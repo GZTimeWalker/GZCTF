@@ -9,6 +9,7 @@ import {
   Table,
   Text,
   Tooltip,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -31,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { downloadBlob } from '@Utils/ApiHelper'
-import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles, useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
 
@@ -46,7 +47,9 @@ const AnswerResultMap = new Map([
 
 const AnswerResultIconMap = (size: number) => {
   const theme = useMantineTheme()
-  const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
+  const { colorScheme } = useMantineColorScheme()
+
+  const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
     [
@@ -87,10 +90,16 @@ const Submissions: FC = () => {
   const { game } = useGame(numId)
 
   const iconMap = AnswerResultIconMap(0.8)
-  const { classes, cx, theme } = useTableStyles()
+  const { classes, cx } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
+  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
 
   const { t } = useTranslation()
+  const viewport = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [activePage, viewport])
 
   useEffect(() => {
     api.game
@@ -159,30 +168,30 @@ const Submissions: FC = () => {
 
   const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map(
     (item, i) => (
-      <tr
+      <Table.Tr
         key={`${item.time}@${i}`}
         className={
           i === 0 && activePage === 1 && filteredSubs.length > 0 ? cx(classes.fade) : undefined
         }
       >
-        <td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</td>
-        <td className={cx(classes.mono)}>
+        <Table.Td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</Table.Td>
+        <Table.Td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" fw="bold">
             {item.team ?? 'Team'}
           </Text>
-        </td>
-        <td>
-          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold">
+        </Table.Td>
+        <Table.Td>
+          <Text ff="monospace" size="sm" fw="bold">
             {item.user ?? 'User'}
           </Text>
-        </td>
-        <td>{item.challenge ?? 'Challenge'}</td>
-        <td
+        </Table.Td>
+        <Table.Td>{item.challenge ?? 'Challenge'}</Table.Td>
+        <Table.Td
           style={{
             width: '36vw',
             maxWidth: '100%',
@@ -194,26 +203,24 @@ const Submissions: FC = () => {
             value={item.answer}
             readOnly
             size="sm"
-            sx={(theme) => ({
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-              },
-              wrapper: {
-                width: '100%',
-              },
-            })}
+            classNames={inputClasses}
           />
-        </td>
-      </tr>
+        </Table.Td>
+      </Table.Tr>
     )
   )
 
   const onDownloadSubmissionSheet = () =>
-    downloadBlob(api.game.gameSubmissionSheet(numId, { format: 'blob' }), setDisabled, t)
+    downloadBlob(
+      api.game.gameSubmissionSheet(numId, { format: 'blob' }),
+      `Submission_${numId}_${Date.now()}.xlsx`,
+      setDisabled,
+      t
+    )
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" w="100%">
+      <Group justify="space-between" w="100%">
         <SegmentedControl
           color="brand"
           value={type}
@@ -222,8 +229,8 @@ const Submissions: FC = () => {
               background: 'transparent',
             },
           }}
-          onChange={(value: AnswerResult | 'All') => {
-            setType(value)
+          onChange={(value) => {
+            setType(value as AnswerResult | 'All')
             setPage(1)
           }}
           data={[
@@ -239,7 +246,7 @@ const Submissions: FC = () => {
               .filter((role) => role.value !== AnswerResult.FlagSubmitted),
           ]}
         />
-        <Group position="right">
+        <Group justify="right">
           <Tooltip
             label={t('game.button.download.submissionsheet')}
             position="left"
@@ -262,23 +269,23 @@ const Submissions: FC = () => {
         </Group>
       </Group>
       <Paper shadow="md" p="md">
-        <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
+        <ScrollArea viewportRef={viewport} offsetScrollbars h="calc(100vh - 200px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th style={{ width: '0.6rem' }}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ width: '0.6rem' }}>
                   <Group align="center">
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
-                </th>
-                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-                <th style={{ minWidth: '5rem' }}>{t('common.label.team')}</th>
-                <th style={{ minWidth: '5rem' }}>{t('common.label.user')}</th>
-                <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
-                <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
+                </Table.Th>
+                <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.team')}</Table.Th>
+                <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.user')}</Table.Th>
+                <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+                <Table.Th className={cx(classes.mono)}>{t('common.label.flag')}</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </ScrollArea>
       </Paper>

@@ -1,0 +1,29 @@
+body {
+  padding: 0;
+  margin: 0;
+
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-gray-7));
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
+
+  @media print {
+    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-gray-7));
+  }
+}
+
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mantine-color-dark-3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

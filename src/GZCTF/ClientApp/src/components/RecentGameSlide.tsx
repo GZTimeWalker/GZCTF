@@ -1,4 +1,5 @@
-import { Badge, createStyles, Group, Paper, Stack, Title } from '@mantine/core'
+import { Badge, Group, Paper, Stack, Title } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -50,11 +51,11 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       shadow="md"
       p="md"
       radius="md"
-      sx={{ backgroundImage: `url(${poster})` }}
+      style={{ backgroundImage: `url(${poster})` }}
       className={classes.card}
     >
-      <Stack h="100%" spacing={2} justify="space-between">
-        <Group spacing={4}>
+      <Stack h="100%" gap={2} justify="space-between">
+        <Group gap={4}>
           <Badge size="sm" variant="filled">
             {game.limit === 0
               ? t('game.tag.multiplayer')

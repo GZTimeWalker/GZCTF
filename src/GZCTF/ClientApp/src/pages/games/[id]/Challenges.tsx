@@ -13,7 +13,7 @@ const Challenges: FC = () => {
     <WithNavBar width="90%">
       <WithRole requiredRole={Role.User}>
         <WithGameTab>
-          <Group spacing="sm" position="apart" align="flex-start" grow noWrap>
+          <Group gap="sm" justify="space-between" align="flex-start" grow wrap="nowrap">
             <ChallengePanel />
             <Stack maw="20rem">
               <TeamRank />

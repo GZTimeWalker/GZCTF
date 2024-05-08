@@ -111,8 +111,8 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
         },
       }}
       title={
-        <Group noWrap w="100%" position="apart" spacing="sm">
-          <Group noWrap spacing="sm">
+        <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
+          <Group wrap="nowrap" gap="sm">
             {tagData && (
               <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />
             )}
@@ -120,17 +120,17 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               {challenge?.title ?? ''}
             </Title>
           </Group>
-          <Text miw="5em" fw={700} ff={theme.fontFamilyMonospace}>
+          <Text miw="5em" fw="bold" ff="monospace">
             {challenge?.originalScore ?? 500} pts
           </Text>
         </Group>
       }
     >
-      <Stack spacing="sm">
+      <Stack gap="sm">
         <Divider />
-        <Stack spacing="sm" justify="space-between" pos="relative" mih="20vh">
+        <Stack gap="sm" justify="space-between" pos="relative" mih="20vh">
           <LoadingOverlay visible={!challenge} />
-          <Group grow noWrap position="right" align="flex-start" spacing={2}>
+          <Group grow wrap="nowrap" justify="right" align="flex-start" gap={2}>
             <Box className={classes.root} mih="4rem">
               {attachmentType !== FileType.None && (
                 <Tooltip
@@ -173,9 +173,9 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
             </Box>
           </Group>
           {challenge?.hints && challenge.hints.length > 0 && (
-            <Stack spacing={2}>
+            <Stack gap={2}>
               {challenge.hints.map((hint) => (
-                <Group spacing="xs" align="flex-start" noWrap>
+                <Group gap="xs" align="flex-start" wrap="nowrap">
                   <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
                   <InlineMarkdownRender
                     key={hint}
@@ -199,7 +199,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
         </Stack>
         <Divider />
         <form onSubmit={onSubmit}>
-          <Group position="apart" spacing="sm" align="flex-end">
+          <Group justify="space-between" gap="sm" align="flex-end">
             <TextInput
               placeholder={placeholder}
               value={flag}
@@ -207,7 +207,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               style={{ flexGrow: 1 }}
               styles={{
                 input: {
-                  fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
+                  fontFamily: theme.fontFamilyMonospace,
                 },
               }}
             />

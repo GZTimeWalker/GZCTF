@@ -81,13 +81,16 @@ const Games: FC = () => {
   return (
     <AdminPage
       isLoading={!games}
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       head={
         <>
-          <Button leftIcon={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
+          <Button
+            leftSection={<Icon path={mdiPlus} size={1} />}
+            onClick={() => setCreateOpened(true)}
+          >
             {t('admin.button.games.new')}
           </Button>
-          <Group w="calc(100% - 9rem)" position="right">
+          <Group w="calc(100% - 9rem)" justify="right">
             <Text fw="bold" size="sm">
               <Trans
                 i18nKey="admin.content.games.stats"
@@ -119,50 +122,50 @@ const Games: FC = () => {
       <Paper shadow="md" p="md" w="100%">
         <ScrollArea offsetScrollbars h="calc(100vh - 190px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th>{t('admin.label.games.public')}</th>
-                <th>{t('common.label.game')}</th>
-                <th>{t('common.label.time')}</th>
-                <th>{t('admin.label.games.summary')}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.games.public')}</Table.Th>
+                <Table.Th>{t('common.label.game')}</Table.Th>
+                <Table.Th>{t('common.label.time')}</Table.Th>
+                <Table.Th>{t('admin.label.games.summary')}</Table.Th>
+                <Table.Th />
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {games &&
                 games.map((game) => {
                   const { startTime, endTime, status } = getGameStatus(game)
                   const color = GameColorMap.get(status)
 
                   return (
-                    <tr key={game.id}>
-                      <td>
+                    <Table.Tr key={game.id}>
+                      <Table.Td>
                         <Switch
                           disabled={disabled}
                           checked={!game.hidden}
                           onChange={() => onToggleHidden(game)}
                         />
-                      </td>
-                      <td>
-                        <Group noWrap position="apart">
+                      </Table.Td>
+                      <Table.Td>
+                        <Group wrap="nowrap" justify="space-between">
                           <Group
-                            noWrap
-                            position="left"
+                            wrap="nowrap"
+                            justify="left"
                             onClick={() => navigate(`/games/${game.id}`)}
-                            sx={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer' }}
                           >
                             <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
-                            <Text fw={700} lineClamp={1} maw="calc(10vw)">
+                            <Text fw="bold" lineClamp={1} maw="calc(10vw)">
                               {game.title}
                             </Text>
                           </Group>
                           <Badge color={color}>{status}</Badge>
                         </Group>
-                      </td>
-                      <td>
-                        <Group noWrap spacing="xs">
+                      </Table.Td>
+                      <Table.Td>
+                        <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>
@@ -171,14 +174,14 @@ const Games: FC = () => {
                             {dayjs(endTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>
                         </Group>
-                      </td>
-                      <td>
-                        <Text truncate maw="30rem">
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" truncate maw="20rem">
                           {game.summary}
                         </Text>
-                      </td>
-                      <td>
-                        <Group position="right">
+                      </Table.Td>
+                      <Table.Td>
+                        <Group justify="right">
                           <ActionIcon
                             onClick={() => {
                               navigate(`/admin/games/${game.id}/info`)
@@ -187,11 +190,11 @@ const Games: FC = () => {
                             <Icon path={mdiPencilOutline} size={1} />
                           </ActionIcon>
                         </Group>
-                      </td>
-                    </tr>
+                      </Table.Td>
+                    </Table.Tr>
                   )
                 })}
-            </tbody>
+            </Table.Tbody>
           </Table>
         </ScrollArea>
       </Paper>

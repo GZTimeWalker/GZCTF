@@ -1,15 +1,13 @@
-import { createStyles, keyframes } from '@mantine/core'
+import { createStyles, keyframes } from '@mantine/emotion'
 import { FC } from 'react'
+import { useIconStyles } from '@Utils/ThemeOverride'
 
 const spinning = keyframes({
   from: { transform: 'rotate(0deg)' },
   to: { transform: 'rotate(360deg)' },
 })
 
-const useStyles = createStyles((theme) => ({
-  triangle: {
-    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
-  },
+const useStyles = createStyles(() => ({
   rotator: {
     transformOrigin: '50% 50%',
     animation: `${spinning} 8s linear infinite`,
@@ -18,6 +16,7 @@ const useStyles = createStyles((theme) => ({
 
 const Icon404: FC = () => {
   const { classes, cx } = useStyles()
+  const { classes: triClasses } = useIconStyles()
   return (
     <svg
       id="main_logo"
@@ -38,7 +37,7 @@ const Icon404: FC = () => {
 
       <path
         id="Triangle"
-        className={cx(classes.triangle, classes.rotator)}
+        className={cx(triClasses.triangle, classes.rotator)}
         fillRule="evenodd"
         d="M3794.48,5044.61L1305.28,3607.47V2792.53l2489.2-1437.14,705.76,407.47V4637.14Zm0.89-2875.82L2009.27,3200l1786.1,1031.21V2168.79Z"
       />

@@ -1,8 +1,8 @@
 import {
+  alpha,
   Avatar,
   Box,
   Center,
-  createStyles,
   Group,
   Input,
   Pagination,
@@ -12,7 +12,9 @@ import {
   Table,
   Text,
   Tooltip,
+  useMantineColorScheme,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
@@ -30,7 +32,7 @@ import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
 
-export const useScoreboardStyles = createStyles((theme) => ({
+export const useScoreboardStyles = createStyles((theme, _, u) => ({
   table: {
     tableLayout: 'fixed',
     width: 'auto',
@@ -48,7 +50,13 @@ export const useScoreboardStyles = createStyles((theme) => ({
   },
   theadFixLeft: {
     position: 'sticky',
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[7],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.white,
+    },
   },
   theadHeader: {
     fontWeight: 'bold',
@@ -65,8 +73,21 @@ export const useScoreboardStyles = createStyles((theme) => ({
     float: 'left',
     zIndex: 20,
   },
-  noBorder: {
-    border: 'none !important',
+  text: {
+    fontSize: '0.9em',
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 600,
+  },
+  inputWapper: {
+    width: '100%',
+  },
+  input: {
+    userSelect: 'none',
+    fontWeight: 500,
+
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 }))
 
@@ -79,58 +100,67 @@ Lefts.forEach((val, idx) => {
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const { classes, cx, theme } = useScoreboardStyles()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const hiddenCol = [...Array(5).keys()].map((i) => (
-    <th
+    <Table.Th
       key={i}
-      className={cx(classes.theadFixLeft, classes.noBorder)}
-      style={{ left: Lefts[i], width: Widths[i], minWidth: Widths[i], maxWidth: Widths[i] }}
+      className={classes.theadFixLeft}
+      style={{
+        left: Lefts[i],
+        width: Widths[i],
+        minWidth: Widths[i],
+        maxWidth: Widths[i],
+      }}
     >
       &nbsp;
-    </th>
+    </Table.Th>
   ))
 
   return (
-    <thead className={classes.thead}>
+    <Table.Thead className={classes.thead}>
       {/* Challenge Tag */}
-      <tr>
+      <Table.Tr style={{ border: 'none' }}>
         {hiddenCol}
         {Object.keys(table).map((key) => {
           const tag = challengeTagLabelMap.get(key as ChallengeTag)!
           return (
-            <th
+            <Table.Th
               key={key}
               colSpan={table[key].length}
+              h="3rem"
               style={{
-                backgroundColor: theme.fn.rgba(
-                  theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6],
-                  theme.colorScheme === 'dark' ? 0.15 : 0.2
+                backgroundColor: alpha(
+                  theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6],
+                  colorScheme === 'dark' ? 0.15 : 0.2
                 ),
               }}
             >
-              <Group spacing={4} noWrap position="center" w="100%">
+              <Group gap={4} wrap="nowrap" justify="center" w="100%">
                 <Icon
                   path={tag.icon}
                   size={1}
-                  color={theme.colors[tag.color][theme.colorScheme === 'dark' ? 8 : 6]}
+                  color={theme.colors[tag.color][colorScheme === 'dark' ? 8 : 6]}
                 />
-                <Text c={tag.color}>{key}</Text>
+                <Text c={tag.color} className={classes.text} ff="text" fz="sm">
+                  {key}
+                </Text>
               </Group>
-            </th>
+            </Table.Th>
           )
         })}
-      </tr>
+      </Table.Tr>
       {/* Challenge Name */}
-      <tr>
+      <Table.Tr>
         {hiddenCol}
         {Object.keys(table).map((key) =>
-          table[key].map((item) => <th key={item.id}>{item.title}</th>)
+          table[key].map((item) => <Table.Th key={item.id}>{item.title}</Table.Th>)
         )}
-      </tr>
+      </Table.Tr>
       {/* Headers & Score */}
-      <tr>
+      <Table.Tr>
         {[
           t('game.label.score_table.rank_total'),
           t('game.label.score_table.rank_organization'),
@@ -138,23 +168,23 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
           t('game.label.score_table.solved_count'),
           t('game.label.score_table.score_total'),
         ].map((header, idx) => (
-          <th
+          <Table.Th
             key={idx}
             className={cx(classes.theadFixLeft, classes.theadHeader)}
             style={{ left: Lefts[idx] }}
           >
             {header}
-          </th>
+          </Table.Th>
         ))}
         {Object.keys(table).map((key) =>
           table[key].map((item) => (
-            <th key={item.id} className={classes.theadMono}>
+            <Table.Th key={item.id} className={classes.theadMono}>
               {item.score}
-            </th>
+            </Table.Th>
           ))
         )}
-      </tr>
-    </thead>
+      </Table.Tr>
+    </Table.Thead>
   )
 }
 
@@ -166,32 +196,32 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
-  const { classes, cx, theme } = useScoreboardStyles()
+  const { classes, cx } = useScoreboardStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
 
   return (
-    <tr>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
+    <Table.Tr>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
         {item.rank}
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[1] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[1] }}>
         {allRank ? item.rank : item.organizationRank ?? tableRank}
-      </td>
-      <td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
-        <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
+        <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
             src={item.avatar}
             radius="xl"
             size={30}
             color="brand"
-            sx={(theme) => ({
-              ...theme.fn.hover({
+            style={{
+              '&:hover': {
                 cursor: 'pointer',
-              }),
-            })}
+              },
+            }}
           >
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
@@ -200,55 +230,40 @@ const TableRow: FC<{
             value={item.name}
             readOnly
             size="sm"
-            sx={(theme) => ({
-              wrapper: {
-                width: '100%',
-              },
-
-              input: {
-                userSelect: 'none',
-
-                ...theme.fn.hover({
-                  cursor: 'pointer',
-                }),
-              },
-            })}
+            classNames={{ wrapper: classes.inputWapper, input: classes.input }}
           />
         </Group>
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
         {solved?.length}
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[4] }}>
+      </Table.Td>
+      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[4] }}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
-      </td>
+      </Table.Td>
       {challenges &&
         Object.keys(challenges).map((key) =>
           challenges[key].map((item) => {
             const chal = solved?.find((c) => c.id === item.id)
             const icon = iconMap.get(chal?.type ?? SubmissionType.Unaccepted)
 
-            if (!icon) return <td key={item.id} className={classes.theadMono} />
+            if (!icon) return <Table.Td key={item.id} className={classes.theadMono} />
 
             const tag = challengeTagLabelMap.get(item.tag as ChallengeTag)!
-            const textStyle = {
-              fontSize: '0.9em',
-              fontFamily: theme.fontFamilyMonospace,
-              fontWeight: 600,
-            }
 
             return (
-              <td key={item.id} className={classes.theadMono}>
+              <Table.Td key={item.id} className={classes.theadMono}>
                 <Tooltip
                   classNames={tooltipClasses}
                   transitionProps={{ transition: 'pop' }}
                   label={
-                    <Stack align="flex-start" spacing={0} maw="20rem">
-                      <Text lineClamp={3}>{item.title}</Text>
-                      <Text c={tag.color} style={textStyle}>
+                    <Stack align="flex-start" gap={0} maw="20rem">
+                      <Text lineClamp={3} fz="xs" className={classes.text}>
+                        {item.title}
+                      </Text>
+                      <Text c={tag.color} fz="xs" className={classes.text}>
                         + {chal?.score} pts
                       </Text>
-                      <Text c="dimmed" style={textStyle}>
+                      <Text c="dimmed" fz="xs" className={classes.text}>
                         # {dayjs(chal?.time).format('MM/DD HH:mm:ss')}
                       </Text>
                     </Stack>
@@ -256,11 +271,11 @@ const TableRow: FC<{
                 >
                   <Center>{icon}</Center>
                 </Tooltip>
-              </td>
+              </Table.Td>
             )
           })
         )}
-    </tr>
+    </Table.Tr>
   )
 }
 
@@ -304,7 +319,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
 
   return (
     <Paper shadow="md" p="md">
-      <Stack spacing="xs">
+      <Stack gap="xs">
         {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
           <Group>
             <Select
@@ -332,18 +347,18 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           </Group>
         )}
         <Box pos="relative">
-          <Box
-            maw="100%"
-            sx={{
-              overflow: 'scroll',
-              '::-webkit-scrollbar': {
-                height: 0,
+          <Table.ScrollContainer
+            minWidth="100%"
+            styles={{
+              scrollContainer: {
+                // Hide scrollbar (type = "never" for ScrollArea)
+                '--scrollarea-scrollbar-size': '0pt',
               },
             }}
           >
             <Table className={classes.table}>
               <TableHeader {...scoreboard?.challenges} />
-              <tbody>
+              <Table.Tbody>
                 {scoreboard &&
                   currentItems?.map((item, idx) => (
                     <TableRow
@@ -359,15 +374,15 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                       iconMap={iconMap}
                     />
                   ))}
-              </tbody>
+              </Table.Tbody>
             </Table>
-          </Box>
+          </Table.ScrollContainer>
 
           <Box className={classes.legend}>
-            <Stack spacing="xs">
-              <Group spacing="lg">
+            <Stack gap="xs">
+              <Group gap="lg">
                 {BloodsTypes.map((type, idx) => (
-                  <Group key={idx} position="left" spacing={2}>
+                  <Group key={idx} justify="left" gap={2}>
                     {iconMap.get(type)}
                     <Text size="sm">{bloodData.get(type)?.name}</Text>
                     <Text size="xs" c="dimmed">
@@ -382,13 +397,12 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
             </Stack>
           </Box>
         </Box>
-        <Group position="apart">
+        <Group justify="space-between">
           <Text size="sm" c="dimmed">
             {t('game.content.scoreboard_tip')}
           </Text>
 
           <Pagination
-            noWrap
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}

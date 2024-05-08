@@ -66,7 +66,7 @@ const Configs: FC = () => {
         variant="filled"
         radius="xl"
         size="md"
-        leftIcon={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
+        leftSection={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
         onClick={() => {
           updateConfig({ globalConfig, accountPolicy, containerPolicy })
           setSaved(false)
@@ -76,7 +76,7 @@ const Configs: FC = () => {
       >
         {t('admin.button.save')}
       </Button>
-      <Stack w="100%" spacing="xl">
+      <Stack w="100%" gap="xl">
         <Stack>
           <Title order={2}>{t('admin.content.settings.platform.title')}</Title>
           <Divider />
@@ -201,6 +201,8 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.defaultLifetime ?? 120}
               onChange={(e) => {
+                if (typeof e === 'string') return
+
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
                 setContainerPolicy({ ...(containerPolicy ?? {}), defaultLifetime: num })
               }}
@@ -214,6 +216,8 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.extensionDuration ?? 120}
               onChange={(e) => {
+                if (typeof e === 'string') return
+
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
                 setContainerPolicy({ ...(containerPolicy ?? {}), extensionDuration: num })
               }}
@@ -227,6 +231,8 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.renewalWindow ?? 10}
               onChange={(e) => {
+                if (typeof e === 'string') return
+
                 const num = e ? Math.min(Math.max(e, 1), 360) : 10
                 setContainerPolicy({ ...(containerPolicy ?? {}), renewalWindow: num })
               }}

@@ -28,13 +28,13 @@ const GameWriteups: FC = () => {
 
   return (
     <WithGameTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       contentPos="right"
       head={
         <Button
           fullWidth
           w="15rem"
-          leftIcon={<Icon path={mdiFolderDownloadOutline} size={1} />}
+          leftSection={<Icon path={mdiFolderDownloadOutline} size={1} />}
           onClick={() => window.open(`/api/admin/writeups/${id}/all`, '_blank')}
         >
           {t('admin.button.writeups.download_all')}
@@ -43,13 +43,13 @@ const GameWriteups: FC = () => {
     >
       {!writeups?.length || !selected ? (
         <Center mih="calc(100vh - 180px)">
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <Title order={2}>{t('admin.content.games.writeups.empty.title')}</Title>
             <Text>{t('admin.content.games.writeups.empty.description')}</Text>
           </Stack>
         </Center>
       ) : (
-        <Group noWrap align="flex-start" position="apart">
+        <Group wrap="nowrap" align="flex-start" justify="space-between">
           <Stack pos="relative" mt="-3rem" w="calc(100% - 16rem)">
             <ErrorBoundary
               fallback={
@@ -63,16 +63,14 @@ const GameWriteups: FC = () => {
             </ErrorBoundary>
           </Stack>
           <ScrollArea miw="15rem" maw="15rem" h="calc(100vh - 110px - 3rem)" type="never">
-            <Stack>
+            <Stack gap="sm">
               {writeups?.map((writeup) => (
                 <TeamWriteupCard
                   key={writeup.id}
                   writeup={writeup}
                   selected={selected?.id === writeup.id}
                   onClick={() => setSelected(writeup)}
-                >
-                  <Text>{writeup.team?.name}</Text>
-                </TeamWriteupCard>
+                />
               ))}
             </Stack>
           </ScrollArea>

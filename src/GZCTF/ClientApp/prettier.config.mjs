@@ -13,6 +13,7 @@ export default {
     '^@Components/(.*)$',
     '^@Utils/(.*)$',
     '^@Api$',
+    '^@(.*).css$',
     '^[./]',
   ],
 }

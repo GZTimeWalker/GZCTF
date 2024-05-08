@@ -11,6 +11,7 @@ import {
   SelectableItemProps,
 } from '@Components/ScrollSelect'
 import { useChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import {
   ChallengeTag,
   ChallengeTrafficModel,
@@ -28,36 +29,24 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
   const data = challengeTagLabelMap.get(item.tag as ChallengeTag)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
-
+  const { classes } = useDisplayInputStyles({ fw: 'bold' })
   const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group position="apart" spacing={0} w="100%" noWrap>
-        <Group position="left" spacing="xs" noWrap>
+      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+        <Group justify="left" gap="xs" wrap="nowrap">
           <Icon path={data.icon} color={theme.colors[data.color ?? 'brand'][5]} size={1} />
-          <Stack spacing={0} align="flex-start">
-            <Input
-              variant="unstyled"
-              value={item.title ?? 'Team'}
-              readOnly
-              sx={() => ({
-                input: {
-                  userSelect: 'none',
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  height: '1.5rem',
-                },
-              })}
-            />
+          <Stack gap={0} align="flex-start">
+            <Input variant="unstyled" value={item.title ?? 'Team'} readOnly classNames={classes} />
             <Badge color={data.color} size="xs" variant="dot">
               {type}
             </Badge>
           </Stack>
         </Group>
 
-        <Group position="right" spacing={2} noWrap w="6rem">
-          <Text color="dimmed" size="xs" lineClamp={1}>
+        <Group justify="right" gap={2} wrap="nowrap" w="6rem">
+          <Text c="dimmed" size="xs" lineClamp={1}>
             {item.count}&nbsp;{t('common.label.team')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
@@ -70,29 +59,18 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
 
+  const { classes } = useDisplayInputStyles({ fw: 'bold' })
   const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group position="apart" spacing={0} w="100%" noWrap>
-        <Group position="left" spacing="xs" noWrap>
+      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+        <Group justify="left" gap="xs" wrap="nowrap">
           <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color="brand">
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Stack spacing={0} align="flex-start">
-            <Input
-              variant="unstyled"
-              value={item.name ?? 'Team'}
-              readOnly
-              sx={() => ({
-                input: {
-                  userSelect: 'none',
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  height: '1.5rem',
-                },
-              })}
-            />
+          <Stack gap={0} align="flex-start">
+            <Input variant="unstyled" value={item.name ?? 'Team'} readOnly classNames={classes} />
             {item.organization && (
               <Badge size="xs" variant="outline">
                 {item.organization}
@@ -101,8 +79,8 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
           </Stack>
         </Group>
 
-        <Group position="right" spacing={2} noWrap w="6rem">
-          <Text color="dimmed" size="xs" lineClamp={1}>
+        <Group justify="right" gap={2} wrap="nowrap" w="6rem">
+          <Text c="dimmed" size="xs" lineClamp={1}>
             {item.count}&nbsp;{t('game.label.traffic')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
@@ -124,18 +102,18 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
 
   return (
     <SelectableItem h={itemHeight} active={false} {...props}>
-      <Group position="apart" spacing={0} noWrap w="100%">
+      <Group justify="space-between" gap={0} wrap="nowrap" w="100%">
         <Group
-          position="apart"
-          spacing={0}
-          noWrap
+          justify="space-between"
+          gap={0}
+          wrap="nowrap"
           w="calc(100% - 2.5rem)"
           onClick={() => onDownload(item)}
         >
-          <Group position="left" spacing="sm" noWrap>
+          <Group justify="left" gap="sm" wrap="nowrap">
             <Icon path={mdiFileDownloadOutline} size={1.2} />
 
-            <Stack spacing={0} align="flex-start">
+            <Stack gap={0} align="flex-start">
               <Text truncate fw={500}>
                 {item.fileName}
               </Text>
@@ -149,7 +127,7 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
             {HunamizeSize(item.size ?? 0)}
           </Text>
         </Group>
-        <Group position="right" spacing="sm" noWrap w="2.5rem">
+        <Group justify="right" gap="sm" wrap="nowrap" w="2.5rem">
           <ActionIconWithConfirm
             iconPath={mdiDeleteOutline}
             color="red"

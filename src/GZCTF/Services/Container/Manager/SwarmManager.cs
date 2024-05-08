@@ -144,12 +144,12 @@ public class SwarmManager : IContainerManager
         container.Port = (int)res.Endpoint.Ports.First().PublishedPort;
         container.IsProxy = !_meta.ExposePort;
 
-        if (_meta.ExposePort)
-        {
-            container.PublicPort = container.Port;
-            if (!string.IsNullOrEmpty(_meta.PublicEntry))
-                container.PublicIP = _meta.PublicEntry;
-        }
+        if (!_meta.ExposePort)
+            return container;
+
+        container.PublicPort = container.Port;
+        if (!string.IsNullOrEmpty(_meta.PublicEntry))
+            container.PublicIP = _meta.PublicEntry;
 
         return container;
     }

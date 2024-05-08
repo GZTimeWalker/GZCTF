@@ -1,7 +1,19 @@
-import { createStyles, keyframes, MantineThemeOverride, rem, useMantineTheme } from '@mantine/core'
+import {
+  ActionIcon,
+  Badge,
+  Loader,
+  Modal,
+  Popover,
+  Switch,
+  createTheme,
+  darken,
+  rem,
+  useMantineTheme,
+} from '@mantine/core'
+import { createStyles, keyframes } from '@mantine/emotion'
 import { useMediaQuery } from '@mantine/hooks'
 
-export const ThemeOverride: MantineThemeOverride = {
+export const CustomTheme = createTheme({
   colors: {
     gray: [
       '#EBEBEB',
@@ -13,6 +25,7 @@ export const ThemeOverride: MantineThemeOverride = {
       '#414141',
       '#252525',
       '#202020',
+      '#141414',
     ],
     brand: [
       '#A7FFEB',
@@ -24,6 +37,7 @@ export const ThemeOverride: MantineThemeOverride = {
       '#02BFA5',
       '#009985',
       '#007F6E',
+      '#005A4C',
     ],
     alert: [
       '#FFB4B4',
@@ -37,7 +51,7 @@ export const ThemeOverride: MantineThemeOverride = {
       '#FC1414',
       '#FC0000',
     ],
-    white: [
+    light: [
       '#FFFFFF',
       '#F8F8F8',
       '#EFEFEF',
@@ -65,13 +79,31 @@ export const ThemeOverride: MantineThemeOverride = {
   primaryColor: 'brand',
   fontFamily:
     "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif",
-  fontFamilyMonospace: "'JetBrains Mono', monospace",
+  fontFamilyMonospace:
+    "'JetBrains Mono', ui-monospace, SFMono-Regular, Monaco, Consolas, 'Courier New', monospace, 'IBM Plex Sans', sans-serif",
   headings: {
     fontFamily: "'IBM Plex Sans', sans-serif",
   },
-  loader: 'bars',
+  breakpoints: {
+    xs: '30em',
+    sm: '48em',
+    md: '64em',
+    lg: '74em',
+    xl: '90em',
+    w18: '1800px',
+    w24: '2400px',
+    w30: '3000px',
+    w36: '3600px',
+    w42: '4200px',
+    w48: '4800px',
+  },
   components: {
-    Switch: {
+    Loader: Loader.extend({
+      defaultProps: {
+        type: 'bars',
+      },
+    }),
+    Switch: Switch.extend({
       styles: {
         body: {
           alignItems: 'center',
@@ -80,8 +112,8 @@ export const ThemeOverride: MantineThemeOverride = {
           display: 'flex',
         },
       },
-    },
-    Modal: {
+    }),
+    Modal: Modal.extend({
       defaultProps: {
         centered: true,
         styles: {
@@ -90,12 +122,23 @@ export const ThemeOverride: MantineThemeOverride = {
           },
         },
       },
-    },
-    Popover: {
+    }),
+    Popover: Popover.extend({
       defaultProps: {
         withinPortal: true,
       },
-    },
+    }),
+    ActionIcon: ActionIcon.extend({
+      defaultProps: {
+        variant: 'transparent',
+      },
+    }),
+    Badge: Badge.extend({
+      defaultProps: {
+        variant: 'outline',
+      },
+    }),
+    // TODO: notifcation styles
     Notification: {
       defaultProps: {
         radius: 'md',
@@ -104,9 +147,9 @@ export const ThemeOverride: MantineThemeOverride = {
       },
     },
   },
-}
+})
 
-export const useTableStyles = createStyles((theme) => ({
+export const useTableStyles = createStyles((theme, _, u) => ({
   mono: {
     fontFamily: theme.fontFamilyMonospace,
   },
@@ -123,7 +166,14 @@ export const useTableStyles = createStyles((theme) => ({
       position: 'sticky',
       top: 0,
       zIndex: 195,
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[7],
+      },
+
+      [u.light]: {
+        backgroundColor: theme.white,
+      },
     },
 
     '& tbody tr td': {
@@ -132,15 +182,20 @@ export const useTableStyles = createStyles((theme) => ({
   },
 }))
 
-export const useTooltipStyles = createStyles((theme) => ({
+export const useTooltipStyles = createStyles((theme, _, u) => ({
   tooltip: {
     fontWeight: 500,
-    background:
-      theme.colorScheme === 'dark'
-        ? theme.fn.darken(theme.colors.gray[6], 0.4)
-        : theme.colors.white[0],
     boxShadow: theme.shadows.md,
-    color: theme.colorScheme === 'dark' ? theme.colors.white[2] : theme.colors.gray[7],
+
+    [u.dark]: {
+      backgroundColor: darken(theme.colors.gray[6], 0.4),
+      color: theme.colors.gray[0],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.colors.white,
+      color: theme.colors.gray[7],
+    },
   },
   arrow: {
     boxShadow: theme.shadows.md,
@@ -149,26 +204,16 @@ export const useTooltipStyles = createStyles((theme) => ({
 
 export const useIsMobile = (limit?: number) => {
   const theme = useMantineTheme()
-  const isMobile = useMediaQuery(`(max-width: ${limit ? `${limit}px` : theme.breakpoints.xs})`)
+  const isMobile = useMediaQuery(`(max-width: ${limit ? `${limit}px` : theme.breakpoints.sm})`)
   return isMobile
 }
-
-export const ACCEPT_IMAGE_MIME_TYPE = [
-  'image/png',
-  'image/gif',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-  'image/bmp',
-  'image/tiff',
-]
 
 interface FixedButtonProps {
   right?: string
   bottom?: string
 }
 
-export const useFixedButtonStyles = createStyles((theme, { right, bottom }: FixedButtonProps) => ({
+export const useFixedButtonStyles = createStyles((_, { right, bottom }: FixedButtonProps) => ({
   fixedButton: {
     position: 'fixed',
     bottom,
@@ -183,21 +228,40 @@ export const useFixedButtonStyles = createStyles((theme, { right, bottom }: Fixe
   },
 }))
 
-export const useBannerStyles = createStyles((theme) => ({
+export const useIconStyles = createStyles((theme, _, u) => ({
+  triangle: {
+    [u.dark]: {
+      fill: theme.white,
+    },
+
+    [u.light]: {
+      fill: theme.colors.gray[6],
+    },
+  },
+}))
+
+export const useBannerStyles = createStyles((theme, _, u) => ({
   root: {
     position: 'relative',
     display: 'flex',
-    background: theme.colorScheme === 'dark' ? ` rgba(0,0,0,0.2)` : theme.white,
     justifyContent: 'center',
     backgroundSize: 'cover',
     backgroundPosition: 'center center',
     padding: `calc(${theme.spacing.xl} * 3) 0`,
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.dark]: {
+      background: 'rgba(0,0,0,0.2)',
+    },
+
+    [u.light]: {
+      background: theme.white,
+    },
+
+    [u.smallerThan('sm')]: {
       justifyContent: 'start',
     },
 
-    [theme.fn.smallerThan('md')]: {
+    [u.smallerThan('md')]: {
       padding: `calc(${theme.spacing.xl} * 1.5) 1rem`,
     },
   },
@@ -207,14 +271,14 @@ export const useBannerStyles = createStyles((theme) => ({
     width: '100%',
     zIndex: 1,
 
-    [theme.fn.smallerThan('md')]: {
+    [u.smallerThan('md')]: {
       padding: `${theme.spacing.md} calc(${theme.spacing.md} * 2)`,
     },
   },
   flexGrowAtSm: {
     flexGrow: 0,
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.smallerThan('sm')]: {
       flexGrow: 1,
     },
   },
@@ -223,12 +287,19 @@ export const useBannerStyles = createStyles((theme) => ({
     maxWidth: 600,
   },
   title: {
-    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
     fontSize: `calc(${theme.fontSizes.xl} * 2.2)`,
     fontWeight: 900,
     lineHeight: 1.1,
 
-    [theme.fn.smallerThan('md')]: {
+    [u.dark]: {
+      color: theme.colors.light[0],
+    },
+
+    [u.light]: {
+      color: theme.colors.gray[6],
+    },
+
+    [u.smallerThan('md')]: {
       maxWidth: '100%',
       fontSize: `calc(${theme.fontSizes.xl} * 1.8)`,
       lineHeight: 1.15,
@@ -242,12 +313,18 @@ export const useBannerStyles = createStyles((theme) => ({
     height: '100%',
     width: '40vw',
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.smallerThan('sm')]: {
       display: 'none',
     },
   },
   date: {
-    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+    [u.dark]: {
+      color: theme.colors.light[0],
+    },
+
+    [u.light]: {
+      color: theme.colors.gray[6],
+    },
   },
 }))
 
@@ -280,20 +357,65 @@ export const useUploadStyles = createStyles(() => ({
   },
 }))
 
-export const useAccordionStyles = createStyles((theme) => ({
+interface UseDisplayInputStylesProps {
+  ff?: 'monospace' | 'text'
+  fw?: React.CSSProperties['fontWeight']
+  lh?: React.CSSProperties['lineHeight']
+}
+
+export const useDisplayInputStyles = createStyles(
+  (theme, { fw = 'normal', lh = '1.5rem', ff = 'text' }: UseDisplayInputStylesProps) => ({
+    wrapper: {
+      width: '100%',
+    },
+    input: {
+      fontWeight: fw,
+      fontFamily: ff === 'text' ? theme.fontFamily : theme.fontFamilyMonospace,
+      height: lh,
+      lineHeight: lh,
+      cursor: 'auto',
+      userSelect: 'none',
+      minHeight: '1rem',
+      maxHeight: '2rem',
+    },
+  })
+)
+
+export const useAccordionStyles = createStyles((theme, _, u) => ({
   root: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     borderRadius: theme.radius.sm,
+
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[6],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.colors.gray[0],
+    },
   },
 
   item: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     border: '1px solid rgba(0,0,0,0.2)',
     position: 'relative',
 
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[6],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.colors.gray[0],
+    },
+
     '&[data-active]': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
       boxShadow: theme.shadows.md,
+
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[7],
+      },
+
+      [u.light]: {
+        backgroundColor: theme.white,
+      },
     },
   },
 
@@ -303,37 +425,71 @@ export const useAccordionStyles = createStyles((theme) => ({
 
   control: {
     padding: '8px 4px',
-    ...theme.fn.hover({ background: 'transparent' }),
+
+    '&:hover': {
+      cursor: 'pointer',
+      background: 'transparent',
+    },
+  },
+}))
+
+export const useHoverCardStyles = createStyles((theme, _, u) => ({
+  root: {
+    cursor: 'pointer',
+    transition: 'filter .2s',
+
+    '&:hover': {
+      [u.dark]: {
+        filter: 'brightness(1.2)',
+      },
+
+      [u.light]: {
+        filter: 'brightness(.97)',
+      },
+    },
   },
 }))
 
 const FOOTER_HEIGHT = rem(240)
 
-export const useFooterStyles = createStyles((theme) => ({
+export const useFooterStyles = createStyles((theme, _, u) => ({
   spacer: {
     height: FOOTER_HEIGHT,
   },
 
   wrapper: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.white[2],
     position: 'fixed',
     zIndex: 5,
     bottom: 0,
     left: 0,
     right: 0,
     height: FOOTER_HEIGHT,
-    paddingRight: `calc(${theme.spacing.xl} * 3)`,
-    paddingLeft: `calc(var(--mantine-navbar-width) + ${theme.spacing.xl} * 3)`,
+    paddingLeft: `calc(var(--app-shell-navbar-offset, 0rem) + var(--mantine-spacing-xl) * 2)`,
+    paddingRight: `calc(var(--mantine-spacing-xl) * 2)`,
 
-    [theme.fn.smallerThan('md')]: {
-      padding: `calc(${theme.spacing.xl})`,
+    [u.smallerThan('md')]: {
+      padding: `var(--mantine-spacing-xl)`,
+    },
+
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[7],
+    },
+
+    [u.light]: {
+      backgroundColor: theme.colors.light[2],
     },
   },
 }))
 
-export const useLogoStyles = createStyles((theme) => ({
+export const useLogoStyles = createStyles((theme, _, u) => ({
   title: {
-    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
+    [u.dark]: {
+      color: theme.colors.light[0],
+    },
+
+    [u.light]: {
+      color: theme.colors.gray[6],
+    },
   },
   brand: {
     color: theme.colors[theme.primaryColor][4],
@@ -342,7 +498,14 @@ export const useLogoStyles = createStyles((theme) => ({
     fontFamily: theme.fontFamilyMonospace,
     fontWeight: 'bold',
     fontSize: '1.5rem',
-    color: theme.colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.dark[4],
+
+    [u.dark]: {
+      color: theme.colors.gray[2],
+    },
+
+    [u.light]: {
+      color: theme.colors.dark[4],
+    },
   },
   blink: {
     animation: `${keyframes`0%, 100% {

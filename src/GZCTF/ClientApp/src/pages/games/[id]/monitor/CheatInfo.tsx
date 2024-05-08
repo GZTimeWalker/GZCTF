@@ -29,7 +29,7 @@ import { ParticipationStatusControl } from '@Components/admin/ParticipationStatu
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { useAccordionStyles, useTableStyles } from '@Utils/ThemeOverride'
+import { useAccordionStyles, useDisplayInputStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
@@ -142,11 +142,12 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
   const { submissionInfo } = props
   const theme = useMantineTheme()
   const type = CheatTypeMap.get(submissionInfo.cheatType)!
+  const { classes } = useDisplayInputStyles({ ff: 'monospace' })
 
   return (
-    <Group position="apart" w="100%" spacing={0}>
-      <Group position="apart" w="60%" pr="2rem">
-        <Group position="left">
+    <Group justify="space-between" w="100%" gap={0}>
+      <Group justify="space-between" w="60%" pr="2rem">
+        <Group justify="left">
           <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
           <Badge size="sm" color="indigo">
             {dayjs(submissionInfo.time).format('MM/DD HH:mm:ss')}
@@ -159,7 +160,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
           {submissionInfo.user}
         </Text>
       </Group>
-      <Stack spacing={0} w="40%">
+      <Stack gap={0} w="40%">
         <Text fw="bold" size="xs" lineClamp={1}>
           {submissionInfo.challenge}
         </Text>
@@ -168,11 +169,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
           value={submissionInfo.answer}
           readOnly
           size="xs"
-          sx={(theme) => ({
-            input: {
-              fontFamily: theme.fontFamilyMonospace,
-            },
-          })}
+          classNames={classes}
         />
       </Stack>
     </Group>
@@ -197,13 +194,13 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Accordion.Control>
-          <Group position="apart">
-            <Group position="left">
+          <Group justify="space-between">
+            <Group justify="left">
               <Avatar alt="avatar" src={cheatTeamInfo.avatar}>
                 {!cheatTeamInfo.name ? 'T' : cheatTeamInfo.name.slice(0, 1)}
               </Avatar>
-              <Stack spacing={0}>
-                <Group spacing={4}>
+              <Stack gap={0}>
+                <Group gap={4}>
                   <Title order={4} lineClamp={1} fw="bold">
                     {!cheatTeamInfo.name
                       ? t('admin.placeholder.games.participation.team')
@@ -220,24 +217,26 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                 </Text>
               </Stack>
             </Group>
-            <Box w="6em">
-              <Badge color={part.color}>{part.title}</Badge>
-            </Box>
+            <Group w="12rem" gap={0} justify="space-between" wrap="nowrap">
+              <Box w="6rem" ta="center">
+                <Badge color={part.color}>{part.title}</Badge>
+              </Box>
+              {RequireRole(Role.Admin, userRole) && (
+                <ParticipationStatusControl
+                  disabled={disabled}
+                  participateId={cheatTeamInfo.participateId!}
+                  status={cheatTeamInfo.status!}
+                  setParticipationStatus={setParticipationStatus}
+                  m={`0 ${theme.spacing.xl}`}
+                  miw={theme.spacing.xl}
+                />
+              )}
+            </Group>
           </Group>
         </Accordion.Control>
-        {RequireRole(Role.Admin, userRole) && (
-          <ParticipationStatusControl
-            disabled={disabled}
-            participateId={cheatTeamInfo.participateId!}
-            status={cheatTeamInfo.status!}
-            setParticipationStatus={setParticipationStatus}
-            m={`0 ${theme.spacing.xl}`}
-            miw={theme.spacing.xl}
-          />
-        )}
       </Box>
       <Accordion.Panel>
-        <Stack spacing="sm">
+        <Stack gap="sm">
           {[...cheatTeamInfo.submissionInfo]
             .sort((a, b) => (b.time?.unix() ?? 0) - (a.time?.unix() ?? 0))
             .map((submissionInfo) => (
@@ -267,10 +266,10 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
 
   return (
     <ScrollArea offsetScrollbars h="calc(100vh - 180px)">
-      <Stack spacing="xs" w="100%">
+      <Stack gap="xs" w="100%">
         {!cheatTeamInfo || cheatTeamInfo?.size === 0 ? (
           <Center h="calc(100vh - 200px)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('game.content.no_cheat.title')}</Title>
               <Text>{t('game.content.no_cheat.comment')}</Text>
             </Stack>
@@ -306,7 +305,8 @@ interface CheatInfoTableViewProps {
 }
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
-  const { classes, cx, theme } = useTableStyles()
+  const { classes, cx } = useTableStyles()
+  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
 
   const { t } = useTranslation()
 
@@ -315,34 +315,34 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
       (a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0)
     )
     .map((item, i) => (
-      <tr key={`${item.submission?.time}@${i}`}>
-        <td className={cx(classes.mono)}>
+      <Table.Tr key={`${item.submission?.time}@${i}`}>
+        <Table.Td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.submission?.time).format('MM/DD HH:mm:ss')}
           </Badge>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" fw="bold">
             {item.ownedTeam?.team?.name ?? 'Team'}
           </Text>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Badge size="sm" color="orange">
             {`>>>`}
           </Badge>
-        </td>
-        <td>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" fw="bold">
             {item.submitTeam?.team?.name ?? 'Team'}
           </Text>
-        </td>
-        <td>
-          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold">
+        </Table.Td>
+        <Table.Td>
+          <Text ff="monospace" size="sm" fw="bold">
             {item.submission?.user ?? 'User'}
           </Text>
-        </td>
-        <td>{item.submission?.challenge ?? 'Challenge'}</td>
-        <td
+        </Table.Td>
+        <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
+        <Table.Td
           style={{
             width: '36vw',
             maxWidth: '100%',
@@ -354,35 +354,34 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
             value={item.submission?.answer}
             readOnly
             size="sm"
-            sx={(theme) => ({
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-              },
-              wrapper: {
-                width: '100%',
-              },
-            })}
+            classNames={inputClasses}
           />
-        </td>
-      </tr>
+        </Table.Td>
+      </Table.Tr>
     ))
 
   return (
     <Paper shadow="md" p="md">
       <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
         <Table className={classes.table}>
-          <thead>
-            <tr>
-              <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.owned_team')}</th>
-              <th />
-              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_team')}</th>
-              <th style={{ minWidth: '5rem' }}>{t('game.label.cheat_info.submit_user')}</th>
-              <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
-              <th className={cx(classes.mono)}>{t('common.label.flag')}</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
+              <Table.Th style={{ minWidth: '5rem' }}>
+                {t('game.label.cheat_info.owned_team')}
+              </Table.Th>
+              <Table.Th />
+              <Table.Th style={{ minWidth: '5rem' }}>
+                {t('game.label.cheat_info.submit_team')}
+              </Table.Th>
+              <Table.Th style={{ minWidth: '5rem' }}>
+                {t('game.label.cheat_info.submit_user')}
+              </Table.Th>
+              <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+              <Table.Th className={cx(classes.mono)}>{t('common.label.flag')}</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </ScrollArea>
     </Paper>
@@ -436,7 +435,7 @@ const CheatInfo: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" w="100%">
+      <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(
             t('game.content.team_view.label'),

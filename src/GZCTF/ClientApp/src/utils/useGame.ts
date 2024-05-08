@@ -34,10 +34,7 @@ export const useGame = (numId: number) => {
 
 export const useGameScoreboard = (numId: number) => {
   const { game } = useGame(numId)
-
-  const { finished, started } = getGameStatus(game)
-
-  const inProgress = started && !finished
+  const { status } = getGameStatus(game)
 
   const {
     data: scoreboard,
@@ -45,8 +42,25 @@ export const useGameScoreboard = (numId: number) => {
     mutate,
   } = api.game.useGameScoreboard(numId, {
     ...OnceSWRConfig,
-    refreshInterval: inProgress ? 30 * 1000 : 0,
+    refreshInterval: status === GameStatus.OnGoing ? 30 * 1000 : 0,
   })
 
   return { scoreboard, error, mutate }
+}
+
+export const useGameTeamInfo = (numId: number) => {
+  const { game } = useGame(numId)
+  const { status } = getGameStatus(game)
+
+  const {
+    data: teamInfo,
+    error,
+    mutate,
+  } = api.game.useGameChallengesWithTeamInfo(numId, {
+    ...OnceSWRConfig,
+    shouldRetryOnError: false,
+    refreshInterval: status === GameStatus.OnGoing ? 10 * 1000 : 0,
+  })
+
+  return { teamInfo, error, mutate }
 }

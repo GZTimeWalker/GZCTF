@@ -1,15 +1,16 @@
 import {
   ActionIcon,
+  AppShell,
   Avatar,
   Center,
-  createStyles,
-  getStylesRef,
   Menu,
-  Navbar,
   Stack,
   Tooltip,
+  alpha,
+  darken,
   useMantineColorScheme,
 } from '@mantine/core'
+import { createStyles, getStylesRef } from '@mantine/emotion'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -31,10 +32,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import MainIcon from '@Components/icon/MainIcon'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Utils/useConfig'
-import { useLoginOut, useUser } from '@Utils/useUser'
+import { useLogOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
 
-const useStyles = createStyles((theme) => {
+const useStyles = createStyles((theme, _, u) => {
   const active = { ref: getStylesRef('activeItem') } as const
 
   return {
@@ -54,31 +55,33 @@ const useStyles = createStyles((theme) => {
       },
 
       [`&.${active.ref}, &.${active.ref}:hover`]: {
-        backgroundColor: theme.fn.rgba(theme.colors[theme.primaryColor][7], 0.25),
+        backgroundColor: alpha(theme.colors[theme.primaryColor][7], 0.25),
         color: theme.colors[theme.primaryColor][4],
       },
     },
 
     navbar: {
       backgroundColor: theme.colors.gray[8],
+      padding: theme.spacing.xs,
+      border: 'none',
 
-      [theme.fn.smallerThan('xs')]: {
+      [u.smallerThan('xs')]: {
         display: 'none',
       },
     },
 
     tooltipBody: {
       marginLeft: 20,
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.fn.darken(theme.colors[theme.primaryColor][8], 0.45)
-          : theme.colors[theme.primaryColor][6],
-      color:
-        theme.colorScheme === 'dark' ? theme.colors[theme.primaryColor][4] : theme.colors.white[0],
-    },
 
-    menuBody: {
-      left: 100,
+      [u.dark]: {
+        backgroundColor: darken(theme.colors[theme.primaryColor][8], 0.45),
+        color: theme.colors[theme.primaryColor][4],
+      },
+
+      [u.light]: {
+        backgroundColor: theme.colors[theme.primaryColor][6],
+        color: theme.colors.light[0],
+      },
     },
   }
 })
@@ -122,7 +125,7 @@ const AppNavbar: FC = () => {
   const { classes } = useStyles()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
-  const logout = useLoginOut()
+  const logout = useLogOut()
   const { user, error } = useUser()
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()
@@ -160,9 +163,9 @@ const AppNavbar: FC = () => {
     .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />)
 
   return (
-    <Navbar fixed width={{ xs: 70, base: 0 }} p="md" className={classes.navbar}>
+    <AppShell.Navbar className={classes.navbar}>
       {/* Logo */}
-      <Navbar.Section grow>
+      <AppShell.Section grow>
         <Center>
           <MainIcon
             style={{ width: '100%', height: 'auto', position: 'relative', left: 2 }}
@@ -170,20 +173,28 @@ const AppNavbar: FC = () => {
             onClick={() => navigate('/')}
           />
         </Center>
-      </Navbar.Section>
+      </AppShell.Section>
 
       {/* Common Nav */}
-      <Navbar.Section grow mb={20} mt={20} style={{ display: 'flex', alignItems: 'center' }}>
-        <Stack align="center" spacing={5}>
-          {links}
-        </Stack>
-      </Navbar.Section>
-
-      <Navbar.Section
+      <AppShell.Section
         grow
-        style={{ display: 'flex', flexDirection: 'column', justifyContent: 'end' }}
+        display="flex"
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '5pt',
+        }}
       >
-        <Stack align="center" spacing={5}>
+        {links}
+      </AppShell.Section>
+
+      <AppShell.Section
+        grow
+        display="flex"
+        style={{ flexDirection: 'column', justifyContent: 'end' }}
+      >
+        <Stack w="100%" align="center" justify="center" gap={5}>
           {/* Language */}
           <Menu position="right-end" offset={24} width={160}>
             <Menu.Target>
@@ -221,7 +232,7 @@ const AppNavbar: FC = () => {
 
           {/* User Info */}
           {user && !error ? (
-            <Menu position="right-end" offset={24} width={160}>
+            <Menu position="right-end" offset={24}>
               <Menu.Target>
                 <ActionIcon className={classes.link}>
                   {user?.avatar ? (
@@ -239,14 +250,21 @@ const AppNavbar: FC = () => {
                 <Menu.Item
                   component={Link}
                   to="/account/profile"
-                  icon={<Icon path={mdiAccountCircleOutline} size={1} />}
+                  leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
                 >
                   {t('common.tab.account.profile')}
                 </Menu.Item>
-                <Menu.Item onClick={clearLocalCache} icon={<Icon path={mdiCached} size={1} />}>
+                <Menu.Item
+                  onClick={clearLocalCache}
+                  leftSection={<Icon path={mdiCached} size={1} />}
+                >
                   {t('common.tab.account.clean_cache')}
                 </Menu.Item>
-                <Menu.Item color="red" onClick={logout} icon={<Icon path={mdiLogout} size={1} />}>
+                <Menu.Item
+                  color="red"
+                  onClick={logout}
+                  leftSection={<Icon path={mdiLogout} size={1} />}
+                >
                   {t('common.tab.account.logout')}
                 </Menu.Item>
               </Menu.Dropdown>
@@ -267,8 +285,8 @@ const AppNavbar: FC = () => {
             </Tooltip>
           )}
         </Stack>
-      </Navbar.Section>
-    </Navbar>
+      </AppShell.Section>
+    </AppShell.Navbar>
   )
 }
 

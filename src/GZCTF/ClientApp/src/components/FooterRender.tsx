@@ -1,19 +1,20 @@
-import { createStyles, TypographyStylesProvider } from '@mantine/core'
+import { TypographyStylesProvider } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { marked } from 'marked'
 import { forwardRef } from 'react'
 import { MarkdownProps } from '@Components/MarkdownRender'
 import { useIsMobile } from '@Utils/ThemeOverride'
 
-const useFooterStyles = createStyles((theme) => {
-  const sc = (dark: any, light: any) => (theme.colorScheme === 'dark' ? dark : light)
+const useFooterStyles = createStyles((theme, _, u) => {
   const cs = theme.colors
+  const gray = cs.gray[6]
 
   return {
     root: {
       overflowX: 'auto',
       textAlign: 'center',
       fontSize: theme.fontSizes.sm,
-      color: theme.fn.dimmed(),
+      color: gray,
 
       '& p': {
         wordBreak: 'break-word',
@@ -23,7 +24,7 @@ const useFooterStyles = createStyles((theme) => {
       },
 
       '& :not(pre) > code': {
-        color: theme.fn.dimmed(),
+        color: gray,
         whiteSpace: 'normal',
         fontSize: '0.95em',
         backgroundColor: 'transparent',
@@ -32,11 +33,17 @@ const useFooterStyles = createStyles((theme) => {
       },
 
       '& strong': {
-        color: cs.brand[sc(6, 7)],
+        [u.dark]: {
+          color: cs.brand[6],
+        },
+
+        [u.light]: {
+          color: cs.brand[7],
+        },
       },
 
       '& a': {
-        color: theme.fn.dimmed(),
+        color: gray,
         textDecoration: 'none',
         transition: 'all 0.2s ease-in-out',
       },

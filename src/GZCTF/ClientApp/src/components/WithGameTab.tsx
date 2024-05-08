@@ -1,4 +1,12 @@
-import { Card, LoadingOverlay, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import {
+  Card,
+  LoadingOverlay,
+  Stack,
+  Text,
+  Title,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -41,7 +49,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
         overflow: 'visible',
       }}
     >
-      <Text fw={700} lineClamp={1}>
+      <Text fw="bold" lineClamp={1}>
         {countdown.asHours() > 999
           ? t('game.content.game_lasts_long')
           : countdown.asSeconds() > 0
@@ -119,6 +127,8 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     navigate(`/games/${numId}/${tabKey}`)
   }
 
+  const { colorScheme } = useMantineColorScheme()
+
   usePageTitle(game?.title)
 
   useEffect(() => {
@@ -171,8 +181,8 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     <Stack pos="relative" mt="md">
       <LoadingOverlay
         visible={!game}
-        overlayOpacity={1}
-        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+        opacity={1}
+        c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
       />
       <IconTabs
         active={activeTab}

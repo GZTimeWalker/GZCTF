@@ -14,9 +14,9 @@ import {
   Text,
   TextInput,
   Title,
-  createStyles,
   useMantineTheme,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -85,15 +85,15 @@ const MemberItem: FC<MemberItemProps> = (props) => {
   const { classes } = useGridStyles()
 
   return (
-    <Group noWrap spacing="xl" position="apart">
-      <Group noWrap w="calc(100% - 16rem)" miw="500px">
+    <Group wrap="nowrap" gap="xl" justify="space-between">
+      <Group wrap="nowrap" w="calc(100% - 16rem)" miw="500px">
         <Avatar alt="avatar" src={user.avatar}>
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
         <Grid className={classes.root}>
           <Grid.Col span={3} className={classes.col}>
             <Icon path={mdiIdentifier} {...iconProps} />
-            <Text fw={700}>{user.userName}</Text>
+            <Text fw="bold">{user.userName}</Text>
           </Grid.Col>
           <Grid.Col span={3} className={classes.col}>
             <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
@@ -123,16 +123,16 @@ const MemberItem: FC<MemberItemProps> = (props) => {
           </Grid.Col>
         </Grid>
       </Group>
-      <Group noWrap position="right">
+      <Group wrap="nowrap" justify="right">
         {isCaptain && (
-          <Group spacing={0}>
+          <Group gap={0}>
             <Icon path={mdiStar} color={theme.colors.yellow[4]} size={0.9} />
             <Text size="sm" fw={500} c="yellow">
               {t('team.content.role.captain')}
             </Text>
           </Group>
         )}
-        <Text size="sm" fw={700} c={isRegistered ? 'teal' : 'orange'}>
+        <Text size="sm" fw="bold" c={isRegistered ? 'teal' : 'orange'}>
           {isRegistered
             ? t('admin.content.games.review.participation.joined')
             : t('admin.content.games.review.participation.not_joined')}
@@ -158,7 +158,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
     <Accordion.Item value={participation.id!.toString()}>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Accordion.Control>
-          <Group position="apart">
+          <Group justify="space-between">
             <Group>
               <Avatar alt="avatar" src={participation.team?.avatar}>
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
@@ -176,10 +176,10 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group position="apart" w="30%">
+            <Group justify="space-between" w="30%">
               <Box>
                 <Text>{participation.organization}</Text>
-                <Text size="sm" c="dimmed" fw={700}>
+                <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
                     total: participation.team?.members?.length ?? 0,
@@ -189,15 +189,15 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               <Center w="6em">
                 <Badge color={part.color}>{part.title}</Badge>
               </Center>
+              <ParticipationStatusControl
+                disabled={disabled}
+                participateId={participation.id!}
+                status={participation.status!}
+                setParticipationStatus={setParticipationStatus}
+              />
             </Group>
           </Group>
         </Accordion.Control>
-        <ParticipationStatusControl
-          disabled={disabled}
-          participateId={participation.id!}
-          status={participation.status!}
-          setParticipationStatus={setParticipationStatus}
-        />
       </Box>
       <Accordion.Panel>
         <Stack>
@@ -291,10 +291,10 @@ const GameTeamReview: FC = () => {
 
   return (
     <WithGameEditTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       isLoading={!participations}
       head={
-        <Group position="apart" noWrap w="100%">
+        <Group justify="space-between" wrap="nowrap" w="100%">
           <TextInput
             w="20rem"
             placeholder={t('admin.placeholder.teams.search')}
@@ -302,14 +302,14 @@ const GameTeamReview: FC = () => {
             onChange={setSearch}
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
-          <Group position="right" noWrap>
+          <Group justify="right" wrap="nowrap">
             {orgs.length && (
               <Select
                 placeholder={t('admin.content.show_all')}
                 clearable
                 data={orgs.map((org) => ({ value: org, label: org }))}
                 value={selectedOrg}
-                onChange={(value: string) => setSelectedOrg(value)}
+                onChange={(value) => setSelectedOrg(value)}
               />
             )}
             <Select
@@ -317,7 +317,7 @@ const GameTeamReview: FC = () => {
               clearable
               data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
-              onChange={(value: ParticipationStatus) => setSelectedStatus(value)}
+              onChange={(value) => setSelectedStatus(value as ParticipationStatus | null)}
             />
           </Group>
         </Group>
@@ -326,7 +326,7 @@ const GameTeamReview: FC = () => {
       <ScrollArea type="never" pos="relative" h="calc(100vh - 250px)">
         {!participations || participations.length === 0 ? (
           <Center h="calc(100vh - 200px)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('admin.content.games.review.empty.title')}</Title>
               <Text>{t('admin.content.games.review.empty.description')}</Text>
             </Stack>
@@ -350,10 +350,16 @@ const GameTeamReview: FC = () => {
         )}
       </ScrollArea>
       <Pagination
-        position="right"
         value={activePage}
         onChange={setPage}
         total={(filteredParticipations?.length ?? 0) / PART_NUM_PER_PAGE + 1}
+        styles={{
+          root: {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+          },
+        }}
       />
     </WithGameEditTab>
   )
