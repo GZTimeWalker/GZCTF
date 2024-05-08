@@ -7,14 +7,13 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 
 const useFooterStyles = createStyles((theme, _, u) => {
   const cs = theme.colors
-  const gray = cs.gray[6]
 
   return {
     root: {
       overflowX: 'auto',
       textAlign: 'center',
       fontSize: theme.fontSizes.sm,
-      color: gray,
+      color: 'var(--mantine-color-dimmed)',
 
       '& p': {
         wordBreak: 'break-word',
@@ -24,7 +23,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& :not(pre) > code': {
-        color: gray,
+        color: 'var(--mantine-color-dimmed)',
         whiteSpace: 'normal',
         fontSize: '0.95em',
         backgroundColor: 'transparent',
@@ -43,7 +42,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& a': {
-        color: gray,
+        color: 'var(--mantine-color-dimmed)',
         textDecoration: 'none',
         transition: 'all 0.2s ease-in-out',
       },
@@ -67,6 +66,7 @@ export const FooterRender = forwardRef<HTMLDivElement, MarkdownProps>((props, re
   return (
     <TypographyStylesProvider
       ref={ref}
+      c="dimmed"
       className={others.className ? cx(classes.root, others.className) : classes.root}
       {...others}
     >
