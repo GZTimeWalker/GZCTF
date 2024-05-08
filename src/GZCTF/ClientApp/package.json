@@ -83,5 +83,10 @@
     "vite-plugin-prismjs": "^0.0.11",
     "vite-plugin-webfont-dl": "^3.9.4",
     "vite-tsconfig-paths": "^4.3.2"
-  }
+  },
+  "pnpm": {
+    "overrides": {
+        "canvas": "npm:dry-uninstall"
+    }
+}
 }
