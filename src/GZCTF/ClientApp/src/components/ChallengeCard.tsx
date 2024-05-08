@@ -9,7 +9,6 @@ import {
   Title,
   Tooltip,
   alpha,
-  useMantineColorScheme,
 } from '@mantine/core'
 import { createStyles, keyframes } from '@mantine/emotion'
 import { mdiFlag } from '@mdi/js'
@@ -82,7 +81,6 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { classes, cx, theme } = useStyles(props)
   const { classes: tooltipClasses } = useTooltipStyles()
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
-  const { colorScheme } = useMantineColorScheme()
 
   return (
     <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>
@@ -123,8 +121,8 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                     classNames={tooltipClasses}
                     label={
                       <Stack gap={0}>
-                        <Text c={colorScheme === 'dark' ? undefined : 'dark'}>{blood?.name}</Text>
-                        <Text size="xs" c="dimmed">
+                        <Text fw={500}>{blood?.name}</Text>
+                        <Text fw={500} size="xs" c="dimmed">
                           {dayjs(blood?.submitTimeUtc).format('YY/MM/DD HH:mm:ss')}
                         </Text>
                       </Stack>

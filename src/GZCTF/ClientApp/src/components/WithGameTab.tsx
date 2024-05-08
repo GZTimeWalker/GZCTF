@@ -42,7 +42,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
 
   return (
     <Card
-      w="9rem"
+      miw="9rem"
       ta="center"
       pt={4}
       style={{

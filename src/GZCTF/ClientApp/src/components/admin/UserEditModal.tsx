@@ -80,7 +80,6 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
               label={t('account.label.username')}
               type="text"
               w="100%"
-              ff="monospace"
               value={profile.userName ?? 'ctfer'}
               disabled={disabled}
               onChange={(event) => setProfile({ ...profile, userName: event.target.value })}

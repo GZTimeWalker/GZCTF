@@ -338,7 +338,6 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            ff="monospace"
             readOnly
           />
         )}

@@ -5,6 +5,7 @@ import {
   Modal,
   Popover,
   Switch,
+  Tabs,
   createTheme,
   darken,
   rem,
@@ -138,6 +139,14 @@ export const CustomTheme = createTheme({
         variant: 'outline',
       },
     }),
+    Tabs: Tabs.extend({
+      styles: {
+        tab: {
+          padding: '0.5rem',
+          fontWeight: 500,
+        },
+      },
+    }),
     // TODO: notifcation styles
     Notification: {
       defaultProps: {
@@ -188,13 +197,13 @@ export const useTooltipStyles = createStyles((theme, _, u) => ({
     boxShadow: theme.shadows.md,
 
     [u.dark]: {
-      backgroundColor: darken(theme.colors.gray[6], 0.4),
       color: theme.colors.gray[0],
+      backgroundColor: darken(theme.colors.gray[6], 0.4),
     },
 
     [u.light]: {
-      backgroundColor: theme.colors.white,
       color: theme.colors.gray[7],
+      backgroundColor: theme.colors.light[0],
     },
   },
   arrow: {

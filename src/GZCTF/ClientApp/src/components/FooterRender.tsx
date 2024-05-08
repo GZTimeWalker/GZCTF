@@ -13,7 +13,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       overflowX: 'auto',
       textAlign: 'center',
       fontSize: theme.fontSizes.sm,
-      color: 'var(--mantine-color-dimmed)',
+      color: theme.colors.dimmed,
 
       '& p': {
         wordBreak: 'break-word',
@@ -23,7 +23,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& :not(pre) > code': {
-        color: 'var(--mantine-color-dimmed)',
+        color: theme.colors.dimmed,
         whiteSpace: 'normal',
         fontSize: '0.95em',
         backgroundColor: 'transparent',
@@ -42,7 +42,7 @@ const useFooterStyles = createStyles((theme, _, u) => {
       },
 
       '& a': {
-        color: 'var(--mantine-color-dimmed)',
+        color: theme.colors.dimmed,
         textDecoration: 'none',
         transition: 'all 0.2s ease-in-out',
       },
