@@ -517,6 +517,9 @@ export const useLogoStyles = createStyles((theme, _, u) => ({
     },
   },
   blink: {
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 'bold',
+    fontSize: '1.5rem',
     animation: `${keyframes`0%, 100% {
                               opacity: 0;
                             }

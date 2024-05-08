@@ -30,6 +30,10 @@ const useStyles = createStyles((theme, { sticky }: StickyHeaderProps, u) => ({
     }),
   },
   blink: {
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 'bold',
+    fontSize: '1.375rem',
+
     animation: `${keyframes`0%, 100% {
                               opacity: 0;
                             }
@@ -38,6 +42,9 @@ const useStyles = createStyles((theme, { sticky }: StickyHeaderProps, u) => ({
                               }`} 1s infinite steps(1,start)`,
   },
   subtitle: {
+    fontFamily: theme.fontFamilyMonospace,
+    fontWeight: 'bold',
+
     [u.dark]: {
       color: theme.colors.gray[4],
     },
@@ -58,9 +65,9 @@ const IconHeader: FC<StickyHeaderProps> = (props) => {
   ) : (
     <Group justify="space-between" align="flex-end" className={classes.group}>
       <LogoHeader />
-      <Title className={classes.subtitle} order={3} ff="monospace">
+      <Title className={classes.subtitle} order={3}>
         &gt; {config?.slogan ?? 'Hack for fun not for profit'}
-        <Text span ff="monospace" fw="bold" className={classes.blink}>
+        <Text span className={classes.blink}>
           _
         </Text>
       </Title>
