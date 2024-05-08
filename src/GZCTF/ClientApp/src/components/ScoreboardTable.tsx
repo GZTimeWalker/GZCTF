@@ -377,20 +377,24 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
               </Table.Tbody>
             </Table>
           </Table.ScrollContainer>
-
           <Box className={classes.legend}>
             <Stack gap="xs">
-              <Group gap="lg">
-                {BloodsTypes.map((type, idx) => (
-                  <Group key={idx} justify="left" gap={2}>
-                    {iconMap.get(type)}
-                    <Text size="sm">{bloodData.get(type)?.name}</Text>
-                    <Text size="xs" c="dimmed">
-                      {bloodData.get(type)?.descr}
-                    </Text>
-                  </Group>
-                ))}
-              </Group>
+              <Tooltip.Group>
+                <Group gap="lg">
+                  {BloodsTypes.map((type, idx) => (
+                    <Tooltip
+                      key={idx}
+                      label={bloodData.get(type)?.name}
+                      transitionProps={{ transition: 'pop' }}
+                    >
+                      <Group justify="left" gap={2}>
+                        {iconMap.get(type)}
+                        <Text>{bloodData.get(type)?.descr}</Text>
+                      </Group>
+                    </Tooltip>
+                  ))}
+                </Group>
+              </Tooltip.Group>
               <Text size="sm" c="dimmed">
                 {t('game.content.scoreboard_note')}
               </Text>
@@ -401,7 +405,6 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           <Text size="sm" c="dimmed">
             {t('game.content.scoreboard_tip')}
           </Text>
-
           <Pagination
             value={activePage}
             onChange={setPage}
