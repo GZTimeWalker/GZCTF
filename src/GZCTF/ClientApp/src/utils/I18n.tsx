@@ -26,6 +26,7 @@ export const useLanguage = () => {
   useEffect(() => {
     i18n.changeLanguage(language)
     apiLanguage = language.replace('_', '-')
+    document.documentElement.setAttribute('lang', language.replace('_', '-').toLowerCase())
   }, [language])
 
   const supportedLanguages = Object.keys(resources) as SupportedLanguages[]
