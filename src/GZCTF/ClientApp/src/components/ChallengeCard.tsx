@@ -2,15 +2,16 @@ import {
   Card,
   Center,
   Code,
-  createStyles,
   Divider,
   Group,
-  keyframes,
   Stack,
   Text,
   Title,
   Tooltip,
+  alpha,
+  useMantineColorScheme,
 } from '@mantine/core'
+import { createStyles, keyframes } from '@mantine/emotion'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -29,18 +30,24 @@ interface ChallengeCardProps {
   teamId?: number
 }
 
-export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) => ({
+export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps, u) => ({
   spike: {
     position: 'absolute',
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
-    filter:
-      theme.colorScheme === 'dark' ? 'brightness(.8) saturate(.5)' : 'brightness(1.2) saturate(.8)',
     width: '70%',
     height: '200%',
     zIndex: 91,
     animation: `${keyframes`0% { opacity: .3; } 100% { opacity: 1; }`} 2s linear 0s infinite alternate`,
+
+    [u.dark]: {
+      filter: 'brightness(.8) saturate(.5)',
+    },
+
+    [u.light]: {
+      filter: 'brightness(1.2) saturate(.8)',
+    },
   },
   blood1: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
@@ -51,6 +58,21 @@ export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps) 
   blood3: {
     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.ThirdBlood)}, #fff0)`,
   },
+  card: {
+    transition: 'filter .1s',
+
+    '&:hover': {
+      cursor: 'pointer',
+
+      [u.dark]: {
+        filter: 'brightness(1.2)',
+      },
+
+      [u.light]: {
+        filter: 'brightness(.97)',
+      },
+    },
+  },
 }))
 
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
@@ -60,34 +82,24 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { classes, cx, theme } = useStyles(props)
   const { classes: tooltipClasses } = useTooltipStyles()
   const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
+  const { colorScheme } = useMantineColorScheme()
 
   return (
-    <Card
-      onClick={onClick}
-      radius="md"
-      shadow="sm"
-      sx={(theme) => ({
-        transition: 'filter .1s',
-        ...theme.fn.hover({
-          filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
-          cursor: 'pointer',
-        }),
-      })}
-    >
-      <Stack spacing="sm" pos="relative" style={{ zIndex: 99 }}>
-        <Group h="30px" noWrap position="apart" spacing={2}>
-          <Text lineClamp={1} fw={700} size={theme.fontSizes.lg}>
+    <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>
+      <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
+        <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
+          <Text fw="bold" truncate fz="lg">
             {challenge.title}
           </Text>
           <Center miw="1.5em">{solved && <Icon path={mdiFlag} size={1} color={colorStr} />}</Center>
         </Group>
         <Divider />
-        <Group noWrap position="apart" align="center" spacing={2}>
-          <Text align="center" fw={700} size={18} ff={theme.fontFamilyMonospace}>
+        <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
+          <Text ta="center" fw="bold" fz="lg" ff="monospace">
             {challenge.score}&nbsp;pts
           </Text>
-          <Stack spacing="xs">
-            <Title order={6} c="dimmed" align="center" mt={`calc(${theme.spacing.xs} / 2)`}>
+          <Stack gap="xs">
+            <Title order={6} c="dimmed" ta="center" mt={`calc(${theme.spacing.xs} / 2)`}>
               <Trans
                 i18nKey={'challenge.content.solved'}
                 values={{
@@ -101,7 +113,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                 _
               </Trans>
             </Title>
-            <Group position="center" spacing="md" h={20} noWrap>
+            <Group justify="center" gap="md" h={20} wrap="nowrap">
               {challenge.bloods &&
                 challenge.bloods.map((blood, idx) => (
                   <Tooltip.Floating
@@ -110,8 +122,8 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                     multiline
                     classNames={tooltipClasses}
                     label={
-                      <Stack spacing={0}>
-                        <Text c={theme.colorScheme === 'dark' ? '' : 'dark'}>{blood?.name}</Text>
+                      <Stack gap={0}>
+                        <Text c={colorScheme === 'dark' ? undefined : 'dark'}>{blood?.name}</Text>
                         <Text size="xs" c="dimmed">
                           {dayjs(blood?.submitTimeUtc).format('YY/MM/DD HH:mm:ss')}
                         </Text>
@@ -140,7 +152,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
         <Icon
           path={tagData.icon}
           size={4}
-          color={theme.fn.rgba(theme.colors[tagData?.color][7], 0.3)}
+          color={alpha(theme.colors[tagData?.color][7], 0.3)}
           style={{
             position: 'absolute',
             bottom: 0,

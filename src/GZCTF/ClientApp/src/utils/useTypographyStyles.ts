@@ -1,7 +1,19 @@
-import { createStyles } from '@mantine/core'
+import { alpha } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 
-export const useTypographyStyles = createStyles((theme) => {
-  const sc = (dark: any, light: any) => (theme.colorScheme === 'dark' ? dark : light)
+export const useTypographyStyles = createStyles((theme, _, u) => {
+  const sc = (propName: string, dark: string, light: string) => {
+    return {
+      [u.dark]: {
+        [propName]: dark,
+      },
+
+      [u.light]: {
+        [propName]: light,
+      },
+    }
+  }
+
   const cs = theme.colors
 
   return {
@@ -18,20 +30,30 @@ export const useTypographyStyles = createStyles((theme) => {
       '& ul, & ol': {
         paddingLeft: `calc(${theme.fontSizes.lg} * 1.5)`,
 
-        [theme.fn.smallerThan('xs')]: {
+        [u.smallerThan('xs')]: {
           paddingLeft: `calc(${theme.fontSizes.xs} * 1.5)`,
         },
       },
 
       '& strong': {
-        color: cs.brand[sc(6, 7)],
+        ...sc('color', cs.brand[6], cs.brand[7]),
       },
 
       '& blockquote': {
-        borderLeft: `4px solid ${sc(cs.dark[0], cs.gray[5])}`,
         padding: `calc(${theme.spacing.xs} / 2) ${theme.spacing.md}`,
-        color: theme.fn.rgba(sc(cs.dark[0], cs.gray[7]), 0.9),
-        backgroundColor: theme.fn.rgba(theme.black, sc(0.1, 0.05)),
+
+        [u.dark]: {
+          color: alpha(cs.dark[0], 0.9),
+          backgroundColor: alpha(cs.light[2], 0.03),
+          borderLeft: `4px solid ${cs.dark[0]}`,
+        },
+
+        [u.light]: {
+          color: alpha(cs.gray[7], 0.9),
+          backgroundColor: alpha(cs.dark[1], 0.1),
+          borderLeft: `4px solid ${cs.gray[5]}`,
+        },
+
         marginBottom: theme.spacing.md,
         fontSize: '1em',
 
@@ -40,16 +62,17 @@ export const useTypographyStyles = createStyles((theme) => {
         },
 
         '& pre': {
-          backgroundColor: theme.fn.rgba(sc(cs.dark[6], cs.white[1]), 0.8),
+          ...sc('backgroundColor', alpha(cs.dark[6], 0.8), alpha(cs.light[1], 0.8)),
         },
       },
 
       '& :not(pre) > code': {
         whiteSpace: 'normal',
         fontSize: '0.95em',
-        backgroundColor: theme.fn.rgba(theme.black, sc(0.1, 0.05)),
         padding: `1px calc(${theme.spacing.xs} / 2)`,
         border: 'none',
+
+        ...sc('backgroundColor', alpha(theme.black, 0.1), alpha(theme.white, 0.05)),
       },
 
       '& pre': {
@@ -71,8 +94,15 @@ export const useTypographyStyles = createStyles((theme) => {
         tabSize: 4,
         hyphens: 'none',
 
-        color: sc(cs.white[2], cs.gray[7]),
-        backgroundColor: sc(cs.dark[6], cs.white[1]),
+        [u.dark]: {
+          color: cs.light[2],
+          backgroundColor: cs.dark[6],
+        },
+
+        [u.light]: {
+          color: cs.gray[7],
+          backgroundColor: cs.light[1],
+        },
 
         '& .namespace': {
           opacity: 0.8,
@@ -83,155 +113,153 @@ export const useTypographyStyles = createStyles((theme) => {
         },
 
         '& .token.atrule': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.attr-name': {
-          color: sc('#ffcb6b', '#39adb5'),
+          ...sc('color', '#ffcb6b', '#39adb5'),
         },
 
         '& .token.attr-value': {
-          color: sc('#a5e844', '#f6a434'),
+          ...sc('color', '#a5e844', '#f6a434'),
         },
 
         '& .token.attribute': {
-          color: sc('#a5e844', '#f6a434'),
+          ...sc('color', '#a5e844', '#f6a434'),
         },
 
         '& .token.boolean': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.builtin': {
-          color: sc('#ffcb6b', '#39adb5'),
+          ...sc('color', '#ffcb6b', '#39adb5'),
         },
 
         '& .token.cdata': {
-          color: sc('#80cbc4', '#39adb5'),
+          ...sc('color', '#80cbc4', '#39adb5'),
         },
 
         '& .token.char': {
-          color: sc('#80cbc4', '#39adb5'),
+          ...sc('color', '#80cbc4', '#39adb5'),
         },
 
         '& .token.class': {
-          color: sc('#ffcb6b', '#39adb5'),
+          ...sc('color', '#ffcb6b', '#39adb5'),
         },
 
         '& .token.class-name': {
-          color: sc('#f2ff00', '#6182b8'),
+          ...sc('color', '#f2ff00', '#6182b8'),
         },
 
         '& .token.comment': {
-          color: sc('#616161', '#aabfc9'),
+          ...sc('color', '#616161', '#aabfc9'),
         },
 
         '& .token.constant': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.deleted': {
-          color: sc('#ff6666', '#e53935'),
+          ...sc('color', '#ff6666', '#e53935'),
         },
 
         '& .token.doctype': {
-          color: sc('#616161', '#aabfc9'),
+          ...sc('color', '#616161', '#aabfc9'),
         },
 
         '& .token.entity': {
-          color: sc('#ff6666', '#e53935'),
+          ...sc('color', '#ff6666', '#e53935'),
         },
 
         '& .token.function': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.hexcode': {
-          color: sc('#f2ff00', '#f76d47'),
+          ...sc('color', '#f2ff00', '#f76d47'),
         },
 
         '& .token.id': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.important': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.inserted': {
-          color: sc('#80cbc4', '#39adb5'),
+          ...sc('color', '#80cbc4', '#39adb5'),
         },
 
         '& .token.keyword': {
-          color: sc('#c792ea', '#7c4dff'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.number': {
-          color: sc('#fd9170', '#f76d47'),
+          ...sc('color', '#fd9170', '#f76d47'),
         },
 
         '& .token.operator': {
-          color: sc('#89ddff', '#39adb5'),
+          ...sc('color', '#89ddff', '#39adb5'),
         },
 
         '& .token.prolog': {
-          color: sc('#616161', '#aabfc9'),
+          ...sc('color', '#616161', '#aabfc9'),
         },
 
         '& .token.property': {
-          color: sc('#80cbc4', '#39adb5'),
+          ...sc('color', '#80cbc4', '#39adb5'),
         },
 
         '& .token.pseudo-class': {
-          color: sc('#a5e844', '#f6a434'),
+          ...sc('color', '#a5e844', '#f6a434'),
         },
 
         '& .token.pseudo-element': {
-          color: sc('#a5e844', '#f6a434'),
+          ...sc('color', '#a5e844', '#f6a434'),
         },
 
         '& .token.punctuation': {
-          color: sc('#89ddff', '#39adb5'),
+          ...sc('color', '#89ddff', '#39adb5'),
         },
 
         '& .token.regex': {
-          color: sc('#f2ff00', '#6182b8'),
-        },
-
-        '& .token.selector': {
-          color: sc('#ff6666', '#e53935'),
+          ...sc('color', '#f2ff00', '#6182b8'),
         },
 
         '& .token.string': {
-          color: sc('#a5e844', '#84a657'),
+          ...sc('color', '#a5e844', '#84a657'),
         },
 
         '& .token.symbol': {
-          color: sc('#c792ea', '#7c4dff'),
-        },
-
-        '& .token.tag': {
-          color: sc('#ff6666', '#e53935'),
+          ...sc('color', '#c792ea', '#7c4dff'),
         },
 
         '& .token.unit': {
-          color: sc('#fd9170', '#f76d47'),
+          ...sc('color', '#fd9170', '#f76d47'),
         },
 
-        '& .token.url': {
-          color: sc('#ff6666', '#e53935'),
-        },
-
-        '& .token.variable': {
-          color: sc('#ff6666', '#e53935'),
+        '& .token.selector, & .token.tag, & .token.url, & .token.variable': {
+          ...sc('color', '#ff6666', '#e53935'),
         },
       },
     },
   }
 })
 
-export const useInlineStyles = createStyles((theme) => {
-  const sc = (dark: any, light: any) => (theme.colorScheme === 'dark' ? dark : light)
+export const useInlineStyles = createStyles((theme, _, u) => {
+  const sc = (propName: string, dark: string, light: string) => {
+    return {
+      [u.dark]: {
+        [propName]: dark,
+      },
+
+      [u.light]: {
+        [propName]: light,
+      },
+    }
+  }
   const cs = theme.colors
 
   return {
@@ -249,11 +277,11 @@ export const useInlineStyles = createStyles((theme) => {
       },
 
       '& strong': {
-        color: cs.brand[sc(6, 7)],
+        ...sc('color', cs.brand[6], cs.brand[7]),
       },
 
       '& a': {
-        color: cs.brand[sc(6, 7)],
+        ...sc('color', cs.brand[6], cs.brand[7]),
         textDecoration: 'underline',
         transition: 'all 0.2s ease-in-out',
       },

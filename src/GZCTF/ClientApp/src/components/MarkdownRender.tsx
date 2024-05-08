@@ -1,4 +1,5 @@
-import { Sx, Text, TextProps, TypographyStylesProvider } from '@mantine/core'
+import { Text, TextProps, TypographyStylesProvider } from '@mantine/core'
+import { EmotionSx } from '@mantine/emotion'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import { Marked } from 'marked'
@@ -9,7 +10,7 @@ import { useInlineStyles, useTypographyStyles } from '@Utils/useTypographyStyles
 
 export interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {
   source: string
-  sx?: Sx | (Sx | undefined)[]
+  sx?: EmotionSx
 }
 
 interface InlineMarkdownProps extends TextProps {

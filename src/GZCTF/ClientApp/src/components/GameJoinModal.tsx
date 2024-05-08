@@ -83,7 +83,6 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
       <Stack>
         <Select
           required
-          withinPortal
           label={t('game.content.join.team.label')}
           description={t('game.content.join.team.description')}
           data={teams?.map((t) => ({ label: t.name!, value: t.id!.toString() })) ?? []}
@@ -104,7 +103,6 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
         {game?.organizations && game.organizations.length > 0 && (
           <Select
             required
-            withinPortal
             label={t('game.content.join.organization.label')}
             description={t('game.content.join.organization.description')}
             data={game.organizations}

@@ -14,7 +14,7 @@ import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
+import { useHoverCardStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
 
 interface TeamCardProps {
@@ -32,31 +32,22 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   const members = team.members?.filter((m) => !m?.captain)
 
   const { classes: tooltipClasses, theme } = useTooltipStyles()
+  const { classes: cardClasses } = useHoverCardStyles()
 
   const { t } = useTranslation()
 
   return (
-    <Card
-      shadow="sm"
-      onClick={onEdit}
-      sx={(theme) => ({
-        cursor: 'pointer',
-        transition: 'filter .2s',
-        '&:hover': {
-          filter: theme.colorScheme === 'dark' ? 'brightness(1.2)' : 'brightness(.97)',
-        },
-      })}
-    >
+    <Card shadow="sm" onClick={onEdit} classNames={cardClasses}>
       <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
         <Stack style={{ flexGrow: 1 }}>
-          <Group align="stretch" position="apart">
+          <Group align="stretch" justify="space-between">
             <Avatar alt="avatar" color="cyan" size="lg" radius="md" src={team.avatar}>
               {team.name?.slice(0, 1) ?? 'T'}
             </Avatar>
 
-            <Stack spacing={0} w="calc(100% - 72px)">
-              <Group w="100%" position="left">
-                <Title order={2} align="left">
+            <Stack gap={0} w="calc(100% - 72px)">
+              <Group w="100%" justify="left">
+                <Title order={2} ta="left">
                   {team.name}
                 </Title>
               </Group>
@@ -66,9 +57,9 @@ const TeamCard: FC<TeamCardProps> = (props) => {
             </Stack>
           </Group>
           <Divider my="xs" />
-          <Stack spacing="xs">
-            <Group spacing="xs" position="apart">
-              <Text transform="uppercase" c="dimmed">
+          <Stack gap="xs">
+            <Group gap="xs" justify="space-between">
+              <Text tt="uppercase" c="dimmed">
                 {t('team.label.role')}
               </Text>
               {isCaptain ? (
@@ -81,8 +72,8 @@ const TeamCard: FC<TeamCardProps> = (props) => {
                 </Badge>
               )}
             </Group>
-            <Group spacing="xs">
-              <Text transform="uppercase" c="dimmed">
+            <Group gap="xs">
+              <Text tt="uppercase" c="dimmed">
                 {t('team.label.members')}
               </Text>
               <Box style={{ flexGrow: 1 }} />

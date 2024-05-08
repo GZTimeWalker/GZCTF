@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react'
 import { OnceSWRConfig } from '@Utils/useConfig'
-import api from '@Api'
+import api, { ChallengeInfoModel } from '@Api'
 
 export const useEditChallenge = (numId: number, numCId: number) => {
   const {
@@ -9,4 +10,18 @@ export const useEditChallenge = (numId: number, numCId: number) => {
   } = api.edit.useEditGetGameChallenge(numId, numCId, OnceSWRConfig)
 
   return { challenge, error, mutate }
+}
+
+export const useEditChallenges = (numId: number) => {
+  const { data, error, mutate } = api.edit.useEditGetGameChallenges(numId, OnceSWRConfig)
+
+  const [sortedChallenges, setSortedChallenges] = useState<ChallengeInfoModel[] | null>(null)
+
+  useEffect(() => {
+    if (data) {
+      setSortedChallenges(data.toSorted((a, b) => ((a.tag ?? '') > (b.tag ?? '') ? -1 : 1)))
+    }
+  }, [data])
+
+  return { challenges: sortedChallenges, error, mutate }
 }

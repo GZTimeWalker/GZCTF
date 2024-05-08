@@ -8,7 +8,7 @@ import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 
 const About: FC = () => {
-  const { classes, theme } = useLogoStyles()
+  const { classes } = useLogoStyles()
   const { config } = useConfig()
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ const About: FC = () => {
             </Text>
           </Text>
         </Center>
-        <Group position="right">
+        <Group justify="right">
           <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
             <HoverCard.Target>
               <Badge
@@ -47,7 +47,7 @@ const About: FC = () => {
               <Stack>
                 <Group>
                   <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
-                  <Stack spacing="xs">
+                  <Stack gap="xs">
                     <Title
                       style={{
                         marginLeft: '-20px',
@@ -60,7 +60,7 @@ const About: FC = () => {
                     <Group ml="-18px" mt="-5px">
                       <Anchor
                         href="https://github.com/GZTimeWalker"
-                        color="dimmed"
+                        c="dimmed"
                         size="sm"
                         fw={500}
                         lh={1}
@@ -81,8 +81,8 @@ const About: FC = () => {
                     </Group>
                   </Stack>
                 </Group>
-                <Group spacing="xs">
-                  <Text size="xs" fw={500} color="dimmed" ff={theme.fontFamilyMonospace}>
+                <Group gap="xs">
+                  <Text size="xs" fw={500} c="dimmed" ff="monospace">
                     {valid
                       ? `Built at ${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}`
                       : 'This release is not officially built'}

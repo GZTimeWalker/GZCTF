@@ -1,4 +1,4 @@
-import { ActionIcon, Card, Group, PaperProps, Stack, Text } from '@mantine/core'
+import { ActionIcon, Card, Group, CardProps, Stack, Text } from '@mantine/core'
 import { mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -6,7 +6,7 @@ import { FC } from 'react'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { GameNotice } from '@Api'
 
-interface GameNoticeEditCardProps extends PaperProps {
+interface GameNoticeEditCardProps extends CardProps {
   gameNotice: GameNotice
   onDelete: () => void
   onEdit: () => void
@@ -20,14 +20,14 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
 }) => {
   return (
     <Card {...props} shadow="sm" p="sm">
-      <Group position="apart" noWrap>
-        <Stack spacing={1}>
+      <Group justify="space-between" wrap="nowrap">
+        <Stack gap={1}>
           <InlineMarkdownRender source={gameNotice.values.at(-1) || ''} />
-          <Text size="xs" fw={700} c="dimmed">
+          <Text size="xs" fw="bold" c="dimmed">
             {dayjs(gameNotice.time).format('#YY/MM/DD HH:mm:ss')}
           </Text>
         </Stack>
-        <Group position="right" noWrap>
+        <Group justify="right" wrap="nowrap">
           <ActionIcon onClick={onEdit}>
             <Icon path={mdiPencilOutline} size={1} />
           </ActionIcon>

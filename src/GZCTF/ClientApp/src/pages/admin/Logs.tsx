@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Badge,
-  createStyles,
   Group,
   Input,
   Paper,
@@ -10,6 +9,7 @@ import {
   Table,
   Text,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { showNotification } from '@mantine/notifications'
 import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -48,7 +48,7 @@ const NoPaddingTable = createStyles(() => ({
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes, cx, theme } = useTableStyles()
+  const { classes, cx } = useTableStyles()
   const { classes: noPaddingClasses } = NoPaddingTable()
 
   const [, update] = useState(new Date())
@@ -56,7 +56,6 @@ const Logs: FC = () => {
   const [logs, setLogs] = useState<LogMessageModel[]>()
 
   const { t } = useTranslation()
-
   const viewport = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -127,9 +126,9 @@ const Logs: FC = () => {
   }, [])
 
   const rows = [...(activePage === 1 ? newLogs.current : []), ...(logs ?? [])]
-    .filter((item) => item.level === level)
+    .filter((item) => level === 'All' || item.level === level)
     .map((item, i) => (
-      <tr
+      <Table.Tr
         key={`${item.time}@${i}`}
         className={
           i === 0 &&
@@ -140,41 +139,32 @@ const Logs: FC = () => {
             : undefined
         }
       >
-        <td className={cx(classes.mono)}>
+        <Table.Td className={cx(classes.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
-        </td>
-        <td className={cx(classes.mono)}>
-          <Text ff={theme.fontFamilyMonospace} size="sm" fw={300}>
+        </Table.Td>
+        <Table.Td className={cx(classes.mono)}>
+          <Text ff="monospace" size="sm" fw={300}>
             {item.ip || 'localhost'}
           </Text>
-        </td>
-        <td className={cx(classes.mono)}>
-          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold" lineClamp={1}>
+        </Table.Td>
+        <Table.Td className={cx(classes.mono)}>
+          <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
             {item.name}
           </Text>
-        </td>
-        <td>
-          <Input
-            variant="unstyled"
-            value={item.msg || ''}
-            readOnly
-            size="sm"
-            sx={() => ({
-              input: {
-                userSelect: 'none',
-                lineHeight: 1,
-              },
-            })}
-          />
-        </td>
-        <td className={cx(classes.mono)}>
-          <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
-            {item.status}
-          </Badge>
-        </td>
-      </tr>
+        </Table.Td>
+        <Table.Td>
+          <Input variant="unstyled" value={item.msg || ''} readOnly size="sm" />
+        </Table.Td>
+        <Table.Td className={cx(classes.mono)}>
+          {item.status && (
+            <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
+              {item.status}
+            </Badge>
+          )}
+        </Table.Td>
+      </Table.Tr>
     ))
 
   return (
@@ -190,13 +180,13 @@ const Logs: FC = () => {
                 background: 'transparent',
               },
             }}
-            onChange={(value: LogLevel) => setLevel(value)}
+            onChange={(value) => setLevel(value as LogLevel)}
             data={Object.entries(LogLevel).map((role) => ({
               value: role[1],
               label: role[0],
             }))}
           />
-          <Group position="right">
+          <Group justify="right">
             <ActionIcon
               size="lg"
               disabled={activePage <= 1}
@@ -226,16 +216,16 @@ const Logs: FC = () => {
           h="calc(100vh - 190px)"
         >
           <Table className={cx(classes.table, noPaddingClasses.table)}>
-            <thead>
-              <tr>
-                <th style={{ width: '8rem' }}>{t('common.label.time')}</th>
-                <th style={{ width: '10rem' }}>{t('common.label.ip')}</th>
-                <th style={{ width: '6rem' }}>{t('common.label.user')}</th>
-                <th>{t('admin.label.logs.message')}</th>
-                <th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{ width: '10rem' }}>{t('common.label.ip')}</Table.Th>
+                <Table.Th style={{ width: '6rem' }}>{t('common.label.user')}</Table.Th>
+                <Table.Th>{t('admin.label.logs.message')}</Table.Th>
+                <Table.Th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </ScrollArea>
       </Paper>

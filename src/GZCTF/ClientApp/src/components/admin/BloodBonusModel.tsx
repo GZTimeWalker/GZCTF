@@ -51,7 +51,8 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
         <NumberInput
           label={t('admin.content.games.challenges.bonus.first_blood')}
           defaultValue={5}
-          precision={1}
+          decimalScale={1}
+          fixedDecimalScale
           min={0}
           step={1}
           max={100}
@@ -64,7 +65,8 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
         <NumberInput
           label={t('admin.content.games.challenges.bonus.second_blood')}
           defaultValue={3}
-          precision={1}
+          decimalScale={1}
+          fixedDecimalScale
           min={0}
           step={1}
           max={100}
@@ -77,7 +79,8 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
         <NumberInput
           label={t('admin.content.games.challenges.bonus.third_blood')}
           defaultValue={1}
-          precision={1}
+          decimalScale={1}
+          fixedDecimalScale
           min={0}
           step={1}
           max={100}

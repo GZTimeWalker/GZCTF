@@ -1,4 +1,4 @@
-import { Group, GroupProps, MantineNumberSize, useMantineTheme } from '@mantine/core'
+import { Group, GroupProps, MantineSpacing, useMantineTheme } from '@mantine/core'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
@@ -8,7 +8,7 @@ import { ParticipationStatus } from '@Api'
 interface ParticipationStatusControlProps extends GroupProps {
   disabled: boolean
   participateId: number
-  size?: MantineNumberSize
+  size?: MantineSpacing
   status: ParticipationStatus
   setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
 }
@@ -23,9 +23,9 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
 
   return (
     <Group
-      noWrap
-      position="center"
-      miw={`calc(${theme.spacing.xl} * 3)`}
+      wrap="nowrap"
+      justify="center"
+      miw={`calc(${theme.spacing.xl} * 2)`}
       m={`0 ${theme.spacing.xs}`}
       {...others}
     >

@@ -1,7 +1,7 @@
 import { Stack, Text } from '@mantine/core'
 
 export const SwitchLabel = (title: string, desrc: string) => (
-  <Stack spacing={1}>
+  <Stack gap={1}>
     <Text size="md" fw={500}>
       {title}
     </Text>

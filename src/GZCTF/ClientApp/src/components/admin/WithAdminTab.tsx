@@ -1,4 +1,11 @@
-import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
+import {
+  Group,
+  GroupProps,
+  LoadingOverlay,
+  Stack,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiAccountGroupOutline,
@@ -42,7 +49,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   ]
   const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
   const tabIndex = getTab(location.pathname)
-
+  const { colorScheme } = useMantineColorScheme()
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
   const onChange = (active: number, tabKey: string) => {
@@ -62,7 +69,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   usePageTitle(pages[tabIndex].title)
 
   return (
-    <Stack spacing="xs" align="center" pt="md">
+    <Stack gap="xs" align="center" pt="md">
       <IconTabs
         withIcon
         active={activeTab}
@@ -75,14 +82,14 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
         }))}
       />
       {head && (
-        <Group noWrap position="apart" h="40px" w="100%" {...headProps}>
+        <Group wrap="nowrap" justify="space-between" h="40px" w="100%" {...headProps}>
           {head}
         </Group>
       )}
       <LoadingOverlay
         visible={isLoading ?? false}
-        overlayOpacity={1}
-        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+        opacity={1}
+        c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
       />
       {children}
     </Stack>

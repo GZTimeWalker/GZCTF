@@ -13,6 +13,8 @@ import {
   Stack,
   Text,
   Title,
+  alpha,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -37,6 +39,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const [files, setFiles] = useState<File[]>([])
 
   const { classes, theme } = useUploadStyles()
+  const { colorScheme } = useMantineColorScheme()
 
   const { t } = useTranslation()
 
@@ -119,9 +122,9 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
         <ScrollArea offsetScrollbars h="40vh" pos="relative">
           {files.length === 0 ? (
             <>
-              <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
+              <Overlay opacity={0.3} color={colorScheme === 'dark' ? 'black' : 'white'} />
               <Center h="calc(40vh - 20px)">
-                <Stack spacing={0}>
+                <Stack gap={0}>
                   <Title order={2}>
                     {t('admin.placeholder.games.challenges.attachment.no_file_selected.title')}
                   </Title>
@@ -132,11 +135,11 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               </Center>
             </>
           ) : (
-            <Stack spacing="xs">
+            <Stack gap="xs">
               {files.map((file) => (
                 <Card p={4}>
-                  <Group position="apart">
-                    <Text lineClamp={1} ff={theme.fontFamilyMonospace}>
+                  <Group justify="space-between">
+                    <Text lineClamp={1} ff="monospace">
                       {file.name}
                     </Text>
                     <ActionIcon onClick={() => setFiles(files.filter((f) => f !== file))}>
@@ -171,7 +174,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               <Progress
                 value={progress}
                 className={classes.uploadProgress}
-                color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
                 radius="sm"
               />
             )}

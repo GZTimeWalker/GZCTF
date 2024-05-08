@@ -68,12 +68,12 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   return (
     <Modal {...modalProps}>
       {/* User Info */}
-      <Stack spacing="md" m="auto" mt={15}>
+      <Stack gap="md" m="auto" mt={15}>
         <Grid grow>
           <Grid.Col span={8}>
             <TextInput
               label={
-                <Group position="left" spacing="xs">
+                <Group justify="left" gap="xs">
                   <Text size="sm">{t('team.label.name')}</Text>
                 </Group>
               }
@@ -104,24 +104,24 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
 
-        <Group position="left">
+        <Group justify="left">
           <Text size="sm">{t('team.label.members')}</Text>
           {team.locked && <Icon path={mdiLockOutline} size={0.8} color={theme.colors.yellow[6]} />}
         </Group>
         <ScrollArea h={165} offsetScrollbars>
-          <Stack spacing="xs">
+          <Stack gap="xs">
             {activeTeam.members?.map((user) => (
-              <Group position="apart">
-                <Group position="left">
+              <Group justify="space-between">
+                <Group justify="left">
                   <Avatar alt="avatar" src={user.avatar} radius="xl">
                     {user.userName?.slice(0, 1) ?? 'U'}
                   </Avatar>
-                  <Stack spacing={0}>
+                  <Stack gap={0}>
                     <Text fw={500}>{user.userName}</Text>
                     <Text size="xs" c="dimmed">{`#${user.id?.substring(0, 8)}`}</Text>
                   </Stack>
                 </Group>
-                <Group position="right">
+                <Group justify="right">
                   {user.captain && <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />}
                 </Group>
               </Group>

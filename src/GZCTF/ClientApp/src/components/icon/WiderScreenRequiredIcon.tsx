@@ -1,14 +1,8 @@
-import { createStyles } from '@mantine/core'
 import { FC } from 'react'
-
-const useStyles = createStyles((theme) => ({
-  triangle: {
-    fill: theme.colorScheme === 'dark' ? theme.white : theme.colors.gray[6],
-  },
-}))
+import { useIconStyles } from '@Utils/ThemeOverride'
 
 const IconWiderScreenRequired: FC = () => {
-  const { classes } = useStyles()
+  const { classes } = useIconStyles()
 
   return (
     <svg

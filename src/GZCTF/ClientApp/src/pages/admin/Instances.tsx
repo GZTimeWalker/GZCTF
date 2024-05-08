@@ -2,11 +2,13 @@ import {
   Badge,
   Box,
   Code,
+  ComboboxItem,
   Group,
   Input,
   Paper,
   ScrollArea,
   Select,
+  SelectProps,
   Stack,
   Table,
   Text,
@@ -24,7 +26,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, forwardRef, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
@@ -33,13 +35,15 @@ import { useChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
 import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
 
-type SelectTeamItemProps = TeamModel & React.ComponentPropsWithoutRef<'div'>
-type SelectChallengeItemProps = ChallengeModel & React.ComponentPropsWithoutRef<'div'>
+type SelectTeamItemProps = TeamModel & ComboboxItem
+type SelectChallengeItemProps = ChallengeModel & ComboboxItem
 
-const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
-  ({ name, id, ...others }: SelectTeamItemProps, ref) => (
-    <Stack ref={ref} {...others} spacing={0}>
-      <Text lineClamp={1}>
+const SelectTeamItem: SelectProps['renderOption'] = ({ option }) => {
+  const { name, id, ...others } = option as SelectTeamItemProps
+
+  return (
+    <Stack {...others} gap={0}>
+      <Text size="sm" lineClamp={1}>
         <Text span c="dimmed">
           {`#${id} `}
         </Text>
@@ -47,27 +51,26 @@ const SelectTeamItem = forwardRef<HTMLDivElement, SelectTeamItemProps>(
       </Text>
     </Stack>
   )
-)
+}
 
-const SelectChallengeItem = forwardRef<HTMLDivElement, SelectChallengeItemProps>(
-  ({ title, id, tag, ...others }: SelectChallengeItemProps, ref) => {
-    const challengeTagLabelMap = useChallengeTagLabelMap()
-    const tagInfo = challengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
-    const theme = useMantineTheme()
+const SelectChallengeItem: SelectProps['renderOption'] = ({ option }) => {
+  const { title, id, tag } = option as SelectChallengeItemProps
+  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const tagInfo = challengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
+  const theme = useMantineTheme()
 
-    return (
-      <Group ref={ref} {...others} spacing="sm">
-        <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
-        <Text lineClamp={1}>
-          <Text span c="dimmed">
-            {`#${id} `}
-          </Text>
-          {title}
+  return (
+    <Group gap="sm">
+      <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
+      <Text size="sm" lineClamp={1}>
+        <Text span c="dimmed">
+          {`#${id} `}
         </Text>
-      </Group>
-    )
-  }
-)
+        {title}
+      </Text>
+    </Group>
+  )
+}
 
 const Instances: FC = () => {
   const { data: instances, mutate } = api.admin.useAdminInstances({
@@ -155,7 +158,7 @@ const Instances: FC = () => {
       isLoading={!instances || !teams || !challenge}
       head={
         <>
-          <Group w="60%" position="left" spacing="md">
+          <Group w="60%" justify="left" gap="md">
             <Select
               w="48%"
               searchable
@@ -163,13 +166,14 @@ const Instances: FC = () => {
               placeholder={t('admin.placeholder.instances.teams.select')}
               value={selectedTeamId}
               onChange={(id) => setSelectedTeamId(id)}
-              icon={<Icon path={mdiAccountGroupOutline} size={1} />}
-              itemComponent={SelectTeamItem}
+              leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}
+              nothingFoundMessage={t('admin.placeholder.instances.teams.not_found')}
+              renderOption={SelectTeamItem}
               data={
-                teams?.map((team) => ({ value: String(team.id), label: team.name, ...team })) ?? []
+                teams?.map(
+                  (team) => ({ value: String(team.id), label: team.name, ...team }) as ComboboxItem
+                ) ?? []
               }
-              filter={(query, team) => team.name.includes(query) || team.value.includes(query)}
-              nothingFound={t('admin.placeholder.instances.teams.not_found')}
             />
             <Select
               w="48%"
@@ -177,23 +181,23 @@ const Instances: FC = () => {
               clearable
               placeholder={t('admin.placeholder.instances.challenges.select')}
               onChange={(id) => setSelectedChallengeId(id)}
-              icon={<Icon path={mdiPuzzleOutline} size={1} />}
-              itemComponent={SelectChallengeItem}
+              leftSection={<Icon path={mdiPuzzleOutline} size={1} />}
+              nothingFoundMessage={t('admin.placeholder.instances.challenges.not_found')}
+              renderOption={SelectChallengeItem}
               data={
-                challenge?.map((challenge) => ({
-                  value: String(challenge.id),
-                  label: challenge.title,
-                  ...challenge,
-                })) ?? []
+                challenge?.map(
+                  (challenge) =>
+                    ({
+                      value: String(challenge.id),
+                      label: challenge.title,
+                      ...challenge,
+                    }) as ComboboxItem
+                ) ?? []
               }
-              filter={(query, challenge) =>
-                challenge.title.includes(query) || challenge.value.includes(query)
-              }
-              nothingFound={t('admin.placeholder.instances.challenges.not_found')}
             />
           </Group>
 
-          <Group position="right">
+          <Group justify="right">
             <Text fw="bold" size="sm">
               <Trans i18nKey="admin.content.instances.stats" values={{ count: instances?.length }}>
                 _<Code>_</Code>_
@@ -206,25 +210,25 @@ const Instances: FC = () => {
       <Paper shadow="md" p="xs" w="100%">
         <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 205px)">
           <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th>{t('common.label.team')}</th>
-                <th>{t('common.label.challenge')}</th>
-                <th>{t('admin.label.instances.life_cycle')}</th>
-                <th>{t('admin.label.instances.container_id')}</th>
-                <th>{t('admin.label.instances.entry')}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>{t('common.label.team')}</Table.Th>
+                <Table.Th>{t('common.label.challenge')}</Table.Th>
+                <Table.Th>{t('admin.label.instances.life_cycle')}</Table.Th>
+                <Table.Th>{t('admin.label.instances.container_id')}</Table.Th>
+                <Table.Th>{t('admin.label.instances.entry')}</Table.Th>
+                <Table.Th />
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {filteredInstances &&
                 filteredInstances.map((inst) => {
                   const color = challengeTagLabelMap.get(
                     inst.challenge?.tag ?? ChallengeTag.Misc
                   )!.color
                   return (
-                    <tr key={inst.containerGuid}>
-                      <td>
+                    <Table.Tr key={inst.containerGuid}>
+                      <Table.Td>
                         <Box w="100%" h="100%">
                           <Input
                             variant="unstyled"
@@ -240,8 +244,8 @@ const Instances: FC = () => {
                             })}
                           />
                         </Box>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Box w="100%" h="100%">
                           <Input
                             variant="unstyled"
@@ -257,9 +261,9 @@ const Instances: FC = () => {
                             })}
                           />
                         </Box>
-                      </td>
-                      <td>
-                        <Group noWrap spacing="xs">
+                      </Table.Td>
+                      <Table.Td>
+                        <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
                             {dayjs(inst.startedAt).format('MM/DD HH:mm')}
                           </Badge>
@@ -268,9 +272,9 @@ const Instances: FC = () => {
                             {dayjs(inst.expectStopAt).format('MM/DD HH:mm')}
                           </Badge>
                         </Group>
-                      </td>
-                      <td>
-                        <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" ff="monospace" lineClamp={1}>
                           <Tooltip
                             label={t('common.button.copy')}
                             withArrow
@@ -279,7 +283,7 @@ const Instances: FC = () => {
                           >
                             <Text
                               size="sm"
-                              ff={theme.fontFamilyMonospace}
+                              ff="monospace"
                               style={{
                                 backgroundColor: 'transparent',
                                 fontSize: theme.fontSizes.sm,
@@ -301,8 +305,8 @@ const Instances: FC = () => {
                             </Text>
                           </Tooltip>
                         </Text>
-                      </td>
-                      <td>
+                      </Table.Td>
+                      <Table.Td>
                         <Tooltip
                           label={t('common.button.copy')}
                           withArrow
@@ -311,8 +315,8 @@ const Instances: FC = () => {
                         >
                           <Text
                             size="sm"
-                            color="dimmed"
-                            ff={theme.fontFamilyMonospace}
+                            c="dimmed"
+                            ff="monospace"
                             style={{
                               backgroundColor: 'transparent',
                               fontSize: theme.fontSizes.sm,
@@ -333,9 +337,9 @@ const Instances: FC = () => {
                             </Text>
                           </Text>
                         </Tooltip>
-                      </td>
-                      <td align="right">
-                        <Group noWrap spacing="sm" position="right">
+                      </Table.Td>
+                      <Table.Td align="right">
+                        <Group wrap="nowrap" gap="sm" justify="right">
                           <ActionIconWithConfirm
                             iconPath={mdiPackageVariantClosedRemove}
                             color="alert"
@@ -346,11 +350,11 @@ const Instances: FC = () => {
                             onClick={() => onDelete(inst.containerGuid)}
                           />
                         </Group>
-                      </td>
-                    </tr>
+                      </Table.Td>
+                    </Table.Tr>
                   )
                 })}
-            </tbody>
+            </Table.Tbody>
           </Table>
         </ScrollArea>
         <Text size="xs" c="dimmed">

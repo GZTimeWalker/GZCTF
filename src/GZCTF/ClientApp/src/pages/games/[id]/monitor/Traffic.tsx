@@ -10,6 +10,7 @@ import {
   Text,
   Title,
   Tooltip,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -42,6 +43,7 @@ const Traffic: FC = () => {
   const { classes: tooltipClasses, theme } = useTooltipStyles()
 
   const { t } = useTranslation()
+  const { colorScheme } = useMantineColorScheme()
   const modals = useModals()
 
   const { data: challengeTraffic, mutate: mutateChallenges } =
@@ -128,7 +130,7 @@ const Traffic: FC = () => {
 
   const innerStyle: CSSProperties = {
     borderRight: `${rem(2)} solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
+      colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
     }`,
   }
 
@@ -142,7 +144,7 @@ const Traffic: FC = () => {
     <WithGameMonitorTab>
       {!challengeTraffic || challengeTraffic?.length === 0 ? (
         <Center h="calc(100vh - 140px)">
-          <Stack spacing={0}>
+          <Stack gap={0}>
             <Title order={2}>{t('game.content.no_traffic.title')}</Title>
             <Text>{t('game.content.no_traffic.comment')}</Text>
           </Stack>
@@ -152,7 +154,7 @@ const Traffic: FC = () => {
           <Grid gutter={0} h="calc(100vh - 142px)">
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
-                <Text size="md" weight={700}>
+                <Text size="md" fw="bold">
                   {t('common.label.challenge')}
                 </Text>
               </Group>
@@ -167,7 +169,7 @@ const Traffic: FC = () => {
             </Grid.Col>
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
-                <Text size="md" weight={700}>
+                <Text size="md" fw="bold">
                   {t('common.label.team')}
                 </Text>
               </Group>
@@ -181,14 +183,14 @@ const Traffic: FC = () => {
               />
             </Grid.Col>
             <Grid.Col span={6}>
-              <Group h={headerHeight} pb="3px" px="xs" position="apart" noWrap>
-                <Text size="md" weight={700}>
+              <Group h={headerHeight} pb="3px" px="xs" justify="space-between" wrap="nowrap">
+                <Text size="md" fw="bold">
                   {t('game.label.traffic')}
-                  <Text span px="md" fw="bold" size="sm" color="dimmed">
+                  <Text span px="md" fw="bold" size="sm" c="dimmed">
                     {HunamizeSize(totalFileSize ?? 0)}
                   </Text>
                 </Text>
-                <Group position="right" spacing="sm" noWrap>
+                <Group justify="right" gap="sm" wrap="nowrap">
                   <Tooltip
                     label={t('game.button.delete.all_traffic')}
                     position="left"

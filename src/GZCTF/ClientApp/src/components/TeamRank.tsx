@@ -2,9 +2,8 @@ import {
   Avatar,
   Badge,
   Card,
-  createStyles,
+  CardProps,
   Group,
-  PaperProps,
   PasswordInput,
   Progress,
   Skeleton,
@@ -12,6 +11,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import { createStyles } from '@mantine/emotion'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
@@ -30,7 +30,7 @@ const useStyle = createStyles((theme) => ({
   },
 }))
 
-const TeamRank: FC<PaperProps> = (props) => {
+const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
@@ -58,13 +58,13 @@ const TeamRank: FC<PaperProps> = (props) => {
 
   return (
     <Card {...props} shadow="sm" p="md">
-      <Stack spacing={8}>
-        <Group spacing="sm" noWrap>
+      <Stack gap={8}>
+        <Group gap="sm" wrap="nowrap">
           <Avatar alt="avatar" color="cyan" size={50} radius="md" src={teamInfo?.rank?.avatar}>
             {teamInfo?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Skeleton visible={!teamInfo}>
-            <Stack spacing={2} align="flex-start">
+            <Stack gap={2} align="flex-start">
               <Title order={3} lineClamp={1}>
                 {teamInfo?.rank?.name ?? 'Team'}
               </Title>
@@ -77,27 +77,27 @@ const TeamRank: FC<PaperProps> = (props) => {
           </Skeleton>
         </Group>
         <Group grow ta="center">
-          <Stack spacing={2}>
+          <Stack gap={2}>
             <Skeleton visible={!teamInfo}>
               <Text className={classes.number}>{teamInfo?.rank?.rank ?? '0'}</Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
           </Stack>
           {teamInfo?.rank?.organization && (
-            <Stack spacing={2}>
+            <Stack gap={2}>
               <Skeleton visible={!teamInfo}>
                 <Text className={classes.number}>{teamInfo?.rank?.organizationRank ?? '0'}</Text>
               </Skeleton>
               <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
             </Stack>
           )}
-          <Stack spacing={2}>
+          <Stack gap={2}>
             <Skeleton visible={!teamInfo}>
               <Text className={classes.number}>{teamInfo?.rank?.score ?? '0'}</Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.score')}</Text>
           </Stack>
-          <Stack spacing={2}>
+          <Stack gap={2}>
             <Skeleton visible={!teamInfo}>
               <Text className={classes.number}>{teamInfo?.rank?.solvedCount ?? '0'}</Text>
             </Skeleton>
@@ -109,7 +109,7 @@ const TeamRank: FC<PaperProps> = (props) => {
           <PasswordInput
             value={teamInfo?.teamToken}
             readOnly
-            icon={<Icon path={mdiKey} size={1} />}
+            leftSection={<Icon path={mdiKey} size={1} />}
             variant="unstyled"
             onClick={() => {
               clipboard.copy(teamInfo?.teamToken)

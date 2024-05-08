@@ -11,5 +11,12 @@
   "i18n-ally.extract.keyMaxLength": 20,
   "i18n-ally.extract.keygenStyle": "snake_case",
   "i18n-ally.sortKeys": true,
-  "i18n-ally.sourceLanguage": "zh"
+  "i18n-ally.sourceLanguage": "zh",
+  "cssVariables.lookupFiles": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "node_modules/@mantine/core/styles.css"
+  ]
 }

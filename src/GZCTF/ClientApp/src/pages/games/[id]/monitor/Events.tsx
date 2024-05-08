@@ -7,6 +7,7 @@ import {
   Stack,
   Switch,
   Text,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
@@ -31,7 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import { useTableStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles, useTableStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, EventType, GameEvent } from '@Api'
 
@@ -39,7 +40,8 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const EventTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
-  const colorIdx = theme.colorScheme === 'dark' ? 5 : 7
+  const { colorScheme } = useMantineColorScheme()
+  const colorIdx = colorScheme === 'dark' ? 5 : 7
 
   return new Map([
     [EventType.FlagSubmit, <Icon path={mdiFlag} size={size} color={theme.colors.cyan[colorIdx]} />],
@@ -57,7 +59,7 @@ const EventTypeIconMap = (size: number) => {
     ],
     [
       EventType.Normal,
-      <Icon path={mdiLightningBolt} size={size} color={theme.colors.white[colorIdx]} />,
+      <Icon path={mdiLightningBolt} size={size} color={theme.colors.light[colorIdx]} />,
     ],
   ])
 }
@@ -131,8 +133,13 @@ const Events: FC = () => {
 
   const iconMap = EventTypeIconMap(1.15)
   const { classes } = useTableStyles()
-
+  const { classes: inputClasses } = useDisplayInputStyles({ fw: 500 })
   const { t } = useTranslation()
+  const viewport = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [activePage, viewport])
 
   useEffect(() => {
     api.game
@@ -203,7 +210,7 @@ const Events: FC = () => {
 
   return (
     <WithGameMonitorTab>
-      <Group position="apart" w="100%">
+      <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(
             t('game.content.hide_container_events.label'),
@@ -212,7 +219,7 @@ const Events: FC = () => {
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />
-        <Group position="right">
+        <Group justify="right">
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
             <Icon path={mdiArrowLeftBold} size={1} />
           </ActionIcon>
@@ -225,8 +232,8 @@ const Events: FC = () => {
           </ActionIcon>
         </Group>
       </Group>
-      <ScrollArea offsetScrollbars h="calc(100vh - 160px)">
-        <Stack spacing="xs" pr={10} w="100%">
+      <ScrollArea viewportRef={viewport} offsetScrollbars h="calc(100vh - 160px)">
+        <Stack gap="xs" pr={10} w="100%">
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card
               shadow="sm"
@@ -237,28 +244,17 @@ const Events: FC = () => {
                 i === 0 && activePage === 1 && filteredEvents.length > 0 ? classes.fade : undefined
               }
             >
-              <Group noWrap align="flex-start" position="right" spacing="sm" w="100%">
+              <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
                 {iconMap.get(event.type)}
-                <Stack spacing={2} w="100%">
+                <Stack gap={2} w="100%">
                   <Input
                     variant="unstyled"
                     value={formatEvent(t, event)}
                     readOnly
-                    sx={(theme) => ({
-                      wrapper: {
-                        width: '100%',
-                      },
-
-                      input: {
-                        userSelect: 'none',
-                        fontWeight: 500,
-                        fontSize: theme.fontSizes.md,
-                        lineHeight: '1em',
-                        height: '1em',
-                      },
-                    })}
+                    size="md"
+                    classNames={inputClasses}
                   />
-                  <Group noWrap position="apart">
+                  <Group wrap="nowrap" justify="space-between">
                     <Text size="sm" fw={500} c="dimmed">
                       {event.team}, {event.user}
                     </Text>

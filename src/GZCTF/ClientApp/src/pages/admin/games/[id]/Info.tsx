@@ -6,17 +6,17 @@ import {
   Group,
   Image,
   Input,
-  MultiSelect,
   NumberInput,
   SimpleGrid,
   Stack,
   Switch,
+  TagsInput,
   Text,
   Textarea,
   TextInput,
 } from '@mantine/core'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
-import { Dropzone } from '@mantine/dropzone'
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
@@ -36,7 +36,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
-import { ACCEPT_IMAGE_MIME_TYPE } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
 
@@ -57,7 +56,6 @@ const GameInfoEdit: FC = () => {
   const navigate = useNavigate()
 
   const [disabled, setDisabled] = useState(false)
-  const [organizations, setOrganizations] = useState<string[]>([])
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
   const [wpddl, setWpddl] = useInputState(3)
@@ -82,7 +80,6 @@ const GameInfoEdit: FC = () => {
       setGame(gameSource)
       setStart(dayjs(gameSource.start))
       setEnd(dayjs(gameSource.end))
-      setOrganizations(gameSource.organizations || [])
 
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
@@ -182,7 +179,7 @@ const GameInfoEdit: FC = () => {
 
   return (
     <WithGameEditTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       contentPos="right"
       isLoading={!game}
       head={
@@ -190,7 +187,7 @@ const GameInfoEdit: FC = () => {
           <Button
             disabled={disabled}
             color="red"
-            leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+            leftSection={<Icon path={mdiDeleteOutline} size={1} />}
             variant="outline"
             onClick={() =>
               modals.openConfirmModal({
@@ -208,14 +205,14 @@ const GameInfoEdit: FC = () => {
             {t('admin.button.games.delete')}
           </Button>
           <Button
-            leftIcon={<Icon path={mdiClipboard} size={1} />}
+            leftSection={<Icon path={mdiClipboard} size={1} />}
             disabled={disabled}
             onClick={onCopyPublicKey}
           >
             {t('admin.button.games.copy_public_key')}
           </Button>
           <Button
-            leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+            leftSection={<Icon path={mdiContentSaveOutline} size={1} />}
             disabled={disabled}
             onClick={onUpdateInfo}
           >
@@ -348,7 +345,7 @@ const GameInfoEdit: FC = () => {
           />
         </Grid.Col>
         <Grid.Col span={3}>
-          <Stack spacing="xs" h="100%" justify="space-between">
+          <Stack gap="xs" h="100%" justify="space-between">
             <Switch
               pt="1.5em"
               disabled={disabled}
@@ -371,7 +368,7 @@ const GameInfoEdit: FC = () => {
           </Stack>
         </Grid.Col>
         <Grid.Col span={3}>
-          <Stack spacing="xs">
+          <Stack gap="xs">
             <NumberInput
               label={t('admin.content.games.info.writeup_deadline.label')}
               description={t('admin.content.games.info.writeup_deadline.description')}
@@ -393,10 +390,10 @@ const GameInfoEdit: FC = () => {
           </Stack>
         </Grid.Col>
       </Grid>
-      <Group grow position="apart">
+      <Group grow justify="space-between">
         <Textarea
           label={
-            <Group spacing="sm">
+            <Group gap="sm">
               <Text size="sm">{t('admin.content.games.info.writeup_instruction')}</Text>
               <Text size="xs" c="dimmed">
                 {t('admin.content.markdown_support')}
@@ -411,44 +408,34 @@ const GameInfoEdit: FC = () => {
           maxRows={3}
           onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
         />
-        <MultiSelect
+        <TagsInput
           label={
-            <Group spacing="sm">
+            <Group gap="sm">
               <Text size="sm"> {t('admin.content.games.info.organizations.label')}</Text>
               <Text size="xs" c="dimmed">
                 {t('admin.content.games.info.organizations.description')}
               </Text>
             </Group>
           }
-          searchable
-          creatable
           disabled={disabled}
           placeholder={t('admin.placeholder.games.organizations')}
           maxDropdownHeight={300}
           value={game?.organizations ?? []}
           styles={{
             input: {
-              minHeight: 88,
-              maxHeight: 88,
+              minHeight: 79,
+              maxHeight: 79,
             },
           }}
           onChange={(e) => game && setGame({ ...game, organizations: e })}
-          data={organizations.map((o) => ({ value: o, label: o })) || []}
-          getCreateLabel={(query) =>
-            t('admin.content.games.info.organizations.add', { org: query })
-          }
-          onCreate={(query) => {
-            const item = { value: query, label: query }
-            setOrganizations([...organizations, query])
-            return item
-          }}
+          onClear={() => game && setGame({ ...game, organizations: [] })}
         />
       </Group>
       <Grid grow>
         <Grid.Col span={8}>
           <Textarea
             label={
-              <Group spacing="sm">
+              <Group gap="sm">
                 <Text size="sm">{t('admin.content.games.info.content')}</Text>
                 <Text size="xs" c="dimmed">
                   {t('admin.content.markdown_support')}
@@ -459,8 +446,8 @@ const GameInfoEdit: FC = () => {
             w="100%"
             autosize
             disabled={disabled}
-            minRows={8}
-            maxRows={8}
+            minRows={9}
+            maxRows={9}
             onChange={(e) => game && setGame({ ...game, content: e.target.value })}
           />
         </Grid.Col>
@@ -477,21 +464,21 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={ACCEPT_IMAGE_MIME_TYPE}
+              accept={IMAGE_MIME_TYPE}
               disabled={disabled}
               styles={{
                 root: {
-                  height: '198px',
+                  height: '211px',
                   padding: game?.poster ? '0' : '16px',
                 },
               }}
             >
               <Center style={{ pointerEvents: 'none' }}>
                 {game?.poster ? (
-                  <Image height="195px" fit="contain" src={game.poster} alt="poster" />
+                  <Image height="209px" fit="contain" src={game.poster} alt="poster" />
                 ) : (
-                  <Center h="160px">
-                    <Stack spacing={0}>
+                  <Center h="200px">
+                    <Stack gap={0}>
                       <Text size="xl" inline>
                         {t('common.content.drop_zone.content', {
                           type: t('common.content.drop_zone.type.poster'),
