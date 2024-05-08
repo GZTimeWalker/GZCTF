@@ -48,7 +48,7 @@
       "entry": {
         "description": {
           "anchor": "Get proxy client",
-          "proxy": "Websocket proxy mode has been enabled."
+          "proxy": "Websocket proxy mode has been enabled. "
         },
         "label": "Instance Info"
       },
