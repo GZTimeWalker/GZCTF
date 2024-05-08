@@ -26,7 +26,9 @@
         "add": "Add Hint"
       },
       "new": "New Challenge",
+      "next": "Next",
       "preview": "Preview",
+      "previous": "Previous",
       "test_container": {
         "create": "Create",
         "destroy": "Destroy"
@@ -180,8 +182,7 @@
           "label": "Maximum Team Member"
         },
         "organizations": {
-          "add": "+ Add division \"{{org}}\"",
-          "description": "Add divisions to enable grouped scoreboard",
+          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"
         },
         "poster": "Poster",
@@ -427,7 +428,7 @@
           }
         }
       },
-      "organizations": "No divisions specified; teams can join without selecting a division.",
+      "organizations": "Enter to add a division.",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"
