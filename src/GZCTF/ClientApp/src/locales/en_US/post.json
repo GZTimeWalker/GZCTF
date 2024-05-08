@@ -2,7 +2,7 @@
   "label": {
     "tag": "Tags",
     "title": "Title",
-    "add_tag": "+ Add tag \"{{query}}\"",
+    "add_tag": "Enter to add tag",
     "content": "Content",
     "summary": "Summary"
   },
