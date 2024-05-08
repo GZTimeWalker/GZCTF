@@ -33,6 +33,7 @@ export const useLanguage = () => {
     i18n.changeLanguage(language)
     dayjs.locale(language)
     apiLanguage = language.replace('_', '-')
+    document.documentElement.setAttribute('lang', language.replace('_', '-').toLowerCase())
   }, [language])
 
   const supportedLanguages = Object.keys(resources) as SupportedLanguages[]
