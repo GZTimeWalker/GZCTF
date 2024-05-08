@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "0.19.4",
+  "version": "0.20.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -86,7 +86,7 @@
   },
   "pnpm": {
     "overrides": {
-        "canvas": "npm:dry-uninstall"
+      "canvas": "npm:dry-uninstall"
     }
-}
+  }
 }

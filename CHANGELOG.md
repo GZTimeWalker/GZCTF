@@ -3,7 +3,22 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.19.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.3..v0.19.4) - 2024-05-02
+## [0.20.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.4..v0.20.0) - 2024-05-08
+
+### ⛰️ Features
+
+- **(client)** download blob with filename - ([ea373a](https://github.com/GZTimeWalker/GZCTF/commit/ea373a)) by **Aether Chen**
+- **(deps)** upgrade to mantine v7 (#283) - ([a72e47](https://github.com/GZTimeWalker/GZCTF/commit/a72e47)) by **GZTime**
+- unify team info query hook - ([c46544](https://github.com/GZTimeWalker/GZCTF/commit/c46544)) by **GZTime**
+- update challenge accepted count - ([99650c](https://github.com/GZTimeWalker/GZCTF/commit/99650c)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(i18n)** set `lang` attr in `html` - ([9d8b39](https://github.com/GZTimeWalker/GZCTF/commit/9d8b39)) by **GZTime**
+- **(style)** footer color use css var - ([aafbf2](https://github.com/GZTimeWalker/GZCTF/commit/aafbf2)) by **GZTime**
+
+---
+## [0.19.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.3..v0.19.4) - 2024-05-03
 
 ### ⛰️ Features
 
