@@ -22,13 +22,7 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
   const { t } = useTranslation()
 
   return (
-    <Group
-      wrap="nowrap"
-      justify="center"
-      miw={`calc(${theme.spacing.xl} * 2)`}
-      m={`0 ${theme.spacing.xs}`}
-      {...others}
-    >
+    <Group wrap="nowrap" justify="center" mx="xs" miw={`calc(${theme.spacing.xl} * 2)`} {...others}>
       {part.transformTo.map((value) => {
         const s = partStatusMap.get(value)!
         return (

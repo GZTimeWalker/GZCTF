@@ -176,7 +176,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group justify="space-between" w="30%">
+            <Group wrap="nowrap" justify="space-between" w="32%" miw="350px">
               <Box>
                 <Text>{participation.organization}</Text>
                 <Text size="sm" c="dimmed" fw="bold">

@@ -359,7 +359,7 @@ export const useParticipationStatusMap = () => {
       ParticipationStatus.Rejected,
       {
         title: t('game.participation.status.rejected'),
-        color: 'red',
+        color: 'gray',
         iconPath: mdiClose,
         transformTo: [],
       },
