@@ -1,9 +1,5 @@
-import '@mantine/carousel/styles.css'
 import { Center, Loader, MantineProvider } from '@mantine/core'
-import '@mantine/core/styles.css'
 import { DatesProvider } from '@mantine/dates'
-import '@mantine/dates/styles.css'
-import '@mantine/dropzone/styles.css'
 import { emotionTransform, MantineEmotionProvider } from '@mantine/emotion'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
@@ -16,6 +12,11 @@ import { useLanguage } from '@Utils/I18n'
 import { CustomTheme } from '@Utils/ThemeOverride'
 import { useBanner, localCacheProvider } from '@Utils/useConfig'
 import { fetcher } from '@Api'
+import '@mantine/carousel/styles.css'
+import '@mantine/core/styles.css'
+import '@mantine/dates/styles.css'
+import '@mantine/dropzone/styles.css'
+import '@mantine/notifications/styles.css'
 import './App.css'
 
 export const App: FC = () => {
@@ -25,36 +26,37 @@ export const App: FC = () => {
   const { locale } = useLanguage()
 
   return (
-    <MantineProvider stylesTransform={emotionTransform}>
+    <MantineProvider
+      defaultColorScheme="dark"
+      theme={CustomTheme}
+      stylesTransform={emotionTransform}
+    >
       <MantineEmotionProvider>
-        {/* TODO: wait for fix in next patch*/}
-        <MantineProvider defaultColorScheme="dark" theme={CustomTheme}>
-          <Notifications zIndex={5000} />
+        <Notifications zIndex={5000} />
 
-          <DatesProvider settings={{ locale }}>
-            <ModalsProvider
-              labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
+        <DatesProvider settings={{ locale }}>
+          <ModalsProvider
+            labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
+          >
+            <SWRConfig
+              value={{
+                refreshInterval: 10000,
+                provider: localCacheProvider,
+                fetcher,
+              }}
             >
-              <SWRConfig
-                value={{
-                  refreshInterval: 10000,
-                  provider: localCacheProvider,
-                  fetcher,
-                }}
+              <Suspense
+                fallback={
+                  <Center h="100vh" w="100vw">
+                    <Loader />
+                  </Center>
+                }
               >
-                <Suspense
-                  fallback={
-                    <Center h="100vh" w="100vw">
-                      <Loader />
-                    </Center>
-                  }
-                >
-                  {useRoutes(routes)}
-                </Suspense>
-              </SWRConfig>
-            </ModalsProvider>
-          </DatesProvider>
-        </MantineProvider>
+                {useRoutes(routes)}
+              </Suspense>
+            </SWRConfig>
+          </ModalsProvider>
+        </DatesProvider>
       </MantineEmotionProvider>
     </MantineProvider>
   )

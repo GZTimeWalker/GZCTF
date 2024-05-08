@@ -306,7 +306,7 @@ interface CheatInfoTableViewProps {
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { classes, cx } = useTableStyles()
-  const { classes: inputClasses } = useDisplayInputStyles({ ff: "monospace" })
+  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
 
   const { t } = useTranslation()
 
