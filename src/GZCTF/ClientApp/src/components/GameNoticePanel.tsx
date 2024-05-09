@@ -1,4 +1,13 @@
-import { Card, Center, List, ScrollArea, SegmentedControl, Stack, Text } from '@mantine/core'
+import {
+  Card,
+  Center,
+  List,
+  ScrollArea,
+  SegmentedControl,
+  Stack,
+  Text,
+  useMantineTheme,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -88,6 +97,7 @@ const GameNoticePanel: FC = () => {
   const iconMap = NoticTypeIconMap(0.8)
 
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   useEffect(() => {
     api.game
@@ -134,7 +144,7 @@ const GameNoticePanel: FC = () => {
 
         if (message.type === NoticeType.Normal) {
           showNotification({
-            color: 'brand',
+            color: theme.primaryColor,
             message: formatNotice(t, message),
             autoClose: 5000,
           })

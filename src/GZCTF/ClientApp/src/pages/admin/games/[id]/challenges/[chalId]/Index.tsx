@@ -417,7 +417,7 @@ const GameChallengeEdit: FC = () => {
                 />
                 <Button
                   miw="8rem"
-                  color={challenge?.testContainer ? 'orange' : 'brand'}
+                  color={challenge?.testContainer ? 'orange' : 'green'}
                   disabled={disabled}
                   onClick={onToggleTestContainer}
                 >

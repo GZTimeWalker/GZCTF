@@ -178,7 +178,7 @@ const GameDetail: FC = () => {
         </Stack>
       ),
       onConfirm: () => setJoinModalOpen(true),
-      confirmProps: { color: 'brand' },
+      confirmProps: { color: theme.primaryColor },
     })
 
   const onLeave = () =>
@@ -191,7 +191,7 @@ const GameDetail: FC = () => {
         </Stack>
       ),
       onConfirm: onSubmitLeave,
-      confirmProps: { color: 'brand' },
+      confirmProps: { color: theme.primaryColor },
     })
 
   const ControlButtons = (

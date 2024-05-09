@@ -36,7 +36,11 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
     <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
-          <Icon path={data.icon} color={theme.colors[data.color ?? 'brand'][5]} size={1} />
+          <Icon
+            path={data.icon}
+            color={theme.colors[data.color ?? theme.primaryColor][5]}
+            size={1}
+          />
           <Stack gap={0} align="flex-start">
             <Input variant="unstyled" value={item.title ?? 'Team'} readOnly classNames={classes} />
             <Badge color={data.color} size="xs" variant="dot">
@@ -59,14 +63,14 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
 
-  const { classes } = useDisplayInputStyles({ fw: 'bold' })
+  const { classes, theme } = useDisplayInputStyles({ fw: 'bold' })
   const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
-          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color="brand">
+          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color={theme.primaryColor}>
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0} align="flex-start">

@@ -32,7 +32,9 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
       classNames={classes}
       style={{
         border: `2px solid ${
-          selected ? theme.colors.brand[colorScheme === 'dark' ? 8 : 6] : 'transparent'
+          selected
+            ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6]
+            : 'transparent'
         }`,
       }}
     >

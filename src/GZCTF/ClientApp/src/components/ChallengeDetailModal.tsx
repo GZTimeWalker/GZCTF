@@ -296,7 +296,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
                     rel="noreferrer"
                     variant="filled"
                     size="lg"
-                    color="brand"
+                    color={theme.primaryColor}
                     top={0}
                     right={0}
                     pos="absolute"

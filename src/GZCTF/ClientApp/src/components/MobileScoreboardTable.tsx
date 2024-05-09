@@ -12,7 +12,7 @@ const TableRow: FC<{
   item: ScoreboardItem
   onOpenDetail: () => void
 }> = ({ item, onOpenDetail }) => {
-  const { classes, cx } = useScoreboardStyles()
+  const { classes, cx, theme } = useScoreboardStyles()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
     <Table.Tr>
@@ -24,7 +24,7 @@ const TableRow: FC<{
             src={item.avatar}
             radius="xl"
             size={30}
-            color="brand"
+            color={theme.primaryColor}
             style={{
               '&:hover': {
                 cursor: 'pointer',

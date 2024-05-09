@@ -36,7 +36,7 @@ export const useTypographyStyles = createStyles((theme, _, u) => {
       },
 
       '& strong': {
-        ...sc('color', cs.brand[6], cs.brand[7]),
+        ...sc('color', cs[theme.primaryColor][6], cs[theme.primaryColor][7]),
       },
 
       '& blockquote': {
@@ -277,11 +277,11 @@ export const useInlineStyles = createStyles((theme, _, u) => {
       },
 
       '& strong': {
-        ...sc('color', cs.brand[6], cs.brand[7]),
+        ...sc('color', cs[theme.primaryColor][6], cs[theme.primaryColor][7]),
       },
 
       '& a': {
-        ...sc('color', cs.brand[6], cs.brand[7]),
+        ...sc('color', cs[theme.primaryColor][6], cs[theme.primaryColor][7]),
         textDecoration: 'underline',
         transition: 'all 0.2s ease-in-out',
       },

@@ -57,7 +57,7 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
             type: 'line',
             showSymbol: false,
             clip: true,
-            color: theme.colors.brand[8],
+            color: theme.colors[theme.primaryColor][8],
             data: plotData,
             markPoint: {
               label: {

@@ -253,7 +253,7 @@ export const SubmissionTypeColorMap = () => {
 
   return new Map([
     [SubmissionType.Unaccepted, undefined],
-    [SubmissionType.Normal, theme.colors.brand[colorScheme === 'dark' ? 8 : 6]],
+    [SubmissionType.Normal, theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6]],
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
       SubmissionType.SecondBlood,
@@ -317,7 +317,11 @@ export const NoticTypeIconMap = (size: number) => {
   return new Map([
     [
       NoticeType.Normal,
-      <Icon path={mdiBullhornOutline} size={size} color={theme.colors.brand[colorIdx]} />,
+      <Icon
+        path={mdiBullhornOutline}
+        size={size}
+        color={theme.colors[theme.primaryColor][colorIdx]}
+      />,
     ],
     [
       NoticeType.NewHint,

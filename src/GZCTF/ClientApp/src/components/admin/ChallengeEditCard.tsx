@@ -42,7 +42,7 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
     },
   }
 
-  const color = data?.color ?? 'brand'
+  const color = data?.color ?? theme.primaryColor
   const colors = theme.colors[color]
 
   const minIdx = colorScheme === 'dark' ? 8 : 6
@@ -68,7 +68,11 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
           onChange={() => onToggle(challenge, setDisabled)}
         />
 
-        <Icon path={data!.icon} color={theme.colors[data?.color ?? 'brand'][5]} size={1.2} />
+        <Icon
+          path={data!.icon}
+          color={theme.colors[data?.color ?? theme.primaryColor][5]}
+          size={1.2}
+        />
 
         <Stack gap={0} maw={contentWidth} miw={contentWidth}>
           <Text truncate fw="bold">

@@ -30,7 +30,7 @@ interface MobileScoreboardItemModalProps extends ModalProps {
 
 const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) => {
   const { item, challenges, ...modalProps } = props
-  const { classes } = useTableStyles()
+  const { classes, theme } = useTableStyles()
 
   const { t } = useTranslation()
 
@@ -70,7 +70,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
       {...modalProps}
       title={
         <Group justify="left" gap="md" wrap="nowrap">
-          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color="brand">
+          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color={theme.primaryColor}>
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0}>

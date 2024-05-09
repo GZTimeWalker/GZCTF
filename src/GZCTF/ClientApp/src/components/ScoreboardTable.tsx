@@ -196,7 +196,7 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
-  const { classes, cx } = useScoreboardStyles()
+  const { classes, cx, theme } = useScoreboardStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
@@ -216,7 +216,7 @@ const TableRow: FC<{
             src={item.avatar}
             radius="xl"
             size={30}
-            color="brand"
+            color={theme.primaryColor}
             style={{
               '&:hover': {
                 cursor: 'pointer',

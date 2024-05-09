@@ -50,7 +50,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             <Group justify="space-between">
               <Title order={3}>
                 {post.isPinned && (
-                  <Text span c="brand">
+                  <Text span c={theme.primaryColor}>
                     {`${t('post.content.pinned')} `}
                   </Text>
                 )}
@@ -74,7 +74,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           ) : (
             <Title order={3}>
               {post.isPinned && (
-                <Text span c="brand">
+                <Text span c={theme.primaryColor}>
                   {`${t('post.content.pinned')} `}
                 </Text>
               )}
@@ -85,7 +85,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           {post.tags && (
             <Group>
               {post.tags.map((tag, idx) => (
-                <Text key={idx} size="sm" fw="bold" span c="brand">
+                <Text key={idx} size="sm" fw="bold" span c={theme.primaryColor}>
                   {`#${tag}`}
                 </Text>
               ))}

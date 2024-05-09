@@ -1,4 +1,14 @@
-import { ActionIcon, Avatar, Box, Card, Group, Stack, Text, Title } from '@mantine/core'
+import {
+  ActionIcon,
+  Avatar,
+  Box,
+  Card,
+  Group,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core'
 import { mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -17,13 +27,14 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   return (
     <Card shadow="sm" p="sm">
       <Stack gap="xs">
         <Box onClick={() => navigate(`/posts/${post.id}`)}>
           <Title order={3} pb={4}>
-            <Text span c="brand">
+            <Text span c={theme.primaryColor}>
               {post.isPinned ? `${t('post.content.pinned')} ` : '>>> '}
             </Text>
             {post.title}
@@ -34,7 +45,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           {post.tags && (
             <Group justify="left">
               {post.tags.map((tag, idx) => (
-                <Text key={idx} size="sm" fw="bold" span c="brand">
+                <Text key={idx} size="sm" fw="bold" span c={theme.primaryColor}>
                   {`#${tag}`}
                 </Text>
               ))}

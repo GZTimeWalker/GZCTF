@@ -80,7 +80,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const tagData = challengeTagLabelMap.get(challenge.tag!)
   const { classes, cx, theme } = useStyles(props)
   const { classes: tooltipClasses } = useTooltipStyles()
-  const colorStr = theme.colors[tagData?.color ?? 'brand'][5]
+  const colorStr = theme.colors[tagData?.color ?? theme.primaryColor][5]
 
   return (
     <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>

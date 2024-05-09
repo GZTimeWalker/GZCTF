@@ -76,7 +76,13 @@ const Post: FC = () => {
           <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>
             {post?.title}
           </Title>
-          <Avatar alt="avatar" src={post?.authorAvatar} color="brand" radius="xl" size="lg">
+          <Avatar
+            alt="avatar"
+            src={post?.authorAvatar}
+            color={theme.primaryColor}
+            radius="xl"
+            size="lg"
+          >
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text fw="bold">{post?.authorName ?? 'Anonym'}</Text>
@@ -91,7 +97,7 @@ const Post: FC = () => {
         {post?.tags && post.tags.length > 0 && (
           <Group justify="right">
             {post.tags.map((tag, idx) => (
-              <Text key={idx} fw="bold" span c="brand">
+              <Text key={idx} fw="bold" span c={theme.primaryColor}>
                 {`#${tag}`}
               </Text>
             ))}

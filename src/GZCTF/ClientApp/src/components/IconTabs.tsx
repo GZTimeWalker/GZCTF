@@ -27,7 +27,7 @@ interface IconTabsProps extends GroupProps {
 
 const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
   const activeTab = { ref: getStylesRef('activeTab') } as const
-  const _color = props.color ?? 'brand'
+  const _color = props.color ?? theme.primaryColor
 
   return {
     activeTab,

@@ -1,4 +1,4 @@
-import { Stack, Group, Button, Text } from '@mantine/core'
+import { Stack, Group, Button, Text, useMantineTheme } from '@mantine/core'
 import { mdiArrowLeft, mdiArrowRight } from '@mdi/js'
 import Icon from '@mdi/react'
 import { FC } from 'react'
@@ -17,6 +17,7 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const { challenges } = useEditChallenges(numId)
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   const getBeforeNext = (challenges: ChallengeInfoModel[], id: number) => {
     const index = challenges.findIndex((chal) => chal.id === id)
@@ -33,7 +34,9 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const color = (chal: ChallengeInfoModel | null) => {
-    const c = !chal ? 'brand' : challengeTagLabelMap.get(chal.tag as ChallengeTag)?.color ?? 'brand'
+    const c = !chal
+      ? theme.primaryColor
+      : challengeTagLabelMap.get(chal.tag as ChallengeTag)?.color ?? theme.primaryColor
 
     return c
   }

@@ -12,7 +12,8 @@ export interface CustomProgressProps extends BoxProps {
 export const useStyles = createStyles(
   (theme, { spikeLength = 250, color, percentage, thickness = 4 }: CustomProgressProps, u) => {
     const { colorScheme } = useMantineColorScheme()
-    const _color = percentage < 100 ? (colorScheme === 'dark' ? 'light' : color ?? 'brand') : 'gray'
+    const _color =
+      percentage < 100 ? (colorScheme === 'dark' ? 'light' : color ?? theme.primaryColor) : 'gray'
     const spikeColor = alpha(theme.colors[_color][5], 0.75)
     const spikeLengthStr = `${spikeLength}%`
     const negSpikeLengthStr = `-${spikeLength}%`

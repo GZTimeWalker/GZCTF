@@ -29,7 +29,7 @@ interface ScoreboardItemModalProps extends ModalProps {
 
 const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, challenges, bloodBonusMap, ...modalProps } = props
-  const { classes } = useTableStyles()
+  const { classes, theme } = useTableStyles()
 
   const { t } = useTranslation()
 
@@ -69,7 +69,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       {...modalProps}
       title={
         <Group justify="left" gap="md" wrap="nowrap">
-          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color="brand">
+          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color={theme.primaryColor}>
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0}>

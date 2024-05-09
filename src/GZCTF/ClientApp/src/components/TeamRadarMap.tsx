@@ -17,7 +17,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
       theme={colorScheme}
       option={{
         animation: false,
-        color: theme.colors.brand[5],
+        color: theme.colors[theme.primaryColor][5],
         backgroundColor: 'transparent',
         radar: {
           indicator,
@@ -33,7 +33,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
                 value,
                 name,
                 areaStyle: {
-                  color: alpha(theme.colors.brand[4], 0.6),
+                  color: alpha(theme.colors[theme.primaryColor][4], 0.6),
                 },
               },
             ],

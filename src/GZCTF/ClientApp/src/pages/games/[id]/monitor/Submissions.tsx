@@ -90,7 +90,7 @@ const Submissions: FC = () => {
   const { game } = useGame(numId)
 
   const iconMap = AnswerResultIconMap(0.8)
-  const { classes, cx } = useTableStyles()
+  const { classes, cx, theme } = useTableStyles()
   const { classes: tooltipClasses } = useTooltipStyles()
   const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
 
@@ -222,7 +222,7 @@ const Submissions: FC = () => {
     <WithGameMonitorTab>
       <Group justify="space-between" w="100%">
         <SegmentedControl
-          color="brand"
+          color={theme.primaryColor}
           value={type}
           styles={{
             root: {

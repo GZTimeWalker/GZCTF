@@ -49,7 +49,7 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
         </Group>
         <MarkdownRender source={post.summary} />
         <Group justify="right">
-          <Badge color="brand" variant="light">
+          <Badge color={theme.primaryColor} variant="light">
             {new Date(post.time).toLocaleString()}
           </Badge>
         </Group>

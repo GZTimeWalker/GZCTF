@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Badge,
   Loader,
+  MantineThemeOverride,
   Modal,
   Popover,
   Switch,
@@ -14,7 +15,7 @@ import {
 import { createStyles, keyframes } from '@mantine/emotion'
 import { useMediaQuery } from '@mantine/hooks'
 
-export const CustomTheme = createTheme({
+export const CustomTheme: MantineThemeOverride = createTheme({
   colors: {
     gray: [
       '#EBEBEB',
@@ -238,6 +239,15 @@ export const useIconStyles = createStyles((theme, _, u) => ({
     [u.light]: {
       fill: theme.colors.gray[6],
     },
+  },
+  front: {
+    fill: theme.colors[theme.primaryColor][4],
+  },
+  mid: {
+    fill: theme.colors[theme.primaryColor][6],
+  },
+  back: {
+    fill: theme.colors[theme.primaryColor][8],
   },
 }))
 

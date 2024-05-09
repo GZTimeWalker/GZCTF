@@ -48,7 +48,7 @@ const NoPaddingTable = createStyles(() => ({
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes, cx } = useTableStyles()
+  const { classes, cx, theme } = useTableStyles()
   const { classes: noPaddingClasses } = NoPaddingTable()
 
   const [, update] = useState(new Date())
@@ -173,7 +173,7 @@ const Logs: FC = () => {
       head={
         <>
           <SegmentedControl
-            color="brand"
+            color={theme.primaryColor}
             value={level}
             styles={{
               root: {

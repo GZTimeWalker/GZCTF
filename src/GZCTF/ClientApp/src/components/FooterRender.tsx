@@ -33,11 +33,11 @@ const useFooterStyles = createStyles((theme, _, u) => {
 
       '& strong': {
         [u.dark]: {
-          color: cs.brand[6],
+          color: cs[theme.primaryColor][6],
         },
 
         [u.light]: {
-          color: cs.brand[7],
+          color: cs[theme.primaryColor][7],
         },
       },
 
