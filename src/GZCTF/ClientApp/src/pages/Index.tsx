@@ -4,7 +4,6 @@ import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import IconHeader from '@Components/IconHeader'
 import MobilePostCard from '@Components/MobilePostCard'
 import PostCard from '@Components/PostCard'
 import RecentGame from '@Components/RecentGame'
@@ -101,9 +100,8 @@ const Home: FC = () => {
   usePageTitle()
 
   return (
-    <WithNavBar minWidth={0} withFooter>
+    <WithNavBar minWidth={0} withFooter withHeader stickyHeader>
       <Stack justify="flex-start">
-        <IconHeader />
         {isMobile && recentGames && recentGames.length > 0 && (
           <RecentGameCarousel games={recentGames} />
         )}

@@ -4,7 +4,6 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import IconHeader from '@Components/IconHeader'
 import PostCard from '@Components/PostCard'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
@@ -59,14 +58,11 @@ const Posts: FC = () => {
   }
 
   return (
-    <WithNavBar isLoading={!posts} minWidth={0}>
+    <WithNavBar isLoading={!posts} minWidth={0} withHeader stickyHeader>
       <Stack justify="space-between" mb="3rem">
-        <IconHeader sticky />
-        <Stack>
-          {posts
-            ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
-            .map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
-        </Stack>
+        {posts
+          ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
+          .map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
         {(posts?.length ?? 0) > ITEMS_PER_PAGE && (
           <Pagination
             my={20}

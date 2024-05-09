@@ -88,7 +88,7 @@ const Login: FC = () => {
         message: t('account.notification.login.success.message'),
         icon: <Icon path={mdiCheck} size={1} />,
         autoClose: true,
-        loading: false
+        loading: false,
       })
       setNeedRedirect(true)
       mutate()
@@ -100,7 +100,7 @@ const Login: FC = () => {
         message: err.response.data.title,
         icon: <Icon path={mdiClose} size={1} />,
         autoClose: true,
-        loading: false
+        loading: false,
       })
     } finally {
       setDisabled(false)

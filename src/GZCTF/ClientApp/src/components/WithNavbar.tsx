@@ -10,6 +10,7 @@ import React, { FC } from 'react'
 import AppFooter from '@Components/AppFooter'
 import AppHeader from '@Components/AppHeader'
 import AppNavbar from '@Components/AppNavbar'
+import IconHeader from '@Components/IconHeader'
 import Watermark from '@Components/Watermark'
 import WithWiderScreen from '@Components/WithWiderScreen'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -20,6 +21,8 @@ interface WithNavBarProps extends React.PropsWithChildren {
   minWidth?: number
   isLoading?: boolean
   withFooter?: boolean
+  withHeader?: boolean
+  stickyHeader?: boolean
 }
 
 const WithNavBar: FC<WithNavBarProps> = ({
@@ -28,6 +31,8 @@ const WithNavBar: FC<WithNavBarProps> = ({
   isLoading,
   minWidth,
   withFooter = false,
+  withHeader,
+  stickyHeader = false,
 }) => {
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
@@ -81,8 +86,9 @@ const WithNavBar: FC<WithNavBarProps> = ({
                 opacity={1}
                 c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
               />
+              {withHeader && <IconHeader px={isMobile ? '2%' : '10%'} sticky={stickyHeader} />}
               <Box
-                w={width ?? (isMobile ? '97%' : '80%')}
+                w={width ?? (isMobile ? '96%' : '80%')}
                 style={{
                   zIndex: 20,
                 }}

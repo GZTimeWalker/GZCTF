@@ -147,14 +147,6 @@ export const CustomTheme = createTheme({
         },
       },
     }),
-    // TODO: notifcation styles
-    Notification: {
-      defaultProps: {
-        radius: 'md',
-        withBorder: true,
-        withCloseButton: false,
-      },
-    },
   },
 })
 

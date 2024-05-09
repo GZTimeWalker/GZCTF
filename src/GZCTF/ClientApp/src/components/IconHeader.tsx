@@ -7,16 +7,27 @@ import { useConfig } from '@Utils/useConfig'
 
 interface StickyHeaderProps {
   sticky?: boolean
+  px?: string
 }
 
-const useStyles = createStyles((theme, { sticky }: StickyHeaderProps, u) => ({
+const useStyles = createStyles((theme, { sticky, px }: StickyHeaderProps, u) => ({
   group: {
     width: '100%',
     top: 16,
     paddingBottom: 8,
     position: sticky ? 'sticky' : 'relative',
     zIndex: 50,
+    padding: `0 ${px ?? 0} ${theme.spacing.sm} ${px ?? 0}`,
 
+    [u.dark]: {
+      background: theme.colors.gray[7],
+    },
+
+    [u.light]: {
+      background: theme.colors.light[2],
+    },
+
+    // make it wider to cover the card shadow on sticky
     // only show before on sticky
     ...(sticky && {
       '&::before': {
@@ -26,6 +37,14 @@ const useStyles = createStyles((theme, { sticky }: StickyHeaderProps, u) => ({
         right: 0,
         left: 0,
         paddingTop: 16,
+
+        [u.dark]: {
+          background: theme.colors.gray[7],
+        },
+
+        [u.light]: {
+          background: theme.colors.light[2],
+        },
       },
     }),
   },
