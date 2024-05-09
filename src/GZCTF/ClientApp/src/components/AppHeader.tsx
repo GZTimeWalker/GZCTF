@@ -75,7 +75,7 @@ const AppHeader: FC = () => {
 
             <Menu.Dropdown>
               {supportedLanguages.map((lang: SupportedLanguages) => (
-                <Menu.Item key={lang} fw={500} fz="md" onClick={() => setLanguage(lang)}>
+                <Menu.Item key={lang} fw={500} onClick={() => setLanguage(lang)}>
                   {LanguageMap[lang] ?? lang}
                 </Menu.Item>
               ))}
@@ -140,6 +140,7 @@ const AppHeader: FC = () => {
                     <Icon path={mdiWeatherNight} size={1} />
                   )
                 }
+                fw={500}
                 onClick={() => toggleColorScheme()}
               >
                 {t('common.tab.theme.switch_to', {

@@ -70,8 +70,9 @@ const useStyles = createStyles((theme, _, u) => {
       },
     },
 
-    tooltipBody: {
+    tooltip: {
       marginLeft: 20,
+      fontWeight: 500,
 
       [u.dark]: {
         backgroundColor: darken(theme.colors[theme.primaryColor][8], 0.45),
@@ -106,7 +107,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   const { t } = useTranslation()
 
   return (
-    <Tooltip label={t(props.label)} classNames={{ tooltip: classes.tooltipBody }} position="right">
+    <Tooltip label={t(props.label)} classNames={classes} position="right">
       <ActionIcon
         onClick={props.onClick}
         component={Link}
@@ -205,7 +206,7 @@ const AppNavbar: FC = () => {
 
             <Menu.Dropdown>
               {supportedLanguages.map((lang: SupportedLanguages) => (
-                <Menu.Item key={lang} fw={500} fz="md" onClick={() => setLanguage(lang)}>
+                <Menu.Item key={lang} fw={500} onClick={() => setLanguage(lang)}>
                   {LanguageMap[lang] ?? lang}
                 </Menu.Item>
               ))}
@@ -218,7 +219,7 @@ const AppNavbar: FC = () => {
               theme:
                 colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
             })}
-            classNames={{ tooltip: classes.tooltipBody }}
+            classNames={classes}
             position="right"
           >
             <ActionIcon onClick={() => toggleColorScheme()} className={classes.link}>
@@ -270,11 +271,7 @@ const AppNavbar: FC = () => {
               </Menu.Dropdown>
             </Menu>
           ) : (
-            <Tooltip
-              label={t('common.tab.account.login')}
-              classNames={{ tooltip: classes.tooltipBody }}
-              position="right"
-            >
+            <Tooltip label={t('common.tab.account.login')} classNames={classes} position="right">
               <ActionIcon
                 component={Link}
                 to={`/account/login?from=${location.pathname}`}
