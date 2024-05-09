@@ -2,15 +2,17 @@ import { Button, Center, Text, Stack, Title, useMantineTheme, Textarea, Group } 
 import { FC } from 'react'
 import { FallbackProps } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { clearLocalCache } from '@Utils/useConfig'
 
 const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: FallbackProps) => {
   const theme = useMantineTheme()
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
 
   return (
     <Center h="100vh" px="15%">
-      <Stack maw="60rem" miw="30rem" w="70%" gap="sm">
+      <Stack maw="60rem" miw={isMobile ? '92vw' : '30rem'} w="70%" gap="sm">
         <Title fw="bold" order={1} c={theme.primaryColor}>
           # {t('common.error.encountered')}
         </Title>

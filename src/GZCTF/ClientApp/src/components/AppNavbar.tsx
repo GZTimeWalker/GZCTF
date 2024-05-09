@@ -205,7 +205,7 @@ const AppNavbar: FC = () => {
 
             <Menu.Dropdown>
               {supportedLanguages.map((lang: SupportedLanguages) => (
-                <Menu.Item key={lang} onClick={() => setLanguage(lang)}>
+                <Menu.Item key={lang} fw={500} fz="md" onClick={() => setLanguage(lang)}>
                   {LanguageMap[lang] ?? lang}
                 </Menu.Item>
               ))}
