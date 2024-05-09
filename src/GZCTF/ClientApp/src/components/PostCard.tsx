@@ -50,8 +50,8 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             <Group justify="space-between">
               <Title order={3}>
                 {post.isPinned && (
-                  <Text span c={theme.primaryColor}>
-                    {`${t('post.content.pinned')} `}
+                  <Text fw="bold" fz="h3" span c={theme.primaryColor}>
+                    {t('post.content.pinned')}&nbsp;&nbsp;
                   </Text>
                 )}
                 {post.title}
