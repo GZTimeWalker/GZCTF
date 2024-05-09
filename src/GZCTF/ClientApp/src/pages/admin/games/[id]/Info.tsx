@@ -108,6 +108,7 @@ const GameInfoEdit: FC = () => {
           message: t('admin.notification.games.info.poster.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
+          loading: false,
         })
         mutate({ ...game, poster: res.data })
       })
@@ -119,6 +120,7 @@ const GameInfoEdit: FC = () => {
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
+          loading: false,
         })
       })
       .finally(() => {

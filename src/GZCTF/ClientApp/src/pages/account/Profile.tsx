@@ -90,6 +90,7 @@ const Profile: FC = () => {
           message: t('common.avatar.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
+          loading: false,
         })
         setDisabled(false)
         mutate()
@@ -103,6 +104,7 @@ const Profile: FC = () => {
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
+          loading: false,
         })
       })
       .finally(() => {

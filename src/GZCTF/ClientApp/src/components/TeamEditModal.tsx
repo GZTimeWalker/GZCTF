@@ -235,6 +235,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           message: t('common.avatar.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
+          loading: false,
         })
         setAvatarFile(null)
         const newTeamInfo = { ...teamInfo, avatar: data.data }
@@ -254,6 +255,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
+          loading: false,
         })
       })
       .finally(() => {

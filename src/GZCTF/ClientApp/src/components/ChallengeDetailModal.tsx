@@ -212,6 +212,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           : t('challenge.notification.flag.accepted.message'),
         icon: <Icon path={mdiCheck} size={1} />,
         autoClose: 8000,
+        loading: false,
       })
       if (isDynamic && challenge.context?.instanceEntry) onDestroyContainer()
       mutate()
@@ -224,6 +225,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         message: wrong_flag_hints[Math.floor(Math.random() * wrong_flag_hints.length)],
         icon: <Icon path={mdiClose} size={1} />,
         autoClose: 8000,
+        loading: false,
       })
     } else {
       updateNotification({

@@ -65,6 +65,8 @@ export const downloadBlob = (
         color: 'teal',
         message: t('common.download.success'),
         icon: <Icon path={mdiCheck} size={1} />,
+        loading: false,
+        autoClose: true,
       })
       openAxiosBlobResponse(res, filename)
     })
