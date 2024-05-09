@@ -41,7 +41,7 @@ interface InstanceEntryProps {
 dayjs.extend(duration)
 
 interface CountdownProps {
-  time: string
+  time?: string | null
   onTimeout?: () => void
   extendEnabled: boolean
   enableExtend: () => void
@@ -51,7 +51,7 @@ const Countdown: FC<CountdownProps> = (props) => {
   const { time, onTimeout, extendEnabled, enableExtend } = props
   const { config } = useConfig()
   const [now, setNow] = useState(dayjs())
-  const end = dayjs(time)
+  const end = time ? dayjs(time) : now.add(config.defaultLifetime ?? 120, 'minutes')
   const countdown = dayjs.duration(end.diff(now))
 
   useEffect(() => {
@@ -236,7 +236,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             <Text size="sm" fw={600}>
               {t('challenge.content.instance.actions.count_down')}
               <Countdown
-                time={context.closeTime ?? '0'}
+                time={context.closeTime}
                 extendEnabled={canExtend}
                 enableExtend={enableExtend}
                 onTimeout={onDestroy}

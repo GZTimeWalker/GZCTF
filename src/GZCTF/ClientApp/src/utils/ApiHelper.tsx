@@ -94,7 +94,8 @@ export const showErrorNotification = (err: any, t: (key: string) => string) => {
   if (err?.response?.status === 429) {
     showNotification({
       color: 'red',
-      message: t('common.error.request_too_frequent'),
+      title: t('common.error.try_later'),
+      message: tryGetErrorMsg(err, t),
       icon: <Icon path={mdiClose} size={1} />,
     })
     return
