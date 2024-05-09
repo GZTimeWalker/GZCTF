@@ -34,7 +34,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
       <Stack gap="xs">
         <Box onClick={() => navigate(`/posts/${post.id}`)}>
           <Title order={3} pb={4}>
-            <Text span c={theme.primaryColor}>
+            <Text fw="bold" fz="h3" span c={theme.primaryColor}>
               {post.isPinned ? `${t('post.content.pinned')} ` : '>>> '}
             </Text>
             {post.title}
