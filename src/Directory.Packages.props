@@ -13,7 +13,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
-    <PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.2" />
+    <PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.3" />
     <PackageVersion Include="NPOI" Version="2.7.0" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.0.7" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.0.7" />
