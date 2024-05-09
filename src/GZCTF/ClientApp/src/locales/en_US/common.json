@@ -8,6 +8,7 @@
   "button": {
     "copy": "Copy to Clipboard",
     "select_file": "Select File",
+    "try_again": "Try Again",
     "uploading": "Uploading"
   },
   "content": {
@@ -30,6 +31,7 @@
       "recent_games": "Recent Games"
     },
     "no_data": "No data",
+    "report_error": "Please report this error to the administrator if you think this is a bug",
     "wider": {
       "text": "Please use a broader device to browse this page",
       "title": "Not wide enough"

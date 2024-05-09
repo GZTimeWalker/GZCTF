@@ -4,10 +4,12 @@ import { emotionTransform, MantineEmotionProvider } from '@mantine/emotion'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { FC, Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { useRoutes } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import routes from '~react-pages'
+import ErrorFallback from '@Components/ErrorFallback'
 import { useLanguage } from '@Utils/I18n'
 import { CustomTheme } from '@Utils/ThemeOverride'
 import { useBanner, localCacheProvider } from '@Utils/useConfig'
@@ -32,31 +34,32 @@ export const App: FC = () => {
       stylesTransform={emotionTransform}
     >
       <MantineEmotionProvider>
-        <Notifications zIndex={5000} />
-
-        <DatesProvider settings={{ locale }}>
-          <ModalsProvider
-            labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
-          >
-            <SWRConfig
-              value={{
-                refreshInterval: 10000,
-                provider: localCacheProvider,
-                fetcher,
-              }}
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Notifications zIndex={5000} />
+          <DatesProvider settings={{ locale }}>
+            <ModalsProvider
+              labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
             >
-              <Suspense
-                fallback={
-                  <Center h="100vh" w="100vw">
-                    <Loader />
-                  </Center>
-                }
+              <SWRConfig
+                value={{
+                  refreshInterval: 10000,
+                  provider: localCacheProvider,
+                  fetcher,
+                }}
               >
-                {useRoutes(routes)}
-              </Suspense>
-            </SWRConfig>
-          </ModalsProvider>
-        </DatesProvider>
+                <Suspense
+                  fallback={
+                    <Center h="100vh" w="100vw">
+                      <Loader />
+                    </Center>
+                  }
+                >
+                  {useRoutes(routes)}
+                </Suspense>
+              </SWRConfig>
+            </ModalsProvider>
+          </DatesProvider>
+        </ErrorBoundary>
       </MantineEmotionProvider>
     </MantineProvider>
   )

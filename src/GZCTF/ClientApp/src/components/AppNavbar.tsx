@@ -122,7 +122,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 const AppNavbar: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { classes } = useStyles()
+  const { classes, theme } = useStyles()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const logout = useLogOut()
@@ -183,7 +183,7 @@ const AppNavbar: FC = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: '5pt',
+          gap: theme.spacing.sm,
         }}
       >
         {links}

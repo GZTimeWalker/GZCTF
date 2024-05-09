@@ -8,6 +8,7 @@
   "button": {
     "copy": "复制到剪贴板",
     "select_file": "选择文件",
+    "try_again": "再试一次",
     "uploading": "上传中"
   },
   "content": {
@@ -30,6 +31,7 @@
       "recent_games": "近期比赛"
     },
     "no_data": "没有数据",
+    "report_error": "如果你认为这是一个异常错误，请联系管理员",
     "wider": {
       "text": "请使用更宽的设备浏览本页面",
       "title": "页面宽度不足"
