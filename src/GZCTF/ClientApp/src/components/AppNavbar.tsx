@@ -32,7 +32,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import CustomColorModal from '@Components/CustomColorModal'
+import { AppControlProps } from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Utils/useConfig'
@@ -124,7 +124,7 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
   )
 }
 
-const AppNavbar: FC = () => {
+const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const { classes, theme } = useStyles()
@@ -134,7 +134,6 @@ const AppNavbar: FC = () => {
   const { user, error } = useUser()
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()
-  const [colorModalOpened, setColorModalOpened] = useState(false)
 
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
@@ -267,10 +266,7 @@ const AppNavbar: FC = () => {
               <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
                 {t('common.tab.account.clean_cache')}
               </Menu.Item>
-              <Menu.Item
-                onClick={() => setColorModalOpened(true)}
-                leftSection={<Icon path={mdiPalette} size={1} />}
-              >
+              <Menu.Item onClick={openColorModal} leftSection={<Icon path={mdiPalette} size={1} />}>
                 {t('common.content.color.title')}
               </Menu.Item>
               <MenuDivider />
@@ -293,7 +289,6 @@ const AppNavbar: FC = () => {
               )}
             </Menu.Dropdown>
           </Menu>
-          <CustomColorModal opened={colorModalOpened} onClose={() => setColorModalOpened(false)} />
         </Stack>
       </AppShell.Section>
     </AppShell.Navbar>

@@ -6,10 +6,11 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import AppFooter from '@Components/AppFooter'
 import AppHeader from '@Components/AppHeader'
 import AppNavbar from '@Components/AppNavbar'
+import CustomColorModal from '@Components/CustomColorModal'
 import IconHeader from '@Components/IconHeader'
 import Watermark from '@Components/Watermark'
 import WithWiderScreen from '@Components/WithWiderScreen'
@@ -25,6 +26,10 @@ interface WithNavBarProps extends React.PropsWithChildren {
   stickyHeader?: boolean
 }
 
+export interface AppControlProps {
+  openColorModal: () => void
+}
+
 const WithNavBar: FC<WithNavBarProps> = ({
   children,
   width,
@@ -38,6 +43,9 @@ const WithNavBar: FC<WithNavBarProps> = ({
   const { colorScheme } = useMantineColorScheme()
   const { user } = useUser()
   const isMobile = useIsMobile()
+  const [colorModalOpened, setColorModalOpened] = useState(false)
+
+  const openColorModal = () => setColorModalOpened(true)
 
   return (
     <WithWiderScreen minWidth={minWidth}>
@@ -65,8 +73,8 @@ const WithNavBar: FC<WithNavBarProps> = ({
             },
           }}
         >
-          <AppHeader />
-          <AppNavbar />
+          <AppHeader openColorModal={openColorModal} />
+          <AppNavbar openColorModal={openColorModal} />
           <AppShell.Main w="100%">
             <Stack
               w="100%"
@@ -95,6 +103,10 @@ const WithNavBar: FC<WithNavBarProps> = ({
               >
                 {children}
               </Box>
+              <CustomColorModal
+                opened={colorModalOpened}
+                onClose={() => setColorModalOpened(false)}
+              />
             </Stack>
             {withFooter && <AppFooter />}
           </AppShell.Main>

@@ -14,8 +14,8 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import CustomColorModal from '@Components/CustomColorModal'
 import LogoHeader from '@Components/LogoHeader'
+import { AppControlProps } from '@Components/WithNavbar'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { clearLocalCache } from '@Utils/useConfig'
@@ -47,14 +47,13 @@ const useHeaderStyles = createStyles((theme, _, u) => ({
   },
 }))
 
-const AppHeader: FC = () => {
+const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
   const [opened, setOpened] = useState(false)
   const { classes: headerClasses } = useHeaderStyles()
 
   const location = useLocation()
   const navigate = useNavigate()
 
-  const [colorModalOpened, setColorModalOpened] = useState(false)
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { user, error } = useUser()
 
@@ -150,17 +149,13 @@ const AppHeader: FC = () => {
               <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
                 {t('common.tab.account.clean_cache')}
               </Menu.Item>
-              <Menu.Item
-                onClick={() => setColorModalOpened(true)}
-                leftSection={<Icon path={mdiPalette} size={1} />}
-              >
+              <Menu.Item onClick={openColorModal} leftSection={<Icon path={mdiPalette} size={1} />}>
                 {t('common.content.color.title')}
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
       </Group>
-      <CustomColorModal opened={colorModalOpened} onClose={() => setColorModalOpened(false)} />
     </AppShell.Header>
   )
 }
