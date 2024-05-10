@@ -64,7 +64,7 @@ const CustomColorModal: FC<ModalProps> = (props) => {
             setProvider(e as ColorProvider)
           }}
         >
-          <Group grow mt="xs">
+          <Group justify="space-around" mt="xs">
             {Object.keys(ColorProvider).map((p) => (
               <Radio
                 key={p}

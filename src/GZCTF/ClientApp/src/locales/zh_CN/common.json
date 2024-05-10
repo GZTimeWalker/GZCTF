@@ -34,7 +34,7 @@
         "default": "默认",
         "description": "选择想要采取何种颜色主题",
         "label": "颜色主题来源",
-        "managed": "平台管理"
+        "managed": "管理员提供"
       },
       "title": "修改平台颜色"
     },

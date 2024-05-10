@@ -21,22 +21,22 @@
     },
     "color": {
       "custom": {
-        "description": "カスタムカラーを選択",
+        "description": "カスタムカラーを指定する",
         "label": "カスタムカラー",
         "placeholder": "デフォルトカラーを使用"
       },
       "palette": {
-        "description": "カスタムカラーを選択",
+        "description": "カスタムカラーに基づいて生成されたカラーパレット",
         "label": "カスタムカラーパレット"
       },
       "provider": {
-        "custom": "カスタム",
-        "default": "デフォルト",
-        "description": "使用するカラーテーマを選択",
-        "label": "カラーテーマ",
-        "managed": "マネージド"
+        "custom": "個人用設定",
+        "default": "標準設定",
+        "description": "使用するカラーテーマを指定する",
+        "label": "カラーテーマ設定",
+        "managed": "管理者設定"
       },
-      "title": "テーマの色"
+      "title": "カラーテーマ"
     },
     "drop_zone": {
       "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください",

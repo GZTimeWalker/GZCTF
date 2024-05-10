@@ -291,11 +291,11 @@
       },
       "platform": {
         "color": {
-          "description": "プラットフォームのカスタムカラー",
+          "description": "プラットフォームのカラーをカスタマイズする",
           "label": "プラットフォームカラー"
         },
         "color_palette": {
-          "description": "プラットフォームのカスタムカラーに基づいて生成されたカラーパレット",
+          "description": "カスタムカラーに基づいて生成されたカラーパレット",
           "label": "カラーパレット"
         },
         "footer": {
