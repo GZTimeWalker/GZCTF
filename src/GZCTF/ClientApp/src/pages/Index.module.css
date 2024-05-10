@@ -1,0 +1,34 @@
+.posts {
+  width: 75%;
+  min-width: calc(100% - 320px);
+
+  @mixin smaller-than 900px {
+    width: 100%;
+  }
+}
+
+.wrapper {
+  box-sizing: border-box;
+  padding-left: var(--mantine-spacing-md);
+  position: sticky;
+  top: calc(var(--mantine-spacing-xs) + 90px);
+  right: 0;
+  padding-top: 10px;
+  flex: 0 0;
+
+  @mixin smaller-than 900px {
+    display: none;
+  }
+}
+
+.inner {
+  padding-top: 0;
+  padding-bottom: var(--mantine-spacing-xl);
+  padding-left: var(--mantine-spacing-md);
+  width: 18vw;
+  max-width: 320px;
+  min-width: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

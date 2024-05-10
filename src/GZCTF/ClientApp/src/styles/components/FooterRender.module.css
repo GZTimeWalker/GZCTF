@@ -21,7 +21,7 @@
   }
 
   & strong {
-    color: light-dark(var(--mantine-color-primary-7), var(--mantine-color-primary-6));
+    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
   }
 
   & a {

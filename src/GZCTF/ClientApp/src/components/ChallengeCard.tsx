@@ -31,51 +31,6 @@ interface ChallengeCardProps {
   teamId?: number
 }
 
-// export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps, u) => ({
-//   spike: {
-//     position: 'absolute',
-//     left: '50%',
-//     top: '50%',
-//     transform: 'translate(-50%, -50%)',
-//     width: '70%',
-//     height: '200%',
-//     zIndex: 91,
-//     animation: `${keyframes`0% { opacity: .3; } 100% { opacity: 1; }`} 2s linear 0s infinite alternate`,
-
-//     [u.dark]: {
-//       filter: 'brightness(.8) saturate(.5)',
-//     },
-
-//     [u.light]: {
-//       filter: 'brightness(1.2) saturate(.8)',
-//     },
-//   },
-//   blood1: {
-//     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
-//   },
-//   blood2: {
-//     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.SecondBlood)}, #fff0)`,
-//   },
-//   blood3: {
-//     background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.ThirdBlood)}, #fff0)`,
-//   },
-//   card: {
-//     transition: 'filter .1s',
-
-//     '&:hover': {
-//       cursor: 'pointer',
-
-//       [u.dark]: {
-//         filter: 'brightness(1.2)',
-//       },
-
-//       [u.light]: {
-//         filter: 'brightness(.97)',
-//       },
-//     },
-//   },
-// }))
-
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { challenge, solved, onClick, iconMap, teamId, colorMap } = props
   const challengeTagLabelMap = useChallengeTagLabelMap()

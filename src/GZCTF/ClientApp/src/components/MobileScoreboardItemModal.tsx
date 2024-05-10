@@ -99,27 +99,27 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
           </Center>
           <Group grow ta="center">
             <Stack gap={1}>
-              <Text fw="bold" size="sm" className={tableClasses.mono}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.rank}
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
             {item?.organization && (
               <Stack gap={1}>
-                <Text fw="bold" size="sm" className={tableClasses.mono}>
+                <Text fw="bold" size="sm" ff="monospace">
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
               </Stack>
             )}
             <Stack gap={1}>
-              <Text fw="bold" size="sm" className={tableClasses.mono}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.score}
               </Text>
               <Text size="xs">{t('game.label.score_table.score')}</Text>
             </Stack>
             <Stack gap={1}>
-              <Text fw="bold" size="sm" className={tableClasses.mono}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.solvedCount}
               </Text>
               <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
@@ -129,12 +129,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
-            <Table
-              className={tableClasses.table}
-              style={{
-                fontSize: '0.85rem',
-              }}
-            >
+            <Table className={`${tableClasses.table} ${tableClasses.nopadding}`} fz="sm">
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
@@ -179,8 +174,8 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                               }}
                             />
                           </Table.Td>
-                          <Table.Td className={tableClasses.mono}>{chal.score}</Table.Td>
-                          <Table.Td className={tableClasses.mono}>
+                          <Table.Td ff="monospace">{chal.score}</Table.Td>
+                          <Table.Td ff="monospace">
                             {dayjs(chal.time).format('MM/DD HH:mm')}
                           </Table.Td>
                         </Table.Tr>

@@ -53,6 +53,7 @@ export default defineConfig(({ mode }) => {
           {
             dir: './src/pages',
             baseRoute: '',
+            filePattern: '**/*.tsx',
           },
         ],
       }),

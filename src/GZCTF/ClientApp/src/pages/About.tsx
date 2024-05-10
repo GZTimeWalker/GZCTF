@@ -5,8 +5,8 @@ import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
-import classes from '@Styles/About.module.css'
 import iconClasses from '@Styles/Icon.module.css'
+import classes from './About.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()

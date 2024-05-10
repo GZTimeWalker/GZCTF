@@ -176,7 +176,7 @@ const Submissions: FC = () => {
         }
       >
         <Table.Td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</Table.Td>
-        <Table.Td className={tableClasses.mono}>
+        <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
@@ -283,7 +283,7 @@ const Submissions: FC = () => {
                 <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.team')}</Table.Th>
                 <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.user')}</Table.Th>
                 <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
-                <Table.Th className={tableClasses.mono}>{t('common.label.flag')}</Table.Th>
+                <Table.Th ff="monospace">{t('common.label.flag')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>

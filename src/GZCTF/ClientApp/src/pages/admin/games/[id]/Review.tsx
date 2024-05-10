@@ -16,7 +16,6 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -40,6 +39,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 import classes from '@Styles/Accordion.module.css'
+import reviewClasses from './Review.module.css'
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
@@ -52,37 +52,11 @@ const iconProps = {
   color: 'gray',
 }
 
-const useGridStyles = createStyles((theme) => ({
-  root: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    gap: 0,
-  },
-
-  col: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    gap: theme.spacing.xs,
-    boxSizing: 'border-box',
-    padding: `0 ${theme.spacing.xs}`,
-    height: '1.5rem',
-  },
-
-  input: {
-    userSelect: 'none',
-    lineHeight: 1,
-    fontSize: '1rem',
-  },
-}))
-
 const MemberItem: FC<MemberItemProps> = (props) => {
   const { user, isCaptain, isRegistered } = props
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
-  const { classes } = useGridStyles()
 
   return (
     <Group wrap="nowrap" gap="xl" justify="space-between">
@@ -90,34 +64,34 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         <Avatar alt="avatar" src={user.avatar}>
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
-        <Grid className={classes.root}>
-          <Grid.Col span={3} className={classes.col}>
+        <Grid className={reviewClasses.root}>
+          <Grid.Col span={3} className={reviewClasses.col}>
             <Icon path={mdiIdentifier} {...iconProps} />
             <Text fw="bold">{user.userName}</Text>
           </Grid.Col>
-          <Grid.Col span={3} className={classes.col}>
+          <Grid.Col span={3} className={reviewClasses.col}>
             <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
             <Input
               variant="unstyled"
               value={user.stdNumber || t('admin.placeholder.empty')}
               readOnly
-              classNames={{ input: classes.input }}
+              classNames={{ input: reviewClasses.input }}
             />
           </Grid.Col>
-          <Grid.Col span={6} className={classes.col}>
+          <Grid.Col span={6} className={reviewClasses.col}>
             <Icon path={mdiEmailOutline} {...iconProps} />
             <Text>{user.email || t('admin.placeholder.empty')}</Text>
           </Grid.Col>
-          <Grid.Col span={6} className={classes.col}>
+          <Grid.Col span={6} className={reviewClasses.col}>
             <Icon path={mdiAccountOutline} {...iconProps} />
             <Input
               variant="unstyled"
               value={user.realName || t('admin.placeholder.empty')}
               readOnly
-              classNames={{ input: classes.input }}
+              classNames={{ input: reviewClasses.input }}
             />
           </Grid.Col>
-          <Grid.Col span={6} className={classes.col}>
+          <Grid.Col span={6} className={reviewClasses.col}>
             <Icon path={mdiPhoneOutline} {...iconProps} />
             <Text>{user.phone || t('admin.placeholder.empty')}</Text>
           </Grid.Col>

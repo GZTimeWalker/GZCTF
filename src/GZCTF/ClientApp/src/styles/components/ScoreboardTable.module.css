@@ -1,0 +1,59 @@
+.table {
+  table-layout: fixed;
+  width: auto;
+  min-width: 100%;
+
+  & thead tr th,
+  & tbody tr td {
+    text-align: center;
+    padding: 8px;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+}
+
+.thead {
+  z-index: 5;
+}
+
+.left {
+  position: sticky;
+  background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+}
+
+.header {
+  font-weight: bold;
+}
+
+.mono {
+  font-weight: bold;
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 12px;
+  float: left;
+  z-index: 20;
+}
+
+.text {
+  font-size: 0.9em;
+  font-family: var(--mantine-font-family-monospace);
+  font-weight: 600;
+}
+
+.wapper {
+  width: 100%;
+}
+
+.input {
+  user-select: none;
+  font-weight: 500;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

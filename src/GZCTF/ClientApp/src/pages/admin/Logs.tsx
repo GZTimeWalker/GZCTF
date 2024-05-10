@@ -8,8 +8,8 @@ import {
   SegmentedControl,
   Table,
   Text,
+  useMantineTheme,
 } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import { showNotification } from '@mantine/notifications'
 import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -31,24 +31,10 @@ enum LogLevel {
   All = 'All',
 }
 
-const NoPaddingTable = createStyles(() => ({
-  table: {
-    padding: 0,
-    borderCollapse: 'collapse',
-    borderSpacing: 0,
-    width: '100%',
-
-    '& tbody tr td': {
-      whiteSpace: 'nowrap',
-      padding: '0 1rem 0 0',
-    },
-  },
-}))
-
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes: noPaddingClasses, cx, theme } = NoPaddingTable()
+  const theme = useMantineTheme()
 
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
@@ -134,21 +120,21 @@ const Logs: FC = () => {
           activePage === 1 &&
           newLogs.current.length > 0 &&
           newLogs.current[0].level === level
-            ? cx(tableClasses.fade)
+            ? tableClasses.fade
             : undefined
         }
       >
-        <Table.Td className={cx(tableClasses.mono)}>
+        <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
         </Table.Td>
-        <Table.Td className={cx(tableClasses.mono)}>
+        <Table.Td ff="monospace">
           <Text ff="monospace" size="sm" fw={300}>
             {item.ip || 'localhost'}
           </Text>
         </Table.Td>
-        <Table.Td className={cx(tableClasses.mono)}>
+        <Table.Td ff="monospace">
           <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
             {item.name}
           </Text>
@@ -156,7 +142,7 @@ const Logs: FC = () => {
         <Table.Td>
           <Input variant="unstyled" value={item.msg || ''} readOnly size="sm" />
         </Table.Td>
-        <Table.Td className={cx(tableClasses.mono)}>
+        <Table.Td ff="monospace">
           {item.status && (
             <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
               {item.status}
@@ -214,7 +200,7 @@ const Logs: FC = () => {
           scrollbarSize={4}
           h="calc(100vh - 190px)"
         >
-          <Table className={cx(tableClasses.table, noPaddingClasses.table)}>
+          <Table className={`${tableClasses.table} ${tableClasses.nopadding}`}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>

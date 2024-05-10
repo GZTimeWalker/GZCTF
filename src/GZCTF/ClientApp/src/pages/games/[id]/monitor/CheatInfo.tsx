@@ -316,7 +316,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
     )
     .map((item, i) => (
       <Table.Tr key={`${item.submission?.time}@${i}`}>
-        <Table.Td className={tableClasses.mono}>
+        <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
             {dayjs(item.submission?.time).format('MM/DD HH:mm:ss')}
           </Badge>

@@ -176,12 +176,12 @@
     border: none;
   }
 
+  & a,
   & strong {
-    color: var(--mantine-color-dimmed);
+    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
   }
 
   & a {
-    color: var(--mantine-color-dimmed);
     text-decoration: underline;
     transition: all 0.2s ease-in-out;
   }

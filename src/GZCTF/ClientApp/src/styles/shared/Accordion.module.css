@@ -1,19 +1,19 @@
 .root {
   border-radius: var(--mantine-radius-sm);
 
-  background-color: light-dark(var(--mantine-colors-gray-0), var(--mantine-colors-dark-6));
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
 }
 
 .item {
   border: 1px solid rgba(0, 0, 0, 0.2);
   position: relative;
 
-  background-color: light-dark(var(--mantine-colors-dark-6), var(--mantine-colors-gray-0));
+  background-color: light-dark(var(--mantine-color-dark-6), var(--mantine-color-gray-0));
 
   &[data-active] {
     box-shadow: var(--mantine-shadows-md);
 
-    background-color: light-dark(var(--mantine-colors-white), var(--mantine-colors-dark-7));
+    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
   }
 }
 
