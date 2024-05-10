@@ -17,6 +17,7 @@ import {
 } from '@mantine/core'
 import { createStyles, keyframes } from '@mantine/emotion'
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks'
+import { useEffect, useState } from 'react'
 import { useConfig } from '@Utils/useConfig'
 
 const CustomTheme: MantineThemeOverride = {
@@ -197,28 +198,31 @@ export const useCustomeTheme = () => {
     return color && /^#[0-9A-F]{6}$/i.test(color) ? color : undefined
   }
 
-  const resolvedColor = testColor(color) || testColor(config.customTheme)
+  const [theme, setTheme] = useState<MantineThemeOverride>(createTheme(CustomTheme))
 
-  // if color is 'brand' then use the default theme
-  const theme =
-    resolvedColor && color !== 'brand'
-      ? createTheme({
-          ...CustomTheme,
-          colors: {
-            ...CustomTheme.colors,
-            custom: generateColors(resolvedColor),
-          },
-          components: {
-            ...CustomTheme.components,
-            Avatar: Avatar.extend({
-              defaultProps: {
-                color: 'custom',
-              },
-            }),
-          },
-          primaryColor: 'custom',
-        })
-      : createTheme(CustomTheme)
+  useEffect(() => {
+    const resolvedColor = testColor(color) || testColor(config.customTheme)
+    if (resolvedColor && color !== 'brand') {
+      setTheme({
+        ...CustomTheme,
+        colors: {
+          ...CustomTheme.colors,
+          custom: generateColors(resolvedColor),
+        },
+        components: {
+          ...CustomTheme.components,
+          Avatar: Avatar.extend({
+            defaultProps: {
+              color: 'custom',
+            },
+          }),
+        },
+        primaryColor: 'custom',
+      })
+    } else {
+      setTheme(CustomTheme)
+    }
+  }, [color, config.customTheme])
 
   return { theme }
 }
