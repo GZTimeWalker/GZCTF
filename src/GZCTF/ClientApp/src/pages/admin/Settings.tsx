@@ -137,7 +137,7 @@ const Configs: FC = () => {
               <ColorInput
                 label={t('admin.content.settings.platform.color.label')}
                 description={t('admin.content.settings.platform.color.description')}
-                placeholder={t('admin.placeholder.settings.color')}
+                placeholder={t('common.content.color.custom.placeholder')}
                 value={color ?? ''}
                 onChange={setColor}
               />

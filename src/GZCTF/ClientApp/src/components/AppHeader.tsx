@@ -5,6 +5,7 @@ import {
   mdiAccountGroupOutline,
   mdiCached,
   mdiLogout,
+  mdiPalette,
   mdiTranslate,
   mdiWeatherNight,
   mdiWeatherSunny,
@@ -13,6 +14,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import CustomColorModal from '@Components/CustomColorModal'
 import LogoHeader from '@Components/LogoHeader'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -52,6 +54,7 @@ const AppHeader: FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  const [colorModalOpened, setColorModalOpened] = useState(false)
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
   const { user, error } = useUser()
 
@@ -109,12 +112,6 @@ const AppHeader: FC = () => {
                     {t('common.tab.account.profile')}
                   </Menu.Item>
                   <Menu.Item
-                    onClick={clearLocalCache}
-                    leftSection={<Icon path={mdiCached} size={1} />}
-                  >
-                    {t('common.tab.account.clean_cache')}
-                  </Menu.Item>
-                  <Menu.Item
                     color="red"
                     onClick={logout}
                     leftSection={<Icon path={mdiLogout} size={1} />}
@@ -150,10 +147,20 @@ const AppHeader: FC = () => {
                       : t('common.tab.theme.dark'),
                 })}
               </Menu.Item>
+              <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
+                {t('common.tab.account.clean_cache')}
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setColorModalOpened(true)}
+                leftSection={<Icon path={mdiPalette} size={1} />}
+              >
+                {t('common.content.color.title')}
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
       </Group>
+      <CustomColorModal opened={colorModalOpened} onClose={() => setColorModalOpened(false)} />
     </AppShell.Header>
   )
 }

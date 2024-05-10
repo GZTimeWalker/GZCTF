@@ -453,7 +453,6 @@
       }
     },
     "settings": {
-      "color": "Use default color",
       "email_domain_list": "No restrictions",
       "footer": "`Test` <mbr/> Something..."
     },

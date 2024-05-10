@@ -19,6 +19,25 @@
     "about": {
       "slogan": "Hack for fun not for profit"
     },
+    "color": {
+      "custom": {
+        "description": "カスタムカラーを選択",
+        "label": "カスタムカラー",
+        "placeholder": "デフォルトカラーを使用"
+      },
+      "palette": {
+        "description": "カスタムカラーを選択",
+        "label": "カスタムカラーパレット"
+      },
+      "provider": {
+        "custom": "カスタム",
+        "default": "デフォルト",
+        "description": "使用するカラーテーマを選択",
+        "label": "カラーテーマ",
+        "managed": "マネージド"
+      },
+      "title": "テーマの色"
+    },
     "drop_zone": {
       "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください",
       "limit": "3MB以下の画像を選択してください",

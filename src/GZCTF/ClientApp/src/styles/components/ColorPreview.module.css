@@ -2,13 +2,13 @@
   flex: 1;
 
   &:first-of-type > .swatch {
-    border-top-left-radius: var(--mantine-radius-md) !important;
-    border-bottom-left-radius: var(--mantine-radius-md) !important;
+    border-top-left-radius: var(--mantine-radius-sm) !important;
+    border-bottom-left-radius: var(--mantine-radius-sm) !important;
   }
 
   &:last-of-type > .swatch {
-    border-top-right-radius: var(--mantine-radius-md) !important;
-    border-bottom-right-radius: var(--mantine-radius-md) !important;
+    border-top-right-radius: var(--mantine-radius-sm) !important;
+    border-bottom-right-radius: var(--mantine-radius-sm) !important;
   }
 }
 

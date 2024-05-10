@@ -19,6 +19,25 @@
     "about": {
       "slogan": "Hack for fun not for profit"
     },
+    "color": {
+      "custom": {
+        "description": "选择自定义颜色",
+        "label": "自定义颜色",
+        "placeholder": "使用默认颜色"
+      },
+      "palette": {
+        "description": "自定义颜色生成的色盘",
+        "label": "自定义色盘"
+      },
+      "provider": {
+        "custom": "自定义",
+        "default": "默认",
+        "description": "选择想要采取何种颜色主题",
+        "label": "颜色主题来源",
+        "managed": "平台管理"
+      },
+      "title": "修改平台颜色"
+    },
     "drop_zone": {
       "content": "拖放图片或点击此处以选择{{type}}",
       "limit": "请选择小于 3MB 的图片",

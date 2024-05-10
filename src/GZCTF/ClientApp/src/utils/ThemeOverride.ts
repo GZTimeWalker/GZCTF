@@ -5,6 +5,7 @@ import {
   Badge,
   Loader,
   MantineThemeOverride,
+  Menu,
   Modal,
   Popover,
   Switch,
@@ -15,7 +16,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { createStyles, keyframes } from '@mantine/emotion'
-import { useMediaQuery } from '@mantine/hooks'
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks'
 import { useConfig } from '@Utils/useConfig'
 
 const CustomTheme: MantineThemeOverride = {
@@ -156,19 +157,56 @@ const CustomTheme: MantineThemeOverride = {
         color: 'brand',
       },
     }),
+    Menu: Menu.extend({
+      styles: {
+        item: {
+          fontWeight: 500,
+        },
+      },
+    }),
   },
+}
+
+export const useCustomColor = () => {
+  const [color, setColorInner] = useLocalStorage({
+    key: 'custom-theme',
+    defaultValue: '',
+    getInitialValueInEffect: false,
+  })
+
+  const setCustomColor = (newColor: string) => {
+    if (newColor === color) return
+
+    if (/^#[0-9A-F]{6}$/i.test(newColor) || newColor === 'brand') {
+      setColorInner(newColor)
+    } else {
+      setColorInner('')
+    }
+  }
+
+  // color: null for use platform color, 'brand' for default theme
+  //        or hex color string for custom color
+  return { color, setCustomColor }
 }
 
 export const useCustomeTheme = () => {
   const { config } = useConfig()
+  const { color } = useCustomColor()
 
+  const testColor = (color: string | null | undefined) => {
+    return color && /^#[0-9A-F]{6}$/i.test(color) ? color : undefined
+  }
+
+  const resolvedColor = testColor(color) || testColor(config.customTheme)
+
+  // if color is 'brand' then use the default theme
   const theme =
-    config.customTheme && /^#[0-9A-F]{6}$/i.test(config.customTheme)
+    resolvedColor && color !== 'brand'
       ? createTheme({
           ...CustomTheme,
           colors: {
             ...CustomTheme.colors,
-            custom: generateColors(config.customTheme),
+            custom: generateColors(resolvedColor),
           },
           components: {
             ...CustomTheme.components,

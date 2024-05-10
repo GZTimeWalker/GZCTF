@@ -4,6 +4,7 @@ import {
   Avatar,
   Center,
   Menu,
+  MenuDivider,
   Stack,
   Tooltip,
   alpha,
@@ -18,8 +19,10 @@ import {
   mdiFlagOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
+  mdiLogin,
   mdiLogout,
   mdiNoteTextOutline,
+  mdiPalette,
   mdiTranslate,
   mdiWeatherNight,
   mdiWeatherSunny,
@@ -29,6 +32,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import CustomColorModal from '@Components/CustomColorModal'
 import MainIcon from '@Components/icon/MainIcon'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Utils/useConfig'
@@ -130,6 +134,7 @@ const AppNavbar: FC = () => {
   const { user, error } = useUser()
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()
+  const [colorModalOpened, setColorModalOpened] = useState(false)
 
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
@@ -162,6 +167,8 @@ const AppNavbar: FC = () => {
   const links = items
     .filter((m) => !m.admin || user?.role === Role.Admin)
     .map((link) => <NavbarLink {...link} key={link.label} isActive={link.label === active} />)
+
+  const loggedIn = user && !error
 
   return (
     <AppShell.Navbar className={classes.navbar}>
@@ -232,35 +239,42 @@ const AppNavbar: FC = () => {
           </Tooltip>
 
           {/* User Info */}
-          {user && !error ? (
-            <Menu position="right-end" offset={24}>
-              <Menu.Target>
-                <ActionIcon className={classes.link}>
-                  {user?.avatar ? (
-                    <Avatar alt="avatar" src={user?.avatar} radius="md" size="md">
-                      {user.userName?.slice(0, 1) ?? 'U'}
-                    </Avatar>
-                  ) : (
-                    <Icon path={mdiAccountCircleOutline} size={1} />
-                  )}
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label>{user.userName}</Menu.Label>
-                <Menu.Item
-                  component={Link}
-                  to="/account/profile"
-                  leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
-                >
-                  {t('common.tab.account.profile')}
-                </Menu.Item>
-                <Menu.Item
-                  onClick={clearLocalCache}
-                  leftSection={<Icon path={mdiCached} size={1} />}
-                >
-                  {t('common.tab.account.clean_cache')}
-                </Menu.Item>
+          <Menu position="right-end" offset={24}>
+            <Menu.Target>
+              <ActionIcon className={classes.link}>
+                {user?.avatar ? (
+                  <Avatar alt="avatar" src={user?.avatar} radius="md" size="md">
+                    {user.userName?.slice(0, 1) ?? 'U'}
+                  </Avatar>
+                ) : (
+                  <Icon path={mdiAccountCircleOutline} size={1} />
+                )}
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {loggedIn && (
+                <>
+                  <Menu.Label>{user?.userName}</Menu.Label>
+                  <Menu.Item
+                    component={Link}
+                    to="/account/profile"
+                    leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
+                  >
+                    {t('common.tab.account.profile')}
+                  </Menu.Item>
+                </>
+              )}
+              <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
+                {t('common.tab.account.clean_cache')}
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => setColorModalOpened(true)}
+                leftSection={<Icon path={mdiPalette} size={1} />}
+              >
+                {t('common.content.color.title')}
+              </Menu.Item>
+              <MenuDivider />
+              {loggedIn ? (
                 <Menu.Item
                   color="red"
                   onClick={logout}
@@ -268,19 +282,18 @@ const AppNavbar: FC = () => {
                 >
                   {t('common.tab.account.logout')}
                 </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          ) : (
-            <Tooltip label={t('common.tab.account.login')} classNames={classes} position="right">
-              <ActionIcon
-                component={Link}
-                to={`/account/login?from=${location.pathname}`}
-                className={classes.link}
-              >
-                <Icon path={mdiAccountCircleOutline} size={1} />
-              </ActionIcon>
-            </Tooltip>
-          )}
+              ) : (
+                <Menu.Item
+                  component={Link}
+                  to={`/account/login?from=${location.pathname}`}
+                  leftSection={<Icon path={mdiLogin} size={1} />}
+                >
+                  {t('common.tab.account.login')}
+                </Menu.Item>
+              )}
+            </Menu.Dropdown>
+          </Menu>
+          <CustomColorModal opened={colorModalOpened} onClose={() => setColorModalOpened(false)} />
         </Stack>
       </AppShell.Section>
     </AppShell.Navbar>

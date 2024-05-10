@@ -453,7 +453,6 @@
       }
     },
     "settings": {
-      "color": "使用默认颜色",
       "email_domain_list": "不限制注册域名",
       "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)"
     },

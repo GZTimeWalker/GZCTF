@@ -19,6 +19,25 @@
     "about": {
       "slogan": "Hack for fun not for profit"
     },
+    "color": {
+      "custom": {
+        "description": "Select custom color",
+        "label": "Custom Color",
+        "placeholder": "Use default color"
+      },
+      "palette": {
+        "description": "Custom color palette",
+        "label": "Custom Palette"
+      },
+      "provider": {
+        "custom": "Custom",
+        "default": "Default",
+        "description": "Select the color theme you want to adopt",
+        "label": "Color Theme Source",
+        "managed": "Managed"
+      },
+      "title": "Platform Color"
+    },
     "drop_zone": {
       "content": "Drag and drop an image or click here to select {{type}}",
       "limit": "Please select an image less than 3MB",
