@@ -61,18 +61,10 @@ const Configs: FC = () => {
       })
       .catch((e) => showErrorNotification(e, t))
       .finally(() => {
-        mutateConfig({ ...conf.globalConfig })
+        mutateConfig({ ...conf.globalConfig, ...conf.containerPolicy })
         setDisabled(false)
       })
   }
-
-  useEffect(() => {
-    if (color && /^#[0-9A-F]{6}$/i.test(color)) {
-      setGlobalConfig({ ...(globalConfig ?? {}), customTheme: color })
-    } else {
-      setGlobalConfig({ ...(globalConfig ?? {}), customTheme: '' })
-    }
-  }, [color])
 
   const colors = color && /^#[0-9A-F]{6}$/i.test(color) ? generateColors(color) : theme.colors.brand
 
@@ -85,7 +77,14 @@ const Configs: FC = () => {
         size="md"
         leftSection={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
         onClick={() => {
-          updateConfig({ globalConfig, accountPolicy, containerPolicy })
+          updateConfig({
+            globalConfig: {
+              ...(globalConfig ?? {}),
+              customTheme: color && /^#[0-9A-F]{6}$/i.test(color) ? color : '',
+            },
+            accountPolicy,
+            containerPolicy,
+          })
           setSaved(false)
           setTimeout(() => {
             setSaved(true)
