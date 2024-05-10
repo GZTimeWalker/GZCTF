@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -25,11 +26,12 @@ import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
-import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
+import classes from '@Styles/Banner.module.css'
 
 const GetAlert = (status: ParticipationStatus, team: string) => {
   const { t } = useTranslation()
@@ -84,7 +86,7 @@ const GameDetail: FC = () => {
 
   const { game, error, mutate, status } = useGame(numId)
 
-  const { classes, theme } = useBannerStyles()
+  const theme = useMantineTheme()
 
   const { startTime, endTime, finished, started, progress } = getGameStatus(game)
 

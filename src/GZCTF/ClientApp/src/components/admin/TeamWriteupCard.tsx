@@ -7,13 +7,14 @@ import {
   Stack,
   Text,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiDownload } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { useHoverCardStyles } from '@Utils/ThemeOverride'
 import { WriteupInfoModel } from '@Api'
+import classes from '@Styles/HoverCard.module.css'
 
 interface TeamWriteupCardProps extends CardProps {
   writeup: WriteupInfoModel
@@ -23,7 +24,7 @@ interface TeamWriteupCardProps extends CardProps {
 
 const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props }) => {
   const { colorScheme } = useMantineColorScheme()
-  const { classes, theme } = useHoverCardStyles()
+  const theme = useMantineTheme()
   return (
     <Card
       {...props}

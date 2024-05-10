@@ -1,0 +1,34 @@
+.mono {
+  font-family: var(--mantine-font-family-monospace);
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade {
+  animation: fade 0.5s linear;
+}
+
+.table {
+  & thead tr th {
+    position: sticky;
+    top: 0;
+    z-index: 195;
+
+    background-color: light-dark(var(--mantine-colors-white), var(--mantine-colors-dark-7));
+  }
+
+  & tbody tr td {
+    white-space: nowrap;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+}

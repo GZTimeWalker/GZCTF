@@ -74,7 +74,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           ) : (
             <Title order={3}>
               {post.isPinned && (
-                <Text span c={theme.primaryColor}>
+                <Text fw="bold" fz="h3" span c={theme.primaryColor}>
                   {`${t('post.content.pinned')} `}
                 </Text>
               )}

@@ -12,6 +12,7 @@ import {
   TextInput,
   Title,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
@@ -22,10 +23,10 @@ import { useTranslation } from 'react-i18next'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { ChallengeTagItemProps } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
-import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import api, { AnswerResult, ChallengeType } from '@Api'
+import tooltipClasses from '@Styles/Tooltip.module.css'
+import classes from '@Styles/Typography.module.css'
 import InstanceEntry from './InstanceEntry'
 
 interface ChallengeDetailModalProps extends ModalProps {
@@ -40,7 +41,6 @@ interface ChallengeDetailModalProps extends ModalProps {
 
 const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
-  const { classes: tooltipClasses } = useTooltipStyles()
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(
     gameId,
@@ -49,6 +49,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   )
 
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   const placeholders = t('challenge.content.flag_placeholders', {
     returnObjects: true,
@@ -67,7 +68,6 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   const isDynamic =
     challenge?.type === ChallengeType.StaticContainer ||
     challenge?.type === ChallengeType.DynamicContainer
-  const { classes, theme } = useTypographyStyles()
 
   const [disabled, setDisabled] = useState(false)
   const [onSubmitting, setOnSubmitting] = useState(false)
@@ -307,14 +307,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
               )}
               <MarkdownRender
                 source={challenge?.content ?? ''}
-                sx={{
-                  '& div > p:first-child:before': {
-                    content: '""',
-                    float: 'right',
-                    width: 45,
-                    height: 45,
-                  },
-                }}
+                withRightIcon={!!challenge?.context?.url}
               />
             </Box>
           </Group>

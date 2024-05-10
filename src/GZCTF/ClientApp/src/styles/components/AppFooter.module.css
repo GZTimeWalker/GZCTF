@@ -1,0 +1,20 @@
+.spacer {
+  height: rem(240px);
+}
+
+.wrapper {
+  position: fixed;
+  z-index: 5;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: rem(240px);
+  padding-left: calc(var(--app-shell-navbar-offset, 0rem) + var(--mantine-spacing-xl) * 2);
+  padding-right: calc(var(--mantine-spacing-xl) * 2);
+
+  @mixin smaller-than $mantine-breakpoint-md {
+    padding: var(--mantine-spacing-xl);
+  }
+
+  background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-dark-7));
+}

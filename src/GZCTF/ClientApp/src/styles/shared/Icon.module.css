@@ -1,0 +1,29 @@
+.main {
+  fill: light-dark(var(--mantine-color-gray-6), var(--mantine-color-white));
+}
+
+.front {
+  fill: var(--mantine-primary-color-4);
+}
+
+.mid {
+  fill: var(--mantine-primary-color-6);
+}
+
+.back {
+  fill: var(--mantine-primary-color-8);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  transform-origin: 50% 50%;
+  animation: spin 8s linear infinite;
+}

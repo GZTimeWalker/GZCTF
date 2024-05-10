@@ -17,6 +17,7 @@ import {
   Title,
   alpha,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -31,9 +32,10 @@ import FlagCreateModal from '@Components/admin/FlagCreateModal'
 import FlagEditPanel from '@Components/admin/FlagEditPanel'
 import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useDisplayInputStyles, useUploadStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
+import uploadClasses from '@Styles/Upload.module.css'
 
 interface FlagEditProps {
   onDelete: (flag: FlagInfoModel) => void
@@ -86,7 +88,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
-  const { classes, theme } = useUploadStyles()
+  const theme = useMantineTheme()
   const [progress, setProgress] = useState(0)
   const [flagCreateModalOpen, setFlagCreateModalOpen] = useState(false)
   const FileTypeDesrcMap = new Map<FileType, string>([
@@ -199,13 +201,13 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               <Button
                 {...props}
                 fullWidth
-                className={classes.uploadButton}
+                className={uploadClasses.button}
                 disabled={type !== FileType.Local}
                 w="122px"
                 mt="24px"
                 color={progress !== 0 ? 'cyan' : theme.primaryColor}
               >
-                <div className={classes.uploadLabel}>
+                <div className={uploadClasses.label}>
                   {progress !== 0
                     ? t('admin.button.challenges.attachment.uploading')
                     : t('admin.button.challenges.attachment.upload')}
@@ -213,7 +215,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 {progress !== 0 && (
                   <Progress
                     value={progress}
-                    className={classes.uploadProgress}
+                    className={uploadClasses.progress}
                     color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
                     radius="sm"
                   />
@@ -265,7 +267,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disabled={disabled || type === FileType.None}
             value={challenge?.attachment?.url ?? ''}
             w="calc(100% - 400px)"
-            classNames={{ input: classes.hoverButton }}
+            classNames={{ input: uploadClasses.hover }}
             onClick={() =>
               challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
             }
@@ -276,7 +278,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             disabled={disabled}
             value={remoteUrl}
             w="calc(100% - 400px)"
-            classNames={{ input: classes.hoverButton }}
+            classNames={{ input: uploadClasses.hover }}
             onChange={(e) => setRemoteUrl(e.target.value)}
           />
         )}

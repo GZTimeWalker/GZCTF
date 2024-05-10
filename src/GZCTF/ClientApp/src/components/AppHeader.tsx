@@ -1,5 +1,4 @@
 import { Burger, Group, Menu, useMantineColorScheme, AppShell, ActionIcon } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -20,37 +19,10 @@ import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { clearLocalCache } from '@Utils/useConfig'
 import { useLogOut, useUser } from '@Utils/useUser'
-
-const useHeaderStyles = createStyles((theme, _, u) => ({
-  header: {
-    width: '100%',
-    zIndex: 150,
-    border: 'none',
-    boxShadow: theme.shadows.md,
-
-    [u.dark]: {
-      backgroundColor: theme.colors.gray[8],
-    },
-
-    [u.light]: {
-      backgroundColor: theme.colors.light[0],
-    },
-  },
-  button: {
-    [u.dark]: {
-      color: theme.colors.gray[0],
-    },
-
-    [u.light]: {
-      color: theme.colors.gray[7],
-    },
-  },
-}))
+import classes from '@Styles/AppHeader.module.css'
 
 const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
   const [opened, setOpened] = useState(false)
-  const { classes: headerClasses } = useHeaderStyles()
-
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -64,13 +36,13 @@ const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
   const { setLanguage, supportedLanguages } = useLanguage()
 
   return (
-    <AppShell.Header hidden={!isMobile} h={isMobile ? 60 : 0} className={headerClasses.header}>
+    <AppShell.Header hidden={!isMobile} h={isMobile ? 60 : 0} className={classes.header}>
       <Group h="100%" p="0 1rem" justify="space-between" wrap="nowrap">
         <LogoHeader onClick={() => navigate('/')} />
         <Group justify="flex-end" wrap="nowrap">
           <Menu position="bottom-end" offset={24} width={160}>
             <Menu.Target>
-              <ActionIcon className={headerClasses.button}>
+              <ActionIcon className={classes.button}>
                 <Icon path={mdiTranslate} size={1} />
               </ActionIcon>
             </Menu.Target>

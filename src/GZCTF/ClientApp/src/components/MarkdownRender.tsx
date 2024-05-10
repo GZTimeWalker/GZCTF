@@ -1,16 +1,15 @@
 import { Text, TextProps, TypographyStylesProvider } from '@mantine/core'
-import { EmotionSx } from '@mantine/emotion'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import Prism from 'prismjs'
 import { forwardRef } from 'react'
-import { useInlineStyles, useTypographyStyles } from '@Utils/useTypographyStyles'
+import classes from '@Styles/Typography.module.css'
 
 export interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {
   source: string
-  sx?: EmotionSx
+  withRightIcon?: boolean
 }
 
 interface InlineMarkdownProps extends TextProps {
@@ -31,8 +30,6 @@ const BlockRegex = /\$\$([\s\S]+?)\$\$/g
 export const InlineMarkdownRender = forwardRef<HTMLParagraphElement, InlineMarkdownProps>(
   (props, ref) => {
     const { source, ...others } = props
-    const { classes, cx } = useInlineStyles()
-
     const marked = new Marked()
 
     const renderer = new marked.Renderer()
@@ -52,8 +49,8 @@ export const InlineMarkdownRender = forwardRef<HTMLParagraphElement, InlineMarkd
     return (
       <Text
         ref={ref}
-        className={others.className ? cx(classes.root, others.className) : classes.root}
         {...others}
+        className={classes.inline}
         dangerouslySetInnerHTML={{
           __html: marked.parseInline(source) ?? '',
         }}
@@ -63,7 +60,6 @@ export const InlineMarkdownRender = forwardRef<HTMLParagraphElement, InlineMarkd
 )
 
 export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) => {
-  const { classes, cx } = useTypographyStyles()
   const { source, ...others } = props
 
   Prism.manual = true
@@ -105,8 +101,9 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
   return (
     <TypographyStylesProvider
       ref={ref}
-      className={others.className ? cx(classes.root, others.className) : classes.root}
       {...others}
+      data-with-right-icon={props.withRightIcon || undefined}
+      className={classes.root}
     >
       <div dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
     </TypographyStylesProvider>

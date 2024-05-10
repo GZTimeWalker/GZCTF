@@ -1,4 +1,14 @@
-import { Badge, Card, Center, Group, Image, Stack, Text, Title } from '@mantine/core'
+import {
+  Badge,
+  Card,
+  Center,
+  Group,
+  Image,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -6,9 +16,9 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
-import { useHoverCardStyles } from '@Utils/ThemeOverride'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
+import classes from '@Styles/HoverCard.module.css'
 
 export interface RecentGameProps {
   game: BasicGameInfoModel
@@ -21,7 +31,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
 
   const { title, poster } = game
   const { startTime, endTime, status } = getGameStatus(game)
-  const { classes: cardClasses, theme } = useHoverCardStyles()
+  const theme = useMantineTheme()
 
   const color = GameColorMap.get(status)
 
@@ -29,13 +39,7 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
     status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
   return (
-    <Card
-      {...others}
-      shadow="sm"
-      component={Link}
-      to={`/games/${game.id}`}
-      classNames={cardClasses}
-    >
+    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={classes}>
       <Card.Section pos="relative">
         {poster ? (
           <Image src={poster} h={POSTER_HEIGHT} alt="poster" />

@@ -23,9 +23,9 @@ import { Trans, useTranslation } from 'react-i18next'
 import MarkdownRender from '@Components/MarkdownRender'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { HunamizeSize } from '@Utils/Shared'
-import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
+import uploadClasses from '@Styles/Upload.module.css'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
@@ -40,7 +40,6 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
   const { data, mutate } = api.game.useGameGetWriteup(gameId, OnceSWRConfig)
 
   const theme = useMantineTheme()
-  const { classes } = useUploadStyles()
   const [ddl, setDdl] = useState(dayjs(wpddl))
   const [disabled, setDisabled] = useState(dayjs().isAfter(wpddl))
   const [progress, setProgress] = useState(0)
@@ -193,11 +192,11 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
             <Button
               {...props}
               fullWidth
-              className={classes.uploadButton}
+              className={uploadClasses.button}
               disabled={disabled}
               color={progress !== 0 ? 'cyan' : theme.primaryColor}
             >
-              <div className={classes.uploadLabel}>
+              <div className={uploadClasses.label}>
                 {dayjs().isAfter(ddl)
                   ? t('game.content.writeup.deadline_exceeded')
                   : progress !== 0
@@ -207,7 +206,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
               {progress !== 0 && (
                 <Progress
                   value={progress}
-                  className={classes.uploadProgress}
+                  className={uploadClasses.progress}
                   color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
                   radius="sm"
                 />

@@ -32,9 +32,11 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { downloadBlob } from '@Utils/ApiHelper'
-import { useDisplayInputStyles, useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const ITEM_COUNT_PER_PAGE = 50
 
@@ -90,9 +92,8 @@ const Submissions: FC = () => {
   const { game } = useGame(numId)
 
   const iconMap = AnswerResultIconMap(0.8)
-  const { classes, cx, theme } = useTableStyles()
-  const { classes: tooltipClasses } = useTooltipStyles()
   const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
+  const theme = useMantineTheme()
 
   const { t } = useTranslation()
   const viewport = useRef<HTMLDivElement>(null)
@@ -171,11 +172,11 @@ const Submissions: FC = () => {
       <Table.Tr
         key={`${item.time}@${i}`}
         className={
-          i === 0 && activePage === 1 && filteredSubs.length > 0 ? cx(classes.fade) : undefined
+          i === 0 && activePage === 1 && filteredSubs.length > 0 ? tableClasses.fade : undefined
         }
       >
         <Table.Td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</Table.Td>
-        <Table.Td className={cx(classes.mono)}>
+        <Table.Td className={tableClasses.mono}>
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
@@ -270,7 +271,7 @@ const Submissions: FC = () => {
       </Group>
       <Paper shadow="md" p="md">
         <ScrollArea viewportRef={viewport} offsetScrollbars h="calc(100vh - 200px)">
-          <Table className={classes.table}>
+          <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ width: '0.6rem' }}>
@@ -282,7 +283,7 @@ const Submissions: FC = () => {
                 <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.team')}</Table.Th>
                 <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.user')}</Table.Th>
                 <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
-                <Table.Th className={cx(classes.mono)}>{t('common.label.flag')}</Table.Th>
+                <Table.Th className={tableClasses.mono}>{t('common.label.flag')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>{rows}</Table.Tbody>

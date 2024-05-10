@@ -32,8 +32,9 @@ import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
-import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 type SelectTeamItemProps = TeamModel & ComboboxItem
 type SelectChallengeItemProps = ChallengeModel & ComboboxItem
@@ -81,9 +82,7 @@ const Instances: FC = () => {
   const [teams, setTeams] = useState<TeamModel[]>()
   const [challenge, setChallenge] = useState<ChallengeModel[]>()
   const [disabled, setDisabled] = useState(false)
-  const { classes, theme } = useTableStyles()
   const clipBoard = useClipboard()
-  const { classes: tooltipClasses } = useTooltipStyles()
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
   const { t } = useTranslation()
@@ -209,7 +208,7 @@ const Instances: FC = () => {
     >
       <Paper shadow="md" p="xs" w="100%">
         <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 205px)">
-          <Table className={classes.table}>
+          <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>{t('common.label.team')}</Table.Th>
@@ -284,11 +283,9 @@ const Instances: FC = () => {
                             <Text
                               size="sm"
                               ff="monospace"
-                              style={{
-                                backgroundColor: 'transparent',
-                                fontSize: theme.fontSizes.sm,
-                                cursor: 'pointer',
-                              }}
+                              bg="transparent"
+                              fz="sm"
+                              className={tableClasses.clickable}
                               onClick={() => {
                                 clipBoard.copy(
                                   inst.containerGuid && getProxyUrl(inst.containerGuid)
@@ -317,11 +314,9 @@ const Instances: FC = () => {
                             size="sm"
                             c="dimmed"
                             ff="monospace"
-                            style={{
-                              backgroundColor: 'transparent',
-                              fontSize: theme.fontSizes.sm,
-                              cursor: 'pointer',
-                            }}
+                            bg="transparent"
+                            fz="sm"
+                            className={tableClasses.clickable}
                             onClick={() => {
                               clipBoard.copy(`${inst.ip ?? ''}:${inst.port ?? ''}`)
                               showNotification({

@@ -1,4 +1,4 @@
-import { Box, BoxProps, useMantineColorScheme, useMantineTheme } from '@mantine/core'
+import { Box, BoxProps, useMantineColorScheme } from '@mantine/core'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'

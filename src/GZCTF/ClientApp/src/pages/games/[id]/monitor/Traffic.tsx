@@ -11,6 +11,7 @@ import {
   Title,
   Tooltip,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -24,8 +25,8 @@ import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { HunamizeSize } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import api, { FileRecord } from '@Api'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const SWROptions = {
   refreshInterval: 0,
@@ -40,7 +41,7 @@ const Traffic: FC = () => {
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
   const [disabled, setDisabled] = useState(false)
-  const { classes: tooltipClasses, theme } = useTooltipStyles()
+  const theme = useMantineTheme()
 
   const { t } = useTranslation()
   const { colorScheme } = useMantineColorScheme()

@@ -7,11 +7,8 @@ import {
   MenuDivider,
   Stack,
   Tooltip,
-  alpha,
-  darken,
   useMantineColorScheme,
 } from '@mantine/core'
-import { createStyles, getStylesRef } from '@mantine/emotion'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -38,58 +35,7 @@ import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Utils/useConfig'
 import { useLogOut, useUser } from '@Utils/useUser'
 import { Role } from '@Api'
-
-const useStyles = createStyles((theme, _, u) => {
-  const active = { ref: getStylesRef('activeItem') } as const
-
-  return {
-    active,
-    link: {
-      width: 40,
-      height: 40,
-      borderRadius: theme.radius.md,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: theme.colors.gray[1],
-      cursor: 'pointer',
-
-      '&:hover': {
-        backgroundColor: theme.colors.gray[6] + '80',
-      },
-
-      [`&.${active.ref}, &.${active.ref}:hover`]: {
-        backgroundColor: alpha(theme.colors[theme.primaryColor][7], 0.25),
-        color: theme.colors[theme.primaryColor][4],
-      },
-    },
-
-    navbar: {
-      backgroundColor: theme.colors.gray[8],
-      padding: theme.spacing.xs,
-      border: 'none',
-
-      [u.smallerThan('xs')]: {
-        display: 'none',
-      },
-    },
-
-    tooltip: {
-      marginLeft: 20,
-      fontWeight: 500,
-
-      [u.dark]: {
-        backgroundColor: darken(theme.colors[theme.primaryColor][8], 0.45),
-        color: theme.colors[theme.primaryColor][4],
-      },
-
-      [u.light]: {
-        backgroundColor: theme.colors[theme.primaryColor][6],
-        color: theme.colors.light[0],
-      },
-    },
-  }
-})
+import classes from '@Styles/AppNavBar.module.css'
 
 interface NavbarItem {
   icon: string
@@ -107,7 +53,6 @@ export interface NavbarLinkProps {
 }
 
 const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
-  const { classes, cx } = useStyles()
   const { t } = useTranslation()
 
   return (
@@ -116,7 +61,8 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
         onClick={props.onClick}
         component={Link}
         to={props.link ?? '#'}
-        className={cx(classes.link, { [classes.active]: props.isActive })}
+        data-active={props.isActive || undefined}
+        className={classes.link}
       >
         <Icon path={props.icon} size={1} />
       </ActionIcon>
@@ -127,7 +73,6 @@ const NavbarLink: FC<NavbarLinkProps> = (props: NavbarLinkProps) => {
 const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { classes, theme } = useStyles()
   const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   const logout = useLogOut()
@@ -174,33 +119,16 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       {/* Logo */}
       <AppShell.Section grow>
         <Center>
-          <MainIcon
-            style={{ width: '100%', height: 'auto', position: 'relative', left: 2 }}
-            ignoreTheme
-            onClick={() => navigate('/')}
-          />
+          <MainIcon ignoreTheme className={classes.logo} onClick={() => navigate('/')} />
         </Center>
       </AppShell.Section>
 
       {/* Common Nav */}
-      <AppShell.Section
-        grow
-        display="flex"
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: theme.spacing.sm,
-        }}
-      >
+      <AppShell.Section className={classes.section} style={{ justifyContent: 'center' }}>
         {links}
       </AppShell.Section>
 
-      <AppShell.Section
-        grow
-        display="flex"
-        style={{ flexDirection: 'column', justifyContent: 'end' }}
-      >
+      <AppShell.Section className={classes.section} style={{ justifyContent: 'end' }}>
         <Stack w="100%" align="center" justify="center" gap={5}>
           {/* Language */}
           <Menu position="right-end" offset={24} width={160}>

@@ -8,6 +8,7 @@ import {
   Text,
   Title,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { mdiPencilOutline } from '@mdi/js'
@@ -20,17 +21,17 @@ import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { useLanguage } from '@Utils/I18n'
-import { useBannerStyles, useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { Role } from '@Api'
+import classes from '@Styles/Banner.module.css'
+import btnClasses from '@Styles/FixedButton.module.css'
 
 const Post: FC = () => {
   const { postId } = useParams()
   const navigate = useNavigate()
 
-  const { classes, theme } = useBannerStyles()
-
+  const theme = useMantineTheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -51,11 +52,6 @@ const Post: FC = () => {
 
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>()
   useEffect(() => scrollIntoView({ alignment: 'center' }), [])
-
-  const { classes: btnClasses } = useFixedButtonStyles({
-    right: '2rem',
-    bottom: '2rem',
-  })
 
   const { role } = useUserRole()
   const { colorScheme } = useMantineColorScheme()
@@ -117,7 +113,7 @@ const Post: FC = () => {
       </Container>
       {RequireRole(Role.Admin, role) && (
         <Button
-          className={btnClasses.fixedButton}
+          className={btnClasses.root}
           variant="filled"
           radius="xl"
           size="md"

@@ -43,7 +43,9 @@
         "src/resources/*"
       ],
       "@Styles/*": [
-        "src/styles/components/*"
+        "src/styles/components/*",
+        "src/styles/shared/*",
+        "src/styles/pages/*"
       ],
     }
   },

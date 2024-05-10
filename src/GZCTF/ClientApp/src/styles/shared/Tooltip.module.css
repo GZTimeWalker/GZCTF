@@ -1,0 +1,18 @@
+.tooltip {
+  font-weight: 500;
+  box-shadow: var(--mantine-shadow-md);
+
+  @mixin light {
+    color: var(--mantine-color-gray-7);
+    background-color: var(--mantine-color-light-0);
+  }
+
+  @mixin dark {
+    color: var(--mantine-color-gray-0);
+    background-color: darken(var(--mantine-color-gray-8), 0.4);
+  }
+}
+
+.arrow {
+  box-shadow: var(--mantine-shadow-md);
+}

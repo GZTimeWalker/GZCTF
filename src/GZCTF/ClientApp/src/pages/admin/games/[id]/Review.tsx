@@ -38,8 +38,8 @@ import { ParticipationStatusControl } from '@Components/admin/ParticipationStatu
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { useAccordionStyles } from '@Utils/ThemeOverride'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
+import classes from '@Styles/Accordion.module.css'
 
 interface MemberItemProps {
   user: ProfileUserInfoModel
@@ -228,7 +228,6 @@ const GameTeamReview: FC = () => {
   const [selectedOrg, setSelectedOrg] = useState<string | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
   const [search, setSearch] = useInputState('')
-  const { classes } = useAccordionStyles()
   const participationStatusMap = useParticipationStatusMap()
 
   const { t } = useTranslation()

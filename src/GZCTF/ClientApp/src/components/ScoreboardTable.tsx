@@ -28,9 +28,9 @@ import {
   SubmissionTypeIconMap,
   useBonusLabels,
 } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 export const useScoreboardStyles = createStyles((theme, _, u) => ({
   table: {
@@ -197,7 +197,6 @@ const TableRow: FC<{
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
   const { classes, cx, theme } = useScoreboardStyles()
-  const { classes: tooltipClasses } = useTooltipStyles()
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
 

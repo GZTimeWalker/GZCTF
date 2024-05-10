@@ -19,8 +19,8 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AdminPage from '@Components/admin/AdminPage'
 import { TaskStatusColorMap } from '@Utils/Shared'
-import { useTableStyles } from '@Utils/ThemeOverride'
 import api, { LogMessageModel, TaskStatus } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 const ITEM_COUNT_PER_PAGE = 50
 
@@ -48,8 +48,7 @@ const NoPaddingTable = createStyles(() => ({
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
-  const { classes, cx, theme } = useTableStyles()
-  const { classes: noPaddingClasses } = NoPaddingTable()
+  const { classes: noPaddingClasses, cx, theme } = NoPaddingTable()
 
   const [, update] = useState(new Date())
   const newLogs = useRef<LogMessageModel[]>([])
@@ -135,21 +134,21 @@ const Logs: FC = () => {
           activePage === 1 &&
           newLogs.current.length > 0 &&
           newLogs.current[0].level === level
-            ? cx(classes.fade)
+            ? cx(tableClasses.fade)
             : undefined
         }
       >
-        <Table.Td className={cx(classes.mono)}>
+        <Table.Td className={cx(tableClasses.mono)}>
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}
           </Badge>
         </Table.Td>
-        <Table.Td className={cx(classes.mono)}>
+        <Table.Td className={cx(tableClasses.mono)}>
           <Text ff="monospace" size="sm" fw={300}>
             {item.ip || 'localhost'}
           </Text>
         </Table.Td>
-        <Table.Td className={cx(classes.mono)}>
+        <Table.Td className={cx(tableClasses.mono)}>
           <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
             {item.name}
           </Text>
@@ -157,7 +156,7 @@ const Logs: FC = () => {
         <Table.Td>
           <Input variant="unstyled" value={item.msg || ''} readOnly size="sm" />
         </Table.Td>
-        <Table.Td className={cx(classes.mono)}>
+        <Table.Td className={cx(tableClasses.mono)}>
           {item.status && (
             <Badge size="sm" color={TaskStatusColorMap.get(item.status as TaskStatus) ?? 'gray'}>
               {item.status}
@@ -215,7 +214,7 @@ const Logs: FC = () => {
           scrollbarSize={4}
           h="calc(100vh - 190px)"
         >
-          <Table className={cx(classes.table, noPaddingClasses.table)}>
+          <Table className={cx(tableClasses.table, noPaddingClasses.table)}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
