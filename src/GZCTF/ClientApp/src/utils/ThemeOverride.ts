@@ -1,5 +1,7 @@
+import { generateColors } from '@mantine/colors-generator'
 import {
   ActionIcon,
+  Avatar,
   Badge,
   Loader,
   MantineThemeOverride,
@@ -14,8 +16,9 @@ import {
 } from '@mantine/core'
 import { createStyles, keyframes } from '@mantine/emotion'
 import { useMediaQuery } from '@mantine/hooks'
+import { useConfig } from '@Utils/useConfig'
 
-export const CustomTheme: MantineThemeOverride = createTheme({
+const CustomTheme: MantineThemeOverride = {
   colors: {
     gray: [
       '#EBEBEB',
@@ -30,9 +33,9 @@ export const CustomTheme: MantineThemeOverride = createTheme({
       '#141414',
     ],
     brand: [
-      '#A7FFEB',
-      '#64FFDA',
-      '#25EEBA',
+      '#D0FFF8',
+      '#A7F8EB',
+      '#64F0DA',
       '#1DE9B6',
       '#0AD7AF',
       '#04CAAB',
@@ -148,8 +151,39 @@ export const CustomTheme: MantineThemeOverride = createTheme({
         },
       },
     }),
+    Avatar: Avatar.extend({
+      defaultProps: {
+        color: 'brand',
+      },
+    }),
   },
-})
+}
+
+export const useCustomeTheme = () => {
+  const { config } = useConfig()
+
+  const theme =
+    config.customTheme && /^#[0-9A-F]{6}$/i.test(config.customTheme)
+      ? createTheme({
+          ...CustomTheme,
+          colors: {
+            ...CustomTheme.colors,
+            custom: generateColors(config.customTheme),
+          },
+          components: {
+            ...CustomTheme.components,
+            Avatar: Avatar.extend({
+              defaultProps: {
+                color: 'custom',
+              },
+            }),
+          },
+          primaryColor: 'custom',
+        })
+      : createTheme(CustomTheme)
+
+  return { theme }
+}
 
 export const useTableStyles = createStyles((theme, _, u) => ({
   mono: {

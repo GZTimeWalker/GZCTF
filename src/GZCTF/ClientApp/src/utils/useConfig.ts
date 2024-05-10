@@ -38,6 +38,7 @@ export const useConfig = () => {
       title: 'GZ',
       slogan: 'Hack for fun not for profit',
       footerInfo: null,
+      customTheme: null,
       defaultLifetime: 120,
       extensionDuration: 120,
       renewalWindow: 10,

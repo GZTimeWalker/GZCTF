@@ -290,6 +290,14 @@
         "title": "Container Policy"
       },
       "platform": {
+        "color": {
+          "description": "Custom color for the platform",
+          "label": "Platform Color"
+        },
+        "color_palette": {
+          "description": "Color palette generated from the custom color",
+          "label": "Color Palette"
+        },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
@@ -445,6 +453,7 @@
       }
     },
     "settings": {
+      "color": "Use default color",
       "email_domain_list": "No restrictions",
       "footer": "`Test` <mbr/> Something..."
     },

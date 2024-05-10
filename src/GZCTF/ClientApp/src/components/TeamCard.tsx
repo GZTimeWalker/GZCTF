@@ -41,7 +41,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
       <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
         <Stack style={{ flexGrow: 1 }}>
           <Group align="stretch" justify="space-between">
-            <Avatar alt="avatar" color="cyan" size="lg" radius="md" src={team.avatar}>
+            <Avatar alt="avatar" size="lg" radius="md" src={team.avatar}>
               {team.name?.slice(0, 1) ?? 'T'}
             </Avatar>
 

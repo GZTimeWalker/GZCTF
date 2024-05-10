@@ -20,6 +20,9 @@ importers:
       '@mantine/carousel':
         specifier: ^7.9.1
         version: 7.9.1(@mantine/core@7.9.1(@mantine/hooks@7.9.1(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.1(react@18.3.1))(embla-carousel-react@8.0.4(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@mantine/colors-generator':
+        specifier: ^7.9.1
+        version: 7.9.1(chroma-js@2.4.2)
       '@mantine/core':
         specifier: ^7.9.1
         version: 7.9.1(@mantine/hooks@7.9.1(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -56,6 +59,9 @@ importers:
       '@microsoft/signalr':
         specifier: ^8.0.0
         version: 8.0.0
+      chroma-js:
+        specifier: ^2.4.2
+        version: 2.4.2
       dayjs:
         specifier: ^1.11.11
         version: 1.11.11
@@ -138,6 +144,9 @@ importers:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.2.5)
+      '@types/chroma-js':
+        specifier: ^2.4.4
+        version: 2.4.4
       '@types/katex':
         specifier: ^0.16.7
         version: 0.16.7
@@ -640,6 +649,11 @@ packages:
       react: ^18.2.0
       react-dom: ^18.2.0
 
+  '@mantine/colors-generator@7.9.1':
+    resolution: {integrity: sha512-PruvJCRmzCDnNL0xAGfpqJfzhcSn1Q9fTNWgK99O30oOhqOhj0X0iY7lwZQbg8EVirVnbAP0yO4iIqPQBcHpig==}
+    peerDependencies:
+      chroma-js: ^2.4.2
+
   '@mantine/core@7.9.1':
     resolution: {integrity: sha512-UXK11t1fAQ2ROQ9HTIZfyU52XdwS8sFJ2SRUh5uHMWSahJo3wTdKzaCvYN7wg+ONM9p6ENT0hC0dfv5qXoKU4w==}
     peerDependencies:
@@ -856,6 +870,9 @@ packages:
   '@types/babel__traverse@7.20.5':
     resolution: {integrity: sha512-WXCyOcRtH37HAUkpXhUduaxdm82b4GSlyTqajXviN4EfiuPgNYR109xMCKvpl6zPIpua0DGlMEDCq+g8EdoheQ==}
 
+  '@types/chroma-js@2.4.4':
+    resolution: {integrity: sha512-/DTccpHTaKomqussrn+ciEvfW4k6NAHzNzs/sts1TCqg333qNxOhy8TNIoQCmbGG3Tl8KdEhkGAssb1n3mTXiQ==}
+
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
@@ -1071,6 +1088,9 @@ packages:
   char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
     engines: {node: '>=10'}
+
+  chroma-js@2.4.2:
+    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
 
   clean-css@5.3.3:
     resolution: {integrity: sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg==}
@@ -3083,6 +3103,10 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  '@mantine/colors-generator@7.9.1(chroma-js@2.4.2)':
+    dependencies:
+      chroma-js: 2.4.2
+
   '@mantine/core@7.9.1(@mantine/hooks@7.9.1(react@18.3.1))(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/react': 0.26.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3293,6 +3317,8 @@ snapshots:
   '@types/babel__traverse@7.20.5':
     dependencies:
       '@babel/types': 7.23.9
+
+  '@types/chroma-js@2.4.4': {}
 
   '@types/debug@4.1.12':
     dependencies:
@@ -3543,6 +3569,8 @@ snapshots:
       supports-color: 7.2.0
 
   char-regex@1.0.2: {}
+
+  chroma-js@2.4.2: {}
 
   clean-css@5.3.3:
     dependencies:

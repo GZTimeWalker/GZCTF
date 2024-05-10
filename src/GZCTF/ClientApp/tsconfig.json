@@ -41,7 +41,10 @@
       ],
       "@Resources/*": [
         "src/resources/*"
-      ]
+      ],
+      "@Styles/*": [
+        "src/styles/components/*"
+      ],
     }
   },
   "include": [

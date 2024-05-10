@@ -11,7 +11,7 @@ import { SWRConfig } from 'swr'
 import routes from '~react-pages'
 import ErrorFallback from '@Components/ErrorFallback'
 import { useLanguage } from '@Utils/I18n'
-import { CustomTheme } from '@Utils/ThemeOverride'
+import { useCustomeTheme } from '@Utils/ThemeOverride'
 import { useBanner, localCacheProvider } from '@Utils/useConfig'
 import { fetcher } from '@Api'
 import '@mantine/carousel/styles.css'
@@ -19,20 +19,17 @@ import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import '@mantine/dropzone/styles.css'
 import '@mantine/notifications/styles.css'
-import './App.css'
+import './styles/App.css'
 
 export const App: FC = () => {
   useBanner()
 
   const { t } = useTranslation()
   const { locale } = useLanguage()
+  const { theme } = useCustomeTheme()
 
   return (
-    <MantineProvider
-      defaultColorScheme="dark"
-      theme={CustomTheme}
-      stylesTransform={emotionTransform}
-    >
+    <MantineProvider defaultColorScheme="dark" theme={theme} stylesTransform={emotionTransform}>
       <MantineEmotionProvider>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Notifications zIndex={5000} />

@@ -99,6 +99,11 @@ public class GlobalConfig
     /// 页脚显示的信息
     /// </summary>
     public string? FooterInfo { get; set; }
+    
+    /// <summary>
+    /// 自定义主题颜色
+    /// </summary>
+    public string? CustomTheme { get; set; }
 
     /// <summary>
     /// 邮件模版
@@ -127,6 +132,11 @@ public partial class ClientConfig
     /// 页脚显示的信息
     /// </summary>
     public string? FooterInfo { get; set; }
+    
+    /// <summary>
+    /// 自定义主题颜色
+    /// </summary>
+    public string? CustomTheme { get; set; }
 
     /// <summary>
     /// 容器的默认生命周期，以分钟计
@@ -149,6 +159,7 @@ public partial class ClientConfig
             Title = globalConfig.Title,
             Slogan = globalConfig.Slogan,
             FooterInfo = globalConfig.FooterInfo,
+            CustomTheme = globalConfig.CustomTheme,
             DefaultLifetime = containerPolicy.DefaultLifetime,
             ExtensionDuration = containerPolicy.ExtensionDuration,
             RenewalWindow = containerPolicy.RenewalWindow

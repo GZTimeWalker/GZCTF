@@ -60,7 +60,7 @@ const TeamRank: FC<CardProps> = (props) => {
     <Card {...props} shadow="sm" p="md">
       <Stack gap={8}>
         <Group gap="sm" wrap="nowrap">
-          <Avatar alt="avatar" color="cyan" size={50} radius="md" src={teamInfo?.rank?.avatar}>
+          <Avatar alt="avatar" size={50} radius="md" src={teamInfo?.rank?.avatar}>
             {teamInfo?.rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Skeleton visible={!teamInfo}>

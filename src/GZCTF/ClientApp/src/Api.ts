@@ -255,6 +255,8 @@ export interface GlobalConfig {
   slogan?: string;
   /** 页脚显示的信息 */
   footerInfo?: string | null;
+  /** 自定义主题颜色 */
+  customTheme?: string | null;
   /** 邮件模版 */
   emailTemplate?: string;
 }
@@ -1723,6 +1725,8 @@ export interface ClientConfig {
   slogan?: string;
   /** 页脚显示的信息 */
   footerInfo?: string | null;
+  /** 自定义主题颜色 */
+  customTheme?: string | null;
   /**
    * 容器的默认生命周期，以分钟计
    * @format int32

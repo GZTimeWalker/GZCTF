@@ -63,14 +63,14 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
 
-  const { classes, theme } = useDisplayInputStyles({ fw: 'bold' })
+  const { classes } = useDisplayInputStyles({ fw: 'bold' })
   const { t } = useTranslation()
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
-          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color={theme.primaryColor}>
+          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30}>
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0} align="flex-start">

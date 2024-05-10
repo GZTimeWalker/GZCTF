@@ -1,7 +1,10 @@
+import { generateColors } from '@mantine/colors-generator'
 import {
   Button,
+  ColorInput,
   Divider,
   Grid,
+  InputBase,
   NumberInput,
   SimpleGrid,
   Stack,
@@ -13,6 +16,7 @@ import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import ColorPreview from '@Components/ColorPreview'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
@@ -28,11 +32,12 @@ const Configs: FC = () => {
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
   const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null>()
+  const [color, setColor] = useState<string | undefined | null>(globalConfig?.customTheme)
 
   const { t } = useTranslation()
 
   const [saved, setSaved] = useState(true)
-  const { classes: btnClasses } = useFixedButtonStyles({
+  const { classes: btnClasses, theme } = useFixedButtonStyles({
     right: 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
     bottom: '2rem',
   })
@@ -42,11 +47,13 @@ const Configs: FC = () => {
       setContainerPolicy(configs.containerPolicy)
       setGlobalConfig(configs.globalConfig)
       setAccountPolicy(configs.accountPolicy)
+      setColor(configs.globalConfig?.customTheme)
     }
   }, [configs])
 
   const updateConfig = (conf: ConfigEditModel) => {
     setDisabled(true)
+
     api.admin
       .adminUpdateConfigs(conf)
       .then(() => {
@@ -59,6 +66,16 @@ const Configs: FC = () => {
       })
   }
 
+  useEffect(() => {
+    if (color && /^#[0-9A-F]{6}$/i.test(color)) {
+      setGlobalConfig({ ...(globalConfig ?? {}), customTheme: color })
+    } else {
+      setGlobalConfig({ ...(globalConfig ?? {}), customTheme: '' })
+    }
+  }, [color])
+
+  const colors = color && /^#[0-9A-F]{6}$/i.test(color) ? generateColors(color) : theme.colors.brand
+
   return (
     <AdminPage isLoading={!configs}>
       <Button
@@ -70,7 +87,9 @@ const Configs: FC = () => {
         onClick={() => {
           updateConfig({ globalConfig, accountPolicy, containerPolicy })
           setSaved(false)
-          setTimeout(() => setSaved(true), 500)
+          setTimeout(() => {
+            setSaved(true)
+          }, 500)
         }}
         disabled={!saved}
       >
@@ -114,9 +133,33 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
+            <Grid.Col span={1}>
+              <ColorInput
+                label={t('admin.content.settings.platform.color.label')}
+                description={t('admin.content.settings.platform.color.description')}
+                placeholder={t('admin.placeholder.settings.color')}
+                value={color ?? ''}
+                onChange={setColor}
+              />
+            </Grid.Col>
+            <Grid.Col span={3}>
+              <InputBase
+                label={t('admin.content.settings.platform.color_palette.label')}
+                description={t('admin.content.settings.platform.color_palette.description')}
+                variant="unstyled"
+                component={ColorPreview}
+                h="100%"
+                colors={colors}
+                displayColorsInfo={false}
+                styles={{
+                  input: {
+                    display: 'flex',
+                  },
+                }}
+              />
+            </Grid.Col>
           </Grid>
         </Stack>
-
         <Stack>
           <Title order={2}>{t('admin.content.settings.account.title')}</Title>
           <Divider />
