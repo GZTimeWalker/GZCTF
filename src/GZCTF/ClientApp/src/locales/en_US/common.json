@@ -26,7 +26,7 @@
         "placeholder": "Use default color"
       },
       "palette": {
-        "description": "Color palette generated from the base color",
+        "description": "Color palette generated from the custom base color",
         "label": "Color Palette"
       },
       "provider": {
