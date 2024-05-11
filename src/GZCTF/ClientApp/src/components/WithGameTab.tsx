@@ -15,7 +15,7 @@ import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import CustomProgress from '@Components/CustomProgress'
+import GameProgress from '@Components/GameProgress'
 import IconTabs from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
 import { getGameStatus, useGame } from '@Utils/useGame'
@@ -57,7 +57,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
             : t('game.content.game_ended')}
       </Text>
       <Card.Section mt={4}>
-        <CustomProgress percentage={progress} py={0} />
+        <GameProgress percentage={progress} py={0} />
       </Card.Section>
     </Card>
   )

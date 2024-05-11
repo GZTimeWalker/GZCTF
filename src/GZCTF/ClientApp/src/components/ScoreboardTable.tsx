@@ -16,6 +16,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -111,7 +112,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
         ].map((header, idx) => (
           <Table.Th
             key={idx}
-            className={`${classes.left} ${classes.header}`}
+            className={cx(classes.left, classes.header)}
             style={{ left: Lefts[idx] }}
           >
             {header}
@@ -143,10 +144,10 @@ const TableRow: FC<{
 
   return (
     <Table.Tr>
-      <Table.Td className={`${classes.mono} ${classes.left}`} style={{ left: Lefts[0] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[0] }}>
         {item.rank}
       </Table.Td>
-      <Table.Td className={`${classes.mono} ${classes.left}`} style={{ left: Lefts[1] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[1] }}>
         {allRank ? item.rank : item.organizationRank ?? tableRank}
       </Table.Td>
       <Table.Td className={classes.left} style={{ left: Lefts[2] }}>
@@ -174,10 +175,10 @@ const TableRow: FC<{
           />
         </Group>
       </Table.Td>
-      <Table.Td className={`${classes.mono} ${classes.left}`} style={{ left: Lefts[3] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[3] }}>
         {solved?.length}
       </Table.Td>
-      <Table.Td className={`${classes.mono} ${classes.left}`} style={{ left: Lefts[4] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[4] }}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
       </Table.Td>
       {challenges &&

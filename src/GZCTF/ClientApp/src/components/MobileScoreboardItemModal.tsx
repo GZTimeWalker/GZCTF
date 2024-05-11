@@ -14,6 +14,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -129,7 +130,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
-            <Table className={`${tableClasses.table} ${tableClasses.nopadding}`} fz="sm">
+            <Table className={cx(tableClasses.table, tableClasses.nopadding)} fz="sm">
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>

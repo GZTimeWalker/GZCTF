@@ -1,3 +1,4 @@
+import cx from 'clsx'
 import { FC } from 'react'
 import classes from '@Styles/Icon.module.css'
 
@@ -22,7 +23,7 @@ const Icon404: FC = () => {
 
       <path
         id="Triangle"
-        className={`${classes.main} ${classes.spin}`}
+        className={cx(classes.main, classes.spin)}
         fillRule="evenodd"
         d="M3794.48,5044.61L1305.28,3607.47V2792.53l2489.2-1437.14,705.76,407.47V4637.14Zm0.89-2875.82L2009.27,3200l1786.1,1031.21V2168.79Z"
       />
@@ -36,7 +37,7 @@ const Icon404: FC = () => {
 
       <path
         id="Triangle_front"
-        className={`${classes.main} ${classes.spin}`}
+        className={cx(classes.main, classes.spin)}
         fillRule="evenodd"
         d="M3795,4230.99l0.37,0.22V2168.79l-0.37.22V1355.69l705.24,407.17V4637.14L3795,5044.31V4230.99Z"
       />

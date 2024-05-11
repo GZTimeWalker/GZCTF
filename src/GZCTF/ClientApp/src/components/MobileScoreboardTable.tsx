@@ -10,6 +10,7 @@ import {
   Table,
   useMantineTheme,
 } from '@mantine/core'
+import cx from 'clsx'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -28,7 +29,7 @@ const TableRow: FC<{
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
     <Table.Tr>
-      <Table.Td className={`${classes.mono} ${classes.left}`}>{item.rank}</Table.Td>
+      <Table.Td className={cx(classes.mono, classes.left)}>{item.rank}</Table.Td>
       <Table.Td className={classes.left}>
         <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
@@ -66,7 +67,7 @@ const TableRow: FC<{
           />
         </Group>
       </Table.Td>
-      <Table.Td className={`${classes.mono} ${classes.left}`}>
+      <Table.Td className={cx(classes.mono, classes.left)}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
       </Table.Td>
     </Table.Tr>
@@ -144,7 +145,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
                     t('game.label.score_table.team'),
                     t('game.label.score_table.score_total'),
                   ].map((header, idx) => (
-                    <Table.Th key={idx} className={`${classes.left} ${classes.theadHeader}`}>
+                    <Table.Th key={idx} className={cx(classes.left, classes.theadHeader)}>
                       {header}
                     </Table.Th>
                   ))}
