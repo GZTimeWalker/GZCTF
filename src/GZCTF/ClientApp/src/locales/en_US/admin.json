@@ -291,11 +291,11 @@
       },
       "platform": {
         "color": {
-          "description": "自定义平台颜色，用于生成主题色盘",
+          "description": "Custom color for the platform",
           "label": "Platform Color"
         },
         "color_palette": {
-          "description": "自定义平台颜色生成的色盘",
+          "description": "Color palette generated from the custom color",
           "label": "Color Palette"
         },
         "footer": {
