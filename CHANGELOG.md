@@ -3,6 +3,34 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.0..v0.20.1) - 2024-05-11
+
+### ⛰️ Features
+
+- **(i18n)** switch language on mobile - ([e6ff33](https://github.com/GZTimeWalker/GZCTF/commit/e6ff33)) by **GZTime**
+- **(style)** use more css modules - ([04cd3e](https://github.com/GZTimeWalker/GZCTF/commit/04cd3e)) by **GZTime**
+- control frontend color on client - ([fc3e8b](https://github.com/GZTimeWalker/GZCTF/commit/fc3e8b)) by **GZTime**
+- custom theme color for frontend - ([d45f6d](https://github.com/GZTimeWalker/GZCTF/commit/d45f6d)) by **GZTime**
+- add global `ErrorBoundary` - ([55e610](https://github.com/GZTimeWalker/GZCTF/commit/55e610)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(notification)** container destory notification - ([5448ad](https://github.com/GZTimeWalker/GZCTF/commit/5448ad)) by **GZTime**
+- **(security)** html injection by team name - ([31e775](https://github.com/GZTimeWalker/GZCTF/commit/31e775)) by **GZTime**
+- **(style)** tooltip & font size in navbar - ([7d2b2b](https://github.com/GZTimeWalker/GZCTF/commit/7d2b2b)) by **GZTime**
+- **(style)** mobile post card - ([4f0a15](https://github.com/GZTimeWalker/GZCTF/commit/4f0a15)) by **GZTime**
+- **(style)** pinned post card - ([d9b8b8](https://github.com/GZTimeWalker/GZCTF/commit/d9b8b8)) by **GZTime**
+- **(style)** sticky header - ([d495c1](https://github.com/GZTimeWalker/GZCTF/commit/d495c1)) by **GZTime**
+- **(style)** notifications never close - ([219c60](https://github.com/GZTimeWalker/GZCTF/commit/219c60)) by **GZTime**
+- some global config will be clear when save color - ([c547bb](https://github.com/GZTimeWalker/GZCTF/commit/c547bb)) by **GZTime**
+- custom theme cannot be set properly - ([725b3a](https://github.com/GZTimeWalker/GZCTF/commit/725b3a)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- **(i18n)** update translations - ([e9f2d9](https://github.com/GZTimeWalker/GZCTF/commit/e9f2d9)) by **GZTime**
+- use `useEffect` & `useState` for custom theme - ([924395](https://github.com/GZTimeWalker/GZCTF/commit/924395)) by **GZTime**
+
+---
 ## [0.20.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.4..v0.20.0) - 2024-05-08
 
 ### ⛰️ Features
@@ -15,7 +43,14 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### 🐛 Bug Fixes
 
 - **(i18n)** set `lang` attr in `html` - ([9d8b39](https://github.com/GZTimeWalker/GZCTF/commit/9d8b39)) by **GZTime**
+- **(style)** review page - ([d6bf73](https://github.com/GZTimeWalker/GZCTF/commit/d6bf73)) by **GZTime**
+- **(style)** blinking underline - ([e88bc5](https://github.com/GZTimeWalker/GZCTF/commit/e88bc5)) by **GZTime**
+- **(style)** some style issue - ([26ca2c](https://github.com/GZTimeWalker/GZCTF/commit/26ca2c)) by **GZTime**
 - **(style)** footer color use css var - ([aafbf2](https://github.com/GZTimeWalker/GZCTF/commit/aafbf2)) by **GZTime**
+
+### 🎨 Styling
+
+- use tootip for blood legend - ([f05f13](https://github.com/GZTimeWalker/GZCTF/commit/f05f13)) by **GZTime**
 
 ---
 ## [0.19.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.19.3..v0.19.4) - 2024-05-03
