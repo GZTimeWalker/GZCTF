@@ -8,21 +8,17 @@ import PostCard from '@Components/PostCard'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { PostInfoModel, Role } from '@Api'
+import btnClasses from '@Styles/FixedButton.module.css'
 
 const ITEMS_PER_PAGE = 10
 
 const Posts: FC = () => {
   const { data: posts, mutate } = api.info.useInfoGetPosts(OnceSWRConfig)
 
-  const { classes: btnClasses } = useFixedButtonStyles({
-    right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
-    bottom: '2rem',
-  })
   const [activePage, setPage] = useState(1)
   const navigate = useNavigate()
   const { role } = useUserRole()
@@ -81,7 +77,10 @@ const Posts: FC = () => {
       </Stack>
       {RequireRole(Role.Admin, role) && (
         <Button
-          className={btnClasses.fixedButton}
+          className={btnClasses.root}
+          __vars={{
+            '--fixed-right': 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
+          }}
           variant="filled"
           radius="xl"
           size="md"

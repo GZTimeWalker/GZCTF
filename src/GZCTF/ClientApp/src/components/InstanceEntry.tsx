@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -25,9 +26,9 @@ import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useConfig } from '@Utils/useConfig'
 import { ClientFlagContext } from '@Api'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface InstanceEntryProps {
   test?: boolean
@@ -81,8 +82,6 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const [withContainer, setWithContainer] = useState(!!context.instanceEntry)
 
-  const { classes: tooltipClasses, theme } = useTooltipStyles()
-
   const instanceEntry = context.instanceEntry ?? ''
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
   const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, test) : instanceEntry
@@ -90,6 +89,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const [canExtend, setCanExtend] = useState(false)
 
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   const enableExtend = () => {
     if (canExtend) return

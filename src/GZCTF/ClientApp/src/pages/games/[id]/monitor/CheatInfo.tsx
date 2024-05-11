@@ -29,10 +29,12 @@ import { ParticipationStatusControl } from '@Components/admin/ParticipationStatu
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { useAccordionStyles, useDisplayInputStyles, useTableStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
+import classes from '@Styles/Accordion.module.css'
+import tableClasses from '@Styles/Table.module.css'
 
 enum CheatType {
   Submit = 'Submit',
@@ -259,7 +261,6 @@ interface CheatInfoTeamViewProps {
 
 const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
   const { role } = useUserRole()
-  const { classes } = useAccordionStyles()
   const { cheatTeamInfo, disabled, setParticipationStatus } = props
 
   const { t } = useTranslation()
@@ -305,8 +306,7 @@ interface CheatInfoTableViewProps {
 }
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
-  const { classes, cx } = useTableStyles()
-  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
+  const { classes: inputClasses, cx } = useDisplayInputStyles({ ff: 'monospace' })
 
   const { t } = useTranslation()
 
@@ -316,7 +316,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
     )
     .map((item, i) => (
       <Table.Tr key={`${item.submission?.time}@${i}`}>
-        <Table.Td className={cx(classes.mono)}>
+        <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
             {dayjs(item.submission?.time).format('MM/DD HH:mm:ss')}
           </Badge>

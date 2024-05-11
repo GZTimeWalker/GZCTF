@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   Center,
   Code,
@@ -9,16 +10,17 @@ import {
   Title,
   Tooltip,
   alpha,
+  useMantineTheme,
 } from '@mantine/core'
-import { createStyles, keyframes } from '@mantine/emotion'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
 import { BloodsTypes, useChallengeTagLabelMap } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, SubmissionType } from '@Api'
+import classes from '@Styles/ChallengeCard.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface ChallengeCardProps {
   challenge: ChallengeInfo
@@ -29,57 +31,11 @@ interface ChallengeCardProps {
   teamId?: number
 }
 
-export const useStyles = createStyles((theme, { colorMap }: ChallengeCardProps, u) => ({
-  spike: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '70%',
-    height: '200%',
-    zIndex: 91,
-    animation: `${keyframes`0% { opacity: .3; } 100% { opacity: 1; }`} 2s linear 0s infinite alternate`,
-
-    [u.dark]: {
-      filter: 'brightness(.8) saturate(.5)',
-    },
-
-    [u.light]: {
-      filter: 'brightness(1.2) saturate(.8)',
-    },
-  },
-  blood1: {
-    background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.FirstBlood)}, #fff0)`,
-  },
-  blood2: {
-    background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.SecondBlood)}, #fff0)`,
-  },
-  blood3: {
-    background: `linear-gradient(0deg, #fff0, ${colorMap.get(SubmissionType.ThirdBlood)}, #fff0)`,
-  },
-  card: {
-    transition: 'filter .1s',
-
-    '&:hover': {
-      cursor: 'pointer',
-
-      [u.dark]: {
-        filter: 'brightness(1.2)',
-      },
-
-      [u.light]: {
-        filter: 'brightness(.97)',
-      },
-    },
-  },
-}))
-
 const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
-  const { challenge, solved, onClick, iconMap, teamId } = props
+  const { challenge, solved, onClick, iconMap, teamId, colorMap } = props
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const tagData = challengeTagLabelMap.get(challenge.tag!)
-  const { classes, cx, theme } = useStyles(props)
-  const { classes: tooltipClasses } = useTooltipStyles()
+  const theme = useMantineTheme()
   const colorStr = theme.colors[tagData?.color ?? theme.primaryColor][5]
 
   return (
@@ -132,12 +88,12 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                       <div style={{ position: 'relative', zIndex: 92 }}>
                         {iconMap.get(BloodsTypes[idx])}
                       </div>
-                      <div
-                        className={cx(
-                          classes.spike,
-                          idx === 0 ? classes.blood1 : idx === 1 ? classes.blood2 : classes.blood3
-                        )}
-                        style={{ display: teamId === blood?.id ? 'block' : 'none' }}
+                      <Box
+                        className={classes.spike}
+                        data-blood={teamId === blood?.id || undefined}
+                        __vars={{
+                          '--blood-color': colorMap.get(BloodsTypes[idx]),
+                        }}
                       />
                     </div>
                   </Tooltip.Floating>

@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
@@ -19,17 +20,18 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import CustomProgress from '@Components/CustomProgress'
 import GameJoinModal from '@Components/GameJoinModal'
+import GameProgress from '@Components/GameProgress'
 import MarkdownRender from '@Components/MarkdownRender'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
-import { useBannerStyles, useIsMobile } from '@Utils/ThemeOverride'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useTeams, useUser } from '@Utils/useUser'
 import api, { GameJoinModel, ParticipationStatus } from '@Api'
+import classes from '@Styles/Banner.module.css'
 
 const GetAlert = (status: ParticipationStatus, team: string) => {
   const { t } = useTranslation()
@@ -84,7 +86,7 @@ const GameDetail: FC = () => {
 
   const { game, error, mutate, status } = useGame(numId)
 
-  const { classes, theme } = useBannerStyles()
+  const theme = useMantineTheme()
 
   const { startTime, endTime, finished, started, progress } = getGameStatus(game)
 
@@ -272,7 +274,7 @@ const GameDetail: FC = () => {
                 </Text>
               </Stack>
             </Group>
-            <CustomProgress percentage={progress} />
+            <GameProgress percentage={progress} />
             <Group>{ControlButtons}</Group>
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">

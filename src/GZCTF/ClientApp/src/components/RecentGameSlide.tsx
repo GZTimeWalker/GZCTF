@@ -1,5 +1,4 @@
 import { Badge, Group, Paper, Stack, Title } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,37 +6,13 @@ import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
 import { getGameStatus } from '@Utils/useGame'
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    height: 200,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-
-  title: {
-    fontWeight: 700,
-    color: theme.white,
-    lineHeight: 1.4,
-    fontSize: 24,
-    marginTop: theme.spacing.xs,
-    textShadow: '0 0 10px rgba(0, 0, 0, 0.5)',
-  },
-}))
+import classes from '@Styles/RecentGameSlide.module.css'
 
 const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
-  const { classes } = useStyles()
-
-  const { t } = useTranslation()
-
   const { title, poster } = game
-
   const { startTime, endTime, status } = getGameStatus(game)
 
+  const { t } = useTranslation()
   const color = GameColorMap.get(status)
 
   const duration =

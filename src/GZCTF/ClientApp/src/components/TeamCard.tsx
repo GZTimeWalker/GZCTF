@@ -9,13 +9,15 @@ import {
   Text,
   Title,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useHoverCardStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
+import cardClasses from '@Styles/HoverCard.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface TeamCardProps {
   team: TeamInfoModel
@@ -31,9 +33,7 @@ const TeamCard: FC<TeamCardProps> = (props) => {
   const captain = team.members?.filter((m) => m?.captain)[0]
   const members = team.members?.filter((m) => !m?.captain)
 
-  const { classes: tooltipClasses, theme } = useTooltipStyles()
-  const { classes: cardClasses } = useHoverCardStyles()
-
+  const theme = useMantineTheme()
   const { t } = useTranslation()
 
   return (

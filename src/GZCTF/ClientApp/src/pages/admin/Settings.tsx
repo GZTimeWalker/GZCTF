@@ -11,6 +11,7 @@ import {
   Switch,
   TextInput,
   Title,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -20,9 +21,9 @@ import ColorPreview from '@Components/ColorPreview'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
+import btnClasses from '@Styles/FixedButton.module.css'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
@@ -37,10 +38,7 @@ const Configs: FC = () => {
   const { t } = useTranslation()
 
   const [saved, setSaved] = useState(true)
-  const { classes: btnClasses, theme } = useFixedButtonStyles({
-    right: 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
-    bottom: '2rem',
-  })
+  const theme = useMantineTheme()
 
   useEffect(() => {
     if (configs) {
@@ -71,7 +69,10 @@ const Configs: FC = () => {
   return (
     <AdminPage isLoading={!configs}>
       <Button
-        className={btnClasses.fixedButton}
+        className={btnClasses.root}
+        __vars={{
+          '--fixed-right': 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
+        }}
         variant="filled"
         radius="xl"
         size="md"

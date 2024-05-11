@@ -8,15 +8,16 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { useHoverCardStyles } from '@Utils/ThemeOverride'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
+import classes from '@Styles/HoverCard.module.css'
 
 export enum GameStatus {
   Coming = 'coming',
@@ -35,7 +36,7 @@ interface GameCardProps {
 }
 
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
-  const { classes: cardClasses, theme } = useHoverCardStyles()
+  const theme = useMantineTheme()
   const { t } = useTranslation()
 
   const { summary, title, poster, limit } = game
@@ -46,13 +47,7 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const color = GameColorMap.get(status)
 
   return (
-    <Card
-      {...others}
-      shadow="sm"
-      component={Link}
-      to={`/games/${game.id}`}
-      classNames={cardClasses}
-    >
+    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={classes}>
       <Card.Section>
         <Group wrap="nowrap" align="flex-start">
           <BackgroundImage src={poster ?? ''} h="10rem" maw="20rem" miw="20rem">

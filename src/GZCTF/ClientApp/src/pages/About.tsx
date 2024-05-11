@@ -3,12 +3,12 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
-import { useLogoStyles } from '@Utils/ThemeOverride'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
+import iconClasses from '@Styles/Icon.module.css'
+import classes from './About.module.css'
 
 const About: FC = () => {
-  const { classes } = useLogoStyles()
   const { config } = useConfig()
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()
@@ -48,14 +48,8 @@ const About: FC = () => {
                 <Group>
                   <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
                   <Stack gap="xs">
-                    <Title
-                      style={{
-                        marginLeft: '-20px',
-                        marginBottom: '-5px',
-                      }}
-                      className={classes.title}
-                    >
-                      GZ<span className={classes.brand}>::</span>CTF
+                    <Title ml="-20px" mb="-5px" className={classes.title}>
+                      GZ<span className={iconClasses.front}>::</span>CTF
                     </Title>
                     <Group ml="-18px" mt="-5px">
                       <Anchor

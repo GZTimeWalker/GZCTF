@@ -33,10 +33,10 @@ import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { useUser } from '@Utils/useUser'
 import api, { Role, UserInfoModel } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -59,8 +59,6 @@ const Users: FC = () => {
   const modals = useModals()
   const { user: currentUser } = useUser()
   const clipboard = useClipboard()
-  const { classes } = useTableStyles()
-
   const { t } = useTranslation()
   const viewport = useRef<HTMLDivElement>(null)
 
@@ -250,7 +248,7 @@ const Users: FC = () => {
           scrollbarSize={4}
           h="calc(100vh - 190px)"
         >
-          <Table className={classes.table}>
+          <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>

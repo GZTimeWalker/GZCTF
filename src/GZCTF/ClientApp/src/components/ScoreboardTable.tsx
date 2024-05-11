@@ -13,9 +13,10 @@ import {
   Text,
   Tooltip,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -28,68 +29,10 @@ import {
   SubmissionTypeIconMap,
   useBonusLabels,
 } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
-
-export const useScoreboardStyles = createStyles((theme, _, u) => ({
-  table: {
-    tableLayout: 'fixed',
-    width: 'auto',
-    minWidth: '100%',
-
-    '& thead tr th, & tbody tr td': {
-      textAlign: 'center',
-      padding: '8px',
-      whiteSpace: 'nowrap',
-      fontSize: 12,
-    },
-  },
-  thead: {
-    zIndex: 5,
-  },
-  theadFixLeft: {
-    position: 'sticky',
-    [u.dark]: {
-      backgroundColor: theme.colors.dark[7],
-    },
-
-    [u.light]: {
-      backgroundColor: theme.white,
-    },
-  },
-  theadHeader: {
-    fontWeight: 'bold',
-  },
-  theadMono: {
-    fontWeight: 'bold',
-    fontFamily: theme.fontFamilyMonospace,
-  },
-  legend: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: 12,
-    float: 'left',
-    zIndex: 20,
-  },
-  text: {
-    fontSize: '0.9em',
-    fontFamily: theme.fontFamilyMonospace,
-    fontWeight: 600,
-  },
-  inputWapper: {
-    width: '100%',
-  },
-  input: {
-    userSelect: 'none',
-    fontWeight: 500,
-
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-}))
+import classes from '@Styles/ScoreboardTable.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const Lefts = [0, 55, 110, 280, 350, 410]
 const Widths = Array(5).fill(0)
@@ -98,8 +41,7 @@ Lefts.forEach((val, idx) => {
 })
 
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
-  const { classes, cx, theme } = useScoreboardStyles()
-
+  const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
   const challengeTagLabelMap = useChallengeTagLabelMap()
@@ -107,7 +49,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const hiddenCol = [...Array(5).keys()].map((i) => (
     <Table.Th
       key={i}
-      className={classes.theadFixLeft}
+      className={classes.left}
       style={{
         left: Lefts[i],
         width: Widths[i],
@@ -170,7 +112,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
         ].map((header, idx) => (
           <Table.Th
             key={idx}
-            className={cx(classes.theadFixLeft, classes.theadHeader)}
+            className={cx(classes.left, classes.header)}
             style={{ left: Lefts[idx] }}
           >
             {header}
@@ -178,7 +120,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
         ))}
         {Object.keys(table).map((key) =>
           table[key].map((item) => (
-            <Table.Th key={item.id} className={classes.theadMono}>
+            <Table.Th key={item.id} className={classes.mono}>
               {item.score}
             </Table.Th>
           ))
@@ -196,20 +138,19 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, React.ReactNode>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
-  const { classes, cx, theme } = useScoreboardStyles()
-  const { classes: tooltipClasses } = useTooltipStyles()
+  const theme = useMantineTheme()
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
 
   return (
     <Table.Tr>
-      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[0] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[0] }}>
         {item.rank}
       </Table.Td>
-      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[1] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[1] }}>
         {allRank ? item.rank : item.organizationRank ?? tableRank}
       </Table.Td>
-      <Table.Td className={cx(classes.theadFixLeft)} style={{ left: Lefts[2] }}>
+      <Table.Td className={classes.left} style={{ left: Lefts[2] }}>
         <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
@@ -230,14 +171,14 @@ const TableRow: FC<{
             value={item.name}
             readOnly
             size="sm"
-            classNames={{ wrapper: classes.inputWapper, input: classes.input }}
+            classNames={{ wrapper: classes.wapper, input: classes.input }}
           />
         </Group>
       </Table.Td>
-      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[3] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[3] }}>
         {solved?.length}
       </Table.Td>
-      <Table.Td className={cx(classes.theadMono, classes.theadFixLeft)} style={{ left: Lefts[4] }}>
+      <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[4] }}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
       </Table.Td>
       {challenges &&
@@ -246,12 +187,12 @@ const TableRow: FC<{
             const chal = solved?.find((c) => c.id === item.id)
             const icon = iconMap.get(chal?.type ?? SubmissionType.Unaccepted)
 
-            if (!icon) return <Table.Td key={item.id} className={classes.theadMono} />
+            if (!icon) return <Table.Td key={item.id} className={classes.mono} />
 
             const tag = challengeTagLabelMap.get(item.tag as ChallengeTag)!
 
             return (
-              <Table.Td key={item.id} className={classes.theadMono}>
+              <Table.Td key={item.id} className={classes.mono}>
                 <Tooltip
                   classNames={tooltipClasses}
                   transitionProps={{ transition: 'pop' }}
@@ -289,7 +230,6 @@ export interface ScoreboardProps {
 const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { classes } = useScoreboardStyles()
   const { iconMap } = SubmissionTypeIconMap(1)
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)

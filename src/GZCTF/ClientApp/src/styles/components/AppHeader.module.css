@@ -1,0 +1,12 @@
+.header {
+  width: 100%;
+  z-index: 150;
+  border: none;
+  box-shadow: var(--mantine-shadow-md);
+
+  background-color: light-dark(var(--mantine-color-light-0), var(--mantine-color-gray-8));
+}
+
+.button {
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-0));
+}

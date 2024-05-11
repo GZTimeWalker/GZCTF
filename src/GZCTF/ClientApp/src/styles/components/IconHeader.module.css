@@ -1,0 +1,48 @@
+.group {
+  width: 100%;
+  top: 16px;
+  padding-bottom: 8px;
+  z-index: 50;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 var(--header-px) var(--mantine-spacing-sm) var(--header-px);
+  position: relative;
+  background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-7));
+
+  &[data-sticky] {
+    position: sticky;
+  }
+
+  &[data-sticky]::before {
+    content: '';
+    position: absolute;
+    top: -16px;
+    right: 0;
+    left: 0;
+    padding-top: 16px;
+    background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-7));
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.blink {
+  font-family: var(--mantine-font-family-monospace);
+  font-weight: bold;
+  font-size: 1.375rem;
+  animation: blink 1s infinite steps(1, start);
+}
+
+.subtitle {
+  font-family: var(--mantine-font-family-monospace);
+  font-weight: bold;
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-4));
+}

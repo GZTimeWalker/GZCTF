@@ -21,6 +21,7 @@ import Empty from '@Components/Empty'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
+import classes from '@Styles/Typography.module.css'
 
 enum NoticeFilter {
   All = 'all',
@@ -205,12 +206,18 @@ const GameNoticePanel: FC = () => {
                     <Text fz="xs" fw="bold" c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>
-                    <InlineMarkdownRender
-                      fz="sm"
-                      fw={500}
-                      c="dimmed"
-                      source={formatNotice(t, notice)}
-                    />
+                    {notice.type === NoticeType.Normal ? (
+                      <InlineMarkdownRender
+                        fz="sm"
+                        fw={500}
+                        c="dimmed"
+                        source={formatNotice(t, notice)}
+                      />
+                    ) : (
+                      <Text fz="sm" fw={500} c="dimmed" className={classes.inline}>
+                        {formatNotice(t, notice)}
+                      </Text>
+                    )}
                   </Stack>
                 </List.Item>
               ))}

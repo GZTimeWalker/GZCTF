@@ -1,12 +1,15 @@
-import { Box, Group, GroupProps, MantineColor } from '@mantine/core'
-import { createStyles, getStylesRef } from '@mantine/emotion'
+import {
+  Box,
+  Group,
+  GroupProps,
+  MantineColor,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import React, { FC, useEffect, useState } from 'react'
 import LogoHeader from '@Components/LogoHeader'
-
-interface TabStyleProps {
-  color?: MantineColor
-}
+import classes from '@Styles/IconTabs.module.css'
 
 interface TabProps {
   tabKey: string
@@ -21,107 +24,15 @@ interface IconTabsProps extends GroupProps {
   grow?: boolean
   active?: number
   withIcon?: boolean
+  disabled?: boolean
   aside?: React.ReactNode
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
-const useTabStyle = createStyles((theme, props: TabStyleProps, u) => {
-  const activeTab = { ref: getStylesRef('activeTab') } as const
-  const _color = props.color ?? theme.primaryColor
-
-  return {
-    activeTab,
-    default: {
-      transition: 'border-color 100ms ease, color 100ms ease, background 100ms ease',
-      borderRadius: theme.radius.sm,
-      fontSize: theme.fontSizes.sm,
-      height: 'auto',
-      padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
-      fontWeight: 500,
-      boxSizing: 'border-box',
-      cursor: 'pointer',
-      border: 0,
-      display: 'block',
-      backgroundColor: 'transparent',
-
-      [u.smallerThan('xs')]: {
-        padding: `${theme.spacing.xs} ${theme.spacing.md}`,
-      },
-
-      [u.dark]: {
-        color: theme.colors.dark[1],
-      },
-
-      [u.light]: {
-        color: theme.colors.gray[7],
-      },
-
-      '&:disabled': {
-        cursor: 'not-allowed',
-
-        [u.dark]: {
-          color: theme.colors.dark[3],
-        },
-
-        [u.light]: {
-          color: theme.colors.gray[5],
-        },
-      },
-
-      '&:hover': {
-        [u.dark]: {
-          backgroundColor: theme.colors.dark[6],
-        },
-
-        [u.light]: {
-          backgroundColor: theme.colors.gray[0],
-        },
-      },
-
-      [`&.${activeTab.ref}`]: {
-        [u.dark]: {
-          backgroundColor: theme.colors.dark[7],
-          color: theme.colors[_color][4],
-        },
-
-        [u.light]: {
-          backgroundColor: theme.white,
-          color: theme.colors[_color][6],
-        },
-      },
-    },
-    tabInner: {
-      boxSizing: 'border-box',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      lineHeight: 1,
-      height: '100%',
-
-      [u.smallerThan('xs')]: {
-        flexDirection: 'column',
-        gap: theme.spacing.md,
-      },
-    },
-    tabLabel: {
-      fontWeight: 700,
-    },
-    tabIcon: {
-      margin: 'auto',
-
-      '&:not(:only-child)': {
-        marginRight: theme.spacing.xs,
-      },
-      '& *': {
-        display: 'block',
-      },
-    },
-  }
-})
-
-const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) => {
-  const { color, label, active, icon, tabKey, ...others } = props
-  const { classes, cx } = useTabStyle({ color })
+const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boolean }> = (
+  props
+) => {
+  const { color, label, active, icon, tabKey, disabled, ...others } = props
 
   return (
     <Box
@@ -129,21 +40,29 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) =>
       component="button"
       type="button"
       role="tab"
+      disabled={disabled}
       key={tabKey}
-      className={cx(classes.default, { [classes.activeTab]: active })}
+      __vars={{
+        '--tab-active-color': color,
+      }}
+      data-active={active || undefined}
+      className={classes.default}
     >
-      <div className={classes.tabInner}>
-        {icon && <div className={classes.tabIcon}>{icon}</div>}
-        {label && <div className={classes.tabLabel}>{label}</div>}
+      <div className={classes.inner}>
+        {icon && <div className={classes.icon}>{icon}</div>}
+        {label && <div className={classes.label}>{label}</div>}
       </div>
     </Box>
   )
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, tabs, withIcon, aside, ...others } = props
+  const { active, onTabChange, tabs, withIcon, aside, disabled, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
-
+  const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
+  const resolveColor = (color?: MantineColor) =>
+    theme.colors[color ?? theme.primaryColor][colorScheme === 'dark' ? 6 : 7]
   const activeTab = clamp(_activeTab, 0, tabs.length - 1)
 
   useEffect(() => {
@@ -153,6 +72,8 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   const panes = tabs.map((tab, index) => (
     <Tab
       {...tab}
+      disabled={disabled}
+      color={resolveColor(tab.color)}
       key={tab.tabKey}
       active={activeTab === index}
       onClick={() => {

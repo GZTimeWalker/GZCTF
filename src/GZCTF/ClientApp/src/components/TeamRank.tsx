@@ -11,7 +11,6 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
@@ -23,20 +22,11 @@ import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useGameTeamInfo } from '@Utils/useGame'
 
-const useStyle = createStyles((theme) => ({
-  number: {
-    fontFamily: theme.fontFamilyMonospace,
-    fontWeight: 700,
-  },
-}))
-
 const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
   const { teamInfo, error } = useGameTeamInfo(numId)
-
-  const { classes, theme } = useStyle()
 
   const clipboard = useClipboard()
   const isMobile = useIsMobile(1080)
@@ -79,27 +69,35 @@ const TeamRank: FC<CardProps> = (props) => {
         <Group grow ta="center">
           <Stack gap={2}>
             <Skeleton visible={!teamInfo}>
-              <Text className={classes.number}>{teamInfo?.rank?.rank ?? '0'}</Text>
+              <Text ff="monospace" fw="bold">
+                {teamInfo?.rank?.rank ?? '0'}
+              </Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
           </Stack>
           {teamInfo?.rank?.organization && (
             <Stack gap={2}>
               <Skeleton visible={!teamInfo}>
-                <Text className={classes.number}>{teamInfo?.rank?.organizationRank ?? '0'}</Text>
+                <Text ff="monospace" fw="bold">
+                  {teamInfo?.rank?.organizationRank ?? '0'}
+                </Text>
               </Skeleton>
               <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
             </Stack>
           )}
           <Stack gap={2}>
             <Skeleton visible={!teamInfo}>
-              <Text className={classes.number}>{teamInfo?.rank?.score ?? '0'}</Text>
+              <Text ff="monospace" fw="bold">
+                {teamInfo?.rank?.score ?? '0'}
+              </Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.score')}</Text>
           </Stack>
           <Stack gap={2}>
             <Skeleton visible={!teamInfo}>
-              <Text className={classes.number}>{teamInfo?.rank?.solvedCount ?? '0'}</Text>
+              <Text ff="monospace" fw="bold">
+                {teamInfo?.rank?.solvedCount ?? '0'}
+              </Text>
             </Skeleton>
             <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
           </Stack>
@@ -119,12 +117,12 @@ const TeamRank: FC<CardProps> = (props) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            styles={{
+            styles={(theme) => ({
               innerInput: {
                 cursor: 'copy',
                 fontFamily: theme.fontFamilyMonospace,
               },
-            }}
+            })}
           />
         )}
       </Stack>

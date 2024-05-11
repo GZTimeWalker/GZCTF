@@ -2,13 +2,11 @@ import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/
 import { mdiFolderDownloadOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
-import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import PDFViewer from '@Components/admin/PDFViewer'
 import TeamWriteupCard from '@Components/admin/TeamWriteupCard'
 import WithGameTab from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiHelper'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { WriteupInfoModel } from '@Api'
 
@@ -51,16 +49,7 @@ const GameWriteups: FC = () => {
       ) : (
         <Group wrap="nowrap" align="flex-start" justify="space-between">
           <Stack pos="relative" mt="-3rem" w="calc(100% - 16rem)">
-            <ErrorBoundary
-              fallback={
-                <Center mih="calc(100vh - 110px)">
-                  <Text>{t('admin.content.games.writeups.pdf_fallback')}</Text>
-                </Center>
-              }
-              onError={(e) => showErrorNotification(e, t)}
-            >
-              <PDFViewer url={selected?.url} height="calc(100vh - 110px)" />
-            </ErrorBoundary>
+            <PDFViewer url={selected?.url} height="calc(100vh - 110px)" />
           </Stack>
           <ScrollArea miw="15rem" maw="15rem" h="calc(100vh - 110px - 3rem)" type="never">
             <Stack gap="sm">

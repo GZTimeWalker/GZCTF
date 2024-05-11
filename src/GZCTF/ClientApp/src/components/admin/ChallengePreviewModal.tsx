@@ -12,6 +12,7 @@ import {
   TextInput,
   Title,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
@@ -23,9 +24,9 @@ import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { ChallengeTagItemProps } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
-import { useTypographyStyles } from '@Utils/useTypographyStyles'
 import { ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
+import tooltipClasses from '@Styles/Tooltip.module.css'
+import classes from '@Styles/Typography.module.css'
 
 interface ChallengePreviewModalProps extends ModalProps {
   challenge: ChallengeUpdateModel
@@ -41,7 +42,6 @@ interface FakeContext {
 
 const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
   const { challenge, type, attachmentType, tagData, ...modalProps } = props
-  const { classes: tooltipClasses } = useTooltipStyles()
 
   const [placeholder, setPlaceholder] = useState('')
   const [flag, setFlag] = useInputState('')
@@ -52,6 +52,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
   })
 
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   const onCreate = () => {
     setContext({
@@ -89,7 +90,6 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
 
   const isDynamic =
     type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer
-  const { classes, theme } = useTypographyStyles()
 
   return (
     <Modal
@@ -161,14 +161,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
               )}
               <MarkdownRender
                 source={challenge?.content ?? ''}
-                sx={{
-                  '& div > p:first-child:before': {
-                    content: '""',
-                    float: 'right',
-                    width: 45,
-                    height: 45,
-                  },
-                }}
+                withRightIcon={attachmentType !== FileType.None}
               />
             </Box>
           </Group>

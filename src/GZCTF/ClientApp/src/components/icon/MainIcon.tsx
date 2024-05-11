@@ -1,12 +1,11 @@
 import { FC, SVGProps } from 'react'
-import { useIconStyles } from '@Utils/ThemeOverride'
+import classes from '@Styles/Icon.module.css'
 
 interface MainIconProps extends SVGProps<SVGSVGElement> {
   ignoreTheme?: boolean
 }
 
 const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
-  const { classes } = useIconStyles()
   const { ignoreTheme, ...svgProps } = props
 
   return (
@@ -19,7 +18,7 @@ const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
         />
       ) : (
         <path
-          className={classes.triangle}
+          className={classes.main}
           fillRule="evenodd"
           d="M2994.48,4244.61L505.28,2807.47V1992.53l256.572-148.14L1287,2285l258-307,160.39,135.56L1209.27,2400l1786.1,1031.21V2427.79L3517,1806,2420.98,886.5l573.5-331.11,705.76,407.474V3837.14Z"
         />

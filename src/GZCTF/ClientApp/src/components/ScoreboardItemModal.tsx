@@ -18,8 +18,8 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
-import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
@@ -29,7 +29,6 @@ interface ScoreboardItemModalProps extends ModalProps {
 
 const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, challenges, bloodBonusMap, ...modalProps } = props
-  const { classes } = useTableStyles()
 
   const { t } = useTranslation()
 
@@ -100,27 +99,27 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           </Center>
           <Group grow ta="center">
             <Stack gap={2}>
-              <Text fw="bold" size="sm" className={classes.mono}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.rank}
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
             {item?.organization && (
               <Stack gap={2}>
-                <Text fw="bold" size="sm" className={classes.mono}>
+                <Text fw="bold" size="sm" ff="monospace">
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
               </Stack>
             )}
             <Stack gap={2}>
-              <Text fw="bold" size="sm" className={classes.mono}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.score}
               </Text>
               <Text size="xs">{t('game.label.score_table.score')}</Text>
             </Stack>
             <Stack gap={2}>
-              <Text fw="bold" size="sm" className={classes.mono}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.solvedCount}
               </Text>
               <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
@@ -130,7 +129,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
-            <Table className={classes.table}>
+            <Table className={tableClasses.table}>
               <Table.Thead>
                 <Table.Tr>
                   <Table.Th>{t('common.label.user')}</Table.Th>
@@ -152,18 +151,18 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                         <Table.Tr key={chal.id}>
                           <Table.Td style={{ fontWeight: 500 }}>{chal.userName}</Table.Td>
                           <Table.Td>{info?.title}</Table.Td>
-                          <Table.Td className={classes.mono}>{info?.tag}</Table.Td>
-                          <Table.Td className={classes.mono}>
+                          <Table.Td ff="monospace">{info?.tag}</Table.Td>
+                          <Table.Td ff="monospace">
                             {chal.score}
                             {chal.score! > info?.score! &&
                               chal.type &&
                               BloodsTypes.includes(chal.type) && (
-                                <Text span c="dimmed" className={classes.mono}>
+                                <Text span c="dimmed" ff="monospace">
                                   {` (${bloodBonusMap.get(chal.type)?.descr})`}
                                 </Text>
                               )}
                           </Table.Td>
-                          <Table.Td className={classes.mono}>
+                          <Table.Td ff="monospace">
                             {dayjs(chal.time).format('MM/DD HH:mm:ss')}
                           </Table.Td>
                         </Table.Tr>

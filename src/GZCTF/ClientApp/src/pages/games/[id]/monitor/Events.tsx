@@ -32,9 +32,10 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import { useDisplayInputStyles, useTableStyles } from '@Utils/ThemeOverride'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, EventType, GameEvent } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -132,7 +133,6 @@ const Events: FC = () => {
   const { game } = useGame(numId)
 
   const iconMap = EventTypeIconMap(1.15)
-  const { classes } = useTableStyles()
   const { classes: inputClasses } = useDisplayInputStyles({ fw: 500 })
   const { t } = useTranslation()
   const viewport = useRef<HTMLDivElement>(null)
@@ -241,7 +241,9 @@ const Events: FC = () => {
               p="xs"
               key={`${event.time}@${i}`}
               className={
-                i === 0 && activePage === 1 && filteredEvents.length > 0 ? classes.fade : undefined
+                i === 0 && activePage === 1 && filteredEvents.length > 0
+                  ? tableClasses.fade
+                  : undefined
               }
             >
               <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">

@@ -1,0 +1,36 @@
+.title {
+  color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-light-0));
+}
+
+.bio {
+  font-family: var(--mantine-font-family-monospace);
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-2));
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.blink {
+  font-family: var(--mantine-font-family-monospace);
+  font-weight: bold;
+  font-size: 1.5rem;
+  animation: blink 1s infinite steps(1, start);
+}
+
+.watermark {
+  position: absolute;
+  font-size: 12rem;
+  font-weight: bold;
+  opacity: 0.05;
+  transform: scale(1.5);
+  user-select: none;
+}

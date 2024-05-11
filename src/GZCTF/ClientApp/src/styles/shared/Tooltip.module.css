@@ -1,0 +1,10 @@
+.tooltip {
+  font-weight: 500;
+  box-shadow: var(--mantine-shadow-md);
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-0));
+  background-color: light-dark(var(--mantine-color-light-0), var(--mantine-color-gray-7));
+}
+
+.arrow {
+  box-shadow: var(--mantine-shadow-md);
+}

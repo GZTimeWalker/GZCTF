@@ -1,0 +1,36 @@
+.root {
+  overflow-x: auto;
+  text-align: center;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dimmed);
+
+  & p {
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow: hidden;
+    margin-bottom: var(--mantine-spacing-xs);
+  }
+
+  & :not(pre) > code {
+    color: var(--mantine-color-dimmed);
+    white-space: normal;
+    font-size: 0.95em;
+    background-color: transparent;
+    padding: 1px calc(var(--mantine-spacing-xs) / 2);
+    border: none;
+  }
+
+  & strong {
+    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
+  }
+
+  & a {
+    color: var(--mantine-color-dimmed);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+  }
+
+  & a:hover {
+    text-decoration: none;
+  }
+}

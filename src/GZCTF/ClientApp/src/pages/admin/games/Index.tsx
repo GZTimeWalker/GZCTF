@@ -27,10 +27,10 @@ import { GameColorMap } from '@Components/GameCard'
 import AdminPage from '@Components/admin/AdminPage'
 import GameCreateModal from '@Components/admin/GameCreateModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { getGameStatus } from '@Utils/useGame'
 import api, { GameInfoModel } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -47,7 +47,6 @@ const Games: FC = () => {
   const [current, setCurrent] = useState(0)
 
   const navigate = useNavigate()
-  const { classes } = useTableStyles()
   const { t } = useTranslation()
 
   const onToggleHidden = (game: GameInfoModel) => {
@@ -121,7 +120,7 @@ const Games: FC = () => {
     >
       <Paper shadow="md" p="md" w="100%">
         <ScrollArea offsetScrollbars h="calc(100vh - 190px)">
-          <Table className={classes.table}>
+          <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.games.public')}</Table.Th>

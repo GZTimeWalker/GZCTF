@@ -1,5 +1,7 @@
 export default {
-    plugins: {
-        'postcss-preset-mantine': {},
+  plugins: {
+    'postcss-preset-mantine': {
+      autoRem: true,
     },
+  },
 };

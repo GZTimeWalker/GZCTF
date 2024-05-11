@@ -32,9 +32,10 @@ import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import TeamEditModal from '@Components/admin/TeamEditModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useTableStyles, useTooltipStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -53,9 +54,6 @@ const Teams: FC = () => {
   const [current, setCurrent] = useState(0)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [activeTeam, setActiveTeam] = useState<TeamWithDetailedUserInfo>({})
-
-  const { classes } = useTableStyles()
-  const { classes: tooltipClasses } = useTooltipStyles()
 
   const { t } = useTranslation()
   const viewport = useRef<HTMLDivElement>(null)
@@ -210,7 +208,7 @@ const Teams: FC = () => {
           scrollbarSize={4}
           h="calc(100vh - 190px)"
         >
-          <Table className={classes.table}>
+          <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ width: '35vw', minWidth: '400px' }}>
