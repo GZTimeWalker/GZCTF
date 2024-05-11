@@ -1,15 +1,15 @@
 import {
   Center,
   ElementProps,
-  rem,
   ScrollArea,
   ScrollAreaProps,
   Stack,
   UnstyledButton,
   UnstyledButtonProps,
 } from '@mantine/core'
-import { createStyles } from '@mantine/emotion'
+import cx from 'clsx'
 import { FC, forwardRef } from 'react'
+import classes from '@Styles/ScrollSelect.module.css'
 
 export interface SelectableItemProps
   extends UnstyledButtonProps,
@@ -32,51 +32,13 @@ interface ScrollSelectProps extends ScrollAreaProps {
   onSelect?: (item: any | null) => void
 }
 
-const useItemStyle = createStyles((theme, _, u) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: `${rem(8)} ${theme.spacing.sm}`,
-    marginTop: '2pt',
-    userSelect: 'none',
-    cursor: 'pointer',
-    borderRadius: theme.radius.md,
-
-    '&:hover': {
-      [u.dark]: {
-        backgroundColor: theme.colors.dark[6],
-      },
-
-      [u.light]: {
-        backgroundColor: theme.colors.light[2],
-      },
-    },
-
-    '&[data-active]': {
-      [u.dark]: {
-        backgroundColor: theme.colors.dark[5],
-      },
-
-      [u.light]: {
-        backgroundColor: theme.colors.light[3],
-      },
-    },
-
-    '&[data-disabled]': {
-      opacity: 0.4,
-      pointerEvents: 'none',
-    },
-  },
-}))
-
 export const SelectableItem = forwardRef<HTMLButtonElement, SelectableItemProps>((props, ref) => {
   const { onClick, active, children, disabled, className, ...others } = props
-  const { classes, cx } = useItemStyle()
 
   return (
     <UnstyledButton
       ref={ref}
-      className={cx(classes.root, className)}
+      className={cx(classes.item, className)}
       data-active={active || undefined}
       onClick={onClick}
       data-disabled={disabled || undefined}

@@ -225,7 +225,6 @@ const Profile: FC = () => {
             <Grid.Col span={4}>
               <Button
                 fullWidth
-                color="orange"
                 variant="outline"
                 disabled={disabled}
                 onClick={() => setMailEditOpened(true)}
@@ -236,7 +235,6 @@ const Profile: FC = () => {
             <Grid.Col span={4}>
               <Button
                 fullWidth
-                color="orange"
                 variant="outline"
                 disabled={disabled}
                 onClick={() => setPwdChangeOpened(true)}
