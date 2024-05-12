@@ -3,6 +3,24 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.1..v0.20.2) - 2024-05-12
+
+### ⛰️ Features
+
+- custom logo - ([26f774](https://github.com/GZTimeWalker/GZCTF/commit/26f774)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(style)** progress pulse as unexpected - ([728cff](https://github.com/GZTimeWalker/GZCTF/commit/728cff)) by **GZTime**
+- **(style)** icon color - ([6171a8](https://github.com/GZTimeWalker/GZCTF/commit/6171a8)) by **GZTime**
+- remove svg (again) from image mime types - ([df449b](https://github.com/GZTimeWalker/GZCTF/commit/df449b)) by **GZTime**
+
+### ⚙️ Miscellaneous Tasks
+
+- fix indentation - ([6883d5](https://github.com/GZTimeWalker/GZCTF/commit/6883d5)) by **GZTime**
+- tidy up - ([261246](https://github.com/GZTimeWalker/GZCTF/commit/261246)) by **GZTime**
+
+---
 ## [0.20.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.0..v0.20.1) - 2024-05-11
 
 ### ⛰️ Features
