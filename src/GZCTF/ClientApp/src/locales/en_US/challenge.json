@@ -1,8 +1,8 @@
 {
   "bonus": {
-    "first_blood": "1st blood",
-    "second_blood": "2nd blood",
-    "third_blood": "3rd blood"
+    "first_blood": "first blood",
+    "second_blood": "second blood",
+    "third_blood": "thrid blood"
   },
   "button": {
     "download": {

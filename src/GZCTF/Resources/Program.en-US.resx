@@ -496,25 +496,25 @@
     <value>Title not found or dynamic attachment allocation failed</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
-    <value>The problem has been created container</value>
+    <value>The container of this challenge already exists</value>
   </data>
   <data name="Game_ContainerCreationFailed" xml:space="preserve">
-    <value>Problem creating container failed</value>
+    <value>Failed to create container for challenge</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
     <value>The title cannot create a container</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
-    <value>{0} destroyed container instance of problem {1} [{2}]</value>
+    <value>{0} has destroyed container [{2}] of challenge {1}</value>
   </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
-    <value>Problem deleting container failed</value>
+    <value>Failed to delete container for challenge</value>
   </data>
   <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
     <value>Container's lifetime cannot be extended yet</value>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
-    <value>No container created for the problem</value>
+    <value>The container of this challenge hasn't been created</value>
   </data>
   <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
     <value>The number of team containers cannot exceed {0}</value>
@@ -703,7 +703,7 @@
     <value>Welcome to GZ::CTF!</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
-    <value>{0} Auto-destroy container instance of problem {1} [{2}]</value>
+    <value>{0} destroyed container [{2}] of challenge {1} automatically</value>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} launches container instance of challenge {1} [{2}]</value>
@@ -715,7 +715,7 @@
     <value>Destroy container [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>Insufficient number of dynamic attachments requested for problem {0}#{1}</value>
+    <value>Insufficient number of dynamic attachments allocated for challenge {0}#{1}</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>{0} fail to create instance for challenge {1}#{2} (may cause by concurrent conflicts), rolling back...</value>
