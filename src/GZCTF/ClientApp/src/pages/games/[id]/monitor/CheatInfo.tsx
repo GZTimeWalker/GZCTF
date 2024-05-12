@@ -34,7 +34,6 @@ import { OnceSWRConfig } from '@Utils/useConfig'
 import { useUserRole } from '@Utils/useUser'
 import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
 import classes from '@Styles/Accordion.module.css'
-import tableClasses from '@Styles/Table.module.css'
 
 enum CheatType {
   Submit = 'Submit',
