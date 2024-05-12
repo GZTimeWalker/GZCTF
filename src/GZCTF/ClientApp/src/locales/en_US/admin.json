@@ -266,7 +266,7 @@
         },
         "title": "Account Policy",
         "use_captcha": {
-          "description": "Whether to use CAPTCHA",
+          "description": "是否在登录、注册和找回时进行校验",
           "label": "Enable CAPTCHA"
         }
       },
