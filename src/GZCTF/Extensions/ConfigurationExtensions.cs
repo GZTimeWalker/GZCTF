@@ -35,7 +35,7 @@ public static class ConfigurationExtensions
         if (hash is null || !Codec.FileHashRegex().IsMatch(hash))
             goto FallbackToDefaultIcon;
 
-        WriteCustomIcon:
+    WriteCustomIcon:
         var eTag = GetETag(hash[..8]);
         if (context.Request.Headers.IfNoneMatch == eTag)
             return Results.StatusCode(StatusCodes.Status304NotModified);
