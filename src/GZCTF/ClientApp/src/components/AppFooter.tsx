@@ -5,7 +5,7 @@ import MainIcon from '@Components/icon/MainIcon'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useConfig } from '@Utils/useConfig'
 import classes from '@Styles/AppFooter.module.css'
-import iconClasses from '@Styles/Icon.module.css'
+import logoClasses from '@Styles/LogoHeader.module.css'
 
 // COPYRIGHT © 2022-now @GZTimeWalker, All Rights Reserved.
 // NO MODIFICATION HERE IS ALLOWED
@@ -33,7 +33,7 @@ const AppFooter: FC = () => {
             <Stack w="100%" align="center" gap={2}>
               <MainIcon size={isMobile ? '3rem' : '4rem'} />
               <Text fw="bold" size={isMobile ? '2rem' : '2.5rem'}>
-                GZ<span className={iconClasses.front}>::</span>CTF
+                GZ<span className={logoClasses.brand}>::</span>CTF
               </Text>
             </Stack>
             {isMobile ? (

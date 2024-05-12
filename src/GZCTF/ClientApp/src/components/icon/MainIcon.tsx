@@ -18,6 +18,7 @@ const MainIcon: FC<MainIconProps & SVGProps<SVGSVGElement>> = ({
       height="480"
       viewBox="0 0 4800 4800"
       style={{
+        marginLeft: `calc(${rem(size)} / 10)`,
         width: rem(size) || 'auto',
         height: 'auto',
         aspectRatio: '1 / 1',

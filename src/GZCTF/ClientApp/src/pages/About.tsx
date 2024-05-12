@@ -1,17 +1,28 @@
-import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title } from '@mantine/core'
+import {
+  Anchor,
+  Badge,
+  Center,
+  Group,
+  HoverCard,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import WithNavBar from '@Components/WithNavbar'
 import MainIcon from '@Components/icon/MainIcon'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
-import iconClasses from '@Styles/Icon.module.css'
+import logoClasses from '@Styles/LogoHeader.module.css'
 import classes from './About.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()
   const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   usePageTitle(t('common.title.about'))
 
@@ -49,7 +60,7 @@ const About: FC = () => {
                   <MainIcon size="60px" />
                   <Stack gap="xs">
                     <Title ml="-20px" mb="-5px" className={classes.title}>
-                      GZ<span className={iconClasses.front}>::</span>CTF
+                      GZ<span className={logoClasses.brand}>::</span>CTF
                     </Title>
                     <Group ml="-18px" mt="-5px">
                       <Anchor
@@ -62,12 +73,8 @@ const About: FC = () => {
                         @GZTimeWalker
                       </Anchor>
                       <Badge
-                        variant="gradient"
-                        gradient={
-                          valid
-                            ? { from: 'teal', to: 'blue', deg: 60 }
-                            : { from: 'red', to: 'orange', deg: -60 }
-                        }
+                        variant={valid ? 'light' : 'filled'}
+                        color={valid ? theme.primaryColor : 'alert'}
                         size="xs"
                       >
                         {valid ? `${tag}#${sha.substring(0, 6)}` : 'UNOFFICIAL'}
