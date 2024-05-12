@@ -96,6 +96,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Resources\favicon.webp" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="kube-config.yaml">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

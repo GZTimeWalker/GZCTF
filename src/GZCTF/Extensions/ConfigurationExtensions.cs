@@ -4,6 +4,7 @@ using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Extensions;
 
@@ -16,36 +17,66 @@ public static class ConfigurationExtensions
     public static void UseCustomFavicon(this WebApplication app) =>
         app.MapGet("/favicon.webp", FaviconHandler);
 
-    static async void FaviconHandler(HttpContext context, IDistributedCache cache,
+    static async Task<IResult> FaviconHandler(HttpContext context, IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig, CancellationToken token = default)
     {
-        context.Response.ContentType = "image/webp";
-        context.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
-
-        var value = await cache.GetAsync(CacheKey.Favicon, token);
-        if (value is not null)
+        var hash = await cache.GetStringAsync(CacheKey.Favicon, token);
+        if (hash is not null)
         {
-            await context.Response.BodyWriter.WriteAsync(value, token);
-            return;
+            goto WriteCustomIcon;
         }
 
-        var hash = globalConfig.Value.FaviconHash;
-        byte[] bytes;
+        hash = globalConfig.Value.FaviconHash;
         if (hash is null || !Codec.FileHashRegex().IsMatch(hash))
         {
-            bytes = await File.ReadAllBytesAsync("wwwroot/favicon.webp", token);
+            goto FallbackToDefaultIcon;
         }
         else
         {
-            var path = Path.GetFullPath(Path.Combine(FilePath.Uploads, hash[..2], hash[2..4], hash));
-            if (File.Exists(path))
-                bytes = await File.ReadAllBytesAsync(path, token);
-            else
-                bytes = await File.ReadAllBytesAsync("wwwroot/favicon.webp", token);
+            goto WriteCustomIcon;
         }
 
-        await cache.SetAsync(CacheKey.Favicon, bytes,
+    WriteCustomIcon:
+        var eTag = $"\"{hash}\"";
+        if (context.Request.Headers.IfNoneMatch == eTag)
+        {
+            return Results.StatusCode(StatusCodes.Status304NotModified);
+        }
+
+        if (hash == Program.DefaultFaviconHash)
+        {
+            return Results.File(
+                Program.DefaultFavicon,
+                "image/webp",
+                "favicon.webp",
+                lastModified: DateTimeOffset.UtcNow,
+                entityTag: EntityTagHeaderValue.Parse(eTag));
+        }
+
+        var path = Path.GetFullPath(Path.Combine(FilePath.Uploads, hash[..2], hash[2..4], hash));
+        if (File.Exists(path))
+        {
+            await cache.SetStringAsync(CacheKey.Favicon, hash,
+                new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) }, token);
+
+            return Results.File(
+                path,
+                "image/webp",
+                "favicon.webp",
+                lastModified: File.GetLastWriteTimeUtc(path),
+                entityTag: EntityTagHeaderValue.Parse(eTag));
+        }
+
+    FallbackToDefaultIcon:
+        eTag = $"\"{Program.DefaultFaviconHash}\"";
+        await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash,
             new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7) }, token);
-        await context.Response.BodyWriter.WriteAsync(bytes, token);
+
+        return Results.File(
+            Program.DefaultFavicon,
+            "image/webp",
+            "favicon.webp",
+            lastModified: DateTimeOffset.UtcNow,
+            entityTag: EntityTagHeaderValue.Parse(eTag));
     }
 }

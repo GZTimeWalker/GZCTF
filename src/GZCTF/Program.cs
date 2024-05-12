@@ -4,6 +4,7 @@ global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
@@ -372,6 +373,17 @@ namespace GZCTF
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
+
+        internal static byte[] DefaultFavicon { get; }
+        internal static string DefaultFaviconHash { get; }
+
+        static Program()
+        {
+            using var stream = typeof(Program).Assembly.GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
+            DefaultFavicon = new byte[stream.Length];
+            stream.ReadExactly(DefaultFavicon);
+            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon)).Replace("-", "").ToLowerInvariant();
+        }
 
         internal static void Banner()
         {

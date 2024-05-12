@@ -11,7 +11,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
-  const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:5000'
+  const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:55000'
 
   return {
     server: {
@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => {
         '/swagger': TARGET,
         '/assets': TARGET,
         '/hub': { target: TARGET.replace('http', 'ws'), ws: true },
+        '/favicon.webp': TARGET,
       },
     },
     preview: {
