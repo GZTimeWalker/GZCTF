@@ -10,6 +10,11 @@ namespace GZCTF.Extensions;
 
 public static class ConfigurationExtensions
 {
+    static readonly DistributedCacheEntryOptions FaviconOptions = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
+    };
+
     public static IConfigurationBuilder AddEntityConfiguration(this IConfigurationBuilder builder,
         Action<DbContextOptionsBuilder> optionsAction) =>
         builder.Add(new EntityConfigurationSource(optionsAction));
@@ -18,10 +23,6 @@ public static class ConfigurationExtensions
         app.MapGet("/favicon.webp", FaviconHandler);
 
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
-    static readonly DistributedCacheEntryOptions FaviconOptions = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
-    };
 
     static async Task<IResult> FaviconHandler(HttpContext context, IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig, CancellationToken token = default)
@@ -47,18 +48,18 @@ public static class ConfigurationExtensions
             goto FallbackToDefaultIcon;
 
         await cache.SetStringAsync(CacheKey.Favicon, hash, FaviconOptions, token);
-        
+
         return Results.File(
             path,
             "image/webp",
             "favicon.webp",
             entityTag: EntityTagHeaderValue.Parse(eTag));
 
-        FallbackToDefaultIcon:
+    FallbackToDefaultIcon:
         eTag = GetETag(Program.DefaultFaviconHash[..8]);
         await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash, FaviconOptions, token);
 
-        SendDefaultIcon:
+    SendDefaultIcon:
         return Results.File(
             Program.DefaultFavicon,
             "image/webp",

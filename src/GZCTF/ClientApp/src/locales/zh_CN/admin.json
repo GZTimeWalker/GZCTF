@@ -266,7 +266,7 @@
         },
         "title": "账户策略",
         "use_captcha": {
-          "description": "是否在登陆、注册和找回时进行校验",
+          "description": "是否在登录、注册和找回时进行校验",
           "label": "启用验证码"
         }
       },

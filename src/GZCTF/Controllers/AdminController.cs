@@ -169,7 +169,7 @@ public class AdminController(
 
     async Task<bool> DeleteCurrentLogo(CancellationToken token)
     {
-        var globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
+        GlobalConfig globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
 
         return await DeleteByHash(globalConfig.LogoHash, token) &&
                await DeleteByHash(globalConfig.FaviconHash, token);

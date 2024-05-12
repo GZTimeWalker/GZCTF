@@ -99,7 +99,6 @@ else
 #region Configuration
 
 if (!GZCTF.Program.IsTesting)
-{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -119,7 +118,6 @@ if (!GZCTF.Program.IsTesting)
         GZCTF.Program.ExitWithFatalMessage(
             GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
     }
-}
 
 #endregion Configuration
 
@@ -369,6 +367,15 @@ namespace GZCTF
 {
     public class Program
     {
+        static Program()
+        {
+            using Stream stream = typeof(Program).Assembly.GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
+            DefaultFavicon = new byte[stream.Length];
+            stream.ReadExactly(DefaultFavicon);
+            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
+                .Replace("-", "").ToLowerInvariant();
+        }
+
         public static bool IsTesting { get; set; }
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
@@ -376,15 +383,6 @@ namespace GZCTF
 
         internal static byte[] DefaultFavicon { get; }
         internal static string DefaultFaviconHash { get; }
-
-        static Program()
-        {
-            using var stream = typeof(Program).Assembly.GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
-            DefaultFavicon = new byte[stream.Length];
-            stream.ReadExactly(DefaultFavicon);
-            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
-                .Replace("-", "").ToLowerInvariant();
-        }
 
         internal static void Banner()
         {

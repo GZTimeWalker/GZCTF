@@ -24,13 +24,44 @@ public class ConfigService(
 
     public void ReloadConfig() => _configuration?.Reload();
 
+    public async Task SaveConfigSet(HashSet<Config> configs, CancellationToken token = default)
+    {
+        Dictionary<string, Config> dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
+        foreach (Config conf in configs)
+        {
+            if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
+            {
+                if (dbConf.Value == conf.Value)
+                    continue;
+
+                dbConf.Value = conf.Value;
+                logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey,
+                        conf.Value ?? "null"],
+                    TaskStatus.Success, LogLevel.Debug);
+            }
+            else
+            {
+                logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
+                        conf.Value ?? "null"],
+                    TaskStatus.Success, LogLevel.Debug);
+                await context.Configs.AddAsync(conf, token);
+            }
+        }
+
+        await context.SaveChangesAsync(token);
+        await cache.RemoveAsync(CacheKey.ClientConfig, token);
+        _configuration?.Reload();
+    }
+
     static void MapConfigsInternal(string key, HashSet<Config> configs, PropertyInfo info, object? value)
     {
         // ignore when value with `AutoSaveIgnoreAttribute`
         if (value is null || info.GetCustomAttribute<AutoSaveIgnoreAttribute>() != null)
             return;
 
-        var type = info.PropertyType;
+        Type type = info.PropertyType;
         if (type.IsArray || IsArrayLikeInterface(type))
             throw new NotSupportedException(Program.StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
@@ -62,37 +93,6 @@ public class ConfigService(
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item, item.GetValue(config));
 
         return configs;
-    }
-
-    public async Task SaveConfigSet(HashSet<Config> configs, CancellationToken token = default)
-    {
-        Dictionary<string, Config> dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
-        foreach (Config conf in configs)
-        {
-            if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
-            {
-                if (dbConf.Value == conf.Value)
-                    continue;
-
-                dbConf.Value = conf.Value;
-                logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey,
-                        conf.Value ?? "null"],
-                    TaskStatus.Success, LogLevel.Debug);
-            }
-            else
-            {
-                logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
-                        conf.Value ?? "null"],
-                    TaskStatus.Success, LogLevel.Debug);
-                await context.Configs.AddAsync(conf, token);
-            }
-        }
-
-        await context.SaveChangesAsync(token);
-        await cache.RemoveAsync(CacheKey.ClientConfig, token);
-        _configuration?.Reload();
     }
 
     static bool IsArrayLikeInterface(Type type)

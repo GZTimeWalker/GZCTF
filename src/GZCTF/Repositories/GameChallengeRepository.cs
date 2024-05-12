@@ -99,7 +99,7 @@ public class GameChallengeRepository(
 
         try
         {
-            foreach (int cId in await Context.GameChallenges.IgnoreAutoIncludes()
+            foreach (var cId in await Context.GameChallenges.IgnoreAutoIncludes()
                          .Where(c => c.GameId == game.Id)
                          .Select(c => c.Id)
                          .ToArrayAsync(token))
@@ -111,7 +111,7 @@ public class GameChallengeRepository(
                                 i.Participation.Status == ParticipationStatus.Accepted)
                     .CountAsync(token);
 
-                var chal = await Context.GameChallenges.IgnoreAutoIncludes()
+                GameChallenge chal = await Context.GameChallenges.IgnoreAutoIncludes()
                     .SingleAsync(c => c.Id == cId, token);
 
                 if (chal.AcceptedCount == count)
