@@ -16,7 +16,7 @@ import {
   TextInput,
 } from '@mantine/core'
 import { DatePickerInput, TimeInput } from '@mantine/dates'
-import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone'
+import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
@@ -36,6 +36,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
+import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameInfoModel } from '@Api'
 
@@ -466,7 +467,7 @@ const GameInfoEdit: FC = () => {
                 })
               }}
               maxSize={3 * 1024 * 1024}
-              accept={IMAGE_MIME_TYPE}
+              accept={IMAGE_MIME_TYPES}
               disabled={disabled}
               styles={{
                 root: {

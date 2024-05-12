@@ -474,6 +474,15 @@ export const HunamizeSize = (size: number) => {
   }
 }
 
+export const IMAGE_MIME_TYPES = [
+  'image/png',
+  'image/gif',
+  'image/jpeg',
+  'image/webp',
+  'image/avif',
+  'image/heic',
+]
+
 /** 系统错误信息 */
 export const enum ErrorCodes {
   /**
