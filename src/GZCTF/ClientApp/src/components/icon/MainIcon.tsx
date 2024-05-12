@@ -1,15 +1,29 @@
+import { StyleProp, rem } from '@mantine/core'
 import { FC, SVGProps } from 'react'
 import classes from '@Styles/Icon.module.css'
 
-interface MainIconProps extends SVGProps<SVGSVGElement> {
+export interface MainIconProps {
   ignoreTheme?: boolean
+  size?: StyleProp<React.CSSProperties['width']>
 }
 
-const MainIcon: FC<MainIconProps> = (props: MainIconProps) => {
-  const { ignoreTheme, ...svgProps } = props
-
+const MainIcon: FC<MainIconProps & SVGProps<SVGSVGElement>> = ({
+  ignoreTheme,
+  size,
+  ...svgProps
+}) => {
   return (
-    <svg width="480" height="480" viewBox="0 0 4800 4800" {...svgProps}>
+    <svg
+      width="480"
+      height="480"
+      viewBox="0 0 4800 4800"
+      style={{
+        width: rem(size) || 'auto',
+        height: 'auto',
+        aspectRatio: '1 / 1',
+      }}
+      {...svgProps}
+    >
       {ignoreTheme ? (
         <path
           fill="#fff"

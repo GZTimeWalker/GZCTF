@@ -7,6 +7,8 @@ import { useConfig } from '@Utils/useConfig'
 import classes from '@Styles/AppFooter.module.css'
 import iconClasses from '@Styles/Icon.module.css'
 
+// COPYRIGHT © 2022-now @GZTimeWalker, All Rights Reserved.
+// NO MODIFICATION HERE IS ALLOWED
 const AppFooter: FC = () => {
   const { config } = useConfig()
   const isMobile = useIsMobile()
@@ -29,12 +31,11 @@ const AppFooter: FC = () => {
         <Center mx="auto" h="100%">
           <Stack gap="sm" w={isMobile ? '100%' : '80%'}>
             <Stack w="100%" align="center" gap={2}>
-              <MainIcon style={{ maxWidth: isMobile ? '3rem' : '4rem', height: 'auto' }} />
+              <MainIcon size={isMobile ? '3rem' : '4rem'} />
               <Text fw="bold" size={isMobile ? '2rem' : '2.5rem'}>
                 GZ<span className={iconClasses.front}>::</span>CTF
               </Text>
             </Stack>
-
             {isMobile ? (
               <>
                 {copyright}
@@ -43,7 +44,6 @@ const AppFooter: FC = () => {
             ) : (
               <Divider label={copyright} labelPosition="center" />
             )}
-
             {config.footerInfo && <FooterRender source={config.footerInfo} />}
           </Stack>
         </Center>

@@ -3,7 +3,10 @@ import {
   Button,
   ColorInput,
   Divider,
+  FileInput,
   Grid,
+  Group,
+  Text,
   InputBase,
   NumberInput,
   SimpleGrid,
@@ -18,9 +21,11 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ColorPreview from '@Components/ColorPreview'
+import LogoBox from '@Components/LogoBox'
 import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
 import btnClasses from '@Styles/FixedButton.module.css'
@@ -122,6 +127,26 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
+            <Grid.Col span={1}>
+              <FileInput
+                label={t('admin.content.settings.platform.logo.label')}
+                description={t('admin.content.settings.platform.logo.description')}
+                placeholder={t('admin.placeholder.settings.logo')}
+                accept={IMAGE_MIME_TYPES.join(',')}
+              />
+            </Grid.Col>
+            <Grid.Col p={0} span={1}>
+              <Group gap="sm" align="flex-end" justify="center">
+                {[20, 40, 60, 80].map((size) => (
+                  <Stack align="center" justify="space-between" gap={0} key={size}>
+                    <LogoBox size={size} />
+                    <Text fw="bold" ta="center" size="xs">
+                      {size}px
+                    </Text>
+                  </Stack>
+                ))}
+              </Group>
+            </Grid.Col>
             <Grid.Col span={2}>
               <TextInput
                 label={t('admin.content.settings.platform.footer.label')}
@@ -133,6 +158,7 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
+
             <Grid.Col span={1}>
               <ColorInput
                 label={t('admin.content.settings.platform.color.label')}
@@ -142,7 +168,7 @@ const Configs: FC = () => {
                 onChange={setColor}
               />
             </Grid.Col>
-            <Grid.Col span={3}>
+            <Grid.Col span={1}>
               <InputBase
                 label={t('admin.content.settings.platform.color_palette.label')}
                 description={t('admin.content.settings.platform.color_palette.description')}

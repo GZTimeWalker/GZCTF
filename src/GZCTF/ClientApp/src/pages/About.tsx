@@ -46,7 +46,7 @@ const About: FC = () => {
             <HoverCard.Dropdown>
               <Stack>
                 <Group>
-                  <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
+                  <MainIcon size="60px" />
                   <Stack gap="xs">
                     <Title ml="-20px" mb="-5px" className={classes.title}>
                       GZ<span className={iconClasses.front}>::</span>CTF
