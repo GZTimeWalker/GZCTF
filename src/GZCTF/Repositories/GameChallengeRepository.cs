@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Repositories;
 
-public class GameChallengeRepository(AppDbContext context,
+public class GameChallengeRepository(
+    AppDbContext context,
     IFileRepository fileRepository,
     CacheHelper cacheHelper
-    ) : RepositoryBase(context),
+) : RepositoryBase(context),
     IGameChallengeRepository
 {
     public async Task AddFlags(GameChallenge challenge, FlagCreateModel[] models, CancellationToken token = default)

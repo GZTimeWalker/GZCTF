@@ -302,6 +302,10 @@
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
         },
+        "logo": {
+          "description": "Will be displayed at the top of the page and used for favicon",
+          "label": "Platform Logo"
+        },
         "name": {
           "description": "Platform name will be displayed with ::CTF",
           "label": "Platform Name"
@@ -454,7 +458,11 @@
     },
     "settings": {
       "email_domain_list": "No restrictions",
-      "footer": "`Test` <mbr/> Something..."
+      "footer": "`Test` <mbr/> Something...",
+      "logo": {
+        "custom": "Custom Logo",
+        "default": "Use GZCTF Icon"
+      }
     },
     "teams": {
       "search": "Search by name"

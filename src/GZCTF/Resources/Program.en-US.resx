@@ -1032,4 +1032,7 @@
   <data name="Error_InternalServerError" xml:space="preserve">
     <value>Internal server error</value>
   </data>
+  <data name="Admin_LogoUpdateFailed" xml:space="preserve">
+      <value>Failed to update logo</value>
+  </data>
 </root>

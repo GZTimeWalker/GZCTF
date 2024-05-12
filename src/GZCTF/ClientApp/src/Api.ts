@@ -257,8 +257,10 @@ export interface GlobalConfig {
   footerInfo?: string | null;
   /** 自定义主题颜色 */
   customTheme?: string | null;
-  /** 邮件模版 */
-  emailTemplate?: string;
+  /** 平台 Logo 哈希 */
+  logoHash?: string | null;
+  /** 平台 favicon 哈希 */
+  faviconHash?: string | null;
 }
 
 /** 容器策略 */
@@ -1727,6 +1729,8 @@ export interface ClientConfig {
   footerInfo?: string | null;
   /** 自定义主题颜色 */
   customTheme?: string | null;
+  /** 平台 Logo */
+  logoUrl?: string | null;
   /**
    * 容器的默认生命周期，以分钟计
    * @format int32
@@ -2508,6 +2512,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description 使用此接口重置平台 Logo，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminResetLogo
+     * @summary 重置平台 Logo
+     * @request DELETE:/api/admin/config/logo
+     */
+    adminResetLogo: (params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/config/logo`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
      * @description 使用此接口重置用户密码，需要Admin权限
      *
      * @tags Admin
@@ -2661,6 +2680,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "PUT",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description 使用此接口更改平台 Logo，需要Admin权限
+     *
+     * @tags Admin
+     * @name AdminUpdateLogo
+     * @summary 更改平台 Logo
+     * @request POST:/api/admin/config/logo
+     */
+    adminUpdateLogo: (
+      data: {
+        /** @format binary */
+        file?: File | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/config/logo`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
         ...params,
       }),
 

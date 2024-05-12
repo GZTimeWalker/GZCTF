@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using GZCTF.Models.Internal;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -16,18 +17,20 @@ public class ConfigService(
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
     public Task SaveConfig(Type type, object? value, CancellationToken token = default) =>
-        SaveConfigInternal(GetConfigs(type, value), token);
+        SaveConfigSet(GetConfigs(type, value), token);
 
     public Task SaveConfig<T>(T config, CancellationToken token = default) where T : class =>
-        SaveConfigInternal(GetConfigs(config), token);
+        SaveConfigSet(GetConfigs(config), token);
 
     public void ReloadConfig() => _configuration?.Reload();
 
-    static void MapConfigsInternal(string key, HashSet<Config> configs, Type? type, object? value)
+    static void MapConfigsInternal(string key, HashSet<Config> configs, PropertyInfo info, object? value)
     {
-        if (value is null || type is null)
+        // ignore when value with `AutoSaveIgnoreAttribute`
+        if (value is null || info.GetCustomAttribute<AutoSaveIgnoreAttribute>() != null)
             return;
 
+        var type = info.PropertyType;
         if (type.IsArray || IsArrayLikeInterface(type))
             throw new NotSupportedException(Program.StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
@@ -37,7 +40,7 @@ public class ConfigService(
             configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty));
         else if (type.IsClass)
             foreach (PropertyInfo item in type.GetProperties())
-                MapConfigsInternal($"{key}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
+                MapConfigsInternal($"{key}:{item.Name}", configs, item, item.GetValue(value));
     }
 
     static HashSet<Config> GetConfigs(Type type, object? value)
@@ -45,7 +48,7 @@ public class ConfigService(
         HashSet<Config> configs = [];
 
         foreach (PropertyInfo item in type.GetProperties())
-            MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(value));
+            MapConfigsInternal($"{type.Name}:{item.Name}", configs, item, item.GetValue(value));
 
         return configs;
     }
@@ -56,12 +59,12 @@ public class ConfigService(
         Type type = typeof(T);
 
         foreach (PropertyInfo item in type.GetProperties())
-            MapConfigsInternal($"{type.Name}:{item.Name}", configs, item.PropertyType, item.GetValue(config));
+            MapConfigsInternal($"{type.Name}:{item.Name}", configs, item, item.GetValue(config));
 
         return configs;
     }
 
-    async Task SaveConfigInternal(HashSet<Config> configs, CancellationToken token = default)
+    public async Task SaveConfigSet(HashSet<Config> configs, CancellationToken token = default)
     {
         Dictionary<string, Config> dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
         foreach (Config conf in configs)

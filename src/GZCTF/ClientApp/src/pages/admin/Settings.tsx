@@ -15,8 +15,10 @@ import {
   TextInput,
   Title,
   useMantineTheme,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core'
-import { mdiCheck, mdiContentSaveOutline } from '@mdi/js'
+import { mdiCheck, mdiContentSaveOutline, mdiRestore } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -131,8 +133,19 @@ const Configs: FC = () => {
               <FileInput
                 label={t('admin.content.settings.platform.logo.label')}
                 description={t('admin.content.settings.platform.logo.description')}
-                placeholder={t('admin.placeholder.settings.logo')}
+                placeholder={
+                  globalConfig?.faviconHash
+                    ? t('admin.placeholder.settings.logo.custom')
+                    : t('admin.placeholder.settings.logo.default')
+                }
                 accept={IMAGE_MIME_TYPES.join(',')}
+                rightSection={
+                  <Tooltip label={t('common.button.reset')}>
+                    <ActionIcon>
+                      <Icon path={mdiRestore} />
+                    </ActionIcon>
+                  </Tooltip>
+                }
               />
             </Grid.Col>
             <Grid.Col p={0} span={1}>

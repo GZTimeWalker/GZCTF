@@ -6,8 +6,11 @@ using System.Text.RegularExpressions;
 
 namespace GZCTF.Utils;
 
-public partial class Codec
+public static partial class Codec
 {
+    [GeneratedRegex("^[0-9a-fA-F]{64}$")]
+    public static partial Regex FileHashRegex();
+
     [GeneratedRegex(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+]).{8,}$")]
     private static partial Regex PasswordRegex();
 

@@ -1032,4 +1032,7 @@
   <data name="Error_InternalServerError" xml:space="preserve">
     <value>服务器发生内部错误</value>
   </data>
+  <data name="Admin_LogoUpdateFailed" xml:space="preserve">
+      <value>平台 Logo 更新失败</value>
+  </data>
 </root>

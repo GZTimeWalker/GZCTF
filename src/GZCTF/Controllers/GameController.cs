@@ -110,7 +110,8 @@ public class GameController(
                 StatusCodes.Status404NotFound));
 
         if (!game.PracticeMode && game.EndTimeUtc < DateTimeOffset.UtcNow)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
+            return BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
 
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
@@ -991,7 +992,7 @@ public class GameController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
-        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
+        if (instance.IsContainerOperationTooFrequent)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
                 StatusCodes.Status429TooManyRequests))
             { StatusCode = StatusCodes.Status429TooManyRequests };
@@ -1108,7 +1109,7 @@ public class GameController(
         if (instance.Container is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
-        if (DateTimeOffset.UtcNow - instance.LastContainerOperation < TimeSpan.FromSeconds(10))
+        if (instance.IsContainerOperationTooFrequent)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
                 StatusCodes.Status429TooManyRequests))
             { StatusCode = StatusCodes.Status429TooManyRequests };
@@ -1166,11 +1167,12 @@ public class GameController(
 
         if (DateTimeOffset.UtcNow < res.Game.StartTimeUtc)
             return res.WithResult(
-                BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted), ErrorCodes.GameNotStarted])));
+                BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted),
+                    ErrorCodes.GameNotStarted])));
 
         if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTimeOffset.UtcNow)
             return res.WithResult(
-                    BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded)));
+                BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded)));
 
         if (challengeId <= 0)
             return res;

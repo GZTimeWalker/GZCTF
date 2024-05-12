@@ -99,18 +99,32 @@ public class GlobalConfig
     /// 页脚显示的信息
     /// </summary>
     public string? FooterInfo { get; set; }
-    
+
     /// <summary>
     /// 自定义主题颜色
     /// </summary>
     public string? CustomTheme { get; set; }
 
     /// <summary>
-    /// 邮件模版
+    /// 平台 Logo 哈希
     /// </summary>
-    // TODO: email template validation for MailContent
-    public string EmailTemplate { get; set; } = DefaultEmailTemplate;
+    [AutoSaveIgnore]
+    public string? LogoHash { get; set; }
+
+    /// <summary>
+    /// 平台 favicon 哈希
+    /// </summary>
+    [AutoSaveIgnore]
+    public string? FaviconHash { get; set; }
+
+    [JsonIgnore]
+    public string? LogoUrl => LogoHash is null ? null : $"/assets/{LogoHash}/logo";
 }
+
+/// <summary>
+/// 在主动保存时忽略的熟悉
+/// </summary>
+public sealed class AutoSaveIgnoreAttribute : Attribute;
 
 /// <summary>
 /// 客户端配置
@@ -132,11 +146,16 @@ public partial class ClientConfig
     /// 页脚显示的信息
     /// </summary>
     public string? FooterInfo { get; set; }
-    
+
     /// <summary>
     /// 自定义主题颜色
     /// </summary>
     public string? CustomTheme { get; set; }
+
+    /// <summary>
+    /// 平台 Logo
+    /// </summary>
+    public string? LogoUrl { get; set; }
 
     /// <summary>
     /// 容器的默认生命周期，以分钟计
@@ -160,6 +179,7 @@ public partial class ClientConfig
             Slogan = globalConfig.Slogan,
             FooterInfo = globalConfig.FooterInfo,
             CustomTheme = globalConfig.CustomTheme,
+            LogoUrl = globalConfig.LogoUrl,
             DefaultLifetime = containerPolicy.DefaultLifetime,
             ExtensionDuration = containerPolicy.ExtensionDuration,
             RenewalWindow = containerPolicy.RenewalWindow

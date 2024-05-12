@@ -291,6 +291,7 @@ app.UseRequestLocalization();
 
 app.UseResponseCompression();
 
+app.UseCustomFavicon();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -318,11 +319,11 @@ else
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
     app.UseRateLimiter();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging"))
     app.UseRequestLogging();
@@ -411,7 +412,7 @@ namespace GZCTF
             var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(new RequestResponse(
-                        localizer[nameof(Resources.Program.Model_ValidationFailed)]))
+                    localizer[nameof(Resources.Program.Model_ValidationFailed)]))
                 { StatusCode = 400 };
 
             var error = context.ModelState.Values.Where(v => v.Errors.Count > 0)

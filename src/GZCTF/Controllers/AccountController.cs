@@ -509,11 +509,13 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Avatar(IFormFile file, CancellationToken token)
     {
-        if (file.Length == 0)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
-
-        if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        switch (file.Length)
+        {
+            case 0:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+            case > 3 * 1024 * 1024:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        }
 
         UserInfo? user = await userManager.GetUserAsync(User);
 

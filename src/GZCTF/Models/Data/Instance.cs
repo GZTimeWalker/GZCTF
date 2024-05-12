@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace GZCTF.Models.Data;
 
 public class Instance
@@ -16,6 +18,10 @@ public class Instance
     /// 最后一次容器操作的时间，确保单题目容器操作不会过于频繁
     /// </summary>
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
+
+    [NotMapped]
+    public bool IsContainerOperationTooFrequent =>
+        DateTimeOffset.UtcNow - LastContainerOperation < TimeSpan.FromSeconds(10);
 
     #region Db Relationship
 

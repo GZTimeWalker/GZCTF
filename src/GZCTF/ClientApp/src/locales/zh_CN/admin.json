@@ -302,6 +302,10 @@
           "description": "显示在网页底部的附加信息，支持 Markdown 语法, <mbr/> 会在移动设备中替换为 <br/>",
           "label": "页脚附加信息"
         },
+        "logo": {
+          "description": "平台 Logo 将会被用于页面顶部和页面 favicon",
+          "label": "平台 Logo"
+        },
         "name": {
           "description": "平台名称显示后跟 ::CTF 字段",
           "label": "平台名称"
@@ -454,7 +458,11 @@
     },
     "settings": {
       "email_domain_list": "不限制注册域名",
-      "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)"
+      "footer": "`Test` <mbr/> [某 IPC 备 XXXXXXXX 号-X](http://beian.miit.gov.cn/)",
+      "logo": {
+        "custom": "自定义 Logo",
+        "default": "使用 GZCTF 图标"
+      }
     },
     "teams": {
       "search": "搜索队伍名称"
