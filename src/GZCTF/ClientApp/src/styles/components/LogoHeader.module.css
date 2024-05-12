@@ -4,6 +4,5 @@
 }
 
 .title {
-  margin-left: -20px;
   color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-light-0));
 }

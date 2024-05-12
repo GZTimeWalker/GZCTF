@@ -341,9 +341,8 @@ public static partial class CodecExtensions
     public static string ToMD5String(this string str, bool useBase64 = false)
     {
         var output = MD5.HashData(str.ToUTF8Bytes());
-        if (useBase64)
-            return Convert.ToBase64String(output);
-        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
+        return useBase64 ? Convert.ToBase64String(output) : 
+            BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
 
     /// <summary>
@@ -355,9 +354,8 @@ public static partial class CodecExtensions
     public static string ToSHA256String(this string str, bool useBase64 = false)
     {
         var output = SHA256.HashData(str.ToUTF8Bytes());
-        if (useBase64)
-            return Convert.ToBase64String(output);
-        return BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
+        return useBase64 ? Convert.ToBase64String(output) : 
+            BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
     }
 
 

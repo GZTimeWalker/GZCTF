@@ -86,27 +86,8 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   return (
     <Group gap={0} justify="space-between" w="100%" wrap="nowrap">
       {aside}
-      {withIcon && (
-        <LogoHeader
-          sx={(_, u) => ({
-            [u.smallerThan('xs')]: {
-              display: 'none',
-            },
-          })}
-        />
-      )}
-      <Group
-        justify="right"
-        wrap="nowrap"
-        gap={5}
-        sx={(_, u) => ({
-          [u.smallerThan('xs')]: {
-            width: '100%',
-            justifyContent: 'space-around',
-          },
-        })}
-        {...others}
-      >
+      {withIcon && <LogoHeader className={classes.hidable} />}
+      <Group className={classes.panes} {...others}>
         {panes}
       </Group>
     </Group>

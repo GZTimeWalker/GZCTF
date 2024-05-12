@@ -382,7 +382,8 @@ namespace GZCTF
             using var stream = typeof(Program).Assembly.GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
             DefaultFavicon = new byte[stream.Length];
             stream.ReadExactly(DefaultFavicon);
-            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon)).Replace("-", "").ToLowerInvariant();
+            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
+                .Replace("-", "").ToLowerInvariant();
         }
 
         internal static void Banner()

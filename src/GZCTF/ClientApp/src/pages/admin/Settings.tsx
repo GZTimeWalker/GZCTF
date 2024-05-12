@@ -78,7 +78,6 @@ const Configs: FC = () => {
 
   const onResetLogo = () => {
     setDisabled(true)
-
     setLogoFile(null)
 
     api.admin
@@ -217,9 +216,9 @@ const Configs: FC = () => {
               <InputBase
                 label={t('admin.content.settings.platform.color_palette.label')}
                 description={t('admin.content.settings.platform.color_palette.description')}
+                h="100%"
                 variant="unstyled"
                 component={ColorPreview}
-                h="100%"
                 colors={colors}
                 displayColorsInfo={false}
                 styles={{

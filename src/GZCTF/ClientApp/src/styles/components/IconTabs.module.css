@@ -67,3 +67,21 @@
     display: block;
   }
 }
+
+.hidable {
+  @mixin smaller-than $mantine-breakpoint-xs {
+    display: none;
+  }
+}
+
+.panes {
+  display: flex;
+  gap: 5pt;
+  justify-content: right;
+  flex-wrap: nowrap;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    width: 100%;
+    justify-content: space-around;
+  }
+}
