@@ -1033,6 +1033,6 @@
     <value>サーバーで内部エラーが発生しました</value>
   </data>
   <data name="Admin_LogoUpdateFailed" xml:space="preserve">
-      <value>ロゴの更新に失敗</value>
+      <value>プラットフォームアイコンの更新に失敗しました</value>
   </data>
 </root>

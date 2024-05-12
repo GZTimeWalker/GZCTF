@@ -291,11 +291,11 @@
       },
       "platform": {
         "color": {
-          "description": "プラットフォームのカラーをカスタマイズする",
+          "description": "プラットフォームのカラーをカスタマイズします。",
           "label": "プラットフォームカラー"
         },
         "color_palette": {
-          "description": "カスタムカラーに基づいて生成されたカラーパレット",
+          "description": "カスタムカラーに基づいて生成されたカラーパレット。",
           "label": "カラーパレット"
         },
         "footer": {
@@ -303,7 +303,7 @@
           "label": "フッターの追加情報"
         },
         "logo": {
-          "description": "アイコンはページの左上隅に表示され、faviconにも使用されます",
+          "description": "アイコンはページの左上隅に表示され、faviconにも使用されます。",
           "label": "プラットフォームアイコン"
         },
         "name": {
@@ -460,8 +460,8 @@
       "email_domain_list": "新規登録のドメインを制限しません",
       "footer": "`テスト` <mbr/> [某大学ホームページ](...)",
       "logo": {
-        "custom": "アイコンをカスタマイズする",
-        "default": "GZCTFのアイコンを使用する"
+        "custom": "アイコンをカスタマイズします。",
+        "default": "GZCTFのアイコンを使用"
       }
     },
     "teams": {
