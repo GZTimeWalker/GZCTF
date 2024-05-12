@@ -24,7 +24,7 @@ const GameProgress: FC<GameProgressProps> = (props: GameProgressProps) => {
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
 
-  const pulsing = percentage <= 100
+  const pulsing = percentage < 100
   const resolvedColor = pulsing
     ? colorScheme === 'dark'
       ? 'light'
