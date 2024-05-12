@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using MemoryPack;
+using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Exporter;
 using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
@@ -118,7 +119,7 @@ public class GlobalConfig
     public string? FaviconHash { get; set; }
 
     [JsonIgnore]
-    public string? LogoUrl => LogoHash is null ? null : $"/assets/{LogoHash}/logo";
+    public string? LogoUrl => LogoHash.IsNullOrEmpty() ? null : $"/assets/{LogoHash}/logo";
 }
 
 /// <summary>

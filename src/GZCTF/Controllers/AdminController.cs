@@ -116,7 +116,7 @@ public class AdminController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
         }
 
-        if (await DeleteCurrentLogo(token))
+        if (!await DeleteCurrentLogo(token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
         LocalFile? logo = await fileService.CreateOrUpdateImage(file, "logo", 640, token);
@@ -152,7 +152,7 @@ public class AdminController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ResetLogo(CancellationToken token)
     {
-        if (await DeleteCurrentLogo(token))
+        if (!await DeleteCurrentLogo(token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
         HashSet<Config> configSet =

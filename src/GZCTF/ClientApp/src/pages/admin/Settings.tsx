@@ -41,6 +41,7 @@ const Configs: FC = () => {
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
   const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null>()
   const [color, setColor] = useState<string | undefined | null>(globalConfig?.customTheme)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
 
   const { t } = useTranslation()
 
@@ -56,17 +57,38 @@ const Configs: FC = () => {
     }
   }, [configs])
 
-  const updateConfig = (conf: ConfigEditModel) => {
+  const updateConfig = async (conf: ConfigEditModel) => {
     setDisabled(true)
 
+    try {
+      await api.admin.adminUpdateConfigs(conf)
+
+      if (logoFile) {
+        await api.admin.adminUpdateLogo({ file: logoFile })
+      }
+
+      mutate({ ...conf })
+      mutateConfig({ ...conf.globalConfig, ...conf.containerPolicy })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onResetLogo = () => {
+    setDisabled(true)
+
+    setLogoFile(null)
+
     api.admin
-      .adminUpdateConfigs(conf)
+      .adminResetLogo()
       .then(() => {
-        mutate({ ...conf })
+        mutate({ ...configs, globalConfig: { ...globalConfig, faviconHash: '' } })
       })
       .catch((e) => showErrorNotification(e, t))
       .finally(() => {
-        mutateConfig({ ...conf.globalConfig, ...conf.containerPolicy })
+        mutateConfig({ ...configs, logoUrl: '' })
         setDisabled(false)
       })
   }
@@ -98,7 +120,7 @@ const Configs: FC = () => {
             setSaved(true)
           }, 500)
         }}
-        disabled={!saved}
+        disabled={!saved || disabled}
       >
         {t('admin.button.save')}
       </Button>
@@ -112,6 +134,7 @@ const Configs: FC = () => {
                 label={t('admin.content.settings.platform.name.label')}
                 description={t('admin.content.settings.platform.name.description')}
                 placeholder="GZ"
+                disabled={disabled}
                 value={globalConfig?.title ?? ''}
                 onChange={(e) => {
                   setGlobalConfig({ ...(globalConfig ?? {}), title: e.currentTarget.value })
@@ -123,6 +146,7 @@ const Configs: FC = () => {
                 label={t('admin.content.settings.platform.slogan.label')}
                 description={t('admin.content.settings.platform.slogan.description')}
                 placeholder="Hack for fun not for profit"
+                disabled={disabled}
                 value={globalConfig?.slogan ?? ''}
                 onChange={(e) => {
                   setGlobalConfig({ ...(globalConfig ?? {}), slogan: e.currentTarget.value })
@@ -138,10 +162,13 @@ const Configs: FC = () => {
                     ? t('admin.placeholder.settings.logo.custom')
                     : t('admin.placeholder.settings.logo.default')
                 }
+                disabled={disabled}
                 accept={IMAGE_MIME_TYPES.join(',')}
+                value={logoFile}
+                onChange={setLogoFile}
                 rightSection={
                   <Tooltip label={t('common.button.reset')}>
-                    <ActionIcon>
+                    <ActionIcon onClick={onResetLogo}>
                       <Icon path={mdiRestore} />
                     </ActionIcon>
                   </Tooltip>
@@ -152,7 +179,10 @@ const Configs: FC = () => {
               <Group gap="sm" align="flex-end" justify="center">
                 {[20, 40, 60, 80].map((size) => (
                   <Stack align="center" justify="space-between" gap={0} key={size}>
-                    <LogoBox size={size} />
+                    <LogoBox
+                      size={size}
+                      url={logoFile ? URL.createObjectURL(logoFile) : undefined}
+                    />
                     <Text fw="bold" ta="center" size="xs">
                       {size}px
                     </Text>
@@ -165,6 +195,7 @@ const Configs: FC = () => {
                 label={t('admin.content.settings.platform.footer.label')}
                 description={t('admin.content.settings.platform.footer.description')}
                 placeholder={t('admin.placeholder.settings.footer')}
+                disabled={disabled}
                 value={globalConfig?.footerInfo ?? ''}
                 onChange={(e) => {
                   setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })
@@ -177,6 +208,7 @@ const Configs: FC = () => {
                 label={t('admin.content.settings.platform.color.label')}
                 description={t('admin.content.settings.platform.color.description')}
                 placeholder={t('common.content.color.custom.placeholder')}
+                disabled={disabled}
                 value={color ?? ''}
                 onChange={setColor}
               />
