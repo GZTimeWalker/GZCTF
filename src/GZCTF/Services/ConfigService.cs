@@ -48,11 +48,15 @@ public class ConfigService(
             }
             else
             {
+                if (conf.CacheKeys is not null)
+                    cacheKeys.UnionWith(conf.CacheKeys);
+
+                await context.Configs.AddAsync(conf, token);
+
                 logger.SystemLog(
                     Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
                         conf.Value ?? "null"],
                     TaskStatus.Success, LogLevel.Debug);
-                await context.Configs.AddAsync(conf, token);
             }
         }
 
