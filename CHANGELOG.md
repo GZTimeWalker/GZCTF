@@ -3,6 +3,28 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.2..v0.20.3) - 2024-05-13
+
+### ⛰️ Features
+
+- **(experimental)** remove lock check for joining team - ([c9b814](https://github.com/GZTimeWalker/GZCTF/commit/c9b814)) by **GZTime**
+- add `og:image` property to index - ([451328](https://github.com/GZTimeWalker/GZCTF/commit/451328)) by **GZTime**
+- custom title & description for SEO - ([29bc1f](https://github.com/GZTimeWalker/GZCTF/commit/29bc1f)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(config)** flush index cache at launch - ([6894db](https://github.com/GZTimeWalker/GZCTF/commit/6894db)) by **GZTime**
+- **(config)** cache won't flush when config add - ([0dab8f](https://github.com/GZTimeWalker/GZCTF/commit/0dab8f)) by **GZTime**
+- **(frontend)** confirm modal after saving post - ([509c8a](https://github.com/GZTimeWalker/GZCTF/commit/509c8a)) by **GZTime**
+- **(style)** name overflow on instances page - ([289922](https://github.com/GZTimeWalker/GZCTF/commit/289922)) by **GZTime**
+- correctly join usernames (#294) - ([06229c](https://github.com/GZTimeWalker/GZCTF/commit/06229c)) by **Light**
+
+### ⚙️ Miscellaneous Tasks
+
+- tidy up - ([322adb](https://github.com/GZTimeWalker/GZCTF/commit/322adb)) by **GZTime**
+- tidy up - ([113f06](https://github.com/GZTimeWalker/GZCTF/commit/113f06)) by **GZTime**
+
+---
 ## [0.20.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.1..v0.20.2) - 2024-05-12
 
 ### ⛰️ Features
@@ -11,6 +33,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### 🐛 Bug Fixes
 
+- **(style)** wrong light dark use for review page - ([7b8930](https://github.com/GZTimeWalker/GZCTF/commit/7b8930)) by **GZTime**
 - **(style)** progress pulse as unexpected - ([728cff](https://github.com/GZTimeWalker/GZCTF/commit/728cff)) by **GZTime**
 - **(style)** icon color - ([6171a8](https://github.com/GZTimeWalker/GZCTF/commit/6171a8)) by **GZTime**
 - remove svg (again) from image mime types - ([df449b](https://github.com/GZTimeWalker/GZCTF/commit/df449b)) by **GZTime**
