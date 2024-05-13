@@ -298,6 +298,10 @@
           "description": "Color palette generated from the custom color",
           "label": "Color Palette"
         },
+        "description": {
+          "description": "向搜索引擎和爬虫程序提供的平台摘要",
+          "label": "平台摘要"
+        },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
@@ -307,7 +311,7 @@
           "label": "Platform Logo"
         },
         "name": {
-          "description": "Platform name will be displayed with ::CTF",
+          "description": "后跟 ::CTF 字段进行展示",
           "label": "Platform Name"
         },
         "slogan": {
