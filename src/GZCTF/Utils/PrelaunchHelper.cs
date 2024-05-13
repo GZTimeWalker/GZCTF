@@ -1,4 +1,5 @@
 ﻿using GZCTF.Models.Internal;
+using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -70,6 +71,9 @@ public static class PrelaunchHelper
 
         if (!cache.CacheCheck())
             Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
+        
+        await cache.RemoveAsync(CacheKey.Index);
+        await cache.RemoveAsync(CacheKey.Favicon);
     }
 
     static bool CacheCheck(this IDistributedCache cache)
