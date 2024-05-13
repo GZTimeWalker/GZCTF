@@ -3,6 +3,7 @@ global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
+using System.Net.Mime;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -263,7 +264,12 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        ["application/json", "text/javascript", "text/html", "text/css"]
+        [
+            MediaTypeNames.Application.Json,
+            MediaTypeNames.Text.Html,
+            MediaTypeNames.Text.JavaScript,
+            MediaTypeNames.Text.Css
+        ]
     );
 });
 
@@ -338,7 +344,7 @@ app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
 
-await app.UseHomePageAsync();
+await app.UseIndexAsync();
 
 #endregion Middlewares
 
@@ -369,8 +375,10 @@ namespace GZCTF
     {
         static Program()
         {
-            using Stream stream = typeof(Program).Assembly.GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
+            using Stream stream = typeof(Program).Assembly
+                .GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
             DefaultFavicon = new byte[stream.Length];
+
             stream.ReadExactly(DefaultFavicon);
             DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
                 .Replace("-", "").ToLowerInvariant();

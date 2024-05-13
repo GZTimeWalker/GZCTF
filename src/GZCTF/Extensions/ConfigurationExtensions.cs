@@ -1,4 +1,5 @@
-﻿using System.Text.Encodings.Web;
+﻿using System.Net.Mime;
+using System.Text.Encodings.Web;
 using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
@@ -16,18 +17,23 @@ public static class ConfigurationExtensions
         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
     };
 
-    public static IConfigurationBuilder AddEntityConfiguration(this IConfigurationBuilder builder,
+    public static void AddEntityConfiguration(this IConfigurationBuilder builder,
         Action<DbContextOptionsBuilder> optionsAction) =>
         builder.Add(new EntityConfigurationSource(optionsAction));
 
     public static void UseCustomFavicon(this WebApplication app) =>
         app.MapGet("/favicon.webp", FaviconHandler);
 
-    public static async Task UseHomePageAsync(this WebApplication app)
+    public static async Task UseIndexAsync(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
+        if (!File.Exists(Path.Join(app.Environment.WebRootPath, "index.html")))
         {
-            app.MapFallbackToFile("index.html");
+            app.MapFallback(context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                context.Response.ContentType = MediaTypeNames.Text.Html;
+                return Task.CompletedTask;
+            });
             return;
         }
 
@@ -37,7 +43,7 @@ public static class ConfigurationExtensions
         using var streamReader = new StreamReader(stream);
         var template = await streamReader.ReadToEndAsync();
 
-        app.MapFallback(HomePageHandler(template));
+        app.MapFallback(IndexHandler(template));
     }
 
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
@@ -46,14 +52,12 @@ public static class ConfigurationExtensions
         IOptionsSnapshot<GlobalConfig> globalConfig, CancellationToken token = default)
     {
         var hash = await cache.GetStringAsync(CacheKey.Favicon, token);
-        if (hash is not null)
-            goto WriteCustomIcon;
-
-        hash = globalConfig.Value.FaviconHash;
-        if (hash is null || !Codec.FileHashRegex().IsMatch(hash))
-            goto FallbackToDefaultIcon;
-
-        WriteCustomIcon:
+        if (hash is null)
+        {
+            hash = globalConfig.Value.FaviconHash;
+            if (hash is null || !Codec.FileHashRegex().IsMatch(hash))
+                goto FallbackToDefaultIcon;
+        }
 
         var eTag = GetETag(hash[..8]);
         if (context.Request.Headers.IfNoneMatch == eTag)
@@ -70,7 +74,7 @@ public static class ConfigurationExtensions
 
         return Results.File(
             path,
-            "image/webp",
+            MediaTypeNames.Image.Webp,
             "favicon.webp",
             entityTag: EntityTagHeaderValue.Parse(eTag));
 
@@ -83,30 +87,29 @@ public static class ConfigurationExtensions
 
         return Results.File(
             Program.DefaultFavicon,
-            "image/webp",
+            MediaTypeNames.Image.Webp,
             "favicon.webp",
             entityTag: EntityTagHeaderValue.Parse(eTag));
     }
 
-    static HomePageHandlerDelegate HomePageHandler(string template)
-        => async (
-            IDistributedCache cache,
-            IOptionsSnapshot<GlobalConfig> globalConfig,
-            CancellationToken token = default) =>
-        {
-            var content = await cache.GetStringAsync(CacheKey.Index, token);
+    static HomePageHandlerDelegate IndexHandler(string template) => async (
+        IDistributedCache cache,
+        IOptionsSnapshot<GlobalConfig> globalConfig,
+        CancellationToken token = default) =>
+    {
+        var content = await cache.GetStringAsync(CacheKey.Index, token);
 
-            if (content is not null)
-                return Results.Text(content, "text/html");
+        if (content is not null)
+            return Results.Text(content, MediaTypeNames.Text.Html);
 
-            GlobalConfig config = globalConfig.Value;
-            var title = HtmlEncoder.Default.Encode(config.Platform);
-            var descr = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
-            content = template.Replace("%title%", title).Replace("%description%", descr);
+        GlobalConfig config = globalConfig.Value;
+        var title = HtmlEncoder.Default.Encode(config.Platform);
+        var descr = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
+        content = template.Replace("%title%", title).Replace("%description%", descr);
 
-            await cache.SetStringAsync(CacheKey.Index, content, token);
-            return Results.Text(content, "text/html");
-        };
+        await cache.SetStringAsync(CacheKey.Index, content, token);
+        return Results.Text(content, MediaTypeNames.Text.Html);
+    };
 
     delegate Task<IResult> HomePageHandlerDelegate(IDistributedCache cache, IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default);
