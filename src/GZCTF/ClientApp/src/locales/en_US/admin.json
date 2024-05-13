@@ -307,7 +307,7 @@
           "label": "Footer"
         },
         "logo": {
-          "description": "Will be displayed at the top of the page and used for favicon",
+          "description": "Used for favicon and the logo on pages",
           "label": "Platform Logo"
         },
         "name": {
