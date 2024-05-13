@@ -20,9 +20,9 @@ public static class CacheKey
     public const string Favicon = "_Favicon";
 
     /// <summary>
-    /// HomePage 缓存标识
+    /// 主页缓存标识
     /// </summary>
-    public const string HomePage = "_HomePage";
+    public const string Index = "_Index";
 
     /// <summary>
     /// 积分榜缓存根标识

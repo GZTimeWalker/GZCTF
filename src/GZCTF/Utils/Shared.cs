@@ -135,7 +135,7 @@ public class FileRecord
 /// <summary>
 /// 三血加分
 /// </summary>
-public struct BloodBonus(long init = BloodBonus.DefaultValue)
+public readonly struct BloodBonus(long init = BloodBonus.DefaultValue)
 {
     public const long DefaultValue = (50 << 20) + (30 << 10) + 10;
     const int Mask = 0x3ff;
@@ -150,17 +150,17 @@ public struct BloodBonus(long init = BloodBonus.DefaultValue)
         return new(value);
     }
 
-    public readonly long FirstBlood => (Val >> 20) & 0x3ff;
+    public long FirstBlood => (Val >> 20) & 0x3ff;
 
-    public readonly float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
+    public float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
 
-    public readonly long SecondBlood => (Val >> 10) & 0x3ff;
+    public long SecondBlood => (Val >> 10) & 0x3ff;
 
-    public readonly float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
+    public float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
 
-    public readonly long ThirdBlood => Val & 0x3ff;
+    public long ThirdBlood => Val & 0x3ff;
 
-    public readonly float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
+    public float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
 
-    public readonly bool NoBonus => Val == 0;
+    public bool NoBonus => Val == 0;
 }

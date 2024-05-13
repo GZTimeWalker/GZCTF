@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using GZCTF.Models.Internal;
-using GZCTF.Services.Cache;
 using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -26,7 +25,10 @@ public class ConfigService(
 
     public async Task SaveConfigSet(HashSet<Config> configs, CancellationToken token = default)
     {
-        Dictionary<string, Config> dbConfigs = await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c, token);
+        Dictionary<string, Config> dbConfigs = await context.Configs
+            .ToDictionaryAsync(c => c.ConfigKey, c => c, token);
+        HashSet<string> cacheKeys = [];
+
         foreach (Config conf in configs)
         {
             if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
@@ -35,6 +37,10 @@ public class ConfigService(
                     continue;
 
                 dbConf.Value = conf.Value;
+
+                if (conf.CacheKeys is not null)
+                    cacheKeys.UnionWith(conf.CacheKeys);
+
                 logger.SystemLog(
                     Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey,
                         conf.Value ?? "null"],
@@ -51,8 +57,11 @@ public class ConfigService(
         }
 
         await context.SaveChangesAsync(token);
-        await cache.RemoveAsync(CacheKey.ClientConfig, token);
         _configuration?.Reload();
+
+        // flush cache
+        foreach (var key in cacheKeys)
+            await cache.RemoveAsync(key, token);
     }
 
     static void MapConfigsInternal(string key, HashSet<Config> configs, PropertyInfo info, object? value)
@@ -68,10 +77,17 @@ public class ConfigService(
         TypeConverter converter = TypeDescriptor.GetConverter(type);
 
         if (type == typeof(string) || type.IsValueType)
-            configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty));
+        {
+            var keys = info.GetCustomAttributes<CacheFlushAttribute>()
+                .Select(a => a.CacheKey).ToArray();
+
+            configs.Add(new(key, converter.ConvertToString(value) ?? string.Empty, keys));
+        }
         else if (type.IsClass)
+        {
             foreach (PropertyInfo item in type.GetProperties())
                 MapConfigsInternal($"{key}:{item.Name}", configs, item, item.GetValue(value));
+        }
     }
 
     static HashSet<Config> GetConfigs(Type type, object? value)

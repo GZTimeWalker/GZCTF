@@ -23,20 +23,21 @@ public static class ConfigurationExtensions
     public static void UseCustomFavicon(this WebApplication app) =>
         app.MapGet("/favicon.webp", FaviconHandler);
 
-    public static async Task UseHomePageAsync(this WebApplication app, IWebHostEnvironment env)
+    public static async Task UseHomePageAsync(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {
             app.MapFallbackToFile("index.html");
+            return;
         }
-        else
-        {
-            await using var stream = app.Environment.WebRootFileProvider
-                .GetFileInfo("index.html").CreateReadStream();
-            using var streamReader = new StreamReader(stream);
-            var template = await streamReader.ReadToEndAsync();
-            app.MapFallback(HomePageHandler(template));
-        }
+
+        await using Stream stream = app.Environment.WebRootFileProvider
+            .GetFileInfo("index.html").CreateReadStream();
+
+        using var streamReader = new StreamReader(stream);
+        var template = await streamReader.ReadToEndAsync();
+
+        app.MapFallback(HomePageHandler(template));
     }
 
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
@@ -53,6 +54,7 @@ public static class ConfigurationExtensions
             goto FallbackToDefaultIcon;
 
         WriteCustomIcon:
+
         var eTag = GetETag(hash[..8]);
         if (context.Request.Headers.IfNoneMatch == eTag)
             return Results.StatusCode(StatusCodes.Status304NotModified);
@@ -73,10 +75,12 @@ public static class ConfigurationExtensions
             entityTag: EntityTagHeaderValue.Parse(eTag));
 
     FallbackToDefaultIcon:
+
         eTag = GetETag(Program.DefaultFaviconHash[..8]);
         await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash, FaviconOptions, token);
 
     SendDefaultIcon:
+
         return Results.File(
             Program.DefaultFavicon,
             "image/webp",
@@ -89,20 +93,21 @@ public static class ConfigurationExtensions
             IDistributedCache cache,
             IOptionsSnapshot<GlobalConfig> globalConfig,
             CancellationToken token = default) =>
-    {
-        var content = await cache.GetStringAsync(CacheKey.HomePage, token);
-        if (content is null)
         {
-            // TODO: use real title and description
-            // TODO: clear cache when the global config changes
-            // TODO: UI and database for config
-            content = template.Replace("%title%", HtmlEncoder.Default.Encode(globalConfig.Value.Title))
-                .Replace("%description%", HtmlEncoder.Default.Encode(globalConfig.Value.Title));
-            await cache.SetStringAsync(CacheKey.HomePage, content, token);
-        }
+            var content = await cache.GetStringAsync(CacheKey.Index, token);
 
-        return Results.Text(content, "text/html");
-    };
+            if (content is not null)
+                return Results.Text(content, "text/html");
 
-    delegate Task<IResult> HomePageHandlerDelegate(IDistributedCache cache, IOptionsSnapshot<GlobalConfig> globalConfig, CancellationToken token = default);
+            GlobalConfig config = globalConfig.Value;
+            var title = HtmlEncoder.Default.Encode(config.Platform);
+            var descr = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
+            content = template.Replace("%title%", title).Replace("%description%", descr);
+
+            await cache.SetStringAsync(CacheKey.Index, content, token);
+            return Results.Text(content, "text/html");
+        };
+
+    delegate Task<IResult> HomePageHandlerDelegate(IDistributedCache cache, IOptionsSnapshot<GlobalConfig> globalConfig,
+        CancellationToken token = default);
 }

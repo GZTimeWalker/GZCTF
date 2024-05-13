@@ -253,11 +253,13 @@ export interface GlobalConfig {
   title?: string;
   /** 平台标语 */
   slogan?: string;
+  /** 站点描述显示的信息 */
+  description?: string | null;
   /** 页脚显示的信息 */
   footerInfo?: string | null;
   /** 自定义主题颜色 */
   customTheme?: string | null;
-  /** 平台 Logo 哈希 */
+  /** 平台 logo 哈希 */
   logoHash?: string | null;
   /** 平台 favicon 哈希 */
   faviconHash?: string | null;

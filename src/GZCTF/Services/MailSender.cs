@@ -268,5 +268,5 @@ public class MailContent(
     /// <summary>
     /// 平台名称
     /// </summary>
-    public string Platform { get; } = $"{globalConfig.Value.Title}::CTF";
+    public string Platform { get; } = globalConfig.Value.Platform;
 }

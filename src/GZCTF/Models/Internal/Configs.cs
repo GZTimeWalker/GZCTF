@@ -3,6 +3,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
+using GZCTF.Services.Cache;
 using MemoryPack;
 using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Exporter;
@@ -10,6 +11,20 @@ using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace GZCTF.Models.Internal;
+
+/// <summary>
+/// 在主动保存时忽略
+/// </summary>
+public sealed class AutoSaveIgnoreAttribute : Attribute;
+
+/// <summary>
+/// 更改该属性时需要更新缓存
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+public sealed class CacheFlushAttribute(string cacheKey) : Attribute
+{
+    public string CacheKey { get; } = cacheKey;
+}
 
 /// <summary>
 /// 账户策略
@@ -60,6 +75,7 @@ public class ContainerPolicy
     /// <summary>
     /// 容器的默认生命周期，以分钟计
     /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
     [Range(1, 7200, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int DefaultLifetime { get; set; } = 120;
@@ -67,6 +83,7 @@ public class ContainerPolicy
     /// <summary>
     /// 容器每次续期的时长，以分钟计
     /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
     [Range(1, 7200, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int ExtensionDuration { get; set; } = 120;
@@ -74,6 +91,7 @@ public class ContainerPolicy
     /// <summary>
     /// 容器停止前的可续期时间段，以分钟计
     /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
     [Range(1, 360, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int RenewalWindow { get; set; } = 10;
@@ -84,30 +102,44 @@ public class ContainerPolicy
 /// </summary>
 public class GlobalConfig
 {
-    public const string DefaultEmailTemplate = "default";
+    /// <summary>
+    /// 默认站点描述
+    /// </summary>
+    public const string DefaultDescription = "GZ::CTF is an open source CTF platform";
 
     /// <summary>
     /// 平台前缀名称
     /// </summary>
+    [CacheFlush(CacheKey.Index)]
+    [CacheFlush(CacheKey.ClientConfig)]
     public string Title { get; set; } = "GZ";
 
     /// <summary>
     /// 平台标语
     /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
     public string Slogan { get; set; } = "Hack for fun not for profit";
+
+    /// <summary>
+    /// 站点描述显示的信息
+    /// </summary>
+    [CacheFlush(CacheKey.Index)]
+    public string? Description { get; set; } = DefaultDescription;
 
     /// <summary>
     /// 页脚显示的信息
     /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
     public string? FooterInfo { get; set; }
 
     /// <summary>
     /// 自定义主题颜色
     /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
     public string? CustomTheme { get; set; }
 
     /// <summary>
-    /// 平台 Logo 哈希
+    /// 平台 logo 哈希
     /// </summary>
     [AutoSaveIgnore]
     public string? LogoHash { get; set; }
@@ -120,12 +152,13 @@ public class GlobalConfig
 
     [JsonIgnore]
     public string? LogoUrl => LogoHash.IsNullOrEmpty() ? null : $"/assets/{LogoHash}/logo";
-}
 
-/// <summary>
-/// 在主动保存时忽略的熟悉
-/// </summary>
-public sealed class AutoSaveIgnoreAttribute : Attribute;
+    /// <summary>
+    /// 平台名称，用于邮件和主页渲染
+    /// </summary>
+    [JsonIgnore]
+    public string Platform => Title.IsNullOrEmpty() ? "GZ::CTF" : $"{Title}::CTF";
+}
 
 /// <summary>
 /// 客户端配置

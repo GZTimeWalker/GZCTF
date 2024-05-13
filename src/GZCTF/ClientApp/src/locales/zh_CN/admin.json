@@ -298,6 +298,10 @@
           "description": "自定义平台颜色生成的色盘",
           "label": "色盘"
         },
+        "description": {
+          "description": "向搜索引擎和爬虫程序提供的平台摘要",
+          "label": "平台摘要"
+        },
         "footer": {
           "description": "显示在网页底部的附加信息，支持 Markdown 语法, <mbr/> 会在移动设备中替换为 <br/>",
           "label": "页脚附加信息"
@@ -307,7 +311,7 @@
           "label": "平台 Logo"
         },
         "name": {
-          "description": "平台名称显示后跟 ::CTF 字段",
+          "description": "后跟 ::CTF 字段进行展示",
           "label": "平台名称"
         },
         "slogan": {

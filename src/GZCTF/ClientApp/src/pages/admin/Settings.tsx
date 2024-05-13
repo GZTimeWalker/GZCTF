@@ -123,8 +123,8 @@ const Configs: FC = () => {
       >
         {t('admin.button.save')}
       </Button>
-      <Stack w="100%" gap="xl">
-        <Stack>
+      <Stack w="100%" gap="md">
+        <Stack gap="sm">
           <Title order={2}>{t('admin.content.settings.platform.title')}</Title>
           <Divider />
           <Grid columns={4}>
@@ -191,13 +191,13 @@ const Configs: FC = () => {
             </Grid.Col>
             <Grid.Col span={2}>
               <TextInput
-                label={t('admin.content.settings.platform.footer.label')}
-                description={t('admin.content.settings.platform.footer.description')}
-                placeholder={t('admin.placeholder.settings.footer')}
+                label={t('admin.content.settings.platform.description.label')}
+                description={t('admin.content.settings.platform.description.description')}
+                placeholder="GZ::CTF is an open source CTF platform"
                 disabled={disabled}
-                value={globalConfig?.footerInfo ?? ''}
+                value={globalConfig?.description ?? ''}
                 onChange={(e) => {
-                  setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })
+                  setGlobalConfig({ ...(globalConfig ?? {}), description: e.currentTarget.value })
                 }}
               />
             </Grid.Col>
@@ -228,9 +228,21 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
+            <Grid.Col span={4}>
+              <TextInput
+                label={t('admin.content.settings.platform.footer.label')}
+                description={t('admin.content.settings.platform.footer.description')}
+                placeholder={t('admin.placeholder.settings.footer')}
+                disabled={disabled}
+                value={globalConfig?.footerInfo ?? ''}
+                onChange={(e) => {
+                  setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })
+                }}
+              />
+            </Grid.Col>
           </Grid>
         </Stack>
-        <Stack>
+        <Stack gap="sm">
           <Title order={2}>{t('admin.content.settings.account.title')}</Title>
           <Divider />
           <SimpleGrid cols={4}>
@@ -301,7 +313,7 @@ const Configs: FC = () => {
             }}
           />
         </Stack>
-        <Stack>
+        <Stack gap="sm">
           <Title order={2}>{t('admin.content.settings.container.title')}</Title>
           <Divider />
           <SimpleGrid cols={4} style={{ alignItems: 'center' }}>
