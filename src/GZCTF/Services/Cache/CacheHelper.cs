@@ -20,6 +20,11 @@ public static class CacheKey
     public const string Favicon = "_Favicon";
 
     /// <summary>
+    /// HomePage 缓存标识
+    /// </summary>
+    public const string HomePage = "_HomePage";
+
+    /// <summary>
     /// 积分榜缓存根标识
     /// </summary>
     public const string ScoreBoardBase = "_ScoreBoard";

@@ -338,8 +338,7 @@ app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
 
-app.MapFallbackToFile("index.html");
-
+await app.UseHomePageAsync(app.Environment);
 #endregion Middlewares
 
 await using AsyncServiceScope scope = app.Services.CreateAsyncScope();

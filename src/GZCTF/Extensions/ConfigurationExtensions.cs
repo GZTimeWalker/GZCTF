@@ -22,6 +22,22 @@ public static class ConfigurationExtensions
     public static void UseCustomFavicon(this WebApplication app) =>
         app.MapGet("/favicon.webp", FaviconHandler);
 
+    public static async Task UseHomePageAsync(this WebApplication app, IWebHostEnvironment env)
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapFallbackToFile("index.html");
+        }
+        else
+        {
+            await using var stream = app.Environment.WebRootFileProvider
+                .GetFileInfo("index.html").CreateReadStream();
+            using var streamReader = new StreamReader(stream);
+            var template = await streamReader.ReadToEndAsync();
+            app.MapFallback(HomePageHandler(template));
+        }
+    }
+
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
 
     static async Task<IResult> FaviconHandler(HttpContext context, IDistributedCache cache,
@@ -35,7 +51,7 @@ public static class ConfigurationExtensions
         if (hash is null || !Codec.FileHashRegex().IsMatch(hash))
             goto FallbackToDefaultIcon;
 
-    WriteCustomIcon:
+        WriteCustomIcon:
         var eTag = GetETag(hash[..8]);
         if (context.Request.Headers.IfNoneMatch == eTag)
             return Results.StatusCode(StatusCodes.Status304NotModified);
@@ -66,4 +82,23 @@ public static class ConfigurationExtensions
             "favicon.webp",
             entityTag: EntityTagHeaderValue.Parse(eTag));
     }
+
+    static HomePageHandlerDelegate HomePageHandler(string template)
+        => async (
+            IDistributedCache cache,
+            IOptionsSnapshot<GlobalConfig> globalConfig,
+            CancellationToken token = default) =>
+    {
+        var content = await cache.GetStringAsync(CacheKey.HomePage, token);
+        if (content is null)
+        {
+            content = template.Replace("%title%", globalConfig.Value.Title)
+                .Replace("%description%", globalConfig.Value.Title);
+            await cache.SetStringAsync(CacheKey.HomePage, content, token); // FIXME
+        }
+
+        return Results.Text(content, "text/html");
+    };
+
+    delegate Task<IResult> HomePageHandlerDelegate(IDistributedCache cache, IOptionsSnapshot<GlobalConfig> globalConfig, CancellationToken token = default);
 }
