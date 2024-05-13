@@ -9,7 +9,6 @@ import {
   ScrollArea,
   Select,
   SelectProps,
-  Stack,
   Table,
   Text,
   Tooltip,
@@ -43,14 +42,14 @@ const SelectTeamItem: SelectProps['renderOption'] = ({ option }) => {
   const { name, id, ...others } = option as SelectTeamItemProps
 
   return (
-    <Stack {...others} gap={0}>
-      <Text size="sm" lineClamp={1}>
+    <Group {...others} gap={0} wrap="nowrap">
+      <Text fw={500} size="sm" lineClamp={1} style={{ wordBreak: 'break-all' }}>
         <Text span c="dimmed">
           {`#${id} `}
         </Text>
         {name}
       </Text>
-    </Stack>
+    </Group>
   )
 }
 
@@ -61,9 +60,9 @@ const SelectChallengeItem: SelectProps['renderOption'] = ({ option }) => {
   const theme = useMantineTheme()
 
   return (
-    <Group gap="sm">
+    <Group wrap="nowrap" gap="sm">
       <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
-      <Text size="sm" lineClamp={1}>
+      <Text fw={500} size="sm" lineClamp={1} style={{ wordBreak: 'break-all' }}>
         <Text span c="dimmed">
           {`#${id} `}
         </Text>

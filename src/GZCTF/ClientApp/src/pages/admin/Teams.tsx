@@ -283,7 +283,17 @@ const Teams: FC = () => {
                                 </Tooltip>
                               ))}
                             {members && members.length > 8 && (
-                              <Tooltip label={<Text>{members.slice(8).map(o => o.userName).join(',')}</Text>} withArrow>
+                              <Tooltip
+                                label={
+                                  <Text>
+                                    {members
+                                      .slice(8)
+                                      .map((o) => o.userName)
+                                      .join(',')}
+                                  </Text>
+                                }
+                                withArrow
+                              >
                                 <Avatar alt="avatar" radius="xl">
                                   +{members.length - 8}
                                 </Avatar>
