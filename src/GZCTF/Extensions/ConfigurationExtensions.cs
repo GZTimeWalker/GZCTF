@@ -1,4 +1,5 @@
-﻿using GZCTF.Models.Internal;
+﻿using System.Text.Encodings.Web;
+using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -92,9 +93,12 @@ public static class ConfigurationExtensions
         var content = await cache.GetStringAsync(CacheKey.HomePage, token);
         if (content is null)
         {
-            content = template.Replace("%title%", globalConfig.Value.Title)
-                .Replace("%description%", globalConfig.Value.Title);
-            await cache.SetStringAsync(CacheKey.HomePage, content, token); // FIXME
+            // TODO: use real title and description
+            // TODO: clear cache when the global config changes
+            // TODO: UI and database for config
+            content = template.Replace("%title%", HtmlEncoder.Default.Encode(globalConfig.Value.Title))
+                .Replace("%description%", HtmlEncoder.Default.Encode(globalConfig.Value.Title));
+            await cache.SetStringAsync(CacheKey.HomePage, content, token);
         }
 
         return Results.Text(content, "text/html");
