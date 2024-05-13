@@ -59,6 +59,8 @@ const PostEdit: FC = () => {
 
   const [tags, setTags] = useState<string[]>([])
   const [disabled, setDisabled] = useState(false)
+  const [hasChanged, setHasChanged] = useState(false)
+
   const modals = useModals()
 
   const isMobile = useIsMobile()
@@ -77,6 +79,7 @@ const PostEdit: FC = () => {
             message: t('post.notification.created'),
             icon: <Icon path={mdiCheck} size={24} />,
           })
+          setHasChanged(false)
           navigate(`/posts/${res.data}/edit`)
         })
         .finally(() => {
@@ -95,6 +98,7 @@ const PostEdit: FC = () => {
             message: t('post.notification.saved'),
             icon: <Icon path={mdiCheck} size={24} />,
           })
+          setHasChanged(false)
         })
         .finally(() => {
           setDisabled(false)
@@ -131,11 +135,16 @@ const PostEdit: FC = () => {
     setTags(curPost.tags ?? [])
   }, [curPost])
 
-  const isChanged = () =>
-    post.title !== curPost?.title ||
-    post.content !== curPost?.content ||
-    post.summary !== curPost?.summary ||
-    (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false)
+  useEffect(() => {
+    if (!curPost) return
+    setHasChanged(
+      post.title !== curPost.title ||
+        post.content !== curPost.content ||
+        post.summary !== curPost.summary ||
+        post.isPinned !== curPost.isPinned ||
+        (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false)
+    )
+  }, [post, curPost])
 
   const titlePart = (
     <>
@@ -200,7 +209,7 @@ const PostEdit: FC = () => {
                     disabled={disabled}
                     leftSection={<Icon path={mdiFileCheckOutline} size={1} />}
                     onClick={() => {
-                      if (isChanged()) {
+                      if (hasChanged) {
                         modals.openConfirmModal({
                           title: t('post.content.updated.title'),
                           children: <Text size="sm">{t('post.content.updated.content')}</Text>,
@@ -240,8 +249,8 @@ const PostEdit: FC = () => {
             autosize
             value={post.summary}
             onChange={(e) => setPost({ ...post, summary: e.currentTarget.value })}
-            minRows={3}
-            maxRows={3}
+            minRows={5}
+            maxRows={5}
           />
           <Textarea
             label={
