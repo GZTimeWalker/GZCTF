@@ -299,8 +299,8 @@
           "label": "Color Palette"
         },
         "description": {
-          "description": "向搜索引擎和爬虫程序提供的平台摘要",
-          "label": "平台摘要"
+          "description": "Site description provided for SEO",
+          "label": "Site Description"
         },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
@@ -311,7 +311,7 @@
           "label": "Platform Logo"
         },
         "name": {
-          "description": "后跟 ::CTF 字段进行展示",
+          "description": "Platform name will be displayed with ::CTF",
           "label": "Platform Name"
         },
         "slogan": {
