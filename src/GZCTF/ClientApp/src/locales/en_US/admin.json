@@ -298,6 +298,10 @@
           "description": "Color palette generated from the custom color",
           "label": "Color Palette"
         },
+        "description": {
+          "description": "Site description provided for SEO",
+          "label": "Site Description"
+        },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
