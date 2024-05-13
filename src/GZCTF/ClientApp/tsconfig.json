@@ -1,14 +1,8 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "types": [
-      "vite/client"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -24,36 +18,15 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@Api": [
-        "src/Api.ts"
-      ],
-      "@App": [
-        "src/App"
-      ],
-      "@Components/*": [
-        "src/components/*"
-      ],
-      "@Pages/*": [
-        "src/pages/*"
-      ],
-      "@Utils/*": [
-        "src/utils/*"
-      ],
-      "@Resources/*": [
-        "src/resources/*"
-      ],
-      "@Styles/*": [
-        "src/styles/components/*",
-        "src/styles/shared/*"
-      ],
+      "@Api": ["src/Api.ts"],
+      "@App": ["src/App"],
+      "@Components/*": ["src/components/*"],
+      "@Pages/*": ["src/pages/*"],
+      "@Utils/*": ["src/utils/*"],
+      "@Resources/*": ["src/resources/*"],
+      "@Styles/*": ["src/styles/components/*", "src/styles/shared/*"]
     }
   },
-  "include": [
-    "vite.config.mts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["vite.config.mts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
