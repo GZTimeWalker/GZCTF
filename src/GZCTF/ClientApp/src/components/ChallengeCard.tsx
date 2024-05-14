@@ -36,7 +36,6 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const challengeTagLabelMap = useChallengeTagLabelMap()
   const tagData = challengeTagLabelMap.get(challenge.tag!)
   const theme = useMantineTheme()
-  const colorStr = theme.colors[tagData?.color ?? theme.primaryColor][5]
 
   return (
     <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>
@@ -45,7 +44,15 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           <Text fw="bold" truncate fz="lg">
             {challenge.title}
           </Text>
-          <Center miw="1.5em">{solved && <Icon path={mdiFlag} size={1} color={colorStr} />}</Center>
+          <Center miw="1.5em">
+            {solved && (
+              <Icon
+                size={1}
+                path={mdiFlag}
+                color={theme.colors[tagData?.color ?? theme.primaryColor][5]}
+              />
+            )}
+          </Center>
         </Group>
         <Divider />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
@@ -77,7 +84,9 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
                     classNames={tooltipClasses}
                     label={
                       <Stack gap={0}>
-                        <Text fw={500}>{blood?.name}</Text>
+                        <Text fw={500} size="sm">
+                          {blood?.name}
+                        </Text>
                         <Text fw={500} size="xs" c="dimmed">
                           {dayjs(blood?.submitTimeUtc).format('YY/MM/DD HH:mm:ss')}
                         </Text>
@@ -104,8 +113,8 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
       </Stack>
       {tagData && (
         <Icon
-          path={tagData.icon}
           size={4}
+          path={tagData.icon}
           color={alpha(theme.colors[tagData?.color][7], 0.3)}
           style={{
             position: 'absolute',
