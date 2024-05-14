@@ -146,7 +146,7 @@ const CustomTheme: MantineThemeOverride = {
     Tabs: Tabs.extend({
       styles: {
         tab: {
-          padding: '0.5rem',
+          padding: 'var(--mantine-spacing-xs)',
           fontWeight: 500,
         },
       },

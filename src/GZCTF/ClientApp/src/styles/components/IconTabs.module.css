@@ -26,7 +26,7 @@
   }
 
   &:not(:disabled):hover {
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+    background-color: light-dark(var(--mantine-color-light-4), var(--mantine-color-dark-6));
   }
 
   &[data-active] {
@@ -35,6 +35,13 @@
       alpha(var(--mantine-color-dark-7), 0.5)
     );
     color: var(--tab-active-color, var(--mantine-primary-color-6));
+
+    &:hover {
+      background-color: light-dark(
+        var(--mantine-color-white),
+        alpha(var(--mantine-color-dark-7), 0.5)
+      );
+    }
   }
 }
 
@@ -76,7 +83,7 @@
 
 .panes {
   display: flex;
-  gap: 5pt;
+  gap: var(--mantine-spacing-xs);
   justify-content: right;
   flex-wrap: nowrap;
 

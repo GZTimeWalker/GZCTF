@@ -112,8 +112,10 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
             <Stack w="calc(100% - 10rem)" pos="relative">
               <LoadingOverlay
                 visible={isLoading ?? false}
-                opacity={1}
-                c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
+                overlayProps={{
+                  backgroundOpacity: 1,
+                  color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
+                }}
               />
               {children}
             </Stack>

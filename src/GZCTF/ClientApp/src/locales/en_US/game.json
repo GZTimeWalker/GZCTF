@@ -148,8 +148,8 @@
   },
   "notice": {
     "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
-    "new_challenge": "New challenge [{{title}}] has been released",
-    "new_hint": "New hints to [{{title}}]"
+    "new_challenge": "New challenge [{{title}}] has been released.",
+    "new_hint": "Hints for [{{title}}] has been updated."
   },
   "notification": {
     "connected": {

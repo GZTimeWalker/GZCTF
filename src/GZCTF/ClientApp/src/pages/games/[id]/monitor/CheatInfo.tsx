@@ -305,8 +305,7 @@ interface CheatInfoTableViewProps {
 }
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
-  const { classes: inputClasses, cx } = useDisplayInputStyles({ ff: 'monospace' })
-
+  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
   const { t } = useTranslation()
 
   const rows = props.cheatInfo
@@ -343,8 +342,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
         <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
         <Table.Td
           style={{
-            width: '36vw',
-            maxWidth: '100%',
+            width: '24vw',
             padding: 0,
           }}
         >
@@ -377,7 +375,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
                 {t('game.label.cheat_info.submit_user')}
               </Table.Th>
               <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
-              <Table.Th className={cx(classes.mono)}>{t('common.label.flag')}</Table.Th>
+              <Table.Th className={classes.mono}>{t('common.label.flag')}</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
@@ -433,7 +431,7 @@ const CheatInfo: FC = () => {
   }
 
   return (
-    <WithGameMonitorTab>
+    <WithGameMonitorTab isLoading={!cheatInfo}>
       <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(

@@ -44,7 +44,7 @@ const Logs: FC = () => {
 
   const { t } = useTranslation()
   const viewport = useRef<HTMLDivElement>(null)
-  const { classes: inputClasses } = useDisplayInputStyles({ fw: 500, ff: 'monospace', lh: '1rem' })
+  const { classes: inputClasses } = useDisplayInputStyles({ fw: 500, ff: 'monospace' })
 
   useEffect(() => {
     viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })

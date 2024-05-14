@@ -25,12 +25,3 @@
     background: linear-gradient(0deg, #fff0, var(--blood-color), #fff0);
   }
 }
-
-.card {
-  transition: filter 0.1s;
-
-  &:hover {
-    cursor: pointer;
-    filter: light-dark(brightness(1.2), brightness(0.97));
-  }
-}

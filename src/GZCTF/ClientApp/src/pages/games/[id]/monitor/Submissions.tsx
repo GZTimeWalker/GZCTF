@@ -220,7 +220,7 @@ const Submissions: FC = () => {
     )
 
   return (
-    <WithGameMonitorTab>
+    <WithGameMonitorTab isLoading={!submissions}>
       <Group justify="space-between" w="100%">
         <SegmentedControl
           color={theme.primaryColor}

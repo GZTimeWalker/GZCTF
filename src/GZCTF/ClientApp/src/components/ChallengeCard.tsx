@@ -20,6 +20,7 @@ import { Trans } from 'react-i18next'
 import { BloodsTypes, useChallengeTagLabelMap } from '@Utils/Shared'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
+import hoverClasses from '@Styles/HoverCard.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface ChallengeCardProps {
@@ -38,7 +39,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const theme = useMantineTheme()
 
   return (
-    <Card onClick={onClick} radius="md" shadow="sm" className={classes.card}>
+    <Card onClick={onClick} radius="md" shadow="sm" className={hoverClasses.root}>
       <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <Text fw="bold" truncate fz="lg">

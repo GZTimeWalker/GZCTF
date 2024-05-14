@@ -180,6 +180,7 @@ const GameNoticePanel: FC = () => {
       <Stack gap="xs">
         <SegmentedControl
           value={filter}
+          color={theme.primaryColor}
           styles={{
             root: {
               background: 'transparent',
