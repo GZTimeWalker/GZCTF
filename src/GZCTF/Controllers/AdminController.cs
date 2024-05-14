@@ -32,7 +32,6 @@ namespace GZCTF.Controllers;
 public class AdminController(
     UserManager<UserInfo> userManager,
     ILogger<AdminController> logger,
-    IDistributedCache cache,
     IFileRepository fileService,
     ILogRepository logRepository,
     IConfigService configService,
@@ -129,12 +128,11 @@ public class AdminController(
 
         HashSet<Config> configSet =
         [
-            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.LogoHash)}", logo.Hash),
-            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.FaviconHash)}", favicon.Hash)
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.LogoHash)}", logo.Hash, [CacheKey.ClientConfig]),
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.FaviconHash)}", favicon.Hash, [CacheKey.Favicon])
         ];
 
         await configService.SaveConfigSet(configSet, token);
-        await cache.RemoveAsync(CacheKey.Favicon, token);
 
         return Ok();
     }
@@ -157,12 +155,11 @@ public class AdminController(
 
         HashSet<Config> configSet =
         [
-            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.LogoHash)}", string.Empty),
-            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.FaviconHash)}", string.Empty)
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.LogoHash)}", string.Empty, [CacheKey.ClientConfig]),
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.FaviconHash)}", string.Empty, [CacheKey.Favicon])
         ];
 
         await configService.SaveConfigSet(configSet, token);
-        await cache.RemoveAsync(CacheKey.Favicon, token);
 
         return Ok();
     }
