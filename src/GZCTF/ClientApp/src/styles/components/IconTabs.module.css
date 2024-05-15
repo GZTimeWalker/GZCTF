@@ -6,7 +6,7 @@
   border-radius: var(--mantine-radius-sm);
   font-size: var(--mantine-font-size-sm);
   height: auto;
-  padding: var(--mantine-spacing-xs) var(--mantine-spacing-lg);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
   font-weight: 500;
   box-sizing: border-box;
   cursor: pointer;
@@ -15,7 +15,7 @@
   background-color: transparent;
 
   @mixin smaller-than $mantine-breakpoint-xs {
-    padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+    padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
   }
 
   color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
@@ -25,22 +25,19 @@
     color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
   }
 
-  &:not(:disabled):hover {
+  &:not(:disabled):not([data-active]):hover {
     background-color: light-dark(var(--mantine-color-light-4), var(--mantine-color-dark-6));
   }
 
   &[data-active] {
-    background-color: light-dark(
-      var(--mantine-color-white),
-      alpha(var(--mantine-color-dark-7), 0.5)
-    );
-    color: var(--tab-active-color, var(--mantine-primary-color-6));
+    @mixin dark {
+      color: var(--tab-active-color, var(--mantine-primary-color-4));
+      background-color: alpha(var(--mantine-color-dark-7), 0.5);
+    }
 
-    &:hover {
-      background-color: light-dark(
-        var(--mantine-color-white),
-        alpha(var(--mantine-color-dark-7), 0.5)
-      );
+    @mixin light {
+      color: var(--tab-active-color, var(--mantine-primary-color-6));
+      background-color: alpha(var(--mantine-color-light-5), 0.5);
     }
   }
 }
@@ -83,7 +80,7 @@
 
 .panes {
   display: flex;
-  gap: var(--mantine-spacing-xs);
+  gap: calc(var(--mantine-spacing-xs) / 2);
   justify-content: right;
   flex-wrap: nowrap;
 

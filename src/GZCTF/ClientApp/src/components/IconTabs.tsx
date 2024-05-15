@@ -62,7 +62,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const resolveColor = (color?: MantineColor) =>
-    theme.colors[color ?? theme.primaryColor][colorScheme === 'dark' ? 6 : 7]
+    color ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 4 : 6] : undefined
   const activeTab = clamp(_activeTab, 0, tabs.length - 1)
 
   useEffect(() => {

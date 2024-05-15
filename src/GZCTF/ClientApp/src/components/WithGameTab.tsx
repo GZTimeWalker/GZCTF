@@ -82,7 +82,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.challenge'),
       path: 'challenges',
       link: 'challenges',
-      color: 'blue',
       requireJoin: true,
       requireRole: Role.User,
     },
@@ -91,7 +90,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.scoreboard'),
       path: 'scoreboard',
       link: 'scoreboard',
-      color: 'yellow',
       requireJoin: false,
       requireRole: Role.User,
     },
@@ -100,7 +98,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.monitor.index'),
       path: 'monitor',
       link: 'monitor/events',
-      color: 'green',
       requireJoin: false,
       requireRole: Role.Monitor,
     },
@@ -115,7 +112,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     tabKey: p.link,
     label: p.title,
     icon: <Icon path={p.icon} size={1} />,
-    color: p.color,
   }))
   const getTab = (path: string) => filteredPages?.findIndex((page) => path.includes(page.path))
 

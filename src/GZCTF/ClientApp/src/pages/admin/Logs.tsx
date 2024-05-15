@@ -211,7 +211,7 @@ const Logs: FC = () => {
             <Table.Thead>
               <Table.Tr>
                 <Table.Th style={{ width: '6rem' }}>{t('common.label.time')}</Table.Th>
-                <Table.Th style={{ width: '14rem' }}>{t('common.label.ip')}</Table.Th>
+                <Table.Th style={{ width: '12%' }}>{t('common.label.ip')}</Table.Th>
                 <Table.Th style={{ width: '6rem' }}>{t('common.label.user')}</Table.Th>
                 <Table.Th>{t('admin.label.logs.message')}</Table.Th>
                 <Table.Th style={{ width: '3rem' }}>{t('admin.label.logs.status')}</Table.Th>
