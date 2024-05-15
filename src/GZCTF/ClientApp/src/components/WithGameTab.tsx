@@ -181,8 +181,10 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     <Stack pos="relative" mt="md">
       <LoadingOverlay
         visible={!game}
-        opacity={1}
-        c={colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2]}
+        overlayProps={{
+          backgroundOpacity: 1,
+          color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
+        }}
       />
       <IconTabs
         active={activeTab}

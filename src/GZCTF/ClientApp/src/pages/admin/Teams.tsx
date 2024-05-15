@@ -162,7 +162,7 @@ const Teams: FC = () => {
       head={
         <>
           <TextInput
-            w="30%"
+            w="36%"
             leftSection={<Icon path={mdiMagnify} size={1} />}
             placeholder={t('admin.placeholder.teams.search')}
             value={hint}

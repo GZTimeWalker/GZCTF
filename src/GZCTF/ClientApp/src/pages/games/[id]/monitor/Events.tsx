@@ -209,7 +209,7 @@ const Events: FC = () => {
   )
 
   return (
-    <WithGameMonitorTab>
+    <WithGameMonitorTab isLoading={!events}>
       <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(

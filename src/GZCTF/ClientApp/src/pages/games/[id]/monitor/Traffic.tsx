@@ -142,7 +142,7 @@ const Traffic: FC = () => {
   teamTraffic?.sort((a, b) => (a.teamId ?? 0) - (b.teamId ?? 0))
 
   return (
-    <WithGameMonitorTab>
+    <WithGameMonitorTab isLoading={!challengeTraffic}>
       {!challengeTraffic || challengeTraffic?.length === 0 ? (
         <Center h="calc(100vh - 140px)">
           <Stack gap={0}>
