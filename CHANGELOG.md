@@ -3,11 +3,16 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [unreleased]
+## [0.20.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.3..v0.20.4) - 2024-05-17
 
 ### 🐛 Bug Fixes
 
 - **(config)** cache not flush - ([811b73](https://github.com/GZTimeWalker/GZCTF/commit/811b73)) by **GZTime**
+- **(style)** `LoadingOverlay` with wrong props - ([8ce788](https://github.com/GZTimeWalker/GZCTF/commit/8ce788)) by **GZTime**
+
+### 🎨 Styling
+
+- use primary color for Icon Tabs - ([0f9071](https://github.com/GZTimeWalker/GZCTF/commit/0f9071)) by **GZTime**
 
 ---
 ## [0.20.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.2..v0.20.3) - 2024-05-13
