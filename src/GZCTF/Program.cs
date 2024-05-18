@@ -296,6 +296,8 @@ app.UseRequestLocalization();
 
 app.UseResponseCompression();
 
+app.UseCspMiddleware();
+
 app.UseCustomFavicon();
 app.UseStaticFiles(new StaticFileOptions
 {

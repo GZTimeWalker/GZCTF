@@ -19,7 +19,7 @@ importers:
         version: 11.11.4(@types/react@18.3.2)(react@18.3.1)
       '@mantine/carousel':
         specifier: ^7.9.2
-        version: 7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.1(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/colors-generator':
         specifier: ^7.9.2
         version: 7.9.2(chroma-js@2.4.2)
@@ -75,14 +75,14 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2(echarts@5.5.0)(react@18.3.1)
       embla-carousel:
-        specifier: ^8.1.0
-        version: 8.1.0
+        specifier: ^8.1.1
+        version: 8.1.1
       embla-carousel-autoplay:
-        specifier: ^8.1.0
-        version: 8.1.0(embla-carousel@8.1.0)
+        specifier: ^8.1.1
+        version: 8.1.1(embla-carousel@8.1.1)
       embla-carousel-react:
-        specifier: ^8.1.0
-        version: 8.1.0(react@18.3.1)
+        specifier: ^8.1.1
+        version: 8.1.1(react@18.3.1)
       i18next:
         specifier: ^23.11.4
         version: 23.11.4
@@ -1245,23 +1245,23 @@ packages:
   electron-to-chromium@1.4.751:
     resolution: {integrity: sha512-2DEPi++qa89SMGRhufWTiLmzqyuGmNF3SK4+PQetW1JKiZdEpF4XQonJXJCzyuYSA6mauiMhbyVhqYAP45Hvfw==}
 
-  embla-carousel-autoplay@8.1.0:
-    resolution: {integrity: sha512-Uh5aX193XLSW5vaLWiQQ1uCIEpb14QUFxVI7mQpDAb50kEK0EVv8pTMyVjW9BWfvixj6LXEY/RVMnK8E/YOf5g==}
+  embla-carousel-autoplay@8.1.1:
+    resolution: {integrity: sha512-MwQzErkZDBL06JGIjxx8P2YgpbfaLCWtowfbd0MfhAUgFOiMeYTHG4C3VzBRse2B/aV8K9PfXrdvFoNvhOOVHQ==}
     peerDependencies:
-      embla-carousel: 8.1.0
+      embla-carousel: 8.1.1
 
-  embla-carousel-react@8.1.0:
-    resolution: {integrity: sha512-sSqTG+mz+nnzOGbbjINKlv+2UBrS213dGbUL32x/kkLRRlzqGDxe3dcJzaNBZlg3d8IyEvgcrI9trQwXBCNIug==}
+  embla-carousel-react@8.1.1:
+    resolution: {integrity: sha512-VuIrNyGneFKlDzAvkRGeXjEOw+FW2Ob76R/Y+kdSuKj68bnaAJCEf8PlHtJJWle1/rR/Sfv9NTIa00zlA8iXgw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
-  embla-carousel-reactive-utils@8.1.0:
-    resolution: {integrity: sha512-jiPOa5iT61HATnn6cjym4+0r+VGopJlFTO6MtzDUM435vjZQ1ot995aa7hJJ++ssYOhUlHYt6YJy08Ooigx4hQ==}
+  embla-carousel-reactive-utils@8.1.1:
+    resolution: {integrity: sha512-zlsaorYN56qtoXoVNw8hA/IbUjxq0pdggZpl9b5V2Cxvrd47ZSL5Lat7GgC+kgyUEdEocP1iOmw5+vpCX9rZPA==}
     peerDependencies:
-      embla-carousel: 8.1.0
+      embla-carousel: 8.1.1
 
-  embla-carousel@8.1.0:
-    resolution: {integrity: sha512-s6i450b1cppstIQB0RQ/eHzBGS57twsM09GiAE04w4QyLYzZkuosxpiAGxK6Cez6BIp0Vd/SCmD7yWliEP6XEw==}
+  embla-carousel@8.1.1:
+    resolution: {integrity: sha512-PfdhNbPoNl7V5YnwuKe2zmKd0+/HY+Q4O59xQcVvinsgv2LkpAVQ1NB/q5STqAde8nZ56U2uQOe6X+9u4IZlhA==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3092,11 +3092,11 @@ snapshots:
       js-yaml: 4.1.0
       vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
 
-  '@mantine/carousel@7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.0(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@mantine/carousel@7.9.2(@mantine/core@7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.9.2(react@18.3.1))(embla-carousel-react@8.1.1(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@mantine/core': 7.9.2(@mantine/hooks@7.9.2(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mantine/hooks': 7.9.2(react@18.3.1)
-      embla-carousel-react: 8.1.0(react@18.3.1)
+      embla-carousel-react: 8.1.1(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
@@ -3730,21 +3730,21 @@ snapshots:
 
   electron-to-chromium@1.4.751: {}
 
-  embla-carousel-autoplay@8.1.0(embla-carousel@8.1.0):
+  embla-carousel-autoplay@8.1.1(embla-carousel@8.1.1):
     dependencies:
-      embla-carousel: 8.1.0
+      embla-carousel: 8.1.1
 
-  embla-carousel-react@8.1.0(react@18.3.1):
+  embla-carousel-react@8.1.1(react@18.3.1):
     dependencies:
-      embla-carousel: 8.1.0
-      embla-carousel-reactive-utils: 8.1.0(embla-carousel@8.1.0)
+      embla-carousel: 8.1.1
+      embla-carousel-reactive-utils: 8.1.1(embla-carousel@8.1.1)
       react: 18.3.1
 
-  embla-carousel-reactive-utils@8.1.0(embla-carousel@8.1.0):
+  embla-carousel-reactive-utils@8.1.1(embla-carousel@8.1.1):
     dependencies:
-      embla-carousel: 8.1.0
+      embla-carousel: 8.1.1
 
-  embla-carousel@8.1.0: {}
+  embla-carousel@8.1.1: {}
 
   emoji-regex@8.0.0: {}
 

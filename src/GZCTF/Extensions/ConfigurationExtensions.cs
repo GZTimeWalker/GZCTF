@@ -48,8 +48,11 @@ public static class ConfigurationExtensions
 
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
 
-    static async Task<IResult> FaviconHandler(HttpContext context, IDistributedCache cache,
-        IOptionsSnapshot<GlobalConfig> globalConfig, CancellationToken token = default)
+    static async Task<IResult> FaviconHandler(
+        HttpContext context,
+        IDistributedCache cache,
+        IOptionsSnapshot<GlobalConfig> globalConfig,
+        CancellationToken token = default)
     {
         var hash = await cache.GetStringAsync(CacheKey.Favicon, token);
         if (hash is null)
@@ -111,6 +114,8 @@ public static class ConfigurationExtensions
         return Results.Text(content, MediaTypeNames.Text.Html);
     };
 
-    delegate Task<IResult> HomePageHandlerDelegate(IDistributedCache cache, IOptionsSnapshot<GlobalConfig> globalConfig,
+    delegate Task<IResult> HomePageHandlerDelegate(
+        IDistributedCache cache,
+        IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default);
 }
