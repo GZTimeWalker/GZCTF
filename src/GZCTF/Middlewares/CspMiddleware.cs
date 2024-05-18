@@ -8,7 +8,7 @@ public class CspMiddleware(RequestDelegate next)
 
     public Task InvokeAsync(HttpContext context)
     {
-        context.Request.Headers.ContentSecurityPolicy = CspString;
+        context.Response.Headers.ContentSecurityPolicy = CspString;
         return next(context);
     }
 }
