@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using GZCTF.Models.Internal;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Container.Provider;
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Options;

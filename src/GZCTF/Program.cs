@@ -15,8 +15,9 @@ using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Config;
 using GZCTF.Services.Container;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -295,8 +296,6 @@ await app.RunPrelaunchWork();
 app.UseRequestLocalization();
 
 app.UseResponseCompression();
-
-app.UseCspMiddleware();
 
 app.UseCustomFavicon();
 app.UseStaticFiles(new StaticFileOptions

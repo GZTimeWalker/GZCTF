@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using GZCTF.Models.Internal;
-using GZCTF.Services;
+using GZCTF.Services.Config;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

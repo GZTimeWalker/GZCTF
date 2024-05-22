@@ -4,7 +4,7 @@ using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;

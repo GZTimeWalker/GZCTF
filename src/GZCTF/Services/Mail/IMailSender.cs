@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
-namespace GZCTF.Services.Interface;
+namespace GZCTF.Services.Mail;
 
 public interface IMailSender
 {

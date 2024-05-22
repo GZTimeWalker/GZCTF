@@ -3,7 +3,7 @@ using GZCTF.Extensions;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Container.Manager;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Distributed;

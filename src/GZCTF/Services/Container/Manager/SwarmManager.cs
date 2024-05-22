@@ -3,7 +3,6 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
-using GZCTF.Services.Interface;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
 namespace GZCTF.Services.Container.Manager;

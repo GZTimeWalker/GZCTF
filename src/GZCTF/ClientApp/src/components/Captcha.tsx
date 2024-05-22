@@ -66,6 +66,8 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const type = info?.type ?? CaptchaProvider.None
   const turnstileRef = useRef<TurnstileInstance>(null)
   const reCaptchaRef = useRef<CaptchaInstance>(null)
+  const nonce =
+    document.querySelector('meta[property="csp-nonce"]')?.getAttribute('nonce') ?? undefined
 
   useImperativeHandle(
     ref,
@@ -99,6 +101,9 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
     return (
       <GoogleReCaptchaProvider
         reCaptchaKey={info.siteKey}
+        scriptProps={{
+          nonce,
+        }}
         container={{
           parameters: {
             theme: colorScheme == 'auto' ? undefined : colorScheme,
@@ -114,6 +119,7 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
     <Box {...others}>
       <Turnstile
         ref={turnstileRef}
+        nonce={nonce}
         siteKey={info.siteKey}
         options={{
           theme: colorScheme,

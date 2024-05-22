@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using GZCTF.Models.Internal;
-using GZCTF.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using ConfigModel = GZCTF.Models.Data.Config;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.Config;
 
 public class ConfigService(
     AppDbContext context,
@@ -23,15 +23,15 @@ public class ConfigService(
 
     public void ReloadConfig() => _configuration?.Reload();
 
-    public async Task SaveConfigSet(HashSet<Config> configs, CancellationToken token = default)
+    public async Task SaveConfigSet(HashSet<ConfigModel> configs, CancellationToken token = default)
     {
-        Dictionary<string, Config> dbConfigs = await context.Configs
+        Dictionary<string, ConfigModel> dbConfigs = await context.Configs
             .ToDictionaryAsync(c => c.ConfigKey, c => c, token);
         HashSet<string> cacheKeys = [];
 
-        foreach (Config conf in configs)
+        foreach (ConfigModel conf in configs)
         {
-            if (dbConfigs.TryGetValue(conf.ConfigKey, out Config? dbConf))
+            if (dbConfigs.TryGetValue(conf.ConfigKey, out ConfigModel? dbConf))
             {
                 if (dbConf.Value == conf.Value)
                     continue;
@@ -68,7 +68,7 @@ public class ConfigService(
             await cache.RemoveAsync(key, token);
     }
 
-    static void MapConfigsInternal(string key, HashSet<Config> configs, PropertyInfo info, object? value)
+    static void MapConfigsInternal(string key, HashSet<ConfigModel> configs, PropertyInfo info, object? value)
     {
         // ignore when value with `AutoSaveIgnoreAttribute`
         if (value is null || info.GetCustomAttribute<AutoSaveIgnoreAttribute>() != null)
@@ -94,9 +94,9 @@ public class ConfigService(
         }
     }
 
-    static HashSet<Config> GetConfigs(Type type, object? value)
+    static HashSet<ConfigModel> GetConfigs(Type type, object? value)
     {
-        HashSet<Config> configs = [];
+        HashSet<ConfigModel> configs = [];
 
         foreach (PropertyInfo item in type.GetProperties())
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item, item.GetValue(value));
@@ -104,9 +104,9 @@ public class ConfigService(
         return configs;
     }
 
-    public static HashSet<Config> GetConfigs<T>(T config) where T : class
+    public static HashSet<ConfigModel> GetConfigs<T>(T config) where T : class
     {
-        HashSet<Config> configs = [];
+        HashSet<ConfigModel> configs = [];
         Type type = typeof(T);
 
         foreach (PropertyInfo item in type.GetProperties())

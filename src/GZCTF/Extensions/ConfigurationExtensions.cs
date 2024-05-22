@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using GZCTF.Models.Internal;
 using GZCTF.Providers;
@@ -16,6 +17,9 @@ public static class ConfigurationExtensions
     {
         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
     };
+
+    const string CspTemplate = "default-src 'self' 'nonce-{0}'; style-src 'self' 'unsafe-inline'; " +
+                               "img-src * 'self' data:; font-src * 'self' data:; object-src 'none'; frame-src 'none';";
 
     public static void AddEntityConfiguration(this IConfigurationBuilder builder,
         Action<DbContextOptionsBuilder> optionsAction) =>
@@ -96,6 +100,7 @@ public static class ConfigurationExtensions
     }
 
     static HomePageHandlerDelegate IndexHandler(string template) => async (
+        HttpContext context,
         IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default) =>
@@ -103,18 +108,27 @@ public static class ConfigurationExtensions
         var content = await cache.GetStringAsync(CacheKey.Index, token);
 
         if (content is not null)
-            return Results.Text(content, MediaTypeNames.Text.Html);
+            goto SendContent;
 
         GlobalConfig config = globalConfig.Value;
         var title = HtmlEncoder.Default.Encode(config.Platform);
         var descr = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
-        content = template.Replace("%title%", title).Replace("%description%", descr);
+        content = template.Replace("%title%", title)
+            .Replace("%description%", descr);
 
         await cache.SetStringAsync(CacheKey.Index, content, token);
-        return Results.Text(content, MediaTypeNames.Text.Html);
+
+    SendContent:
+
+        var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
+
+        context.Response.Headers.ContentSecurityPolicy = string.Format(CspTemplate, nonce);
+
+        return Results.Text(content.Replace("%nonce%", nonce), MediaTypeNames.Text.Html);
     };
 
     delegate Task<IResult> HomePageHandlerDelegate(
+        HttpContext context,
         IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
-using GZCTF.Services;
+using GZCTF.Services.Config;
 using Xunit;
 using Xunit.Abstractions;
 

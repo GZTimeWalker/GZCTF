@@ -1,4 +1,4 @@
-﻿namespace GZCTF.Services.Interface;
+﻿namespace GZCTF.Services.Container.Provider;
 
 public interface IContainerProvider<T, M>
 {

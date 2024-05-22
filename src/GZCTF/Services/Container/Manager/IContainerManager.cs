@@ -1,6 +1,6 @@
 ﻿using GZCTF.Models.Internal;
 
-namespace GZCTF.Services.Interface;
+namespace GZCTF.Services.Container.Manager;
 
 public interface IContainerManager
 {

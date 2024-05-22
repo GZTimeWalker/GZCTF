@@ -1,7 +1,7 @@
 ﻿using Docker.DotNet;
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Container.Provider;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Provider;
