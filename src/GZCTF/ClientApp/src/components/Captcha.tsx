@@ -66,8 +66,7 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const type = info?.type ?? CaptchaProvider.None
   const turnstileRef = useRef<TurnstileInstance>(null)
   const reCaptchaRef = useRef<CaptchaInstance>(null)
-  const nonce =
-    document.querySelector('meta[property="csp-nonce"]')?.getAttribute('nonce') ?? undefined
+  const nonce = document.getElementById('nonce-container')?.getAttribute('data-nonce') ?? undefined
 
   useImperativeHandle(
     ref,

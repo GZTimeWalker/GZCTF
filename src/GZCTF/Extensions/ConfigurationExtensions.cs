@@ -120,7 +120,7 @@ public static class ConfigurationExtensions
 
     SendContent:
 
-        var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
+        var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(12));
 
         context.Response.Headers.ContentSecurityPolicy = string.Format(CspTemplate, nonce);
 
