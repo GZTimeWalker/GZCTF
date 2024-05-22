@@ -3,6 +3,15 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.4..v0.20.5) - 2024-05-22
+
+### ⛰️ Features
+
+- **(experimental)** use nonce for csp - ([c42255](https://github.com/GZTimeWalker/GZCTF/commit/c42255)) by **GZTime**
+- **(security)** Initial content security policy - ([02d9e2](https://github.com/GZTimeWalker/GZCTF/commit/02d9e2)) by **GZTime**
+- remove size limit of form and multipart-form - ([e1294e](https://github.com/GZTimeWalker/GZCTF/commit/e1294e)) by **Steven He**
+
+---
 ## [0.20.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.3..v0.20.4) - 2024-05-17
 
 ### 🐛 Bug Fixes
