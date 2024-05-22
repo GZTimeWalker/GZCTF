@@ -33,7 +33,7 @@ public record Config
     /// 在更新配置时使用，若不为空则会删除对应缓存
     /// </summary>
     /// <remarks>
-    /// 仅在 <see cref="GZCTF.Services.ConfigService.SaveConfigSet" /> 中使用
+    /// 仅在 <see cref="GZCTF.Services.Config.ConfigService.SaveConfigSet" /> 中使用
     /// </remarks>
     [NotMapped]
     [JsonIgnore]
