@@ -18,8 +18,8 @@ public static class ConfigurationExtensions
         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
     };
 
-    const string CspTemplate = "default-src 'self' 'nonce-{0}'; style-src 'self' 'unsafe-inline'; " +
-                               "img-src * 'self' data:; font-src * 'self' data:; object-src 'none'; frame-src 'none';";
+    const string CspTemplate = "default-src 'self' 'nonce-{0}' 'unsafe-inline'; img-src * 'self' data:; " +
+                               "font-src * 'self' data:; object-src 'none'; base-uri 'self';";
 
     public static void AddEntityConfiguration(this IConfigurationBuilder builder,
         Action<DbContextOptionsBuilder> optionsAction) =>
