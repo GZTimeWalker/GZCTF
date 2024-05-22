@@ -48,10 +48,13 @@ export default defineConfig(({ mode }) => {
       react(),
       tsconfigPaths(),
       eslintPlugin(), // only for development
-      webfontDownload([
-        'https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap',
-        'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&display=swap',
-      ]),
+      webfontDownload(
+        [
+          'https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap',
+          'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&display=swap',
+        ],
+        { injectAsStyleTag: false, async: false }
+      ),
       Pages({
         dirs: [
           {
