@@ -118,11 +118,13 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
     <Box {...others}>
       <Turnstile
         ref={turnstileRef}
-        nonce={nonce}
         siteKey={info.siteKey}
         options={{
           theme: colorScheme,
           action,
+        }}
+        scriptOptions={{
+          nonce,
         }}
       />
     </Box>
