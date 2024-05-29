@@ -102,8 +102,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(marked@12.0.2)
       pdfjs-dist:
-        specifier: 3.11.174
-        version: 3.11.174
+        specifier: 4.3.136
+        version: 4.3.136
       prismjs:
         specifier: ^1.29.0
         version: 1.29.0
@@ -123,8 +123,8 @@ importers:
         specifier: ^14.1.2
         version: 14.1.2(i18next@23.11.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-pdf:
-        specifier: ^8.0.2
-        version: 8.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^9.0.0
+        version: 9.0.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router:
         specifier: ^6.23.1
         version: 6.23.1(react@18.3.1)
@@ -140,10 +140,10 @@ importers:
         version: 7.24.6(@babel/core@7.24.6)(eslint@8.57.0)
       '@kainstar/vite-plugin-i18next-loader':
         specifier: ^1.0.3
-        version: 1.0.3(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 1.0.3(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
       '@nabla/vite-plugin-eslint':
         specifier: ^2.0.4
-        version: 2.0.4(eslint@8.57.0)(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 2.0.4(eslint@8.57.0)(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.2.5)
@@ -173,7 +173,7 @@ importers:
         version: 7.11.0(eslint@8.57.0)(typescript@5.4.5)
       '@vitejs/plugin-react':
         specifier: ^4.3.0
-        version: 4.3.0(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 4.3.0(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
       axios:
         specifier: ^1.7.2
         version: 1.7.2
@@ -217,20 +217,20 @@ importers:
         specifier: 5.4.5
         version: 5.4.5
       vite:
-        specifier: ^5.2.11
-        version: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+        specifier: ^5.2.12
+        version: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
       vite-plugin-pages:
         specifier: ^0.32.2
-        version: 0.32.2(react-router@6.23.1(react@18.3.1))(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 0.32.2(react-router@6.23.1(react@18.3.1))(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
       vite-plugin-prismjs:
         specifier: ^0.0.11
         version: 0.0.11(prismjs@1.29.0)
       vite-plugin-webfont-dl:
         specifier: ^3.9.4
-        version: 3.9.4(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 3.9.4(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
       vite-tsconfig-paths:
         specifier: ^4.3.2
-        version: 4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
+        version: 4.3.2(typescript@5.4.5)(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))
 
 packages:
 
@@ -2012,15 +2012,15 @@ packages:
     resolution: {integrity: sha512-5HviZNaZcfqP95rwpv+1HDgUamezbqdSYTyzjTvwtJSnIH+3vnbmWsItli8OFEndS984VT55M3jduxZbX351gg==}
     engines: {node: '>=12'}
 
-  path2d-polyfill@2.0.1:
-    resolution: {integrity: sha512-ad/3bsalbbWhmBo0D6FZ4RNMwsLsPpL6gnvhuSaU5Vm7b06Kr5ubSltQQ0T7YKsiJQO+g22zJ4dJKNTXIyOXtA==}
-    engines: {node: '>=8'}
+  path2d@0.2.0:
+    resolution: {integrity: sha512-KdPAykQX6kmLSOO6Jpu2KNcCED7CKjmaBNGGNuctOsG0hgYO1OdYQaan6cYXJiG0WmXOwZZPILPBimu5QAIw3A==}
+    engines: {node: '>=6'}
 
   pathe@1.1.2:
     resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
 
-  pdfjs-dist@3.11.174:
-    resolution: {integrity: sha512-TdTZPf1trZ8/UFu5Cx/GXB7GZM30LT+wWUNfsi6Bq8ePLnb+woNKtDymI2mxZYBpMbonNFqKmiz684DIfnd8dA==}
+  pdfjs-dist@4.3.136:
+    resolution: {integrity: sha512-gzfnt1qc4yA+U46golPGYtU4WM2ssqP2MvFjKga8GEKOrEnzRPrA/9jogLLPYHiA3sGBPJ+p7BdAq+ytmw3jEg==}
     engines: {node: '>=18'}
 
   picocolors@1.0.0:
@@ -2158,8 +2158,8 @@ packages:
       react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
       react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
-  react-pdf@8.0.2:
-    resolution: {integrity: sha512-C0PFC+j9vmEIZ82Iq0c85xUWkgsZTUS05syqOk8NC+7PAanyWlVi/ImYkGQe27zYAlBA6IidRYEt1DAAXKq1Ow==}
+  react-pdf@9.0.0:
+    resolution: {integrity: sha512-J+pza8R2p9oNEOJOHIQJI4o5rFK7ji7bBl2IvsHvz1OOyphvuzVDo5tOJwWAFAbxYauCH3Kt8jOvcMJUOpxYZQ==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -2607,8 +2607,8 @@ packages:
       vite:
         optional: true
 
-  vite@5.2.11:
-    resolution: {integrity: sha512-HndV31LWW05i1BLPMUCE1B9E9GFbOu1MbenhS58FuK6owSO5qHm7GiCotrNY1YE5rMeQSFBGmT5ZaLEjFizgiQ==}
+  vite@5.2.12:
+    resolution: {integrity: sha512-/gC8GxzxMK5ntBwb48pR32GGhENnjtY30G4A0jemunsBkiEZFw60s8InGpN8gkhHEkjnRK1aSAxeQgwvFhUHAA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -3191,12 +3191,12 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@kainstar/vite-plugin-i18next-loader@1.0.3(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))':
+  '@kainstar/vite-plugin-i18next-loader@1.0.3(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))':
     dependencies:
       dot-prop: 8.0.2
       globby: 14.0.1
       js-yaml: 4.1.0
-      vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
 
   '@mantine/carousel@7.10.0(@mantine/core@7.10.0(@mantine/hooks@7.10.0(react@18.3.1))(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mantine/hooks@7.10.0(react@18.3.1))(embla-carousel-react@8.1.3(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -3308,13 +3308,13 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@nabla/vite-plugin-eslint@2.0.4(eslint@8.57.0)(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))':
+  '@nabla/vite-plugin-eslint@2.0.4(eslint@8.57.0)(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))':
     dependencies:
       '@types/eslint': 8.56.9
       chalk: 4.1.2
       debug: 4.3.4
       eslint: 8.57.0
-      vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
 
@@ -3544,14 +3544,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.3.0(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))':
+  '@vitejs/plugin-react@4.3.0(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)))':
     dependencies:
       '@babel/core': 7.24.6
       '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
       '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
 
@@ -4568,15 +4568,15 @@ snapshots:
 
   path-type@5.0.0: {}
 
-  path2d-polyfill@2.0.1:
+  path2d@0.2.0:
     optional: true
 
   pathe@1.1.2: {}
 
-  pdfjs-dist@3.11.174:
+  pdfjs-dist@4.3.136:
     optionalDependencies:
       canvas: dry-uninstall@0.3.0
-      path2d-polyfill: 2.0.1
+      path2d: 0.2.0
 
   picocolors@1.0.0: {}
 
@@ -4694,14 +4694,14 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-pdf@8.0.2(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-pdf@9.0.0(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       clsx: 2.1.1
       dequal: 2.0.3
       make-cancellable-promise: 1.3.2
       make-event-props: 1.6.2
       merge-refs: 1.3.0(@types/react@18.3.3)
-      pdfjs-dist: 3.11.174
+      pdfjs-dist: 4.3.136
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tiny-invariant: 1.3.3
@@ -5108,7 +5108,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite-plugin-pages@0.32.2(react-router@6.23.1(react@18.3.1))(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-plugin-pages@0.32.2(react-router@6.23.1(react@18.3.1))(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.3.4
@@ -5118,7 +5118,7 @@ snapshots:
       json5: 2.2.3
       local-pkg: 0.5.0
       picocolors: 1.0.1
-      vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
       yaml: 2.4.2
     optionalDependencies:
       react-router: 6.23.1(react@18.3.1)
@@ -5133,28 +5133,28 @@ snapshots:
       - prismjs
       - supports-color
 
-  vite-plugin-webfont-dl@3.9.4(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-plugin-webfont-dl@3.9.4(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       axios: 1.7.2
       clean-css: 5.3.3
       flat-cache: 3.2.0
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - debug
 
-  vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
+  vite-tsconfig-paths@4.3.2(typescript@5.4.5)(vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))):
     dependencies:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.4.5)
     optionalDependencies:
-      vite: 5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
+      vite: 5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38))
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.2.11(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)):
+  vite@5.2.12(@types/node@20.12.12)(sugarss@4.0.1(postcss@8.4.38)):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
