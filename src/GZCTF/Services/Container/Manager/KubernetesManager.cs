@@ -197,7 +197,9 @@ public class KubernetesManager : IContainerManager
             Image = config.Image,
             Port = config.ExposedPort,
             IP = service.Spec.ClusterIP,
-            IsProxy = !_meta.ExposePort
+            IsProxy = !_meta.ExposePort,
+            // No tracking for k8s-managed containers
+            Status = ContainerStatus.Running
         };
 
         if (!_meta.ExposePort)

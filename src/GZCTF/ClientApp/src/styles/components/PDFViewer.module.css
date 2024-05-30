@@ -25,3 +25,25 @@
 .paper {
   margin-bottom: var(--mantine-spacing-md);
 }
+
+.box {
+  @mixin dark {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: var(--mantine-color-gray-7);
+      opacity: 0.13;
+      z-index: 10;
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+}
+
+:global(.hiddenCanvasElement) {
+  display: none;
+}

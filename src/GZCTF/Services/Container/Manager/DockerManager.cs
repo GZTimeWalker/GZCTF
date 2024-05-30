@@ -28,7 +28,8 @@ public class DockerManager : IContainerManager
     {
         try
         {
-            await _client.Containers.RemoveContainerAsync(container.ContainerId, new() { Force = true }, token);
+            await _client.Containers.RemoveContainerAsync(container.ContainerId,
+                new() { Force = true }, token);
         }
         catch (DockerContainerNotFoundException)
         {
