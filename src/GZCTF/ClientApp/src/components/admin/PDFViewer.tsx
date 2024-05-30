@@ -29,8 +29,6 @@ const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
   const pageWidth = ref.current?.offsetWidth ?? renderWidth
   const ratio = pageWidth / renderWidth
 
-  console.log(renderWidth, pageWidth, ratio)
-
   return (
     <ErrorBoundary
       fallback={
