@@ -37,7 +37,7 @@ import { Callout } from "nextra-theme-docs";
           "Value": "gzctf"
         }
       ],
-      "PropertiesAsLabels": [ "app" ],
+      "PropertiesAsLabels": ["app"],
       "Credentials": {
         "Login": "login",
         "Password": "password"
@@ -85,7 +85,9 @@ import { Callout } from "nextra-theme-docs";
       // optional
       "SwarmMode": false,
       "ChallengeNetwork": "",
-      "Uri": "unix:///var/run/docker.sock"
+      "Uri": "unix:///var/run/docker.sock",
+      "UserName": "",
+      "Password": ""
     },
     "KubernetesConfig": {
       // optional
@@ -215,7 +217,6 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 
   - **Enable**：是否启用。
 
-
 ### EmailConfig
 
 此处配置邮件发送相关信息，若采用邮箱注册和其他相关邮件功能，此处为必填项。
@@ -260,6 +261,8 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
   - 如需使用外部 docker，请将 Uri 指向对应 docker API Server，**外部 API 鉴权尚未实现，不推荐此部署方式**
 
 - **ChallengeNetwork:** 指定题目容器所在的网络，若不指定，将会使用默认网络。
+
+- **UserName, Password:** Docker API Basic Auth 用户名和密码，可选项。
 
 #### Kubernetes
 

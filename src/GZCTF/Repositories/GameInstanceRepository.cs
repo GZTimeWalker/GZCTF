@@ -67,27 +67,25 @@ public class GameInstanceRepository(
                     };
                     break;
                 case ChallengeType.DynamicAttachment:
+                    var flags = await Context.FlagContexts
+                        .Where(e => e.Challenge == challenge && !e.IsOccupied)
+                        .ToListAsync(token);
+
+                    if (flags.Count == 0)
                     {
-                        List<FlagContext> flags = await Context.FlagContexts
-                            .Where(e => e.Challenge == challenge && !e.IsOccupied)
-                            .ToListAsync(token);
-
-                        if (flags.Count == 0)
-                        {
-                            logger.SystemLog(
-                                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough),
-                                    challenge.Title,
-                                    challenge.Id], TaskStatus.Failed,
-                                LogLevel.Warning);
-                            return null;
-                        }
-
-                        var pos = Random.Shared.Next(flags.Count);
-                        flags[pos].IsOccupied = true;
-
-                        instance.FlagId = flags[pos].Id;
-                        break;
+                        logger.SystemLog(
+                            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough),
+                                challenge.Title,
+                                challenge.Id], TaskStatus.Failed,
+                            LogLevel.Warning);
+                        return null;
                     }
+
+                    var pos = Random.Shared.Next(flags.Count);
+                    flags[pos].IsOccupied = true;
+
+                    instance.FlagId = flags[pos].Id;
+                    break;
             }
 
             // instance.FlagContext is null by default

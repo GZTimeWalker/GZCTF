@@ -7,11 +7,11 @@ const Feedback: React.FC = () => {
   const { locale } = useRouter();
 
   switch (locale) {
-    case 'zh':
+    case "zh":
       return "文档有问题？欢迎反馈 →";
-    case 'ja':
+    case "ja":
       return "フィードバックはこちら →";
-    case 'en':
+    case "en":
       return "Feedback →";
     default:
       return "Feedback →";
@@ -22,11 +22,11 @@ const EditLink: React.FC = () => {
   const { locale } = useRouter();
 
   switch (locale) {
-    case 'zh':
+    case "zh":
       return "编辑此页面";
-    case 'ja':
+    case "ja":
       return "ページの編集";
-    case 'en':
+    case "en":
       return "Edit this page";
     default:
       return "Edit this page";
@@ -37,11 +37,11 @@ const Toc: React.FC = () => {
   const { locale } = useRouter();
 
   switch (locale) {
-    case 'zh':
+    case "zh":
       return "此页内容";
-    case 'ja':
+    case "ja":
       return "ページの内容";
-    case 'en':
+    case "en":
       return "Page content";
     default:
       return "Page content";
@@ -63,7 +63,11 @@ const config: DocsThemeConfig = {
   search: {
     component: null,
   },
-  i18n: [{ locale: "zh", text: "中文" }, { locale: "en", text: "English" }, { locale: "ja", text: "日本語" }],
+  i18n: [
+    { locale: "zh", text: "中文" },
+    { locale: "en", text: "English" },
+    { locale: "ja", text: "日本語" },
+  ],
   feedback: {
     content: Feedback,
   },
@@ -74,7 +78,7 @@ const config: DocsThemeConfig = {
     title: Toc,
   },
   footer: {
-    text: "©2022-present By GZTimeWalker"
+    text: "©2022-present By GZTimeWalker",
   },
 };
 

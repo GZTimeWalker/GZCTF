@@ -6,6 +6,7 @@
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.2.0" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.1" />
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
+    <PackageVersion Include="Docker.DotNet.BasicAuth" Version="3.125.15" />
     <PackageVersion Include="KubernetesClient" Version="14.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.6" />

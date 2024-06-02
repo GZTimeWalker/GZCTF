@@ -1,10 +1,10 @@
 {
-    "index": "概要",
-    "quick-start": "クイックスタート",
-    "config": "構成",
-    "deployment": "デプロイ",
-    "guide": "ガイダンス",
-    "issue": "よくある質問",
-    "thanks": "謝辞",
-    "changelog": "リリースノート"
+  "index": "概要",
+  "quick-start": "クイックスタート",
+  "config": "構成",
+  "deployment": "デプロイ",
+  "guide": "ガイダンス",
+  "issue": "よくある質問",
+  "thanks": "謝辞",
+  "changelog": "リリースノート"
 }

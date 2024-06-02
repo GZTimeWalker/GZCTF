@@ -1,4 +1,4 @@
 {
-    "docker-k8s": "Docker + K8s 部署",
-    "k8s-only": "仅 K8s 部署"
+  "docker-k8s": "Docker + K8s 部署",
+  "k8s-only": "仅 K8s 部署"
 }

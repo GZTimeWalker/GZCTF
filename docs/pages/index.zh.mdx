@@ -21,6 +21,7 @@ GZ::CTF 基于 AGPLv3 协议开源，使用和修改均需遵守开源协议。�
 - 创建高度可自定义的题目
 
   - 题目类型：静态附件、动态附件、静态容器、动态容器
+
     - 静态附件：共用附件，任意添加的 flag 均可提交。
     - 动态附件：需要至少满足队伍数量的 flag 和附件，附件及 flag 按照队伍进行分发。
     - 静态容器：共用容器模版，不下发 flag，任意添加的 flag 均可提交。
@@ -30,7 +31,7 @@ GZ::CTF 基于 AGPLv3 协议开源，使用和修改均需遵守开源协议。�
 
     - 分值曲线：
 
-      $$ f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
+      $$ f(S, r, d, x) = \left \lfloor S \times \left[r + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
 
       其中 $S$ 为原始分值、 $r$ 为最低分值比例、 $d$ 为难度系数、 $x$ 为提交次数。前三个参数可通过自定义实现绝大部分的动态分值需求。
 

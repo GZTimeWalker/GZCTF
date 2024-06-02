@@ -1,10 +1,10 @@
 {
-    "index": "Overview",
-    "quick-start": "Quick Start",
-    "config": "Configuration",
-    "deployment": "Deploymnt",
-    "guide": "Guidance",
-    "issue": "Common Issues",
-    "thanks": "Acknowledgements",
-    "changelog": "Changelog"
+  "index": "Overview",
+  "quick-start": "Quick Start",
+  "config": "Configuration",
+  "deployment": "Deploymnt",
+  "guide": "Guidance",
+  "issue": "Common Issues",
+  "thanks": "Acknowledgements",
+  "changelog": "Changelog"
 }

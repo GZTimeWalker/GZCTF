@@ -1,10 +1,10 @@
 {
-    "index": "简介",
-    "quick-start": "快速上手",
-    "config": "配置",
-    "deployment": "部署",
-    "guide": "使用指南",
-    "issue": "常见问题",
-    "thanks": "致谢",
-    "changelog": "更新日志"
+  "index": "简介",
+  "quick-start": "快速上手",
+  "config": "配置",
+  "deployment": "部署",
+  "guide": "使用指南",
+  "issue": "常见问题",
+  "thanks": "致谢",
+  "changelog": "更新日志"
 }

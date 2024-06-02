@@ -272,6 +272,8 @@ public class ContainerProvider
 public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
+    public string? UserName { get; set; }
+    public string? Password { get; set; }
     public bool SwarmMode { get; set; } = false;
     public string? ChallengeNetwork { get; set; }
 }

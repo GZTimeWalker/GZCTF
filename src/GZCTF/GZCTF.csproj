@@ -31,6 +31,7 @@
         </PackageReference>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="Docker.DotNet" />
+        <PackageReference Include="Docker.DotNet.BasicAuth" />
         <PackageReference Include="KubernetesClient" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />

@@ -37,7 +37,7 @@ Here is a complete example of configuration:
           "Value": "gzctf"
         }
       ],
-      "PropertiesAsLabels": [ "app" ],
+      "PropertiesAsLabels": ["app"],
       "Credentials": {
         "Login": "login",
         "Password": "password"
@@ -85,7 +85,9 @@ Here is a complete example of configuration:
       // optional
       "SwarmMode": false,
       "ChallengeNetwork": "",
-      "Uri": "unix:///var/run/docker.sock"
+      "Uri": "unix:///var/run/docker.sock",
+      "UserName": "",
+      "Password": ""
     },
     "KubernetesConfig": {
       // optional
@@ -241,7 +243,7 @@ Heer we can configure the container backend which is required for creating conta
 - **Type:** Type of the container backend: `Docker` or `Kubernetes`。
 - **PublicEntry:** Public entry of the container backend, used to generate the address of the competition, and show to the participating teams.
 - **PortMappingType:** Port mapping type, can be `Default` or `PlatformProxy`。
-- **EnableTrafficCapture:** Enable/Disable traffic capture, only available when `PortMappingType` is configured as `PlatformProxy`. Captured traffic will be saved to  `/app/files/capture`.
+- **EnableTrafficCapture:** Enable/Disable traffic capture, only available when `PortMappingType` is configured as `PlatformProxy`. Captured traffic will be saved to `/app/files/capture`.
 
 #### Docker
 
@@ -259,6 +261,8 @@ Heer we can configure the container backend which is required for creating conta
   - If you use external docker, please set Uri to the corresponding docker API Server, **external API authentication has not been implemented, this deployment method is not recommended**
 
 - **ChallengeNetwork:** Specify the network where the challenge container is located. If not specified, the default network will be used.
+
+- **UserName, Password:** Docker API Basic Auth username and password, optional.
 
 #### Kubernetes
 

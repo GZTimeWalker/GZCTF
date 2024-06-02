@@ -54,7 +54,6 @@ For users who want deploy to multi-node cluster, we recommend using K3s as the d
 
 The most convenient deployment method in general is Docker + K3s separate deployment. You only need to execute `docker-compose` to complete the deployment of the GZCTF platform, and the deployment of K3s only requires exporting the kubeconfig after installation and mounting it to GZCTF.
 
-
 If you need to deploy internally in a K3s cluster, you need to provide two PVCs (for the database and attachment storage), one ConfigMap (for storing appsettings.json), and one Secret (for storing the kube-config.yaml pointing to your own cluster). You can deploy the database and Redis as needed. If you are running only one GZCTF instance, you can choose not to deploy Redis.
 
 **After testing, due to database performance considerations, it is not recommended to use multi-instance distributed deployment. A single instance is sufficient to support most competitions.**

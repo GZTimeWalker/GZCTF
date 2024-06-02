@@ -135,7 +135,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
            app: gzctf
        spec:
          nodeSelector:
-             kubernetes.io/hostname: xxx # Specify the deployment node, forcing it to be on the same node as the database
+           kubernetes.io/hostname: xxx # Specify the deployment node, forcing it to be on the same node as the database
          containers:
            - name: gzctf
              image: gztime/gzctf:latest
@@ -220,7 +220,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
            app: gzctf-db
        spec:
          nodeSelector:
-             kubernetes.io/hostname: xxx # Specify the deployment node, need to be on the same node as GZCTF
+           kubernetes.io/hostname: xxx # Specify the deployment node, need to be on the same node as GZCTF
          containers:
            - name: gzctf-db
              image: postgres:alpine
@@ -319,23 +319,23 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
 
 5. Additional Configuration for Traefik
 
-  In order to make GZCTF able to obtain the real IP address of users through XFF, Traefik needs to be able to add the XFF header correctly. Please note that the following content may not always be up-to-date and applicable to all versions of Traefik. This is an example of helm values, please search for the latest configuration method yourself.
+In order to make GZCTF able to obtain the real IP address of users through XFF, Traefik needs to be able to add the XFF header correctly. Please note that the following content may not always be up-to-date and applicable to all versions of Traefik. This is an example of helm values, please search for the latest configuration method yourself.
 
-   ```yaml
-   service:
-     spec:
-    externalTrafficPolicy: Local # To make XFF work properly, set externalTrafficPolicy to Local
-   deployment:
-     kind: DaemonSet
-   ports:
-     web:
-     redirectTo: websecure # Redirect HTTP to HTTPS
-   additionalArguments:
-     - "--entryPoints.web.proxyProtocol.insecure"
-     - "--entryPoints.web.forwardedHeaders.insecure"
-     - "--entryPoints.websecure.proxyProtocol.insecure"
-     - "--entryPoints.websecure.forwardedHeaders.insecure"
-   ```
+```yaml
+service:
+  spec:
+externalTrafficPolicy: Local # To make XFF work properly, set externalTrafficPolicy to Local
+deployment:
+  kind: DaemonSet
+ports:
+  web:
+  redirectTo: websecure # Redirect HTTP to HTTPS
+additionalArguments:
+  - "--entryPoints.web.proxyProtocol.insecure"
+  - "--entryPoints.web.forwardedHeaders.insecure"
+  - "--entryPoints.websecure.proxyProtocol.insecure"
+  - "--entryPoints.websecure.forwardedHeaders.insecure"
+```
 
 ## Deployment Tips
 
