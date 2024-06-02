@@ -31,6 +31,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 - Create highly customizable challenges
 
   - Type of challenges: Static Attachment, Dynamic Attachment, Static Container, Dynamic Container
+
     - Static Attachment: Shared attachments, any configured flag can be accepted.
     - Dynamic Attachment: The number of flags and attachments must be at least the number of teams. Attachments and flags are distributed according to the teams.
     - Static Container: Shared container templates, no dynamic flag is issued, and any configured flag can be submitted.
@@ -49,7 +50,6 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
   - Disable or enable challenges during the competition, and release new challenges at any time.
   - Dynamic flag sharing detection, optional flag template, leet flag
-
 
 - **Teams** score timeline, scoreboard. Teams can be grouped
 - Dynamic container distribution, management, and multiple port mapping methods based on **Docker or K8s**

@@ -3,6 +3,18 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.6](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.5..v0.20.6) - 2024-06-02
+
+### ⛰️ Features
+
+- support docker basic auth - ([12418d](https://github.com/GZTimeWalker/GZCTF/commit/12418d)) by **GZTime**
+- darken pdf in dark mode - ([418343](https://github.com/GZTimeWalker/GZCTF/commit/418343)) by **GZTime**
+
+### 🎨 Styling
+
+- challenge page - ([a8254e](https://github.com/GZTimeWalker/GZCTF/commit/a8254e)) by **GZTime**
+
+---
 ## [0.20.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.4..v0.20.5) - 2024-05-22
 
 ### ⛰️ Features
