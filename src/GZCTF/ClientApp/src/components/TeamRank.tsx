@@ -46,61 +46,47 @@ const TeamRank: FC<CardProps> = (props) => {
     }
   }, [error])
 
+  const rank = teamInfo?.rank
+
+  const item = (label: string, value?: null | string | number) => (
+    <Stack gap={2}>
+      <Skeleton visible={!rank}>
+        <Text ff="monospace" fw="bold">
+          {value ?? '0'}
+        </Text>
+      </Skeleton>
+      <Text size="xs" fw={500}>
+        {label}
+      </Text>
+    </Stack>
+  )
+
   return (
-    <Card {...props} shadow="sm" p="md">
-      <Stack gap={8}>
+    <Card {...props} shadow="sm">
+      <Stack gap="xs">
         <Group gap="sm" wrap="nowrap">
-          <Avatar alt="avatar" size={50} radius="md" src={teamInfo?.rank?.avatar}>
-            {teamInfo?.rank?.name?.slice(0, 1) ?? 'T'}
+          <Avatar alt="avatar" size={50} radius="md" src={rank?.avatar}>
+            {rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Skeleton visible={!teamInfo}>
+          <Skeleton visible={!rank}>
             <Stack gap={2} align="flex-start">
               <Title order={3} lineClamp={1}>
-                {teamInfo?.rank?.name ?? 'Team'}
+                {rank?.name ?? 'Team'}
               </Title>
-              {teamInfo?.rank?.organization && (
+              {rank?.organization && (
                 <Badge size="xs" variant="outline">
-                  {teamInfo.rank.organization}
+                  {rank.organization}
                 </Badge>
               )}
             </Stack>
           </Skeleton>
         </Group>
         <Group grow ta="center">
-          <Stack gap={2}>
-            <Skeleton visible={!teamInfo}>
-              <Text ff="monospace" fw="bold">
-                {teamInfo?.rank?.rank ?? '0'}
-              </Text>
-            </Skeleton>
-            <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
-          </Stack>
-          {teamInfo?.rank?.organization && (
-            <Stack gap={2}>
-              <Skeleton visible={!teamInfo}>
-                <Text ff="monospace" fw="bold">
-                  {teamInfo?.rank?.organizationRank ?? '0'}
-                </Text>
-              </Skeleton>
-              <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
-            </Stack>
-          )}
-          <Stack gap={2}>
-            <Skeleton visible={!teamInfo}>
-              <Text ff="monospace" fw="bold">
-                {teamInfo?.rank?.score ?? '0'}
-              </Text>
-            </Skeleton>
-            <Text size="xs">{t('game.label.score_table.score')}</Text>
-          </Stack>
-          <Stack gap={2}>
-            <Skeleton visible={!teamInfo}>
-              <Text ff="monospace" fw="bold">
-                {teamInfo?.rank?.solvedCount ?? '0'}
-              </Text>
-            </Skeleton>
-            <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
-          </Stack>
+          {item(t('game.label.score_table.rank_total'), rank?.rank)}
+          {rank?.organization &&
+            item(t('game.label.score_table.rank_organization'), rank?.organizationRank)}
+          {item(t('game.label.score_table.score'), rank?.score)}
+          {item(t('game.label.score_table.solved_count'), rank?.solvedCount)}
         </Group>
         <Progress value={solved * 100} />
         {!isMobile && (

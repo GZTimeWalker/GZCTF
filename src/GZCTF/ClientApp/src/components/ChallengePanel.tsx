@@ -66,15 +66,9 @@ const ChallengePanel: FC = () => {
   // skeleton for loading
   if (!challenges) {
     return (
-      <Group
-        gap="sm"
-        wrap="nowrap"
-        justify="space-between"
-        align="flex-start"
-        maw="calc(100% - 20rem)"
-      >
-        <Stack miw="10rem" gap={6}>
-          {Array(10)
+      <>
+        <Stack miw="10rem" maw="10rem">
+          {Array(9)
             .fill(null)
             .map((_v, i) => (
               <Group key={i} wrap="nowrap" p={10}>
@@ -91,7 +85,7 @@ const ChallengePanel: FC = () => {
           w="calc(100% - 9rem)"
           cols={{ base: 3, w18: 4, w24: 6, w30: 8, w36: 10, w42: 12, w48: 14 }}
         >
-          {Array(8)
+          {Array(13)
             .fill(null)
             .map((_v, i) => (
               <Card key={i} radius="md" shadow="sm">
@@ -115,13 +109,13 @@ const ChallengePanel: FC = () => {
               </Card>
             ))}
         </SimpleGrid>
-      </Group>
+      </>
     )
   }
 
   if (allChallenges.length === 0) {
     return (
-      <Center miw="calc(100% - 20rem)" h="calc(100vh - 100px)">
+      <Center h="calc(100vh - 100px)">
         <Empty
           bordered
           description={t('game.content.no_challenge')}
@@ -134,13 +128,7 @@ const ChallengePanel: FC = () => {
   }
 
   return (
-    <Group
-      gap="sm"
-      wrap="nowrap"
-      justify="space-between"
-      align="flex-start"
-      miw="calc(100% - 20rem)"
-    >
+    <>
       <Stack miw="10rem">
         {game?.writeupRequired && (
           <>
@@ -218,15 +206,20 @@ const ChallengePanel: FC = () => {
         </Tabs>
       </Stack>
       <ScrollArea
-        w="calc(100% - 9rem)"
-        h="calc(100vh - 7rem)"
+        h="calc(100vh - 6.67rem)"
         pos="relative"
         offsetScrollbars
         scrollbarSize={4}
+        styles={{
+          root: {
+            flexGrow: 1,
+          },
+        }}
       >
         {currentChallenges && currentChallenges.length ? (
           <SimpleGrid
             p="xs"
+            w="100%"
             pt={0}
             spacing="sm"
             cols={{ base: 3, w18: 4, w24: 6, w30: 8, w36: 10, w42: 12, w48: 14 }}
@@ -287,7 +280,7 @@ const ChallengePanel: FC = () => {
           challengeId={challenge.id}
         />
       )}
-    </Group>
+    </>
   )
 }
 

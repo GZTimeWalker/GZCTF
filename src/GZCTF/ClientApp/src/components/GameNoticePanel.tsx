@@ -21,7 +21,7 @@ import Empty from '@Components/Empty'
 import { InlineMarkdownRender } from '@Components/MarkdownRender'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
-import classes from '@Styles/Typography.module.css'
+import typoClasses from '@Styles/Typography.module.css'
 
 enum NoticeFilter {
   All = 'all',
@@ -86,6 +86,8 @@ const formatNotice = (t: TFunction, notice: GameNotice) => {
       return notice.values.at(-1) || ''
   }
 }
+
+const PANEL_HEIGHT = 'calc(100vh - 25rem)'
 
 const GameNoticePanel: FC = () => {
   const { id } = useParams()
@@ -176,14 +178,18 @@ const GameNoticePanel: FC = () => {
   )
 
   return (
-    <Card shadow="sm" w="20rem">
+    <Card shadow="sm" w="100%">
       <Stack gap="xs">
         <SegmentedControl
           value={filter}
           color={theme.primaryColor}
+          fullWidth
           styles={{
             root: {
               background: 'transparent',
+            },
+            label: {
+              fontWeight: 500,
             },
           }}
           onChange={(value) => setFilter(value as NoticeFilter)}
@@ -195,7 +201,7 @@ const GameNoticePanel: FC = () => {
           ]}
         />
         {filteredNotices.length ? (
-          <ScrollArea offsetScrollbars scrollbarSize={0} h="calc(100vh - 25rem)">
+          <ScrollArea offsetScrollbars scrollbarSize={0} h={PANEL_HEIGHT}>
             <List size="sm" spacing={3}>
               {filteredNotices.map((notice) => (
                 <List.Item
@@ -215,7 +221,7 @@ const GameNoticePanel: FC = () => {
                         source={formatNotice(t, notice)}
                       />
                     ) : (
-                      <Text fz="sm" fw={500} c="dimmed" className={classes.inline}>
+                      <Text fz="sm" fw={500} c="dimmed" className={typoClasses.inline}>
                         {formatNotice(t, notice)}
                       </Text>
                     )}
@@ -225,7 +231,7 @@ const GameNoticePanel: FC = () => {
             </List>
           </ScrollArea>
         ) : (
-          <Center h="calc(100vh - 25rem)">
+          <Center h={PANEL_HEIGHT}>
             <Empty description={t('game.content.no_notice')} />
           </Center>
         )}
