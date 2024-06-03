@@ -67,19 +67,21 @@ jobs:
       - name: Docker metadata action
         uses: docker/metadata-action@v5
         id: meta
+        env:
+          # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
+          RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-')) }}
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/gzctf
+            ghcr.io/${{ github.repository }}/gzctf
             gztime/gzctf
-          # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
           flavor: |
-            latest=${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-'))}}
+            latest=${{ env.RELEASE }}
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+,group=0
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+,group=0
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+.\d+,group=0
 
       - name: Publish images
         uses: docker/build-push-action@v5
