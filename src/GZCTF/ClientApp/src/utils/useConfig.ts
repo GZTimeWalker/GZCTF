@@ -12,7 +12,7 @@ export const OnceSWRConfig: SWRConfiguration = {
 
 const RepoMeta = {
   sha: import.meta.env.VITE_APP_GIT_SHA ?? 'unknown',
-  tag: import.meta.env.VITE_APP_GIT_NAME ?? 'unknown',
+  rawTag: import.meta.env.VITE_APP_GIT_NAME ?? 'unknown',
   timestamp: import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '',
   buildtime: import.meta.env.DEV ? dayjs() : dayjs(import.meta.env.VITE_APP_BUILD_TIMESTAMP),
   repo: 'https://github.com/GZTimeWalker/GZCTF',
@@ -55,14 +55,21 @@ export const useConfig = () => {
 }
 
 export const ValidatedRepoMeta = () => {
-  const { sha, tag, timestamp, buildtime } = RepoMeta
+  const { sha, rawTag, timestamp, buildtime } = RepoMeta
+
+  const tag = rawTag.replace(/-.*$/, '')
+
   const valid =
-    timestamp.length === 20 && buildtime.isValid() && sha.length === 40 && tag.length > 0
-  return { valid, ...RepoMeta }
+    timestamp.length === 20 &&
+    buildtime.isValid() &&
+    sha.length === 40 &&
+    /^v\d+\.\d+\.\d+$/i.test(tag)
+
+  return { valid, tag, ...RepoMeta }
 }
 
 const showBanner = () => {
-  const { sha, tag, buildtime, repo, valid } = ValidatedRepoMeta()
+  const { sha, rawTag: tag, buildtime, repo, valid } = ValidatedRepoMeta()
   const padding = ' '.repeat(45)
 
   const bannerClr = ['color: #4ccaaa', 'color: unset']

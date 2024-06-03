@@ -20,7 +20,7 @@ import classes from './About.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()
-  const { repo, valid, tag, sha, buildtime } = ValidatedRepoMeta()
+  const { repo, valid, rawTag: tag, sha, buildtime } = ValidatedRepoMeta()
   const { t } = useTranslation()
   const theme = useMantineTheme()
 
