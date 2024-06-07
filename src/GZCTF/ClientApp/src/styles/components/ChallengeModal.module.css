@@ -1,0 +1,37 @@
+.title {
+  margin: 0;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-height: 75vh;
+  min-height: 30vh;
+  overflow-y: scroll;
+
+  /* tricky for cover leaked content */
+  &:after {
+    content: '';
+    display: block;
+    position: fixed;
+    bottom: 0;
+    height: 20px;
+    width: 100%;
+    background-color: var(--mantine-color-body);
+    z-index: 100;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  background-color: var(--mantine-color-body);
+  bottom: 0;
+  width: 100%;
+  z-index: 400;
+  padding: var(--mantine-spacing-md);
+  padding-top: var(--mantine-spacing-xs);
+}

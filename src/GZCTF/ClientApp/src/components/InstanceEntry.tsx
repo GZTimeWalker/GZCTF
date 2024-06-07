@@ -11,6 +11,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
+import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
   mdiCheck,
@@ -33,7 +34,7 @@ import tooltipClasses from '@Styles/Tooltip.module.css'
 interface InstanceEntryProps {
   test?: boolean
   context: ClientFlagContext
-  disabled: boolean
+  disabled?: boolean
   onCreate?: () => void
   onExtend?: () => void
   onDestroy?: () => void
@@ -53,6 +54,7 @@ const Countdown: FC<CountdownProps> = (props) => {
   const { config } = useConfig()
   const [now, setNow] = useState(dayjs())
   const end = time ? dayjs(time) : now.add(config.defaultLifetime ?? 120, 'minutes')
+
   const countdown = dayjs.duration(end.diff(now))
 
   useEffect(() => {
@@ -75,7 +77,7 @@ const Countdown: FC<CountdownProps> = (props) => {
 }
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
-  const { test, context, disabled, onCreate, onDestroy } = props
+  const { test: isPreview, context, disabled, onCreate, onDestroy } = props
 
   const { config } = useConfig()
   const clipBoard = useClipboard()
@@ -84,25 +86,22 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const instanceEntry = context.instanceEntry ?? ''
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
-  const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, test) : instanceEntry
+  const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, isPreview) : instanceEntry
 
-  const [canExtend, setCanExtend] = useState(false)
+  const [canExtend, setCanExtend] = useDebouncedState(false, 500)
 
   const { t } = useTranslation()
   const theme = useMantineTheme()
 
-  const enableExtend = () => {
-    if (canExtend) return
-
+  const enableExtend = useDebouncedCallback(() => {
     showNotification({
       color: 'orange',
       title: t('challenge.notification.instance.extend.note.title'),
       message: t('challenge.notification.instance.extend.note.message'),
       icon: <Icon path={mdiExclamation} size={1} />,
     })
-
     setCanExtend(true)
-  }
+  }, 100)
 
   useEffect(() => {
     setWithContainer(!!context.instanceEntry)
@@ -114,7 +113,6 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     if (!canExtend || !props.onExtend) return
 
     props.onExtend()
-    setCanExtend(false)
 
     showNotification({
       color: 'teal',
@@ -122,6 +120,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
       message: t('challenge.notification.instance.extend.success.message'),
       icon: <Icon path={mdiCheck} size={1} />,
     })
+
+    setCanExtend(false)
   }
 
   const onCopyEntry = () => {
@@ -145,12 +145,12 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const openUrl = isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`
 
   if (!withContainer) {
-    return test ? (
+    return isPreview ? (
       <Text size="md" c="dimmed" fw="bold" pt={30}>
         {t('challenge.content.instance.test.no_container')}
       </Text>
     ) : (
-      <Group justify="space-between" pt="xs" wrap="nowrap">
+      <Group justify="space-between" wrap="nowrap">
         <Stack align="left" gap={0}>
           <Text size="sm" fw="bold">
             {t('challenge.content.instance.no_container.message')}
@@ -170,7 +170,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }
 
   return (
-    <Stack gap={2} w="100%">
+    <Stack gap="sm" w="100%">
       <TextInput
         label={
           <Text size="sm" fw="bold">
@@ -179,9 +179,10 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         }
         description={
           isPlatformProxy &&
-          !test && (
+          !isPreview && (
             <Text size="sm">
               {t('challenge.content.instance.entry.description.proxy')}
+              &nbsp;
               <Anchor
                 href="https://github.com/XDSEC/WebSocketReflectorX/releases"
                 target="_blank"
@@ -230,8 +231,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         }
         rightSectionWidth="5rem"
       />
-      {!test && (
-        <Group justify="space-between" pt="xs" wrap="nowrap">
+      {!isPreview && (
+        <Group justify="space-between" wrap="nowrap">
           <Stack align="left" gap={0}>
             <Text size="sm" fw={600}>
               {t('challenge.content.instance.actions.count_down')}
@@ -246,7 +247,6 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               {t('challenge.content.instance.actions.note', { min: config.renewalWindow })}
             </Text>
           </Stack>
-
           <Group justify="right" wrap="nowrap" gap="xs">
             <Button color="orange" onClick={onExtend} disabled={!canExtend}>
               {t('challenge.button.instance.extend')}

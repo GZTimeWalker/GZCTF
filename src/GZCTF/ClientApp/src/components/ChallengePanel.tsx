@@ -21,8 +21,8 @@ import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ChallengeCard from '@Components/ChallengeCard'
-import ChallengeDetailModal from '@Components/ChallengeDetailModal'
 import Empty from '@Components/Empty'
+import GameChallengeModal from '@Components/GameChallengeModal'
 import WriteupSubmitModal from '@Components/WriteupSubmitModal'
 import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
@@ -263,7 +263,7 @@ const ChallengePanel: FC = () => {
         />
       )}
       {challenge?.id && (
-        <ChallengeDetailModal
+        <GameChallengeModal
           gameId={numId}
           opened={detailOpened}
           withCloseButton={false}

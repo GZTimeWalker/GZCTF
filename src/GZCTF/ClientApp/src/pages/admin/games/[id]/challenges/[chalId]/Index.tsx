@@ -42,7 +42,7 @@ import {
   useChallengeTypeLabelMap,
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Utils/useEdit'
-import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
+import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -173,6 +173,13 @@ const GameChallengeEdit: FC = () => {
       },
       true
     )?.then(challenge?.testContainer ? onDestroyTestContainer : onCreateTestContainer)
+  }
+
+  const tryDefault: <T>(
+    values: T[],
+    defaultValue?: NonNullable<T>
+  ) => NonNullable<T> | undefined = (vs, d) => {
+    return vs.find((v) => !!v) ?? d
   }
 
   return (
@@ -519,14 +526,19 @@ const GameChallengeEdit: FC = () => {
         )}
       </Stack>
       <ChallengePreviewModal
-        challenge={challengeInfo}
+        challenge={{
+          title: tryDefault([challengeInfo?.title, challenge?.title], ''),
+          content: tryDefault([challengeInfo?.content, challenge?.content]),
+          hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
+          score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
+          tag: tag as ChallengeTag,
+          type: challenge?.type ?? ChallengeType.StaticAttachment,
+        }}
         opened={previewOpend}
         onClose={() => setPreviewOpend(false)}
-        type={challenge?.type ?? ChallengeType.StaticAttachment}
         tagData={
           challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
         }
-        attachmentType={challenge?.attachment?.type ?? FileType.None}
       />
     </WithChallengeEdit>
   )

@@ -1,15 +1,6 @@
 .root {
   overflow-x: auto;
 
-  &[data-with-right-icon] {
-    & div > p:first-of-type::before {
-      content: '';
-      float: right;
-      width: 45px;
-      height: 45px;
-    }
-  }
-
   & p {
     word-break: break-word;
     word-wrap: break-word;

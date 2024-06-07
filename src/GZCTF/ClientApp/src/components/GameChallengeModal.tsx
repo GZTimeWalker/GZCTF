@@ -1,35 +1,17 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Divider,
-  Group,
-  LoadingOverlay,
-  Modal,
-  ModalProps,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core'
+import { ModalProps } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiDownload, mdiLightbulbOnOutline, mdiLoading } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
+import ChallengeModal from '@Components/ChallengeModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { AnswerResult, ChallengeType } from '@Api'
-import tooltipClasses from '@Styles/Tooltip.module.css'
-import classes from '@Styles/Typography.module.css'
-import InstanceEntry from './InstanceEntry'
 
-interface ChallengeDetailModalProps extends ModalProps {
+interface GameChallengeModalProps extends ModalProps {
   gameId: number
   gameEnded: boolean
   tagData: ChallengeTagItemProps
@@ -39,8 +21,8 @@ interface ChallengeDetailModalProps extends ModalProps {
   solved?: boolean
 }
 
-const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
-  const { gameId, gameEnded, challengeId, tagData, title, score, solved, ...modalProps } = props
+const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
+  const { gameId, gameEnded, challengeId, tagData, solved, title, score, ...modalProps } = props
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(
     gameId,
@@ -49,32 +31,20 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   )
 
   const { t } = useTranslation()
-  const theme = useMantineTheme()
-
-  const placeholders = t('challenge.content.flag_placeholders', {
-    returnObjects: true,
-  }) as string[]
 
   const wrong_flag_hints = t('challenge.content.wrong_flag_hints', {
     returnObjects: true,
   }) as string[]
-
-  const [placeholder, setPlaceholder] = useState('')
-
-  useEffect(() => {
-    setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
-  }, [challengeId])
 
   const isDynamic =
     challenge?.type === ChallengeType.StaticContainer ||
     challenge?.type === ChallengeType.DynamicContainer
 
   const [disabled, setDisabled] = useState(false)
-  const [onSubmitting, setOnSubmitting] = useState(false)
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
 
-  const onCreateContainer = () => {
+  const onCreate = () => {
     if (!challengeId || disabled) return
     setDisabled(true)
     api.game
@@ -99,7 +69,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       .finally(() => setDisabled(false))
   }
 
-  const onDestroyContainer = () => {
+  const onDestroy = () => {
     if (!challengeId || disabled) return
     setDisabled(true)
     api.game
@@ -124,7 +94,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       .finally(() => setDisabled(false))
   }
 
-  const onExtendContainer = () => {
+  const onExtend = () => {
     if (!challengeId || disabled) return
     setDisabled(true)
     api.game
@@ -142,9 +112,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       .finally(() => setDisabled(false))
   }
 
-  const onSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-
+  const onSubmit = () => {
     if (!challengeId || !flag) {
       showNotification({
         color: 'red',
@@ -154,7 +122,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
       return
     }
 
-    setOnSubmitting(true)
+    setDisabled(true)
     api.game
       .gameSubmit(gameId, challengeId, {
         flag,
@@ -183,19 +151,17 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         .gameStatus(gameId, challengeId, submitId)
         .then((res) => {
           if (res.data !== AnswerResult.FlagSubmitted) {
-            setOnSubmitting(false)
+            setDisabled(false)
             setFlag('')
             checkDataFlag(submitId, res.data)
             clearInterval(polling)
-            setDisabled(false)
           }
         })
         .catch((err) => {
-          setOnSubmitting(false)
+          setDisabled(false)
           setFlag('')
           showErrorNotification(err, t)
           clearInterval(polling)
-          setDisabled(false)
         })
     }, 500)
     return () => clearInterval(polling)
@@ -214,7 +180,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
         autoClose: 8000,
         loading: false,
       })
-      if (isDynamic && challenge.context?.instanceEntry) onDestroyContainer()
+      if (isDynamic && challenge.context?.instanceEntry) onDestroy()
       mutate()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
@@ -243,128 +209,20 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
   }
 
   return (
-    <Modal
-      size="45%"
-      withCloseButton={false}
+    <ChallengeModal
       {...modalProps}
-      onClose={() => {
-        setFlag('')
-        modalProps.onClose()
-      }}
-      styles={{
-        ...modalProps.styles,
-        header: {
-          margin: 0,
-        },
-        title: {
-          width: '100%',
-          margin: 0,
-        },
-      }}
-      title={
-        <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
-          <Group wrap="nowrap" gap="sm">
-            {tagData && (
-              <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />
-            )}
-            <Title w="calc(100% - 1.5rem)" order={4} lineClamp={1}>
-              {challenge?.title ?? title}
-            </Title>
-          </Group>
-          <Text miw="5em" fw="bold" ff="monospace">
-            {challenge?.score ?? score} pts
-          </Text>
-        </Group>
-      }
-    >
-      <Stack gap="sm">
-        <Divider />
-        <Stack gap="sm" justify="space-between" pos="relative" mih="20vh">
-          <LoadingOverlay visible={!challenge} />
-          <Group grow wrap="nowrap" justify="right" align="flex-start" gap={2}>
-            <Box className={classes.root} mih="4rem">
-              {challenge?.context?.url && (
-                <Tooltip
-                  label={t('challenge.button.download.attachment')}
-                  position="left"
-                  classNames={tooltipClasses}
-                >
-                  <ActionIcon
-                    component="a"
-                    href={challenge.context?.url ?? '#'}
-                    target="_blank"
-                    rel="noreferrer"
-                    variant="filled"
-                    size="lg"
-                    color={theme.primaryColor}
-                    top={0}
-                    right={0}
-                    pos="absolute"
-                  >
-                    <Icon path={mdiDownload} size={1} />
-                  </ActionIcon>
-                </Tooltip>
-              )}
-              <MarkdownRender
-                source={challenge?.content ?? ''}
-                withRightIcon={!!challenge?.context?.url}
-              />
-            </Box>
-          </Group>
-          {challenge?.hints && challenge.hints.length > 0 && (
-            <Stack gap={2}>
-              {challenge.hints.map((hint) => (
-                <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
-                  <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-                  <InlineMarkdownRender
-                    key={hint}
-                    size="sm"
-                    maw="calc(100% - 2rem)"
-                    source={hint}
-                  />
-                </Group>
-              ))}
-            </Stack>
-          )}
-          {isDynamic && challenge.context && (
-            <InstanceEntry
-              context={challenge.context}
-              onCreate={onCreateContainer}
-              onExtend={onExtendContainer}
-              onDestroy={onDestroyContainer}
-              disabled={disabled}
-            />
-          )}
-        </Stack>
-        <Divider />
-        {solved ? (
-          <Text ta="center" fw="bold">
-            {t('challenge.content.already_solved')}
-          </Text>
-        ) : (
-          <form onSubmit={onSubmit}>
-            <Group justify="space-between" gap="sm" align="flex-end">
-              <TextInput
-                placeholder={placeholder}
-                value={flag}
-                disabled={disabled}
-                onChange={setFlag}
-                style={{ flexGrow: 1 }}
-                styles={{
-                  input: {
-                    fontFamily: theme.fontFamilyMonospace,
-                  },
-                }}
-              />
-              <Button miw="6rem" type="submit" disabled={onSubmitting}>
-                {t('challenge.button.submit_flag')}
-              </Button>
-            </Group>
-          </form>
-        )}
-      </Stack>
-    </Modal>
+      challenge={challenge ?? { title, score }}
+      tagData={tagData}
+      solved={solved}
+      flag={flag}
+      setFlag={setFlag}
+      onCreate={onCreate}
+      onDestroy={onDestroy}
+      onSubmitFlag={onSubmit}
+      disabled={disabled}
+      onExtend={onExtend}
+    />
   )
 }
 
-export default ChallengeDetailModal
+export default GameChallengeModal

@@ -9,7 +9,6 @@ import classes from '@Styles/Typography.module.css'
 
 export interface MarkdownProps extends React.ComponentPropsWithoutRef<'div'> {
   source: string
-  withRightIcon?: boolean
 }
 
 interface InlineMarkdownProps extends TextProps {
@@ -99,12 +98,7 @@ export const MarkdownRender = forwardRef<HTMLDivElement, MarkdownProps>((props, 
   })
 
   return (
-    <TypographyStylesProvider
-      ref={ref}
-      {...others}
-      data-with-right-icon={props.withRightIcon || undefined}
-      className={classes.root}
-    >
+    <TypographyStylesProvider ref={ref} {...others} className={classes.root}>
       <div dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
     </TypographyStylesProvider>
   )
