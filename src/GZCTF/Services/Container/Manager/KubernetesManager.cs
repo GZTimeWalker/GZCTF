@@ -40,7 +40,9 @@ public class KubernetesManager : IContainerManager
             return null;
         }
 
-        var name = $"{imageName.ToValidRFC1123String("chal")}-{Ulid.NewUlid().ToString().ToLowerInvariant()}";
+        var chalImage = imageName.ToValidRFC1123String("chal");
+
+        var name = $"{chalImage}-{Ulid.NewUlid().ToString().ToLowerInvariant()}";
 
         var pod = new V1Pod("v1", "Pod")
         {
@@ -51,8 +53,10 @@ public class KubernetesManager : IContainerManager
                 Labels = new Dictionary<string, string>
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
+                    ["ctf.gzti.me/Image"] = chalImage,
                     ["ctf.gzti.me/TeamId"] = config.TeamId,
-                    ["ctf.gzti.me/UserId"] = config.UserId.ToString()
+                    ["ctf.gzti.me/UserId"] = config.UserId.ToString(),
+                    ["ctf.gzti.me/ChallengeId"] = config.ChallengeId.ToString()
                 }
             },
             Spec = new V1PodSpec
@@ -73,8 +77,12 @@ public class KubernetesManager : IContainerManager
                         ImagePullPolicy = "Always",
                         Env =
                             config.Flag is null
-                                ? new List<V1EnvVar>()
-                                : [new V1EnvVar("GZCTF_FLAG", config.Flag)],
+                                ? [new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)]
+                                :
+                                [
+                                    new V1EnvVar("GZCTF_FLAG", config.Flag),
+                                    new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)
+                                ],
                         Ports = [new V1ContainerPort(config.ExposedPort)],
                         Resources = new V1ResourceRequirements
                         {

@@ -164,7 +164,8 @@ public class SwarmManager : IContainerManager
                     new Dictionary<string, string>
                     {
                         ["TeamId"] = config.TeamId,
-                        ["UserId"] = config.UserId.ToString()
+                        ["UserId"] = config.UserId.ToString(),
+                        ["ChallengeId"] = config.ChallengeId.ToString()
                     },
                 Mode = new() { Replicated = new() { Replicas = 1 } },
                 TaskTemplate = new()
@@ -176,8 +177,8 @@ public class SwarmManager : IContainerManager
                             Image = config.Image,
                             Env =
                                 config.Flag is null
-                                    ? []
-                                    : [$"GZCTF_FLAG={config.Flag}"]
+                                    ? [$"GZCTF_TEAM_ID={config.TeamId}"]
+                                    : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"],
                         },
                     Resources = new()
                     {

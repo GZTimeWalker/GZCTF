@@ -158,6 +158,7 @@ public class ExerciseInstanceRepository(
         {
             TeamId = "exercise",
             UserId = user.Id,
+            ChallengeId = instance.ExerciseId,
             Flag = instance.FlagContext?.Flag, // static challenge has no specific flag
             Image = instance.Exercise.ContainerImage,
             CPUCount = instance.Exercise.CPUCount ?? 1,
