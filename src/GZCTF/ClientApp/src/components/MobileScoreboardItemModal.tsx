@@ -52,7 +52,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
       max: 1,
     }))
 
-  const values = new Array(item?.challenges?.length ?? 0).fill(0)
+  const values = Array.from({ length: item?.challenges?.length ?? 0 }, () => 0)
 
   item?.challenges?.forEach((chal) => {
     if (indicator && challengeIdMap && chal) {

@@ -138,7 +138,7 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
           ) : (
             <Stack gap="xs">
               {files.map((file) => (
-                <Card p={4}>
+                <Card key={file.name} p={4}>
                   <Group justify="space-between">
                     <Text lineClamp={1} ff="monospace">
                       {file.name}

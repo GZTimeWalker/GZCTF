@@ -51,7 +51,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       max: 1,
     }))
 
-  const values = new Array(item?.challenges?.length ?? 0).fill(0)
+  const values = Array.from({ length: item?.challenges?.length ?? 0 }, () => 0)
 
   item?.challenges?.forEach((chal) => {
     if (indicator && challengeIdMap && chal) {
@@ -146,15 +146,16 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                     .filter((c) => c.type !== SubmissionType.Unaccepted)
                     .sort((a, b) => dayjs(b.time).diff(dayjs(a.time)))
                     .map((chal) => {
-                      const info = challengeIdMap.get(chal.id!)
+                      const info = challengeIdMap.get(chal.id!)!
                       return (
                         <Table.Tr key={chal.id}>
                           <Table.Td style={{ fontWeight: 500 }}>{chal.userName}</Table.Td>
-                          <Table.Td>{info?.title}</Table.Td>
-                          <Table.Td ff="monospace">{info?.tag}</Table.Td>
+                          <Table.Td>{info.title}</Table.Td>
+                          <Table.Td ff="monospace">{info.tag}</Table.Td>
                           <Table.Td ff="monospace">
                             {chal.score}
-                            {chal.score! > info?.score! &&
+                            {info.score &&
+                              chal.score! > info.score &&
                               chal.type &&
                               BloodsTypes.includes(chal.type) && (
                                 <Text span c="dimmed" ff="monospace">

@@ -314,7 +314,7 @@ const ChallengeDetailModal: FC<ChallengeDetailModalProps> = (props) => {
           {challenge?.hints && challenge.hints.length > 0 && (
             <Stack gap={2}>
               {challenge.hints.map((hint) => (
-                <Group gap="xs" align="flex-start" wrap="nowrap">
+                <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
                   <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
                   <InlineMarkdownRender
                     key={hint}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Group,
   Stack,
@@ -252,7 +253,7 @@ export const SubmissionTypeColorMap = () => {
   const { colorScheme } = useMantineColorScheme()
 
   return new Map([
-    [SubmissionType.Unaccepted, undefined],
+    [SubmissionType.Unaccepted, theme.colors.alert[5]],
     [SubmissionType.Normal, theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6]],
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
@@ -273,35 +274,26 @@ export const SubmissionTypeColorMap = () => {
 export const SubmissionTypeIconMap = (size: number) => {
   const colorMap = SubmissionTypeColorMap()
   return {
-    iconMap: new Map([
-      [SubmissionType.Unaccepted, undefined],
+    iconMap: new Map<SubmissionType, PartialIconProps>([
+      [
+        SubmissionType.Unaccepted,
+        { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Unaccepted) },
+      ],
       [
         SubmissionType.Normal,
-        <Icon path={mdiFlag} size={size} color={colorMap.get(SubmissionType.Normal)} />,
+        { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Normal) },
       ],
       [
         SubmissionType.FirstBlood,
-        <Icon
-          path={mdiHexagonSlice6}
-          size={size}
-          color={colorMap.get(SubmissionType.FirstBlood)}
-        />,
+        { path: mdiHexagonSlice6, size: size, color: colorMap.get(SubmissionType.FirstBlood) },
       ],
       [
         SubmissionType.SecondBlood,
-        <Icon
-          path={mdiHexagonSlice4}
-          size={size}
-          color={colorMap.get(SubmissionType.SecondBlood)}
-        />,
+        { path: mdiHexagonSlice4, size: size, color: colorMap.get(SubmissionType.SecondBlood) },
       ],
       [
         SubmissionType.ThirdBlood,
-        <Icon
-          path={mdiHexagonSlice2}
-          size={size}
-          color={colorMap.get(SubmissionType.ThirdBlood)}
-        />,
+        { path: mdiHexagonSlice2, size: size, color: colorMap.get(SubmissionType.ThirdBlood) },
       ],
     ]),
     colorMap,
@@ -317,24 +309,23 @@ export const NoticTypeIconMap = (size: number) => {
   return new Map([
     [
       NoticeType.Normal,
-      <Icon
-        path={mdiBullhornOutline}
-        size={size}
-        color={theme.colors[theme.primaryColor][colorIdx]}
-      />,
+      { path: mdiBullhornOutline, size: size, color: theme.colors[theme.primaryColor][colorIdx] },
     ],
     [
       NoticeType.NewHint,
-      <Icon path={mdiLightbulbOnOutline} size={size} color={theme.colors.yellow[colorIdx]} />,
+      { path: mdiLightbulbOnOutline, size: size, color: theme.colors.yellow[colorIdx] },
     ],
-    [
-      NoticeType.NewChallenge,
-      <Icon path={mdiPlus} size={size} color={theme.colors.green[colorIdx]} />,
-    ],
+    [NoticeType.NewChallenge, { path: mdiPlus, size: size, color: theme.colors.green[colorIdx] }],
     [NoticeType.FirstBlood, iconMap.get(SubmissionType.FirstBlood)],
     [NoticeType.SecondBlood, iconMap.get(SubmissionType.SecondBlood)],
     [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
   ])
+}
+
+export interface PartialIconProps {
+  path: string
+  size: number
+  color: string | undefined
 }
 
 export const useParticipationStatusMap = () => {

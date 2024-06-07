@@ -54,25 +54,21 @@ const AnswerResultIconMap = (size: number) => {
   const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
-    [
-      AnswerResult.Accepted,
-      <Icon path={mdiCheck} size={size} color={theme.colors.green[colorIdx]} />,
-    ],
-    [
-      AnswerResult.WrongAnswer,
-      <Icon path={mdiClose} size={size} color={theme.colors.red[colorIdx]} />,
-    ],
+    [AnswerResult.Accepted, { path: mdiCheck, size, color: theme.colors.green[colorIdx] }],
+    [AnswerResult.WrongAnswer, { path: mdiClose, size, color: theme.colors.red[colorIdx] }],
     [
       AnswerResult.NotFound,
-      <Icon path={mdiCrosshairsQuestion} size={size} color={theme.colors.gray[colorIdx]} />,
+
+      { path: mdiCrosshairsQuestion, size, color: theme.colors.gray[colorIdx] },
     ],
     [
       AnswerResult.CheatDetected,
-      <Icon path={mdiExclamationThick} size={size} color={theme.colors.orange[colorIdx]} />,
+
+      { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] },
     ],
     [
       AnswerResult.FlagSubmitted,
-      <Icon path={mdiDotsHorizontal} size={size} color={theme.colors.gray[colorIdx]} />,
+      { path: mdiDotsHorizontal, size, color: theme.colors.gray[colorIdx] },
     ],
   ])
 }
@@ -123,7 +119,7 @@ const Submissions: FC = () => {
     if (activePage === 1) {
       newSubmissions.current = []
     }
-  }, [activePage, type])
+  }, [activePage, type, numId, t])
 
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
@@ -161,7 +157,7 @@ const Submissions: FC = () => {
         })
       }
     }
-  }, [game])
+  })
 
   const filteredSubs = newSubmissions.current.filter(
     (item) => type === 'All' || item.status === type
@@ -175,7 +171,9 @@ const Submissions: FC = () => {
           i === 0 && activePage === 1 && filteredSubs.length > 0 ? tableClasses.fade : undefined
         }
       >
-        <Table.Td>{iconMap.get(item.status ?? AnswerResult.FlagSubmitted)}</Table.Td>
+        <Table.Td>
+          <Icon {...iconMap.get(item.status ?? AnswerResult.FlagSubmitted)!} />
+        </Table.Td>
         <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
             {dayjs(item.time).format('MM/DD HH:mm:ss')}

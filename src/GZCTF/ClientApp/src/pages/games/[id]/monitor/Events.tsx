@@ -45,23 +45,20 @@ const EventTypeIconMap = (size: number) => {
   const colorIdx = colorScheme === 'dark' ? 5 : 7
 
   return new Map([
-    [EventType.FlagSubmit, <Icon path={mdiFlag} size={size} color={theme.colors.cyan[colorIdx]} />],
+    [EventType.FlagSubmit, { path: mdiFlag, size, color: theme.colors.cyan[colorIdx] }],
     [
       EventType.ContainerStart,
-      <Icon path={mdiToggleSwitchOutline} size={size} color={theme.colors.green[colorIdx]} />,
+      { path: mdiToggleSwitchOutline, size, color: theme.colors.green[colorIdx] },
     ],
     [
       EventType.ContainerDestroy,
-      <Icon path={mdiToggleSwitchOffOutline} size={size} color={theme.colors.red[colorIdx]} />,
+      { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] },
     ],
     [
       EventType.CheatDetected,
-      <Icon path={mdiExclamationThick} size={size} color={theme.colors.orange[colorIdx]} />,
+      { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] },
     ],
-    [
-      EventType.Normal,
-      <Icon path={mdiLightningBolt} size={size} color={theme.colors.light[colorIdx]} />,
-    ],
+    [EventType.Normal, { path: mdiLightningBolt, size, color: theme.colors.light[colorIdx] }],
   ])
 }
 
@@ -162,7 +159,7 @@ const Events: FC = () => {
     if (activePage === 1) {
       newEvents.current = []
     }
-  }, [activePage, hideContainerEvents])
+  }, [activePage, hideContainerEvents, numId, t])
 
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
@@ -200,7 +197,7 @@ const Events: FC = () => {
         })
       }
     }
-  }, [game])
+  }, [game, numId, t])
 
   const filteredEvents = newEvents.current.filter(
     (e) =>
@@ -247,7 +244,7 @@ const Events: FC = () => {
               }
             >
               <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
-                {iconMap.get(event.type)}
+                <Icon {...iconMap.get(event.type)!} />
                 <Stack gap={2} w="100%">
                   <Input
                     variant="unstyled"

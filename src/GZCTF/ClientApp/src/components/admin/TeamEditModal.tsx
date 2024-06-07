@@ -111,7 +111,7 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         <ScrollArea h={165} offsetScrollbars>
           <Stack gap="xs">
             {activeTeam.members?.map((user) => (
-              <Group justify="space-between">
+              <Group key={user.id} justify="space-between">
                 <Group justify="left">
                   <Avatar alt="avatar" src={user.avatar} radius="xl">
                     {user.userName?.slice(0, 1) ?? 'U'}

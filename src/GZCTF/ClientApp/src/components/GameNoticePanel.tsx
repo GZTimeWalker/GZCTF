@@ -116,7 +116,7 @@ const GameNoticePanel: FC = () => {
           icon: <Icon path={mdiClose} size={1} />,
         })
       })
-  }, [numId])
+  }, [numId, t])
 
   useEffect(() => {
     newNotices.current = []
@@ -166,7 +166,7 @@ const GameNoticePanel: FC = () => {
         })
       }
     }
-  }, [])
+  })
 
   const allNotices = [...newNotices.current, ...(notices ?? [])]
   const filteredNotices = ApplyFilter(allNotices, filter)
@@ -206,7 +206,7 @@ const GameNoticePanel: FC = () => {
               {filteredNotices.map((notice) => (
                 <List.Item
                   key={notice.id}
-                  icon={iconMap.get(notice.type)}
+                  icon={<Icon {...iconMap.get(notice.type)!} />}
                   styles={{ itemWrapper: { alignItems: 'normal' } }}
                 >
                   <Stack gap={1}>

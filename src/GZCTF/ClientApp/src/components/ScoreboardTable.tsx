@@ -28,6 +28,7 @@ import {
   useChallengeTagLabelMap,
   SubmissionTypeIconMap,
   useBonusLabels,
+  PartialIconProps,
 } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, ScoreboardItem, SubmissionType } from '@Api'
@@ -135,7 +136,7 @@ const TableRow: FC<{
   allRank: boolean
   tableRank: number
   onOpenDetail: () => void
-  iconMap: Map<SubmissionType, React.ReactNode>
+  iconMap: Map<SubmissionType, PartialIconProps>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
   const theme = useMantineTheme()
@@ -210,7 +211,9 @@ const TableRow: FC<{
                     </Stack>
                   }
                 >
-                  <Center>{icon}</Center>
+                  <Center>
+                    <Icon {...icon} />
+                  </Center>
                 </Tooltip>
               </Table.Td>
             )
@@ -328,7 +331,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                       transitionProps={{ transition: 'pop' }}
                     >
                       <Group justify="left" gap={2}>
-                        {iconMap.get(type)}
+                        <Icon {...iconMap.get(type)!} />
                         <Text>{bloodData.get(type)?.descr}</Text>
                       </Group>
                     </Tooltip>

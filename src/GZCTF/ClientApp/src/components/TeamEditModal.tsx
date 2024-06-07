@@ -177,8 +177,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   }
 
   const onConfirmKickUser = (userId: string) => {
+    if (!teamInfo?.id || !isCaptain) return
+
     api.team
-      .teamKickUser(teamInfo?.id!, userId)
+      .teamKickUser(teamInfo.id, userId)
       .then((data) => {
         showNotification({
           color: 'teal',
@@ -198,10 +200,10 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   }
 
   const onRefreshInviteCode = () => {
-    if (!inviteCode) return
+    if (!inviteCode || !team?.id) return
 
     api.team
-      .teamUpdateInviteToken(team?.id!)
+      .teamUpdateInviteToken(team.id)
       .then((data) => {
         setInviteCode(data.data)
         showNotification({

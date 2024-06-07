@@ -36,12 +36,12 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boo
 
   return (
     <Box
+      key={tabKey}
       {...others}
       component="button"
       type="button"
       role="tab"
       disabled={disabled}
-      key={tabKey}
       __vars={{
         '--tab-active-color': color,
       }}
@@ -71,10 +71,10 @@ const IconTabs: FC<IconTabsProps> = (props) => {
 
   const panes = tabs.map((tab, index) => (
     <Tab
+      key={tab.tabKey}
       {...tab}
       disabled={disabled}
       color={resolveColor(tab.color)}
-      key={tab.tabKey}
       active={activeTab === index}
       onClick={() => {
         setActiveTab(index)

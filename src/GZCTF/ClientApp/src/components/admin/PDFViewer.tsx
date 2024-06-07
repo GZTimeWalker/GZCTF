@@ -54,7 +54,7 @@ const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
             onLoadError={(e) => showErrorNotification(e, t)}
           >
             <Stack ref={ref}>
-              {Array.from(new Array(numPages), (_, index) => (
+              {Array.from(Array.from({ length: numPages }), (_, index) => (
                 <Paper className={classes.paper} key={`page_${index + 1}`}>
                   <Page
                     width={renderWidth}

@@ -108,7 +108,7 @@ const Configs: FC = () => {
         onClick={() => {
           updateConfig({
             globalConfig: {
-              ...(globalConfig ?? {}),
+              ...globalConfig,
               customTheme: color && /^#[0-9A-F]{6}$/i.test(color) ? color : '',
             },
             accountPolicy,
@@ -136,7 +136,7 @@ const Configs: FC = () => {
                 disabled={disabled}
                 value={globalConfig?.title ?? ''}
                 onChange={(e) => {
-                  setGlobalConfig({ ...(globalConfig ?? {}), title: e.currentTarget.value })
+                  setGlobalConfig({ ...globalConfig, title: e.currentTarget.value })
                 }}
               />
             </Grid.Col>
@@ -148,7 +148,7 @@ const Configs: FC = () => {
                 disabled={disabled}
                 value={globalConfig?.slogan ?? ''}
                 onChange={(e) => {
-                  setGlobalConfig({ ...(globalConfig ?? {}), slogan: e.currentTarget.value })
+                  setGlobalConfig({ ...globalConfig, slogan: e.currentTarget.value })
                 }}
               />
             </Grid.Col>
@@ -197,7 +197,7 @@ const Configs: FC = () => {
                 disabled={disabled}
                 value={globalConfig?.description ?? ''}
                 onChange={(e) => {
-                  setGlobalConfig({ ...(globalConfig ?? {}), description: e.currentTarget.value })
+                  setGlobalConfig({ ...globalConfig, description: e.currentTarget.value })
                 }}
               />
             </Grid.Col>
@@ -236,7 +236,7 @@ const Configs: FC = () => {
                 disabled={disabled}
                 value={globalConfig?.footerInfo ?? ''}
                 onChange={(e) => {
-                  setGlobalConfig({ ...(globalConfig ?? {}), footerInfo: e.currentTarget.value })
+                  setGlobalConfig({ ...globalConfig, footerInfo: e.currentTarget.value })
                 }}
               />
             </Grid.Col>
@@ -255,7 +255,7 @@ const Configs: FC = () => {
               )}
               onChange={(e) =>
                 setAccountPolicy({
-                  ...(accountPolicy ?? {}),
+                  ...accountPolicy,
                   allowRegister: e.currentTarget.checked,
                 })
               }
@@ -269,7 +269,7 @@ const Configs: FC = () => {
               )}
               onChange={(e) =>
                 setAccountPolicy({
-                  ...(accountPolicy ?? {}),
+                  ...accountPolicy,
                   emailConfirmationRequired: e.currentTarget.checked,
                 })
               }
@@ -283,7 +283,7 @@ const Configs: FC = () => {
               )}
               onChange={(e) =>
                 setAccountPolicy({
-                  ...(accountPolicy ?? {}),
+                  ...accountPolicy,
                   activeOnRegister: e.currentTarget.checked,
                 })
               }
@@ -297,7 +297,7 @@ const Configs: FC = () => {
               )}
               onChange={(e) =>
                 setAccountPolicy({
-                  ...(accountPolicy ?? {}),
+                  ...accountPolicy,
                   useCaptcha: e.currentTarget.checked,
                 })
               }
@@ -309,7 +309,7 @@ const Configs: FC = () => {
             placeholder={t('admin.placeholder.settings.email_domain_list')}
             value={accountPolicy?.emailDomainList ?? ''}
             onChange={(e) => {
-              setAccountPolicy({ ...(accountPolicy ?? {}), emailDomainList: e.currentTarget.value })
+              setAccountPolicy({ ...accountPolicy, emailDomainList: e.currentTarget.value })
             }}
           />
         </Stack>
@@ -329,7 +329,7 @@ const Configs: FC = () => {
                 if (typeof e === 'string') return
 
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
-                setContainerPolicy({ ...(containerPolicy ?? {}), defaultLifetime: num })
+                setContainerPolicy({ ...containerPolicy, defaultLifetime: num })
               }}
             />
             <NumberInput
@@ -344,7 +344,7 @@ const Configs: FC = () => {
                 if (typeof e === 'string') return
 
                 const num = e ? Math.min(Math.max(e, 1), 7200) : 120
-                setContainerPolicy({ ...(containerPolicy ?? {}), extensionDuration: num })
+                setContainerPolicy({ ...containerPolicy, extensionDuration: num })
               }}
             />
             <NumberInput
@@ -359,7 +359,7 @@ const Configs: FC = () => {
                 if (typeof e === 'string') return
 
                 const num = e ? Math.min(Math.max(e, 1), 360) : 10
-                setContainerPolicy({ ...(containerPolicy ?? {}), renewalWindow: num })
+                setContainerPolicy({ ...containerPolicy, renewalWindow: num })
               }}
             />
             <Switch
@@ -371,7 +371,7 @@ const Configs: FC = () => {
               )}
               onChange={(e) =>
                 setContainerPolicy({
-                  ...(containerPolicy ?? {}),
+                  ...containerPolicy,
                   autoDestroyOnLimitReached: e.currentTarget.checked,
                 })
               }
