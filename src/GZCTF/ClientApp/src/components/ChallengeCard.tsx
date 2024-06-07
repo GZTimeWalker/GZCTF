@@ -27,7 +27,7 @@ interface ChallengeCardProps {
   challenge: ChallengeInfo
   solved?: boolean
   onClick?: () => void
-  iconMap: Map<SubmissionType, PartialIconProps>
+  iconMap: Map<SubmissionType, PartialIconProps | undefined>
   colorMap: Map<SubmissionType, string | undefined>
   teamId?: number
 }

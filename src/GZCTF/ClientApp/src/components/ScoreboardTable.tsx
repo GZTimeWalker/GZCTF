@@ -136,7 +136,7 @@ const TableRow: FC<{
   allRank: boolean
   tableRank: number
   onOpenDetail: () => void
-  iconMap: Map<SubmissionType, PartialIconProps>
+  iconMap: Map<SubmissionType, PartialIconProps | undefined>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
   const theme = useMantineTheme()

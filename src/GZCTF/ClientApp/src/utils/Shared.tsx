@@ -253,7 +253,7 @@ export const SubmissionTypeColorMap = () => {
   const { colorScheme } = useMantineColorScheme()
 
   return new Map([
-    [SubmissionType.Unaccepted, theme.colors.alert[5]],
+    [SubmissionType.Unaccepted, undefined],
     [SubmissionType.Normal, theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6]],
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
@@ -274,11 +274,8 @@ export const SubmissionTypeColorMap = () => {
 export const SubmissionTypeIconMap = (size: number) => {
   const colorMap = SubmissionTypeColorMap()
   return {
-    iconMap: new Map<SubmissionType, PartialIconProps>([
-      [
-        SubmissionType.Unaccepted,
-        { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Unaccepted) },
-      ],
+    iconMap: new Map<SubmissionType, PartialIconProps | undefined>([
+      [SubmissionType.Unaccepted, undefined],
       [
         SubmissionType.Normal,
         { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Normal) },
