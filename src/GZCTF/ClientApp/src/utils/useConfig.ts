@@ -63,7 +63,7 @@ export const ValidatedRepoMeta = () => {
     timestamp.length === 20 &&
     buildtime.isValid() &&
     sha.length === 40 &&
-    /^v\d+\.\d+\.\d+$/i.test(tag)
+    (/^v\d+\.\d+\.\d+$/i.test(tag) || tag === 'develop')
 
   return { valid, tag, ...RepoMeta }
 }
