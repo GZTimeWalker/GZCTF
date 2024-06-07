@@ -3,6 +3,21 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.7](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.6-patch.1..v0.20.7) - 2024-06-07
+
+### ⛰️ Features
+
+- **(frontend)** redesigned challenge modal - ([cbedf8](https://github.com/GZTimeWalker/GZCTF/commit/cbedf8)) by **GZTime**
+- add more labels for container - ([817abd](https://github.com/GZTimeWalker/GZCTF/commit/817abd)) by **GZTime**
+
+---
+## [0.20.6-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.6..v0.20.6-patch.1) - 2024-06-03
+
+### 🐛 Bug Fixes
+
+- allow `blob:` for `img-src` - ([32a0d7](https://github.com/GZTimeWalker/GZCTF/commit/32a0d7)) by **GZTime**
+
+---
 ## [0.20.6](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.5..v0.20.6) - 2024-06-02
 
 ### ⛰️ Features
