@@ -12,7 +12,7 @@ import {
   useMantineTheme,
   ScrollAreaProps,
 } from '@mantine/core'
-import { mdiLightbulbOnOutline, mdiPackageVariantClosed } from '@mdi/js'
+import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
 import { FC, forwardRef, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -103,6 +103,9 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   const withAttachment = !!challenge?.context?.url || onDownload
 
+  const link = challenge?.context?.url
+  const local = link && link.startsWith('/assets')
+
   const attachment = withAttachment && (
     <Group gap="xs" justify="flex-start" align="center" wrap="nowrap">
       <Text fw="bold" size="sm">
@@ -111,12 +114,12 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       <Text>👉</Text>
       <Button
         component="a"
-        href={challenge?.context?.url ?? '#'}
+        href={link ?? '#'}
         variant="light"
         size="compact-sm"
         target="_blank"
         rel="noreferrer"
-        leftSection={<Icon path={mdiPackageVariantClosed} size={0.8} />}
+        leftSection={<Icon path={local ? mdiPackageVariantClosed : mdiOpenInNew} size={0.8} />}
         maw="20rem"
         onClick={
           onDownload &&
@@ -126,7 +129,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           })
         }
       >
-        {challenge?.context?.url?.split('/').pop()}
+        {local ? link.split('/').pop() : t('common.content.external_link')}
       </Button>
     </Group>
   )
