@@ -11,6 +11,7 @@ import {
   Title,
   useMantineTheme,
   ScrollAreaProps,
+  LoadingOverlay,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
@@ -202,6 +203,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
+        <LoadingOverlay visible={!challenge?.content} />
         <Modal.Body pb={0}>{content}</Modal.Body>
         {footer}
       </Modal.Content>

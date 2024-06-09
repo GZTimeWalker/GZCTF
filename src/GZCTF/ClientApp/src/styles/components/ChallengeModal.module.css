@@ -9,7 +9,6 @@
   justify-content: space-between;
   max-height: 75vh;
   min-height: 30vh;
-  overflow-y: scroll;
 
   /* tricky for cover leaked content */
   &:after {
