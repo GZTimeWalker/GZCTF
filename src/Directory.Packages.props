@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.2.0" />
-    <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.1" />
+    <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0"/>
     <PackageVersion Include="Docker.DotNet" Version="3.125.15" />
     <PackageVersion Include="Docker.DotNet.BasicAuth" Version="3.125.15" />
     <PackageVersion Include="KubernetesClient" Version="14.0.2" />

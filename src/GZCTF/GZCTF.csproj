@@ -98,6 +98,7 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\favicon.webp" />
+        <EmbeddedResource Update="Resources\Program.resx" PublicClass="true"/>
     </ItemGroup>
 
     <ItemGroup>

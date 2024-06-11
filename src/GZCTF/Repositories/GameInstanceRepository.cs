@@ -36,18 +36,18 @@ public class GameInstanceRepository(
             return null;
         }
 
-        if (instance.IsLoaded)
-        {
-            await transaction.CommitAsync(token);
-            return instance;
-        }
-
         GameChallenge challenge = instance.Challenge;
 
         if (!challenge.IsEnabled)
         {
             await transaction.CommitAsync(token);
             return null;
+        }
+
+        if (instance.IsLoaded)
+        {
+            await transaction.CommitAsync(token);
+            return instance;
         }
 
         try
