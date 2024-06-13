@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { InlineMarkdownRender } from '@Components/MarkdownRender'
+import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
@@ -33,7 +33,7 @@ const GameNoticeEdit: FC = () => {
         <Stack>
           <Text> {t('admin.content.games.notices.delete')}</Text>
           <Divider />
-          <InlineMarkdownRender source={gameNotice.values.at(-1) || ''} />
+          <InlineMarkdown source={gameNotice.values.at(-1) || ''} />
         </Stack>
       ),
       onConfirm: () => onConfirmDelete(gameNotice),

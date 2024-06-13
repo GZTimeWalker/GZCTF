@@ -22,7 +22,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import GameJoinModal from '@Components/GameJoinModal'
 import GameProgress from '@Components/GameProgress'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
@@ -316,7 +316,7 @@ const GameDetail: FC = () => {
               {isMobile && t('game.participation.alert.not_started.mobile')}
             </Alert>
           )}
-          <MarkdownRender source={game?.content ?? ''} />
+          <Markdown source={game?.content ?? ''} />
         </Stack>
         <GameJoinModal
           title={t('game.content.join.title')}

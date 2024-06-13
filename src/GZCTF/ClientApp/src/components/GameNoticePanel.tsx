@@ -18,7 +18,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import Empty from '@Components/Empty'
-import { InlineMarkdownRender } from '@Components/MarkdownRender'
+import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
 import typoClasses from '@Styles/Typography.module.css'
@@ -214,7 +214,7 @@ const GameNoticePanel: FC = () => {
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
                     </Text>
                     {notice.type === NoticeType.Normal ? (
-                      <InlineMarkdownRender
+                      <InlineMarkdown
                         fz="sm"
                         fw={500}
                         c="dimmed"

@@ -15,7 +15,7 @@ import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import { PostCardProps } from '@Components/PostCard'
 import { RequireRole } from '@Components/WithRole'
 import { useUserRole } from '@Utils/useUser'
@@ -39,7 +39,7 @@ const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             </Text>
             {post.title}
           </Title>
-          <MarkdownRender source={post.summary} />
+          <Markdown source={post.summary} />
         </Box>
         <Group justify="space-between">
           {post.tags && (

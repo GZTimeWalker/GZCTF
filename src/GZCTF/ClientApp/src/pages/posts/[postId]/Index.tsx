@@ -17,7 +17,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { useLanguage } from '@Utils/I18n'
@@ -89,7 +89,7 @@ const Post: FC = () => {
         </Stack>
       </div>
       <Container className={classes.content}>
-        <MarkdownRender source={post?.content ?? ''} />
+        <Markdown source={post?.content ?? ''} />
         {post?.tags && post.tags.length > 0 && (
           <Group justify="right">
             {post.tags.map((tag, idx) => (

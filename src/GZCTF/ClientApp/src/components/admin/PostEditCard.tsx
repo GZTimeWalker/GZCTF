@@ -11,7 +11,7 @@ import {
 import { mdiDeleteOutline, mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import { PostInfoModel } from '@Api'
 
 interface PostEditCardProps extends CardProps {
@@ -47,7 +47,7 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
             </ActionIcon>
           </Group>
         </Group>
-        <MarkdownRender source={post.summary} />
+        <Markdown source={post.summary} />
         <Group justify="right">
           <Badge color={theme.primaryColor} variant="light">
             {new Date(post.time).toLocaleString()}

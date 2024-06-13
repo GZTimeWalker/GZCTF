@@ -3,7 +3,7 @@ import { mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
-import { InlineMarkdownRender } from '@Components/MarkdownRender'
+import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { GameNotice } from '@Api'
 
 interface GameNoticeEditCardProps extends CardProps {
@@ -22,7 +22,7 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
     <Card {...props} shadow="sm" p="sm">
       <Group justify="space-between" wrap="nowrap">
         <Stack gap={1}>
-          <InlineMarkdownRender source={gameNotice.values.at(-1) || ''} />
+          <InlineMarkdown source={gameNotice.values.at(-1) || ''} />
           <Text size="xs" fw="bold" c="dimmed">
             {dayjs(gameNotice.time).format('#YY/MM/DD HH:mm:ss')}
           </Text>

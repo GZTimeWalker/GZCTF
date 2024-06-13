@@ -16,7 +16,7 @@ import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import { RequireRole } from '@Components/WithRole'
 import { useLanguage } from '@Utils/I18n'
 import { useUserRole } from '@Utils/useUser'
@@ -81,7 +81,7 @@ const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
               {post.title}
             </Title>
           )}
-          <MarkdownRender source={post.summary} />
+          <Markdown source={post.summary} />
           {post.tags && (
             <Group>
               {post.tags.map((tag, idx) => (

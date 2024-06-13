@@ -18,7 +18,7 @@ import Icon from '@mdi/react'
 import { FC, forwardRef, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
-import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
+import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { ChallengeTagItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
@@ -88,13 +88,13 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   const content = (
     <Stack gap="xs" mih="20vh">
-      <MarkdownRender source={challenge?.content ?? ''} />
+      <Markdown source={challenge?.content ?? ''} />
       {challenge?.hints && challenge.hints.length > 0 && (
         <Stack gap={2} pt="sm">
           {challenge.hints.map((hint) => (
             <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
               <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-              <InlineMarkdownRender key={hint} size="sm" maw="calc(100% - 2rem)" source={hint} />
+              <InlineMarkdown key={hint} size="sm" maw="calc(100% - 2rem)" source={hint} />
             </Group>
           ))}
         </Stack>

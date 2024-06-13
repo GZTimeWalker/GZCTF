@@ -20,7 +20,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { HunamizeSize } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
@@ -159,7 +159,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         {data?.note && (
           <>
             <Title order={5}>{t('game.content.writeup.instructions.additional')}</Title>
-            <MarkdownRender source={data.note} />
+            <Markdown source={data.note} />
           </>
         )}
         <Title order={5}>{t('game.content.writeup.current')}</Title>

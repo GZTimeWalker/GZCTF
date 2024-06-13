@@ -1,7 +1,7 @@
 import { TypographyStylesProvider } from '@mantine/core'
 import { marked } from 'marked'
 import { forwardRef } from 'react'
-import { MarkdownProps } from '@Components/MarkdownRender'
+import { MarkdownProps } from '@Components/MarkdownRenderer'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import classes from '@Styles/FooterRender.module.css'
 
