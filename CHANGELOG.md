@@ -3,12 +3,36 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.8](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.7-patch.1..v0.20.8) - 2024-06-13
+
+### ⛰️ Features
+
+- **(frontend)** upgrade marked to v13 with custom extension - ([43f908](https://github.com/GZTimeWalker/GZCTF/commit/43f908)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(frontend)** unexpected indentation in markdown render (#304) - ([0861e7](https://github.com/GZTimeWalker/GZCTF/commit/0861e7)) by **埃拉**
+- **(game)** access to disabled challenges - ([440e15](https://github.com/GZTimeWalker/GZCTF/commit/440e15)) by **GZTime**
+- overflow for some challenges - ([6b44ef](https://github.com/GZTimeWalker/GZCTF/commit/6b44ef)) by **GZTime**
+
+---
+## [0.20.7-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.7..v0.20.7-patch.1) - 2024-06-08
+
+### ⛰️ Features
+
+- show `external link` for remote attachment - ([2082c5](https://github.com/GZTimeWalker/GZCTF/commit/2082c5)) by **GZTime**
+
+---
 ## [0.20.7](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.6-patch.1..v0.20.7) - 2024-06-07
 
 ### ⛰️ Features
 
 - **(frontend)** redesigned challenge modal - ([cbedf8](https://github.com/GZTimeWalker/GZCTF/commit/cbedf8)) by **GZTime**
 - add more labels for container - ([817abd](https://github.com/GZTimeWalker/GZCTF/commit/817abd)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(frontend)** incorrect icon map - ([704d36](https://github.com/GZTimeWalker/GZCTF/commit/704d36)) by **GZTime**
 
 ---
 ## [0.20.6-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.6..v0.20.6-patch.1) - 2024-06-03
