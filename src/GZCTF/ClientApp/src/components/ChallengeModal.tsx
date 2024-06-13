@@ -4,18 +4,17 @@ import {
   Group,
   Modal,
   ModalProps,
-  ScrollArea,
   Stack,
   TextInput,
   Text,
   Title,
   useMantineTheme,
-  ScrollAreaProps,
-  LoadingOverlay,
+  ScrollAreaAutosize,
+  Skeleton,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
-import { FC, forwardRef, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
@@ -87,19 +86,33 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   )
 
   const content = (
-    <Stack gap="xs" mih="20vh">
-      <Markdown source={challenge?.content ?? ''} />
-      {challenge?.hints && challenge.hints.length > 0 && (
-        <Stack gap={2} pt="sm">
-          {challenge.hints.map((hint) => (
-            <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
-              <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-              <InlineMarkdown key={hint} size="sm" maw="calc(100% - 2rem)" source={hint} />
-            </Group>
-          ))}
-        </Stack>
+    <ScrollAreaAutosize scrollbars="y" scrollbarSize={6} type="scroll">
+      {challenge?.content === undefined ? (
+        <>
+          <Skeleton height={14} mt={8} radius="xl" />
+          <Skeleton height={14} mt={8} radius="xl" />
+          <Skeleton height={14} mt={8} width="60%" radius="xl" />
+
+          <Skeleton height={14} mt={8 + 14} radius="xl" />
+          <Skeleton height={14} mt={8} radius="xl" />
+          <Skeleton height={14} mt={8} width="30%" radius="xl" />
+        </>
+      ) : (
+        <>
+          <Markdown source={challenge?.content ?? ''} />
+          {challenge?.hints && challenge.hints.length > 0 && (
+            <Stack gap={2} pt="sm">
+              {challenge.hints.map((hint) => (
+                <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
+                  <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
+                  <InlineMarkdown key={hint} size="sm" maw="calc(100% - 2rem)" source={hint} />
+                </Group>
+              ))}
+            </Stack>
+          )}
+        </>
       )}
-    </Stack>
+    </ScrollAreaAutosize>
   )
 
   const withAttachment = !!challenge?.context?.url || onDownload
@@ -188,14 +201,14 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   return (
     <Modal.Root
-      size="45%"
+      size="40vw"
       {...modalProps}
       onClose={() => {
         setFlag('')
         modalProps.onClose()
       }}
       centered
-      scrollAreaComponent={CustomScrollArea}
+      scrollAreaComponent={({ children }) => <>{children}</>}
       classNames={classes}
     >
       <Modal.Overlay />
@@ -203,16 +216,11 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         <Modal.Header>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <LoadingOverlay visible={!challenge?.content} />
-        <Modal.Body pb={0}>{content}</Modal.Body>
+        <Modal.Body>{content}</Modal.Body>
         {footer}
       </Modal.Content>
     </Modal.Root>
   )
 }
-
-const CustomScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>((props, ref) => (
-  <ScrollArea.Autosize ref={ref} {...props} type="never" />
-))
 
 export default ChallengeModal

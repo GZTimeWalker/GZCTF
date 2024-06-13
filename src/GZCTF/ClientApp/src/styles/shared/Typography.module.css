@@ -1,7 +1,7 @@
 .root {
-  overflow: auto;
-  overflow-wrap: break-word;
   box-sizing: border-box;
+  max-width: max-content;
+  min-width: 100%;
 
   & p {
     word-break: break-word;
@@ -52,7 +52,8 @@
   & pre {
     background-color: light-dark(var(--mantine-color-light-1), var(--mantine-color-dark-6));
     padding: var(--mantine-spacing-sm);
-    overflow-wrap: normal;
+    white-space: pre;
+    overflow-wrap: anywhere;
   }
 
   & :not(pre) > code {

@@ -3,11 +3,15 @@
   width: 100%;
 }
 
+.body {
+  padding-bottom: 0;
+}
+
 .content {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  max-height: 75vh;
+  max-height: 80vh;
   min-height: 30vh;
 
   /* tricky for cover leaked content */
