@@ -64,7 +64,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
-  const isDynamic =
+  const isContainer =
     challenge?.type === ChallengeType.StaticContainer ||
     challenge?.type === ChallengeType.DynamicContainer
 
@@ -86,7 +86,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   )
 
   const content = (
-    <ScrollAreaAutosize scrollbars="y" scrollbarSize={6} type="scroll">
+    <ScrollAreaAutosize mah="50vh" maw="100%" scrollbars="y" scrollbarSize={6} type="scroll">
       {challenge?.content === undefined ? (
         <>
           <Skeleton height={14} mt={8} radius="xl" />
@@ -99,8 +99,8 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         </>
       ) : (
         <>
-          <Markdown source={challenge?.content ?? ''} />
-          {challenge?.hints && challenge.hints.length > 0 && (
+          <Markdown source={challenge.content ?? ''} />
+          {challenge.hints && challenge.hints.length > 0 && (
             <Stack gap={2} pt="sm">
               {challenge.hints.map((hint) => (
                 <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
@@ -148,7 +148,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     </Group>
   )
 
-  const withInstance = isDynamic && challenge?.context
+  const withInstance = isContainer && challenge?.context
 
   const instance = withInstance && (
     <InstanceEntry

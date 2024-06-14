@@ -3,6 +3,10 @@
   width: 100%;
 }
 
+.header {
+  padding-bottom: var(--mantine-spacing-xs);
+}
+
 .body {
   padding-bottom: 0;
 }
@@ -11,20 +15,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  max-height: 80vh;
-  min-height: 30vh;
-
-  /* tricky for cover leaked content */
-  &:after {
-    content: '';
-    display: block;
-    position: fixed;
-    bottom: 0;
-    height: 20px;
-    width: 100%;
-    background-color: var(--mantine-color-body);
-    z-index: 100;
-  }
+  max-height: calc(50vh + 300px);
 }
 
 .footer {
