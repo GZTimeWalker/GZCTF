@@ -87,7 +87,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
    version: "3.0"
    services:
      gzctf:
-       image: gztime/gzctf:latest
+       image: registry.cn-shanghai.aliyuncs.com/gztime/gzctf:develop
        restart: always
        environment:
          - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
@@ -197,12 +197,22 @@ gzctf=# #do your sql query
 
 GZCTF 已经预先构建并打包为统一的 Docker 镜像，你可以在 [Docker Hub](https://hub.docker.com/r/gztime/gzctf) 上找到相关的镜像。
 
-请使用如下两个容器注册表获取镜像：
+请使用如下容器注册表获取镜像：
 
-```
+```txt
 gztime/gzctf:latest
 ghcr.io/gztimewalker/gzctf/gzctf:latest
 ```
+
+<Callout type="info">
+
+建议国内用户使用阿里云注册表（仅适用于 2024 年 6 月 20 日之后的版本）：
+
+```txt
+registry.cn-shanghai.aliyuncs.com/gztime/gzctf:latest
+```
+
+</Callout>
 
 测试版本和开发版本请使用 `develop` 镜像标签。
 

@@ -138,7 +138,7 @@ import { Callout } from "nextra-theme-docs";
            kubernetes.io/hostname: xxx # 指定部署节点，强制和数据库位于同一节点
          containers:
            - name: gzctf
-             image: gztime/gzctf:latest
+             image: registry.cn-shanghai.aliyuncs.com/gztime/gzctf:latest
              imagePullPolicy: Always
              env:
                - name: GZCTF_ADMIN_PASSWORD
