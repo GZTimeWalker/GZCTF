@@ -14,7 +14,7 @@ import {
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
@@ -199,6 +199,11 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     </Stack>
   )
 
+  const cachedScrollAreaComponent = useCallback<React.FC<any>>(
+    ({ style, ...props }) => <div {...props} style={{ ...style }} />,
+    []
+  )
+
   return (
     <Modal.Root
       size="40vw"
@@ -208,7 +213,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         modalProps.onClose()
       }}
       centered
-      scrollAreaComponent={({ children }) => <>{children}</>}
+      scrollAreaComponent={cachedScrollAreaComponent}
       classNames={classes}
     >
       <Modal.Overlay />
