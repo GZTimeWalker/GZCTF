@@ -343,3 +343,4 @@ import { Callout } from "nextra-theme-docs";
 2. 请在系统日志界面调试并参考是否能够正常获取用户真实 IP，如果不能请检查 Traefik 的配置是否正确。
 3. 如有监控需求，请自行部署 Prometheus 和 Grafana，并打开 Traefik 的 Prometheus 支持，并且你可以通过 node exporter 监控题目容器的资源使用情况。
 4. 如果需要根据配置文件更改自动更新 GZCTF 的部署，请参考 [Reloader](https://github.com/stakater/Reloader)。
+5. 在集群内部，可以使用 `https://kubernetes.default.svc.cluster.local:443` 作为集群配置文件中的 `server` 字段。

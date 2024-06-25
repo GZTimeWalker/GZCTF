@@ -343,3 +343,4 @@ import { Callout } from "nextra-theme-docs";
 2. システムログ画面でデバッグし、ユーザーの実際のIPを正常に取得できるかどうかを確認してください。できない場合は、Traefikの設定が正しいかどうかを確認してください。
 3. モニタリングが必要な場合は、PrometheusとGrafanaを自分でデプロイし、TraefikのPrometheusサポートを有効にしてください。また、node exporterを使用してチャレンジコンテナのリソース使用状況を監視することができます。
 4. 設定ファイルの変更に基づいてGZCTFのデプロイを自動更新する必要がある場合は、[Reloader](https://github.com/stakater/Reloader)を参照してください。
+5. クラスタ内で、クラスタ構成ファイルの`server`フィールドに`https://kubernetes.default.svc.cluster.local:443`を使用できます。

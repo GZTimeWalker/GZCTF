@@ -343,3 +343,4 @@ additionalArguments:
 2. Please debug and verify if GZCTF can correctly retrieve the real IP address of users on the system log page. If not, check if the Traefik configuration is correct.
 3. If you want to monitor the resource usage, please deploy Prometheus and Grafana on your own, enable Prometheus support in Traefik, and monitor the resource usage of the challenge containers using node exporter.
 4. If you need to automatically update the deployment of GZCTF based on the configuration file, please refer to [Reloader](https://github.com/stakater/Reloader).
+5. Inside the cluster, you can use `https://kubernetes.default.svc.cluster.local:443` as the `server` field in the cluster configuration file.
