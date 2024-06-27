@@ -326,7 +326,6 @@ public class GoogleRecaptchaConfig
 
 public class TelemetryConfig
 {
-    public bool Enable { get; set; }
     public PrometheusConfig Prometheus { get; set; } = new();
     public OpenTelemetryConfig OpenTelemetry { get; set; } = new();
     public AzureMonitorConfig AzureMonitor { get; set; } = new();

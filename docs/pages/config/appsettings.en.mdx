@@ -47,7 +47,6 @@ Here is a complete example of configuration:
     }
   },
   "Telemetry": {
-    "Enable": false,
     "Prometheus": {
       "Enable": false,
       "Port": 3000,
@@ -194,8 +193,6 @@ Available logging levels: Trace, Debug, Information, Warning, Error, Critical, N
 
 GZCTF supports metrics and distributed tracing. You can configure the providers you want to use.
 
-- **Enable**: Enable telemetry support or not.
-
 - **Prometheus**: Prometheus endpoint support.
 
   - **Enable**: Enable it or not.
@@ -255,7 +252,7 @@ Heer we can configure the container backend which is required for creating conta
 
   </Callout>
 
-- **Uri:** Docker API Server 地址
+- **Uri:** Docker API Server Address
 
   - If you use local docker, please leave Uri empty, and mount `/var/run/docker.sock` into the container.
   - If you use external docker, please set Uri to the corresponding docker API Server, **external API authentication has not been implemented, this deployment method is not recommended**

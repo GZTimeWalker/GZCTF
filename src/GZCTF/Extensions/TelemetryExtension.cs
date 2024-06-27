@@ -12,7 +12,11 @@ public static class TelemetryExtension
 {
     public static void AddTelemetry(this IServiceCollection services, TelemetryConfig? config)
     {
-        if (config is not { Enable: true })
+        if (config is not (
+            { OpenTelemetry.Enable: true }
+            or { Prometheus.Enable: true }
+            or { AzureMonitor.Enable: true }
+            or { Console.Enable: true }))
             return;
 
         var otl = services.AddOpenTelemetry();
@@ -28,13 +32,13 @@ public static class TelemetryExtension
             metrics.AddRuntimeInstrumentation();
             metrics.AddProcessInstrumentation();
 
-            if (config.Prometheus.Enable)
+            if (config is { Prometheus.Enable: true })
                 metrics.AddPrometheusExporter(options =>
                 {
                     options.DisableTotalNameSuffixForCounters = !config.Prometheus.TotalNameSuffixForCounters;
                 });
 
-            if (config.Console.Enable)
+            if (config is { Console.Enable: true })
                 metrics.AddConsoleExporter();
         });
 
@@ -45,22 +49,22 @@ public static class TelemetryExtension
             tracing.AddEntityFrameworkCoreInstrumentation();
             tracing.AddRedisInstrumentation();
             tracing.AddNpgsql();
-            if (config.Console.Enable)
+            if (config is { Console.Enable: true })
                 tracing.AddConsoleExporter();
         });
 
-        if (config.AzureMonitor.Enable)
+        if (config is { AzureMonitor.Enable: true })
             otl.UseAzureMonitor(
                 options => options.ConnectionString = config.AzureMonitor.ConnectionString);
 
-        if (config.OpenTelemetry.Enable)
+        if (config is { OpenTelemetry.Enable: true })
             otl.UseOtlpExporter(config.OpenTelemetry.Protocol,
                 new(config.OpenTelemetry.EndpointUri ?? "http://localhost:4317"));
     }
 
     public static void UseTelemetry(this IApplicationBuilder app, TelemetryConfig? config)
     {
-        if (config is not { Enable: true, Prometheus.Enable: true })
+        if (config is not { Prometheus.Enable: true })
             return;
 
         if (config.Prometheus.Port is { } port)
