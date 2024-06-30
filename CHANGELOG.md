@@ -3,6 +3,29 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.20.9](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.8-patch.2..v0.20.9) - 2024-06-30
+
+### ⛰️ Features
+
+- Remove redundant Telemetry.Enable config - ([66d337](https://github.com/GZTimeWalker/GZCTF/commit/66d337)) by **Steven He**
+
+---
+## [0.20.8-patch.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.8-patch.1..v0.20.8-patch.2) - 2024-06-23
+
+### 🐛 Bug Fixes
+
+- optimize ChallengeModal scroll area component (#308) - ([8f24da](https://github.com/GZTimeWalker/GZCTF/commit/8f24da)) by **AdBean**
+- remove captcha key on boot (#306) - ([e66939](https://github.com/GZTimeWalker/GZCTF/commit/e66939)) by **GZTime**
+- remove workaround for Prometheus - ([c779b1](https://github.com/GZTimeWalker/GZCTF/commit/c779b1)) by **Steven He**
+
+---
+## [0.20.8-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.8..v0.20.8-patch.1) - 2024-06-14
+
+### 🐛 Bug Fixes
+
+- **(frontend)** overflow for challenge modal, again - ([cfe526](https://github.com/GZTimeWalker/GZCTF/commit/cfe526)) by **GZTime**
+
+---
 ## [0.20.8](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.7-patch.1..v0.20.8) - 2024-06-13
 
 ### ⛰️ Features
