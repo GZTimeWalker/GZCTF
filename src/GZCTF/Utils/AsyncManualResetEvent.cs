@@ -23,7 +23,7 @@ public sealed class AsyncManualResetEvent
         await await Task.WhenAny(tcs.Task, cancelTcs.Task);
     }
 
-    async Task<bool> Delay(int milliseconds)
+    static async Task<bool> Delay(int milliseconds)
     {
         await Task.Delay(milliseconds);
         return false;

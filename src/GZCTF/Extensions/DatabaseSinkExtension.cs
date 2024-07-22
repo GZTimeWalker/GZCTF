@@ -79,22 +79,22 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 while (_logBuffer.TryDequeue(out LogModel? logModel))
                     lockedLogBuffer.Add(logModel);
 
-                if (lockedLogBuffer.Count > 50 || DateTimeOffset.Now - _lastFlushTime > TimeSpan.FromSeconds(10))
+                if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10)) 
+                    continue;
+                
+                await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
+
+                try
                 {
-                    await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
-
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
-
-                    try
-                    {
-                        await dbContext.SaveChangesAsync(token);
-                    }
-                    finally
-                    {
-                        lockedLogBuffer.Clear();
-                        _lastFlushTime = DateTimeOffset.Now;
-                    }
+                    await dbContext.SaveChangesAsync(token);
+                }
+                finally
+                {
+                    lockedLogBuffer.Clear();
+                    _lastFlushTime = DateTimeOffset.Now;
                 }
             }
         }
