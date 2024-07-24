@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -52,11 +53,28 @@ public class DatabaseSink : ILogEventSink, IDisposable
         logEvent.Properties.TryGetValue("IP", out LogEventPropertyValue? ip);
         logEvent.Properties.TryGetValue("Status", out LogEventPropertyValue? status);
 
+        var sb = new StringBuilder(logEvent.RenderMessage());
+        var exception = logEvent.Exception;
+        if (exception is not null)
+        {
+            sb.AppendLine();
+            do
+            {
+                sb.Append($"{exception.GetType()}: {exception.Message}");
+                exception = exception.InnerException;
+                if (exception is not null)
+                {
+                    sb.AppendLine();
+                    sb.Append(" ---> ");
+                }
+            } while (exception is not null);
+        }
+
         return new LogModel
         {
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
-            Message = logEvent.RenderMessage(),
+            Message = sb.ToString(),
             UserName = LogHelper.GetStringValue(userName, "Anonymous"),
             Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
             RemoteIP = LogHelper.GetStringValue(ip),
@@ -79,9 +97,9 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 while (_logBuffer.TryDequeue(out LogModel? logModel))
                     lockedLogBuffer.Add(logModel);
 
-                if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10)) 
+                if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10))
                     continue;
-                
+
                 await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
 
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
