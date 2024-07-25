@@ -13,7 +13,7 @@ public static class TelemetryExtension
     public static void AddTelemetry(this IServiceCollection services, TelemetryConfig? config)
     {
         if (config is not (
-            { OpenTelemetry.Enable: true }
+        { OpenTelemetry.Enable: true }
             or { Prometheus.Enable: true }
             or { AzureMonitor.Enable: true }
             or { Console.Enable: true }))

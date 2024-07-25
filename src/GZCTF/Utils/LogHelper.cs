@@ -1,5 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Net;
+using System.Text;
 using GZCTF.Extensions;
 using GZCTF.Models.Internal;
 using Serilog;
@@ -17,9 +18,9 @@ namespace GZCTF.Utils;
 public static class LogHelper
 {
     const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
-                                "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
-                                "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
-                                "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
+                               "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
+                               "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
+                               "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
 
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
@@ -156,7 +157,7 @@ public static class LogHelper
 
         if (configuration.GetSection("Logging").GetSection("Loki") is not { } lokiSection || !lokiSection.Exists())
             return loggerConfig.CreateLogger();
-        
+
         if (lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
             loggerConfig = loggerConfig.WriteTo.GrafanaLoki(
                 lokiOptions.EndpointUri,
@@ -174,5 +175,29 @@ public static class LogHelper
         if (value is ScalarValue { Value: string rawValue })
             return rawValue;
         return value?.ToString() ?? defaultValue;
+    }
+
+    public static string RenderMessageWithExceptions(this LogEvent logEvent)
+    {
+        if (logEvent.Exception is null)
+            return logEvent.RenderMessage();
+
+        var exception = logEvent.Exception;
+        var sb = new StringBuilder(logEvent.RenderMessage());
+
+        sb.AppendLine();
+        while (true)
+        {
+            sb.Append($"{exception.GetType()}: {exception.Message}");
+            exception = exception.InnerException;
+
+            if (exception is null)
+                break;
+
+            sb.AppendLine();
+            sb.Append(" ---> ");
+        }
+
+        return sb.ToString();
     }
 }

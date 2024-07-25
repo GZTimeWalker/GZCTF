@@ -28,7 +28,7 @@ const GameProgress: FC<GameProgressProps> = (props: GameProgressProps) => {
   const resolvedColor = pulsing
     ? colorScheme === 'dark'
       ? 'light'
-      : color ?? theme.primaryColor
+      : (color ?? theme.primaryColor)
     : 'gray'
   const spikeColor = theme.colors[resolvedColor][5]
   const bgColor = theme.colors[resolvedColor][2]

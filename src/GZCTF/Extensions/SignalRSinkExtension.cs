@@ -38,10 +38,11 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
                 {
                     Time = logEvent.Timestamp,
                     Level = logEvent.Level.ToString(),
-                    Msg = logEvent.RenderMessage(),
+                    Msg = logEvent.RenderMessageWithExceptions(),
                     UserName = LogHelper.GetStringValue(userName, "Anonymous"),
                     IP = LogHelper.GetStringValue(ip),
-                    Status = LogHelper.GetStringValue(status)
+                    Status = logEvent.Exception is null ?
+                        LogHelper.GetStringValue(status) : TaskStatus.Failed.ToString(),
                 }).Wait();
         }
         catch

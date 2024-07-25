@@ -53,32 +53,16 @@ public class DatabaseSink : ILogEventSink, IDisposable
         logEvent.Properties.TryGetValue("IP", out LogEventPropertyValue? ip);
         logEvent.Properties.TryGetValue("Status", out LogEventPropertyValue? status);
 
-        var sb = new StringBuilder(logEvent.RenderMessage());
-        var exception = logEvent.Exception;
-        if (exception is not null)
-        {
-            sb.AppendLine();
-            do
-            {
-                sb.Append($"{exception.GetType()}: {exception.Message}");
-                exception = exception.InnerException;
-                if (exception is not null)
-                {
-                    sb.AppendLine();
-                    sb.Append(" ---> ");
-                }
-            } while (exception is not null);
-        }
-
         return new LogModel
         {
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
-            Message = sb.ToString(),
+            Message = logEvent.RenderMessageWithExceptions(),
             UserName = LogHelper.GetStringValue(userName, "Anonymous"),
             Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
             RemoteIP = LogHelper.GetStringValue(ip),
-            Status = LogHelper.GetStringValue(status),
+            Status = logEvent.Exception is null ?
+                LogHelper.GetStringValue(status) : TaskStatus.Failed.ToString(),
             Exception = logEvent.Exception?.ToString()
         };
     }

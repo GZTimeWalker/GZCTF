@@ -48,7 +48,7 @@ const ChallengePanel: FC = () => {
   const allChallenges = Object.values(challenges ?? {}).flat()
   const currentChallenges =
     challenges &&
-    (activeTab !== 'All' ? challenges[activeTab] ?? [] : allChallenges).filter(
+    (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
       (chal) =>
         !hideSolved ||
         (teamInfo &&

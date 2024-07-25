@@ -149,7 +149,7 @@ const TableRow: FC<{
         {item.rank}
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[1] }}>
-        {allRank ? item.rank : item.organizationRank ?? tableRank}
+        {allRank ? item.rank : (item.organizationRank ?? tableRank)}
       </Table.Td>
       <Table.Td className={classes.left} style={{ left: Lefts[2] }}>
         <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>

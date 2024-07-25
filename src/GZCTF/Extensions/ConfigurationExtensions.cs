@@ -114,9 +114,8 @@ public static class ConfigurationExtensions
 
         GlobalConfig config = globalConfig.Value;
         var title = HtmlEncoder.Default.Encode(config.Platform);
-        var descr = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
-        content = template.Replace("%title%", title)
-            .Replace("%description%", descr);
+        var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
+        content = template.Replace("%title%", title).Replace("%description%", description);
 
         await cache.SetStringAsync(CacheKey.Index, content, token);
 
