@@ -85,7 +85,7 @@
     "swagger-typescript-api": "^13.0.13",
     "tslib": "^2.6.3",
     "typescript": "5.5.4",
-    "vite": "^5.3.4",
+    "vite": "^5.3.5",
     "vite-plugin-pages": "^0.32.3",
     "vite-plugin-prismjs": "^0.0.11",
     "vite-plugin-webfont-dl": "^3.9.4",

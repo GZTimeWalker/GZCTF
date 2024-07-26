@@ -188,7 +188,7 @@ export const useCustomColor = () => {
   return { color, setCustomColor }
 }
 
-export const useCustomeTheme = () => {
+export const useCustomTheme = () => {
   const { config } = useConfig()
   const { color } = useCustomColor()
 

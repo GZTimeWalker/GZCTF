@@ -59,7 +59,7 @@ const GameChallengeEdit: FC = () => {
   const [tag, setTag] = useState<string | null>(challenge?.tag ?? ChallengeTag.Misc)
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
-  const [previewOpend, setPreviewOpend] = useState(false)
+  const [previewOpened, setPreviewOpened] = useState(false)
 
   const modals = useModals()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
@@ -218,7 +218,7 @@ const GameChallengeEdit: FC = () => {
             <Button
               disabled={disabled}
               leftSection={<Icon path={mdiEyeOutline} size={1} />}
-              onClick={() => setPreviewOpend(true)}
+              onClick={() => setPreviewOpened(true)}
             >
               {t('admin.button.challenges.preview')}
             </Button>
@@ -534,8 +534,8 @@ const GameChallengeEdit: FC = () => {
           tag: tag as ChallengeTag,
           type: challenge?.type ?? ChallengeType.StaticAttachment,
         }}
-        opened={previewOpend}
-        onClose={() => setPreviewOpend(false)}
+        opened={previewOpened}
+        onClose={() => setPreviewOpened(false)}
         tagData={
           challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
         }
