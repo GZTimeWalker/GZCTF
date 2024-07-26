@@ -22,8 +22,8 @@ You will need to install Docker and docker-compose to get started with GZCTF. Yo
 
 1. To prepare for the following configuration, please prepare the following initialization parameters:
 
-   - `GZCTF_ADMIN_PASSWORD`: Initial administrator password, effective when the database is not initialized, needs to be set at the first startup. It should be configured in `docker-compose.yml`.
-   - `POSTGRES_PASSWORD`: Database password, needs to be configured in `docker-compose.yml` and `appsettings.json`.
+   - `GZCTF_ADMIN_PASSWORD`: Initial administrator password, effective when the database is not initialized, needs to be set at the first startup. It should be configured in `compose.yml`.
+   - `POSTGRES_PASSWORD`: Database password, needs to be configured in `compose.yml` and `appsettings.json`.
    - `XOR_KEY`: A random string used to encrypt the competition private key, needs to be configured in `appsettings.json`.
    - `PUBLIC_ENTRY`: External access address, can be IP or domain name, needs to be configured in `appsettings.json`, used to provide the address of the problem container for players to access.
 
@@ -81,10 +81,9 @@ You will need to install Docker and docker-compose to get started with GZCTF. Yo
    }
    ```
 
-3. Save the following content as the `docker-compose.yml` file, **and replace with your initialization parameters**.
+3. Save the following content as the `compose.yml` file, **and replace with your initialization parameters**.
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        image: gztime/gzctf:latest
@@ -114,7 +113,7 @@ You will need to install Docker and docker-compose to get started with GZCTF. Yo
 
    <Callout type="info">
 
-   You might encounter network segment conflicts, please refer to `docker-compose.yml` subnet configuration or `/etc/docker/daemon.json` subnet configuration.
+   You might encounter network segment conflicts, please refer to `compose.yml` subnet configuration or `/etc/docker/daemon.json` subnet configuration.
 
    ```yaml
    networks:
@@ -158,10 +157,9 @@ gzctf=# #do your sql query
 
 If you want to use Redis as a cache to get a more seamless version switching and server restart experience, you can add the following content to the above configuration:
 
-1. `docker-compose.yml` file
+1. `compose.yml` file
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        # ...

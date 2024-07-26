@@ -22,8 +22,8 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
 
 1. 为了后续的配置，请准备好如下的初始化参数：
 
-   - `GZCTF_ADMIN_PASSWORD`：初始管理员密码，在数据库未初始化时生效，需要在第一次启动时进行设置，配置在 `docker-compose.yml` 中。
-   - `POSTGRES_PASSWORD`: 数据库密码，需要配置在 `docker-compose.yml` 中及 `appsettings.json` 中。
+   - `GZCTF_ADMIN_PASSWORD`：初始管理员密码，在数据库未初始化时生效，需要在第一次启动时进行设置，配置在 `compose.yml` 中。
+   - `POSTGRES_PASSWORD`: 数据库密码，需要配置在 `compose.yml` 中及 `appsettings.json` 中。
    - `XOR_KEY`: 用于加密比赛私钥的随机字符串，需要配置在 `appsettings.json` 中。
    - `PUBLIC_ENTRY`: 外部访问地址，可以是 IP 或域名，需要配置在 `appsettings.json` 中，用于提供给选手访问题目容器的地址。
 
@@ -81,10 +81,9 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
    }
    ```
 
-3. 将以下内容保存为 `docker-compose.yml` 文件，**并替换为你的初始化参数**
+3. 将以下内容保存为 `compose.yml` 文件，**并替换为你的初始化参数**
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        image: registry.cn-shanghai.aliyuncs.com/gztime/gzctf:develop
@@ -114,7 +113,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
 
    <Callout type="info">
 
-   你有可能遇到网段冲突的情况，请参考相关更改 `docker-compose.yml`
+   你有可能遇到网段冲突的情况，请参考相关更改 `compose.yml`
    中的子网配置或 `/etc/docker/daemon.json` 中的网段配置。
 
    ```yaml
@@ -159,10 +158,9 @@ gzctf=# #do your sql query
 
 如果你想使用 Redis 作为缓存，获得更无缝的版本切换、服务端重启体验，可以在上述到配置中添加如下内容：
 
-1. `docker-compose.yml` 文件
+1. `compose.yml` 文件
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        # ...

@@ -31,10 +31,9 @@ GZCTFには、WebSocket-TCPの転送機能と対応するトラフィック記�
 docker network create challenges -d bridge --subnet 192.168.133.0/24
 ```
 
-設定項目 **ChallengeNetwork** を対応するネットワーク名に設定し、docker-compose.yml で外部ネットワークをブリッジする必要があります。例えば：
+設定項目 **ChallengeNetwork** を対応するネットワーク名に設定し、`compose.yml` で外部ネットワークをブリッジする必要があります。例えば：
 
 ```yaml
-version: "3.7"
 services:
   gzctf:
     ...

@@ -22,8 +22,8 @@ GZCTF の使用をすぐに開始するには、Docker と docker-compose をイ
 
 1. 構成を円滑に進められるために、次の初期化パラメータを準備してください。
 
-   - `GZCTF_ADMIN_PASSWORD`：初期管理者パスワード。 データベースが初期化されていない状態で有効となり、初回起動時に設定する必要があり、`docker-compose.yml` で設定する必要があります。
-   - `POSTGRES_PASSWORD`: データベースのパスワード。`docker-compose.yml` と `appsettings.json` で設定する必要があります。
+   - `GZCTF_ADMIN_PASSWORD`：初期管理者パスワード。 データベースが初期化されていない状態で有効となり、初回起動時に設定する必要があり、`compose.yml` で設定する必要があります。
+   - `POSTGRES_PASSWORD`: データベースのパスワード。`compose.yml` と `appsettings.json` で設定する必要があります。
    - `XOR_KEY`: ゲーム秘密鍵の暗号化に使用されるランダムな文字列。`appsettings.json` で設定する必要があります。
    - `PUBLIC_ENTRY`: 外部アクセス アドレス。IP アドレスまたはドメイン名であり、プロジェクト コンテナにアクセスするためのアドレスを参加者に提供するために使用されます。`appsettings.json` で設定する必要があります。
 
@@ -81,10 +81,9 @@ GZCTF の使用をすぐに開始するには、Docker と docker-compose をイ
    }
    ```
 
-3. 次のコンテンツを `docker-compose.yml` ファイルとして保存し、**初期化パラメーターに置き換えってください**。
+3. 次のコンテンツを `compose.yml` ファイルとして保存し、**初期化パラメーターに置き換えってください**。
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        image: gztime/gzctf:latest
@@ -114,7 +113,7 @@ GZCTF の使用をすぐに開始するには、Docker と docker-compose をイ
 
    <Callout type="info">
 
-   ネットワーク セグメントの競合が発生する可能性があります。その場合は `docker-compose.yml` のサブネット構成
+   ネットワーク セグメントの競合が発生する可能性があります。その場合は `compose.yml` のサブネット構成
    または `/etc/docker/daemon.json` のネットワーク セグメント構成を変更してください。
 
    ```yaml
@@ -159,10 +158,9 @@ gzctf=# #do your sql query
 
 Redis をキャッシュとして使用して、よりシームレスなバージョンの切り替えとサーバーの再起動エクスペリエンスを実現する場合は、上記の構成に次のコンテンツを追加してください：
 
-1. ファイル `docker-compose.yml` に
+1. ファイル `compose.yml` に
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        # ...

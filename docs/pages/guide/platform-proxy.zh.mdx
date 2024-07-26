@@ -31,10 +31,9 @@ GZCTF 自带对于流量的 WebSocket-TCP 转发功能和对应的流量记录�
 docker network create challenges -d bridge --subnet 192.168.133.0/24
 ```
 
-设置配置项 **ChallengeNetwork** 为对应的网络名称，并需要在 docker-compose.yml 中桥接外部网络，例如：
+设置配置项 **ChallengeNetwork** 为对应的网络名称，并需要在 `compose.yml` 中桥接外部网络，例如：
 
 ```yaml
-version: "3.7"
 services:
   gzctf:
     ...
