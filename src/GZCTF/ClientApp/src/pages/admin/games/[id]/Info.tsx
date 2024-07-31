@@ -428,6 +428,7 @@ const GameInfoEdit: FC = () => {
             input: {
               minHeight: 79,
               maxHeight: 79,
+              overflow: 'auto',
             },
           }}
           onChange={(e) => game && setGame({ ...game, organizations: e })}

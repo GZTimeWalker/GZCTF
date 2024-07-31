@@ -46,7 +46,7 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
 
   return (
     <WithGameEditTab isLoading={isLoading} {...rest}>
-      <Stack h="calc(100vh - 12rem)" justify="space-between">
+      <Stack mih="calc(100vh - 12rem)" justify="space-between">
         {children}
         <Group justify="space-between" w="100%">
           <Button
