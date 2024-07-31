@@ -85,7 +85,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
         </>
       }
     >
-      <Group wrap="nowrap" justify="space-between" align="flex-start" w="100%">
+      <Group wrap="nowrap" justify="space-between" align="flex-start" w="100%" pb="xl">
         <Tabs
           orientation="vertical"
           value={activeTab}
