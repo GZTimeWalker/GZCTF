@@ -3,6 +3,19 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.21.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.9..v0.21.0) - 2024-07-31
+
+### ⛰️ Features
+
+- **(log)** unified exception rendering - ([30f3a3](https://github.com/GZTimeWalker/GZCTF/commit/30f3a3)) by **GZTime**
+- Append exception information to log - ([d342bb](https://github.com/GZTimeWalker/GZCTF/commit/d342bb)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(docker)** container only bind specific ports - ([b36718](https://github.com/GZTimeWalker/GZCTF/commit/b36718)) by **Kengwang**
+- **(frontend)** page padding and overflow for game edit and chall edit (#314) - ([39934f](https://github.com/GZTimeWalker/GZCTF/commit/39934f)) by **LilRan**
+
+---
 ## [0.20.9](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.8-patch.2..v0.20.9) - 2024-06-30
 
 ### ⛰️ Features
