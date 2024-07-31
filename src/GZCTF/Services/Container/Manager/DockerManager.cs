@@ -79,7 +79,10 @@ public class DockerManager : IContainerManager
         if (_meta.ExposePort)
         {
             parameters.ExposedPorts = new Dictionary<string, EmptyStruct> { [config.ExposedPort.ToString()] = new() };
-            parameters.HostConfig.PublishAllPorts = true;
+            parameters.HostConfig.PortBindings = new Dictionary<string, IList<PortBinding>>
+            {
+                [config.ExposedPort.ToString()] = [new() { HostPort = "0" }] // docker will allocate a free port on start
+            };
         }
 
         CreateContainerResponse? containerRes = null;
