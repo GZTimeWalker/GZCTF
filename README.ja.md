@@ -118,6 +118,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
 - **北京航空航天大学 BUAACTF 2024**
 - **カリフォルニア大学サンディエゴ校 San Diego CTF 2024**
+- **曲阜師範大学第1回“曲star”サイバーセキュリティスキルコンテスト**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 
