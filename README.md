@@ -119,6 +119,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **BIEM CTF 2024：Beijing Institute Of Economics And Management - The first BIEM "Xin'an Cup" CTF competition**
 - **BUAACTF 2024: Beihang University CTF**
 - **San Diego CTF 2024: University of California, San Diego**
+- **The first "Qu STAR" network security skills competition of Qufu Normal University**
 
 _The list is not in any particular order, and PRs are welcome for additions._
 
