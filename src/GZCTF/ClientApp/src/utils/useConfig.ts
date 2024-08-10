@@ -1,3 +1,7 @@
+/*
+ * This file is protected and may not be modified without permission.
+ * See LICENSE_ADDENDUM.txt for details.
+ */
 import { useLocalStorage } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import LZString from 'lz-string'
