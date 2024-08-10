@@ -210,11 +210,3 @@ Challenges configuration and examples can be found in the [GZCTF-Challenges](htt
 You can also refer to and learn from the public challenges repository of [W4terCTF 2023](https://github.com/W4terDr0p/W4terCTF-2023). The challenges in this repository try to ensure that the Docker Image is small enough to be quickly deployed during the competition while keeping the challenges working properly.
 
 GZCTF distributes dynamic flags by injecting the `GZCTF_FLAG` environment variable into the container, so please make sure that the text in this environment variable is placed in the appropriate location in the **container initialization script** of the challenge. Please note that this environment variable is initialized when the container is started, not when the container image is built.
-
-<Callout type="info">
-
-If you use Docker as the container backend, please do not use `EXPOSE` to expose ports in the challenge Dockerfile, because GZCTF will automatically map the specified port to a random port on the host. If you use `EXPOSE` in the Dockerfile, it will cause a challenge to expose multiple ports, occupy port resources, and leave security risks.
-
-If you use Kubernetes as the container backend, this configuration is not affected, because in Kubernetes, GZCTF will create a Service for specific ports.
-
-</Callout>

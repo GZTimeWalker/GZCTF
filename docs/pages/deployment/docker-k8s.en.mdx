@@ -26,6 +26,20 @@ If you only have one machine and want to run GZCTF through Docker, you can speci
 INSTALL_K3S_EXEC="--docker"
 ```
 
+<Callout to="info">
+
+If you need to run more than 255 challenge containers on a single k3s instance, you **need to specify `INSTALL_K3S_EXEC` during k3s installation** and change `node-cidr-mask-size` to the desired subnet size.
+
+```bash
+INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+```
+
+**The above configuration CANNOT BE CHANGED after installation.** Changing the CIDR to `/16` can support 65535 Pods.
+
+The above configuration only changes the IP address range used by the node Pods. If you need to change the node's Pod limit, please refer to the following.
+
+</Callout>
+
 And install k3s in the following way. For more information, please refer to [k3s installation configuration](https://docs.k3s.io/installation/configuration):
 
 ```bash
@@ -172,22 +186,6 @@ Run the following commands on the machine where the k3s control-panel is located
 
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
-
-<Callout type="info">
-
-If you need to run more than 255 Pods on a single k3s instance, it may exceed the default subnet size. You need to specify `INSTALL_K3S_EXEC` during k3s installation and change `node-cidr-mask-size` to the desired subnet size.
-
-```bash
-INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
-```
-
-Install k3s using the following format, for more information please refer to [k3s installation configuration](https://docs.k3s.io/installation/configuration):
-
-```bash
-curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
-```
-
-</Callout>
 
 ## Add Container Image Registry
 

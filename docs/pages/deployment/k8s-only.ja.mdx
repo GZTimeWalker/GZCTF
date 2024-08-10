@@ -16,6 +16,21 @@ import { Callout } from "nextra-theme-docs";
 2. 複数のインスタンスをデプロイする場合、すべてのインスタンスに共有ストレージをPVとしてマウントする必要があります。そうしないと、ファイルの一貫性を保証することができません。また、Redisをデプロイすることで、複数のインスタンスのキャッシュの一貫性を保証する必要があります。
 3. 複数のインスタンスをデプロイする場合、ロードバランサーはsticky sessionを設定する必要があります。そうしないと、websocketを使用してリアルタイムデータを取得することができません。
 4. **もし面倒なら、単一インスタンスをデプロイしましょう！**
+5. クラスタ内でGZCTFをデプロイすることを選択した場合、一定の程度のPod数が必要であることに注意してください。
+
+   - インストール時に `--kube-controller-manager-arg=node-cidr-mask-size=16` を指定してください。デフォルトのCIDRは `/24` で、最大255個のPodをサポートします。**インストール後にこの設定を変更することはできません**。
+
+     ```bash
+     INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+     ```
+
+   - `maxPods`の値を適切に調整してください。そうしないと、Podの数が上限に達してスケジュールできなくなる可能性があります。
+
+     ```yaml
+     apiVersion: kubelet.config.k8s.io/v1beta1
+     kind: KubeletConfiguration
+     maxPods: 800
+     ```
 
 ## GZCTFのデプロイ
 

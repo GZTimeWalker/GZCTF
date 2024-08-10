@@ -26,6 +26,20 @@ k3sは軽量なk8sディストリビューションで、シングルマシン�
 INSTALL_K3S_EXEC="--docker"
 ```
 
+<Callout type="info">
+
+もし一台のk3sインスタンスで255個を超える問題コンテナを実行したい場合は、**k3sのインストール時に**`INSTALL_K3S_EXEC`を指定し、`node-cidr-mask-size`を必要なサブネットサイズに変更する必要があります。
+
+```bash
+INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+```
+
+**上記の設定はインストール後に変更できません。** CIDRを`/16`に変更すると、65535個のPodをサポートできます。
+
+上記の設定は、ノードのPodが使用するIPアドレス範囲を変更するだけであり、ノードのPod数制限を変更する場合は、以下を参照してください。
+
+</Callout>
+
 そして、以下の形式でk3sをインストールします。詳細は[k3sのインストール設定](https://docs.k3s.io/installation/configuration)を参照してください：
 
 ```bash
@@ -172,22 +186,6 @@ k3s control-panelが存在するマシンで以下のコマンドを実行しま
 
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
-
-<Callout type="info">
-
-もし、一台のk3sインスタンス上で255個以上のPodを実行する必要がある場合、デフォルトのサブネットサイズを超える可能性があります。その場合、k3sをインストールする際に`INSTALL_K3S_EXEC`を指定し、`node-cidr-mask-size`を必要なサブネットサイズに変更します。
-
-```bash
-INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
-```
-
-そして、以下の形式でk3sをインストールします。詳細は[k3sのインストール設定](https://docs.k3s.io/installation/configuration)を参照してください：
-
-```bash
-curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
-```
-
-</Callout>
 
 ## コンテナイメージリポジトリの追加
 

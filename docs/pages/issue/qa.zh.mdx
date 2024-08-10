@@ -64,6 +64,14 @@ GZCTF 支持多个实例同时运行，但需要提供相同的数据库实例�
 
 同时，为了确保 SignalR 基于 websocket 的正常运行，需要在负载均衡器中配置 Sticky Session。
 
+### HTTP 端口无法访问？
+
+此类问题主要出现在 Docker + K8s 分离部署的情况下将 GZCTF 通过 Docker 直接运行在 K8s 节点中，此时机器的 HTTP 端口被 traefik 及其负载均衡器占用，导致无法访问。解决方案很多且非常灵活：
+
+- 既然只有一个机器，建议直接将 GZCTF 部署在 K8s 集群内，并通过 Service 和 Ingress 暴露服务。
+- 在另一台机器上运行 GZCTF，让 K8s 节点干净整洁，同时避免 GZCTF 的资源占用。
+- 关闭 K8s 集群的 traefik 服务，让 GZCTF 或反向代理服务能够监听相关端口。
+
 ## 平台定位相关
 
 ### 是否考虑支持 AWD / AWDP 赛制

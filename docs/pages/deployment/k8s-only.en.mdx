@@ -16,6 +16,21 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
 2. For multi-instance deployment, all instances need to mount the shared storage as Persistent Volumes (PV) to ensure file consistency. Additionally, Redis needs to be deployed to ensure cache consistency among multiple instances.
 3. For multi-instance deployment, the load balancer needs to be configured with sticky sessions to enable real-time data retrieval using websockets.
 4. **If you prefer a simpler deployment, go for a single-instance deployment!**
+5. Since you have chosen to deploy with Kubernetes, it implies that you need a larger number of Pods. Please pay attention to the following configuration:
+
+   - Specify `--kube-controller-manager-arg=node-cidr-mask-size=16` during installation. The default CIDR is `/24`, supporting a maximum of 255 Pods. **This cannot be changed after installation.**
+
+     ```bash
+     INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+     ```
+
+   - Adjust the value of `maxPods` accordingly, otherwise you may reach the Pod limit and be unable to schedule more Pods.
+
+     ```yaml
+     apiVersion: kubelet.config.k8s.io/v1beta1
+     kind: KubeletConfiguration
+     maxPods: 800
+     ```
 
 ## Deploying GZCTF
 

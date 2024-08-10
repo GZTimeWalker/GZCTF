@@ -16,6 +16,21 @@ import { Callout } from "nextra-theme-docs";
 2. 多实例部署时，需要给全部实例挂载共享存储作为 PV，否则无法保证文件的一致性；同时需要保证部署 Redis，否则无法保证多实例的缓存一致性。
 3. 多实例部署时，负载均衡器需要配置 sticky session，否则无法使用 websocket 来获取实时数据。
 4. **如果你不想那么麻烦，那就部署单实例吧！**
+5. 既然选择使用 K8s 进行部署，一定程度上说明你需要更大的 Pod 数量，请务必注意如下配置项：
+
+   - 在安装时指定 `--kube-controller-manager-arg=node-cidr-mask-size=16`，默认的 CIDR 为 `/24`，最多支持 255 个 Pod。**此配置项在安装后无法更改**。
+
+     ```bash
+     INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+     ```
+
+   - 请自行调整 `maxPods` 的值，否则可能会导致 Pod 数量达到上限而无法调度。
+
+     ```yaml
+     apiVersion: kubelet.config.k8s.io/v1beta1
+     kind: KubeletConfiguration
+     maxPods: 800
+     ```
 
 ## 部署 GZCTF
 
