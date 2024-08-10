@@ -663,4 +663,4 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
   Please note that certain files in this project are subject to additional
 restrictions as specified in the LICENSE_ADDENDUM.txt file. These files are
-not to be modified without permission from the original author or maintainer.
+not to be modified without permission from the original author or maintainers.

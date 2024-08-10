@@ -6,7 +6,7 @@ the "GZCTF" string within this project.
 ### Restricted Files
 
 The following files may not be modified, redistributed, or used in derivative
-works without the express written permission of the original author or maintainer:
+works without the express written permission of the original author or maintainers:
 
 - src/GZCTF/Services/Container/Manager/*.cs
 - src/GZCTF/ClientApp/src/utils/useConfig.ts
@@ -17,7 +17,7 @@ Any string or identifier related to the "GZCTF" name, including but not limited
 to variations, derivations, or similar constructs, is considered a protected
 identifier within this project. Modification, removal, or replacement of these
 identifiers in any part of the codebase is strictly prohibited without the express
-written permission of the original author or maintainer.
+written permission of the original author or maintainers.
 
 **Examples of protected identifiers include, but are not limited to:**
 
