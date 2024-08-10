@@ -1,3 +1,16 @@
+/*
+ * GZ::CTF
+ *
+ * Copyright © 2022-present GZTimeWalker
+ *
+ * This source code is licensed under the AGPLv3 license found in the LICENSE file
+ * in the root directory of this source tree.
+ *
+ * Identifiers related to "GZCTF" (including variations and derivations) are protected.
+ * Examples include "GZCTF", "GZ::CTF", "GZCTF_FLAG", and similar constructs.
+ *
+ * Modifications to these identifiers are prohibited as per the LICENSE_ADDENDUM.txt
+ */
 global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;

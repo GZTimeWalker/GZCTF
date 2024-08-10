@@ -658,3 +658,9 @@ specific requirements.
 if any, to sign a "copyright disclaimer" for the program, if necessary.
 For more information on this, and how to apply and follow the GNU AGPL, see
 <https://www.gnu.org/licenses/>.
+
+  18. Additional Restrictions.
+
+  Please note that certain files in this project are subject to additional
+restrictions as specified in the LICENSE_ADDENDUM.txt file. These files are
+not to be modified without permission from the original author or maintainers.

@@ -1,3 +1,7 @@
+/*
+ * This file is protected and may not be modified without permission.
+ * See LICENSE_ADDENDUM.txt for details.
+ */
 using System.Net;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
