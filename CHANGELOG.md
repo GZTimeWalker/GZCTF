@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.21.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.0..v0.21.1) - 2024-08-11
+
+### 🐛 Bug Fixes
+
+- **(docker)** handle container conflict when creating - ([c74bb8](https://github.com/GZTimeWalker/GZCTF/commit/c74bb8)) by **GZTime**
+
+### 📦 Other Changes
+
+- add LICENSE_ADDENDUM.txt (#317) - ([89af5d](https://github.com/GZTimeWalker/GZCTF/commit/89af5d)) by **GZTime**
+
+---
 ## [0.21.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.20.9..v0.21.0) - 2024-07-31
 
 ### ⛰️ Features
