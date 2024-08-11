@@ -138,6 +138,15 @@ importers:
       '@babel/eslint-parser':
         specifier: ^7.25.1
         version: 7.25.1(@babel/core@7.25.2)(eslint@9.9.0)
+      '@eslint/compat':
+        specifier: ^1.1.1
+        version: 1.1.1
+      '@eslint/eslintrc':
+        specifier: ^3.1.0
+        version: 3.1.0
+      '@eslint/js':
+        specifier: ^9.9.0
+        version: 9.9.0
       '@kainstar/vite-plugin-i18next-loader':
         specifier: ^1.0.3
         version: 1.0.3(vite@5.4.0(@types/node@22.2.0)(sugarss@4.0.1(postcss@8.4.41)))
@@ -184,8 +193,8 @@ importers:
         specifier: ^9.9.0
         version: 9.9.0
       eslint-plugin-oxlint:
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.7.0
+        version: 0.7.0
       eslint-plugin-react:
         specifier: ^7.35.0
         version: 7.35.0(eslint@9.9.0)
@@ -195,6 +204,9 @@ importers:
       form-data:
         specifier: ~4.0.0
         version: 4.0.0
+      globals:
+        specifier: ^15.9.0
+        version: 15.9.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -217,8 +229,8 @@ importers:
         specifier: ^4.20.0
         version: 4.20.0
       swagger-typescript-api:
-        specifier: ^13.0.16
-        version: 13.0.16
+        specifier: ^13.0.19
+        version: 13.0.19
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
@@ -610,6 +622,10 @@ packages:
   '@eslint-community/regexpp@4.11.0':
     resolution: {integrity: sha512-G/M/tIiMrTAxEWRfLfQJMmGNX28IxBg4PBz8XqQhqUHLFI6TL2htpIB1iQCj144V5ee/JaKyT9/WZ0MGZWfA7A==}
     engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+
+  '@eslint/compat@1.1.1':
+    resolution: {integrity: sha512-lpHyRyplhGPL5mGEh6M9O5nnKk0Gz4bFI+Zu6tKlPpDUN7XshWvH9C/px4UVm87IAANE0W81CEsNGbS1KlzXpA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/config-array@0.17.1':
     resolution: {integrity: sha512-BlYOpej8AQ8Ev9xVqroV7a02JK3SkBAaN9GfMMH9W6Ch8FlQlkjGw4Ir7+FgYwfirivAf4t+GtzuAxqfukmISA==}
@@ -1451,8 +1467,8 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
-  eslint-plugin-oxlint@0.5.0:
-    resolution: {integrity: sha512-DFPxJTUSe8XdvbOsvpAyzUVNmLHnqpNLQFAH2bJo+Mxkb59s50/EKn1nCukrzMAG34nq02Iu4D+0MuUr9oHWhw==}
+  eslint-plugin-oxlint@0.7.0:
+    resolution: {integrity: sha512-gP4AAVr0EoFIbAEUkYGIXMpBIyTxlmDj33iSYN6pYQlD2aFMu3syggIEzVZWTKssk88+f6+PODOw/XKws3VCdA==}
 
   eslint-plugin-react-hooks@5.1.0-rc-fb9a90fa48-20240614:
     resolution: {integrity: sha512-xsiRwaDNF5wWNC4ZHLut+x/YcAxksUd9Rizt7LaEn3bV8VyYRpXnRJQlLOfYaVy9esk4DFP4zPPnoNVjq5Gc0w==}
@@ -1665,6 +1681,10 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
+    engines: {node: '>=18'}
+
+  globals@15.9.0:
+    resolution: {integrity: sha512-SmSKyLLKFbSr6rptvP8izbyxJL4ILwqO9Jg23UA0sDlGlu58V59D1//I3vlc0KJphVdUR7vMjHIplYnzBxorQA==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -2571,8 +2591,8 @@ packages:
   swagger-schema-official@2.0.0-bab6bed:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
 
-  swagger-typescript-api@13.0.16:
-    resolution: {integrity: sha512-UhfqfHBp3R5H4UElwFjl0SP5+suWpIhkm4jFuuGrP37atFyjTXIJluIc7sdsRK7viDfZRr5GVxdOvAp39M58UA==}
+  swagger-typescript-api@13.0.19:
+    resolution: {integrity: sha512-2fCb04w1fjZNK/LUgbm/x2Z+oXXPx/x69d/rh+LnOso6cOUOr+gcPLkc4IvPchs/GytnMEiZp+L5v+OWQ4YLUg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -3299,6 +3319,8 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.11.0': {}
+
+  '@eslint/compat@1.1.1': {}
 
   '@eslint/config-array@0.17.1':
     dependencies:
@@ -4247,7 +4269,7 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-plugin-oxlint@0.5.0:
+  eslint-plugin-oxlint@0.7.0:
     dependencies:
       scule: 1.3.0
 
@@ -4490,6 +4512,8 @@ snapshots:
   globals@11.12.0: {}
 
   globals@14.0.0: {}
+
+  globals@15.9.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -5423,7 +5447,7 @@ snapshots:
 
   swagger-schema-official@2.0.0-bab6bed: {}
 
-  swagger-typescript-api@13.0.16:
+  swagger-typescript-api@13.0.19:
     dependencies:
       '@types/swagger-schema-official': 2.0.25
       cosmiconfig: 9.0.0(typescript@5.5.4)
