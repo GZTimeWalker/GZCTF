@@ -11,6 +11,7 @@
  *
  * Modifications to these identifiers are prohibited as per the LICENSE_ADDENDUM.txt
  */
+
 global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
@@ -408,6 +409,9 @@ namespace GZCTF
 
         internal static void Banner()
         {
+            // The GZCTF identifier is protected by the License.
+            // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
+            // Please see LICENSE_ADDENDUM.txt for details.
             const string banner =
                 """
                       ___           ___           ___                       ___

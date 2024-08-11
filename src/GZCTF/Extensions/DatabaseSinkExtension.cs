@@ -61,8 +61,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
             UserName = LogHelper.GetStringValue(userName, "Anonymous"),
             Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
             RemoteIP = LogHelper.GetStringValue(ip),
-            Status = logEvent.Exception is null ?
-                LogHelper.GetStringValue(status) : TaskStatus.Failed.ToString(),
+            Status = logEvent.Exception is null ? LogHelper.GetStringValue(status) : TaskStatus.Failed.ToString(),
             Exception = logEvent.Exception?.ToString()
         };
     }

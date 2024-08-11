@@ -70,10 +70,10 @@ public static class TelemetryExtension
         if (config.Prometheus.Port is { } port)
             app.UseOpenTelemetryPrometheusScrapingEndpoint(context
                 => context.Connection.LocalPort == port
-                    && string.Equals(
-                        context.Request.Path.ToString().TrimEnd('/'),
-                        "/metrics",
-                        StringComparison.OrdinalIgnoreCase));
+                   && string.Equals(
+                       context.Request.Path.ToString().TrimEnd('/'),
+                       "/metrics",
+                       StringComparison.OrdinalIgnoreCase));
         else
             app.UseOpenTelemetryPrometheusScrapingEndpoint(context
                 => string.Equals(

@@ -2,6 +2,7 @@
  * This file is protected and may not be modified without permission.
  * See LICENSE_ADDENDUM.txt for details.
  */
+
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -179,6 +180,9 @@ public class SwarmManager : IContainerManager
                         new()
                         {
                             Image = config.Image,
+                            // The GZCTF identifier is protected by the License.
+                            // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
+                            // Please see LICENSE_ADDENDUM.txt for details.
                             Env =
                                 config.Flag is null
                                     ? [$"GZCTF_TEAM_ID={config.TeamId}"]

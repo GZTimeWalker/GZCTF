@@ -20,7 +20,7 @@ import classes from './About.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()
-  const { repo, valid, rawTag: tag, sha, buildtime } = ValidatedRepoMeta()
+  const { repo, valid, rawTag: tag, sha, buildTime } = ValidatedRepoMeta()
   const { t } = useTranslation()
   const theme = useMantineTheme()
 
@@ -85,7 +85,7 @@ const About: FC = () => {
                 <Group gap="xs">
                   <Text size="xs" fw={500} c="dimmed" ff="monospace">
                     {valid
-                      ? `Built at ${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}`
+                      ? `Built at ${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}`
                       : 'This release is not officially built'}
                   </Text>
                 </Group>

@@ -18,7 +18,7 @@ const RepoMeta = {
   sha: import.meta.env.VITE_APP_GIT_SHA ?? 'unknown',
   rawTag: import.meta.env.VITE_APP_GIT_NAME ?? 'unknown',
   timestamp: import.meta.env.VITE_APP_BUILD_TIMESTAMP ?? '',
-  buildtime: import.meta.env.DEV ? dayjs() : dayjs(import.meta.env.VITE_APP_BUILD_TIMESTAMP),
+  buildTime: import.meta.env.DEV ? dayjs() : dayjs(import.meta.env.VITE_APP_BUILD_TIMESTAMP),
   repo: 'https://github.com/GZTimeWalker/GZCTF',
 }
 
@@ -59,7 +59,7 @@ export const useConfig = () => {
 }
 
 export const ValidatedRepoMeta = () => {
-  const { sha, rawTag, timestamp, buildtime } = RepoMeta
+  const { sha, rawTag, timestamp, buildTime: buildtime } = RepoMeta
 
   const tag = rawTag.replace(/-.*$/, '')
 
@@ -73,12 +73,16 @@ export const ValidatedRepoMeta = () => {
 }
 
 const showBanner = () => {
-  const { sha, rawTag: tag, buildtime, repo, valid } = ValidatedRepoMeta()
+  const { sha, rawTag: tag, buildTime, repo, valid } = ValidatedRepoMeta()
   const padding = ' '.repeat(45)
 
   const bannerClr = ['color: #4ccaaa', 'color: unset']
   const textClr = ['font-weight: bold', 'font-weight: bold; color: #4ccaaa']
   const badClr = ['font-weight: bold', 'font-weight: bold; color: #fe3030']
+
+  // The GZCTF identifier is protected by the License.
+  // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
+  // Please see LICENSE_ADDENDUM.txt for details.
 
   const banner = `
   ██████╗ ███████╗           ██████╗████████╗███████╗
@@ -93,7 +97,7 @@ const showBanner = () => {
 
 %cLicense  : %cGNU Affero General Public License v3.0
 %cCommit   : %c${valid ? sha : 'Unofficial build version'}
-%cBuilt at : %c${buildtime.format('YYYY-MM-DDTHH:mm:ssZ')}
+%cBuilt at : %c${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}
 %cIssues   : %c${repo}/issues
  `
 
