@@ -147,7 +147,7 @@ k3s 默认的 NodePort 端口范围为 30000-32767，这可能会与需求不太
   ```bash
   ExecStart=/usr/local/bin/k3s \
       server \
-      --kube-apiserver-arg service-node-port-range=20000-50000
+      --kube-apiserver-arg=service-node-port-range=20000-50000
   ```
 
 - `sudo systemctl daemon-reload`
