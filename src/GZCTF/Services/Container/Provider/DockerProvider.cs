@@ -24,7 +24,8 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <param name="config"></param>
     /// <returns></returns>
     public static string GetName(ContainerConfig config) =>
-        $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Ulid.NewUlid().ToString().ToLowerInvariant()).ToMD5String()[..16]}";
+        $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_" +
+        (config.Flag ?? Ulid.NewUlid().ToString().ToLowerInvariant()).ToMD5String()[..16];
 }
 
 public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>

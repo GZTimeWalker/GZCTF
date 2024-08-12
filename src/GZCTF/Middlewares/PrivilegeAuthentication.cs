@@ -8,10 +8,10 @@ using Serilog;
 namespace GZCTF.Middlewares;
 
 /// <summary>
-/// 需要权限访问
+/// Authorization filter for privilege
 /// </summary>
 /// <param name="privilege">
-/// 所需权限
+/// The privilege required
 /// </param>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthorizationFilter
@@ -66,16 +66,16 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 }
 
 /// <summary>
-/// 需要已登录用户权限
+/// User required
 /// </summary>
 public class RequireUserAttribute() : RequirePrivilegeAttribute(Role.User);
 
 /// <summary>
-/// 需要监控者权限
+/// Monitor role required
 /// </summary>
 public class RequireMonitorAttribute() : RequirePrivilegeAttribute(Role.Monitor);
 
 /// <summary>
-/// 需要Admin权限
+/// Admin privilege required
 /// </summary>
 public class RequireAdminAttribute() : RequirePrivilegeAttribute(Role.Admin);

@@ -131,6 +131,12 @@ public class DockerManager : IContainerManager
         {
             if (e.StatusCode == HttpStatusCode.Conflict)
             {
+                _logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted),
+                        parameters.Name],
+                    TaskStatus.Duplicate,
+                    LogLevel.Warning);
+
                 // the container already exists, remove it and retry
                 try
                 {
@@ -139,7 +145,7 @@ public class DockerManager : IContainerManager
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,
+                    _logger.LogError(ex, "{msg}",
                         Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                             parameters.Name]);
                     return null;
@@ -160,7 +166,7 @@ public class DockerManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e,
+            _logger.LogError(e, "{msg}",
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
                     parameters.Name]);
             return null;
@@ -169,24 +175,28 @@ public class DockerManager : IContainerManager
         var container = new Models.Data.Container { ContainerId = containerRes.ID, Image = config.Image };
 
         retry = 0;
-        bool started;
 
-        do
+        while (true)
         {
-            started = await _client.Containers.StartContainerAsync(container.ContainerId, new(), token);
             if (retry++ >= 3)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
+                    Program.StaticLocalizer[
+                        nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
                         container.ContainerId[..12],
                         config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
 
-            if (!started)
-                await Task.Delay(500, token);
-        } while (!started);
+            var started = await _client.Containers.StartContainerAsync(container.ContainerId,
+                new(), token);
+
+            if (started)
+                break;
+
+            await Task.Delay(500, token);
+        }
 
         ContainerInspectResponse? info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
 

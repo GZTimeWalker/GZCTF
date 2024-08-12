@@ -13,12 +13,13 @@ public class FlagChecker(
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     CancellationTokenSource TokenSource { get; set; } = new();
+    const int MaxWorkerCount = 2;
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         TokenSource = new CancellationTokenSource();
 
-        for (var i = 0; i < 2; ++i)
+        for (var i = 0; i < MaxWorkerCount; ++i)
         {
             await Task.Factory.StartNew(() => Checker(i, TokenSource.Token), cancellationToken,
                 TaskCreationOptions.LongRunning, TaskScheduler.Default);

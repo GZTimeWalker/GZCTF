@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write src",
-    "genapi": "swagger-typescript-api -p template/swagger.json -t template -o src --module-name-first-tag --sort-routes"
+    "genapi": "swagger-typescript-api -p http://localhost:63000/swagger/v1/swagger.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
     "@babel/core": "^7.25.2",

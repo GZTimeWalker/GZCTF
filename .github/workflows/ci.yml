@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     defaults:
       run:
         working-directory: src/GZCTF
@@ -104,7 +107,7 @@ jobs:
         uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           dry-run: false
-          token: ${{ secrets.PACKAGE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           container: ${{ github.event.repository.name }}/gzctf
           keep-tags-regexes: ^v\d+\.\d+\.\d+$
           prune-tags-regexes: ^[0-9a-f]{6,40}

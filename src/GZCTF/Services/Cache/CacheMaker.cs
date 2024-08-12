@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace GZCTF.Services.Cache;
 
 /// <summary>
-/// 缓存更新请求
+/// Cache update request
 /// </summary>
 public class CacheRequest(string key, DistributedCacheEntryOptions? options = null, params string[] @params)
 {
@@ -15,7 +15,7 @@ public class CacheRequest(string key, DistributedCacheEntryOptions? options = nu
 }
 
 /// <summary>
-/// 缓存请求处理接口
+/// Cache request handler
 /// </summary>
 public interface ICacheRequestHandler
 {

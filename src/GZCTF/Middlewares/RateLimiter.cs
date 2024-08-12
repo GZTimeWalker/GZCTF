@@ -9,29 +9,29 @@ using Microsoft.Extensions.Localization;
 namespace GZCTF.Middlewares;
 
 /// <summary>
-/// 请求频率限制
+/// The rate limiter middleware
 /// </summary>
 public static class RateLimiter
 {
     public enum LimitPolicy
     {
         /// <summary>
-        /// 并发操作限制
+        /// Concurrency operation limit
         /// </summary>
         Concurrency,
 
         /// <summary>
-        /// 注册请求限制
+        /// Register limit
         /// </summary>
         Register,
 
         /// <summary>
-        /// 容器操作限制
+        /// Container operation limit
         /// </summary>
         Container,
 
         /// <summary>
-        /// 提交请求限制
+        /// Flag submit limit
         /// </summary>
         Submit
     }
