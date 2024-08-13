@@ -341,7 +341,7 @@
   },
   "label": {
     "games": {
-      "public": "Public",
+      "hide": "Hide",
       "summary": "Summary"
     },
     "instances": {

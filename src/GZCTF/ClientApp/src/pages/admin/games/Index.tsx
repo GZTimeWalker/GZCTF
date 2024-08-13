@@ -123,7 +123,7 @@ const Games: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.games.public')}</Table.Th>
+                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.games.hide')}</Table.Th>
                 <Table.Th>{t('common.label.game')}</Table.Th>
                 <Table.Th>{t('common.label.time')}</Table.Th>
                 <Table.Th>{t('admin.label.games.summary')}</Table.Th>
@@ -141,7 +141,7 @@ const Games: FC = () => {
                       <Table.Td>
                         <Switch
                           disabled={disabled}
-                          checked={!game.hidden}
+                          checked={game.hidden}
                           onChange={() => onToggleHidden(game)}
                         />
                       </Table.Td>

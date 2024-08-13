@@ -341,7 +341,7 @@
   },
   "label": {
     "games": {
-      "public": "公开",
+      "hide": "隐藏",
       "summary": "简介"
     },
     "instances": {
