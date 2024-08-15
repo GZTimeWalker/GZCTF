@@ -61,12 +61,13 @@ commit_parsers = [
   { message = "^[fF]eat", group = "<!-- 0 -->⛰️ Features" },
   { message = "^[fF]ix", group = "<!-- 1 -->🐛 Bug Fixes" },
   { message = "^[sS]tyle", group = "<!-- 2 -->🎨 Styling" },
+  { message = "^[pP]erf", group = "<!-- 3 -->🚀 Performances" },
   { message = "^[dD]oc", skip = true },
   { message = "^[rR]elease", skip = true },
   { message = "^[rR]evert", skip = true },
   { message = "^[wW]ip", skip = true },
   { message = "^[dD]eps", skip = true },
   { message = "^[cC]hore", skip = true },
-  { body = ".*security", group = "<!-- 4 -->🛡️ Security" },
+  { body = ".*security", group = "<!-- 8 -->🛡️ Security" },
   { message = ".*", group = "<!-- 9 -->📦 Other Changes"}
 ]

@@ -227,29 +227,27 @@ public class GameInstanceRepository(
     {
         CheatCheckInfo checkInfo = new();
 
-        GameInstance[] instances = await Context.GameInstances.Where(i => i.ChallengeId == submission.ChallengeId &&
-                                                                          i.ParticipationId !=
-                                                                          submission.ParticipationId)
-            .Include(i => i.FlagContext).Include(i => i.Participation)
-            .ThenInclude(i => i.Team).ToArrayAsync(token);
+        GameInstance? instance = await Context.GameInstances
+            .Include(i => i.Participation)
+            .ThenInclude(i => i.Team)
+            .Include(i => i.FlagContext)
+            .Where(i => i.ChallengeId == submission.ChallengeId &&
+                        i.ParticipationId != submission.ParticipationId &&
+                        i.FlagContext != null && i.FlagContext.Flag == submission.Answer)
+            .FirstOrDefaultAsync(token);
 
-        foreach (GameInstance instance in instances)
-        {
-            if (instance.FlagContext?.Flag != submission.Answer)
-                continue;
-
-            Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
-
-            CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
-
-            checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
-
-            updateSub.Status = AnswerResult.CheatDetected;
-
-            await SaveAsync(token);
-
+        if (instance is null)
             return checkInfo;
-        }
+
+        Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+
+        CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+
+        checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
+
+        updateSub.Status = AnswerResult.CheatDetected;
+
+        await SaveAsync(token);
 
         return checkInfo;
     }
@@ -260,7 +258,8 @@ public class GameInstanceRepository(
 
         try
         {
-            GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes().Include(i => i.FlagContext)
+            GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes()
+                .Include(i => i.FlagContext)
                 .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                                            i.ParticipationId == submission.ParticipationId, token);
 
