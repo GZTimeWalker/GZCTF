@@ -7,6 +7,10 @@ on:
     paths: ["src/GZCTF/**"]
   workflow_dispatch:
 
+env:
+  # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
+  RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-')) }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,7 +46,11 @@ jobs:
       - name: Publish project
         run: |
           dotnet publish "GZCTF.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
-          dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
+
+          # ignore arm64 for non-release tags
+          if [ "${{ env.RELEASE }}" = "true" ]; then
+            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
+          fi
         env:
           VITE_APP_BUILD_TIMESTAMP: ${{ steps.datetime.outputs.time }}
           VITE_APP_GIT_SHA: ${{ github.sha }}
@@ -77,9 +85,6 @@ jobs:
       - name: Docker metadata action
         uses: docker/metadata-action@v5
         id: meta
-        env:
-          # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
-          RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-')) }}
         with:
           images: |
             gztime/gzctf
@@ -100,7 +105,7 @@ jobs:
           context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.RELEASE && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           push: true
 
       - name: Prune old packages
