@@ -3,6 +3,24 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.21.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.1..v0.21.2) - 2024-08-15
+
+### ⛰️ Features
+
+- **(excel)** auto resize columns - ([b84d11](https://github.com/GZTimeWalker/GZCTF/commit/b84d11)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(ci)** update expression - ([63a937](https://github.com/GZTimeWalker/GZCTF/commit/63a937)) by **GZTime**
+- **(excel)** no fonts no auto resize - ([a75d88](https://github.com/GZTimeWalker/GZCTF/commit/a75d88)) by **GZTime**
+- **(frontend)** wrong badge width after mantine upgrade - ([bff428](https://github.com/GZTimeWalker/GZCTF/commit/bff428)) by **GZTime**
+- clarify "hidden" vs "private" - ([ff8b55](https://github.com/GZTimeWalker/GZCTF/commit/ff8b55)) by **GZTime**
+
+### 🚀 Performances
+
+- **(checker)** use db queries to search for cheating - ([1276d0](https://github.com/GZTimeWalker/GZCTF/commit/1276d0)) by **GZTime**
+
+---
 ## [0.21.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.0..v0.21.1) - 2024-08-11
 
 ### 🐛 Bug Fixes
