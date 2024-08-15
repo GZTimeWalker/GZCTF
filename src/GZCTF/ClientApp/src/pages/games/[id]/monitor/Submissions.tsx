@@ -277,9 +277,9 @@ const Submissions: FC = () => {
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </Table.Th>
-                <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
-                <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.team')}</Table.Th>
-                <Table.Th style={{ minWidth: '5rem' }}>{t('common.label.user')}</Table.Th>
+                <Table.Th style={{ width: '9rem' }}>{t('common.label.time')}</Table.Th>
+                <Table.Th style={{ minWidth: '4.5rem' }}>{t('common.label.team')}</Table.Th>
+                <Table.Th style={{ minWidth: '4.5rem' }}>{t('common.label.user')}</Table.Th>
                 <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
                 <Table.Th ff="monospace">{t('common.label.flag')}</Table.Th>
               </Table.Tr>
