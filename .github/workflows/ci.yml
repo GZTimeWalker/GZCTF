@@ -105,7 +105,7 @@ jobs:
           context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: ${{ env.RELEASE && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           push: true
 
       - name: Prune old packages
