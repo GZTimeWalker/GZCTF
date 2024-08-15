@@ -42,6 +42,9 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
         WriteBoardContent(boardSheet, scoreboard, challIds, game);
 
+        for (var i = 0; i < _commonScoreboardHeader.Length; i++)
+            boardSheet.AutoSizeColumn(i);
+
         var stream = new MemoryStream();
         workbook.Write(stream, true);
         return stream;
@@ -54,6 +57,9 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         ICellStyle headerStyle = GetHeaderStyle(workbook);
         WriteSubmissionHeader(subSheet, headerStyle);
         WriteSubmissionContent(subSheet, submissions);
+
+        for (var i = 0; i < _commonSubmissionHeader.Length; i++)
+            subSheet.AutoSizeColumn(i);
 
         var stream = new MemoryStream();
         workbook.Write(stream, true);
@@ -155,12 +161,15 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
                 row.CreateCell(colIndex++).SetCellValue(item.Organization);
 
             row.CreateCell(colIndex++).SetCellValue(item.TeamInfo?.Captain?.RealName ?? string.Empty);
+
+            var members = item.TeamInfo?.Members ?? [];
+
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.RealName) ?? []));
+                .SetCellValue(string.Join(";", members.Select(m => TakeIfNotEmpty(m.RealName))));
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.StdNumber) ?? []));
+                .SetCellValue(string.Join(";", members.Select(m => TakeIfNotEmpty(m.StdNumber))));
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join("/", item.TeamInfo?.Members.Select(m => m.PhoneNumber) ?? []));
+                .SetCellValue(string.Join(";", members.Select(m => TakeIfNotEmpty(m.PhoneNumber))));
 
             row.CreateCell(colIndex++).SetCellValue(item.SolvedCount);
             row.CreateCell(colIndex++).SetCellValue(item.LastSubmissionTime.ToString("u"));
@@ -175,4 +184,6 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             rowIndex++;
         }
     }
+
+    static string TakeIfNotEmpty(string? str) => string.IsNullOrWhiteSpace(str) ? "<empty>" : str;
 }
