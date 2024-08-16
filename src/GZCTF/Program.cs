@@ -281,9 +281,8 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         [
-            MediaTypeNames.Application.Pdf,
-            MediaTypeNames.Application.Octet,
-            MediaTypeNames.Application.Zip
+            // See others in ResponseCompressionDefaults.MimeTypes
+            MediaTypeNames.Application.Pdf
         ]
     );
     options.EnableForHttps = true;
