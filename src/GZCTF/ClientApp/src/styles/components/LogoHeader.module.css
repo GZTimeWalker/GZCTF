@@ -1,0 +1,8 @@
+.brand {
+  display: inline-block;
+  color: light-dark(var(--mantine-primary-color-6), var(--mantine-primary-color-4));
+}
+
+.title {
+  color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-light-0));
+}

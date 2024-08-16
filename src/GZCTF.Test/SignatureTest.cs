@@ -10,15 +10,8 @@ using Xunit.Abstractions;
 
 namespace GZCTF.Test;
 
-public class SignatureTest
+public class SignatureTest(ITestOutputHelper output)
 {
-    readonly ITestOutputHelper output;
-
-    public SignatureTest(ITestOutputHelper _output)
-    {
-        output = _output;
-    }
-
     [Fact]
     public void Ed25519Test()
     {
@@ -88,9 +81,9 @@ public class SignatureTest
     }
 
     [Fact]
-    public void Ed25519ctxTest()
+    public void Ed25519CtxTest()
     {
-        var sAlgorithm = SignAlgorithm.Ed25519Ctx;
+        const SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519Ctx;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
         SecureRandom sr = new();
@@ -146,9 +139,9 @@ public class SignatureTest
     }
 
     [Fact]
-    public void SHA512withRSATest()
+    public void SHA512WithRSATest()
     {
-        var sAlgorithm = SignAlgorithm.SHA512WithRSA;
+        const SignAlgorithm sAlgorithm = SignAlgorithm.SHA512WithRSA;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
         SecureRandom sr = new();

@@ -7,7 +7,9 @@
   },
   "button": {
     "copy": "Copy to Clipboard",
+    "reset": "Reset",
     "select_file": "Select File",
+    "try_again": "Try Again",
     "uploading": "Uploading"
   },
   "content": {
@@ -18,6 +20,25 @@
     "about": {
       "slogan": "Hack for fun not for profit"
     },
+    "color": {
+      "custom": {
+        "description": "Select the base color you want to use",
+        "label": "Custom Base Color",
+        "placeholder": "Use default color"
+      },
+      "palette": {
+        "description": "Color palette generated from the custom base color",
+        "label": "Color Palette"
+      },
+      "provider": {
+        "custom": "Customized",
+        "default": "Default",
+        "description": "Select how the base color is determined",
+        "label": "Theme color provider",
+        "managed": "Admin Provided"
+      },
+      "title": "Customize Color"
+    },
     "drop_zone": {
       "content": "Drag and drop an image or click here to select {{type}}",
       "limit": "Please select an image less than 3MB",
@@ -26,10 +47,12 @@
         "poster": "poster"
       }
     },
+    "external_link": "External Link",
     "home": {
       "recent_games": "Recent Games"
     },
     "no_data": "No data",
+    "report_error": "Please report this error to the administrator if you think this is a bug",
     "wider": {
       "text": "Please use a broader device to browse this page",
       "title": "Not wide enough"

@@ -2,14 +2,21 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: ["develop", "ci-test*", "v*"]
+    branches: ["develop", "ci/*", "v*"]
     tags: ["v*"]
     paths: ["src/GZCTF/**"]
   workflow_dispatch:
 
+env:
+  # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
+  RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-')) }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     defaults:
       run:
         working-directory: src/GZCTF
@@ -23,7 +30,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Get current date time
         id: datetime
@@ -39,7 +46,11 @@ jobs:
       - name: Publish project
         run: |
           dotnet publish "GZCTF.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
-          dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
+
+          # ignore arm64 for non-release tags
+          if [ "${{ env.RELEASE }}" = "true" ]; then
+            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true
+          fi
         env:
           VITE_APP_BUILD_TIMESTAMP: ${{ steps.datetime.outputs.time }}
           VITE_APP_GIT_SHA: ${{ github.sha }}
@@ -64,35 +75,44 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Login to Aliyun Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-shanghai.aliyuncs.com
+          username: ${{ secrets.ALIYUN_USER }}
+          password: ${{ secrets.ALIYUN_PASSWORD }}
+
       - name: Docker metadata action
         uses: docker/metadata-action@v5
         id: meta
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/gzctf
             gztime/gzctf
+            ghcr.io/${{ github.repository }}/gzctf
+            registry.cn-shanghai.aliyuncs.com/gztime/gzctf
           flavor: |
-            latest=${{ startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-') }}
+            latest=${{ env.RELEASE }}
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+,group=0
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+,group=0
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+.\d+,group=0
 
       - name: Publish images
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           push: true
 
       - name: Prune old packages
         uses: vlaurin/action-ghcr-prune@v0.6.0
         with:
           dry-run: false
-          token: ${{ secrets.PACKAGE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           container: ${{ github.event.repository.name }}/gzctf
           keep-tags-regexes: ^v\d+\.\d+\.\d+$
           prune-tags-regexes: ^[0-9a-f]{6,40}

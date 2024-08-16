@@ -1,4 +1,11 @@
-import { Group, GroupProps, LoadingOverlay, Stack, useMantineTheme } from '@mantine/core'
+import {
+  Group,
+  GroupProps,
+  LoadingOverlay,
+  Stack,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import {
   mdiAccountCogOutline,
   mdiAccountGroupOutline,
@@ -28,21 +35,20 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   const { t } = useTranslation()
 
   const pages = [
-    { icon: mdiFlagOutline, title: t('admin.tab.games.index'), path: 'games', color: 'yellow' },
-    { icon: mdiAccountGroupOutline, title: t('admin.tab.teams'), path: 'teams', color: 'green' },
-    { icon: mdiAccountCogOutline, title: t('admin.tab.users'), path: 'users', color: 'cyan' },
+    { icon: mdiFlagOutline, title: t('admin.tab.games.index'), path: 'games' },
+    { icon: mdiAccountGroupOutline, title: t('admin.tab.teams'), path: 'teams' },
+    { icon: mdiAccountCogOutline, title: t('admin.tab.users'), path: 'users' },
     {
       icon: mdiPackageVariantClosed,
       title: t('admin.tab.instances'),
       path: 'instances',
-      color: 'blue',
     },
-    { icon: mdiFileDocumentOutline, title: t('admin.tab.logs'), path: 'logs', color: 'red' },
-    { icon: mdiSitemapOutline, title: t('admin.tab.settings'), path: 'settings', color: 'orange' },
+    { icon: mdiFileDocumentOutline, title: t('admin.tab.logs'), path: 'logs' },
+    { icon: mdiSitemapOutline, title: t('admin.tab.settings'), path: 'settings' },
   ]
   const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
   const tabIndex = getTab(location.pathname)
-
+  const { colorScheme } = useMantineColorScheme()
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
   const onChange = (active: number, tabKey: string) => {
@@ -62,7 +68,7 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
   usePageTitle(pages[tabIndex].title)
 
   return (
-    <Stack spacing="xs" align="center" pt="md">
+    <Stack gap="xs" align="center" pt="md">
       <IconTabs
         withIcon
         active={activeTab}
@@ -71,20 +77,21 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
           tabKey: p.path,
           label: p.title,
           icon: <Icon path={p.icon} size={1} />,
-          color: p.color,
         }))}
       />
       {head && (
-        <Group noWrap position="apart" h="40px" w="100%" {...headProps}>
+        <Group wrap="nowrap" justify="space-between" h="40px" w="100%" {...headProps}>
           {head}
         </Group>
       )}
+      {children}
       <LoadingOverlay
         visible={isLoading ?? false}
-        overlayOpacity={1}
-        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+        overlayProps={{
+          backgroundOpacity: 1,
+          color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
+        }}
       />
-      {children}
     </Stack>
   )
 }

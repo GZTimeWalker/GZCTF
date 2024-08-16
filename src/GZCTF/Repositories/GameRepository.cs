@@ -43,7 +43,7 @@ public class GameRepository(
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
         Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
-                                 && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(5))
+                                 && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(8))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0,
@@ -165,7 +165,8 @@ public class GameRepository(
             .Where(i => i.Challenge.Game == game
                         && i.Challenge.IsEnabled
                         && i.Participation.Status == ParticipationStatus.Accepted)
-            .Include(i => i.Participation).ThenInclude(p => p.Team).ThenInclude(t => t.Members)
+            .Include(i => i.Participation)
+            .ThenInclude(p => p.Team).ThenInclude(t => t.Members)
             .GroupJoin(
                 Context.Submissions.Where(s => s.Status == AnswerResult.Accepted
                                                && s.SubmitTimeUtc < game.EndTimeUtc),

@@ -1,0 +1,31 @@
+.title {
+  margin: 0;
+  width: 100%;
+}
+
+.header {
+  padding-bottom: var(--mantine-spacing-xs);
+}
+
+.body {
+  padding-bottom: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-height: calc(50vh + 300px);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  background-color: var(--mantine-color-body);
+  bottom: 0;
+  width: 100%;
+  z-index: 400;
+  padding: var(--mantine-spacing-md);
+  padding-top: var(--mantine-spacing-xs);
+}

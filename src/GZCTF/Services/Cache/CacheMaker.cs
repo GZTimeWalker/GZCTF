@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace GZCTF.Services.Cache;
 
 /// <summary>
-/// 缓存更新请求
+/// Cache update request
 /// </summary>
 public class CacheRequest(string key, DistributedCacheEntryOptions? options = null, params string[] @params)
 {
@@ -15,7 +15,7 @@ public class CacheRequest(string key, DistributedCacheEntryOptions? options = nu
 }
 
 /// <summary>
-/// 缓存请求处理接口
+/// Cache request handler
 /// </summary>
 public interface ICacheRequestHandler
 {
@@ -32,7 +32,7 @@ public class CacheMaker(
     readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
     CancellationTokenSource TokenSource { get; set; } = new();
 
-    public Task StartAsync(CancellationToken token)
+    public async Task StartAsync(CancellationToken token)
     {
         TokenSource = new CancellationTokenSource();
 
@@ -42,9 +42,8 @@ public class CacheMaker(
 
         #endregion
 
-        _ = Maker(TokenSource.Token);
-
-        return Task.CompletedTask;
+        await Task.Factory.StartNew(() => Maker(TokenSource.Token), token, TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
     }
 
     public Task StopAsync(CancellationToken token)
@@ -69,7 +68,7 @@ public class CacheMaker(
         {
             await foreach (CacheRequest item in channelReader.ReadAllAsync(token))
             {
-                if (!_cacheHandlers.ContainsKey(item.Key))
+                if (!_cacheHandlers.TryGetValue(item.Key, out ICacheRequestHandler? handler))
                 {
                     logger.SystemLog(
                         Program.StaticLocalizer[nameof(Resources.Program.Cache_NoMatchingRequest), item.Key],
@@ -78,7 +77,6 @@ public class CacheMaker(
                     continue;
                 }
 
-                ICacheRequestHandler handler = _cacheHandlers[item.Key];
                 var key = handler.CacheKey(item);
 
                 if (key is null)
@@ -106,7 +104,7 @@ public class CacheMaker(
                 try
                 {
                     await cache.SetAsync(updateLock, [],
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(60) },
+                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1) },
                         token);
 
                     var bytes = await handler.Handler(scope, item, token);

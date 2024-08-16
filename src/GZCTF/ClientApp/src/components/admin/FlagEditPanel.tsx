@@ -1,19 +1,11 @@
-import {
-  ActionIcon,
-  Card,
-  Group,
-  Input,
-  SimpleGrid,
-  Stack,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
+import { ActionIcon, Card, Group, Input, SimpleGrid, Stack, Text } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { Attachment, FlagInfoModel } from '@Api'
 
 interface FlagCardProps {
@@ -23,42 +15,34 @@ interface FlagCardProps {
 }
 
 const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
-  const theme = useMantineTheme()
   const clipboard = useClipboard()
   const attachment = unifiedAttachment ?? flag.attachment
   const shortURL = attachment?.url?.split('/').slice(-2)[0].slice(0, 8)
-
+  const { classes } = useDisplayInputStyles({ fw: 'bold', ff: 'monospace' })
   const { t } = useTranslation()
 
   return (
-    <Card>
-      <Group noWrap position="apart" spacing={3}>
-        <Stack align="flex-start" spacing={0} w="100%">
+    <Card p="sm">
+      <Group wrap="nowrap" justify="space-between" gap={3}>
+        <Stack align="flex-start" gap={0} w="100%">
           <Input
             variant="unstyled"
             value={flag.flag}
+            w="100%"
             size="md"
             readOnly
             onClick={() => {
               clipboard.copy(flag.flag)
               showNotification({
-                message: t('flag 已复制到剪贴板'),
+                message: t('admin.notification.games.challenges.flag.copied'),
                 color: 'teal',
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            styles={{
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-                lineHeight: '1em',
-                height: 'auto',
-              },
-              wrapper: {
-                width: '100%',
-              },
-            }}
+            classNames={classes}
+            styles={{ input: { cursor: 'pointer' } }}
           />
-          <Text c="dimmed" size="sm" ff={theme.fontFamilyMonospace}>
+          <Text c="dimmed" size="sm" ff="monospace">
             {attachment?.type} {shortURL}
           </Text>
         </Stack>
@@ -79,14 +63,7 @@ interface FladEditPanelProps {
 const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachment }) => {
   return (
     <Stack>
-      <SimpleGrid
-        cols={2}
-        breakpoints={[
-          { maxWidth: 3600, cols: 4, spacing: 'sm' },
-          { maxWidth: 2700, cols: 3, spacing: 'sm' },
-          { maxWidth: 1800, cols: 2, spacing: 'sm' },
-        ]}
-      >
+      <SimpleGrid spacing="sm" cols={{ base: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}>
         {flags &&
           flags.map((flag, i) => (
             <FlagCard

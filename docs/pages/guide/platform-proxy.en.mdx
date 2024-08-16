@@ -31,10 +31,9 @@ When using Docker as the backend and using the PlatformProxy port mapping config
 docker network create challenges -d bridge --subnet 192.168.133.0/24
 ```
 
-Set the configuration item **ChallengeNetwork** to the corresponding network name, and bridge the external network in the docker-compose.yml file, for example:
+Set the configuration item **ChallengeNetwork** to the corresponding network name, and bridge the external network in the `compose.yml` file, for example:
 
 ```yaml
-version: "3.7"
 services:
   gzctf:
     ...

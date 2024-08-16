@@ -2,7 +2,7 @@
   "label": {
     "tag": "文章标签",
     "title": "文章标题",
-    "add_tag": "+ 添加标签 \"{{query}}\"",
+    "add_tag": "回车添加标签",
     "content": "文章内容",
     "summary": "文章梗概"
   },

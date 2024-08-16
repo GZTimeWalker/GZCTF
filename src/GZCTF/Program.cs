@@ -1,9 +1,25 @@
+/*
+ * GZ::CTF
+ *
+ * Copyright © 2022-present GZTimeWalker
+ *
+ * This source code is licensed under the AGPLv3 license found in the LICENSE file
+ * in the root directory of this source tree.
+ *
+ * Identifiers related to "GZCTF" (including variations and derivations) are protected.
+ * Examples include "GZCTF", "GZ::CTF", "GZCTF_FLAG", and similar constructs.
+ *
+ * Modifications to these identifiers are prohibited as per the LICENSE_ADDENDUM.txt
+ */
+
 global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using AppDbContext = GZCTF.Models.AppDbContext;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Globalization;
+using System.Net.Mime;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using GZCTF.Extensions;
 using GZCTF.Hubs;
@@ -14,8 +30,9 @@ using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Config;
 using GZCTF.Services.Container;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -51,7 +68,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    var kestrelSection = builder.Configuration.GetSection("Kestrel");
+    IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 });
@@ -235,9 +252,16 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 
 #endregion Identity
 
+#region Telemetry
+
+var telemetryOptions = builder.Configuration.GetSection("Telemetry").Get<TelemetryConfig>();
+builder.Services.AddTelemetry(telemetryOptions);
+
+#endregion
+
 #region Services and Repositories
 
-builder.Services.AddTransient<IMailSender, MailSender>()
+builder.Services.AddSingleton<IMailSender, MailSender>()
     .Configure<EmailConfig>(builder.Configuration.GetSection(nameof(EmailConfig)));
 
 builder.Services.Configure<RegistryConfig>(builder.Configuration.GetSection(nameof(RegistryConfig)));
@@ -290,11 +314,16 @@ builder.Services.AddHealthChecks();
 builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
 builder.Services.AddResponseCompression(options =>
 {
+    options.Providers.Add<ZStandardCompressionProvider>();
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        ["application/json", "text/javascript", "text/html", "text/css"]
+        [
+            // See others in ResponseCompressionDefaults.MimeTypes
+            MediaTypeNames.Application.Pdf
+        ]
     );
+    options.EnableForHttps = true;
 });
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
@@ -320,6 +349,7 @@ app.UseRequestLocalization();
 
 app.UseResponseCompression();
 
+app.UseCustomFavicon();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -347,16 +377,18 @@ else
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 if (app.Configuration.GetValue<bool>("DisableRateLimit") is not true)
     app.UseRateLimiter();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging"))
     app.UseRequestLogging();
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
+
+app.UseTelemetry(telemetryOptions);
 
 app.MapHealthChecks("/healthz");
 app.MapControllers();
@@ -365,7 +397,7 @@ app.MapHub<UserHub>("/hub/user");
 app.MapHub<MonitorHub>("/hub/monitor");
 app.MapHub<AdminHub>("/hub/admin");
 
-app.MapFallbackToFile("index.html");
+await app.UseIndexAsync();
 
 #endregion Middlewares
 
@@ -399,13 +431,30 @@ namespace GZCTF
 {
     public class Program
     {
+        static Program()
+        {
+            using Stream stream = typeof(Program).Assembly
+                .GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
+            DefaultFavicon = new byte[stream.Length];
+
+            stream.ReadExactly(DefaultFavicon);
+            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
+                .Replace("-", "").ToLowerInvariant();
+        }
+
         public static bool IsTesting { get; set; }
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
 
+        internal static byte[] DefaultFavicon { get; }
+        internal static string DefaultFaviconHash { get; }
+
         internal static void Banner()
         {
+            // The GZCTF identifier is protected by the License.
+            // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
+            // Please see LICENSE_ADDENDUM.txt for details.
             const string banner =
                 """
                       ___           ___           ___                       ___
@@ -440,21 +489,17 @@ namespace GZCTF
 
         public static IActionResult InvalidModelStateHandler(ActionContext context)
         {
-            string? errors = null;
             var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             if (context.ModelState.ErrorCount <= 0)
-                return new JsonResult(
-                    new RequestResponse(errors is [_, ..]
-                        ? errors
-                        : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
+                return new JsonResult(new RequestResponse(
+                    localizer[nameof(Resources.Program.Model_ValidationFailed)]))
                 { StatusCode = 400 };
 
-            errors = (from val in context.ModelState.Values
-                      where val.Errors.Count > 0
-                      select val.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
+            var error = context.ModelState.Values.Where(v => v.Errors.Count > 0)
+                .Select(v => v.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
-            return new JsonResult(new RequestResponse(errors is [_, ..]
-                ? errors
+            return new JsonResult(new RequestResponse(error is [_, ..]
+                ? error
                 : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
             { StatusCode = 400 };
         }

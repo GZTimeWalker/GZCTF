@@ -1,4 +1,12 @@
-import { Card, LoadingOverlay, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import {
+  Card,
+  LoadingOverlay,
+  Stack,
+  Text,
+  Title,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -7,7 +15,7 @@ import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import CustomProgress from '@Components/CustomProgress'
+import GameProgress from '@Components/GameProgress'
 import IconTabs from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
 import { getGameStatus, useGame } from '@Utils/useGame'
@@ -34,14 +42,14 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
 
   return (
     <Card
-      w="9rem"
+      miw="9rem"
       ta="center"
       pt={4}
       style={{
         overflow: 'visible',
       }}
     >
-      <Text fw={700} lineClamp={1}>
+      <Text fw="bold" lineClamp={1}>
         {countdown.asHours() > 999
           ? t('game.content.game_lasts_long')
           : countdown.asSeconds() > 0
@@ -49,7 +57,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
             : t('game.content.game_ended')}
       </Text>
       <Card.Section mt={4}>
-        <CustomProgress percentage={progress} py={0} />
+        <GameProgress percentage={progress} py={0} />
       </Card.Section>
     </Card>
   )
@@ -74,7 +82,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.challenge'),
       path: 'challenges',
       link: 'challenges',
-      color: 'blue',
       requireJoin: true,
       requireRole: Role.User,
     },
@@ -83,7 +90,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.scoreboard'),
       path: 'scoreboard',
       link: 'scoreboard',
-      color: 'yellow',
       requireJoin: false,
       requireRole: Role.User,
     },
@@ -92,7 +98,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.monitor.index'),
       path: 'monitor',
       link: 'monitor/events',
-      color: 'green',
       requireJoin: false,
       requireRole: Role.Monitor,
     },
@@ -107,7 +112,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     tabKey: p.link,
     label: p.title,
     icon: <Icon path={p.icon} size={1} />,
-    color: p.color,
   }))
   const getTab = (path: string) => filteredPages?.findIndex((page) => path.includes(page.path))
 
@@ -118,6 +122,8 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     setActiveTab(active)
     navigate(`/games/${numId}/${tabKey}`)
   }
+
+  const { colorScheme } = useMantineColorScheme()
 
   usePageTitle(game?.title)
 
@@ -171,8 +177,10 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     <Stack pos="relative" mt="md">
       <LoadingOverlay
         visible={!game}
-        overlayOpacity={1}
-        overlayColor={theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]}
+        overlayProps={{
+          backgroundOpacity: 1,
+          color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
+        }}
       />
       <IconTabs
         active={activeTab}

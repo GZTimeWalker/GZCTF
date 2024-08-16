@@ -54,7 +54,6 @@ For users who want deploy to multi-node cluster, we recommend using K3s as the d
 
 The most convenient deployment method in general is Docker + K3s separate deployment. You only need to execute `docker-compose` to complete the deployment of the GZCTF platform, and the deployment of K3s only requires exporting the kubeconfig after installation and mounting it to GZCTF.
 
-
 If you need to deploy internally in a K3s cluster, you need to provide two PVCs (for the database and attachment storage), one ConfigMap (for storing appsettings.json), and one Secret (for storing the kube-config.yaml pointing to your own cluster). You can deploy the database and Redis as needed. If you are running only one GZCTF instance, you can choose not to deploy Redis.
 
 **After testing, due to database performance considerations, it is not recommended to use multi-instance distributed deployment. A single instance is sufficient to support most competitions.**
@@ -64,6 +63,14 @@ If you need to deploy internally in a K3s cluster, you need to provide two PVCs 
 GZCTF supports running multiple instances simultaneously, but requires the same database instance and Redis instance (multiple instances are mandatory) and shared storage (such as NFS) as PVC. The database instance and shared storage are used to ensure data consistency, and the Redis instance is used for caching synchronization of backend data and Scale-Out broadcasting of SignalR.
 
 To ensure SignalR which is based on websockets can work as expected, it is necessary to configure Sticky Session in the load balancer.
+
+### HTTP port cannot be accessed?
+
+This kind of problem mainly occurs when GZCTF is directly run on a K8s node through Docker in the case of Docker + K8s separate deployment, and the HTTP port of the machine is occupied by traefik and its load balancer, causing it to be inaccessible. There are many and very flexible solutions:
+
+- Since there is only one machine, it is recommended to deploy GZCTF directly inside the K8s cluster and expose the service through Service and Ingress.
+- Run GZCTF on another machine to keep the K8s node clean and avoid resource occupation by GZCTF.
+- Turn off the traefik service of the K8s cluster so that GZCTF or reverse proxy services can listen to the relevant ports.
 
 ## Platform Furture Plan Related
 

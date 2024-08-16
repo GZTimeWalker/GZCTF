@@ -1,0 +1,55 @@
+.link {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--mantine-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mantine-color-gray-1);
+  cursor: pointer;
+
+  &:hover {
+    background-color: alpha(var(--mantine-color-gray-6), 0.5);
+  }
+
+  &[data-active] {
+    background-color: alpha(var(--mantine-primary-color-7), 0.25);
+    color: var(--mantine-primary-color-4);
+  }
+}
+
+.navbar {
+  background-color: var(--mantine-color-gray-8);
+  padding: var(--mantine-spacing-xs);
+  border: none;
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    display: none;
+  }
+}
+
+.tooltip {
+  margin-left: 20px;
+  font-weight: 500;
+  color: var(--mantine-color-light-0);
+  background-color: var(--mantine-primary-color-6);
+
+  @mixin dark {
+    background-color: darken(var(--mantine-primary-color-8), 0.45);
+    color: var(--mantine-primary-color-4);
+  }
+}
+
+.section {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: var(--mantine-spacing-xs);
+}
+
+.logo {
+  width: 100%;
+  height: auto;
+  position: relative;
+}

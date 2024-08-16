@@ -14,13 +14,14 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { BonusLabel } from '@Utils/Shared'
-import { useTableStyles } from '@Utils/ThemeOverride'
 import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 interface MobileScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
@@ -30,8 +31,6 @@ interface MobileScoreboardItemModalProps extends ModalProps {
 
 const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) => {
   const { item, challenges, ...modalProps } = props
-  const { classes } = useTableStyles()
-
   const { t } = useTranslation()
 
   const challengeIdMap =
@@ -53,7 +52,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
       max: 1,
     }))
 
-  const values = new Array(item?.challenges?.length ?? 0).fill(0)
+  const values = Array.from({ length: item?.challenges?.length ?? 0 }, () => 0)
 
   item?.challenges?.forEach((chal) => {
     if (indicator && challengeIdMap && chal) {
@@ -69,12 +68,12 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
     <Modal
       {...modalProps}
       title={
-        <Group position="left" spacing="md" noWrap>
-          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" color="brand">
+        <Group justify="left" gap="md" wrap="nowrap">
+          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md">
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Stack spacing={0}>
-            <Group spacing={4}>
+          <Stack gap={0}>
+            <Group gap={4}>
               <Title order={4} lineClamp={1}>
                 {item?.name ?? 'Team'}
               </Title>
@@ -91,7 +90,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
         </Group>
       }
     >
-      <Stack align="center" spacing="xs">
+      <Stack align="center" gap="xs">
         <Stack w="60%" miw="20rem">
           <Center h="14rem">
             <LoadingOverlay visible={!indicator || !values} />
@@ -100,28 +99,28 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
             )}
           </Center>
           <Group grow ta="center">
-            <Stack spacing={1}>
-              <Text fw={700} size="sm" className={classes.mono}>
+            <Stack gap={1}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.rank}
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
             {item?.organization && (
-              <Stack spacing={1}>
-                <Text fw={700} size="sm" className={classes.mono}>
+              <Stack gap={1}>
+                <Text fw="bold" size="sm" ff="monospace">
                   {item?.organizationRank}
                 </Text>
                 <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
               </Stack>
             )}
-            <Stack spacing={1}>
-              <Text fw={700} size="sm" className={classes.mono}>
+            <Stack gap={1}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.score}
               </Text>
               <Text size="xs">{t('game.label.score_table.score')}</Text>
             </Stack>
-            <Stack spacing={1}>
-              <Text fw={700} size="sm" className={classes.mono}>
+            <Stack gap={1}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.solvedCount}
               </Text>
               <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
@@ -131,20 +130,17 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
-            <Table
-              className={classes.table}
-              styles={{
-                fontSize: '0.85rem',
-              }}
-            >
-              <thead>
-                <tr>
-                  <th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</th>
-                  <th style={{ minWidth: '3rem' }}>{t('game.label.score_table.score')}</th>
-                  <th style={{ minWidth: '3rem' }}>{t('common.label.time')}</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table className={cx(tableClasses.table, tableClasses.nopadding)} fz="sm">
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+                  <Table.Th style={{ minWidth: '3rem' }}>
+                    {t('game.label.score_table.score')}
+                  </Table.Th>
+                  <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.time')}</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {item?.challenges &&
                   challengeIdMap &&
                   item.challenges
@@ -153,14 +149,14 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
                       return (
-                        <tr key={chal.id}>
-                          <td>
+                        <Table.Tr key={chal.id}>
+                          <Table.Td>
                             <Input
                               variant="unstyled"
                               value={info?.title}
                               readOnly
                               size="sm"
-                              sx={(theme) => ({
+                              sx={{
                                 wrapper: {
                                   width: '100%',
                                 },
@@ -172,23 +168,25 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                                   height: '0.9rem',
                                   fontWeight: 500,
 
-                                  ...theme.fn.hover({
-                                    cursor: 'pointer',
-                                  }),
+                                  '&:hover': {
+                                    textDecoration: 'underline',
+                                  },
                                 },
-                              })}
+                              }}
                             />
-                          </td>
-                          <td className={classes.mono}>{chal.score}</td>
-                          <td className={classes.mono}>{dayjs(chal.time).format('MM/DD HH:mm')}</td>
-                        </tr>
+                          </Table.Td>
+                          <Table.Td ff="monospace">{chal.score}</Table.Td>
+                          <Table.Td ff="monospace">
+                            {dayjs(chal.time).format('MM/DD HH:mm')}
+                          </Table.Td>
+                        </Table.Tr>
                       )
                     })}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </ScrollArea>
         ) : (
-          <Text py="1rem" fw={700}>
+          <Text py="1rem" fw="bold">
             {t('game.placeholder.no_solved')}
           </Text>
         )}

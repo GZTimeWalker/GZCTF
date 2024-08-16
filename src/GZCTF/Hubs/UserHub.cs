@@ -12,16 +12,15 @@ public class UserHub : Hub<IUserClient>
         HttpContext? context = Context.GetHttpContext();
 
         if (context is null
-            || !await HubHelper.HasUser(context)
             || !context.Request.Query.TryGetValue("game", out StringValues gameId)
-            || !int.TryParse(gameId, out var gameNumId))
+            || !int.TryParse(gameId, out var gId))
         {
             Context.Abort();
             return;
         }
 
         var gameRepository = context.RequestServices.GetRequiredService<IGameRepository>();
-        Game? game = await gameRepository.GetGameById(gameNumId);
+        Game? game = await gameRepository.GetGameById(gId);
 
         if (game is null)
         {
@@ -31,6 +30,6 @@ public class UserHub : Hub<IUserClient>
 
         await base.OnConnectedAsync();
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, $"Game_{gameNumId}");
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"Game_{gId}");
     }
 }

@@ -75,7 +75,7 @@ const PasswordChangeModal: FC<ModalProps> = (props) => {
           onChange={setRetypedPwd}
         />
 
-        <Group position="right">
+        <Group justify="right">
           <Button
             variant="default"
             onClick={() => {

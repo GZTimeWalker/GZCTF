@@ -1,0 +1,49 @@
+.layout {
+  margin-left: var(--mantine-spacing-md);
+  margin-right: var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-sm);
+
+  @mixin larger-than calc(1100 + var(--mantine-spacing-md) * 2) {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  & canvas {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: var(--mantine-radius-xs);
+    box-shadow: var(--mantine-shadows-sm);
+  }
+}
+
+.doc {
+  max-height: var(--pdf-height);
+}
+
+.paper {
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.box {
+  @mixin dark {
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: var(--mantine-color-gray-7);
+      opacity: 0.13;
+      z-index: 10;
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+}
+
+:global(.hiddenCanvasElement) {
+  display: none;
+}

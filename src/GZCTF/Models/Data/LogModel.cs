@@ -11,23 +11,23 @@ public class LogModel
     public DateTimeOffset TimeUtc { get; set; }
 
     [Required]
-    [MaxLength(50)]
+    [MaxLength(Limits.MaxLogLevelLength)]
     public string Level { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(250)]
+    [MaxLength(Limits.MaxLoggerLength)]
     public string Logger { get; set; } = string.Empty;
 
-    [MaxLength(40)]
+    [MaxLength(Limits.MaxLogStatusLength)]
+    public string? Status { get; set; }
+
+    [MaxLength(Limits.MaxIPLength)]
     public string? RemoteIP { get; set; }
 
-    [MaxLength(25)]
+    [MaxLength(Limits.MaxUserNameLength)]
     public string? UserName { get; set; }
 
     public string Message { get; set; } = string.Empty;
-
-    [MaxLength(20)]
-    public string? Status { get; set; }
 
     public string? Exception { get; set; }
 }

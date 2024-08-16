@@ -17,6 +17,7 @@ import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountOutline,
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
@@ -26,16 +27,16 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import UserEditModal, { RoleColorMap } from '@Components/admin/UserEditModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useTableStyles } from '@Utils/ThemeOverride'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { useUser } from '@Utils/useUser'
 import api, { Role, UserInfoModel } from '@Api'
+import tableClasses from '@Styles/Table.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -58,9 +59,12 @@ const Users: FC = () => {
   const modals = useModals()
   const { user: currentUser } = useUser()
   const clipboard = useClipboard()
-  const { classes, theme } = useTableStyles()
-
   const { t } = useTranslation()
+  const viewport = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [page, viewport])
 
   useEffect(() => {
     api.admin
@@ -144,7 +148,7 @@ const Users: FC = () => {
             <Text>
               <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
-            <Text fw={700} align="center" ff={theme.fontFamilyMonospace}>
+            <Text fw="bold" ff="monospace">
               {res.data}
             </Text>
             <Button
@@ -198,16 +202,17 @@ const Users: FC = () => {
       head={
         <>
           <TextInput
-            w="30%"
-            icon={<Icon path={mdiMagnify} size={1} />}
+            w="36%"
+            leftSection={<Icon path={mdiMagnify} size={1} />}
             placeholder={t('admin.placeholder.users.search')}
             value={hint}
             onChange={setHint}
             onKeyDown={(e) => {
               !searching && e.key === 'Enter' && onSearch()
             }}
+            rightSection={<Icon path={mdiAccountOutline} size={1} />}
           />
-          <Group position="right">
+          <Group justify="right">
             <Text fw="bold" size="sm">
               <Trans
                 i18nKey="admin.content.users.stats"
@@ -237,37 +242,42 @@ const Users: FC = () => {
       }
     >
       <Paper shadow="md" p="xs" w="100%">
-        <ScrollArea offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
-          <Table className={classes.table}>
-            <thead>
-              <tr>
-                <th style={{ width: '1.8rem' }}>{t('admin.label.users.active')}</th>
-                <th>{t('common.label.user')}</th>
-                <th>{t('account.label.email')}</th>
-                <th>{t('common.label.ip')}</th>
-                <th>{t('account.label.real_name')}</th>
-                <th>{t('account.label.student_id')}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
+        <ScrollArea
+          viewportRef={viewport}
+          offsetScrollbars
+          scrollbarSize={4}
+          h="calc(100vh - 190px)"
+        >
+          <Table className={tableClasses.table}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>
+                <Table.Th>{t('common.label.user')}</Table.Th>
+                <Table.Th>{t('account.label.email')}</Table.Th>
+                <Table.Th>{t('common.label.ip')}</Table.Th>
+                <Table.Th>{t('account.label.real_name')}</Table.Th>
+                <Table.Th>{t('account.label.student_id')}</Table.Th>
+                <Table.Th />
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
               {users &&
                 users.map((user) => (
-                  <tr key={user.id}>
-                    <td>
+                  <Table.Tr key={user.id}>
+                    <Table.Td>
                       <Switch
                         disabled={disabled}
                         checked={user.emailConfirmed ?? false}
                         onChange={() => onToggleActive(user)}
                       />
-                    </td>
-                    <td>
-                      <Group noWrap position="apart" spacing="xs">
-                        <Group noWrap position="left">
+                    </Table.Td>
+                    <Table.Td>
+                      <Group wrap="nowrap" justify="space-between" gap="xs">
+                        <Group wrap="nowrap" justify="left">
                           <Avatar alt="avatar" src={user.avatar} radius="xl">
                             {user.userName?.slice(0, 1) ?? 'U'}
                           </Avatar>
-                          <Text ff={theme.fontFamilyMonospace} size="sm" fw="bold" lineClamp={1}>
+                          <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
                             {user.userName}
                           </Text>
                         </Group>
@@ -275,25 +285,25 @@ const Users: FC = () => {
                           {user.role}
                         </Badge>
                       </Group>
-                    </td>
-                    <td>
-                      <Text size="sm" ff={theme.fontFamilyMonospace} lineClamp={1}>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="sm" ff="monospace" lineClamp={1}>
                         {user.email}
                       </Text>
-                    </td>
-                    <td>
-                      <Text lineClamp={1} size="sm" ff={theme.fontFamilyMonospace}>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text lineClamp={1} size="sm" ff="monospace">
                         {user.ip}
                       </Text>
-                    </td>
-                    <td>{user.realName ?? t('admin.placeholder.users.real_name')}</td>
-                    <td>
-                      <Text size="sm" ff={theme.fontFamilyMonospace}>
+                    </Table.Td>
+                    <Table.Td>{user.realName ?? t('admin.placeholder.users.real_name')}</Table.Td>
+                    <Table.Td>
+                      <Text size="sm" ff="monospace">
                         {user.stdNumber ?? t('admin.placeholder.users.student_id')}
                       </Text>
-                    </td>
-                    <td align="right">
-                      <Group noWrap spacing="sm" position="right">
+                    </Table.Td>
+                    <Table.Td align="right">
+                      <Group wrap="nowrap" gap="sm" justify="right">
                         <ActionIcon
                           color="blue"
                           onClick={() => {
@@ -322,10 +332,10 @@ const Users: FC = () => {
                           onClick={() => onDelete(user)}
                         />
                       </Group>
-                    </td>
-                  </tr>
+                    </Table.Td>
+                  </Table.Tr>
                 ))}
-            </tbody>
+            </Table.Tbody>
           </Table>
         </ScrollArea>
         <UserEditModal

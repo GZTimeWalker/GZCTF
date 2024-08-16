@@ -1,5 +1,6 @@
 import {
   Button,
+  ComboboxItem,
   Grid,
   Group,
   Input,
@@ -12,6 +13,7 @@ import {
   Textarea,
   TextInput,
   Title,
+  useMantineColorScheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -31,7 +33,7 @@ import InstanceEntry from '@Components/InstanceEntry'
 import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
 import ScoreFunc from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import WithGameEditTab from '@Components/admin/WithGameEditTab'
+import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeTagItem,
@@ -39,9 +41,8 @@ import {
   ChallengeTypeItem,
   useChallengeTypeLabelMap,
 } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
-import { useEditChallenge } from '@Utils/useEdit'
-import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
+import { useEditChallenge, useEditChallenges } from '@Utils/useEdit'
+import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -49,11 +50,7 @@ const GameChallengeEdit: FC = () => {
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
   const { challenge, mutate } = useEditChallenge(numId, numCId)
-
-  const { data: chals, mutate: mutateChals } = api.edit.useEditGetGameChallenges(
-    numId,
-    OnceSWRConfig
-  )
+  const { challenges, mutate: mutateChals } = useEditChallenges(numId)
 
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
   const [disabled, setDisabled] = useState(false)
@@ -62,12 +59,13 @@ const GameChallengeEdit: FC = () => {
   const [tag, setTag] = useState<string | null>(challenge?.tag ?? ChallengeTag.Misc)
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
-  const [previewOpend, setPreviewOpend] = useState(false)
+  const [previewOpened, setPreviewOpened] = useState(false)
 
   const modals = useModals()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
   const challengeTagLabelMap = useChallengeTagLabelMap()
 
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -118,7 +116,7 @@ const GameChallengeEdit: FC = () => {
           icon: <Icon path={mdiCheck} size={1} />,
         })
         mutateChals(
-          chals?.filter((chal) => chal.id !== numCId),
+          challenges?.filter((chal) => chal.id !== numCId),
           { revalidate: false }
         )
         navigate(`/admin/games/${id}/challenges`)
@@ -177,21 +175,28 @@ const GameChallengeEdit: FC = () => {
     )?.then(challenge?.testContainer ? onDestroyTestContainer : onCreateTestContainer)
   }
 
+  const tryDefault: <T>(
+    values: T[],
+    defaultValue?: NonNullable<T>
+  ) => NonNullable<T> | undefined = (vs, d) => {
+    return vs.find((v) => !!v) ?? d
+  }
+
   return (
-    <WithGameEditTab
+    <WithChallengeEdit
       isLoading={!challenge}
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'apart' }}
       backUrl={`/admin/games/${id}/challenges`}
       head={
         <>
           <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
             # {challengeInfo?.title}
           </Title>
-          <Group noWrap position="right">
+          <Group wrap="nowrap" justify="right">
             <Button
               disabled={disabled}
               color="red"
-              leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+              leftSection={<Icon path={mdiDeleteOutline} size={1} />}
               variant="outline"
               onClick={() =>
                 modals.openConfirmModal({
@@ -212,21 +217,21 @@ const GameChallengeEdit: FC = () => {
             </Button>
             <Button
               disabled={disabled}
-              leftIcon={<Icon path={mdiEyeOutline} size={1} />}
-              onClick={() => setPreviewOpend(true)}
+              leftSection={<Icon path={mdiEyeOutline} size={1} />}
+              onClick={() => setPreviewOpened(true)}
             >
               {t('admin.button.challenges.preview')}
             </Button>
             <Button
               disabled={disabled}
-              leftIcon={<Icon path={mdiDatabaseEditOutline} size={1} />}
+              leftSection={<Icon path={mdiDatabaseEditOutline} size={1} />}
               onClick={() => navigate(`/admin/games/${numId}/challenges/${numCId}/flags`)}
             >
               {t('admin.button.challenges.edit_more')}
             </Button>
             <Button
               disabled={disabled}
-              leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+              leftSection={<Icon path={mdiContentSaveOutline} size={1} />}
               onClick={() =>
                 onUpdate({
                   ...challengeInfo,
@@ -255,7 +260,7 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Select
               label={
-                <Group spacing="sm">
+                <Group gap="sm">
                   <Text size="sm">{t('admin.content.games.challenges.type.label')}</Text>
                   <Text size="xs" c="dimmed">
                     {t('admin.content.games.challenges.type.description')}
@@ -266,10 +271,10 @@ const GameChallengeEdit: FC = () => {
               value={type}
               disabled={disabled}
               readOnly
-              itemComponent={ChallengeTypeItem}
+              renderOption={ChallengeTypeItem}
               data={Object.entries(ChallengeType).map((type) => {
                 const data = challengeTypeLabelMap.get(type[1])
-                return { value: type[1], ...data }
+                return { value: type[1], label: data?.name, ...data } as ComboboxItem
               })}
             />
           </Grid.Col>
@@ -284,10 +289,10 @@ const GameChallengeEdit: FC = () => {
                 setTag(e)
                 setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
               }}
-              itemComponent={ChallengeTagItem}
+              renderOption={ChallengeTagItem}
               data={Object.entries(ChallengeTag).map((tag) => {
                 const data = challengeTagLabelMap.get(tag[1])
-                return { value: tag[1], ...data }
+                return { value: tag[1], label: data?.name, ...data } as ComboboxItem
               })}
             />
           </Grid.Col>
@@ -295,7 +300,7 @@ const GameChallengeEdit: FC = () => {
             <Textarea
               w="100%"
               label={
-                <Group spacing="sm">
+                <Group gap="sm">
                   <Text size="sm">{t('admin.content.games.challenges.description')}</Text>
                   <Text size="xs" c="dimmed">
                     {t('admin.content.markdown_support')}
@@ -311,10 +316,10 @@ const GameChallengeEdit: FC = () => {
             />
           </Grid.Col>
           <Grid.Col span={1}>
-            <Stack spacing="sm">
+            <Stack gap="sm">
               <HintList
                 label={
-                  <Group spacing="sm">
+                  <Group gap="sm">
                     <Text size="sm">{t('admin.content.games.challenges.hints')}</Text>
                     <Text size="xs" c="dimmed">
                       {t('admin.content.markdown_inline_support')}
@@ -329,7 +334,7 @@ const GameChallengeEdit: FC = () => {
             </Stack>
           </Grid.Col>
           <Grid.Col span={1}>
-            <Stack spacing="sm">
+            <Stack gap="sm">
               <NumberInput
                 label={t('admin.content.games.challenges.score')}
                 min={0}
@@ -339,12 +344,13 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo?.originalScore ?? 500}
                 onChange={(e) =>
-                  e !== '' && setChallengeInfo({ ...challengeInfo, originalScore: e })
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, originalScore: e })
                 }
               />
               <NumberInput
                 label={t('admin.content.games.challenges.difficulty')}
-                precision={1}
+                decimalScale={2}
+                fixedDecimalScale
                 step={0.2}
                 min={0.1}
                 required
@@ -352,7 +358,9 @@ const GameChallengeEdit: FC = () => {
                 value={challengeInfo?.difficulty ?? 100}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
+                onChange={(e) =>
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })
+                }
               />
               <Input.Wrapper
                 label={t('admin.content.games.challenges.min_score_radio.label')}
@@ -375,7 +383,7 @@ const GameChallengeEdit: FC = () => {
                   styles={(theme) => ({
                     label: {
                       background:
-                        theme.colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
+                        colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
                     },
                   })}
                 />
@@ -403,7 +411,7 @@ const GameChallengeEdit: FC = () => {
         {(type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer) && (
           <Grid columns={12}>
             <Grid.Col span={8}>
-              <Group position="apart" align="flex-end">
+              <Group justify="space-between" align="flex-end">
                 <TextInput
                   label={t('admin.content.games.challenges.container_image')}
                   disabled={disabled}
@@ -416,7 +424,7 @@ const GameChallengeEdit: FC = () => {
                 />
                 <Button
                   miw="8rem"
-                  color={challenge?.testContainer ? 'orange' : 'brand'}
+                  color={challenge?.testContainer ? 'orange' : 'green'}
                   disabled={disabled}
                   onClick={onToggleTestContainer}
                 >
@@ -448,7 +456,8 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.containerExposePort ?? 1}
                 onChange={(e) =>
-                  e !== '' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })
+                  typeof e !== 'string' &&
+                  setChallengeInfo({ ...challengeInfo, containerExposePort: e })
                 }
               />
             </Grid.Col>
@@ -463,7 +472,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.cpuCount ?? 1}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, cpuCount: e })}
+                onChange={(e) =>
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, cpuCount: e })
+                }
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -477,7 +488,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.memoryLimit ?? 32}
-                onChange={(e) => e !== '' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
+                onChange={(e) =>
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })
+                }
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -492,7 +505,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.storageLimit ?? 128}
                 onChange={(e) =>
-                  e !== '' && setChallengeInfo({ ...challengeInfo, storageLimit: e })
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, storageLimit: e })
                 }
               />
             </Grid.Col>
@@ -513,16 +526,21 @@ const GameChallengeEdit: FC = () => {
         )}
       </Stack>
       <ChallengePreviewModal
-        challenge={challengeInfo}
-        opened={previewOpend}
-        onClose={() => setPreviewOpend(false)}
-        type={challenge?.type ?? ChallengeType.StaticAttachment}
+        challenge={{
+          title: tryDefault([challengeInfo?.title, challenge?.title], ''),
+          content: tryDefault([challengeInfo?.content, challenge?.content]),
+          hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
+          score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
+          tag: tag as ChallengeTag,
+          type: challenge?.type ?? ChallengeType.StaticAttachment,
+        }}
+        opened={previewOpened}
+        onClose={() => setPreviewOpened(false)}
         tagData={
           challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
         }
-        attachmentType={challenge?.attachment?.type ?? FileType.None}
       />
-    </WithGameEditTab>
+    </WithChallengeEdit>
   )
 }
 

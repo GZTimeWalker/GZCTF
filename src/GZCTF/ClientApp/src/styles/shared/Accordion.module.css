@@ -1,0 +1,28 @@
+.root {
+  border-radius: var(--mantine-radius-sm);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+
+.item {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  position: relative;
+  background-color: light-dark(var(--mantine-color-gray-0) var(--mantine-color-dark-6));
+
+  &[data-active] {
+    box-shadow: var(--mantine-shadows-md);
+    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+  }
+}
+
+.label {
+  padding: 0;
+}
+
+.control {
+  padding: 8px 4px;
+
+  &:hover {
+    cursor: pointer;
+    background: transparent;
+  }
+}

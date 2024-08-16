@@ -1,0 +1,14 @@
+.root {
+  cursor: pointer;
+  transition: filter 0.2s;
+
+  @mixin hover {
+    @mixin light {
+      filter: brightness(0.97);
+    }
+
+    @mixin dark {
+      filter: brightness(1.2);
+    }
+  }
+}

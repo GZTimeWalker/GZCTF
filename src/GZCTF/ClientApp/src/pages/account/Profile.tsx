@@ -25,7 +25,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import PasswordChangeModal from '@Components/PasswordChangeModal'
 import WithNavBar from '@Components/WithNavbar'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
-import { ACCEPT_IMAGE_MIME_TYPE, useIsMobile } from '@Utils/ThemeOverride'
+import { IMAGE_MIME_TYPES } from '@Utils/Shared'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUser } from '@Utils/useUser'
 import api, { ProfileUpdateModel } from '@Api'
@@ -90,6 +91,7 @@ const Profile: FC = () => {
           message: t('common.avatar.uploaded'),
           icon: <Icon path={mdiCheck} size={1} />,
           autoClose: true,
+          loading: false,
         })
         setDisabled(false)
         mutate()
@@ -103,6 +105,7 @@ const Profile: FC = () => {
           message: tryGetErrorMsg(err, t),
           icon: <Icon path={mdiClose} size={1} />,
           autoClose: true,
+          loading: false,
         })
       })
       .finally(() => {
@@ -152,8 +155,8 @@ const Profile: FC = () => {
     <>
       <Title order={2}>{t('account.title.profile')}</Title>
       <Divider mt="xs" mb="md" />
-      <Stack spacing="md" m="auto">
-        <Group noWrap>
+      <Stack gap="md" m="auto">
+        <Group wrap="nowrap">
           <TextInput
             label={t('account.label.username')}
             type="text"
@@ -223,7 +226,6 @@ const Profile: FC = () => {
             <Grid.Col span={4}>
               <Button
                 fullWidth
-                color="orange"
                 variant="outline"
                 disabled={disabled}
                 onClick={() => setMailEditOpened(true)}
@@ -234,7 +236,6 @@ const Profile: FC = () => {
             <Grid.Col span={4}>
               <Button
                 fullWidth
-                color="orange"
                 variant="outline"
                 disabled={disabled}
                 onClick={() => setPwdChangeOpened(true)}
@@ -256,7 +257,9 @@ const Profile: FC = () => {
   return (
     <WithNavBar minWidth={0}>
       {isMobile ? (
-        <Box mt="md">{context}</Box>
+        <Box mt="md" p="sm">
+          {context}
+        </Box>
       ) : (
         <Center h="100vh">
           <Paper w="55%" maw={600} shadow="sm" p="5%">
@@ -289,7 +292,7 @@ const Profile: FC = () => {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
-          <Group position="right">
+          <Group justify="right">
             <Button
               variant="default"
               onClick={() => {
@@ -325,9 +328,9 @@ const Profile: FC = () => {
           miw={220}
           mih={220}
           maxSize={3 * 1024 * 1024}
-          accept={ACCEPT_IMAGE_MIME_TYPE}
+          accept={IMAGE_MIME_TYPES}
         >
-          <Group position="center" spacing="xl" mih={240} style={{ pointerEvents: 'none' }}>
+          <Group justify="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

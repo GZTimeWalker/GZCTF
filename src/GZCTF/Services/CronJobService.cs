@@ -61,13 +61,13 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         {
             var key = CacheKey.ScoreBoard(game);
             var value = await cache.GetAsync(key);
-            if (value is null)
-            {
-                await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
-                    TaskStatus.Success,
-                    LogLevel.Debug);
-            }
+            if (value is not null)
+                continue;
+
+            await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
+            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
+                TaskStatus.Success,
+                LogLevel.Debug);
         }
     }
 

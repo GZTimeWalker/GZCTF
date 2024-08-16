@@ -1,28 +1,14 @@
-import { createStyles, Group, GroupProps, Title } from '@mantine/core'
+import { Group, GroupProps, Title } from '@mantine/core'
 import { forwardRef } from 'react'
-import MainIcon from '@Components/icon/MainIcon'
+import LogoBox from '@Components/LogoBox'
 import { useConfig } from '@Utils/useConfig'
-
-const useStyles = createStyles((theme) => ({
-  brand: {
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors[theme.primaryColor][4]
-        : theme.colors[theme.primaryColor][6],
-    display: 'inline-block',
-  },
-  title: {
-    color: theme.colorScheme === 'dark' ? theme.colors.white[0] : theme.colors.gray[6],
-    marginLeft: '-20px',
-  },
-}))
+import classes from '@Styles/LogoHeader.module.css'
 
 export const LogoHeader = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
-  const { classes } = useStyles()
   const { config } = useConfig()
   return (
-    <Group ref={ref} noWrap {...props}>
-      <MainIcon style={{ maxWidth: 60, height: 'auto' }} />
+    <Group ref={ref} wrap="nowrap" align="center" justify="flex-start" gap="sm" {...props}>
+      <LogoBox size="50px" pr="sm" />
       <Title className={classes.title}>
         {config?.title ?? 'GZ'}
         <span className={classes.brand}>::</span>CTF

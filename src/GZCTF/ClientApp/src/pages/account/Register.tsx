@@ -101,6 +101,8 @@ const Register: FC = () => {
           title: data.title,
           message: data.message,
           icon: <Icon path={mdiCheck} size={1} />,
+          loading: false,
+          autoClose: true,
         })
 
         if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
@@ -113,6 +115,8 @@ const Register: FC = () => {
         title: t('common.error.encountered'),
         message: `${err.response.data.title}`,
         icon: <Icon path={mdiClose} size={1} />,
+        loading: false,
+        autoClose: true,
       })
     } finally {
       setDisabled(false)

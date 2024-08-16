@@ -3,25 +3,15 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Test;
 
-public class AccountTest : IClassFixture<TestWebAppFactory>
+public class AccountTest(TestWebAppFactory factory) : IClassFixture<TestWebAppFactory>
 {
-    readonly TestWebAppFactory _factory;
-    readonly ITestOutputHelper _output;
-
-    public AccountTest(TestWebAppFactory factory, ITestOutputHelper output)
-    {
-        _factory = factory;
-        _output = output;
-    }
-
     [Fact]
     public async Task TestCreateUser()
     {
-        using HttpClient client = _factory.CreateClient();
+        using HttpClient client = factory.CreateClient();
         HttpResponseMessage registerResult = await client.PostAsJsonAsync("/api/account/register",
             new { userName = "foo", password = "foo12345", email = "foo@example.com" });
         Assert.Equal(HttpStatusCode.BadRequest, registerResult.StatusCode);

@@ -8,13 +8,13 @@
 
 - **数据库结构不再与之前兼容，需要重新初始化数据库，如需保持数据请使用 `v0.17` 版本**
 
-    更新步骤：删除原有数据库，重新初始化数据库
+  更新步骤：删除原有数据库，重新初始化数据库
 
 - **容器默认暴露端口从 `80` 变为 `8080`**
 
-    更新步骤：修改容器暴露端口为 `8080`
+  更新步骤：修改容器暴露端口为 `8080`
 
-    参考资料：[Default ASP.NET Core port changed from 80 to 8080](https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/8.0/aspnet-port)
+  参考资料：[Default ASP.NET Core port changed from 80 to 8080](https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/8.0/aspnet-port)
 
 ## v0.17
 
@@ -22,7 +22,7 @@
 
 - **将原有 `uploads` 目录移动至 `files/uploads`，移除了此目录的配置项，更改了日志存储位置**
 
-    更新步骤：将原有 `uploads` 目录移动至 `files/uploads`，并重新挂载相关目录，删除 `uploads` 目录的配置项和原有 `log` 目录
+  更新步骤：将原有 `uploads` 目录移动至 `files/uploads`，并重新挂载相关目录，删除 `uploads` 目录的配置项和原有 `log` 目录
 
 ## v0.16-v0.1
 

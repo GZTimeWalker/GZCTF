@@ -1,12 +1,15 @@
 import {
+  alpha,
   Button,
   Group,
-  MultiSelect,
+  SimpleGrid,
   Stack,
+  TagsInput,
   Text,
   Textarea,
   TextInput,
   Title,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
@@ -15,8 +18,7 @@ import { mdiCheck, mdiContentSaveOutline, mdiDeleteOutline, mdiFileCheckOutline 
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router'
-import StickyHeader from '@Components/StickyHeader'
+import { useNavigate, useParams } from 'react-router-dom'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
@@ -57,9 +59,12 @@ const PostEdit: FC = () => {
 
   const [tags, setTags] = useState<string[]>([])
   const [disabled, setDisabled] = useState(false)
+  const [hasChanged, setHasChanged] = useState(false)
+
   const modals = useModals()
 
   const isMobile = useIsMobile()
+  const { colorScheme } = useMantineColorScheme()
 
   const onUpdate = () => {
     if (postId === 'new') {
@@ -74,6 +79,7 @@ const PostEdit: FC = () => {
             message: t('post.notification.created'),
             icon: <Icon path={mdiCheck} size={24} />,
           })
+          setHasChanged(false)
           navigate(`/posts/${res.data}/edit`)
         })
         .finally(() => {
@@ -92,6 +98,7 @@ const PostEdit: FC = () => {
             message: t('post.notification.saved'),
             icon: <Icon path={mdiCheck} size={24} />,
           })
+          setHasChanged(false)
         })
         .finally(() => {
           setDisabled(false)
@@ -128,11 +135,16 @@ const PostEdit: FC = () => {
     setTags(curPost.tags ?? [])
   }, [curPost])
 
-  const isChanged = () =>
-    post.title !== curPost?.title ||
-    post.content !== curPost?.content ||
-    post.summary !== curPost?.summary ||
-    (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false)
+  useEffect(() => {
+    if (!curPost) return
+    setHasChanged(
+      post.title !== curPost.title ||
+        post.content !== curPost.content ||
+        post.summary !== curPost.summary ||
+        post.isPinned !== curPost.isPinned ||
+        (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false)
+    )
+  }, [post, curPost])
 
   const titlePart = (
     <>
@@ -141,48 +153,40 @@ const PostEdit: FC = () => {
         value={post.title}
         onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
       />
-      <MultiSelect
+      <TagsInput
         label={t('post.label.tag')}
         data={tags.map((o) => ({ value: o, label: o })) || []}
-        getCreateLabel={(query) => t('post.label.add_tag', { query })}
-        maxSelectedValues={5}
+        placeholder={t('post.label.add_tag')}
         value={post?.tags ?? []}
         onChange={(values) => setPost({ ...post, tags: values })}
-        onCreate={(query) => {
-          const item = { value: query, label: query }
-          setTags([...tags, query])
-          return item
-        }}
-        searchable
-        creatable
+        clearable
       />
     </>
   )
 
   return (
-    <WithNavBar minWidth={0}>
+    <WithNavBar minWidth={0} withHeader stickyHeader>
       <WithRole requiredRole={Role.Admin}>
-        <StickyHeader />
-        <Stack mt={isMobile ? 5 : 30}>
-          <Group position={isMobile ? 'right' : 'apart'}>
+        <Stack mt={isMobile ? 25 : 30}>
+          <Group justify={isMobile ? 'right' : 'space-between'}>
             {!isMobile && (
               <Title
                 order={1}
-                color={theme.fn.rgba(
-                  theme.colorScheme === 'dark' ? theme.colors.white[6] : theme.colors.gray[7],
+                c={alpha(
+                  colorScheme === 'dark' ? theme.colors.light[6] : theme.colors.gray[7],
                   0.5
                 )}
               >
                 {`> ${postId === 'new' ? t('post.button.new') : t('post.button.edit')}`}
               </Title>
             )}
-            <Group position="right">
+            <Group justify="right">
               {postId?.length === 8 && (
                 <>
                   <Button
                     disabled={disabled}
                     color="red"
-                    leftIcon={<Icon path={mdiDeleteOutline} size={1} />}
+                    leftSection={<Icon path={mdiDeleteOutline} size={1} />}
                     variant="outline"
                     onClick={() =>
                       modals.openConfirmModal({
@@ -203,9 +207,9 @@ const PostEdit: FC = () => {
                   </Button>
                   <Button
                     disabled={disabled}
-                    leftIcon={<Icon path={mdiFileCheckOutline} size={1} />}
+                    leftSection={<Icon path={mdiFileCheckOutline} size={1} />}
                     onClick={() => {
-                      if (isChanged()) {
+                      if (hasChanged) {
                         modals.openConfirmModal({
                           title: t('post.content.updated.title'),
                           children: <Text size="sm">{t('post.content.updated.content')}</Text>,
@@ -225,37 +229,39 @@ const PostEdit: FC = () => {
               )}
               <Button
                 disabled={disabled}
-                leftIcon={<Icon path={mdiContentSaveOutline} size={1} />}
+                leftSection={<Icon path={mdiContentSaveOutline} size={1} />}
                 onClick={onUpdate}
               >
                 {postId === 'new' ? t('post.button.new') : t('post.button.save')}
               </Button>
             </Group>
           </Group>
-          {isMobile ? titlePart : <Group grow>{titlePart}</Group>}
+          {isMobile ? titlePart : <SimpleGrid cols={2}>{titlePart}</SimpleGrid>}
           <Textarea
             label={
-              <Group spacing="sm">
+              <Group gap="sm">
                 <Text size="sm">{t('post.label.summary')}</Text>
                 <Text size="xs" c="dimmed">
                   {t('admin.content.markdown_support')}
                 </Text>
               </Group>
             }
+            autosize
             value={post.summary}
             onChange={(e) => setPost({ ...post, summary: e.currentTarget.value })}
-            minRows={3}
-            maxRows={3}
+            minRows={5}
+            maxRows={5}
           />
           <Textarea
             label={
-              <Group spacing="sm">
+              <Group gap="sm">
                 <Text size="sm">{t('post.label.content')}</Text>
                 <Text size="xs" c="dimmed">
                   {t('admin.content.markdown_support')}
                 </Text>
               </Group>
             }
+            autosize
             value={post.content}
             onChange={(e) => setPost({ ...post, content: e.currentTarget.value })}
             minRows={isMobile ? 14 : 16}

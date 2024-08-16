@@ -1,0 +1,35 @@
+import { Callout } from "nextra-theme-docs";
+
+# Deployment
+
+<Callout type="info">
+
+The deployment chapter will omit the content of the platform configuration. If necessary, please refer to the [Quick Start](/quick-start) chapter and the [`appsettings.json` configuration](/config/appsettings) chapter.
+
+</Callout>
+
+GZCTF provides a variety of executable deployment methods, ranked in order of recommendation as follows:
+
+## K8s Cluster Deployment (Sustainable Deployment 👍)
+
+GZCTF, database, and challenge containers are all in the same k8s cluster, isolated using namespaces. You can take full advantage of k8s, use monitoring tools such as grafana and prometheus for monitoring, and collect more complete statistical data, but the deployment process is complex and the learning cost is high. **However, it is the first choice for continuous deployment**. [View details](/deployment/k8s-only)
+
+## Separated Deployment with Docker and K8s (Recommended for Small Competitions 👍)
+
+GZCTF and the database are in a Docker instance, and a remote k8s is used as the challenge container platform. This deployment method can maximize the security and deployment advantages of k8s at an acceptable cost, and the deployment process is more user-friendly. **Using k3s as a k8s distribution makes deployment easier, making it a good choice for general CTF competitions and school competitions**. [View details](/deployment/docker-k8s)
+
+<Callout type="warning">
+
+When using Separated Deployment with Docker and K8s, **the platform traffic proxy and traffic capture functions cannot be used**.
+
+If you only have one machine, it is strongly NOT recommended to run k3s and Docker on the same machine at the same time and run GZCTF with Docker.
+
+</Callout>
+
+## Docker Single Deployment (For Testing Only ⚠️)
+
+GZCTF, database, and challenge containers are all in the same Docker instance. This deployment method can be deployed on a single machine with small resources, **but the security is low, and the resource restriction-related functions are not perfect. It is only recommended for single machine testing and minimal deployment**. [Still under construction, refer to Quick Start](/quick-start)
+
+## Docker Swarm Cluster Deployment (Not Recommended 🚫)
+
+GZCTF, database, and challenge containers are all in a Docker Swarm cluster. Although the Docker Swarm cluster deployment function is available, it is **not recommended** due to lack of deployment experience and potential security issues compared to the above deployment methods.

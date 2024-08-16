@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <AssemblyVersion>0.18.5.0</AssemblyVersion>
+        <AssemblyVersion>0.21.2.0</AssemblyVersion>
         <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -18,9 +18,10 @@
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
         <Configurations>Debug;Release</Configurations>
-        <ReleaseVersion>0.18.5</ReleaseVersion>
+        <ReleaseVersion>0.21.2</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <ServerGarbageCollection>true</ServerGarbageCollection>
+        <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,7 +29,9 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="Docker.DotNet" />
+        <PackageReference Include="Docker.DotNet.BasicAuth" />
         <PackageReference Include="KubernetesClient" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
@@ -44,6 +47,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+        <PackageReference Include="Npgsql.OpenTelemetry" />
         <PackageReference Include="NPOI" />
         <PackageReference Include="NSwag.AspNetCore" />
         <PackageReference Include="NSwag.MSBuild">
@@ -51,6 +55,16 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+        <PackageReference Include="OpenTelemetry.Exporter.Console" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+        <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Process" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Expressions" />
         <PackageReference Include="Serilog.Extensions.Logging" />
@@ -65,10 +79,13 @@
         <PackageReference Include="MemoryPack" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
         <PackageReference Include="SixLabors.ImageSharp" />
         <PackageReference Include="BouncyCastle.Cryptography" />
         <PackageReference Include="PacketDotNet" />
         <PackageReference Include="SharpPcap" />
+        <PackageReference Include="Ulid" />
+        <PackageReference Include="ZstdSharp.Port" />
     </ItemGroup>
 
     <ItemGroup>
@@ -83,6 +100,11 @@
 
     <ItemGroup>
         <None Remove="ClientApp\build\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\favicon.webp" />
+        <EmbeddedResource Update="Resources\Program.resx" PublicClass="true" />
     </ItemGroup>
 
     <ItemGroup>

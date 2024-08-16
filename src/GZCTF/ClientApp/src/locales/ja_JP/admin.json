@@ -26,11 +26,14 @@
         "add": "ヒントを追加"
       },
       "new": "チャレンジを作成",
+      "next": "次のチャレンジ",
       "preview": "チャレンジをプレビュー",
+      "previous": "前のチャレンジ",
       "test_container": {
         "create": "テストコンテナを作成",
         "destroy": "テストコンテナを破棄"
-      }
+      },
+      "update_accept_count": "解答数を更新"
     },
     "games": {
       "challenges": {
@@ -179,9 +182,8 @@
           "label": "チーム人数制限"
         },
         "organizations": {
-          "add": "+ 組織「{{org}} 」を追加する",
-          "description": "参加組織を追加して組織ランキングを開始します",
-          "label": "参加できる組織一覧"
+          "description": "組織を追加してランキングを開始し、空欄の場合は全員が自動的に参加します",
+          "label": "参加できる一組織覧"
         },
         "poster": "ポスター",
         "practice_mode": {
@@ -247,15 +249,15 @@
     "settings": {
       "account": {
         "allow_register": {
-          "description": "アカウントの新規登録を許可します",
+          "description": "アカウントの新規登録を許可します。",
           "label": "アカウント新規登録を許可"
         },
         "auto_active": {
-          "description": "アカウント新規登録後自動的にアクティブにします",
+          "description": "アカウント新規登録後自動的にアクティブにします。",
           "label": "新規登録後に自動で有効化する"
         },
         "email_confirmation_required": {
-          "description": "アカウント新規登録するときメールの認証を要求します",
+          "description": "アカウント新規登録するときメールの認証を要求します。",
           "label": "メール認証を要求"
         },
         "email_domain_list": {
@@ -264,36 +266,52 @@
         },
         "title": "アカウントポリシー",
         "use_captcha": {
-          "description": "ログイン、新規登録、パスワードの再設定時にキャプチャ検証を行います",
+          "description": "ログイン、新規登録、パスワードの再設定時にキャプチャ検証を行います。",
           "label": "キャプチャ認証を使用"
         }
       },
       "container": {
         "auto_destroy": {
-          "description": "ユーザーインスタンスが上限を超える場合は古いインスタンスを自動的に破棄する",
+          "description": "ユーザーインスタンスが上限を超える場合は古いインスタンスを自動的に破棄する。",
           "label": "古いインスタンスの自動破棄"
         },
         "default_lifetime": {
-          "description": "コンテナの既定の有効期限",
+          "description": "コンテナの既定の有効期限。",
           "label": "既定の有効期限（分）"
         },
         "extension_duration": {
-          "description": "コンテナが毎回延長される期間",
+          "description": "コンテナが毎回延長される期間。",
           "label": "延長される期間（分）"
         },
         "renewal_window": {
-          "description": "コンテナの有効期限が切れるまでの延長が許可される期間",
+          "description": "コンテナの有効期限が切れるまでの延長が許可される期間。",
           "label": "許可される期間（分）"
         },
         "title": "コンテナーポリシー"
       },
       "platform": {
+        "color": {
+          "description": "プラットフォームのカラーをカスタマイズします。",
+          "label": "プラットフォームカラー"
+        },
+        "color_palette": {
+          "description": "カスタムカラーに基づいて生成されたカラーパレット。",
+          "label": "カラーパレット"
+        },
+        "description": {
+          "description": "検索エンジンとクローラーに提供されるプラットフォームの説明。",
+          "label": "プラットフォーム説明"
+        },
         "footer": {
           "description": "ウエーブページの下部に表示される追加情報です。Markdown構文をサポートしています。 <mbr/> はモバイルデバイスで <br/>に置き換えられます。",
           "label": "フッターの追加情報"
         },
+        "logo": {
+          "description": "アイコンはページの左上隅に表示され、faviconにも使用されます。",
+          "label": "プラットフォームアイコン"
+        },
         "name": {
-          "description": "プラットフォーム名が表示され、その後に ::CTF が付いています。",
+          "description": "「::CTF」はプラットフォーム名に付かされて表示されます。",
           "label": "プラットフォーム名"
         },
         "slogan": {
@@ -323,7 +341,7 @@
   },
   "label": {
     "games": {
-      "public": "公開",
+      "hide": "隠す",
       "summary": "概要"
     },
     "instances": {
@@ -355,6 +373,7 @@
         "created": "チャレンジが作成されました",
         "deleted": "チャレンジが削除されました",
         "flag": {
+          "copied": "フラッグがコピーされました",
           "created": "フラッグが作成されました",
           "deleted": "フラッグが削除されました"
         },
@@ -369,6 +388,7 @@
       },
       "created": "ゲームが作成されました",
       "info": {
+        "accept_count_updated": "解答数が更新されました",
         "deleted": "ゲームが削除されました",
         "info_updated": "ゲーム情報が更新されました",
         "poster": {
@@ -424,7 +444,7 @@
           }
         }
       },
-      "organizations": "指定された参加組織がない場合、組織のないチームの参加が許可されます",
+      "organizations": "参加団体を追加する",
       "participation": {
         "bio": "（自己紹介なし）",
         "team": "（チーム名なし）"
@@ -442,7 +462,11 @@
     },
     "settings": {
       "email_domain_list": "新規登録のドメインを制限しません",
-      "footer": "`テスト` <mbr/> [某大学ホームページ](...)"
+      "footer": "`テスト` <mbr/> [某大学ホームページ](...)",
+      "logo": {
+        "custom": "アイコンをカスタマイズします。",
+        "default": "GZCTFのアイコンを使用"
+      }
     },
     "teams": {
       "search": "チーム名を検索"

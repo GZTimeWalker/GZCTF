@@ -1,0 +1,11 @@
+.root {
+  position: fixed;
+  bottom: var(--fixed-bottom, 2rem);
+  right: var(--fixed-right, 2rem);
+  box-shadow: var(--mantine-shadow-lg);
+  z-index: 1000;
+
+  @media print {
+    display: none;
+  }
+}

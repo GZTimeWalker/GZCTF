@@ -4,7 +4,7 @@ using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -26,6 +26,7 @@ public class AccountController(
     IHostEnvironment environment,
     ICaptchaExtension captcha,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
+    IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
     ILogger<AccountController> logger,
@@ -110,7 +111,7 @@ public class AccountController(
         }
         else
         {
-            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link))
+            if (!mailSender.SendConfirmEmailUrl(user.UserName, user.Email, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
@@ -174,7 +175,7 @@ public class AccountController(
         }
         else
         {
-            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email, link))
+            if (!mailSender.SendResetPasswordUrl(user.UserName, user.Email, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
@@ -345,7 +346,7 @@ public class AccountController(
         {
             var oldName = user.UserName;
 
-            var unameRes = await userManager.SetUserNameAsync(user, model.UserName);
+            IdentityResult unameRes = await userManager.SetUserNameAsync(user, model.UserName);
 
             if (!unameRes.Succeeded)
                 return HandleIdentityError(unameRes.Errors);
@@ -355,7 +356,7 @@ public class AccountController(
         }
 
         user!.UpdateUserInfo(model);
-        var result = await userManager.UpdateAsync(user);
+        IdentityResult result = await userManager.UpdateAsync(user);
 
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
@@ -434,7 +435,7 @@ public class AccountController(
         }
         else
         {
-            if (!mailSender.SendChangeEmailUrl(user!.UserName, model.NewMail, link))
+            if (!mailSender.SendChangeEmailUrl(user!.UserName, model.NewMail, link, localizer, globalConfig))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_EmailSendFailed)]));
         }
 
@@ -508,11 +509,13 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Avatar(IFormFile file, CancellationToken token)
     {
-        if (file.Length == 0)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
-
-        if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        switch (file.Length)
+        {
+            case 0:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+            case > 3 * 1024 * 1024:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        }
 
         UserInfo? user = await userManager.GetUserAsync(User);
 

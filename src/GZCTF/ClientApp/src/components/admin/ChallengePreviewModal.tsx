@@ -1,60 +1,41 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Divider,
-  Group,
-  LoadingOverlay,
-  Modal,
-  ModalProps,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-  Tooltip,
-} from '@mantine/core'
+import { ModalProps } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiDownload, mdiLightbulbOnOutline } from '@mdi/js'
+import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import InstanceEntry from '@Components/InstanceEntry'
-import MarkdownRender, { InlineMarkdownRender } from '@Components/MarkdownRender'
+import ChallengeModal from '@Components/ChallengeModal'
 import { ChallengeTagItemProps } from '@Utils/Shared'
-import { useTooltipStyles } from '@Utils/ThemeOverride'
-import { useTypographyStyles } from '@Utils/useTypographyStyles'
-import { ChallengeType, ChallengeUpdateModel, FileType } from '@Api'
+import { ChallengeDetailModel } from '@Api'
 
 interface ChallengePreviewModalProps extends ModalProps {
-  challenge: ChallengeUpdateModel
-  type: ChallengeType
-  attachmentType: FileType
+  challenge: ChallengeDetailModel
   tagData: ChallengeTagItemProps
 }
 
 interface FakeContext {
   closeTime: string | null
   instanceEntry: string | null
+  url: string
 }
 
 const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
-  const { challenge, type, attachmentType, tagData, ...modalProps } = props
-  const { classes: tooltipClasses } = useTooltipStyles()
-
-  const [placeholder, setPlaceholder] = useState('')
-  const [flag, setFlag] = useInputState('')
+  const { challenge, tagData, ...modalProps } = props
 
   const [context, setContext] = useState<FakeContext>({
     closeTime: null,
     instanceEntry: null,
+    url: '/assets/attachment.zip',
   })
 
   const { t } = useTranslation()
+  const [flag, setFlag] = useInputState('')
 
   const onCreate = () => {
     setContext({
+      ...context,
       closeTime: dayjs().add(10, 'm').add(10, 's').toJSON(),
       instanceEntry: 'localhost:2333',
     })
@@ -62,14 +43,21 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
 
   const onDestroy = () => {
     setContext({
+      ...context,
       closeTime: null,
       instanceEntry: null,
     })
   }
 
-  const onSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
+  const onExtend = () => {
+    setContext({
+      ...context,
+      closeTime: dayjs(context.closeTime).add(10, 'm').toJSON(),
+      instanceEntry: context.instanceEntry,
+    })
+  }
 
+  const onSubmit = () => {
     showNotification({
       color: 'teal',
       title: t('admin.notification.games.challenges.preview.flag_submitted'),
@@ -79,145 +67,27 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     setFlag('')
   }
 
-  const placeholders = t('challenge.content.flag_placeholders', {
-    returnObjects: true,
-  }) as string[]
-
-  useEffect(() => {
-    setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
-  }, [challenge])
-
-  const isDynamic =
-    type === ChallengeType.StaticContainer || type === ChallengeType.DynamicContainer
-  const { classes, theme } = useTypographyStyles()
+  const onDownload = () => {
+    showNotification({
+      color: 'teal',
+      message: t('admin.notification.games.challenges.preview.attachment_downloaded'),
+      icon: <Icon path={mdiCheck} size={1} />,
+    })
+  }
 
   return (
-    <Modal
-      size="45%"
-      withCloseButton={false}
+    <ChallengeModal
       {...modalProps}
-      onClose={() => {
-        setFlag('')
-        modalProps.onClose()
-      }}
-      styles={{
-        ...modalProps.styles,
-        header: {
-          margin: 0,
-        },
-        title: {
-          width: '100%',
-          margin: 0,
-        },
-      }}
-      title={
-        <Group noWrap w="100%" position="apart" spacing="sm">
-          <Group noWrap spacing="sm">
-            {tagData && (
-              <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />
-            )}
-            <Title w="calc(100% - 1.5rem)" order={4} lineClamp={1}>
-              {challenge?.title ?? ''}
-            </Title>
-          </Group>
-          <Text miw="5em" fw={700} ff={theme.fontFamilyMonospace}>
-            {challenge?.originalScore ?? 500} pts
-          </Text>
-        </Group>
-      }
-    >
-      <Stack spacing="sm">
-        <Divider />
-        <Stack spacing="sm" justify="space-between" pos="relative" mih="20vh">
-          <LoadingOverlay visible={!challenge} />
-          <Group grow noWrap position="right" align="flex-start" spacing={2}>
-            <Box className={classes.root} mih="4rem">
-              {attachmentType !== FileType.None && (
-                <Tooltip
-                  label={t('challenge.button.download.attachment')}
-                  position="left"
-                  classNames={tooltipClasses}
-                >
-                  <ActionIcon
-                    variant="filled"
-                    size="lg"
-                    color="brand"
-                    top={0}
-                    right={0}
-                    pos="absolute"
-                    onClick={() =>
-                      showNotification({
-                        color: 'teal',
-                        message: t(
-                          'admin.notification.games.challenges.preview.attachment_downloaded'
-                        ),
-                        icon: <Icon path={mdiCheck} size={1} />,
-                      })
-                    }
-                  >
-                    <Icon path={mdiDownload} size={1} />
-                  </ActionIcon>
-                </Tooltip>
-              )}
-              <MarkdownRender
-                source={challenge?.content ?? ''}
-                sx={{
-                  '& div > p:first-child:before': {
-                    content: '""',
-                    float: 'right',
-                    width: 45,
-                    height: 45,
-                  },
-                }}
-              />
-            </Box>
-          </Group>
-          {challenge?.hints && challenge.hints.length > 0 && (
-            <Stack spacing={2}>
-              {challenge.hints.map((hint) => (
-                <Group spacing="xs" align="flex-start" noWrap>
-                  <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-                  <InlineMarkdownRender
-                    key={hint}
-                    size="sm"
-                    maw="calc(100% - 2rem)"
-                    source={hint}
-                  />
-                </Group>
-              ))}
-            </Stack>
-          )}
-          {isDynamic && (
-            <InstanceEntry
-              context={context}
-              disabled={false}
-              onCreate={onCreate}
-              onExtend={onCreate}
-              onDestroy={onDestroy}
-            />
-          )}
-        </Stack>
-        <Divider />
-        <form onSubmit={onSubmit}>
-          <Group position="apart" spacing="sm" align="flex-end">
-            <TextInput
-              placeholder={placeholder}
-              value={flag}
-              onChange={setFlag}
-              style={{ flexGrow: 1 }}
-              styles={{
-                input: {
-                  fontFamily: `${theme.fontFamilyMonospace}, ${theme.fontFamily}`,
-                },
-              }}
-            />
-            <Button miw="6rem" type="submit">
-              {t('challenge.button.submit_flag')}
-            </Button>
-          </Group>
-        </form>
-      </Stack>
-    </Modal>
+      challenge={{ ...challenge, context: context }}
+      tagData={tagData}
+      flag={flag}
+      setFlag={setFlag}
+      onCreate={onCreate}
+      onDestroy={onDestroy}
+      onSubmitFlag={onSubmit}
+      onExtend={onExtend}
+      onDownload={onDownload}
+    />
   )
 }
 

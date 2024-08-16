@@ -13,6 +13,11 @@ public class ContainerConfig
     public string TeamId { get; set; } = string.Empty;
 
     /// <summary>
+    /// 题目 Id
+    /// </summary>
+    public int ChallengeId { get; set; }
+
+    /// <summary>
     /// 用户 Id
     /// </summary>
     public Guid UserId { get; set; }

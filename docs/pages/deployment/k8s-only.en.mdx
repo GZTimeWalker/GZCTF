@@ -16,6 +16,21 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
 2. For multi-instance deployment, all instances need to mount the shared storage as Persistent Volumes (PV) to ensure file consistency. Additionally, Redis needs to be deployed to ensure cache consistency among multiple instances.
 3. For multi-instance deployment, the load balancer needs to be configured with sticky sessions to enable real-time data retrieval using websockets.
 4. **If you prefer a simpler deployment, go for a single-instance deployment!**
+5. Since you have chosen to deploy with Kubernetes, it implies that you need a larger number of Pods. Please pay attention to the following configuration:
+
+   - Specify `--kube-controller-manager-arg=node-cidr-mask-size=16` during installation. The default CIDR is `/24`, supporting a maximum of 255 Pods. **This cannot be changed after installation.**
+
+     ```bash
+     INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+     ```
+
+   - Adjust the value of `maxPods` accordingly, otherwise you may reach the Pod limit and be unable to schedule more Pods.
+
+     ```yaml
+     apiVersion: kubelet.config.k8s.io/v1beta1
+     kind: KubeletConfiguration
+     maxPods: 800
+     ```
 
 ## Deploying GZCTF
 
@@ -135,16 +150,17 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
            app: gzctf
        spec:
          nodeSelector:
-             kubernetes.io/hostname: xxx # Specify the deployment node, forcing it to be on the same node as the database
+           kubernetes.io/hostname: xxx # Specify the deployment node, forcing it to be on the same node as the database
          containers:
            - name: gzctf
              image: gztime/gzctf:latest
              imagePullPolicy: Always
              env:
-               - name: LANG
-                 value: en_US # choose your backend language `en_US` / `zh_CN` / `ja_JP`
                - name: GZCTF_ADMIN_PASSWORD
                  value: xxx # Admin password
+               # choose your backend language `en_US` / `zh_CN` / `ja_JP`
+               - name: LC_ALL
+                 value: en_US.UTF-8
              ports:
                - containerPort: 8080
                  name: http
@@ -219,7 +235,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
            app: gzctf-db
        spec:
          nodeSelector:
-             kubernetes.io/hostname: xxx # Specify the deployment node, need to be on the same node as GZCTF
+           kubernetes.io/hostname: xxx # Specify the deployment node, need to be on the same node as GZCTF
          containers:
            - name: gzctf-db
              image: postgres:alpine
@@ -318,23 +334,23 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
 
 5. Additional Configuration for Traefik
 
-  In order to make GZCTF able to obtain the real IP address of users through XFF, Traefik needs to be able to add the XFF header correctly. Please note that the following content may not always be up-to-date and applicable to all versions of Traefik. This is an example of helm values, please search for the latest configuration method yourself.
+In order to make GZCTF able to obtain the real IP address of users through XFF, Traefik needs to be able to add the XFF header correctly. Please note that the following content may not always be up-to-date and applicable to all versions of Traefik. This is an example of helm values, please search for the latest configuration method yourself.
 
-   ```yaml
-   service:
-     spec:
-    externalTrafficPolicy: Local # To make XFF work properly, set externalTrafficPolicy to Local
-   deployment:
-     kind: DaemonSet
-   ports:
-     web:
-     redirectTo: websecure # Redirect HTTP to HTTPS
-   additionalArguments:
-     - "--entryPoints.web.proxyProtocol.insecure"
-     - "--entryPoints.web.forwardedHeaders.insecure"
-     - "--entryPoints.websecure.proxyProtocol.insecure"
-     - "--entryPoints.websecure.forwardedHeaders.insecure"
-   ```
+```yaml
+service:
+  spec:
+externalTrafficPolicy: Local # To make XFF work properly, set externalTrafficPolicy to Local
+deployment:
+  kind: DaemonSet
+ports:
+  web:
+  redirectTo: websecure # Redirect HTTP to HTTPS
+additionalArguments:
+  - "--entryPoints.web.proxyProtocol.insecure"
+  - "--entryPoints.web.forwardedHeaders.insecure"
+  - "--entryPoints.websecure.proxyProtocol.insecure"
+  - "--entryPoints.websecure.forwardedHeaders.insecure"
+```
 
 ## Deployment Tips
 
@@ -342,3 +358,4 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
 2. Please debug and verify if GZCTF can correctly retrieve the real IP address of users on the system log page. If not, check if the Traefik configuration is correct.
 3. If you want to monitor the resource usage, please deploy Prometheus and Grafana on your own, enable Prometheus support in Traefik, and monitor the resource usage of the challenge containers using node exporter.
 4. If you need to automatically update the deployment of GZCTF based on the configuration file, please refer to [Reloader](https://github.com/stakater/Reloader).
+5. Inside the cluster, you can use `https://kubernetes.default.svc.cluster.local:443` as the `server` field in the cluster configuration file.

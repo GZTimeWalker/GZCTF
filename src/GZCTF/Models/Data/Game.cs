@@ -26,14 +26,14 @@ public class Game
     /// Token 签名公钥
     /// </summary>
     [Required]
-    [MaxLength(63)]
+    [MaxLength(Limits.GameKeyLength)]
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
     /// Token 签名私钥
     /// </summary>
     [Required]
-    [MaxLength(63)]
+    [MaxLength(Limits.GameKeyLength)]
     public string PrivateKey { get; set; } = string.Empty;
 
     /// <summary>
@@ -45,7 +45,7 @@ public class Game
     /// <summary>
     /// 头图哈希
     /// </summary>
-    [MaxLength(64)]
+    [MaxLength(Limits.FileHashLength)]
     public string? PosterHash { get; set; }
 
     /// <summary>
@@ -71,6 +71,7 @@ public class Game
     /// <summary>
     /// 比赛邀请码
     /// </summary>
+    [MaxLength(Limits.InviteTokenLength)]
     public string? InviteCode { get; set; }
 
     /// <summary>
@@ -176,7 +177,7 @@ public class Game
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
-        Organizations = model.Organizations ?? Organizations;
+        Organizations = model.Organizations?.ToHashSet() ?? Organizations;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;

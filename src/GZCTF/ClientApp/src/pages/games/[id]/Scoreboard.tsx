@@ -8,14 +8,12 @@ import TimeLine from '@Components/TimeLine'
 import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import api from '@Api'
+import { useGameTeamInfo } from '@Utils/useGame'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId, {
-    shouldRetryOnError: false,
-  })
+  const { teamInfo, error } = useGameTeamInfo(numId)
 
   const [organization, setOrganization] = useState<string | null>('all')
   const isMobile = useIsMobile(1080)
@@ -25,7 +23,7 @@ const Scoreboard: FC = () => {
     <WithNavBar width="90%" minWidth={0}>
       {isMobile ? (
         <Stack pt="md">
-          {data && !error && <TeamRank />}
+          {teamInfo && !error && <TeamRank />}
           {isVertical ? (
             <MobileScoreboardTable
               organization={organization ?? 'all'}

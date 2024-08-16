@@ -28,17 +28,18 @@ public class ProxyController(
 {
     const int BufferSize = 1024 * 4;
     const uint ConnectionLimit = 64;
-    readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
-    readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
-    readonly JsonSerializerOptions _jsonOptions =
+    static readonly JsonSerializerOptions _jsonOptions =
         new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
 
-    readonly DistributedCacheEntryOptions _storeOption =
+    static readonly DistributedCacheEntryOptions _storeOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
 
-    readonly DistributedCacheEntryOptions _validOption =
+    static readonly DistributedCacheEntryOptions _validOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
+
+    readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
+    readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
     /// <summary>
     /// 采用 websocket 代理 TCP 流量
@@ -155,47 +156,64 @@ public class ProxyController(
     {
         using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-        RecordableNetworkStream? stream;
-        try
-        {
-            await socket.ConnectAsync(target, token);
-
-            if (!socket.Connected)
-                throw new SocketException((int)SocketError.NotConnected);
-
-            stream = new RecordableNetworkStream(socket, metadata, options);
-        }
-        catch (SocketException e)
-        {
-            logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog), e.SocketErrorCode,
-                    $"{target.Address}:{target.Port}"],
-                TaskStatus.Failed, LogLevel.Debug);
-            return new JsonResult(new RequestResponse(
-                localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
-                StatusCodes.Status418ImATeapot))
-            { StatusCode = StatusCodes.Status418ImATeapot };
-        }
-
-        using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+        RecordableNetworkStream? stream = null;
 
         try
         {
-            var (tx, rx) = await RunProxy(stream, ws, token);
-            logger.SystemLog($"[{id}] {client.Address} -> {target.Address}:{target.Port}, tx {tx}, rx {rx}",
-                TaskStatus.Success, LogLevel.Debug);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Proxy_Error)]);
+            try
+            {
+                await socket.ConnectAsync(target, token);
+
+                if (!socket.Connected)
+                    throw new SocketException((int)SocketError.NotConnected);
+
+                stream = new RecordableNetworkStream(socket, metadata, options);
+            }
+            catch (SocketException e)
+            {
+                logger.SystemLog(
+                    Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog),
+                        e.SocketErrorCode,
+                        $"{target.Address}:{target.Port}"],
+                    TaskStatus.Failed, LogLevel.Debug);
+                return new JsonResult(new RequestResponse(
+                    localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
+                    StatusCodes.Status418ImATeapot))
+                { StatusCode = StatusCodes.Status418ImATeapot };
+            }
+
+            using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+
+            try
+            {
+                var (tx, rx) = await RunProxy(stream, ws, token);
+                LogProxyResult(id, client, target, tx, rx);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Proxy_Error)]);
+            }
+            finally
+            {
+                await DecrementConnectionCount(CacheKey.ConnectionCount(id));
+            }
+
+            return new EmptyResult();
         }
         finally
         {
-            await DecrementConnectionCount(CacheKey.ConnectionCount(id));
-            stream.Close();
+            stream?.Dispose();
         }
+    }
 
-        return new EmptyResult();
+    void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
+    {
+        var shortId = id.ToString("N")[..8];
+        IPAddress clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
+        IPAddress targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
+
+        logger.SystemLog($"[{shortId}] {clientAddress} -> {targetAddress}:{target.Port}, tx {tx}, rx {rx}",
+            TaskStatus.Success, LogLevel.Debug);
     }
 
     /// <summary>
@@ -208,7 +226,7 @@ public class ProxyController(
     static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws,
         CancellationToken token = default)
     {
-        var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
         CancellationToken ct = cts.Token;

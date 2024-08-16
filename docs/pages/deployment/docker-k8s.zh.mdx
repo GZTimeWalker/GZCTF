@@ -20,11 +20,25 @@ k3s 是一个轻量级的 k8s 发行版，可以在单机和多机上快速部�
 
 <Callout type="info">
 
-如果你的机器只有一台，并想通过 Docker 运行 GZCTF 可以在安装时指定添加以下参数指定 Docker 后端：
+如果你的机器只有一台，并想通过 Docker 运行 GZCTF 可以在安装时指定添加以下参数指定 Docker 后端（不推荐）：
 
 ```bash
 INSTALL_K3S_EXEC="--docker"
 ```
+
+<Callout type="info">
+
+如果需要在一台 k3s 实例上运行超过 255 个题目容器，**需要在安装 k3s 时** 指定 `INSTALL_K3S_EXEC`，并更改 `node-cidr-mask-size` 为所需的子网大小。
+
+```bash
+INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
+```
+
+**上述配置项在安装后无法更改。** CIDR 修改为 `/16` 可以支持 65535 个 Pod。
+
+上述配置仅修改了节点 Pod 使用的 IP 地址范围，如果需要修改节点的 Pod 数量限制，请参考下文。
+
+</Callout>
 
 并使用如下格式安装 k3s，如需更多信息请参考 [k3s 安装配置](https://docs.k3s.io/installation/configuration)：
 
@@ -90,12 +104,12 @@ clusters:
 # ...
 ```
 
-将其存储至部署 GZCTF 的机器上，和 `docker-compose.yml` 在一个文件夹内，例如 `kube-config.yaml`。
-之后更改 `docker-compose.yml` 中的挂载信息：
+将其存储至部署 GZCTF 的机器上，和 `compose.yml` 在一个文件夹内，例如 `kube-config.yaml`。
+之后更改 `compose.yml` 中的挂载信息：
 
 ```yaml
 gzctf:
-  image: gztime/gzctf:latest
+  image: registry.cn-shanghai.aliyuncs.com/gztime/gzctf:latest
   restart: always
   ports:
     - "80:8080"
@@ -133,7 +147,7 @@ k3s 默认的 NodePort 端口范围为 30000-32767，这可能会与需求不太
   ```bash
   ExecStart=/usr/local/bin/k3s \
       server \
-      --kube-apiserver-arg service-node-port-range=20000-50000
+      --kube-apiserver-arg=service-node-port-range=20000-50000
   ```
 
 - `sudo systemctl daemon-reload`
@@ -172,22 +186,6 @@ Reference: [How do you increase maximum pods per node in K3S?](https://stackover
 
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
-
-<Callout type="info">
-
-如果需要在一台 k3s 实例上运行超过 255 个 Pod 可能会超过默认的子网大小，需要在安装 k3s 时指定 `INSTALL_K3S_EXEC`，并更改 `node-cidr-mask-size` 为所需的子网大小。
-
-```bash
-INSTALL_K3S_EXEC="--kube-controller-manager-arg=node-cidr-mask-size=16"
-```
-
-并使用如下格式安装 k3s，如需更多信息请参考 [k3s 安装配置](https://docs.k3s.io/installation/configuration)：
-
-```bash
-curl -sfL https://rancher-mirror.rancher.cn/k3s/k3s-install.sh | INSTALL_K3S_EXEC="..." sh -
-```
-
-</Callout>
 
 ## 添加容器镜像仓库
 

@@ -13,6 +13,9 @@ import {
   Stack,
   Text,
   Title,
+  alpha,
+  useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -21,9 +24,9 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useUploadStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType } from '@Api'
+import uploadClasses from '@Styles/Upload.module.css'
 
 const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
@@ -36,7 +39,8 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const [progress, setProgress] = useState(0)
   const [files, setFiles] = useState<File[]>([])
 
-  const { classes, theme } = useUploadStyles()
+  const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
 
   const { t } = useTranslation()
 
@@ -119,9 +123,9 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
         <ScrollArea offsetScrollbars h="40vh" pos="relative">
           {files.length === 0 ? (
             <>
-              <Overlay opacity={0.3} color={theme.colorScheme === 'dark' ? 'black' : 'white'} />
+              <Overlay opacity={0.3} color={colorScheme === 'dark' ? 'black' : 'white'} />
               <Center h="calc(40vh - 20px)">
-                <Stack spacing={0}>
+                <Stack gap={0}>
                   <Title order={2}>
                     {t('admin.placeholder.games.challenges.attachment.no_file_selected.title')}
                   </Title>
@@ -132,11 +136,11 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
               </Center>
             </>
           ) : (
-            <Stack spacing="xs">
+            <Stack gap="xs">
               {files.map((file) => (
-                <Card p={4}>
-                  <Group position="apart">
-                    <Text lineClamp={1} ff={theme.fontFamilyMonospace}>
+                <Card key={file.name} p={4}>
+                  <Group justify="space-between">
+                    <Text lineClamp={1} ff="monospace">
                       {file.name}
                     </Text>
                     <ActionIcon onClick={() => setFiles(files.filter((f) => f !== file))}>
@@ -157,12 +161,12 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
             )}
           </FileButton>
           <Button
-            className={classes.uploadButton}
+            className={uploadClasses.button}
             disabled={disabled || files.length < 1}
             onClick={onUpload}
             color={progress !== 0 ? 'cyan' : theme.primaryColor}
           >
-            <div className={classes.uploadLabel}>
+            <div className={uploadClasses.label}>
               {progress !== 0
                 ? t('common.button.uploading')
                 : t('admin.button.challenges.flag.add.dynamic')}
@@ -170,8 +174,8 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
             {progress !== 0 && (
               <Progress
                 value={progress}
-                className={classes.uploadProgress}
-                color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                className={uploadClasses.progress}
+                color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
                 radius="sm"
               />
             )}

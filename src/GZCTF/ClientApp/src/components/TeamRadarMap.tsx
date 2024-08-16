@@ -1,4 +1,4 @@
-import { useMantineTheme } from '@mantine/core'
+import { alpha, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
 
@@ -10,18 +10,19 @@ interface TeamRadarMapProps {
 
 const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
 
   return (
     <ReactEcharts
-      theme={theme.colorScheme}
+      theme={colorScheme}
       option={{
         animation: false,
-        color: theme.colors.brand[5],
+        color: theme.colors[theme.primaryColor][5],
         backgroundColor: 'transparent',
         radar: {
           indicator,
           axisName: {
-            color: theme.colorScheme === 'dark' ? theme.colors.white[1] : theme.colors.dark[5],
+            color: colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5],
           },
         },
         series: [
@@ -32,7 +33,7 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
                 value,
                 name,
                 areaStyle: {
-                  color: theme.fn.rgba(theme.colors.brand[4], 0.6),
+                  color: alpha(theme.colors[theme.primaryColor][4], 0.6),
                 },
               },
             ],

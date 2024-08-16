@@ -1,7 +1,7 @@
 ﻿using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Container.Manager;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -24,9 +24,6 @@ public class ContainerRepository(
             .Include(c => c.GameInstance).ThenInclude(i => i!.FlagContext)
             .Include(c => c.GameInstance).ThenInclude(i => i!.Participation).ThenInclude(p => p.Team)
             .FirstOrDefaultAsync(i => i.Id == guid, token);
-
-    public Task<List<Container>> GetContainers(CancellationToken token = default) =>
-        Context.Containers.ToListAsync(token);
 
     public async Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default) =>
         (await Context.Containers
@@ -77,4 +74,7 @@ public class ContainerRepository(
             return false;
         }
     }
+
+    public Task<List<Container>> GetContainers(CancellationToken token = default) =>
+        Context.Containers.ToListAsync(token);
 }

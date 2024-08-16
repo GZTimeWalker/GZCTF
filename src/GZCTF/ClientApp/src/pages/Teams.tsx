@@ -9,6 +9,7 @@ import {
   Text,
   TextInput,
   Title,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -84,20 +85,22 @@ const Teams: FC = () => {
       })
   }
 
+  const { colorScheme } = useMantineColorScheme()
+
   usePageTitle(t('team.title.index'))
 
   const btns = (
     <>
       <Button
-        leftIcon={<Icon path={mdiHumanGreetingVariant} size={1} />}
-        variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
+        leftSection={<Icon path={mdiHumanGreetingVariant} size={1} />}
+        variant={colorScheme === 'dark' ? 'outline' : 'filled'}
         onClick={() => setJoinOpened(true)}
       >
         {t('team.button.join')}
       </Button>
       <Button
-        leftIcon={<Icon path={mdiAccountMultiplePlus} size={1} />}
-        variant={theme.colorScheme === 'dark' ? 'outline' : 'filled'}
+        leftSection={<Icon path={mdiAccountMultiplePlus} size={1} />}
+        variant={colorScheme === 'dark' ? 'outline' : 'filled'}
         onClick={() => setCreateOpened(true)}
       >
         {t('team.button.create')}
@@ -109,13 +112,13 @@ const Teams: FC = () => {
     <WithNavBar minWidth={0}>
       <WithRole requiredRole={Role.User}>
         <Stack pt="md">
-          <Group position={isMobile ? 'center' : 'apart'} grow={isMobile}>
+          <Group justify={isMobile ? 'center' : 'space-between'} grow={isMobile}>
             {isMobile ? (
               btns
             ) : (
               <>
                 <LogoHeader />
-                <Group position="right">{btns}</Group>
+                <Group justify="right">{btns}</Group>
               </>
             )}
           </Group>
@@ -124,12 +127,12 @@ const Teams: FC = () => {
               <Title
                 order={2}
                 style={{
+                  color: theme.colors[theme.primaryColor][colorScheme === 'dark' ? 2 : 6],
                   fontSize: '6rem',
                   fontWeight: 'bold',
                   opacity: 0.15,
                   height: '4.5rem',
                   paddingLeft: '1rem',
-                  color: theme.colors.brand[theme.colorScheme === 'dark' ? 2 : 6],
                   userSelect: 'none',
                   marginTop: '-1.5rem',
                 }}
@@ -137,12 +140,8 @@ const Teams: FC = () => {
                 TEAMS
               </Title>
               <SimpleGrid
-                cols={3}
-                spacing="lg"
-                breakpoints={[
-                  { maxWidth: 1600, cols: 2, spacing: 'md' },
-                  { maxWidth: 800, cols: 1, spacing: 'sm' },
-                ]}
+                cols={{ base: 1, lg: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}
+                spacing={{ base: 'sm', lg: 'md' }}
               >
                 {teams.map((t, i) => (
                   <TeamCard

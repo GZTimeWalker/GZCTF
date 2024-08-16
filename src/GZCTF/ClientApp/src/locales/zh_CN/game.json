@@ -1,6 +1,9 @@
 {
   "button": {
     "challenges": "进入比赛",
+    "delete": {
+      "all_traffic": "删除全部列出流量"
+    },
     "download": {
       "all_traffic": "下载全部列出流量",
       "scoreboard": "下载积分榜",
@@ -36,7 +39,7 @@
       "confirm": "确认报名",
       "content": [
         "你确定要报名此比赛吗？",
-        "报名参赛并审核通过后，参赛队伍将被锁定，不能再进行人员变动，<strong>即邀请、踢出队员。</strong> 队伍将在比赛结束后或驳回请求时解锁。",
+        "报名参赛并审核通过后，参赛队伍将被锁定，<strong>不能再踢出队员</strong>，队伍将在比赛结束后或驳回请求时解锁。",
         "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
       ],
       "invite_code": {
@@ -80,6 +83,10 @@
     },
     "total_duration": "共 {{hours}} 小时",
     "total_time": "持续时间",
+    "traffic": {
+      "delete_confirm": "确认删除此流量文件？",
+      "deleted_all_confirm": "确认删除全部列出流量？"
+    },
     "writeup": {
       "current": "当前提交",
       "deadline_exceeded": "提交截止时间已过",
@@ -160,6 +167,9 @@
     "not_started": "比赛尚未开始",
     "select_chal_and_part": "请先选择题目和队伍",
     "suspended": "您已被禁赛",
+    "traffic": {
+      "deleted": "流量文件已删除"
+    },
     "writeup": {
       "submitted": "Writeup 已成功提交"
     }

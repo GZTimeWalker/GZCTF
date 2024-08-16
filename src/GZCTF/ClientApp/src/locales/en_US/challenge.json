@@ -1,47 +1,70 @@
 {
   "bonus": {
-    "first_blood": "1st blood",
-    "second_blood": "2nd blood",
-    "third_blood": "3rd blood"
+    "first_blood": "first blood",
+    "second_blood": "second blood",
+    "third_blood": "third blood"
   },
   "button": {
     "download": {
       "attachment": "Download Attachment"
     },
-    "submit_flag": "Submit Flag",
     "instance": {
       "create": "Create",
-      "extend": "Extend",
-      "destroy": "Destroy"
-    }
+      "destroy": "Destroy",
+      "extend": "Extend"
+    },
+    "submit_flag": "Submit Flag"
   },
   "content": {
-    "solved": "<1>{{solved}}</1> solves",
     "already_solved": "This challenge has been solved",
+    "flag_placeholders": [
+      "To be, or not to be, flag is the question",
+      "All that glisters is not flag",
+      "The flag, dear Brutus, is not in our stars",
+      "Better three hours too soon than a flag too late",
+      "My kingdom for a flag",
+      "Shall I compare thee to a flag?",
+      "Put flag in thy pocket, and be gone",
+      "Here's flag: I drink to thee",
+      "For never was a flag of more woe",
+      "For where thou art, there is the flag",
+      "My flag is in my heart, not in my head",
+      "Fearless minds climb soonest unto flag",
+      "But, for my own part, it was flag to me",
+      "What's mine is flag and what's yours is mine",
+      "This blessed plot, this earth, this realm, this flag",
+      "The ripest flag first falls",
+      "One touch of flag makes the whole world kin",
+      "Better a witty flag than a foolish wit",
+      "Even if there are a thousand kinds of flags, who else can I talk to?",
+      "The flag is still shining in an unknown area.",
+      "May I ask where the flag is?"
+    ],
     "instance": {
-      "test": {
-        "no_container": "Test container is not running"
+      "actions": {
+        "count_down": "Remaining: ",
+        "note": "You can extend it {{min}} mins before expires."
       },
       "entry": {
-        "label": "Instance Info",
         "description": {
-          "proxy": "Websocket proxy mode has been enabled.",
-          "anchor": "Get proxy client"
-        }
+          "anchor": "Get proxy client",
+          "proxy": "WebSocket proxy mode has been enabled."
+        },
+        "label": "Instance Info"
+      },
+      "no_container": {
+        "message": "This challenge requires creating an instance",
+        "note": "Instance will live for {{min}} mins."
       },
       "open": {
         "client": "Open in client",
         "web": "Open as web page"
       },
-      "no_container": {
-        "message": "This challenge requires creating an instance",
-        "note": "Instance will live for 2 hours."
-      },
-      "actions": {
-        "count_down": "Remaining: ",
-        "note": "You can extend it 10 mins before it expires."
+      "test": {
+        "no_container": "Test container is not running"
       }
     },
+    "solved": "<1>{{solved}}</1> solves",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",
       "To be, or not to be, that is not the flag.",
@@ -66,29 +89,6 @@
       "All is quiet, only the error prompt of the flag is here.",
       "The correct flag is still not obtained.",
       "The winds are bitter and cold, and the flag is still not on your hand."
-    ],
-    "flag_placeholders": [
-      "To be, or not to be, flag is the question",
-      "All that glisters is not flag",
-      "The flag, dear Brutus, is not in our stars",
-      "Better three hours too soon than a flag too late",
-      "My kingdom for a flag",
-      "Shall I compare thee to a flag?",
-      "Put flag in thy pocket, and be gone",
-      "Here's flag: I drink to thee",
-      "For never was a flag of more woe",
-      "For where thou art, there is the flag",
-      "My flag is in my heart, not in my head",
-      "Fearless minds climb soonest unto flag",
-      "But, for my own part, it was flag to me",
-      "What's mine is flag and what's yours is mine",
-      "This blessed plot, this earth, this realm, this flag",
-      "The ripest flag first falls",
-      "One touch of flag makes the whole world kin",
-      "Better a witty flag than a foolish wit",
-      "Even if there are a thousand kinds of flags, who else can I talk to?",
-      "The flag is still shining in an unknown area.",
-      "May I ask where the flag is?"
     ]
   },
   "file_type": {
@@ -97,6 +97,23 @@
     "remote": "Remote Url"
   },
   "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "The game has ended, submissions will not be scored",
+        "message": "The scoreboard will be updated later.",
+        "title": "flag correct"
+      },
+      "empty": "The flag cannot be empty",
+      "submitted": {
+        "message": "Please wait for flag check...",
+        "title": "flag submitted"
+      },
+      "unknown": {
+        "message": "Please contact the admin to confirm the submission: {{id}}",
+        "title": "flag status unknown"
+      },
+      "wrong": "flag wrong"
+    },
     "instance": {
       "copied": {
         "entry": "Instance entry copied to clipboard",
@@ -104,6 +121,14 @@
           "message": "Please use client to access",
           "title": "Instance entry copied to clipboard"
         }
+      },
+      "created": {
+        "message": "Please note the instance expiration time",
+        "title": "Instance created"
+      },
+      "destroyed": {
+        "message": "You can recreate the instance",
+        "title": "Instance has been destroyed"
       },
       "extend": {
         "note": {
@@ -114,31 +139,6 @@
           "message": "Please note the instance expiration time",
           "title": "Instance’s lifetime has been extended"
         }
-      },
-      "created": {
-        "message": "Please note the instance expiration time",
-        "title": "Instance created"
-      },
-      "destroyed": {
-        "message": "You can recreate the instance",
-        "title": "Instance has been destroyed"
-      }
-    },
-    "flag": {
-      "empty": "The flag cannot be empty",
-      "accepted": {
-        "title": "flag correct",
-        "message": "The scoreboard will be updated later.",
-        "ended": "The game has ended, submissions will not be scored"
-      },
-      "wrong": "flag wrong",
-      "unknown": {
-        "title": "flag status unknown",
-        "message": "Please contact the admin to confirm the submission: {{id}}"
-      },
-      "submitted": {
-        "title": "flag submitted",
-        "message": "Please wait for flag check..."
       }
     }
   },

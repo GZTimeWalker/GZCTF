@@ -1,0 +1,40 @@
+.item {
+  flex: 1;
+
+  &:first-of-type > .swatch {
+    border-top-left-radius: var(--mantine-radius-sm) !important;
+    border-bottom-left-radius: var(--mantine-radius-sm) !important;
+  }
+
+  &:last-of-type > .swatch {
+    border-top-right-radius: var(--mantine-radius-sm) !important;
+    border-bottom-right-radius: var(--mantine-radius-sm) !important;
+  }
+}
+
+.swatch {
+  width: 100%;
+  padding-bottom: var(--input-line-height);
+  overflow: hidden;
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease,
+    border-radius 100ms ease;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 5px;
+
+  @media (max-width: em(600px)) {
+    display: none;
+  }
+}
+
+.hex {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: var(--mantine-font-family-monospace);
+}

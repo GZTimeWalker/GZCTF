@@ -2,9 +2,8 @@ import {
   Avatar,
   Badge,
   Card,
-  createStyles,
+  CardProps,
   Group,
-  PaperProps,
   PasswordInput,
   Progress,
   Skeleton,
@@ -19,35 +18,25 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import api from '@Api'
+import { useGameTeamInfo } from '@Utils/useGame'
 
-const useStyle = createStyles((theme) => ({
-  number: {
-    fontFamily: theme.fontFamilyMonospace,
-    fontWeight: 700,
-  },
-}))
-
-const TeamRank: FC<PaperProps> = (props) => {
+const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
-  const { data, error } = api.game.useGameChallengesWithTeamInfo(numId, {
-    shouldRetryOnError: false,
-  })
-
-  const { classes, theme } = useStyle()
+  const { teamInfo, error } = useGameTeamInfo(numId)
 
   const clipboard = useClipboard()
   const isMobile = useIsMobile(1080)
 
   const { t } = useTranslation()
 
-  const solved = (data?.rank?.solvedCount ?? 0) / (data?.rank?.challenges?.length ?? 1)
+  const solved = (teamInfo?.rank?.solvedCount ?? 0) / (teamInfo?.rank?.challenges?.length ?? 1)
 
   useEffect(() => {
-    if (error?.status === 410) {
+    if (error?.status === ErrorCodes.GameEnded) {
       navigate(`/games/${numId}`)
       showNotification({
         color: 'yellow',
@@ -57,75 +46,69 @@ const TeamRank: FC<PaperProps> = (props) => {
     }
   }, [error])
 
+  const rank = teamInfo?.rank
+
+  const item = (label: string, value?: null | string | number) => (
+    <Stack gap={2}>
+      <Skeleton visible={!rank}>
+        <Text ff="monospace" fw="bold">
+          {value ?? '0'}
+        </Text>
+      </Skeleton>
+      <Text size="xs" fw={500}>
+        {label}
+      </Text>
+    </Stack>
+  )
+
   return (
-    <Card {...props} shadow="sm" p="md">
-      <Stack spacing={8}>
-        <Group spacing="sm" noWrap>
-          <Avatar alt="avatar" color="cyan" size={50} radius="md" src={data?.rank?.avatar}>
-            {data?.rank?.name?.slice(0, 1) ?? 'T'}
+    <Card {...props} shadow="sm">
+      <Stack gap="xs">
+        <Group gap="sm" wrap="nowrap">
+          <Avatar alt="avatar" size={50} radius="md" src={rank?.avatar}>
+            {rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Skeleton visible={!data}>
-            <Stack spacing={2} align="flex-start">
+          <Skeleton visible={!rank}>
+            <Stack gap={2} align="flex-start">
               <Title order={3} lineClamp={1}>
-                {data?.rank?.name ?? 'Team'}
+                {rank?.name ?? 'Team'}
               </Title>
-              {data?.rank?.organization && (
+              {rank?.organization && (
                 <Badge size="xs" variant="outline">
-                  {data.rank.organization}
+                  {rank.organization}
                 </Badge>
               )}
             </Stack>
           </Skeleton>
         </Group>
         <Group grow ta="center">
-          <Stack spacing={2}>
-            <Skeleton visible={!data}>
-              <Text className={classes.number}>{data?.rank?.rank ?? '0'}</Text>
-            </Skeleton>
-            <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
-          </Stack>
-          {data?.rank?.organization && (
-            <Stack spacing={2}>
-              <Skeleton visible={!data}>
-                <Text className={classes.number}>{data?.rank?.organizationRank ?? '0'}</Text>
-              </Skeleton>
-              <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
-            </Stack>
-          )}
-          <Stack spacing={2}>
-            <Skeleton visible={!data}>
-              <Text className={classes.number}>{data?.rank?.score ?? '0'}</Text>
-            </Skeleton>
-            <Text size="xs">{t('game.label.score_table.score')}</Text>
-          </Stack>
-          <Stack spacing={2}>
-            <Skeleton visible={!data}>
-              <Text className={classes.number}>{data?.rank?.solvedCount ?? '0'}</Text>
-            </Skeleton>
-            <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
-          </Stack>
+          {item(t('game.label.score_table.rank_total'), rank?.rank)}
+          {rank?.organization &&
+            item(t('game.label.score_table.rank_organization'), rank?.organizationRank)}
+          {item(t('game.label.score_table.score'), rank?.score)}
+          {item(t('game.label.score_table.solved_count'), rank?.solvedCount)}
         </Group>
         <Progress value={solved * 100} />
         {!isMobile && (
           <PasswordInput
-            value={data?.teamToken}
+            value={teamInfo?.teamToken}
             readOnly
-            icon={<Icon path={mdiKey} size={1} />}
+            leftSection={<Icon path={mdiKey} size={1} />}
             variant="unstyled"
             onClick={() => {
-              clipboard.copy(data?.teamToken)
+              clipboard.copy(teamInfo?.teamToken)
               showNotification({
                 color: 'teal',
                 message: t('team.notification.token.copied'),
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            styles={{
+            styles={(theme) => ({
               innerInput: {
                 cursor: 'copy',
                 fontFamily: theme.fontFamilyMonospace,
               },
-            }}
+            })}
           />
         )}
       </Stack>

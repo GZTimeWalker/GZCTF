@@ -1,21 +1,14 @@
 ﻿using System.Collections.Generic;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
-using GZCTF.Services;
+using GZCTF.Services.Config;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace GZCTF.Test;
 
-public class ConfigServiceTest
+public class ConfigServiceTest(ITestOutputHelper output)
 {
-    readonly ITestOutputHelper output;
-
-    public ConfigServiceTest(ITestOutputHelper _output)
-    {
-        output = _output;
-    }
-
     [Fact]
     public void TestGetConfigs()
     {

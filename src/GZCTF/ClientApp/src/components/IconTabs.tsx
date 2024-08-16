@@ -1,19 +1,15 @@
 import {
   Box,
-  createStyles,
-  getStylesRef,
   Group,
-  GroupPosition,
   GroupProps,
   MantineColor,
+  useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import React, { FC, useEffect, useState } from 'react'
 import LogoHeader from '@Components/LogoHeader'
-
-interface TabStyleProps {
-  color?: MantineColor
-}
+import classes from '@Styles/IconTabs.module.css'
 
 interface TabProps {
   tabKey: string
@@ -23,107 +19,50 @@ interface TabProps {
 }
 
 interface IconTabsProps extends GroupProps {
-  position?: GroupPosition
+  position?: React.CSSProperties['justifyContent']
   tabs: TabProps[]
   grow?: boolean
   active?: number
   withIcon?: boolean
+  disabled?: boolean
   aside?: React.ReactNode
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
-const useTabStyle = createStyles((theme, props: TabStyleProps) => {
-  const activeTab = { ref: getStylesRef('activeTab') } as const
-  const color = props.color ?? 'brand'
-
-  return {
-    activeTab,
-    default: {
-      transition: 'border-color 100ms ease, color 100ms ease, background 100ms ease',
-      borderRadius: theme.radius.sm,
-      color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
-      fontSize: theme.fontSizes.sm,
-      height: 'auto',
-      padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
-      fontWeight: 500,
-      boxSizing: 'border-box',
-      cursor: 'pointer',
-      border: 0,
-      display: 'block',
-      backgroundColor: 'transparent',
-
-      [theme.fn.smallerThan('xs')]: {
-        padding: `${theme.spacing.xs} ${theme.spacing.md}`,
-      },
-
-      '&:disabled': {
-        cursor: 'not-allowed',
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[3] : theme.colors.gray[5],
-      },
-
-      '&:hover': {
-        background: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-      },
-
-      [`&.${activeTab.ref}`]: {
-        color: theme.fn.themeColor(color as string, theme.colorScheme === 'dark' ? 4 : 6),
-        background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-      },
-    },
-    tabInner: {
-      boxSizing: 'border-box',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      lineHeight: 1,
-      height: '100%',
-
-      [theme.fn.smallerThan('xs')]: {
-        flexDirection: 'column',
-        gap: theme.spacing.md,
-      },
-    },
-    tabLabel: {
-      fontWeight: 700,
-    },
-    tabIcon: {
-      margin: 'auto',
-
-      '&:not(:only-child)': {
-        marginRight: theme.spacing.xs,
-      },
-      '& *': {
-        display: 'block',
-      },
-    },
-  }
-})
-
-const Tab: FC<TabProps & { active: boolean; onClick?: () => void }> = (props) => {
-  const { color, label, active, icon, tabKey, ...others } = props
-  const { classes, cx } = useTabStyle({ color })
+const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boolean }> = (
+  props
+) => {
+  const { color, label, active, icon, tabKey, disabled, ...others } = props
 
   return (
     <Box
+      key={tabKey}
       {...others}
       component="button"
       type="button"
       role="tab"
-      key={tabKey}
-      className={cx(classes.default, { [classes.activeTab]: active })}
+      disabled={disabled}
+      __vars={{
+        '--tab-active-color': color,
+      }}
+      data-active={active || undefined}
+      className={classes.default}
     >
-      <div className={classes.tabInner}>
-        {icon && <div className={classes.tabIcon}>{icon}</div>}
-        {label && <div className={classes.tabLabel}>{label}</div>}
+      <div className={classes.inner}>
+        {icon && <div className={classes.icon}>{icon}</div>}
+        {label && <div className={classes.label}>{label}</div>}
       </div>
     </Box>
   )
 }
 
 const IconTabs: FC<IconTabsProps> = (props) => {
-  const { active, onTabChange, tabs, withIcon, aside, ...others } = props
+  const { active, onTabChange, tabs, withIcon, aside, disabled, ...others } = props
   const [_activeTab, setActiveTab] = useState(active ?? 0)
-
+  const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
+  const resolveColor = (color?: MantineColor) =>
+    color ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 4 : 6] : undefined
   const activeTab = clamp(_activeTab, 0, tabs.length - 1)
 
   useEffect(() => {
@@ -132,8 +71,10 @@ const IconTabs: FC<IconTabsProps> = (props) => {
 
   const panes = tabs.map((tab, index) => (
     <Tab
-      {...tab}
       key={tab.tabKey}
+      {...tab}
+      disabled={disabled}
+      color={resolveColor(tab.color)}
       active={activeTab === index}
       onClick={() => {
         setActiveTab(index)
@@ -143,29 +84,10 @@ const IconTabs: FC<IconTabsProps> = (props) => {
   ))
 
   return (
-    <Group spacing={0} position="apart" w="100%" noWrap>
+    <Group gap={0} justify="space-between" w="100%" wrap="nowrap">
       {aside}
-      {withIcon && (
-        <LogoHeader
-          sx={(theme) => ({
-            [theme.fn.smallerThan('xs')]: {
-              display: 'none',
-            },
-          })}
-        />
-      )}
-      <Group
-        position="right"
-        noWrap
-        spacing={5}
-        sx={(theme) => ({
-          [theme.fn.smallerThan('xs')]: {
-            width: '100%',
-            justifyContent: 'space-around',
-          },
-        })}
-        {...others}
-      >
+      {withIcon && <LogoHeader className={classes.hidable} />}
+      <Group className={classes.panes} {...others}>
         {panes}
       </Group>
     </Group>

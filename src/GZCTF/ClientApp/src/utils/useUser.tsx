@@ -2,7 +2,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { useSWRConfig } from 'swr'
 import api from '@Api'
 
@@ -64,7 +64,7 @@ export const useTeams = () => {
   return { teams, error, mutate }
 }
 
-export const useLoginOut = () => {
+export const useLogOut = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
   const { mutate: mutateProfile } = useUser()

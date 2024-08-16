@@ -1,0 +1,32 @@
+License Addendum for GZ::CTF
+
+This addendum to the AGPLv3 license applies to the following specific files and
+the "GZCTF" string within this project.
+
+### Restricted Files
+
+The following files may not be modified, redistributed, or used in derivative
+works without the express written permission of the original author or maintainers:
+
+- src/GZCTF/Services/Container/Manager/*.cs
+- src/GZCTF/ClientApp/src/utils/useConfig.ts
+
+### Restricted String
+
+Any string or identifier related to the "GZCTF" name, including but not limited
+to variations, derivations, or similar constructs, is considered a protected
+identifier within this project. Modification, removal, or replacement of these
+identifiers in any part of the codebase is strictly prohibited without the express
+written permission of the original author or maintainers.
+
+**Examples of protected identifiers include, but are not limited to:**
+
+- GZCTF
+- GZ::CTF
+- GZCTF_FLAG
+- GZCTF_Token
+- ASCII art or logos containing the GZCTF name
+
+These restrictions are in addition to the terms of the AGPLv3 license.
+
+[2024-08-10]

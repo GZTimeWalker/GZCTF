@@ -2,7 +2,7 @@
   "label": {
     "tag": "タグ",
     "title": "タイトル",
-    "add_tag": "+ タグ「{{query}}」を追加する",
+    "add_tag": "タグを追加",
     "content": "内容",
     "summary": "概要"
   },

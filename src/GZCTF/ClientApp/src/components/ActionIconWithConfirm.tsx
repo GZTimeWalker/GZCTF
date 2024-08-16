@@ -3,7 +3,7 @@ import {
   Button,
   Group,
   MantineColor,
-  MantineNumberSize,
+  MantineSpacing,
   Popover,
   Stack,
   Text,
@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 export interface ActionIconWithConfirmProps {
   iconPath: string
   color?: MantineColor
-  size?: MantineNumberSize
+  size?: MantineSpacing
   message: string
   disabled?: boolean
   onClick: () => Promise<void>
@@ -41,7 +41,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>
-        <Stack align="center" spacing={6}>
+        <Stack align="center" gap={6}>
           <Text
             size="sm"
             fw="bold"
@@ -54,7 +54,16 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
             {props.message}
           </Text>
 
-          <Group w="100%" position="apart">
+          <Group w="100%" justify="space-between">
+            <Button
+              size="xs"
+              py={2}
+              variant="outline"
+              disabled={props.disabled}
+              onClick={() => setOpened(false)}
+            >
+              {t('common.modal.cancel')}
+            </Button>
             <Button
               size="xs"
               py={2}
@@ -70,15 +79,6 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
               }}
             >
               {t('common.modal.confirm')}
-            </Button>
-            <Button
-              size="xs"
-              py={2}
-              variant="outline"
-              disabled={props.disabled}
-              onClick={() => setOpened(false)}
-            >
-              {t('common.modal.cancel')}
             </Button>
           </Group>
         </Stack>

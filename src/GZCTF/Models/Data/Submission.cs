@@ -15,7 +15,7 @@ public class Submission
     /// <summary>
     /// 提交的答案字符串
     /// </summary>
-    [MaxLength(127)]
+    [MaxLength(Limits.MaxFlagLength)]
     public string Answer { get; set; } = string.Empty;
 
     /// <summary>

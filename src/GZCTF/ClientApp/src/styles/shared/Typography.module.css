@@ -1,0 +1,192 @@
+.root {
+  box-sizing: border-box;
+  max-width: max-content;
+  min-width: 100%;
+
+  & p {
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow: hidden;
+    margin-bottom: var(--mantine-spacing-xs);
+  }
+
+  & ul,
+  & ol {
+    padding-left: var(--mantine-font-size-lg);
+
+    @mixin smaller-than $mantine-breakpoint-xs {
+      padding-left: var(--mantine-font-size-xs);
+    }
+  }
+
+  & strong {
+    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
+  }
+
+  & blockquote {
+    padding: calc(var(--mantine-spacing-xs) / 2) var(--mantine-spacing-md);
+    margin-bottom: var(--mantine-spacing-md);
+    font-size: var(--mantine-font-size-md);
+    color: light-dark(
+      alpha(var(--mantine-color-gray-7), 0.9),
+      alpha(var(--mantine-color-dark-0), 0.9)
+    );
+    background-color: light-dark(
+      alpha(var(--mantine-color-dark-1), 0.1),
+      alpha(var(--mantine-color-light-2), 0.03)
+    );
+    border-left: light-dark(
+      4px solid var(--mantine-color-gray-5),
+      4px solid var(--mantine-color-dark-0)
+    );
+
+    & pre,
+    & code {
+      background-color: light-dark(
+        alpha(var(--mantine-color-light-1), 0.8),
+        alpha(var(--mantine-color-dark-6), 0.8)
+      );
+    }
+  }
+
+  & pre {
+    background-color: light-dark(var(--mantine-color-light-1), var(--mantine-color-dark-6));
+    padding: var(--mantine-spacing-sm);
+    white-space: pre;
+    overflow-wrap: anywhere;
+  }
+
+  & :not(pre) > code {
+    white-space: normal;
+    font-size: 0.95rem;
+    padding: 1px calc(var(--mantine-spacing-xs) / 2);
+    border: none;
+    background-color: light-dark(
+      alpha(var(--mantine-white), 0.05),
+      alpha(var(--mantine-black), 0.1)
+    );
+  }
+
+  & pre > code {
+    padding: 0;
+    background-color: transparent;
+    color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-light-2));
+    font-family: var(--mantine-font-family-monospace);
+    font-weight: 500;
+    text-align: left;
+    white-space: pre-wrap;
+    word-break: normal;
+    font-size: var(--mantine-font-size-sm);
+    line-height: var(--mantine-line-height-sm);
+    tab-size: 4;
+    hyphens: none;
+
+    & :global(.namespace) {
+      opacity: 0.8;
+    }
+
+    & :global(.token.id),
+    & :global(.token.important),
+    & :global(.token.keyword) {
+      font-weight: bold;
+    }
+
+    & :global(.token.atrule),
+    & :global(.token.boolean),
+    & :global(.token.constant),
+    & :global(.token.function),
+    & :global(.token.id),
+    & :global(.token.important),
+    & :global(.token.keyword),
+    & :global(.token.symbol) {
+      color: light-dark(#7c4dff, #c792ea);
+    }
+
+    & :global(.token.attr-name),
+    & :global(.token.builtin),
+    & :global(.token.class) {
+      color: light-dark(#39adb5, #ffcb6b);
+    }
+
+    & :global(.token.attr-value),
+    & :global(.token.attribute),
+    & :global(.token.pseudo-class),
+    & :global(.token.pseudo-element) {
+      color: light-dark(#f6a434, #a5e844);
+    }
+
+    & :global(.token.cdata),
+    & :global(.token.char),
+    & :global(.token.inserted),
+    & :global(.token.operator),
+    & :global(.token.property) {
+      color: light-dark(#39adb5, #80cbc4);
+    }
+
+    & :global(.token.class-name),
+    & :global(.token.regex) {
+      color: light-dark(#6182b8, #f2ff00);
+    }
+
+    & :global(.token.comment),
+    & :global(.token.doctype),
+    & :global(.token.prolog) {
+      color: light-dark(#aabfc9, #616161);
+    }
+
+    & :global(.token.deleted),
+    & :global(.token.entity),
+    & :global(.token.selector),
+    & :global(.token.tag),
+    & :global(.token.url),
+    & :global(.token.variable) {
+      color: light-dark(#e53935, #ff6666);
+    }
+
+    & :global(.token.hexcode) {
+      color: light-dark(#f76d47, #f2ff00);
+    }
+
+    & :global(.token.number),
+    & :global(.token.unit) {
+      color: light-dark(#f76d47, #fd9170);
+    }
+
+    & :global(.token.punctuation) {
+      color: light-dark(#39adb5, #89ddff);
+    }
+
+    & :global(.token.string) {
+      color: light-dark(#84a657, #a5e844);
+    }
+  }
+}
+
+.inline {
+  word-break: break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+
+  & code {
+    white-space: normal;
+    font-weight: 500;
+    background-color: transparent;
+    font-family: var(--mantine-font-family-monospace);
+    padding: 0 2px;
+    border: none;
+  }
+
+  & a,
+  & strong {
+    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
+  }
+
+  & a {
+    text-decoration: underline;
+    transition: all 0.2s ease-in-out;
+  }
+
+  & a:hover {
+    text-decoration: none;
+  }
+}

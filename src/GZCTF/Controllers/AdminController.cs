@@ -8,7 +8,8 @@ using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Interface;
+using GZCTF.Services.Cache;
+using GZCTF.Services.Config;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -82,11 +83,104 @@ public class AdminController(
         foreach (PropertyInfo prop in typeof(ConfigEditModel).GetProperties())
         {
             var value = prop.GetValue(model);
-            if (value is not null)
-                await configService.SaveConfig(prop.PropertyType, value, token);
+
+            if (value is null)
+                continue;
+
+            await configService.SaveConfig(prop.PropertyType, value, token);
         }
 
         return Ok();
+    }
+
+    /// <summary>
+    /// 更改平台 Logo
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口更改平台 Logo，需要Admin权限
+    /// </remarks>
+    /// <response code="200">更新成功</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpPost("Config/Logo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateLogo(IFormFile file, CancellationToken token)
+    {
+        switch (file.Length)
+        {
+            case 0:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+            case > 3 * 1024 * 1024:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        }
+
+        if (!await DeleteCurrentLogo(token))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
+
+        LocalFile? logo = await fileService.CreateOrUpdateImage(file, "logo", 640, token);
+        if (logo is null)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
+
+        LocalFile? favicon = await fileService.CreateOrUpdateImage(file, "favicon", 256, token);
+        if (favicon is null)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
+
+        HashSet<Config> configSet =
+        [
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.LogoHash)}", logo.Hash, [CacheKey.ClientConfig]),
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.FaviconHash)}", favicon.Hash, [CacheKey.Favicon])
+        ];
+
+        await configService.SaveConfigSet(configSet, token);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// 重置平台 Logo
+    /// </summary>
+    /// <remarks>
+    /// 使用此接口重置平台 Logo，需要Admin权限
+    /// </remarks>
+    /// <response code="200">更新成功</response>
+    /// <response code="401">未授权用户</response>
+    /// <response code="403">禁止访问</response>
+    [HttpDelete("Config/Logo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ResetLogo(CancellationToken token)
+    {
+        if (!await DeleteCurrentLogo(token))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
+
+        HashSet<Config> configSet =
+        [
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.LogoHash)}", string.Empty, [CacheKey.ClientConfig]),
+            new($"{nameof(GlobalConfig)}:{nameof(GlobalConfig.FaviconHash)}", string.Empty, [CacheKey.Favicon])
+        ];
+
+        await configService.SaveConfigSet(configSet, token);
+
+        return Ok();
+    }
+
+    async Task<bool> DeleteCurrentLogo(CancellationToken token)
+    {
+        GlobalConfig globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
+
+        return await DeleteByHash(globalConfig.LogoHash, token) &&
+               await DeleteByHash(globalConfig.FaviconHash, token);
+    }
+
+    async Task<bool> DeleteByHash(string? hash, CancellationToken token)
+    {
+        if (hash is not null && Codec.FileHashRegex().IsMatch(hash))
+            return await fileService.DeleteFileByHash(hash, token) switch
+            {
+                TaskStatus.Success or TaskStatus.NotFound => true,
+                _ => false
+            };
+
+        return true;
     }
 
     /// <summary>
@@ -203,17 +297,16 @@ public class AdminController(
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
-        return Ok((await userManager.Users.Where(item =>
-                    item.UserName!.ToLower().Contains(loweredHint) ||
-                    item.StdNumber.ToLower().Contains(loweredHint) ||
-                    item.Email!.ToLower().Contains(loweredHint) ||
-                    item.PhoneNumber!.ToLower().Contains(loweredHint) ||
-                    item.Id.ToString().ToLower().Contains(loweredHint) ||
-                    item.RealName.ToLower().Contains(loweredHint)
-                )
-                .OrderBy(e => e.Id).Take(30).ToArrayAsync(token))
-            .Select(UserInfoModel.FromUserInfo)
-            .ToResponse());
+        UserInfo[] data = await userManager.Users.Where(item =>
+            item.UserName!.ToLower().Contains(loweredHint) ||
+            item.StdNumber.ToLower().Contains(loweredHint) ||
+            item.Email!.ToLower().Contains(loweredHint) ||
+            item.PhoneNumber!.ToLower().Contains(loweredHint) ||
+            item.Id.ToString().ToLower().Contains(loweredHint) ||
+            item.RealName.ToLower().Contains(loweredHint)
+        ).OrderBy(e => e.Id).Take(30).ToArrayAsync(token);
+
+        return Ok(data.Select(UserInfoModel.FromUserInfo).ToResponse());
     }
 
     /// <summary>
@@ -299,7 +392,7 @@ public class AdminController(
 
         if (model.UserName is not null && model.UserName != user.UserName)
         {
-            var result = await userManager.SetUserNameAsync(user, model.UserName);
+            IdentityResult result = await userManager.SetUserNameAsync(user, model.UserName);
 
             if (!result.Succeeded)
                 return HandleIdentityError(result.Errors);
@@ -307,7 +400,7 @@ public class AdminController(
 
         if (model.Email is not null && model.Email != user.Email)
         {
-            var result = await userManager.SetEmailAsync(user, model.Email);
+            IdentityResult result = await userManager.SetEmailAsync(user, model.Email);
 
             if (!result.Succeeded)
                 return HandleIdentityError(result.Errors);

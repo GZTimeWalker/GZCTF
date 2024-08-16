@@ -1,7 +1,7 @@
 ﻿using Docker.DotNet;
+using Docker.DotNet.BasicAuth;
 using Docker.DotNet.Models;
 using GZCTF.Models.Internal;
-using GZCTF.Services.Interface;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Provider;
@@ -24,7 +24,8 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <param name="config"></param>
     /// <returns></returns>
     public static string GetName(ContainerConfig config) =>
-        $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_{(config.Flag ?? Guid.NewGuid().ToString()).ToMD5String()[..16]}";
+        $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_" +
+        (config.Flag ?? Ulid.NewUlid().ToString().ToLowerInvariant()).ToMD5String()[..16];
 }
 
 public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
@@ -42,11 +43,15 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             PublicEntry = options.Value.PublicEntry
         };
 
-        DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
-            ? new()
-            : new(new Uri(_dockerMeta.Config.Uri));
+        Credentials? credentials = null;
 
-        // TODO: Docker Auth Required
+        if (!string.IsNullOrEmpty(_dockerMeta.Config.UserName) && !string.IsNullOrEmpty(_dockerMeta.Config.Password))
+            credentials = new BasicAuthCredentials(_dockerMeta.Config.UserName, _dockerMeta.Config.Password);
+
+        DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
+            ? new(credentials)
+            : new(new Uri(_dockerMeta.Config.Uri), credentials);
+
         _dockerClient = cfg.CreateClient();
 
         // Auth for registry

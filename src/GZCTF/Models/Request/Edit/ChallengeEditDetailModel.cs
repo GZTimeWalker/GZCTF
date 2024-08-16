@@ -42,11 +42,13 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// 题目提示
     /// </summary>
-    public string[] Hints { get; set; } = [];
+    public List<string> Hints { get; set; } = [];
 
     /// <summary>
     /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
     /// </summary>
+    [MaxLength(Limits.MaxFlagTemplateLength, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string? FlagTemplate { get; set; }
 
     /// <summary>
@@ -80,36 +82,7 @@ public class ChallengeEditDetailModel
     /// 题目 Flag 信息
     /// </summary>
     [Required]
-    public FlagInfoModel[] Flags { get; set; } = [];
-
-    internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
-        new()
-        {
-            Id = chal.Id,
-            Title = chal.Title,
-            Content = chal.Content,
-            Tag = chal.Tag,
-            Type = chal.Type,
-            FlagTemplate = chal.FlagTemplate,
-            Hints = chal.Hints?.ToArray() ?? [],
-            IsEnabled = chal.IsEnabled,
-            ContainerImage = chal.ContainerImage,
-            MemoryLimit = chal.MemoryLimit,
-            CPUCount = chal.CPUCount,
-            StorageLimit = chal.StorageLimit,
-            ContainerExposePort = chal.ContainerExposePort,
-            EnableTrafficCapture = chal.EnableTrafficCapture,
-            OriginalScore = chal.OriginalScore,
-            MinScoreRate = chal.MinScoreRate,
-            Difficulty = chal.Difficulty,
-            FileName = chal.FileName,
-            AcceptedCount = chal.AcceptedCount,
-            Attachment = chal.Attachment,
-            TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
-            Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToArray()
-        };
-
-    #region Container
+    public List<FlagInfoModel> Flags { get; set; } = [];
 
     /// <summary>
     /// 镜像名称与标签
@@ -146,10 +119,6 @@ public class ChallengeEditDetailModel
     /// </summary>
     public bool? EnableTrafficCapture { get; set; } = false;
 
-    #endregion Container
-
-    #region Score
-
     /// <summary>
     /// 初始分数
     /// </summary>
@@ -169,5 +138,30 @@ public class ChallengeEditDetailModel
     [Required]
     public double Difficulty { get; set; } = 3;
 
-    #endregion Score
+    internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
+        new()
+        {
+            Id = chal.Id,
+            Title = chal.Title,
+            Content = chal.Content,
+            Tag = chal.Tag,
+            Type = chal.Type,
+            FlagTemplate = chal.FlagTemplate,
+            Hints = chal.Hints ?? [],
+            IsEnabled = chal.IsEnabled,
+            ContainerImage = chal.ContainerImage,
+            MemoryLimit = chal.MemoryLimit,
+            CPUCount = chal.CPUCount,
+            StorageLimit = chal.StorageLimit,
+            ContainerExposePort = chal.ContainerExposePort,
+            EnableTrafficCapture = chal.EnableTrafficCapture,
+            OriginalScore = chal.OriginalScore,
+            MinScoreRate = chal.MinScoreRate,
+            Difficulty = chal.Difficulty,
+            FileName = chal.FileName,
+            AcceptedCount = chal.AcceptedCount,
+            Attachment = chal.Attachment,
+            TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
+            Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
+        };
 }

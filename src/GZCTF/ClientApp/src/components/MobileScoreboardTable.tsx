@@ -1,35 +1,48 @@
-import { Avatar, Box, Group, Input, Pagination, Paper, Select, Stack, Table } from '@mantine/core'
+import {
+  Avatar,
+  Box,
+  Group,
+  Input,
+  Pagination,
+  Paper,
+  Select,
+  Stack,
+  Table,
+  useMantineTheme,
+} from '@mantine/core'
+import cx from 'clsx'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
-import { ScoreboardProps, useScoreboardStyles } from '@Components/ScoreboardTable'
+import { ScoreboardProps } from '@Components/ScoreboardTable'
 import { BloodBonus, useBonusLabels } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
 import { ScoreboardItem, SubmissionType } from '@Api'
+import classes from '@Styles/ScoreboardTable.module.css'
 
 const TableRow: FC<{
   item: ScoreboardItem
   onOpenDetail: () => void
 }> = ({ item, onOpenDetail }) => {
-  const { classes, cx } = useScoreboardStyles()
+  const theme = useMantineTheme()
   const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
   return (
-    <tr>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)}>{item.rank}</td>
-      <td className={cx(classes.theadFixLeft)}>
-        <Group position="left" spacing={5} noWrap onClick={onOpenDetail}>
+    <Table.Tr>
+      <Table.Td className={cx(classes.mono, classes.left)}>{item.rank}</Table.Td>
+      <Table.Td className={classes.left}>
+        <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
           <Avatar
             alt="avatar"
             src={item.avatar}
             radius="xl"
             size={30}
-            color="brand"
-            sx={(theme) => ({
-              ...theme.fn.hover({
+            color={theme.primaryColor}
+            style={{
+              '&:hover': {
                 cursor: 'pointer',
-              }),
-            })}
+              },
+            }}
           >
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
@@ -38,7 +51,7 @@ const TableRow: FC<{
             value={item.name}
             readOnly
             size="sm"
-            sx={(theme) => ({
+            style={{
               wrapper: {
                 width: '100%',
               },
@@ -46,18 +59,18 @@ const TableRow: FC<{
               input: {
                 userSelect: 'none',
 
-                ...theme.fn.hover({
+                '&:hover': {
                   cursor: 'pointer',
-                }),
+                },
               },
-            })}
+            }}
           />
         </Group>
-      </td>
-      <td className={cx(classes.theadMono, classes.theadFixLeft)}>
+      </Table.Td>
+      <Table.Td className={cx(classes.mono, classes.left)}>
         {solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0)}
-      </td>
-    </tr>
+      </Table.Td>
+    </Table.Tr>
   )
 }
 
@@ -68,7 +81,6 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
   const numId = parseInt(id ?? '-1')
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
-  const { classes, cx } = useScoreboardStyles()
 
   const { scoreboard } = useGameScoreboard(numId)
 
@@ -95,7 +107,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
 
   return (
     <Paper shadow="xs" p="sm">
-      <Stack spacing="xs">
+      <Stack gap="xs">
         {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
           <Select
             defaultValue="all"
@@ -126,20 +138,20 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             }}
           >
             <Table className={classes.table}>
-              <thead className={classes.thead}>
-                <tr>
+              <Table.Thead className={classes.thead}>
+                <Table.Tr>
                   {[
                     t('game.label.score_table.rank_total'),
                     t('game.label.score_table.team'),
                     t('game.label.score_table.score_total'),
                   ].map((header, idx) => (
-                    <th key={idx} className={cx(classes.theadFixLeft, classes.theadHeader)}>
+                    <Table.Th key={idx} className={cx(classes.left, classes.theadHeader)}>
                       {header}
-                    </th>
+                    </Table.Th>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
                 {scoreboard &&
                   currentItems?.map((item, idx) => (
                     <TableRow
@@ -151,13 +163,12 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
                       }}
                     />
                   ))}
-              </tbody>
+              </Table.Tbody>
             </Table>
           </Box>
         </Box>
-        <Group position="center">
+        <Group justify="center">
           <Pagination
-            noWrap
             size="md"
             value={activePage}
             onChange={setPage}

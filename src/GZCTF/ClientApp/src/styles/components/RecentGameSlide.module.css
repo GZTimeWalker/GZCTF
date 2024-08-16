@@ -1,0 +1,18 @@
+.card {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-size: cover;
+  background-position: center;
+}
+
+.title {
+  font-weight: bold;
+  color: var(--mantine-color-white);
+  line-height: 1.4;
+  font-size: 24px;
+  margin-top: var(--mantine-spacing-xs);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}

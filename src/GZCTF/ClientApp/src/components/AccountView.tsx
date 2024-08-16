@@ -1,30 +1,29 @@
-import { Center, createStyles, Stack } from '@mantine/core'
+import { Center, Stack } from '@mantine/core'
 import { FC } from 'react'
+import { PropsWithChildren } from 'react'
 import { useNavigate } from 'react-router-dom'
 import LogoHeader from '@Components/LogoHeader'
 
-const useStyles = createStyles(() => ({
-  input: {
-    width: '300px',
-    minWidth: '300px',
-    maxWidth: '300px',
-  },
-}))
-
-interface AccountViewProps extends React.PropsWithChildren {
+interface AccountViewProps extends PropsWithChildren {
   onSubmit?: (event: React.FormEvent) => Promise<void>
 }
 
 const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {
-  const { classes } = useStyles()
   const navigate = useNavigate()
 
   return (
     <Center h="100vh">
       <Stack align="center" justify="center">
         <LogoHeader onClick={() => navigate('/')} />
-        <form className={classes.input} onSubmit={onSubmit}>
-          <Stack spacing="xs" align="center" justify="center">
+        <form
+          style={{
+            width: '300px',
+            minWidth: '300px',
+            maxWidth: '300px',
+          }}
+          onSubmit={onSubmit}
+        >
+          <Stack gap="xs" align="center" justify="center">
             {children}
           </Stack>
         </form>

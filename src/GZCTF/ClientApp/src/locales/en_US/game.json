@@ -1,6 +1,9 @@
 {
   "button": {
     "challenges": "Challenges",
+    "delete": {
+      "all_traffic": "Delete all listed traffic"
+    },
     "download": {
       "all_traffic": "Download all listed traffic",
       "scoreboard": "Scoreboard",
@@ -29,14 +32,14 @@
     "game_ended": "Ended",
     "game_lasts_long": "The game will last for a long time",
     "hide_container_events": {
-      "description": "Hide container launching/destroying events",
+      "description": "Hide container creation/destroying events",
       "label": "Hide container events"
     },
     "join": {
       "confirm": "Confirm Registration",
       "content": [
         "Are you sure you want to register for this game?",
-        "After successfully registering for the competition and passing the review, the team will be locked and you will no longer be able to change your team member, <strong>e.g. invites new member or remove member from the team.</strong> The team will be unlocked after the match ends or when the participation request is denied.",
+        "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
         "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
       "invite_code": {
@@ -83,6 +86,10 @@
     },
     "total_duration": "{{hours}}h in total",
     "total_time": "Duration",
+    "traffic": {
+      "delete_confirm": "Delete this traffic file?",
+      "deleted_all_confirm": "Delete all listed traffic?"
+    },
     "writeup": {
       "current": "Current Writeup",
       "deadline_exceeded": "Submission deadline has passed",
@@ -141,8 +148,8 @@
   },
   "notice": {
     "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
-    "new_challenge": "New challenge [{{title}}] has been released",
-    "new_hint": "New hints to [{{title}}]"
+    "new_challenge": "New challenge [{{title}}] has been released.",
+    "new_hint": "Hints for [{{title}}] has been updated."
   },
   "notification": {
     "connected": {
@@ -163,6 +170,9 @@
     "not_started": "Game not yet started",
     "select_chal_and_part": "Please select challenges and teams first",
     "suspended": "You have been banned",
+    "traffic": {
+      "deleted": "Traffic file(s) has been deleted"
+    },
     "writeup": {
       "submitted": "Writeup was successfully submitted"
     }

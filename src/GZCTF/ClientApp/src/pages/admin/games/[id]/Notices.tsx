@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { InlineMarkdownRender } from '@Components/MarkdownRender'
+import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
 import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
 import WithGameTab from '@Components/admin/WithGameEditTab'
@@ -33,7 +33,7 @@ const GameNoticeEdit: FC = () => {
         <Stack>
           <Text> {t('admin.content.games.notices.delete')}</Text>
           <Divider />
-          <InlineMarkdownRender source={gameNotice.values.at(-1) || ''} />
+          <InlineMarkdown source={gameNotice.values.at(-1) || ''} />
         </Stack>
       ),
       onConfirm: () => onConfirmDelete(gameNotice),
@@ -56,11 +56,11 @@ const GameNoticeEdit: FC = () => {
 
   return (
     <WithGameTab
-      headProps={{ position: 'apart' }}
+      headProps={{ justify: 'space-between' }}
       contentPos="right"
       head={
         <Button
-          leftIcon={<Icon path={mdiPlus} size={1} />}
+          leftSection={<Icon path={mdiPlus} size={1} />}
           onClick={() => {
             setActiveGameNotice(null)
             setIsEditModalOpen(true)
@@ -73,13 +73,13 @@ const GameNoticeEdit: FC = () => {
       <ScrollArea pos="relative" h="calc(100vh - 180px)" offsetScrollbars>
         {!gameNotices || gameNotices?.length === 0 ? (
           <Center h="calc(100vh - 200px)">
-            <Stack spacing={0}>
+            <Stack gap={0}>
               <Title order={2}>{t('admin.content.games.notices.empty.title')}</Title>
               <Text>{t('admin.content.games.notices.empty.description')}</Text>
             </Stack>
           </Center>
         ) : (
-          <Stack spacing="lg" align="center" m="2%">
+          <Stack gap="lg" align="center" m="2%">
             {gameNotices.map((gameNotice) => (
               <GameNoticeEditCard
                 w="95%"

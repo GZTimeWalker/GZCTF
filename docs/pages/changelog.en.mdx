@@ -2,19 +2,19 @@
 
 ## v0.18
 
-- **新增**：初步支持了 i18n 多语言支持，目前支持中文、日文、英文
+- **New**: Preliminary support for i18n multi-language support, currently supporting Chinese, Japanese, and English
 
-**Break Changes**
+**Breaking Changes**
 
-- **数据库结构不再与之前兼容，需要重新初始化数据库，如需保持数据请使用 `v0.17` 版本**
+- **The database structure is no longer compatible with the previous version, and the database needs to be reinitialized. If you need to keep the data, please use the `v0.17` tag**
 
-    更新步骤：删除原有数据库，重新初始化数据库
+  Update steps: Delete or backup the original database and reinitialize the database
 
-- **容器默认暴露端口从 `80` 变为 `8080`**
+- **The default exposed port of the container has been changed from `80` to `8080`**
 
-    更新步骤：修改容器暴露端口为 `8080`
+  Update steps: Modify the exposed port of the container to `8080`
 
-    参考资料：[Default ASP.NET Core port changed from 80 to 8080](https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/8.0/aspnet-port)
+  Reference: [Default ASP.NET Core port changed from 80 to 8080](https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/8.0/aspnet-port)
 
 ## v0.17
 
@@ -22,7 +22,7 @@
 
 - **Moved the original `uploads` directory to `files/uploads`, removed the configuration item for this directory, and changed the location of the log storage**
 
-    Update steps: Move the original `uploads` directory to `files/uploads`, remount the relevant directories, and delete the configuration item for the `uploads` directory and the original `log` directory.
+  Update steps: Move the original `uploads` directory to `files/uploads`, remount the relevant directories, and delete the configuration item for the `uploads` directory and the original `log` directory.
 
 ## v0.16-v0.1
 

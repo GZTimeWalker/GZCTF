@@ -7,7 +7,9 @@
   },
   "button": {
     "copy": "クリップボードにコピー",
+    "reset": "リセット",
     "select_file": "ファイルを選択",
+    "try_again": "再試行",
     "uploading": "アップロード中"
   },
   "content": {
@@ -18,6 +20,25 @@
     "about": {
       "slogan": "Hack for fun not for profit"
     },
+    "color": {
+      "custom": {
+        "description": "カスタムカラーを指定する",
+        "label": "カスタムカラー",
+        "placeholder": "デフォルトカラーを使用"
+      },
+      "palette": {
+        "description": "カスタムカラーに基づいて生成されたカラーパレット",
+        "label": "カスタムカラーパレット"
+      },
+      "provider": {
+        "custom": "個人用設定",
+        "default": "標準設定",
+        "description": "使用するカラーテーマを指定する",
+        "label": "カラーテーマ設定",
+        "managed": "管理者設定"
+      },
+      "title": "カラーテーマ"
+    },
     "drop_zone": {
       "content": "画像をここにドロップするか、ここをクリックして{{type}}を選択してください",
       "limit": "3MB以下の画像を選択してください",
@@ -26,10 +47,12 @@
         "poster": "ポスター"
       }
     },
+    "external_link": "外部リンク",
     "home": {
       "recent_games": "最近のゲーム"
     },
     "no_data": "データがありません",
+    "report_error": "エラーが発生しました。管理者に連絡してください",
     "wider": {
       "text": "このページにアクセスするには、より広いデバイスを使用してください",
       "title": "ページの幅が足りません"

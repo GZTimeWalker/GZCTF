@@ -70,7 +70,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           onChange={setTitle}
         />
 
-        <Group grow position="apart">
+        <Group grow justify="space-between">
           <DatePickerInput
             label={t('admin.content.games.info.start_date')}
             value={start.toDate()}
@@ -106,7 +106,7 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           />
         </Group>
 
-        <Group grow position="apart">
+        <Group grow justify="space-between">
           <DatePickerInput
             label={t('admin.content.games.info.end_date')}
             minDate={start.toDate()}

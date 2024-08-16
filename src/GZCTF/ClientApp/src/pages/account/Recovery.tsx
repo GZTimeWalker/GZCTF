@@ -58,14 +58,18 @@ const Recovery: FC = () => {
         title: t('common.email.sent.title'),
         message: t('common.email.sent.message'),
         icon: <Icon path={mdiCheck} size={1} />,
+        loading: false,
+        autoClose: true,
       })
     } catch (err: any) {
       updateNotification({
         id: 'recovery-status',
         color: 'red',
         title: t('common.error.encountered'),
-        message: `${err.response.data.title}`,
+        message: err.response.data.title,
         icon: <Icon path={mdiClose} size={1} />,
+        loading: false,
+        autoClose: true,
       })
     } finally {
       setDisabled(false)

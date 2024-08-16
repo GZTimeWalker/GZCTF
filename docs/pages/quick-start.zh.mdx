@@ -22,8 +22,8 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
 
 1. 为了后续的配置，请准备好如下的初始化参数：
 
-   - `GZCTF_ADMIN_PASSWORD`：初始管理员密码，在数据库未初始化时生效，需要在第一次启动时进行设置，配置在 `docker-compose.yml` 中。
-   - `POSTGRES_PASSWORD`: 数据库密码，需要配置在 `docker-compose.yml` 中及 `appsettings.json` 中。
+   - `GZCTF_ADMIN_PASSWORD`：初始管理员密码，在数据库未初始化时生效，需要在第一次启动时进行设置，配置在 `compose.yml` 中。
+   - `POSTGRES_PASSWORD`: 数据库密码，需要配置在 `compose.yml` 中及 `appsettings.json` 中。
    - `XOR_KEY`: 用于加密比赛私钥的随机字符串，需要配置在 `appsettings.json` 中。
    - `PUBLIC_ENTRY`: 外部访问地址，可以是 IP 或域名，需要配置在 `appsettings.json` 中，用于提供给选手访问题目容器的地址。
 
@@ -81,17 +81,17 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
    }
    ```
 
-3. 将以下内容保存为 `docker-compose.yml` 文件，**并替换为你的初始化参数**
+3. 将以下内容保存为 `compose.yml` 文件，**并替换为你的初始化参数**
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
-       image: gztime/gzctf:latest
+       image: registry.cn-shanghai.aliyuncs.com/gztime/gzctf:develop
        restart: always
        environment:
-         - "LANG=zh_CN.UTF-8" # choose your backend language `en_US` / `zh_CN` / `ja_JP`
          - "GZCTF_ADMIN_PASSWORD=<Your GZCTF_ADMIN_PASSWORD>"
+         # choose your backend language `en_US` / `zh_CN` / `ja_JP`
+         - "LC_ALL=zh_CN.UTF-8"
        ports:
          - "80:8080"
        volumes:
@@ -113,7 +113,7 @@ GZCTF 的安全性和前端功能（如操作剪贴板）依赖于 HTTPS，此�
 
    <Callout type="info">
 
-   你有可能遇到网段冲突的情况，请参考相关更改 `docker-compose.yml`
+   你有可能遇到网段冲突的情况，请参考相关更改 `compose.yml`
    中的子网配置或 `/etc/docker/daemon.json` 中的网段配置。
 
    ```yaml
@@ -158,10 +158,9 @@ gzctf=# #do your sql query
 
 如果你想使用 Redis 作为缓存，获得更无缝的版本切换、服务端重启体验，可以在上述到配置中添加如下内容：
 
-1. `docker-compose.yml` 文件
+1. `compose.yml` 文件
 
    ```yaml
-   version: "3.0"
    services:
      gzctf:
        # ...
@@ -196,12 +195,22 @@ gzctf=# #do your sql query
 
 GZCTF 已经预先构建并打包为统一的 Docker 镜像，你可以在 [Docker Hub](https://hub.docker.com/r/gztime/gzctf) 上找到相关的镜像。
 
-请使用如下两个容器注册表获取镜像：
+请使用如下容器注册表获取镜像：
 
-```
+```txt
 gztime/gzctf:latest
 ghcr.io/gztimewalker/gzctf/gzctf:latest
 ```
+
+<Callout type="info">
+
+建议国内用户使用阿里云注册表（仅适用于 2024 年 6 月 20 日之后的版本）：
+
+```txt
+registry.cn-shanghai.aliyuncs.com/gztime/gzctf:latest
+```
+
+</Callout>
 
 测试版本和开发版本请使用 `develop` 镜像标签。
 
@@ -212,11 +221,3 @@ ghcr.io/gztimewalker/gzctf/gzctf:latest
 也可以参考和借鉴 [W4terCTF 2023](https://github.com/W4terDr0p/W4terCTF-2023) 的公开题目仓库，此内的题目均在题目正常工作的情况下尽量保证 Docker Image 的体积足够小，以便于在比赛中快速部署。
 
 GZCTF 通过将 `GZCTF_FLAG` 环境变量注入到容器中来实现动态 flag 的分发，因此请确保题目**的容器初始化脚本**中将这个环境变量中的文本放入到合适的位置。请注意，这一环境变量的初始化是在容器启动时进行的，而非容器镜像构建时。
-
-<Callout type="info">
-
-若使用 Docker 作为容器后端，则请勿在题目 Dockerfile 中使用 `EXPOSE` 暴露端口，因为 GZCTF 会自动将指定端口映射到主机的随机端口上，如果在 Dockerfile 中使用 `EXPOSE` 会导致一道题暴露多个端口，占用端口资源、留下安全隐患。
-
-使用 Kubernetes 作为容器后端时，此项配置不受影响，因为 Kubernetes 中 GZCTF 会为特定的端口创建 Service。
-
-</Callout>

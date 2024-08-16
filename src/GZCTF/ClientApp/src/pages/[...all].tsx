@@ -1,4 +1,4 @@
-import { Stack, Text, Title } from '@mantine/core'
+import { Stack, Text, Title, useMantineTheme } from '@mantine/core'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -11,6 +11,7 @@ const Error404: FC = () => {
   const location = useLocation()
 
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   usePageTitle(t('common.title.404'))
 
@@ -22,9 +23,9 @@ const Error404: FC = () => {
 
   return (
     <WithNavBar minWidth={0}>
-      <Stack spacing={0} align="center" justify="center" h="calc(100vh - 32px)">
+      <Stack gap={0} align="center" justify="center" h="calc(100vh - 32px)">
         <Icon404 />
-        <Title order={1} color="#00bfa5" fw="lighter">
+        <Title order={1} c={theme.primaryColor} fw="lighter">
           {t('common.content.404.title')}
         </Title>
         <Text fw="bold">{t('common.content.404.text')}</Text>

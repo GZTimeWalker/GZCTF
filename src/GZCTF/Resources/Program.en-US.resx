@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -166,7 +166,7 @@
     <value>Registration has been disabled</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>Please contact the administrator to reset the password</value>
+    <value>Email verification is not enabled, please contact the administrator to reset the password</value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>Send email to user for email change</value>
@@ -496,25 +496,25 @@
     <value>Title not found or dynamic attachment allocation failed</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
-    <value>The problem has been created container</value>
+    <value>The container of this challenge already exists</value>
   </data>
   <data name="Game_ContainerCreationFailed" xml:space="preserve">
-    <value>Problem creating container failed</value>
+    <value>Failed to create container for challenge</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
     <value>The title cannot create a container</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
-    <value>{0} destroyed container instance of problem {1} [{2}]</value>
+    <value>{0} has destroyed container [{2}] of challenge {1}</value>
   </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
-    <value>Problem deleting container failed</value>
+    <value>Failed to delete container for challenge</value>
   </data>
   <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
     <value>Container's lifetime cannot be extended yet</value>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
-    <value>No container created for the problem</value>
+    <value>The container of this challenge hasn't been created</value>
   </data>
   <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
     <value>The number of team containers cannot exceed {0}</value>
@@ -522,7 +522,7 @@
   <data name="Game_DeadlineExpired" xml:space="preserve">
     <value>Submission due date has passed</value>
   </data>
-  <data name="Game_End" xml:space="preserve">
+  <data name="Game_Ended" xml:space="preserve">
     <value>The game has ended</value>
   </data>
   <data name="Game_InOtherTeam" xml:space="preserve">
@@ -703,7 +703,7 @@
     <value>Welcome to GZ::CTF!</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
-    <value>{0} Auto-destroy container instance of problem {1} [{2}]</value>
+    <value>{0} destroyed container [{2}] of challenge {1} automatically</value>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} launches container instance of challenge {1} [{2}]</value>
@@ -715,7 +715,7 @@
     <value>Destroy container [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>Insufficient number of dynamic attachments requested for problem {0}#{1}</value>
+    <value>Insufficient number of dynamic attachments allocated for challenge {0}#{1}</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>{0} fail to create instance for challenge {1}#{2} (may cause by concurrent conflicts), rolling back...</value>
@@ -754,7 +754,7 @@
     <value>Send mail: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Hello, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a                href="{url}"                style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            If the above button is not valid, please copy this link to your browser: &lt;br/&gt;&lt;span                style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;If you have not done so, please ignore this email. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+      <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Hello, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a                href="{url}"                style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            If the above button is not valid, please copy this link to your browser: &lt;br/&gt;&lt;span                style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;If you have not done so, please ignore this email. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>Verify Email</value>
@@ -1034,5 +1034,9 @@
   </data>
   <data name="Database_CurrentProvider" xml:space="preserve">
     <value>Using database: {0}</value>
+  </data>
+</root>
+  <data name="Admin_LogoUpdateFailed" xml:space="preserve">
+      <value>Failed to update logo</value>
   </data>
 </root>

@@ -62,8 +62,9 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
     public Task<Team[]> SearchTeams(string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
-        var query = int.TryParse(hint, out int id)
-            ? Context.Teams.Include(t => t.Members).Where(item => item.Name.ToLower().Contains(loweredHint) || item.Id == id)
+        IQueryable<Team> query = int.TryParse(hint, out var id)
+            ? Context.Teams.Include(t => t.Members)
+                .Where(item => item.Name.ToLower().Contains(loweredHint) || item.Id == id)
             : Context.Teams.Include(t => t.Members).Where(item => item.Name.ToLower().Contains(loweredHint));
 
         return query.OrderBy(t => t.Id).Take(30).ToArrayAsync(token);

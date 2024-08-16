@@ -8,11 +8,11 @@ namespace GZCTF.Models.Request.Edit;
 public class PostEditModel
 {
     /// <summary>
-    /// 通知标题
+    /// 文章标题
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
-    [MaxLength(50, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong),
+    [MaxLength(Limits.MaxPostTitleLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Title { get; set; } = string.Empty;
 
@@ -29,7 +29,7 @@ public class PostEditModel
     /// <summary>
     /// 文章标签
     /// </summary>
-    public string[] Tags { get; set; } = [];
+    public List<string>? Tags { get; set; } = [];
 
     /// <summary>
     /// 是否置顶

@@ -2,8 +2,8 @@ import {
   ActionIcon,
   Badge,
   Card,
+  CardProps,
   Group,
-  PaperProps,
   Stack,
   Title,
   useMantineTheme,
@@ -11,10 +11,10 @@ import {
 import { mdiDeleteOutline, mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import { PostInfoModel } from '@Api'
 
-interface PostEditCardProps extends PaperProps {
+interface PostEditCardProps extends CardProps {
   post: PostInfoModel
   onDelete: () => void
   onEdit: () => void
@@ -26,12 +26,12 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
   return (
     <Card {...props} shadow="sm" p="lg">
       <Stack>
-        <Group position="apart">
-          <Group position="left">
+        <Group justify="space-between">
+          <Group justify="left">
             {post.isPinned && <Icon color={theme.colors.orange[4]} path={mdiPinOutline} size={1} />}
             <Title order={3}>{post.title}</Title>
           </Group>
-          <Group position="right">
+          <Group justify="right">
             <ActionIcon onClick={onPin}>
               {post.isPinned ? (
                 <Icon path={mdiPinOffOutline} size={1} />
@@ -47,9 +47,9 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
             </ActionIcon>
           </Group>
         </Group>
-        <MarkdownRender source={post.summary} />
-        <Group position="right">
-          <Badge color="brand" variant="light">
+        <Markdown source={post.summary} />
+        <Group justify="right">
+          <Badge color={theme.primaryColor} variant="light">
             {new Date(post.time).toLocaleString()}
           </Badge>
         </Group>

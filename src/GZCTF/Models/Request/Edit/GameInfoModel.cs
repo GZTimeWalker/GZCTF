@@ -47,14 +47,15 @@ public class GameInfoModel
     /// <summary>
     /// 比赛邀请码
     /// </summary>
-    [MaxLength(32, ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong),
+    [MaxLength(Limits.InviteTokenLength,
+        ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? InviteCode { get; set; }
 
     /// <summary>
     /// 参赛所属单位列表
     /// </summary>
-    public HashSet<string>? Organizations { get; set; }
+    public List<string>? Organizations { get; set; }
 
     /// <summary>
     /// 队员数量限制, 0 为无上限
@@ -124,7 +125,7 @@ public class GameInfoModel
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
-            Organizations = game.Organizations,
+            Organizations = game.Organizations?.ToList(),
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,

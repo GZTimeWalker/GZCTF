@@ -87,6 +87,8 @@ const Login: FC = () => {
         title: t('account.notification.login.success.title'),
         message: t('account.notification.login.success.message'),
         icon: <Icon path={mdiCheck} size={1} />,
+        autoClose: true,
+        loading: false,
       })
       setNeedRedirect(true)
       mutate()
@@ -95,8 +97,10 @@ const Login: FC = () => {
         id: 'login-status',
         color: 'red',
         title: t('common.error.encountered'),
-        message: `${err.response.data.title}`,
+        message: err.response.data.title,
         icon: <Icon path={mdiClose} size={1} />,
+        autoClose: true,
+        loading: false,
       })
     } finally {
       setDisabled(false)

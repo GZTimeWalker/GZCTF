@@ -1,4 +1,15 @@
-import { Group, MantineColor, Stack, Text, useMantineTheme } from '@mantine/core'
+import {
+  Group,
+  Stack,
+  Text,
+  darken,
+  lighten,
+  useMantineTheme,
+  useMantineColorScheme,
+  SelectProps,
+  ComboboxItem,
+  MantineColorsTuple,
+} from '@mantine/core'
 import {
   mdiBomb,
   mdiBullhornOutline,
@@ -24,7 +35,6 @@ import {
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { forwardRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ChallengeTag,
@@ -42,52 +52,57 @@ export const useChallengeTypeLabelMap = () => {
     [
       ChallengeType.StaticAttachment,
       {
-        label: t('challenge.type.static_attachment.label'),
+        name: t('challenge.type.static_attachment.label'),
         desrc: t('challenge.type.static_attachment.desrc'),
       },
     ],
     [
       ChallengeType.StaticContainer,
       {
-        label: t('challenge.type.static_container.label'),
+        name: t('challenge.type.static_container.label'),
         desrc: t('challenge.type.static_container.desrc'),
       },
     ],
     [
       ChallengeType.DynamicAttachment,
       {
-        label: t('challenge.type.dynamic_attachment.label'),
+        name: t('challenge.type.dynamic_attachment.label'),
         desrc: t('challenge.type.dynamic_attachment.desrc'),
       },
     ],
     [
       ChallengeType.DynamicContainer,
       {
-        label: t('challenge.type.dynamic_container.label'),
+        name: t('challenge.type.dynamic_container.label'),
         desrc: t('challenge.type.dynamic_container.desrc'),
       },
     ],
   ])
 }
 
-export interface ChallengeTypeItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  label: string
+export interface ChallengeTypeItemProps {
+  name: string
   desrc: string
 }
 
-export const ChallengeTypeItem = forwardRef<HTMLDivElement, ChallengeTypeItemProps>(
-  ({ label, desrc, ...others }: ChallengeTypeItemProps, ref) => {
-    return (
-      <Stack spacing={0} ref={ref} {...others}>
-        <Text size="sm">{label}</Text>
-        <Text size="xs">{desrc}</Text>
-      </Stack>
-    )
-  }
-)
+type SelectChallengeTypeItemProps = ChallengeTypeItemProps & ComboboxItem
+
+export const ChallengeTypeItem: SelectProps['renderOption'] = ({ option }) => {
+  const { name, desrc } = option as SelectChallengeTypeItemProps
+
+  return (
+    <Stack gap={0}>
+      <Text size="sm" fw="bold">
+        {name}
+      </Text>
+      <Text size="xs">{desrc}</Text>
+    </Stack>
+  )
+}
 
 export const useChallengeTagLabelMap = () => {
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   return new Map<ChallengeTag, ChallengeTagItemProps>([
     [
@@ -95,8 +110,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.misc'),
         icon: mdiGamepadVariantOutline,
-        label: ChallengeTag.Misc,
+        name: ChallengeTag.Misc,
         color: 'teal',
+        colors: theme.colors['teal'],
       },
     ],
     [
@@ -104,25 +120,39 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.crypto'),
         icon: mdiMatrix,
-        label: ChallengeTag.Crypto,
+        name: ChallengeTag.Crypto,
         color: 'indigo',
+        colors: theme.colors['indigo'],
       },
     ],
     [
       ChallengeTag.Pwn,
-      { desrc: t('challenge.tag.pwn'), icon: mdiBomb, label: ChallengeTag.Pwn, color: 'red' },
+      {
+        desrc: t('challenge.tag.pwn'),
+        icon: mdiBomb,
+        name: ChallengeTag.Pwn,
+        color: 'red',
+        colors: theme.colors['red'],
+      },
     ],
     [
       ChallengeTag.Web,
-      { desrc: t('challenge.tag.web'), icon: mdiWeb, label: ChallengeTag.Web, color: 'blue' },
+      {
+        desrc: t('challenge.tag.web'),
+        icon: mdiWeb,
+        name: ChallengeTag.Web,
+        color: 'blue',
+        colors: theme.colors['blue'],
+      },
     ],
     [
       ChallengeTag.Reverse,
       {
         desrc: t('challenge.tag.reverse'),
         icon: mdiChevronTripleLeft,
-        label: ChallengeTag.Reverse,
+        name: ChallengeTag.Reverse,
         color: 'yellow',
+        colors: theme.colors['yellow'],
       },
     ],
     [
@@ -130,8 +160,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.blockchain'),
         icon: mdiEthereum,
-        label: ChallengeTag.Blockchain,
+        name: ChallengeTag.Blockchain,
         color: 'lime',
+        colors: theme.colors['lime'],
       },
     ],
     [
@@ -139,8 +170,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.forensics'),
         icon: mdiFingerprint,
-        label: ChallengeTag.Forensics,
+        name: ChallengeTag.Forensics,
         color: 'cyan',
+        colors: theme.colors['cyan'],
       },
     ],
     [
@@ -148,8 +180,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.hardware'),
         icon: mdiChip,
-        label: ChallengeTag.Hardware,
+        name: ChallengeTag.Hardware,
         color: 'violet',
+        colors: theme.colors['violet'],
       },
     ],
     [
@@ -157,8 +190,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.mobile'),
         icon: mdiCellphoneCog,
-        label: ChallengeTag.Mobile,
+        name: ChallengeTag.Mobile,
         color: 'pink',
+        colors: theme.colors['pink'],
       },
     ],
     [
@@ -166,8 +200,9 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.ppc'),
         icon: mdiConsole,
-        label: ChallengeTag.PPC,
+        name: ChallengeTag.PPC,
         color: 'orange',
+        colors: theme.colors['orange'],
       },
     ],
     [
@@ -175,31 +210,36 @@ export const useChallengeTagLabelMap = () => {
       {
         desrc: t('challenge.tag.ai'),
         icon: mdiRobotLoveOutline,
-        label: ChallengeTag.AI,
+        name: ChallengeTag.AI,
         color: 'green',
+        colors: theme.colors['green'],
       },
     ],
   ])
 }
 
-export interface ChallengeTagItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  label: ChallengeTag
+export interface ChallengeTagItemProps {
+  name: ChallengeTag
   desrc: string
   icon: string
-  color: MantineColor
+  color: string
+  colors: MantineColorsTuple
 }
 
-export const ChallengeTagItem = forwardRef<HTMLDivElement, ChallengeTagItemProps>(
-  ({ label, icon, color, ...others }: ChallengeTagItemProps, ref) => {
-    const theme = useMantineTheme()
-    return (
-      <Group ref={ref} noWrap {...others}>
-        <Icon color={theme.colors[color][4]} path={icon} size={1} />
-        <Text size="sm">{label}</Text>
-      </Group>
-    )
-  }
-)
+type SelectChallengeTagItemProps = ChallengeTagItemProps & ComboboxItem
+
+export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
+  const { colors, icon, name } = option as SelectChallengeTagItemProps
+
+  return (
+    <Group wrap="nowrap">
+      <Icon color={colors[4]} path={icon} size={1.2} />
+      <Text size="sm" fw="bold">
+        {name}
+      </Text>
+    </Group>
+  )
+}
 
 export const BloodsTypes = [
   SubmissionType.FirstBlood,
@@ -209,21 +249,23 @@ export const BloodsTypes = [
 
 export const SubmissionTypeColorMap = () => {
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
+
   return new Map([
     [SubmissionType.Unaccepted, undefined],
-    [SubmissionType.Normal, theme.colors.brand[theme.colorScheme === 'dark' ? 8 : 6]],
+    [SubmissionType.Normal, theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6]],
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
       SubmissionType.SecondBlood,
-      theme.colorScheme === 'dark'
-        ? theme.fn.lighten(theme.colors.gray[2], 0.3)
-        : theme.fn.darken(theme.colors.gray[1], 0.2),
+      colorScheme === 'dark'
+        ? lighten(theme.colors.gray[2], 0.3)
+        : darken(theme.colors.gray[1], 0.2),
     ],
     [
       SubmissionType.ThirdBlood,
-      theme.colorScheme === 'dark'
-        ? theme.fn.darken(theme.colors.orange[7], 0.25)
-        : theme.fn.lighten(theme.colors.orange[7], 0.2),
+      colorScheme === 'dark'
+        ? darken(theme.colors.orange[7], 0.25)
+        : lighten(theme.colors.orange[7], 0.2),
     ],
   ])
 }
@@ -231,35 +273,23 @@ export const SubmissionTypeColorMap = () => {
 export const SubmissionTypeIconMap = (size: number) => {
   const colorMap = SubmissionTypeColorMap()
   return {
-    iconMap: new Map([
+    iconMap: new Map<SubmissionType, PartialIconProps | undefined>([
       [SubmissionType.Unaccepted, undefined],
       [
         SubmissionType.Normal,
-        <Icon path={mdiFlag} size={size} color={colorMap.get(SubmissionType.Normal)} />,
+        { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Normal) },
       ],
       [
         SubmissionType.FirstBlood,
-        <Icon
-          path={mdiHexagonSlice6}
-          size={size}
-          color={colorMap.get(SubmissionType.FirstBlood)}
-        />,
+        { path: mdiHexagonSlice6, size: size, color: colorMap.get(SubmissionType.FirstBlood) },
       ],
       [
         SubmissionType.SecondBlood,
-        <Icon
-          path={mdiHexagonSlice4}
-          size={size}
-          color={colorMap.get(SubmissionType.SecondBlood)}
-        />,
+        { path: mdiHexagonSlice4, size: size, color: colorMap.get(SubmissionType.SecondBlood) },
       ],
       [
         SubmissionType.ThirdBlood,
-        <Icon
-          path={mdiHexagonSlice2}
-          size={size}
-          color={colorMap.get(SubmissionType.ThirdBlood)}
-        />,
+        { path: mdiHexagonSlice2, size: size, color: colorMap.get(SubmissionType.ThirdBlood) },
       ],
     ]),
     colorMap,
@@ -269,25 +299,29 @@ export const SubmissionTypeIconMap = (size: number) => {
 export const NoticTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
   const { iconMap } = SubmissionTypeIconMap(size)
-  const colorIdx = theme.colorScheme === 'dark' ? 4 : 7
+  const { colorScheme } = useMantineColorScheme()
+  const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
     [
       NoticeType.Normal,
-      <Icon path={mdiBullhornOutline} size={size} color={theme.colors.brand[colorIdx]} />,
+      { path: mdiBullhornOutline, size: size, color: theme.colors[theme.primaryColor][colorIdx] },
     ],
     [
       NoticeType.NewHint,
-      <Icon path={mdiLightbulbOnOutline} size={size} color={theme.colors.yellow[colorIdx]} />,
+      { path: mdiLightbulbOnOutline, size: size, color: theme.colors.yellow[colorIdx] },
     ],
-    [
-      NoticeType.NewChallenge,
-      <Icon path={mdiPlus} size={size} color={theme.colors.green[colorIdx]} />,
-    ],
+    [NoticeType.NewChallenge, { path: mdiPlus, size: size, color: theme.colors.green[colorIdx] }],
     [NoticeType.FirstBlood, iconMap.get(SubmissionType.FirstBlood)],
     [NoticeType.SecondBlood, iconMap.get(SubmissionType.SecondBlood)],
     [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
   ])
+}
+
+export interface PartialIconProps {
+  path: string
+  size: number
+  color: string | undefined
 }
 
 export const useParticipationStatusMap = () => {
@@ -316,7 +350,7 @@ export const useParticipationStatusMap = () => {
       ParticipationStatus.Rejected,
       {
         title: t('game.participation.status.rejected'),
-        color: 'red',
+        color: 'gray',
         iconPath: mdiClose,
         transformTo: [],
       },
@@ -425,4 +459,26 @@ export const HunamizeSize = (size: number) => {
   } else {
     return `${(size / 1024 / 1024 / 1024).toFixed(2)} GiB`
   }
+}
+
+export const IMAGE_MIME_TYPES = [
+  'image/png',
+  'image/gif',
+  'image/jpeg',
+  'image/webp',
+  'image/avif',
+  'image/heic',
+]
+
+/** 系统错误信息 */
+export const enum ErrorCodes {
+  /**
+   * 比赛未开始
+   */
+  GameNotStarted = 10001,
+
+  /**
+   * 比赛已结束
+   */
+  GameEnded = 10002,
 }

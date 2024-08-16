@@ -1,11 +1,11 @@
 import {
   Button,
   Group,
-  GroupPosition,
   GroupProps,
   LoadingOverlay,
   Stack,
   Tabs,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import {
@@ -22,10 +22,10 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AdminPage from '@Components/admin/AdminPage'
 
-interface GameEditTabProps extends React.PropsWithChildren {
+export interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
   headProps?: GroupProps
-  contentPos?: GroupPosition
+  contentPos?: React.CSSProperties['justifyContent']
   isLoading?: boolean
   backUrl?: string
 }
@@ -42,6 +42,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
   const location = useLocation()
   const { id } = useParams()
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const pages = [
@@ -73,34 +74,38 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           <Button
             w="9rem"
             styles={{ inner: { justifyContent: 'space-between' } }}
-            leftIcon={<Icon path={mdiKeyboardBackspace} size={1} />}
+            leftSection={<Icon path={mdiKeyboardBackspace} size={1} />}
             onClick={() => navigate(backUrl ?? '/admin/games')}
           >
             {t('admin.button.back')}
           </Button>
-          <Group noWrap position={contentPos ?? 'apart'} w="calc(100% - 10rem)">
+          <Group wrap="nowrap" justify={contentPos ?? 'space-between'} w="calc(100% - 10rem)">
             {head}
           </Group>
         </>
       }
     >
-      <Group noWrap position="apart" align="flex-start" w="100%">
+      <Group wrap="nowrap" justify="space-between" align="flex-start" w="100%" pb="xl">
         <Tabs
           orientation="vertical"
           value={activeTab}
-          onTabChange={(value) => navigate(`/admin/games/${id}/${value}`)}
+          onChange={(value) => value && navigate(`/admin/games/${id}/${value}`)}
           styles={{
             root: {
               width: '9rem',
             },
-            tabsList: {
+            list: {
               width: '9rem',
             },
           }}
         >
           <Tabs.List>
             {pages.map((page) => (
-              <Tabs.Tab key={page.path} icon={<Icon path={page.icon} size={1} />} value={page.path}>
+              <Tabs.Tab
+                key={page.path}
+                leftSection={<Icon path={page.icon} size={1} />}
+                value={page.path}
+              >
                 {page.title}
               </Tabs.Tab>
             ))}
@@ -109,10 +114,10 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
         <Stack w="calc(100% - 10rem)" pos="relative">
           <LoadingOverlay
             visible={isLoading ?? false}
-            overlayOpacity={1}
-            overlayColor={
-              theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2]
-            }
+            overlayProps={{
+              backgroundOpacity: 1,
+              color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
+            }}
           />
 
           {children}

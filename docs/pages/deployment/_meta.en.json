@@ -1,4 +1,4 @@
 {
-    "docker-k8s": "Deploy with Docker + K8s",
-    "k8s-only": "Deploy with K8s Only"
+  "docker-k8s": "Deploy with Docker + K8s",
+  "k8s-only": "Deploy with K8s Only"
 }

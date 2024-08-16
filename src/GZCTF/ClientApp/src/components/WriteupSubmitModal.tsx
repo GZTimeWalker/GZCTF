@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   Title,
+  alpha,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -19,12 +20,12 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { HunamizeSize } from '@Utils/Shared'
-import { useUploadStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
+import uploadClasses from '@Styles/Upload.module.css'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
@@ -39,7 +40,6 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
   const { data, mutate } = api.game.useGameGetWriteup(gameId, OnceSWRConfig)
 
   const theme = useMantineTheme()
-  const { classes } = useUploadStyles()
   const [ddl, setDdl] = useState(dayjs(wpddl))
   const [disabled, setDisabled] = useState(dayjs().isAfter(wpddl))
   const [progress, setProgress] = useState(0)
@@ -52,7 +52,9 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     setDisabled(dayjs().isAfter(wpddl))
   }, [wpddl])
 
-  const onUpload = (file: File) => {
+  const onUpload = (file: File | null) => {
+    if (!file || disabled) return
+
     setProgress(0)
     setDisabled(true)
 
@@ -88,9 +90,9 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
   return (
     <Modal
       title={
-        <Group w="100%" position="apart">
+        <Group w="100%" justify="space-between">
           <Title order={4}>{t('game.content.writeup.title')}</Title>
-          <Group spacing={4}>
+          <Group gap={4}>
             <Icon
               path={data?.submitted ? mdiCheck : mdiExclamationThick}
               size={0.9}
@@ -116,7 +118,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         },
       }}
     >
-      <Stack spacing="xs" mt={0}>
+      <Stack gap="xs" mt={0}>
         <Divider />
         <Title order={5}>{t('game.content.writeup.instructions.title')}</Title>
         <List
@@ -157,7 +159,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         {data?.note && (
           <>
             <Title order={5}>{t('game.content.writeup.instructions.additional')}</Title>
-            <MarkdownRender source={data.note} />
+            <Markdown source={data.note} />
           </>
         )}
         <Title order={5}>{t('game.content.writeup.current')}</Title>
@@ -165,11 +167,11 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
           {data && data.submitted ? (
             <Group>
               <Icon path={mdiFileDocumentOutline} size={1.5} />
-              <Stack spacing={0}>
+              <Stack gap={0}>
                 <Text fw={600} size="md">
                   {data.name}
                 </Text>
-                <Text fw={600} size="sm" c="dimmed" ff={theme.fontFamilyMonospace}>
+                <Text fw={600} size="sm" c="dimmed" ff="monospace">
                   {data.fileSize && HunamizeSize(data.fileSize)}
                 </Text>
               </Stack>
@@ -177,7 +179,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
           ) : (
             <Group>
               <Icon path={mdiFileHidden} size={1.5} />
-              <Stack spacing={0}>
+              <Stack gap={0}>
                 <Text fw={600} size="md">
                   {t('game.content.writeup.unsubmitted_note')}
                 </Text>
@@ -190,11 +192,11 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
             <Button
               {...props}
               fullWidth
-              className={classes.uploadButton}
+              className={uploadClasses.button}
               disabled={disabled}
               color={progress !== 0 ? 'cyan' : theme.primaryColor}
             >
-              <div className={classes.uploadLabel}>
+              <div className={uploadClasses.label}>
                 {dayjs().isAfter(ddl)
                   ? t('game.content.writeup.deadline_exceeded')
                   : progress !== 0
@@ -204,8 +206,8 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
               {progress !== 0 && (
                 <Progress
                   value={progress}
-                  className={classes.uploadProgress}
-                  color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
+                  className={uploadClasses.progress}
+                  color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
                   radius="sm"
                 />
               )}

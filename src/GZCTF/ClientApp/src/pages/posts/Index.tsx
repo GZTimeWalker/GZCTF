@@ -3,27 +3,22 @@ import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import PostCard from '@Components/PostCard'
-import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useFixedButtonStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { PostInfoModel, Role } from '@Api'
+import btnClasses from '@Styles/FixedButton.module.css'
 
 const ITEMS_PER_PAGE = 10
 
 const Posts: FC = () => {
   const { data: posts, mutate } = api.info.useInfoGetPosts(OnceSWRConfig)
 
-  const { classes: btnClasses } = useFixedButtonStyles({
-    right: 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
-    bottom: '2rem',
-  })
   const [activePage, setPage] = useState(1)
   const navigate = useNavigate()
   const { role } = useUserRole()
@@ -59,31 +54,37 @@ const Posts: FC = () => {
   }
 
   return (
-    <WithNavBar isLoading={!posts} minWidth={0}>
+    <WithNavBar isLoading={!posts} minWidth={0} withHeader stickyHeader>
       <Stack justify="space-between" mb="3rem">
-        <StickyHeader />
-        <Stack>
-          {posts
-            ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
-            .map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
-        </Stack>
+        {posts
+          ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
+          .map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
         {(posts?.length ?? 0) > ITEMS_PER_PAGE && (
           <Pagination
-            position="center"
             my={20}
             value={activePage}
             onChange={setPage}
             total={Math.ceil((posts?.length ?? 0) / ITEMS_PER_PAGE)}
+            styles={{
+              root: {
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              },
+            }}
           />
         )}
       </Stack>
       {RequireRole(Role.Admin, role) && (
         <Button
-          className={btnClasses.fixedButton}
+          className={btnClasses.root}
+          __vars={{
+            '--fixed-right': 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
+          }}
           variant="filled"
           radius="xl"
           size="md"
-          leftIcon={<Icon path={mdiPlus} size={1} />}
+          leftSection={<Icon path={mdiPlus} size={1} />}
           onClick={() => navigate('/posts/new/edit')}
         >
           {t('post.button.new')}

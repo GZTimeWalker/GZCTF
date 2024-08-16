@@ -26,11 +26,14 @@
         "add": "Add Hint"
       },
       "new": "New Challenge",
+      "next": "Next",
       "preview": "Preview",
+      "previous": "Previous",
       "test_container": {
         "create": "Create",
         "destroy": "Destroy"
-      }
+      },
+      "update_accept_count": "Update AC Counter"
     },
     "games": {
       "challenges": {
@@ -179,8 +182,7 @@
           "label": "Maximum Team Member"
         },
         "organizations": {
-          "add": "+ Add division \"{{org}}\"",
-          "description": "Add divisions to enable grouped scoreboard",
+          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"
         },
         "poster": "Poster",
@@ -264,7 +266,7 @@
         },
         "title": "Account Policy",
         "use_captcha": {
-          "description": "Whether to use CAPTCHA",
+          "description": "Verify on login, registration and recovery",
           "label": "Enable CAPTCHA"
         }
       },
@@ -288,9 +290,25 @@
         "title": "Container Policy"
       },
       "platform": {
+        "color": {
+          "description": "Custom color for the platform",
+          "label": "Platform Color"
+        },
+        "color_palette": {
+          "description": "Color palette generated from the custom color",
+          "label": "Color Palette"
+        },
+        "description": {
+          "description": "Site description provided for SEO",
+          "label": "Site Description"
+        },
         "footer": {
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
+        },
+        "logo": {
+          "description": "Used for favicon and the logo on pages",
+          "label": "Platform Logo"
         },
         "name": {
           "description": "Platform name will be displayed with ::CTF",
@@ -323,7 +341,7 @@
   },
   "label": {
     "games": {
-      "public": "Public",
+      "hide": "Hide",
       "summary": "Summary"
     },
     "instances": {
@@ -355,6 +373,7 @@
         "created": "Challenge created",
         "deleted": "Challenge deleted",
         "flag": {
+          "copied": "Flag copied to clipboard",
           "created": "Flag created",
           "deleted": "Flag deleted"
         },
@@ -369,6 +388,7 @@
       },
       "created": "Game created",
       "info": {
+        "accept_count_updated": "AC counter updated",
         "deleted": "Game deleted",
         "info_updated": "Game updated",
         "poster": {
@@ -424,7 +444,7 @@
           }
         }
       },
-      "organizations": "No divisions specified; teams can join without selecting a division.",
+      "organizations": "Enter to add a division.",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"
@@ -442,7 +462,11 @@
     },
     "settings": {
       "email_domain_list": "No restrictions",
-      "footer": "`Test` <mbr/> Something..."
+      "footer": "`Test` <mbr/> Something...",
+      "logo": {
+        "custom": "Custom Logo",
+        "default": "Use GZCTF Icon"
+      }
     },
     "teams": {
       "search": "Search by name"

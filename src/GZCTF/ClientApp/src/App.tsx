@@ -1,102 +1,63 @@
-import {
-  Center,
-  ColorScheme,
-  ColorSchemeProvider,
-  Global,
-  Loader,
-  MantineProvider,
-} from '@mantine/core'
-import { useLocalStorage } from '@mantine/hooks'
+import { Center, Loader, MantineProvider } from '@mantine/core'
+import { DatesProvider } from '@mantine/dates'
+import { emotionTransform, MantineEmotionProvider } from '@mantine/emotion'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
 import { FC, Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { useRoutes } from 'react-router-dom'
 import { SWRConfig } from 'swr'
 import routes from '~react-pages'
-import { ThemeOverride } from '@Utils/ThemeOverride'
+import ErrorFallback from '@Components/ErrorFallback'
+import { useLanguage } from '@Utils/I18n'
+import { useCustomTheme } from '@Utils/ThemeOverride'
 import { useBanner, localCacheProvider } from '@Utils/useConfig'
 import { fetcher } from '@Api'
+import '@mantine/carousel/styles.css'
+import '@mantine/core/styles.css'
+import '@mantine/dates/styles.css'
+import '@mantine/dropzone/styles.css'
+import '@mantine/notifications/styles.css'
+import './styles/App.css'
 
 export const App: FC = () => {
-  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: 'color-scheme',
-    defaultValue: 'dark',
-    getInitialValueInEffect: true,
-  })
-
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
-
   useBanner()
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
+  const { theme } = useCustomTheme()
 
   return (
-    <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-      <MantineProvider withGlobalStyles withCSSVariables theme={{ ...ThemeOverride, colorScheme }}>
-        <Notifications zIndex={5000} />
-        {StyledGlobal}
-        <ModalsProvider
-          labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
-        >
-          <SWRConfig
-            value={{
-              refreshInterval: 10000,
-              provider: localCacheProvider,
-              fetcher,
-            }}
-          >
-            <Suspense
-              fallback={
-                <Center h="100vh" w="100vw">
-                  <Loader />
-                </Center>
-              }
+    <MantineProvider defaultColorScheme="dark" theme={theme} stylesTransform={emotionTransform}>
+      <MantineEmotionProvider>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Notifications zIndex={5000} />
+          <DatesProvider settings={{ locale }}>
+            <ModalsProvider
+              labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
             >
-              {useRoutes(routes)}
-            </Suspense>
-          </SWRConfig>
-        </ModalsProvider>
-      </MantineProvider>
-    </ColorSchemeProvider>
+              <SWRConfig
+                value={{
+                  refreshInterval: 10000,
+                  provider: localCacheProvider,
+                  fetcher,
+                }}
+              >
+                <Suspense
+                  fallback={
+                    <Center h="100vh" w="100vw">
+                      <Loader />
+                    </Center>
+                  }
+                >
+                  {useRoutes(routes)}
+                </Suspense>
+              </SWRConfig>
+            </ModalsProvider>
+          </DatesProvider>
+        </ErrorBoundary>
+      </MantineEmotionProvider>
+    </MantineProvider>
   )
 }
-
-const StyledGlobal = (
-  <Global
-    styles={(theme) => ({
-      body: {
-        ...theme.fn.fontStyles(),
-        backgroundColor:
-          theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.white[2],
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
-        lineHeight: theme.lineHeight,
-        padding: 0,
-        margin: 0,
-
-        '@media print': {
-          backgroundColor: theme.colorScheme === 'dark' ? theme.colors.gray[7] : theme.white,
-        },
-      },
-
-      '::-webkit-scrollbar': {
-        height: 6,
-        width: 6,
-      },
-
-      '::-webkit-scrollbar-thumb': {
-        background: 'var(--mantine-color-dark-3)',
-        borderRadius: 3,
-      },
-
-      '::-webkit-scrollbar-track': {
-        backgroundColor: 'transparent',
-      },
-
-      '::-webkit-scrollbar-corner': {
-        backgroundColor: 'transparent',
-      },
-    })}
-  />
-)

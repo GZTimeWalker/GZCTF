@@ -17,7 +17,7 @@ namespace GZCTF.Migrations.PostgreSQL
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -184,7 +184,8 @@ namespace GZCTF.Migrations.PostgreSQL
                         .HasColumnType("text");
 
                     b.Property<string>("FlagTemplate")
-                        .HasColumnType("text");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.Property<string>("Hints")
                         .HasColumnType("text");
@@ -302,7 +303,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("Flag")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(127)
+                        .HasColumnType("character varying(127)");
 
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("boolean");
@@ -348,7 +350,8 @@ namespace GZCTF.Migrations.PostgreSQL
                         .HasColumnType("boolean");
 
                     b.Property<string>("InviteCode")
-                        .HasColumnType("text");
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Organizations")
                         .HasColumnType("text");
@@ -441,7 +444,8 @@ namespace GZCTF.Migrations.PostgreSQL
                         .HasColumnType("text");
 
                     b.Property<string>("FlagTemplate")
-                        .HasColumnType("text");
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
@@ -640,8 +644,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("Level")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
 
                     b.Property<string>("Logger")
                         .IsRequired()
@@ -657,15 +661,15 @@ namespace GZCTF.Migrations.PostgreSQL
                         .HasColumnType("character varying(40)");
 
                     b.Property<string>("Status")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<DateTimeOffset>("TimeUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
 
                     b.HasKey("Id");
 
@@ -737,7 +741,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTimeOffset>("UpdateTimeUtc")
                         .HasColumnType("timestamp with time zone");
@@ -813,8 +818,8 @@ namespace GZCTF.Migrations.PostgreSQL
                         .HasColumnType("character varying(64)");
 
                     b.Property<string>("Bio")
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(72)
+                        .HasColumnType("character varying(72)");
 
                     b.Property<Guid>("CaptainId")
                         .HasColumnType("uuid");
@@ -829,8 +834,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("character varying(16)");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
@@ -854,8 +859,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("Bio")
                         .IsRequired()
-                        .HasMaxLength(63)
-                        .HasColumnType("character varying(63)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -875,7 +880,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("IP")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.Property<DateTimeOffset>("LastSignedInUtc")
                         .HasColumnType("timestamp with time zone");
@@ -908,8 +914,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("RealName")
                         .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("character varying(7)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<DateTimeOffset>("RegisterTimeUtc")
                         .HasColumnType("timestamp with time zone");
@@ -922,8 +928,8 @@ namespace GZCTF.Migrations.PostgreSQL
 
                     b.Property<string>("StdNumber")
                         .IsRequired()
-                        .HasMaxLength(31)
-                        .HasColumnType("character varying(31)");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");

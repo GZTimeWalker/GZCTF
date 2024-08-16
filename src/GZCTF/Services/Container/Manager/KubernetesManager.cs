@@ -1,7 +1,11 @@
+/*
+ * This file is protected and may not be modified without permission.
+ * See LICENSE_ADDENDUM.txt for details.
+ */
+
 using System.Net;
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
-using GZCTF.Services.Interface;
 using k8s;
 using k8s.Autorest;
 using k8s.Models;
@@ -41,7 +45,9 @@ public class KubernetesManager : IContainerManager
             return null;
         }
 
-        var name = $"{imageName.ToValidRFC1123String("chal")}-{Guid.NewGuid().ToString("N")[..16]}";
+        var chalImage = imageName.ToValidRFC1123String("chal");
+
+        var name = $"{chalImage}-{Ulid.NewUlid().ToString().ToLowerInvariant()}";
 
         var pod = new V1Pod("v1", "Pod")
         {
@@ -52,8 +58,10 @@ public class KubernetesManager : IContainerManager
                 Labels = new Dictionary<string, string>
                 {
                     ["ctf.gzti.me/ResourceId"] = name,
+                    ["ctf.gzti.me/Image"] = chalImage,
                     ["ctf.gzti.me/TeamId"] = config.TeamId,
-                    ["ctf.gzti.me/UserId"] = config.UserId.ToString()
+                    ["ctf.gzti.me/UserId"] = config.UserId.ToString(),
+                    ["ctf.gzti.me/ChallengeId"] = config.ChallengeId.ToString()
                 }
             },
             Spec = new V1PodSpec
@@ -63,7 +71,7 @@ public class KubernetesManager : IContainerManager
                         ? Array.Empty<V1LocalObjectReference>()
                         : new List<V1LocalObjectReference> { new() { Name = authSecretName } },
                 DnsPolicy = "None",
-                DnsConfig = new() { Nameservers = options.Dns ?? ["8.8.8.8", "223.5.5.5", "114.114.114.114"] },
+                DnsConfig = new() { Nameservers = options.Dns ?? ["223.5.5.5", "114.114.114.114"] },
                 EnableServiceLinks = false,
                 Containers =
                 [
@@ -72,10 +80,17 @@ public class KubernetesManager : IContainerManager
                         Name = name,
                         Image = config.Image,
                         ImagePullPolicy = "Always",
+                        // The GZCTF identifier is protected by the License.
+                        // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
+                        // Please see LICENSE_ADDENDUM.txt for details.
                         Env =
                             config.Flag is null
-                                ? new List<V1EnvVar>()
-                                : [new V1EnvVar("GZCTF_FLAG", config.Flag)],
+                                ? [new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)]
+                                :
+                                [
+                                    new V1EnvVar("GZCTF_FLAG", config.Flag),
+                                    new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)
+                                ],
                         Ports = [new V1ContainerPort(config.ExposedPort)],
                         Resources = new V1ResourceRequirements
                         {
@@ -93,7 +108,8 @@ public class KubernetesManager : IContainerManager
                         }
                     }
                 ],
-                RestartPolicy = "Never"
+                RestartPolicy = "Never",
+                AutomountServiceAccountToken = false
             }
         };
 
@@ -116,7 +132,7 @@ public class KubernetesManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e,
+            _logger.LogError(e, "{msg}",
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed), name]);
             return null;
         }
@@ -131,9 +147,6 @@ public class KubernetesManager : IContainerManager
         }
 
         // Service is needed for port mapping
-        var container =
-            new Models.Data.Container { ContainerId = name, Image = config.Image, Port = config.ExposedPort };
-
         var service = new V1Service("v1", "Service")
         {
             Metadata = new V1ObjectMeta
@@ -189,16 +202,21 @@ public class KubernetesManager : IContainerManager
                 // ignored
             }
 
-            _logger.LogError(e,
+            _logger.LogError(e, "{msg}",
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailed), name]);
             return null;
         }
 
-        container.StartedAt = DateTimeOffset.UtcNow;
-        container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = service.Spec.ClusterIP;
-        container.Port = config.ExposedPort;
-        container.IsProxy = !_meta.ExposePort;
+        var container = new Models.Data.Container
+        {
+            ContainerId = name,
+            Image = config.Image,
+            Port = config.ExposedPort,
+            IP = service.Spec.ClusterIP,
+            IsProxy = !_meta.ExposePort,
+            // No tracking for k8s-managed containers
+            Status = ContainerStatus.Running
+        };
 
         if (!_meta.ExposePort)
             return container;
@@ -237,7 +255,7 @@ public class KubernetesManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e,
+            _logger.LogError(e, "{msg}",
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                     container.ContainerId]);
             return;

@@ -389,9 +389,6 @@ public partial class TeamController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameInvalidInvitation),
                     teamName]));
 
-            if (team.Locked && await teamRepository.AnyActiveGame(team, cancelToken))
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameLocked), teamName]));
-
             UserInfo? user = await userManager.GetUserAsync(User);
 
             if (team.Members.Any(m => m.Id == user!.Id))
@@ -497,11 +494,13 @@ public partial class TeamController(
                 StatusCodes.Status403Forbidden))
             { StatusCode = StatusCodes.Status403Forbidden };
 
-        if (file.Length == 0)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
-
-        if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        switch (file.Length)
+        {
+            case 0:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+            case > 3 * 1024 * 1024:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        }
 
         if (team.AvatarHash is not null)
             _ = await fileService.DeleteFileByHash(team.AvatarHash, token);
@@ -555,7 +554,8 @@ public partial class TeamController(
 
         await teamRepository.DeleteTeam(team, token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted)], user, TaskStatus.Success);
+        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted), team.Name], user,
+            TaskStatus.Success);
 
         return Ok();
     }

@@ -1,7 +1,13 @@
 import { useLocalStorage } from '@mantine/hooks'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ja'
+import 'dayjs/locale/zh'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import resources from 'virtual:i18next-loader'
+
+dayjs.extend(localizedFormat)
 
 export const LanguageMap = {
   zh_CN: '简体中文',
@@ -25,7 +31,9 @@ export const useLanguage = () => {
 
   useEffect(() => {
     i18n.changeLanguage(language)
+    dayjs.locale(language)
     apiLanguage = language.replace('_', '-')
+    document.documentElement.setAttribute('lang', language.replace('_', '-').toLowerCase())
   }, [language])
 
   const supportedLanguages = Object.keys(resources) as SupportedLanguages[]
@@ -40,7 +48,9 @@ export const useLanguage = () => {
     }
   }
 
-  return { language, setLanguage, supportedLanguages }
+  const locale = language.split('_')[0]
+
+  return { language, locale, setLanguage, supportedLanguages }
 }
 
 export const normalizeLanguage = (language: string) => language.toUpperCase().replace(/[_-].*/, '')

@@ -1,28 +1,37 @@
-import { Avatar, Button, Container, Divider, Group, Stack, Text, Title } from '@mantine/core'
+import {
+  Avatar,
+  Button,
+  Container,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  Title,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import { useScrollIntoView } from '@mantine/hooks'
 import { mdiPencilOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
-import MarkdownRender from '@Components/MarkdownRender'
+import Markdown from '@Components/MarkdownRenderer'
 import WithNavBar from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
-import { useBannerStyles, useFixedButtonStyles } from '@Utils/ThemeOverride'
+import { useLanguage } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
 import api, { Role } from '@Api'
-
-dayjs.extend(LocalizedFormat)
+import classes from '@Styles/Banner.module.css'
+import btnClasses from '@Styles/FixedButton.module.css'
 
 const Post: FC = () => {
   const { postId } = useParams()
   const navigate = useNavigate()
 
-  const { classes, theme } = useBannerStyles()
-
+  const theme = useMantineTheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -44,12 +53,9 @@ const Post: FC = () => {
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>()
   useEffect(() => scrollIntoView({ alignment: 'center' }), [])
 
-  const { classes: btnClasses } = useFixedButtonStyles({
-    right: '2rem',
-    bottom: '2rem',
-  })
-
   const { role } = useUserRole()
+  const { colorScheme } = useMantineColorScheme()
+  const { locale } = useLanguage()
 
   usePageTitle(post?.title ?? 'Post')
 
@@ -57,7 +63,7 @@ const Post: FC = () => {
     <WithNavBar width="100%" isLoading={!post} minWidth={0} withFooter>
       <div ref={targetRef} className={classes.root}>
         <Stack
-          spacing={6}
+          gap={6}
           align="center"
           w="100%"
           p={`0 ${theme.spacing.xs}`}
@@ -66,46 +72,52 @@ const Post: FC = () => {
           <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>
             {post?.title}
           </Title>
-          <Avatar alt="avatar" src={post?.authorAvatar} color="brand" radius="xl" size="lg">
+          <Avatar
+            alt="avatar"
+            src={post?.authorAvatar}
+            color={theme.primaryColor}
+            radius="xl"
+            size="lg"
+          >
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text fw={700}>{post?.authorName ?? 'Anonym'}</Text>
-          <Stack spacing={2}>
-            <Divider color={theme.colorScheme === 'dark' ? 'white' : 'gray'} />
-            <Text fw={500}>{dayjs(post?.time).format('LLL')}</Text>
+          <Text fw="bold">{post?.authorName ?? 'Anonym'}</Text>
+          <Stack gap={2}>
+            <Divider color={colorScheme === 'dark' ? 'white' : 'gray'} />
+            <Text fw={500}>{dayjs(post?.time).locale(locale).format('lll')}</Text>
           </Stack>
         </Stack>
       </div>
       <Container className={classes.content}>
-        <MarkdownRender source={post?.content ?? ''} />
+        <Markdown source={post?.content ?? ''} />
         {post?.tags && post.tags.length > 0 && (
-          <Group position="right">
+          <Group justify="right">
             {post.tags.map((tag, idx) => (
-              <Text key={idx} fw={700} span c="brand">
+              <Text key={idx} fw="bold" span c={theme.primaryColor}>
                 {`#${tag}`}
               </Text>
             ))}
           </Group>
         )}
-        <Group spacing={5} mb={100} position="right">
+        <Group gap={5} my="lg" justify="right">
           <Avatar alt="avatar" src={post?.authorAvatar} size="sm">
             {post?.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
-          <Text fw={700}>
+          <Text fw="bold">
             {t('post.content.metadata', {
               author: post?.authorName ?? 'Anonym',
-              date: dayjs(post?.time).format('HH:mm, YY/MM/DD'),
+              date: dayjs(post?.time).locale(locale).format('LLL'),
             })}
           </Text>
         </Group>
       </Container>
       {RequireRole(Role.Admin, role) && (
         <Button
-          className={btnClasses.fixedButton}
+          className={btnClasses.root}
           variant="filled"
           radius="xl"
           size="md"
-          leftIcon={<Icon path={mdiPencilOutline} size={1} />}
+          leftSection={<Icon path={mdiPencilOutline} size={1} />}
           onClick={() => navigate(`/posts/${postId}/edit`)}
         >
           {t('post.button.edit')}

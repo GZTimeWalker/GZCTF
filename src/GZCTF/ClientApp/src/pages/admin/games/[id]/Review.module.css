@@ -1,0 +1,22 @@
+.root {
+  flex-direction: row;
+  flex-grow: 1;
+  gap: 0;
+}
+
+.col {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--mantine-spacing-xs);
+  box-sizing: border-box;
+  padding: 0 var(--mantine-spacing-xs);
+  height: 1.5rem;
+}
+
+.input {
+  user-select: none;
+  line-height: 1;
+  font-size: 1rem;
+}

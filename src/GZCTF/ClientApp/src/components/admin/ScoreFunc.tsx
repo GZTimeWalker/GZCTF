@@ -1,4 +1,4 @@
-import { useMantineTheme } from '@mantine/core'
+import { useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import ReactEcharts from 'echarts-for-react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -28,12 +28,12 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
   const showCount = currentAcceptCount > 5.8 * difficulty ? 5.8 * difficulty : currentAcceptCount
   const theme = useMantineTheme()
   const plotData = [...Array(100).keys()].map((x) => [toX(x), func(toX(x))])
-
+  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   return (
     <ReactEcharts
-      theme={theme.colorScheme}
+      theme={colorScheme}
       option={{
         animation: false,
         backgroundColor: 'transparent',
@@ -57,7 +57,7 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
             type: 'line',
             showSymbol: false,
             clip: true,
-            color: theme.colors.brand[8],
+            color: theme.colors[theme.primaryColor][8],
             data: plotData,
             markPoint: {
               label: {

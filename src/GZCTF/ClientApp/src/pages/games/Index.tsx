@@ -2,7 +2,6 @@ import { Stack } from '@mantine/core'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import GameCard from '@Components/GameCard'
-import StickyHeader from '@Components/StickyHeader'
 import WithNavBar from '@Components/WithNavbar'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -24,9 +23,8 @@ const Games: FC = () => {
   usePageTitle(t('game.title.index'))
 
   return (
-    <WithNavBar>
-      <StickyHeader />
-      <Stack pt="md">
+    <WithNavBar withHeader stickyHeader>
+      <Stack>
         {games.map((g) => (
           <GameCard key={g.id} game={g} />
         ))}

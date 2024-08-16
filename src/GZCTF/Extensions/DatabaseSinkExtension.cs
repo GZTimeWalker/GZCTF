@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -15,11 +16,12 @@ public static class DatabaseSinkExtension
 
 public class DatabaseSink : ILogEventSink, IDisposable
 {
+    readonly ConcurrentQueue<LogModel> _logBuffer = [];
+    readonly AsyncManualResetEvent _resetEvent = new();
     readonly IServiceProvider _serviceProvider;
+    readonly CancellationTokenSource _tokenSource = new();
 
     DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
-    readonly CancellationTokenSource _tokenSource = new();
-    readonly ConcurrentQueue<LogModel> _logBuffer = [];
 
     public DatabaseSink(IServiceProvider serviceProvider)
     {
@@ -41,6 +43,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
             return;
 
         _logBuffer.Enqueue(ToLogModel(logEvent));
+        _resetEvent.Set();
     }
 
     static LogModel ToLogModel(LogEvent logEvent)
@@ -54,11 +57,11 @@ public class DatabaseSink : ILogEventSink, IDisposable
         {
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
-            Message = logEvent.RenderMessage(),
+            Message = logEvent.RenderMessageWithExceptions(),
             UserName = LogHelper.GetStringValue(userName, "Anonymous"),
             Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
             RemoteIP = LogHelper.GetStringValue(ip),
-            Status = LogHelper.GetStringValue(status),
+            Status = logEvent.Exception is null ? LogHelper.GetStringValue(status) : TaskStatus.Failed.ToString(),
             Exception = logEvent.Exception?.ToString()
         };
     }
@@ -71,28 +74,29 @@ public class DatabaseSink : ILogEventSink, IDisposable
         {
             while (!token.IsCancellationRequested)
             {
+                await _resetEvent.WaitAsync(token);
+                _resetEvent.Reset();
+
                 while (_logBuffer.TryDequeue(out LogModel? logModel))
                     lockedLogBuffer.Add(logModel);
 
-                if (lockedLogBuffer.Count > 50 || DateTimeOffset.Now - _lastFlushTime > TimeSpan.FromSeconds(10))
+                if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10))
+                    continue;
+
+                await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
+
+                try
                 {
-                    await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
-
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
-
-                    try
-                    {
-                        await dbContext.SaveChangesAsync(token);
-                    }
-                    finally
-                    {
-                        lockedLogBuffer.Clear();
-                        _lastFlushTime = DateTimeOffset.Now;
-                    }
+                    await dbContext.SaveChangesAsync(token);
                 }
-
-                await Task.Delay(TimeSpan.FromSeconds(1), token);
+                finally
+                {
+                    lockedLogBuffer.Clear();
+                    _lastFlushTime = DateTimeOffset.Now;
+                }
             }
         }
         catch (TaskCanceledException) { }

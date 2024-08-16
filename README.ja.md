@@ -12,6 +12,7 @@
 
 [![Telegram Group](https://img.shields.io/endpoint?color=blue&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fgzctf)](https://telegram.dog/gzctf)
 [![QQ Group](https://img.shields.io/badge/QQ%20Group-903244818-blue)](https://jq.qq.com/?_wv=1027&k=muSqhF9x)
+[![Discord](https://img.shields.io/discord/1239476909033656320?label=Discord)](https://discord.gg/dV9A6ZjVhC)
 
 [English](./README.md), [简体中文](./README.zh.md), [日本語](./README.ja.md)
 
@@ -30,6 +31,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - 高度カスタマイズ可能なチャレンジを作れる
 
   - チャレンジ種類：静的アタッチメント、動的アタッチメント、静的コンテイナー、動的コンテイナー
+
     - 静的アタッチメント：アタッチメントは共有され、追加されたフラッグのどれも提出可能となります。
     - 動的アタッチメント：チーム数に応じたフラッグやアタッチメントが少なくとも必要となり、チームに応じてアタッチメントやフラッグが配布されます。
     - 静的コンテイナー：コンテナーのテンプレートは共有され、フラッグは発行されず、追加されたフラッグのどれも提出可能となります。
@@ -52,7 +54,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **組織ごとにグループされたチーム**のスコアタイムライン、組織順位表
 - **Docker または K8S** に基づいた動的なコンテナの分散、管理、および複数のポート マッピング方法のサポート
 - SignalR に基づいた**リアルタイム**ゲーム通知、ゲームイベントとフラッグ送信とログの監視
-- SMTPメール検証機能、Google ReCaptchav3による悪意のある登録防止
+- SMTP メール検証機能、Google ReCaptchav3 による悪意のある登録防止
 - ユーザーのブロックおよび権限管理
 - オプションのチームレビュー、招待コード、登録メール制限
 - プラットフォーム内での記事の収集、レビューとバッチダウンロード
@@ -61,19 +63,24 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - チャレンジに対するトラフィック **TCP over WebSocket プロキシ転送**、トラフィック キャプチャの設定ができます
 - Redis ベースのクラスター キャッシュ、PGSQL をデータベースとして使用
 - グローバル設定でプラットフォームタイトルと他の情報を設定可能
+- マトリクスと分散トレーシングのサポート
 - その他...
 
 ## Demo 🗿
 
-![](assets/demo-1.png)
-![](assets/demo-2.png)
-![](assets/demo-3.png)
-![](assets/demo-4.png)
-![](assets/demo-5.png)
-![](assets/demo-6.png)
-![](assets/demo-7.png)
-![](assets/demo-8.png)
-![](assets/demo-9.png)
+![index.png](docs/public/images/index.png)
+![game.challenges.png](docs/public/images/game.challenges.png)
+![game.scoreboard.png](docs/public/images/game.scoreboard.png)
+![admin.settings.png](docs/public/images/admin.settings.png)
+![admin.challenges.png](docs/public/images/admin.challenges.png)
+![admin.challenge.info.png](docs/public/images/admin.challenge.info.png)
+![admin.challenge.flags.png](docs/public/images/admin.challenge.flags.png)
+![admin.game.info.png](docs/public/images/admin.game.info.png)
+![admin.game.review.png](docs/public/images/admin.game.review.png)
+![admin.teams.png](docs/public/images/admin.teams.png)
+![admin.instances.png](docs/public/images/admin.instances.png)
+![monitor.game.events.png](docs/public/images/monitor.game.events.png)
+![monitor.game.submissions.png](docs/public/images/monitor.game.submissions.png)
 
 ## i18n について 🌐
 
@@ -109,6 +116,9 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **南陽師範学院新人戦 NYNUCTF S4**
 - **商丘師範学院初回ネットワークセキュリティ新人戦**
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
+- **北京航空航天大学 BUAACTF 2024**
+- **カリフォルニア大学サンディエゴ校 San Diego CTF 2024**
+- **曲阜師範大学第1回“曲star”サイバーセキュリティスキルコンテスト**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 

@@ -2,7 +2,9 @@
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -14,9 +16,12 @@ namespace GZCTF.Controllers;
 [Route("api")]
 [ApiController]
 public class InfoController(
+    IDistributedCache cache,
     ICaptchaExtension captcha,
     IPostRepository postRepository,
+    ILogger<InfoController> logger,
     IOptionsSnapshot<GlobalConfig> globalConfig,
+    IOptionsSnapshot<ContainerPolicy> containerPolicy,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
@@ -71,15 +76,25 @@ public class InfoController(
     }
 
     /// <summary>
-    /// 获取全局设置
+    /// 获取客户端设置
     /// </summary>
     /// <remarks>
-    /// 获取全局设置
+    /// 获取客户端设置
     /// </remarks>
     /// <response code="200">成功获取配置信息</response>
     [HttpGet("Config")]
-    [ProducesResponseType(typeof(GlobalConfig), StatusCodes.Status200OK)]
-    public IActionResult GetGlobalConfig() => Ok(globalConfig.Value);
+    [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
+    {
+        ClientConfig data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
+            entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                return Task.FromResult(ClientConfig.FromConfigs(globalConfig.Value, containerPolicy.Value));
+            }, token);
+
+        return Ok(data);
+    }
 
     /// <summary>
     /// 获取 Captcha 配置
@@ -90,6 +105,17 @@ public class InfoController(
     /// <response code="200">成功获取 Captcha 配置</response>
     [HttpGet("Captcha")]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
-    public IActionResult GetClientCaptchaInfo() =>
-        Ok(accountPolicy.Value.UseCaptcha ? captcha.ClientInfo() : new ClientCaptchaInfoModel());
+    public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
+    {
+        ClientCaptchaInfoModel data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
+            entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                return Task.FromResult(accountPolicy.Value.UseCaptcha
+                    ? captcha.ClientInfo()
+                    : new ClientCaptchaInfoModel());
+            }, token);
+
+        return Ok(data);
+    }
 }

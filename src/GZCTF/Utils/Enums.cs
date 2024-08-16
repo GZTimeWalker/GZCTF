@@ -345,7 +345,7 @@ public enum ChallengeTag : byte
     Hardware = 7,
     Mobile = 8,
     PPC = 9,
-    AI = 10,
+    AI = 10
 }
 
 /// <summary>
@@ -408,4 +408,20 @@ public static class AnswerResultExtensions
             AnswerResult.NotFound => localizer[nameof(Resources.Program.Submission_UnknownInstance)],
             _ => "??"
         };
+}
+
+/// <summary>
+/// 系统错误信息，从 10000 开始
+/// </summary>
+public static class ErrorCodes
+{
+    /// <summary>
+    /// 比赛未开始
+    /// </summary>
+    public const int GameNotStarted = 10001;
+
+    /// <summary>
+    /// 比赛已结束
+    /// </summary>
+    public const int GameEnded = 10002;
 }
