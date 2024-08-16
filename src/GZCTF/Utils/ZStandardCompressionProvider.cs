@@ -19,10 +19,8 @@ public class ZStandardCompressionProvider : ICompressionProvider
 
     public bool SupportsFlush => true;
 
-    public Stream CreateStream(Stream outputStream)
-    {
-        return new CompressionStream(outputStream, Options.Level, leaveOpen: true);
-    }
+    public Stream CreateStream(Stream outputStream) =>
+        new CompressionStream(outputStream, Options.Level, leaveOpen: true);
 }
 
 public class ZStandardCompressionProviderOptions
