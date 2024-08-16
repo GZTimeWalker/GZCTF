@@ -280,12 +280,12 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         [
-            MediaTypeNames.Application.Json,
-            MediaTypeNames.Text.Html,
-            MediaTypeNames.Text.JavaScript,
-            MediaTypeNames.Text.Css
+            MediaTypeNames.Application.Pdf,
+            MediaTypeNames.Application.Octet,
+            MediaTypeNames.Application.Zip
         ]
     );
+    options.EnableForHttps = true;
 });
 
 builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =>
