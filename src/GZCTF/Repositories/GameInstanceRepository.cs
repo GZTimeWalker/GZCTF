@@ -186,7 +186,7 @@ public class GameInstanceRepository(
         container.ExpectStopAt = container.StartedAt.AddMinutes(containerPolicy.Value.DefaultLifetime);
 
         gameInstance.Container = container;
-        gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
+        gameInstance.LastContainerOperation = DateTime.UtcNow;
 
         logger.Log(
             Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,

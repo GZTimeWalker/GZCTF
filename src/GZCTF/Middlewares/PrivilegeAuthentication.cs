@@ -42,7 +42,7 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         diagnosticContext.Set("UserName", user.UserName);
         diagnosticContext.Set("IP", context.HttpContext.Connection.RemoteIpAddress);
 
-        if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
+        if (DateTime.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
         {
             user.UpdateByHttpContext(context.HttpContext);
             await dbContext.SaveChangesAsync(); // avoid to update ConcurrencyStamp

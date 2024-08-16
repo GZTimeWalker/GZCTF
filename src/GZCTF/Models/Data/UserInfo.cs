@@ -33,17 +33,17 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// 用户最近登录时间
     /// </summary>
-    public DateTimeOffset LastSignedInUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime LastSignedInUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 用户最近访问时间
     /// </summary>
-    public DateTimeOffset LastVisitedUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime LastVisitedUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 用户注册时间
     /// </summary>
-    public DateTimeOffset RegisterTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime RegisterTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 个性签名
@@ -80,7 +80,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <param name="context"></param>
     public void UpdateByHttpContext(HttpContext context)
     {
-        LastVisitedUtc = DateTimeOffset.UtcNow;
+        LastVisitedUtc = DateTime.UtcNow;
 
         IPAddress? remoteAddress = context.Connection.RemoteIpAddress;
 

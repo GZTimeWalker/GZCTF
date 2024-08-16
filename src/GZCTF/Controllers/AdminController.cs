@@ -612,7 +612,7 @@ public class AdminController(
                 StatusCodes.Status404NotFound));
 
         WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
-        var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var filename = $"Writeups-{game.Title}-{DateTime.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         Stream stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), FilePath.Uploads, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
 

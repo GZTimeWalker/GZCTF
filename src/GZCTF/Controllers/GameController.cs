@@ -109,7 +109,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (!game.PracticeMode && game.EndTimeUtc < DateTimeOffset.UtcNow)
+        if (!game.PracticeMode && game.EndTimeUtc < DateTime.UtcNow)
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
 
@@ -243,7 +243,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         return Ok(await gameRepository.GetScoreboard(game, token));
@@ -273,7 +273,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         return Ok(await noticeRepository.GetNotices(game.Id, count, skip, token));
@@ -305,7 +305,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         return Ok(await eventRepository.GetEvents(game.Id, hideContainer, count, skip, token));
@@ -337,7 +337,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, token));
@@ -365,7 +365,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         return Ok((await cheatInfoRepository.GetCheatInfoByGameId(game.Id, token))
@@ -471,7 +471,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
                 StatusCodes.Status404NotFound));
 
-        var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var filename = $"Capture-{challengeId}-{partId}-{DateTime.UtcNow:yyyyMMdd-HH.mm.ssZ}";
         Stream stream = await Codec.ZipFilesAsync(filePath, filename, token);
         stream.Seek(0, SeekOrigin.Begin);
 
@@ -681,7 +681,7 @@ public class GameController(
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         try
@@ -692,7 +692,7 @@ public class GameController(
 
             return File(stream,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                $"{game.Title}_Scoreboard_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+                $"{game.Title}_Scoreboard_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
         }
         catch (Exception ex)
         {
@@ -729,7 +729,7 @@ public class GameController(
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
 
-        if (DateTimeOffset.UtcNow < game.StartTimeUtc)
+        if (DateTime.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
         Submission[] submissions = await submissionRepository.GetSubmissions(game, count: 0, token: token);
@@ -739,7 +739,7 @@ public class GameController(
 
         return File(stream,
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            $"{game.Title}_Submissions_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+            $"{game.Title}_Submissions_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
     }
 
     /// <summary>
@@ -816,7 +816,7 @@ public class GameController(
             Team = context.Participation!.Team,
             Participation = context.Participation!,
             Status = AnswerResult.FlagSubmitted,
-            SubmitTimeUtc = DateTimeOffset.UtcNow
+            SubmitTimeUtc = DateTime.UtcNow
         };
 
         submission = await submissionRepository.AddSubmission(submission, token);
@@ -935,7 +935,7 @@ public class GameController(
         Participation part = context.Participation!;
         Team team = part.Team;
 
-        if (DateTimeOffset.UtcNow > game.WriteupDeadline)
+        if (DateTime.UtcNow > game.WriteupDeadline)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_DeadlineExpired)]));
 
         LocalFile? wp = context.Participation!.Writeup;
@@ -944,7 +944,7 @@ public class GameController(
             await fileService.DeleteFile(wp, token);
 
         part.Writeup = await fileService.CreateOrUpdateFile(file,
-            $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
+            $"Writeup-{game.Id}-{team.Id}-{DateTime.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
 
         await participationRepository.SaveAsync(token);
 
@@ -1058,7 +1058,7 @@ public class GameController(
         if (instance.Container is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
-        if (instance.Container.ExpectStopAt - DateTimeOffset.UtcNow >
+        if (instance.Container.ExpectStopAt - DateTime.UtcNow >
             TimeSpan.FromMinutes(containerPolicy.Value.RenewalWindow))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerExtensionNotAvailable)]));
@@ -1119,7 +1119,7 @@ public class GameController(
         if (!await containerRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerDeletionFailed)]));
 
-        instance.LastContainerOperation = DateTimeOffset.UtcNow;
+        instance.LastContainerOperation = DateTime.UtcNow;
 
         await gameEventRepository.AddEvent(
             new()
@@ -1165,12 +1165,12 @@ public class GameController(
             return res.WithResult(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ParticipationNotAccepted)])));
 
-        if (DateTimeOffset.UtcNow < res.Game.StartTimeUtc)
+        if (DateTime.UtcNow < res.Game.StartTimeUtc)
             return res.WithResult(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted),
                     ErrorCodes.GameNotStarted])));
 
-        if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTimeOffset.UtcNow)
+        if (denyAfterEnded && !res.Game.PracticeMode && res.Game.EndTimeUtc < DateTime.UtcNow)
             return res.WithResult(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded)));
 

@@ -185,7 +185,7 @@ public class GameRepository(
                 .Where(t => t.Key is not null)
                 .Select(c =>
                 {
-                    Data? s = c.OrderBy(t => t.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
+                    Data? s = c.OrderBy(t => t.Submission?.SubmitTimeUtc ?? DateTime.UtcNow)
                         .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
 
                     return s is null
@@ -199,7 +199,7 @@ public class GameRepository(
                         };
                 })
                 .Where(t => t is not null)
-                .OrderBy(t => t?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
+                .OrderBy(t => t?.SubmitTimeUtc ?? DateTime.UtcNow)
                 .Take(3).ToArray()
         }).ToDictionary(a => a.Key.Id, a => a.Value);
 
@@ -236,7 +236,7 @@ public class GameRepository(
                     Rank = 0,
                     LastSubmissionTime = j
                         .Where(s => s.Submission?.SubmitTimeUtc < game.EndTimeUtc)
-                        .Select(s => s.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
+                        .Select(s => s.Submission?.SubmitTimeUtc ?? DateTime.UtcNow)
                         .OrderBy(t => t).LastOrDefault(game.StartTimeUtc),
                     SolvedCount = challengeGroup.Count(c => c.Any(
                         s => s.Submission?.Status == AnswerResult.Accepted
@@ -245,7 +245,7 @@ public class GameRepository(
                         .Select(c =>
                         {
                             var cid = c.Key;
-                            Data? s = c.OrderBy(s => s.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
+                            Data? s = c.OrderBy(s => s.Submission?.SubmitTimeUtc ?? DateTime.UtcNow)
                                 .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
 
                             var status = SubmissionType.Normal;

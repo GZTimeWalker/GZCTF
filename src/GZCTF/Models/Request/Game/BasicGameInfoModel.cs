@@ -39,13 +39,13 @@ public partial class BasicGameInfoModel
     /// 开始时间
     /// </summary>
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime StartTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime EndTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     internal static BasicGameInfoModel FromGame(Data.Game game) =>
         new()

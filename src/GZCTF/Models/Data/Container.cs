@@ -34,7 +34,7 @@ public class Container
     /// 容器创建时间
     /// </summary>
     [Required]
-    public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// 容器期望终止时间
@@ -43,7 +43,7 @@ public class Container
     /// 此处设置 2 小时避免创建后立即被销毁，实际销毁时间由容器管理器决定
     /// </remarks>
     [Required]
-    public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
+    public DateTime ExpectStopAt { get; set; } = DateTime.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
     /// 是否具备反向代理

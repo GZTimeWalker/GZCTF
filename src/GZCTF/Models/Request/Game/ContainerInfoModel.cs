@@ -10,12 +10,12 @@ public class ContainerInfoModel
     /// <summary>
     /// 容器创建时间
     /// </summary>
-    public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// 容器期望终止时间
     /// </summary>
-    public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
+    public DateTime ExpectStopAt { get; set; } = DateTime.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
     /// 题目入口

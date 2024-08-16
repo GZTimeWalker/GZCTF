@@ -55,7 +55,7 @@ public partial class Post
     /// 发布时间
     /// </summary>
     [Required]
-    public DateTimeOffset UpdateTimeUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime UpdateTimeUtc { get; set; } = DateTime.UtcNow;
 
     internal Post Update(PostEditModel model, UserInfo user)
     {
@@ -73,7 +73,7 @@ public partial class Post
         Tags = model.Tags;
         Author = user;
         AuthorId = user.Id;
-        UpdateTimeUtc = DateTimeOffset.UtcNow;
+        UpdateTimeUtc = DateTime.UtcNow;
 
         return this;
     }

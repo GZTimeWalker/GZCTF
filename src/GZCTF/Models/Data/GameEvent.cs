@@ -20,7 +20,7 @@ public class GameEvent : FormattableData<EventType>
     /// </summary>
     [Required]
     [JsonPropertyName("time")]
-    public DateTimeOffset PublishTimeUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime PublishTimeUtc { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// 相关用户名

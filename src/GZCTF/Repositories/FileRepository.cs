@@ -178,7 +178,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         {
             localFile.FileSize = contentStream.Length;
             localFile.Name = fileName; // allow to rename
-            localFile.UploadTimeUtc = DateTimeOffset.UtcNow; // update upload time
+            localFile.UploadTimeUtc = DateTime.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
 
             logger.SystemLog(

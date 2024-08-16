@@ -88,19 +88,19 @@ public class GameInfoModel
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime StartTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime EndTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// Writeup 提交截止时间
     /// </summary>
-    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime WriteupDeadline { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// Writeup 附加说明

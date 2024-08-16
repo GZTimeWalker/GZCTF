@@ -94,20 +94,20 @@ public class Game
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
-    public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime StartTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 结束时间
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
-    public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime EndTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// Writeup 提交截止时间
     /// </summary>
     [Required]
-    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime WriteupDeadline { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// Writeup 附加说明
@@ -132,7 +132,7 @@ public class Game
 
     [NotMapped]
     [JsonIgnore]
-    public bool IsActive => StartTimeUtc <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUtc;
+    public bool IsActive => StartTimeUtc <= DateTime.Now && DateTime.Now <= EndTimeUtc;
 
     [NotMapped]
     public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
