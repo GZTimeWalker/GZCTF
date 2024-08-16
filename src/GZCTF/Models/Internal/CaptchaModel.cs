@@ -51,7 +51,7 @@ public class TurnstileResponseModel
     public bool Success { get; set; }
 
     [JsonPropertyName("challenge_ts")]
-    public DateTimeOffset ChallengeTimeStamp { get; set; }
+    public DateTime ChallengeTimeStamp { get; set; }
 
     [JsonPropertyName("hostname")]
     public string Hostname { get; set; } = string.Empty;

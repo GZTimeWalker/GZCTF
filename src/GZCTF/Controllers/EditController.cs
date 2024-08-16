@@ -349,7 +349,7 @@ public class EditController(
                 Values = [model.Content],
                 GameId = game.Id,
                 Type = NoticeType.Normal,
-                PublishTimeUtc = DateTimeOffset.UtcNow
+                PublishTimeUtc = DateTime.UtcNow
             }, token);
 
         return Ok(res);

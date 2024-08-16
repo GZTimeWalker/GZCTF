@@ -8,7 +8,7 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
 {
     public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
     {
-        DateTimeOffset current = DateTimeOffset.UtcNow;
+        DateTime current = DateTime.UtcNow;
         var result = await Context.Participations
             .Where(p => p.Team == team && p.Game.EndTimeUtc > current)
             .AnyAsync(token);

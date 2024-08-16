@@ -218,7 +218,7 @@ public class DockerManager : IContainerManager
             return null;
         }
 
-        container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
+        container.StartedAt = DateTime.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
         container.IP = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
         container.Port = config.ExposedPort;

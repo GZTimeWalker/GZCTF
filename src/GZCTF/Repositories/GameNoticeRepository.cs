@@ -42,7 +42,7 @@ public class GameNoticeRepository(
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             return Context.GameNotices.Where(e => e.GameId == gameId)
-                .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUtc)
+                .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTime.UtcNow : e.PublishTimeUtc)
                 .Skip(skip).Take(count).ToArrayAsync(token);
         }, token);
 
@@ -56,7 +56,7 @@ public class GameNoticeRepository(
 
     public async Task<GameNotice> UpdateNotice(GameNotice notice, CancellationToken token = default)
     {
-        notice.PublishTimeUtc = DateTimeOffset.UtcNow;
+        notice.PublishTimeUtc = DateTime.UtcNow;
         await SaveAsync(token);
 
         await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);

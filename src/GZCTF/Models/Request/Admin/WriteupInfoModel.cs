@@ -26,7 +26,7 @@ public class WriteupInfoModel
     /// <summary>
     /// 文件上传时间
     /// </summary>
-    public DateTimeOffset UploadTimeUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime UploadTimeUtc { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// Writeup 文件对象

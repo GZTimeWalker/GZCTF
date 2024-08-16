@@ -24,7 +24,7 @@ public class ExerciseInstance : Instance
     /// <summary>
     /// 答案解出的时间
     /// </summary>
-    public DateTimeOffset SolveTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime SolveTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     #region Db Relationship
 

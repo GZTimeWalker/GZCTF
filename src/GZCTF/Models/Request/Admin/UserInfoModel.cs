@@ -38,12 +38,12 @@ public class UserInfoModel
     /// <summary>
     /// 注册时间
     /// </summary>
-    public DateTimeOffset RegisterTimeUtc { get; set; }
+    public DateTime RegisterTimeUtc { get; set; }
 
     /// <summary>
     /// 用户最近访问时间
     /// </summary>
-    public DateTimeOffset LastVisitedUtc { get; set; }
+    public DateTime LastVisitedUtc { get; set; }
 
     /// <summary>
     /// 用户最近访问IP

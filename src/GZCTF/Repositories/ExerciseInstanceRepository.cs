@@ -180,7 +180,7 @@ public class ExerciseInstanceRepository(
         }
 
         instance.Container = container;
-        instance.LastContainerOperation = DateTimeOffset.UtcNow;
+        instance.LastContainerOperation = DateTime.UtcNow;
 
         logger.Log(
             Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!,
@@ -235,7 +235,7 @@ public class ExerciseInstanceRepository(
         await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
 
         instance.IsSolved = true;
-        instance.SolveTimeUtc = DateTimeOffset.UtcNow;
+        instance.SolveTimeUtc = DateTime.UtcNow;
         await SaveAsync(token);
 
         await transaction.CommitAsync(token);

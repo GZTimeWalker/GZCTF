@@ -22,7 +22,7 @@ public partial class GameNotice : FormattableData<NoticeType>
     /// </summary>
     [Required]
     [JsonPropertyName("time")]
-    public DateTimeOffset PublishTimeUtc { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime PublishTimeUtc { get; set; } = DateTime.UtcNow;
 
     [JsonIgnore]
     [MemoryPackIgnore]

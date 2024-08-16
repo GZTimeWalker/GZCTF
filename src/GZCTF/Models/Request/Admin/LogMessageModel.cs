@@ -11,7 +11,7 @@ public class LogMessageModel
     /// 日志时间
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset Time { get; set; }
+    public DateTime TimeUtc { get; set; }
 
     /// <summary>
     /// 用户名
@@ -43,7 +43,7 @@ public class LogMessageModel
     public static LogMessageModel FromLogModel(LogModel logInfo) =>
         new()
         {
-            Time = logInfo.TimeUtc,
+            TimeUtc = logInfo.TimeUtc,
             Level = logInfo.Level,
             UserName = logInfo.UserName,
             IP = logInfo.RemoteIP,

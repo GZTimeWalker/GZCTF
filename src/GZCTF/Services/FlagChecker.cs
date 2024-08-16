@@ -146,7 +146,7 @@ public class FlagChecker(
                             }
                     }
 
-                    if (item.Game.EndTimeUtc > DateTimeOffset.UtcNow
+                    if (item.Game.EndTimeUtc > DateTime.UtcNow
                         && type != SubmissionType.Unaccepted
                         && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(

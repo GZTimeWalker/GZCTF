@@ -122,7 +122,7 @@ public class FileRecord
     /// <summary>
     /// 文件修改日期
     /// </summary>
-    public DateTimeOffset UpdateTime { get; set; } = DateTimeOffset.Now;
+    public DateTime UpdateTime { get; set; } = DateTime.Now;
 
     internal static FileRecord FromFileInfo(FileInfo info) => new()
     {

@@ -56,7 +56,7 @@ public class PostDetailModel
     /// 发布时间
     /// </summary>
     [Required]
-    public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;
+    public DateTime Time { get; set; } = DateTime.UtcNow;
 
     internal static PostDetailModel FromPost(Post post) =>
         new()

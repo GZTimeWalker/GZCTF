@@ -36,7 +36,7 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
             _hubContext.Clients.All.ReceivedLog(
                 new LogMessageModel
                 {
-                    Time = logEvent.Timestamp,
+                    TimeUtc = logEvent.Timestamp.ToUniversalTime().DateTime,
                     Level = logEvent.Level.ToString(),
                     Msg = logEvent.RenderMessageWithExceptions(),
                     UserName = LogHelper.GetStringValue(userName, "Anonymous"),

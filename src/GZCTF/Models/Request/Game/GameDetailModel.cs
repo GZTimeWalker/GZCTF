@@ -32,5 +32,5 @@ public class GameDetailModel
     /// Writeup 提交截止时间
     /// </summary>
     [Required]
-    public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime WriteupDeadline { get; set; } = DateTime.UnixEpoch;
 }

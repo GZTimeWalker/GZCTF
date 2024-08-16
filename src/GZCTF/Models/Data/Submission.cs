@@ -27,7 +27,7 @@ public class Submission
     /// 答案提交的时间
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset SubmitTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
+    public DateTime SubmitTimeUtc { get; set; } = DateTime.UnixEpoch;
 
     /// <summary>
     /// 提交用户

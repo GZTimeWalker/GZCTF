@@ -26,7 +26,7 @@ public static class PrelaunchHelper
         {
             await context.Posts.AddAsync(new()
             {
-                UpdateTimeUtc = DateTimeOffset.UtcNow,
+                UpdateTimeUtc = DateTime.UtcNow,
                 Title = Program.StaticLocalizer[nameof(Resources.Program.Init_PostTitle)],
                 Summary = Program.StaticLocalizer[nameof(Resources.Program.Init_PostSummary)],
                 Content = Program.StaticLocalizer[nameof(Resources.Program.Init_PostContent)]
@@ -51,7 +51,7 @@ public static class PrelaunchHelper
                     Email = "admin@gzti.me",
                     Role = Role.Admin,
                     EmailConfirmed = true,
-                    RegisterTimeUtc = DateTimeOffset.UtcNow
+                    RegisterTimeUtc = DateTime.UtcNow
                 };
 
                 IdentityResult result = await userManager.CreateAsync(admin, password);

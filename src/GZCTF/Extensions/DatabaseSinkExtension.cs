@@ -21,7 +21,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
     readonly IServiceProvider _serviceProvider;
     readonly CancellationTokenSource _tokenSource = new();
 
-    DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
+    DateTime _lastFlushTime = DateTime.UnixEpoch;
 
     public DatabaseSink(IServiceProvider serviceProvider)
     {
@@ -55,7 +55,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
 
         return new LogModel
         {
-            TimeUtc = logEvent.Timestamp.ToUniversalTime(),
+            TimeUtc = logEvent.Timestamp.ToUniversalTime().DateTime,
             Level = logEvent.Level.ToString(),
             Message = logEvent.RenderMessageWithExceptions(),
             UserName = LogHelper.GetStringValue(userName, "Anonymous"),
@@ -80,7 +80,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 while (_logBuffer.TryDequeue(out LogModel? logModel))
                     lockedLogBuffer.Add(logModel);
 
-                if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10))
+                if (lockedLogBuffer.Count <= 50 && DateTime.Now - _lastFlushTime <= TimeSpan.FromSeconds(10))
                     continue;
 
                 await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
@@ -95,7 +95,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 finally
                 {
                     lockedLogBuffer.Clear();
-                    _lastFlushTime = DateTimeOffset.Now;
+                    _lastFlushTime = DateTime.Now;
                 }
             }
         }

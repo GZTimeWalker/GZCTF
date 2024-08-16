@@ -245,9 +245,9 @@ public class AccountController(
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailVerified)], user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
 
-        user.LastSignedInUtc = DateTimeOffset.UtcNow;
-        user.LastVisitedUtc = DateTimeOffset.UtcNow;
-        user.RegisterTimeUtc = DateTimeOffset.UtcNow;
+        user.LastSignedInUtc = DateTime.UtcNow;
+        user.LastVisitedUtc = DateTime.UtcNow;
+        user.RegisterTimeUtc = DateTime.UtcNow;
 
         result = await userManager.UpdateAsync(user);
 
@@ -289,7 +289,7 @@ public class AccountController(
             return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)],
                 StatusCodes.Status401Unauthorized));
 
-        user.LastSignedInUtc = DateTimeOffset.UtcNow;
+        user.LastSignedInUtc = DateTime.UtcNow;
         user.UpdateByHttpContext(HttpContext);
 
         await signInManager.SignOutAsync();

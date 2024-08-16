@@ -264,7 +264,7 @@ public class MailContent(
     /// <summary>
     /// 发信时间
     /// </summary>
-    public string Time { get; } = DateTimeOffset.UtcNow.ToString("u");
+    public string Time { get; } = DateTime.UtcNow.ToString("u");
 
     /// <summary>
     /// 平台名称
