@@ -79,6 +79,7 @@
         <PackageReference Include="PacketDotNet" />
         <PackageReference Include="SharpPcap" />
         <PackageReference Include="Ulid" />
+        <PackageReference Include="ZstdSharp.Port" />
     </ItemGroup>
 
     <ItemGroup>
@@ -96,8 +97,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Resources\favicon.webp" />
-        <EmbeddedResource Update="Resources\Program.resx" PublicClass="true"/>
+        <EmbeddedResource Include="Resources\favicon.webp" />
+        <EmbeddedResource Update="Resources\Program.resx" PublicClass="true" />
     </ItemGroup>
 
     <ItemGroup>

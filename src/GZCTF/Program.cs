@@ -276,6 +276,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
 builder.Services.AddResponseCompression(options =>
 {
+    options.Providers.Add<ZStandardCompressionProvider>();
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

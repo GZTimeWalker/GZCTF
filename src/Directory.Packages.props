@@ -68,5 +68,6 @@
     </PackageVersion>
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
+    <PackageVersion Include="ZstdSharp.Port" Version="0.8.1" />
   </ItemGroup>
 </Project>
