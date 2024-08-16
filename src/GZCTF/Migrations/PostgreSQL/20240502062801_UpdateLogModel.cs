@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace GZCTF.Migrations
+namespace GZCTF.Migrations.PostgreSQL
 {
     /// <inheritdoc />
     public partial class UpdateLogModel : Migration

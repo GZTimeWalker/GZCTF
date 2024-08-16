@@ -9,18 +9,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GZCTF.Migrations
+namespace GZCTF.Migrations.PostgreSQL
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240424194046_UpdateModelLimits")]
-    partial class UpdateModelLimits
+    [Migration("20240816103249_UseDateTime")]
+    partial class UseDateTime
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -103,7 +103,7 @@ namespace GZCTF.Migrations
                     b.Property<int?>("ExerciseInstanceId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("ExpectStopAt")
+                    b.Property<DateTime>("ExpectStopAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("GameInstanceId")
@@ -129,7 +129,7 @@ namespace GZCTF.Migrations
                     b.Property<int?>("PublicPort")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("StartedAt")
+                    b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<byte>("Status")
@@ -267,10 +267,10 @@ namespace GZCTF.Migrations
                     b.Property<bool>("IsSolved")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset>("LastContainerOperation")
+                    b.Property<DateTime>("LastContainerOperation")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("SolveTimeUtc")
+                    b.Property<DateTime>("SolveTimeUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "ExerciseId");
@@ -345,7 +345,7 @@ namespace GZCTF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("EndTimeUtc")
+                    b.Property<DateTime>("EndTimeUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "end");
 
@@ -376,7 +376,7 @@ namespace GZCTF.Migrations
                         .HasMaxLength(63)
                         .HasColumnType("character varying(63)");
 
-                    b.Property<DateTimeOffset>("StartTimeUtc")
+                    b.Property<DateTime>("StartTimeUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "start");
 
@@ -391,7 +391,7 @@ namespace GZCTF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("WriteupDeadline")
+                    b.Property<DateTime>("WriteupDeadline")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("WriteupNote")
@@ -509,7 +509,7 @@ namespace GZCTF.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("PublishTimeUtc")
+                    b.Property<DateTime>("PublishTimeUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "time");
 
@@ -557,7 +557,7 @@ namespace GZCTF.Migrations
                     b.Property<bool>("IsSolved")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset>("LastContainerOperation")
+                    b.Property<DateTime>("LastContainerOperation")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("ChallengeId", "ParticipationId");
@@ -583,7 +583,7 @@ namespace GZCTF.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("PublishTimeUtc")
+                    b.Property<DateTime>("PublishTimeUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "time");
 
@@ -624,7 +624,7 @@ namespace GZCTF.Migrations
                     b.Property<long>("ReferenceCount")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("UploadTimeUtc")
+                    b.Property<DateTime>("UploadTimeUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -647,8 +647,8 @@ namespace GZCTF.Migrations
 
                     b.Property<string>("Level")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
 
                     b.Property<string>("Logger")
                         .IsRequired()
@@ -664,10 +664,10 @@ namespace GZCTF.Migrations
                         .HasColumnType("character varying(40)");
 
                     b.Property<string>("Status")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
-                    b.Property<DateTimeOffset>("TimeUtc")
+                    b.Property<DateTime>("TimeUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
@@ -747,7 +747,7 @@ namespace GZCTF.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<DateTimeOffset>("UpdateTimeUtc")
+                    b.Property<DateTime>("UpdateTimeUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -783,7 +783,7 @@ namespace GZCTF.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("SubmitTimeUtc")
+                    b.Property<DateTime>("SubmitTimeUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasAnnotation("Relational:JsonPropertyName", "time");
 
@@ -883,12 +883,13 @@ namespace GZCTF.Migrations
 
                     b.Property<string>("IP")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
-                    b.Property<DateTimeOffset>("LastSignedInUtc")
+                    b.Property<DateTime>("LastSignedInUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("LastVisitedUtc")
+                    b.Property<DateTime>("LastVisitedUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("LockoutEnabled")
@@ -919,7 +920,7 @@ namespace GZCTF.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.Property<DateTimeOffset>("RegisterTimeUtc")
+                    b.Property<DateTime>("RegisterTimeUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Role")

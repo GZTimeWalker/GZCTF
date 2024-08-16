@@ -42,7 +42,6 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Localization;
-using MySqlConnector;
 using Serilog;
 using StackExchange.Redis;
 
@@ -137,11 +136,6 @@ else
                     options
                         .UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                         .UseMigrationNamespace(new PostgreSQLMigrationNamespace());
-                    break;
-                case DatabaseProvider.SQLServer:
-                    options
-                        .UseSqlServer(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                        .UseMigrationNamespace(new SQLServerMigrationNamespace());
                     break;
                 case DatabaseProvider.MySQL:
                     var mysqlConnection = new MySqlConnection(connectionString);
@@ -424,7 +418,7 @@ finally
 
 enum DatabaseProvider
 {
-    PostgreSQL, SQLServer, MySQL, SQLite, InMemory
+    PostgreSQL, MySQL, SQLite, InMemory
 }
 
 namespace GZCTF

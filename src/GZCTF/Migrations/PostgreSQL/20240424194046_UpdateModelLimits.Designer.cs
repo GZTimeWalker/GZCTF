@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GZCTF.Migrations
+namespace GZCTF.Migrations.PostgreSQL
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240502062801_UpdateLogModel")]
-    partial class UpdateLogModel
+    [Migration("20240424194046_UpdateModelLimits")]
+    partial class UpdateModelLimits
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -647,8 +647,8 @@ namespace GZCTF.Migrations
 
                     b.Property<string>("Level")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Logger")
                         .IsRequired()
@@ -664,8 +664,8 @@ namespace GZCTF.Migrations
                         .HasColumnType("character varying(40)");
 
                     b.Property<string>("Status")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTimeOffset>("TimeUtc")
                         .HasColumnType("timestamp with time zone");
@@ -883,8 +883,7 @@ namespace GZCTF.Migrations
 
                     b.Property<string>("IP")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("LastSignedInUtc")
                         .HasColumnType("timestamp with time zone");
