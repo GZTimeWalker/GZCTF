@@ -3,6 +3,18 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.21.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.2..v0.21.3) - 2024-08-16
+
+### ⛰️ Features
+
+- Add zstd compression support - ([4ae144](https://github.com/GZTimeWalker/GZCTF/commit/4ae144)) by **Steven He**
+- Enable response compression for more scenarios - ([bda153](https://github.com/GZTimeWalker/GZCTF/commit/bda153)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(server)** remove unnecessary mimetypes - ([acf84c](https://github.com/GZTimeWalker/GZCTF/commit/acf84c)) by **GZTime**
+
+---
 ## [0.21.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.1..v0.21.2) - 2024-08-15
 
 ### ⛰️ Features
