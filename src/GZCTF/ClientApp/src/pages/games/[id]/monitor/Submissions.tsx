@@ -157,7 +157,7 @@ const Submissions: FC = () => {
         })
       }
     }
-  })
+  }, [game, numId, t])
 
   const filteredSubs = newSubmissions.current.filter(
     (item) => type === 'All' || item.status === type
