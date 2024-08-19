@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import ChallengeModal from '@Components/ChallengeModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { ChallengeTagItemProps } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { AnswerResult, ChallengeType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
@@ -24,11 +23,9 @@ interface GameChallengeModalProps extends ModalProps {
 const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, tagData, solved, title, score, ...modalProps } = props
 
-  const { data: challenge, mutate } = api.game.useGameGetChallenge(
-    gameId,
-    challengeId,
-    OnceSWRConfig
-  )
+  const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
+    refreshInterval: 120 * 1000,
+  })
 
   const { t } = useTranslation()
 
@@ -72,25 +69,32 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const onDestroy = () => {
     if (!challengeId || disabled) return
     setDisabled(true)
-    api.game
-      .gameDeleteContainer(gameId, challengeId)
-      .then(() => {
-        mutate({
-          ...challenge,
-          context: {
-            ...challenge?.context,
-            closeTime: null,
-            instanceEntry: null,
-          },
-        })
-        showNotification({
-          color: 'teal',
-          title: t('challenge.notification.instance.destroyed.title'),
-          message: t('challenge.notification.instance.destroyed.message'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
+
+    mutate()
+      .then((res) => {
+        // the instanceEntry is already destroyed
+        if (!res?.context?.instanceEntry) return
+
+        api.game
+          .gameDeleteContainer(gameId, challengeId)
+          .then(() => {
+            mutate({
+              ...challenge,
+              context: {
+                ...challenge?.context,
+                closeTime: null,
+                instanceEntry: null,
+              },
+            })
+            showNotification({
+              color: 'teal',
+              title: t('challenge.notification.instance.destroyed.title'),
+              message: t('challenge.notification.instance.destroyed.message'),
+              icon: <Icon path={mdiCheck} size={1} />,
+            })
+          })
+          .catch((e) => showErrorNotification(e, t))
       })
-      .catch((e) => showErrorNotification(e, t))
       .finally(() => setDisabled(false))
   }
 

@@ -31,6 +31,8 @@ import { useConfig } from '@Utils/useConfig'
 import { ClientFlagContext } from '@Api'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
+dayjs.extend(duration)
+
 interface InstanceEntryProps {
   test?: boolean
   context: ClientFlagContext
@@ -39,8 +41,6 @@ interface InstanceEntryProps {
   onExtend?: () => void
   onDestroy?: () => void
 }
-
-dayjs.extend(duration)
 
 interface CountdownProps {
   time?: string | null
