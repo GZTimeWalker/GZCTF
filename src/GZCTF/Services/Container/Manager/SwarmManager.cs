@@ -53,14 +53,7 @@ public class SwarmManager : IContainerManager
             }
             else
             {
-                _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
-                        container.ContainerId,
-                        e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-                _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
-                        container.ContainerId,
-                        e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
+                _logger.LogDeletionFailedWithHttpContext(container.ContainerId, e.StatusCode, e.ResponseBody);
                 return;
             }
         }
@@ -112,14 +105,7 @@ public class SwarmManager : IContainerManager
                 goto CreateContainer;
             }
 
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
-                    parameters.Service.Name,
-                    e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse),
-                    parameters.Service.Name,
-                    e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
+            _logger.LogCreationFailedWithHttpContext(parameters.Service.Name, e.StatusCode, e.ResponseBody);
             return null;
         }
         catch (Exception e)

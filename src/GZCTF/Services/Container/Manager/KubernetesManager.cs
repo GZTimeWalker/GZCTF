@@ -119,15 +119,7 @@ public class KubernetesManager : IContainerManager
         }
         catch (HttpOperationException e)
         {
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus), name,
-                    e.Response.StatusCode],
-                TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse),
-                    name,
-                    e.Response.Content],
-                TaskStatus.Failed, LogLevel.Error);
+            _logger.LogCreationFailedWithHttpContext(name, e.Response.StatusCode, e.Response.Content);
             return null;
         }
         catch (Exception e)
@@ -180,14 +172,7 @@ public class KubernetesManager : IContainerManager
                 // ignored
             }
 
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus), name,
-                    e.Response.StatusCode],
-                TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse), name,
-                    e.Response.Content],
-                TaskStatus.Failed, LogLevel.Error);
+            _logger.LogServiceCreationFailedWithHttpContext(name, e.Response.StatusCode, e.Response.Content);
             return null;
         }
         catch (Exception e)
@@ -244,14 +229,7 @@ public class KubernetesManager : IContainerManager
                 return;
             }
 
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
-                    container.ContainerId,
-                    e.Response.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
-                    container.ContainerId,
-                    e.Response.Content], TaskStatus.Failed, LogLevel.Error);
+            _logger.LogDeletionFailedWithHttpContext(container.ContainerId, e.Response.StatusCode, e.Response.Content);
         }
         catch (Exception e)
         {

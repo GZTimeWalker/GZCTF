@@ -54,20 +54,13 @@ public class DockerManager : IContainerManager
             }
             else
             {
-                _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
-                        container.ContainerId,
-                        e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-                _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse),
-                        container.ContainerId,
-                        e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
+                _logger.LogDeletionFailedWithHttpContext(container.ContainerId, e.StatusCode, e.ResponseBody);
                 return;
             }
         }
         catch (Exception e)
         {
-            _logger.LogError(e,
+            _logger.LogError(e, "{msg}",
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                     container.ContainerId]);
             return;
@@ -154,14 +147,7 @@ public class DockerManager : IContainerManager
                 goto CreateDockerContainer;
             }
 
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
-                    parameters.Name,
-                    e.StatusCode], TaskStatus.Failed, LogLevel.Warning);
-            _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse),
-                    parameters.Name,
-                    e.ResponseBody], TaskStatus.Failed, LogLevel.Error);
+            _logger.LogCreationFailedWithHttpContext(parameters.Name, e.StatusCode, e.ResponseBody);
             return null;
         }
         catch (Exception e)
