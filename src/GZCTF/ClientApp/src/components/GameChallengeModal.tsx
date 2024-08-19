@@ -75,7 +75,7 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         // the instanceEntry is already destroyed
         if (!res?.context?.instanceEntry) return
 
-        api.game
+        return api.game
           .gameDeleteContainer(gameId, challengeId)
           .then(() => {
             mutate({
