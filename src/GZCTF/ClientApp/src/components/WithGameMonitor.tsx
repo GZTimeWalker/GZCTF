@@ -1,12 +1,4 @@
-import {
-  Button,
-  Group,
-  LoadingOverlay,
-  Stack,
-  Tabs,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { Button, Group, LoadingOverlay, Stack, Tabs } from '@mantine/core'
 import {
   mdiExclamationThick,
   mdiFileTableOutline,
@@ -22,6 +14,7 @@ import WithGameTab from '@Components/WithGameTab'
 import WithNavBar from '@Components/WithNavbar'
 import WithRole from '@Components/WithRole'
 import { downloadBlob } from '@Utils/ApiHelper'
+import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import api, { Role } from '@Api'
 
 interface WithGameMonitorProps extends React.PropsWithChildren {
@@ -34,9 +27,6 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const theme = useMantineTheme()
-
-  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const pages = [
@@ -110,13 +100,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
               </Tabs>
             </Stack>
             <Stack w="calc(100% - 10rem)" pos="relative">
-              <LoadingOverlay
-                visible={isLoading ?? false}
-                overlayProps={{
-                  backgroundOpacity: 1,
-                  color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
-                }}
-              />
+              <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
               {children}
             </Stack>
           </Group>

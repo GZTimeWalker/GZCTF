@@ -14,6 +14,7 @@ import CustomColorModal from '@Components/CustomColorModal'
 import IconHeader from '@Components/IconHeader'
 import Watermark from '@Components/Watermark'
 import WithWiderScreen from '@Components/WithWiderScreen'
+import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useUser } from '@Utils/useUser'
 
@@ -55,7 +56,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
         rotate={-12}
         textSize={14}
         gutter={22}
-        opacity={colorScheme === 'dark' ? 0.016 : 0.024}
+        opacity={colorScheme === 'dark' ? 0.02 : 0.03}
       >
         <AppShell
           padding={0}
@@ -91,10 +92,8 @@ const WithNavBar: FC<WithNavBarProps> = ({
             >
               <LoadingOverlay
                 visible={isLoading ?? false}
-                overlayProps={{
-                  backgroundOpacity: 1,
-                  color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
-                }}
+                // visible
+                overlayProps={DEFAULT_LOADING_OVERLAY}
               />
               {withHeader && <IconHeader px={isMobile ? '2%' : '10%'} sticky={stickyHeader} />}
               <Box

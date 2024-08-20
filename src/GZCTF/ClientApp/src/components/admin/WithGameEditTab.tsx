@@ -1,13 +1,4 @@
-import {
-  Button,
-  Group,
-  GroupProps,
-  LoadingOverlay,
-  Stack,
-  Tabs,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { Button, Group, GroupProps, LoadingOverlay, Stack, Tabs } from '@mantine/core'
 import {
   mdiAccountGroupOutline,
   mdiBullhornOutline,
@@ -21,6 +12,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import AdminPage from '@Components/admin/AdminPage'
+import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 
 export interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
@@ -41,8 +33,6 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
-  const theme = useMantineTheme()
-  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   const pages = [
@@ -112,13 +102,7 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
           </Tabs.List>
         </Tabs>
         <Stack w="calc(100% - 10rem)" pos="relative">
-          <LoadingOverlay
-            visible={isLoading ?? false}
-            overlayProps={{
-              backgroundOpacity: 1,
-              color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
-            }}
-          />
+          <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
 
           {children}
         </Stack>

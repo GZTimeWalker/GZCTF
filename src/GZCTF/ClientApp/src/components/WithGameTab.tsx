@@ -1,12 +1,4 @@
-import {
-  Card,
-  LoadingOverlay,
-  Stack,
-  Text,
-  Title,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { Card, LoadingOverlay, Stack, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -18,6 +10,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import GameProgress from '@Components/GameProgress'
 import IconTabs from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
+import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { getGameStatus, useGame } from '@Utils/useGame'
 import { usePageTitle } from '@Utils/usePageTitle'
 import { useUserRole } from '@Utils/useUser'
@@ -69,7 +62,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  const theme = useMantineTheme()
   const { role } = useUserRole()
   const { game, status } = useGame(numId)
   const { t } = useTranslation()
@@ -123,8 +115,6 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     navigate(`/games/${numId}/${tabKey}`)
   }
 
-  const { colorScheme } = useMantineColorScheme()
-
   usePageTitle(game?.title)
 
   useEffect(() => {
@@ -175,13 +165,7 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
 
   return (
     <Stack pos="relative" mt="md">
-      <LoadingOverlay
-        visible={!game}
-        overlayProps={{
-          backgroundOpacity: 1,
-          color: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
-        }}
-      />
+      <LoadingOverlay visible={!game} overlayProps={DEFAULT_LOADING_OVERLAY} />
       <IconTabs
         active={activeTab}
         onTabChange={onChange}

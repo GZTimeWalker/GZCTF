@@ -9,6 +9,7 @@ import {
   SelectProps,
   ComboboxItem,
   MantineColorsTuple,
+  OverlayProps,
 } from '@mantine/core'
 import {
   mdiBomb,
@@ -459,6 +460,11 @@ export const HunamizeSize = (size: number) => {
   } else {
     return `${(size / 1024 / 1024 / 1024).toFixed(2)} GiB`
   }
+}
+
+export const DEFAULT_LOADING_OVERLAY: OverlayProps = {
+  backgroundOpacity: 0.5,
+  blur: 8,
 }
 
 export const IMAGE_MIME_TYPES = [

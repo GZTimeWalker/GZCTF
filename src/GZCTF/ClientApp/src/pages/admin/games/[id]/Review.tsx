@@ -297,7 +297,7 @@ const GameTeamReview: FC = () => {
       }
     >
       <ScrollArea type="never" pos="relative" h="calc(100vh - 250px)">
-        {!participations || participations.length === 0 ? (
+        {participations && participations.length === 0 ? (
           <Center h="calc(100vh - 200px)">
             <Stack gap={0}>
               <Title order={2}>{t('admin.content.games.review.empty.title')}</Title>
