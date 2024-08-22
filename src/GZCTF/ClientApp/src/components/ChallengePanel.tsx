@@ -236,8 +236,9 @@ const ChallengePanel: FC = () => {
                 }}
                 solved={
                   teamInfo &&
-                  teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type !==
-                    SubmissionType.Unaccepted
+                  (teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type
+                    ?? SubmissionType.Unaccepted)
+                    !== SubmissionType.Unaccepted
                 }
                 teamId={teamInfo?.rank?.id}
               />
@@ -271,8 +272,9 @@ const ChallengePanel: FC = () => {
           gameEnded={dayjs(game?.end) < dayjs()}
           solved={
             teamInfo &&
-            teamInfo.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==
-              SubmissionType.Unaccepted
+            (teamInfo.rank?.challenges?.find((c) => c.id === challenge?.id)?.type
+              ?? SubmissionType.Unaccepted)
+              !== SubmissionType.Unaccepted
           }
           tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
           title={challenge?.title ?? ''}
