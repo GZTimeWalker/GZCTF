@@ -73,6 +73,10 @@
     },
     "remaining_duration": "剩余 {{hours}} 小时",
     "remaining_time": "剩余时间",
+    "scoreboard_not_ready": {
+      "comment": "坐和放宽，稍作等待……",
+      "title": "正在加载题目信息"
+    },
     "scoreboard_note": "注：同分队伍以得分时间先后排名",
     "scoreboard_tip": "Tip: 可以按左右方向键滚动题目列表哦~",
     "start_at": "开始于",

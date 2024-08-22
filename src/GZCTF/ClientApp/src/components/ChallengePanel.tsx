@@ -216,7 +216,15 @@ const ChallengePanel: FC = () => {
           },
         }}
       >
-        {currentChallenges && currentChallenges.length ? (
+        {/* if rank is 0, means scoreboard not ready yet */}
+        {!teamInfo?.rank?.rank ? (
+          <Center h="calc(100vh - 10rem)">
+            <Stack gap={0}>
+              <Title order={2}>{t('game.content.scoreboard_not_ready.title')}</Title>
+              <Text>{t('game.content.scoreboard_not_ready.comment')}</Text>
+            </Stack>
+          </Center>
+        ) : currentChallenges && currentChallenges.length ? (
           <SimpleGrid
             p="xs"
             w="100%"
@@ -224,24 +232,25 @@ const ChallengePanel: FC = () => {
             spacing="sm"
             cols={{ base: 3, w18: 4, w24: 6, w30: 8, w36: 10, w42: 12, w48: 14 }}
           >
-            {currentChallenges?.map((chal) => (
-              <ChallengeCard
-                key={chal.id}
-                challenge={chal}
-                iconMap={iconMap}
-                colorMap={colorMap}
-                onClick={() => {
-                  setChallenge(chal)
-                  setDetailOpened(true)
-                }}
-                solved={
-                  teamInfo &&
-                  teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type !==
-                    SubmissionType.Unaccepted
-                }
-                teamId={teamInfo?.rank?.id}
-              />
-            ))}
+            {currentChallenges?.map((chal) => {
+              const status = teamInfo?.rank?.challenges?.find((c) => c.id === chal.id)?.type
+              const solved = status !== SubmissionType.Unaccepted && status !== undefined
+
+              return (
+                <ChallengeCard
+                  key={chal.id}
+                  challenge={chal}
+                  iconMap={iconMap}
+                  colorMap={colorMap}
+                  onClick={() => {
+                    setChallenge(chal)
+                    setDetailOpened(true)
+                  }}
+                  solved={solved}
+                  teamId={teamInfo?.rank?.id}
+                />
+              )
+            })}
           </SimpleGrid>
         ) : (
           <Center h="calc(100vh - 10rem)">
@@ -269,11 +278,7 @@ const ChallengePanel: FC = () => {
           withCloseButton={false}
           onClose={() => setDetailOpened(false)}
           gameEnded={dayjs(game?.end) < dayjs()}
-          solved={
-            teamInfo &&
-            teamInfo.rank?.challenges?.find((c) => c.id === challenge?.id)?.type !==
-              SubmissionType.Unaccepted
-          }
+          status={teamInfo?.rank?.challenges?.find((c) => c.id === challenge?.id)?.type}
           tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}

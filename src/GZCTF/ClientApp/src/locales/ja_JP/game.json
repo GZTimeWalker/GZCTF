@@ -76,6 +76,10 @@
     },
     "remaining_duration": "残り {{hours}} 時間",
     "remaining_time": "残り時間",
+    "scoreboard_not_ready": {
+      "comment": "慌てず騒がず、しばらくお待ちください…",
+      "title": "チャレンジ情報を読み込んでいます"
+    },
     "scoreboard_note": "注：同じ得点のチームは時間順に順位つけされます",
     "scoreboard_tip": "Tip: 左矢印キーと右矢印キーを使ってチャレンジ一覧をスクロールできます",
     "start_at": "開始日時",

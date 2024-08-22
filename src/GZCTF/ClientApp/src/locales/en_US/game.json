@@ -76,6 +76,10 @@
     },
     "remaining_duration": "{{hours}}h left",
     "remaining_time": "Remaining time",
+    "scoreboard_not_ready": {
+      "comment": "Patience is a virtue, please hold on…",
+      "title": "Loading challenges"
+    },
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
     "start_at": "Starts at",

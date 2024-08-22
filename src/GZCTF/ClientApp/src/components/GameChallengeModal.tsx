@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import ChallengeModal from '@Components/ChallengeModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { ChallengeTagItemProps } from '@Utils/Shared'
-import api, { AnswerResult, ChallengeType } from '@Api'
+import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
   gameId: number
@@ -17,11 +17,11 @@ interface GameChallengeModalProps extends ModalProps {
   title: string
   score: number
   challengeId: number
-  solved?: boolean
+  status?: SubmissionType
 }
 
 const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
-  const { gameId, gameEnded, challengeId, tagData, solved, title, score, ...modalProps } = props
+  const { gameId, gameEnded, challengeId, tagData, status, title, score, ...modalProps } = props
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
     refreshInterval: 120 * 1000,
@@ -217,7 +217,7 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       {...modalProps}
       challenge={challenge ?? { title, score }}
       tagData={tagData}
-      solved={solved}
+      solved={status !== SubmissionType.Unaccepted && status !== undefined}
       flag={flag}
       setFlag={setFlag}
       onCreate={onCreate}
