@@ -145,8 +145,8 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0
       '@eslint/js':
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: ^9.9.0
+        version: 9.9.0
       '@kainstar/vite-plugin-i18next-loader':
         specifier: ^1.0.3
         version: 1.0.3(vite@5.4.2(@types/node@22.5.0)(sugarss@4.0.1(postcss@8.4.41)))
@@ -199,8 +199,8 @@ importers:
         specifier: ^7.35.0
         version: 7.35.0(eslint@9.9.0)
       eslint-plugin-react-hooks:
-        specifier: 5.1.0-rc-fb9a90fa48-20240614
-        version: 5.1.0-rc-fb9a90fa48-20240614(eslint@9.9.0)
+        specifier: 5.1.0-rc-1d989965-20240821
+        version: 5.1.0-rc-1d989965-20240821(eslint@9.9.0)
       form-data:
         specifier: ~4.0.0
         version: 4.0.0
@@ -585,11 +585,6 @@ packages:
   '@eslint/eslintrc@3.1.0':
     resolution: {integrity: sha512-4Bfj15dVJdoy3RfZmmo86RK1Fwzn6SstsvK9JS+BaVKqC6QQQQyXekNaC+g+LKNgkQ+2VhGAzm6hO40AhMR3zQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@eslint/js@10.0.0':
-    resolution: {integrity: sha512-J2VKrn6YUBegZFzRQVOVA8jk7VViV/MXhQUvXuCUK1I2RGGT2E+bmNGOsgtdO9Wo25Kd3hfZFuCm8LcfsUFV7g==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    deprecated: This version should not be used.
 
   '@eslint/js@9.9.0':
     resolution: {integrity: sha512-hhetes6ZHP3BlXLxmd8K2SNgkhNSi+UcecbnwWKwpP7kyi/uC75DJ1lOOBO3xrC4jyojtGE3YxKZPHfk4yrgug==}
@@ -1417,8 +1412,8 @@ packages:
   eslint-plugin-oxlint@0.7.2:
     resolution: {integrity: sha512-3+fhror4D0SQi4FmAI/c6eNVwUegekIMBNjBz2vBCDLkXnKsKO7hx4tLb93UOA1j1sznHXSlsoCr1hTNtEIU/Q==}
 
-  eslint-plugin-react-hooks@5.1.0-rc-fb9a90fa48-20240614:
-    resolution: {integrity: sha512-xsiRwaDNF5wWNC4ZHLut+x/YcAxksUd9Rizt7LaEn3bV8VyYRpXnRJQlLOfYaVy9esk4DFP4zPPnoNVjq5Gc0w==}
+  eslint-plugin-react-hooks@5.1.0-rc-1d989965-20240821:
+    resolution: {integrity: sha512-oGk2ScQjiE7cW6naW23S2XKyIP0BJgBhxtwAC1r68VCKpbORS3kW0l+M5FoJc86V+eZqxnYzezpz9dArD1Jg0w==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -3193,8 +3188,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/js@10.0.0': {}
-
   '@eslint/js@9.9.0': {}
 
   '@eslint/object-schema@2.1.4': {}
@@ -4120,7 +4113,7 @@ snapshots:
     dependencies:
       scule: 1.3.0
 
-  eslint-plugin-react-hooks@5.1.0-rc-fb9a90fa48-20240614(eslint@9.9.0):
+  eslint-plugin-react-hooks@5.1.0-rc-1d989965-20240821(eslint@9.9.0):
     dependencies:
       eslint: 9.9.0
 
