@@ -3,7 +3,7 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [unreleased]
+## [0.22.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.3-patch.1..v0.22.0) - 2024-08-23
 
 ### 💥 BREAK CHANGES
 
