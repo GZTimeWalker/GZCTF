@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write src",
-    "genapi": "swagger-typescript-api -p http://localhost:63000/swagger/v1/swagger.json -t template -o src --module-name-first-tag --sort-routes"
+    "genapi": "swagger-typescript-api -p http://localhost:55000/swagger/v1/swagger.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
     "@babel/core": "^7.25.2",
@@ -74,13 +74,13 @@
     "axios": "^1.7.4",
     "babel-plugin-prismjs": "^2.1.0",
     "eslint": "^9.9.0",
-    "eslint-plugin-oxlint": "^0.7.2",
+    "eslint-plugin-oxlint": "^0.8.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "5.1.0-rc-1d989965-20240821",
     "form-data": "~4.0.0",
     "globals": "^15.9.0",
     "lodash": "^4.17.21",
-    "oxlint": "^0.7.2",
+    "oxlint": "^0.8.0",
     "postcss": "^8.4.41",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",

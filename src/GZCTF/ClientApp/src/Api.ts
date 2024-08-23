@@ -1285,8 +1285,6 @@ export interface TimeLine {
    * @format int32
    */
   score?: number;
-  /** @format int32 */
-  "global::MemoryPack.IFixedSizeMemoryPackable.Size"?: number;
 }
 
 export interface ScoreboardItem {
