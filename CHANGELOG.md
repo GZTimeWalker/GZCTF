@@ -3,7 +3,31 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.21.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.2..v0.21.3) - 2024-08-16
+## [unreleased]
+
+### 💥 BREAK CHANGES
+
+- **(BREAK)** modified the team hash algorithm - ([883c2b](https://github.com/GZTimeWalker/GZCTF/commit/883c2b)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(challenge)** show loading when scoreboard is not ready - ([254177](https://github.com/GZTimeWalker/GZCTF/commit/254177)) by **GZTime**
+- **(challenge)** return api promise - ([d22fe4](https://github.com/GZTimeWalker/GZCTF/commit/d22fe4)) by **GZTime**
+- **(challenge)** mutate on instance update - ([62b0f5](https://github.com/GZTimeWalker/GZCTF/commit/62b0f5)) by **GZTime**
+
+### 🎨 Styling
+
+- **(overlay)** use blur loading overlay - ([1c4c37](https://github.com/GZTimeWalker/GZCTF/commit/1c4c37)) by **GZTime**
+
+---
+## [0.21.3-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.3..v0.21.3-patch.1) - 2024-08-18
+
+### 🐛 Bug Fixes
+
+- **(monitor/submission)** wrong dependence for useEffect (#321) - ([985fe1](https://github.com/GZTimeWalker/GZCTF/commit/985fe1)) by **Kengwang**
+
+---
+## [0.21.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.21.2..v0.21.3) - 2024-08-17
 
 ### ⛰️ Features
 

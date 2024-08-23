@@ -58,10 +58,11 @@ topo_order = false
 sort_commits = "newest"
 
 commit_parsers = [
-  { message = "^[fF]eat", group = "<!-- 0 -->⛰️ Features" },
-  { message = "^[fF]ix", group = "<!-- 1 -->🐛 Bug Fixes" },
-  { message = "^[sS]tyle", group = "<!-- 2 -->🎨 Styling" },
-  { message = "^[pP]erf", group = "<!-- 3 -->🚀 Performances" },
+  { message = ".*BREAK", group = "<!-- 0 -->💥 BREAK CHANGES" },
+  { message = "^[fF]eat", group = "<!-- 1 -->⛰️ Features" },
+  { message = "^[fF]ix", group = "<!-- 2 -->🐛 Bug Fixes" },
+  { message = "^[sS]tyle", group = "<!-- 3 -->🎨 Styling" },
+  { message = "^[pP]erf", group = "<!-- 4 -->🚀 Performances" },
   { message = "^[dD]oc", skip = true },
   { message = "^[rR]elease", skip = true },
   { message = "^[rR]evert", skip = true },
