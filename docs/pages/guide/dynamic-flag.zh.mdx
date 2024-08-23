@@ -76,7 +76,7 @@ $$
 
 - 队伍 Token：在队伍注册时由系统生成、签发的、可被公钥验证的 ed25519 签名
 - 题目 ID：题目的唯一标识符
-- 队伍哈希加盐：加密后的比赛签名私钥加盐之后的 SHA256 哈希
+- 比赛哈希盐：加密后的比赛签名私钥加盐之后的 SHA256 哈希
 
 生成 Team Hash 的类 python 代码如下：
 
@@ -89,17 +89,30 @@ encrypted_game_pk = "...some base64..."
 chal_id = 114
 team_token = "114:...some base64..."
 
-salt = str_sha256(f"GZCTF@{encrypted_game_pk}@PK")
-team_hash = str_sha256(f"{team_token}::{salt}::{chal_id}")[12:24]
+# you can get this salt from /api/edit/games/{id}/teamhashsalt
+game_salt = str_sha256(f"GZCTF@{encrypted_game_pk}@PK")
+
+# you should calculate this hash by yourself, and put it in challenge
+chal_salt = str_sha256(f"{game_salt}::{chal_id}")
+
+# let your challenge to calculate team hash
+team_hash = str_sha256(f"{chal_salt}::{team_token}")[12:24]
 ```
 
-其中，队伍哈希加盐 `salt` 可以通过管理员权限访问 `/api/edit/games/{id}/teamhashsalt` 接口获取，如需使用请注意保密。
+其中，比赛哈希盐 `game_salt` 可以通过管理员权限访问 `/api/edit/games/{id}/hashsalt` 接口获取，如需使用请注意保密。
+
+### 安全性
+
+- 队伍 Token 由 GZCTF 签发，它是一个 ed25519 签名，**可以被公钥验证，因此不会被伪造**
+- 比赛哈希盐是一个比赛特异的值，源自比赛签名私钥的哈希，**需要管理员保证其安全性**
+- 题目 ID 是一个整数，在创建题目时由系统生成，**由管理员结合比赛哈希盐来计算题目哈希盐**
+- 题目哈希盐是一个题目特异的值，应当被用于最终的 Team Hash 计算，**其泄漏不会影响其他题目的安全性**
 
 ### 正确使用
 
 队伍哈希的一个核心的使用场景是外部题目（队伍所访问的最终容器并非 GZCTF 所启动的容器），例如某些 Web 题目的部署难度高、依赖复杂的情况下，题目可能只有一个外部实例，而不是每一个队伍都有一个独立的实例。
 
-在这种情况下，我们可以通过校验队伍 Token 并根据队伍 Token 来自助生成 flag，从而保证每一个队伍都有唯一的动态 flag。
+在这种情况下，我们可以通过校验队伍 Token 并根据队伍 Token 来独立生成 flag，从而保证每一个队伍都有唯一的动态 flag。
 
 ### 队伍签名校验
 

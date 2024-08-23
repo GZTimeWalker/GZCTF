@@ -131,6 +131,8 @@ public class Challenge
     /// </summary>
     public List<FlagContext> Flags { get; set; } = [];
 
+    #endregion
+
     /// <summary>
     /// 为参赛对象生成动态 Flag
     /// </summary>
@@ -153,12 +155,16 @@ public class Challenge
 
         //   Using the signature private key of the game to generate a hash for the
         // team is not a wise and sufficiently secure choice. Moreover, this private
-        // key should not exist outside of any backend systems, even if it is encrypted
-        // with a XOR key in a configuration file or provided to the organizers (admin)
+        // key should not exist outside any backend systems, even if it is encrypted
+        // with an XOR key in a configuration file or provided to the organizers (admin)
         // for third-party flag calculation and external distribution.
         //   To address this issue, one possible solution is to use a salted hash of
         // the private key as the salt for the team's hash.
-        var hash = $"{part.Token}::{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
+        //   To prevent specific challenges from leaking hash salts, leading to the
+        // risk of being able to compute other challenges' flags, the salt is hashed
+        // with the challenge ID to generate a unique salt for each challenge.
+        var salt = $"{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
+        var hash = $"{salt}::{part.Token}".ToSHA256String();
         return flag.Replace("[TEAM_HASH]", hash[12..24]);
     }
 
@@ -194,6 +200,4 @@ public class Challenge
 
         return Codec.Leet.LeetFlag(FlagTemplate.StartsWith("[LEET]") ? FlagTemplate[6..] : FlagTemplate);
     }
-
-    #endregion
 }

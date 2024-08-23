@@ -10,6 +10,7 @@ using GZCTF.Services.Container.Manager;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using NSwag.Annotations;
 
 namespace GZCTF.Controllers;
 
@@ -174,18 +175,19 @@ public class EditController(
     }
 
     /// <summary>
-    /// 获取比赛队伍 Hash 的加盐
+    /// 获取比赛哈希盐
     /// </summary>
     /// <remarks>
-    /// 获取比赛队伍 Hash 的加盐，需要管理员权限
+    /// 获取比赛哈希盐，需要管理员权限
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">成功获取比赛哈希加盐</response>
-    [HttpGet("Games/{id:int}/TeamHashSalt")]
+    [OpenApiIgnore]
+    [HttpGet("Games/{id:int}/HashSalt")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetTeamHashSalt([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> GetHashSalt([FromRoute] int id, CancellationToken token)
     {
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -193,8 +195,6 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        // ref: TeamToken =>
-        // Codec.StrSHA256($"{part.Token}::{part.Game.TeamHashSalt}::{Id}");
         return Ok(game.TeamHashSalt);
     }
 

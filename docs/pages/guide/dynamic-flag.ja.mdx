@@ -76,7 +76,7 @@ GZCTFでは、チームハッシュはSHA256ハッシュの中央12桁で、例�
 
 - チームトークン：チーム登録時にシステムが生成、発行し、公開鍵で検証可能なed25519署名
 - チャレンジID：チャレンジの一意の識別子
-- チームハッシュのソルト：暗号化された試合署名の秘密鍵をソルト化した後のSHA256ハッシュ
+- ゲームハッシュのソルト：暗号化された試合署名の秘密鍵をソルト化した後のSHA256ハッシュ
 
 ハッシュの生成には以下のようなPythonコードを使用できます：
 
@@ -89,11 +89,24 @@ encrypted_game_pk = "...some base64..."
 chal_id = 114
 team_token = "114:...some base64..."
 
-salt = str_sha256(f"GZCTF@{encrypted_game_pk}@PK")
-team_hash = str_sha256(f"{team_token}::{salt}::{chal_id}")[12:24]
+# you can get this salt from /api/edit/games/{id}/teamhashsalt
+game_salt = str_sha256(f"GZCTF@{encrypted_game_pk}@PK")
+
+# you should calculate this hash by yourself, and put it in challenge
+chal_salt = str_sha256(f"{game_salt}::{chal_id}")
+
+# let your challenge to calculate team hash
+team_hash = str_sha256(f"{chal_salt}::{team_token}")[12:24]
 ```
 
-ここで、チームハッシュのソルト`salt`は、管理者権限で`/api/edit/games/{id}/teamhashsalt`インターフェースにアクセスすることで取得できます。使用する場合は、秘密を保つように注意してください。
+ここで、ゲームハッシュのソルト`game_salt`は、管理者権限で`/api/edit/games/{id}/hashsalt`エンドポイントにアクセスすることで取得できます。使用する場合は、その機密性を確保してください。
+
+### セキュリティ
+
+- チームトークンはGZCTFによって発行され、ed25519署名であり、**公開鍵で検証可能なので、偽造されることはありません**
+- ゲームハッシュのソルトはゲーム固有の値であり、ゲーム署名秘密鍵のハッシュから派生しています。**管理者はそのセキュリティを確保する必要があります**
+- チャレンジIDは整数であり、チャレンジを作成する際にシステムが生成します。**管理者はゲームハッシュのソルトを組み合わせてチャレンジハッシュのソルトを計算します**
+- チャレンジハッシュのソルトはチャレンジ固有の値であり、最終的なチームハッシュの計算に使用されるべきです。**その漏洩は他のチャレンジのセキュリティに影響を与えません**
 
 ### 正しい使用法
 

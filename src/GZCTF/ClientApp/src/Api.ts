@@ -3363,43 +3363,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfGameInfoModel>([`/api/edit/games`, query], data, options),
 
     /**
-     * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetTeamHashSalt
-     * @summary 获取比赛队伍 Hash 的加盐
-     * @request GET:/api/edit/games/{id}/teamhashsalt
-     */
-    editGetTeamHashSalt: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/edit/games/${id}/teamhashsalt`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetTeamHashSalt
-     * @summary 获取比赛队伍 Hash 的加盐
-     * @request GET:/api/edit/games/{id}/teamhashsalt
-     */
-    useEditGetTeamHashSalt: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<string, RequestResponse>(doFetch ? `/api/edit/games/${id}/teamhashsalt` : null, options),
-
-    /**
-     * @description 获取比赛队伍 Hash 的加盐，需要管理员权限
-     *
-     * @tags Edit
-     * @name EditGetTeamHashSalt
-     * @summary 获取比赛队伍 Hash 的加盐
-     * @request GET:/api/edit/games/{id}/teamhashsalt
-     */
-    mutateEditGetTeamHashSalt: (id: number, data?: string | Promise<string>, options?: MutatorOptions) =>
-      mutate<string>(`/api/edit/games/${id}/teamhashsalt`, data, options),
-
-    /**
      * @description 删除比赛题目 Flag，需要管理员权限
      *
      * @tags Edit
