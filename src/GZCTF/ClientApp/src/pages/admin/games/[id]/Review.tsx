@@ -325,7 +325,7 @@ const GameTeamReview: FC = () => {
       <Pagination
         value={activePage}
         onChange={setPage}
-        total={(filteredParticipations?.length ?? 0) / PART_NUM_PER_PAGE + 1}
+        total={Math.ceil((filteredParticipations?.length ?? 1) / PART_NUM_PER_PAGE)}
         styles={{
           root: {
             display: 'flex',
