@@ -1035,4 +1035,7 @@
   <data name="Admin_LogoUpdateFailed" xml:space="preserve">
       <value>平台 Logo 更新失败</value>
   </data>
+  <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
+      <value>成功连接到 SMTP 服务器：{0}</value>
+  </data>
 </root>

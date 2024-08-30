@@ -1035,4 +1035,7 @@
   <data name="Admin_LogoUpdateFailed" xml:space="preserve">
       <value>Failed to update logo</value>
   </data>
+  <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
+      <value>Successfully connected to SMTP server: {0}</value>
+  </data>
 </root>

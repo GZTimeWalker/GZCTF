@@ -1035,4 +1035,7 @@
   <data name="Admin_LogoUpdateFailed" xml:space="preserve">
       <value>プラットフォームアイコンの更新に失敗しました</value>
   </data>
+  <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
+      <value>SMTPサーバーへの接続に成功しました：{0}</value>
+  </data>
 </root>

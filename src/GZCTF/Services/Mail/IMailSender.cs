@@ -7,19 +7,10 @@ namespace GZCTF.Services.Mail;
 public interface IMailSender
 {
     /// <summary>
-    /// 发送邮件
-    /// </summary>
-    /// <param name="subject">主题</param>
-    /// <param name="content">HTML内容</param>
-    /// <param name="to">收件人</param>
-    /// <returns>发送是否成功</returns>
-    public Task<bool> SendEmailAsync(string subject, string content, string to);
-
-    /// <summary>
-    /// 发送带有链接的邮件
+    /// 发送带邮件内容
     /// </summary>
     /// <param name="content">邮件内容</param>
-    public Task SendUrlAsync(MailContent content);
+    public Task SendMailContent(MailContent content);
 
     /// <summary>
     /// 发送新用户验证URL
