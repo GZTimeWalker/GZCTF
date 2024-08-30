@@ -47,6 +47,9 @@ public sealed class MailSender : IMailSender, IDisposable
                            !cipherName.EndsWith("NULL");
                 }));
 
+        _smtpClient.ServerCertificateValidationCallback = (_, _, _, errors)
+            => errors is SslPolicyErrors.None || options.Value.Smtp?.BypassCertVerify is true;
+
         Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
     }

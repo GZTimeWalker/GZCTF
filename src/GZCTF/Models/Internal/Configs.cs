@@ -226,6 +226,7 @@ public class SmtpConfig
 {
     public string? Host { get; set; } = "127.0.0.1";
     public int? Port { get; set; } = 587;
+    public bool BypassCertVerify { get; set; }
 }
 
 public class EmailConfig
