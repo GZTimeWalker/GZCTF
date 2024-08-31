@@ -1,141 +1,141 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <AssemblyVersion>0.22.0.0</AssemblyVersion>
-        <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-        <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-        <IsPackable>false</IsPackable>
-        <SpaRoot>ClientApp\</SpaRoot>
-        <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-        <UserSecretsId>291cc810-6142-49a5-8134-1175254665a9</UserSecretsId>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>$(NoWarn);1591</NoWarn>
-        <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
-        <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
-        <Configurations>Debug;Release</Configurations>
-        <ReleaseVersion>0.22.0</ReleaseVersion>
-        <WarningLevel>4</WarningLevel>
-        <ServerGarbageCollection>true</ServerGarbageCollection>
-        <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyVersion>0.22.0.0</AssemblyVersion>
+    <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <UserSecretsId>291cc810-6142-49a5-8134-1175254665a9</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
+    <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
+    <Configurations>Debug;Release</Configurations>
+    <ReleaseVersion>0.22.0</ReleaseVersion>
+    <WarningLevel>4</WarningLevel>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
+  </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aigamo.ResXGenerator">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore"/>
+    <PackageReference Include="Docker.DotNet"/>
+    <PackageReference Include="Docker.DotNet.BasicAuth"/>
+    <PackageReference Include="KubernetesClient"/>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json"/>
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+    <PackageReference Include="Npgsql.OpenTelemetry"/>
+    <PackageReference Include="NPOI"/>
+    <PackageReference Include="NSwag.AspNetCore"/>
+    <PackageReference Include="NSwag.MSBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="OpenTelemetry.Exporter.Console"/>
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
+    <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore"/>
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Process"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime"/>
+    <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis"/>
+    <PackageReference Include="Serilog.AspNetCore"/>
+    <PackageReference Include="Serilog.Expressions"/>
+    <PackageReference Include="Serilog.Extensions.Logging"/>
+    <PackageReference Include="Serilog.Sinks.Async"/>
+    <PackageReference Include="Serilog.Sinks.File"/>
+    <PackageReference Include="Serilog.Sinks.File.Archive"/>
+    <PackageReference Include="MailKit"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore"/>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis"/>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis"/>
+    <PackageReference Include="MemoryPack"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+    <PackageReference Include="Microsoft.Extensions.Options"/>
+    <PackageReference Include="Serilog.Sinks.Grafana.Loki"/>
+    <PackageReference Include="SixLabors.ImageSharp"/>
+    <PackageReference Include="BouncyCastle.Cryptography"/>
+    <PackageReference Include="PacketDotNet"/>
+    <PackageReference Include="SharpPcap"/>
+    <PackageReference Include="Ulid"/>
+    <PackageReference Include="ZstdSharp.Port"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="GZCTF.Test"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Content Remove="$(SpaRoot)**"/>
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\build\**"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\favicon.webp"/>
+    <EmbeddedResource Update="Resources\Program.resx" PublicClass="true"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="kube-config.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE."/>
+    <!-- Ensure pnpm is installed -->
+    <Exec Command="pnpm --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation/, and then restart your command prompt or IDE."/>
+    <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..."/>
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install"/>
+  </Target>
+
+  <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install"/>
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run build"/>
+
+    <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-        <PackageReference Include="Aigamo.ResXGenerator">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
-        <PackageReference Include="Docker.DotNet" />
-        <PackageReference Include="Docker.DotNet.BasicAuth" />
-        <PackageReference Include="KubernetesClient" />
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-        <PackageReference Include="Npgsql.OpenTelemetry" />
-        <PackageReference Include="NPOI" />
-        <PackageReference Include="NSwag.AspNetCore" />
-        <PackageReference Include="NSwag.MSBuild">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="OpenTelemetry.Exporter.Console" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-        <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Process" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
-        <PackageReference Include="Serilog.AspNetCore" />
-        <PackageReference Include="Serilog.Expressions" />
-        <PackageReference Include="Serilog.Extensions.Logging" />
-        <PackageReference Include="Serilog.Sinks.Async" />
-        <PackageReference Include="Serilog.Sinks.File" />
-        <PackageReference Include="Serilog.Sinks.File.Archive" />
-        <PackageReference Include="MailKit" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" />
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
-        <PackageReference Include="MemoryPack" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-        <PackageReference Include="Microsoft.Extensions.Options" />
-        <PackageReference Include="Serilog.Sinks.Grafana.Loki" />
-        <PackageReference Include="SixLabors.ImageSharp" />
-        <PackageReference Include="BouncyCastle.Cryptography" />
-        <PackageReference Include="PacketDotNet" />
-        <PackageReference Include="SharpPcap" />
-        <PackageReference Include="Ulid" />
-        <PackageReference Include="ZstdSharp.Port" />
+      <DistFiles Include="$(SpaRoot)build\**"/>
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
     </ItemGroup>
-
-    <ItemGroup>
-        <InternalsVisibleTo Include="GZCTF.Test" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <!-- Don't publish the SPA source files, but do show them in the project files list -->
-        <Content Remove="$(SpaRoot)**" />
-        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="ClientApp\build\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\favicon.webp" />
-        <EmbeddedResource Update="Resources\Program.resx" PublicClass="true" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="kube-config.yaml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
-
-    <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
-        <!-- Ensure Node.js is installed -->
-        <Exec Command="node --version" ContinueOnError="true">
-            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-        </Exec>
-        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-        <!-- Ensure pnpm is installed -->
-        <Exec Command="pnpm --version" ContinueOnError="true">
-            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-        </Exec>
-        <Error Condition="'$(ErrorCode)' != '0'" Text="pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation/, and then restart your command prompt or IDE." />
-        <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..." />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
-    </Target>
-
-    <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish">
-        <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm install" />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm run build" />
-
-        <!-- Include the newly-built files in the publish output -->
-        <ItemGroup>
-            <DistFiles Include="$(SpaRoot)build\**" />
-            <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-                <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
-                <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-                <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            </ResolvedFileToPublish>
-        </ItemGroup>
-    </Target>
+  </Target>
 
 </Project>

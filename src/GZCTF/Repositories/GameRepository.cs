@@ -7,7 +7,6 @@ using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Distributed;
-using Array = NPOI.HPSF.Array;
 
 namespace GZCTF.Repositories;
 
@@ -175,7 +174,7 @@ public class GameRepository(
                     LastSubmissionTime = DateTimeOffset.MinValue,
                     // update: only store accepted challenges
                 }).ToDictionaryAsync(i => i.ParticipantId, token);
-            
+
             // 2. Fetch all challenges from GameChallenges, into ChallengeInfo
             challenges = await Context.GameChallenges
                 .AsNoTracking()
@@ -190,7 +189,7 @@ public class GameRepository(
                     SolvedCount = c.AcceptedCount,
                     // pending fields: Bloods
                 }).ToDictionaryAsync(c => c.Id, token);
-            
+
             // 3. fetch all needed submissions into a list of ChallengeItem
             //    **take only the first accepted submission for each challenge & team**
             submissions = await Context.Submissions
@@ -223,7 +222,7 @@ public class GameRepository(
                         .First()
                 )
                 .ToListAsync(token);
-            
+
             await trans.CommitAsync(token);
         }
 
@@ -349,9 +348,9 @@ public class GameRepository(
 
         return new()
         {
-            Challenges = challengesDict, 
-            Items = items, 
-            TimeLines = timelines, 
+            Challenges = challengesDict,
+            Items = items,
+            TimeLines = timelines,
             BloodBonusValue = game.BloodBonus.Val
         };
     }

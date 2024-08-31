@@ -4,7 +4,9 @@
   "i18n-ally.pathMatcher": "{locale}/{namespaces}.{ext}",
   "i18n-ally.keystyle": "nested",
   "i18n-ally.extract.keyPrefix": "{fileNameWithoutExt}",
-  "i18n-ally.localesPaths": ["src/locales"],
+  "i18n-ally.localesPaths": [
+    "src/locales"
+  ],
   "i18n-ally.extract.autoDetect": true,
   "i18n-ally.extract.keyMaxLength": 20,
   "i18n-ally.extract.keygenStyle": "snake_case",

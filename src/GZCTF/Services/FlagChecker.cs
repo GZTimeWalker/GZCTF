@@ -23,7 +23,7 @@ public class FlagChecker(
         var memoryInfo = GC.GetGCMemoryInfo();
         double freeMemory = memoryInfo.TotalAvailableMemoryBytes / 1024.0 / 1024.0 / 1024.0;
         var cpuCount = Environment.ProcessorCount;
-        
+
         if (freeMemory < 2 || cpuCount <= 3)
             return 1;
         if (freeMemory < 4 || cpuCount <= 6)
