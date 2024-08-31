@@ -202,7 +202,9 @@ public class GameRepository(
                 .IgnoreAutoIncludes()
                 .Include(s => s.User)
                 .Include(s => s.GameChallenge)
-                .Where(s => s.Status == AnswerResult.Accepted && s.GameChallenge.IsEnabled
+                .Where(s => s.Status == AnswerResult.Accepted
+                            && s.GameId == game.Id
+                            && s.GameChallenge.IsEnabled
                             && s.SubmitTimeUtc < game.EndTimeUtc)
                 .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
                 .Where(g => g.Any())
@@ -350,10 +352,7 @@ public class GameRepository(
 
         return new()
         {
-            Challenges = challengesDict,
-            Items = items,
-            TimeLines = timelines,
-            BloodBonusValue = game.BloodBonus.Val
+            Challenges = challengesDict, Items = items, TimeLines = timelines, BloodBonusValue = game.BloodBonus.Val
         };
     }
 
