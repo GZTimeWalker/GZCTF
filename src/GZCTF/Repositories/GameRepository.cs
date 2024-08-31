@@ -305,7 +305,7 @@ public class GameRepository(
             item.Rank = currentRank++;
 
             if (item.Rank <= 10)
-                orgTeams["all"].Add(item.Id);
+                orgTeams["all"].Add(item.ParticipantId);
 
             if (item.Organization is null)
                 continue;
@@ -314,32 +314,35 @@ public class GameRepository(
             {
                 item.OrganizationRank = rank + 1;
                 ranks[item.Organization]++;
-                orgTeams[item.Organization].Add(item.Id);
+                orgTeams[item.Organization].Add(item.ParticipantId);
             }
             else
             {
                 item.OrganizationRank = 1;
                 ranks[item.Organization] = 1;
-                orgTeams[item.Organization] = [item.Id];
+                orgTeams[item.Organization] = [item.ParticipantId];
             }
         }
 
         // 7. generate top timelines by solved challenges
         var timelines = orgTeams.ToDictionary(
             i => i.Key,
-            i => i.Value.Select(id =>
-                new TopTimeLine
+            i => i.Value.Select(pid =>
                 {
-                    Id = id,
-                    Name = items[id].Name,
-                    Items = items[id].SolvedChallenges
-                        .OrderBy(c => c.SubmitTimeUtc)
-                        .Aggregate(new List<TimeLine>(), (acc, c) =>
-                        {
-                            var last = acc.LastOrDefault();
-                            acc.Add(new TimeLine { Score = (last?.Score ?? 0) + c.Score, Time = c.SubmitTimeUtc });
-                            return acc;
-                        })
+                    var item = items[pid];
+                    return new TopTimeLine
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Items = item.SolvedChallenges
+                            .OrderBy(c => c.SubmitTimeUtc)
+                            .Aggregate(new List<TimeLine>(), (acc, c) =>
+                            {
+                                var last = acc.LastOrDefault();
+                                acc.Add(new TimeLine { Score = (last?.Score ?? 0) + c.Score, Time = c.SubmitTimeUtc });
+                                return acc;
+                            })
+                    };
                 }
             )
         );
