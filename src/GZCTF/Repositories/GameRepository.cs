@@ -148,7 +148,7 @@ public class GameRepository(
     // Refactored by GZTimeWalker @ 2024/08/31
     public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
     {
-        Dictionary<int, ScoreboardItem> items;
+        Dictionary<int, ScoreboardItem> items; // participant id -> scoreboard item
         Dictionary<int, ChallengeInfo> challenges;
         List<ChallengeItem> submissions;
 
@@ -291,21 +291,21 @@ public class GameRepository(
         }
 
         // 5. sort scoreboard items by score and last submission time
-        var sortedItems = items.Values
+        items = items.Values
             .OrderByDescending(i => i.Score)
             .ThenBy(i => i.LastSubmissionTime)
-            .ToArray();
+            .ToDictionary(i => i.Id); // team id -> scoreboard item
 
         // 6. update rank and organization rank
         var ranks = new Dictionary<string, int>();
         var currentRank = 1;
         Dictionary<string, HashSet<int>> orgTeams = new() { ["all"] = [] };
-        foreach (var item in sortedItems)
+        foreach (var item in items.Values)
         {
             item.Rank = currentRank++;
 
             if (item.Rank <= 10)
-                orgTeams["all"].Add(item.ParticipantId);
+                orgTeams["all"].Add(item.Id);
 
             if (item.Organization is null)
                 continue;
@@ -314,22 +314,22 @@ public class GameRepository(
             {
                 item.OrganizationRank = rank + 1;
                 ranks[item.Organization]++;
-                orgTeams[item.Organization].Add(item.ParticipantId);
+                orgTeams[item.Organization].Add(item.Id);
             }
             else
             {
                 item.OrganizationRank = 1;
                 ranks[item.Organization] = 1;
-                orgTeams[item.Organization] = [item.ParticipantId];
+                orgTeams[item.Organization] = [item.Id];
             }
         }
 
         // 7. generate top timelines by solved challenges
         var timelines = orgTeams.ToDictionary(
             i => i.Key,
-            i => i.Value.Select(pid =>
+            i => i.Value.Select(tid =>
                 {
-                    var item = items[pid];
+                    var item = items[tid];
                     return new TopTimeLine
                     {
                         Id = item.Id,
@@ -355,7 +355,10 @@ public class GameRepository(
 
         return new()
         {
-            Challenges = challengesDict, Items = items, TimeLines = timelines, BloodBonusValue = game.BloodBonus.Val
+            Challenges = challengesDict, 
+            Items = items, 
+            TimeLines = timelines, 
+            BloodBonusValue = game.BloodBonus.Val
         };
     }
 
