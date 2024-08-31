@@ -106,7 +106,6 @@ else
 
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
-            options.LogTo(Console.WriteLine, LogLevel.Information);
         }
     );
 }
