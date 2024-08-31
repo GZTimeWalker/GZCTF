@@ -71,7 +71,8 @@ import { Callout } from "nextra-theme-docs";
     "Password": "",
     "Smtp": {
       "Host": "localhost",
-      "Port": 587
+      "Port": 587,
+      "BypassCertVerify": false
     }
   },
   "XorKey": "<Random Key Str>",
@@ -222,6 +223,7 @@ GZCTF はメトリクスと分散トレーシングをサポートしていま�
 - **UserName:** SMTP サーバーのユーザー名
 - **Password:** SMTP サーバーのパスワード
 - **Smtp:** SMTP サーバーのアドレスとポート
+- **BypassCertVerify:** 証明書の検証をバイパスするかどうか
 
 <Callout type="info">
 

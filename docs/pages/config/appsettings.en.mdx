@@ -71,7 +71,8 @@ Here is a complete example of configuration:
     "Password": "",
     "Smtp": {
       "Host": "localhost",
-      "Port": 587
+      "Port": 587,
+      "BypassCertVerify": false
     }
   },
   "XorKey": "<Random Key Str>",
@@ -222,6 +223,7 @@ Here we can configure the information of email sending server. If you use email 
 - **UserName:** SMTP Server username
 - **Password:** SMTP Server password
 - **Smtp:** SMTP Server address and port
+- **BypassCertVerify:** Whether to bypass the certificate verification of the SMTP server
 
 <Callout type="info">
 

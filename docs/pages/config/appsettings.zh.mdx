@@ -71,7 +71,8 @@ import { Callout } from "nextra-theme-docs";
     "Password": "",
     "Smtp": {
       "Host": "localhost",
-      "Port": 587
+      "Port": 587,
+      "BypassCertVerify": false
     }
   },
   "XorKey": "<Random Key Str>",
@@ -222,6 +223,7 @@ GZCTF 支持测量和分布式追踪。您可以配置您想要使用的提供�
 - **UserName:** SMTP 服务器用户名
 - **Password:** SMTP 服务器密码
 - **Smtp:** SMTP 服务器地址和端口
+- **BypassCertVerify:** 是否跳过证书验证
 
 <Callout type="info">
 
