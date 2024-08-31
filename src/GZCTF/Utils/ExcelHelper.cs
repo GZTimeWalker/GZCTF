@@ -128,13 +128,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
 
         foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
-            foreach (ChallengeInfo chall in type.Value)
-            {
-                ICell? cell = row.CreateCell(colIndex++);
-                cell.SetCellValue(chall.Title);
-                cell.CellStyle = style;
-                challIds.Add(chall.Id);
-            }
+        foreach (ChallengeInfo chall in type.Value)
+        {
+            ICell? cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(chall.Title);
+            cell.CellStyle = style;
+            challIds.Add(chall.Id);
+        }
 
         return challIds.ToArray();
     }
@@ -171,7 +171,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
             foreach (var challId in challIds)
             {
-                ChallengeItem? chall = item.Challenges.SingleOrDefault(c => c.Id == challId);
+                ChallengeItem? chall = item.SolvedChallenges.SingleOrDefault(c => c.Id == challId);
                 row.CreateCell(colIndex++).SetCellValue(chall?.Score ?? 0);
             }
 

@@ -106,6 +106,7 @@ else
 
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
+            options.LogTo(Console.WriteLine, LogLevel.Information);
         }
     );
 }
@@ -449,16 +450,14 @@ namespace GZCTF
             var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(new RequestResponse(
-                    localizer[nameof(Resources.Program.Model_ValidationFailed)]))
-                { StatusCode = 400 };
+                    localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             var error = context.ModelState.Values.Where(v => v.Errors.Count > 0)
                 .Select(v => v.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(error is [_, ..]
                 ? error
-                : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
-            { StatusCode = 400 };
+                : localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
         }
     }
 }

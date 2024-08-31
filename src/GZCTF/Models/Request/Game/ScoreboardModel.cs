@@ -35,13 +35,6 @@ public partial class ScoreboardModel
     public Dictionary<int, ScoreboardItem> Items { get; set; } = default!;
 
     /// <summary>
-    /// 队伍信息列表
-    /// </summary>
-    [MemoryPackIgnore]
-    [JsonPropertyName("items")]
-    public IEnumerable<ScoreboardItem> ItemList => Items.Values;
-
-    /// <summary>
     /// 题目信息
     /// </summary>
     public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
@@ -63,7 +56,7 @@ public partial class TopTimeLine
     /// <summary>
     /// 时间线
     /// </summary>
-    public IEnumerable<TimeLine> Items { get; set; } = default!;
+    public List<TimeLine> Items { get; set; } = default!;
 }
 
 [MemoryPackable]
@@ -111,7 +104,7 @@ public partial class ScoreboardItem
     /// <summary>
     /// 分数
     /// </summary>
-    public int Score => Challenges.Sum(c => c.Score);
+    public int Score => SolvedChallenges.Sum(c => c.Score);
 
     /// <summary>
     /// 排名
@@ -126,7 +119,7 @@ public partial class ScoreboardItem
     /// <summary>
     /// 已解出的题目数量
     /// </summary>
-    public int SolvedCount { get; set; }
+    public int SolvedCount => SolvedChallenges.Count;
 
     /// <summary>
     /// 得分时间
@@ -134,9 +127,16 @@ public partial class ScoreboardItem
     public DateTimeOffset LastSubmissionTime { get; set; }
 
     /// <summary>
-    /// 题目情况列表
+    /// 解出的题目列表
     /// </summary>
-    public IEnumerable<ChallengeItem> Challenges { get; set; } = Array.Empty<ChallengeItem>();
+    public List<ChallengeItem> SolvedChallenges { get; set; } = [];
+
+    /// <summary>
+    /// 参与对象 Id
+    /// </summary>
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public int ParticipantId { get; set; }
 
     /// <summary>
     /// 队伍信息，用于生成排行榜
@@ -174,7 +174,14 @@ public partial class ChallengeItem
     /// 题目提交的时间，为了计算时间线
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset? SubmitTimeUtc { get; set; }
+    public DateTimeOffset SubmitTimeUtc { get; set; }
+
+    /// <summary>
+    /// 参与对象 Id
+    /// </summary>
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public int ParticipantId { get; set; }
 }
 
 [MemoryPackable]
@@ -209,7 +216,7 @@ public partial class ChallengeInfo
     /// <summary>
     /// 题目三血
     /// </summary>
-    public Blood?[] Bloods { get; set; } = default!;
+    public List<Blood> Bloods { get; set; } = [];
 }
 
 [MemoryPackable]

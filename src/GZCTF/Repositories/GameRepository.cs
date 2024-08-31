@@ -6,6 +6,7 @@ using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Distributed;
+using Array = NPOI.HPSF.Array;
 
 namespace GZCTF.Repositories;
 
@@ -142,211 +143,216 @@ public class GameRepository(
 
     #region Generate Scoreboard
 
-    record Data(GameInstance GameInstance, Submission? Submission);
-
     // By xfoxfu & GZTimeWalker @ 2022/04/03
+    // Refactored by GZTimeWalker @ 2024/08/31
     public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
     {
-        Data[] data = await FetchData(game, token);
-        Dictionary<int, Blood?[]> bloods = GenBloods(data);
-        Dictionary<int, ScoreboardItem> items = GenScoreboardItems(data, game, bloods);
-        return new()
+        Dictionary<int, ScoreboardItem> items;
+        Dictionary<int, ChallengeInfo> challenges;
+        List<ChallengeItem> submissions;
+
+        // 0. Begin transaction
+        await using (var trans = await Context.Database.BeginTransactionAsync(token))
         {
-            Challenges = GenChallenges(data, bloods),
-            Items = items,
-            TimeLines = GenTopTimeLines(items.Values, game),
-            BloodBonusValue = game.BloodBonus.Val
-        };
-    }
-
-    Task<Data[]> FetchData(Game game, CancellationToken token = default) =>
-        Context.GameInstances
-            .Include(i => i.Challenge)
-            .Where(i => i.Challenge.Game == game
-                        && i.Challenge.IsEnabled
-                        && i.Participation.Status == ParticipationStatus.Accepted)
-            .Include(i => i.Participation)
-            .ThenInclude(p => p.Team).ThenInclude(t => t.Members)
-            .GroupJoin(
-                Context.Submissions.Where(s => s.Status == AnswerResult.Accepted
-                                               && s.SubmitTimeUtc < game.EndTimeUtc),
-                i => new { i.ChallengeId, i.ParticipationId },
-                s => new { s.ChallengeId, s.ParticipationId },
-                (i, s) => new { Instance = i, Submissions = s }
-            ).SelectMany(j => j.Submissions.DefaultIfEmpty(),
-                (j, s) => new Data(j.Instance, s)
-            ).AsSplitQuery().ToArrayAsync(token);
-
-    static Dictionary<int, Blood?[]> GenBloods(Data[] data) =>
-        data.GroupBy(j => j.GameInstance.Challenge).Select(g => new
-        {
-            g.Key,
-            Value = g.GroupBy(c => c.Submission?.TeamId)
-                .Where(t => t.Key is not null)
-                .Select(c =>
+            // 1. Fetch all teams with their members from Participations, into ScoreboardItem
+            items = await Context.Participations
+                .AsNoTracking()
+                .IgnoreAutoIncludes()
+                .Where(p => p.Game == game)
+                .Include(p => p.Team)
+                .Include(p => p.Team.Members)
+                .Select(p => new ScoreboardItem
                 {
-                    Data? s = c.OrderBy(t => t.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
-                        .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
-
-                    return s is null
-                        ? null
-                        : new Blood
-                        {
-                            Id = s.GameInstance.Participation.TeamId,
-                            Avatar = s.GameInstance.Participation.Team.AvatarUrl,
-                            Name = s.GameInstance.Participation.Team.Name,
-                            SubmitTimeUtc = s.Submission?.SubmitTimeUtc
-                        };
-                })
-                .Where(t => t is not null)
-                .OrderBy(t => t?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
-                .Take(3).ToArray()
-        }).ToDictionary(a => a.Key.Id, a => a.Value);
-
-    static Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> GenChallenges(Data[] data,
-        Dictionary<int, Blood?[]> bloods) =>
-        data.GroupBy(g => g.GameInstance.Challenge)
-            .Select(c => new ChallengeInfo
-            {
-                Id = c.Key.Id,
-                Title = c.Key.Title,
-                Tag = c.Key.Tag,
-                Score = c.Key.CurrentScore,
-                SolvedCount = c.Key.AcceptedCount,
-                Bloods = bloods[c.Key.Id]
-            }).GroupBy(c => c.Tag)
-            .OrderBy(i => i.Key)
-            .ToDictionary(c => c.Key, c => c.AsEnumerable());
-
-    static Dictionary<int, ScoreboardItem> GenScoreboardItems(Data[] data, Game game, Dictionary<int, Blood?[]> bloods)
-    {
-        Dictionary<string, int> ranks = [];
-        return data.GroupBy(j => j.GameInstance.Participation)
-            .Select(j =>
-            {
-                IEnumerable<IGrouping<int, Data>> challengeGroup = j.GroupBy(s => s.GameInstance.ChallengeId);
-
-                return new ScoreboardItem
-                {
-                    Id = j.Key.Team.Id,
-                    Bio = j.Key.Team.Bio,
-                    Name = j.Key.Team.Name,
-                    Avatar = j.Key.Team.AvatarUrl,
-                    Organization = j.Key.Organization,
+                    Id = p.Team.Id,
+                    Bio = p.Team.Bio,
+                    Name = p.Team.Name,
+                    Avatar = p.Team.AvatarUrl,
+                    Organization = p.Organization,
+                    ParticipantId = p.Id,
+                    TeamInfo = p.Team,
+                    // pending fields: SolvedChallenges
                     Rank = 0,
-                    LastSubmissionTime = j
-                        .Where(s => s.Submission?.SubmitTimeUtc < game.EndTimeUtc)
-                        .Select(s => s.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
-                        .OrderBy(t => t).LastOrDefault(game.StartTimeUtc),
-                    SolvedCount = challengeGroup.Count(c => c.Any(
-                        s => s.Submission?.Status == AnswerResult.Accepted
-                             && s.Submission.SubmitTimeUtc < game.EndTimeUtc)),
-                    Challenges = challengeGroup
-                        .Select(c =>
-                        {
-                            var cid = c.Key;
-                            Data? s = c.OrderBy(s => s.Submission?.SubmitTimeUtc ?? DateTimeOffset.UtcNow)
-                                .FirstOrDefault(s => s.Submission?.Status == AnswerResult.Accepted);
+                    LastSubmissionTime = DateTimeOffset.MinValue,
+                    // update: only store accepted challenges
+                }).ToDictionaryAsync(i => i.ParticipantId, token);
 
-                            var status = SubmissionType.Normal;
+            logger.LogTrace("Fetched all teams with members: {0}", items.Count);
 
-                            if (s?.Submission is null)
-                                status = SubmissionType.Unaccepted;
-                            else if (bloods[cid][0] is not null &&
-                                     s.Submission.SubmitTimeUtc <= bloods[cid][0]!.SubmitTimeUtc)
-                                status = SubmissionType.FirstBlood;
-                            else if (bloods[cid][1] is not null &&
-                                     s.Submission.SubmitTimeUtc <= bloods[cid][1]!.SubmitTimeUtc)
-                                status = SubmissionType.SecondBlood;
-                            else if (bloods[cid][2] is not null &&
-                                     s.Submission.SubmitTimeUtc <= bloods[cid][2]!.SubmitTimeUtc)
-                                status = SubmissionType.ThirdBlood;
+            // 2. Fetch all challenges from GameChallenges, into ChallengeInfo
+            challenges = await Context.GameChallenges
+                .AsNoTracking()
+                .IgnoreAutoIncludes()
+                .Where(c => c.Game == game)
+                .Select(c => new ChallengeInfo
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    Tag = c.Tag,
+                    Score = c.CurrentScore,
+                    SolvedCount = c.AcceptedCount,
+                    // pending fields: Bloods
+                }).ToDictionaryAsync(c => c.Id, token);
 
-                            return new ChallengeItem
-                            {
-                                Id = cid,
-                                Type = status,
-                                UserName = s?.Submission?.UserName,
-                                SubmitTimeUtc = s?.Submission?.SubmitTimeUtc,
-                                Score = s is null ? 0 :
-                                    game.BloodBonus.NoBonus ? status switch
-                                    {
-                                        SubmissionType.Unaccepted => 0,
-                                        _ => s.GameInstance.Challenge.CurrentScore
-                                    } : status switch
-                                    {
-                                        SubmissionType.Unaccepted => 0,
-                                        SubmissionType.FirstBlood => Convert.ToInt32(
-                                            s.GameInstance.Challenge.CurrentScore *
-                                            game.BloodBonus.FirstBloodFactor),
-                                        SubmissionType.SecondBlood => Convert.ToInt32(
-                                            s.GameInstance.Challenge.CurrentScore *
-                                            game.BloodBonus.SecondBloodFactor),
-                                        SubmissionType.ThirdBlood => Convert.ToInt32(
-                                            s.GameInstance.Challenge.CurrentScore *
-                                            game.BloodBonus.ThirdBloodFactor),
-                                        SubmissionType.Normal => s.GameInstance.Challenge.CurrentScore,
-                                        _ => throw new ArgumentException(nameof(status))
-                                    }
-                            };
-                        }).ToList()
-                };
-            }).OrderByDescending(j => j.Score).ThenBy(j => j.LastSubmissionTime) //成绩倒序，最后提交时间正序
-            .Select((j, i) =>
+            logger.LogTrace("Fetched all challenges: {0}", challenges.Count);
+
+            // 3. fetch all needed submissions into a list of ChallengeItem
+            //    **take only the first accepted submission for each challenge & team**
+            submissions = await Context.Submissions
+                .AsNoTracking()
+                .IgnoreAutoIncludes()
+                .Include(s => s.User)
+                .Where(s => s.Status == AnswerResult.Accepted
+                            && s.SubmitTimeUtc < game.EndTimeUtc)
+                .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
+                .Where(g => g.Any())
+                .Select(g =>
+                    g.OrderBy(s => s.SubmitTimeUtc)
+                        .Take(1)
+                        .Select(
+                            s =>
+                                new ChallengeItem
+                                {
+                                    Id = s.ChallengeId,
+                                    UserName = s.User.UserName,
+                                    SubmitTimeUtc = s.SubmitTimeUtc,
+                                    ParticipantId = s.ParticipationId,
+                                    // pending fields
+                                    Score = 0,
+                                    Type = SubmissionType.Normal
+                                }
+                        )
+                        .First()
+                )
+                .ToListAsync(token);
+
+            logger.LogTrace("Fetched all challenge items: {0}", submissions.Count);
+
+            await trans.CommitAsync(token);
+        }
+
+        // 4. sort challenge items by submit time, and update the Score and Type fields
+        bool noBonus = game.BloodBonus.NoBonus;
+
+        float[] bloodFactors =
+        [
+            game.BloodBonus.FirstBloodFactor,
+            game.BloodBonus.SecondBloodFactor,
+            game.BloodBonus.ThirdBloodFactor
+        ];
+
+        foreach (var item in submissions)
+        {
+            var challenge = challenges[item.Id];
+            var scoreboardItem = items[item.ParticipantId];
+
+            // 4.1. generate bloods
+            if (challenge.Bloods.Count < 3)
             {
-                j.Rank = i + 1;
-
-                if (j.Organization is null)
-                    return j;
-
-                if (ranks.TryGetValue(j.Organization, out var rank))
+                item.Type = challenge.Bloods.Count switch
                 {
-                    j.OrganizationRank = rank + 1;
-                    ranks[j.Organization]++;
-                }
-                else
+                    0 => SubmissionType.FirstBlood,
+                    1 => SubmissionType.SecondBlood,
+                    2 => SubmissionType.ThirdBlood,
+                    _ => SubmissionType.Normal // should not happen
+                };
+                challenge.Bloods.Add(new Blood
                 {
-                    j.OrganizationRank = 1;
-                    ranks[j.Organization] = 1;
+                    Id = scoreboardItem.Id,
+                    Avatar = scoreboardItem.Avatar,
+                    Name = scoreboardItem.Name,
+                    SubmitTimeUtc = item.SubmitTimeUtc
+                });
+            }
+
+            // 4.2. update score
+            item.Score = noBonus
+                ? item.Type switch
+                {
+                    SubmissionType.Unaccepted => 0, // should not happen
+                    _ => challenge.Score
                 }
+                : item.Type switch
+                {
+                    SubmissionType.Unaccepted => 0, // should not happen
+                    SubmissionType.FirstBlood => Convert.ToInt32(challenge.Score * bloodFactors[0]),
+                    SubmissionType.SecondBlood => Convert.ToInt32(challenge.Score * bloodFactors[1]),
+                    SubmissionType.ThirdBlood => Convert.ToInt32(challenge.Score * bloodFactors[2]),
+                    SubmissionType.Normal => challenge.Score,
+                    _ => throw new ArgumentException(nameof(item.Type))
+                };
 
-                return j;
-            }).ToDictionary(d => d.Id);
-    }
+            // 4.3. update scoreboard item
+            scoreboardItem.SolvedChallenges.Add(item);
+            scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
 
-    static Dictionary<string, IEnumerable<TopTimeLine>> GenTopTimeLines(IEnumerable<ScoreboardItem> items, Game game)
-    {
-        Dictionary<string, IEnumerable<TopTimeLine>> timelines = game.Organizations is { Count: > 0 }
-            ? items
-                .GroupBy(i => i.Organization ?? "all")
-                .ToDictionary(i => i.Key, i => i.Take(10)
-                    .Select(team =>
-                        new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
-                    .ToArray()
-                    .AsEnumerable())
-            : [];
+            // 4.4. update challenge info
+            challenge.SolvedCount++;
+        }
 
-        timelines["all"] = items.Take(10)
-            .Select(team => new TopTimeLine { Id = team.Id, Name = team.Name, Items = GenTimeLine(team.Challenges) })
+        // 5. sort scoreboard items by score and last submission time
+        var sortedItems = items.Values
+            .OrderByDescending(i => i.Score)
+            .ThenBy(i => i.LastSubmissionTime)
             .ToArray();
 
-        return timelines;
-    }
+        // 6. update rank and organization rank
+        var ranks = new Dictionary<string, int>();
+        var currentRank = 1;
+        Dictionary<string, HashSet<int>> orgTeams = new() { ["All"] = [] };
+        foreach (var item in sortedItems)
+        {
+            item.Rank = currentRank++;
 
-    static IEnumerable<TimeLine> GenTimeLine(IEnumerable<ChallengeItem> items)
-    {
-        var score = 0;
-        return items.Where(i => i.SubmitTimeUtc is not null)
-            .OrderBy(i => i.SubmitTimeUtc)
-            .Select(i =>
+            if (item.Rank <= 10)
+                orgTeams["All"].Add(item.Id);
+
+            if (item.Organization is null)
+                continue;
+
+            if (ranks.TryGetValue(item.Organization, out var rank))
             {
-                score += i.Score;
-                return new TimeLine
+                item.OrganizationRank = rank + 1;
+                ranks[item.Organization]++;
+                orgTeams[item.Organization].Add(item.Id);
+            }
+            else
+            {
+                item.OrganizationRank = 1;
+                ranks[item.Organization] = 1;
+                orgTeams[item.Organization] = [item.Id];
+            }
+        }
+
+        // 7. generate top timelines by solved challenges
+        var timelines = orgTeams.ToDictionary(
+            i => i.Key,
+            i => i.Value.Select(id =>
+                new TopTimeLine
                 {
-                    Score = score,
-                    Time = i.SubmitTimeUtc!.Value // 此处不为 null
-                };
-            });
+                    Id = id,
+                    Name = items[id].Name,
+                    Items = items[id].SolvedChallenges
+                        .OrderBy(c => c.SubmitTimeUtc)
+                        .Aggregate(new List<TimeLine>(), (acc, c) =>
+                        {
+                            var last = acc.LastOrDefault();
+                            acc.Add(new TimeLine { Score = (last?.Score ?? 0) + c.Score, Time = c.SubmitTimeUtc });
+                            return acc;
+                        })
+                }
+            )
+        );
+
+        // 8. construct the final scoreboard model
+        var challengesDict = challenges
+            .Values
+            .GroupBy(c => c.Tag)
+            .ToDictionary(c => c.Key, c => c.AsEnumerable());
+
+        return new()
+        {
+            Challenges = challengesDict, Items = items, TimeLines = timelines, BloodBonusValue = game.BloodBonus.Val
+        };
     }
 
     #endregion Generate Scoreboard
@@ -372,8 +378,18 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
         if (game is null)
             return [];
 
-        ScoreboardModel scoreboard = await gameRepository.GenScoreboard(game, token);
-        return MemoryPackSerializer.Serialize(scoreboard);
+        try
+        {
+            ScoreboardModel scoreboard = await gameRepository.GenScoreboard(game, token);
+            return MemoryPackSerializer.Serialize(scoreboard);
+        }
+        catch (Exception e)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardCacheHandler>>();
+            logger.LogError(e, "{msg}",
+                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+            return [];
+        }
     }
 
     public static CacheRequest MakeCacheRequest(int id) =>
