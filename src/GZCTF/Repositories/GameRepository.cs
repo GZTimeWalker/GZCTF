@@ -175,9 +175,7 @@ public class GameRepository(
                     LastSubmissionTime = DateTimeOffset.MinValue,
                     // update: only store accepted challenges
                 }).ToDictionaryAsync(i => i.ParticipantId, token);
-
-            logger.LogDebug("Fetched all teams with members: {0}", items.Count);
-
+            
             // 2. Fetch all challenges from GameChallenges, into ChallengeInfo
             challenges = await Context.GameChallenges
                 .AsNoTracking()
@@ -192,9 +190,7 @@ public class GameRepository(
                     SolvedCount = c.AcceptedCount,
                     // pending fields: Bloods
                 }).ToDictionaryAsync(c => c.Id, token);
-
-            logger.LogDebug("Fetched all challenges: {0}", challenges.Count);
-
+            
             // 3. fetch all needed submissions into a list of ChallengeItem
             //    **take only the first accepted submission for each challenge & team**
             submissions = await Context.Submissions
@@ -227,9 +223,7 @@ public class GameRepository(
                         .First()
                 )
                 .ToListAsync(token);
-
-            logger.LogDebug("Fetched all challenge items: {0}", submissions.Count);
-
+            
             await trans.CommitAsync(token);
         }
 
