@@ -71,7 +71,7 @@
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "axios": "^1.7.5",
+    "axios": "^1.7.6",
     "babel-plugin-prismjs": "^2.1.0",
     "eslint": "^9.9.1",
     "eslint-plugin-oxlint": "^0.9.1",
