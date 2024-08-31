@@ -55,7 +55,7 @@ public sealed class MailSender : IMailSender, IDisposable
             ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)]);
 
         _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_ConnectedToSmtp),
-            $"{_options.Smtp.Host}:{_options.Smtp.Port}"]);
+            $"{_options.Smtp.Host}:{_options.Smtp.Port}"], TaskStatus.Success, LogLevel.Debug);
 
         Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
