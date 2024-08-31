@@ -29,10 +29,12 @@ import {
   mdiHexagonSlice2,
   mdiHexagonSlice4,
   mdiHexagonSlice6,
+  mdiLanPending,
   mdiLightbulbOnOutline,
   mdiMatrix,
   mdiPlus,
   mdiRobotLoveOutline,
+  mdiSearchWeb,
   mdiWeb,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -104,6 +106,8 @@ export const ChallengeTypeItem: SelectProps['renderOption'] = ({ option }) => {
 export const useChallengeTagLabelMap = () => {
   const { t } = useTranslation()
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
+  const revert = colorScheme === 'dark' ? 'light' : 'dark'
 
   return new Map<ChallengeTag, ChallengeTagItemProps>([
     [
@@ -122,8 +126,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.crypto'),
         icon: mdiMatrix,
         name: ChallengeTag.Crypto,
-        color: 'indigo',
-        colors: theme.colors['indigo'],
+        color: 'violet',
+        colors: theme.colors['violet'],
       },
     ],
     [
@@ -162,8 +166,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.blockchain'),
         icon: mdiEthereum,
         name: ChallengeTag.Blockchain,
-        color: 'lime',
-        colors: theme.colors['lime'],
+        color: 'green',
+        colors: theme.colors['green'],
       },
     ],
     [
@@ -172,8 +176,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.forensics'),
         icon: mdiFingerprint,
         name: ChallengeTag.Forensics,
-        color: 'cyan',
-        colors: theme.colors['cyan'],
+        color: 'indigo',
+        colors: theme.colors['indigo'],
       },
     ],
     [
@@ -182,8 +186,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.hardware'),
         icon: mdiChip,
         name: ChallengeTag.Hardware,
-        color: 'violet',
-        colors: theme.colors['violet'],
+        color: 'grape',
+        colors: theme.colors['grape'],
       },
     ],
     [
@@ -202,8 +206,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.ppc'),
         icon: mdiConsole,
         name: ChallengeTag.PPC,
-        color: 'orange',
-        colors: theme.colors['orange'],
+        color: revert,
+        colors: theme.colors[revert],
       },
     ],
     [
@@ -212,8 +216,28 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.ai'),
         icon: mdiRobotLoveOutline,
         name: ChallengeTag.AI,
-        color: 'green',
-        colors: theme.colors['green'],
+        color: 'lime',
+        colors: theme.colors['lime'],
+      },
+    ],
+    [
+      ChallengeTag.OSINT,
+      {
+        desrc: t('challenge.tag.osint'),
+        icon: mdiSearchWeb,
+        name: ChallengeTag.OSINT,
+        color: 'orange',
+        colors: theme.colors['orange'],
+      },
+    ],
+    [
+      ChallengeTag.Pentest,
+      {
+        desrc: t('challenge.tag.pentest'),
+        icon: mdiLanPending,
+        name: ChallengeTag.Pentest,
+        color: 'cyan',
+        colors: theme.colors['cyan'],
       },
     ],
   ])
@@ -230,14 +254,17 @@ export interface ChallengeTagItemProps {
 type SelectChallengeTagItemProps = ChallengeTagItemProps & ComboboxItem
 
 export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
-  const { colors, icon, name } = option as SelectChallengeTagItemProps
+  const { colors, icon, name, desrc } = option as SelectChallengeTagItemProps
 
   return (
     <Group wrap="nowrap">
       <Icon color={colors[4]} path={icon} size={1.2} />
-      <Text size="sm" fw="bold">
-        {name}
-      </Text>
+      <Stack gap={0}>
+        <Text size="sm" fw="bold">
+          {name}
+        </Text>
+        <Text size="xs">{desrc}</Text>
+      </Stack>
     </Group>
   )
 }

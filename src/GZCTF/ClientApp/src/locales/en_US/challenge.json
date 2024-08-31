@@ -143,17 +143,19 @@
     }
   },
   "tag": {
-    "ai": "AI",
+    "ai": "AI security",
     "blockchain": "Blockchain",
-    "crypto": "Crypto",
-    "forensics": "Forensics",
-    "hardware": "Hardware",
-    "misc": "Misc",
-    "mobile": "Mobile",
-    "ppc": "PPC",
-    "pwn": "Pwn",
-    "reverse": "Reverse",
-    "web": "Web"
+    "crypto": "Cryptography",
+    "forensics": "Digital forensics",
+    "hardware": "Hardware security",
+    "misc": "Miscellaneous",
+    "mobile": "Mobile security",
+    "ppc": "Programming",
+    "pwn": "Binary exploitation",
+    "reverse": "Reverse engineering",
+    "web": "Web security",
+    "osint": "Open-source intel",
+    "pentest": "Penetration testing"
   },
   "type": {
     "dynamic_attachment": {

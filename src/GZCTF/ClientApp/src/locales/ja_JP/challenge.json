@@ -143,17 +143,19 @@
     }
   },
   "tag": {
-    "ai": "AI",
+    "ai": "AIセキュリティ",
     "blockchain": "ブロックチェーン",
     "crypto": "暗号学",
-    "forensics": "フォレンジック",
-    "hardware": "ハードウェア",
+    "forensics": "デジタル・フォレンジック",
+    "hardware": "ハードウェアセキュリティ",
     "misc": "その他",
     "mobile": "モバイルセキュリティ",
     "ppc": "プログラミング",
-    "pwn": "Pwn",
+    "pwn": "エクスプロイト",
     "reverse": "リバースエンジニアリング",
-    "web": "Web"
+    "web": "ウェブセキュリティ",
+    "osint": "オープンソース情報",
+    "pentest": "ペネトレーションテスト"
   },
   "type": {
     "dynamic_attachment": {

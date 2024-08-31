@@ -123,6 +123,7 @@ const GameChallengeEdit: FC = () => {
             placeholder={t('admin.content.show_all')}
             clearable
             searchable
+            w="16rem"
             value={category}
             nothingFoundMessage={t('admin.content.nothing_found')}
             onChange={(value) => setCategory(value as ChallengeTag | null)}

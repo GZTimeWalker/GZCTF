@@ -633,6 +633,8 @@ export enum ChallengeTag {
   Mobile = "Mobile",
   PPC = "PPC",
   AI = "AI",
+  Pentest = "Pentest",
+  OSINT = "OSINT",
 }
 
 /** 列表响应 */
