@@ -52,15 +52,12 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       max: 1,
     }))
 
-  const values = item?.solvedChallenges?.map((chal) => {
-    if (indicator && challengeIdMap && chal) {
-      const challenge = challengeIdMap.get(chal.id!)
-      const index = challenge && indicator?.findIndex((ch) => ch.name === challenge.tag)
-      if (chal?.score && challenge?.score && index !== undefined && index !== -1) {
-        return challenge?.score / indicator[index].scoreSum
-      }
-    }
-    return 0
+  const values = indicator?.map((ind) => {
+    const solvedChallenges = item?.solvedChallenges?.filter(
+      (chal) => challengeIdMap?.get(chal.id!)?.tag === ind.name
+    )
+    const tagScore = solvedChallenges?.reduce((sum, chal) => sum + chal.score!, 0) ?? 0
+    return Math.min(tagScore / ind.scoreSum, 1)
   })
 
   return (
