@@ -141,7 +141,7 @@ const TableRow: FC<{
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
   const theme = useMantineTheme()
   const challengeTagLabelMap = useChallengeTagLabelMap()
-  const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
+  const solved = item.solvedChallenges
 
   return (
     <Table.Tr>
@@ -357,7 +357,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
         </Group>
       </Stack>
       <ScoreboardItemModal
-        challenges={scoreboard?.challenges}
+        scoreboard={scoreboard}
         bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}

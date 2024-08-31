@@ -622,6 +622,7 @@ public class GameController(
             ScoreboardItem = boardItem,
             TeamToken = context.Participation!.Token,
             Challenges = scoreboard.Challenges,
+            ChallengeCount = scoreboard.ChallengeCount,
             WriteupRequired = context.Game!.WriteupRequired,
             WriteupDeadline = context.Game!.WriteupDeadline
         });

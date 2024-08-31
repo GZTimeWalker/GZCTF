@@ -1260,6 +1260,11 @@ export interface ScoreboardModel {
   items?: ScoreboardItem[];
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>;
+  /**
+   * 题目数量
+   * @format int32
+   */
+  challengeCount?: number;
 }
 
 export interface TopTimeLine {
@@ -1317,17 +1322,17 @@ export interface ScoreboardItem {
    */
   organizationRank?: number | null;
   /**
-   * 已解出的题目数量
-   * @format int32
-   */
-  solvedCount?: number;
-  /**
    * 得分时间
    * @format date-time
    */
   lastSubmissionTime?: string;
-  /** 题目情况列表 */
-  challenges?: ChallengeItem[];
+  /** 解出的题目列表 */
+  solvedChallenges?: ChallengeItem[];
+  /**
+   * 已解出的题目数量
+   * @format int32
+   */
+  solvedCount?: number;
 }
 
 export interface ChallengeItem {
@@ -1349,7 +1354,7 @@ export interface ChallengeItem {
    * 题目提交的时间，为了计算时间线
    * @format date-time
    */
-  time?: string | null;
+  time?: string;
 }
 
 /** 提交类型 */
@@ -1382,7 +1387,7 @@ export interface ChallengeInfo {
    */
   solved?: number;
   /** 题目三血 */
-  bloods?: (Blood | null)[];
+  bloods?: Blood[];
 }
 
 export interface Blood {
@@ -1559,6 +1564,11 @@ export interface FileRecord {
 export interface GameDetailModel {
   /** 题目信息 */
   challenges?: Record<string, ChallengeInfo[]>;
+  /**
+   * 题目数量
+   * @format int32
+   */
+  challengeCount?: number;
   /** 积分榜信息 */
   rank?: ScoreboardItem | null;
   /**

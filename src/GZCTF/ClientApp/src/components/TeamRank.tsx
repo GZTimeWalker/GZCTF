@@ -33,7 +33,7 @@ const TeamRank: FC<CardProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const solved = (teamInfo?.rank?.solvedCount ?? 0) / (teamInfo?.rank?.challenges?.length ?? 1)
+  const solved = (teamInfo?.rank?.solvedCount ?? 0) / (teamInfo?.challengeCount ?? 1)
 
   useEffect(() => {
     if (error?.status === ErrorCodes.GameEnded) {

@@ -18,7 +18,7 @@ import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps } from '@Components/ScoreboardTable'
 import { BloodBonus, useBonusLabels } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
-import { ScoreboardItem, SubmissionType } from '@Api'
+import { ScoreboardItem } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 
 const TableRow: FC<{
@@ -26,7 +26,7 @@ const TableRow: FC<{
   onOpenDetail: () => void
 }> = ({ item, onOpenDetail }) => {
   const theme = useMantineTheme()
-  const solved = item.challenges?.filter((c) => c.type !== SubmissionType.Unaccepted)
+  const solved = item.solvedChallenges
   return (
     <Table.Tr>
       <Table.Td className={cx(classes.mono, classes.left)}>{item.rank}</Table.Td>
@@ -178,7 +178,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
         </Group>
       </Stack>
       <MobileScoreboardItemModal
-        challenges={scoreboard?.challenges}
+        scoreboard={scoreboard}
         bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}

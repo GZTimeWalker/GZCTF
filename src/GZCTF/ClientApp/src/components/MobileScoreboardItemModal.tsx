@@ -6,7 +6,6 @@ import {
   Input,
   LoadingOverlay,
   Modal,
-  ModalProps,
   Progress,
   ScrollArea,
   Stack,
@@ -19,20 +18,15 @@ import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import TeamRadarMap from '@Components/TeamRadarMap'
-import { BonusLabel } from '@Utils/Shared'
-import { ChallengeInfo, ScoreboardItem, SubmissionType } from '@Api'
+import { ChallengeInfo } from '@Api'
 import tableClasses from '@Styles/Table.module.css'
+import { ScoreboardItemModalProps } from './ScoreboardItemModal'
 
-interface MobileScoreboardItemModalProps extends ModalProps {
-  item?: ScoreboardItem | null
-  bloodBonusMap: Map<SubmissionType, BonusLabel>
-  challenges?: Record<string, ChallengeInfo[]>
-}
-
-const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) => {
-  const { item, challenges, ...modalProps } = props
+const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
+  const { item, scoreboard, ...modalProps } = props
   const { t } = useTranslation()
 
+  const challenges = scoreboard?.challenges
   const challengeIdMap =
     challenges &&
     Object.keys(challenges).reduce((map, key) => {
@@ -42,7 +36,7 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
       return map
     }, new Map<number, ChallengeInfo>())
 
-  const solved = (item?.solvedCount ?? 0) / (item?.challenges?.length ?? 1)
+  const solved = (item?.solvedCount ?? 0) / (scoreboard?.challengeCount ?? 1)
 
   const indicator =
     challenges &&
@@ -52,16 +46,15 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
       max: 1,
     }))
 
-  const values = Array.from({ length: item?.challenges?.length ?? 0 }, () => 0)
-
-  item?.challenges?.forEach((chal) => {
+  const values = item?.solvedChallenges?.map((chal) => {
     if (indicator && challengeIdMap && chal) {
       const challenge = challengeIdMap.get(chal.id!)
       const index = challenge && indicator?.findIndex((ch) => ch.name === challenge.tag)
       if (chal?.score && challenge?.score && index !== undefined && index !== -1) {
-        values[index] += challenge?.score / indicator[index].scoreSum
+        return challenge?.score / indicator[index].scoreSum
       }
     }
+    return 0
   })
 
   return (
@@ -141,10 +134,9 @@ const MobileScoreboardItemModal: FC<MobileScoreboardItemModalProps> = (props) =>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {item?.challenges &&
+                {item?.solvedChallenges &&
                   challengeIdMap &&
-                  item.challenges
-                    .filter((c) => c.type !== SubmissionType.Unaccepted)
+                  item.solvedChallenges
                     .sort((a, b) => dayjs(b.time).diff(dayjs(a.time)))
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)

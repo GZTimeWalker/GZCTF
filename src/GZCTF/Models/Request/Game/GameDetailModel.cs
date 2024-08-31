@@ -11,6 +11,11 @@ public class GameDetailModel
     public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = new();
 
     /// <summary>
+    /// 题目数量
+    /// </summary>
+    public int ChallengeCount { get; set; }
+
+    /// <summary>
     /// 积分榜信息
     /// </summary>
     [JsonPropertyName("rank")]

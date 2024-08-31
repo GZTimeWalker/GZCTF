@@ -182,7 +182,7 @@ public class GameRepository(
             challenges = await Context.GameChallenges
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
-                .Where(c => c.Game == game)
+                .Where(c => c.Game == game && c.IsEnabled)
                 .Select(c => new ChallengeInfo
                 {
                     Id = c.Id,
@@ -201,7 +201,8 @@ public class GameRepository(
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Include(s => s.User)
-                .Where(s => s.Status == AnswerResult.Accepted
+                .Include(s => s.GameChallenge)
+                .Where(s => s.Status == AnswerResult.Accepted && s.GameChallenge.IsEnabled
                             && s.SubmitTimeUtc < game.EndTimeUtc)
                 .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
                 .Where(g => g.Any())
@@ -283,6 +284,7 @@ public class GameRepository(
 
             // 4.3. update scoreboard item
             scoreboardItem.SolvedChallenges.Add(item);
+            scoreboardItem.Score += item.Score;
             scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
 
             // 4.4. update challenge info
@@ -298,13 +300,13 @@ public class GameRepository(
         // 6. update rank and organization rank
         var ranks = new Dictionary<string, int>();
         var currentRank = 1;
-        Dictionary<string, HashSet<int>> orgTeams = new() { ["All"] = [] };
+        Dictionary<string, HashSet<int>> orgTeams = new() { ["all"] = [] };
         foreach (var item in sortedItems)
         {
             item.Rank = currentRank++;
 
             if (item.Rank <= 10)
-                orgTeams["All"].Add(item.Id);
+                orgTeams["all"].Add(item.Id);
 
             if (item.Organization is null)
                 continue;

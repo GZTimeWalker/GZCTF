@@ -35,9 +35,32 @@ public partial class ScoreboardModel
     public Dictionary<int, ScoreboardItem> Items { get; set; } = default!;
 
     /// <summary>
+    /// 队伍信息列表
+    /// </summary>
+    [MemoryPackIgnore]
+    [JsonPropertyName("items")]
+    public IEnumerable<ScoreboardItem> ItemList => Items.Values;
+
+    /// <summary>
     /// 题目信息
     /// </summary>
-    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
+    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges
+    {
+        get => _challenges;
+        set
+        {
+            _challenges = value;
+            ChallengeCount = value.Values.Select(x => x.Count()).Sum();
+        }
+    }
+
+    private Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> _challenges = default!;
+
+    /// <summary>
+    /// 题目数量
+    /// </summary>
+    [MemoryPackIgnore]
+    public int ChallengeCount { get; private set; }
 }
 
 [MemoryPackable]
@@ -104,7 +127,7 @@ public partial class ScoreboardItem
     /// <summary>
     /// 分数
     /// </summary>
-    public int Score => SolvedChallenges.Sum(c => c.Score);
+    public int Score { get; set; }
 
     /// <summary>
     /// 排名
@@ -117,11 +140,6 @@ public partial class ScoreboardItem
     public int? OrganizationRank { get; set; }
 
     /// <summary>
-    /// 已解出的题目数量
-    /// </summary>
-    public int SolvedCount => SolvedChallenges.Count;
-
-    /// <summary>
     /// 得分时间
     /// </summary>
     public DateTimeOffset LastSubmissionTime { get; set; }
@@ -130,6 +148,11 @@ public partial class ScoreboardItem
     /// 解出的题目列表
     /// </summary>
     public List<ChallengeItem> SolvedChallenges { get; set; } = [];
+
+    /// <summary>
+    /// 已解出的题目数量
+    /// </summary>
+    public int SolvedCount => SolvedChallenges.Count;
 
     /// <summary>
     /// 参与对象 Id

@@ -46,14 +46,13 @@ const ChallengePanel: FC = () => {
   })
 
   const allChallenges = Object.values(challenges ?? {}).flat()
+
   const currentChallenges =
     challenges &&
     (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
       (chal) =>
         !hideSolved ||
-        (teamInfo &&
-          teamInfo.rank?.challenges?.find((c) => c.id === chal.id)?.type ===
-            SubmissionType.Unaccepted)
+        (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
     )
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
@@ -233,7 +232,7 @@ const ChallengePanel: FC = () => {
             cols={{ base: 3, w18: 4, w24: 6, w30: 8, w36: 10, w42: 12, w48: 14 }}
           >
             {currentChallenges?.map((chal) => {
-              const status = teamInfo?.rank?.challenges?.find((c) => c.id === chal.id)?.type
+              const status = teamInfo?.rank?.solvedChallenges?.find((c) => c.id === chal.id)?.type
               const solved = status !== SubmissionType.Unaccepted && status !== undefined
 
               return (
@@ -278,7 +277,7 @@ const ChallengePanel: FC = () => {
           withCloseButton={false}
           onClose={() => setDetailOpened(false)}
           gameEnded={dayjs(game?.end) < dayjs()}
-          status={teamInfo?.rank?.challenges?.find((c) => c.id === challenge?.id)?.type}
+          status={teamInfo?.rank?.solvedChallenges?.find((c) => c.id === challenge?.id)?.type}
           tagData={challengeTagLabelMap.get((challenge?.tag as ChallengeTag) ?? ChallengeTag.Misc)!}
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}
