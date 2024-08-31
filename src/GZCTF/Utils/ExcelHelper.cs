@@ -171,7 +171,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
             foreach (var challId in challIds)
             {
-                ChallengeItem? chall = item.Challenges.SingleOrDefault(c => c.Id == challId);
+                ChallengeItem? chall = item.SolvedChallenges.SingleOrDefault(c => c.Id == challId);
                 row.CreateCell(colIndex++).SetCellValue(chall?.Score ?? 0);
             }
 

@@ -13,13 +13,29 @@ public class FlagChecker(
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     CancellationTokenSource TokenSource { get; set; } = new();
-    const int MaxWorkerCount = 2;
+    const int MaxWorkerCount = 4;
+
+    internal static int GetWorkerCount()
+    {
+        // if RAM < 2GiB or CPU <= 3, return 1
+        // if RAM < 4GiB or CPU <= 6, return 2
+        // otherwise, return 4
+        var memoryInfo = GC.GetGCMemoryInfo();
+        double freeMemory = memoryInfo.TotalAvailableMemoryBytes / 1024.0 / 1024.0 / 1024.0;
+        var cpuCount = Environment.ProcessorCount;
+        
+        if (freeMemory < 2 || cpuCount <= 3)
+            return 1;
+        if (freeMemory < 4 || cpuCount <= 6)
+            return 2;
+        return MaxWorkerCount;
+    }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         TokenSource = new CancellationTokenSource();
 
-        for (var i = 0; i < MaxWorkerCount; ++i)
+        for (var i = 0; i < GetWorkerCount(); ++i)
         {
             await Task.Factory.StartNew(() => Checker(i, TokenSource.Token), cancellationToken,
                 TaskCreationOptions.LongRunning, TaskScheduler.Default);

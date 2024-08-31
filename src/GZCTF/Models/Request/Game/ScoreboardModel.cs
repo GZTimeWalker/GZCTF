@@ -44,7 +44,23 @@ public partial class ScoreboardModel
     /// <summary>
     /// 题目信息
     /// </summary>
-    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = default!;
+    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges
+    {
+        get => _challenges;
+        set
+        {
+            _challenges = value;
+            ChallengeCount = value.Values.Select(x => x.Count()).Sum();
+        }
+    }
+
+    private Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> _challenges = default!;
+
+    /// <summary>
+    /// 题目数量
+    /// </summary>
+    [MemoryPackIgnore]
+    public int ChallengeCount { get; private set; }
 }
 
 [MemoryPackable]
@@ -63,7 +79,7 @@ public partial class TopTimeLine
     /// <summary>
     /// 时间线
     /// </summary>
-    public IEnumerable<TimeLine> Items { get; set; } = default!;
+    public List<TimeLine> Items { get; set; } = default!;
 }
 
 [MemoryPackable]
@@ -111,7 +127,7 @@ public partial class ScoreboardItem
     /// <summary>
     /// 分数
     /// </summary>
-    public int Score => Challenges.Sum(c => c.Score);
+    public int Score { get; set; }
 
     /// <summary>
     /// 排名
@@ -124,19 +140,26 @@ public partial class ScoreboardItem
     public int? OrganizationRank { get; set; }
 
     /// <summary>
-    /// 已解出的题目数量
-    /// </summary>
-    public int SolvedCount { get; set; }
-
-    /// <summary>
     /// 得分时间
     /// </summary>
     public DateTimeOffset LastSubmissionTime { get; set; }
 
     /// <summary>
-    /// 题目情况列表
+    /// 解出的题目列表
     /// </summary>
-    public IEnumerable<ChallengeItem> Challenges { get; set; } = Array.Empty<ChallengeItem>();
+    public List<ChallengeItem> SolvedChallenges { get; set; } = [];
+
+    /// <summary>
+    /// 已解出的题目数量
+    /// </summary>
+    public int SolvedCount => SolvedChallenges.Count;
+
+    /// <summary>
+    /// 参与对象 Id
+    /// </summary>
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public int ParticipantId { get; set; }
 
     /// <summary>
     /// 队伍信息，用于生成排行榜
@@ -174,7 +197,14 @@ public partial class ChallengeItem
     /// 题目提交的时间，为了计算时间线
     /// </summary>
     [JsonPropertyName("time")]
-    public DateTimeOffset? SubmitTimeUtc { get; set; }
+    public DateTimeOffset SubmitTimeUtc { get; set; }
+
+    /// <summary>
+    /// 参与对象 Id
+    /// </summary>
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public int ParticipantId { get; set; }
 }
 
 [MemoryPackable]
@@ -209,7 +239,7 @@ public partial class ChallengeInfo
     /// <summary>
     /// 题目三血
     /// </summary>
-    public Blood?[] Bloods { get; set; } = default!;
+    public List<Blood> Bloods { get; set; } = [];
 }
 
 [MemoryPackable]
