@@ -53,10 +53,10 @@ public sealed class MailSender : IMailSender, IDisposable
 
         if (!TestSmtpClient())
             ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)]);
-        
+
         _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_ConnectedToSmtp),
             $"{_options.Smtp.Host}:{_options.Smtp.Port}"]);
-        
+
         Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
     }
@@ -189,7 +189,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         return true;
     }
-    
+
     bool TestSmtpClient(CancellationToken token = default)
     {
         if (_smtpClient is null)

@@ -351,7 +351,10 @@ public class GameRepository(
 
         return new()
         {
-            Challenges = challengesDict, Items = items, TimeLines = timelines, BloodBonusValue = game.BloodBonus.Val
+            Challenges = challengesDict,
+            Items = items,
+            TimeLines = timelines,
+            BloodBonusValue = game.BloodBonus.Val
         };
     }
 
