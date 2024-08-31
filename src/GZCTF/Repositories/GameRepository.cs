@@ -161,7 +161,6 @@ public class GameRepository(
                 .IgnoreAutoIncludes()
                 .Where(p => p.GameId == game.Id)
                 .Include(p => p.Team)
-                .Include(p => p.Team.Members)
                 .Select(p => new ScoreboardItem
                 {
                     Id = p.Team.Id,
@@ -177,7 +176,7 @@ public class GameRepository(
                     // update: only store accepted challenges
                 }).ToDictionaryAsync(i => i.ParticipantId, token);
 
-            logger.LogTrace("Fetched all teams with members: {0}", items.Count);
+            logger.LogDebug("Fetched all teams with members: {0}", items.Count);
 
             // 2. Fetch all challenges from GameChallenges, into ChallengeInfo
             challenges = await Context.GameChallenges
@@ -194,7 +193,7 @@ public class GameRepository(
                     // pending fields: Bloods
                 }).ToDictionaryAsync(c => c.Id, token);
 
-            logger.LogTrace("Fetched all challenges: {0}", challenges.Count);
+            logger.LogDebug("Fetched all challenges: {0}", challenges.Count);
 
             // 3. fetch all needed submissions into a list of ChallengeItem
             //    **take only the first accepted submission for each challenge & team**
@@ -227,7 +226,7 @@ public class GameRepository(
                 )
                 .ToListAsync(token);
 
-            logger.LogTrace("Fetched all challenge items: {0}", submissions.Count);
+            logger.LogDebug("Fetched all challenge items: {0}", submissions.Count);
 
             await trans.CommitAsync(token);
         }
@@ -287,9 +286,6 @@ public class GameRepository(
             scoreboardItem.SolvedChallenges.Add(item);
             scoreboardItem.Score += item.Score;
             scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
-
-            // 4.4. update challenge info
-            challenge.SolvedCount++;
         }
 
         // 5. sort scoreboard items by score and last submission time
