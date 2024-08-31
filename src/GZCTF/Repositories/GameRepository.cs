@@ -1,4 +1,5 @@
-﻿using GZCTF.Extensions;
+﻿using System.Diagnostics;
+using GZCTF.Extensions;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -158,7 +159,7 @@ public class GameRepository(
             items = await Context.Participations
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
-                .Where(p => p.Game == game)
+                .Where(p => p.GameId == game.Id)
                 .Include(p => p.Team)
                 .Include(p => p.Team.Members)
                 .Select(p => new ScoreboardItem
@@ -182,7 +183,7 @@ public class GameRepository(
             challenges = await Context.GameChallenges
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
-                .Where(c => c.Game == game && c.IsEnabled)
+                .Where(c => c.GameId == game.Id && c.IsEnabled)
                 .Select(c => new ChallengeInfo
                 {
                     Id = c.Id,
@@ -254,7 +255,7 @@ public class GameRepository(
                     0 => SubmissionType.FirstBlood,
                     1 => SubmissionType.SecondBlood,
                     2 => SubmissionType.ThirdBlood,
-                    _ => SubmissionType.Normal // should not happen
+                    _ => throw new UnreachableException()
                 };
                 challenge.Bloods.Add(new Blood
                 {
@@ -269,12 +270,12 @@ public class GameRepository(
             item.Score = noBonus
                 ? item.Type switch
                 {
-                    SubmissionType.Unaccepted => 0, // should not happen
+                    SubmissionType.Unaccepted => throw new UnreachableException(),
                     _ => challenge.Score
                 }
                 : item.Type switch
                 {
-                    SubmissionType.Unaccepted => 0, // should not happen
+                    SubmissionType.Unaccepted => throw new UnreachableException(),
                     SubmissionType.FirstBlood => Convert.ToInt32(challenge.Score * bloodFactors[0]),
                     SubmissionType.SecondBlood => Convert.ToInt32(challenge.Score * bloodFactors[1]),
                     SubmissionType.ThirdBlood => Convert.ToInt32(challenge.Score * bloodFactors[2]),
