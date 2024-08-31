@@ -63,6 +63,8 @@ commit_parsers = [
   { message = "^[fF]ix", group = "<!-- 2 -->🐛 Bug Fixes" },
   { message = "^[sS]tyle", group = "<!-- 3 -->🎨 Styling" },
   { message = "^[pP]erf", group = "<!-- 4 -->🚀 Performances" },
+  { message = "^[rR]efactor", group = "<!-- 5 -->🔨 Refactor" },
+  { message = "^[tT]est", group = "<!-- 6 -->🧪 Tests" },
   { message = "^[dD]oc", skip = true },
   { message = "^[rR]elease", skip = true },
   { message = "^[rR]evert", skip = true },
