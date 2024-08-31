@@ -115,7 +115,7 @@ const ChallengePanel: FC = () => {
 
   if (allChallenges.length === 0) {
     return (
-      <Center h="calc(100vh - 100px)">
+      <Center h="calc(100vh - 100px)" w="100%">
         <Empty
           bordered
           description={t('game.content.no_challenge')}
