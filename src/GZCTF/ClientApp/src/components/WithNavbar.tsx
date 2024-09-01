@@ -56,7 +56,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
         rotate={-12}
         textSize={14}
         gutter={22}
-        opacity={colorScheme === 'dark' ? 0.02 : 0.03}
+        opacity={colorScheme === 'dark' ? 0.02 : 0.025}
       >
         <AppShell
           padding={0}

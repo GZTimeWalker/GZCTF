@@ -54,7 +54,7 @@
     "no_data": "No data",
     "report_error": "Please report this error to the administrator if you think this is a bug",
     "wider": {
-      "text": "Please use a broader device to browse this page",
+      "text": "Try to use a wider device",
       "title": "Not wide enough"
     }
   },
