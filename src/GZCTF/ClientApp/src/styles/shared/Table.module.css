@@ -12,12 +12,23 @@
 }
 
 .table {
-  & thead tr th {
+  & thead {
     position: sticky;
     top: 0;
     z-index: 195;
 
     background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-7));
+
+    & tr::after {
+      content: '';
+      display: block;
+      position: absolute;
+      bottom: -1px;
+      left: 0px;
+      width: 100%;
+      height: rem(2px);
+      background-color: var(--table-border-color);
+    }
   }
 
   & tbody tr td {

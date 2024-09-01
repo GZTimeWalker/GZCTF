@@ -167,13 +167,12 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
             </Table>
           </Box>
         </Box>
-        <Group justify="center">
+        <Group justify="center" wrap="nowrap">
           <Pagination
-            size="md"
+            size="sm"
             value={activePage}
             onChange={setPage}
             total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
-            boundaries={1}
           />
         </Group>
       </Stack>

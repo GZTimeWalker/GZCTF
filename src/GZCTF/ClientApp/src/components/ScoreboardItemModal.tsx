@@ -12,6 +12,7 @@ import {
   Table,
   Text,
   Title,
+  Input,
 } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC } from 'react'
@@ -19,6 +20,7 @@ import { useTranslation } from 'react-i18next'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { ChallengeInfo, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
+import inputClasses from '@Styles/Input.module.css'
 import tableClasses from '@Styles/Table.module.css'
 
 export interface ScoreboardItemModalProps extends ModalProps {
@@ -125,7 +127,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           <Progress value={solved * 100} />
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
-          <ScrollArea scrollbarSize={6} h="12rem" w="100%">
+          <ScrollArea scrollbarSize={6} h="12rem" w="100%" scrollbars="y">
             <Table className={tableClasses.table}>
               <Table.Thead>
                 <Table.Tr>
@@ -145,21 +147,39 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                       const info = challengeIdMap.get(chal.id!)!
                       return (
                         <Table.Tr key={chal.id}>
-                          <Table.Td style={{ fontWeight: 500 }}>{chal.userName}</Table.Td>
-                          <Table.Td>{info.title}</Table.Td>
-                          <Table.Td ff="monospace">{info.tag}</Table.Td>
-                          <Table.Td ff="monospace">
+                          <Table.Td fw="bold">{chal.userName}</Table.Td>
+                          <Table.Td>
+                            <Input
+                              variant="unstyled"
+                              value={info.title}
+                              readOnly
+                              size="sm"
+                              miw="16rem"
+                              maw="20rem"
+                              __vars={{
+                                '--input-height': 'var(--mantine-line-height-sm)',
+                              }}
+                              classNames={{
+                                input: inputClasses.input,
+                                wrapper: inputClasses.wrapper,
+                              }}
+                            />
+                          </Table.Td>
+                          <Table.Td ff="monospace" fz="sm">
+                            {info.tag}
+                          </Table.Td>
+                          <Table.Td ff="monospace" fz="sm">
                             {chal.score}
                             {info.score &&
                               chal.score! > info.score &&
                               chal.type &&
                               BloodsTypes.includes(chal.type) && (
-                                <Text span c="dimmed" ff="monospace">
-                                  {` (${bloodBonusMap.get(chal.type)?.descr})`}
+                                <Text size="sm" c="dimmed" span>
+                                  {`(${bloodBonusMap.get(chal.type)?.descr})`}
                                 </Text>
                               )}
                           </Table.Td>
-                          <Table.Td ff="monospace">
+                          <Table.Td ff="monospace" fz="sm">
                             {dayjs(chal.time).format('MM/DD HH:mm:ss')}
                           </Table.Td>
                         </Table.Tr>

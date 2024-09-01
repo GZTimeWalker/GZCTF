@@ -1,0 +1,12 @@
+.wapper {
+  width: 100%;
+  height: 0.9rem;
+}
+
+.input {
+  user-select: none;
+  font-size: var(--mantine-font-size-sm);
+  line-height: var(--mantine-line-height-sm);
+  height: var(--mantine-line-height-sm);
+  font-weight: 500;
+}

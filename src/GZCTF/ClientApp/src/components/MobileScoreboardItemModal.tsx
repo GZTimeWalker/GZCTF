@@ -13,14 +13,14 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ScoreboardItemModalProps } from '@Components/ScoreboardItemModal'
 import TeamRadarMap from '@Components/TeamRadarMap'
 import { ChallengeInfo } from '@Api'
+import inputClasses from '@Styles/Input.module.css'
 import tableClasses from '@Styles/Table.module.css'
-import { ScoreboardItemModalProps } from './ScoreboardItemModal'
 
 const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, scoreboard, ...modalProps } = props
@@ -120,14 +120,12 @@ const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
         </Stack>
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%">
-            <Table className={cx(tableClasses.table, tableClasses.nopadding)} fz="sm">
+            <Table className={tableClasses.table} fz="sm">
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
-                  <Table.Th style={{ minWidth: '3rem' }}>
-                    {t('game.label.score_table.score')}
-                  </Table.Th>
-                  <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.time')}</Table.Th>
+                  <Table.Th>{t('common.label.challenge')}</Table.Th>
+                  <Table.Th>{t('game.label.score_table.score')}</Table.Th>
+                  <Table.Th>{t('common.label.time')}</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -138,36 +136,24 @@ const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                     .map((chal) => {
                       const info = challengeIdMap.get(chal.id!)
                       return (
-                        <Table.Tr key={chal.id}>
+                        <Table.Tr key={chal.id} ff="monospace">
                           <Table.Td>
                             <Input
                               variant="unstyled"
                               value={info?.title}
                               readOnly
                               size="sm"
-                              sx={{
-                                wrapper: {
-                                  width: '100%',
-                                },
-
-                                input: {
-                                  userSelect: 'none',
-                                  fontSize: '0.85rem',
-                                  lineHeight: '0.9rem',
-                                  height: '0.9rem',
-                                  fontWeight: 500,
-
-                                  '&:hover': {
-                                    textDecoration: 'underline',
-                                  },
-                                },
+                              __vars={{
+                                '--input-height': 'var(--mantine-line-height-sm)',
+                              }}
+                              classNames={{
+                                input: inputClasses.input,
+                                wrapper: inputClasses.wrapper,
                               }}
                             />
                           </Table.Td>
-                          <Table.Td ff="monospace">{chal.score}</Table.Td>
-                          <Table.Td ff="monospace">
-                            {dayjs(chal.time).format('MM/DD HH:mm')}
-                          </Table.Td>
+                          <Table.Td>{chal.score}</Table.Td>
+                          <Table.Td>{dayjs(chal.time).format('MM/DD HH:mm')}</Table.Td>
                         </Table.Tr>
                       )
                     })}
