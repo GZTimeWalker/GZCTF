@@ -130,7 +130,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
 
   return (
     <Accordion.Item value={participation.id!.toString()}>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box style={{ alignItems: 'center' }} display="flex">
         <Accordion.Control>
           <Group justify="space-between">
             <Group>

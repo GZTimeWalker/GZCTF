@@ -232,14 +232,14 @@ const Instances: FC = () => {
                             variant="unstyled"
                             value={inst.team?.name ?? 'Team'}
                             readOnly
-                            sx={() => ({
+                            styles={{
                               input: {
                                 userSelect: 'none',
                                 lineHeight: 1,
                                 fontWeight: 700,
                                 height: '1.5rem',
                               },
-                            })}
+                            }}
                           />
                         </Box>
                       </Table.Td>
@@ -249,14 +249,14 @@ const Instances: FC = () => {
                             variant="unstyled"
                             value={inst.challenge?.title ?? 'Challenge'}
                             readOnly
-                            sx={() => ({
+                            styles={{
                               input: {
                                 userSelect: 'none',
                                 lineHeight: 1,
                                 fontWeight: 700,
                                 height: '1.5rem',
                               },
-                            })}
+                            }}
                           />
                         </Box>
                       </Table.Td>

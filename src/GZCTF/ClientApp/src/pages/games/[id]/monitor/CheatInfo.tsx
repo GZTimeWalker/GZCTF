@@ -193,7 +193,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
 
   return (
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box display="flex" style={{ alignItems: 'center' }}>
         <Accordion.Control>
           <Group justify="space-between">
             <Group justify="left">

@@ -71,11 +71,11 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
           minRows={8}
           maxRows={8}
           onChange={setFlags}
-          sx={(theme) => ({
-            '& textarea': {
-              fontFamily: theme.fontFamilyMonospace,
+          wrapperProps={{
+            __vars: {
+              '--input-font-family': 'var(--mantine-font-family-monospace)',
             },
-          })}
+          }}
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>

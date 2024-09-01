@@ -1,0 +1,7 @@
+.box[data-border] {
+  border-style: dashed;
+  border-color: gray;
+  border-width: thick;
+  border-radius: 1rem;
+  padding: 1rem;
+}

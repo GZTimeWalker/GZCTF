@@ -131,10 +131,8 @@ const Login: FC = () => {
       />
       <Captcha action="login" ref={captchaRef} />
       <Anchor
-        sx={(theme) => ({
-          fontSize: theme.fontSizes.xs,
-          alignSelf: 'end',
-        })}
+        fz="xs"
+        style={{ alignSelf: 'end' }}
         component={Link}
         to="/account/recovery"
       >

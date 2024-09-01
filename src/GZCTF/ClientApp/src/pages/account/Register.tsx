@@ -161,10 +161,8 @@ const Register: FC = () => {
       />
       <Captcha action="register" ref={captchaRef} />
       <Anchor
-        sx={(theme) => ({
-          fontSize: theme.fontSizes.xs,
-          alignSelf: 'end',
-        })}
+        fz="xs"
+        style={{ alignSelf: 'end' }}
         component={Link}
         to="/account/login"
       >
