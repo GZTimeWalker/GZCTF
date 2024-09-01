@@ -178,6 +178,8 @@ public class GameRepository(
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Where(c => c.GameId == game.Id && c.IsEnabled)
+                .OrderBy(c => c.Tag)
+                .ThenBy(c => c.Title)
                 .Select(c => new ChallengeInfo
                 {
                     Id = c.Id,
