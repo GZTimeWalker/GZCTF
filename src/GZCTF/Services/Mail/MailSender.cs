@@ -30,7 +30,8 @@ public sealed class MailSender : IMailSender, IDisposable
         _options = options.Value;
         _cancellationToken = _cancellationTokenSource.Token;
 
-        if (_options is not { SendMailAddress: not null, Smtp.Host: not null, Smtp.Port: not null })
+        if (string.IsNullOrWhiteSpace(_options.SendMailAddress) ||
+            string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port is not null)
             return;
 
         _smtpClient = new();
