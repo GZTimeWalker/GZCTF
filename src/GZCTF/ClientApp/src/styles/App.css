@@ -6,7 +6,7 @@ body {
   padding: 0;
   margin: 0;
 
-  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-gray-7));
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-gray-7));
   color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
 
   @media print {

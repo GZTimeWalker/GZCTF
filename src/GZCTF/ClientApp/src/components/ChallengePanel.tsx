@@ -168,6 +168,13 @@ const ChallengePanel: FC = () => {
             tabLabel: {
               width: '100%',
             },
+            tab: {
+              '&:not([data-active="true"])': {
+                'span[data-position="left"]': {
+                  color: 'var(--tabs-color)',
+                },
+              },
+            },
           }}
         >
           <Tabs.List>

@@ -72,7 +72,9 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     <Stack gap="xs">
       <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
         <Group wrap="nowrap" gap="sm">
-          {tagData && <Icon path={tagData.icon} size={1} color={theme.colors[tagData?.color][5]} />}
+          {tagData && (
+            <Icon path={tagData.icon} size={1.2} color={theme.colors[tagData?.color][5]} />
+          )}
           <Title w="calc(100% - 1.5rem)" order={4} lineClamp={1}>
             {challenge?.title ?? ''}
           </Title>
@@ -81,7 +83,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           {challenge?.score ?? 0} pts
         </Text>
       </Group>
-      <Divider />
+      <Divider size="md" color={tagData?.color} />
     </Stack>
   )
 

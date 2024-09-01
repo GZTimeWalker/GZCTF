@@ -14,6 +14,7 @@ import {
 } from '@mantine/core'
 import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { Trans } from 'react-i18next'
@@ -39,8 +40,14 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const theme = useMantineTheme()
 
   return (
-    <Card onClick={onClick} radius="md" shadow="sm" className={hoverClasses.root}>
-      <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
+    <Card
+      onClick={onClick}
+      radius="md"
+      shadow="sm"
+      className={cx(hoverClasses.root, classes.root)}
+      data-solved={solved || undefined}
+    >
+      <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <Text fw="bold" truncate fz="lg">
             {challenge.title}
@@ -55,7 +62,7 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
             )}
           </Center>
         </Group>
-        <Divider />
+        <Divider size="sm" color={tagData?.color} />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
           <Text ta="center" fw="bold" fz="lg" ff="monospace">
             {challenge.score}&nbsp;pts

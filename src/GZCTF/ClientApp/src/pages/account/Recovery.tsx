@@ -89,12 +89,7 @@ const Recovery: FC = () => {
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
       <Captcha action="recovery" ref={captchaRef} />
-      <Anchor
-        fz="xs"
-        style={{ alignSelf: 'end' }}
-        component={Link}
-        to="/account/login"
-      >
+      <Anchor fz="xs" style={{ alignSelf: 'end' }} component={Link} to="/account/login">
         {t('account.anchor.login')}
       </Anchor>
       <Button disabled={disabled} fullWidth onClick={onRecovery}>

@@ -1,14 +1,18 @@
 .root {
   cursor: pointer;
-  transition: filter 0.2s;
+  transition:
+    box-shadow 0.2s,
+    filter 0.2s;
 
   @mixin hover {
     @mixin light {
-      filter: brightness(0.97);
+      filter: brightness(1.04) !important;
+      box-shadow: 0 0 12px var(--mantine-color-gray-2);
     }
 
     @mixin dark {
-      filter: brightness(1.2);
+      filter: brightness(1.2) !important;
+      box-shadow: 0 0 12px var(--mantine-color-gray-7);
     }
   }
 }

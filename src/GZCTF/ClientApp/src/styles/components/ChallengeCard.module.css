@@ -25,3 +25,7 @@
     background: linear-gradient(0deg, #fff0, var(--blood-color), #fff0);
   }
 }
+
+.root[data-solved] {
+  filter: light-dark(brightness(0.9), brightness(0.8));
+}

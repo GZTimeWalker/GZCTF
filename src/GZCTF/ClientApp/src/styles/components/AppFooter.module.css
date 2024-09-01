@@ -16,5 +16,5 @@
     padding: var(--mantine-spacing-xl);
   }
 
-  background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-dark-7));
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
 }

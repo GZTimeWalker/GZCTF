@@ -130,12 +130,7 @@ const Login: FC = () => {
         onChange={(event) => setPwd(event.currentTarget.value)}
       />
       <Captcha action="login" ref={captchaRef} />
-      <Anchor
-        fz="xs"
-        style={{ alignSelf: 'end' }}
-        component={Link}
-        to="/account/recovery"
-      >
+      <Anchor fz="xs" style={{ alignSelf: 'end' }} component={Link} to="/account/recovery">
         {t('account.anchor.recovery')}
       </Anchor>
       <Grid grow w="100%">

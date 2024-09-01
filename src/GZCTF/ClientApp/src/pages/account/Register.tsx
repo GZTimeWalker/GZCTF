@@ -160,12 +160,7 @@ const Register: FC = () => {
         error={pwd !== retypedPwd}
       />
       <Captcha action="register" ref={captchaRef} />
-      <Anchor
-        fz="xs"
-        style={{ alignSelf: 'end' }}
-        component={Link}
-        to="/account/login"
-      >
+      <Anchor fz="xs" style={{ alignSelf: 'end' }} component={Link} to="/account/login">
         {t('account.anchor.login')}
       </Anchor>
       <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>

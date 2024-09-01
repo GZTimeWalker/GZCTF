@@ -17,7 +17,7 @@ const Empty: FC<EmptyProps> = (props) => {
   const { t } = useTranslation()
 
   return (
-    <Stack align="center" data-border={props.bordered} className={classes.box}>
+    <Stack align="center" data-border={props.bordered || undefined} className={classes.box}>
       <Icon path={props.mdiPath ?? mdiInbox} size={props.iconSize ?? 4} color="gray" />
       <Text c="dimmed" size={props.fontSize}>
         {props.description ?? t('common.content.no_data')}

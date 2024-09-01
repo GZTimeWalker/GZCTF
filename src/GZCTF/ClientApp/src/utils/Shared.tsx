@@ -103,6 +103,8 @@ export const ChallengeTypeItem: SelectProps['renderOption'] = ({ option }) => {
   )
 }
 
+export const ChallengeTagList = Object.values(ChallengeTag)
+
 export const useChallengeTagLabelMap = () => {
   const { t } = useTranslation()
   const theme = useMantineTheme()
@@ -118,16 +120,6 @@ export const useChallengeTagLabelMap = () => {
         name: ChallengeTag.Misc,
         color: 'teal',
         colors: theme.colors['teal'],
-      },
-    ],
-    [
-      ChallengeTag.Crypto,
-      {
-        desrc: t('challenge.tag.crypto'),
-        icon: mdiMatrix,
-        name: ChallengeTag.Crypto,
-        color: 'violet',
-        colors: theme.colors['violet'],
       },
     ],
     [
@@ -161,6 +153,16 @@ export const useChallengeTagLabelMap = () => {
       },
     ],
     [
+      ChallengeTag.Crypto,
+      {
+        desrc: t('challenge.tag.crypto'),
+        icon: mdiMatrix,
+        name: ChallengeTag.Crypto,
+        color: 'violet',
+        colors: theme.colors['violet'],
+      },
+    ],
+    [
       ChallengeTag.Blockchain,
       {
         desrc: t('challenge.tag.blockchain'),
@@ -186,8 +188,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.hardware'),
         icon: mdiChip,
         name: ChallengeTag.Hardware,
-        color: 'grape',
-        colors: theme.colors['grape'],
+        color: revert,
+        colors: theme.colors[revert],
       },
     ],
     [
@@ -206,8 +208,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.ppc'),
         icon: mdiConsole,
         name: ChallengeTag.PPC,
-        color: revert,
-        colors: theme.colors[revert],
+        color: 'cyan',
+        colors: theme.colors['cyan'],
       },
     ],
     [
@@ -236,8 +238,8 @@ export const useChallengeTagLabelMap = () => {
         desrc: t('challenge.tag.pentest'),
         icon: mdiLanPending,
         name: ChallengeTag.Pentest,
-        color: 'cyan',
-        colors: theme.colors['cyan'],
+        color: 'grape',
+        colors: theme.colors['grape'],
       },
     ],
   ])
@@ -258,7 +260,7 @@ export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
 
   return (
     <Group wrap="nowrap">
-      <Icon color={colors[4]} path={icon} size={1.2} />
+      <Icon color={colors[5]} path={icon} size={1.2} />
       <Stack gap={0}>
         <Text size="sm" fw="bold">
           {name}

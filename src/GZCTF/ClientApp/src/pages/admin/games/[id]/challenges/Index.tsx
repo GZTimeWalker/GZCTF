@@ -22,7 +22,7 @@ import ChallengeCreateModal from '@Components/admin/ChallengeCreateModal'
 import ChallengeEditCard from '@Components/admin/ChallengeEditCard'
 import WithGameEditTab from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { ChallengeTagItem, useChallengeTagLabelMap } from '@Utils/Shared'
+import { ChallengeTagItem, ChallengeTagList, useChallengeTagLabelMap } from '@Utils/Shared'
 import { useEditChallenges } from '@Utils/useEdit'
 import api, { ChallengeInfoModel, ChallengeTag } from '@Api'
 
@@ -128,9 +128,9 @@ const GameChallengeEdit: FC = () => {
             nothingFoundMessage={t('admin.content.nothing_found')}
             onChange={(value) => setCategory(value as ChallengeTag | null)}
             renderOption={ChallengeTagItem}
-            data={Object.entries(ChallengeTag).map((tag) => {
-              const data = challengeTagLabelMap.get(tag[1])
-              return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+            data={ChallengeTagList.map((tag) => {
+              const data = challengeTagLabelMap.get(tag)
+              return { value: tag, label: data?.name, ...data } as ComboboxItem
             })}
           />
           <Group justify="right">

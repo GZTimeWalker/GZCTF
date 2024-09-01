@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeTagItem,
+  ChallengeTagList,
   ChallengeTypeItem,
   useChallengeTagLabelMap,
   useChallengeTypeLabelMap,
@@ -78,9 +79,9 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
           value={tag}
           onChange={setTag}
           renderOption={ChallengeTagItem}
-          data={Object.entries(ChallengeTag).map((tag) => {
-            const data = challengeTagLabelMap.get(tag[1])
-            return { value: tag[1], label: data?.name, ...data } as ComboboxItem
+          data={ChallengeTagList.map((tag) => {
+            const data = challengeTagLabelMap.get(tag)
+            return { value: tag, label: data?.name, ...data } as ComboboxItem
           })}
         />
         <Select

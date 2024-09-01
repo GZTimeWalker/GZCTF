@@ -64,7 +64,7 @@
         "no_container": "Test container is not running"
       }
     },
-    "solved": "<1>{{solved}}</1> solves",
+    "solved": "<1>{{solved}}</1> SOLVES",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",
       "To be, or not to be, that is not the flag.",
