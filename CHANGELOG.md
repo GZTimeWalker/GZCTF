@@ -3,7 +3,28 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.23.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.22.0..v0.23.0) - 2024-08-31
+## [0.24.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.23.0..v0.24.0) - 2024-09-02
+
+### ⛰️ Features
+
+- **(cache)** de-bounced the slow cache update request - ([0383fe](https://github.com/GZTimeWalker/GZCTF/commit/0383fe)) by **GZTime**
+- **(mail)** only exit when `EmailConfirmationRequired` enabled - ([d4a525](https://github.com/GZTimeWalker/GZCTF/commit/d4a525)) by **GZTime**
+- empty strings can disable SMTP - ([ae9e26](https://github.com/GZTimeWalker/GZCTF/commit/ae9e26)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(mail)** wrong validation condition - ([0b084b](https://github.com/GZTimeWalker/GZCTF/commit/0b084b)) by **GZTime**
+
+### 🎨 Styling
+
+- **(challenge)** update solved style - ([9f17d4](https://github.com/GZTimeWalker/GZCTF/commit/9f17d4)) by **GZTime**
+- **(challenge)** update challenge items - ([c9931b](https://github.com/GZTimeWalker/GZCTF/commit/c9931b)) by **GZTime**
+- **(color)** adjust placeholder pages - ([331e9e](https://github.com/GZTimeWalker/GZCTF/commit/331e9e)) by **GZTime**
+- **(scoreboard)** update item modal - ([1d2c24](https://github.com/GZTimeWalker/GZCTF/commit/1d2c24)) by **GZTime**
+- remove all sx - ([23fd9c](https://github.com/GZTimeWalker/GZCTF/commit/23fd9c)) by **GZTime**
+
+---
+## [0.23.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.22.0..v0.23.0) - 2024-09-01
 
 ### ⛰️ Features
 
@@ -12,6 +33,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### 🐛 Bug Fixes
 
+- **(backend)** The challenges are not sorted correctly - ([b782ed](https://github.com/GZTimeWalker/GZCTF/commit/b782ed)) by **GZTime**
 - **(frontend)** pagination calculation (#323) - ([6191f4](https://github.com/GZTimeWalker/GZCTF/commit/6191f4)) by **LilRan**
 - incorrect scoreboard - ([84b510](https://github.com/GZTimeWalker/GZCTF/commit/84b510)) by **GZTime**
 
