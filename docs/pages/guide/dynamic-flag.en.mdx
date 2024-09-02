@@ -19,14 +19,16 @@ In dynmaic challenge's flag and attachment management page, the flag template wi
 3. If `[TEAM_HASH]` placeholder is specified, it will be replaced with the hash value generated from the team token and related information.
 4. If `[TEAM_HASH]` placeholder is not specified, Leet string functionality will be enabled, and the string inside the curly braces will be transformed based on the template. Make sure that the entropy of the flag template string is high enough.
 5. If you want to enable Leet string functionality when specifying `[TEAM_HASH]`, add the `[LEET]` marker before the flag template string. In this case, the entropy of the flag template string will not be checked.
+6. If you want to enable special characters when using Leet string (which may cause injection issues), add the `[CLEET]` marker before the flag template string.
 
 ## Examples
 
 1. Leave it blank to generate `flag{1bab71b8-117f-4dea-a047-340b72101d7b}`
 2. Set the flag to `MyCTF{[GUID]}` can get `MyCTF{1bab71b8-117f-4dea-a047-340b72101d7b}`
 3. Set the flag to `flag{hello world}` will generate flag with Leet and get `flag{He1lo_w0r1d}`
-4. Set the flag to `flag{hello_world_[TEAM_HASH]}` will generate flag with team hash like `flag{hello_world_5418ce4d815c}`
-5. Enable Leet with team hash as the same time with `[LEET]flag{hello world [TEAM_HASH]}` can generate `flag{He1lo_w0r1d_5418ce4d815c}`
+4. Set the flag to `[CLEET]flag{hello sara}` will generate flag with special characters like `flag{He1!o_$@rA}`
+5. Set the flag to `flag{hello_world_[TEAM_HASH]}` will generate flag with team hash like `flag{hello_world_5418ce4d815c}`
+6. Enable Leet with team hash as the same time with `[LEET]flag{hello world [TEAM_HASH]}` can generate `flag{He1lo_w0r1d_5418ce4d815c}`
 
 ## Leet String
 
@@ -44,11 +46,19 @@ Leet String is a method of replacing characters in a string with numbers or symb
 |    `2`     | `2zZ`         |    `3`     | `3eE`         |    `4`     | `4aA`         |    `5`     | `5Ss`         |
 |    `6`     | `6Gb`         |    `7`     | `7T`          |    `8`     | `8bB`         |    `9`     | `9g`          |
 
-<Callout type="info">
+When enabling complex Leet strings, please pay attention to character injection issues. It follows the rules below, as there are more possibilities, the length required to reach the specified entropy will be shorter:
 
-In earlier versions of GZCTF, the Leet String rules included some special characters such as `$`, `@`, `!`, etc. However, these characters caused various character injection issues in the actual challenge environment. Therefore, we have removed these characters.
-
-</Callout>
+| Characters | Replaced with | Characters | Replaced with | Characters | Replaced with | Characters | Replaced with |
+| :--------: | :------------ | :--------: | :------------ | :--------: | :------------ | :--------: | :------------ | --- |
+|    `A`     | `Aa4@`        |    `B`     | `Bb68`        |    `C`     | `Cc(`         |    `D`     | `Dd`          |
+|    `E`     | `Ee3`         |    `F`     | `Ff1`         |    `G`     | `Gg69`        |    `H`     | `Hh`          |
+|    `I`     | `Ii1l!`       |    `J`     | `Jj`          |    `K`     | `Kk`          |    `L`     | `Ll1I!`       |
+|    `M`     | `Mm`          |    `N`     | `Nn`          |    `O`     | `Oo0#`        |    `P`     | `Pp`          |
+|    `Q`     | `Qq9`         |    `R`     | `Rr`          |    `S`     | `Ss5$`        |    `T`     | `Tt7`         |
+|    `U`     | `Uu`          |    `V`     | `Vv`          |    `W`     | `Ww`          |    `X`     | `Xx`          |
+|    `Y`     | `Yy`          |    `Z`     | `Zz2?`        |    `0`     | `0oO#`        |    `1`     | `1lI          | `   |
+|    `2`     | `2zZ?`        |    `3`     | `3eE`         |    `4`     | `4aA`         |    `5`     | `5Ss`         |
+|    `6`     | `6Gb`         |    `7`     | `7T`          |    `8`     | `8B&`         |    `9`     | `9g`          |
 
 ### Security
 

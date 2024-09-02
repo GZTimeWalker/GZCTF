@@ -19,14 +19,16 @@ GZCTF 自带对于动态 flag 分发的支持，将会在容器启用时采用 `
 3. 若指定 `[TEAM_HASH]` 则它将会被替换为队伍 Token 与相关信息所生成的哈希值
 4. 若未指定 `[TEAM_HASH]` 则将启用 Leet 字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高
 5. 若需要在指定 `[TEAM_HASH]` 的情况下启用 Leet 字符串功能，请在 flag 模版字符串之前添加 `[LEET]` 标记，此时不会检查 flag 模版字符串的熵
+6. 若需要在 Leet 字符串时启用特殊字符（可能会导致注入问题），请在 flag 模版字符串之前添加 `[CLEET]` 标记
 
 ## 规则示例
 
 1. 留空会得到 `flag{1bab71b8-117f-4dea-a047-340b72101d7b}`
 2. `MyCTF{[GUID]}` 会得到 `MyCTF{1bab71b8-117f-4dea-a047-340b72101d7b}`
 3. `flag{hello world}` 会得到 `flag{He1lo_w0r1d}`
-4. `flag{hello_world_[TEAM_HASH]}` 会得到 `flag{hello_world_5418ce4d815c}`
-5. `[LEET]flag{hello world [TEAM_HASH]}` 会得到 `flag{He1lo_w0r1d_5418ce4d815c}`
+4. `[CLEET]flag{hello sara}` 会得到 `flag{He1!o_$@rA}`
+5. `flag{hello_world_[TEAM_HASH]}` 会得到 `flag{hello_world_5418ce4d815c}`
+6. `[LEET]flag{hello world [TEAM_HASH]}` 会得到 `flag{He1lo_w0r1d_5418ce4d815c}`
 
 ## Leet 字符串
 
@@ -44,11 +46,19 @@ Leet 字符串是一种将字符串中的字符替换为数字或符号的方法
 | `2`  | `2zZ`  | `3`  | `3eE`  | `4`  | `4aA`  | `5`  | `5Ss`  |
 | `6`  | `6Gb`  | `7`  | `7T`   | `8`  | `8bB`  | `9`  | `9g`   |
 
-<Callout type="info">
+启用复杂 Leet 字符串时，请注意字符注入问题，它采用的规则如下，由于可能性更多，达到指定的熵所需的长度会更短：
 
-早期的 GZCTF 版本中，Leet 字符串的规则包含了一些特殊字符，例如 `$`、`@`、`!` 等，但是由于这些字符在实际的题目环境中造成了各种语言的字符注入问题，因此我们移除了这些字符。
-
-</Callout>
+| 字符 | 替换为  | 字符 | 替换为 | 字符 | 替换为 | 字符 | 替换为  |
+| :--: | :------ | :--: | :----- | :--: | :----- | :--: | :------ | --- |
+| `A`  | `Aa4@`  | `B`  | `Bb68` | `C`  | `Cc(`  | `D`  | `Dd`    |
+| `E`  | `Ee3`   | `F`  | `Ff1`  | `G`  | `Gg69` | `H`  | `Hh`    |
+| `I`  | `Ii1l!` | `J`  | `Jj`   | `K`  | `Kk`   | `L`  | `Ll1I!` |
+| `M`  | `Mm`    | `N`  | `Nn`   | `O`  | `Oo0#` | `P`  | `Pp`    |
+| `Q`  | `Qq9`   | `R`  | `Rr`   | `S`  | `Ss5$` | `T`  | `Tt7`   |
+| `U`  | `Uu`    | `V`  | `Vv`   | `W`  | `Ww`   | `X`  | `Xx`    |
+| `Y`  | `Yy`    | `Z`  | `Zz2?` | `0`  | `0oO#` | `1`  | `1lI    | `   |
+| `2`  | `2zZ?`  | `3`  | `3eE`  | `4`  | `4aA`  | `5`  | `5Ss`   |
+| `6`  | `6Gb`   | `7`  | `7T`   | `8`  | `8B&`  | `9`  | `9g`    |
 
 ### 安全性
 

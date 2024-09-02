@@ -8,11 +8,14 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### ⛰️ Features
 
 - **(cache)** de-bounced the slow cache update request - ([0383fe](https://github.com/GZTimeWalker/GZCTF/commit/0383fe)) by **GZTime**
+- **(challenge)** add complex leet table - ([520025](https://github.com/GZTimeWalker/GZCTF/commit/520025)) by **GZTime**
 - **(mail)** only exit when `EmailConfirmationRequired` enabled - ([d4a525](https://github.com/GZTimeWalker/GZCTF/commit/d4a525)) by **GZTime**
+- add `SenderName` option - ([f6ce31](https://github.com/GZTimeWalker/GZCTF/commit/f6ce31)) by **GZTime**
 - empty strings can disable SMTP - ([ae9e26](https://github.com/GZTimeWalker/GZCTF/commit/ae9e26)) by **GZTime**
 
 ### 🐛 Bug Fixes
 
+- **(challenge)** incorrect z-index - ([61e8b1](https://github.com/GZTimeWalker/GZCTF/commit/61e8b1)) by **GZTime**
 - **(mail)** wrong validation condition - ([0b084b](https://github.com/GZTimeWalker/GZCTF/commit/0b084b)) by **GZTime**
 
 ### 🎨 Styling
