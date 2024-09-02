@@ -335,6 +335,12 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 <Code>_</Code>_
               </Trans>
             </Text>
+            <Text size="sm">
+              <Trans i18nKey="admin.content.games.challenges.flag.instructions.complex">
+                _<Code>_</Code>
+                <Code>_</Code>_
+              </Trans>
+            </Text>
             <Text size="sm" fw="bold">
               {t('admin.content.games.challenges.flag.instructions.example')}
             </Text>
@@ -348,6 +354,11 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
                 <Code>{`flag{hello world}`}</Code>
                 {will_generate}
                 <Code>{`flag{He1lo_w0r1d}`}</Code>
+              </List.Item>
+              <List.Item>
+                <Code>{`[CLEET]flag{hello sara}`}</Code>
+                {will_generate}
+                <Code>{`flag{He1!o_$@rA}`}</Code>
               </List.Item>
               <List.Item>
                 <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code>

@@ -245,27 +245,71 @@ public static partial class Codec
             ['9'] = "9g"
         };
 
+        static readonly Dictionary<char, string> ComplexCharMap = new()
+        {
+            ['A'] = "Aa4@",
+            ['B'] = "Bb6&",
+            ['C'] = "Cc(",
+            ['D'] = "Dd",
+            ['E'] = "Ee3",
+            ['F'] = "Ff1",
+            ['G'] = "Gg69",
+            ['H'] = "Hh",
+            ['I'] = "Ii1l!",
+            ['J'] = "Jj",
+            ['K'] = "Kk",
+            ['L'] = "Ll1I!",
+            ['M'] = "Mm",
+            ['N'] = "Nn",
+            ['O'] = "Oo0#",
+            ['P'] = "Pp",
+            ['Q'] = "Qq9",
+            ['R'] = "Rr",
+            ['S'] = "Ss5$",
+            ['T'] = "Tt7",
+            ['U'] = "Uu",
+            ['V'] = "Vv",
+            ['W'] = "Ww",
+            ['X'] = "Xx",
+            ['Y'] = "Yy",
+            ['Z'] = "Zz2?",
+            ['0'] = "0oO#",
+            ['1'] = "1lI|",
+            ['2'] = "2zZ?",
+            ['3'] = "3eE",
+            ['4'] = "4aA",
+            ['5'] = "5Ss",
+            ['6'] = "6Gb",
+            ['7'] = "7T",
+            ['8'] = "8B&",
+            ['9'] = "9g"
+        };
+
         public static double LeetEntropy(string flag)
         {
             double entropy = 0;
             var doLeet = false;
+            bool isComplex = flag.StartsWith("[CLEET]");
+            var map = isComplex ? ComplexCharMap : CharMap;
+
             foreach (var c in flag)
             {
                 if (c is '{' or ']')
                     doLeet = true;
                 else if (doLeet && c is '}' or '[')
                     doLeet = false;
-                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
+                else if (doLeet && map.TryGetValue(char.ToUpperInvariant(c), out var table))
                     entropy += Math.Log(table.Length, 2);
             }
 
             return entropy;
         }
 
-        public static string LeetFlag(string original)
+        public static string LeetFlag(string original, bool complex = false)
         {
             StringBuilder sb = new(original.Length);
             Random random = new();
+            var map = complex ? ComplexCharMap : CharMap;
 
             var doLeet = false;
             // note: only leet 'X' in flag{XXX_XXX_[TEAM_HASH]_XXX}
@@ -279,7 +323,7 @@ public static partial class Codec
                 {
                     doLeet = false;
                 }
-                else if (doLeet && CharMap.TryGetValue(char.ToUpperInvariant(c), out var table))
+                else if (doLeet && map.TryGetValue(char.ToUpperInvariant(c), out var table))
                 {
                     var nc = table[random.Next(table.Length)];
                     sb.Append(nc);
