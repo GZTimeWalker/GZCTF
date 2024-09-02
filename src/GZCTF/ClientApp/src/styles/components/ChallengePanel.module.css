@@ -1,0 +1,24 @@
+.tabList {
+  min-width: 10rem;
+}
+
+.tabLabel {
+  width: 100%;
+}
+
+.tab {
+  &:not([data-active='true']) {
+    span[data-position='left'] {
+      color: var(--tabs-color);
+      filter: saturate(0.8);
+    }
+  }
+}
+
+.switch {
+  justify-content: space-between;
+}
+
+.scrollArea {
+  flex-grow: 1;
+}

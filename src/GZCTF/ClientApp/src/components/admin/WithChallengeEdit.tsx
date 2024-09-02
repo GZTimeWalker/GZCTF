@@ -50,8 +50,8 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
         {children}
         <Group justify="space-between" w="100%">
           <Button
+            justify="space-between"
             disabled={isLoading || !previous}
-            styles={{ inner: { justifyContent: 'space-between' } }}
             leftSection={<Icon path={mdiArrowLeft} size={1} />}
             onClick={() => navigate(`/admin/games/${numId}/challenges/${previous?.id}${restpath}`)}
           >
@@ -68,7 +68,7 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
 
           <Button
             disabled={isLoading || !next}
-            styles={{ inner: { justifyContent: 'space-between' } }}
+            justify="space-between"
             rightSection={<Icon path={mdiArrowRight} size={1} />}
             onClick={() => navigate(`/admin/games/${numId}/challenges/${next?.id}${restpath}`)}
           >

@@ -103,12 +103,12 @@ const TeamRank: FC<CardProps> = (props) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            styles={(theme) => ({
+            styles={{
               innerInput: {
                 cursor: 'copy',
-                fontFamily: theme.fontFamilyMonospace,
+                fontFamily: 'var(--mantine-font-family-monospace)',
               },
-            })}
+            }}
           />
         )}
       </Stack>

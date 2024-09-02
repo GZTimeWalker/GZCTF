@@ -188,7 +188,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
               style={{ flexGrow: 1 }}
               styles={{
                 input: {
-                  fontFamily: theme.fontFamilyMonospace,
+                  fontFamily: 'var(--mantine-font-family-monospace)',
                 },
               }}
             />

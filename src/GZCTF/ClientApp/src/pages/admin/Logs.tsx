@@ -167,11 +167,7 @@ const Logs: FC = () => {
           <SegmentedControl
             color={theme.primaryColor}
             value={level}
-            styles={{
-              root: {
-                background: 'transparent',
-              },
-            }}
+            bg="transparent"
             onChange={(value) => setLevel(value as LogLevel)}
             data={Object.entries(LogLevel).map((role) => ({
               value: role[1],

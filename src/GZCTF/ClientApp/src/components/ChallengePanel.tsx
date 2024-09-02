@@ -27,6 +27,7 @@ import WriteupSubmitModal from '@Components/WriteupSubmitModal'
 import { useChallengeTagLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeTag, SubmissionType } from '@Api'
+import classes from '@Styles/ChallengePanel.module.css'
 
 const ChallengePanel: FC = () => {
   const { id } = useParams()
@@ -142,14 +143,10 @@ const ChallengePanel: FC = () => {
           </>
         )}
         <Switch
+          w="10rem"
           checked={hideSolved}
           onChange={(e) => setHideSolved(e.target.checked)}
-          w="10rem"
-          styles={{
-            body: {
-              justifyContent: 'space-between',
-            },
-          }}
+          classNames={{ body: classes.switch }}
           label={
             <Text fz="md" fw="bold">
               {t('game.button.hide_solved')}
@@ -161,20 +158,10 @@ const ChallengePanel: FC = () => {
           variant="pills"
           value={activeTab}
           onChange={(value) => setActiveTab(value as ChallengeTag)}
-          styles={{
-            list: {
-              minWidth: '10rem',
-            },
-            tabLabel: {
-              width: '100%',
-            },
-            tab: {
-              '&:not([data-active="true"])': {
-                'span[data-position="left"]': {
-                  color: 'var(--tabs-color)',
-                },
-              },
-            },
+          classNames={{
+            list: classes.tabList,
+            tabLabel: classes.tabLabel,
+            tab: classes.tab,
           }}
         >
           <Tabs.List>
@@ -216,11 +203,7 @@ const ChallengePanel: FC = () => {
         pos="relative"
         offsetScrollbars
         scrollbarSize={4}
-        styles={{
-          root: {
-            flexGrow: 1,
-          },
-        }}
+        classNames={{ root: classes.scrollArea }}
       >
         {/* if rank is 0, means scoreboard not ready yet */}
         {!teamInfo?.rank?.rank ? (

@@ -184,14 +184,8 @@ const GameNoticePanel: FC = () => {
           value={filter}
           color={theme.primaryColor}
           fullWidth
-          styles={{
-            root: {
-              background: 'transparent',
-            },
-            label: {
-              fontWeight: 500,
-            },
-          }}
+          bg="transparent"
+          fw={500}
           onChange={(value) => setFilter(value as NoticeFilter)}
           data={[
             { value: NoticeFilter.All, label: t('game.label.notice_type.all') },
@@ -202,13 +196,17 @@ const GameNoticePanel: FC = () => {
         />
         {filteredNotices.length ? (
           <ScrollArea offsetScrollbars scrollbarSize={0} h={PANEL_HEIGHT}>
-            <List size="sm" spacing={3}>
+            <List
+              size="sm"
+              spacing={3}
+              styles={{
+                itemWrapper: {
+                  alignItems: 'normal',
+                },
+              }}
+            >
               {filteredNotices.map((notice) => (
-                <List.Item
-                  key={notice.id}
-                  icon={<Icon {...iconMap.get(notice.type)!} />}
-                  styles={{ itemWrapper: { alignItems: 'normal' } }}
-                >
+                <List.Item key={notice.id} icon={<Icon {...iconMap.get(notice.type)!} />}>
                   <Stack gap={1}>
                     <Text fz="xs" fw="bold" c="dimmed">
                       {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}

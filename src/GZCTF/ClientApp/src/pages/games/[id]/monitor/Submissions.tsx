@@ -223,11 +223,7 @@ const Submissions: FC = () => {
         <SegmentedControl
           color={theme.primaryColor}
           value={type}
-          styles={{
-            root: {
-              background: 'transparent',
-            },
-          }}
+          bg="transparent"
           onChange={(value) => {
             setType(value as AnswerResult | 'All')
             setPage(1)

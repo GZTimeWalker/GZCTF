@@ -1,4 +1,4 @@
-import { Button, Modal, ModalProps, Stack, Text, Textarea, useMantineTheme } from '@mantine/core'
+import { Button, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -19,8 +19,6 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
 
   const [text, setText] = useState('')
   const [flags, setFlags] = useState<FlagCreateModel[]>([])
-
-  const theme = useMantineTheme()
 
   const { t } = useTranslation()
 
@@ -77,11 +75,7 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
           <br />
         </Text>
         <Textarea
-          styles={{
-            input: {
-              fontFamily: theme.fontFamilyMonospace,
-            },
-          }}
+          ff="monospace"
           placeholder={
             'flag{hello_world} http://example.com/1.zip\nflag{he11o_world} http://example.com/2.zip'
           }

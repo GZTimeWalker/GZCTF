@@ -29,3 +29,7 @@
 .root[data-solved] {
   filter: light-dark(brightness(0.9), brightness(0.8));
 }
+
+.root {
+  filter: saturate(0.9);
+}

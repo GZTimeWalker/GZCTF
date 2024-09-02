@@ -81,7 +81,7 @@
     "globals": "^15.9.0",
     "lodash": "^4.17.21",
     "oxlint": "^0.9.1",
-    "postcss": "^8.4.42",
+    "postcss": "^8.4.43",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "~3.3.3",
