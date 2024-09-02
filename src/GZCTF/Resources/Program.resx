@@ -1038,4 +1038,7 @@
   <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
       <value>成功连接到 SMTP 服务器：{0}</value>
   </data>
+  <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
+      <value>无效的邮件配置，但邮件验证已启用</value>
+  </data>
 </root>

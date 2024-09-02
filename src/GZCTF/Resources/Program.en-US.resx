@@ -1038,4 +1038,7 @@
   <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
       <value>Successfully connected to SMTP server: {0}</value>
   </data>
+  <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
+      <value>Invalid email configuration, but email authentication is enabled</value>
+  </data>
 </root>

@@ -23,6 +23,7 @@ public sealed class MailSender : IMailSender, IDisposable
     bool _disposed;
 
     public MailSender(
+        IOptionsSnapshot<AccountPolicy> accountPolicy,
         IOptions<EmailConfig> options,
         ILogger<MailSender> logger)
     {
@@ -53,9 +54,16 @@ public sealed class MailSender : IMailSender, IDisposable
             => errors is SslPolicyErrors.None || options.Value.Smtp?.BypassCertVerify is true;
 
         if (!TestSmtpClient())
-            ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)]);
+        {
+            if (accountPolicy.Value.EmailConfirmationRequired)
+                ExitWithFatalMessage(StaticLocalizer[nameof(Resources.Program.MailSender_InvalidEmailConfig)]);
 
-        _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_ConnectedToSmtp),
+            _smtpClient.Dispose();
+            _smtpClient = null;
+            return;
+        }
+
+        _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_ConnectedToSmtp),
             $"{_options.Smtp.Host}:{_options.Smtp.Port}"], TaskStatus.Success, LogLevel.Debug);
 
         Task.Factory.StartNew(MailSenderWorker, _cancellationToken, TaskCreationOptions.LongRunning,
@@ -75,6 +83,9 @@ public sealed class MailSender : IMailSender, IDisposable
 
     async Task<bool> SendEmailAsync(string subject, string content, string to)
     {
+        if (_smtpClient is null)
+            return false;
+
         using var msg = new MimeMessage();
         msg.From.Add(new MailboxAddress(_options!.SendMailAddress, _options.SendMailAddress));
         msg.To.Add(new MailboxAddress(to, to));
@@ -83,16 +94,16 @@ public sealed class MailSender : IMailSender, IDisposable
 
         try
         {
-            await _smtpClient!.SendAsync(msg, _cancellationToken);
+            await _smtpClient.SendAsync(msg, _cancellationToken);
 
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
+            _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
                 TaskStatus.Success, LogLevel.Information);
             return true;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+                StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }
@@ -116,7 +127,7 @@ public sealed class MailSender : IMailSender, IDisposable
         var title = $"{content.Title} - {content.Platform}";
 
         if (!await SendEmailAsync(title, emailContent, content.Email))
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)],
+            _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)],
                 TaskStatus.Failed);
     }
 
@@ -161,7 +172,7 @@ public sealed class MailSender : IMailSender, IDisposable
                 _mailQueue.Clear();
 
                 _logger.LogError(e, "{msg}",
-                    Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+                    StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             }
             finally
             {
@@ -178,7 +189,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(resetLink))
         {
-            _logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)],
+            _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_InvalidRequest)],
                 TaskStatus.Failed);
             return false;
         }
@@ -205,8 +216,8 @@ public sealed class MailSender : IMailSender, IDisposable
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            _logger.LogDebug(e, "{msg}",
+                StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }

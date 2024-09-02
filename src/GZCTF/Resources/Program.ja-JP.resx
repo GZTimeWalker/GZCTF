@@ -1038,4 +1038,7 @@
   <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
       <value>SMTPサーバーへの接続に成功しました：{0}</value>
   </data>
+  <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
+      <value>無効な電子メール設定ですが、電子メール認証は有効です</value>
+  </data>
 </root>
