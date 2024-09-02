@@ -68,19 +68,19 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 ## Demo 🗿
 
-![index.png](docs/public/images/index.png)
-![game.challenges.png](docs/public/images/game.challenges.png)
-![game.scoreboard.png](docs/public/images/game.scoreboard.png)
-![admin.settings.png](docs/public/images/admin.settings.png)
-![admin.challenges.png](docs/public/images/admin.challenges.png)
-![admin.challenge.info.png](docs/public/images/admin.challenge.info.png)
-![admin.challenge.flags.png](docs/public/images/admin.challenge.flags.png)
-![admin.game.info.png](docs/public/images/admin.game.info.png)
-![admin.game.review.png](docs/public/images/admin.game.review.png)
-![admin.teams.png](docs/public/images/admin.teams.png)
-![admin.instances.png](docs/public/images/admin.instances.png)
-![monitor.game.events.png](docs/public/images/monitor.game.events.png)
-![monitor.game.submissions.png](docs/public/images/monitor.game.submissions.png)
+![index.webp](docs/public/images/index.webp)
+![game.challenges.webp](docs/public/images/game.challenges.webp)
+![game.scoreboard.webp](docs/public/images/game.scoreboard.webp)
+![admin.settings.webp](docs/public/images/admin.settings.webp)
+![admin.challenges.webp](docs/public/images/admin.challenges.webp)
+![admin.challenge.info.webp](docs/public/images/admin.challenge.info.webp)
+![admin.challenge.flags.webp](docs/public/images/admin.challenge.flags.webp)
+![admin.game.info.webp](docs/public/images/admin.game.info.webp)
+![admin.game.review.webp](docs/public/images/admin.game.review.webp)
+![admin.teams.webp](docs/public/images/admin.teams.webp)
+![admin.instances.webp](docs/public/images/admin.instances.webp)
+![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
+![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
 
 ## i18n について 🌐
 
