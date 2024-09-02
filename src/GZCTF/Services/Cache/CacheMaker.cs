@@ -1,5 +1,6 @@
 ﻿using System.Threading.Channels;
 using GZCTF.Repositories;
+using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services.Cache;
@@ -9,9 +10,10 @@ namespace GZCTF.Services.Cache;
 /// </summary>
 public class CacheRequest(string key, DistributedCacheEntryOptions? options = null, params string[] @params)
 {
-    public string Key { get; set; } = key;
-    public string[] Params { get; set; } = @params;
-    public DistributedCacheEntryOptions? Options { get; set; } = options;
+    public DateTimeOffset Time { get; } = DateTimeOffset.Now;
+    public string Key { get; } = key;
+    public string[] Params { get; } = @params;
+    public DistributedCacheEntryOptions? Options { get; } = options;
 }
 
 /// <summary>
@@ -92,12 +94,26 @@ public class CacheMaker(
 
                 if (await cache.GetAsync(updateLock, token) is not null)
                 {
-                    // only one GZCTF instance will never encounter this problem
+                    // only one GZCTF instance will never encounter this
                     logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_InvalidUpdateRequest), key],
                         TaskStatus.Pending,
                         LogLevel.Debug);
                     continue;
                 }
+
+                var lastUpdateKey = CacheKey.LastUpdateTime(key);
+                var lastUpdateBytes = await cache.GetAsync(lastUpdateKey, token);
+                if (lastUpdateBytes is not null && lastUpdateBytes.Length > 0)
+                {
+                    var lastUpdate = MemoryPackSerializer.Deserialize<DateTimeOffset>(lastUpdateBytes);
+                    // if the cache is updated after the request, skip
+                    // this will de-bounced the slow cache update request
+                    if (lastUpdate > item.Time)
+                        continue;
+                }
+
+                lastUpdateBytes = MemoryPackSerializer.Serialize(DateTimeOffset.UtcNow);
+                await cache.SetAsync(lastUpdateKey, lastUpdateBytes, new(), token);
 
                 await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
 

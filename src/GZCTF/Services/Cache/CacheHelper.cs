@@ -57,7 +57,12 @@ public static class CacheKey
     /// <summary>
     /// The cache update lock
     /// </summary>
-    public static string UpdateLock(string key) => $"_CacheUpdateLock_{key}";
+    public static string UpdateLock(string key) => $"_UpdateLock_{key}";
+    
+    /// <summary>
+    /// The last update time
+    /// </summary>
+    public static string LastUpdateTime(string key) => $"_LastUpdateTime_{key}";
 
     /// <summary>
     /// Scoreboard cache
