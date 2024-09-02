@@ -20,7 +20,11 @@
   }
 
   & strong {
-    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
+    color: light-dark(var(--mantine-primary-color-6), var(--mantine-primary-color-5));
+
+    & code {
+      color: inherit;
+    }
   }
 
   & blockquote {
@@ -178,7 +182,8 @@
 
   & a,
   & strong {
-    color: light-dark(var(--mantine-primary-color-7), var(--mantine-primary-color-6));
+    font-weight: 300;
+    color: light-dark(var(--mantine-primary-color-6), var(--mantine-primary-color-5));
   }
 
   & a {

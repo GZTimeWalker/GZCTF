@@ -52,15 +52,6 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           <Text fw="bold" truncate fz="lg">
             {challenge.title}
           </Text>
-          <Center miw="1.5em">
-            {solved && (
-              <Icon
-                size={1}
-                path={mdiFlag}
-                color={theme.colors[tagData?.color ?? theme.primaryColor][5]}
-              />
-            )}
-          </Center>
         </Group>
         <Divider size="sm" color={tagData?.color} />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>
@@ -127,14 +118,13 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
           size={4}
           path={tagData.icon}
           color={alpha(theme.colors[tagData?.color][7], 0.3)}
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            transform: 'translateY(35%)',
-            zIndex: 90,
-          }}
+          className={classes.icon}
         />
+      )}
+      {solved && (
+        <Center className={classes.flag}>
+          <Icon size={1} path={mdiFlag} />
+        </Center>
       )}
     </Card>
   )

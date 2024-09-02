@@ -26,10 +26,38 @@
   }
 }
 
-.root[data-solved] {
-  filter: light-dark(brightness(0.9), brightness(0.8));
-}
-
 .root {
   filter: saturate(0.9);
+
+  &[data-solved] {
+    @mixin dark {
+      filter: brightness(0.8);
+    }
+
+    @mixin light {
+      filter: brightness(0.9);
+    }
+  }
+}
+
+.flag {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  z-index: 130;
+  pointer-events: none;
+  top: 0;
+  right: 0;
+  padding: calc(0.25 * var(--mantine-spacing-xs));
+  border-radius: 0 0 0 var(--mantine-radius-md);
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-3));
+  color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+
+.icon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translateY(35%);
+  z-index: 100;
 }

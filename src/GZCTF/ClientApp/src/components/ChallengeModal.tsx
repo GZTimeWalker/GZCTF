@@ -168,36 +168,30 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       {attachment}
       {instance}
       <Divider />
-      {solved ? (
-        <Text ta="center" fw="bold">
-          {t('challenge.content.already_solved')}
-        </Text>
-      ) : (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            onSubmitFlag()
-          }}
-        >
-          <Group justify="space-between" gap="sm" align="flex-end">
-            <TextInput
-              placeholder={placeholder}
-              value={flag}
-              disabled={disabled}
-              onChange={setFlag}
-              style={{ flexGrow: 1 }}
-              styles={{
-                input: {
-                  fontFamily: 'var(--mantine-font-family-monospace)',
-                },
-              }}
-            />
-            <Button miw="6rem" type="submit" disabled={disabled}>
-              {t('challenge.button.submit_flag')}
-            </Button>
-          </Group>
-        </form>
-      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (!solved) onSubmitFlag()
+        }}
+      >
+        <Group justify="space-between" gap="sm" align="flex-end">
+          <TextInput
+            placeholder={placeholder}
+            value={solved ? t('challenge.content.already_solved') : flag}
+            disabled={disabled || solved}
+            onChange={setFlag}
+            style={{ flexGrow: 1 }}
+            styles={{
+              input: {
+                fontFamily: 'var(--mantine-font-family-monospace)',
+              },
+            }}
+          />
+          <Button miw="6rem" type="submit" disabled={disabled || solved}>
+            {t('challenge.button.submit_flag')}
+          </Button>
+        </Group>
+      </form>
     </Stack>
   )
 

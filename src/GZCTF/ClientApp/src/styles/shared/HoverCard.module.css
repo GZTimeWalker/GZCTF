@@ -6,12 +6,12 @@
 
   @mixin hover {
     @mixin light {
-      filter: brightness(1.04);
+      filter: brightness(1.04) !important;
       box-shadow: 0 0 12px var(--mantine-color-gray-2);
     }
 
     @mixin dark {
-      filter: brightness(1.2);
+      filter: brightness(1.2) !important;
       box-shadow: 0 0 12px var(--mantine-color-gray-7);
     }
   }
