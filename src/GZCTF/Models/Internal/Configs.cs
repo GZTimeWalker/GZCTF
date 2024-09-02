@@ -233,7 +233,8 @@ public class EmailConfig
 {
     public string? UserName { get; set; } = string.Empty;
     public string? Password { get; set; } = string.Empty;
-    public string? SendMailAddress { get; set; } = string.Empty;
+    public string? SenderAddress { get; set; } = string.Empty;
+    public string? SenderName { get; set; } = string.Empty;
     public SmtpConfig? Smtp { get; set; } = new();
 }
 

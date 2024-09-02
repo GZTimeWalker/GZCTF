@@ -31,7 +31,7 @@ public sealed class MailSender : IMailSender, IDisposable
         _options = options.Value;
         _cancellationToken = _cancellationTokenSource.Token;
 
-        if (string.IsNullOrWhiteSpace(_options.SendMailAddress) ||
+        if (string.IsNullOrWhiteSpace(_options.SenderAddress) ||
             string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port is not > 0)
             return;
 
@@ -81,14 +81,14 @@ public sealed class MailSender : IMailSender, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    async Task<bool> SendEmailAsync(string subject, string content, string to)
+    async Task<bool> SendEmailAsync(string subject, string content, MailboxAddress from, MailboxAddress to)
     {
         if (_smtpClient is null)
             return false;
 
         using var msg = new MimeMessage();
-        msg.From.Add(new MailboxAddress(_options!.SendMailAddress, _options.SendMailAddress));
-        msg.To.Add(new MailboxAddress(to, to));
+        msg.From.Add(from);
+        msg.To.Add(to);
         msg.Subject = subject;
         msg.Body = new TextPart(TextFormat.Html) { Text = content };
 
@@ -126,7 +126,12 @@ public sealed class MailSender : IMailSender, IDisposable
 
         var title = $"{content.Title} - {content.Platform}";
 
-        if (!await SendEmailAsync(title, emailContent, content.Email))
+        var sender = string.IsNullOrWhiteSpace(_options!.SenderName) ? _options.SenderName : content.Platform;
+        var from = new MailboxAddress(sender, _options.SenderAddress);
+
+        var to = new MailboxAddress(content.UserName, content.Email);
+
+        if (!await SendEmailAsync(title, emailContent, from, to))
             _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)],
                 TaskStatus.Failed);
     }

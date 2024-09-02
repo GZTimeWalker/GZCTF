@@ -66,7 +66,8 @@ Here is a complete example of configuration:
     }
   },
   "EmailConfig": {
-    "SendMailAddress": "",
+    "SenderAddress": "",
+    "SenderName": "",
     "UserName": "",
     "Password": "",
     "Smtp": {
@@ -219,7 +220,8 @@ GZCTF supports metrics and distributed tracing. You can configure the providers 
 
 Here we can configure the information of email sending server. If you use email registration and other email features, this is required.
 
-- **SendMailAddress:** Email address of the sender
+- **SenderAddress:** Email address of the sender
+- **SenderName:** Name of the sender
 - **UserName:** SMTP Server username
 - **Password:** SMTP Server password
 - **Smtp:** SMTP Server address and port
