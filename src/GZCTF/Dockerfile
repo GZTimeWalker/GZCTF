@@ -10,7 +10,7 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
 
 WORKDIR /app
 EXPOSE 8080
-RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs ca-certificates libgdiplus && \
+RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs ca-certificates libgdiplus tzdata && \
     update-ca-certificates
 
 COPY --from=build /publish .

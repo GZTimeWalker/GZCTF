@@ -6,8 +6,8 @@ namespace GZCTF.Extensions;
 public static class CacheExtensions
 {
     /// <summary>
-    /// 获取缓存或重新构建，如果缓存不存在会阻塞
-    /// 使用 CacheMaker 和 CacheRequest 代替处理耗时更久的缓存
+    /// Get or create cache, if cache not exists will block
+    /// Use CacheMaker and CacheRequest to replace handling longer time operation
     /// </summary>
     public static async Task<TResult> GetOrCreateAsync<TResult, TLogger>(this IDistributedCache cache,
         ILogger<TLogger> logger,
@@ -15,6 +15,7 @@ public static class CacheExtensions
         Func<DistributedCacheEntryOptions, Task<TResult>> func,
         CancellationToken token = default)
     {
+        var cacheTime = DateTimeOffset.Now;
         var value = await cache.GetAsync(key, token);
         TResult? result = default;
 
@@ -38,8 +39,11 @@ public static class CacheExtensions
         var bytes = MemoryPackSerializer.Serialize(result);
 
         await cache.SetAsync(key, bytes, cacheOptions, token);
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_Rebuilt), key, bytes.Length],
-            TaskStatus.Success, LogLevel.Debug);
+
+        logger.SystemLog(Program.StaticLocalizer[
+            nameof(Resources.Program.Cache_Updated),
+            key, cacheTime.ToString("HH:mm:ss.fff"), bytes.Length
+        ], TaskStatus.Success, LogLevel.Debug);
 
         return result;
     }

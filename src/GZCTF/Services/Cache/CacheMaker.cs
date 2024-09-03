@@ -129,9 +129,10 @@ public class CacheMaker(
                     {
                         await cache.SetAsync(key, bytes, item.Options ?? new DistributedCacheEntryOptions(), token);
                         logger.SystemLog(
-                            Program.StaticLocalizer[nameof(Resources.Program.Cache_Updated), key, bytes.Length],
-                            TaskStatus.Success,
-                            LogLevel.Debug);
+                            Program.StaticLocalizer[
+                                nameof(Resources.Program.Cache_Updated),
+                                key, item.Time.ToString("HH:mm:ss.fff"), bytes.Length
+                            ], TaskStatus.Success, LogLevel.Debug);
                     }
                     else
                     {

@@ -23,7 +23,7 @@ public sealed class MailSender : IMailSender, IDisposable
     bool _disposed;
 
     public MailSender(
-        IOptionsSnapshot<AccountPolicy> accountPolicy,
+        IOptions<AccountPolicy> accountPolicy,
         IOptions<EmailConfig> options,
         ILogger<MailSender> logger)
     {

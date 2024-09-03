@@ -59,7 +59,9 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -112,10 +114,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    </value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    </value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
     <value>有効なメールドメイン：{0}</value>
@@ -267,14 +271,11 @@
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
     <value>キャッシュ更新ワーカーに一致するリクエストが見つかりませんでした：{0}</value>
   </data>
-  <data name="Cache_Rebuilt" xml:space="preserve">
-    <value>キャッシュが再構築されました：{0} @ {1} bytes</value>
-  </data>
   <data name="Cache_Stopped" xml:space="preserve">
     <value>キャッシュの更新が停止されました</value>
   </data>
   <data name="Cache_Updated" xml:space="preserve">
-    <value>キャッシュが更新されました：{0} @ {1} bytes</value>
+    <value>キャッシュが更新されました：{0}[{1}] @ {2} bytes</value>
   </data>
   <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
     <value>キャッシュ更新ワーカーが更新に失敗しました：{0} @ {1}</value>
@@ -754,7 +755,7 @@
     <value>{0} にメールを送信します</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-      <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;ようこそ，{userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a                href="{url}"                style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            上のボタンが機能しない場合は、このリンクをブラウザにコピーしてアクセスしてください：&lt;br/&gt;&lt;span                style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;このメールに心当たりがない場合はこのメールを無視してください。&lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;ようこそ，{userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            上のボタンが機能しない場合は、このリンクをブラウザにコピーしてアクセスしてください：&lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;このメールに心当たりがない場合はこのメールを無視してください。&lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>メールを確認する</value>
@@ -1033,12 +1034,12 @@
     <value>サーバーで内部エラーが発生しました</value>
   </data>
   <data name="Admin_LogoUpdateFailed" xml:space="preserve">
-      <value>プラットフォームアイコンの更新に失敗しました</value>
+    <value>プラットフォームアイコンの更新に失敗しました</value>
   </data>
   <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
-      <value>SMTPサーバーへの接続に成功しました：{0}</value>
+    <value>SMTPサーバーへの接続に成功しました：{0}</value>
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
-      <value>無効な電子メール設定ですが、電子メール認証は有効です</value>
+    <value>無効な電子メール設定ですが、電子メール認証は有効です</value>
   </data>
 </root>
