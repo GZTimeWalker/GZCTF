@@ -50,8 +50,8 @@ export default defineConfig(({ mode }) => {
       eslintPlugin(), // only for development
       webfontDownload(
         [
-          'https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap',
-          'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,400&display=swap',
+          'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap',
+          'https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap',
         ],
         { injectAsStyleTag: false, async: false }
       ),

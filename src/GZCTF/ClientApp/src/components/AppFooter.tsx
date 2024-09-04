@@ -14,10 +14,10 @@ const AppFooter: FC = () => {
   const isMobile = useIsMobile()
 
   const copyright = (
-    <Text size="xs" ta="center" fw={500} c="dimmed" ff="monospace">
+    <Text size="sm" ta="center" fw={400} c="dimmed">
       Copyright&nbsp;©&nbsp;2022-now&nbsp;
       {isMobile && <br />}
-      <Anchor href="https://github.com/GZTimeWalker" c="dimmed" size="sm" fw={500} lh={1}>
+      <Anchor href="https://github.com/GZTimeWalker" c="dimmed" size="sm" fw={500}>
         @GZTimeWalker
       </Anchor>
       ,&nbsp;All&nbsp;Rights&nbsp;Reserved.

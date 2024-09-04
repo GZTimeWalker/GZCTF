@@ -1,7 +1,6 @@
 .board {
-  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-gray-8));
   justify-content: center;
-  height: calc(100vh - 3.75rem * var(--mantine-scale));
+  height: 100vh;
   padding: var(--mantine-spacing-lg);
   align-items: center;
 }

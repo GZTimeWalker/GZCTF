@@ -6,7 +6,7 @@
   & thead tr th,
   & tbody tr td {
     text-align: center;
-    padding: 8px;
+    padding: 6px 4px;
     white-space: nowrap;
     font-size: 12px;
   }
