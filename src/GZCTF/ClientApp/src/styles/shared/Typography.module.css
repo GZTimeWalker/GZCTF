@@ -182,11 +182,11 @@
 
   & a,
   & strong {
-    font-weight: 300;
     color: light-dark(var(--mantine-primary-color-6), var(--mantine-primary-color-5));
   }
 
   & a {
+    font-weight: 300;
     text-decoration: underline;
     transition: all 0.2s ease-in-out;
   }
