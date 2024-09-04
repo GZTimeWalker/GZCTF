@@ -57,7 +57,7 @@ public static class CacheKey
     /// <summary>
     /// The cache update lock
     /// </summary>
-    public static string UpdateLock(string key) => $"_UpdateLock_{key}";
+    public static string UpdateLock(string key) => $"_UpdateLock{key}";
 
     /// <summary>
     /// The last update time
