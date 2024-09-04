@@ -83,11 +83,11 @@ const CustomTheme: MantineThemeOverride = {
   },
   primaryColor: 'brand',
   fontFamily:
-    'SUSE, -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif',
+    'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif',
   fontFamilyMonospace:
-    "'JetBrains Mono', ui-monospace, SFMono-Regular, Monaco, Consolas, 'Courier New', monospace, sans-serif",
+    'JetBrains Mono, ui-monospace, SFMono-Regular, Monaco, Consolas, Courier New, monospace, sans-serif',
   headings: {
-    fontFamily: 'SUSE, sans-serif',
+    fontFamily: 'IBM Plex Sans, sans-serif',
   },
   breakpoints: {
     xs: '30em',

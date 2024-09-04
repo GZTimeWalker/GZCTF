@@ -133,7 +133,7 @@ const ChallengePanel: FC = () => {
         {game?.writeupRequired && (
           <>
             <Button
-              px="sm"
+              px="xs"
               leftSection={<Icon path={mdiFileUploadOutline} size={1} />}
               onClick={() => setWriteupSubmitOpened(true)}
             >
