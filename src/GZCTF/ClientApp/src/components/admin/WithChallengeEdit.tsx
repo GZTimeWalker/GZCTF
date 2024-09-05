@@ -48,7 +48,7 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
     <WithGameEditTab isLoading={isLoading} {...rest}>
       <Stack mih="calc(100vh - 12rem)" justify="space-between">
         {children}
-        <Group justify="space-between" w="100%">
+        <Group justify="space-between" w="100%" wrap="nowrap">
           <Button
             justify="space-between"
             disabled={isLoading || !previous}
@@ -58,12 +58,16 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
             {t('admin.button.challenges.previous')}
           </Button>
 
-          <Group justify="space-between" gap="xs">
-            <Text c="dimmed">{previous?.title ?? ''}</Text>
-            <Text fw="bold" c={color(current)}>
+          <Group justify="space-between" gap="xs" wrap="nowrap" maw="calc(100% - 16rem)">
+            <Text c="dimmed" truncate>
+              {previous?.title ?? ''}
+            </Text>
+            <Text fw="bold" c={color(current)} truncate>
               {current?.title ?? ''}
             </Text>
-            <Text c="dimmed">{next?.title ?? ''}</Text>
+            <Text c="dimmed" truncate>
+              {next?.title ?? ''}
+            </Text>
           </Group>
 
           <Button
