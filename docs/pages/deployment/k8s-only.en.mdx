@@ -267,7 +267,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
    metadata:
      name: gzctf
      namespace: gzctf-server
-    annotations: # Enable Traefik Sticky Session
+     annotations: # Enable Traefik Sticky Session
        traefik.ingress.kubernetes.io/service.sticky.cookie: "true"
        traefik.ingress.kubernetes.io/service.sticky.cookie.name: "LB_Session"
        traefik.ingress.kubernetes.io/service.sticky.cookie.httponly: "true"
