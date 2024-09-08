@@ -119,13 +119,13 @@
           },
           "instructions": {
             "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情况下启用 Leet 字符串功能，请在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 标记，此时不会检查 flag 模版字符串的熵",
+            "complex": "如果需要在 flag 生成中启用特殊字符，请在字符串开头用 <1>[CLEET]</1> 代替 <2>[LEET]</2>，这可能造成对于题目的注入问题",
             "description": "请输入 flag 模版字符串，留空以生成随机 GUID 作为 flag",
             "example": "flag 模板编写示例",
             "guid": "指定 <1>[GUID]</1>则会仅替换此处的占位符为随机 GUID",
             "leave_empty": "留空",
             "leet": "若未指定 <1>[TEAM_HASH]</1> 则将启用 Leet 字符串功能，将会基于模版对花括号内字符串进行变换，需要确保 flag 模版字符串的熵足够高",
             "team_hash": "若指定 <1>[TEAM_HASH]</1> 则它将会被自动替换为队伍 Token 和比赛信息所生成的哈希值",
-            "complex": "如果需要在 flag 生成中启用特殊字符，请在字符串开头用 <1>[CLEET]</1> 代替 <2>[LEET]</2>，这可能造成对于题目的注入问题",
             "will_generate": "将会生成"
           },
           "template": "flag 模版",

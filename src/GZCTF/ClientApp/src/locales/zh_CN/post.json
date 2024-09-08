@@ -1,33 +1,33 @@
 {
+  "button": {
+    "delete": "删除文章",
+    "edit": "编辑文章",
+    "goto": "转到文章",
+    "new": "新建文章",
+    "save": "保存文章"
+  },
+  "content": {
+    "delete": "你确定要删除文章 “{{title}}” 吗？",
+    "details": "查看详情",
+    "metadata": "{{author}} 发布于 {{date}}",
+    "pinned": "[置顶]",
+    "updated": {
+      "content": "文章内容已更改，是否保存？",
+      "title": "文章已更改"
+    }
+  },
   "label": {
-    "tag": "文章标签",
-    "title": "文章标题",
     "add_tag": "回车添加标签",
     "content": "文章内容",
-    "summary": "文章梗概"
+    "summary": "文章梗概",
+    "tag": "文章标签",
+    "title": "文章标题"
+  },
+  "notification": {
+    "created": "文章已创建",
+    "saved": "文章已保存"
   },
   "title": {
     "index": "文章"
-  },
-  "button": {
-    "new": "新建文章",
-    "edit": "编辑文章",
-    "goto": "转到文章",
-    "save": "保存文章",
-    "delete": "删除文章"
-  },
-  "content": {
-    "metadata": "{{author}} 发布于 {{date}}",
-    "pinned": "[置顶]",
-    "details": "查看详情",
-    "delete": "你确定要删除文章 “{{title}}” 吗？",
-    "updated": {
-      "title": "文章已更改",
-      "content": "文章内容已更改，是否保存？"
-    }
-  },
-  "notification": {
-    "saved": "文章已保存",
-    "created": "文章已创建"
   }
 }

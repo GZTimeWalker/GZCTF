@@ -150,12 +150,12 @@
     "hardware": "Hardware security",
     "misc": "Miscellaneous",
     "mobile": "Mobile security",
+    "osint": "Open-source intelligence",
+    "pentest": "Penetration testing",
     "ppc": "Programming",
     "pwn": "Binary exploitation",
     "reverse": "Reverse engineering",
-    "web": "Web security",
-    "osint": "Open-source intelligence",
-    "pentest": "Penetration testing"
+    "web": "Web security"
   },
   "type": {
     "dynamic_attachment": {

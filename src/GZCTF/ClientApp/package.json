@@ -85,6 +85,7 @@
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "~3.3.3",
+    "prettier-plugin-sort-json": "^4.0.0",
     "rollup": "^4.21.2",
     "swagger-typescript-api": "^13.0.22",
     "tslib": "^2.7.0",

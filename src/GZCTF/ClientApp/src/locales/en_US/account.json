@@ -1,108 +1,108 @@
 {
-  "label": {
-    "bio": "Description",
-    "email": "Email",
-    "phone": "Phone number",
-    "password": "Password",
-    "username": "Username",
-    "email_new": "New Email",
-    "real_name": "Real Name",
-    "student_id": "Student ID",
-    "password_old": "Original password",
-    "password_retype": "Confirm password",
-    "username_or_email": "Username or Email"
-  },
-  "title": {
-    "login": "Login",
-    "reset": "Reset password",
-    "verify": "Account Verification",
-    "confirm": "Email Verification",
-    "profile": "Profile",
-    "register": "Register",
-    "recovery": "Recover account"
-  },
   "anchor": {
     "login": "Already have account?",
     "recovery": "Forgot password?"
   },
   "button": {
+    "change_password": "Change Password",
+    "confirm_email": "Confirm Email",
     "login": "Login",
-    "reset": "Reset Password",
     "recovery": "Send Reset Email",
     "register": "Register",
+    "reset": "Reset Password",
     "save_profile": "Save Profile",
     "update_email": "Change Email",
-    "confirm_email": "Confirm Email",
-    "verify_account": "Verify Account",
-    "change_password": "Change Password"
+    "verify_account": "Verify Account"
   },
   "content": {
-    "verify": {
-      "message": "Please click the button below to verify the account."
-    },
-    "welcome": "Hello, {{decodeEmail}}👋",
     "confirm": {
       "message": "Please click the button below to verify your email."
     },
+    "link_check": "Please check your activation link and try again",
+    "link_invalid": "Ouch! There's something wrong with your activation link",
     "profile": {
       "update_email_note": "After changing your email, you will no longer be able to log in using your original email.<br/>An email will be sent to your new email address, click on the link in it to complete the verification."
     },
-    "link_check": "Please check your activation link and try again",
-    "link_invalid": "Ouch! There's something wrong with your activation link"
+    "verify": {
+      "message": "Please click the button below to verify the account."
+    },
+    "welcome": "Hello, {{decodeEmail}}👋"
   },
-  "password": {
-    "empty": "Password cannot be empty",
-    "not_match": "The repeated password is incorrect",
-    "min_length": "At least 6 characters",
-    "include_number": "Include numbers",
-    "include_symbol": "Include special characters",
-    "include_lowercase": "Include lower case letters",
-    "include_uppercase": "Include upper case letters"
-  },
-  "placeholder": {
-    "bio": "This person is lazy, nothing written"
+  "label": {
+    "bio": "Description",
+    "email": "Email",
+    "email_new": "New Email",
+    "password": "Password",
+    "password_old": "Original password",
+    "password_retype": "Confirm password",
+    "phone": "Phone number",
+    "real_name": "Real Name",
+    "student_id": "Student ID",
+    "username": "Username",
+    "username_or_email": "Username or Email"
   },
   "notification": {
-    "login": {
-      "banned": "User has been banned",
-      "invalid": "Wrong username or password",
-      "success": {
-        "title": "Login succeeded",
-        "message": "Redirect to the previous page before login"
-      }
-    },
-    "reset": {
-      "success": {
-        "title": "Password has been reset",
-        "message": "Please login again"
-      }
-    },
-    "logout": "Logout successfully",
-    "verify": {
-      "failed": "Failed to verify the account",
-      "success": "Account has been verified, please login"
-    },
     "captcha": {
       "not_valid": "Please wait for captcha...",
       "request_sent": {
-        "title": "Request sent...",
-        "message": "Waiting for server verification"
+        "message": "Waiting for server verification",
+        "title": "Request sent..."
       }
     },
     "confirm": {
       "failed": "Failed to verify email",
       "success": "Email has been verified"
     },
+    "login": {
+      "banned": "User has been banned",
+      "invalid": "Wrong username or password",
+      "success": {
+        "message": "Redirect to the previous page before login",
+        "title": "Login succeeded"
+      }
+    },
+    "logout": "Logout successfully",
     "profile": {
-      "profile_updated": "Profile updated",
-      "password_updated": "Password has been changed, please login again"
+      "password_updated": "Password has been changed, please login again",
+      "profile_updated": "Profile updated"
     },
     "register": {
       "logged_in": "Successfully registered",
       "request_sent": {
-        "title": "Registration request sent",
-        "message": "Please wait for administrator's approval for activation~"
+        "message": "Please wait for administrator's approval for activation~",
+        "title": "Registration request sent"
       }
+    },
+    "reset": {
+      "success": {
+        "message": "Please login again",
+        "title": "Password has been reset"
+      }
+    },
+    "verify": {
+      "failed": "Failed to verify the account",
+      "success": "Account has been verified, please login"
     }
+  },
+  "password": {
+    "empty": "Password cannot be empty",
+    "include_lowercase": "Include lower case letters",
+    "include_number": "Include numbers",
+    "include_symbol": "Include special characters",
+    "include_uppercase": "Include upper case letters",
+    "min_length": "At least 6 characters",
+    "not_match": "The repeated password is incorrect"
+  },
+  "placeholder": {
+    "bio": "This person is lazy, nothing written"
+  },
+  "title": {
+    "confirm": "Email Verification",
+    "login": "Login",
+    "profile": "Profile",
+    "recovery": "Recover account",
+    "register": "Register",
+    "reset": "Reset password",
+    "verify": "Account Verification"
   }
 }

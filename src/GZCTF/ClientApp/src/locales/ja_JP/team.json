@@ -1,64 +1,71 @@
 {
-  "title": {
-    "index": "チーム管理"
-  },
-  "label": {
-    "bio": "一言",
-    "name": "チーム名",
-    "kick": "チームから追放する",
-    "members": "チームメンバー",
-    "transfer": "チーム譲渡",
-    "invite_code": "招待コード",
-    "role": "役割"
-  },
   "button": {
-    "join": "チームに参加",
-    "edit": "チーム詳細",
-    "save": "変更を保存",
-    "leave": "チームから離脱",
     "create": "チームを作成",
-    "disband": "チームを解散"
+    "disband": "チームを解散",
+    "edit": "チーム詳細",
+    "join": "チームに参加",
+    "leave": "チームから離脱",
+    "save": "変更を保存"
   },
   "content": {
-    "join": "招待コードをチームの作成者から取得し、招待コードを入力してチームに参加してください。",
-    "role": {
-      "captain": "リーダー",
-      "member": "メンバー"
+    "create": "チームを作成する。他の人を招待することができます。1つのチームしか所有できません。",
+    "disband": {
+      "confirm": {
+        "message": "チーム \"{{team}}\" を解散しますか？",
+        "title": "チーム解散確認"
+      }
     },
+    "join": "招待コードをチームの作成者から取得し、招待コードを入力してチームに参加してください。",
     "kick": {
       "confirm": {
-        "title": "追放確認",
-        "message": "チームメンバー「{{user}}」を追放しますか？"
+        "message": "チームメンバー「{{user}}」を追放しますか？",
+        "title": "追放確認"
       }
     },
     "leave": {
       "confirm": {
-        "title": "チームから離脱",
-        "message": "チーム「{{team}}」から離脱しますか？"
-      }
-    },
-    "create": "チームを作成する。他の人を招待することができます。1つのチームしか所有できません。",
-    "disband": {
-      "confirm": {
-        "title": "チーム解散確認",
-        "message": "チーム \"{{team}}\" を解散しますか？"
-      }
-    },
-    "transfer": {
-      "confirm": {
-        "title": "チーム譲渡確認",
-        "message": "チーム「{{team}}」を「{{user}}」に譲渡しますか？"
+        "message": "チーム「{{team}}」から離脱しますか？",
+        "title": "チームから離脱"
       }
     },
     "no_create": {
-      "title": "すでに一つのチームを作成しました",
-      "content": "1つのチームのみ所有できます。<br/>所有したチームを削除してから再度作成してください。"
+      "content": "1つのチームのみ所有できます。<br/>所有したチームを削除してから再度作成してください。",
+      "title": "すでに一つのチームを作成しました"
+    },
+    "role": {
+      "captain": "リーダー",
+      "member": "メンバー"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "チーム「{{team}}」を「{{user}}」に譲渡しますか？",
+        "title": "チーム譲渡確認"
+      }
     }
   },
-  "placeholder": {
-    "bio": "この怠け者は何でも書いていない"
+  "label": {
+    "bio": "一言",
+    "invite_code": "招待コード",
+    "kick": "チームから追放する",
+    "members": "チームメンバー",
+    "name": "チーム名",
+    "role": "役割",
+    "transfer": "チーム譲渡"
   },
   "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}}が作成されました。チームメンバーを今すぐ招待しましょう！",
+        "title": "チームが作成されました"
+      }
+    },
+    "disband": {
+      "success": "チームを解散しました"
+    },
+    "invite_code": {
+      "copied": "招待コードがコピーされました",
+      "updated": "チーム招待コードが更新されました"
+    },
     "join": {
       "success": "チームに参加しました",
       "wrong_invite_code": "チーム招待コードが正しくありません"
@@ -69,25 +76,18 @@
     "leave": {
       "success": "チームから離脱しました"
     },
-    "create": {
-      "success": {
-        "title": "チームが作成されました",
-        "message": "{{team}}が作成されました。チームメンバーを今すぐ招待しましょう！"
-      }
-    },
-    "updated": "チーム情報を更新しました",
     "token": {
       "copied": "チームトークンがコピーされました"
-    },
-    "disband": {
-      "success": "チームを解散しました"
     },
     "transfer": {
       "success": "チーム譲渡が成功しました"
     },
-    "invite_code": {
-      "copied": "招待コードがコピーされました",
-      "updated": "チーム招待コードが更新されました"
-    }
+    "updated": "チーム情報を更新しました"
+  },
+  "placeholder": {
+    "bio": "この怠け者は何でも書いていない"
+  },
+  "title": {
+    "index": "チーム管理"
   }
 }

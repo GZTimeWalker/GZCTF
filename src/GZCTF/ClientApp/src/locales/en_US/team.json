@@ -1,64 +1,71 @@
 {
-  "title": {
-    "index": "Team management"
-  },
-  "label": {
-    "bio": "Biography",
-    "name": "Team Name",
-    "kick": "Kick out",
-    "members": "Members",
-    "transfer": "Transfer",
-    "invite_code": "Invitation Code",
-    "role": "Role"
-  },
   "button": {
-    "join": "Join Team",
-    "edit": "Team Details",
-    "save": "Update Info",
-    "leave": "Quit Team",
     "create": "Create Team",
-    "disband": "Disband Team"
+    "disband": "Disband Team",
+    "edit": "Team Details",
+    "join": "Join Team",
+    "leave": "Quit Team",
+    "save": "Update Info"
   },
   "content": {
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
-    "role": {
-      "captain": "Captain",
-      "member": "Member"
+    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "disband": {
+      "confirm": {
+        "message": "Are you sure you want to disband team \"{{team}}\"?",
+        "title": "Confirm Disband Team"
+      }
     },
+    "join": "Please get the invitation code from the team creator, use it to join the team.",
     "kick": {
       "confirm": {
-        "title": "Confirm removing member.",
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?"
+        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
+        "title": "Confirm removing member."
       }
     },
     "leave": {
       "confirm": {
-        "title": "Confirm Quit",
-        "message": "Are you sure you want to leave the team \"{{team}}\"?"
-      }
-    },
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
-    "disband": {
-      "confirm": {
-        "title": "Confirm Disband Team",
-        "message": "Are you sure you want to disband team \"{{team}}\"?"
-      }
-    },
-    "transfer": {
-      "confirm": {
-        "title": "Confirm Transfer",
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?"
+        "message": "Are you sure you want to leave the team \"{{team}}\"?",
+        "title": "Confirm Quit"
       }
     },
     "no_create": {
-      "title": "You've created a team",
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one."
+      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
+      "title": "You've created a team"
+    },
+    "role": {
+      "captain": "Captain",
+      "member": "Member"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
+        "title": "Confirm Transfer"
+      }
     }
   },
-  "placeholder": {
-    "bio": "This team is lazy, nothing written"
+  "label": {
+    "bio": "Biography",
+    "invite_code": "Invitation Code",
+    "kick": "Kick out",
+    "members": "Members",
+    "name": "Team Name",
+    "role": "Role",
+    "transfer": "Transfer"
   },
   "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}} has been created, invite your teammates now!",
+        "title": "Successfully created team"
+      }
+    },
+    "disband": {
+      "success": "Successfully disbanded team"
+    },
+    "invite_code": {
+      "copied": "Invitation code is copied to clipboard",
+      "updated": "Team invitation token updated"
+    },
     "join": {
       "success": "Successfully joined team",
       "wrong_invite_code": "Incorrect team invitation code"
@@ -69,25 +76,18 @@
     "leave": {
       "success": "Successfully quit"
     },
-    "create": {
-      "success": {
-        "title": "Successfully created team",
-        "message": "{{team}} has been created, invite your teammates now!"
-      }
-    },
-    "updated": "Team information has been updated",
     "token": {
       "copied": "Team token copied to clipboard"
-    },
-    "disband": {
-      "success": "Successfully disbanded team"
     },
     "transfer": {
       "success": "Successfully transferred team"
     },
-    "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
-    }
+    "updated": "Team information has been updated"
+  },
+  "placeholder": {
+    "bio": "This team is lazy, nothing written"
+  },
+  "title": {
+    "index": "Team management"
   }
 }

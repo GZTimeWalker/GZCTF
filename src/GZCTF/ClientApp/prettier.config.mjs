@@ -7,7 +7,11 @@ export default {
   semi: false,
   printWidth: 100,
   htmlWhitespaceSensitivity: 'ignore',
-  plugins: ['@trivago/prettier-plugin-sort-imports'],
+  jsonRecursiveSort: true,
+  plugins: [
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-sort-json'
+  ],
   importOrder: [
     '<THIRD_PARTY_MODULES>',
     '^@Components/(.*)$',

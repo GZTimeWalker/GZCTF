@@ -1,64 +1,71 @@
 {
-  "title": {
-    "index": "队伍管理"
-  },
-  "label": {
-    "bio": "队伍签名",
-    "name": "队伍名称",
-    "kick": "踢出队伍",
-    "members": "队伍成员",
-    "transfer": "转让队伍",
-    "invite_code": "邀请码",
-    "role": "个人身份"
-  },
   "button": {
-    "join": "加入队伍",
-    "edit": "队伍详情",
-    "save": "更新信息",
-    "leave": "退出队伍",
     "create": "创建队伍",
-    "disband": "解散队伍"
+    "disband": "解散队伍",
+    "edit": "队伍详情",
+    "join": "加入队伍",
+    "leave": "退出队伍",
+    "save": "更新信息"
   },
   "content": {
-    "join": "请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。",
-    "role": {
-      "captain": "队长",
-      "member": "队员"
+    "create": "创建一个队伍，你可以组织一个队伍，并且可以邀请其他人加入。每个人只能拥有一个队伍。",
+    "disband": {
+      "confirm": {
+        "message": "你确定要解散队伍 \"{{team}}\" 吗？",
+        "title": "确认解散队伍"
+      }
     },
+    "join": "请从队伍创建者处获取队伍邀请码，输入邀请码加入队伍。",
     "kick": {
       "confirm": {
-        "title": "确认踢出队员",
-        "message": "你确定要踢出队员 \"{{user}}\" 吗？"
+        "message": "你确定要踢出队员 \"{{user}}\" 吗？",
+        "title": "确认踢出队员"
       }
     },
     "leave": {
       "confirm": {
-        "title": "确认退出队伍",
-        "message": "你确定要退出队伍 \"{{team}}\" 吗？"
-      }
-    },
-    "create": "创建一个队伍，你可以组织一个队伍，并且可以邀请其他人加入。每个人只能拥有一个队伍。",
-    "disband": {
-      "confirm": {
-        "title": "确认解散队伍",
-        "message": "你确定要解散队伍 \"{{team}}\" 吗？"
-      }
-    },
-    "transfer": {
-      "confirm": {
-        "title": "确认转让队伍",
-        "message": "你确定要将队伍 \"{{team}}\" 转让给 \"{{user}}\" 吗？"
+        "message": "你确定要退出队伍 \"{{team}}\" 吗？",
+        "title": "确认退出队伍"
       }
     },
     "no_create": {
-      "title": "你已经创建了一个队伍",
-      "content": "每个人只能拥有一个队伍<br/>你可以删除队伍后重新创建"
+      "content": "每个人只能拥有一个队伍<br/>你可以删除队伍后重新创建",
+      "title": "你已经创建了一个队伍"
+    },
+    "role": {
+      "captain": "队长",
+      "member": "队员"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "你确定要将队伍 \"{{team}}\" 转让给 \"{{user}}\" 吗？",
+        "title": "确认转让队伍"
+      }
     }
   },
-  "placeholder": {
-    "bio": "这个队很懒，什么都没有写"
+  "label": {
+    "bio": "队伍签名",
+    "invite_code": "邀请码",
+    "kick": "踢出队伍",
+    "members": "队伍成员",
+    "name": "队伍名称",
+    "role": "个人身份",
+    "transfer": "转让队伍"
   },
   "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}}创建成功，快去邀请队友吧！",
+        "title": "队伍已创建"
+      }
+    },
+    "disband": {
+      "success": "解散队伍成功"
+    },
+    "invite_code": {
+      "copied": "邀请码已复制到剪贴板",
+      "updated": "队伍邀请码已更新"
+    },
     "join": {
       "success": "加入队伍成功",
       "wrong_invite_code": "队伍邀请码格式不正确"
@@ -69,25 +76,18 @@
     "leave": {
       "success": "退出队伍成功"
     },
-    "create": {
-      "success": {
-        "title": "队伍已创建",
-        "message": "{{team}}创建成功，快去邀请队友吧！"
-      }
-    },
-    "updated": "队伍信息已更新",
     "token": {
       "copied": "队伍 Token 已复制到剪贴板"
-    },
-    "disband": {
-      "success": "解散队伍成功"
     },
     "transfer": {
       "success": "转让队伍成功"
     },
-    "invite_code": {
-      "copied": "邀请码已复制到剪贴板",
-      "updated": "队伍邀请码已更新"
-    }
+    "updated": "队伍信息已更新"
+  },
+  "placeholder": {
+    "bio": "这个队很懒，什么都没有写"
+  },
+  "title": {
+    "index": "队伍管理"
   }
 }

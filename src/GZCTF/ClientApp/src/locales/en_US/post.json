@@ -1,33 +1,33 @@
 {
+  "button": {
+    "delete": "Delete Post",
+    "edit": "Edit Post",
+    "goto": "Go to Post",
+    "new": "New Post",
+    "save": "Save Post"
+  },
+  "content": {
+    "delete": "Are you sure you want to delete post {{title}}?",
+    "details": "View Details",
+    "metadata": "{{author}} published on {{date}}",
+    "pinned": "[Pinned]",
+    "updated": {
+      "content": "The post has been changed. Save it?",
+      "title": "Post has been changed"
+    }
+  },
   "label": {
-    "tag": "Tags",
-    "title": "Title",
     "add_tag": "Enter to add tag",
     "content": "Content",
-    "summary": "Summary"
+    "summary": "Summary",
+    "tag": "Tags",
+    "title": "Title"
+  },
+  "notification": {
+    "created": "Post has been created",
+    "saved": "Post has been saved"
   },
   "title": {
     "index": "Posts"
-  },
-  "button": {
-    "new": "New Post",
-    "edit": "Edit Post",
-    "goto": "Go to Post",
-    "save": "Save Post",
-    "delete": "Delete Post"
-  },
-  "content": {
-    "metadata": "{{author}} published on {{date}}",
-    "pinned": "[Pinned]",
-    "details": "View Details",
-    "delete": "Are you sure you want to delete post {{title}}?",
-    "updated": {
-      "title": "Post has been changed",
-      "content": "The post has been changed. Save it?"
-    }
-  },
-  "notification": {
-    "saved": "Post has been saved",
-    "created": "Post has been created"
   }
 }

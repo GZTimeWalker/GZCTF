@@ -1,108 +1,108 @@
 {
-  "label": {
-    "bio": "一言",
-    "email": "メール",
-    "phone": "電話番号",
-    "password": "パスワード",
-    "username": "ユーザー名",
-    "email_new": "新メール",
-    "real_name": "氏名",
-    "student_id": "学生番号",
-    "password_old": "現在のパスワード",
-    "password_retype": "パスワード再確認",
-    "username_or_email": "ユーザー名またはメール"
-  },
-  "title": {
-    "login": "ログイン",
-    "reset": "パスワードリセット",
-    "verify": "アカウント認証",
-    "confirm": "メールによる認証",
-    "profile": "個人情報",
-    "register": "新規登録",
-    "recovery": "アカウント回復"
-  },
   "anchor": {
     "login": "アカウントを持っていますか？",
     "recovery": "パスワードをお忘れですか？"
   },
   "button": {
+    "change_password": "パスワードを変更",
+    "confirm_email": "メールを確認",
     "login": "ログイン",
-    "reset": "パスワードをリセット",
     "recovery": "確認メールを送信",
     "register": "新規登録",
+    "reset": "パスワードをリセット",
     "save_profile": "個人情報を保存",
     "update_email": "メールを変更",
-    "confirm_email": "メールを確認",
-    "verify_account": "アカウントを認証",
-    "change_password": "パスワードを変更"
+    "verify_account": "アカウントを認証"
   },
   "content": {
-    "verify": {
-      "message": "次のボタンをクリックしてアカウントを認証してください"
-    },
-    "welcome": "{{decodeEmail}}, こんにちは👋",
     "confirm": {
       "message": "次のボタンをクリックしてメールの変更を確認してください。"
     },
+    "link_check": "リンクを確認して再アクセスしてください",
+    "link_invalid": "あかん! リンクは無効のようです",
     "profile": {
       "update_email_note": "メールアドレスを変更すると、元のメールアドレスがログインできなくなります。<br/>新メールアドレスに確認用のリンクが含まれたメールが送信されますので、そこから確認を完了してください。"
     },
-    "link_check": "リンクを確認して再アクセスしてください",
-    "link_invalid": "あかん! リンクは無効のようです"
+    "verify": {
+      "message": "次のボタンをクリックしてアカウントを認証してください"
+    },
+    "welcome": "{{decodeEmail}}, こんにちは👋"
   },
-  "password": {
-    "empty": "パスワードは空にできません",
-    "not_match": "パスワードが一致しません",
-    "min_length": "最低 6 文字",
-    "include_number": "数字が含まれています",
-    "include_symbol": "特殊文字が含まれています",
-    "include_lowercase": "小文字が含まれています",
-    "include_uppercase": "大文字が含まれています"
-  },
-  "placeholder": {
-    "bio": "この怠け者は何でも書いていない"
+  "label": {
+    "bio": "一言",
+    "email": "メール",
+    "email_new": "新メール",
+    "password": "パスワード",
+    "password_old": "現在のパスワード",
+    "password_retype": "パスワード再確認",
+    "phone": "電話番号",
+    "real_name": "氏名",
+    "student_id": "学生番号",
+    "username": "ユーザー名",
+    "username_or_email": "ユーザー名またはメール"
   },
   "notification": {
-    "login": {
-      "banned": "ユーザーはブロックされました",
-      "invalid": "ユーザー名またはパスワードが正しくありません",
-      "success": {
-        "title": "ログイン成功",
-        "message": "ログイン前のページへ移動"
-      }
-    },
-    "reset": {
-      "success": {
-        "title": "パスワードがリセットされました",
-        "message": "ログインし直してください"
-      }
-    },
-    "logout": "ログアウト成功",
-    "verify": {
-      "failed": "アカウントを認証できませんでした",
-      "success": "アカウント認証済みです。ログインしてください"
-    },
     "captcha": {
       "not_valid": "キャプチャ認証をお待ちください……",
       "request_sent": {
-        "title": "リクエストが送信されました……",
-        "message": "サーバーからの認証を待っています"
+        "message": "サーバーからの認証を待っています",
+        "title": "リクエストが送信されました……"
       }
     },
     "confirm": {
       "failed": "メールの認証に失敗しました",
       "success": "メールの認証が完了しました"
     },
+    "login": {
+      "banned": "ユーザーはブロックされました",
+      "invalid": "ユーザー名またはパスワードが正しくありません",
+      "success": {
+        "message": "ログイン前のページへ移動",
+        "title": "ログイン成功"
+      }
+    },
+    "logout": "ログアウト成功",
     "profile": {
-      "profile_updated": "個人情報が更新されました。",
-      "password_updated": "パスワードが変更されましたためログインし直してください。"
+      "password_updated": "パスワードが変更されましたためログインし直してください。",
+      "profile_updated": "個人情報が更新されました。"
     },
     "register": {
       "logged_in": "新規登録が完了しました",
       "request_sent": {
-        "title": "新規登録リクエストが送信されました",
-        "message": "管理者の承認までしばらくお待ちください~"
+        "message": "管理者の承認までしばらくお待ちください~",
+        "title": "新規登録リクエストが送信されました"
       }
+    },
+    "reset": {
+      "success": {
+        "message": "ログインし直してください",
+        "title": "パスワードがリセットされました"
+      }
+    },
+    "verify": {
+      "failed": "アカウントを認証できませんでした",
+      "success": "アカウント認証済みです。ログインしてください"
     }
+  },
+  "password": {
+    "empty": "パスワードは空にできません",
+    "include_lowercase": "小文字が含まれています",
+    "include_number": "数字が含まれています",
+    "include_symbol": "特殊文字が含まれています",
+    "include_uppercase": "大文字が含まれています",
+    "min_length": "最低 6 文字",
+    "not_match": "パスワードが一致しません"
+  },
+  "placeholder": {
+    "bio": "この怠け者は何でも書いていない"
+  },
+  "title": {
+    "confirm": "メールによる認証",
+    "login": "ログイン",
+    "profile": "個人情報",
+    "recovery": "アカウント回復",
+    "register": "新規登録",
+    "reset": "パスワードリセット",
+    "verify": "アカウント認証"
   }
 }
