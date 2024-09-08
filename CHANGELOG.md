@@ -3,6 +3,35 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.24.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.0-patch.1..v0.24.1) - 2024-09-08
+
+### ⛰️ Features
+
+- **(cache)** single flight cache update - ([484aa0](https://github.com/GZTimeWalker/GZCTF/commit/484aa0)) by **GZTime**
+- **(k8s)** use ServiceAccount if in cluster and no config provided (#328) - ([4e4947](https://github.com/GZTimeWalker/GZCTF/commit/4e4947)) by **Light**
+
+### 🐛 Bug Fixes
+
+- **(style)** unexpected font weight - ([b0e171](https://github.com/GZTimeWalker/GZCTF/commit/b0e171)) by **GZTime**
+
+### 🎨 Styling
+
+- **(admin)** nowrap for challenge edit page - ([e92d8c](https://github.com/GZTimeWalker/GZCTF/commit/e92d8c)) by **GZTime**
+- **(font)** fix missing weight for IBM Plex Sans - ([5b23a7](https://github.com/GZTimeWalker/GZCTF/commit/5b23a7)) by **GZTime**
+- **(font)** use variable font SUSE - ([83d028](https://github.com/GZTimeWalker/GZCTF/commit/83d028)) by **GZTime**
+
+---
+## [0.24.0-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.0..v0.24.0-patch.1) - 2024-09-03
+
+### ⛰️ Features
+
+- log cache request time - ([7db780](https://github.com/GZTimeWalker/GZCTF/commit/7db780)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(mail)** cannot use sender name - ([d5dcef](https://github.com/GZTimeWalker/GZCTF/commit/d5dcef)) by **GZTime**
+
+---
 ## [0.24.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.23.0..v0.24.0) - 2024-09-02
 
 ### ⛰️ Features
