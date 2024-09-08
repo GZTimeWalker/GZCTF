@@ -50,7 +50,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         }
         else if (KubernetesClientConfiguration.IsInCluster())
         {
-            // use ServiceAccount token if running in cluster and no kubeconfig is provided
+            // use ServiceAccount token if running in cluster and no kube-config is provided
             config = KubernetesClientConfiguration.InClusterConfig();
         }
         else
