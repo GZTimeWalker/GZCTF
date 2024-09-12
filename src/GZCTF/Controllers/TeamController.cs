@@ -94,7 +94,7 @@ public partial class TeamController(
 
         Team[] teams = await teamRepository.GetUserTeams(user!, token);
 
-        if (teams.Length > 1 && teams.Any(t => t.CaptainId == user!.Id))
+        if (teams.Any(t => t.CaptainId == user!.Id))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Team_MultipleCreationNotAllowed)]));
 
