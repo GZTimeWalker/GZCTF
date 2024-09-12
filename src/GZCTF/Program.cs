@@ -395,8 +395,7 @@ namespace GZCTF
             DefaultFavicon = new byte[stream.Length];
 
             stream.ReadExactly(DefaultFavicon);
-            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
-                .Replace("-", "").ToLowerInvariant();
+            DefaultFaviconHash = Convert.ToHexStringLower(SHA256.HashData(DefaultFavicon));
         }
 
         public static bool IsTesting { get; set; }

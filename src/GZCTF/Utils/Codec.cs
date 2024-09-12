@@ -52,7 +52,7 @@ public static partial class Codec
     /// <returns></returns>
     public static string BytesToHex(byte[] bytes, bool useLower = true)
     {
-        var output = BitConverter.ToString(bytes).Replace("-", "");
+        var output = Convert.ToHexString(bytes);
         return useLower ? output.ToLowerInvariant() : output.ToUpperInvariant();
     }
 
@@ -387,7 +387,7 @@ public static partial class CodecExtensions
         var output = MD5.HashData(str.ToUTF8Bytes());
         return useBase64
             ? Convert.ToBase64String(output)
-            : BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
+            : Convert.ToHexStringLower(output);
     }
 
     /// <summary>
@@ -401,7 +401,7 @@ public static partial class CodecExtensions
         var output = SHA256.HashData(str.ToUTF8Bytes());
         return useBase64
             ? Convert.ToBase64String(output)
-            : BitConverter.ToString(output).Replace("-", "").ToLowerInvariant();
+            : Convert.ToHexStringLower(output);
     }
 
 

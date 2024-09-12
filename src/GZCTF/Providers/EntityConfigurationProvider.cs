@@ -81,11 +81,13 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))
         ));
 
-    public override void Load()
+    public override void Load() => LoadAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+    private async Task LoadAsync()
     {
         if (_databaseWatcher is not null)
         {
-            Data = GetDataAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            Data = await GetDataAsync();
             _lastHash = ConfigHash(Data);
             return;
         }
@@ -93,9 +95,9 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         AppDbContext context = CreateAppDbContext();
 
         if (!context.Database.IsInMemory() && context.Database.GetMigrations().Any())
-            context.Database.Migrate();
+            await context.Database.MigrateAsync();
 
-        context.Database.EnsureCreated();
+        await context.Database.EnsureCreatedAsync();
 
         if (!context.Configs.Any())
         {
@@ -116,6 +118,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         _lastHash = ConfigHash(Data);
 
         CancellationToken cancellationToken = _cancellationTokenSource.Token;
-        _databaseWatcher = Task.Run(() => WatchDatabase(cancellationToken), cancellationToken);
+        _databaseWatcher = Task.Factory.StartNew(() => WatchDatabase(cancellationToken),
+            cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }
 }

@@ -170,7 +170,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
     {
         contentStream.Position = 0;
         var hash = await SHA256.HashDataAsync(contentStream, token);
-        var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+        var fileHash = Convert.ToHexStringLower(hash);
 
         LocalFile? localFile = await GetFileByHash(fileHash, token);
 
