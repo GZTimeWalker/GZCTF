@@ -58,6 +58,19 @@ export const useConfig = () => {
   return { config: config ?? clientConfig, error, mutate }
 }
 
+export const useCaptchaConfig = () => {
+  const { data, error, mutate } = api.info.useInfoGetClientCaptchaInfo({
+    refreshInterval: 0,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    refreshWhenHidden: false,
+    shouldRetryOnError: false,
+    refreshWhenOffline: false,
+  })
+
+  return { info: data, error, mutate }
+}
+
 export const ValidatedRepoMeta = () => {
   const { sha, rawTag, timestamp, buildTime: buildtime } = RepoMeta
 

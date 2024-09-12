@@ -44,6 +44,7 @@ public class AccountPolicy
     /// <summary>
     /// 使用验证码校验
     /// </summary>
+    [CacheFlush(CacheKey.CaptchaConfig)]
     public bool UseCaptcha { get; set; }
 
     /// <summary>

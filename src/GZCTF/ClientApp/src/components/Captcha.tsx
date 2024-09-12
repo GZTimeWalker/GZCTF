@@ -2,7 +2,8 @@ import { Box, BoxProps, useMantineColorScheme } from '@mantine/core'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import api, { CaptchaProvider } from '@Api'
+import { useCaptchaConfig } from '@Utils/useConfig'
+import { CaptchaProvider } from '@Api'
 
 interface CaptchaProps extends BoxProps {
   action: string
@@ -53,15 +54,7 @@ const ReCaptchaBox = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
 const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const { action, ...others } = props
 
-  const { data: info, error } = api.info.useInfoGetClientCaptchaInfo({
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    refreshWhenHidden: false,
-    shouldRetryOnError: false,
-    refreshWhenOffline: false,
-  })
-
+  const { info, error } = useCaptchaConfig()
   const { colorScheme } = useMantineColorScheme()
   const type = info?.type ?? CaptchaProvider.None
   const turnstileRef = useRef<TurnstileInstance>(null)

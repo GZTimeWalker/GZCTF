@@ -28,12 +28,13 @@ import AdminPage from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
-import { OnceSWRConfig, useConfig } from '@Utils/useConfig'
+import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Utils/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
 import btnClasses from '@Styles/FixedButton.module.css'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
+  const { mutate: mutateCaptchaConfig } = useCaptchaConfig()
 
   const { mutate: mutateConfig } = useConfig()
   const [disabled, setDisabled] = useState(false)
@@ -69,6 +70,7 @@ const Configs: FC = () => {
 
       mutate({ ...conf })
       mutateConfig({ ...conf.globalConfig, ...conf.containerPolicy })
+      mutateCaptchaConfig()
     } catch (e) {
       showErrorNotification(e, t)
     } finally {
