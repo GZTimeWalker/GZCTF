@@ -28,9 +28,9 @@ public class ChallengeUpdateModel
     public string? FlagTemplate { get; set; }
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
-    public ChallengeTag? Tag { get; set; }
+    public ChallengeCategory? Category { get; set; }
 
     /// <summary>
     /// 题目提示

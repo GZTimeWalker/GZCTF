@@ -18,13 +18,13 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InstanceEntry from '@Components/InstanceEntry'
 import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
-import { ChallengeTagItemProps } from '@Utils/Shared'
+import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
 
 export interface ChallengeModalProps extends ModalProps {
   challenge?: ChallengeDetailModel
-  tagData: ChallengeTagItemProps
+  cateData: ChallengeCategoryItemProps
   solved?: boolean
   disabled?: boolean
   flag: string
@@ -39,7 +39,7 @@ export interface ChallengeModalProps extends ModalProps {
 const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const {
     challenge,
-    tagData,
+    cateData,
     solved,
     disabled,
     flag,
@@ -72,8 +72,8 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     <Stack gap="xs">
       <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
         <Group wrap="nowrap" gap="sm">
-          {tagData && (
-            <Icon path={tagData.icon} size={1.2} color={theme.colors[tagData?.color][5]} />
+          {cateData && (
+            <Icon path={cateData.icon} size={1.2} color={theme.colors[cateData?.color][5]} />
           )}
           <Title w="calc(100% - 1.5rem)" order={4} lineClamp={1}>
             {challenge?.title ?? ''}
@@ -83,7 +83,7 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           {challenge?.score ?? 0} pts
         </Text>
       </Group>
-      <Divider size="md" color={tagData?.color} />
+      <Divider size="md" color={cateData?.color} />
     </Stack>
   )
 

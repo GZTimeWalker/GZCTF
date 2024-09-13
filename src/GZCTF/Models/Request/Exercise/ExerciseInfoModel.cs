@@ -23,7 +23,7 @@ public class ExerciseInfoModel
     /// <summary>
     /// 练习标签
     /// </summary>
-    public ChallengeTag Tag { get; set; }
+    public ChallengeCategory Category { get; set; }
 
     /// <summary>
     /// 练习附加标签

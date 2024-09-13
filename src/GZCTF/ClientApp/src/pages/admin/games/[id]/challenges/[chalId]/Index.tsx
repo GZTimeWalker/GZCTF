@@ -36,14 +36,14 @@ import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
-  ChallengeTagItem,
-  useChallengeTagLabelMap,
+  ChallengeCategoryItem,
+  useChallengeCategoryLabelMap,
   ChallengeTypeItem,
   useChallengeTypeLabelMap,
-  ChallengeTagList,
+  ChallengeCategoryList,
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Utils/useEdit'
-import api, { ChallengeTag, ChallengeType, ChallengeUpdateModel } from '@Api'
+import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel } from '@Api'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -57,14 +57,16 @@ const GameChallengeEdit: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const [minRate, setMinRate] = useState((challenge?.minScoreRate ?? 0.25) * 100)
-  const [tag, setTag] = useState<string | null>(challenge?.tag ?? ChallengeTag.Misc)
+  const [category, setCategory] = useState<string | null>(
+    challenge?.category ?? ChallengeCategory.Misc
+  )
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
   const [previewOpened, setPreviewOpened] = useState(false)
 
   const modals = useModals()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
@@ -72,7 +74,7 @@ const GameChallengeEdit: FC = () => {
   useEffect(() => {
     if (challenge) {
       setChallengeInfo({ ...challenge })
-      setTag(challenge.tag)
+      setCategory(challenge.category)
       setType(challenge.type)
       setMinRate((challenge?.minScoreRate ?? 0.25) * 100)
       setCurrentAcceptCount(challenge.acceptedCount)
@@ -169,7 +171,7 @@ const GameChallengeEdit: FC = () => {
     onUpdate(
       {
         ...challengeInfo,
-        tag: tag as ChallengeTag,
+        category: category as ChallengeCategory,
         minScoreRate: minRate / 100,
       },
       true
@@ -236,7 +238,7 @@ const GameChallengeEdit: FC = () => {
               onClick={() =>
                 onUpdate({
                   ...challengeInfo,
-                  tag: tag as ChallengeTag,
+                  category: category as ChallengeCategory,
                   minScoreRate: minRate / 100,
                 })
               }
@@ -282,18 +284,18 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Select
               required
-              label={t('admin.content.games.challenges.tag')}
-              placeholder="Tag"
-              value={tag}
+              label={t('admin.content.games.challenges.category')}
+              placeholder="Category"
+              value={category}
               disabled={disabled}
               onChange={(e) => {
-                setTag(e)
-                setChallengeInfo({ ...challengeInfo, tag: e as ChallengeTag })
+                setCategory(e)
+                setChallengeInfo({ ...challengeInfo, category: e as ChallengeCategory })
               }}
-              renderOption={ChallengeTagItem}
-              data={ChallengeTagList.map((tag) => {
-                const data = challengeTagLabelMap.get(tag)
-                return { value: tag, label: data?.name, ...data } as ComboboxItem
+              renderOption={ChallengeCategoryItem}
+              data={ChallengeCategoryList.map((category) => {
+                const data = challengeCategoryLabelMap.get(category)
+                return { value: category, label: data?.name, ...data } as ComboboxItem
               })}
             />
           </Grid.Col>
@@ -532,13 +534,15 @@ const GameChallengeEdit: FC = () => {
           content: tryDefault([challengeInfo?.content, challenge?.content]),
           hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
           score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
-          tag: tag as ChallengeTag,
+          category: category as ChallengeCategory,
           type: challenge?.type ?? ChallengeType.StaticAttachment,
         }}
         opened={previewOpened}
         onClose={() => setPreviewOpened(false)}
-        tagData={
-          challengeTagLabelMap.get((challengeInfo?.tag as ChallengeTag) ?? ChallengeTag.Misc)!
+        cateData={
+          challengeCategoryLabelMap.get(
+            (challengeInfo?.category as ChallengeCategory) ?? ChallengeCategory.Misc
+          )!
         }
       />
     </WithChallengeEdit>

@@ -10,10 +10,10 @@ import {
   SelectableItemComponent,
   SelectableItemProps,
 } from '@Components/ScrollSelect'
-import { useChallengeTagLabelMap, HunamizeSize } from '@Utils/Shared'
+import { useChallengeCategoryLabelMap, HunamizeSize } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import {
-  ChallengeTag,
+  ChallengeCategory,
   ChallengeTrafficModel,
   ChallengeType,
   FileRecord,
@@ -25,8 +25,8 @@ const itemHeight = rem(60)
 
 export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (itemProps) => {
   const { item, ...props } = itemProps
-  const challengeTagLabelMap = useChallengeTagLabelMap()
-  const data = challengeTagLabelMap.get(item.tag as ChallengeTag)!
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
+  const data = challengeCategoryLabelMap.get(item.category as ChallengeCategory)!
   const theme = useMantineTheme()
   const type = item.type === ChallengeType.DynamicContainer ? 'dyn' : 'sta'
   const { classes } = useDisplayInputStyles({ fw: 'bold' })

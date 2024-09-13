@@ -15,6 +15,21 @@
     },
     "submit_flag": "フラッグを提出"
   },
+  "category": {
+    "ai": "AIセキュリティ",
+    "blockchain": "ブロックチェーン",
+    "crypto": "暗号学",
+    "forensics": "デジタル・フォレンジック",
+    "hardware": "ハードウェアセキュリティ",
+    "misc": "その他",
+    "mobile": "モバイルセキュリティ",
+    "osint": "オープンソース情報",
+    "pentest": "ペネトレーションテスト",
+    "ppc": "プログラミング",
+    "pwn": "エクスプロイト",
+    "reverse": "リバースエンジニアリング",
+    "web": "ウェブセキュリティ"
+  },
   "content": {
     "already_solved": "このチャレンジはすでに解かれています",
     "flag_placeholders": [
@@ -141,21 +156,6 @@
         }
       }
     }
-  },
-  "tag": {
-    "ai": "AIセキュリティ",
-    "blockchain": "ブロックチェーン",
-    "crypto": "暗号学",
-    "forensics": "デジタル・フォレンジック",
-    "hardware": "ハードウェアセキュリティ",
-    "misc": "その他",
-    "mobile": "モバイルセキュリティ",
-    "osint": "オープンソース情報",
-    "pentest": "ペネトレーションテスト",
-    "ppc": "プログラミング",
-    "pwn": "エクスプロイト",
-    "reverse": "リバースエンジニアリング",
-    "web": "ウェブセキュリティ"
   },
   "type": {
     "dynamic_attachment": {

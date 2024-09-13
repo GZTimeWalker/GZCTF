@@ -20,9 +20,9 @@ public class ExerciseDetailModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
-    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+    public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
     /// 题目提示
@@ -62,7 +62,7 @@ public class ExerciseDetailModel
             Hints = instance.Exercise.Hints,
             Credit = instance.Exercise.Credit,
             Difficulty = instance.Exercise.Difficulty,
-            Tag = instance.Exercise.Tag,
+            Category = instance.Exercise.Category,
             Tags = instance.Exercise.Tags,
             Title = instance.Exercise.Title,
             Type = instance.Exercise.Type,

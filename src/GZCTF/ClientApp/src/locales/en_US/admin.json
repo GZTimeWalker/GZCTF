@@ -96,6 +96,7 @@
           "second_blood": "Second Blood Reward (%)",
           "third_blood": "Third Blood Reward (%)"
         },
+        "category": "Category",
         "container_image": "Container Image",
         "cpu_limit": {
           "description": "Multiplication of 0.1 CPU core",
@@ -150,7 +151,6 @@
           "description": "Storage (including image)",
           "label": "Storage Limit (MB)"
         },
-        "tag": "Tag",
         "title": "Title",
         "traffic_capture": {
           "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",

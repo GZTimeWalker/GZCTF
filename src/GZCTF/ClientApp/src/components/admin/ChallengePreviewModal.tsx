@@ -7,12 +7,12 @@ import dayjs from 'dayjs'
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ChallengeModal from '@Components/ChallengeModal'
-import { ChallengeTagItemProps } from '@Utils/Shared'
+import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel } from '@Api'
 
 interface ChallengePreviewModalProps extends ModalProps {
   challenge: ChallengeDetailModel
-  tagData: ChallengeTagItemProps
+  cateData: ChallengeCategoryItemProps
 }
 
 interface FakeContext {
@@ -22,7 +22,7 @@ interface FakeContext {
 }
 
 const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
-  const { challenge, tagData, ...modalProps } = props
+  const { challenge, cateData, ...modalProps } = props
 
   const [context, setContext] = useState<FakeContext>({
     closeTime: null,
@@ -79,7 +79,7 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     <ChallengeModal
       {...modalProps}
       challenge={{ ...challenge, context: context }}
-      tagData={tagData}
+      cateData={cateData}
       flag={flag}
       setFlag={setFlag}
       onCreate={onCreate}

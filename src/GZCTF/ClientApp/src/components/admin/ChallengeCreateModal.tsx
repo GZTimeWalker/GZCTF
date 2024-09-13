@@ -8,13 +8,13 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
-  ChallengeTagItem,
-  ChallengeTagList,
+  ChallengeCategoryItem,
+  ChallengeCategoryList,
   ChallengeTypeItem,
-  useChallengeTagLabelMap,
+  useChallengeCategoryLabelMap,
   useChallengeTypeLabelMap,
 } from '@Utils/Shared'
-import api, { ChallengeInfoModel, ChallengeTag, ChallengeType } from '@Api'
+import api, { ChallengeInfoModel, ChallengeCategory, ChallengeType } from '@Api'
 
 interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void
@@ -25,17 +25,17 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
 
   const [title, setTitle] = useInputState('')
-  const [tag, setTag] = useState<string | null>(null)
+  const [category, setCategory] = useState<string | null>(null)
   const [type, setType] = useState<string | null>(null)
 
   const { t } = useTranslation()
 
   const onCreate = () => {
-    if (!title || !tag || !type) return
+    if (!title || !category || !type) return
 
     setDisabled(true)
     const numId = parseInt(id ?? '-1')
@@ -43,7 +43,7 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
     api.edit
       .editAddGameChallenge(numId, {
         title: title,
-        tag: tag as ChallengeTag,
+        category: category as ChallengeCategory,
         type: type as ChallengeType,
       })
       .then((data) => {
@@ -74,14 +74,14 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
         />
         <Select
           required
-          label={t('admin.content.games.challenges.tag')}
-          placeholder="Tag"
-          value={tag}
-          onChange={setTag}
-          renderOption={ChallengeTagItem}
-          data={ChallengeTagList.map((tag) => {
-            const data = challengeTagLabelMap.get(tag)
-            return { value: tag, label: data?.name, ...data } as ComboboxItem
+          label={t('admin.content.games.challenges.category')}
+          placeholder="Category"
+          value={category}
+          onChange={setCategory}
+          renderOption={ChallengeCategoryItem}
+          data={ChallengeCategoryList.map((category) => {
+            const data = challengeCategoryLabelMap.get(category)
+            return { value: category, label: data?.name, ...data } as ComboboxItem
           })}
         />
         <Select

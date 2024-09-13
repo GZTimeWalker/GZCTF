@@ -96,6 +96,7 @@
           "second_blood": "二血奖励 (%)",
           "third_blood": "三血奖励 (%)"
         },
+        "category": "题目类别",
         "container_image": "容器镜像",
         "cpu_limit": {
           "description": "乘以 0.1 即为 CPU 核心数",
@@ -150,7 +151,6 @@
           "description": "限制存储空间，含镜像大小",
           "label": "存储限制 (MB)"
         },
-        "tag": "题目标签",
         "title": "题目标题",
         "traffic_capture": {
           "description": "捕获队伍解题流量，需要开启平台代理",

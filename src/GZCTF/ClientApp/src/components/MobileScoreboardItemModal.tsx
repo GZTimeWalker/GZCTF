@@ -40,18 +40,18 @@ const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
 
   const indicator =
     challenges &&
-    Object.keys(challenges).map((tag) => ({
-      name: tag,
-      scoreSum: challenges[tag].reduce((sum, chal) => sum + (!chal.solved ? 0 : chal.score!), 0),
+    Object.keys(challenges).map((cate) => ({
+      name: cate,
+      scoreSum: challenges[cate].reduce((sum, chal) => sum + (!chal.solved ? 0 : chal.score!), 0),
       max: 1,
     }))
 
   const values = indicator?.map((ind) => {
     const solvedChallenges = item?.solvedChallenges?.filter(
-      (chal) => challengeIdMap?.get(chal.id!)?.tag === ind.name
+      (chal) => challengeIdMap?.get(chal.id!)?.category === ind.name
     )
-    const tagScore = solvedChallenges?.reduce((sum, chal) => sum + chal.score!, 0) ?? 0
-    return Math.min(tagScore / ind.scoreSum, 1)
+    const cateScore = solvedChallenges?.reduce((sum, chal) => sum + chal.score!, 0) ?? 0
+    return Math.min(cateScore / ind.scoreSum, 1)
   })
 
   return (

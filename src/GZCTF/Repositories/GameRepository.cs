@@ -178,13 +178,13 @@ public class GameRepository(
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Where(c => c.GameId == game.Id && c.IsEnabled)
-                .OrderBy(c => c.Tag)
+                .OrderBy(c => c.Category)
                 .ThenBy(c => c.Title)
                 .Select(c => new ChallengeInfo
                 {
                     Id = c.Id,
                     Title = c.Title,
-                    Tag = c.Tag,
+                    Category = c.Category,
                     Score = c.CurrentScore,
                     SolvedCount = c.AcceptedCount,
                     // pending fields: Bloods
@@ -344,7 +344,7 @@ public class GameRepository(
         // 8. construct the final scoreboard model
         var challengesDict = challenges
             .Values
-            .GroupBy(c => c.Tag)
+            .GroupBy(c => c.Category)
             .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
         return new()

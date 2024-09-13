@@ -19,9 +19,9 @@ public class ChallengeTrafficModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
-    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+    public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
     /// 题目类型
@@ -46,7 +46,7 @@ public class ChallengeTrafficModel
         {
             Id = challenge.Id,
             Title = challenge.Title,
-            Tag = challenge.Tag,
+            Category = challenge.Category,
             Type = challenge.Type,
             IsEnabled = challenge.IsEnabled,
             Count = Directory.Exists(trafficPath)

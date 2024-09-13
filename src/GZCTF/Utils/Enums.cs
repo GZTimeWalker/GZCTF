@@ -330,10 +330,10 @@ public static class ChallengeTypeExtensions
 }
 
 /// <summary>
-/// 题目标签
+/// 题目类别
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ChallengeTag : byte
+public enum ChallengeCategory : byte
 {
     Misc = 0,
     Crypto = 1,

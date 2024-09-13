@@ -43,7 +43,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         };
 
         KubernetesClientConfiguration config;
-        
+
         if (File.Exists(_kubernetesMetadata.Config.KubeConfig))
         {
             config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
@@ -59,7 +59,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
                 _kubernetesMetadata.Config.KubeConfig]);
             throw new FileNotFoundException(_kubernetesMetadata.Config.KubeConfig);
         }
-        
+
         _kubernetesMetadata.HostIp = new Uri(config.Host).Host;
 
         _kubernetesClient = new Kubernetes(config);

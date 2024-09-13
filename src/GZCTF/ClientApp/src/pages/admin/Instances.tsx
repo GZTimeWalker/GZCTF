@@ -30,8 +30,8 @@ import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useChallengeTagLabelMap, getProxyUrl } from '@Utils/Shared'
-import api, { ChallengeModel, ChallengeTag, TeamModel } from '@Api'
+import { useChallengeCategoryLabelMap, getProxyUrl } from '@Utils/Shared'
+import api, { ChallengeModel, ChallengeCategory, TeamModel } from '@Api'
 import tableClasses from '@Styles/Table.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
@@ -54,14 +54,14 @@ const SelectTeamItem: SelectProps['renderOption'] = ({ option }) => {
 }
 
 const SelectChallengeItem: SelectProps['renderOption'] = ({ option }) => {
-  const { title, id, tag } = option as SelectChallengeItemProps
-  const challengeTagLabelMap = useChallengeTagLabelMap()
-  const tagInfo = challengeTagLabelMap.get(tag ?? ChallengeTag.Misc)!
+  const { title, id, category } = option as SelectChallengeItemProps
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
+  const cateData = challengeCategoryLabelMap.get(category ?? ChallengeCategory.Misc)!
   const theme = useMantineTheme()
 
   return (
     <Group wrap="nowrap" gap="sm">
-      <Icon color={theme.colors[tagInfo.color][4]} path={tagInfo.icon} size={1} />
+      <Icon color={theme.colors[cateData.color][4]} path={cateData.icon} size={1} />
       <Text fw={500} size="sm" lineClamp={1} style={{ wordBreak: 'break-all' }}>
         <Text span c="dimmed">
           {`#${id} `}
@@ -82,7 +82,7 @@ const Instances: FC = () => {
   const [challenge, setChallenge] = useState<ChallengeModel[]>()
   const [disabled, setDisabled] = useState(false)
   const clipBoard = useClipboard()
-  const challengeTagLabelMap = useChallengeTagLabelMap()
+  const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
   const { t } = useTranslation()
 
@@ -221,8 +221,8 @@ const Instances: FC = () => {
             <Table.Tbody>
               {filteredInstances &&
                 filteredInstances.map((inst) => {
-                  const color = challengeTagLabelMap.get(
-                    inst.challenge?.tag ?? ChallengeTag.Misc
+                  const color = challengeCategoryLabelMap.get(
+                    inst.challenge?.category ?? ChallengeCategory.Misc
                   )!.color
                   return (
                     <Table.Tr key={inst.containerGuid}>

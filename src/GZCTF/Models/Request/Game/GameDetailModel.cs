@@ -8,7 +8,7 @@ public class GameDetailModel
     /// <summary>
     /// 题目信息
     /// </summary>
-    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges { get; set; } = new();
+    public Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> Challenges { get; set; } = new();
 
     /// <summary>
     /// 题目数量

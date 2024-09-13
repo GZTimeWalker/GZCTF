@@ -7,13 +7,13 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ChallengeModal from '@Components/ChallengeModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { ChallengeTagItemProps } from '@Utils/Shared'
+import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
   gameId: number
   gameEnded: boolean
-  tagData: ChallengeTagItemProps
+  cateData: ChallengeCategoryItemProps
   title: string
   score: number
   challengeId: number
@@ -21,7 +21,7 @@ interface GameChallengeModalProps extends ModalProps {
 }
 
 const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
-  const { gameId, gameEnded, challengeId, tagData, status, title, score, ...modalProps } = props
+  const { gameId, gameEnded, challengeId, cateData, status, title, score, ...modalProps } = props
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
     refreshInterval: 120 * 1000,
@@ -216,7 +216,7 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     <ChallengeModal
       {...modalProps}
       challenge={challenge ?? { title, score }}
-      tagData={tagData}
+      cateData={cateData}
       solved={status !== SubmissionType.Unaccepted && status !== undefined}
       flag={flag}
       setFlag={setFlag}

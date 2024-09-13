@@ -15,6 +15,21 @@
     },
     "submit_flag": "Submit Flag"
   },
+  "category": {
+    "ai": "AI security",
+    "blockchain": "Blockchain",
+    "crypto": "Cryptography",
+    "forensics": "Digital forensics",
+    "hardware": "Hardware security",
+    "misc": "Miscellaneous",
+    "mobile": "Mobile security",
+    "osint": "Open-source intelligence",
+    "pentest": "Penetration testing",
+    "ppc": "Programming",
+    "pwn": "Binary exploitation",
+    "reverse": "Reverse engineering",
+    "web": "Web security"
+  },
   "content": {
     "already_solved": "This challenge has been solved",
     "flag_placeholders": [
@@ -141,21 +156,6 @@
         }
       }
     }
-  },
-  "tag": {
-    "ai": "AI security",
-    "blockchain": "Blockchain",
-    "crypto": "Cryptography",
-    "forensics": "Digital forensics",
-    "hardware": "Hardware security",
-    "misc": "Miscellaneous",
-    "mobile": "Mobile security",
-    "osint": "Open-source intelligence",
-    "pentest": "Penetration testing",
-    "ppc": "Programming",
-    "pwn": "Binary exploitation",
-    "reverse": "Reverse engineering",
-    "web": "Web security"
   },
   "type": {
     "dynamic_attachment": {

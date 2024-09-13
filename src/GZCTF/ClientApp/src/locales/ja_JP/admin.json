@@ -96,6 +96,7 @@
           "second_blood": "セカンドブラッドボーナス (%)",
           "third_blood": "サードブラッドボーナス (%)"
         },
+        "category": "カテゴリ",
         "container_image": "コンテナイメージ",
         "cpu_limit": {
           "description": "0.1を掛けると、CPUのコア数になります",
@@ -150,7 +151,6 @@
           "description": "ストレージ容量の制限、イメージサイズも含みます",
           "label": "ストレージ上限 (MB)"
         },
-        "tag": "タグ",
         "title": "タイトル",
         "traffic_capture": {
           "description": "チームの解答トラフィックをキャプチャするには、プラットフォームプロキシを有効にする必要があります",

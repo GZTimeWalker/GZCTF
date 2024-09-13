@@ -60,10 +60,10 @@ public record TeamModel(int Id, string Name, string? Avatar)
 /// </summary>
 /// <param name="Id">题目 ID</param>
 /// <param name="Title">题目名称</param>
-/// <param name="Tag">题目标签</param>
-public record ChallengeModel(int Id, string Title, ChallengeTag Tag)
+/// <param name="Category">题目类别</param>
+public record ChallengeModel(int Id, string Title, ChallengeCategory Category)
 {
-    internal static ChallengeModel FromChallenge(GameChallenge chal) => new(chal.Id, chal.Title, chal.Tag);
+    internal static ChallengeModel FromChallenge(GameChallenge chal) => new(chal.Id, chal.Title, chal.Category);
 }
 
 /// <summary>

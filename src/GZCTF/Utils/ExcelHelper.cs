@@ -127,7 +127,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             cell.CellStyle = style;
         }
 
-        foreach (KeyValuePair<ChallengeTag, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
+        foreach (KeyValuePair<ChallengeCategory, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
             foreach (ChallengeInfo chall in type.Value)
             {
                 ICell? cell = row.CreateCell(colIndex++);

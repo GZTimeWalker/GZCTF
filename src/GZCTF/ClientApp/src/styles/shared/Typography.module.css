@@ -141,7 +141,7 @@
     & :global(.token.deleted),
     & :global(.token.entity),
     & :global(.token.selector),
-    & :global(.token.tag),
+    & :global(.token.category),
     & :global(.token.url),
     & :global(.token.variable) {
       color: light-dark(#e53935, #ff6666);

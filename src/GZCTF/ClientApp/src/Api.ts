@@ -616,12 +616,12 @@ export interface ChallengeModel {
   id?: number;
   /** 题目名称 */
   title?: string;
-  /** 题目标签 */
-  tag?: ChallengeTag;
+  /** 题目类别 */
+  category?: ChallengeCategory;
 }
 
-/** 题目标签 */
-export enum ChallengeTag {
+/** 题目类别 */
+export enum ChallengeCategory {
   Misc = "Misc",
   Crypto = "Crypto",
   Pwn = "Pwn",
@@ -875,8 +875,8 @@ export interface ChallengeEditDetailModel {
   title: string;
   /** 题目内容 */
   content?: string;
-  /** 题目标签 */
-  tag: ChallengeTag;
+  /** 题目类别 */
+  category: ChallengeCategory;
   /** 题目类型 */
   type: ChallengeType;
   /** 题目提示 */
@@ -1023,8 +1023,8 @@ export interface ChallengeInfoModel {
    * @minLength 1
    */
   title: string;
-  /** 题目标签 */
-  tag?: ChallengeTag;
+  /** 题目类别 */
+  category?: ChallengeCategory;
   /** 题目类型 */
   type?: ChallengeType;
   /** 是否启用题目 */
@@ -1060,8 +1060,8 @@ export interface ChallengeUpdateModel {
    * @maxLength 120
    */
   flagTemplate?: string | null;
-  /** 题目标签 */
-  tag?: ChallengeTag | null;
+  /** 题目类别 */
+  category?: ChallengeCategory | null;
   /** 题目提示 */
   hints?: string[] | null;
   /** 是否启用题目 */
@@ -1376,8 +1376,8 @@ export interface ChallengeInfo {
   id?: number;
   /** 题目名称 */
   title?: string;
-  /** 题目标签 */
-  tag?: ChallengeTag;
+  /** 题目类别 */
+  category?: ChallengeCategory;
   /**
    * 题目分值
    * @format int32
@@ -1509,8 +1509,8 @@ export interface ChallengeTrafficModel {
    * @minLength 1
    */
   title: string;
-  /** 题目标签 */
-  tag?: ChallengeTag;
+  /** 题目类别 */
+  category?: ChallengeCategory;
   /** 题目类型 */
   type?: ChallengeType;
   /** 是否启用题目 */
@@ -1640,8 +1640,8 @@ export interface ChallengeDetailModel {
   title?: string;
   /** 题目内容 */
   content?: string;
-  /** 题目标签 */
-  tag?: ChallengeTag;
+  /** 题目类别 */
+  category?: ChallengeCategory;
   /** 题目提示 */
   hints?: string[] | null;
   /**

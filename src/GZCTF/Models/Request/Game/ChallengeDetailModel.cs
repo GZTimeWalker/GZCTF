@@ -23,9 +23,9 @@ public class ChallengeDetailModel
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
-    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+    public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
     /// 题目提示
@@ -54,7 +54,7 @@ public class ChallengeDetailModel
             Content = gameInstance.Challenge.Content,
             Hints = gameInstance.Challenge.Hints,
             Score = gameInstance.Challenge.CurrentScore,
-            Tag = gameInstance.Challenge.Tag,
+            Category = gameInstance.Challenge.Category,
             Title = gameInstance.Challenge.Title,
             Type = gameInstance.Challenge.Type,
             Context = new()

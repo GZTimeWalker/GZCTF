@@ -40,7 +40,7 @@ import {
 import { Icon } from '@mdi/react'
 import { useTranslation } from 'react-i18next'
 import {
-  ChallengeTag,
+  ChallengeCategory,
   ChallengeType,
   NoticeType,
   ParticipationStatus,
@@ -103,141 +103,141 @@ export const ChallengeTypeItem: SelectProps['renderOption'] = ({ option }) => {
   )
 }
 
-export const ChallengeTagList = Object.values(ChallengeTag)
+export const ChallengeCategoryList = Object.values(ChallengeCategory)
 
-export const useChallengeTagLabelMap = () => {
+export const useChallengeCategoryLabelMap = () => {
   const { t } = useTranslation()
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const revert = colorScheme === 'dark' ? 'light' : 'dark'
 
-  return new Map<ChallengeTag, ChallengeTagItemProps>([
+  return new Map<ChallengeCategory, ChallengeCategoryItemProps>([
     [
-      ChallengeTag.Misc,
+      ChallengeCategory.Misc,
       {
-        desrc: t('challenge.tag.misc'),
+        desrc: t('challenge.category.misc'),
         icon: mdiGamepadVariantOutline,
-        name: ChallengeTag.Misc,
+        name: ChallengeCategory.Misc,
         color: 'teal',
         colors: theme.colors['teal'],
       },
     ],
     [
-      ChallengeTag.Pwn,
+      ChallengeCategory.Pwn,
       {
-        desrc: t('challenge.tag.pwn'),
+        desrc: t('challenge.category.pwn'),
         icon: mdiBomb,
-        name: ChallengeTag.Pwn,
+        name: ChallengeCategory.Pwn,
         color: 'red',
         colors: theme.colors['red'],
       },
     ],
     [
-      ChallengeTag.Web,
+      ChallengeCategory.Web,
       {
-        desrc: t('challenge.tag.web'),
+        desrc: t('challenge.category.web'),
         icon: mdiWeb,
-        name: ChallengeTag.Web,
+        name: ChallengeCategory.Web,
         color: 'blue',
         colors: theme.colors['blue'],
       },
     ],
     [
-      ChallengeTag.Reverse,
+      ChallengeCategory.Reverse,
       {
-        desrc: t('challenge.tag.reverse'),
+        desrc: t('challenge.category.reverse'),
         icon: mdiChevronTripleLeft,
-        name: ChallengeTag.Reverse,
+        name: ChallengeCategory.Reverse,
         color: 'yellow',
         colors: theme.colors['yellow'],
       },
     ],
     [
-      ChallengeTag.Crypto,
+      ChallengeCategory.Crypto,
       {
-        desrc: t('challenge.tag.crypto'),
+        desrc: t('challenge.category.crypto'),
         icon: mdiMatrix,
-        name: ChallengeTag.Crypto,
+        name: ChallengeCategory.Crypto,
         color: 'violet',
         colors: theme.colors['violet'],
       },
     ],
     [
-      ChallengeTag.Blockchain,
+      ChallengeCategory.Blockchain,
       {
-        desrc: t('challenge.tag.blockchain'),
+        desrc: t('challenge.category.blockchain'),
         icon: mdiEthereum,
-        name: ChallengeTag.Blockchain,
+        name: ChallengeCategory.Blockchain,
         color: 'green',
         colors: theme.colors['green'],
       },
     ],
     [
-      ChallengeTag.Forensics,
+      ChallengeCategory.Forensics,
       {
-        desrc: t('challenge.tag.forensics'),
+        desrc: t('challenge.category.forensics'),
         icon: mdiFingerprint,
-        name: ChallengeTag.Forensics,
+        name: ChallengeCategory.Forensics,
         color: 'indigo',
         colors: theme.colors['indigo'],
       },
     ],
     [
-      ChallengeTag.Hardware,
+      ChallengeCategory.Hardware,
       {
-        desrc: t('challenge.tag.hardware'),
+        desrc: t('challenge.category.hardware'),
         icon: mdiChip,
-        name: ChallengeTag.Hardware,
+        name: ChallengeCategory.Hardware,
         color: revert,
         colors: theme.colors[revert],
       },
     ],
     [
-      ChallengeTag.Mobile,
+      ChallengeCategory.Mobile,
       {
-        desrc: t('challenge.tag.mobile'),
+        desrc: t('challenge.category.mobile'),
         icon: mdiCellphoneCog,
-        name: ChallengeTag.Mobile,
+        name: ChallengeCategory.Mobile,
         color: 'pink',
         colors: theme.colors['pink'],
       },
     ],
     [
-      ChallengeTag.PPC,
+      ChallengeCategory.PPC,
       {
-        desrc: t('challenge.tag.ppc'),
+        desrc: t('challenge.category.ppc'),
         icon: mdiConsole,
-        name: ChallengeTag.PPC,
+        name: ChallengeCategory.PPC,
         color: 'cyan',
         colors: theme.colors['cyan'],
       },
     ],
     [
-      ChallengeTag.AI,
+      ChallengeCategory.AI,
       {
-        desrc: t('challenge.tag.ai'),
+        desrc: t('challenge.category.ai'),
         icon: mdiRobotLoveOutline,
-        name: ChallengeTag.AI,
+        name: ChallengeCategory.AI,
         color: 'lime',
         colors: theme.colors['lime'],
       },
     ],
     [
-      ChallengeTag.OSINT,
+      ChallengeCategory.OSINT,
       {
-        desrc: t('challenge.tag.osint'),
+        desrc: t('challenge.category.osint'),
         icon: mdiSearchWeb,
-        name: ChallengeTag.OSINT,
+        name: ChallengeCategory.OSINT,
         color: 'orange',
         colors: theme.colors['orange'],
       },
     ],
     [
-      ChallengeTag.Pentest,
+      ChallengeCategory.Pentest,
       {
-        desrc: t('challenge.tag.pentest'),
+        desrc: t('challenge.category.pentest'),
         icon: mdiLanPending,
-        name: ChallengeTag.Pentest,
+        name: ChallengeCategory.Pentest,
         color: 'grape',
         colors: theme.colors['grape'],
       },
@@ -245,18 +245,18 @@ export const useChallengeTagLabelMap = () => {
   ])
 }
 
-export interface ChallengeTagItemProps {
-  name: ChallengeTag
+export interface ChallengeCategoryItemProps {
+  name: ChallengeCategory
   desrc: string
   icon: string
   color: string
   colors: MantineColorsTuple
 }
 
-type SelectChallengeTagItemProps = ChallengeTagItemProps & ComboboxItem
+type SelectChallengeCategoryItemProps = ChallengeCategoryItemProps & ComboboxItem
 
-export const ChallengeTagItem: SelectProps['renderOption'] = ({ option }) => {
-  const { colors, icon, name, desrc } = option as SelectChallengeTagItemProps
+export const ChallengeCategoryItem: SelectProps['renderOption'] = ({ option }) => {
+  const { colors, icon, name, desrc } = option as SelectChallengeCategoryItemProps
 
   return (
     <Group wrap="nowrap">

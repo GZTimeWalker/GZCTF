@@ -44,7 +44,7 @@ public partial class ScoreboardModel
     /// <summary>
     /// 题目信息
     /// </summary>
-    public Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> Challenges
+    public Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> Challenges
     {
         get => _challenges;
         set
@@ -54,7 +54,7 @@ public partial class ScoreboardModel
         }
     }
 
-    private Dictionary<ChallengeTag, IEnumerable<ChallengeInfo>> _challenges = default!;
+    private Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> _challenges = default!;
 
     /// <summary>
     /// 题目数量
@@ -221,9 +221,9 @@ public partial class ChallengeInfo
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
-    public ChallengeTag Tag { get; set; }
+    public ChallengeCategory Category { get; set; }
 
     /// <summary>
     /// 题目分值

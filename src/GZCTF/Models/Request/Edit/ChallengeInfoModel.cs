@@ -22,9 +22,9 @@ public class ChallengeInfoModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目标签
+    /// 题目类别
     /// </summary>
-    public ChallengeTag Tag { get; set; } = ChallengeTag.Misc;
+    public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
     /// 题目类型
@@ -56,7 +56,7 @@ public class ChallengeInfoModel
         {
             Id = challenge.Id,
             Title = challenge.Title,
-            Tag = challenge.Tag,
+            Category = challenge.Category,
             Type = challenge.Type,
             Score = challenge.CurrentScore,
             MinScore = (int)Math.Floor(challenge.MinScoreRate * challenge.OriginalScore),
