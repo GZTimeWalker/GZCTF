@@ -66,7 +66,7 @@
     "@types/katex": "^0.16.7",
     "@types/node": "22.5.5",
     "@types/prismjs": "^1.26.4",
-    "@types/react": "^18.3.5",
+    "@types/react": "^18.3.6",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.5.0",
     "@typescript-eslint/parser": "^8.5.0",
