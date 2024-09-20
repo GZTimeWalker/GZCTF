@@ -10,9 +10,13 @@ GZ::CTF is open source under AGPLv3 license, use and modification are subject to
 
 <Callout type="warning">
 
-Since January 1, 2024, the database structure of the `develop` image is no longer compatible with previous versions. If you prefer to use it, please go to `v0.17`.
+**Upgrade and migration considerations:**
 
-During the rapid development of new features, it is not recommended to use the `develop` image for production deployment, and the database structure changes will cause data loss.
+1. To upgrade the platform, simply pull the latest image and restart, and the database migration will be performed automatically.
+2. In general, **downgrade** operations are not supported. Upgrading versions with a large time span may result in data incompatibility, so **please make sure to back up your data**.
+3. After the upgrade, there may be new configuration items and changes in file structure. It is recommended to consult the official documentation or the community.
+4. If you are migrating to another branch project, please pay attention to whether the database structure has changed. **The database after the change does not support rollback to the original version**.
+5. The community and the official maintainers are not responsible for data loss, data incompatibility, and other issues. For issues with branch projects, please contact the corresponding project maintainer.
 
 </Callout>
 
