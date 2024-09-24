@@ -35,7 +35,7 @@ ExecStart=/usr/local/bin/k3s \
 - `sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml`
 - 在 `spec.containers.command` 中添加 `--service-node-port-range=<new-range>`
 - 例如 `--service-node-port-range=30000-40000`
-- 如果多master则请确保所有master节点都修改
+- 如果多 MASTER 则请确保所有 MASTER 节点都修改
 - 如果是二进制部署请修改 `kube-apiserver` 配置文件，参数和上面相同，并重启服务
 
 ## Docker Swarm 部署：
