@@ -28,6 +28,16 @@ ExecStart=/usr/local/bin/k3s \
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
 
-## K8s と Docker Swarm のデプロイ
+## K8s のデプロイ
+
+デフォルトの範囲は `30000-32767` です。調整が必要な場合は、以下を参考にしてください。
+
+- `sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml` を実行します。
+- `spec.containers.command` に `--service-node-port-range=<new-range>` を追加します。
+- 例えば `--service-node-port-range=30000-40000` のようにします。
+- マスターが複数ある場合は、すべてのマスターノードを変更してください。
+- バイナリでデプロイしている場合は、`kube-apiserver` の設定ファイルを変更し、パラメータは上記と同じにし、サービスを再起動してください。
+
+## Docker Swarm のデプロイ
 
 私はまだ試していませんが、成功した方はぜひ PR を提出して補足してください。

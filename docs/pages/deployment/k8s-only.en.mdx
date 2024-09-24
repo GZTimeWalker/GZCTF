@@ -111,6 +111,7 @@ This article focuses on deploying GZCTF in a Kubernetes cluster. For configurati
        path: /mnt/path/to/gzctf/db # local path
    apiVersion: v1
    ---
+   apiVersion: v1
    kind: PersistentVolumeClaim
    metadata:
      name: gzctf-files
