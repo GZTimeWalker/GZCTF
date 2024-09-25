@@ -92,7 +92,6 @@ const WithNavBar: FC<WithNavBarProps> = ({
             >
               <LoadingOverlay
                 visible={isLoading ?? false}
-                // visible
                 overlayProps={DEFAULT_LOADING_OVERLAY}
               />
               {withHeader && <IconHeader px={isMobile ? '2%' : '10%'} sticky={stickyHeader} />}
