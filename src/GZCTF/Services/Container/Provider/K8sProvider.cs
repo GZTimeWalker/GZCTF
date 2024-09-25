@@ -42,10 +42,19 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
             PublicEntry = options.Value.PublicEntry
         };
 
-        if (!File.Exists(_k8sMetadata.Config.KubeConfig))
+        if (File.Exists(_kubernetesMetadata.Config.KubeConfig))
+        {
+            config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
+        }
+        else if (KubernetesClientConfiguration.IsInCluster())
+        {
+            // use ServiceAccount token if running in cluster and no kube-config is provided
+            config = KubernetesClientConfiguration.InClusterConfig();
+        }
+        else
         {
             logger.SystemLog($"无法加载 K8s 配置文件，请确保配置文件存在 {_k8sMetadata.Config.KubeConfig}");
-            throw new FileNotFoundException(_k8sMetadata.Config.KubeConfig);
+            throw new FileNotFoundException(_kubernetesMetadata.Config.KubeConfig);
         }
 
         var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_k8sMetadata.Config.KubeConfig);
