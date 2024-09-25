@@ -42,9 +42,11 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
             PublicEntry = options.Value.PublicEntry
         };
 
-        if (File.Exists(_kubernetesMetadata.Config.KubeConfig))
+        KubernetesClientConfiguration config;
+
+        if (File.Exists(_k8sMetadata.Config.KubeConfig))
         {
-            config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
+            config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_k8sMetadata.Config.KubeConfig);
         }
         else if (KubernetesClientConfiguration.IsInCluster())
         {
@@ -54,12 +56,10 @@ public class K8sProvider : IContainerProvider<Kubernetes, K8sMetadata>
         else
         {
             logger.SystemLog($"无法加载 K8s 配置文件，请确保配置文件存在 {_k8sMetadata.Config.KubeConfig}");
-            throw new FileNotFoundException(_kubernetesMetadata.Config.KubeConfig);
+            throw new FileNotFoundException(_k8sMetadata.Config.KubeConfig);
         }
 
-        var config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_k8sMetadata.Config.KubeConfig);
-
-        _k8sMetadata.HostIp = config.Host[(config.Host.LastIndexOf('/') + 1)..config.Host.LastIndexOf(':')];
+        _k8sMetadata.HostIp = new Uri(config.Host).Host;
 
         _kubernetesClient = new Kubernetes(config);
 
