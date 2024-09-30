@@ -217,7 +217,8 @@
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! 这支队伍还没有解出题目呢……"
+    "no_solved": "Ouch! 这支队伍还没有解出题目呢……",
+    "search_team": "搜索队伍"
   },
   "tab": {
     "challenge": "比赛题目",

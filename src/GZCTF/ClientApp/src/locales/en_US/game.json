@@ -220,7 +220,8 @@
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not solved any challenges..."
+    "no_solved": "Ouch! This team has not solved any challenges...",
+    "search_team": "Search Team"
   },
   "tab": {
     "challenge": "Challenges",
