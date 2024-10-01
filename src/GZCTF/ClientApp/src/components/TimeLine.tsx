@@ -20,14 +20,17 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
 
   const { game } = useGame(numId)
 
-  const { startTime, endTime, progress } = getGameStatus(game)
+  const { startTime, endTime, progress, finished } = getGameStatus(game)
 
   const totDuration = endTime.diff(startTime, 'd')
   const longGame = totDuration > 14
-  const weekProgress = (7 / totDuration) * 100
 
-  const scaleStart = progress - weekProgress
-  const scaleEnd = progress
+  const weekProgress = (7 / totDuration) * 100
+  const weekStart = progress - weekProgress
+  const weekEnd = progress
+
+  const drawStart = longGame && !finished ? weekStart : 0
+  const drawEnd = longGame && !finished ? weekEnd : 100
 
   const [now, setNow] = useState<Date>(new Date())
   const [chartData, setChartData] = useState<any>()
@@ -151,14 +154,14 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
         dataZoom: [
           {
             type: 'inside',
-            start: longGame ? scaleStart : 0,
-            end: longGame ? scaleEnd : 100,
+            start: drawStart,
+            end: drawEnd,
             xAxisIndex: 0,
             filterMode: 'none',
           },
           {
-            start: longGame ? scaleStart : 0,
-            end: longGame ? scaleEnd : 100,
+            start: drawStart,
+            end: drawEnd,
             xAxisIndex: 0,
             showDetail: false,
           },

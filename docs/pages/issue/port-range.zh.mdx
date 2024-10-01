@@ -28,6 +28,16 @@ ExecStart=/usr/local/bin/k3s \
 - `sudo systemctl daemon-reload`
 - `sudo systemctl restart k3s`
 
-## K8s 及 Docker Swarm 部署：
+## K8s 部署
+
+默认范围为`30000-32767`，如需调整，参考如下
+
+- `sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml`
+- 在 `spec.containers.command` 中添加 `--service-node-port-range=<new-range>`
+- 例如 `--service-node-port-range=30000-40000`
+- 如果多 MASTER 则请确保所有 MASTER 节点都修改
+- 如果是二进制部署请修改 `kube-apiserver` 配置文件，参数和上面相同，并重启服务
+
+## Docker Swarm 部署：
 
 笔者尚未尝试，如有成功的朋友欢迎提 PR 补充

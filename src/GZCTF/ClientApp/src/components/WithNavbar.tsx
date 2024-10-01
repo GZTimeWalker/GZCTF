@@ -90,11 +90,7 @@ const WithNavBar: FC<WithNavBarProps> = ({
                   colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
               }}
             >
-              <LoadingOverlay
-                visible={isLoading ?? false}
-                // visible
-                overlayProps={DEFAULT_LOADING_OVERLAY}
-              />
+              <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
               {withHeader && <IconHeader px={isMobile ? '2%' : '10%'} sticky={stickyHeader} />}
               <Box
                 w={width ?? (isMobile ? '96%' : '80%')}

@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Center,
+  Grid,
   Group,
   Input,
   Pagination,
@@ -11,10 +12,13 @@ import {
   Stack,
   Table,
   Text,
+  TextInput,
   Tooltip,
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
+import { mdiAccountGroup, mdiMagnify } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -236,15 +240,41 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
   const [activePage, setPage] = useState(1)
   const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
 
+  const [keyword, setKeyword] = useState('')
+  const [debouncedKeyword] = useDebouncedValue(keyword, 400)
+
+  const [filteredList, setFilteredList] = useState<ScoreboardItem[]>([])
+
   const { scoreboard } = useGameScoreboard(numId)
 
-  const filtered =
-    organization === 'all'
-      ? scoreboard?.items
-      : scoreboard?.items?.filter((s) => s.organization === organization)
+  useEffect(() => {
+    setPage(1)
+    setOrganization('all')
+    setKeyword('')
+  }, [id])
+
+  useEffect(() => {
+    if (!scoreboard?.items) return
+
+    if (!!debouncedKeyword && debouncedKeyword.length > 0) {
+      setFilteredList(
+        scoreboard.items.filter((s) =>
+          s.name?.toLowerCase().includes(debouncedKeyword.toLowerCase())
+        )
+      )
+      return
+    }
+
+    if (organization !== 'all') {
+      setFilteredList(scoreboard.items.filter((s) => s.organization === organization))
+      return
+    }
+
+    setFilteredList(scoreboard.items)
+  }, [scoreboard, debouncedKeyword, organization])
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
-  const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)
+  const currentItems = filteredList?.slice(base, base + ITEM_COUNT_PER_PAGE)
 
   const [currentItem, setCurrentItem] = useState<ScoreboardItem | null>(null)
   const [itemDetailOpened, setItemDetailOpened] = useState(false)
@@ -258,17 +288,18 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
   }, [scoreboard])
 
   const bloodData = useBonusLabels(bloodBonus)
+  const multiTimeline = scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1
 
   return (
     <Paper shadow="md" p="md">
       <Stack gap="xs">
-        {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
-          <Group>
+        <Grid>
+          <Grid.Col span={3}>
             <Select
               defaultValue="all"
               data={[
                 { value: 'all', label: t('game.label.score_table.rank_total') },
-                ...Object.keys(scoreboard.timeLines)
+                ...Object.keys(scoreboard?.timeLines ?? {})
                   .filter((k) => k !== 'all')
                   .map((o) => ({
                     value: o,
@@ -276,19 +307,25 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                   })),
               ]}
               value={organization}
+              readOnly={!multiTimeline}
               onChange={(org) => {
                 setOrganization(org)
                 setPage(1)
               }}
-              styles={{
-                input: {
-                  width: 300,
-                },
-              }}
+              leftSection={<Icon path={mdiAccountGroup} size={1} />}
             />
-          </Group>
-        )}
-        <Box pos="relative">
+          </Grid.Col>
+          <Grid.Col span={6} />
+          <Grid.Col span={3}>
+            <TextInput
+              placeholder={t('game.placeholder.search_team')}
+              value={keyword}
+              onChange={(e) => setKeyword(e.currentTarget.value)}
+              leftSection={<Icon path={mdiMagnify} size={1} />}
+            />
+          </Grid.Col>
+        </Grid>
+        <Box pos="relative" mih="calc(100vh - 14rem)">
           <Table.ScrollContainer
             minWidth="100%"
             styles={{
@@ -350,7 +387,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
           <Pagination
             value={activePage}
             onChange={setPage}
-            total={Math.ceil((filtered?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
+            total={Math.ceil((filteredList?.length ?? 1) / ITEM_COUNT_PER_PAGE)}
             boundaries={2}
           />
         </Group>

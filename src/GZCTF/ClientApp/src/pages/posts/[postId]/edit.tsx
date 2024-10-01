@@ -154,7 +154,7 @@ const PostEdit: FC = () => {
         onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
       />
       <TagsInput
-        label={t('post.label.category')}
+        label={t('post.label.tag')}
         data={tags.map((o) => ({ value: o, label: o })) || []}
         placeholder={t('post.label.add_tag')}
         value={post?.tags ?? []}

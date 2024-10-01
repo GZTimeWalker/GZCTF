@@ -3,6 +3,29 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.24.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.1-patch.1..v0.24.2) - 2024-09-24
+
+### ⛰️ Features
+
+- **(timeline)** show all when finished - ([010653](https://github.com/GZTimeWalker/GZCTF/commit/010653)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(i18n)** wrong key for post page - ([f0a736](https://github.com/GZTimeWalker/GZCTF/commit/f0a736)) by **GZTime**
+- **(team create)** only create one team (#330) - ([81b1e1](https://github.com/GZTimeWalker/GZCTF/commit/81b1e1)) by **Kood**
+
+### 🔨 Refactor
+
+- rename tag into category - ([4238c5](https://github.com/GZTimeWalker/GZCTF/commit/4238c5)) by **GZTime**
+
+---
+## [0.24.1-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.1..v0.24.1-patch.1) - 2024-09-12
+
+### 🐛 Bug Fixes
+
+- **(captcha)** cache not flush - ([3dffb0](https://github.com/GZTimeWalker/GZCTF/commit/3dffb0)) by **GZTime**
+
+---
 ## [0.24.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.0-patch.1..v0.24.1) - 2024-09-08
 
 ### ⛰️ Features

@@ -23,7 +23,7 @@ public class ConfigServiceTest(ITestOutputHelper output)
 
 public class TestConfig
 {
-    public AccountPolicy AccoutPolicy { get; set; } = new();
+    public AccountPolicy AccountPolicy { get; set; } = new();
     public DockerConfig DockerConfig { get; set; } = new();
     public EmailConfig EmailConfig { get; set; } = new();
 }

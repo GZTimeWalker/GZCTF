@@ -1,3 +1,6 @@
 # These are supported funding model platforms
 
-custom: ['https://blog.gzti.me/thanks/']
+custom: [
+  'https://afdian.com/a/gzctf',
+  'https://blog.gzti.me/thanks/'
+]

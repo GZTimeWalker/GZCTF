@@ -22,9 +22,13 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 > **To save your effort, please read the documentation carefully before using: [https://docs.ctf.gzti.me/en](https://docs.ctf.gzti.me/en)**
 
 > [!WARNING]
-> Since 01/01/2024, the database structure of the `develop` image is no longer compatible with previous versions. If you prefer to use it, please go to `v0.17`.
+> **Upgrade and migration considerations:**
 >
-> During the rapid development of new features, it is not recommended to use the `develop` image for production deployment, and the database structure changes will cause data loss.
+> 1. To upgrade the platform, simply pull the latest image and restart, and the database migration will be performed automatically.
+> 2. In general, **downgrade** operations are not supported. Upgrading versions with a large time span may result in data incompatibility, so **please make sure to back up your data**.
+> 3. After the upgrade, there may be new configuration items and changes in file structure. It is recommended to consult the official documentation or the community.
+> 4. If you are migrating to another branch project, please pay attention to whether the database structure has changed. **The database after the change does not support rollback to the original version**.
+> 5. The community and the official maintainers are not responsible for data loss, data incompatibility, and other issues. For issues with branch projects, please contact the corresponding project maintainer.
 
 ## Features 🛠️
 
@@ -84,7 +88,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 ## About i18n 🌐
 
-Localization support is in progress, please refer to [translate.ctf.gzti.me](https://translate.ctf.gzti.me) to learn more or participate in the translation work.
+Please refer to [translate.ctf.gzti.me](https://translate.ctf.gzti.me) to learn more or participate in the translation work.
 
 ## Contributors 👋
 
