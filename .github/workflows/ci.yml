@@ -94,7 +94,6 @@ jobs:
             latest=${{ env.RELEASE }}
           tags: |
             type=ref,event=branch
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
             type=match,enable=${{ env.RELEASE }},pattern=v\d+,group=0
             type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+,group=0
             type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+.\d+,group=0
