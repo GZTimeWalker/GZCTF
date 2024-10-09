@@ -42,18 +42,24 @@
 .text {
   font-size: 0.9em;
   font-family: var(--mantine-font-family-monospace);
-  font-weight: 600;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pointer {
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .wapper {
   width: 100%;
+  height: var(--mantine-line-height-sm);
 }
 
 .input {
   user-select: none;
-  font-weight: 500;
-
-  &:hover {
-    cursor: pointer;
-  }
+  font-weight: 600;
+  line-height: var(--mantine-line-height-sm);
+  height: var(--mantine-line-height-sm);
 }
