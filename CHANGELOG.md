@@ -3,6 +3,22 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.24.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.2-patch.1..v0.24.3) - 2024-10-10
+
+### ⛰️ Features
+
+- **(notice)** trim before submit - ([cab285](https://github.com/GZTimeWalker/GZCTF/commit/cab285)) by **GZTime**
+- **(scoreboard)** show organization in scoreboard - ([a20062](https://github.com/GZTimeWalker/GZCTF/commit/a20062)) by **GZTime**
+- **(scoreboard)** add team search - ([5c8771](https://github.com/GZTimeWalker/GZCTF/commit/5c8771)) by **GZTime**
+
+---
+## [0.24.2-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.2..v0.24.2-patch.1) - 2024-09-25
+
+### 🐛 Bug Fixes
+
+- **(deps)** failed to use `colors-generator` - ([a6108a](https://github.com/GZTimeWalker/GZCTF/commit/a6108a)) by **GZTime**
+
+---
 ## [0.24.2](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.1-patch.1..v0.24.2) - 2024-09-24
 
 ### ⛰️ Features
