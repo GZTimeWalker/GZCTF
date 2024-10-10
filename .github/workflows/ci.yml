@@ -125,10 +125,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           package: gzctf/gzctf
+          older-than: 6 month
           use-regex: true
           exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}"
           validate: true
-          dry-run: true
+          dry-run: false
           delete-untagged: true
           delete-ghost-images: true
           delete-partial-images: true
