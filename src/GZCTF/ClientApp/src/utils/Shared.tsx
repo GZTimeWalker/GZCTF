@@ -450,12 +450,12 @@ export const useBonusLabels = (bonus: BloodBonus) => {
 
   return new Map(
     BloodsTypes.map((type) => {
-      const bonus_value = bonus.getBonusNum(type)
+      const bonusValue = bonus.getBonusNum(type)
       return [
         type,
         {
           name: BonusLabelNameMap.get(type),
-          descr: `+${bonus_value / (BloodBonus.base / 100)}%`,
+          descr: `+${bonusValue / (BloodBonus.base / 100)}%`,
         } as BonusLabel,
       ]
     })
