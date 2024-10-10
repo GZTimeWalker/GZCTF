@@ -6,6 +6,12 @@ on:
     tags: ["v*"]
     paths: ["src/GZCTF/**"]
   workflow_dispatch:
+    inputs:
+      skip-build:
+        type: boolean
+        description: "Skip build step"
+        default: false
+        required: false
 
 env:
   # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
@@ -14,6 +20,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: ${{ !github.event.inputs.skip-build }}
     permissions:
       contents: read
       packages: write
@@ -107,6 +114,12 @@ jobs:
           platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           push: true
 
+  prune:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
       - name: Prune old packages
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
