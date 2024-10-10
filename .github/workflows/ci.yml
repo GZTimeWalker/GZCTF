@@ -120,7 +120,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Prune tagged packages
+      - name: Prune old packages
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
