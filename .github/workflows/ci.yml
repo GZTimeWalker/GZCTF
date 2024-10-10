@@ -139,9 +139,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           package: gzctf/gzctf
           validate: true
-          dry-run: true
+          dry-run: false
           older-than: 1 year
           delete-tags: "*"
+          delete-untagged: true
           delete-ghost-images: true
           delete-partial-images: true
           delete-orphaned-images: true
