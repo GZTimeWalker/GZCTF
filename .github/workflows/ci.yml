@@ -120,29 +120,15 @@ jobs:
       contents: read
       packages: write
     steps:
-      # - name: Prune tagged packages
-      #   uses: dataaxiom/ghcr-cleanup-action@v1
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     package: gzctf/gzctf
-      #     use-regex: true
-      #     exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}"
-      #     validate: true
-      #     dry-run: true
-      #     delete-ghost-images: true
-      #     delete-partial-images: true
-      #     delete-orphaned-images: true
-
-      - name: Prune old images
+      - name: Prune tagged packages
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           package: gzctf/gzctf
+          use-regex: true
+          exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}"
           validate: true
-          dry-run: false
-          older-than: 1 year
-          delete-tags: "*"
+          dry-run: true
           delete-untagged: true
           delete-ghost-images: true
           delete-partial-images: true
-          delete-orphaned-images: true
