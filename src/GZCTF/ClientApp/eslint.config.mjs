@@ -6,8 +6,11 @@ import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+/* eslint-enable @typescript-eslint/naming-convention */
+
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
@@ -49,5 +52,17 @@ export default [{
     "react/jsx-key": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    "@typescript-eslint/naming-convention": [
+      "warn",
+      {
+        "selector": "variable",
+        "modifiers": ["const", "global"],
+        "format": ["PascalCase", "camelCase", "UPPER_CASE"]
+      },
+      {
+        "selector": "variable",
+        "format": ["PascalCase", "camelCase"]
+      }
+    ]
   },
 }];
