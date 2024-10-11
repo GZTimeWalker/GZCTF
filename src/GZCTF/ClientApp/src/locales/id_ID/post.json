@@ -1,33 +1,33 @@
 {
   "button": {
-    "delete": "删除文章",
-    "edit": "编辑文章",
-    "goto": "转到文章",
-    "new": "新建文章",
-    "save": "保存文章"
+    "delete": "Delete Post",
+    "edit": "Edit Post",
+    "goto": "Go to Post",
+    "new": "New Post",
+    "save": "Save Post"
   },
   "content": {
-    "delete": "你确定要删除文章 “{{title}}” 吗？",
-    "details": "查看详情",
-    "metadata": "{{author}} 发布于 {{date}}",
-    "pinned": "[置顶]",
+    "delete": "Are you sure you want to delete post {{title}}?",
+    "details": "View Details",
+    "metadata": "{{author}} published on {{date}}",
+    "pinned": "[Pinned]",
     "updated": {
-      "content": "文章内容已更改，是否保存？",
-      "title": "文章已更改"
+      "content": "The post has been changed. Save it?",
+      "title": "Post has been changed"
     }
   },
   "label": {
-    "add_tag": "回车添加标签",
-    "content": "文章内容",
-    "summary": "文章梗概",
-    "tag": "文章标签",
-    "title": "文章标题"
+    "add_tag": "Enter to add tag",
+    "content": "Content",
+    "summary": "Summary",
+    "tag": "Tags",
+    "title": "Title"
   },
   "notification": {
-    "created": "文章已创建",
-    "saved": "文章已保存"
+    "created": "Post has been created",
+    "saved": "Post has been saved"
   },
   "title": {
-    "index": "文章"
+    "index": "Posts"
   }
 }
