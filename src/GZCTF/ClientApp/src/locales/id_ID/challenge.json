@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "一血",
+    "second_blood": "二血",
+    "third_blood": "三血"
+  },
+  "button": {
+    "download": {
+      "attachment": "下载附件"
+    },
+    "instance": {
+      "create": "创建实例",
+      "destroy": "销毁实例",
+      "extend": "延长时间"
+    },
+    "submit_flag": "提交 flag"
+  },
+  "category": {
+    "ai": "人工智能安全",
+    "blockchain": "区块链",
+    "crypto": "密码学",
+    "forensics": "数字取证",
+    "hardware": "硬件安全",
+    "misc": "安全杂项",
+    "mobile": "移动安全",
+    "osint": "开源情报",
+    "pentest": "渗透测试",
+    "ppc": "专业编程",
+    "pwn": "二进制漏洞利用",
+    "reverse": "逆向工程",
+    "web": "网络安全"
+  },
+  "content": {
+    "already_solved": "该题目已被解出",
+    "flag_placeholders": [
+      "横看成岭侧成峰，flag 高低各不同",
+      "flag 当关，万夫莫开",
+      "寻寻觅觅，冷冷清清，flag 惨惨戚戚",
+      "问君能有几多愁？恰似一江 flag 向东流",
+      "人生得意须尽欢，莫使 flag 空对月",
+      "汉皇重色思 flag，御宇多年求不得",
+      "flag 几时有？把酒问青天",
+      "羽扇纶巾，谈笑间，flag 灰飞烟灭",
+      "浊酒一杯家万里，flag 未勒归无计",
+      "孤帆远影碧空尽，唯见 flag 天际流",
+      "安得 flag 千万间，大庇天下 ctfer 俱欢颜！",
+      "两个黄鹂鸣翠柳，一行 flag 上青天",
+      "flag 一场大梦，人生几度秋凉？",
+      "剪不断，理还乱，是 flag",
+      "蓦然回首，flag 却在，灯火阑珊处",
+      "稻花香里说丰年，听取 flag 一片",
+      "采菊东篱下，悠然见 flag",
+      "不畏 flag 遮望眼，自缘身在最高层",
+      "便纵有千种 flag，更与何人说？",
+      "人生自古谁无死？留取 flag 照汗青",
+      "借问 flag 何处有？牧童遥指杏花村"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "剩余时间：",
+        "note": "你可以在到期前 {{min}} 分钟内延长时间"
+      },
+      "entry": {
+        "description": {
+          "anchor": "获取客户端",
+          "proxy": "平台已启用 tcp over ws 代理模式。"
+        },
+        "label": "实例入口"
+      },
+      "no_container": {
+        "message": "本题为容器题目，解题需开启容器实例",
+        "note": "容器默认有效期为 {{min}} 分钟"
+      },
+      "open": {
+        "client": "在客户端中打开",
+        "web": "作为网页打开"
+      },
+      "test": {
+        "no_container": "测试容器未开启"
+      }
+    },
+    "solved": "<1>{{solved}}</1> 次解出",
+    "wrong_flag_hints": [
+      "饮水思源，重新审题吧。",
+      "诗云：路漫漫其修远兮，再接再厉吧。",
+      "沉着冷静，可能会有意想不到的收获。",
+      "失败乃成功之母，回去再琢磨琢磨。",
+      "非也非也，不是这个 flag。",
+      "望眼欲穿，flag 却不在这里。",
+      "不要浮躁，仔细再思考思考。",
+      "翻遍天涯，也不是这个答案。",
+      "走马观花，可找不到 flag。",
+      "反复推敲，答案应该就在你手边。",
+      "深谋远虑，flag 不是那么简单。",
+      "山高水远，flag 藏得真是深啊！",
+      "时运不济，碾过你的难道是寂寞？",
+      "兴奋过头，还需要学会更加冷静的思考。",
+      "碰壁了，难道是你已经到了巅峰？",
+      "岁月静好，flag 却已然远去。",
+      "浅水已涸，flag 不可复得。",
+      "白雪纷纷何所似，似此 flag 被错过。",
+      "旧事追思，往事如烟。flag 已然消逝。",
+      "桃花潭水深千尺，不及 flag 不见了踪迹。",
+      "万籁俱寂，唯有 flag 的错误提示在耳边响起。",
+      "陌上花开，可缓缓归矣。flag 未得而返。",
+      "风萧萧兮易水寒，无奈 flag 仍未到彼岸。"
+    ]
+  },
+  "file_type": {
+    "local": "本地附件",
+    "none": "无附件",
+    "remote": "远程附件"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "比赛已结束，本次提交不会被计分",
+        "message": "排行榜将稍后更新……",
+        "title": "flag 正确"
+      },
+      "empty": "flag 不能为空",
+      "submitted": {
+        "message": "请等待 flag 检查……",
+        "title": "flag 已提交"
+      },
+      "unknown": {
+        "message": "请联系管理员确认提交：{{id}}",
+        "title": "flag 状态未知"
+      },
+      "wrong": "flag 错误"
+    },
+    "instance": {
+      "copied": {
+        "entry": "实例入口已复制到剪贴板",
+        "url": {
+          "message": "请使用客户端进行访问",
+          "title": "实例入口已复制到剪贴板"
+        }
+      },
+      "created": {
+        "message": "请注意实例到期时间",
+        "title": "实例已创建"
+      },
+      "destroyed": {
+        "message": "你可以重新创建实例",
+        "title": "实例已销毁"
+      },
+      "extend": {
+        "note": {
+          "message": "请及时延长时间或销毁实例",
+          "title": "实例即将到期"
+        },
+        "success": {
+          "message": "请注意实例到期时间",
+          "title": "实例时间已延长"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "按照队伍分发附件，需保证附件数量大于队伍数",
+      "label": "动态附件"
+    },
+    "dynamic_container": {
+      "desrc": "自动生成下发 flag，每队均唯一",
+      "label": "动态容器"
+    },
+    "static_attachment": {
+      "desrc": "共用附件，任意 flag 均可提交",
+      "label": "静态附件"
+    },
+    "static_container": {
+      "desrc": "共用容器，任意 flag 均可提交",
+      "label": "静态容器"
+    }
+  }
+}
