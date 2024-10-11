@@ -101,8 +101,8 @@
     "login": "Login",
     "profile": "Profile",
     "recovery": "Recover account",
-    "register": "Register",
-    "reset": "Reset password",
-    "verify": "Account Verification"
+    "register": "Daftar",
+    "reset": "Atur ulang kata sandi",
+    "verify": "Verifikasi Akun"
   }
 }
