@@ -12,7 +12,7 @@
     "genapi": "swagger-typescript-api -p http://localhost:55000/swagger/v1/swagger.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
-    "@babel/core": "^7.25.7",
+    "@babel/core": "^7.25.8",
     "@emotion/react": "^11.13.3",
     "@mantine/carousel": "^7.13.2",
     "@mantine/colors-generator": "^7.13.2",
@@ -55,7 +55,7 @@
     "swr": "2.2.5"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.25.7",
+    "@babel/eslint-parser": "^7.25.8",
     "@eslint/compat": "^1.2.0",
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^9.12.0",
