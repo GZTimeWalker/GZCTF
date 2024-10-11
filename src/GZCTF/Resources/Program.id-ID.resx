@@ -870,22 +870,22 @@
     <value>ACCEPTED</value>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
-    <value>Cheat detection</value>
+    <value>Kecurangan terdeteksi</value>
   </data>
   <data name="Submission_FirstBlood" xml:space="preserve">
-    <value>First blood</value>
+    <value>First Blood</value>
   </data>
   <data name="Submission_FlagSubmitted" xml:space="preserve">
-    <value>Successfully submitted</value>
+    <value>Berhasil dikirimkan</value>
   </data>
   <data name="Submission_NotFound" xml:space="preserve">
-    <value>The submission was not found</value>
+    <value>Submission tidak ditemukan</value>
   </data>
   <data name="Submission_SecondBlood" xml:space="preserve">
     <value>Second blood</value>
   </data>
   <data name="Submission_ThirdBlood" xml:space="preserve">
-    <value>Third blood</value>
+    <value>Third Blood</value>
   </data>
   <data name="Submission_UnknownInstance" xml:space="preserve">
     <value>Unknown instance</value>
