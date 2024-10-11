@@ -1,108 +1,108 @@
 {
   "anchor": {
-    "login": "准备好登录？",
-    "recovery": "忘记密码？"
+    "login": "Already have account?",
+    "recovery": "Forgot password?"
   },
   "button": {
-    "change_password": "更改密码",
-    "confirm_email": "确认邮箱",
-    "login": "登录",
-    "recovery": "发送重置邮件",
-    "register": "注册",
-    "reset": "重置密码",
-    "save_profile": "保存个人信息",
-    "update_email": "更改邮箱",
-    "verify_account": "验证账户"
+    "change_password": "Change Password",
+    "confirm_email": "Confirm Email",
+    "login": "Login",
+    "recovery": "Send Reset Email",
+    "register": "Register",
+    "reset": "Reset Password",
+    "save_profile": "Save Profile",
+    "update_email": "Change Email",
+    "verify_account": "Verify Account"
   },
   "content": {
     "confirm": {
-      "message": "请点击下方按钮确认更改邮箱。"
+      "message": "Please click the button below to verify your email."
     },
-    "link_check": "请检查链接是否正确后再次访问",
-    "link_invalid": "Ouch! 你的链接好像有问题",
+    "link_check": "Please check your activation link and try again",
+    "link_invalid": "Ouch! There's something wrong with your activation link",
     "profile": {
-      "update_email_note": "更改邮箱后，您将不能通过原邮箱登录。<br/>一封邮件将发送至新邮箱，点击其中链接完成验证。"
+      "update_email_note": "After changing your email, you will no longer be able to log in using your original email.<br/>An email will be sent to your new email address, click on the link in it to complete the verification."
     },
     "verify": {
-      "message": "请点击下方按钮验证账户。"
+      "message": "Please click the button below to verify the account."
     },
-    "welcome": "{{decodeEmail}}, 你好👋"
+    "welcome": "Hello, {{decodeEmail}}👋"
   },
   "label": {
-    "bio": "描述",
-    "email": "邮箱",
-    "email_new": "新邮箱",
-    "password": "密码",
-    "password_old": "原密码",
-    "password_retype": "确认密码",
-    "phone": "手机号",
-    "real_name": "真实姓名",
-    "student_id": "学工号",
-    "username": "用户名",
-    "username_or_email": "用户名或邮箱"
+    "bio": "Description",
+    "email": "Email",
+    "email_new": "New Email",
+    "password": "Password",
+    "password_old": "Original password",
+    "password_retype": "Confirm password",
+    "phone": "Phone number",
+    "real_name": "Real Name",
+    "student_id": "Student ID",
+    "username": "Username",
+    "username_or_email": "Username or Email"
   },
   "notification": {
     "captcha": {
-      "not_valid": "请等待验证码……",
+      "not_valid": "Please wait for captcha...",
       "request_sent": {
-        "message": "等待服务器验证",
-        "title": "请求已发送……"
+        "message": "Waiting for server verification",
+        "title": "Request sent..."
       }
     },
     "confirm": {
-      "failed": "邮箱验证失败",
-      "success": "邮箱已验证"
+      "failed": "Failed to verify email",
+      "success": "Email has been verified"
     },
     "login": {
-      "banned": "用户已被禁用",
-      "invalid": "用户名或密码错误",
+      "banned": "User has been banned",
+      "invalid": "Wrong username or password",
       "success": {
-        "message": "跳转回登录前页面",
-        "title": "登录成功"
+        "message": "Redirect to the previous page before login",
+        "title": "Login succeeded"
       }
     },
-    "logout": "登出成功",
+    "logout": "Logout successfully",
     "profile": {
-      "password_updated": "密码已修改，请重新登录",
-      "profile_updated": "个人信息已更新"
+      "password_updated": "Password has been changed, please login again",
+      "profile_updated": "Profile updated"
     },
     "register": {
-      "logged_in": "注册成功",
+      "logged_in": "Successfully registered",
       "request_sent": {
-        "message": "请等待管理员审核激活~",
-        "title": "注册请求已发送"
+        "message": "Please wait for administrator's approval for activation~",
+        "title": "Registration request sent"
       }
     },
     "reset": {
       "success": {
-        "message": "请重新登录",
-        "title": "密码已重置"
+        "message": "Please login again",
+        "title": "Password has been reset"
       }
     },
     "verify": {
-      "failed": "账户验证失败",
-      "success": "账户已验证，请登录"
+      "failed": "Failed to verify the account",
+      "success": "Account has been verified, please login"
     }
   },
   "password": {
-    "empty": "密码不能为空",
-    "include_lowercase": "包含小写字母",
-    "include_number": "包含数字",
-    "include_symbol": "包含特殊字符",
-    "include_uppercase": "包含大写字母",
-    "min_length": "至少 6 个字符",
-    "not_match": "重复密码有误"
+    "empty": "Password cannot be empty",
+    "include_lowercase": "Include lower case letters",
+    "include_number": "Include numbers",
+    "include_symbol": "Include special characters",
+    "include_uppercase": "Include upper case letters",
+    "min_length": "At least 6 characters",
+    "not_match": "The repeated password is incorrect"
   },
   "placeholder": {
-    "bio": "这个人很懒，什么都没有写"
+    "bio": "This person is lazy, nothing written"
   },
   "title": {
-    "confirm": "邮箱验证",
-    "login": "登录",
-    "profile": "个人资料",
-    "recovery": "找回帐号",
-    "register": "注册",
-    "reset": "重置密码",
-    "verify": "账户验证"
+    "confirm": "Email Verification",
+    "login": "Login",
+    "profile": "Profile",
+    "recovery": "Recover account",
+    "register": "Register",
+    "reset": "Reset password",
+    "verify": "Account Verification"
   }
 }
