@@ -1,246 +1,246 @@
 {
   "button": {
-    "challenges": "进入比赛",
+    "challenges": "Challenges",
     "delete": {
-      "all_traffic": "删除全部列出流量"
+      "all_traffic": "Delete all listed traffic"
     },
     "download": {
-      "all_traffic": "下载全部列出流量",
-      "scoreboard": "下载积分榜",
-      "submissionsheet": "下载全部提交"
+      "all_traffic": "Download all listed traffic",
+      "scoreboard": "Scoreboard",
+      "submissionsheet": "Submissions"
     },
-    "finished": "比赛结束",
-    "hide_solved": "隐藏已解出",
-    "join": "报名参赛",
-    "leave": "取消报名",
-    "login_required": "请先登录",
-    "scoreboard": "查看榜单",
-    "submit_writeup": "提交 Writeup",
+    "finished": "Game Ended",
+    "hide_solved": "Hide Solved",
+    "join": "Join",
+    "leave": "Leave Game",
+    "login_required": "Please Login",
+    "scoreboard": "Scoreboard",
+    "submit_writeup": "Submit Writeup",
     "writeup": {
-      "upload": "上传 Writeup",
-      "uploading": "正在上传"
+      "upload": "Submit Writeup",
+      "uploading": "Uploading..."
     }
   },
   "content": {
     "all_solved": {
-      "comment": "或许还有更难的挑战在等着你……",
-      "title": "题目都被解出啦！"
+      "comment": "Perhaps more difficult challenges are waiting for you...",
+      "title": "All challenges were solved!"
     },
-    "duration": "{{hours}} 小时",
-    "end_at": "结束于",
-    "end_time": "结束时间",
-    "game_ended": "比赛已结束",
-    "game_lasts_long": "比赛还会很久",
+    "duration": "{{hours}} hour(s)",
+    "end_at": "Ends at",
+    "end_time": "End Time",
+    "game_ended": "Ended",
+    "game_lasts_long": "The game will last for a long time",
     "hide_container_events": {
-      "description": "隐藏容器启动/销毁事件",
-      "label": "隐藏容器事件"
+      "description": "Hide container creation/destroying events",
+      "label": "Hide container events"
     },
     "join": {
-      "confirm": "确认报名",
+      "confirm": "Confirm Registration",
       "content": [
-        "你确定要报名此比赛吗？",
-        "报名参赛并审核通过后，参赛队伍将被锁定，<strong>不能再踢出队员</strong>，队伍将在比赛结束后或驳回请求时解锁。",
-        "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
+        "Are you sure you want to register for this game?",
+        "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
+        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
       "invite_code": {
-        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码",
-        "label": "请输入邀请码"
+        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
+        "label": "Please enter the invitation code"
       },
       "organization": {
-        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织",
-        "label": "选择参赛组织"
+        "description": "This game has multiple division available. Please select your division.",
+        "label": "Select Division"
       },
       "team": {
-        "description": "请选择一个队伍参与比赛，选定后不可更改",
-        "label": "选择参赛队伍"
+        "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
+        "label": "Select your team"
       },
-      "title": "补全报名信息"
+      "title": "Registration Information"
     },
-    "joined_status": "<strong>{{count}}</strong>支队伍已报名",
+    "joined_status": "<strong>{{count}}</strong> teams have already joined",
     "leave": {
-      "confirm": "确认取消报名",
+      "confirm": "Confirm quitting",
       "content": [
-        "你确定要退出此比赛吗？",
-        "退出后如果队伍报名人数为空，队伍参与信息将被删除。"
+        "Are you sure you want to quit this game?",
+        "If the number of team members is zero after you quit, the team's participation data will be deleted."
       ]
     },
-    "no_challenge": "Ouch! 这个比赛还没有可用题目呢……",
+    "no_challenge": "Ouch! No challenges available for this game.",
     "no_cheat": {
-      "comment": "看起来大家都很老实呢",
-      "title": "暂时没有队伍作弊信息"
+      "comment": "It looks like everyone played fair!",
+      "title": "No cheating detected yet"
     },
-    "no_notice": "暂无通知",
+    "no_notice": "Nothing here.",
     "no_traffic": {
-      "comment": "需要平台配置和题目双重启用",
-      "title": "暂时没有启用流量捕获的题目"
+      "comment": "Both platform and challenge need to be set up to enable capture",
+      "title": "No challenge has traffic capture enabled"
     },
-    "remaining_duration": "剩余 {{hours}} 小时",
-    "remaining_time": "剩余时间",
+    "remaining_duration": "{{hours}}h left",
+    "remaining_time": "Remaining time",
     "scoreboard_not_ready": {
-      "comment": "坐和放宽，稍作等待……",
-      "title": "正在加载题目信息"
+      "comment": "Patience is a virtue, please hold on…",
+      "title": "Loading challenges"
     },
-    "scoreboard_note": "注：同分队伍以得分时间先后排名",
-    "scoreboard_tip": "Tip: 可以按左右方向键滚动题目列表哦~",
-    "start_at": "开始于",
-    "start_time": "开始时间",
+    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
+    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
+    "start_at": "Starts at",
+    "start_time": "Start Time",
     "team_view": {
-      "description": "使用队伍视图展示作弊信息",
-      "label": "队伍视图"
+      "description": "Display cheating information by teams",
+      "label": "View as Team"
     },
-    "total_duration": "共 {{hours}} 小时",
-    "total_time": "持续时间",
+    "total_duration": "{{hours}}h in total",
+    "total_time": "Duration",
     "traffic": {
-      "delete_confirm": "确认删除此流量文件？",
-      "deleted_all_confirm": "确认删除全部列出流量？"
+      "delete_confirm": "Delete this traffic file?",
+      "deleted_all_confirm": "Delete all listed traffic?"
     },
     "writeup": {
-      "current": "当前提交",
-      "deadline_exceeded": "提交截止时间已过",
+      "current": "Current Writeup",
+      "deadline_exceeded": "Submission deadline has passed",
       "instructions": {
-        "additional": "附加说明",
-        "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
-        "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
-        "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
-        "title": "提交说明"
+        "additional": "Additional Notes",
+        "datetime_format": "DD/MM/YYYY HH:mm:ss",
+        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
+        "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
+        "title": "Submission Instructions"
       },
-      "submitted": "已成功提交",
-      "title": "管理 Writeup",
-      "unsubmitted": "尚未提交",
-      "unsubmitted_note": "你的队伍尚未提交 Writeup"
+      "submitted": "Successfully submitted",
+      "title": "Writeup Management",
+      "unsubmitted": "Not yet submitted",
+      "unsubmitted_note": "Your team has not submitted yet"
     }
   },
   "event": {
     "answer": {
-      "accepted": "答案正确",
-      "cheat": "作弊行为",
-      "not_found": "未知实例",
-      "submitted": "成功提交",
-      "wrong": "答案错误"
+      "accepted": "Flag accepted",
+      "cheat": "Cheating",
+      "not_found": "Unknown",
+      "submitted": "Successfully submitted",
+      "wrong": "Incorrect flag"
     },
-    "cheat_detected": "题目 [{{chal}}] 疑似发生违规，队伍 [{{team}}] 使用了 [{{steam}}] 的答案",
+    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
     "container": {
-      "destroy": "{{chal}}#{{id}} 销毁题目实例",
-      "start": "{{chal}}#{{id}} 开启题目实例"
+      "destroy": "Destroyed challenge instance for {{chal}}#{{id}}",
+      "start": "Created challenge instance for {{chal}}#{{id}}"
     },
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
   },
   "label": {
     "cheat_info": {
-      "owned_team": "原始队伍",
-      "submit_team": "提交队伍",
-      "submit_user": "提交用户"
+      "owned_team": "Source Team",
+      "submit_team": "Submit Team",
+      "submit_user": "Submit User"
     },
     "notice_type": {
-      "all": "全部",
-      "challenge": "题目",
-      "events": "动态",
-      "game": "通知"
+      "all": "All",
+      "challenge": "Challenge",
+      "events": "News",
+      "game": "Notice"
     },
-    "score": "分数",
-    "score_formatter": "{value} 分",
+    "score": "Score",
+    "score_formatter": "{value} pts",
     "score_table": {
-      "rank_organization": "排名",
-      "rank_total": "总排名",
-      "score": "得分",
-      "score_total": "总分",
-      "solved_count": "解题数",
-      "team": "战队",
-      "type": "类型"
+      "rank_organization": "Rank",
+      "rank_total": "Overall",
+      "score": "Score",
+      "score_total": "Score",
+      "solved_count": "Solved",
+      "team": "Team",
+      "type": "Type"
     },
-    "traffic": "流量"
+    "traffic": "Traffic"
   },
   "notice": {
-    "blood": "恭喜 {{team}} 获得 [{{chal}}] {{blood}}",
-    "new_challenge": "题目 [{{title}}] 已开放",
-    "new_hint": "题目 [{{title}}] 更新了提示"
+    "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
+    "new_challenge": "New challenge [{{title}}] has been released.",
+    "new_hint": "Hints for [{{title}}] has been updated."
   },
   "notification": {
     "connected": {
-      "event": "实时事件连接成功",
-      "submission": "实时提交连接成功"
+      "event": "Real-time event connected",
+      "submission": "Real-time submission connected"
     },
-    "ended": "比赛已经结束",
+    "ended": "The game has ended",
     "fetch_failed": {
-      "event": "获取事件失败",
-      "notice": "获取通知失败",
-      "submission": "获取提交失败"
+      "event": "Failed to fetch events",
+      "notice": "Failed to fetch notifications",
+      "submission": "Failed to fetch submissions"
     },
-    "joined": "报名成功",
-    "left": "取消报名成功",
-    "no_invite_code": "邀请码不能为空",
-    "no_organization": "请选择参赛组织",
-    "no_team": "请选择参赛队伍",
-    "not_started": "比赛尚未开始",
-    "select_chal_and_part": "请先选择题目和队伍",
-    "suspended": "您已被禁赛",
+    "joined": "Registration successful",
+    "left": "Successfully cancel",
+    "no_invite_code": "Invitation code cannot be empty",
+    "no_organization": "Please select the division",
+    "no_team": "Please select the team to participate with",
+    "not_started": "Game not yet started",
+    "select_chal_and_part": "Please select challenges and teams first",
+    "suspended": "You have been banned",
     "traffic": {
-      "deleted": "流量文件已删除"
+      "deleted": "Traffic file(s) has been deleted"
     },
     "writeup": {
-      "submitted": "Writeup 已成功提交"
+      "submitted": "Writeup was successfully submitted"
     }
   },
   "participation": {
     "actions": {
-      "accepted": "审核通过",
-      "pending": "等待审核",
-      "rejected": "重新报名",
-      "suspended": "禁赛中",
-      "unsubmitted": "报名参赛"
+      "accepted": "Approved",
+      "pending": "Pending review",
+      "rejected": "Re-Sign Up",
+      "suspended": "Banned",
+      "unsubmitted": "Join game"
     },
     "alert": {
       "not_started": {
-        "content": "你已经以队伍 {{team}} 成员身份成功报名并通过审核，请在比赛开始后进入比赛页面。",
-        "mobile": "请使用电脑端参与比赛及查看比赛详情。",
-        "title": "比赛尚未开始"
+        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
+        "mobile": "Please use desktop site to see the details of the game.",
+        "title": "Game not yet started"
       },
       "pending": {
-        "content": "请耐心等待审核结果",
-        "title": "你已经以队伍 {{team}} 成员身份成功报名"
+        "content": "Please wait for review results",
+        "title": "You have successfully registered as a member of team {{team}}"
       },
       "rejected": {
-        "content": "请确保具备参赛资格和满足参赛要求后重新报名",
-        "title": "你的参赛申请未通过"
+        "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements",
+        "title": "Your participating request was rejected"
       },
       "suspended": {
-        "content": "如有异议，请联系管理员进行申诉",
-        "title": "您的队伍 {{team}} 已被禁赛"
+        "content": "If you have any objections, please contact the administrator to appeal.",
+        "title": "Your team {{team}} has been suspended"
       },
       "team_required": {
-        "content": "你没有加入任何队伍，请在<1>队伍管理</1>页面创建、加入队伍。",
-        "title": "当前无法报名"
+        "content": "You didn't join any team, please create or join a team on the <1> Team Management </1> page.",
+        "title": "Unable to register at this time"
       }
     },
     "status": {
-      "accepted": "审核通过",
-      "pending": "待审核",
-      "rejected": "审核未通过",
-      "suspended": "禁赛中"
+      "accepted": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "suspended": "Banned"
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! 这支队伍还没有解出题目呢……",
-    "search_team": "搜索队伍"
+    "no_solved": "Ouch! This team has not solved any challenges...",
+    "search_team": "Search Team"
   },
   "tab": {
-    "challenge": "比赛题目",
+    "challenge": "Challenges",
     "monitor": {
-      "cheatinfo": "作弊信息",
-      "events": "事件监控",
-      "index": "比赛监控",
-      "submissions": "提交记录",
-      "traffic": "流量捕获"
+      "cheatinfo": "Cheats",
+      "events": "Events",
+      "index": "Monitoring",
+      "submissions": "Submissions",
+      "traffic": "Traffics"
     },
-    "scoreboard": "积分总榜"
+    "scoreboard": "Scoreboard"
   },
   "tag": {
-    "hidden": "比赛已隐藏",
-    "individual": "个人赛",
-    "limited": "{{count}}人赛",
-    "multiplayer": "团队赛"
+    "hidden": "Hidden",
+    "individual": "Personal",
+    "limited": "{{count}} players",
+    "multiplayer": "Team"
   },
   "title": {
-    "index": "赛事"
+    "index": "Games"
   }
 }
