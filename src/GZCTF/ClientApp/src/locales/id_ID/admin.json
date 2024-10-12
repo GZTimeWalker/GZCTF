@@ -288,209 +288,209 @@
           "description": "Jendela waktu sebelum kontainer kedaluwarsa untuk memperpanjang",
           "label": "Jendela Perpanjangan (menit)"
         },
-        "title": "Container Policy"
+        "title": "Kebijakan container"
       },
       "platform": {
         "color": {
-          "description": "Custom color for the platform",
-          "label": "Platform Color"
+          "description": "Warna kustom untuk platform",
+          "label": "Warna platform"
         },
         "color_palette": {
-          "description": "Color palette generated from the custom color",
-          "label": "Color Palette"
+          "description": "Palet warna yang dihasilkan dari warna kustom",
+          "label": "Pallet warna"
         },
         "description": {
-          "description": "Site description provided for SEO",
-          "label": "Site Description"
+          "description": "Deskripsi situs dibutuhkan untuk SEO",
+          "label": "Deskripsi situs"
         },
         "footer": {
-          "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
+          "description": "Mendukung sintaks Markdown, <mbr/> akan diganti dengan <br/> di perangkat seluler",
           "label": "Footer"
         },
         "logo": {
-          "description": "Used for favicon and the logo on pages",
-          "label": "Platform Logo"
+          "description": "Gunakan untuk favicon dan logo pada halaman",
+          "label": "Logo platform"
         },
         "name": {
-          "description": "Platform name will be displayed with ::CTF",
-          "label": "Platform Name"
+          "description": "Nama platform akan ditampilkan dengan ::CTF",
+          "label": "Nama platform"
         },
         "slogan": {
-          "description": "Will be displayed at the top of the page",
-          "label": "Platform Slogan"
+          "description": "Akan ditampilkan di bagian atas halaman",
+          "label": "Slogan platform"
         },
-        "title": "Platform Settings"
+        "title": "Pengaturan platform"
       }
     },
-    "show_all": "Show All",
+    "show_all": "Tampilan semua",
     "teams": {
-      "delete": "Are you sure you want to delete team {{name}} ?",
-      "lock": "Are you sure you want to {{action}} team {{name}} ?",
-      "locked": "Locked",
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> teams displayed",
-      "unlocked": "Unlocked"
+      "delete": "Apakah kamu yakin ingin menghapus tim {{name}} ?",
+      "lock": "Apakah kamu yakin ingin {{action}} tim {{name}} ?",
+      "locked": "Terkunci",
+      "stats": "<1>{{current}}</1> dari <1>{{total}}</1> game yang ditampilkan",
+      "unlocked": "Tidak terkunci"
     },
     "users": {
-      "delete": "Are you sure you want to delete user {{name}} ?",
+      "delete": "Apakah kamu yakin ingin menghapus pengguna {{name}} ?",
       "reset": {
-        "content": "The user password has been reset, <strong>this password will only show up once</strong>, please save it properly.",
-        "message": "Are you sure you want to reset the password for {{name}}?",
-        "title": "Reset password for {{name}}"
+        "content": "Password pengguna telah direset, <strong>password ini hanya akan muncul sekali</strong>, harap simpan dengan baik.",
+        "message": "Apakah Anda yakin ingin mereset password untuk {{name}}?",
+        "title": "Reset password untuk {{name}}"
       },
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
+      "stats": "<1>{{current}}</1> dari <1>{{total}}</1> pengguna yang ditampilkan"
     }
   },
   "label": {
     "games": {
-      "hide": "Hide",
-      "summary": "Summary"
+      "hide": "Sembunyikan",
+      "summary": "Ringkasan"
     },
     "instances": {
-      "container_id": "Container ID",
-      "entry": "Instance Entry",
-      "life_cycle": "Lifecycle"
+      "container_id": "Id container",
+      "entry": "Entri instance",
+      "life_cycle": "Siklus"
     },
     "logs": {
-      "message": "Message",
+      "message": "Pesan",
       "status": "Status"
     },
     "teams": {
       "bio": "Bio",
-      "members": "Members"
+      "members": "Anggota"
     },
     "users": {
-      "active": "Activate",
-      "last_visit": "Last Visit",
-      "role": "User Roles"
+      "active": "Aktif",
+      "last_visit": "Kunjungan terakhir",
+      "role": "Role pengguna"
     }
   },
   "notification": {
     "games": {
       "challenges": {
         "attachment": {
-          "no_selected": "Please select at least one file",
-          "updated": "Attachment updated"
+          "no_selected": "Pilih setidaknya satu file",
+          "updated": "Lampiran diperbarui"
         },
-        "created": "Challenge created",
-        "deleted": "Challenge deleted",
+        "created": "Challenge berhasil dibuat",
+        "deleted": "Challenge dihapus",
         "flag": {
-          "copied": "Flag copied to clipboard",
-          "created": "Flag created",
-          "deleted": "Flag deleted"
+          "copied": "Flag dicopy ke clipboard",
+          "created": "Flag berhasil dibuat",
+          "deleted": "Flag dihapus"
         },
         "flag_template": {
-          "updated": "Flag template updated"
+          "updated": "Template flag telah diupdate"
         },
         "preview": {
-          "attachment_downloaded": "Pretend the attachment has been downloaded!",
-          "flag_submitted": "Flag submitted!"
+          "attachment_downloaded": "Anggap saja lampiran sudah diunduh!",
+          "flag_submitted": "Flag telah disubmit!"
         },
-        "updated": "Challenge updated"
+        "updated": "Challenge berhasil diperbarui"
       },
-      "created": "Game created",
+      "created": "Game telah dibuat",
       "info": {
-        "accept_count_updated": "AC counter updated",
-        "deleted": "Game deleted",
-        "info_updated": "Game updated",
+        "accept_count_updated": "AC counter diperbarui",
+        "deleted": "Game dihapus",
+        "info_updated": "Game diperbarui",
         "poster": {
-          "upload_failed": "Post upload failed",
-          "uploaded": "Poster successfully uploaded",
-          "uploading": "Uploading poster..."
+          "upload_failed": "Gagal mengungah postingan",
+          "uploaded": "Poster berhasil diunggah",
+          "uploading": "Mengunggah poster..."
         },
-        "public_key_copied": "Public key copied to clipboard"
+        "public_key_copied": "Public key disalin ke clipboard"
       },
       "instances": {
-        "created": "Instance created",
-        "deleted": "Instances destroyed"
+        "created": "Instance berhasil dibuat",
+        "deleted": "Instance dihapus"
       },
-      "no_title_time": "Please enter title and time of the game",
+      "no_title_time": "Harap masukkan judul dan waktu game",
       "notices": {
-        "created": "Notice created",
-        "deleted": "Notice deleted",
-        "updated": "Notice updated"
+        "created": "Notice berhasil dibuat",
+        "deleted": "Notice dihapus",
+        "updated": "Notice diperbarui"
       },
       "participation": {
-        "updated": "Team status has been updated"
+        "updated": "Status tim sudah diperbarui"
       }
     },
     "instances": {
-      "destroyed": "Instances destroyed",
-      "entry_copied": "Instance entry copied to clipboard",
+      "destroyed": "Instance berhasil di hapus",
+      "entry_copied": "Entri instance disalin ke clipboard",
       "url_copied": {
-        "message": "Please use client to access",
-        "title": "Proxy URL copied to clipboard"
+        "message": "Harap gunakan client untuk mengakses",
+        "title": "Url proxy disalin ke clipboard"
       }
     },
     "logs": {
-      "connected": "Real-time log connected",
-      "fetch_failed": "Failed to fetch logs"
+      "connected": "Log real-time terhubung",
+      "fetch_failed": "Gagal mengambil log"
     },
     "teams": {
-      "deleted": "{{name}} has been deleted"
+      "deleted": "{{name}} telah dihapus"
     },
     "users": {
-      "deleted": "{{name}} has been deleted",
-      "password_copied": "Password copied to clipboard",
-      "updated": "User profile updated"
+      "deleted": "{{name}} telah dihapus",
+      "password_copied": "Kata sandi disalin ke clipboard",
+      "updated": "Profil diperbarui"
     }
   },
   "placeholder": {
-    "empty": "Empty",
+    "empty": "Kosong",
     "games": {
       "challenges": {
         "attachment": {
           "no_file_selected": {
-            "comment": "The selected file will be displayed here",
-            "title": "You haven't selected any file"
+            "comment": "Berkas yang dipilih akan ditampilkan di sini",
+            "title": "Anda belum memilih berkas apa pun"
           }
         }
       },
-      "organizations": "Enter to add a division.",
+      "organizations": "Tekan Enter untuk menambahkan divisi.",
       "participation": {
-        "bio": "(no bio)",
-        "team": "(no name)"
+        "bio": "(bio kosong)",
+        "team": "(tanpa nama)"
       }
     },
     "instances": {
       "challenges": {
-        "not_found": "No challenge found",
-        "select": "All challenges"
+        "not_found": "Tidak ada challenge yang ditemukan",
+        "select": "Seluruh challenge"
       },
       "teams": {
-        "not_found": "Team not found",
-        "select": "All Teams"
+        "not_found": "Tim tidak ditemukan",
+        "select": "Semua tim"
       }
     },
     "settings": {
-      "email_domain_list": "No restrictions",
-      "footer": "`Test` <mbr/> Something...",
+      "email_domain_list": "Tidak ada pembatasan",
+      "footer": "`Test` <mbr/> Sesuatu...",
       "logo": {
-        "custom": "Custom Logo",
-        "default": "Use GZCTF Icon"
+        "custom": "Kustom logo",
+        "default": "Gunakan GZCTF icon"
       }
     },
     "teams": {
-      "search": "Search by name"
+      "search": "Cari berdasarkan nama"
     },
     "users": {
-      "real_name": "Empty",
-      "search": "Search by ID/username/email/student ID/real name",
+      "real_name": "Kosong",
+      "search": "Cari berdasarkan ID/username/email/student ID/nama",
       "student_id": "00000000"
     }
   },
   "tab": {
     "games": {
-      "challenges": "Challenges",
-      "index": "Games",
-      "info": "Information",
-      "notices": "Notices",
-      "review": "Teams",
+      "challenges": "Challenge",
+      "index": "Game",
+      "info": "Informasi",
+      "notices": "Notis",
+      "review": "Tim",
       "writeups": "Writeups"
     },
-    "instances": "Instances",
-    "logs": "Logs",
-    "settings": "Settings",
-    "teams": "Teams",
-    "users": "Users"
+    "instances": "Instance",
+    "logs": "Log",
+    "settings": "Pengaturan",
+    "teams": "Tim",
+    "users": "Pengguna"
   }
 }
