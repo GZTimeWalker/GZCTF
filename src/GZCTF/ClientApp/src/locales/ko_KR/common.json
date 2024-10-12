@@ -1,0 +1,129 @@
+{
+  "avatar": {
+    "save": "Save Avatar",
+    "upload_failed": "Failed to update avatar",
+    "uploaded": "Avatar updated",
+    "uploading": "Uploading avatar"
+  },
+  "button": {
+    "copy": "Copy to Clipboard",
+    "reset": "Reset",
+    "select_file": "Select File",
+    "try_again": "Try Again",
+    "uploading": "Uploading"
+  },
+  "content": {
+    "404": {
+      "text": "A desolation, why is it here",
+      "title": "Page does not exist"
+    },
+    "about": {
+      "slogan": "Hack for fun not for profit"
+    },
+    "color": {
+      "custom": {
+        "description": "Select the base color you want to use",
+        "label": "Custom Base Color",
+        "placeholder": "Use default color"
+      },
+      "palette": {
+        "description": "Color palette generated from the custom base color",
+        "label": "Color Palette"
+      },
+      "provider": {
+        "custom": "Customized",
+        "default": "Default",
+        "description": "Select how the base color is determined",
+        "label": "Theme color provider",
+        "managed": "Admin Provided"
+      },
+      "title": "Customize Color"
+    },
+    "drop_zone": {
+      "content": "Drag and drop an image or click here to select {{type}}",
+      "limit": "Please select an image less than 3MB",
+      "type": {
+        "avatar": "avatar",
+        "poster": "poster"
+      }
+    },
+    "external_link": "External Link",
+    "home": {
+      "recent_games": "Recent Games"
+    },
+    "no_data": "No data",
+    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "wider": {
+      "text": "Try to use a wider device",
+      "title": "Not wide enough"
+    }
+  },
+  "download": {
+    "failed": "Failed to download",
+    "started": "Downloading",
+    "success": "Downloaded"
+  },
+  "email": {
+    "sent": {
+      "message": "Please check your email and spam mail!",
+      "title": "Email Sent"
+    }
+  },
+  "error": {
+    "check_input": "Please check your input",
+    "empty": "Content can't be empty",
+    "encountered": "An error has occurred",
+    "file_invalid": {
+      "message": "Please check file format and size",
+      "title": "Failed to load file"
+    },
+    "invalid_username_or_password": "Incorrect username or password",
+    "no_change": "There seems to be no change",
+    "param_error": "Incorrect parameter, please check",
+    "param_invalid": "Invalid parameter",
+    "param_missing": "Missing parameter",
+    "param_unknown": "Unknown parameter",
+    "request_too_frequent": "Too many requests",
+    "try_later": "Please try again later",
+    "unknown": "Unknown error"
+  },
+  "label": {
+    "challenge": "Challenge",
+    "flag": "flag",
+    "game": "Game",
+    "ip": "IP",
+    "team": "Team",
+    "time": "Time",
+    "user": "User"
+  },
+  "modal": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "confirm_delete": "Confirm delete",
+    "confirm_update": "Confirm Update",
+    "delete": "Delete"
+  },
+  "tab": {
+    "about": "About",
+    "account": {
+      "clean_cache": "Clear Cache",
+      "login": "Login",
+      "logout": "Logout",
+      "profile": "Profile"
+    },
+    "admin": "Admin",
+    "game": "Games",
+    "home": "Home",
+    "post": "Posts",
+    "team": "Team",
+    "theme": {
+      "dark": "dark mode",
+      "light": "light mode",
+      "switch_to": "Switch to {{theme}}"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "About"
+  }
+}

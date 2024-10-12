@@ -1,0 +1,108 @@
+{
+  "anchor": {
+    "login": "Sudah memiliki akun?",
+    "recovery": "Lupa kata sandi?"
+  },
+  "button": {
+    "change_password": "Ubah Kata Sandi",
+    "confirm_email": "Konfirmasi email",
+    "login": "Masuk",
+    "recovery": "Mengirim reset email",
+    "register": "Daftar",
+    "reset": "Atur ulang Kata Sandi",
+    "save_profile": "Simpan profil",
+    "update_email": "Ubah email",
+    "verify_account": "Verifikasi akun"
+  },
+  "content": {
+    "confirm": {
+      "message": "Silakan klik tombol di bawah ini untuk memverifikasi email kamu."
+    },
+    "link_check": "Silakan periksa tautan aktivasi kamu dan coba lagi",
+    "link_invalid": "Waduh! Ada yang tidak beres dengan tautan aktivasi kamu",
+    "profile": {
+      "update_email_note": "Setelah mengganti email kamu, kamu tidak akan bisa lagi masuk menggunakan email asli kamu.<br/>Verifikasi email akan dikirim ke alamat email baru kamu, klik tautan di dalamnya untuk menyelesaikan verifikasi."
+    },
+    "verify": {
+      "message": "Silakan klik tombol di bawah ini untuk memverifikasi akun."
+    },
+    "welcome": "Halo, {{decodeEmail}}👋"
+  },
+  "label": {
+    "bio": "Deskripsi",
+    "email": "Email",
+    "email_new": "Email baru",
+    "password": "Kata sandi",
+    "password_old": "Sandi awal",
+    "password_retype": "Konfirmasi kata sandi",
+    "phone": "Nomor Handphone",
+    "real_name": "Nama asli",
+    "student_id": "Kartu Pelajar",
+    "username": "Username",
+    "username_or_email": "Username atau email"
+  },
+  "notification": {
+    "captcha": {
+      "not_valid": "Silahkan menunggu captcha...",
+      "request_sent": {
+        "message": "Menunggu verifikasi dari server",
+        "title": "Request dikirimkan..."
+      }
+    },
+    "confirm": {
+      "failed": "Gagal memverifikasi email",
+      "success": "Email telah diverifikasi"
+    },
+    "login": {
+      "banned": "User telah di banned",
+      "invalid": "Username atau password salah",
+      "success": {
+        "message": "Kembali ke halaman sebelumnya sebelum login",
+        "title": "Berhasil masuk"
+      }
+    },
+    "logout": "Berhasil logout",
+    "profile": {
+      "password_updated": "Password telah diubah, silahkan login kembali",
+      "profile_updated": "Profil diperbarui"
+    },
+    "register": {
+      "logged_in": "Berhasil mendaftar",
+      "request_sent": {
+        "message": "Silakan tunggu persetujuan dari administrator untuk aktivasi~",
+        "title": "Permintaan pendaftaran sudah dikirim"
+      }
+    },
+    "reset": {
+      "success": {
+        "message": "Harap login kembali",
+        "title": "Password sudah direset"
+      }
+    },
+    "verify": {
+      "failed": "Gagal memverifikasi akun",
+      "success": "Akun berhasil diverifikasi, harap login"
+    }
+  },
+  "password": {
+    "empty": "Password tidak boleh kosong",
+    "include_lowercase": "Sertakan huruf kecil",
+    "include_number": "Sertakan angka",
+    "include_symbol": "Sertakan special karakter",
+    "include_uppercase": "Sertakan huruf besar",
+    "min_length": "Setidaknya 6 karakter",
+    "not_match": "Password yang diulang salah"
+  },
+  "placeholder": {
+    "bio": "Orang ini Malas, tidak ada yang ditulis"
+  },
+  "title": {
+    "confirm": "Verifikasi Email",
+    "login": "Masuk",
+    "profile": "Profil",
+    "recovery": "Pulihkan akun",
+    "register": "Daftar",
+    "reset": "Atur ulang kata sandi",
+    "verify": "Verifikasi Akun"
+  }
+}

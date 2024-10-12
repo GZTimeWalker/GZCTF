@@ -1,0 +1,33 @@
+{
+  "button": {
+    "delete": "Hapus Postingan",
+    "edit": "Ubah Postingan",
+    "goto": "Pergi ke postingan",
+    "new": "Posting Baru",
+    "save": "Simpan postingan"
+  },
+  "content": {
+    "delete": "Apakah kamu yakin ingin menghapus postingan {{title}}?",
+    "details": "Lihat detail",
+    "metadata": "{{author}} dipublikasikan pada {{date}}",
+    "pinned": "[Pinned]",
+    "updated": {
+      "content": "Postingan telah diubah. Simpan?",
+      "title": "Postingan telah diubah"
+    }
+  },
+  "label": {
+    "add_tag": "Tekan enter untuk menambahkan tag",
+    "content": "Konten",
+    "summary": "Ringkasan",
+    "tag": "Tag",
+    "title": "Judul"
+  },
+  "notification": {
+    "created": "Postingan telah dibuat",
+    "saved": "Postingan telah disimpan"
+  },
+  "title": {
+    "index": "Post"
+  }
+}

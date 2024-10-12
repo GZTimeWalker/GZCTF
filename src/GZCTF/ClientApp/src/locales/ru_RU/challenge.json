@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "first blood",
+    "second_blood": "second blood",
+    "third_blood": "third blood"
+  },
+  "button": {
+    "download": {
+      "attachment": "Download Attachment"
+    },
+    "instance": {
+      "create": "Create",
+      "destroy": "Destroy",
+      "extend": "Extend"
+    },
+    "submit_flag": "Submit Flag"
+  },
+  "category": {
+    "ai": "AI security",
+    "blockchain": "Blockchain",
+    "crypto": "Cryptography",
+    "forensics": "Digital forensics",
+    "hardware": "Hardware security",
+    "misc": "Miscellaneous",
+    "mobile": "Mobile security",
+    "osint": "Open-source intelligence",
+    "pentest": "Penetration testing",
+    "ppc": "Programming",
+    "pwn": "Binary exploitation",
+    "reverse": "Reverse engineering",
+    "web": "Web security"
+  },
+  "content": {
+    "already_solved": "This challenge has been solved",
+    "flag_placeholders": [
+      "To be, or not to be, flag is the question",
+      "All that glisters is not flag",
+      "The flag, dear Brutus, is not in our stars",
+      "Better three hours too soon than a flag too late",
+      "My kingdom for a flag",
+      "Shall I compare thee to a flag?",
+      "Put flag in thy pocket, and be gone",
+      "Here's flag: I drink to thee",
+      "For never was a flag of more woe",
+      "For where thou art, there is the flag",
+      "My flag is in my heart, not in my head",
+      "Fearless minds climb soonest unto flag",
+      "But, for my own part, it was flag to me",
+      "What's mine is flag and what's yours is mine",
+      "This blessed plot, this earth, this realm, this flag",
+      "The ripest flag first falls",
+      "One touch of flag makes the whole world kin",
+      "Better a witty flag than a foolish wit",
+      "Even if there are a thousand kinds of flags, who else can I talk to?",
+      "The flag is still shining in an unknown area.",
+      "May I ask where the flag is?"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "Remaining: ",
+        "note": "You can extend it {{min}} mins before expires."
+      },
+      "entry": {
+        "description": {
+          "anchor": "Get proxy client",
+          "proxy": "WebSocket proxy mode has been enabled."
+        },
+        "label": "Instance Info"
+      },
+      "no_container": {
+        "message": "This challenge requires creating an instance",
+        "note": "Instance will live for {{min}} mins."
+      },
+      "open": {
+        "client": "Open in client",
+        "web": "Open as web page"
+      },
+      "test": {
+        "no_container": "Test container is not running"
+      }
+    },
+    "solved": "<1>{{solved}}</1> SOLVES",
+    "wrong_flag_hints": [
+      "Where there's a will, there's a flag.",
+      "To be, or not to be, that is not the flag.",
+      "Pride hurts, flag benefits.",
+      "Failure teaches flags.",
+      "No, no, it's not this flag.",
+      "Eyes wide open, but the flag is not here.",
+      "Don't be impetuous, think carefully.",
+      "Searching everywhere, this is not the answer.",
+      "Superficially looking, you haven't found the flag.",
+      "The answer should be right at your fingertips.",
+      "Careful planning and consideration, flag is not that simple.",
+      "The flag is really well hidden!",
+      "Is it loneliness that crushes you when your luck is bad?",
+      "Too excited! You still need to learn to think more calmly.",
+      "Hit a wall, could it be that you have reached the peak?",
+      "The years are peaceful, but the flag has gone far away.",
+      "The shallow water has dried up, the flag is still not found.",
+      "Where this flag can be found?",
+      "Beautiful thumbnails like smoke. Where did the flag go?",
+      "The quagmire is deep in depth, and the flag is still not found.",
+      "All is quiet, only the error prompt of the flag is here.",
+      "The correct flag is still not obtained.",
+      "The winds are bitter and cold, and the flag is still not on your hand."
+    ]
+  },
+  "file_type": {
+    "local": "Self Hosted",
+    "none": "None",
+    "remote": "Remote Url"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "The game has ended, submissions will not be scored",
+        "message": "The scoreboard will be updated later.",
+        "title": "flag correct"
+      },
+      "empty": "The flag cannot be empty",
+      "submitted": {
+        "message": "Please wait for flag check...",
+        "title": "flag submitted"
+      },
+      "unknown": {
+        "message": "Please contact the admin to confirm the submission: {{id}}",
+        "title": "flag status unknown"
+      },
+      "wrong": "flag wrong"
+    },
+    "instance": {
+      "copied": {
+        "entry": "Instance entry copied to clipboard",
+        "url": {
+          "message": "Please use client to access",
+          "title": "Instance entry copied to clipboard"
+        }
+      },
+      "created": {
+        "message": "Please note the instance expiration time",
+        "title": "Instance created"
+      },
+      "destroyed": {
+        "message": "You can recreate the instance",
+        "title": "Instance has been destroyed"
+      },
+      "extend": {
+        "note": {
+          "message": "Please extend lifetime or destroy instance in time",
+          "title": "Instance is due"
+        },
+        "success": {
+          "message": "Please note the instance expiration time",
+          "title": "Instance’s lifetime has been extended"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
+      "label": "Dynamic Attachments"
+    },
+    "dynamic_container": {
+      "desrc": "Automatic flag generation, unique for each team",
+      "label": "Dynamic Container"
+    },
+    "static_attachment": {
+      "desrc": "Shared attachments, any flag can be submitted",
+      "label": "Static Attachments"
+    },
+    "static_container": {
+      "desrc": "Shared containers, any flag can be submitted",
+      "label": "Static Container"
+    }
+  }
+}

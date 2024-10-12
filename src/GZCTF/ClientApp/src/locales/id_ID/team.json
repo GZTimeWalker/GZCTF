@@ -1,0 +1,93 @@
+{
+  "button": {
+    "create": "Buat tim",
+    "disband": "Bubarkan tim",
+    "edit": "Detail Tim",
+    "join": "Gabung ke Tim",
+    "leave": "Keluar dari tim",
+    "save": "Perbarui Info"
+  },
+  "content": {
+    "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung. Setiap pemain hanya bisa membuat satu tim.",
+    "disband": {
+      "confirm": {
+        "message": "Apakah kamu yakin ingin membubarkan tim \"{{team}}\"?",
+        "title": "Konfirmasi Pembubaran Tim"
+      }
+    },
+    "join": "Silakan dapatkan kode undangan dari pembuat tim, gunakan itu untuk bergabung dengan tim.",
+    "kick": {
+      "confirm": {
+        "message": "Apakah kamu yakin ingin mengeluarkan anggota tim \"{{user}}\"?",
+        "title": "Konfirmasi penghapusan anggota."
+      }
+    },
+    "leave": {
+      "confirm": {
+        "message": "Apakah kamu yakin ingin meninggalkan tim '{{team}}'?",
+        "title": "Konfirmasi Keluar"
+      }
+    },
+    "no_create": {
+      "content": "Setiap pemain hanya bisa membuat satu tim.<br/>Kamu bisa membubarkan tim yang ada dan membuat yang baru",
+      "title": "Kamu membuat sebuah tim"
+    },
+    "role": {
+      "captain": "Kapten",
+      "member": "Anggota"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "Apakah kamu yakin ingin mentransfer tim '{{team}}' ke '{{user}}'?",
+        "title": "Konfirmasi Transfer"
+      }
+    }
+  },
+  "label": {
+    "bio": "Biografi",
+    "invite_code": "Kode Undangan",
+    "kick": "Keluarkannya dari grup",
+    "members": "Anggota",
+    "name": "Nama Tim",
+    "role": "Role",
+    "transfer": "Transfer"
+  },
+  "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}} telah dibuat, undang rekan timmu sekarang!",
+        "title": "Tim berhasil dibuat"
+      }
+    },
+    "disband": {
+      "success": "Tim berhasil dibubarkan"
+    },
+    "invite_code": {
+      "copied": "Kode undangan telah disalin ke clipboard",
+      "updated": "Token undangan tim telah diperbarui"
+    },
+    "join": {
+      "success": "Berhasil bergabung dengan tim",
+      "wrong_invite_code": "Kode undangan tim tidak valid"
+    },
+    "kick": {
+      "success": "Berhasil menghapus anggota"
+    },
+    "leave": {
+      "success": "Berhasil keluar"
+    },
+    "token": {
+      "copied": "Token tim disalin ke clipboard"
+    },
+    "transfer": {
+      "success": "Tim berhasil dipindahkan"
+    },
+    "updated": "Informasi tim telah diperbarui"
+  },
+  "placeholder": {
+    "bio": "Tim ini Malas, tidak ada yang ditulis"
+  },
+  "title": {
+    "index": "Manajemen tim"
+  }
+}
