@@ -54,7 +54,7 @@ GZCTF.Program.Banner();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
-        string[] supportedCultures = ["en-US", "zh-CN", "ja-JP"];
+        string[] supportedCultures = ["en-US", "zh-CN", "zh-TW", "ja-JP", "id-ID"];
 
         options
             .AddSupportedCultures(supportedCultures)
