@@ -1,33 +1,33 @@
 {
   "button": {
-    "delete": "Delete Post",
-    "edit": "Edit Post",
-    "goto": "Go to Post",
-    "new": "New Post",
-    "save": "Save Post"
+    "delete": "Hapus Postingan",
+    "edit": "Ubah Postingan",
+    "goto": "Pergi ke postingan",
+    "new": "Posting Baru",
+    "save": "Simpan postingan"
   },
   "content": {
-    "delete": "Are you sure you want to delete post {{title}}?",
-    "details": "View Details",
-    "metadata": "{{author}} published on {{date}}",
+    "delete": "Apakah kamu yakin ingin menghapus postingan {{title}}?",
+    "details": "Lihat detail",
+    "metadata": "{{author}} dipublikasikan pada {{date}}",
     "pinned": "[Pinned]",
     "updated": {
-      "content": "The post has been changed. Save it?",
-      "title": "Post has been changed"
+      "content": "Postingan telah diubah. Simpan?",
+      "title": "Postingan telah diubah"
     }
   },
   "label": {
-    "add_tag": "Enter to add tag",
-    "content": "Content",
-    "summary": "Summary",
-    "tag": "Tags",
-    "title": "Title"
+    "add_tag": "Tekan enter untuk menambahkan tag",
+    "content": "Konten",
+    "summary": "Ringkasan",
+    "tag": "Tag",
+    "title": "Judul"
   },
   "notification": {
-    "created": "Post has been created",
-    "saved": "Post has been saved"
+    "created": "Postingan telah dibuat",
+    "saved": "Postingan telah disimpan"
   },
   "title": {
-    "index": "Posts"
+    "index": "Post"
   }
 }
