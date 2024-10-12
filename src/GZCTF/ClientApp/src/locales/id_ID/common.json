@@ -1,129 +1,129 @@
 {
   "avatar": {
-    "save": "Save Avatar",
-    "upload_failed": "Failed to update avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar"
+    "save": "Simpan avatar",
+    "upload_failed": "Gagal memperbarui avatar",
+    "uploaded": "Avatar diperbarui",
+    "uploading": "Mengunggah avatar"
   },
   "button": {
-    "copy": "Copy to Clipboard",
+    "copy": "Salin ke Clipboard",
     "reset": "Reset",
-    "select_file": "Select File",
-    "try_again": "Try Again",
-    "uploading": "Uploading"
+    "select_file": "Pilih File",
+    "try_again": "Coba Lagi",
+    "uploading": "Mengunggah"
   },
   "content": {
     "404": {
-      "text": "A desolation, why is it here",
-      "title": "Page does not exist"
+      "text": "Sebuah kehampaan, mengapa ini ada di sini",
+      "title": "Halaman tidak ada"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "slogan": "Ngehack untuk senang senang bukan buat nyari profit"
     },
     "color": {
       "custom": {
-        "description": "Select the base color you want to use",
-        "label": "Custom Base Color",
-        "placeholder": "Use default color"
+        "description": "Pilih warna dasar yang ingin kamu gunakan",
+        "label": "Pilih warna dasar",
+        "placeholder": "Gunakan warna standar"
       },
       "palette": {
-        "description": "Color palette generated from the custom base color",
-        "label": "Color Palette"
+        "description": "Palet warna yang dihasilkan dari warna dasar kustom",
+        "label": "Pallet warna"
       },
       "provider": {
-        "custom": "Customized",
+        "custom": "Sesuaikan",
         "default": "Default",
-        "description": "Select how the base color is determined",
-        "label": "Theme color provider",
-        "managed": "Admin Provided"
+        "description": "Pilih bagaimana warna dasar ditentukan",
+        "label": "Penyedia warna tema",
+        "managed": "Disediakan oleh Admin"
       },
-      "title": "Customize Color"
+      "title": "Sesuaikan warna"
     },
     "drop_zone": {
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB",
+      "content": "Seret dan lepas gambar atau klik di sini untuk memilih {{type}}",
+      "limit": "Harap pilih gambar yang kurang dari 3MB",
       "type": {
         "avatar": "avatar",
         "poster": "poster"
       }
     },
-    "external_link": "External Link",
+    "external_link": "Tautan eksternal",
     "home": {
-      "recent_games": "Recent Games"
+      "recent_games": "Game Terbaru"
     },
-    "no_data": "No data",
-    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "no_data": "Tidak ada data",
+    "report_error": "Harap laporkan kesalahan ini kepada admin jika kamu merasa ini adalah bug",
     "wider": {
-      "text": "Try to use a wider device",
-      "title": "Not wide enough"
+      "text": "Cobalah gunakan perangkat yang lebih lebar",
+      "title": "Tidak cukup lebar"
     }
   },
   "download": {
-    "failed": "Failed to download",
-    "started": "Downloading",
-    "success": "Downloaded"
+    "failed": "Gagal mengunduh",
+    "started": "Mengunduh",
+    "success": "Terunduh"
   },
   "email": {
     "sent": {
-      "message": "Please check your email and spam mail!",
-      "title": "Email Sent"
+      "message": "Tolong cek email inbox dan email spam!",
+      "title": "Email terkirim"
     }
   },
   "error": {
-    "check_input": "Please check your input",
-    "empty": "Content can't be empty",
-    "encountered": "An error has occurred",
+    "check_input": "Tolong cek inputanmu",
+    "empty": "Konten tidak boleh kosong",
+    "encountered": "Terjadi suatu kesalahan",
     "file_invalid": {
-      "message": "Please check file format and size",
-      "title": "Failed to load file"
+      "message": "Harap periksa format dan ukuran berkas",
+      "title": "Gagal memuat berkas"
     },
-    "invalid_username_or_password": "Incorrect username or password",
-    "no_change": "There seems to be no change",
-    "param_error": "Incorrect parameter, please check",
-    "param_invalid": "Invalid parameter",
-    "param_missing": "Missing parameter",
-    "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too many requests",
-    "try_later": "Please try again later",
-    "unknown": "Unknown error"
+    "invalid_username_or_password": "Username atau kata sandi salah",
+    "no_change": "Sepertinya tidak ada perubahan",
+    "param_error": "Parameter tidak benar, harap periksa",
+    "param_invalid": "Parameter tidak valid",
+    "param_missing": "Parameter tidak ada",
+    "param_unknown": "Parameter tidak diketahui",
+    "request_too_frequent": "Terlalu banyak permintaan",
+    "try_later": "Silakan coba beberapa saat lagi",
+    "unknown": "Kesalahan tidak diketahui"
   },
   "label": {
     "challenge": "Challenge",
     "flag": "flag",
     "game": "Game",
     "ip": "IP",
-    "team": "Team",
-    "time": "Time",
-    "user": "User"
+    "team": "Tim",
+    "time": "Waktu",
+    "user": "Pengguna"
   },
   "modal": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm Update",
-    "delete": "Delete"
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "confirm_delete": "Konfirmasi hapus",
+    "confirm_update": "Konfirmasi pembaruan",
+    "delete": "Hapus"
   },
   "tab": {
-    "about": "About",
+    "about": "Tentang",
     "account": {
-      "clean_cache": "Clear Cache",
-      "login": "Login",
-      "logout": "Logout",
-      "profile": "Profile"
+      "clean_cache": "Hapus Cache",
+      "login": "Masuk",
+      "logout": "Keluar",
+      "profile": "Profil"
     },
     "admin": "Admin",
     "game": "Games",
-    "home": "Home",
-    "post": "Posts",
-    "team": "Team",
+    "home": "Beranda",
+    "post": "Postingan",
+    "team": "Tim",
     "theme": {
-      "dark": "dark mode",
-      "light": "light mode",
-      "switch_to": "Switch to {{theme}}"
+      "dark": "mode gelap",
+      "light": "mode terang",
+      "switch_to": "Ubah ke {{theme}}"
     }
   },
   "title": {
-    "404": "The Nowhere",
-    "about": "About"
+    "404": "Tempat yang Tidak Ada",
+    "about": "Tentang"
   }
 }
