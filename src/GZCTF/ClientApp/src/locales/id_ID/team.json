@@ -1,93 +1,93 @@
 {
   "button": {
-    "create": "Create Team",
-    "disband": "Disband Team",
-    "edit": "Team Details",
-    "join": "Join Team",
-    "leave": "Quit Team",
-    "save": "Update Info"
+    "create": "Buat tim",
+    "disband": "Bubarkan tim",
+    "edit": "Detail Tim",
+    "join": "Gabung ke Tim",
+    "leave": "Keluar dari tim",
+    "save": "Perbarui Info"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung. Setiap pemain hanya bisa membuat satu tim.",
     "disband": {
       "confirm": {
-        "message": "Are you sure you want to disband team \"{{team}}\"?",
-        "title": "Confirm Disband Team"
+        "message": "Apakah kamu yakin ingin membubarkan tim \"{{team}}\"?",
+        "title": "Konfirmasi Pembubaran Tim"
       }
     },
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
+    "join": "Silakan dapatkan kode undangan dari pembuat tim, gunakan itu untuk bergabung dengan tim.",
     "kick": {
       "confirm": {
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
-        "title": "Confirm removing member."
+        "message": "Apakah kamu yakin ingin mengeluarkan anggota tim \"{{user}}\"?",
+        "title": "Konfirmasi penghapusan anggota."
       }
     },
     "leave": {
       "confirm": {
-        "message": "Are you sure you want to leave the team \"{{team}}\"?",
-        "title": "Confirm Quit"
+        "message": "Apakah kamu yakin ingin meninggalkan tim '{{team}}'?",
+        "title": "Konfirmasi Keluar"
       }
     },
     "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+      "content": "Setiap pemain hanya bisa membuat satu tim.<br/>Kamu bisa membubarkan tim yang ada dan membuat yang baru",
+      "title": "Kamu membuat sebuah tim"
     },
     "role": {
-      "captain": "Captain",
-      "member": "Member"
+      "captain": "Kapten",
+      "member": "Anggota"
     },
     "transfer": {
       "confirm": {
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
-        "title": "Confirm Transfer"
+        "message": "Apakah kamu yakin ingin mentransfer tim '{{team}}' ke '{{user}}'?",
+        "title": "Konfirmasi Transfer"
       }
     }
   },
   "label": {
-    "bio": "Biography",
-    "invite_code": "Invitation Code",
-    "kick": "Kick out",
-    "members": "Members",
-    "name": "Team Name",
+    "bio": "Biografi",
+    "invite_code": "Kode Undangan",
+    "kick": "Keluarkannya dari grup",
+    "members": "Anggota",
+    "name": "Nama Tim",
     "role": "Role",
     "transfer": "Transfer"
   },
   "notification": {
     "create": {
       "success": {
-        "message": "{{team}} has been created, invite your teammates now!",
-        "title": "Successfully created team"
+        "message": "{{team}} telah dibuat, undang rekan timmu sekarang!",
+        "title": "Tim berhasil dibuat"
       }
     },
     "disband": {
-      "success": "Successfully disbanded team"
+      "success": "Tim berhasil dibubarkan"
     },
     "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "copied": "Kode undangan telah disalin ke clipboard",
+      "updated": "Token undangan tim telah diperbarui"
     },
     "join": {
-      "success": "Successfully joined team",
-      "wrong_invite_code": "Incorrect team invitation code"
+      "success": "Berhasil bergabung dengan tim",
+      "wrong_invite_code": "Kode undangan tim tidak valid"
     },
     "kick": {
-      "success": "Successfully removed member"
+      "success": "Berhasil menghapus anggota"
     },
     "leave": {
-      "success": "Successfully quit"
+      "success": "Berhasil keluar"
     },
     "token": {
-      "copied": "Team token copied to clipboard"
+      "copied": "Token tim disalin ke clipboard"
     },
     "transfer": {
-      "success": "Successfully transferred team"
+      "success": "Tim berhasil dipindahkan"
     },
-    "updated": "Team information has been updated"
+    "updated": "Informasi tim telah diperbarui"
   },
   "placeholder": {
-    "bio": "This team is lazy, nothing written"
+    "bio": "Tim ini Malas, tidak ada yang ditulis"
   },
   "title": {
-    "index": "Team management"
+    "index": "Manajemen tim"
   }
 }
