@@ -861,13 +861,13 @@
     <value>Papan Skor</value>
   </data>
   <data name="Server_Exited" xml:space="preserve">
-    <value>Server exited</value>
+    <value>Server keluar</value>
   </data>
   <data name="Server_Failed" xml:space="preserve">
-    <value>Server exited unexpectedly due to exceptions</value>
+    <value>Server keluar secara tidak terduga karena kesalahan</value>
   </data>
   <data name="Submission_Accepted" xml:space="preserve">
-    <value>ACCEPTED</value>
+    <value>DITERIMA</value>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
     <value>Kecurangan terdeteksi</value>
@@ -891,58 +891,58 @@
     <value>Unknown instance</value>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
-    <value>WRONG</value>
+    <value>Jawaban salah</value>
   </data>
   <data name="Game_CreationFailed" xml:space="preserve">
-    <value>Failed to create game</value>
+    <value>Gagal membuat game</value>
   </data>
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
-    <value>Enable traffic capture only for challenge with containers</value>
+    <value>Aktifkan penangkapan traffic untuk challenge dengan container</value>
   </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
-    <value>Dynamic attachment name cannot be empty</value>
+    <value>Dynamic attachment tidak boleh kosong</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>Flag is not sufficiently complicated, please consider adding team hash or adding length</value>
+    <value>Flag tidak cukup rumit, harap pertimbangkan untuk menambahkan hash tim atau menambah panjang flagnya</value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
-    <value>The challenge has no flag and cannot be enabled</value>
+    <value>Challenge tidak memiliki flag dan tidak dapat diaktifkan</value>
   </data>
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
-    <value>Use assets API to upload attachments</value>
+    <value>Gunakan aset API untuk mengunggah lampiran</value>
   </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
-    <value>Container address parse failed</value>
+    <value>Gagal mem-parsing alamat container</value>
   </data>
   <data name="Container_ConfigError" xml:space="preserve">
-    <value>Container Configuration Error</value>
+    <value>Konfigurasi container error</value>
   </data>
   <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
-    <value>Container connection limit reached</value>
+    <value>Batas koneksi container sudah tercapai</value>
   </data>
   <data name="Container_CreationFailed" xml:space="preserve">
-    <value>Failed to create container</value>
+    <value>Gagal membuat container</value>
   </data>
   <data name="Container_InvalidClientAddress" xml:space="preserve">
-    <value>Invalid access address</value>
+    <value>Alamat akses tidak valid</value>
   </data>
   <data name="Container_InvalidPort" xml:space="preserve">
-    <value>Invalid port when creating a container</value>
+    <value>Port tidak valid saat membuat container</value>
   </data>
   <data name="Container_NotFound" xml:space="preserve">
-    <value>Container does not exist</value>
+    <value>Container tidak ditemukan</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>Successfully created test container {0}</value>
+    <value>Container percobaan {0} berhasil dibuat</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
-    <value>Failed to create file</value>
+    <value>Gagal membuat file</value>
   </data>
   <data name="Notification_NotFound" xml:space="preserve">
-    <value>Notification not found</value>
+    <value>Notifikasi tidak ditemukan</value>
   </data>
   <data name="Notification_SystemNotDeletable" xml:space="preserve">
-    <value>System notifications could not be deleted</value>
+    <value>Notifikasi sistem tidak bisa dihapus</value>
   </data>
   <data name="Notification_SystemNotEditable" xml:space="preserve">
     <value>Notifikasi sistem tidak dapat diubah</value>
