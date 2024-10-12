@@ -1,93 +1,93 @@
 {
   "button": {
-    "create": "Create Team",
-    "disband": "Disband Team",
-    "edit": "Team Details",
-    "join": "Join Team",
-    "leave": "Quit Team",
-    "save": "Update Info"
+    "create": "創建隊伍",
+    "disband": "解散隊伍",
+    "edit": "隊伍詳情",
+    "join": "加入隊伍",
+    "leave": "退出隊伍",
+    "save": "更新信息"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "創建一個隊伍，你可以組織一個隊伍，並且可以邀請其他人加入。每個人只能擁有一個隊伍。",
     "disband": {
       "confirm": {
-        "message": "Are you sure you want to disband team \"{{team}}\"?",
-        "title": "Confirm Disband Team"
+        "message": "你確定要解散隊伍 \"{{team}}\" 嗎？",
+        "title": "確認解散隊伍"
       }
     },
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
+    "join": "請從隊伍創建者處獲取隊伍邀請碼，輸入邀請碼加入隊伍。",
     "kick": {
       "confirm": {
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
-        "title": "Confirm removing member."
+        "message": "你確定要踢出隊員 \"{{user}}\" 嗎？",
+        "title": "確認踢出隊員"
       }
     },
     "leave": {
       "confirm": {
-        "message": "Are you sure you want to leave the team \"{{team}}\"?",
-        "title": "Confirm Quit"
+        "message": "你確定要退出隊伍 \"{{team}}\" 嗎？",
+        "title": "確認退出隊伍"
       }
     },
     "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+      "content": "每個人只能擁有一個隊伍<br/>你可以刪除隊伍後重新創建",
+      "title": "你已經創建了一個隊伍"
     },
     "role": {
-      "captain": "Captain",
-      "member": "Member"
+      "captain": "隊長",
+      "member": "隊員"
     },
     "transfer": {
       "confirm": {
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
-        "title": "Confirm Transfer"
+        "message": "你確定要將隊伍 \"{{team}}\" 轉讓給 \"{{user}}\" 嗎？",
+        "title": "確認轉讓隊伍"
       }
     }
   },
   "label": {
-    "bio": "Biography",
-    "invite_code": "Invitation Code",
-    "kick": "Kick out",
-    "members": "Members",
-    "name": "Team Name",
-    "role": "Role",
-    "transfer": "Transfer"
+    "bio": "隊伍籤名",
+    "invite_code": "邀請碼",
+    "kick": "踢出隊伍",
+    "members": "隊伍成員",
+    "name": "隊伍名稱",
+    "role": "個人身份",
+    "transfer": "轉讓隊伍"
   },
   "notification": {
     "create": {
       "success": {
-        "message": "{{team}} has been created, invite your teammates now!",
-        "title": "Successfully created team"
+        "message": "{{team}}創建成功，快去邀請隊友吧！",
+        "title": "隊伍已創建"
       }
     },
     "disband": {
-      "success": "Successfully disbanded team"
+      "success": "解散隊伍成功"
     },
     "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "copied": "邀請碼已複製到剪貼板",
+      "updated": "隊伍邀請碼已更新"
     },
     "join": {
-      "success": "Successfully joined team",
-      "wrong_invite_code": "Incorrect team invitation code"
+      "success": "加入隊伍成功",
+      "wrong_invite_code": "隊伍邀請碼格式不正確"
     },
     "kick": {
-      "success": "Successfully removed member"
+      "success": "踢出成員成功"
     },
     "leave": {
-      "success": "Successfully quit"
+      "success": "退出隊伍成功"
     },
     "token": {
-      "copied": "Team token copied to clipboard"
+      "copied": "隊伍 Token 已複製到剪貼板"
     },
     "transfer": {
-      "success": "Successfully transferred team"
+      "success": "轉讓隊伍成功"
     },
-    "updated": "Team information has been updated"
+    "updated": "隊伍信息已更新"
   },
   "placeholder": {
-    "bio": "This team is lazy, nothing written"
+    "bio": "這個隊很懶，什麼都沒有寫"
   },
   "title": {
-    "index": "Team management"
+    "index": "隊伍管理"
   }
 }
