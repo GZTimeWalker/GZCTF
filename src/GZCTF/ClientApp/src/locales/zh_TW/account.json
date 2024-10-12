@@ -1,108 +1,108 @@
 {
   "anchor": {
-    "login": "Already have account?",
-    "recovery": "Forgot password?"
+    "login": "準備好登錄？",
+    "recovery": "忘記密碼？"
   },
   "button": {
-    "change_password": "Change Password",
-    "confirm_email": "Confirm Email",
-    "login": "Login",
-    "recovery": "Send Reset Email",
-    "register": "Register",
-    "reset": "Reset Password",
-    "save_profile": "Save Profile",
-    "update_email": "Change Email",
-    "verify_account": "Verify Account"
+    "change_password": "更改密碼",
+    "confirm_email": "確認郵箱",
+    "login": "登錄",
+    "recovery": "發送重置郵件",
+    "register": "註冊",
+    "reset": "重置密碼",
+    "save_profile": "保存個人信息",
+    "update_email": "更改郵箱",
+    "verify_account": "驗證帳戶"
   },
   "content": {
     "confirm": {
-      "message": "Please click the button below to verify your email."
+      "message": "請點擊下方按鈕確認更改郵箱。"
     },
-    "link_check": "Please check your activation link and try again",
-    "link_invalid": "Ouch! There's something wrong with your activation link",
+    "link_check": "請檢查連結是否正確後再次訪問",
+    "link_invalid": "Ouch! 你的連結好像有問題",
     "profile": {
-      "update_email_note": "After changing your email, you will no longer be able to log in using your original email.<br/>An email will be sent to your new email address, click on the link in it to complete the verification."
+      "update_email_note": "更改郵箱後，您將不能通過原郵箱登錄。<br/>一封郵件將發送至新郵箱，點擊其中連結完成驗證。"
     },
     "verify": {
-      "message": "Please click the button below to verify the account."
+      "message": "請點擊下方按鈕驗證帳戶。"
     },
-    "welcome": "Hello, {{decodeEmail}}👋"
+    "welcome": "{{decodeEmail}}, 你好👋"
   },
   "label": {
-    "bio": "Description",
-    "email": "Email",
-    "email_new": "New Email",
-    "password": "Password",
-    "password_old": "Original password",
-    "password_retype": "Confirm password",
-    "phone": "Phone number",
-    "real_name": "Real Name",
-    "student_id": "Student ID",
-    "username": "Username",
-    "username_or_email": "Username or Email"
+    "bio": "描述",
+    "email": "郵箱",
+    "email_new": "新郵箱",
+    "password": "密碼",
+    "password_old": "原密碼",
+    "password_retype": "確認密碼",
+    "phone": "手機號",
+    "real_name": "真實姓名",
+    "student_id": "學工號",
+    "username": "用戶名",
+    "username_or_email": "用戶名或郵箱"
   },
   "notification": {
     "captcha": {
-      "not_valid": "Please wait for captcha...",
+      "not_valid": "請等待驗證碼……",
       "request_sent": {
-        "message": "Waiting for server verification",
-        "title": "Request sent..."
+        "message": "等待伺服器驗證",
+        "title": "請求已發送……"
       }
     },
     "confirm": {
-      "failed": "Failed to verify email",
-      "success": "Email has been verified"
+      "failed": "郵箱驗證失敗",
+      "success": "郵箱已驗證"
     },
     "login": {
-      "banned": "User has been banned",
-      "invalid": "Wrong username or password",
+      "banned": "用戶已被禁用",
+      "invalid": "用戶名或密碼錯誤",
       "success": {
-        "message": "Redirect to the previous page before login",
-        "title": "Login succeeded"
+        "message": "跳轉回登錄前頁面",
+        "title": "登錄成功"
       }
     },
-    "logout": "Logout successfully",
+    "logout": "登出成功",
     "profile": {
-      "password_updated": "Password has been changed, please login again",
-      "profile_updated": "Profile updated"
+      "password_updated": "密碼已修改，請重新登錄",
+      "profile_updated": "個人信息已更新"
     },
     "register": {
-      "logged_in": "Successfully registered",
+      "logged_in": "註冊成功",
       "request_sent": {
-        "message": "Please wait for administrator's approval for activation~",
-        "title": "Registration request sent"
+        "message": "請等待管理員審核激活~",
+        "title": "註冊請求已發送"
       }
     },
     "reset": {
       "success": {
-        "message": "Please login again",
-        "title": "Password has been reset"
+        "message": "請重新登錄",
+        "title": "密碼已重置"
       }
     },
     "verify": {
-      "failed": "Failed to verify the account",
-      "success": "Account has been verified, please login"
+      "failed": "帳戶驗證失敗",
+      "success": "帳戶已驗證，請登錄"
     }
   },
   "password": {
-    "empty": "Password cannot be empty",
-    "include_lowercase": "Include lower case letters",
-    "include_number": "Include numbers",
-    "include_symbol": "Include special characters",
-    "include_uppercase": "Include upper case letters",
-    "min_length": "At least 6 characters",
-    "not_match": "The repeated password is incorrect"
+    "empty": "密碼不能為空",
+    "include_lowercase": "包含小寫字母",
+    "include_number": "包含數字",
+    "include_symbol": "包含特殊字符",
+    "include_uppercase": "包含大寫字母",
+    "min_length": "至少 6 個字符",
+    "not_match": "重複密碼有誤"
   },
   "placeholder": {
-    "bio": "This person is lazy, nothing written"
+    "bio": "這個人很懶，什麼都沒有寫"
   },
   "title": {
-    "confirm": "Email Verification",
-    "login": "Login",
-    "profile": "Profile",
-    "recovery": "Recover account",
-    "register": "Register",
-    "reset": "Reset password",
-    "verify": "Account Verification"
+    "confirm": "郵箱驗證",
+    "login": "登錄",
+    "profile": "個人資料",
+    "recovery": "找回帳號",
+    "register": "註冊",
+    "reset": "重置密碼",
+    "verify": "帳戶驗證"
   }
 }
