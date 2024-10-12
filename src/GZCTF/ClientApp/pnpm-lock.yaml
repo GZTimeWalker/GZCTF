@@ -126,11 +126,11 @@ importers:
         specifier: ^9.1.1
         version: 9.1.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router:
-        specifier: ^6.26.2
-        version: 6.26.2(react@18.3.1)
+        specifier: ^6.27.0
+        version: 6.27.0(react@18.3.1)
       react-router-dom:
-        specifier: ^6.26.2
-        version: 6.26.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^6.27.0
+        version: 6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       swr:
         specifier: 2.2.5
         version: 2.2.5(react@18.3.1)
@@ -172,8 +172,8 @@ importers:
         specifier: ^18.3.11
         version: 18.3.11
       '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.0
+        specifier: ^18.3.1
+        version: 18.3.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.8.1
         version: 8.8.1(@typescript-eslint/parser@8.8.1(eslint@9.12.0)(typescript@5.6.3))(eslint@9.12.0)(typescript@5.6.3)
@@ -245,7 +245,7 @@ importers:
         version: 5.4.8(@types/node@22.7.5)(sugarss@4.0.1(postcss@8.4.47))
       vite-plugin-pages:
         specifier: ^0.32.3
-        version: 0.32.3(react-router@6.26.2(react@18.3.1))(vite@5.4.8(@types/node@22.7.5)(sugarss@4.0.1(postcss@8.4.47)))
+        version: 0.32.3(react-router@6.27.0(react@18.3.1))(vite@5.4.8(@types/node@22.7.5)(sugarss@4.0.1(postcss@8.4.47)))
       vite-plugin-prismjs:
         specifier: ^0.0.11
         version: 0.0.11(prismjs@1.29.0)
@@ -830,8 +830,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@remix-run/router@1.19.2':
-    resolution: {integrity: sha512-baiMx18+IMuD1yyvOGaHM9QrVUPGGG0jC+z+IPHnRJWUAUvaKuWKyE8gjDj2rzv3sz9zOGoRSPgeBVHRhZnBlA==}
+  '@remix-run/router@1.20.0':
+    resolution: {integrity: sha512-mUnk8rPJBI9loFDZ+YzPGdeniYK+FTmRD1TMCz7ev2SNIozyKKpnGgsxO34u6Z4z/t0ITuu7voi/AshfsGsgFg==}
     engines: {node: '>=14.0.0'}
 
   '@rollup/rollup-android-arm-eabi@4.24.0':
@@ -972,8 +972,8 @@ packages:
   '@types/prop-types@15.7.13':
     resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
 
-  '@types/react-dom@18.3.0':
-    resolution: {integrity: sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==}
+  '@types/react-dom@18.3.1':
+    resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
 
   '@types/react@18.3.11':
     resolution: {integrity: sha512-r6QZ069rFTjrEYgFdOck1gK7FLVsgJE7tTz0pQBczlBNUhBNk0MQH4UbnFSwjpQLMkLzgqvBBa+qGpLje16eTQ==}
@@ -2281,15 +2281,15 @@ packages:
       '@types/react':
         optional: true
 
-  react-router-dom@6.26.2:
-    resolution: {integrity: sha512-z7YkaEW0Dy35T3/QKPYB1LjMK2R1fxnHO8kWpUMTBdfVzZrWOiY9a7CtN8HqdWtDUWd5FY6Dl8HFsqVwH4uOtQ==}
+  react-router-dom@6.27.0:
+    resolution: {integrity: sha512-+bvtFWMC0DgAFrfKXKG9Fc+BcXWRUO1aJIihbB79xaeq0v5UzfvnM5houGUm1Y461WVRcgAQ+Clh5rdb1eCx4g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
 
-  react-router@6.26.2:
-    resolution: {integrity: sha512-tvN1iuT03kHgOFnLPfLJ8V95eijteveqdOSk+srqfePtQvqCExB8eHOYnlilbOcyJyKnYkr1vJvf7YqotAJu1A==}
+  react-router@6.27.0:
+    resolution: {integrity: sha512-YA+HGZXz4jaAkVoYBE98VQl+nVzI+cVI2Oj/06F5ZM+0u3TgedN9Y9kmMRo2mnkSK2nCpNQn0DVob4HCsY/WLw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: '>=16.8'
@@ -3420,7 +3420,7 @@ snapshots:
   '@oxlint/win32-x64@0.9.10':
     optional: true
 
-  '@remix-run/router@1.19.2': {}
+  '@remix-run/router@1.20.0': {}
 
   '@rollup/rollup-android-arm-eabi@4.24.0':
     optional: true
@@ -3534,7 +3534,7 @@ snapshots:
 
   '@types/prop-types@15.7.13': {}
 
-  '@types/react-dom@18.3.0':
+  '@types/react-dom@18.3.1':
     dependencies:
       '@types/react': 18.3.11
 
@@ -4966,16 +4966,16 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.11
 
-  react-router-dom@6.26.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-router-dom@6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.19.2
+      '@remix-run/router': 1.20.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-router: 6.26.2(react@18.3.1)
+      react-router: 6.27.0(react@18.3.1)
 
-  react-router@6.26.2(react@18.3.1):
+  react-router@6.27.0(react@18.3.1):
     dependencies:
-      '@remix-run/router': 1.19.2
+      '@remix-run/router': 1.20.0
       react: 18.3.1
 
   react-style-singleton@2.2.1(@types/react@18.3.11)(react@18.3.1):
@@ -5427,7 +5427,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite-plugin-pages@0.32.3(react-router@6.26.2(react@18.3.1))(vite@5.4.8(@types/node@22.7.5)(sugarss@4.0.1(postcss@8.4.47))):
+  vite-plugin-pages@0.32.3(react-router@6.27.0(react@18.3.1))(vite@5.4.8(@types/node@22.7.5)(sugarss@4.0.1(postcss@8.4.47))):
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.3.7
@@ -5440,7 +5440,7 @@ snapshots:
       vite: 5.4.8(@types/node@22.7.5)(sugarss@4.0.1(postcss@8.4.47))
       yaml: 2.5.1
     optionalDependencies:
-      react-router: 6.26.2(react@18.3.1)
+      react-router: 6.27.0(react@18.3.1)
     transitivePeerDependencies:
       - supports-color
 
