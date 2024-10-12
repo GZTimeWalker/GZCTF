@@ -67,40 +67,40 @@
       "profile_updated": "Profil diperbarui"
     },
     "register": {
-      "logged_in": "Successfully registered",
+      "logged_in": "Berhasil mendaftar",
       "request_sent": {
-        "message": "Please wait for administrator's approval for activation~",
-        "title": "Registration request sent"
+        "message": "Silakan tunggu persetujuan dari administrator untuk aktivasi~",
+        "title": "Permintaan pendaftaran sudah dikirim"
       }
     },
     "reset": {
       "success": {
-        "message": "Please login again",
-        "title": "Password has been reset"
+        "message": "Harap login kembali",
+        "title": "Password sudah direset"
       }
     },
     "verify": {
-      "failed": "Failed to verify the account",
-      "success": "Account has been verified, please login"
+      "failed": "Gagal memverifikasi akun",
+      "success": "Akun berhasil diverifikasi, harap login"
     }
   },
   "password": {
-    "empty": "Password cannot be empty",
-    "include_lowercase": "Include lower case letters",
-    "include_number": "Include numbers",
-    "include_symbol": "Include special characters",
-    "include_uppercase": "Include upper case letters",
-    "min_length": "At least 6 characters",
-    "not_match": "The repeated password is incorrect"
+    "empty": "Password tidak boleh kosong",
+    "include_lowercase": "Sertakan huruf kecil",
+    "include_number": "Sertakan angka",
+    "include_symbol": "Sertakan special karakter",
+    "include_uppercase": "Sertakan huruf besar",
+    "min_length": "Setidaknya 6 karakter",
+    "not_match": "Password yang diulang salah"
   },
   "placeholder": {
-    "bio": "This person is lazy, nothing written"
+    "bio": "Orang ini Malas, tidak ada yang ditulis"
   },
   "title": {
-    "confirm": "Email Verification",
-    "login": "Login",
-    "profile": "Profile",
-    "recovery": "Recover account",
+    "confirm": "Verifikasi Email",
+    "login": "Masuk",
+    "profile": "Profil",
+    "recovery": "Pulihkan akun",
     "register": "Daftar",
     "reset": "Atur ulang kata sandi",
     "verify": "Verifikasi Akun"
