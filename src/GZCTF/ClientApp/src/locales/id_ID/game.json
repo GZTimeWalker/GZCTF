@@ -2,88 +2,88 @@
   "button": {
     "challenges": "Challenges",
     "delete": {
-      "all_traffic": "Delete all listed traffic"
+      "all_traffic": "Hapus semua traffic yang ada di list"
     },
     "download": {
-      "all_traffic": "Download all listed traffic",
-      "scoreboard": "Scoreboard",
-      "submissionsheet": "Submissions"
+      "all_traffic": "Download semua traffic yang ada di list",
+      "scoreboard": "Papan Skor",
+      "submissionsheet": "Submission"
     },
-    "finished": "Game Ended",
-    "hide_solved": "Hide Solved",
-    "join": "Join",
-    "leave": "Leave Game",
-    "login_required": "Please Login",
-    "scoreboard": "Scoreboard",
-    "submit_writeup": "Submit Writeup",
+    "finished": "Game telah Berakhir",
+    "hide_solved": "Sembunyikan solve",
+    "join": "Gabung",
+    "leave": "Meninggalkan game",
+    "login_required": "Silahkan masuk",
+    "scoreboard": "Papan Skor",
+    "submit_writeup": "Submit writeup",
     "writeup": {
-      "upload": "Submit Writeup",
-      "uploading": "Uploading..."
+      "upload": "Submit writeup",
+      "uploading": "Mengunggah..."
     }
   },
   "content": {
     "all_solved": {
-      "comment": "Perhaps more difficult challenges are waiting for you...",
-      "title": "All challenges were solved!"
+      "comment": "Mungkin tantangan yang lebih sulit menunggu kamu...",
+      "title": "Semua challenge telah diselesaikan!"
     },
-    "duration": "{{hours}} hour(s)",
-    "end_at": "Ends at",
-    "end_time": "End Time",
-    "game_ended": "Ended",
-    "game_lasts_long": "The game will last for a long time",
+    "duration": "{{hours}} jam",
+    "end_at": "Berakhir pada",
+    "end_time": "Waktu Berakhir",
+    "game_ended": "Telah berakhir",
+    "game_lasts_long": "Game ini akan berlangsung lama",
     "hide_container_events": {
-      "description": "Hide container creation/destroying events",
-      "label": "Hide container events"
+      "description": "Sembunyikan pembuatan/pemusnahan container",
+      "label": "Sembunyikan event container"
     },
     "join": {
-      "confirm": "Confirm Registration",
+      "confirm": "Konfirmasi Pendaftaran",
       "content": [
-        "Are you sure you want to register for this game?",
-        "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
-        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
+        "Apakah kamu yakin ingin mendaftar untuk permainan ini?",
+        "Setelah berhasil mendaftar untuk kompetisi dan lulus tinjauan, tim akan terkunci dan <strong>kamu tidak akan bisa lagi menghapus anggota dari tim.</strong> Tim akan dibuka kembali setelah pertandingan berakhir atau ketika permintaan partisipasi ditolak.",
+        "Limit pada jumlah pemain mengacu pada jumlah anggota yang telah memutuskan untuk berpartisipasi sebagai bagian dari tim tertentu, <strong>tanpa memandang tim mana yang kamu pilih untuk bermain.</strong>"
       ],
       "invite_code": {
-        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
-        "label": "Please enter the invitation code"
+        "description": "Permainan ini hanya dengan undangan. Untuk berpartisipasi, harap masukkan kode undangan.",
+        "label": "Harap masukkan kode undangan"
       },
       "organization": {
-        "description": "This game has multiple division available. Please select your division.",
-        "label": "Select Division"
+        "description": "Permainan ini memiliki beberapa divisi yang tersedia. Harap pilih divisi kamu.",
+        "label": "Pilih divisi"
       },
       "team": {
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
-        "label": "Select your team"
+        "description": "Harap pilih tim yang ingin kamu ikuti dalam permainan ini. Ini tidak bisa diubah setelah permintaan partisipasi disetujui.",
+        "label": "Pilih Tim"
       },
-      "title": "Registration Information"
+      "title": "Informasi Pendaftaran"
     },
-    "joined_status": "<strong>{{count}}</strong> teams have already joined",
+    "joined_status": "<strong>{{count}}</strong> tim sudah bergabung",
     "leave": {
-      "confirm": "Confirm quitting",
+      "confirm": "Konfirmasi untuk keluar",
       "content": [
-        "Are you sure you want to quit this game?",
-        "If the number of team members is zero after you quit, the team's participation data will be deleted."
+        "Apakah kamu yakin ingin keluar dari permainan ini?",
+        "Jika jumlah anggota tim menjadi nol setelah kamu keluar, data partisipasi tim akan dihapus."
       ]
     },
-    "no_challenge": "Ouch! No challenges available for this game.",
+    "no_challenge": "Waduh! Tidak ada game yang tersedia untuk permainan ini.",
     "no_cheat": {
-      "comment": "It looks like everyone played fair!",
-      "title": "No cheating detected yet"
+      "comment": "Sepertinya semua orang bermain dengan adil!",
+      "title": "Belum ada kecurangan yang terdeteksi"
     },
-    "no_notice": "Nothing here.",
+    "no_notice": "Tak ada apa-apa di sini.",
     "no_traffic": {
-      "comment": "Both platform and challenge need to be set up to enable capture",
-      "title": "No challenge has traffic capture enabled"
+      "comment": "Baik platform maupun tantangan harus diatur untuk mengaktifkan penangkapan",
+      "title": "Tidak ada game yang mengaktifkan tangkapan traffic"
     },
-    "remaining_duration": "{{hours}}h left",
-    "remaining_time": "Remaining time",
+    "remaining_duration": "{{hours}} jam tersisa",
+    "remaining_time": "Waktu tersisa",
     "scoreboard_not_ready": {
-      "comment": "Patience is a virtue, please hold on…",
-      "title": "Loading challenges"
+      "comment": "Sabar itu indah, harap tunggu sebentar…",
+      "title": "Memuat tantangan"
     },
-    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
-    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
-    "start_at": "Starts at",
-    "start_time": "Start Time",
+    "scoreboard_note": "Note: tim dengan skor yang sama diurutkan berdasarkan waktu submit.",
+    "scoreboard_tip": "Tip: Scroll daftar tantangan menggunakan panah kiri dan kanan!",
+    "start_at": "Mulai pada",
+    "start_time": "Waktu Mulai",
     "team_view": {
       "description": "Display cheating information by teams",
       "label": "View as Team"
