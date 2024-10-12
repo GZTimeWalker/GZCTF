@@ -120,94 +120,94 @@
     </value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
-    <value>Available email suffix: {0}</value>
+    <value>사용 가능한 이메일 접미사: {0}</value>
   </data>
   <data name="Account_AvatarUpdated" xml:space="preserve">
-    <value>Change new avatar: [{0}]</value>
+    <value>아바타 변경하기: [{0}]</value>
   </data>
   <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
-    <value>Please contact the administrator to change the email</value>
+    <value>이메일을 변경하려면 관리자에게 문의하세요.</value>
   </data>
   <data name="Account_EmailChanged" xml:space="preserve">
-    <value>Email changed successfully</value>
+    <value>이메일이 성공적으로 변경되었습니다.</value>
   </data>
   <data name="Account_EmailNotConfirmed" xml:space="preserve">
-    <value>Account not activated, please register again</value>
+    <value>계정이 활성화되지 않았습니다. 다시 등록하십시오</value>
   </data>
   <data name="Account_EmailSendFailed" xml:space="preserve">
-    <value>Unable to send email, please contact the administrator</value>
+    <value>이메일을 보낼 수 없습니다. 관리자에게 문의하세요</value>
   </data>
   <data name="Account_EmailSent" xml:space="preserve">
-    <value>Email sent successfully</value>
+    <value>이메일을 성공적으로 전송하였습니다.</value>
   </data>
   <data name="Account_EmailUsed" xml:space="preserve">
-    <value>Email address is already in use</value>
+    <value>이미 사용 중인 이메일입니다.</value>
   </data>
   <data name="Account_EmailVerificationFailed" xml:space="preserve">
-    <value>Email verification failed</value>
+    <value>이메일 인증에 실패하였습니다.</value>
   </data>
   <data name="Account_EmailVerificationPending" xml:space="preserve">
-    <value>Email pending verification</value>
+    <value>확인 대기 중인 이메일입니다.</value>
   </data>
   <data name="Account_EmailVerified" xml:space="preserve">
-    <value>Email verified</value>
+    <value>이메일 인증이 완료되었습니다.</value>
   </data>
   <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
-    <value>Wrong username or password</value>
+    <value>잘못된 사용자 이름 또는 비밀번호 입니다.</value>
   </data>
   <data name="Account_InvalidEmail" xml:space="preserve">
-    <value>Invalid email address</value>
+    <value>잘못된 이메일 주소입니다.</value>
   </data>
   <data name="Account_PasswordChanged" xml:space="preserve">
-    <value>User updated password</value>
+    <value>업데이트 할 계정 비밀번호</value>
   </data>
   <data name="Account_PasswordReset" xml:space="preserve">
-    <value>User password reset successful</value>
+    <value>성공적으로 계정 비밀번호를 초기화하였습니다.</value>
   </data>
   <data name="Account_RegisterNotEnabled" xml:space="preserve">
-    <value>Registration has been disabled</value>
+    <value>등록이 비활성화 되었습니다.</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>Email verification is not enabled, please contact the administrator to reset the password</value>
+    <value>이메일 인증이 활성화되어 있지 않습니다. 관리자에게 문의하여 비밀번호를 재설정하세요.</value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
-    <value>Send email to user for email change</value>
+    <value>이메일 변경을 위해 사용자에게 메일을 보냈습니다.</value>
   </data>
   <data name="Account_SendEmailVerification" xml:space="preserve">
-    <value>Send email to user for email verification</value>
+    <value>이메일 확인을 위하여 사용자에게 이메일을 보냈습니다.</value>
   </data>
   <data name="Account_TokenValidationFailed" xml:space="preserve">
-    <value>Captcha failed</value>
+    <value>인증에 실패하였습니다.</value>
   </data>
   <data name="Account_UserDisabled" xml:space="preserve">
-    <value>User is banned</value>
+    <value>사용자가 차단되었습니다.</value>
   </data>
   <data name="Account_UserExisting" xml:space="preserve">
-    <value>This account already exists</value>
+    <value>이미 존재하는 계정입니다.</value>
   </data>
   <data name="Account_UserLogined" xml:space="preserve">
-    <value>User successfully logged in</value>
+    <value>성공적으로 로그인 하였습니다.</value>
   </data>
   <data name="Account_UserNotExist" xml:space="preserve">
-    <value>User does not exist</value>
+    <value>사용자가 존재하지 않습니다.</value>
   </data>
   <data name="Account_UserRegistered" xml:space="preserve">
-    <value>Successfully registered</value>
+    <value>성공적으로 회원가입을 했습니다.</value>
   </data>
   <data name="Account_UserRegisteredLog" xml:space="preserve">
-    <value>User successfully registered</value>
+    <value>성공적으로 회원가입을 했습니다.</value>
   </data>
   <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
-    <value>Successfully registered, waiting for moderator approval</value>
+    <value>성공적으로 회원가입이 되었으며 관리자 승인을 기다리고 있습니다.</value>
   </data>
   <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
-    <value>User successfully registered, pending approval</value>
+    <value>계정이 성공적으로 등록되었으며 승인 대기 중입니다.</value>
   </data>
   <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
-    <value>Successfully registered, waiting for email verification</value>
+    <value>성공적으로 등록이 되었으며 이메일 인증 대기 중입니다.</value>
   </data>
   <data name="Account_UserUpdated" xml:space="preserve">
-    <value>User updated: {0} =&gt; {1}</value>
+    <value>사용자가 업데이트 되었습니다: {0} =&gt;{1}</value>
   </data>
   <data name="Account_UserUpdateFailed" xml:space="preserve">
     <value>User update failed</value>
