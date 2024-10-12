@@ -85,160 +85,160 @@
     "start_at": "Mulai pada",
     "start_time": "Waktu Mulai",
     "team_view": {
-      "description": "Display cheating information by teams",
-      "label": "View as Team"
+      "description": "Tampilkan informasi kecurangan berdasarkan tim",
+      "label": "Lihat sebagai tim"
     },
-    "total_duration": "{{hours}}h in total",
-    "total_time": "Duration",
+    "total_duration": "Total {{hours}} jam",
+    "total_time": "Durasi",
     "traffic": {
-      "delete_confirm": "Delete this traffic file?",
-      "deleted_all_confirm": "Delete all listed traffic?"
+      "delete_confirm": "Hapus file traffic ini?",
+      "deleted_all_confirm": "Hapus semua traffic yang ada di list?"
     },
     "writeup": {
-      "current": "Current Writeup",
-      "deadline_exceeded": "Submission deadline has passed",
+      "current": "Writeup Saat Ini",
+      "deadline_exceeded": "Batas waktu pengiriman sudah lewat",
       "instructions": {
-        "additional": "Additional Notes",
+        "additional": "Tambahan Catatan",
         "datetime_format": "DD/MM/YYYY HH:mm:ss",
-        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
-        "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
-        "title": "Submission Instructions"
+        "deadline": "Harap kirimkan writeup sebelum <1>{{datetime}}</1>. Pengiriman yang terlambat atau tidak submit akan dianggap menyerah pada hasil game ini.",
+        "file_format": "Harap susun writeup dari semua tantangan yang telah diselesaikan menjadi <1>dokumen PDF standar dengan ukuran kurang dari 20MB</1>.",
+        "title": "Instruksi submission"
       },
-      "submitted": "Successfully submitted",
-      "title": "Writeup Management",
-      "unsubmitted": "Not yet submitted",
-      "unsubmitted_note": "Your team has not submitted yet"
+      "submitted": "Berhasil disubmit",
+      "title": "Manajemen writeup",
+      "unsubmitted": "Belum disubmit",
+      "unsubmitted_note": "Tim kamu belum mengirimkan apa pun"
     }
   },
   "event": {
     "answer": {
-      "accepted": "Flag accepted",
-      "cheat": "Cheating",
-      "not_found": "Unknown",
-      "submitted": "Successfully submitted",
-      "wrong": "Incorrect flag"
+      "accepted": "Flag diterima",
+      "cheat": "Kecurangan",
+      "not_found": "Tak diketahui",
+      "submitted": "Berhasil dikirimkan",
+      "wrong": "Flagnya salah"
     },
-    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
+    "cheat_detected": "Kecurangan terdeteksi di tantangan {{chal}}, tim {{team}} menggunakan flag milik {{steam}}.",
     "container": {
-      "destroy": "Destroyed challenge instance for {{chal}}#{{id}}",
-      "start": "Created challenge instance for {{chal}}#{{id}}"
+      "destroy": "Instance tantangan untuk {{chal}}#{{id}} telah dihapus",
+      "start": "Instance tantangan telah dibuat untuk {{chal}}#{{id}}"
     },
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
   },
   "label": {
     "cheat_info": {
-      "owned_team": "Source Team",
-      "submit_team": "Submit Team",
-      "submit_user": "Submit User"
+      "owned_team": "Sumber tim",
+      "submit_team": "Submit tim",
+      "submit_user": "Submit user"
     },
     "notice_type": {
-      "all": "All",
+      "all": "Semua",
       "challenge": "Challenge",
-      "events": "News",
+      "events": "Berita",
       "game": "Notice"
     },
-    "score": "Score",
-    "score_formatter": "{value} pts",
+    "score": "Skor",
+    "score_formatter": "{value} poin",
     "score_table": {
-      "rank_organization": "Rank",
-      "rank_total": "Overall",
-      "score": "Score",
-      "score_total": "Score",
-      "solved_count": "Solved",
-      "team": "Team",
-      "type": "Type"
+      "rank_organization": "Ranking",
+      "rank_total": "Keseluruhan",
+      "score": "Skor",
+      "score_total": "Skor",
+      "solved_count": "Jumlah Solved",
+      "team": "Tim",
+      "type": "Jenis"
     },
     "traffic": "Traffic"
   },
   "notice": {
-    "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
-    "new_challenge": "New challenge [{{title}}] has been released.",
-    "new_hint": "Hints for [{{title}}] has been updated."
+    "blood": "Selamat kepada {{team}} atas {{blood}} di {{chal}}.",
+    "new_challenge": "Challenge baru [{{title}}] telah dirilis.",
+    "new_hint": "Petunjuk untuk [{{title}}] telah diperbarui."
   },
   "notification": {
     "connected": {
-      "event": "Real-time event connected",
-      "submission": "Real-time submission connected"
+      "event": "Real-time event terhubung",
+      "submission": "Real-time submission terhubung"
     },
-    "ended": "The game has ended",
+    "ended": "Game telah berakhir",
     "fetch_failed": {
-      "event": "Failed to fetch events",
-      "notice": "Failed to fetch notifications",
-      "submission": "Failed to fetch submissions"
+      "event": "Gagal mengambil event",
+      "notice": "Gagal mengambil notifikasi",
+      "submission": "Gagal mengambil submission"
     },
-    "joined": "Registration successful",
-    "left": "Successfully cancel",
-    "no_invite_code": "Invitation code cannot be empty",
-    "no_organization": "Please select the division",
-    "no_team": "Please select the team to participate with",
-    "not_started": "Game not yet started",
-    "select_chal_and_part": "Please select challenges and teams first",
-    "suspended": "You have been banned",
+    "joined": "Pendaftaran berhasil",
+    "left": "Berhasil dibatalkan",
+    "no_invite_code": "Kode undangan tidak boleh kosong",
+    "no_organization": "Silakan pilih divisi",
+    "no_team": "Silakan pilih tim untuk ikut serta",
+    "not_started": "Game belum dimulai",
+    "select_chal_and_part": "Silakan pilih tantangan dan tim terlebih dahulu",
+    "suspended": "Kamu telah dibanned",
     "traffic": {
-      "deleted": "Traffic file(s) has been deleted"
+      "deleted": "File(s) traffic telah dihapus"
     },
     "writeup": {
-      "submitted": "Writeup was successfully submitted"
+      "submitted": "Writeup berhasil di submit"
     }
   },
   "participation": {
     "actions": {
-      "accepted": "Approved",
-      "pending": "Pending review",
-      "rejected": "Re-Sign Up",
+      "accepted": "Disetujui",
+      "pending": "Tinjauan tertunda",
+      "rejected": "Daftar ulang",
       "suspended": "Banned",
-      "unsubmitted": "Join game"
+      "unsubmitted": "Bergabung dalam game"
     },
     "alert": {
       "not_started": {
-        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
-        "mobile": "Please use desktop site to see the details of the game.",
-        "title": "Game not yet started"
+        "content": "Kamu telah berhasil mendaftar dan lolos review sebagai anggota tim {{team}}. Silakan tunggu hingga game dimulai.",
+        "mobile": "Silakan gunakan situs desktop untuk melihat detail permainan.",
+        "title": "Game belum dimulai"
       },
       "pending": {
-        "content": "Please wait for review results",
-        "title": "You have successfully registered as a member of team {{team}}"
+        "content": "Silakan tunggu hasil review",
+        "title": "Kamu telah berhasil mendaftar sebagai anggota tim {{team}}"
       },
       "rejected": {
-        "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements",
-        "title": "Your participating request was rejected"
+        "content": "Pastikan kamu memenuhi syarat untuk mendaftar di game ini dan daftar ulang setelah memenuhi persyaratan",
+        "title": "Permintaan partisipasimu ditolak"
       },
       "suspended": {
-        "content": "If you have any objections, please contact the administrator to appeal.",
-        "title": "Your team {{team}} has been suspended"
+        "content": "Jika kamu memiliki keberatan, silakan hubungi admin untuk mengajukan banding.",
+        "title": "Tim kamu {{team}} telah disuspend"
       },
       "team_required": {
-        "content": "You didn't join any team, please create or join a team on the <1> Team Management </1> page.",
-        "title": "Unable to register at this time"
+        "content": "Kamu belum bergabung dengan tim mana pun, silakan buat atau bergabung dengan tim di halaman <1>Manajemen Tim</1>.",
+        "title": "Tidak bisa mendaftar saat ini"
       }
     },
     "status": {
-      "accepted": "Approved",
+      "accepted": "Disetujui",
       "pending": "Pending",
-      "rejected": "Rejected",
+      "rejected": "Ditolak",
       "suspended": "Banned"
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not solved any challenges...",
-    "search_team": "Search Team"
+    "no_solved": "Uh-oh! Tim ini belum menyelesaikan challenge apa pun...",
+    "search_team": "Cari tim"
   },
   "tab": {
     "challenge": "Challenges",
     "monitor": {
       "cheatinfo": "Cheats",
-      "events": "Events",
-      "index": "Monitoring",
+      "events": "Event",
+      "index": "Pengawasan",
       "submissions": "Submissions",
       "traffic": "Traffics"
     },
-    "scoreboard": "Scoreboard"
+    "scoreboard": "Papan Skor"
   },
   "tag": {
-    "hidden": "Hidden",
-    "individual": "Personal",
-    "limited": "{{count}} players",
-    "multiplayer": "Team"
+    "hidden": "Sembunyikan",
+    "individual": "Pribadi",
+    "limited": "{{count}} pemain",
+    "multiplayer": "Tim"
   },
   "title": {
     "index": "Games"
