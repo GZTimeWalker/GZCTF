@@ -1,129 +1,129 @@
 {
   "avatar": {
-    "save": "Save Avatar",
-    "upload_failed": "Failed to update avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar"
+    "save": "保存頭像",
+    "upload_failed": "頭像更新失敗",
+    "uploaded": "頭像已更新",
+    "uploading": "正在上傳頭像"
   },
   "button": {
-    "copy": "Copy to Clipboard",
-    "reset": "Reset",
-    "select_file": "Select File",
-    "try_again": "Try Again",
-    "uploading": "Uploading"
+    "copy": "複製到剪貼板",
+    "reset": "重置",
+    "select_file": "選擇文件",
+    "try_again": "再試一次",
+    "uploading": "上傳中"
   },
   "content": {
     "404": {
-      "text": "A desolation, why is it here",
-      "title": "Page does not exist"
+      "text": "一處荒蕪，為何於此駐足",
+      "title": "頁面不存在"
     },
     "about": {
       "slogan": "Hack for fun not for profit"
     },
     "color": {
       "custom": {
-        "description": "Select the base color you want to use",
-        "label": "Custom Base Color",
-        "placeholder": "Use default color"
+        "description": "選擇自定義顏色",
+        "label": "自定義顏色",
+        "placeholder": "使用默認顏色"
       },
       "palette": {
-        "description": "Color palette generated from the custom base color",
-        "label": "Color Palette"
+        "description": "自定義顏色生成的色盤",
+        "label": "自定義色盤"
       },
       "provider": {
-        "custom": "Customized",
-        "default": "Default",
-        "description": "Select how the base color is determined",
-        "label": "Theme color provider",
-        "managed": "Admin Provided"
+        "custom": "自定義",
+        "default": "默認",
+        "description": "選擇想要採取何種顏色主題",
+        "label": "顏色主題來源",
+        "managed": "管理員提供"
       },
-      "title": "Customize Color"
+      "title": "修改平臺顏色"
     },
     "drop_zone": {
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB",
+      "content": "拖放圖片或點擊此處以選擇{{type}}",
+      "limit": "請選擇小於 3MB 的圖片",
       "type": {
-        "avatar": "avatar",
-        "poster": "poster"
+        "avatar": "頭像",
+        "poster": "海報"
       }
     },
-    "external_link": "External Link",
+    "external_link": "外部連結",
     "home": {
-      "recent_games": "Recent Games"
+      "recent_games": "近期比賽"
     },
-    "no_data": "No data",
-    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "no_data": "沒有數據",
+    "report_error": "如果你認為這是一個異常錯誤，請聯繫管理員",
     "wider": {
-      "text": "Try to use a wider device",
-      "title": "Not wide enough"
+      "text": "請使用更寬的設備瀏覽本頁面",
+      "title": "頁面寬度不足"
     }
   },
   "download": {
-    "failed": "Failed to download",
-    "started": "Downloading",
-    "success": "Downloaded"
+    "failed": "下載失敗",
+    "started": "正在下載",
+    "success": "下載成功"
   },
   "email": {
     "sent": {
-      "message": "Please check your email and spam mail!",
-      "title": "Email Sent"
+      "message": "請檢查你的郵箱及垃圾郵件~",
+      "title": "郵件已發送"
     }
   },
   "error": {
-    "check_input": "Please check your input",
-    "empty": "Content can't be empty",
-    "encountered": "An error has occurred",
+    "check_input": "請檢查輸入",
+    "empty": "內容不能為空",
+    "encountered": "遇到了問題",
     "file_invalid": {
-      "message": "Please check file format and size",
-      "title": "Failed to load file"
+      "message": "請檢查文件格式和大小",
+      "title": "文件加載失敗"
     },
-    "invalid_username_or_password": "Incorrect username or password",
-    "no_change": "There seems to be no change",
-    "param_error": "Incorrect parameter, please check",
-    "param_invalid": "Invalid parameter",
-    "param_missing": "Missing parameter",
-    "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too many requests",
-    "try_later": "Please try again later",
-    "unknown": "Unknown error"
+    "invalid_username_or_password": "用戶名或密碼錯誤",
+    "no_change": "似乎沒有修改",
+    "param_error": "參數錯誤，請檢查",
+    "param_invalid": "參數無效",
+    "param_missing": "缺少參數",
+    "param_unknown": "未知參數",
+    "request_too_frequent": "請求過於頻繁",
+    "try_later": "請稍後再試",
+    "unknown": "未知錯誤"
   },
   "label": {
-    "challenge": "Challenge",
+    "challenge": "題目",
     "flag": "flag",
-    "game": "Game",
+    "game": "比賽",
     "ip": "IP",
-    "team": "Team",
-    "time": "Time",
-    "user": "User"
+    "team": "隊伍",
+    "time": "時間",
+    "user": "用戶"
   },
   "modal": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm Update",
-    "delete": "Delete"
+    "cancel": "取消",
+    "confirm": "確認",
+    "confirm_delete": "確認刪除",
+    "confirm_update": "確認修改",
+    "delete": "刪除"
   },
   "tab": {
-    "about": "About",
+    "about": "關於",
     "account": {
-      "clean_cache": "Clear Cache",
-      "login": "Login",
-      "logout": "Logout",
-      "profile": "Profile"
+      "clean_cache": "清除緩存",
+      "login": "登錄",
+      "logout": "登出",
+      "profile": "用戶信息"
     },
-    "admin": "Admin",
-    "game": "Games",
-    "home": "Home",
-    "post": "Posts",
-    "team": "Team",
+    "admin": "管理",
+    "game": "賽事",
+    "home": "主頁",
+    "post": "文章",
+    "team": "戰隊",
     "theme": {
-      "dark": "dark mode",
-      "light": "light mode",
-      "switch_to": "Switch to {{theme}}"
+      "dark": "深色",
+      "light": "淺色",
+      "switch_to": "切換到{{theme}}主題"
     }
   },
   "title": {
     "404": "The Nowhere",
-    "about": "About"
+    "about": "關於"
   }
 }
