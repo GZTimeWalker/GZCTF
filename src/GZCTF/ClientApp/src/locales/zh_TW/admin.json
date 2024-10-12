@@ -1,66 +1,66 @@
 {
   "button": {
-    "back": "Go Back",
+    "back": "返回上級",
     "challenges": {
       "attachment": {
-        "save_url": "Save Link",
-        "upload": "Upload",
-        "uploading": "Uploading..."
+        "save_url": "保存連結",
+        "upload": "上傳附件",
+        "uploading": "上傳中……"
       },
-      "bonus": "Triple Blood Bonus",
-      "delete": "Delete",
-      "disable": "Disable",
-      "edit": "Edit Challenge",
-      "edit_more": "Edit Flags",
-      "enable": "Enable",
+      "bonus": "三血獎勵",
+      "delete": "刪除題目",
+      "disable": "禁用題目",
+      "edit": "編輯題目",
+      "edit_more": "編輯附件及 flag",
+      "enable": "啟用題目",
       "flag": {
         "add": {
-          "dynamic": "Upload Attachments",
-          "normal": "Add Flag",
-          "remote": "Add Remote"
+          "dynamic": "上傳動態附件",
+          "normal": "添加 flag",
+          "remote": "添加遠程附件"
         },
-        "delete": "Delete",
-        "save": "Save Template"
+        "delete": "刪除 flag",
+        "save": "保存 flag 模版"
       },
       "hint": {
-        "add": "Add Hint"
+        "add": "添加提示"
       },
-      "new": "New Challenge",
-      "next": "Next",
-      "preview": "Preview",
-      "previous": "Previous",
+      "new": "新建題目",
+      "next": "下一題",
+      "preview": "預覽題目",
+      "previous": "上一題",
       "test_container": {
-        "create": "Create",
-        "destroy": "Destroy"
+        "create": "創建測試容器",
+        "destroy": "銷毀測試容器"
       },
-      "update_accept_count": "Update AC Counter"
+      "update_accept_count": "更新解題計數"
     },
     "games": {
       "challenges": {
         "attachment": {
-          "batch_add": "Batch Add"
+          "batch_add": "批量添加"
         }
       },
-      "copy_public_key": "Copy Public Key",
-      "delete": "Delete",
-      "new": "New Game"
+      "copy_public_key": "複製公鑰",
+      "delete": "刪除比賽",
+      "new": "新建比賽"
     },
     "notices": {
-      "delete": "Delete",
-      "edit": "Edit Notice",
-      "new": "New Notice"
+      "delete": "刪除公告",
+      "edit": "編輯公告",
+      "new": "新建公告"
     },
-    "save": "Save Changes",
+    "save": "保存更改",
     "teams": {
-      "do_lock": "Lock",
-      "do_unlock": "Unlock",
-      "edit": "Edit Team"
+      "do_lock": "鎖定",
+      "do_unlock": "解鎖",
+      "edit": "編輯隊伍"
     },
     "users": {
-      "edit": "Edit User"
+      "edit": "編輯用戶"
     },
     "writeups": {
-      "download_all": "Download All"
+      "download_all": "下載全部 Writeup"
     }
   },
   "content": {
@@ -68,429 +68,429 @@
       "challenges": {
         "attachment": {
           "clear": {
-            "description": "Are you sure you want to remove the attachment of this challenge?",
-            "title": "Clear Attachment"
+            "description": "你確定要清除本題的附件嗎？",
+            "title": "清除附件"
           },
           "instruction": {
-            "amount_double": "It is recommended to upload dynamic attachments that are twice the expected number of participating teams.",
+            "amount_double": "建議上傳預期參賽隊伍數量的兩倍的動態附件。",
             "dynamic": {
-              "content": "Batch upload dynamic attachments, all of which will be distributed with the same file name.",
-              "format": "Please use each flag as the file name for the corresponding attachment."
+              "content": "批量上傳動態附件，所有附件上傳後將會以統一的文件名進行下發。",
+              "format": "請以每個 flag 作為對應附件的文件名。"
             },
             "remote": {
-              "content": "Batch set remote attachments and corresponding flags, with one group per line.",
-              "format": "Please separate the flag and the URL with a space."
+              "content": "批量設置遠程附件及對應 flag，每行一組。",
+              "format": "請將 flag 字符串與 url 以空格隔開。"
             }
           },
-          "link": "Attachment Link",
-          "title": "Attachment Management",
-          "type": "Attachment Type"
+          "link": "附件連結",
+          "title": "附件管理",
+          "type": "附件類型"
         },
         "attachment_name": {
-          "description": "All dynamic attachments will be downloaded under this filename",
-          "label": "Global Attachment Name"
+          "description": "所有動態附件均會以此文件名下載",
+          "label": "全局附件名"
         },
         "bonus": {
-          "description": "The Triple Blood Bonus refers to the additional points awarded when a challenge is solved by the first three teams. Each team can receive a scoring bonus based on the current points of the challenge. The bonus will be added to the team's score in the form of a fixed percentage.",
-          "first_blood": "First Blood Reward (%)",
-          "second_blood": "Second Blood Reward (%)",
-          "third_blood": "Third Blood Reward (%)"
+          "description": "三血獎勵加成是指當一個題目被前三個隊伍解出時，每個隊伍可以得到的分值獎勵。三血的獎勵基於題目的當前分值，並以一個固定百分比的形式累加至該隊伍的得分中。",
+          "first_blood": "一血獎勵 (%)",
+          "second_blood": "二血獎勵 (%)",
+          "third_blood": "三血獎勵 (%)"
         },
-        "category": "Category",
-        "container_image": "Container Image",
+        "category": "題目類別",
+        "container_image": "容器鏡像",
         "cpu_limit": {
-          "description": "Multiplication of 0.1 CPU core",
-          "label": "CPU Limit (0.1 CPUs)"
+          "description": "乘以 0.1 即為 CPU 核心數",
+          "label": "CPU 限制 (0.1 CPUs)"
         },
-        "delete": "Are you sure you want to delete challenge {{name}}?",
-        "description": "Description",
-        "difficulty": "Difficulty Factor",
-        "disable": "Are you sure you want to disable challenge {{name}}?",
+        "delete": "你確定要刪除題目 {{name}} 嗎？",
+        "description": "題目描述",
+        "difficulty": "難度係數",
+        "disable": "你確定要禁用題目 {{name}} 嗎？",
         "empty": {
-          "description": "Click the top right to create the first challenge",
-          "title": "Ouch! This game has no challenge yet."
+          "description": "點擊右上角創建第一個題目",
+          "title": "Ouch! 這個比賽還沒有題目"
         },
-        "enable": "Are you sure you want to enable challenge {{name}}?",
+        "enable": "你確定要啟用題目 {{name}} 嗎？",
         "flag": {
-          "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br /> Each challenge can have multiple flags. Any configured flags can be accepted.",
-          "delete": "Are you sure you want to delete this flag?",
+          "create": "創建 flag，多個 flag 按行分割，每行一個。<br />每道題目可以擁有多個 flag，獲取任意 flag 均可得分。",
+          "delete": "確定刪除此 flag 嗎？",
           "empty": {
-            "description": "Please add flag via top right corner",
-            "title": "The flag list is empty"
+            "description": "請通過右上角添加 flag",
+            "title": "flag 列表為空"
           },
           "instructions": {
-            "both": "If you need to enable leet flag with <1>[TEAM_HASH]</1>, add the <2>[LEET]</2> tag <strong> before </strong> the flag template string. The entropy of the flag template string will not be checked.",
-            "complex": "If you need to enable special characters in flag generation, use <1>[CLEET]</1> instead of <2>[LEET]</2> at the beginning of the string. This may cause injection issues.",
-            "description": "Please enter flag template string, leave it blank to generate random GUID as flag",
-            "example": "Examples",
-            "guid": "Specify <1>[GUID]</1> to replace only placeholder here with random GUID",
-            "leave_empty": "Leave it blank",
-            "leet": "Leet will be enabled if <1>[TEAM_HASH]</1> is not specified and will change strings in braces based on the template. Please make sure the entropy of flag template is high enough.",
-            "team_hash": "If <1>[TEAM_HASH]</1> is specified, it will be automatically replaced with the hash generated by team token and contest's information",
-            "will_generate": "will generate"
+            "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情況下啟用 Leet 字符串功能，請在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 標記，此時不會檢查 flag 模版字符串的熵",
+            "complex": "如果需要在 flag 生成中啟用特殊字符，請在字符串開頭用 <1>[CLEET]</1> 代替 <2>[LEET]</2>，這可能造成對於題目的注入問題",
+            "description": "請輸入 flag 模版字符串，留空以生成隨機 GUID 作為 flag",
+            "example": "flag 模板編寫示例",
+            "guid": "指定 <1>[GUID]</1>則會僅替換此處的佔位符為隨機 GUID",
+            "leave_empty": "留空",
+            "leet": "若未指定 <1>[TEAM_HASH]</1> 則將啟用 Leet 字符串功能，將會基於模版對花括號內字符串進行變換，需要確保 flag 模版字符串的熵足夠高",
+            "team_hash": "若指定 <1>[TEAM_HASH]</1> 則它將會被自動替換為隊伍 Token 和比賽信息所生成的哈希值",
+            "will_generate": "將會生成"
           },
-          "template": "Flag Template",
-          "title": "Flag Management"
+          "template": "flag 模版",
+          "title": "flag 管理"
         },
-        "hints": "Hints",
+        "hints": "題目提示",
         "memory_limit": {
-          "description": "RAM limitation of containers",
-          "label": "Memory Limit (MB)"
+          "description": "限制容器使用的 RAM",
+          "label": "內存限制 (MB)"
         },
         "min_score_radio": {
-          "description": "Min score: {{min_score}}pts",
-          "label": "Minimum Score Ratio"
+          "description": "最低分值：{{min_score}}pts",
+          "label": "最低分比例"
         },
-        "score": "Score",
+        "score": "題目分值",
         "service_port": {
-          "description": "Port of container services",
-          "label": "Service Port"
+          "description": "容器內服務的埠號",
+          "label": "服務埠"
         },
-        "solve_count": "Solves",
+        "solve_count": "解出次數",
         "storage_limit": {
-          "description": "Storage (including image)",
-          "label": "Storage Limit (MB)"
+          "description": "限制存儲空間，含鏡像大小",
+          "label": "存儲限制 (MB)"
         },
-        "title": "Title",
+        "title": "題目標題",
         "traffic_capture": {
-          "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",
-          "label": "Enable Traffic Capture"
+          "description": "捕獲隊伍解題流量，需要開啟平臺代理",
+          "label": "開啟流量捕獲"
         },
         "type": {
-          "description": "Cannot be changed after creation",
-          "label": "Type"
+          "description": "創建後不可更改",
+          "label": "題目類型"
         }
       },
       "info": {
         "accept_without_review": {
-          "description": "Accept directly after team registration",
-          "label": "Accept Without Review"
+          "description": "隊伍報名後直接設置為 Accept 狀態",
+          "label": "隊伍報名免審核"
         },
         "container_limit": {
-          "description": "Containers shared by one team (0 = unlimited)",
-          "label": "Team Container Limit"
+          "description": "隊伍共享的容器數量 (0 表示不限制)",
+          "label": "隊伍容器限制"
         },
-        "content": "Game Details",
-        "delete": "Are you sure you want to delete game {{name}}?",
-        "end_date": "End Date",
-        "end_time": "End Time",
+        "content": "比賽詳情",
+        "delete": "你確定要刪除比賽 {{name}} 嗎？",
+        "end_date": "結束日期",
+        "end_time": "結束時間",
         "invite_code": {
-          "description": "Leave empty for no invitation code",
-          "label": "Invitation Code"
+          "description": "留空表示不使用邀請碼",
+          "label": "邀請碼"
         },
         "member_limit": {
-          "description": "0 means unlimited members of team",
-          "label": "Maximum Team Member"
+          "description": "0 表示不限制隊伍人數",
+          "label": "隊伍人數限制"
         },
         "organizations": {
-          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
-          "label": "List of Participating Divisions"
+          "description": "添加參賽組織以開啟分組榜單，留空則不分組",
+          "label": "參賽可選組織列表"
         },
-        "poster": "Poster",
+        "poster": "比賽海報",
         "practice_mode": {
-          "description": "View challenges after the game ends",
-          "label": "Practice Mode"
+          "description": "比賽結束後仍然可以查看題目和提交",
+          "label": "練習模式"
         },
-        "start_date": "Start Date",
-        "start_time": "Start Time",
+        "start_date": "開始日期",
+        "start_time": "開始時間",
         "summary": {
-          "description": "Will be displayed in the game list",
-          "label": "Summary"
+          "description": "將會顯示在比賽列表中",
+          "label": "比賽簡介"
         },
         "title": {
-          "description": "Excessive length may affect the display effect",
-          "label": "Title"
+          "description": "過長會影響顯示效果",
+          "label": "比賽標題"
         },
         "writeup_deadline": {
-          "description": "Hours to submit writeups after game ends",
-          "label": "Writeup Deadline"
+          "description": "比賽結束後允許提交 Writeup 的小時數",
+          "label": "Writeup 提交時限"
         },
-        "writeup_instruction": "Writeup Instructions",
+        "writeup_instruction": "Writeup 提交說明",
         "writeup_required": {
-          "description": "Enable writeup submission",
-          "label": "Writeup Required"
+          "description": "是否啟用比賽的 Writeup 提交功能",
+          "label": "需要 Writeup"
         }
       },
       "notices": {
-        "delete": "Are you sure you want to delete this notice?",
+        "delete": "你確定要刪除通知該通知嗎？",
         "empty": {
-          "description": "Click on the top right button to create a new notice",
-          "title": "No notice yet"
+          "description": "點擊右上角按鈕新建公告",
+          "title": "暫無公告"
         }
       },
       "review": {
         "empty": {
-          "description": "On the way... Don't worry!",
-          "title": "Ouch! No teams have joined this game yet"
+          "description": "在路上了……別急！",
+          "title": "Ouch! 還沒有隊伍報名這個比賽"
         },
         "participation": {
-          "joined": "Joined",
-          "not_joined": "Not Registered",
-          "stats": "{{count}}/{{total}} joined",
-          "update": "Set this team's status to: \"{{status}}\"?"
+          "joined": "已報名",
+          "not_joined": "未報名",
+          "stats": "{{count}}/{{total}} 已報名",
+          "update": "確定要設為 \"{{status}}\" 嗎？"
         }
       },
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> games displayed",
+      "stats": "已顯示 <1>{{current}}</1>/<1>{{total}}</1> 比賽",
       "writeups": {
         "empty": {
-          "description": "New writeups will appear here",
-          "title": "Ouch! No writeup yet"
+          "description": "新提交的 Writeup 會顯示在這裡",
+          "title": "Ouch! 還沒有隊伍提交 Writeup"
         },
-        "pdf_fallback": "Failed to load PDF"
+        "pdf_fallback": "未能成功加載 PDF"
       }
     },
     "instances": {
-      "destroy": "Are you sure you want to destroy instance {{name}}?",
-      "note": "Note: Container statistics do not include admin test container and destroyed container",
-      "stats": " <1>{{count}}</1> distributed instances in total"
+      "destroy": "你確定要銷毀容器實例 {{name}} 嗎？",
+      "note": "註：容器實例統計不包括管理員測試容器、已銷毀的容器",
+      "stats": "共計 <1>{{count}}</1> 個已分發容器實例"
     },
-    "markdown_inline_support": "Styling with inline Markdown is supported",
-    "markdown_support": "Styling with Markdown is supported",
-    "nothing_found": "Nothing found",
+    "markdown_inline_support": "支持 Inline Markdown 語法",
+    "markdown_support": "支持 Markdown 語法",
+    "nothing_found": "什麼都沒有找到",
     "settings": {
       "account": {
         "allow_register": {
-          "description": "Allow users to register new accounts",
-          "label": "Allow Register"
+          "description": "是否允許用戶註冊新帳戶",
+          "label": "允許新用戶註冊"
         },
         "auto_active": {
-          "description": "Whether to activate users after registered",
-          "label": "Auto-activate"
+          "description": "是否在新用戶註冊後自動激活帳戶",
+          "label": "註冊後自動激活"
         },
         "email_confirmation_required": {
-          "description": "Whether user verification email is required",
-          "label": "Email Verification Required"
+          "description": "是否需要用戶驗證郵箱",
+          "label": "需要郵箱驗證"
         },
         "email_domain_list": {
-          "description": "List of allowed email domains to register. Separate multiple domains with commas, leave empty to disable.",
-          "label": "Email Domain Whitelist"
+          "description": "允許註冊的郵箱域名列表，多個域名用逗號分隔，留空則不限制",
+          "label": "郵箱域名白名單"
         },
-        "title": "Account Policy",
+        "title": "帳戶策略",
         "use_captcha": {
-          "description": "Verify on login, registration and recovery",
-          "label": "Enable CAPTCHA"
+          "description": "是否在登錄、註冊和找回時進行校驗",
+          "label": "啟用驗證碼"
         }
       },
       "container": {
         "auto_destroy": {
-          "description": "Whether to auto-destroy the old instance when meets the limit",
-          "label": "Auto-destroy Old Instances"
+          "description": "是否在用戶實例達到上限時自動銷毀舊實例",
+          "label": "自動銷毀舊實例"
         },
         "default_lifetime": {
-          "description": "The default lifetime of the container",
-          "label": "Default Lifetime (min)"
+          "description": "容器默認生命周期",
+          "label": "默認有效期（分鐘）"
         },
         "extension_duration": {
-          "description": "The duration of each renewal of the container",
-          "label": "Renewal Duration (min)"
+          "description": "容器每次續期的時長",
+          "label": "續期時長（分鐘）"
         },
         "renewal_window": {
-          "description": "The time window before the container expires to renew",
-          "label": "Renewal Window (min)"
+          "description": "容器到期前多少分鐘內可以續期",
+          "label": "續期窗口（分鐘）"
         },
-        "title": "Container Policy"
+        "title": "容器策略"
       },
       "platform": {
         "color": {
-          "description": "Custom color for the platform",
-          "label": "Platform Color"
+          "description": "自定義平臺顏色，用於生成主題色盤",
+          "label": "平臺顏色"
         },
         "color_palette": {
-          "description": "Color palette generated from the custom color",
-          "label": "Color Palette"
+          "description": "自定義平臺顏色生成的色盤",
+          "label": "色盤"
         },
         "description": {
-          "description": "Site description provided for SEO",
-          "label": "Site Description"
+          "description": "向搜尋引擎和爬蟲程序提供的平臺摘要",
+          "label": "平臺摘要"
         },
         "footer": {
-          "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
-          "label": "Footer"
+          "description": "顯示在網頁底部的附加信息，支持 Markdown 語法, <mbr/> 會在行動裝置中替換為 <br/>",
+          "label": "頁腳附加信息"
         },
         "logo": {
-          "description": "Used for favicon and the logo on pages",
-          "label": "Platform Logo"
+          "description": "平臺 Logo 將會被用於頁面頂部和頁面 favicon",
+          "label": "平臺 Logo"
         },
         "name": {
-          "description": "Platform name will be displayed with ::CTF",
-          "label": "Platform Name"
+          "description": "後跟 ::CTF 欄位進行展示",
+          "label": "平臺名稱"
         },
         "slogan": {
-          "description": "Will be displayed at the top of the page",
-          "label": "Platform Slogan"
+          "description": "平臺標語將顯示在頁面頂部和關於頁面",
+          "label": "平臺標語"
         },
-        "title": "Platform Settings"
+        "title": "平臺設置"
       }
     },
-    "show_all": "Show All",
+    "show_all": "顯示全部",
     "teams": {
-      "delete": "Are you sure you want to delete team {{name}} ?",
-      "lock": "Are you sure you want to {{action}} team {{name}} ?",
-      "locked": "Locked",
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> teams displayed",
-      "unlocked": "Unlocked"
+      "delete": "你確定要刪除隊伍 {{name}} 嗎？",
+      "lock": "確定要{{action}}隊伍 {{name}} 嗎？",
+      "locked": "已鎖定",
+      "stats": "已顯示 <1>{{current}}</1>/<1>{{total}}</1> 隊伍",
+      "unlocked": "已解鎖"
     },
     "users": {
-      "delete": "Are you sure you want to delete user {{name}} ?",
+      "delete": "你確定要刪除用戶 {{name}} 嗎？",
       "reset": {
-        "content": "The user password has been reset, <strong>this password will only show up once</strong>, please save it properly.",
-        "message": "Are you sure you want to reset the password for {{name}}?",
-        "title": "Reset password for {{name}}"
+        "content": "用戶密碼已重置，<strong>此密碼只會顯示一次</strong>，請妥善保存。",
+        "message": "你確定重置用戶 {{name}} 的密碼嗎？",
+        "title": "為 {{name}} 重置密碼"
       },
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
+      "stats": "已顯示 <1>{{current}}</1>/<1>{{total}}</1> 用戶"
     }
   },
   "label": {
     "games": {
-      "hide": "Hide",
-      "summary": "Summary"
+      "hide": "隱藏",
+      "summary": "簡介"
     },
     "instances": {
-      "container_id": "Container ID",
-      "entry": "Instance Entry",
-      "life_cycle": "Lifecycle"
+      "container_id": "容器 ID",
+      "entry": "訪問入口",
+      "life_cycle": "生命周期"
     },
     "logs": {
-      "message": "Message",
-      "status": "Status"
+      "message": "信息",
+      "status": "狀態"
     },
     "teams": {
-      "bio": "Bio",
-      "members": "Members"
+      "bio": "籤名",
+      "members": "隊員"
     },
     "users": {
-      "active": "Activate",
-      "last_visit": "Last Visit",
-      "role": "User Roles"
+      "active": "激活",
+      "last_visit": "最後訪問時間",
+      "role": "用戶角色"
     }
   },
   "notification": {
     "games": {
       "challenges": {
         "attachment": {
-          "no_selected": "Please select at least one file",
-          "updated": "Attachment updated"
+          "no_selected": "請選擇至少一個文件",
+          "updated": "附件已更新"
         },
-        "created": "Challenge created",
-        "deleted": "Challenge deleted",
+        "created": "題目已創建",
+        "deleted": "題目已刪除",
         "flag": {
-          "copied": "Flag copied to clipboard",
-          "created": "Flag created",
-          "deleted": "Flag deleted"
+          "copied": "flag 已複製到剪貼板",
+          "created": "flag 已創建",
+          "deleted": "flag 已刪除"
         },
         "flag_template": {
-          "updated": "Flag template updated"
+          "updated": "flag 模板已更新"
         },
         "preview": {
-          "attachment_downloaded": "Pretend the attachment has been downloaded!",
-          "flag_submitted": "Flag submitted!"
+          "attachment_downloaded": "假裝附件已經下載了！",
+          "flag_submitted": "flag 似乎被正確提交了！"
         },
-        "updated": "Challenge updated"
+        "updated": "題目已更新"
       },
-      "created": "Game created",
+      "created": "比賽已創建",
       "info": {
-        "accept_count_updated": "AC counter updated",
-        "deleted": "Game deleted",
-        "info_updated": "Game updated",
+        "accept_count_updated": "解題數量已刷新",
+        "deleted": "比賽已刪除",
+        "info_updated": "比賽信息已更新",
         "poster": {
-          "upload_failed": "Post upload failed",
-          "uploaded": "Poster successfully uploaded",
-          "uploading": "Uploading poster..."
+          "upload_failed": "海報上傳失敗",
+          "uploaded": "海報上傳成功",
+          "uploading": "正在上傳海報..."
         },
-        "public_key_copied": "Public key copied to clipboard"
+        "public_key_copied": "公鑰已複製到剪貼板"
       },
       "instances": {
-        "created": "Instance created",
-        "deleted": "Instances destroyed"
+        "created": "實例已創建",
+        "deleted": "實例已銷毀"
       },
-      "no_title_time": "Please enter title and time of the game",
+      "no_title_time": "請輸入標題和時間信息",
       "notices": {
-        "created": "Notice created",
-        "deleted": "Notice deleted",
-        "updated": "Notice updated"
+        "created": "公告已創建",
+        "deleted": "公告已刪除",
+        "updated": "公告已更新"
       },
       "participation": {
-        "updated": "Team status has been updated"
+        "updated": "隊伍審核狀態已更新"
       }
     },
     "instances": {
-      "destroyed": "Instances destroyed",
-      "entry_copied": "Instance entry copied to clipboard",
+      "destroyed": "實例已銷毀",
+      "entry_copied": "訪問入口已複製到剪貼板",
       "url_copied": {
-        "message": "Please use client to access",
-        "title": "Proxy URL copied to clipboard"
+        "message": "請使用客戶端進行訪問",
+        "title": "代理 URL 已複製到剪貼板"
       }
     },
     "logs": {
-      "connected": "Real-time log connected",
-      "fetch_failed": "Failed to fetch logs"
+      "connected": "實時日誌連接成功",
+      "fetch_failed": "獲取日誌失敗"
     },
     "teams": {
-      "deleted": "{{name}} has been deleted"
+      "deleted": "{{name}} 已刪除"
     },
     "users": {
-      "deleted": "{{name}} has been deleted",
-      "password_copied": "Password copied to clipboard",
-      "updated": "User profile updated"
+      "deleted": "{{name}} 已刪除",
+      "password_copied": "密碼已複製到剪貼板",
+      "updated": "用戶信息已更新"
     }
   },
   "placeholder": {
-    "empty": "Empty",
+    "empty": "未填寫",
     "games": {
       "challenges": {
         "attachment": {
           "no_file_selected": {
-            "comment": "The selected file will be displayed here",
-            "title": "You haven't selected any file"
+            "comment": "你選擇的文件將會顯示在這裡",
+            "title": "你還沒有選擇任何文件"
           }
         }
       },
-      "organizations": "Enter to add a division.",
+      "organizations": "回車添加參賽組織",
       "participation": {
-        "bio": "(no bio)",
-        "team": "(no name)"
+        "bio": "（無簡介）",
+        "team": "（無名隊伍）"
       }
     },
     "instances": {
       "challenges": {
-        "not_found": "No challenge found",
-        "select": "All challenges"
+        "not_found": "未找到題目",
+        "select": "所有題目"
       },
       "teams": {
-        "not_found": "Team not found",
-        "select": "All Teams"
+        "not_found": "未找到隊伍",
+        "select": "所有隊伍"
       }
     },
     "settings": {
-      "email_domain_list": "No restrictions",
-      "footer": "`Test` <mbr/> Something...",
+      "email_domain_list": "不限制註冊域名",
+      "footer": "`Test` <mbr/> [某 IPC 備 XXXXXXXX 號-X](http://beian.miit.gov.cn/)",
       "logo": {
-        "custom": "Custom Logo",
-        "default": "Use GZCTF Icon"
+        "custom": "自定義 Logo",
+        "default": "使用 GZCTF 圖標"
       }
     },
     "teams": {
-      "search": "Search by name"
+      "search": "搜索隊伍名稱"
     },
     "users": {
-      "real_name": "Empty",
-      "search": "Search by ID/username/email/student ID/real name",
+      "real_name": "用戶未填寫",
+      "search": "搜索用戶ID/用戶名/郵箱/學號/姓名",
       "student_id": "00000000"
     }
   },
   "tab": {
     "games": {
-      "challenges": "Challenges",
-      "index": "Games",
-      "info": "Information",
-      "notices": "Notices",
-      "review": "Teams",
+      "challenges": "題目管理",
+      "index": "比賽管理",
+      "info": "信息編輯",
+      "notices": "比賽公告",
+      "review": "隊伍審核",
       "writeups": "Writeups"
     },
-    "instances": "Instances",
-    "logs": "Logs",
-    "settings": "Settings",
-    "teams": "Teams",
-    "users": "Users"
+    "instances": "實例管理",
+    "logs": "系統日誌",
+    "settings": "系統設置",
+    "teams": "隊伍管理",
+    "users": "用戶管理"
   }
 }
