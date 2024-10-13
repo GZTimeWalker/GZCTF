@@ -306,31 +306,31 @@
     <value>Не удалось обновить глобальную конфигурацию</value>
   </data>
   <data name="Config_TypeNotSupported" xml:space="preserve">
-    <value>Unsupported configuration type</value>
+    <value>Данный тип аргумента не поддерживается</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
-    <value>Failed to create container {0}</value>
+    <value>Не удалось создать контейнер {0}</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
-    <value>Failed to create container {0}, response: {1}</value>
+    <value>Не удалось создать контейнер {0}, ответ: {1}</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
-    <value>Failed to create container {0}, status: {1}</value>
+    <value>Не удалось создать контейнер {0}, статус: {1}</value>
   </data>
   <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
-    <value>Failed to delete container {0}</value>
+    <value>Не удалось уничтожить контейнер {0}</value>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
-    <value>Failed to delete container {0}, response: {1}</value>
+    <value>Не удалось уничтожить контейнер {0}, ответ: {1}</value>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
-    <value>Failed to delete container {0}, status: {1}</value>
+    <value>Не удалось уничтожить контейнер {0}, статус: {1}</value>
   </data>
   <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
-    <value>Container {0} has been destroyed</value>
+    <value>Контейнер {0} уничтожен</value>
   </data>
   <data name="ContainerManager_ContainerExisted" xml:space="preserve">
-    <value>Container {0} already exists, try removing it and recreating it</value>
+    <value>Контейнер {0} уже существует, попробуйте сначала уничтожить его</value>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
     <value>Container instance {0} failed to create</value>
