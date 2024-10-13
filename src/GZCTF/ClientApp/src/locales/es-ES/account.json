@@ -1,108 +1,108 @@
 {
   "anchor": {
-    "login": "Already have account?",
-    "recovery": "Forgot password?"
+    "login": "¿Ya tienes cuenta?",
+    "recovery": "¿Olvidaste la contraseña?"
   },
   "button": {
-    "change_password": "Change Password",
-    "confirm_email": "Confirm Email",
-    "login": "Login",
-    "recovery": "Send Reset Email",
-    "register": "Register",
-    "reset": "Reset Password",
-    "save_profile": "Save Profile",
-    "update_email": "Change Email",
-    "verify_account": "Verify Account"
+    "change_password": "Cambiar contraseña",
+    "confirm_email": "Confirmar correo electrónico",
+    "login": "Iniciar sesión",
+    "recovery": "Enviar email de restablecimiento",
+    "register": "Registrarse",
+    "reset": "Restablecer contraseña",
+    "save_profile": "Guardar perfil",
+    "update_email": "Cambiar correo electrónico",
+    "verify_account": "Verificar cuenta"
   },
   "content": {
     "confirm": {
-      "message": "Please click the button below to verify your email."
+      "message": "Por favor, haz clic en el botón de abajo para verificar tu correo electrónico."
     },
-    "link_check": "Please check your activation link and try again",
-    "link_invalid": "Ouch! There's something wrong with your activation link",
+    "link_check": "Por favor, verifica tu enlace de activación y vuelve a intentarlo",
+    "link_invalid": "¡Vaya! Hay algo mal con tu enlace de activación",
     "profile": {
-      "update_email_note": "After changing your email, you will no longer be able to log in using your original email.<br/>An email will be sent to your new email address, click on the link in it to complete the verification."
+      "update_email_note": "Después de cambiar tu correo electrónico, ya no podrás iniciar sesión usando tu correo original.<br/>Se enviará un correo a tu nueva dirección de email, haz clic en el enlace del mismo para completar la verificación."
     },
     "verify": {
-      "message": "Please click the button below to verify the account."
+      "message": "Por favor haz clic en el botón de abajo para verificar la cuenta."
     },
-    "welcome": "Hello, {{decodeEmail}}👋"
+    "welcome": "Hola, {{decodeEmail}}👋"
   },
   "label": {
-    "bio": "Description",
-    "email": "Email",
-    "email_new": "New Email",
-    "password": "Password",
-    "password_old": "Original password",
-    "password_retype": "Confirm password",
-    "phone": "Phone number",
-    "real_name": "Real Name",
-    "student_id": "Student ID",
-    "username": "Username",
-    "username_or_email": "Username or Email"
+    "bio": "Descripción",
+    "email": "Correo electrónico",
+    "email_new": "Nuevo correo electrónico",
+    "password": "Contraseña",
+    "password_old": "Contraseña original",
+    "password_retype": "Confirmar contraseña",
+    "phone": "Número de teléfono",
+    "real_name": "Nombre real",
+    "student_id": "ID de estudiante",
+    "username": "Nombre de usuario",
+    "username_or_email": "Nombre de usuario o correo electrónico"
   },
   "notification": {
     "captcha": {
-      "not_valid": "Please wait for captcha...",
+      "not_valid": "Por favor espera por el captcha...",
       "request_sent": {
-        "message": "Waiting for server verification",
-        "title": "Request sent..."
+        "message": "Esperando la verificación del servidor",
+        "title": "Solicitud enviada..."
       }
     },
     "confirm": {
-      "failed": "Failed to verify email",
-      "success": "Email has been verified"
+      "failed": "Error al verificar el correo electrónico",
+      "success": "El correo electrónico ha sido verificado"
     },
     "login": {
-      "banned": "User has been banned",
-      "invalid": "Wrong username or password",
+      "banned": "El usuario ha sido baneado",
+      "invalid": "Nombre de usuario o contraseña incorrectos",
       "success": {
-        "message": "Redirect to the previous page before login",
-        "title": "Login succeeded"
+        "message": "Redirigir a la página anterior antes de iniciar sesión",
+        "title": "Inicio de sesión exitoso"
       }
     },
-    "logout": "Logout successfully",
+    "logout": "Cierre de sesión exitoso",
     "profile": {
-      "password_updated": "Password has been changed, please login again",
-      "profile_updated": "Profile updated"
+      "password_updated": "La contraseña ha sido cambiada, por favor inicie sesión nuevamente",
+      "profile_updated": "Perfil actualizado"
     },
     "register": {
-      "logged_in": "Successfully registered",
+      "logged_in": "Registrado exitosamente",
       "request_sent": {
-        "message": "Please wait for administrator's approval for activation~",
-        "title": "Registration request sent"
+        "message": "Por favor espere la aprobación del administrador para la activación~",
+        "title": "Solicitud de registro enviada"
       }
     },
     "reset": {
       "success": {
-        "message": "Please login again",
-        "title": "Password has been reset"
+        "message": "Por favor inicie sesión nuevamente",
+        "title": "La contraseña ha sido restablecida"
       }
     },
     "verify": {
-      "failed": "Failed to verify the account",
-      "success": "Account has been verified, please login"
+      "failed": "No se pudo verificar la cuenta",
+      "success": "La cuenta ha sido verificada, por favor inicie sesión"
     }
   },
   "password": {
-    "empty": "Password cannot be empty",
-    "include_lowercase": "Include lower case letters",
-    "include_number": "Include numbers",
-    "include_symbol": "Include special characters",
-    "include_uppercase": "Include upper case letters",
-    "min_length": "At least 6 characters",
-    "not_match": "The repeated password is incorrect"
+    "empty": "La contraseña no puede estar vacía",
+    "include_lowercase": "Incluir letras minúsculas",
+    "include_number": "Incluir números",
+    "include_symbol": "Incluir caracteres especiales",
+    "include_uppercase": "Incluir letras mayúsculas",
+    "min_length": "Al menos 6 caracteres",
+    "not_match": "La contraseña repetida es incorrecta"
   },
   "placeholder": {
-    "bio": "This person is lazy, nothing written"
+    "bio": "Esta persona es perezosa, no escribió nada"
   },
   "title": {
-    "confirm": "Email Verification",
-    "login": "Login",
-    "profile": "Profile",
-    "recovery": "Recover account",
-    "register": "Register",
-    "reset": "Reset password",
-    "verify": "Account Verification"
+    "confirm": "Verificación de correo electrónico",
+    "login": "Iniciar sesión",
+    "profile": "Perfil",
+    "recovery": "Recuperar cuenta",
+    "register": "Registrar",
+    "reset": "Restablecer contraseña",
+    "verify": "Verificación de cuenta"
   }
 }
