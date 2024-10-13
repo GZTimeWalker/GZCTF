@@ -1,0 +1,93 @@
+{
+  "button": {
+    "create": "Créer une équipe",
+    "disband": "Dissoudre l'équipe",
+    "edit": "Détails de l'équipe",
+    "join": "Rejoindre l'équipe",
+    "leave": "Quitter l'équipe",
+    "save": "Mettre à jour les infos"
+  },
+  "content": {
+    "create": "Vous pouvez créer une équipe et inviter d'autres à se joindre. Chaque joueur peut créer une seule équipe.",
+    "disband": {
+      "confirm": {
+        "message": "Êtes-vous sûr de vouloir dissoudre l'équipe \"{{team}}\" ?",
+        "title": "Confirmer la dissolution de l'équipe"
+      }
+    },
+    "join": "Veuillez obtenir le code d'invitation auprès du créateur de l'équipe, utilisez-le pour rejoindre l'équipe.",
+    "kick": {
+      "confirm": {
+        "message": "Êtes-vous sûr de vouloir expulser le membre de l'équipe \"{{user}}\" ?",
+        "title": "Confirmer la suppression du membre."
+      }
+    },
+    "leave": {
+      "confirm": {
+        "message": "Êtes-vous sûr de vouloir quitter l'équipe \"{{team}}\" ?",
+        "title": "Confirmer le départ"
+      }
+    },
+    "no_create": {
+      "content": "Chaque joueur ne peut créer qu'une seule équipe.<br/>Vous pouvez dissoudre l'équipe existante et en créer une nouvelle.",
+      "title": "Vous avez créé une équipe"
+    },
+    "role": {
+      "captain": "Capitaine",
+      "member": "Membre"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "Êtes-vous sûr de vouloir transférer l'équipe \"{{team}}\" à \"{{user}}\" ?",
+        "title": "Confirmer le transfert"
+      }
+    }
+  },
+  "label": {
+    "bio": "Biographie",
+    "invite_code": "Code d'invitation",
+    "kick": "Exclure",
+    "members": "Membres",
+    "name": "Nom de l'équipe",
+    "role": "Rôle",
+    "transfer": "Transférer"
+  },
+  "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}} a été créée, invitez vos coéquipiers maintenant !",
+        "title": "Équipe créée avec succès"
+      }
+    },
+    "disband": {
+      "success": "L'équipe a été dissoute avec succès"
+    },
+    "invite_code": {
+      "copied": "Le code d'invitation est copié dans le presse-papiers",
+      "updated": "Le jeton d'invitation de l'équipe a été mis à jour"
+    },
+    "join": {
+      "success": "Rejoint l'équipe avec succès",
+      "wrong_invite_code": "Code d'invitation de l'équipe incorrect"
+    },
+    "kick": {
+      "success": "Membre supprimé avec succès"
+    },
+    "leave": {
+      "success": "Quitter avec succès"
+    },
+    "token": {
+      "copied": "Token d'équipe copié dans le presse-papiers"
+    },
+    "transfer": {
+      "success": "Équipe transférée avec succès"
+    },
+    "updated": "Les informations de l'équipe ont été mises à jour"
+  },
+  "placeholder": {
+    "bio": "Cette équipe est paresseuse, rien n'a été écrit"
+  },
+  "title": {
+    "index": "Gestion d'équipe"
+  }
+}
