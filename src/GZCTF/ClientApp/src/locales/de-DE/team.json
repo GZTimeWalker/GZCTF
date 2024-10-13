@@ -1,0 +1,93 @@
+{
+  "button": {
+    "create": "Team erstellen",
+    "disband": "Team auflösen",
+    "edit": "Teamdetails",
+    "join": "Team beitreten",
+    "leave": "Team verlassen",
+    "save": "Informationen aktualisieren"
+  },
+  "content": {
+    "create": "Sie können ein Team erstellen und andere einladen, beizutreten. Jeder Spieler kann nur ein Team erstellen.",
+    "disband": {
+      "confirm": {
+        "message": "Sind Sie sicher, dass Sie das Team \"{{team}}\" auflösen möchten?",
+        "title": "Teamauflösung bestätigen"
+      }
+    },
+    "join": "Bitte holen Sie den Einladungscode vom Team-Ersteller und verwenden Sie ihn, um dem Team beizutreten.",
+    "kick": {
+      "confirm": {
+        "message": "Sind Sie sicher, dass Sie das Teammitglied \"{{user}}\" rauswerfen möchten?",
+        "title": "Bestätigen Sie das Entfernen des Mitglieds."
+      }
+    },
+    "leave": {
+      "confirm": {
+        "message": "Sind Sie sicher, dass Sie das Team \"{{team}}\" verlassen möchten?",
+        "title": "Verlassen bestätigen"
+      }
+    },
+    "no_create": {
+      "content": "Jeder Spieler kann nur ein Team erstellen.<br/>Sie können das bestehende Team auflösen und ein neues erstellen.",
+      "title": "Sie haben ein Team erstellt"
+    },
+    "role": {
+      "captain": "Kapitän",
+      "member": "Mitglied"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "Sind Sie sicher, dass Sie das Team \"{{team}}\" an \"{{user}}\" übertragen möchten?",
+        "title": "Übertragung bestätigen"
+      }
+    }
+  },
+  "label": {
+    "bio": "Biografie",
+    "invite_code": "Einladungscode",
+    "kick": "Rauswerfen",
+    "members": "Mitglieder",
+    "name": "Teamname",
+    "role": "Rolle",
+    "transfer": "Übertragen"
+  },
+  "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}} wurde erstellt, lade jetzt deine Teamkollegen ein!",
+        "title": "Team erfolgreich erstellt"
+      }
+    },
+    "disband": {
+      "success": "Team erfolgreich aufgelöst"
+    },
+    "invite_code": {
+      "copied": "Einladungscode in die Zwischenablage kopiert",
+      "updated": "Einladungs-Token für das Team aktualisiert"
+    },
+    "join": {
+      "success": "Erfolgreich dem Team beigetreten",
+      "wrong_invite_code": "Falscher Einladungscode für das Team"
+    },
+    "kick": {
+      "success": "Mitglied erfolgreich entfernt"
+    },
+    "leave": {
+      "success": "Erfolgreich verlassen"
+    },
+    "token": {
+      "copied": "Team-Token in die Zwischenablage kopiert"
+    },
+    "transfer": {
+      "success": "Erfolgreich Team transferiert"
+    },
+    "updated": "Teaminformationen wurden aktualisiert"
+  },
+  "placeholder": {
+    "bio": "Dieses Team ist faul, nichts geschrieben"
+  },
+  "title": {
+    "index": "Teamverwaltung"
+  }
+}
