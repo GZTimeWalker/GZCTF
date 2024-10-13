@@ -246,7 +246,7 @@
     <value>Попытка получить несуществующий файл [{0}] {1}</value>
   </data>
   <data name="Assets_UpdateFile" xml:space="preserve">
-    <value>File updated [{0}] {1} @ {2} bytes</value>
+    <value>Файл обновлен [{0}] {1} @ {2} байт</value>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
     <value>Доступ запрещён</value>
@@ -267,7 +267,7 @@
     <value>Invalid cache request: {0}</value>
   </data>
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
-    <value>No matching request found for cache worker: {0}</value>
+    <value>Не найден соответствующий запрос для обработчика кэша: {0}</value>
   </data>
   <data name="Cache_Stopped" xml:space="preserve">
     <value>Cache update has been stopped</value>
@@ -276,7 +276,7 @@
     <value>Cache updated: {0}[{1}] @ {2} bytes</value>
   </data>
   <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
-    <value>Cache update failed: {0} @ {1}</value>
+    <value>Не удалось обновить кэш: {0} @ {1}</value>
   </data>
   <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
     <value>Cache update worker locked: {0}</value>
@@ -303,7 +303,7 @@
     <value>Initializing database...</value>
   </data>
   <data name="Config_ReloadFailed" xml:space="preserve">
-    <value>Failed to reload global configuration</value>
+    <value>Не удалось обновить глобальную конфигурацию</value>
   </data>
   <data name="Config_TypeNotSupported" xml:space="preserve">
     <value>Unsupported configuration type</value>
@@ -366,7 +366,7 @@
     <value>The service {0} failed to create, status: {1}</value>
   </data>
   <data name="ContainerManager_SwarmMode" xml:space="preserve">
-    <value>Container mode：Docker Swarm Cluster Container Control</value>
+    <value>Режим контейнера：Docker Swarm Cluster Container Control</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
     <value>Could not parse image name `{0}'</value>
