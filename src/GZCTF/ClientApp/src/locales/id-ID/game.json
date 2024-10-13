@@ -10,7 +10,7 @@
       "submissionsheet": "Submission"
     },
     "finished": "Game telah Berakhir",
-    "hide_solved": "Hide Solve",
+    "hide_solved": "Hide Solved",
     "join": "Gabung",
     "leave": "Meninggalkan game",
     "login_required": "Silahkan masuk",
@@ -105,7 +105,7 @@
         "title": "Instruksi submission"
       },
       "submitted": "Berhasil disubmit",
-      "title": "Manajemen writeup",
+      "title": "Manajemen Writeup",
       "unsubmitted": "Belum disubmit",
       "unsubmitted_note": "Tim kamu belum mengirimkan apa pun"
     }
@@ -141,10 +141,10 @@
     "score_formatter": "{value} poin",
     "score_table": {
       "rank_organization": "Ranking",
-      "rank_total": "Keseluruhan",
+      "rank_total": "Overall",
       "score": "Skor",
       "score_total": "Skor",
-      "solved_count": "Jumlah Solved",
+      "solved_count": "Solved",
       "team": "Tim",
       "type": "Jenis"
     },
