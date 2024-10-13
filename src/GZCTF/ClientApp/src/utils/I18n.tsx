@@ -26,6 +26,7 @@ export const LanguageMap = {
   'ru-RU': '🇷🇺 Русский (WIP)',
   'de-DE': '🇩🇪 Deutsch (MT)',
   'fr-FR': '🇫🇷 Français (MT)',
+  'es-ES': '🇪🇸 Español (MT)',
 }
 
 export const defaultLanguage = 'en-US'
