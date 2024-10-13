@@ -1,6 +1,9 @@
+import { Anchor, Button, Stack, Text } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
+import { modals } from '@mantine/modals'
 import dayjs from 'dayjs'
 import 'dayjs/locale/de'
+import 'dayjs/locale/fr'
 import 'dayjs/locale/id'
 import 'dayjs/locale/ja'
 import 'dayjs/locale/ko'
@@ -22,7 +25,8 @@ export const LanguageMap = {
   'id-ID': '🇮🇩 Bahasa',
   'ko-KR': '🇰🇷 한국어 (wip)',
   'ru-RU': '🇷🇺 Русский (wip)',
-  'de-DE': '🇩🇪 Deutsch (wip)',
+  'de-DE': '🇩🇪 Deutsch (MT)',
+  'fr-FR': '🇫🇷 Français (MT)',
 }
 
 export const defaultLanguage = 'en-US'
@@ -53,6 +57,32 @@ export const useLanguage = () => {
     // check if language is supported
     if (supportedLanguages.includes(lang)) {
       setLanguageInner(lang)
+
+      // if current language contains "MT"
+      // show the modal to inform user that the translation is machine translated
+      if (lang in LanguageMap && LanguageMap[lang as SupportedLanguages].includes('(MT)')) {
+        modals.open({
+          // title:  add emojis in the title
+          title: <Text fw="bold">🤖 Machine Translation</Text>,
+          children: (
+            <Stack>
+              <Text>
+                This translation is done by machine, it may not be accurate. If you are interested
+                in helping to translate, please contact us on{' '}
+                <Anchor
+                  href="https://github.com/GZTimeWalker/GZCTF"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  GitHub
+                </Anchor>
+                .
+              </Text>
+              <Button onClick={() => modals.closeAll()}>Confirm</Button>
+            </Stack>
+          ),
+        })
+      }
     } else {
       console.warn(`Language ${lang} is not supported, fallback to ${defaultLanguage}`)
       setLanguageInner(defaultLanguage)

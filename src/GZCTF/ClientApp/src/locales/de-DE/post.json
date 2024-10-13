@@ -1,33 +1,33 @@
 {
   "button": {
-    "delete": "Delete Post",
-    "edit": "Edit Post",
-    "goto": "Go to Post",
-    "new": "New Post",
-    "save": "Save Post"
+    "delete": "Beitrag löschen",
+    "edit": "Beitrag bearbeiten",
+    "goto": "Zum Beitrag gehen",
+    "new": "Neuer Beitrag",
+    "save": "Beitrag speichern"
   },
   "content": {
-    "delete": "Are you sure you want to delete post {{title}}?",
-    "details": "View Details",
-    "metadata": "{{author}} published on {{date}}",
-    "pinned": "[Pinned]",
+    "delete": "Sind Sie sicher, dass Sie den Beitrag {{title}} löschen möchten?",
+    "details": "Details anzeigen",
+    "metadata": "{{author}} veröffentlicht am {{date}}",
+    "pinned": "[Angeheftet]",
     "updated": {
-      "content": "The post has been changed. Save it?",
-      "title": "Post has been changed"
+      "content": "Der Beitrag wurde geändert. Speichern?",
+      "title": "Beitrag wurde geändert"
     }
   },
   "label": {
-    "add_tag": "Enter to add tag",
-    "content": "Content",
-    "summary": "Summary",
+    "add_tag": "Drücken Sie Enter, um ein Tag hinzuzufügen",
+    "content": "Inhalt",
+    "summary": "Zusammenfassung",
     "tag": "Tags",
-    "title": "Title"
+    "title": "Titel"
   },
   "notification": {
-    "created": "Post has been created",
-    "saved": "Post has been saved"
+    "created": "Beitrag wurde erstellt",
+    "saved": "Beitrag wurde gespeichert"
   },
   "title": {
-    "index": "Posts"
+    "index": "Beiträge"
   }
 }

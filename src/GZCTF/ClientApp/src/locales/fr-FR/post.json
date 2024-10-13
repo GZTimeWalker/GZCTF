@@ -1,0 +1,33 @@
+{
+  "button": {
+    "delete": "Supprimer l'article",
+    "edit": "Modifier l'article",
+    "goto": "Aller à l'article",
+    "new": "Nouvel article",
+    "save": "Enregistrer l'article"
+  },
+  "content": {
+    "delete": "Êtes-vous sûr de vouloir supprimer l'article {{title}} ?",
+    "details": "Voir les détails",
+    "metadata": "{{author}} a publié le {{date}}",
+    "pinned": "[Épinglé]",
+    "updated": {
+      "content": "L'article a été modifié. Sauvegarder ?",
+      "title": "L'article a été modifié"
+    }
+  },
+  "label": {
+    "add_tag": "Entrer pour ajouter un tag",
+    "content": "Contenu",
+    "summary": "Résumé",
+    "tag": "Tags",
+    "title": "Titre"
+  },
+  "notification": {
+    "created": "L'article a été créé",
+    "saved": "L'article a été enregistré"
+  },
+  "title": {
+    "index": "Articles"
+  }
+}

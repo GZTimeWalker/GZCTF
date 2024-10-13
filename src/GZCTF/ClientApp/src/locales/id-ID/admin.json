@@ -146,7 +146,7 @@
           "description": "Port servis container",
           "label": "Servis port"
         },
-        "solve_count": "Jumlah Solved",
+        "solve_count": "Solves",
         "storage_limit": {
           "description": "Penyimpanan (includ gambar)",
           "label": "Limit penyimpanan (MB)"
@@ -167,7 +167,7 @@
           "label": "Terima tanpa ditinjau"
         },
         "container_limit": {
-          "description": "Container yang dibagi oleh satu tim (0 = tidak terbatas)",
+          "description": "Container yang diberikan ke satu tim (0 = unlimited)",
           "label": "Container tim limit"
         },
         "content": "Detil game",
@@ -183,7 +183,7 @@
           "label": "Batas maks anggota tim"
         },
         "organizations": {
-          "description": "Tambahkan divisi untuk mengaktifkan papan skor terkelompok, biarkan kosong untuk menonaktifkan",
+          "description": "Tambah divisi untuk aktifkan grup papan skor, kosongkan untuk menonaktifkan",
           "label": "Daftar Divisi yang Berpartisipasi"
         },
         "poster": "Poster",
@@ -198,11 +198,11 @@
           "label": "Ringkasan"
         },
         "title": {
-          "description": "Panjang yang berlebihan dapat memengaruhi tampilan",
+          "description": "Judul yang panjang akan memengaruhi tampilan",
           "label": "Judul"
         },
         "writeup_deadline": {
-          "description": "Waktu untuk mengumpulkan write-up setelah permainan berakhir",
+          "description": "Jam submit write-up setelah game berakhir",
           "label": "Batas waktu writeup"
         },
         "writeup_instruction": "Instruksi writeup",
