@@ -55,7 +55,7 @@
     },
     "login": {
       "banned": "User has been banned",
-      "invalid": "Wrong username or password",
+      "invalid": "Неверные логин или пароль",
       "success": {
         "message": "Redirect to the previous page before login",
         "title": "Login succeeded"
@@ -67,7 +67,7 @@
       "profile_updated": "Profile updated"
     },
     "register": {
-      "logged_in": "Successfully registered",
+      "logged_in": "Регистрация успешна",
       "request_sent": {
         "message": "Please wait for administrator's approval for activation~",
         "title": "Registration request sent"
