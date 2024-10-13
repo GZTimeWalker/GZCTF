@@ -582,7 +582,7 @@
     <value>Téléphone</value>
   </data>
   <data name="Header_Ranking" xml:space="preserve">
-    <value>Classement</value>
+    <value>Rang</value>
   </data>
   <data name="Header_ScoringTime" xml:space="preserve">
     <value>Temps</value>
