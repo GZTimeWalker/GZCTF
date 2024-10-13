@@ -15,7 +15,7 @@
     "leave": "Spiel verlassen",
     "login_required": "Bitte einloggen",
     "scoreboard": "Anzeigetafel",
-    "submit_writeup": "Writeup einreichen",
+    "submit_writeup": "Writeup",
     "writeup": {
       "upload": "Einreichen Writeup",
       "uploading": "Hochladen..."
@@ -80,7 +80,7 @@
       "comment": "Geduld ist eine Tugend, bitte bleiben Sie dran…",
       "title": "Lade Herausforderungen"
     },
-    "scoreboard_note": "Hinweis: Teams mit gleicher Punktzahl werden nach der Einreichungszeit sortiert.",
+    "scoreboard_note": "Gleiche Punktzahl: Sortierung nach Einreichungszeit.",
     "scoreboard_tip": "Tipp: Durch die Liste der Herausforderungen mit den Pfeiltasten links und rechts blättern!",
     "start_at": "Beginnt um",
     "start_time": "Startzeit",
@@ -99,7 +99,7 @@
       "deadline_exceeded": "Einreichungsfrist ist abgelaufen",
       "instructions": {
         "additional": "Zusätzliche Hinweise",
-        "datetime_format": "TT/MM/JJJJ SS:mm:ss",
+        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Bitte reichen Sie das Writeup vor dem <1>{{datetime}}</1> ein, verspätete oder nicht erfolgte Einreichungen werden als Verzicht auf die Ergebnisse dieses Spiels betrachtet.",
         "file_format": "Bitte organisieren Sie das Writeup aller gelösten Herausforderungen in <1>ein Standard-PDF-Dokument mit weniger als 20MB</1>.",
         "title": "Einreichungsanleitung"
@@ -141,7 +141,7 @@
     "score_formatter": "{value} Pkt.",
     "score_table": {
       "rank_organization": "Rang",
-      "rank_total": "Insgesamt",
+      "rank_total": "Gesamt",
       "score": "Punkte",
       "score_total": "Punkte",
       "solved_count": "Gelöst",
@@ -229,7 +229,7 @@
       "cheatinfo": "Betrug",
       "events": "Ereignisse",
       "index": "Überwachung",
-      "submissions": "Übermittlungen",
+      "submissions": "Einreichung",
       "traffic": "Verkehr"
     },
     "scoreboard": "Ergebnistafel"

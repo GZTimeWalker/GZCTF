@@ -146,7 +146,7 @@
           "description": "Port des services de conteneur",
           "label": "Port de service"
         },
-        "solve_count": "Résolutions",
+        "solve_count": "Résout",
         "storage_limit": {
           "description": "Stockage (y compris l'image)",
           "label": "Limite de stockage (MB)"
