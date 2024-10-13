@@ -55,7 +55,7 @@
     },
     "login": {
       "banned": "User has been banned",
-      "invalid": "Wrong username or password",
+      "invalid": "잘못된 사용자 이름 또는 비밀번호 입니다.",
       "success": {
         "message": "Redirect to the previous page before login",
         "title": "Login succeeded"
@@ -67,7 +67,7 @@
       "profile_updated": "Profile updated"
     },
     "register": {
-      "logged_in": "Successfully registered",
+      "logged_in": "성공적으로 회원가입을 했습니다.",
       "request_sent": {
         "message": "Please wait for administrator's approval for activation~",
         "title": "Registration request sent"
