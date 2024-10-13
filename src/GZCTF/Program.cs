@@ -54,7 +54,10 @@ GZCTF.Program.Banner();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
-        string[] supportedCultures = ["en-US", "zh-CN", "zh-TW", "ja-JP", "id-ID"];
+        string[] supportedCultures = [
+            "en-US", "zh-CN", "zh-TW", "ja-JP", "id-ID",
+            "ko-KR", "ru-RU", "de-DE", "fr-FR"
+        ];
 
         options
             .AddSupportedCultures(supportedCultures)
@@ -435,6 +438,12 @@ namespace GZCTF
 
             // ReSharper disable once LocalizableElement
             Console.WriteLine($"GZCTF © 2022-present GZTimeWalker {versionStr,33}\n");
+
+            // Show warning if a language is machine translated
+            string[] mlWarnings = ["de-DE", "fr-FR"];
+            if (mlWarnings.Contains(CultureInfo.CurrentCulture.Name))
+                // ReSharper disable once LocalizableElement
+                Console.WriteLine("Warning: This language is machine translated and may not be accurate.\n");
         }
 
         public static void ExitWithFatalMessage(string msg)
