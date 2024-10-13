@@ -120,7 +120,7 @@
     </value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
-    <value>Available email suffix: {0}</value>
+    <value>Доступен почтовый домен: {0}</value>
   </data>
   <data name="Account_AvatarUpdated" xml:space="preserve">
     <value>Изменён аватар: [{0}]</value>
@@ -129,7 +129,7 @@
     <value>Свяжитесь с администратором для смены электронной почты</value>
   </data>
   <data name="Account_EmailChanged" xml:space="preserve">
-    <value>Email changed successfully</value>
+    <value>Электронная почта успешно изменена</value>
   </data>
   <data name="Account_EmailNotConfirmed" xml:space="preserve">
     <value>Аккаунт не активирован, зарегистрируйтесь снова</value>
@@ -177,7 +177,7 @@
     <value>Отправка письма с подтверждением на почту</value>
   </data>
   <data name="Account_TokenValidationFailed" xml:space="preserve">
-    <value>Captcha failed</value>
+    <value>Ошибка Captcha</value>
   </data>
   <data name="Account_UserDisabled" xml:space="preserve">
     <value>Пользователь заблокирован</value>
@@ -207,22 +207,22 @@
     <value>Регистрация успешна, ожидание подтверждения электронной почты</value>
   </data>
   <data name="Account_UserUpdated" xml:space="preserve">
-    <value>User updated: {0} =&gt; {1}</value>
+    <value>Имя пользователя изменено: {0} =&gt; {1}</value>
   </data>
   <data name="Account_UserUpdateFailed" xml:space="preserve">
-    <value>User update failed</value>
+    <value>Не удалось изменить имя пользователя</value>
   </data>
   <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
     <value>Вы не можете удалить капитана</value>
   </data>
   <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
-    <value>Container destruction failed</value>
+    <value>Не удалось уничтожить контейнер</value>
   </data>
   <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
     <value>Контейнер не найден</value>
   </data>
   <data name="Admin_ParticipationNotFound" xml:space="preserve">
-    <value>Participation not found</value>
+    <value>Запись участия не найдена</value>
   </data>
   <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
     <value>Нельзя удалить самого себя</value>
@@ -231,7 +231,7 @@
     <value>Команда не найдена</value>
   </data>
   <data name="Admin_UserBatchAdded" xml:space="preserve">
-    <value>Successfully added {0} users</value>
+    <value>Успешно добавлено {0} пользователей</value>
   </data>
   <data name="Admin_UserNotFound" xml:space="preserve">
     <value>Пользователь не найден</value>
@@ -264,34 +264,34 @@
     <value>Ошибка генерации кеша: {0}</value>
   </data>
   <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
-    <value>Invalid cache request: {0}</value>
+    <value>Неверный запрос кэша: {0}</value>
   </data>
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
     <value>Не найден соответствующий запрос для обработчика кэша: {0}</value>
   </data>
   <data name="Cache_Stopped" xml:space="preserve">
-    <value>Cache update has been stopped</value>
+    <value>Обновление кэша остановлено</value>
   </data>
   <data name="Cache_Updated" xml:space="preserve">
-    <value>Cache updated: {0}[{1}] @ {2} bytes</value>
+    <value>Кэш обновлен: {0}[{1}] @ {2} байт</value>
   </data>
   <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
     <value>Не удалось обновить кэш: {0} @ {1}</value>
   </data>
   <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
-    <value>Cache update worker locked: {0}</value>
+    <value>Обработчик обновления кэша заблокирован: {0}</value>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
-    <value>Cache update worker is stopping because task has been cancelled</value>
+    <value>Обработчик обновления кэша остановлен, потому что задание было отменено</value>
   </data>
   <data name="Cache_WorkerStarted" xml:space="preserve">
-    <value>Cache update worker has been started</value>
+    <value>Обработчик обновления кэша запущен</value>
   </data>
   <data name="Cache_WorkerStopped" xml:space="preserve">
-    <value>Cache update worker has been stopped</value>
+    <value>Обработчик обновления кэша остановлен</value>
   </data>
   <data name="Challenge_NotFound" xml:space="preserve">
-    <value>The challenge was not found</value>
+    <value>Задание не найдено</value>
   </data>
   <data name="Config_GlobalConfigAdded" xml:space="preserve">
     <value>Global configuration added: {0} =&gt; {1}</value>
