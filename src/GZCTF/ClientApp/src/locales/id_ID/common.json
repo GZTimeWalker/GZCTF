@@ -34,7 +34,7 @@
         "custom": "Sesuaikan",
         "default": "Default",
         "description": "Pilih bagaimana warna dasar ditentukan",
-        "label": "Penyedia warna tema",
+        "label": "Warna tema",
         "managed": "Disediakan oleh Admin"
       },
       "title": "Sesuaikan warna"
