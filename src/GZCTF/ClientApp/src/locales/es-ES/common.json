@@ -1,129 +1,129 @@
 {
   "avatar": {
-    "save": "Save Avatar",
-    "upload_failed": "Failed to update avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar"
+    "save": "Guardar Avatar",
+    "upload_failed": "No se pudo actualizar el avatar",
+    "uploaded": "Avatar actualizado",
+    "uploading": "Subiendo avatar"
   },
   "button": {
-    "copy": "Copy to Clipboard",
-    "reset": "Reset",
-    "select_file": "Select File",
-    "try_again": "Try Again",
-    "uploading": "Uploading"
+    "copy": "Copiar al Portapapeles",
+    "reset": "Restablecer",
+    "select_file": "Seleccionar Archivo",
+    "try_again": "Intentar Nuevamente",
+    "uploading": "Subiendo"
   },
   "content": {
     "404": {
-      "text": "A desolation, why is it here",
-      "title": "Page does not exist"
+      "text": "Una desolación, ¿por qué está aquí?",
+      "title": "Página no existe"
     },
     "about": {
       "slogan": "Hack for fun not for profit"
     },
     "color": {
       "custom": {
-        "description": "Select the base color you want to use",
-        "label": "Custom Base Color",
-        "placeholder": "Use default color"
+        "description": "Selecciona el color base que deseas usar",
+        "label": "Color Base Personalizado",
+        "placeholder": "Usar color predeterminado"
       },
       "palette": {
-        "description": "Color palette generated from the custom base color",
-        "label": "Color Palette"
+        "description": "Paleta de colores generada a partir del color base personalizado",
+        "label": "Paleta de Colores"
       },
       "provider": {
-        "custom": "Customized",
-        "default": "Default",
-        "description": "Select how the base color is determined",
-        "label": "Theme color provider",
-        "managed": "Admin Provided"
+        "custom": "Personalizado",
+        "default": "Predeterminado",
+        "description": "Selecciona cómo se determina el color base",
+        "label": "Proveedor de color del tema",
+        "managed": "Proporcionado por el Administrador"
       },
-      "title": "Customize Color"
+      "title": "Personalizar Color"
     },
     "drop_zone": {
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB",
+      "content": "Arrastra y suelta una imagen o haz clic aquí para seleccionar {{type}}",
+      "limit": "Por favor, selecciona una imagen de menos de 3MB",
       "type": {
         "avatar": "avatar",
-        "poster": "poster"
+        "poster": "póster"
       }
     },
-    "external_link": "External Link",
+    "external_link": "Enlace Externo",
     "home": {
-      "recent_games": "Recent Games"
+      "recent_games": "Juegos Recientes"
     },
-    "no_data": "No data",
-    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "no_data": "Sin datos",
+    "report_error": "Por favor, informa de este error al administrador si piensas que es un fallo",
     "wider": {
-      "text": "Try to use a wider device",
-      "title": "Not wide enough"
+      "text": "Intenta usar un dispositivo más ancho",
+      "title": "No lo suficientemente ancho"
     }
   },
   "download": {
-    "failed": "Failed to download",
-    "started": "Downloading",
-    "success": "Downloaded"
+    "failed": "Error al descargar",
+    "started": "Descargando",
+    "success": "Descargado"
   },
   "email": {
     "sent": {
-      "message": "Please check your email and spam mail!",
-      "title": "Email Sent"
+      "message": "¡Por favor revise su correo electrónico y correo no deseado!",
+      "title": "Correo Enviado"
     }
   },
   "error": {
-    "check_input": "Please check your input",
-    "empty": "Content can't be empty",
-    "encountered": "An error has occurred",
+    "check_input": "Por favor revise su entrada",
+    "empty": "El contenido no puede estar vacío",
+    "encountered": "Ha ocurrido un error",
     "file_invalid": {
-      "message": "Please check file format and size",
-      "title": "Failed to load file"
+      "message": "Por favor verifique el formato y el tamaño del archivo",
+      "title": "No se pudo cargar el archivo"
     },
-    "invalid_username_or_password": "Incorrect username or password",
-    "no_change": "There seems to be no change",
-    "param_error": "Incorrect parameter, please check",
-    "param_invalid": "Invalid parameter",
-    "param_missing": "Missing parameter",
-    "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too many requests",
-    "try_later": "Please try again later",
-    "unknown": "Unknown error"
+    "invalid_username_or_password": "Nombre de usuario o contraseña incorrectos",
+    "no_change": "Parece que no hay cambio",
+    "param_error": "Parámetro incorrecto, por favor verifique",
+    "param_invalid": "Parámetro inválido",
+    "param_missing": "Parámetro faltante",
+    "param_unknown": "Parámetro desconocido",
+    "request_too_frequent": "Demasiadas solicitudes",
+    "try_later": "Por favor, intenta de nuevo más tarde",
+    "unknown": "Error desconocido"
   },
   "label": {
-    "challenge": "Challenge",
-    "flag": "flag",
-    "game": "Game",
+    "challenge": "Desafío",
+    "flag": "bandera",
+    "game": "Juego",
     "ip": "IP",
-    "team": "Team",
-    "time": "Time",
-    "user": "User"
+    "team": "Equipo",
+    "time": "Tiempo",
+    "user": "Usuario"
   },
   "modal": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm Update",
-    "delete": "Delete"
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "confirm_delete": "Confirmar eliminación",
+    "confirm_update": "Confirmar actualización",
+    "delete": "Eliminar"
   },
   "tab": {
-    "about": "About",
+    "about": "Acerca de",
     "account": {
-      "clean_cache": "Clear Cache",
-      "login": "Login",
-      "logout": "Logout",
-      "profile": "Profile"
+      "clean_cache": "Limpiar caché",
+      "login": "Iniciar sesión",
+      "logout": "Cerrar sesión",
+      "profile": "Perfil"
     },
-    "admin": "Admin",
-    "game": "Games",
-    "home": "Home",
-    "post": "Posts",
-    "team": "Team",
+    "admin": "Administración",
+    "game": "Juegos",
+    "home": "Inicio",
+    "post": "Publicaciones",
+    "team": "Equipo",
     "theme": {
-      "dark": "dark mode",
-      "light": "light mode",
-      "switch_to": "Switch to {{theme}}"
+      "dark": "modo oscuro",
+      "light": "modo claro",
+      "switch_to": "Cambiar a {{theme}}"
     }
   },
   "title": {
     "404": "The Nowhere",
-    "about": "About"
+    "about": "Acerca de"
   }
 }
