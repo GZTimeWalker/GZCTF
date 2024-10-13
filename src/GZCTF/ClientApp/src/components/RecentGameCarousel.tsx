@@ -18,7 +18,6 @@ const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...props }) =>
       loop
       withIndicators
       withControls={false}
-      height={200}
       plugins={[autoplay.current]}
       onMouseEnter={autoplay.current.stop}
       onMouseLeave={autoplay.current.reset}

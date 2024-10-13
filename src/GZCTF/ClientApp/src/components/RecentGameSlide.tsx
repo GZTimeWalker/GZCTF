@@ -26,7 +26,9 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       shadow="md"
       p="md"
       radius="md"
-      style={{ backgroundImage: `url(${poster})` }}
+      __vars={{
+        '--slide-image': `url(${poster})`,
+      }}
       className={classes.card}
     >
       <Stack h="100%" gap={2} justify="space-between">
@@ -44,7 +46,7 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
               : t('game.content.total_duration', { hours: duration })}
           </Badge>
         </Group>
-        <Title pb={10} order={3} lineClamp={1} className={classes.title}>
+        <Title pb={10} order={3} className={classes.title}>
           {title}
         </Title>
       </Stack>
