@@ -15,9 +15,9 @@
     "leave": "Quitter le jeu",
     "login_required": "Veuillez vous connecter",
     "scoreboard": "Tableau des scores",
-    "submit_writeup": "Soumettre le Writeup",
+    "submit_writeup": "Writeup",
     "writeup": {
-      "upload": "Soumettre l'écrit",
+      "upload": "Soumettre",
       "uploading": "Téléchargement..."
     }
   },
@@ -80,7 +80,7 @@
       "comment": "La patience est une vertu, veuillez patienter…",
       "title": "Chargement des défis"
     },
-    "scoreboard_note": "Note : les équipes avec le même score sont classées par ordre de soumission.",
+    "scoreboard_note": "Note : Les équipes à égalité sont classées par soumission.",
     "scoreboard_tip": "Astuce : Faites défiler la liste des défis avec les flèches gauche et droite !",
     "start_at": "Commence à",
     "start_time": "Heure de début",
@@ -99,7 +99,7 @@
       "deadline_exceeded": "La date limite de soumission est dépassée",
       "instructions": {
         "additional": "Notes supplémentaires",
-        "datetime_format": "JJ/MM/AAAA HH:mm:ss",
+        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Veuillez soumettre la rédaction avant le <1>{{datetime}}</1>. Les soumissions tardives ou non soumises seront considérées comme un abandon des résultats de ce jeu.",
         "file_format": "Veuillez organiser la rédaction de tous les défis résolus dans <1>un document PDF standard de moins de 20 Mo</1>.",
         "title": "Instructions de soumission"
@@ -140,7 +140,7 @@
     "score": "Score",
     "score_formatter": "{value} point",
     "score_table": {
-      "rank_organization": "Classement",
+      "rank_organization": "Rang",
       "rank_total": "Global",
       "score": "Score",
       "score_total": "Total des scores",
