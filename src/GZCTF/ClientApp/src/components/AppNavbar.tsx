@@ -128,7 +128,7 @@ const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       <AppShell.Section className={classes.section} style={{ justifyContent: 'end' }}>
         <Stack w="100%" align="center" justify="center" gap={5}>
           {/* Language */}
-          <Menu position="right-end" offset={24} width={160}>
+          <Menu position="right" offset={24} width={160}>
             <Menu.Target>
               <ActionIcon className={classes.link}>
                 <Icon path={mdiTranslate} size={1} />
