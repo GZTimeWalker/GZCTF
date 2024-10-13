@@ -294,13 +294,13 @@
     <value>Задание не найдено</value>
   </data>
   <data name="Config_GlobalConfigAdded" xml:space="preserve">
-    <value>Global configuration added: {0} =&gt; {1}</value>
+    <value>Добавлен параметр настроек платформы: {0} =&gt; {1}</value>
   </data>
   <data name="Config_GlobalConfigUpdated" xml:space="preserve">
-    <value>Global configuration updated: {0} =&gt; {1}</value>
+    <value>Изменён параметр настроек платформы: {0} =&gt; {1}</value>
   </data>
   <data name="Config_InitializingDatabase" xml:space="preserve">
-    <value>Initializing database...</value>
+    <value>Инициализация базы данных...</value>
   </data>
   <data name="Config_ReloadFailed" xml:space="preserve">
     <value>Не удалось обновить глобальную конфигурацию</value>
