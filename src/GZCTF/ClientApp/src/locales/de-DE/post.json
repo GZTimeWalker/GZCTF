@@ -1,0 +1,33 @@
+{
+  "button": {
+    "delete": "Beitrag löschen",
+    "edit": "Beitrag bearbeiten",
+    "goto": "Zum Beitrag gehen",
+    "new": "Neuer Beitrag",
+    "save": "Beitrag speichern"
+  },
+  "content": {
+    "delete": "Sind Sie sicher, dass Sie den Beitrag {{title}} löschen möchten?",
+    "details": "Details anzeigen",
+    "metadata": "{{author}} veröffentlicht am {{date}}",
+    "pinned": "[Angeheftet]",
+    "updated": {
+      "content": "Der Beitrag wurde geändert. Speichern?",
+      "title": "Beitrag wurde geändert"
+    }
+  },
+  "label": {
+    "add_tag": "Drücken Sie Enter, um ein Tag hinzuzufügen",
+    "content": "Inhalt",
+    "summary": "Zusammenfassung",
+    "tag": "Tags",
+    "title": "Titel"
+  },
+  "notification": {
+    "created": "Beitrag wurde erstellt",
+    "saved": "Beitrag wurde gespeichert"
+  },
+  "title": {
+    "index": "Beiträge"
+  }
+}
