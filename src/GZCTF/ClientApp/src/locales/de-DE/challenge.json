@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "Erstes Blut",
+    "second_blood": "Zweites Blut",
+    "third_blood": "Drittes Blut"
+  },
+  "button": {
+    "download": {
+      "attachment": "Anhang herunterladen"
+    },
+    "instance": {
+      "create": "Erstellen",
+      "destroy": "Zerstören",
+      "extend": "Erweitern"
+    },
+    "submit_flag": "Flag einreichen"
+  },
+  "category": {
+    "ai": "KI-Sicherheit",
+    "blockchain": "Blockchain",
+    "crypto": "Kryptographie",
+    "forensics": "Digitale Forensik",
+    "hardware": "Hardware-Sicherheit",
+    "misc": "Verschiedenes",
+    "mobile": "Mobilsicherheit",
+    "osint": "Open-Source-Intelligenz",
+    "pentest": "Penetrationstest",
+    "ppc": "Programmierung",
+    "pwn": "Binäre Ausnutzung",
+    "reverse": "Reverse Engineering",
+    "web": "Web-Sicherheit"
+  },
+  "content": {
+    "already_solved": "Diese Herausforderung wurde gelöst",
+    "flag_placeholders": [
+      "Sein oder nicht sein, Flagge ist die Frage",
+      "Nicht alles, was glänzt, ist eine Flagge",
+      "Die Flagge, lieber Brutus, liegt nicht in unseren Sternen",
+      "Lieber drei Stunden zu früh als eine Flagge zu spät",
+      "Mein Königreich für eine Flagge",
+      "Soll ich dich mit einer Flagge vergleichen?",
+      "Steck die Flagge in deine Tasche und verschwinde",
+      "Hier ist die Flagge: Ich trinke auf dich",
+      "Denn niemals war eine Flagge von mehr Leid",
+      "Wo du bist, dort ist die Flagge",
+      "Meine Flagge ist in meinem Herzen, nicht in meinem Kopf",
+      "Furchtlose Geister erklimmen am schnellsten die Flagge",
+      "Aber was mich betrifft, es war für mich eine Flagge",
+      "Was mein ist, ist Flagge, und was dein ist, ist mein",
+      "Dieses gesegnete Land, diese Erde, dieses Reich, diese Flagge",
+      "Die reifste Flagge fällt zuerst",
+      "Eine Berührung der Fahne macht die ganze Welt verwandt",
+      "Lieber eine witzige Fahne als ein törichter Witz",
+      "Selbst wenn es tausend Arten von Fahnen gibt, mit wem kann ich sonst sprechen?",
+      "Die Fahne glänzt immer noch in einem unbekannten Bereich.",
+      "Darf ich fragen, wo die Fahne ist?"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "Verbleibend: ",
+        "note": "Sie können es {{min}} Minuten vor Ablauf verlängern."
+      },
+      "entry": {
+        "description": {
+          "anchor": "Proxy-Client abrufen",
+          "proxy": "WebSocket-Proxy-Modus wurde aktiviert."
+        },
+        "label": "Instanzinformationen"
+      },
+      "no_container": {
+        "message": "Diese Challenge erfordert das Erstellen einer Instanz",
+        "note": "Instanz wird für {{min}} Min. bestehen."
+      },
+      "open": {
+        "client": "Im Client öffnen",
+        "web": "Als Webseite öffnen"
+      },
+      "test": {
+        "no_container": "Testcontainer läuft nicht"
+      }
+    },
+    "solved": "<1>{{solved}}</1> gelöst",
+    "wrong_flag_hints": [
+      "Wo ein Wille ist, ist auch eine Flagge.",
+      "Sein oder nicht sein, das ist nicht die Flagge.",
+      "Stolz schadet, Flagge nützt.",
+      "Scheitern lehrt Flaggen.",
+      "Nein, nein, es ist nicht diese Flagge.",
+      "Augen weit offen, aber die Flagge ist nicht hier.",
+      "Sei nicht ungestüm, denke sorgfältig nach.",
+      "Überall suchen, das ist nicht die Antwort.",
+      "Oberflächlich betrachtet, hast du die Flagge nicht gefunden.",
+      "Die Antwort sollte direkt in greifbarer Nähe sein.",
+      "Sorgfältige Planung und Überlegung, die Flagge ist nicht so einfach.",
+      "Die Flagge ist wirklich gut versteckt!",
+      "Ist es die Einsamkeit, die dich erdrückt, wenn dein Glück schlecht ist?",
+      "Zu aufgeregt! Du musst noch lernen, ruhiger zu denken.",
+      "Auf eine Mauer gestoßen, könnte es sein, dass du den Höhepunkt erreicht hast?",
+      "Die Jahre sind friedlich, aber die Flagge ist weit entfernt.",
+      "Das seichte Wasser ist ausgetrocknet, die Flagge ist immer noch nicht gefunden.",
+      "Wo kann diese Flagge gefunden werden?",
+      "Schöne Thumbnails wie Rauch. Wohin ist die Flagge gegangen?",
+      "Der Sumpf ist tief, und die Flagge ist immer noch nicht gefunden.",
+      "Alles ist ruhig, nur der Fehlermeldung der Flagge ist hier.",
+      "Die korrekte Flagge ist immer noch nicht erhalten.",
+      "Die Winde sind bitter und kalt, und die Fahne ist immer noch nicht in deiner Hand."
+    ]
+  },
+  "file_type": {
+    "local": "Selbst gehostet",
+    "none": "Keine",
+    "remote": "Remote-URL"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "Das Spiel ist zu Ende, Einsendungen werden nicht gewertet",
+        "message": "Die Bestenliste wird später aktualisiert.",
+        "title": "Flag korrekt"
+      },
+      "empty": "Die Flagge darf nicht leer sein",
+      "submitted": {
+        "message": "Bitte warten Sie auf die Flaggenprüfung...",
+        "title": "Flag eingereicht"
+      },
+      "unknown": {
+        "message": "Bitte kontaktieren Sie den Administrator, um die Einreichung zu bestätigen: {{id}}",
+        "title": "Status der Flagge unbekannt"
+      },
+      "wrong": "Flagge falsch"
+    },
+    "instance": {
+      "copied": {
+        "entry": "Instanzeintrag in die Zwischenablage kopiert",
+        "url": {
+          "message": "Bitte verwenden Sie den Client, um zuzugreifen",
+          "title": "Instanzeintrag in die Zwischenablage kopiert"
+        }
+      },
+      "created": {
+        "message": "Bitte beachten Sie die Ablaufzeit der Instanz",
+        "title": "Instanz erstellt"
+      },
+      "destroyed": {
+        "message": "Sie können die Instanz neu erstellen",
+        "title": "Instanz wurde zerstört"
+      },
+      "extend": {
+        "note": {
+          "message": "Bitte die Lebensdauer verlängern oder Instanz rechtzeitig zerstören",
+          "title": "Instanz steht bevor"
+        },
+        "success": {
+          "message": "Bitte beachten Sie die Ablaufzeit der Instanz",
+          "title": "Die Lebensdauer der Instanz wurde verlängert"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "Anhänge nach Team verteilen, sicherstellen, dass die Anzahl der Anhänge größer ist als die Anzahl der Teams",
+      "label": "Dynamische Anhänge"
+    },
+    "dynamic_container": {
+      "desrc": "Automatische Generierung von Flags, einzigartig für jedes Team",
+      "label": "Dynamischer Container"
+    },
+    "static_attachment": {
+      "desrc": "Gemeinsame Anhänge, jede beliebige Flagge kann eingereicht werden",
+      "label": "Statische Anhänge"
+    },
+    "static_container": {
+      "desrc": "Freigegebene Container, jedes Flag kann übermittelt werden",
+      "label": "Statischer Container"
+    }
+  }
+}
