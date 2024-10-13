@@ -15,17 +15,17 @@ import resources from 'virtual:i18next-loader'
 dayjs.extend(localizedFormat)
 
 export const LanguageMap = {
-  en_US: '🇺🇸 English',
-  zh_CN: '🇨🇳 简体中文',
-  zh_TW: '🇨🇳 繁體中文',
-  ja_JP: '🇯🇵 日本語',
-  id_ID: '🇮🇩 Bahasa',
-  ko_KR: '🇰🇷 한국어 (wip)',
-  ru_RU: '🇷🇺 Русский (wip)',
-  de_DE: '🇩🇪 Deutsch (wip)',
+  'en-US': '🇺🇸 English',
+  'zh-CN': '🇨🇳 简体中文',
+  'zh-TW': '🇨🇳 繁體中文',
+  'ja-JP': '🇯🇵 日本語',
+  'id-ID': '🇮🇩 Bahasa',
+  'ko-KR': '🇰🇷 한국어 (wip)',
+  'ru-RU': '🇷🇺 Русский (wip)',
+  'de-DE': '🇩🇪 Deutsch (wip)',
 }
 
-export const defaultLanguage = 'en_US'
+export const defaultLanguage = 'en-US'
 export let apiLanguage: string = defaultLanguage
 
 export type SupportedLanguages = keyof typeof LanguageMap
@@ -41,9 +41,8 @@ export const useLanguage = () => {
 
   useEffect(() => {
     i18n.changeLanguage(language)
-    const apiLang = language.replace('_', '-')
-    apiLanguage = apiLang
-    const pageLang = apiLang.toLowerCase()
+    apiLanguage = language
+    const pageLang = language.toLowerCase()
     dayjs.locale(pageLang)
     document.documentElement.setAttribute('lang', pageLang)
   }, [language])
@@ -60,7 +59,7 @@ export const useLanguage = () => {
     }
   }
 
-  const locale = language.split('_')[0]
+  const locale = language.split('-')[0]
 
   return { language, locale, setLanguage, supportedLanguages }
 }
