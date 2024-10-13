@@ -10,7 +10,7 @@
       "submissionsheet": "Submission"
     },
     "finished": "Game telah Berakhir",
-    "hide_solved": "Sembunyikan solve",
+    "hide_solved": "Hide Solve",
     "join": "Gabung",
     "leave": "Meninggalkan game",
     "login_required": "Silahkan masuk",
@@ -32,7 +32,7 @@
     "game_ended": "Telah berakhir",
     "game_lasts_long": "Game ini akan berlangsung lama",
     "hide_container_events": {
-      "description": "Sembunyikan pembuatan/pemusnahan container",
+      "description": "Sembunyikan pembuatan/hapus container",
       "label": "Sembunyikan event container"
     },
     "join": {
@@ -80,8 +80,8 @@
       "comment": "Sabar itu indah, harap tunggu sebentar…",
       "title": "Memuat tantangan"
     },
-    "scoreboard_note": "Note: tim dengan skor yang sama diurutkan berdasarkan waktu submit.",
-    "scoreboard_tip": "Tip: Scroll daftar tantangan menggunakan panah kiri dan kanan!",
+    "scoreboard_note": "Note: skor yang sama diurutkan berdasarkan waktu submit.",
+    "scoreboard_tip": "Tip: Gunakan panah kiri dan kanan untuk melihat daftar challenge!",
     "start_at": "Mulai pada",
     "start_time": "Waktu Mulai",
     "team_view": {
