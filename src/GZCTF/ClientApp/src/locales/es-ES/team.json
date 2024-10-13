@@ -1,93 +1,93 @@
 {
   "button": {
-    "create": "Create Team",
-    "disband": "Disband Team",
-    "edit": "Team Details",
-    "join": "Join Team",
-    "leave": "Quit Team",
-    "save": "Update Info"
+    "create": "Crear equipo",
+    "disband": "Disolver equipo",
+    "edit": "Detalles del equipo",
+    "join": "Unirse al equipo",
+    "leave": "Abandonar equipo",
+    "save": "Actualizar info"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "Puedes crear un equipo e invitar a otros a unirse. Cada jugador solo puede crear un equipo.",
     "disband": {
       "confirm": {
-        "message": "Are you sure you want to disband team \"{{team}}\"?",
-        "title": "Confirm Disband Team"
+        "message": "¿Estás seguro de que deseas disolver el equipo \"{{team}}\"?",
+        "title": "Confirmar disolución del equipo"
       }
     },
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
+    "join": "Por favor, obtén el código de invitación del creador del equipo, úsalo para unirte al equipo.",
     "kick": {
       "confirm": {
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
-        "title": "Confirm removing member."
+        "message": "¿Estás seguro de que quieres expulsar al miembro del equipo \"{{user}}\"?",
+        "title": "Confirmar la eliminación del miembro."
       }
     },
     "leave": {
       "confirm": {
-        "message": "Are you sure you want to leave the team \"{{team}}\"?",
-        "title": "Confirm Quit"
+        "message": "¿Estás seguro de que quieres dejar el equipo \"{{team}}\"?",
+        "title": "Confirmar salida"
       }
     },
     "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+      "content": "Cada jugador solo puede crear un equipo.<br/>Puedes disolver el equipo existente y crear uno nuevo.",
+      "title": "Has creado un equipo"
     },
     "role": {
-      "captain": "Captain",
-      "member": "Member"
+      "captain": "Capitán",
+      "member": "Miembro"
     },
     "transfer": {
       "confirm": {
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
-        "title": "Confirm Transfer"
+        "message": "¿Estás seguro de que deseas transferir el equipo \"{{team}}\" a \"{{user}}\"?",
+        "title": "Confirmar transferencia"
       }
     }
   },
   "label": {
-    "bio": "Biography",
-    "invite_code": "Invitation Code",
-    "kick": "Kick out",
-    "members": "Members",
-    "name": "Team Name",
-    "role": "Role",
-    "transfer": "Transfer"
+    "bio": "Biografía",
+    "invite_code": "Código de invitación",
+    "kick": "Expulsar",
+    "members": "Miembros",
+    "name": "Nombre del equipo",
+    "role": "Rol",
+    "transfer": "Transferir"
   },
   "notification": {
     "create": {
       "success": {
-        "message": "{{team}} has been created, invite your teammates now!",
-        "title": "Successfully created team"
+        "message": "{{team}} ha sido creado, ¡invita a tus compañeros ahora!",
+        "title": "Equipo creado exitosamente"
       }
     },
     "disband": {
-      "success": "Successfully disbanded team"
+      "success": "Equipo disuelto con éxito"
     },
     "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "copied": "Código de invitación copiado al portapapeles",
+      "updated": "Token de invitación del equipo actualizado"
     },
     "join": {
-      "success": "Successfully joined team",
-      "wrong_invite_code": "Incorrect team invitation code"
+      "success": "Se unió al equipo con éxito",
+      "wrong_invite_code": "Código de invitación del equipo incorrecto"
     },
     "kick": {
-      "success": "Successfully removed member"
+      "success": "Miembro eliminado con éxito"
     },
     "leave": {
-      "success": "Successfully quit"
+      "success": "Se salió con éxito"
     },
     "token": {
-      "copied": "Team token copied to clipboard"
+      "copied": "Token del equipo copiado al portapapeles"
     },
     "transfer": {
-      "success": "Successfully transferred team"
+      "success": "Equipo transferido con éxito"
     },
-    "updated": "Team information has been updated"
+    "updated": "La información del equipo ha sido actualizada"
   },
   "placeholder": {
-    "bio": "This team is lazy, nothing written"
+    "bio": "Este equipo es perezoso, no ha escrito nada"
   },
   "title": {
-    "index": "Team management"
+    "index": "Gestión de equipos"
   }
 }
