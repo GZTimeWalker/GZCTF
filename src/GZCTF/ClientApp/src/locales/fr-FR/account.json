@@ -1,0 +1,108 @@
+{
+  "anchor": {
+    "login": "Vous avez déjà un compte ?",
+    "recovery": "Mot de passe oublié ?"
+  },
+  "button": {
+    "change_password": "Changer le mot de passe",
+    "confirm_email": "Confirmer l'email",
+    "login": "Se connecter",
+    "recovery": "Envoyer un e-mail de réinitialisation",
+    "register": "Inscription",
+    "reset": "Réinitialiser le mot de passe",
+    "save_profile": "Enregistrer le profil",
+    "update_email": "Changer l'email",
+    "verify_account": "Vérifier le compte"
+  },
+  "content": {
+    "confirm": {
+      "message": "Veuillez cliquer sur le bouton ci-dessous pour vérifier votre email."
+    },
+    "link_check": "Veuillez vérifier votre lien d'activation et réessayer",
+    "link_invalid": "Aïe ! Il y a quelque chose qui ne va pas avec votre lien d'activation",
+    "profile": {
+      "update_email_note": "Après avoir changé votre adresse e-mail, vous ne pourrez plus vous connecter avec votre adresse e-mail d’origine. <br/> Un e-mail sera envoyé à votre nouvelle adresse, cliquez sur le lien qu’il contient pour terminer la vérification."
+    },
+    "verify": {
+      "message": "Veuillez cliquer sur le bouton ci-dessous pour vérifier le compte."
+    },
+    "welcome": "Bonjour, {{decodeEmail}}👋"
+  },
+  "label": {
+    "bio": "Libellé",
+    "email": "Courriel",
+    "email_new": "Nouvel e-mail",
+    "password": "Mot de passe",
+    "password_old": "Mot de passe original",
+    "password_retype": "Confirmer le mot de passe",
+    "phone": "Numéro de téléphone",
+    "real_name": "Nom réel",
+    "student_id": "ID de l'étudiant",
+    "username": "Nom d'utilisateur",
+    "username_or_email": "Nom d'utilisateur ou email"
+  },
+  "notification": {
+    "captcha": {
+      "not_valid": "Veuillez patienter pendant le captcha...",
+      "request_sent": {
+        "message": "En attente de vérification du serveur",
+        "title": "Demande envoyée..."
+      }
+    },
+    "confirm": {
+      "failed": "Échec de la vérification de l'e-mail",
+      "success": "L'e-mail a été vérifié"
+    },
+    "login": {
+      "banned": "L'utilisateur a été banni",
+      "invalid": "Mauvais nom d'utilisateur ou mot de passe",
+      "success": {
+        "message": "Rediriger vers la page précédente avant de vous connecter",
+        "title": "Connexion réussie"
+      }
+    },
+    "logout": "Déconnexion réussie",
+    "profile": {
+      "password_updated": "Le mot de passe a été modifié, veuillez vous reconnecter",
+      "profile_updated": "Profil mis à jour"
+    },
+    "register": {
+      "logged_in": "Enregistré avec succès",
+      "request_sent": {
+        "message": "Veuillez attendre l'approbation de l'administrateur pour l'activation~",
+        "title": "Demande d'inscription envoyée"
+      }
+    },
+    "reset": {
+      "success": {
+        "message": "Veuillez vous reconnecter",
+        "title": "Le mot de passe a été réinitialisé"
+      }
+    },
+    "verify": {
+      "failed": "Impossible de vérifier le compte",
+      "success": "Le compte a été vérifié, veuillez vous connecter"
+    }
+  },
+  "password": {
+    "empty": "Le mot de passe ne peut pas être vide",
+    "include_lowercase": "Inclure les lettres minuscules",
+    "include_number": "Inclure les numéros",
+    "include_symbol": "Inclure les caractères spéciaux",
+    "include_uppercase": "Inclure les lettres majuscules",
+    "min_length": "Au moins 6 caractères",
+    "not_match": "Le mot de passe répété est incorrect"
+  },
+  "placeholder": {
+    "bio": "Cette personne est paresseuse, rien n'est écrit"
+  },
+  "title": {
+    "confirm": "Vérification de l'e-mail",
+    "login": "Se connecter",
+    "profile": "Profil",
+    "recovery": "Récupérer le compte",
+    "register": "Inscription",
+    "reset": "Réinitialiser le mot de passe",
+    "verify": "Vérification du compte"
+  }
+}

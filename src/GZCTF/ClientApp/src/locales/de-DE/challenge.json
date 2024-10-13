@@ -1,178 +1,178 @@
 {
   "bonus": {
-    "first_blood": "first blood",
-    "second_blood": "second blood",
-    "third_blood": "third blood"
+    "first_blood": "erstes Blut",
+    "second_blood": "zweites Blut",
+    "third_blood": "drittes Blut"
   },
   "button": {
     "download": {
-      "attachment": "Download Attachment"
+      "attachment": "Anhang herunterladen"
     },
     "instance": {
-      "create": "Create",
-      "destroy": "Destroy",
-      "extend": "Extend"
+      "create": "Anlegen",
+      "destroy": "Zerstören",
+      "extend": "Erweitern"
     },
-    "submit_flag": "Submit Flag"
+    "submit_flag": "Flagge senden"
   },
   "category": {
-    "ai": "AI security",
+    "ai": "KI-Sicherheit",
     "blockchain": "Blockchain",
-    "crypto": "Cryptography",
-    "forensics": "Digital forensics",
-    "hardware": "Hardware security",
-    "misc": "Miscellaneous",
-    "mobile": "Mobile security",
-    "osint": "Open-source intelligence",
-    "pentest": "Penetration testing",
-    "ppc": "Programming",
-    "pwn": "Binary exploitation",
-    "reverse": "Reverse engineering",
-    "web": "Web security"
+    "crypto": "Kryptographie",
+    "forensics": "Digitale Forensik",
+    "hardware": "Hardware-Sicherheit",
+    "misc": "Sonstige",
+    "mobile": "Mobile Sicherheit",
+    "osint": "Open-Source Intelligenz",
+    "pentest": "Penetrationstest",
+    "ppc": "Programmierung",
+    "pwn": "Binäre Ausbeutung",
+    "reverse": "Umgekehrtes Engineering",
+    "web": "Web-Sicherheit"
   },
   "content": {
-    "already_solved": "This challenge has been solved",
+    "already_solved": "Diese Herausforderung wurde gelöst",
     "flag_placeholders": [
-      "To be, or not to be, flag is the question",
-      "All that glisters is not flag",
-      "The flag, dear Brutus, is not in our stars",
-      "Better three hours too soon than a flag too late",
-      "My kingdom for a flag",
-      "Shall I compare thee to a flag?",
-      "Put flag in thy pocket, and be gone",
-      "Here's flag: I drink to thee",
-      "For never was a flag of more woe",
-      "For where thou art, there is the flag",
-      "My flag is in my heart, not in my head",
-      "Fearless minds climb soonest unto flag",
-      "But, for my own part, it was flag to me",
-      "What's mine is flag and what's yours is mine",
-      "This blessed plot, this earth, this realm, this flag",
-      "The ripest flag first falls",
-      "One touch of flag makes the whole world kin",
-      "Better a witty flag than a foolish wit",
-      "Even if there are a thousand kinds of flags, who else can I talk to?",
-      "The flag is still shining in an unknown area.",
-      "May I ask where the flag is?"
+      "Flagge zu sein oder nicht zu sein, ist die Frage",
+      "Alles, was glänzt, ist keine Flagge",
+      "Die Flagge, lieber Brutus, ist nicht in unseren Sternen",
+      "Besser drei Stunden zu früh als eine Flagge zu spät",
+      "Mein Königreich für eine Flagge",
+      "Soll ich dich mit einer Fahne vergleichen?",
+      "Setze die Fahne in deine Tasche und lass dich weg",
+      "Hier ist Fahne: Ich trinke zu dir",
+      "Denn nie war eine Flagge von mehr Leid",
+      "Denn wo du bist, da ist die Fahne",
+      "Meine Fahne liegt in meinem Herzen, nicht in meinem Kopf",
+      "Furchtlose Köpfe klettern bald zur Flagge",
+      "Aber für meinen Teil war es für mich eine Flagge",
+      "Was ist meine Flagge und was du dir gehört ist meine",
+      "Dieses gesegnete Grundstück, diese Erde, dieses Realm, diese Fahne",
+      "Die reifste Flagge fällt zuerst",
+      "Ein Hauch von Fahne macht die ganze Welt zu einem Hauch",
+      "Besser eine witzige Flagge als ein törichter Witz",
+      "Selbst wenn es tausend Arten von Flaggen gibt, mit wem kann ich sprechen?",
+      "Die Flagge leuchtet immer noch in einem unbekannten Gebiet.",
+      "Darf ich fragen, wo die Flagge ist?"
     ],
     "instance": {
       "actions": {
-        "count_down": "Remaining: ",
-        "note": "You can extend it {{min}} mins before expires."
+        "count_down": "Verbleibend: ",
+        "note": "Sie können ihn vor Ablauf von {{min}} Minuten verlängern."
       },
       "entry": {
         "description": {
-          "anchor": "Get proxy client",
-          "proxy": "WebSocket proxy mode has been enabled."
+          "anchor": "Proxy-Client abrufen",
+          "proxy": "WebSocket-Proxy-Modus wurde aktiviert."
         },
-        "label": "Instance Info"
+        "label": "Instanz Info"
       },
       "no_container": {
-        "message": "This challenge requires creating an instance",
-        "note": "Instance will live for {{min}} mins."
+        "message": "Diese Herausforderung erfordert das Erstellen einer Instanz",
+        "note": "Instanz für {{min}} Min."
       },
       "open": {
-        "client": "Open in client",
-        "web": "Open as web page"
+        "client": "Im Client öffnen",
+        "web": "Als Webseite öffnen"
       },
       "test": {
-        "no_container": "Test container is not running"
+        "no_container": "Test-Container läuft nicht"
       }
     },
     "solved": "<1>{{solved}}</1> SOLVES",
     "wrong_flag_hints": [
-      "Where there's a will, there's a flag.",
-      "To be, or not to be, that is not the flag.",
-      "Pride hurts, flag benefits.",
-      "Failure teaches flags.",
-      "No, no, it's not this flag.",
-      "Eyes wide open, but the flag is not here.",
-      "Don't be impetuous, think carefully.",
-      "Searching everywhere, this is not the answer.",
-      "Superficially looking, you haven't found the flag.",
-      "The answer should be right at your fingertips.",
-      "Careful planning and consideration, flag is not that simple.",
-      "The flag is really well hidden!",
-      "Is it loneliness that crushes you when your luck is bad?",
-      "Too excited! You still need to learn to think more calmly.",
-      "Hit a wall, could it be that you have reached the peak?",
-      "The years are peaceful, but the flag has gone far away.",
-      "The shallow water has dried up, the flag is still not found.",
-      "Where this flag can be found?",
-      "Beautiful thumbnails like smoke. Where did the flag go?",
-      "The quagmire is deep in depth, and the flag is still not found.",
-      "All is quiet, only the error prompt of the flag is here.",
-      "The correct flag is still not obtained.",
-      "The winds are bitter and cold, and the flag is still not on your hand."
+      "Wo es einen Willen gibt, gibt es eine Flagge.",
+      "Das ist nicht die Flagge oder nicht.",
+      "Stolz weh, Flagge Vorteile.",
+      "Fehler lehrt Flaggen.",
+      "Nein, nein, es ist nicht diese Flagge.",
+      "Augen weit offen, aber die Fahne ist nicht hier.",
+      "Seien Sie nicht unhöflich, überlegen Sie sich genau.",
+      "Überall suchen, das ist nicht die Antwort.",
+      "Oberflächlich aussehen, du hast die Flagge nicht gefunden.",
+      "Die Antwort sollte direkt vor Ihrer Haustür liegen.",
+      "Sorgfältige Planung und Überlegung, Flagge ist nicht so einfach.",
+      "Die Fahne ist wirklich gut versteckt!",
+      "Ist es die Einsamkeit, die dich zerdrückt, wenn dein Glück schlecht ist?",
+      "Zu aufgeregt! Du musst noch lernen, ruhig zu denken.",
+      "Hit eine Wand, könnte es sein, dass Sie den Gipfel erreicht haben?",
+      "Die Jahre sind friedlich, aber die Fahne ist weit entfernt.",
+      "Das seichte Wasser ist ausgetrocknet, die Fahne ist immer noch nicht gefunden.",
+      "Wo kann diese Flagge gefunden werden?",
+      "Schöne Miniaturbilder wie Rauch, wohin ist die Fahne gekommen?",
+      "Das Sumpf ist tief in der Tiefe, und die Fahne ist immer noch nicht gefunden.",
+      "Alles ist ruhig, nur die Fehlermeldung der Flagge ist hier.",
+      "Die richtige Flagge ist immer noch nicht erhalten.",
+      "Die Winde sind bitter und kalt, und die Fahne ist immer noch nicht auf der Hand."
     ]
   },
   "file_type": {
-    "local": "Self Hosted",
-    "none": "None",
-    "remote": "Remote Url"
+    "local": "Selbstgehostet",
+    "none": "Keine",
+    "remote": "Entfernte Url"
   },
   "notification": {
     "flag": {
       "accepted": {
-        "ended": "The game has ended, submissions will not be scored",
-        "message": "The scoreboard will be updated later.",
-        "title": "flag correct"
+        "ended": "Das Spiel ist beendet, die Beiträge werden nicht bewertet",
+        "message": "Das Scoreboard wird später aktualisiert.",
+        "title": "korrekt markieren"
       },
-      "empty": "The flag cannot be empty",
+      "empty": "Die Flagge darf nicht leer sein",
       "submitted": {
-        "message": "Please wait for flag check...",
-        "title": "flag submitted"
+        "message": "Bitte warten Sie auf die Markierungsüberprüfung...",
+        "title": "eingetragenes Flag"
       },
       "unknown": {
-        "message": "Please contact the admin to confirm the submission: {{id}}",
-        "title": "flag status unknown"
+        "message": "Bitte kontaktieren Sie den Administrator, um die Einreichung zu bestätigen: {{id}}",
+        "title": "flag-Status unbekannt"
       },
-      "wrong": "flag wrong"
+      "wrong": "falsch markieren"
     },
     "instance": {
       "copied": {
-        "entry": "Instance entry copied to clipboard",
+        "entry": "Instanz Eintrag in Zwischenablage kopiert",
         "url": {
-          "message": "Please use client to access",
-          "title": "Instance entry copied to clipboard"
+          "message": "Bitte verwenden Sie den Client für den Zugriff",
+          "title": "Instanz Eintrag in Zwischenablage kopiert"
         }
       },
       "created": {
-        "message": "Please note the instance expiration time",
-        "title": "Instance created"
+        "message": "Bitte beachten Sie die Ablaufzeit der Instanz",
+        "title": "Instanz erstellt"
       },
       "destroyed": {
-        "message": "You can recreate the instance",
-        "title": "Instance has been destroyed"
+        "message": "Sie können die Instanz neu erstellen",
+        "title": "Instanz wurde zerstört"
       },
       "extend": {
         "note": {
-          "message": "Please extend lifetime or destroy instance in time",
-          "title": "Instance is due"
+          "message": "Bitte verlängern Sie die Lebensdauer oder zerstören Sie die Instanz rechtzeitig",
+          "title": "Instanz ist fällig"
         },
         "success": {
-          "message": "Please note the instance expiration time",
-          "title": "Instance’s lifetime has been extended"
+          "message": "Bitte beachten Sie die Ablaufzeit der Instanz",
+          "title": "Die Lebensdauer der Instanz wurde verlängert"
         }
       }
     }
   },
   "type": {
     "dynamic_attachment": {
-      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+      "desrc": "Verteilen Sie Anhänge nach Team und stellen Sie sicher, dass die Anzahl der Anhänge größer ist als die Anzahl der Teams",
+      "label": "Dynamische Anhänge"
     },
     "dynamic_container": {
-      "desrc": "Automatic flag generation, unique for each team",
-      "label": "Dynamic Container"
+      "desrc": "Automatische Flaggen-Generation, einzigartig für jedes Team",
+      "label": "Dynamischer Container"
     },
     "static_attachment": {
-      "desrc": "Shared attachments, any flag can be submitted",
-      "label": "Static Attachments"
+      "desrc": "Freigegebene Anhänge, jedes Flag kann gesendet werden",
+      "label": "Statische Anhänge"
     },
     "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+      "desrc": "Geteilte Container, jede Flagge kann gesendet werden",
+      "label": "Statischer Container"
     }
   }
 }

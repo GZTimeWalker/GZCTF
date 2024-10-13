@@ -16,14 +16,14 @@
     "submit_flag": "Submit flag"
   },
   "category": {
-    "ai": "AI Security",
+    "ai": "AI security",
     "blockchain": "Blockchain",
     "crypto": "Kriptografi",
     "forensics": "Digital forensic",
     "hardware": "Hardware security",
     "misc": "Miscellaneous",
     "mobile": "Mobile Security",
-    "osint": "Osint",
+    "osint": "Open-source intelligence",
     "pentest": "Pentesting",
     "ppc": "Programming",
     "pwn": "Binary exploitation",
