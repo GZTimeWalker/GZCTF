@@ -1,6 +1,6 @@
 {
   "button": {
-    "challenges": "Herausforderungen",
+    "challenges": "Herausf.",
     "delete": {
       "all_traffic": "Lösche gesamten aufgeführten Verkehr"
     },
@@ -133,7 +133,7 @@
     },
     "notice_type": {
       "all": "Alle",
-      "challenge": "Herausforderung",
+      "challenge": "Herausf.",
       "events": "Neuigkeiten",
       "game": "Benachrichtigung"
     },
@@ -224,7 +224,7 @@
     "search_team": "Team suchen"
   },
   "tab": {
-    "challenge": "Herausforderungen",
+    "challenge": "Herausf.",
     "monitor": {
       "cheatinfo": "Betrug",
       "events": "Ereignisse",
