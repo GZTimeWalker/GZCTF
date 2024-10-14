@@ -22,6 +22,7 @@ import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import Markdown from '@Components/MarkdownRenderer'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api from '@Api'
@@ -41,6 +42,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
 
   const theme = useMantineTheme()
   const [ddl, setDdl] = useState(dayjs(wpddl))
+  const { locale } = useLanguage()
   const [disabled, setDisabled] = useState(dayjs().isAfter(wpddl))
   const [progress, setProgress] = useState(0)
   const noteColor = data?.submitted ? theme.colors.teal[5] : theme.colors.red[5]
@@ -133,7 +135,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
               <Trans
                 i18nKey="game.content.writeup.instructions.deadline"
                 values={{
-                  datetime: ddl.format(t('game.content.writeup.instructions.datetime_format')),
+                  datetime: ddl.locale(locale).format('LL LTS'),
                 }}
               >
                 _

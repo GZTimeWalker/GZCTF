@@ -99,7 +99,6 @@
       "deadline_exceeded": "Submission deadline has passed",
       "instructions": {
         "additional": "Additional Notes",
-        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
         "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
         "title": "Submission Instructions"

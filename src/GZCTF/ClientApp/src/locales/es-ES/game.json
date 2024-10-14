@@ -99,7 +99,6 @@
       "deadline_exceeded": "El plazo de entrega ha pasado",
       "instructions": {
         "additional": "Notas Adicionales",
-        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Por favor, envíe el informe antes de <1>{{datetime}}</1>, las entregas tardías o las no presentaciones se considerarán como renuncia a los resultados de este juego.",
         "file_format": "Por favor, organice el informe de todos los desafíos resueltos en <1>un documento PDF estándar de menos de 20MB</1>.",
         "title": "Instrucciones de Presentación"

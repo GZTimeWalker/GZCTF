@@ -99,7 +99,6 @@
       "deadline_exceeded": "Batas waktu pengiriman sudah lewat",
       "instructions": {
         "additional": "Tambahan Catatan",
-        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Harap kirimkan writeup sebelum <1>{{datetime}}</1>. Pengiriman yang terlambat atau tidak submit akan dianggap menyerah pada hasil game ini.",
         "file_format": "Harap susun writeup dari semua tantangan yang telah diselesaikan menjadi <1>dokumen PDF standar dengan ukuran kurang dari 20MB</1>.",
         "title": "Instruksi submission"

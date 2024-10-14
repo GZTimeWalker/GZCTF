@@ -99,7 +99,6 @@
       "deadline_exceeded": "提交截止时间已过",
       "instructions": {
         "additional": "附加说明",
-        "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
         "deadline": "请在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交视为放弃本次参赛记录。",
         "file_format": "请将全部解出题目整理为<1>一份小于 20MB 的标准 PDF 文档</1>。",
         "title": "提交说明"

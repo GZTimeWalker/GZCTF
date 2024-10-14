@@ -99,7 +99,6 @@
       "deadline_exceeded": "La date limite de soumission est dépassée",
       "instructions": {
         "additional": "Notes supplémentaires",
-        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Veuillez soumettre la rédaction avant le <1>{{datetime}}</1>. Les soumissions tardives ou non soumises seront considérées comme un abandon des résultats de ce jeu.",
         "file_format": "Veuillez organiser la rédaction de tous les défis résolus dans <1>un document PDF standard de moins de 20 Mo</1>.",
         "title": "Instructions de soumission"

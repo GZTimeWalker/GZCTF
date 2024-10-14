@@ -99,7 +99,6 @@
       "deadline_exceeded": "Einreichungsfrist ist abgelaufen",
       "instructions": {
         "additional": "Zusätzliche Hinweise",
-        "datetime_format": "DD/MM/YYYY HH:mm:ss",
         "deadline": "Bitte reichen Sie das Writeup vor dem <1>{{datetime}}</1> ein, verspätete oder nicht erfolgte Einreichungen werden als Verzicht auf die Ergebnisse dieses Spiels betrachtet.",
         "file_format": "Bitte organisieren Sie das Writeup aller gelösten Herausforderungen in <1>ein Standard-PDF-Dokument mit weniger als 20MB</1>.",
         "title": "Einreichungsanleitung"
