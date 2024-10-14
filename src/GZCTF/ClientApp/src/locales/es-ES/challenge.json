@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "primer sangre",
+    "second_blood": "segunda sangre",
+    "third_blood": "tercer sangre"
+  },
+  "button": {
+    "download": {
+      "attachment": "Descargar adjunto"
+    },
+    "instance": {
+      "create": "Crear",
+      "destroy": "Destruir",
+      "extend": "Extender"
+    },
+    "submit_flag": "Enviar bandera"
+  },
+  "category": {
+    "ai": "Seguridad de IA",
+    "blockchain": "Blockchain",
+    "crypto": "Criptografía",
+    "forensics": "Forense digital",
+    "hardware": "Seguridad de hardware",
+    "misc": "Misceláneo",
+    "mobile": "Seguridad móvil",
+    "osint": "Inteligencia de código abierto",
+    "pentest": "Pruebas de penetración",
+    "ppc": "Programación",
+    "pwn": "Explotación binaria",
+    "reverse": "Ingeniería inversa",
+    "web": "Seguridad web"
+  },
+  "content": {
+    "already_solved": "Este desafío ha sido resuelto",
+    "flag_placeholders": [
+      "Ser o no ser, esa es la cuestión del flag",
+      "No todo lo que reluce es flag",
+      "La bandera, querido Brutus, no está en nuestras estrellas",
+      "Mejor tres horas demasiado pronto que una bandera demasiado tarde",
+      "Mi reino por una bandera",
+      "¿Deberé compararte con una bandera?",
+      "Pon la bandera en tu bolsillo, y vete",
+      "Aquí está la bandera: bebo por ti",
+      "Porque nunca hubo una bandera con más desventura",
+      "Porque donde tú estás, ahí está la bandera",
+      "Mi bandera está en mi corazón, no en mi cabeza",
+      "Las mentes valientes ascienden pronto hacia la bandera",
+      "Pero, por mi parte, era bandera para mí",
+      "Lo que es mío es bandera y lo que es tuyo es mío",
+      "Esta parcela bendita, esta tierra, este reino, esta bandera",
+      "La bandera más madura cae primero",
+      "Un toque de bandera hace que todo el mundo sea pariente",
+      "Mejor una bandera ingeniosa que una ingeniosa tontería",
+      "Aunque haya mil tipos de banderas, ¿con quién más puedo hablar?",
+      "La bandera sigue brillando en un área desconocida.",
+      "¿Puedo preguntar dónde está la bandera?"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "Restante: ",
+        "note": "Puedes extenderlo {{min}} minutos antes de que expire."
+      },
+      "entry": {
+        "description": {
+          "anchor": "Obtener cliente proxy",
+          "proxy": "El modo proxy WebSocket ha sido habilitado."
+        },
+        "label": "Información de la instancia"
+      },
+      "no_container": {
+        "message": "Este desafío requiere crear una instancia",
+        "note": "La instancia estará activa por {{min}} minutos."
+      },
+      "open": {
+        "client": "Abrir en el cliente",
+        "web": "Abrir como página web"
+      },
+      "test": {
+        "no_container": "El contenedor de prueba no está en ejecución"
+      }
+    },
+    "solved": "<1>{{solved}}</1> RESUELTOS",
+    "wrong_flag_hints": [
+      "Donde hay voluntad, hay una bandera.",
+      "Ser o no ser, esa no es la bandera.",
+      "El orgullo duele, la bandera beneficia.",
+      "El fracaso enseña banderas.",
+      "No, no, no es esta bandera.",
+      "Ojos bien abiertos, pero la bandera no está aquí.",
+      "No seas impetuoso, piensa con cuidado.",
+      "Buscando por todas partes, esta no es la respuesta.",
+      "Superficialmente mirando, no has encontrado la bandera.",
+      "La respuesta debería estar al alcance de tu mano.",
+      "Planificación cuidadosa y consideración, la bandera no es tan simple.",
+      "¡La bandera está realmente bien escondida!",
+      "¿Es la soledad la que te aplasta cuando tienes mala suerte?",
+      "¡Demasiado emocionado! Aún necesitas aprender a pensar más calmadamente.",
+      "Golpeaste una pared, ¿podría ser que has alcanzado el pico?",
+      "Los años son pacíficos, pero la bandera se ha ido lejos.",
+      "El agua poco profunda se ha secado, la bandera aún no se encuentra.",
+      "¿Dónde se puede encontrar esta bandera?",
+      "Hermosas miniaturas como humo. ¿Dónde fue la bandera?",
+      "El pantano es profundo, y la bandera aún no se encuentra.",
+      "Todo está en silencio, solo el aviso de error de la bandera está aquí.",
+      "La bandera correcta aún no se ha obtenido.",
+      "Los vientos son amargos y fríos, y la bandera aún no está en tu mano."
+    ]
+  },
+  "file_type": {
+    "local": "Autoalojado",
+    "none": "Ninguno",
+    "remote": "URL Remoto"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "El juego ha terminado, las presentaciones no serán puntuadas",
+        "message": "La tabla de posiciones se actualizará más tarde.",
+        "title": "bandera correcta"
+      },
+      "empty": "La bandera no puede estar vacía",
+      "submitted": {
+        "message": "Por favor, espere la verificación de la bandera...",
+        "title": "bandera enviada"
+      },
+      "unknown": {
+        "message": "Por favor contacte al administrador para confirmar la presentación: {{id}}",
+        "title": "estado de bandera desconocido"
+      },
+      "wrong": "bandera incorrecta"
+    },
+    "instance": {
+      "copied": {
+        "entry": "Entrada de instancia copiada al portapapeles",
+        "url": {
+          "message": "Por favor use el cliente para acceder",
+          "title": "Entrada de instancia copiada al portapapeles"
+        }
+      },
+      "created": {
+        "message": "Por favor tenga en cuenta el tiempo de expiración de la instancia",
+        "title": "Instancia creada"
+      },
+      "destroyed": {
+        "message": "Puede recrear la instancia",
+        "title": "La instancia ha sido destruida"
+      },
+      "extend": {
+        "note": {
+          "message": "Por favor, amplíe la vida útil o destruya la instancia a tiempo",
+          "title": "La instancia está próxima a vencer"
+        },
+        "success": {
+          "message": "Por favor, tenga en cuenta la hora de expiración de la instancia",
+          "title": "La vida útil de la instancia ha sido extendida"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "Distribuya los adjuntos por equipo, asegurando que el número de adjuntos sea mayor que el número de equipos",
+      "label": "Adjuntos Dinámicos"
+    },
+    "dynamic_container": {
+      "desrc": "Generación automática de banderas, única para cada equipo",
+      "label": "Contenedor Dinámico"
+    },
+    "static_attachment": {
+      "desrc": "Adjuntos compartidos, cualquier bandera puede ser enviada",
+      "label": "Archivos adjuntos estáticos"
+    },
+    "static_container": {
+      "desrc": "Contenedores compartidos, se puede enviar cualquier bandera",
+      "label": "Contenedor estático"
+    }
+  }
+}

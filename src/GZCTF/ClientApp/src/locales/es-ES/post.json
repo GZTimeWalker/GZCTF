@@ -1,0 +1,33 @@
+{
+  "button": {
+    "delete": "Eliminar Publicación",
+    "edit": "Editar Publicación",
+    "goto": "Ir a la Publicación",
+    "new": "Nueva Publicación",
+    "save": "Guardar Publicación"
+  },
+  "content": {
+    "delete": "¿Estás seguro de que quieres eliminar la publicación {{title}}?",
+    "details": "Ver Detalles",
+    "metadata": "{{author}} publicado el {{date}}",
+    "pinned": "[Fijado]",
+    "updated": {
+      "content": "La publicación ha sido modificada. ¿Guardar?",
+      "title": "La publicación ha sido modificada"
+    }
+  },
+  "label": {
+    "add_tag": "Presiona Enter para añadir etiqueta",
+    "content": "Contenido",
+    "summary": "Resumen",
+    "tag": "Etiquetas",
+    "title": "Título"
+  },
+  "notification": {
+    "created": "La publicación ha sido creada",
+    "saved": "La publicación ha sido guardada"
+  },
+  "title": {
+    "index": "Publicaciones"
+  }
+}

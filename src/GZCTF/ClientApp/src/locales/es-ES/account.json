@@ -1,0 +1,108 @@
+{
+  "anchor": {
+    "login": "¿Ya tienes cuenta?",
+    "recovery": "¿Olvidaste la contraseña?"
+  },
+  "button": {
+    "change_password": "Cambiar contraseña",
+    "confirm_email": "Confirmar correo electrónico",
+    "login": "Iniciar sesión",
+    "recovery": "Enviar email de restablecimiento",
+    "register": "Registrarse",
+    "reset": "Restablecer contraseña",
+    "save_profile": "Guardar perfil",
+    "update_email": "Cambiar correo electrónico",
+    "verify_account": "Verificar cuenta"
+  },
+  "content": {
+    "confirm": {
+      "message": "Por favor, haz clic en el botón de abajo para verificar tu correo electrónico."
+    },
+    "link_check": "Por favor, verifica tu enlace de activación y vuelve a intentarlo",
+    "link_invalid": "¡Vaya! Hay algo mal con tu enlace de activación",
+    "profile": {
+      "update_email_note": "Después de cambiar tu correo electrónico, ya no podrás iniciar sesión usando tu correo original.<br/>Se enviará un correo a tu nueva dirección de email, haz clic en el enlace del mismo para completar la verificación."
+    },
+    "verify": {
+      "message": "Por favor haz clic en el botón de abajo para verificar la cuenta."
+    },
+    "welcome": "Hola, {{decodeEmail}}👋"
+  },
+  "label": {
+    "bio": "Descripción",
+    "email": "Correo electrónico",
+    "email_new": "Nuevo correo electrónico",
+    "password": "Contraseña",
+    "password_old": "Contraseña original",
+    "password_retype": "Confirmar contraseña",
+    "phone": "Número de teléfono",
+    "real_name": "Nombre real",
+    "student_id": "ID de estudiante",
+    "username": "Nombre de usuario",
+    "username_or_email": "Nombre de usuario o correo electrónico"
+  },
+  "notification": {
+    "captcha": {
+      "not_valid": "Por favor espera por el captcha...",
+      "request_sent": {
+        "message": "Esperando la verificación del servidor",
+        "title": "Solicitud enviada..."
+      }
+    },
+    "confirm": {
+      "failed": "Error al verificar el correo electrónico",
+      "success": "El correo electrónico ha sido verificado"
+    },
+    "login": {
+      "banned": "El usuario ha sido baneado",
+      "invalid": "Nombre de usuario o contraseña incorrectos",
+      "success": {
+        "message": "Redirigir a la página anterior antes de iniciar sesión",
+        "title": "Inicio de sesión exitoso"
+      }
+    },
+    "logout": "Cierre de sesión exitoso",
+    "profile": {
+      "password_updated": "La contraseña ha sido cambiada, por favor inicie sesión nuevamente",
+      "profile_updated": "Perfil actualizado"
+    },
+    "register": {
+      "logged_in": "Registrado exitosamente",
+      "request_sent": {
+        "message": "Por favor espere la aprobación del administrador para la activación~",
+        "title": "Solicitud de registro enviada"
+      }
+    },
+    "reset": {
+      "success": {
+        "message": "Por favor inicie sesión nuevamente",
+        "title": "La contraseña ha sido restablecida"
+      }
+    },
+    "verify": {
+      "failed": "No se pudo verificar la cuenta",
+      "success": "La cuenta ha sido verificada, por favor inicie sesión"
+    }
+  },
+  "password": {
+    "empty": "La contraseña no puede estar vacía",
+    "include_lowercase": "Incluir letras minúsculas",
+    "include_number": "Incluir números",
+    "include_symbol": "Incluir caracteres especiales",
+    "include_uppercase": "Incluir letras mayúsculas",
+    "min_length": "Al menos 6 caracteres",
+    "not_match": "La contraseña repetida es incorrecta"
+  },
+  "placeholder": {
+    "bio": "Esta persona es perezosa, no escribió nada"
+  },
+  "title": {
+    "confirm": "Verificación de correo electrónico",
+    "login": "Iniciar sesión",
+    "profile": "Perfil",
+    "recovery": "Recuperar cuenta",
+    "register": "Registrar",
+    "reset": "Restablecer contraseña",
+    "verify": "Verificación de cuenta"
+  }
+}

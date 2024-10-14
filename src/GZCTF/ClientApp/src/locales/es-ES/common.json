@@ -1,0 +1,129 @@
+{
+  "avatar": {
+    "save": "Guardar Avatar",
+    "upload_failed": "No se pudo actualizar el avatar",
+    "uploaded": "Avatar actualizado",
+    "uploading": "Subiendo avatar"
+  },
+  "button": {
+    "copy": "Copiar al Portapapeles",
+    "reset": "Restablecer",
+    "select_file": "Seleccionar Archivo",
+    "try_again": "Intentar Nuevamente",
+    "uploading": "Subiendo"
+  },
+  "content": {
+    "404": {
+      "text": "Una desolación, ¿por qué está aquí?",
+      "title": "Página no existe"
+    },
+    "about": {
+      "slogan": "Hack for fun not for profit"
+    },
+    "color": {
+      "custom": {
+        "description": "Selecciona el color base que deseas usar",
+        "label": "Color Base Personalizado",
+        "placeholder": "Usar color predeterminado"
+      },
+      "palette": {
+        "description": "Paleta de colores generada a partir del color base personalizado",
+        "label": "Paleta de Colores"
+      },
+      "provider": {
+        "custom": "Personalizado",
+        "default": "Predeterminado",
+        "description": "Selecciona cómo se determina el color base",
+        "label": "Proveedor de color del tema",
+        "managed": "Proporcionado por el Administrador"
+      },
+      "title": "Personalizar Color"
+    },
+    "drop_zone": {
+      "content": "Arrastra y suelta una imagen o haz clic aquí para seleccionar {{type}}",
+      "limit": "Por favor, selecciona una imagen de menos de 3MB",
+      "type": {
+        "avatar": "avatar",
+        "poster": "póster"
+      }
+    },
+    "external_link": "Enlace Externo",
+    "home": {
+      "recent_games": "Juegos Recientes"
+    },
+    "no_data": "Sin datos",
+    "report_error": "Por favor, informa de este error al administrador si piensas que es un fallo",
+    "wider": {
+      "text": "Intenta usar un dispositivo más ancho",
+      "title": "No lo suficientemente ancho"
+    }
+  },
+  "download": {
+    "failed": "Error al descargar",
+    "started": "Descargando",
+    "success": "Descargado"
+  },
+  "email": {
+    "sent": {
+      "message": "¡Por favor revise su correo electrónico y correo no deseado!",
+      "title": "Correo Enviado"
+    }
+  },
+  "error": {
+    "check_input": "Por favor revise su entrada",
+    "empty": "El contenido no puede estar vacío",
+    "encountered": "Ha ocurrido un error",
+    "file_invalid": {
+      "message": "Por favor verifique el formato y el tamaño del archivo",
+      "title": "No se pudo cargar el archivo"
+    },
+    "invalid_username_or_password": "Nombre de usuario o contraseña incorrectos",
+    "no_change": "Parece que no hay cambio",
+    "param_error": "Parámetro incorrecto, por favor verifique",
+    "param_invalid": "Parámetro inválido",
+    "param_missing": "Parámetro faltante",
+    "param_unknown": "Parámetro desconocido",
+    "request_too_frequent": "Demasiadas solicitudes",
+    "try_later": "Por favor, intenta de nuevo más tarde",
+    "unknown": "Error desconocido"
+  },
+  "label": {
+    "challenge": "Desafío",
+    "flag": "bandera",
+    "game": "Juego",
+    "ip": "IP",
+    "team": "Equipo",
+    "time": "Tiempo",
+    "user": "Usuario"
+  },
+  "modal": {
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "confirm_delete": "Confirmar eliminación",
+    "confirm_update": "Confirmar actualización",
+    "delete": "Eliminar"
+  },
+  "tab": {
+    "about": "Acerca de",
+    "account": {
+      "clean_cache": "Limpiar caché",
+      "login": "Iniciar sesión",
+      "logout": "Cerrar sesión",
+      "profile": "Perfil"
+    },
+    "admin": "Administración",
+    "game": "Juegos",
+    "home": "Inicio",
+    "post": "Publicaciones",
+    "team": "Equipo",
+    "theme": {
+      "dark": "modo oscuro",
+      "light": "modo claro",
+      "switch_to": "Cambiar a {{theme}}"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "Acerca de"
+  }
+}

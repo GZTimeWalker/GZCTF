@@ -1,0 +1,496 @@
+{
+  "button": {
+    "back": "Regresar",
+    "challenges": {
+      "attachment": {
+        "save_url": "Guardar Enlace",
+        "upload": "Subir",
+        "uploading": "Subiendo..."
+      },
+      "bonus": "Triple Bono de Sangre",
+      "delete": "Eliminar",
+      "disable": "Deshabilitar",
+      "edit": "Editar Desafío",
+      "edit_more": "Editar Banderas",
+      "enable": "Habilitar",
+      "flag": {
+        "add": {
+          "dynamic": "Subir Archivos Adjuntos",
+          "normal": "Añadir Bandera",
+          "remote": "Añadir Remoto"
+        },
+        "delete": "Eliminar",
+        "save": "Guardar Plantilla"
+      },
+      "hint": {
+        "add": "Añadir Pista"
+      },
+      "new": "Nuevo Reto",
+      "next": "Siguiente",
+      "preview": "Previsualizar",
+      "previous": "Anterior",
+      "test_container": {
+        "create": "Crear",
+        "destroy": "Destruir"
+      },
+      "update_accept_count": "Actualizar Contador de AC"
+    },
+    "games": {
+      "challenges": {
+        "attachment": {
+          "batch_add": "Agregar en Lote"
+        }
+      },
+      "copy_public_key": "Copiar Clave Pública",
+      "delete": "Eliminar",
+      "new": "Nuevo Juego"
+    },
+    "notices": {
+      "delete": "Eliminar",
+      "edit": "Editar Aviso",
+      "new": "Nuevo Aviso"
+    },
+    "save": "Guardar Cambios",
+    "teams": {
+      "do_lock": "Bloquear",
+      "do_unlock": "Desbloquear",
+      "edit": "Editar Equipo"
+    },
+    "users": {
+      "edit": "Editar Usuario"
+    },
+    "writeups": {
+      "download_all": "Descargar Todo"
+    }
+  },
+  "content": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "¿Está seguro de que desea eliminar el archivo adjunto de este desafío?",
+            "title": "Eliminar Archivo Adjunto"
+          },
+          "instruction": {
+            "amount_double": "Se recomienda subir archivos adjuntos dinámicos que sean el doble del número esperado de equipos participantes.",
+            "dynamic": {
+              "content": "Cargue en lote archivos adjuntos dinámicos, todos los cuales se distribuirán con el mismo nombre de archivo.",
+              "format": "Utilice cada bandera como el nombre de archivo para el archivo adjunto correspondiente."
+            },
+            "remote": {
+              "content": "Establecer adjuntos remotos y banderas correspondientes en lote, con un grupo por línea.",
+              "format": "Separe la bandera y la URL con un espacio."
+            }
+          },
+          "link": "Enlace de Adjuntos",
+          "title": "Gestión de Adjuntos",
+          "type": "Tipo de Adjunto"
+        },
+        "attachment_name": {
+          "description": "Todos los adjuntos dinámicos se descargarán con este nombre de archivo",
+          "label": "Nombre Global del Adjunto"
+        },
+        "bonus": {
+          "description": "El Triple Bono de Sangre se refiere a los puntos adicionales otorgados cuando un desafío es resuelto por los primeros tres equipos. Cada equipo puede recibir un bono de puntuación basado en los puntos actuales del desafío. El bono se añadirá a la puntuación del equipo en forma de un porcentaje fijo.",
+          "first_blood": "Recompensa de Primera Sangre (%)",
+          "second_blood": "Recompensa de Segunda Sangre (%)",
+          "third_blood": "Recompensa de Tercera Sangre (%)"
+        },
+        "category": "Categoría",
+        "container_image": "Imagen del Contenedor",
+        "cpu_limit": {
+          "description": "Multiplicación de 0.1 núcleo de CPU",
+          "label": "Límite de CPU (0.1 CPUs)"
+        },
+        "delete": "¿Está seguro de que desea eliminar el desafío {{name}}?",
+        "description": "Descripción",
+        "difficulty": "Factor de Dificultad",
+        "disable": "¿Está seguro de que desea deshabilitar el desafío {{name}}?",
+        "empty": {
+          "description": "Haga clic en la parte superior derecha para crear el primer desafío",
+          "title": "¡Vaya! Este juego aún no tiene desafíos."
+        },
+        "enable": "¿Está seguro de que desea habilitar el desafío {{name}}?",
+        "flag": {
+          "create": "Crea banderas. Varias banderas deben estar separadas por líneas, una bandera por línea.<br /> Cada desafío puede tener múltiples banderas. Cualquier bandera configurada puede ser aceptada.",
+          "delete": "¿Estás seguro de que deseas eliminar esta bandera?",
+          "empty": {
+            "description": "Por favor, añade la bandera desde la esquina superior derecha",
+            "title": "La lista de banderas está vacía"
+          },
+          "instructions": {
+            "both": "Si necesitas habilitar la bandera leet con <1>[TEAM_HASH]</1>, añade la etiqueta <2>[LEET]</2> <strong> antes </strong> de la cadena plantilla de la bandera. La entropía de la cadena plantilla de la bandera no se verificará.",
+            "complex": "Si necesitas habilitar caracteres especiales en la generación de banderas, usa <1>[CLEET]</1> en lugar de <2>[LEET]</2> al comienzo de la cadena. Esto puede causar problemas de inyección.",
+            "description": "Por favor, introduce la cadena de plantilla de la bandera, déjala en blanco para generar un GUID aleatorio como bandera",
+            "example": "Ejemplos",
+            "guid": "Especifica <1>[GUID]</1> para reemplazar sólo el marcador aquí con un GUID aleatorio",
+            "leave_empty": "Déjalo en blanco",
+            "leet": "Leet se activará si <1>[TEAM_HASH]</1> no está especificado y cambiará las cadenas entre llaves según la plantilla. Por favor, asegúrese de que la entropía del modelo de banderas sea lo suficientemente alta.",
+            "team_hash": "Si se especifica <1>[TEAM_HASH]</1>, será automáticamente reemplazado con el hash generado por el token del equipo y la información del concurso",
+            "will_generate": "generará"
+          },
+          "template": "Plantilla de Bandera",
+          "title": "Gestión de Banderas"
+        },
+        "hints": "Pistas",
+        "memory_limit": {
+          "description": "Limitación de RAM de los contenedores",
+          "label": "Límite de memoria (MB)"
+        },
+        "min_score_radio": {
+          "description": "Puntuación mínima: {{min_score}}pts",
+          "label": "Proporción de puntuación mínima"
+        },
+        "score": "Puntuación",
+        "service_port": {
+          "description": "Puerto de servicios de contenedor",
+          "label": "Puerto de servicio"
+        },
+        "solve_count": "Resolves",
+        "storage_limit": {
+          "description": "Almacenamiento (incluida imagen)",
+          "label": "Límite de almacenamiento (MB)"
+        },
+        "title": "Título",
+        "traffic_capture": {
+          "description": "Capturando el tráfico cuando el equipo resuelve desafíos. Es necesario habilitar el proxy de la plataforma",
+          "label": "Habilitar Captura de Tráfico"
+        },
+        "type": {
+          "description": "No se puede cambiar después de la creación",
+          "label": "Tipo"
+        }
+      },
+      "info": {
+        "accept_without_review": {
+          "description": "Aceptar directamente después de la inscripción del equipo",
+          "label": "Aceptar Sin Revisión"
+        },
+        "container_limit": {
+          "description": "Contenedores compartidos por un equipo (0 = ilimitado)",
+          "label": "Límite de Contenedores del Equipo"
+        },
+        "content": "Detalles del Juego",
+        "delete": "¿Estás seguro de que deseas eliminar el juego {{name}}?",
+        "end_date": "Fecha de Finalización",
+        "end_time": "Hora de Finalización",
+        "invite_code": {
+          "description": "Deja en blanco para no tener código de invitación",
+          "label": "Código de Invitación"
+        },
+        "member_limit": {
+          "description": "0 significa miembros ilimitados del equipo",
+          "label": "Máximo de Miembros del Equipo"
+        },
+        "organizations": {
+          "description": "Agrega divisiones para habilitar el marcador agrupado, deja en blanco para deshabilitar",
+          "label": "Lista de Divisiones Participantes"
+        },
+        "poster": "Cartel",
+        "practice_mode": {
+          "description": "Ver desafíos después de que el juego termine",
+          "label": "Modo de Práctica"
+        },
+        "start_date": "Fecha de Inicio",
+        "start_time": "Hora de Inicio",
+        "summary": {
+          "description": "Se mostrará en la lista de juegos",
+          "label": "Resumen"
+        },
+        "title": {
+          "description": "La longitud excesiva puede afectar el efecto de visualización",
+          "label": "Título"
+        },
+        "writeup_deadline": {
+          "description": "Horas para enviar informes después de que termine el juego",
+          "label": "Fecha límite de informe"
+        },
+        "writeup_instruction": "Instrucciones para el informe",
+        "writeup_required": {
+          "description": "Habilitar envío de informes",
+          "label": "Informe requerido"
+        }
+      },
+      "notices": {
+        "delete": "¿Está seguro de que desea eliminar este aviso?",
+        "empty": {
+          "description": "Haga clic en el botón superior derecho para crear un nuevo aviso",
+          "title": "Aún no hay avisos"
+        }
+      },
+      "review": {
+        "empty": {
+          "description": "En camino... ¡No te preocupes!",
+          "title": "¡Ay! Ningún equipo se ha unido a este juego todavía"
+        },
+        "participation": {
+          "joined": "Unido",
+          "not_joined": "No registrado",
+          "stats": "{{count}}/{{total}} unido",
+          "update": "¿Establecer el estado de este equipo a: \"{{status}}\"?"
+        }
+      },
+      "stats": "<1>{{current}}</1> de <1>{{total}}</1> juegos mostrados",
+      "writeups": {
+        "empty": {
+          "description": "Nuevas publicaciones aparecerán aquí",
+          "title": "¡Ay! Aún no hay publicaciones"
+        },
+        "pdf_fallback": "Error al cargar el PDF"
+      }
+    },
+    "instances": {
+      "destroy": "¿Estás seguro de que quieres destruir la instancia {{name}}?",
+      "note": "Nota: Las estadísticas del contenedor no incluyen el contenedor de prueba del administrador ni el contenedor destruido",
+      "stats": " <1>{{count}}</1> instancias distribuidas en total"
+    },
+    "markdown_inline_support": "Se admite el formato con Markdown en línea",
+    "markdown_support": "Se admite el formato con Markdown",
+    "nothing_found": "Nada encontrado",
+    "settings": {
+      "account": {
+        "allow_register": {
+          "description": "Permitir a los usuarios registrar nuevas cuentas",
+          "label": "Permitir registro"
+        },
+        "auto_active": {
+          "description": "Si activar a los usuarios después de registrarse",
+          "label": "Activación automática"
+        },
+        "email_confirmation_required": {
+          "description": "Si se requiere verificación de correo electrónico del usuario",
+          "label": "Requiere verificación de correo electrónico"
+        },
+        "email_domain_list": {
+          "description": "Lista de dominios de correo electrónico permitidos para registrarse. Separe múltiples dominios con comas, deje vacío para deshabilitar.",
+          "label": "Lista blanca de dominios de correo electrónico"
+        },
+        "title": "Política de cuenta",
+        "use_captcha": {
+          "description": "Verificación al iniciar sesión, registrarse y recuperar",
+          "label": "Habilitar CAPTCHA"
+        }
+      },
+      "container": {
+        "auto_destroy": {
+          "description": "Si destruir automáticamente la instancia antigua al alcanzar el límite",
+          "label": "Destruir Automáticamente Instancias Antiguas"
+        },
+        "default_lifetime": {
+          "description": "La duración de vida predeterminada del contenedor",
+          "label": "Duración Predeterminada (min)"
+        },
+        "extension_duration": {
+          "description": "La duración de cada renovación del contenedor",
+          "label": "Duración de Renovación (min)"
+        },
+        "renewal_window": {
+          "description": "La ventana de tiempo antes de que expire el contenedor para renovar",
+          "label": "Ventana de Renovación (min)"
+        },
+        "title": "Política de Contenedor"
+      },
+      "platform": {
+        "color": {
+          "description": "Color personalizado para la plataforma",
+          "label": "Color de la Plataforma"
+        },
+        "color_palette": {
+          "description": "Paleta de colores generada desde el color personalizado",
+          "label": "Paleta de Colores"
+        },
+        "description": {
+          "description": "Descripción del sitio proporcionada para SEO",
+          "label": "Descripción del Sitio"
+        },
+        "footer": {
+          "description": "Soporta sintaxis Markdown, <mbr/> se reemplazará con <br/> en dispositivo móvil",
+          "label": "Pie de página"
+        },
+        "logo": {
+          "description": "Se utiliza para el favicon y el logo en las páginas",
+          "label": "Logo de la Plataforma"
+        },
+        "name": {
+          "description": "El nombre de la plataforma se mostrará con ::CTF",
+          "label": "Nombre de la Plataforma"
+        },
+        "slogan": {
+          "description": "Se mostrará en la parte superior de la página",
+          "label": "Eslogan de la Plataforma"
+        },
+        "title": "Configuraciones de la Plataforma"
+      }
+    },
+    "show_all": "Mostrar Todo",
+    "teams": {
+      "delete": "¿Está seguro de que desea eliminar el equipo {{name}} ?",
+      "lock": "¿Estás seguro de que deseas {{action}} el equipo {{name}}?",
+      "locked": "Bloqueado",
+      "stats": "<1>{{current}}</1> de <1>{{total}}</1> equipos mostrados",
+      "unlocked": "Desbloqueado"
+    },
+    "users": {
+      "delete": "¿Estás seguro de que deseas eliminar al usuario {{name}}?",
+      "reset": {
+        "content": "La contraseña del usuario ha sido restablecida, <strong>esta contraseña solo se mostrará una vez</strong>, por favor guárdala adecuadamente.",
+        "message": "¿Estás seguro de que deseas restablecer la contraseña para {{name}}?",
+        "title": "Restablecer contraseña para {{name}}"
+      },
+      "stats": "<1>{{current}}</1> de <1>{{total}}</1> usuarios mostrados"
+    }
+  },
+  "label": {
+    "games": {
+      "hide": "Ocultar",
+      "summary": "Resumen"
+    },
+    "instances": {
+      "container_id": "ID del Contenedor",
+      "entry": "Entrada de la Instancia",
+      "life_cycle": "Ciclo de Vida"
+    },
+    "logs": {
+      "message": "Mensaje",
+      "status": "Estado"
+    },
+    "teams": {
+      "bio": "Biografía",
+      "members": "Miembros"
+    },
+    "users": {
+      "active": "Activar",
+      "last_visit": "Última Visita",
+      "role": "Roles de Usuario"
+    }
+  },
+  "notification": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_selected": "Por favor, seleccione al menos un archivo",
+          "updated": "Adjunto actualizado"
+        },
+        "created": "Desafío creado",
+        "deleted": "Desafío eliminado",
+        "flag": {
+          "copied": "Bandera copiada al portapapeles",
+          "created": "Bandera creada",
+          "deleted": "Bandera eliminada"
+        },
+        "flag_template": {
+          "updated": "Plantilla de bandera actualizada"
+        },
+        "preview": {
+          "attachment_downloaded": "¡Finge que el adjunto ha sido descargado!",
+          "flag_submitted": "¡Bandera enviada!"
+        },
+        "updated": "Desafío actualizado"
+      },
+      "created": "Juego creado",
+      "info": {
+        "accept_count_updated": "Contador AC actualizado",
+        "deleted": "Juego eliminado",
+        "info_updated": "Juego actualizado",
+        "poster": {
+          "upload_failed": "Fallo en la carga del póster",
+          "uploaded": "Cartel subido con éxito",
+          "uploading": "Subiendo cartel..."
+        },
+        "public_key_copied": "Clave pública copiada al portapapeles"
+      },
+      "instances": {
+        "created": "Instancia creada",
+        "deleted": "Instancias destruidas"
+      },
+      "no_title_time": "Por favor, ingrese el título y la hora del juego",
+      "notices": {
+        "created": "Aviso creado",
+        "deleted": "Aviso eliminado",
+        "updated": "Aviso actualizado"
+      },
+      "participation": {
+        "updated": "El estado del equipo ha sido actualizado"
+      }
+    },
+    "instances": {
+      "destroyed": "Instancias destruidas",
+      "entry_copied": "Entrada de instancia copiada al portapapeles",
+      "url_copied": {
+        "message": "Por favor, use el cliente para acceder",
+        "title": "URL de Proxy copiada al portapapeles"
+      }
+    },
+    "logs": {
+      "connected": "Log en tiempo real conectado",
+      "fetch_failed": "Error al obtener logs"
+    },
+    "teams": {
+      "deleted": "{{name}} ha sido eliminado"
+    },
+    "users": {
+      "deleted": "{{name}} ha sido eliminado",
+      "password_copied": "Contraseña copiada al portapapeles",
+      "updated": "Perfil de usuario actualizado"
+    }
+  },
+  "placeholder": {
+    "empty": "Vacío",
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_file_selected": {
+            "comment": "El archivo seleccionado se mostrará aquí",
+            "title": "No has seleccionado ningún archivo"
+          }
+        }
+      },
+      "organizations": "Presiona Enter para añadir una división.",
+      "participation": {
+        "bio": "(sin biografía)",
+        "team": "(sin nombre)"
+      }
+    },
+    "instances": {
+      "challenges": {
+        "not_found": "No se encontró desafío",
+        "select": "Todos los desafíos"
+      },
+      "teams": {
+        "not_found": "Equipo no encontrado",
+        "select": "Todos los equipos"
+      }
+    },
+    "settings": {
+      "email_domain_list": "Sin restricciones",
+      "footer": "`Test` <mbr/> Algo...",
+      "logo": {
+        "custom": "Logo personalizado",
+        "default": "Usar icono GZCTF"
+      }
+    },
+    "teams": {
+      "search": "Buscar por nombre"
+    },
+    "users": {
+      "real_name": "Vacío",
+      "search": "Buscar por ID/nombre de usuario/correo electrónico/número de estudiante/nombre real",
+      "student_id": "00000000"
+    }
+  },
+  "tab": {
+    "games": {
+      "challenges": "Desafíos",
+      "index": "Juegos",
+      "info": "Información",
+      "notices": "Avisos",
+      "review": "Equipos",
+      "writeups": "Writeups"
+    },
+    "instances": "Instancias",
+    "logs": "Registros",
+    "settings": "Configuración",
+    "teams": "Equipos",
+    "users": "Usuarios"
+  }
+}
