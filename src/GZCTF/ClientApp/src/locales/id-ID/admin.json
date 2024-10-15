@@ -244,8 +244,8 @@
       "note": "Note: Statistik container tidak termasuk container tes admin dan container yang telah dihapus",
       "stats": " <1>{{count}}</1> instance yang didistribusikan secara total"
     },
-    "markdown_inline_support": "Styling dengan Markdown inline didukung",
-    "markdown_support": "Styling dengan Markdown inline didukung",
+    "markdown_inline_support": "Support dengan markdown styling",
+    "markdown_support": "Support dengan markdown styling",
     "nothing_found": "Tidak ada yang ditemukan",
     "settings": {
       "account": {
