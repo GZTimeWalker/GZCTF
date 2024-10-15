@@ -1,0 +1,93 @@
+{
+  "button": {
+    "create": "Crear equipo",
+    "disband": "Disolver equipo",
+    "edit": "Detalles del equipo",
+    "join": "Unirse al equipo",
+    "leave": "Abandonar equipo",
+    "save": "Actualizar info"
+  },
+  "content": {
+    "create": "Puedes crear un equipo e invitar a otros a unirse. Cada jugador solo puede crear un equipo.",
+    "disband": {
+      "confirm": {
+        "message": "¿Estás seguro de que deseas disolver el equipo \"{{team}}\"?",
+        "title": "Confirmar disolución del equipo"
+      }
+    },
+    "join": "Por favor, obtén el código de invitación del creador del equipo, úsalo para unirte al equipo.",
+    "kick": {
+      "confirm": {
+        "message": "¿Estás seguro de que quieres expulsar al miembro del equipo \"{{user}}\"?",
+        "title": "Confirmar la eliminación del miembro."
+      }
+    },
+    "leave": {
+      "confirm": {
+        "message": "¿Estás seguro de que quieres dejar el equipo \"{{team}}\"?",
+        "title": "Confirmar salida"
+      }
+    },
+    "no_create": {
+      "content": "Cada jugador solo puede crear un equipo.<br/>Puedes disolver el equipo existente y crear uno nuevo.",
+      "title": "Has creado un equipo"
+    },
+    "role": {
+      "captain": "Capitán",
+      "member": "Miembro"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "¿Estás seguro de que deseas transferir el equipo \"{{team}}\" a \"{{user}}\"?",
+        "title": "Confirmar transferencia"
+      }
+    }
+  },
+  "label": {
+    "bio": "Biografía",
+    "invite_code": "Código de invitación",
+    "kick": "Expulsar",
+    "members": "Miembros",
+    "name": "Nombre del equipo",
+    "role": "Rol",
+    "transfer": "Transferir"
+  },
+  "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}} ha sido creado, ¡invita a tus compañeros ahora!",
+        "title": "Equipo creado exitosamente"
+      }
+    },
+    "disband": {
+      "success": "Equipo disuelto con éxito"
+    },
+    "invite_code": {
+      "copied": "Código de invitación copiado al portapapeles",
+      "updated": "Token de invitación del equipo actualizado"
+    },
+    "join": {
+      "success": "Se unió al equipo con éxito",
+      "wrong_invite_code": "Código de invitación del equipo incorrecto"
+    },
+    "kick": {
+      "success": "Miembro eliminado con éxito"
+    },
+    "leave": {
+      "success": "Se salió con éxito"
+    },
+    "token": {
+      "copied": "Token del equipo copiado al portapapeles"
+    },
+    "transfer": {
+      "success": "Equipo transferido con éxito"
+    },
+    "updated": "La información del equipo ha sido actualizada"
+  },
+  "placeholder": {
+    "bio": "Este equipo es perezoso, no ha escrito nada"
+  },
+  "title": {
+    "index": "Gestión de equipos"
+  }
+}

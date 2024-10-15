@@ -58,12 +58,12 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boo
 
 const IconTabs: FC<IconTabsProps> = (props) => {
   const { active, onTabChange, tabs, withIcon, aside, disabled, ...others } = props
-  const [_activeTab, setActiveTab] = useState(active ?? 0)
+  const [activeTab, setActiveTab] = useState(active ?? 0)
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
   const resolveColor = (color?: MantineColor) =>
     color ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 4 : 6] : undefined
-  const activeTab = clamp(_activeTab, 0, tabs.length - 1)
+  const current = clamp(activeTab, 0, tabs.length - 1)
 
   useEffect(() => {
     setActiveTab(active ?? 0)
@@ -75,7 +75,7 @@ const IconTabs: FC<IconTabsProps> = (props) => {
       {...tab}
       disabled={disabled}
       color={resolveColor(tab.color)}
-      active={activeTab === index}
+      active={current === index}
       onClick={() => {
         setActiveTab(index)
         onTabChange && onTabChange(index, tab.tabKey)

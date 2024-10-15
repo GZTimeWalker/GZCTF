@@ -1,0 +1,245 @@
+{
+  "button": {
+    "challenges": "Herausf.",
+    "delete": {
+      "all_traffic": "Lösche gesamten aufgeführten Verkehr"
+    },
+    "download": {
+      "all_traffic": "Lade gesamten aufgeführten Verkehr herunter",
+      "scoreboard": "Anzeigetafel",
+      "submissionsheet": "Einsendungen"
+    },
+    "finished": "Spiel beendet",
+    "hide_solved": "Gelöste ausblenden",
+    "join": "Beitreten",
+    "leave": "Spiel verlassen",
+    "login_required": "Bitte einloggen",
+    "scoreboard": "Anzeigetafel",
+    "submit_writeup": "Writeup",
+    "writeup": {
+      "upload": "Einreichen Writeup",
+      "uploading": "Hochladen..."
+    }
+  },
+  "content": {
+    "all_solved": {
+      "comment": "Vielleicht warten noch schwierigere Herausforderungen auf dich...",
+      "title": "Alle Herausforderungen wurden gelöst!"
+    },
+    "duration": "{{hours}} Stunde(n)",
+    "end_at": "Endet um",
+    "end_time": "Endzeit",
+    "game_ended": "Beendet",
+    "game_lasts_long": "Das Spiel wird lange dauern",
+    "hide_container_events": {
+      "description": "Verstecke Container-Erstellungs-/Zerstörungsereignisse",
+      "label": "Verstecke Container-Ereignisse"
+    },
+    "join": {
+      "confirm": "Registrierung bestätigen",
+      "content": [
+        "Möchten Sie sich wirklich für dieses Spiel anmelden?",
+        "Nach erfolgreicher Registrierung für den Wettbewerb und Überprüfung wird das Team gesperrt und <strong>Sie können kein Mitglied mehr aus dem Team entfernen.</strong> Das Team wird nach dem Ende des Spiels oder bei Ablehnung der Teilnahme entsperrt.",
+        "Die Begrenzung der Spielerzahl bezieht sich auf die Anzahl der Mitglieder, die sich entschieden haben, als Teil des bestimmten Teams teilzunehmen, <strong>unabhängig davon, mit welchem Team Sie spielen möchten.</strong>"
+      ],
+      "invite_code": {
+        "description": "Dieses Spiel ist nur auf Einladung. Um teilzunehmen, geben Sie bitte einen Einladungscode ein.",
+        "label": "Bitte geben Sie den Einladungscode ein"
+      },
+      "organization": {
+        "description": "Dieses Spiel hat mehrere verfügbare Divisionen. Bitte wählen Sie Ihre Division aus.",
+        "label": "Division auswählen"
+      },
+      "team": {
+        "description": "Bitte wählen Sie ein Team, mit dem Sie an diesem Spiel teilnehmen möchten. Dies kann nach der Genehmigung des Teilnahmegesuchs nicht mehr geändert werden.",
+        "label": "Wählen Sie Ihr Team aus"
+      },
+      "title": "Registrierungsinformationen"
+    },
+    "joined_status": "<strong>{{count}}</strong> Teams haben sich bereits angemeldet",
+    "leave": {
+      "confirm": "Bestätigen Sie das Beenden",
+      "content": [
+        "Sind Sie sicher, dass Sie dieses Spiel verlassen möchten?",
+        "Wenn die Anzahl der Teammitglieder nach Ihrem Austritt null ist, werden die Teilnahmeinformationen des Teams gelöscht."
+      ]
+    },
+    "no_challenge": "Autsch! Keine Herausforderungen für dieses Spiel verfügbar.",
+    "no_cheat": {
+      "comment": "Es sieht so aus, als hätten alle fair gespielt!",
+      "title": "Noch kein Schummeln festgestellt"
+    },
+    "no_notice": "Nichts hier.",
+    "no_traffic": {
+      "comment": "Sowohl Plattform als auch Herausforderung müssen eingerichtet werden, um die Erfassung zu ermöglichen",
+      "title": "Keine Herausforderung hat die Verkehrserfassung aktiviert"
+    },
+    "remaining_duration": "{{hours}} h verbleibend",
+    "remaining_time": "Verbleibende Zeit",
+    "scoreboard_not_ready": {
+      "comment": "Geduld ist eine Tugend, bitte bleiben Sie dran…",
+      "title": "Lade Herausforderungen"
+    },
+    "scoreboard_note": "Gleiche Punktzahl: Sortierung nach Einreichungszeit.",
+    "scoreboard_tip": "Tipp: Durch die Liste der Herausforderungen mit den Pfeiltasten links und rechts blättern!",
+    "start_at": "Beginnt um",
+    "start_time": "Startzeit",
+    "team_view": {
+      "description": "Anzeige von Betrugsinformationen nach Teams",
+      "label": "Als Team anzeigen"
+    },
+    "total_duration": "{{hours}}h insgesamt",
+    "total_time": "Dauer",
+    "traffic": {
+      "delete_confirm": "Diese Verkehrsdaten-Datei löschen?",
+      "deleted_all_confirm": "Alle aufgeführten Verkehrsdaten löschen?"
+    },
+    "writeup": {
+      "current": "Aktuelles Writeup",
+      "deadline_exceeded": "Einreichungsfrist ist abgelaufen",
+      "instructions": {
+        "additional": "Zusätzliche Hinweise",
+        "deadline": "Bitte reichen Sie das Writeup vor dem <1>{{datetime}}</1> ein, verspätete oder nicht erfolgte Einreichungen werden als Verzicht auf die Ergebnisse dieses Spiels betrachtet.",
+        "file_format": "Bitte organisieren Sie das Writeup aller gelösten Herausforderungen in <1>ein Standard-PDF-Dokument mit weniger als 20MB</1>.",
+        "title": "Einreichungsanleitung"
+      },
+      "submitted": "Erfolgreich eingereicht",
+      "title": "Writeup-Verwaltung",
+      "unsubmitted": "Noch nicht eingereicht",
+      "unsubmitted_note": "Ihr Team hat noch nicht eingereicht"
+    }
+  },
+  "event": {
+    "answer": {
+      "accepted": "Flag akzeptiert",
+      "cheat": "Betrug",
+      "not_found": "Unbekannt",
+      "submitted": "Erfolgreich eingereicht",
+      "wrong": "Falsche Flagge"
+    },
+    "cheat_detected": "Betrug in Herausforderung {{chal}} erkannt, Team {{team}} benutzte die Flagge von {{steam}}.",
+    "container": {
+      "destroy": "Herausforderungsinstanz für {{chal}}#{{id}} zerstört",
+      "start": "Herausgeforderte Instanz für {{chal}}#{{id}} erstellt"
+    },
+    "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
+  },
+  "label": {
+    "cheat_info": {
+      "owned_team": "Quellteam",
+      "submit_team": "Einreichendes Team",
+      "submit_user": "Einreicher"
+    },
+    "notice_type": {
+      "all": "Alle",
+      "challenge": "Herausf.",
+      "events": "Neuigkeiten",
+      "game": "Benachrichtigung"
+    },
+    "score": "Punktzahl",
+    "score_formatter": "{value} Pkt.",
+    "score_table": {
+      "rank_organization": "Rang",
+      "rank_total": "Gesamt",
+      "score": "Punkte",
+      "score_total": "Punkte",
+      "solved_count": "Gelöst",
+      "team": "Team",
+      "type": "Typ"
+    },
+    "traffic": "Traffic"
+  },
+  "notice": {
+    "blood": "Herzlichen Glückwunsch an {{team}} für das {{blood}} bei {{chal}}.",
+    "new_challenge": "Neue Herausforderung [{{title}}] wurde veröffentlicht.",
+    "new_hint": "Hinweise für [{{title}}] wurden aktualisiert."
+  },
+  "notification": {
+    "connected": {
+      "event": "Echtzeitereignis verbunden",
+      "submission": "Echtzeiteinreichung verbunden"
+    },
+    "ended": "Das Spiel ist beendet",
+    "fetch_failed": {
+      "event": "Fehler beim Abrufen der Ereignisse",
+      "notice": "Fehler beim Abrufen der Benachrichtigungen",
+      "submission": "Fehler beim Abrufen der Einreichungen"
+    },
+    "joined": "Anmeldung erfolgreich",
+    "left": "Erfolgreich storniert",
+    "no_invite_code": "Einladungscode darf nicht leer sein",
+    "no_organization": "Bitte wählen Sie die Abteilung",
+    "no_team": "Bitte wählen Sie das Team zur Teilnahme",
+    "not_started": "Spiel noch nicht gestartet",
+    "select_chal_and_part": "Bitte wählen Sie zuerst Herausforderungen und Teams aus",
+    "suspended": "Sie wurden gesperrt",
+    "traffic": {
+      "deleted": "<span class=\"notranslate\">Verkehrsdatei(en)</span> wurde(n) gelöscht"
+    },
+    "writeup": {
+      "submitted": "Writeup wurde erfolgreich eingereicht"
+    }
+  },
+  "participation": {
+    "actions": {
+      "accepted": "Genehmigt",
+      "pending": "Ausstehende Überprüfung",
+      "rejected": "Erneut registrieren",
+      "suspended": "Gesperrt",
+      "unsubmitted": "Spiel beitreten"
+    },
+    "alert": {
+      "not_started": {
+        "content": "Sie haben sich erfolgreich registriert und die Überprüfung als Mitglied des Teams {{team}} bestanden. Bitte warten Sie auf den Spielbeginn.",
+        "mobile": "Bitte verwenden Sie die Desktop-Website, um die Details des Spiels zu sehen.",
+        "title": "Spiel noch nicht gestartet"
+      },
+      "pending": {
+        "content": "Bitte warten Sie auf die Überprüfungsergebnisse",
+        "title": "Sie haben sich erfolgreich als Mitglied des Teams {{team}} registriert"
+      },
+      "rejected": {
+        "content": "Bitte stellen Sie sicher, dass Sie berechtigt sind, sich für das Spiel anzumelden, und melden Sie sich nach Erfüllung der Anforderungen erneut an",
+        "title": "Ihr Teilnahmegesuch wurde abgelehnt"
+      },
+      "suspended": {
+        "content": "Wenn Sie Einwände haben, wenden Sie sich bitte an den Administrator, um Berufung einzulegen.",
+        "title": "Ihr Team {{team}} wurde gesperrt"
+      },
+      "team_required": {
+        "content": "Sie sind keinem Team beigetreten, bitte erstellen oder treten Sie einem Team auf der <1> Teamverwaltung </1> Seite bei.",
+        "title": "Registrierung ist derzeit nicht möglich"
+      }
+    },
+    "status": {
+      "accepted": "Genehmigt",
+      "pending": "Ausstehend",
+      "rejected": "Abgelehnt",
+      "suspended": "Gesperrt"
+    }
+  },
+  "placeholder": {
+    "no_solved": "Autsch! Dieses Team hat noch keine Herausforderungen gelöst...",
+    "search_team": "Team suchen"
+  },
+  "tab": {
+    "challenge": "Herausf.",
+    "monitor": {
+      "cheatinfo": "Betrug",
+      "events": "Ereignisse",
+      "index": "Überwachung",
+      "submissions": "Einreichung",
+      "traffic": "Verkehr"
+    },
+    "scoreboard": "Ergebnistafel"
+  },
+  "tag": {
+    "hidden": "Versteckt",
+    "individual": "Persönlich",
+    "limited": "{{count}} Spieler",
+    "multiplayer": "Team"
+  },
+  "title": {
+    "index": "Spiele"
+  }
+}

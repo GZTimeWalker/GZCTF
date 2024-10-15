@@ -1,0 +1,496 @@
+{
+  "button": {
+    "back": "Kembali",
+    "challenges": {
+      "attachment": {
+        "save_url": "Simpan link",
+        "upload": "Unggah",
+        "uploading": "Mengunggah..."
+      },
+      "bonus": "Bonus triple blood",
+      "delete": "Hapus",
+      "disable": "Nonaktifkan",
+      "edit": "Edit challenge",
+      "edit_more": "Edit flag",
+      "enable": "Aktifkan",
+      "flag": {
+        "add": {
+          "dynamic": "Upload lampiran",
+          "normal": "Tambahkan flag",
+          "remote": "Tambahkan remote"
+        },
+        "delete": "Hapus",
+        "save": "Simpan template"
+      },
+      "hint": {
+        "add": "Tambahkan hint"
+      },
+      "new": "Challenge baru",
+      "next": "Lanjut",
+      "preview": "Lihat",
+      "previous": "Sebelumnya",
+      "test_container": {
+        "create": "Buat",
+        "destroy": "Hapus"
+      },
+      "update_accept_count": "Perbarui AC Counter"
+    },
+    "games": {
+      "challenges": {
+        "attachment": {
+          "batch_add": "Tambahkan secara otomatis"
+        }
+      },
+      "copy_public_key": "Salin public key",
+      "delete": "Hapus",
+      "new": "Game baru"
+    },
+    "notices": {
+      "delete": "Hapus",
+      "edit": "Edit notifikasi",
+      "new": "Notifikasi baru"
+    },
+    "save": "Simpan perubahan",
+    "teams": {
+      "do_lock": "Kunci",
+      "do_unlock": "Buka",
+      "edit": "Edit Tim"
+    },
+    "users": {
+      "edit": "Edit Pengguna"
+    },
+    "writeups": {
+      "download_all": "Unduh Semua"
+    }
+  },
+  "content": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "Apakah kamu yakin ingin menghapus lampiran tantangan ini?",
+            "title": "Bersihkan Lampiran"
+          },
+          "instruction": {
+            "amount_double": "Disarankan untuk mengunggah lampiran dinamis yang jumlahnya dua kali lipat dari jumlah tim yang diharapkan ikut.",
+            "dynamic": {
+              "content": "Unggah lampiran dinamis secara batch, semuanya akan dibagikan dengan nama file yang sama.",
+              "format": "Silakan gunakan setiap flag sebagai nama file untuk lampiran yang sesuai."
+            },
+            "remote": {
+              "content": "Atur lampiran remote dan flag yang sesuai secara batch, satu grup per baris.",
+              "format": "Silakan pisahkan flag dan URL dengan spasi."
+            }
+          },
+          "link": "Link lampiran",
+          "title": "Manajemen lampiran",
+          "type": "Jenis lampiran"
+        },
+        "attachment_name": {
+          "description": "Semua lampiran dinamis akan diunduh dengan nama file ini",
+          "label": "Nama lampiran global"
+        },
+        "bonus": {
+          "description": "The Triple Blood Bonus merujuk pada poin tambahan yang diberikan ketika tantangan diselesaikan oleh tiga tim pertama. Setiap tim bisa mendapatkan bonus skor berdasarkan poin yang saat ini dimiliki tantangan tersebut. Bonus ini akan ditambahkan ke skor tim dalam bentuk persentase tetap.",
+          "first_blood": "First Blood Reward (%)",
+          "second_blood": "Second Blood Reward (%)",
+          "third_blood": "Third Blood Reward (%)"
+        },
+        "category": "Kategori",
+        "container_image": "Container image",
+        "cpu_limit": {
+          "description": "Multiplication of 0.1 CPU core",
+          "label": "CPU Limit (0.1 CPUs)"
+        },
+        "delete": "Apakah kamu yakin ingin menghapus tantangan {{name}}?",
+        "description": "Deskripsi",
+        "difficulty": "Tingkat kesulitan",
+        "disable": "Apakah kamu yakin ingin menonaktifkan challenge {{name}}?",
+        "empty": {
+          "description": "Klik pojok kanan atas untuk membuat challenge pertama",
+          "title": "Waduh! Permainan ini belum memiliki challenge."
+        },
+        "enable": "Apakah kamu yakin ingin mengaktifkan challenge {{name}}?",
+        "flag": {
+          "create": "Buat flag. Beberapa flag harus dipisahkan dengan baris, satu bendera per baris.<br /> Setiap tantangan dapat memiliki beberapa flag. Semua flag yang dikonfigurasi dapat diterima.",
+          "delete": "Apakah kamu yakin ingin menghapus flag ini?",
+          "empty": {
+            "description": "Silakan tambahkan flag melalui pojok kanan atas",
+            "title": "Daftar flag kosong"
+          },
+          "instructions": {
+            "both": "Jika kamu perlu mengaktifkan flag leet dengan <1>[TEAM_HASH]</1>, tambahkan tag <2>[LEET]</2> <strong> sebelum </strong> string template flag. Entropi dari string template flag tidak akan diperiksa.",
+            "complex": "Jika kamu perlu mengaktifkan karakter khusus dalam pembuatan flag, gunakan <1>[CLEET]</1> sebagai pengganti <2>[LEET]</2> di awal string. Hal ini dapat menyebabkan masalah injection.",
+            "description": "Silakan masukkan string template flag, kosongkan untuk menghasilkan GUID acak sebagai bendera",
+            "example": "Contoh",
+            "guid": "Tentukan <1>[GUID]</1> untuk mengganti hanya placeholder di sini dengan GUID acak",
+            "leave_empty": "Biarkan kosong",
+            "leet": "Leet akan diaktifkan jika <1>[TEAM_HASH]</1> tidak ditentukan dan akan mengubah string dalam kurung berdasarkan template. Pastikan entropi template flag cukup tinggi.",
+            "team_hash": "Jika <1>[TEAM_HASH]</1> ditentukan, itu akan secara otomatis diganti dengan hash yang dihasilkan oleh token tim dan informasi kontes",
+            "will_generate": "akan di generate"
+          },
+          "template": "Format flag",
+          "title": "Manajemen flag"
+        },
+        "hints": "Hints",
+        "memory_limit": {
+          "description": "Limitasi RAM containers",
+          "label": "Memory Limit (MB)"
+        },
+        "min_score_radio": {
+          "description": "Skor minimum: {{min_score}}pts",
+          "label": "Rasio skor minimum"
+        },
+        "score": "Skor",
+        "service_port": {
+          "description": "Port servis container",
+          "label": "Servis port"
+        },
+        "solve_count": "Solves",
+        "storage_limit": {
+          "description": "Penyimpanan (includ gambar)",
+          "label": "Limit penyimpanan (MB)"
+        },
+        "title": "Judul",
+        "traffic_capture": {
+          "description": "Menangkap traffic saat tim menyelesaikan challenge. Proxy platform perlu diaktifkan",
+          "label": "Aktifkan tangkapan traffic"
+        },
+        "type": {
+          "description": "Setelah dibuat, tidak bisa diubah",
+          "label": "Jenis"
+        }
+      },
+      "info": {
+        "accept_without_review": {
+          "description": "Terima langsung setelah pendaftaran tim",
+          "label": "Terima tanpa ditinjau"
+        },
+        "container_limit": {
+          "description": "Container yang diberikan ke satu tim (0 = unlimited)",
+          "label": "Container tim limit"
+        },
+        "content": "Detil game",
+        "delete": "Apakah kamu yakin ingin menghapus game {{name}}?",
+        "end_date": "Tanggal Berakhir",
+        "end_time": "Waktu Selesai",
+        "invite_code": {
+          "description": "Biarkan kosong jika tidak ada kode undangan",
+          "label": "Kode Undangan"
+        },
+        "member_limit": {
+          "description": "0 berarti anggota tim tidak terbatas",
+          "label": "Batas maks anggota tim"
+        },
+        "organizations": {
+          "description": "Tambah divisi untuk aktifkan grup papan skor, kosongkan untuk menonaktifkan",
+          "label": "Daftar Divisi yang Berpartisipasi"
+        },
+        "poster": "Poster",
+        "practice_mode": {
+          "description": "Lihat challenge setelah permainan selesai",
+          "label": "Mode Latihan"
+        },
+        "start_date": "Tanggal Mulai",
+        "start_time": "Waktu Mulai",
+        "summary": {
+          "description": "Akan ditampilkan di daftar game",
+          "label": "Ringkasan"
+        },
+        "title": {
+          "description": "Judul yang panjang akan memengaruhi tampilan",
+          "label": "Judul"
+        },
+        "writeup_deadline": {
+          "description": "Jam submit write-up setelah game berakhir",
+          "label": "Batas waktu writeup"
+        },
+        "writeup_instruction": "Instruksi writeup",
+        "writeup_required": {
+          "description": "Aktifkan pengumpulan writeup",
+          "label": "Writeup dibutuhkan"
+        }
+      },
+      "notices": {
+        "delete": "Apakah kamu yakin ingin menghapus notice ini?",
+        "empty": {
+          "description": "Klik tombol di sudut kanan atas untuk membuat notice baru",
+          "title": "Belum ada pemberitahuan"
+        }
+      },
+      "review": {
+        "empty": {
+          "description": "Dalam proses... jangan khawatir!",
+          "title": "Waduch! Belum ada tim yang bergabung di game ini"
+        },
+        "participation": {
+          "joined": "Bergabung",
+          "not_joined": "Tidak Terdaftar",
+          "stats": "{{count}}/{{total}} bergabung",
+          "update": "Apakah kamu ingin mengubah status tim ini menjadi: \"{{status}}\"?"
+        }
+      },
+      "stats": "<1>{{current}}</1> dari <1>{{total}}</1> game yang ditampilkan",
+      "writeups": {
+        "empty": {
+          "description": "Writeup baru akan muncul disini",
+          "title": "Waduch! belum ada writeup"
+        },
+        "pdf_fallback": "Gagal memuat PDF"
+      }
+    },
+    "instances": {
+      "destroy": "Apakah kamu yakin ingin menghapus instance {{name}}?",
+      "note": "Note: Statistik container tidak termasuk container tes admin dan container yang telah dihapus",
+      "stats": " <1>{{count}}</1> instance yang didistribusikan secara total"
+    },
+    "markdown_inline_support": "Styling dengan Markdown inline didukung",
+    "markdown_support": "Styling dengan Markdown inline didukung",
+    "nothing_found": "Tidak ada yang ditemukan",
+    "settings": {
+      "account": {
+        "allow_register": {
+          "description": "Izinkan user untuk mendaftar akun baru",
+          "label": "Izinkan Pendaftaran"
+        },
+        "auto_active": {
+          "description": "Apakah pengguna diaktifkan setelah mendaftar",
+          "label": "Aktifkan Otomatis"
+        },
+        "email_confirmation_required": {
+          "description": "Apakah email verifikasi pengguna diperlukan",
+          "label": "Verifikasi Email Diperlukan"
+        },
+        "email_domain_list": {
+          "description": "Daftar domain email yang diizinkan untuk mendaftar. Pisahkan beberapa domain dengan koma, kosongkan untuk menonaktifkan.",
+          "label": "Whitelist Domain Email"
+        },
+        "title": "Kebijakan Akun",
+        "use_captcha": {
+          "description": "Verifikasi saat login, pendaftaran, dan pemulihan",
+          "label": "Aktifkan CAPTCHA"
+        }
+      },
+      "container": {
+        "auto_destroy": {
+          "description": "Apakah kontainer lama dihapuskan secara otomatis saat batas terpenuhi",
+          "label": "Hapus container lama secara otomatis"
+        },
+        "default_lifetime": {
+          "description": "Lifespan default container",
+          "label": "Lifespan Default (menit)"
+        },
+        "extension_duration": {
+          "description": "Durasi setiap perpanjangan container",
+          "label": "Durasi Perpanjangan (menit)"
+        },
+        "renewal_window": {
+          "description": "Jendela waktu sebelum kontainer kedaluwarsa untuk memperpanjang",
+          "label": "Jendela Perpanjangan (menit)"
+        },
+        "title": "Kebijakan container"
+      },
+      "platform": {
+        "color": {
+          "description": "Warna kustom untuk platform",
+          "label": "Warna platform"
+        },
+        "color_palette": {
+          "description": "Palet warna yang dihasilkan dari warna kustom",
+          "label": "Pallet warna"
+        },
+        "description": {
+          "description": "Deskripsi situs dibutuhkan untuk SEO",
+          "label": "Deskripsi situs"
+        },
+        "footer": {
+          "description": "Mendukung sintaks Markdown, <mbr/> akan diganti dengan <br/> di perangkat seluler",
+          "label": "Footer"
+        },
+        "logo": {
+          "description": "Gunakan untuk favicon dan logo pada halaman",
+          "label": "Logo platform"
+        },
+        "name": {
+          "description": "Nama platform akan ditampilkan dengan ::CTF",
+          "label": "Nama platform"
+        },
+        "slogan": {
+          "description": "Akan ditampilkan di bagian atas halaman",
+          "label": "Slogan platform"
+        },
+        "title": "Pengaturan platform"
+      }
+    },
+    "show_all": "Tampilan semua",
+    "teams": {
+      "delete": "Apakah kamu yakin ingin menghapus tim {{name}} ?",
+      "lock": "Apakah kamu yakin ingin {{action}} tim {{name}} ?",
+      "locked": "Terkunci",
+      "stats": "<1>{{current}}</1> dari <1>{{total}}</1> game yang ditampilkan",
+      "unlocked": "Tidak terkunci"
+    },
+    "users": {
+      "delete": "Apakah kamu yakin ingin menghapus pengguna {{name}} ?",
+      "reset": {
+        "content": "Password pengguna telah direset, <strong>password ini hanya akan muncul sekali</strong>, harap simpan dengan baik.",
+        "message": "Apakah Anda yakin ingin mereset password untuk {{name}}?",
+        "title": "Reset password untuk {{name}}"
+      },
+      "stats": "<1>{{current}}</1> dari <1>{{total}}</1> pengguna yang ditampilkan"
+    }
+  },
+  "label": {
+    "games": {
+      "hide": "Sembunyikan",
+      "summary": "Ringkasan"
+    },
+    "instances": {
+      "container_id": "Id container",
+      "entry": "Entri instance",
+      "life_cycle": "Siklus"
+    },
+    "logs": {
+      "message": "Pesan",
+      "status": "Status"
+    },
+    "teams": {
+      "bio": "Bio",
+      "members": "Anggota"
+    },
+    "users": {
+      "active": "Aktif",
+      "last_visit": "Kunjungan terakhir",
+      "role": "Role pengguna"
+    }
+  },
+  "notification": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_selected": "Pilih setidaknya satu file",
+          "updated": "Lampiran diperbarui"
+        },
+        "created": "Challenge berhasil dibuat",
+        "deleted": "Challenge dihapus",
+        "flag": {
+          "copied": "Flag dicopy ke clipboard",
+          "created": "Flag berhasil dibuat",
+          "deleted": "Flag dihapus"
+        },
+        "flag_template": {
+          "updated": "Template flag telah diupdate"
+        },
+        "preview": {
+          "attachment_downloaded": "Anggap saja lampiran sudah diunduh!",
+          "flag_submitted": "Flag telah disubmit!"
+        },
+        "updated": "Challenge berhasil diperbarui"
+      },
+      "created": "Game telah dibuat",
+      "info": {
+        "accept_count_updated": "AC counter diperbarui",
+        "deleted": "Game dihapus",
+        "info_updated": "Game diperbarui",
+        "poster": {
+          "upload_failed": "Gagal mengungah postingan",
+          "uploaded": "Poster berhasil diunggah",
+          "uploading": "Mengunggah poster..."
+        },
+        "public_key_copied": "Public key disalin ke clipboard"
+      },
+      "instances": {
+        "created": "Instance berhasil dibuat",
+        "deleted": "Instance dihapus"
+      },
+      "no_title_time": "Harap masukkan judul dan waktu game",
+      "notices": {
+        "created": "Notice berhasil dibuat",
+        "deleted": "Notice dihapus",
+        "updated": "Notice diperbarui"
+      },
+      "participation": {
+        "updated": "Status tim sudah diperbarui"
+      }
+    },
+    "instances": {
+      "destroyed": "Instance berhasil di hapus",
+      "entry_copied": "Entri instance disalin ke clipboard",
+      "url_copied": {
+        "message": "Harap gunakan client untuk mengakses",
+        "title": "Url proxy disalin ke clipboard"
+      }
+    },
+    "logs": {
+      "connected": "Log real-time terhubung",
+      "fetch_failed": "Gagal mengambil log"
+    },
+    "teams": {
+      "deleted": "{{name}} telah dihapus"
+    },
+    "users": {
+      "deleted": "{{name}} telah dihapus",
+      "password_copied": "Kata sandi disalin ke clipboard",
+      "updated": "Profil diperbarui"
+    }
+  },
+  "placeholder": {
+    "empty": "Kosong",
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_file_selected": {
+            "comment": "Berkas yang dipilih akan ditampilkan di sini",
+            "title": "Anda belum memilih berkas apa pun"
+          }
+        }
+      },
+      "organizations": "Tekan Enter untuk menambahkan divisi.",
+      "participation": {
+        "bio": "(bio kosong)",
+        "team": "(tanpa nama)"
+      }
+    },
+    "instances": {
+      "challenges": {
+        "not_found": "Tidak ada challenge yang ditemukan",
+        "select": "Seluruh challenge"
+      },
+      "teams": {
+        "not_found": "Tim tidak ditemukan",
+        "select": "Semua tim"
+      }
+    },
+    "settings": {
+      "email_domain_list": "Tidak ada pembatasan",
+      "footer": "`Test` <mbr/> Sesuatu...",
+      "logo": {
+        "custom": "Kustom logo",
+        "default": "Gunakan GZCTF icon"
+      }
+    },
+    "teams": {
+      "search": "Cari berdasarkan nama"
+    },
+    "users": {
+      "real_name": "Kosong",
+      "search": "Cari berdasarkan ID/username/email/student ID/nama",
+      "student_id": "00000000"
+    }
+  },
+  "tab": {
+    "games": {
+      "challenges": "Challenge",
+      "index": "Game",
+      "info": "Informasi",
+      "notices": "Notis",
+      "review": "Tim",
+      "writeups": "Writeups"
+    },
+    "instances": "Instance",
+    "logs": "Log",
+    "settings": "Pengaturan",
+    "teams": "Tim",
+    "users": "Pengguna"
+  }
+}

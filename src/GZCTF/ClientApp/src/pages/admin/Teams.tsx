@@ -222,10 +222,9 @@ const Teams: FC = () => {
             <Table.Tbody>
               {teams &&
                 teams.map((team) => {
-                  const members = team.members && [
-                    team.members.filter((m) => m.captain)[0]!,
-                    ...(team.members.filter((m) => !m.captain) ?? []),
-                  ]
+                  const members = team.members?.sort((a, b) =>
+                    a.captain ? (b.captain ? 0 : -1) : 1
+                  )
 
                   return (
                     <Table.Tr key={team.id}>

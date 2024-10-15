@@ -33,6 +33,7 @@ public class GameInstanceRepository(
                 Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId],
                 TaskStatus.NotFound,
                 LogLevel.Warning);
+            await transaction.RollbackAsync(token);
             return null;
         }
 
@@ -40,13 +41,13 @@ public class GameInstanceRepository(
 
         if (!challenge.IsEnabled)
         {
-            await transaction.CommitAsync(token);
+            await transaction.RollbackAsync(token);
             return null;
         }
 
         if (instance.IsLoaded)
         {
-            await transaction.CommitAsync(token);
+            await transaction.RollbackAsync(token);
             return instance;
         }
 

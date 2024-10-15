@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "一血",
+    "second_blood": "貳血",
+    "third_blood": "三血"
+  },
+  "button": {
+    "download": {
+      "attachment": "下載附件"
+    },
+    "instance": {
+      "create": "創建實例",
+      "destroy": "銷毀實例",
+      "extend": "延長時間"
+    },
+    "submit_flag": "提交 flag"
+  },
+  "category": {
+    "ai": "人工智能安全",
+    "blockchain": "區塊鏈",
+    "crypto": "密碼學",
+    "forensics": "數字取證",
+    "hardware": "硬體安全",
+    "misc": "安全雜項",
+    "mobile": "移動安全",
+    "osint": "開源情報",
+    "pentest": "滲透測試",
+    "ppc": "專業編程",
+    "pwn": "二進制漏洞利用",
+    "reverse": "逆向工程",
+    "web": "網絡安全"
+  },
+  "content": {
+    "already_solved": "該題目已被解出",
+    "flag_placeholders": [
+      "橫看成嶺側成峰，flag 高低各不同",
+      "flag 當關，萬夫莫開",
+      "尋尋覓覓，冷冷清清，flag 慘慘戚戚",
+      "問君能有幾多愁？恰似一江 flag 向東流",
+      "人生得意須盡歡，莫使 flag 空對月",
+      "flag 靠得住，豬乸會上樹",
+      "flag 幾時有？把酒問青天",
+      "羽扇綸巾，談笑間，flag 灰飛煙滅",
+      "濁酒一杯家萬裡，flag 未勒歸無計",
+      "孤帆遠影碧空盡，唯見 flag 天際流",
+      "安得 flag 千萬間，大庇天下 ctfer 俱歡顏！",
+      "兩個黃鸝鳴翠柳，一行 flag 上青天",
+      "flag 一場大夢，人生幾度秋涼？",
+      "剪不斷，理還亂，是 flag",
+      "驀然回首，flag 卻在，燈火闌珊處",
+      "稻花香裡說豐年，聽取 flag 一片",
+      "採菊東籬下，悠然見 flag",
+      "不畏 flag 遮望眼，自緣身在最高層",
+      "便縱有千種 flag，更與何人說？",
+      "人生自古誰無死？留取 flag 照汗青",
+      "呐，搵 flag 呢，最緊要就係開心"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "剩餘時間：",
+        "note": "你可以在到期前 {{min}} 分鐘內延長時間"
+      },
+      "entry": {
+        "description": {
+          "anchor": "獲取客戶端",
+          "proxy": "平臺已啟用 tcp over ws 代理模式。"
+        },
+        "label": "實例入口"
+      },
+      "no_container": {
+        "message": "本題為容器題目，解題需開啟容器實例",
+        "note": "容器默認有效期為 {{min}} 分鐘"
+      },
+      "open": {
+        "client": "在客戶端中打開",
+        "web": "作為網頁打開"
+      },
+      "test": {
+        "no_container": "測試容器未開啟"
+      }
+    },
+    "solved": "<1>{{solved}}</1> 次解出",
+    "wrong_flag_hints": [
+      "飲水思源，重新審題吧。",
+      "詩云：路漫漫其修遠兮，再接再厲吧。",
+      "沉著冷靜，可能會有意想不到的收穫。",
+      "失敗乃成功之母，回去再琢磨琢磨。",
+      "非也非也，不是這個 flag。",
+      "望眼欲穿，flag 卻不在這裡。",
+      "不要浮躁，仔細再思考思考。",
+      "翻遍天涯，也不是這個答案。",
+      "走馬觀花，可找不到 flag。",
+      "反覆推敲，答案應該就在你手邊。",
+      "深謀遠慮，flag 不是那麼簡單。",
+      "山高水遠，flag 藏得真是深啊！",
+      "啊茂整flag，冇果樣整果樣",
+      "興奮過頭，還需要學會更加冷靜的思考。",
+      "碰壁了，難道是你已經到了巔峰？",
+      "歲月靜好，flag 卻已然遠去。",
+      "淺水已涸，flag 不可復得。",
+      "白雪紛紛何所似，似此 flag 被錯過。",
+      "舊事追思，往事如煙。flag 已然消逝。",
+      "桃花潭水深千尺，不及 flag 不見了蹤跡。",
+      "萬籟俱寂，唯有 flag 的錯誤提示在耳邊響起。",
+      "陌上花開，可緩緩歸矣。flag 未得而返。",
+      "風蕭蕭兮易水寒，無奈 flag 仍未到彼岸。"
+    ]
+  },
+  "file_type": {
+    "local": "本地附件",
+    "none": "無附件",
+    "remote": "遠程附件"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "比賽已結束，本次提交不會被計分",
+        "message": "排行榜將稍後更新……",
+        "title": "flag 正確"
+      },
+      "empty": "flag 不能為空",
+      "submitted": {
+        "message": "請等待 flag 檢查……",
+        "title": "flag 已提交"
+      },
+      "unknown": {
+        "message": "請聯繫管理員確認提交：{{id}}",
+        "title": "flag 狀態未知"
+      },
+      "wrong": "flag 錯誤"
+    },
+    "instance": {
+      "copied": {
+        "entry": "實例入口已複製到剪貼板",
+        "url": {
+          "message": "請使用客戶端進行訪問",
+          "title": "實例入口已複製到剪貼板"
+        }
+      },
+      "created": {
+        "message": "請注意實例到期時間",
+        "title": "實例已創建"
+      },
+      "destroyed": {
+        "message": "你可以重新創建實例",
+        "title": "實例已銷毀"
+      },
+      "extend": {
+        "note": {
+          "message": "請及時延長時間或銷毀實例",
+          "title": "實例即將到期"
+        },
+        "success": {
+          "message": "請注意實例到期時間",
+          "title": "實例時間已延長"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "按照隊伍分發附件，需保證附件數量大於隊伍數",
+      "label": "動態附件"
+    },
+    "dynamic_container": {
+      "desrc": "自動生成下發 flag，每隊均唯一",
+      "label": "動態容器"
+    },
+    "static_attachment": {
+      "desrc": "共用附件，任意 flag 均可提交",
+      "label": "靜態附件"
+    },
+    "static_container": {
+      "desrc": "共用容器，任意 flag 均可提交",
+      "label": "靜態容器"
+    }
+  }
+}

@@ -1,0 +1,496 @@
+{
+  "button": {
+    "back": "Retour",
+    "challenges": {
+      "attachment": {
+        "save_url": "Enregistrer le lien",
+        "upload": "Télécharger",
+        "uploading": "Téléchargement..."
+      },
+      "bonus": "Triple Bonus de Sang",
+      "delete": "Supprimer",
+      "disable": "Désactiver",
+      "edit": "Modifier le défi",
+      "edit_more": "Modifier les Flags",
+      "enable": "Activer",
+      "flag": {
+        "add": {
+          "dynamic": "Télécharger les pièces jointes",
+          "normal": "Ajouter un drapeau",
+          "remote": "Ajouter à distance"
+        },
+        "delete": "Supprimer",
+        "save": "Enregistrer le modèle"
+      },
+      "hint": {
+        "add": "Ajouter un indice"
+      },
+      "new": "Nouveau défi",
+      "next": "Suivant",
+      "preview": "Aperçu",
+      "previous": "Précédent",
+      "test_container": {
+        "create": "Créer",
+        "destroy": "Détruire"
+      },
+      "update_accept_count": "Mettre à jour le compteur AC"
+    },
+    "games": {
+      "challenges": {
+        "attachment": {
+          "batch_add": "Ajouter en lot"
+        }
+      },
+      "copy_public_key": "Copier la clé publique",
+      "delete": "Supprimer",
+      "new": "Nouveau jeu"
+    },
+    "notices": {
+      "delete": "Supprimer",
+      "edit": "Modifier l'annonce",
+      "new": "Nouvelle annonce"
+    },
+    "save": "Enregistrer les modifications",
+    "teams": {
+      "do_lock": "Verrouiller",
+      "do_unlock": "Déverrouiller",
+      "edit": "Modifier l'équipe"
+    },
+    "users": {
+      "edit": "Modifier l'utilisateur"
+    },
+    "writeups": {
+      "download_all": "Télécharger tout"
+    }
+  },
+  "content": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "Êtes-vous sûr de vouloir supprimer la pièce jointe de ce défi ?",
+            "title": "Effacer la pièce jointe"
+          },
+          "instruction": {
+            "amount_double": "Il est recommandé de télécharger des pièces jointes dynamiques qui sont le double du nombre attendu d'équipes participantes.",
+            "dynamic": {
+              "content": "Téléchargement par lot de pièces jointes dynamiques, toutes seront distribuées avec le même nom de fichier.",
+              "format": "Veuillez utiliser chaque drapeau comme nom de fichier pour la pièce jointe correspondante."
+            },
+            "remote": {
+              "content": "Définissez en lot les pièces jointes distantes et les drapeaux correspondants, avec un groupe par ligne.",
+              "format": "Veuillez séparer le drapeau et l'URL par un espace."
+            }
+          },
+          "link": "Lien de la pièce jointe",
+          "title": "Gestion des pièces jointes",
+          "type": "Type de pièce jointe"
+        },
+        "attachment_name": {
+          "description": "Toutes les pièces jointes dynamiques seront téléchargées sous ce nom de fichier",
+          "label": "Nom global de la pièce jointe"
+        },
+        "bonus": {
+          "description": "Le Triple Bonus de Sang fait référence aux points supplémentaires attribués lorsqu'un défi est résolu par les trois premières équipes. Chaque équipe peut recevoir un bonus de score basé sur les points actuels du défi. Le bonus sera ajouté au score de l'équipe sous la forme d'un pourcentage fixe.",
+          "first_blood": "Récompense Premier Sang (%)",
+          "second_blood": "Récompense Deuxième Sang (%)",
+          "third_blood": "Récompense Troisième Sang (%)"
+        },
+        "category": "Catégorie",
+        "container_image": "Image du Conteneur",
+        "cpu_limit": {
+          "description": "Multiplication de 0.1 cœur CPU",
+          "label": "Limite CPU (0,1 CPU)"
+        },
+        "delete": "Êtes-vous sûr de vouloir supprimer le défi {{name}} ?",
+        "description": "Description",
+        "difficulty": "Facteur de difficulté",
+        "disable": "Êtes-vous sûr de vouloir désactiver le défi {{name}} ?",
+        "empty": {
+          "description": "Cliquez en haut à droite pour créer le premier défi",
+          "title": "Oups ! Ce jeu n'a pas encore de défi."
+        },
+        "enable": "Êtes-vous sûr de vouloir activer le défi {{name}} ?",
+        "flag": {
+          "create": "Créez des drapeaux. Plusieurs drapeaux doivent être séparés par des lignes, un drapeau par ligne.<br /> Chaque défi peut avoir plusieurs drapeaux. Tous les drapeaux configurés peuvent être acceptés.",
+          "delete": "Êtes-vous sûr de vouloir supprimer ce drapeau ?",
+          "empty": {
+            "description": "Veuillez ajouter un drapeau via le coin supérieur droit",
+            "title": "La liste des drapeaux est vide"
+          },
+          "instructions": {
+            "both": "Si vous devez activer le drapeau leet avec <1>[TEAM_HASH]</1>, ajoutez l'étiquette <2>[LEET]</2> <strong> avant </strong> la chaîne de modèle de drapeau. L'entropie de la chaîne de modèle de drapeau ne sera pas vérifiée.",
+            "complex": "Si vous devez activer des caractères spéciaux dans la génération de drapeaux, utilisez <1>[CLEET]</1> au lieu de <2>[LEET]</2> au début de la chaîne. Cela peut entraîner des problèmes d'injection.",
+            "description": "Veuillez entrer la chaîne de modèle de drapeau, laissez-la vide pour générer un GUID aléatoire comme drapeau",
+            "example": "Exemples",
+            "guid": "Spécifiez <1>[GUID]</1> pour remplacer uniquement le placeholder ici par un GUID aléatoire",
+            "leave_empty": "Laissez-le vide",
+            "leet": "Leet sera activé si <1>[TEAM_HASH]</1> n'est pas spécifié et modifiera les chaînes entre accolades selon le modèle. Veuillez vous assurer que l'entropie du modèle de drapeau est suffisamment élevée.",
+            "team_hash": "Si <1>[TEAM_HASH]</1> est spécifié, il sera automatiquement remplacé par le hash généré par le token de l'équipe et les informations du concours",
+            "will_generate": "générera"
+          },
+          "template": "Modèle de Drapeau",
+          "title": "Gestion des Drapeaux"
+        },
+        "hints": "Indices",
+        "memory_limit": {
+          "description": "Limitation de RAM des conteneurs",
+          "label": "Limite de mémoire (MB)"
+        },
+        "min_score_radio": {
+          "description": "Score min: {{min_score}} pts",
+          "label": "Ratio du score minimum"
+        },
+        "score": "Score",
+        "service_port": {
+          "description": "Port des services de conteneur",
+          "label": "Port de service"
+        },
+        "solve_count": "Résout",
+        "storage_limit": {
+          "description": "Stockage (y compris l'image)",
+          "label": "Limite de stockage (MB)"
+        },
+        "title": "Titre",
+        "traffic_capture": {
+          "description": "Capture du trafic lorsque l'équipe résout des défis. Le proxy de la plateforme doit être activé",
+          "label": "Activer la capture de trafic"
+        },
+        "type": {
+          "description": "Ne peut pas être modifié après la création",
+          "label": "Type"
+        }
+      },
+      "info": {
+        "accept_without_review": {
+          "description": "Accepter directement après l'inscription de l'équipe",
+          "label": "Accepter sans révision"
+        },
+        "container_limit": {
+          "description": "Conteneurs partagés par une équipe (0 = illimité)",
+          "label": "Limite de conteneurs par équipe"
+        },
+        "content": "Détails du jeu",
+        "delete": "Êtes-vous sûr de vouloir supprimer le jeu {{name}} ?",
+        "end_date": "Date de fin",
+        "end_time": "Heure de fin",
+        "invite_code": {
+          "description": "Laissez vide pour aucun code d'invitation",
+          "label": "Code d'invitation"
+        },
+        "member_limit": {
+          "description": "0 signifie membres illimités de l'équipe",
+          "label": "Nombre maximal de membres de l'équipe"
+        },
+        "organizations": {
+          "description": "Ajoutez des divisions pour activer le tableau de scores groupé, laissez vide pour désactiver",
+          "label": "Liste des divisions participantes"
+        },
+        "poster": "Affiche",
+        "practice_mode": {
+          "description": "Voir les défis après la fin du jeu",
+          "label": "Mode d'exercice"
+        },
+        "start_date": "Date de début",
+        "start_time": "Heure de début",
+        "summary": {
+          "description": "Sera affiché dans la liste des jeux",
+          "label": "Résumé"
+        },
+        "title": {
+          "description": "Une longueur excessive peut affecter l'effet d'affichage",
+          "label": "Titre"
+        },
+        "writeup_deadline": {
+          "description": "Heures pour soumettre les rapports après la fin du jeu",
+          "label": "Date limite de soumission du rapport"
+        },
+        "writeup_instruction": "Instructions de rédaction",
+        "writeup_required": {
+          "description": "Activer la soumission du rapport",
+          "label": "Rédaction requise"
+        }
+      },
+      "notices": {
+        "delete": "Êtes-vous sûr de vouloir supprimer cet avis ?",
+        "empty": {
+          "description": "Cliquez sur le bouton en haut à droite pour créer un nouvel avis",
+          "title": "Pas encore d'avis"
+        }
+      },
+      "review": {
+        "empty": {
+          "description": "En chemin... Ne vous inquiétez pas !",
+          "title": "Aïe ! Aucune équipe n'a encore rejoint ce jeu"
+        },
+        "participation": {
+          "joined": "Rejoint",
+          "not_joined": "Non Inscrit",
+          "stats": "{{count}}/{{total}} rejoint",
+          "update": "Définir le statut de cette équipe sur : \"{{status}}\" ?"
+        }
+      },
+      "stats": "<1>{{current}}</1> sur <1>{{total}}</1> jeux affichés",
+      "writeups": {
+        "empty": {
+          "description": "De nouveaux comptes-rendus apparaîtront ici",
+          "title": "Aïe ! Aucun compte-rendu pour le moment"
+        },
+        "pdf_fallback": "Échec du chargement du PDF"
+      }
+    },
+    "instances": {
+      "destroy": "Êtes-vous sûr de vouloir détruire l'instance {{name}} ?",
+      "note": "Remarque : Les statistiques des conteneurs n'incluent pas le conteneur de test admin et le conteneur détruit",
+      "stats": " <1>{{count}}</1> instances distribuées au total"
+    },
+    "markdown_inline_support": "La mise en forme avec Markdown en ligne est prise en charge",
+    "markdown_support": "La mise en forme avec Markdown est prise en charge",
+    "nothing_found": "Aucun résultat trouvé",
+    "settings": {
+      "account": {
+        "allow_register": {
+          "description": "Permettre aux utilisateurs de créer de nouveaux comptes",
+          "label": "Autoriser l'inscription"
+        },
+        "auto_active": {
+          "description": "Activer les utilisateurs après l'inscription",
+          "label": "Activation automatique"
+        },
+        "email_confirmation_required": {
+          "description": "Si un e-mail de vérification utilisateur est requis",
+          "label": "Vérification de l'e-mail requise"
+        },
+        "email_domain_list": {
+          "description": "Liste des domaines de messagerie autorisés à s'inscrire. Séparez plusieurs domaines par des virgules, laissez vide pour désactiver.",
+          "label": "Liste blanche des domaines de messagerie"
+        },
+        "title": "Politique de compte",
+        "use_captcha": {
+          "description": "Vérifier à la connexion, à l'inscription et à la récupération",
+          "label": "Activer CAPTCHA"
+        }
+      },
+      "container": {
+        "auto_destroy": {
+          "description": "Déterminer s'il faut détruire automatiquement l'ancienne instance lorsque la limite est atteinte",
+          "label": "Détruire automatiquement les anciennes instances"
+        },
+        "default_lifetime": {
+          "description": "La durée de vie par défaut du conteneur",
+          "label": "Durée de vie par défaut (min)"
+        },
+        "extension_duration": {
+          "description": "La durée de chaque renouvellement du conteneur",
+          "label": "Durée du renouvellement (min)"
+        },
+        "renewal_window": {
+          "description": "La fenêtre de temps avant l'expiration du conteneur pour renouveler",
+          "label": "Fenêtre de renouvellement (min)"
+        },
+        "title": "Politique de conteneur"
+      },
+      "platform": {
+        "color": {
+          "description": "Couleur personnalisée pour la plateforme",
+          "label": "Couleur de la plateforme"
+        },
+        "color_palette": {
+          "description": "Palette de couleurs générée à partir de la couleur personnalisée",
+          "label": "Palette de couleurs"
+        },
+        "description": {
+          "description": "Description du site fournie pour le SEO",
+          "label": "Description du site"
+        },
+        "footer": {
+          "description": "Prend en charge la syntaxe Markdown, <mbr/> sera remplacé par <br/> sur les appareils mobiles",
+          "label": "Pied de page"
+        },
+        "logo": {
+          "description": "Utilisé pour le favicon et le logo sur les pages",
+          "label": "Logo de la plateforme"
+        },
+        "name": {
+          "description": "Le nom de la plateforme sera affiché avec ::CTF",
+          "label": "Nom de la plateforme"
+        },
+        "slogan": {
+          "description": "Sera affiché en haut de la page",
+          "label": "Slogan de la plateforme"
+        },
+        "title": "Paramètres de la plateforme"
+      }
+    },
+    "show_all": "Afficher tout",
+    "teams": {
+      "delete": "Êtes-vous sûr de vouloir supprimer l'équipe {{name}} ?",
+      "lock": "Êtes-vous sûr de vouloir {{action}} l'équipe {{name}} ?",
+      "locked": "Verrouillé",
+      "stats": "<1>{{current}}</1> sur <1>{{total}}</1> équipes affichées",
+      "unlocked": "Déverrouillé"
+    },
+    "users": {
+      "delete": "Êtes-vous sûr de vouloir supprimer l'utilisateur {{name}} ?",
+      "reset": {
+        "content": "Le mot de passe utilisateur a été réinitialisé, <strong>ce mot de passe ne s'affichera qu'une seule fois</strong>, veuillez le sauvegarder correctement.",
+        "message": "Êtes-vous sûr de vouloir réinitialiser le mot de passe pour {{name}} ?",
+        "title": "Réinitialiser le mot de passe pour {{name}}"
+      },
+      "stats": "<1>{{current}}</1> sur <1>{{total}}</1> utilisateurs affichés"
+    }
+  },
+  "label": {
+    "games": {
+      "hide": "Masquer",
+      "summary": "Résumé"
+    },
+    "instances": {
+      "container_id": "ID du conteneur",
+      "entry": "Entrée de l’instance",
+      "life_cycle": "Cycle de vie"
+    },
+    "logs": {
+      "message": "Message",
+      "status": "Statut"
+    },
+    "teams": {
+      "bio": "Bio",
+      "members": "Membres"
+    },
+    "users": {
+      "active": "Activer",
+      "last_visit": "Dernière visite",
+      "role": "Rôles des utilisateurs"
+    }
+  },
+  "notification": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_selected": "Veuillez sélectionner au moins un fichier",
+          "updated": "Pièce jointe mise à jour"
+        },
+        "created": "Challenge créé",
+        "deleted": "Challenge supprimé",
+        "flag": {
+          "copied": "Drapeau copié dans le presse-papier",
+          "created": "Drapeau créé",
+          "deleted": "Drapeau supprimé"
+        },
+        "flag_template": {
+          "updated": "Modèle de drapeau mis à jour"
+        },
+        "preview": {
+          "attachment_downloaded": "Faire semblant que la pièce jointe a été téléchargée !",
+          "flag_submitted": "Drapeau soumis !"
+        },
+        "updated": "Défi mis à jour"
+      },
+      "created": "Jeu créé",
+      "info": {
+        "accept_count_updated": "Compteur AC mis à jour",
+        "deleted": "Jeu supprimé",
+        "info_updated": "Jeu mis à jour",
+        "poster": {
+          "upload_failed": "Échec du téléchargement de l'affiche",
+          "uploaded": "Affiche téléchargée avec succès",
+          "uploading": "Téléchargement de l'affiche..."
+        },
+        "public_key_copied": "Clé publique copiée dans le presse-papiers"
+      },
+      "instances": {
+        "created": "Instance créée",
+        "deleted": "Instances détruites"
+      },
+      "no_title_time": "Veuillez entrer le titre et l'heure du jeu",
+      "notices": {
+        "created": "Avis créé",
+        "deleted": "Avis supprimé",
+        "updated": "Avis mis à jour"
+      },
+      "participation": {
+        "updated": "Le statut de l'équipe a été mis à jour"
+      }
+    },
+    "instances": {
+      "destroyed": "Instances détruites",
+      "entry_copied": "Entrée de l'instance copiée dans le presse-papiers",
+      "url_copied": {
+        "message": "Veuillez utiliser le client pour accéder",
+        "title": "URL du proxy copiée dans le presse-papiers"
+      }
+    },
+    "logs": {
+      "connected": "Journal en temps réel connecté",
+      "fetch_failed": "Échec de la récupération des journaux"
+    },
+    "teams": {
+      "deleted": "{{name}} a été supprimé"
+    },
+    "users": {
+      "deleted": "{{name}} a été supprimé",
+      "password_copied": "Mot de passe copié dans le presse-papiers",
+      "updated": "Profil utilisateur mis à jour"
+    }
+  },
+  "placeholder": {
+    "empty": "Vide",
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_file_selected": {
+            "comment": "Le fichier sélectionné sera affiché ici",
+            "title": "Vous n'avez sélectionné aucun fichier"
+          }
+        }
+      },
+      "organizations": "Appuyez sur Entrée pour ajouter une division.",
+      "participation": {
+        "bio": "(pas de bio)",
+        "team": "(pas de nom)"
+      }
+    },
+    "instances": {
+      "challenges": {
+        "not_found": "Aucun défi trouvé",
+        "select": "Tous les défis"
+      },
+      "teams": {
+        "not_found": "Équipe non trouvée",
+        "select": "Toutes les équipes"
+      }
+    },
+    "settings": {
+      "email_domain_list": "Aucune restriction",
+      "footer": "`Test` <mbr/> Quelque chose...",
+      "logo": {
+        "custom": "Logo personnalisé",
+        "default": "Utiliser l'icône GZCTF"
+      }
+    },
+    "teams": {
+      "search": "Rechercher par nom"
+    },
+    "users": {
+      "real_name": "Vide",
+      "search": "Rechercher par ID/nom d'utilisateur/email/ID étudiant/nom réel",
+      "student_id": "00000000"
+    }
+  },
+  "tab": {
+    "games": {
+      "challenges": "Défis",
+      "index": "Jeux",
+      "info": "Informations",
+      "notices": "Avis",
+      "review": "Équipes",
+      "writeups": "Writeups"
+    },
+    "instances": "Instances",
+    "logs": "Journaux",
+    "settings": "Paramètres",
+    "teams": "Équipes",
+    "users": "Utilisateurs"
+  }
+}

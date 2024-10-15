@@ -1,0 +1,108 @@
+{
+  "anchor": {
+    "login": "Bereits ein Konto?",
+    "recovery": "Passwort vergessen?"
+  },
+  "button": {
+    "change_password": "Passwort ändern",
+    "confirm_email": "E-Mail bestätigen",
+    "login": "Anmelden",
+    "recovery": "E-Mail zum Zurücksetzen senden",
+    "register": "Registrieren",
+    "reset": "Passwort zurücksetzen",
+    "save_profile": "Profil speichern",
+    "update_email": "E-Mail ändern",
+    "verify_account": "Konto verifizieren"
+  },
+  "content": {
+    "confirm": {
+      "message": "Bitte klicken Sie auf die Schaltfläche unten, um Ihre E-Mail zu verifizieren."
+    },
+    "link_check": "Bitte überprüfen Sie Ihren Aktivierungslink und versuchen Sie es erneut",
+    "link_invalid": "Autsch! Mit Ihrem Aktivierungslink stimmt etwas nicht",
+    "profile": {
+      "update_email_note": "Nach der Änderung Ihrer E-Mail können Sie sich nicht mehr mit Ihrer ursprünglichen E-Mail anmelden.<br/>Eine E-Mail wird an Ihre neue E-Mail-Adresse gesendet, klicken Sie auf den Link darin, um die Verifizierung abzuschließen."
+    },
+    "verify": {
+      "message": "Bitte klicken Sie auf die Schaltfläche unten, um das Konto zu verifizieren."
+    },
+    "welcome": "Hallo, {{decodeEmail}}👋"
+  },
+  "label": {
+    "bio": "Beschreibung",
+    "email": "E-Mail",
+    "email_new": "Neue E-Mail",
+    "password": "Passwort",
+    "password_old": "Ursprüngliches Passwort",
+    "password_retype": "Passwort bestätigen",
+    "phone": "Telefonnummer",
+    "real_name": "Echter Name",
+    "student_id": "Studenten-ID",
+    "username": "Benutzername",
+    "username_or_email": "Benutzername oder E-Mail"
+  },
+  "notification": {
+    "captcha": {
+      "not_valid": "Bitte warten Sie auf Captcha...",
+      "request_sent": {
+        "message": "Warten auf Serverüberprüfung",
+        "title": "Anfrage gesendet..."
+      }
+    },
+    "confirm": {
+      "failed": "E-Mail-Verifizierung fehlgeschlagen",
+      "success": "E-Mail wurde verifiziert"
+    },
+    "login": {
+      "banned": "Benutzer wurde gesperrt",
+      "invalid": "Falscher Benutzername oder Passwort",
+      "success": {
+        "message": "Vor dem Anmelden zur vorherigen Seite umleiten",
+        "title": "Anmeldung erfolgreich"
+      }
+    },
+    "logout": "Erfolgreich abgemeldet",
+    "profile": {
+      "password_updated": "Passwort wurde geändert, bitte erneut anmelden",
+      "profile_updated": "Profil aktualisiert"
+    },
+    "register": {
+      "logged_in": "Erfolgreich registriert",
+      "request_sent": {
+        "message": "Bitte warten Sie auf die Genehmigung des Administrators zur Aktivierung~",
+        "title": "Registrierungsanfrage gesendet"
+      }
+    },
+    "reset": {
+      "success": {
+        "message": "Bitte erneut anmelden",
+        "title": "Passwort wurde zurückgesetzt"
+      }
+    },
+    "verify": {
+      "failed": "Fehler bei der Verifizierung des Kontos",
+      "success": "Das Konto wurde verifiziert, bitte einloggen"
+    }
+  },
+  "password": {
+    "empty": "Passwort darf nicht leer sein",
+    "include_lowercase": "Enthält Kleinbuchstaben",
+    "include_number": "Enthält Zahlen",
+    "include_symbol": "Enthält Sonderzeichen",
+    "include_uppercase": "Enthält Großbuchstaben",
+    "min_length": "Mindestens 6 Zeichen",
+    "not_match": "Das wiederholte Passwort ist falsch"
+  },
+  "placeholder": {
+    "bio": "Diese Person ist faul, nichts geschrieben"
+  },
+  "title": {
+    "confirm": "E-Mail-Verifizierung",
+    "login": "Einloggen",
+    "profile": "Profil",
+    "recovery": "Konto wiederherstellen",
+    "register": "Registrieren",
+    "reset": "Passwort zurücksetzen",
+    "verify": "Kontoverifizierung"
+  }
+}

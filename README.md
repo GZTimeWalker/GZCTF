@@ -19,9 +19,11 @@
 GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 > [!IMPORTANT]
+>
 > **To save your effort, please read the documentation carefully before using: [https://docs.ctf.gzti.me/en](https://docs.ctf.gzti.me/en)**
 
 > [!WARNING]
+>
 > **Upgrade and migration considerations:**
 >
 > 1. To upgrade the platform, simply pull the latest image and restart, and the database migration will be performed automatically.
@@ -70,6 +72,30 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 - Support metrics and distributed tracing
 - And more...
 
+## About i18n 🌐
+
+Currently, the platform supports multiple languages, and the translation progress is as follows:
+
+### Translated by Community
+
+- English (en-US): Fully supported, **default language**
+- Simplified Chinese (zh-CN): Fully supported
+- Traditional Chinese (zh-TW): Fully supported
+- Japanese (ja-JP): Fully supported, translated by [Steve](https://github.com/hez2010)
+- Indonesian (id-ID): Fully supported, translated by [Rio](https://github.com/riodrwn)
+- Korean (ko-KR): Work in progress, translated by [Sy2n0](https://github.com/Sy2n0)
+- Russian (ru-RU): Work in progress, translated by [FazaN](https://github.com/CyberFazaN)
+
+### Translated by Machine and AI
+
+- German (de-DE)
+- French (fr-FR)
+- Spanish (es-ES)
+
+These translations are not perfect, and we need your help to improve them.
+
+If you are interested in contributing to the translation, please refer to the [Crowdin project](https://crowdin.com/project/gzctf).
+
 ## Demo 🗿
 
 ![index.webp](docs/public/images/index.webp)
@@ -86,10 +112,6 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 ![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
 ![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
 
-## About i18n 🌐
-
-Please refer to [translate.ctf.gzti.me](https://translate.ctf.gzti.me) to learn more or participate in the translation work.
-
 ## Contributors 👋
 
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
@@ -100,9 +122,17 @@ Please refer to [translate.ctf.gzti.me](https://translate.ctf.gzti.me) to learn 
 
 Some event organizers have already chosen GZCTF and successfully completed their competitions. Their trust, support, and timely feedback are the primary driving force behind the continuous improvement of GZCTF.
 
+### International Events
+
+- [**San Diego CTF 2024: Organized by University of California, San Diego**](https://ctftime.org/event/2325)
+- [**R3CTF 2024: Organized by r3kapig**](https://ctftime.org/event/2273)
+- [**TCP1P CTF 2024: Exploring Nusantara's Digital Realm**](https://ctftime.org/event/2256/)
+
+### Other Events
+
 - **THUCTF 2022: Tsinghua University Network Security Technology Challenge**
 - **ZJUCTF 2022/2023: Zhejiang University CTF**
-- **SUSCTF 2022/2023: Southeast University Tiger Crouching, Dragon Coiling Cup Network Security Challenge**
+- **SUSCTF 2022/2023/2024: Southeast University Tiger Crouching, Dragon Coiling Cup Network Security Challenge**
 - **DIDCTF 2022/2023: Gansu Political and Legal University CTF**
 - **Woodpecker: The First Network Security Practice Competition of Shandong University of Science and Technology**
 - **NPUCTF 2022: Northwestern Polytechnical University CTF**
@@ -122,10 +152,9 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **SVUCTF-WINTER-2023: Suzhou Vocational University 2023 Winter Freshman Competition**
 - **BIEM CTF 2024：Beijing Institute Of Economics And Management - The first BIEM "Xin'an Cup" CTF competition**
 - **BUAACTF 2024: Beihang University CTF**
-- **San Diego CTF 2024: University of California, San Diego**
 - **The first "Qu STAR" network security skills competition of Qufu Normal University**
 
-_The list is not in any particular order, and PRs are welcome for additions._
+_These list is not in any particular order, and PRs are welcome for additions._
 
 ## Special Thanks ❤️‍🔥
 

@@ -1,0 +1,1043 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    </value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    </value>
+  </resheader>
+  <data name="Account_AvailableEmailDomain" xml:space="preserve">
+    <value>Verfügbares E-Mail-Suffix: {0}</value>
+  </data>
+  <data name="Account_AvatarUpdated" xml:space="preserve">
+    <value>Neuen Avatar ändern: [{0}]</value>
+  </data>
+  <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
+    <value>Bitte kontaktieren Sie den Administrator, um die E-Mail zu ändern</value>
+  </data>
+  <data name="Account_EmailChanged" xml:space="preserve">
+    <value>E-Mail erfolgreich geändert</value>
+  </data>
+  <data name="Account_EmailNotConfirmed" xml:space="preserve">
+    <value>Konto nicht aktiviert, bitte erneut registrieren</value>
+  </data>
+  <data name="Account_EmailSendFailed" xml:space="preserve">
+    <value>E-Mail kann nicht gesendet werden, bitte kontaktieren Sie den Administrator</value>
+  </data>
+  <data name="Account_EmailSent" xml:space="preserve">
+    <value>E-Mail erfolgreich gesendet</value>
+  </data>
+  <data name="Account_EmailUsed" xml:space="preserve">
+    <value>E-Mail-Adresse wird bereits verwendet</value>
+  </data>
+  <data name="Account_EmailVerificationFailed" xml:space="preserve">
+    <value>E-Mail-Verifikation fehlgeschlagen</value>
+  </data>
+  <data name="Account_EmailVerificationPending" xml:space="preserve">
+    <value>E-Mail-Verifikation ausstehend</value>
+  </data>
+  <data name="Account_EmailVerified" xml:space="preserve">
+    <value>E-Mail verifiziert</value>
+  </data>
+  <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
+    <value>Falscher Benutzername oder Passwort</value>
+  </data>
+  <data name="Account_InvalidEmail" xml:space="preserve">
+    <value>Ungültige E-Mail-Adresse</value>
+  </data>
+  <data name="Account_PasswordChanged" xml:space="preserve">
+    <value>Benutzer hat das Passwort aktualisiert</value>
+  </data>
+  <data name="Account_PasswordReset" xml:space="preserve">
+    <value>Zurücksetzen des Benutzerpassworts erfolgreich</value>
+  </data>
+  <data name="Account_RegisterNotEnabled" xml:space="preserve">
+    <value>Registrierung wurde deaktiviert</value>
+  </data>
+  <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
+    <value>E-Mail-Verifizierung ist nicht aktiviert, bitte kontaktieren Sie den Administrator, um das Passwort zurückzusetzen</value>
+  </data>
+  <data name="Account_SendEmailChange" xml:space="preserve">
+    <value>Senden Sie dem Benutzer eine E-Mail zur E-Mail-Änderung</value>
+  </data>
+  <data name="Account_SendEmailVerification" xml:space="preserve">
+    <value>Senden Sie dem Benutzer eine E-Mail zur E-Mail-Verifizierung</value>
+  </data>
+  <data name="Account_TokenValidationFailed" xml:space="preserve">
+    <value>Captcha fehlgeschlagen</value>
+  </data>
+  <data name="Account_UserDisabled" xml:space="preserve">
+    <value>Benutzer ist gesperrt</value>
+  </data>
+  <data name="Account_UserExisting" xml:space="preserve">
+    <value>Dieses Konto existiert bereits</value>
+  </data>
+  <data name="Account_UserLogined" xml:space="preserve">
+    <value>Benutzer erfolgreich eingeloggt</value>
+  </data>
+  <data name="Account_UserNotExist" xml:space="preserve">
+    <value>Benutzer existiert nicht</value>
+  </data>
+  <data name="Account_UserRegistered" xml:space="preserve">
+    <value>Erfolgreich registriert</value>
+  </data>
+  <data name="Account_UserRegisteredLog" xml:space="preserve">
+    <value>Benutzer erfolgreich registriert</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
+    <value>Erfolgreich registriert, wartet auf Moderatorgenehmigung</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
+    <value>Benutzer erfolgreich registriert, Genehmigung ausstehend</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
+    <value>Erfolgreich registriert, wartet auf E-Mail-Verifizierung</value>
+  </data>
+  <data name="Account_UserUpdated" xml:space="preserve">
+    <value>Benutzer aktualisiert: {0} =&gt; {1}</value>
+  </data>
+  <data name="Account_UserUpdateFailed" xml:space="preserve">
+    <value>Benutzeraktualisierung fehlgeschlagen</value>
+  </data>
+  <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
+    <value>Sie können den Kapitän nicht löschen</value>
+  </data>
+  <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
+    <value>Container-Zerstörung fehlgeschlagen</value>
+  </data>
+  <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
+    <value>Container nicht gefunden</value>
+  </data>
+  <data name="Admin_ParticipationNotFound" xml:space="preserve">
+    <value>Teilnahme nicht gefunden</value>
+  </data>
+  <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
+    <value>Sie können sich nicht selbst löschen</value>
+  </data>
+  <data name="Team_NotFound" xml:space="preserve">
+    <value>Team nicht gefunden</value>
+  </data>
+  <data name="Admin_UserBatchAdded" xml:space="preserve">
+    <value>Erfolgreich {0} Benutzer hinzugefügt</value>
+  </data>
+  <data name="Admin_UserNotFound" xml:space="preserve">
+    <value>Benutzer nicht gefunden</value>
+  </data>
+  <data name="Assets_DeleteFile" xml:space="preserve">
+    <value>Datei [{0}] wird gelöscht...</value>
+  </data>
+  <data name="Assets_IOError" xml:space="preserve">
+    <value>Ein IO-Fehler ist aufgetreten</value>
+  </data>
+  <data name="Assets_FileNotFound" xml:space="preserve">
+    <value>Versuch, nicht vorhandene Datei zu holen [{0}] {1}</value>
+  </data>
+  <data name="Assets_UpdateFile" xml:space="preserve">
+    <value>Datei aktualisiert [{0}] {1} @ {2} Bytes</value>
+  </data>
+  <data name="Auth_AccessForbidden" xml:space="preserve">
+    <value>Zugriff verweigert</value>
+  </data>
+  <data name="Auth_LoginRequired" xml:space="preserve">
+    <value>Bitte loggen Sie sich zuerst ein</value>
+  </data>
+  <data name="Auth_PathAccessForbidden" xml:space="preserve">
+    <value>Unbefugter Zugriff: {0}</value>
+  </data>
+  <data name="Avatar_UpdateFailed" xml:space="preserve">
+    <value>Benutzer-Avatar-Update fehlgeschlagen</value>
+  </data>
+  <data name="Cache_GenerationFailed" xml:space="preserve">
+    <value>Cache-Generierung fehlgeschlagen: {0}</value>
+  </data>
+  <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
+    <value>Ungültige Cache-Anfrage: {0}</value>
+  </data>
+  <data name="Cache_NoMatchingRequest" xml:space="preserve">
+    <value>Keine passende Anfrage für Cache-Worker gefunden: {0}</value>
+  </data>
+  <data name="Cache_Stopped" xml:space="preserve">
+    <value>Cache-Update wurde gestoppt</value>
+  </data>
+  <data name="Cache_Updated" xml:space="preserve">
+    <value>Cache aktualisiert: {0}[{1}] @ {2} Bytes</value>
+  </data>
+  <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
+    <value>Cache-Update fehlgeschlagen: {0} @ {1}</value>
+  </data>
+  <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
+    <value>Cache-Update-Worker gesperrt: {0}</value>
+  </data>
+  <data name="Cache_WorkerCancelled" xml:space="preserve">
+    <value>Cache-Update-Worker wird gestoppt, da die Aufgabe abgebrochen wurde</value>
+  </data>
+  <data name="Cache_WorkerStarted" xml:space="preserve">
+    <value>Cache-Update-Worker wurde gestartet</value>
+  </data>
+  <data name="Cache_WorkerStopped" xml:space="preserve">
+    <value>Cache-Update-Worker wurde gestoppt</value>
+  </data>
+  <data name="Challenge_NotFound" xml:space="preserve">
+    <value>Die Herausforderung wurde nicht gefunden</value>
+  </data>
+  <data name="Config_GlobalConfigAdded" xml:space="preserve">
+    <value>Globale Konfiguration hinzugefügt: {0} =&gt; {1}</value>
+  </data>
+  <data name="Config_GlobalConfigUpdated" xml:space="preserve">
+    <value>Globale Konfiguration aktualisiert: {0} =&gt; {1}</value>
+  </data>
+  <data name="Config_InitializingDatabase" xml:space="preserve">
+    <value>Initialisiere Datenbank...</value>
+  </data>
+  <data name="Config_ReloadFailed" xml:space="preserve">
+    <value>Fehler beim Neuladen der globalen Konfiguration</value>
+  </data>
+  <data name="Config_TypeNotSupported" xml:space="preserve">
+    <value>Nicht unterstützter Konfigurationstyp</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
+    <value>Fehler beim Erstellen des Containers {0}</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
+    <value>Fehler beim Erstellen des Containers {0}, Antwort: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
+    <value>Fehler beim Erstellen des Containers {0}, Status: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
+    <value>Fehler beim Löschen des Containers {0}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
+    <value>Fehler beim Löschen des Containers {0}, Antwort: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
+    <value>Löschen des Containers {0} fehlgeschlagen, Status: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
+    <value>Container {0} wurde zerstört</value>
+  </data>
+  <data name="ContainerManager_ContainerExisted" xml:space="preserve">
+    <value>Container {0} existiert bereits, versuchen Sie, ihn zu entfernen und erneut zu erstellen</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
+    <value>Erstellung der Containerinstanz {0} fehlgeschlagen</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
+    <value>Fehler beim Erstellen von {0} Instanz：{1}</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
+    <value>Starten der Containerinstanz {0} ({1}) fehlgeschlagen</value>
+  </data>
+  <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
+    <value>Fehler beim Abrufen der Port-Expositionsinformationen nach Erstellung des Containers {0}</value>
+  </data>
+  <data name="ContainerManager_DockerMode" xml:space="preserve">
+    <value>Containermodus: Docker-Instanz-Containersteuerung</value>
+  </data>
+  <data name="ContainerManager_K8sMode" xml:space="preserve">
+    <value>Containermodus: K8s-Cluster-Pod-Containersteuerung</value>
+  </data>
+  <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
+    <value>Kann Portnummer nicht konvertieren: {0}, dies ist eine unerwartete Aktion</value>
+  </data>
+  <data name="ContainerManager_PullContainerImage" xml:space="preserve">
+    <value>Container-Image {0} ziehen</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
+    <value>Dienst {0} konnte nicht erstellt werden</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
+    <value>Der Dienst {0} konnte nicht erstellt werden, Antwort: {1}</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
+    <value>Der Dienst {0} konnte nicht erstellt werden, Status: {1}</value>
+  </data>
+  <data name="ContainerManager_SwarmMode" xml:space="preserve">
+    <value>Containermodus: Docker Swarm Cluster Containersteuerung</value>
+  </data>
+  <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
+    <value>Konnte den Bildnamen `{0}' nicht analysieren</value>
+  </data>
+  <data name="ContainerProvider_DockerInited" xml:space="preserve">
+    <value>Docker-Initialisierung erfolgreich ({0})</value>
+  </data>
+  <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
+    <value>K8s-Profil konnte nicht geladen werden, stellen Sie sicher, dass das Profil in {0} existiert</value>
+  </data>
+  <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
+    <value>K8s-Initialisierung erfolgreich ({0})</value>
+  </data>
+  <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
+    <value>K8s-Initialisierung fehlgeschlagen, bitte überprüfen Sie, ob die Konfiguration korrekt ist ({0})</value>
+  </data>
+  <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
+    <value>Spiel #{0} steht kurz vor dem Start, fügt die Punktetafel-Cache zur Cache-Warteschlange hinzu</value>
+  </data>
+  <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
+    <value>Abgelaufener Container [{0}] wurde entfernt</value>
+  </data>
+  <data name="CronJob_Started" xml:space="preserve">
+    <value>Cron-Job wurde gestartet</value>
+  </data>
+  <data name="CronJob_Stopped" xml:space="preserve">
+    <value>Cron-Job wurde gestoppt</value>
+  </data>
+  <data name="Database_ConnectionFailed" xml:space="preserve">
+    <value>Fehler beim Verbinden mit der Datenbank ({0}), bitte prüfen Sie die Datenbank-Verbindungszeichenfolge</value>
+  </data>
+  <data name="Database_CurrentConnectionString" xml:space="preserve">
+    <value>Aktuelle Verbindungszeichenfolge: {0}</value>
+  </data>
+  <data name="Database_NoConnectionString" xml:space="preserve">
+    <value>Das Feld ‚ConnectionStrings‘ für die Datenbank-Verbindungszeichenfolge wurde nicht gefunden, bitte prüfen Sie, ob appsettings.json korrekt eingebunden und konfiguriert ist</value>
+  </data>
+  <data name="FileRepository_CacheLocation" xml:space="preserve">
+    <value>Cache-Ort: {0}</value>
+  </data>
+  <data name="FileRepository_DeleteFile" xml:space="preserve">
+    <value>Datei löschen [{0}] {1}</value>
+  </data>
+  <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
+    <value>Bild konnte nicht gespeichert werden: {0}</value>
+  </data>
+  <data name="FileRepository_ReferenceCounting" xml:space="preserve">
+    <value>Dateireferenzzähler [{0}] {1} =&gt; {2}</value>
+  </data>
+  <data name="File_DeletionFailed" xml:space="preserve">
+    <value>Fehler beim Löschen der Datei</value>
+  </data>
+  <data name="File_NotFound" xml:space="preserve">
+    <value>Datei existiert nicht</value>
+  </data>
+  <data name="File_PdfOnly" xml:space="preserve">
+    <value>Bitte laden Sie eine PDF-Datei hoch</value>
+  </data>
+  <data name="File_SizeTooLarge" xml:space="preserve">
+    <value>Datei zu groß</value>
+  </data>
+  <data name="File_SizeZero" xml:space="preserve">
+    <value>Ungültige Datei</value>
+  </data>
+  <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
+    <value>[AC] Team [{0}] hat die Antwort [{2}] für die Herausforderung [{1}] eingereicht</value>
+  </data>
+  <data name="FlagChecker_AnswerRejected" xml:space="preserve">
+    <value>[WA] Team [{0}] hat die Antwort [{2}] für die Herausforderung [{1}] eingereicht</value>
+  </data>
+  <data name="FlagChecker_CheatDetected" xml:space="preserve">
+    <value>[CHEAT] Team [{0}] hat das Flag von Team [{2}] in der Herausforderung [{1}] verwendet</value>
+  </data>
+  <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
+    <value>[KONKURRENZ] Status der Einreichung #{0} konnte nicht aktualisiert werden</value>
+  </data>
+  <data name="FlagChecker_UnknownInstance" xml:space="preserve">
+    <value>[UNBEKANNT] Keine Instanz für Team [{0}] in Challenge [{1}] gefunden</value>
+  </data>
+  <data name="FlagsChecker_Recheck" xml:space="preserve">
+    <value>Erneut {0} Flags überprüfen</value>
+  </data>
+  <data name="FlagsChecker_Started" xml:space="preserve">
+    <value>Flag-Checker wurde gestartet</value>
+  </data>
+  <data name="FlagsChecker_Stopped" xml:space="preserve">
+    <value>Flag-Checker wurde gestoppt</value>
+  </data>
+  <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
+    <value>Überprüfung wurde abgebrochen, Checker-Arbeiter #{0} wird gestoppt</value>
+  </data>
+  <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
+    <value>Checker-Arbeiter #{0} hat eine Ausnahme festgestellt</value>
+  </data>
+  <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
+    <value>Checker-Arbeiter #{0} wurde gestartet</value>
+  </data>
+  <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
+    <value>Prüfer-Arbeiter #{0} beginnt mit der Bearbeitung der Einreichung: {1}</value>
+  </data>
+  <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
+    <value>Prüfer-Arbeiter #{0} wurde gestoppt</value>
+  </data>
+  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
+    <value>Bereinige {1} Herausforderungsspeicher für Spiel {0}...</value>
+  </data>
+  <data name="Game_DeletionFailed" xml:space="preserve">
+    <value>Fehler beim Löschen des Spiels, verwandte Dateien könnten beschädigt sein, bitte versuchen Sie es erneut</value>
+  </data>
+  <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
+    <value>Bereinige {1} Teamdateien für Spiel {0}...</value>
+  </data>
+  <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
+    <value>Der Unterschied oder Schlüssel in der Konfigurationsdatei ist nicht gesetzt und der Übereinstimmungsschlüssel wird explizit in der Datenbank gespeichert.</value>
+  </data>
+  <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
+    <value>Das Spiel kann nach Genehmigung des Eintritts nicht verlassen werden</value>
+  </data>
+  <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
+    <value>Kann das Spiel, dem du nicht beitrittst, nicht verlassen</value>
+  </data>
+  <data name="Game_CaptureNotFound" xml:space="preserve">
+    <value>Kein erfasster Datenverkehr gefunden</value>
+  </data>
+  <data name="Game_ChallengeNotFound" xml:space="preserve">
+    <value>Titel nicht gefunden oder dynamische Anhangszuteilung fehlgeschlagen</value>
+  </data>
+  <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
+    <value>Der Container dieser Herausforderung existiert bereits</value>
+  </data>
+  <data name="Game_ContainerCreationFailed" xml:space="preserve">
+    <value>Container für Herausforderung konnte nicht erstellt werden</value>
+  </data>
+  <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
+    <value>Der Titel kann keinen Container erstellen</value>
+  </data>
+  <data name="Game_ContainerDeleted" xml:space="preserve">
+    <value>{0} hat den Container [{2}] der Herausforderung {1} zerstört</value>
+  </data>
+  <data name="Game_ContainerDeletionFailed" xml:space="preserve">
+    <value>Löschen des Containers für Herausforderung fehlgeschlagen</value>
+  </data>
+  <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
+    <value>Lebensdauer des Containers kann noch nicht verlängert werden</value>
+  </data>
+  <data name="Game_ContainerNotCreated" xml:space="preserve">
+    <value>Der Container dieser Herausforderung wurde nicht erstellt</value>
+  </data>
+  <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
+    <value>Die Anzahl der Team-Container darf {0} nicht überschreiten</value>
+  </data>
+  <data name="Game_DeadlineExpired" xml:space="preserve">
+    <value>Der Abgabetermin ist abgelaufen</value>
+  </data>
+  <data name="Game_Ended" xml:space="preserve">
+    <value>Das Spiel ist beendet</value>
+  </data>
+  <data name="Game_InOtherTeam" xml:space="preserve">
+    <value>Du hast dich von einem anderen Team aus dem Spiel angeschlossen</value>
+  </data>
+  <data name="Game_InvalidInvitationCode" xml:space="preserve">
+    <value>Ungültiger Spieleinladungscode</value>
+  </data>
+  <data name="Game_InvalidOrganization" xml:space="preserve">
+    <value>Ungültige Organisation</value>
+  </data>
+  <data name="Game_JoinSucceeded" xml:space="preserve">
+    <value>{0} hat erfolgreich am Spiel {1} teilgenommen</value>
+  </data>
+  <data name="Game_NotFound" xml:space="preserve">
+    <value>Das Spiel wurde nicht gefunden</value>
+  </data>
+  <data name="Game_NotMemberOfTeam" xml:space="preserve">
+    <value>Du bist kein Mitglied des Teams</value>
+  </data>
+  <data name="Game_NotParticipated" xml:space="preserve">
+    <value>Sie haben nicht am Spiel teilgenommen</value>
+  </data>
+  <data name="Game_NotStarted" xml:space="preserve">
+    <value>Das Spiel hat nicht begonnen</value>
+  </data>
+  <data name="Game_OperationTooFrequent" xml:space="preserve">
+    <value>Containeroperation zu häufig</value>
+  </data>
+  <data name="Game_ParticipationNotAccepted" xml:space="preserve">
+    <value>Ihre Registrierung wurde abgelehnt oder gesperrt</value>
+  </data>
+  <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
+    <value>Der Download der Bestenliste ist fehlgeschlagen</value>
+  </data>
+  <data name="Game_SubmissionNotFound" xml:space="preserve">
+    <value>Die Einreichung wurde nicht gefunden</value>
+  </data>
+  <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
+    <value>Die Anzahl der Teammitglieder überschreitet das Limit</value>
+  </data>
+  <data name="Game_WriteupSubmitted" xml:space="preserve">
+    <value>{0} hat erfolgreich {1} Write-Up eingereicht</value>
+  </data>
+  <data name="Header_Captain" xml:space="preserve">
+    <value>Kapitän</value>
+  </data>
+  <data name="Header_Challenge" xml:space="preserve">
+    <value>Herausf.</value>
+  </data>
+  <data name="Header_Email" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="Header_Member" xml:space="preserve">
+    <value>Crew</value>
+  </data>
+  <data name="Header_PhoneNumber" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="Header_Ranking" xml:space="preserve">
+    <value>Rang</value>
+  </data>
+  <data name="Header_ScoringTime" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="Header_SolvedNumber" xml:space="preserve">
+    <value>Gelöst</value>
+  </data>
+  <data name="Header_StdNumber" xml:space="preserve">
+    <value>Matrikelnummer</value>
+  </data>
+  <data name="Header_SubmitContent" xml:space="preserve">
+    <value>Eingabe</value>
+  </data>
+  <data name="Header_SubmitStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Header_SubmitTime" xml:space="preserve">
+    <value>Zeit</value>
+  </data>
+  <data name="Header_Team" xml:space="preserve">
+    <value>Team</value>
+  </data>
+  <data name="Header_TotalScore" xml:space="preserve">
+    <value>Punkte</value>
+  </data>
+  <data name="Header_User" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="Identity_ConcurrencyFailure" xml:space="preserve">
+    <value>Ein gleichzeitiger Fehler ist aufgetreten, bitte versuchen Sie es später erneut</value>
+  </data>
+  <data name="Identity_DefaultError" xml:space="preserve">
+    <value>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später noch einmal.</value>
+  </data>
+  <data name="Identity_DuplicateEmail" xml:space="preserve">
+    <value>E-Mail-Adresse {0} existiert bereits</value>
+  </data>
+  <data name="Identity_DuplicateRoleName" xml:space="preserve">
+    <value>Rollenname {0} existiert bereits</value>
+  </data>
+  <data name="Identity_DuplicateUserName" xml:space="preserve">
+    <value>Benutzername {0} existiert bereits</value>
+  </data>
+  <data name="Identity_InvalidEmail" xml:space="preserve">
+    <value>E-Mail-Adresse {0} ist ungültig</value>
+  </data>
+  <data name="Identity_InvalidRoleName" xml:space="preserve">
+    <value>Rollenname {0} ist ungültig</value>
+  </data>
+  <data name="Identity_InvalidToken" xml:space="preserve">
+    <value>Ungültiger Bestätigungscode</value>
+  </data>
+  <data name="Identity_InvalidUserName" xml:space="preserve">
+    <value>Ungültiger Benutzername {0}</value>
+  </data>
+  <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
+    <value>Login bereits zugeordnet</value>
+  </data>
+  <data name="Identity_PasswordMismatch" xml:space="preserve">
+    <value>Falsches Passwort eingegeben</value>
+  </data>
+  <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
+    <value>Passwort erfordert Ziffern</value>
+  </data>
+  <data name="Identity_PasswordRequiresLower" xml:space="preserve">
+    <value>Passwort erfordert Kleinbuchstaben</value>
+  </data>
+  <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Passwort erfordert Symbole</value>
+  </data>
+  <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
+    <value>Das Passwort benötigt mindestens {0} verschiedene Zeichen</value>
+  </data>
+  <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
+    <value>Passwort erfordert Großbuchstaben</value>
+  </data>
+  <data name="Identity_PasswordTooShort" xml:space="preserve">
+    <value>Passwortlänge {0} ist zu kurz</value>
+  </data>
+  <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
+    <value>Wiederherstellungscode-Abruf fehlgeschlagen</value>
+  </data>
+  <data name="Identity_UnknownError" xml:space="preserve">
+    <value>Unbekannter Fehler</value>
+  </data>
+  <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
+    <value>Benutzerpasswort existiert bereits</value>
+  </data>
+  <data name="Identity_UserAlreadyInRole" xml:space="preserve">
+    <value>Benutzer bereits in Rolle {0}</value>
+  </data>
+  <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
+    <value>Benutzersperre ist nicht aktiviert</value>
+  </data>
+  <data name="Identity_UserNotInRole" xml:space="preserve">
+    <value>Benutzer existiert nicht in Rolle {0}</value>
+  </data>
+  <data name="Init_AdminCreationFailed" xml:space="preserve">
+    <value>Erstellung des Administratorkontos fehlgeschlagen, Fehlermeldung: {0}</value>
+  </data>
+  <data name="Init_NoFilesDir" xml:space="preserve">
+    <value>Datenverzeichnis {0} ist nicht eingebunden, Dateien können verloren gehen, bitte das Datenpersistenzverzeichnis korrekt konfigurieren!</value>
+  </data>
+  <data name="Init_CaptureNotAvailable" xml:space="preserve">
+    <value>Verkehrserfassung nicht möglich, wenn die Plattform-Proxy-Modus nicht verwendet wird!</value>
+  </data>
+  <data name="Init_InvalidCacheConfig" xml:space="preserve">
+    <value>Ungültige Cache-Konfiguration, bitte prüfen Sie die Konfiguration des "RedisCache"-Feldes. Wenn Sie Redis nicht verwenden, lassen Sie das Konfigurationselement bitte leer.</value>
+  </data>
+  <data name="Init_PostContent" xml:space="preserve">
+    <value>Das Projekt basiert auf der AGPL-3.0-Lizenz, Open Source unter [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
+  </data>
+  <data name="Init_PostSummary" xml:space="preserve">
+    <value>Eine Open-Source-CTF-Plattform</value>
+  </data>
+  <data name="Init_PostTitle" xml:space="preserve">
+    <value>Willkommen bei GZ::CTF!</value>
+  </data>
+  <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
+    <value>{0} hat den Container [{2}] der Herausforderung {1} automatisch zerstört</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
+    <value>{0} startet Containerinstanz der Herausforderung {1} [{2}]</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
+    <value>Konnte Containerinstanz für Herausforderung {0} nicht starten</value>
+  </data>
+  <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
+    <value>Zerstöre Container [{0}] ({1}): {2}</value>
+  </data>
+  <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
+    <value>Ungenügende Anzahl von dynamischen Anhängen für die Herausforderung {0}#{1} zugewiesen</value>
+  </data>
+  <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
+    <value>{0} konnte keine Instanz für die Herausforderung {1}#{2} erstellen (möglicherweise durch gleichzeitige Konflikte verursacht), wird zurückgesetzt...</value>
+  </data>
+  <data name="InstanceRepository_InvalidPort" xml:space="preserve">
+    <value>Ungültiger Port beim Erstellen eines Containers</value>
+  </data>
+  <data name="InstanceRepository_NoInstance" xml:space="preserve">
+    <value>Die Teamteilnehmer sind leer, dies könnte unerwartet sein [{0}, {1}]</value>
+  </data>
+  <data name="MailSender_ChangeEmailButton" xml:space="preserve">
+    <value>E-Mail verifizieren</value>
+  </data>
+  <data name="MailSender_ChangeEmailContent" xml:space="preserve">
+    <value>Sie führen eine Aktion zur Änderung der Konto-E-Mail durch. Bitte klicken Sie auf die Schaltfläche unten, um Ihre neue E-Mail zu verifizieren.</value>
+  </data>
+  <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
+    <value>E-Mail ändern</value>
+  </data>
+  <data name="MailSender_InvalidRequest" xml:space="preserve">
+    <value>Ungültige Mail-Anfrage</value>
+  </data>
+  <data name="MailSender_MailSendFailed" xml:space="preserve">
+    <value>Zustellung der E-Mail fehlgeschlagen</value>
+  </data>
+  <data name="MailSender_ResetPasswordButton" xml:space="preserve">
+    <value>Passwortzurücksetzung bestätigen</value>
+  </data>
+  <data name="MailSender_ResetPasswordContent" xml:space="preserve">
+    <value>Sie führen eine Konto-Passwortzurücksetzung durch. Bitte klicken Sie auf die Schaltfläche unten, um Ihr Passwort zurückzusetzen.</value>
+  </data>
+  <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
+    <value>Passwort zurücksetzen</value>
+  </data>
+  <data name="MailSender_SendMail" xml:space="preserve">
+    <value>E-Mail senden: {0}</value>
+  </data>
+  <data name="MailSender_Template" xml:space="preserve">
+    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Hallo, {userName}!&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            Wenn der obige Button nicht funktioniert, kopieren Sie bitte diesen Link in Ihren Browser: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;Falls Sie dies nicht veranlasst haben, ignorieren Sie bitte diese E-Mail. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+  </data>
+  <data name="MailSender_VerifyEmailButton" xml:space="preserve">
+    <value>E-Mail verifizieren</value>
+  </data>
+  <data name="MailSender_VerifyEmailContent" xml:space="preserve">
+    <value>Sie sind dabei, Ihr Konto zu registrieren. Wir müssen Ihre Registrierungs-E-Mail verifizieren: {0}. Bitte klicken Sie auf den unten stehenden Button, um sie zu verifizieren.</value>
+  </data>
+  <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
+    <value>E-Mail verifizieren</value>
+  </data>
+  <data name="Model_BioTooLong" xml:space="preserve">
+    <value>Beschreibung ist zu lang</value>
+  </data>
+  <data name="Model_ContentRequired" xml:space="preserve">
+    <value>Inhalt ist erforderlich</value>
+  </data>
+  <data name="Model_EmailMalformed" xml:space="preserve">
+    <value>E-Mail ist ungültig</value>
+  </data>
+  <data name="Model_EmailRequired" xml:space="preserve">
+    <value>E-Mail ist erforderlich</value>
+  </data>
+  <data name="Model_FlagRequired" xml:space="preserve">
+    <value>Flag ist erforderlich</value>
+  </data>
+  <data name="Model_FlagTooLong" xml:space="preserve">
+    <value>Flag ist zu lang</value>
+  </data>
+  <data name="Model_InvitationCodeTooLong" xml:space="preserve">
+    <value>Einladungscode ist zu lang</value>
+  </data>
+  <data name="Model_MalformedPhoneNumber" xml:space="preserve">
+    <value>Ungültige Telefonnummer</value>
+  </data>
+  <data name="Model_NewPasswordRequired" xml:space="preserve">
+    <value>Ein neues Passwort ist erforderlich</value>
+  </data>
+  <data name="Model_NewPasswordTooShort" xml:space="preserve">
+    <value>Neues Passwort ist zu kurz</value>
+  </data>
+  <data name="Model_OldPasswordRequired" xml:space="preserve">
+    <value>Das alte Passwort ist erforderlich</value>
+  </data>
+  <data name="Model_OldPasswordTooShort" xml:space="preserve">
+    <value>Altes Passwort ist zu kurz</value>
+  </data>
+  <data name="Model_OutOfRange" xml:space="preserve">
+    <value>Der Wert von {0} muss zwischen {1} und {2} liegen</value>
+  </data>
+  <data name="Model_PasswordRequired" xml:space="preserve">
+    <value>Passwort ist erforderlich</value>
+  </data>
+  <data name="Model_RealNameTooLong" xml:space="preserve">
+    <value>Echter Name ist zu lang</value>
+  </data>
+  <data name="Model_StdNumberTooLong" xml:space="preserve">
+    <value>Matrikelnummer ist zu lang</value>
+  </data>
+  <data name="Model_TeamBioTooLong" xml:space="preserve">
+    <value>Team-Biografie ist zu lang</value>
+  </data>
+  <data name="Model_TeamNameTooLong" xml:space="preserve">
+    <value>Teamname ist zu lang</value>
+  </data>
+  <data name="Model_TitleRequired" xml:space="preserve">
+    <value>Titel ist erforderlich</value>
+  </data>
+  <data name="Model_TitleTooLong" xml:space="preserve">
+    <value>Titel ist zu lang</value>
+  </data>
+  <data name="Model_TitleTooShort" xml:space="preserve">
+    <value>Titel ist zu kurz</value>
+  </data>
+  <data name="Model_TokenRequired" xml:space="preserve">
+    <value>Token ist erforderlich</value>
+  </data>
+  <data name="Model_UserNameRequired" xml:space="preserve">
+    <value>Benutzername ist erforderlich</value>
+  </data>
+  <data name="Model_UserNameTooLong" xml:space="preserve">
+    <value>Benutzername ist zu lang</value>
+  </data>
+  <data name="Model_UserNameTooShort" xml:space="preserve">
+    <value>Benutzername ist zu kurz</value>
+  </data>
+  <data name="Model_ValidationFailed" xml:space="preserve">
+    <value>Die Eingabe konnte nicht validiert werden, bitte erneut überprüfen</value>
+  </data>
+  <data name="Post_NotFound" xml:space="preserve">
+    <value>Der Beitrag wurde nicht gefunden</value>
+  </data>
+  <data name="RateLimit_TooManyRequests" xml:space="preserve">
+    <value>Zu viele Anfragen. Bitte versuche es in {0} Sekunden erneut.</value>
+  </data>
+  <data name="Scoreboard_AllSubmissions" xml:space="preserve">
+    <value>Alle Einreichungen</value>
+  </data>
+  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
+    <value>Team nicht geladen</value>
+  </data>
+  <data name="Scoreboard_Title" xml:space="preserve">
+    <value>Scoreboard</value>
+  </data>
+  <data name="Server_Exited" xml:space="preserve">
+    <value>Server beendet</value>
+  </data>
+  <data name="Server_Failed" xml:space="preserve">
+    <value>Server wurde unerwartet aufgrund von Ausnahmen beendet</value>
+  </data>
+  <data name="Submission_Accepted" xml:space="preserve">
+    <value>AKZEPTIERT</value>
+  </data>
+  <data name="Submission_CheatDetected" xml:space="preserve">
+    <value>Betrugserkennung</value>
+  </data>
+  <data name="Submission_FirstBlood" xml:space="preserve">
+    <value>Erstes Blut</value>
+  </data>
+  <data name="Submission_FlagSubmitted" xml:space="preserve">
+    <value>Erfolgreich eingereicht</value>
+  </data>
+  <data name="Submission_NotFound" xml:space="preserve">
+    <value>Die Einreichung wurde nicht gefunden</value>
+  </data>
+  <data name="Submission_SecondBlood" xml:space="preserve">
+    <value>Zweite Blutflecken</value>
+  </data>
+  <data name="Submission_ThirdBlood" xml:space="preserve">
+    <value>Dritte Blutflecken</value>
+  </data>
+  <data name="Submission_UnknownInstance" xml:space="preserve">
+    <value>Unbekannte Instanz</value>
+  </data>
+  <data name="Submission_WrongAnswer" xml:space="preserve">
+    <value>FALSCH</value>
+  </data>
+  <data name="Game_CreationFailed" xml:space="preserve">
+    <value>Fehler beim Erstellen des Spiels</value>
+  </data>
+  <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
+    <value>Erfassen von Verkehr nur für Herausforderungen mit Containern aktivieren</value>
+  </data>
+  <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
+    <value>Dynamischer Anhangsname darf nicht leer sein</value>
+  </data>
+  <data name="Challenge_FlagTooTrivial" xml:space="preserve">
+    <value>Flagge ist nicht ausreichend kompliziert, bitte in Betracht ziehen, Team-Hash oder Länge hinzuzufügen</value>
+  </data>
+  <data name="Challenge_NoFlag" xml:space="preserve">
+    <value>Die Herausforderung hat keine Flagge und kann nicht aktiviert werden</value>
+  </data>
+  <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
+    <value>Verwenden Sie die Assets-API, um Anhänge hochzuladen</value>
+  </data>
+  <data name="Container_AddressResolveFailed" xml:space="preserve">
+    <value>Containeradresse konnte nicht geparst werden</value>
+  </data>
+  <data name="Container_ConfigError" xml:space="preserve">
+    <value>Container-Konfigurationsfehler</value>
+  </data>
+  <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
+    <value>Container-Verbindungslimit erreicht</value>
+  </data>
+  <data name="Container_CreationFailed" xml:space="preserve">
+    <value>Container konnte nicht erstellt werden</value>
+  </data>
+  <data name="Container_InvalidClientAddress" xml:space="preserve">
+    <value>Ungültige Zugriffsadresse</value>
+  </data>
+  <data name="Container_InvalidPort" xml:space="preserve">
+    <value>Ungültiger Port bei der Erstellung eines Containers</value>
+  </data>
+  <data name="Container_NotFound" xml:space="preserve">
+    <value>Container existiert nicht</value>
+  </data>
+  <data name="Container_TestContainerCreated" xml:space="preserve">
+    <value>Testcontainer {0} erfolgreich erstellt</value>
+  </data>
+  <data name="File_CreationFailed" xml:space="preserve">
+    <value>Datei konnte nicht erstellt werden</value>
+  </data>
+  <data name="Notification_NotFound" xml:space="preserve">
+    <value>Benachrichtigung nicht gefunden</value>
+  </data>
+  <data name="Notification_SystemNotDeletable" xml:space="preserve">
+    <value>Systembenachrichtigungen konnten nicht gelöscht werden</value>
+  </data>
+  <data name="Notification_SystemNotEditable" xml:space="preserve">
+    <value>Systembenachrichtigungen können nicht bearbeitet werden</value>
+  </data>
+  <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
+    <value>Verbindung zum Container fehlgeschlagen ({0})</value>
+  </data>
+  <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
+    <value>Containerverbindung fehlgeschlagen ({0}), möglicherweise wird gestartet oder Netzwerkkonfiguration prüfen -&gt; {1}</value>
+  </data>
+  <data name="Proxy_Error" xml:space="preserve">
+    <value>Ein Fehler ist während des Proxy-Prozesses aufgetreten</value>
+  </data>
+  <data name="Proxy_TcpDisabled" xml:space="preserve">
+    <value>TCP-Proxy ist deaktiviert</value>
+  </data>
+  <data name="Team_AvatarUpdated" xml:space="preserve">
+    <value>Team {0} hat das Avatar geändert: [{1}]</value>
+  </data>
+  <data name="Team_AvatarUpdateFailed" xml:space="preserve">
+    <value>Aktualisierung des Team-Avatars fehlgeschlagen</value>
+  </data>
+  <data name="Team_Created" xml:space="preserve">
+    <value>Team {0} erstellen</value>
+  </data>
+  <data name="Team_CreationFailed" xml:space="preserve">
+    <value>Teamerstellung fehlgeschlagen</value>
+  </data>
+  <data name="Team_Deleted" xml:space="preserve">
+    <value>Team {0} löschen</value>
+  </data>
+  <data name="Team_IdTransformFailed" xml:space="preserve">
+    <value>Team-ID-Konvertierungsfehler：{0}</value>
+  </data>
+  <data name="Team_InvalidCode" xml:space="preserve">
+    <value>Ungültiger Code</value>
+  </data>
+  <data name="Team_Locked" xml:space="preserve">
+    <value>Team ist gesperrt</value>
+  </data>
+  <data name="Team_MemberRemoved" xml:space="preserve">
+    <value>{0} aus Team {1} entfernen</value>
+  </data>
+  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
+    <value>Nicht erlaubt, mehr als ein Team zu erstellen</value>
+  </data>
+  <data name="Team_NameEmpty" xml:space="preserve">
+    <value>Teamname darf nicht leer sein</value>
+  </data>
+  <data name="Team_NameInvalidInvitation" xml:space="preserve">
+    <value>{0} Einladung ist ungültig</value>
+  </data>
+  <data name="Team_NameLocked" xml:space="preserve">
+    <value>Das Team {0} ist gesperrt</value>
+  </data>
+  <data name="Team_NameNotFound" xml:space="preserve">
+    <value>Team {0} nicht gefunden</value>
+  </data>
+  <data name="Team_NewCaptainNotFound" xml:space="preserve">
+    <value>Der übertragene Benutzer existiert nicht</value>
+  </data>
+  <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
+    <value>Zu viele übergebene Teams</value>
+  </data>
+  <data name="Team_UserJoined" xml:space="preserve">
+    <value>Team {0} beitreten</value>
+  </data>
+  <data name="Team_UserLeft" xml:space="preserve">
+    <value>Das Team {0} verlassen</value>
+  </data>
+  <data name="User_AlreadyInTeam" xml:space="preserve">
+    <value>Sie haben diesem Team bereits beigetreten, es ist nicht nötig, erneut beizutreten</value>
+  </data>
+  <data name="User_LeaveNotInTeam" xml:space="preserve">
+    <value>Sie sind nicht in diesem Team und können nicht verlassen</value>
+  </data>
+  <data name="User_NotInTeam" xml:space="preserve">
+    <value>Benutzer nicht im Team</value>
+  </data>
+  <data name="Game_WriteupNotNeeded" xml:space="preserve">
+    <value>Schreiben ist für dieses Spiel deaktiviert.</value>
+  </data>
+  <data name="Signature_Invalid" xml:space="preserve">
+    <value>Ungültige Signatur</value>
+  </data>
+  <data name="Error_InternalServerError" xml:space="preserve">
+    <value>Interner Serverfehler</value>
+  </data>
+  <data name="Admin_LogoUpdateFailed" xml:space="preserve">
+    <value>Fehler beim Aktualisieren des Logos</value>
+  </data>
+  <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
+    <value>Erfolgreich mit dem SMTP-Server verbunden: {0}</value>
+  </data>
+  <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
+    <value>Ungültige E-Mail-Konfiguration, aber E-Mail-Authentifizierung ist aktiviert</value>
+  </data>
+</root>

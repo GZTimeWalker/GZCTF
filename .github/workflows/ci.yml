@@ -6,6 +6,12 @@ on:
     tags: ["v*"]
     paths: ["src/GZCTF/**"]
   workflow_dispatch:
+    inputs:
+      skip-build:
+        type: boolean
+        description: "Skip build step"
+        default: false
+        required: false
 
 env:
   # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
@@ -14,6 +20,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: ${{ !github.event.inputs.skip-build }}
     permissions:
       contents: read
       packages: write
@@ -107,17 +114,23 @@ jobs:
           platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
           push: true
 
+  prune:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()
+    permissions:
+      contents: read
+      packages: write
+    steps:
       - name: Prune old packages
-        uses: vlaurin/action-ghcr-prune@v0.6.0
+        uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          dry-run: false
           token: ${{ secrets.GITHUB_TOKEN }}
-          container: ${{ github.event.repository.name }}/gzctf
-          keep-tags-regexes: ^v\d+\.\d+\.\d+$
-          prune-tags-regexes: ^[0-9a-f]{6,40}
-          keep-tags: |
-            latest
-            main
-            develop
-          keep-last: 20
-          prune-untagged: false
+          package: gzctf/gzctf
+          use-regex: true
+          exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}"
+          validate: true
+          dry-run: false
+          delete-untagged: true
+          delete-ghost-images: true
+          delete-partial-images: true

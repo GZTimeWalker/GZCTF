@@ -1,0 +1,33 @@
+{
+  "button": {
+    "delete": "刪除文章",
+    "edit": "編輯文章",
+    "goto": "轉到文章",
+    "new": "新建文章",
+    "save": "保存文章"
+  },
+  "content": {
+    "delete": "你確定要刪除文章 「{{title}}」 嗎？",
+    "details": "查看詳情",
+    "metadata": "{{author}} 發布於 {{date}}",
+    "pinned": "[置頂]",
+    "updated": {
+      "content": "文章內容已更改，是否保存？",
+      "title": "文章已更改"
+    }
+  },
+  "label": {
+    "add_tag": "回車添加標籤",
+    "content": "文章內容",
+    "summary": "文章梗概",
+    "tag": "文章標籤",
+    "title": "文章標題"
+  },
+  "notification": {
+    "created": "文章已創建",
+    "saved": "文章已保存"
+  },
+  "title": {
+    "index": "文章"
+  }
+}

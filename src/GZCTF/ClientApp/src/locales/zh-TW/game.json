@@ -1,0 +1,245 @@
+{
+  "button": {
+    "challenges": "進入比賽",
+    "delete": {
+      "all_traffic": "刪除全部列出流量"
+    },
+    "download": {
+      "all_traffic": "下載全部列出流量",
+      "scoreboard": "下載積分榜",
+      "submissionsheet": "下載全部提交"
+    },
+    "finished": "比賽結束",
+    "hide_solved": "隱藏已解出",
+    "join": "報名參賽",
+    "leave": "取消報名",
+    "login_required": "請先登錄",
+    "scoreboard": "查看榜單",
+    "submit_writeup": "提交 Writeup",
+    "writeup": {
+      "upload": "上傳 Writeup",
+      "uploading": "正在上傳"
+    }
+  },
+  "content": {
+    "all_solved": {
+      "comment": "或許還有更難的挑戰在等著你……",
+      "title": "題目都被解出啦！"
+    },
+    "duration": "{{hours}} 小時",
+    "end_at": "結束於",
+    "end_time": "結束時間",
+    "game_ended": "比賽已結束",
+    "game_lasts_long": "比賽還會很久",
+    "hide_container_events": {
+      "description": "隱藏容器啟動/銷毀事件",
+      "label": "隱藏容器事件"
+    },
+    "join": {
+      "confirm": "確認報名",
+      "content": [
+        "你確定要報名哩個比賽嗎？",
+        "報名參賽並審核通過後，參賽隊伍將被鎖定，<strong>不能再踢出隊員</strong>，隊伍將在比賽結束後或駁回請求時解鎖。",
+        "比賽隊伍人數要求以選擇隊伍的成員數為準，<strong>不論隊員是否以此隊伍身份參加比賽。</strong>"
+      ],
+      "invite_code": {
+        "description": "本場比賽開啟了邀請參賽，報名參賽需提供邀請碼",
+        "label": "請輸入邀請碼"
+      },
+      "organization": {
+        "description": "本場比賽具有多個參賽組織，請選擇你的參賽組織",
+        "label": "選擇參賽組織"
+      },
+      "team": {
+        "description": "請選擇一個隊伍參與比賽，選定後不可更改",
+        "label": "選擇參賽隊伍"
+      },
+      "title": "補全報名信息"
+    },
+    "joined_status": "<strong>{{count}}</strong>支隊伍已報名",
+    "leave": {
+      "confirm": "確認取消報名",
+      "content": [
+        "你確定要退出此比賽嗎？",
+        "退出後如果隊伍報名人數為空，隊伍參與信息將被刪除。"
+      ]
+    },
+    "no_challenge": "Ouch! 這個比賽還沒有可用題目呢……",
+    "no_cheat": {
+      "comment": "看起來大家都很老實呢",
+      "title": "暫時沒有隊伍作弊信息"
+    },
+    "no_notice": "暫無通知",
+    "no_traffic": {
+      "comment": "需要平臺配置和題目雙重啟用",
+      "title": "暫時沒有啟用流量捕獲的題目"
+    },
+    "remaining_duration": "剩餘 {{hours}} 小時",
+    "remaining_time": "剩餘時間",
+    "scoreboard_not_ready": {
+      "comment": "坐和放寬，稍作等待……",
+      "title": "正在加載題目信息"
+    },
+    "scoreboard_note": "註：同分隊伍以得分時間先後排名",
+    "scoreboard_tip": "Tip: 可以按左右方向鍵滾動題目列表哦~",
+    "start_at": "開始於",
+    "start_time": "開始時間",
+    "team_view": {
+      "description": "使用隊伍視圖展示作弊信息",
+      "label": "隊伍視圖"
+    },
+    "total_duration": "共 {{hours}} 小時",
+    "total_time": "持續時間",
+    "traffic": {
+      "delete_confirm": "確認刪除此流量文件？",
+      "deleted_all_confirm": "確認刪除全部列出流量？"
+    },
+    "writeup": {
+      "current": "當前提交",
+      "deadline_exceeded": "提交截止時間已過",
+      "instructions": {
+        "additional": "附加說明",
+        "deadline": "請在<1>{{datetime}}</1>前提交 Writeup，逾期提交或不提交視為放棄本次參賽記錄。",
+        "file_format": "請將全部解出題目整理為<1>一份小於 20MB 的標準 PDF 文檔</1>。",
+        "title": "提交說明"
+      },
+      "submitted": "已成功提交",
+      "title": "管理 Writeup",
+      "unsubmitted": "尚未提交",
+      "unsubmitted_note": "你的隊伍尚未提交 Writeup"
+    }
+  },
+  "event": {
+    "answer": {
+      "accepted": "答案正確",
+      "cheat": "作弊行為",
+      "not_found": "未知實例",
+      "submitted": "成功提交",
+      "wrong": "答案錯誤"
+    },
+    "cheat_detected": "題目 [{{chal}}] 疑似發生違規，隊伍 [{{team}}] 使用了 [{{steam}}] 的答案",
+    "container": {
+      "destroy": "{{chal}}#{{id}} 銷毀題目實例",
+      "start": "{{chal}}#{{id}} 開啟題目實例"
+    },
+    "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
+  },
+  "label": {
+    "cheat_info": {
+      "owned_team": "原始隊伍",
+      "submit_team": "提交隊伍",
+      "submit_user": "提交用戶"
+    },
+    "notice_type": {
+      "all": "全部",
+      "challenge": "題目",
+      "events": "動態",
+      "game": "通知"
+    },
+    "score": "分數",
+    "score_formatter": "{value} 分",
+    "score_table": {
+      "rank_organization": "排名",
+      "rank_total": "總排名",
+      "score": "得分",
+      "score_total": "總分",
+      "solved_count": "解題數",
+      "team": "戰隊",
+      "type": "類型"
+    },
+    "traffic": "流量"
+  },
+  "notice": {
+    "blood": "恭喜 {{team}} 獲得 [{{chal}}] {{blood}}",
+    "new_challenge": "題目 [{{title}}] 已開放",
+    "new_hint": "題目 [{{title}}] 更新了提示"
+  },
+  "notification": {
+    "connected": {
+      "event": "實時事件連接成功",
+      "submission": "實時提交連接成功"
+    },
+    "ended": "比賽已經結束",
+    "fetch_failed": {
+      "event": "獲取事件失敗",
+      "notice": "獲取通知失敗",
+      "submission": "獲取提交失敗"
+    },
+    "joined": "報名成功",
+    "left": "取消報名成功",
+    "no_invite_code": "邀請碼不能為空",
+    "no_organization": "請選擇參賽組織",
+    "no_team": "請選擇參賽隊伍",
+    "not_started": "比賽尚未開始",
+    "select_chal_and_part": "請先選擇題目和隊伍",
+    "suspended": "您已被禁賽",
+    "traffic": {
+      "deleted": "流量文件已刪除"
+    },
+    "writeup": {
+      "submitted": "Writeup 已成功提交"
+    }
+  },
+  "participation": {
+    "actions": {
+      "accepted": "審核通過",
+      "pending": "等待審核",
+      "rejected": "重新報名",
+      "suspended": "禁賽中",
+      "unsubmitted": "報名參賽"
+    },
+    "alert": {
+      "not_started": {
+        "content": "你已經以隊伍 {{team}} 成員身份成功報名並通過審核，請在比賽開始後進入比賽頁面。",
+        "mobile": "請使用電腦端參與比賽及查看比賽詳情。",
+        "title": "比賽尚未開始"
+      },
+      "pending": {
+        "content": "請耐心等待審核結果",
+        "title": "你已經以隊伍 {{team}} 成員身份成功報名"
+      },
+      "rejected": {
+        "content": "請確保具備參賽資格和滿足參賽要求後重新報名",
+        "title": "你嘅參賽申請未通過"
+      },
+      "suspended": {
+        "content": "如有異議，請聯繫管理員進行申訴",
+        "title": "您的隊伍 {{team}} 已被禁賽"
+      },
+      "team_required": {
+        "content": "你沒有加入任何隊伍，請在<1>隊伍管理</1>頁面創建、加入隊伍。",
+        "title": "當前無法報名"
+      }
+    },
+    "status": {
+      "accepted": "審核通過",
+      "pending": "待審核",
+      "rejected": "審核未通過",
+      "suspended": "禁賽中"
+    }
+  },
+  "placeholder": {
+    "no_solved": "Ouch! 這支隊伍還沒有解出題目呢……",
+    "search_team": "搜索隊伍"
+  },
+  "tab": {
+    "challenge": "比賽題目",
+    "monitor": {
+      "cheatinfo": "作弊信息",
+      "events": "事件監控",
+      "index": "比賽監控",
+      "submissions": "提交記錄",
+      "traffic": "流量捕獲"
+    },
+    "scoreboard": "積分總榜"
+  },
+  "tag": {
+    "hidden": "比賽已隱藏",
+    "individual": "個人賽",
+    "limited": "{{count}}人賽",
+    "multiplayer": "團隊賽"
+  },
+  "title": {
+    "index": "賽事"
+  }
+}

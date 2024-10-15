@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "premier sang",
+    "second_blood": "deuxième sang",
+    "third_blood": "troisième sang"
+  },
+  "button": {
+    "download": {
+      "attachment": "Télécharger la pièce jointe"
+    },
+    "instance": {
+      "create": "Créer",
+      "destroy": "Détruire",
+      "extend": "Étendre"
+    },
+    "submit_flag": "Soumettre"
+  },
+  "category": {
+    "ai": "Sécurité de l'IA",
+    "blockchain": "Blockchain",
+    "crypto": "Cryptographie",
+    "forensics": "Analyse forensique numérique",
+    "hardware": "Sécurité du matériel",
+    "misc": "Divers",
+    "mobile": "Sécurité mobile",
+    "osint": "Renseignement open source",
+    "pentest": "Test d'intrusion",
+    "ppc": "Programmation",
+    "pwn": "Exploitation binaire",
+    "reverse": "Ingénierie inverse",
+    "web": "Sécurité web"
+  },
+  "content": {
+    "already_solved": "Ce défi a été résolu",
+    "flag_placeholders": [
+      "Être ou ne pas être, telle est la question pour le flag",
+      "Tout ce qui brille n'est pas un flag",
+      "Le drapeau, cher Brutus, n'est pas dans nos étoiles",
+      "Mieux vaut trois heures trop tôt qu'un drapeau trop tard",
+      "Mon royaume pour un drapeau",
+      "Te comparerais-je à un drapeau ?",
+      "Mets le drapeau dans ta poche, et pars",
+      "Voici le drapeau : je bois à toi",
+      "Car jamais il n'y eut de drapeau de plus grand malheur",
+      "Car où tu es, là est le drapeau",
+      "Mon drapeau est dans mon cœur, pas dans ma tête",
+      "Les esprits intrépides montent le plus rapidement au drapeau",
+      "Mais, pour ma part, c'était un drapeau pour moi",
+      "Ce qui est à moi est drapeau et ce qui est à toi est à moi",
+      "Cette parcelle bénie, cette terre, ce royaume, ce drapeau",
+      "Le drapeau le plus mûr tombe le premier",
+      "Une touche de drapeau rend le monde entier parent",
+      "Mieux vaut un drapeau ingénieux qu'un esprit insensé",
+      "Même s'il y a mille sortes de drapeaux, à qui d'autre puis-je parler?",
+      "Le drapeau brille encore dans une zone inconnue.",
+      "Puis-je demander où se trouve le drapeau?"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "Restant : ",
+        "note": "Vous pouvez l'étendre {{min}} min avant expiration."
+      },
+      "entry": {
+        "description": {
+          "anchor": "Obtenir le client proxy",
+          "proxy": "Le mode proxy WebSocket a été activé."
+        },
+        "label": "Info de l'instance"
+      },
+      "no_container": {
+        "message": "Ce défi nécessite la création d'une instance",
+        "note": "L'instance sera active pendant {{min}} min."
+      },
+      "open": {
+        "client": "Ouvrir dans le client",
+        "web": "Ouvrir en tant que page web"
+      },
+      "test": {
+        "no_container": "Le conteneur de test ne fonctionne pas"
+      }
+    },
+    "solved": "<1>{{solved}}</1> RÉSOLUTIONS",
+    "wrong_flag_hints": [
+      "Là où il y a une volonté, il y a un drapeau.",
+      "Être ou ne pas être, ce n'est pas le drapeau.",
+      "La fierté blesse, le drapeau profite.",
+      "L'échec enseigne les drapeaux.",
+      "Non, non, ce n'est pas ce drapeau.",
+      "Yeux grands ouverts, mais le drapeau n'est pas ici.",
+      "Ne sois pas impétueux, réfléchis bien.",
+      "Chercher partout, ce n'est pas la réponse.",
+      "À première vue, vous n'avez pas trouvé le drapeau.",
+      "La réponse devrait être à portée de main.",
+      "Une planification et une considération minutieuses, le drapeau n'est pas si simple.",
+      "Le drapeau est vraiment bien caché !",
+      "Est-ce la solitude qui vous écrase quand la chance n'est pas de votre côté ?",
+      "Trop excité ! Vous devez encore apprendre à penser plus calmement.",
+      "Faire face à un mur, se pourrait-il que vous ayez atteint le sommet ?",
+      "Les années sont paisibles, mais le drapeau est parti loin.",
+      "L'eau peu profonde s'est asséchée, le drapeau n'est toujours pas trouvé.",
+      "Où peut-on trouver ce drapeau ?",
+      "Belles miniatures comme la fumée. Où le drapeau est-il allé ?",
+      "Le bourbier est profond, et le drapeau n'est toujours pas trouvé.",
+      "Tout est calme, seul le message d'erreur du drapeau est ici.",
+      "Le drapeau correct n'est toujours pas obtenu.",
+      "Les vents sont amers et froids, et le drapeau n'est toujours pas dans votre main."
+    ]
+  },
+  "file_type": {
+    "local": "Hébergé soi-même",
+    "none": "Aucun",
+    "remote": "URL distante"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "Le jeu est terminé, les soumissions ne seront pas notées",
+        "message": "Le tableau des scores sera mis à jour plus tard.",
+        "title": "drapeau correct"
+      },
+      "empty": "Le drapeau ne peut pas être vide",
+      "submitted": {
+        "message": "Veuillez patienter pour la vérification du drapeau...",
+        "title": "drapeau soumis"
+      },
+      "unknown": {
+        "message": "Veuillez contacter l'administrateur pour confirmer la soumission : {{id}}",
+        "title": "statut du drapeau inconnu"
+      },
+      "wrong": "drapeau incorrect"
+    },
+    "instance": {
+      "copied": {
+        "entry": "Entrée de l'instance copiée dans le presse-papier",
+        "url": {
+          "message": "Veuillez utiliser le client pour accéder",
+          "title": "Entrée de l'instance copiée dans le presse-papier"
+        }
+      },
+      "created": {
+        "message": "Veuillez noter l'heure d'expiration de l'instance",
+        "title": "Instance créée"
+      },
+      "destroyed": {
+        "message": "Vous pouvez recréer l'instance",
+        "title": "L'instance a été détruite"
+      },
+      "extend": {
+        "note": {
+          "message": "Veuillez prolonger la durée de vie ou détruire l'instance à temps",
+          "title": "L'instance est due"
+        },
+        "success": {
+          "message": "Veuillez noter l'heure d'expiration de l'instance",
+          "title": "La durée de vie de l'instance a été prolongée"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "Distribuer les pièces jointes par équipe, en veillant à ce que le nombre de pièces jointes soit supérieur au nombre d'équipes",
+      "label": "Pièces jointes dynamiques"
+    },
+    "dynamic_container": {
+      "desrc": "Génération automatique de drapeau, unique pour chaque équipe",
+      "label": "Conteneur dynamique"
+    },
+    "static_attachment": {
+      "desrc": "Pièces jointes partagées, tout drapeau peut être soumis",
+      "label": "Pièces jointes statiques"
+    },
+    "static_container": {
+      "desrc": "Conteneurs partagés, n'importe quel drapeau peut être soumis",
+      "label": "Conteneur statique"
+    }
+  }
+}

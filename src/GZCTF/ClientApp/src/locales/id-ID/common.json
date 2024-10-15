@@ -1,0 +1,129 @@
+{
+  "avatar": {
+    "save": "Simpan avatar",
+    "upload_failed": "Gagal memperbarui avatar",
+    "uploaded": "Avatar diperbarui",
+    "uploading": "Mengunggah avatar"
+  },
+  "button": {
+    "copy": "Salin ke Clipboard",
+    "reset": "Reset",
+    "select_file": "Pilih File",
+    "try_again": "Coba Lagi",
+    "uploading": "Mengunggah"
+  },
+  "content": {
+    "404": {
+      "text": "Sebuah kehampaan, mengapa ini ada di sini",
+      "title": "Halaman tidak ada"
+    },
+    "about": {
+      "slogan": "Ngehack untuk senang senang bukan buat nyari profit"
+    },
+    "color": {
+      "custom": {
+        "description": "Pilih warna dasar yang ingin kamu gunakan",
+        "label": "Pilih warna dasar",
+        "placeholder": "Gunakan warna standar"
+      },
+      "palette": {
+        "description": "Palet warna yang dihasilkan dari warna dasar kustom",
+        "label": "Pallet warna"
+      },
+      "provider": {
+        "custom": "Sesuaikan",
+        "default": "Default",
+        "description": "Pilih bagaimana warna dasar ditentukan",
+        "label": "Warna tema",
+        "managed": "Disediakan oleh Admin"
+      },
+      "title": "Sesuaikan warna"
+    },
+    "drop_zone": {
+      "content": "Seret dan lepas gambar atau klik di sini untuk memilih {{type}}",
+      "limit": "Harap pilih gambar yang kurang dari 3MB",
+      "type": {
+        "avatar": "avatar",
+        "poster": "poster"
+      }
+    },
+    "external_link": "Tautan eksternal",
+    "home": {
+      "recent_games": "Game Terbaru"
+    },
+    "no_data": "Tidak ada data",
+    "report_error": "Harap laporkan kesalahan ini kepada admin jika kamu merasa ini adalah bug",
+    "wider": {
+      "text": "Cobalah gunakan perangkat yang lebih lebar",
+      "title": "Tidak cukup lebar"
+    }
+  },
+  "download": {
+    "failed": "Gagal mengunduh",
+    "started": "Mengunduh",
+    "success": "Terunduh"
+  },
+  "email": {
+    "sent": {
+      "message": "Tolong cek email inbox dan email spam!",
+      "title": "Email terkirim"
+    }
+  },
+  "error": {
+    "check_input": "Tolong cek inputanmu",
+    "empty": "Konten tidak boleh kosong",
+    "encountered": "Terjadi suatu kesalahan",
+    "file_invalid": {
+      "message": "Harap periksa format dan ukuran berkas",
+      "title": "Gagal memuat berkas"
+    },
+    "invalid_username_or_password": "Username atau kata sandi salah",
+    "no_change": "Sepertinya tidak ada perubahan",
+    "param_error": "Parameter tidak benar, harap periksa",
+    "param_invalid": "Parameter tidak valid",
+    "param_missing": "Parameter tidak ada",
+    "param_unknown": "Parameter tidak diketahui",
+    "request_too_frequent": "Terlalu banyak permintaan",
+    "try_later": "Silakan coba beberapa saat lagi",
+    "unknown": "Kesalahan tidak diketahui"
+  },
+  "label": {
+    "challenge": "Challenge",
+    "flag": "flag",
+    "game": "Game",
+    "ip": "IP",
+    "team": "Tim",
+    "time": "Waktu",
+    "user": "Pengguna"
+  },
+  "modal": {
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "confirm_delete": "Konfirmasi hapus",
+    "confirm_update": "Konfirmasi pembaruan",
+    "delete": "Hapus"
+  },
+  "tab": {
+    "about": "Tentang",
+    "account": {
+      "clean_cache": "Hapus Cache",
+      "login": "Masuk",
+      "logout": "Keluar",
+      "profile": "Profil"
+    },
+    "admin": "Admin",
+    "game": "Games",
+    "home": "Beranda",
+    "post": "Postingan",
+    "team": "Tim",
+    "theme": {
+      "dark": "mode gelap",
+      "light": "mode terang",
+      "switch_to": "Ubah ke {{theme}}"
+    }
+  },
+  "title": {
+    "404": "Tempat yang Tidak Ada",
+    "about": "Tentang"
+  }
+}

@@ -101,27 +101,35 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
               <Text fw="bold" size="sm" ff="monospace">
                 {item?.rank}
               </Text>
-              <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
+              <Text size="xs" fw={500}>
+                {t('game.label.score_table.rank_total')}
+              </Text>
             </Stack>
             {item?.organization && (
               <Stack gap={2}>
                 <Text fw="bold" size="sm" ff="monospace">
                   {item?.organizationRank}
                 </Text>
-                <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
+                <Text size="xs" fw={500}>
+                  {t('game.label.score_table.rank_organization')}
+                </Text>
               </Stack>
             )}
             <Stack gap={2}>
               <Text fw="bold" size="sm" ff="monospace">
                 {item?.score}
               </Text>
-              <Text size="xs">{t('game.label.score_table.score')}</Text>
+              <Text size="xs" fw={500}>
+                {t('game.label.score_table.score')}
+              </Text>
             </Stack>
             <Stack gap={2}>
               <Text fw="bold" size="sm" ff="monospace">
                 {item?.solvedCount}
               </Text>
-              <Text size="xs">{t('game.label.score_table.solved_count')}</Text>
+              <Text size="xs" fw={500}>
+                {t('game.label.score_table.solved_count')}
+              </Text>
             </Stack>
           </Group>
           <Progress value={solved * 100} />

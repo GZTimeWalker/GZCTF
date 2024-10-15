@@ -1,0 +1,93 @@
+{
+  "button": {
+    "create": "創建隊伍",
+    "disband": "解散隊伍",
+    "edit": "隊伍詳情",
+    "join": "加入隊伍",
+    "leave": "退出隊伍",
+    "save": "更新信息"
+  },
+  "content": {
+    "create": "創建一個隊伍，你可以組織一個隊伍，並且可以邀請其他人加入。每個人只能擁有一個隊伍。",
+    "disband": {
+      "confirm": {
+        "message": "你確定要解散隊伍 \"{{team}}\" 嗎？",
+        "title": "確認解散隊伍"
+      }
+    },
+    "join": "請從隊伍創建者處獲取隊伍邀請碼，輸入邀請碼加入隊伍。",
+    "kick": {
+      "confirm": {
+        "message": "你確定要踢出隊員 \"{{user}}\" 嗎？",
+        "title": "確認踢出隊員"
+      }
+    },
+    "leave": {
+      "confirm": {
+        "message": "你確定要退出隊伍 \"{{team}}\" 嗎？",
+        "title": "確認退出隊伍"
+      }
+    },
+    "no_create": {
+      "content": "每個人只能擁有一個隊伍<br/>你可以刪除隊伍後重新創建",
+      "title": "你已經創建了一個隊伍"
+    },
+    "role": {
+      "captain": "隊長",
+      "member": "隊員"
+    },
+    "transfer": {
+      "confirm": {
+        "message": "你確定要將隊伍 \"{{team}}\" 轉讓給 \"{{user}}\" 嗎？",
+        "title": "確認轉讓隊伍"
+      }
+    }
+  },
+  "label": {
+    "bio": "隊伍籤名",
+    "invite_code": "邀請碼",
+    "kick": "踢出隊伍",
+    "members": "隊伍成員",
+    "name": "隊伍名稱",
+    "role": "個人身份",
+    "transfer": "轉讓隊伍"
+  },
+  "notification": {
+    "create": {
+      "success": {
+        "message": "{{team}}創建成功，快去邀請隊友吧！",
+        "title": "隊伍已創建"
+      }
+    },
+    "disband": {
+      "success": "解散隊伍成功"
+    },
+    "invite_code": {
+      "copied": "邀請碼已複製到剪貼板",
+      "updated": "隊伍邀請碼已更新"
+    },
+    "join": {
+      "success": "加入隊伍成功",
+      "wrong_invite_code": "隊伍邀請碼格式不正確"
+    },
+    "kick": {
+      "success": "踢出成員成功"
+    },
+    "leave": {
+      "success": "退出隊伍成功"
+    },
+    "token": {
+      "copied": "隊伍 Token 已複製到剪貼板"
+    },
+    "transfer": {
+      "success": "轉讓隊伍成功"
+    },
+    "updated": "隊伍信息已更新"
+  },
+  "placeholder": {
+    "bio": "哩個隊好懶，咩都冇寫"
+  },
+  "title": {
+    "index": "隊伍管理"
+  }
+}

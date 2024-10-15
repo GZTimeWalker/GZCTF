@@ -49,7 +49,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     if (gameNotice && !disabled) {
       api.edit
         .editUpdateGameNotice(numId, gameNotice.id, {
-          content: content,
+          content: content.trim(),
         })
         .then((data) => {
           showNotification({
@@ -67,7 +67,7 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     } else {
       api.edit
         .editAddGameNotice(numId, {
-          content: content,
+          content: content.trim(),
         })
         .then((data) => {
           showNotification({

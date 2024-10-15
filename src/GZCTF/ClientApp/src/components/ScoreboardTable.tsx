@@ -39,11 +39,14 @@ import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
-const Lefts = [0, 55, 110, 280, 350, 410]
-const Widths = Array(5).fill(0)
-Lefts.forEach((val, idx) => {
-  Widths[idx - 1 || 0] = val - Lefts[idx - 1 || 0]
-})
+const Widths = [60, 55, 170, 55, 70, 60]
+const Lefts = Widths.reduce(
+  (acc, cur) => {
+    acc.push(acc[acc.length - 1] + cur)
+    return acc
+  },
+  [0]
+)
 
 const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
   const theme = useMantineTheme()
@@ -142,9 +145,9 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, PartialIconProps | undefined>
   challenges?: Record<string, ChallengeInfo[]>
 }> = ({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
-  const theme = useMantineTheme()
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const solved = item.solvedChallenges
+  const theme = useMantineTheme()
 
   return (
     <Table.Tr>
@@ -155,28 +158,37 @@ const TableRow: FC<{
         {allRank ? item.rank : (item.organizationRank ?? tableRank)}
       </Table.Td>
       <Table.Td className={classes.left} style={{ left: Lefts[2] }}>
-        <Group justify="left" gap={5} wrap="nowrap" onClick={onOpenDetail}>
-          <Avatar
-            alt="avatar"
-            src={item.avatar}
-            radius="xl"
-            size={30}
-            color={theme.primaryColor}
-            style={{
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            }}
-          >
+        <Group
+          justify="left"
+          gap={5}
+          wrap="nowrap"
+          onClick={onOpenDetail}
+          maw={Widths[2] - 10}
+          className={classes.pointer}
+        >
+          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color={theme.primaryColor}>
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Input
-            variant="unstyled"
-            value={item.name}
-            readOnly
-            size="sm"
-            classNames={{ wrapper: classes.wapper, input: classes.input }}
-          />
+          <Stack gap={0} h="2.5rem" justify="center" w={Widths[2] - 45}>
+            <Input
+              variant="unstyled"
+              value={item.name}
+              readOnly
+              size="sm"
+              __vars={{
+                '--input-height': 'var(--mantine-line-height-sm)',
+              }}
+              classNames={{
+                wrapper: cx(classes.pointer, classes.wapper),
+                input: cx(classes.pointer, classes.input),
+              }}
+            />
+            {!!item.organization && (
+              <Text size="xs" c="dimmed" ta="start" truncate className={classes.text}>
+                {item.organization}
+              </Text>
+            )}
+          </Stack>
         </Group>
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[3] }}>

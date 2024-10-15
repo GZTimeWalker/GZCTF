@@ -1,0 +1,178 @@
+{
+  "bonus": {
+    "first_blood": "first Blood",
+    "second_blood": "second blood",
+    "third_blood": "third Blood"
+  },
+  "button": {
+    "download": {
+      "attachment": "Download Lampiran"
+    },
+    "instance": {
+      "create": "Buat baru",
+      "destroy": "Hapus",
+      "extend": "Perluas"
+    },
+    "submit_flag": "Submit flag"
+  },
+  "category": {
+    "ai": "AI security",
+    "blockchain": "Blockchain",
+    "crypto": "Kriptografi",
+    "forensics": "Digital forensic",
+    "hardware": "Hardware security",
+    "misc": "Miscellaneous",
+    "mobile": "Mobile Security",
+    "osint": "Open-source intelligence",
+    "pentest": "Pentesting",
+    "ppc": "Programming",
+    "pwn": "Binary exploitation",
+    "reverse": "Reverse engineering",
+    "web": "Web security"
+  },
+  "content": {
+    "already_solved": "Challenge ini sudah diselesaikan",
+    "flag_placeholders": [
+      "Untuk ada, atau tidak ada, flag adalah pertanyaannya",
+      "Semua yang berkilau bukanlah flag",
+      "Flag, Brutus yang terkasih, tidak ada di bintang-bintang kita",
+      "Lebih baik datang tiga jam lebih awal daripada flag terlambat",
+      "Kerajaanku untuk sebuah flag",
+      "Haruskah aku membandingkan kamu dengan sebuah flag?",
+      "Masukkan flag ke dalam saku, dan pergi",
+      "Ini flag: Aku minum untukmu",
+      "Karena tidak pernah ada flag yang lebih penuh duka",
+      "Karena di mana kamu berada, di situ ada flag",
+      "Flag saya ada di hati, bukan di kepala",
+      "Pikiran yang tanpa rasa takut cepat mendapatkan flag",
+      "Tetapi, bagi saya sendiri, itu adalah flag bagi saya",
+      "Apa yang punya saya adalah flag, dan apa yang kamu punya adalah milik saya",
+      "Tanah yang diberkati ini, bumi ini, kerajaan ini, flag ini",
+      "Flag yang paling matang pertama kali jatuh",
+      "Satu sentuhan flag membuat seluruh dunia menjadi saudara",
+      "Lebih baik flag yang cerdas daripada kecerdasan yang bodoh",
+      "Meski ada seribu jenis flag, dengan siapa lagi aku bisa bicara?",
+      "Flag masih bersinar di area yang tidak diketahui.",
+      "Bolehkah saya bertanya di mana flagnya?"
+    ],
+    "instance": {
+      "actions": {
+        "count_down": "Tersisa: ",
+        "note": "Anda dapat memperpanjangnya {{min}} menit sebelum kedaluwarsa."
+      },
+      "entry": {
+        "description": {
+          "anchor": "Mendapatkan proxy client",
+          "proxy": "Mode proxy WebSocket telah diaktifkan."
+        },
+        "label": "Informasi instance"
+      },
+      "no_container": {
+        "message": "Tantangan ini memerlukan pembuatan instance",
+        "note": "Instance akan aktif selama {{min}} menit."
+      },
+      "open": {
+        "client": "Buka di client",
+        "web": "Buka laman web"
+      },
+      "test": {
+        "no_container": "Test container tidak berjalan"
+      }
+    },
+    "solved": "<1>{{solved}}</1> SOLVES",
+    "wrong_flag_hints": [
+      "Di mana ada kemauan, di situ ada flag.",
+      "Untuk ada, atau tidak ada, itu bukan flag",
+      "Kebanggaan menyakitkan, flag menguntungkan.",
+      "Kegagalan mengajarkan flag.",
+      "Bukan, bukan, Ini bukan flag cuyyyy.",
+      "Hadeh mata udah terbuka lebar, tetapi flag tidak ada di sini.",
+      "Jangan terburu-buru, pikirkan dengan hati-hati cuy.",
+      "Mencari di mana-mana, tapi ini bukan jawabannya cuy.",
+      "Terlihat dangkal, kamu belum menemukan flag.",
+      "Jawabannya seharusnya ada di ujung jari kamu.",
+      "Coba dipikirkan lagi, flag gak sesimple itu cuy.",
+      "Flag ini benar-benar tersembunyi dengan baik!",
+      "Apakah kesepian yang menghancurkanmu saat keberuntunganmu buruk?",
+      "Semangat banget!, kalem cuyy pelan pelan.",
+      "Nabrak dinding, apakah mungkin kamu telah mencapai puncak?",
+      "Tahun ini damai banget, tetapi flagnya pergi jauh.",
+      "Air dangkal telah mengering, flag masih belum ditemukan.",
+      "Dimana yah flagnya bisa ditemukan?",
+      "Thumbnail yang indah. flagnya pergi kemana yah?",
+      "Rawa ini dalam, dan flag masih belum ditemukan.",
+      "Tenang tenang, ini cuman pesan error salah flag.",
+      "Flag yang benar masih belum didapatkan.",
+      "Angin sangat pahit dan dingin, dan flag masih belum ada di tanganmu."
+    ]
+  },
+  "file_type": {
+    "local": "Hosting sendiri",
+    "none": "Tidak ada",
+    "remote": "Remot Url"
+  },
+  "notification": {
+    "flag": {
+      "accepted": {
+        "ended": "Game telah selesai, submission tidak akan dinilai",
+        "message": "Papan skor akan diperbarui nanti.",
+        "title": "flag benar"
+      },
+      "empty": "Flag tidak boleh kosong",
+      "submitted": {
+        "message": "Sedang melakukan pengecheckan flag...",
+        "title": "flag telah disubmit"
+      },
+      "unknown": {
+        "message": "Harap hubungi admin untuk mengonfirmasi pengumpulan: {{id}}",
+        "title": "status flag tidak diketahui"
+      },
+      "wrong": "flag salah"
+    },
+    "instance": {
+      "copied": {
+        "entry": "Entri instance disalin ke clipboard",
+        "url": {
+          "message": "Harap gunakan client untuk mengakses",
+          "title": "Entri instance disalin ke clipboard"
+        }
+      },
+      "created": {
+        "message": "Harap catat waktu kedaluwarsa instance",
+        "title": "Instance berhasil dibuat"
+      },
+      "destroyed": {
+        "message": "Kamu bisa membuat ulang instance",
+        "title": "Instance berhasil di hapus"
+      },
+      "extend": {
+        "note": {
+          "message": "Harap perpanjang masa berlaku atau hapus instance tepat waktu",
+          "title": "Instansi sudah jatuh tempo"
+        },
+        "success": {
+          "message": "Harap catat waktu kedaluwarsa instance",
+          "title": "Masa berlaku instance telah diperpanjang"
+        }
+      }
+    }
+  },
+  "type": {
+    "dynamic_attachment": {
+      "desrc": "Sebarkan lampiran per tim, pastikan jumlah lampiran lebih banyak daripada jumlah tim",
+      "label": "Lampiran Dinamis"
+    },
+    "dynamic_container": {
+      "desrc": "Generate flag otomatis, unik untuk setiap tim",
+      "label": "Container dinamis"
+    },
+    "static_attachment": {
+      "desrc": "Lampiran yang dibagikan, flag mana pun bisa disubmit",
+      "label": "Lampiran statis"
+    },
+    "static_container": {
+      "desrc": "Container yang dibagikan, fkag mana pun bisa disubmit",
+      "label": "Container statis"
+    }
+  }
+}

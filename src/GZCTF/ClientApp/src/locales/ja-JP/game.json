@@ -99,7 +99,6 @@
       "deadline_exceeded": "提出期限が過ぎました",
       "instructions": {
         "additional": "追加説明",
-        "datetime_format": "YYYY 年 MM 月 DD 日 HH:mm:ss",
         "deadline": "記事を<1>{{datetime}}</1>まで提出してください。期限を過ぎたり提出しなかった場合は、ゲームの参加を放棄したものとみなされます。",
         "file_format": "すべての解答を<1>20MB未満の標準PDFファイル</1>にまとめてください。",
         "title": "提出説明"

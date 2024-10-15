@@ -188,7 +188,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       })
   }
 
-  const will_generate =
+  const willGenerate =
     ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
 
   return (
@@ -347,27 +347,27 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             <List size="sm" spacing={6}>
               <List.Item>
                 {t('admin.content.games.challenges.flag.instructions.leave_empty')}
-                {will_generate}
+                {willGenerate}
                 <Code>{`flag{1bab71b8-117f-4dea-a047-340b72101d7b}`}</Code>
               </List.Item>
               <List.Item>
                 <Code>{`flag{hello world}`}</Code>
-                {will_generate}
+                {willGenerate}
                 <Code>{`flag{He1lo_w0r1d}`}</Code>
               </List.Item>
               <List.Item>
                 <Code>{`[CLEET]flag{hello sara}`}</Code>
-                {will_generate}
+                {willGenerate}
                 <Code>{`flag{He1!o_$@rA}`}</Code>
               </List.Item>
               <List.Item>
                 <Code>{`flag{hello_world_[TEAM_HASH]}`}</Code>
-                {will_generate}
+                {willGenerate}
                 <Code>{`flag{hello_world_5418ce4d815c}`}</Code>
               </List.Item>
               <List.Item>
                 <Code>{`[LEET]flag{hello world [TEAM_HASH]}`}</Code>
-                {will_generate}
+                {willGenerate}
                 <Code>{`flag{He1lo_w0r1d_5418ce4d815c}`}</Code>
               </List.Item>
             </List>

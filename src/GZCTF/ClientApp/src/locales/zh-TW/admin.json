@@ -1,0 +1,496 @@
+{
+  "button": {
+    "back": "返回上級",
+    "challenges": {
+      "attachment": {
+        "save_url": "保存連結",
+        "upload": "上傳附件",
+        "uploading": "上傳中……"
+      },
+      "bonus": "三血獎勵",
+      "delete": "刪除題目",
+      "disable": "禁用題目",
+      "edit": "編輯題目",
+      "edit_more": "編輯附件及 flag",
+      "enable": "啟用題目",
+      "flag": {
+        "add": {
+          "dynamic": "上傳動態附件",
+          "normal": "添加 flag",
+          "remote": "添加遠程附件"
+        },
+        "delete": "刪除 flag",
+        "save": "保存 flag 模版"
+      },
+      "hint": {
+        "add": "添加提示"
+      },
+      "new": "新建題目",
+      "next": "下一題",
+      "preview": "預覽題目",
+      "previous": "上一題",
+      "test_container": {
+        "create": "創建測試容器",
+        "destroy": "銷毀測試容器"
+      },
+      "update_accept_count": "更新解題計數"
+    },
+    "games": {
+      "challenges": {
+        "attachment": {
+          "batch_add": "批量添加"
+        }
+      },
+      "copy_public_key": "複製公鑰",
+      "delete": "刪除比賽",
+      "new": "新建比賽"
+    },
+    "notices": {
+      "delete": "刪除公告",
+      "edit": "編輯公告",
+      "new": "新建公告"
+    },
+    "save": "保存更改",
+    "teams": {
+      "do_lock": "鎖定",
+      "do_unlock": "解鎖",
+      "edit": "編輯隊伍"
+    },
+    "users": {
+      "edit": "編輯用戶"
+    },
+    "writeups": {
+      "download_all": "下載全部 Writeup"
+    }
+  },
+  "content": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "clear": {
+            "description": "你確定要清除本題的附件嗎？",
+            "title": "清除附件"
+          },
+          "instruction": {
+            "amount_double": "建議上傳預期參賽隊伍數量的兩倍的動態附件。",
+            "dynamic": {
+              "content": "批量上傳動態附件，所有附件上傳後將會以統一的文件名進行下發。",
+              "format": "請以每個 flag 作為對應附件的文件名。"
+            },
+            "remote": {
+              "content": "批量設置遠程附件及對應 flag，每行一組。",
+              "format": "請將 flag 字符串與 url 以空格隔開。"
+            }
+          },
+          "link": "附件連結",
+          "title": "附件管理",
+          "type": "附件類型"
+        },
+        "attachment_name": {
+          "description": "所有動態附件均會以此文件名下載",
+          "label": "全局附件名"
+        },
+        "bonus": {
+          "description": "三血獎勵加成是指當一個題目被前三個隊伍解出時，每個隊伍可以得到的分值獎勵。三血的獎勵基於題目的當前分值，並以一個固定百分比的形式累加至該隊伍的得分中。",
+          "first_blood": "一血獎勵 (%)",
+          "second_blood": "二血獎勵 (%)",
+          "third_blood": "三血獎勵 (%)"
+        },
+        "category": "題目類別",
+        "container_image": "容器鏡像",
+        "cpu_limit": {
+          "description": "乘以 0.1 即為 CPU 核心數",
+          "label": "CPU 限制 (0.1 CPUs)"
+        },
+        "delete": "你確定要刪除題目 {{name}} 嗎？",
+        "description": "題目描述",
+        "difficulty": "難度係數",
+        "disable": "你確定要禁用題目 {{name}} 嗎？",
+        "empty": {
+          "description": "點擊右上角創建第一個題目",
+          "title": "Ouch! 這個比賽還沒有題目"
+        },
+        "enable": "你確定要啟用題目 {{name}} 嗎？",
+        "flag": {
+          "create": "創建 flag，多個 flag 按行分割，每行一個。<br />每道題目可以擁有多個 flag，獲取任意 flag 均可得分。",
+          "delete": "確定刪除此 flag 嗎？",
+          "empty": {
+            "description": "請通過右上角添加 flag",
+            "title": "flag 列表為空"
+          },
+          "instructions": {
+            "both": "若需要在指定 <1>[TEAM_HASH]</1> 的情況下啟用 Leet 字符串功能，請在 flag 模版字符串 <strong> 之前 </strong> 添加 <2>[LEET]</2> 標記，此時不會檢查 flag 模版字符串的熵",
+            "complex": "如果需要在 flag 生成中啟用特殊字符，請在字符串開頭用 <1>[CLEET]</1> 代替 <2>[LEET]</2>，這可能造成對於題目的注入問題",
+            "description": "請輸入 flag 模版字符串，留空以生成隨機 GUID 作為 flag",
+            "example": "flag 模板編寫示例",
+            "guid": "指定 <1>[GUID]</1>則會僅替換此處的佔位符為隨機 GUID",
+            "leave_empty": "留空",
+            "leet": "若未指定 <1>[TEAM_HASH]</1> 則將啟用 Leet 字符串功能，將會基於模版對花括號內字符串進行變換，需要確保 flag 模版字符串的熵足夠高",
+            "team_hash": "若指定 <1>[TEAM_HASH]</1> 則它將會被自動替換為隊伍 Token 和比賽信息所生成的哈希值",
+            "will_generate": "將會生成"
+          },
+          "template": "flag 模版",
+          "title": "flag 管理"
+        },
+        "hints": "題目提示",
+        "memory_limit": {
+          "description": "限制容器使用的 RAM",
+          "label": "內存限制 (MB)"
+        },
+        "min_score_radio": {
+          "description": "最低分值：{{min_score}}pts",
+          "label": "最低分比例"
+        },
+        "score": "題目分值",
+        "service_port": {
+          "description": "容器內服務的埠號",
+          "label": "服務埠"
+        },
+        "solve_count": "解出次數",
+        "storage_limit": {
+          "description": "限制存儲空間，含鏡像大小",
+          "label": "存儲限制 (MB)"
+        },
+        "title": "題目標題",
+        "traffic_capture": {
+          "description": "捕獲隊伍解題流量，需要開啟平臺代理",
+          "label": "開啟流量捕獲"
+        },
+        "type": {
+          "description": "創建後不可更改",
+          "label": "題目類型"
+        }
+      },
+      "info": {
+        "accept_without_review": {
+          "description": "隊伍報名後直接設置為 Accept 狀態",
+          "label": "隊伍報名免審核"
+        },
+        "container_limit": {
+          "description": "隊伍共享的容器數量 (0 表示不限制)",
+          "label": "隊伍容器限制"
+        },
+        "content": "比賽詳情",
+        "delete": "你確定要刪除比賽 {{name}} 嗎？",
+        "end_date": "結束日期",
+        "end_time": "結束時間",
+        "invite_code": {
+          "description": "留空表示不使用邀請碼",
+          "label": "邀請碼"
+        },
+        "member_limit": {
+          "description": "0 表示不限制隊伍人數",
+          "label": "隊伍人數限制"
+        },
+        "organizations": {
+          "description": "添加參賽組織以開啟分組榜單，留空則不分組",
+          "label": "參賽可選組織列表"
+        },
+        "poster": "比賽海報",
+        "practice_mode": {
+          "description": "比賽結束後仍然可以查看題目和提交",
+          "label": "練習模式"
+        },
+        "start_date": "開始日期",
+        "start_time": "開始時間",
+        "summary": {
+          "description": "將會顯示在比賽列表中",
+          "label": "比賽簡介"
+        },
+        "title": {
+          "description": "過長會影響顯示效果",
+          "label": "比賽標題"
+        },
+        "writeup_deadline": {
+          "description": "比賽結束後允許提交 Writeup 的小時數",
+          "label": "Writeup 提交時限"
+        },
+        "writeup_instruction": "Writeup 提交說明",
+        "writeup_required": {
+          "description": "是否啟用比賽的 Writeup 提交功能",
+          "label": "需要 Writeup"
+        }
+      },
+      "notices": {
+        "delete": "你確定要刪除通知該通知嗎？",
+        "empty": {
+          "description": "點擊右上角按鈕新建公告",
+          "title": "暫無公告"
+        }
+      },
+      "review": {
+        "empty": {
+          "description": "在路上了……別急！",
+          "title": "Ouch! 還沒有隊伍報名這個比賽"
+        },
+        "participation": {
+          "joined": "已報名",
+          "not_joined": "未報名",
+          "stats": "{{count}}/{{total}} 已報名",
+          "update": "確定要設為 \"{{status}}\" 嗎？"
+        }
+      },
+      "stats": "已顯示 <1>{{current}}</1>/<1>{{total}}</1> 比賽",
+      "writeups": {
+        "empty": {
+          "description": "新提交的 Writeup 會顯示在這裡",
+          "title": "Ouch! 還沒有隊伍提交 Writeup"
+        },
+        "pdf_fallback": "未能成功加載 PDF"
+      }
+    },
+    "instances": {
+      "destroy": "你確定要銷毀容器實例 {{name}} 嗎？",
+      "note": "註：容器實例統計不包括管理員測試容器、已銷毀的容器",
+      "stats": "共計 <1>{{count}}</1> 個已分發容器實例"
+    },
+    "markdown_inline_support": "支持 Inline Markdown 語法",
+    "markdown_support": "支持 Markdown 語法",
+    "nothing_found": "什麼都沒有找到",
+    "settings": {
+      "account": {
+        "allow_register": {
+          "description": "是否允許用戶註冊新帳戶",
+          "label": "允許新用戶註冊"
+        },
+        "auto_active": {
+          "description": "是否在新用戶註冊後自動激活帳戶",
+          "label": "註冊後自動激活"
+        },
+        "email_confirmation_required": {
+          "description": "是否需要用戶驗證郵箱",
+          "label": "需要郵箱驗證"
+        },
+        "email_domain_list": {
+          "description": "允許註冊的郵箱域名列表，多個域名用逗號分隔，留空則不限制",
+          "label": "郵箱域名白名單"
+        },
+        "title": "帳戶策略",
+        "use_captcha": {
+          "description": "是否在登錄、註冊和找回時進行校驗",
+          "label": "啟用驗證碼"
+        }
+      },
+      "container": {
+        "auto_destroy": {
+          "description": "是否在用戶實例達到上限時自動銷毀舊實例",
+          "label": "自動銷毀舊實例"
+        },
+        "default_lifetime": {
+          "description": "容器默認生命周期",
+          "label": "默認有效期（分鐘）"
+        },
+        "extension_duration": {
+          "description": "容器每次續期的時長",
+          "label": "續期時長（分鐘）"
+        },
+        "renewal_window": {
+          "description": "容器到期前多少分鐘內可以續期",
+          "label": "續期窗口（分鐘）"
+        },
+        "title": "容器策略"
+      },
+      "platform": {
+        "color": {
+          "description": "自定義平臺顏色，用於生成主題色盤",
+          "label": "平臺顏色"
+        },
+        "color_palette": {
+          "description": "自定義平臺顏色生成的色盤",
+          "label": "色盤"
+        },
+        "description": {
+          "description": "向搜尋引擎和爬蟲程序提供的平臺摘要",
+          "label": "平臺摘要"
+        },
+        "footer": {
+          "description": "顯示在網頁底部的附加信息，支持 Markdown 語法, <mbr/> 會在行動裝置中替換為 <br/>",
+          "label": "頁腳附加信息"
+        },
+        "logo": {
+          "description": "平臺 Logo 將會被用於頁面頂部和頁面 favicon",
+          "label": "平臺 Logo"
+        },
+        "name": {
+          "description": "後跟 ::CTF 欄位進行展示",
+          "label": "平臺名稱"
+        },
+        "slogan": {
+          "description": "平臺標語將顯示在頁面頂部和關於頁面",
+          "label": "平臺標語"
+        },
+        "title": "平臺設置"
+      }
+    },
+    "show_all": "顯示全部",
+    "teams": {
+      "delete": "你確定要刪除隊伍 {{name}} 嗎？",
+      "lock": "確定要{{action}}隊伍 {{name}} 嗎？",
+      "locked": "已鎖定",
+      "stats": "已顯示 <1>{{current}}</1>/<1>{{total}}</1> 隊伍",
+      "unlocked": "已解鎖"
+    },
+    "users": {
+      "delete": "你確定要刪除用戶 {{name}} 嗎？",
+      "reset": {
+        "content": "用戶密碼已重置，<strong>此密碼只會顯示一次</strong>，請妥善保存。",
+        "message": "你確定重置用戶 {{name}} 的密碼嗎？",
+        "title": "為 {{name}} 重置密碼"
+      },
+      "stats": "已顯示 <1>{{current}}</1>/<1>{{total}}</1> 用戶"
+    }
+  },
+  "label": {
+    "games": {
+      "hide": "隱藏",
+      "summary": "簡介"
+    },
+    "instances": {
+      "container_id": "容器 ID",
+      "entry": "訪問入口",
+      "life_cycle": "生命周期"
+    },
+    "logs": {
+      "message": "信息",
+      "status": "狀態"
+    },
+    "teams": {
+      "bio": "籤名",
+      "members": "隊員"
+    },
+    "users": {
+      "active": "激活",
+      "last_visit": "最後訪問時間",
+      "role": "用戶角色"
+    }
+  },
+  "notification": {
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_selected": "請選擇至少一個文件",
+          "updated": "附件已更新"
+        },
+        "created": "題目已創建",
+        "deleted": "題目已刪除",
+        "flag": {
+          "copied": "flag 已複製到剪貼板",
+          "created": "flag 已創建",
+          "deleted": "flag 已刪除"
+        },
+        "flag_template": {
+          "updated": "flag 模板已更新"
+        },
+        "preview": {
+          "attachment_downloaded": "假裝附件已經下載了！",
+          "flag_submitted": "flag 似乎被正確提交了！"
+        },
+        "updated": "題目已更新"
+      },
+      "created": "比賽已創建",
+      "info": {
+        "accept_count_updated": "解題數量已刷新",
+        "deleted": "比賽已刪除",
+        "info_updated": "比賽信息已更新",
+        "poster": {
+          "upload_failed": "海報上傳失敗",
+          "uploaded": "海報上傳成功",
+          "uploading": "正在上傳海報..."
+        },
+        "public_key_copied": "公鑰已複製到剪貼板"
+      },
+      "instances": {
+        "created": "實例已創建",
+        "deleted": "實例已銷毀"
+      },
+      "no_title_time": "請輸入標題和時間信息",
+      "notices": {
+        "created": "公告已創建",
+        "deleted": "公告已刪除",
+        "updated": "公告已更新"
+      },
+      "participation": {
+        "updated": "隊伍審核狀態已更新"
+      }
+    },
+    "instances": {
+      "destroyed": "實例已銷毀",
+      "entry_copied": "訪問入口已複製到剪貼板",
+      "url_copied": {
+        "message": "請使用客戶端進行訪問",
+        "title": "代理 URL 已複製到剪貼板"
+      }
+    },
+    "logs": {
+      "connected": "實時日誌連接成功",
+      "fetch_failed": "獲取日誌失敗"
+    },
+    "teams": {
+      "deleted": "{{name}} 已刪除"
+    },
+    "users": {
+      "deleted": "{{name}} 已刪除",
+      "password_copied": "密碼已複製到剪貼板",
+      "updated": "用戶信息已更新"
+    }
+  },
+  "placeholder": {
+    "empty": "未填寫",
+    "games": {
+      "challenges": {
+        "attachment": {
+          "no_file_selected": {
+            "comment": "你選擇的文件將會顯示在這裡",
+            "title": "你還沒有選擇任何文件"
+          }
+        }
+      },
+      "organizations": "回車添加參賽組織",
+      "participation": {
+        "bio": "（無簡介）",
+        "team": "（無名隊伍）"
+      }
+    },
+    "instances": {
+      "challenges": {
+        "not_found": "未找到題目",
+        "select": "所有題目"
+      },
+      "teams": {
+        "not_found": "未找到隊伍",
+        "select": "所有隊伍"
+      }
+    },
+    "settings": {
+      "email_domain_list": "不限制註冊域名",
+      "footer": "`Test` <mbr/> [某 IPC 備 XXXXXXXX 號-X](http://beian.miit.gov.cn/)",
+      "logo": {
+        "custom": "自定義 Logo",
+        "default": "使用 GZCTF 圖標"
+      }
+    },
+    "teams": {
+      "search": "搜索隊伍名稱"
+    },
+    "users": {
+      "real_name": "用戶未填寫",
+      "search": "搜索用戶ID/用戶名/郵箱/學號/姓名",
+      "student_id": "00000000"
+    }
+  },
+  "tab": {
+    "games": {
+      "challenges": "題目管理",
+      "index": "比賽管理",
+      "info": "信息編輯",
+      "notices": "比賽公告",
+      "review": "隊伍審核",
+      "writeups": "Writeups"
+    },
+    "instances": "實例管理",
+    "logs": "系統日誌",
+    "settings": "系統設置",
+    "teams": "隊伍管理",
+    "users": "用戶管理"
+  }
+}

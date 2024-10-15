@@ -1,0 +1,1043 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    </value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    </value>
+  </resheader>
+  <data name="Account_AvailableEmailDomain" xml:space="preserve">
+    <value>Akhiran alamat email yang tersedia: {0}</value>
+  </data>
+  <data name="Account_AvatarUpdated" xml:space="preserve">
+    <value>Ganti avaratar baru: [{0}</value>
+  </data>
+  <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
+    <value>Harap hubungi administrator untuk merubah alamat email anda</value>
+  </data>
+  <data name="Account_EmailChanged" xml:space="preserve">
+    <value>Perubahan alamat email berhasil</value>
+  </data>
+  <data name="Account_EmailNotConfirmed" xml:space="preserve">
+    <value>Akun belum aktif, silakan daftar lagi</value>
+  </data>
+  <data name="Account_EmailSendFailed" xml:space="preserve">
+    <value>Gagal mengirim email, silakan hubungi admin</value>
+  </data>
+  <data name="Account_EmailSent" xml:space="preserve">
+    <value>Pesan email berhasil terkirim</value>
+  </data>
+  <data name="Account_EmailUsed" xml:space="preserve">
+    <value>Alamat email sudah digunakan</value>
+  </data>
+  <data name="Account_EmailVerificationFailed" xml:space="preserve">
+    <value>Verifikasi alamat email gagal</value>
+  </data>
+  <data name="Account_EmailVerificationPending" xml:space="preserve">
+    <value>Menunggu verifikasi email</value>
+  </data>
+  <data name="Account_EmailVerified" xml:space="preserve">
+    <value>Alamat email terverifikasi</value>
+  </data>
+  <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
+    <value>Nama pengguna atau kata sandi salah</value>
+  </data>
+  <data name="Account_InvalidEmail" xml:space="preserve">
+    <value>Alamat email tidak valid</value>
+  </data>
+  <data name="Account_PasswordChanged" xml:space="preserve">
+    <value>Kata sandi berhasil diubah</value>
+  </data>
+  <data name="Account_PasswordReset" xml:space="preserve">
+    <value>Reset password pengguna berhasil</value>
+  </data>
+  <data name="Account_RegisterNotEnabled" xml:space="preserve">
+    <value>Pendaftaran sudah di nonaktifkan</value>
+  </data>
+  <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
+    <value>Verifikasi email belum diaktifkan, silakan hubungi admin untuk reset password</value>
+  </data>
+  <data name="Account_SendEmailChange" xml:space="preserve">
+    <value>Kirim email ke pengguna untuk perubahan alamat email</value>
+  </data>
+  <data name="Account_SendEmailVerification" xml:space="preserve">
+    <value>Kirim email ke pengguna untuk verifikasi email</value>
+  </data>
+  <data name="Account_TokenValidationFailed" xml:space="preserve">
+    <value>Verifikasi captcha gagal</value>
+  </data>
+  <data name="Account_UserDisabled" xml:space="preserve">
+    <value>Pengguna dibanned</value>
+  </data>
+  <data name="Account_UserExisting" xml:space="preserve">
+    <value>Akun ini sudah ada</value>
+  </data>
+  <data name="Account_UserLogined" xml:space="preserve">
+    <value>Pengguna berhasil login</value>
+  </data>
+  <data name="Account_UserNotExist" xml:space="preserve">
+    <value>Pengguna tidak terdaftar</value>
+  </data>
+  <data name="Account_UserRegistered" xml:space="preserve">
+    <value>Pendaftaran berhasil</value>
+  </data>
+  <data name="Account_UserRegisteredLog" xml:space="preserve">
+    <value>Pendaftaran pengguna berhasil</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
+    <value>Pendaftaran berhasil, tunggu persetujuan moderator</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
+    <value>Pengguna berhasil terdaftar, menunggu persetujuan</value>
+  </data>
+  <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
+    <value>Pendaftaran berhasil, tunggu verifikasi email</value>
+  </data>
+  <data name="Account_UserUpdated" xml:space="preserve">
+    <value>Pengguna diperbarui: {0} =&gt; {1}</value>
+  </data>
+  <data name="Account_UserUpdateFailed" xml:space="preserve">
+    <value>Pengguna gagal diperbarui</value>
+  </data>
+  <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
+    <value>Kamu tidak dapat menghapus kapten</value>
+  </data>
+  <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
+    <value>Penghapusan container gagal</value>
+  </data>
+  <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
+    <value>Container tidak ditemukan</value>
+  </data>
+  <data name="Admin_ParticipationNotFound" xml:space="preserve">
+    <value>Partisipan tidak ditemukan</value>
+  </data>
+  <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
+    <value>Anda tidak dapat menghapus akun anda sendiri</value>
+  </data>
+  <data name="Team_NotFound" xml:space="preserve">
+    <value>Tim tidak ditemukan</value>
+  </data>
+  <data name="Admin_UserBatchAdded" xml:space="preserve">
+    <value>Berhasil menambahkan {0} pengguna</value>
+  </data>
+  <data name="Admin_UserNotFound" xml:space="preserve">
+    <value>Pengguna tidak ditemukan</value>
+  </data>
+  <data name="Assets_DeleteFile" xml:space="preserve">
+    <value>Menghapus file [{0}]...</value>
+  </data>
+  <data name="Assets_IOError" xml:space="preserve">
+    <value>Terjadi kesalahan IO</value>
+  </data>
+  <data name="Assets_FileNotFound" xml:space="preserve">
+    <value>Mencoba mengambil file yang tidak ada [{0}] {1}</value>
+  </data>
+  <data name="Assets_UpdateFile" xml:space="preserve">
+    <value>File sudah diperbarui [{0}] {1} @ {2} bytes</value>
+  </data>
+  <data name="Auth_AccessForbidden" xml:space="preserve">
+    <value>Akses ditolak</value>
+  </data>
+  <data name="Auth_LoginRequired" xml:space="preserve">
+    <value>Harap login terlebih dahulu</value>
+  </data>
+  <data name="Auth_PathAccessForbidden" xml:space="preserve">
+    <value>Akses tidak diizinkan: {0}</value>
+  </data>
+  <data name="Avatar_UpdateFailed" xml:space="preserve">
+    <value>Avatar pengguna gagal diperbarui</value>
+  </data>
+  <data name="Cache_GenerationFailed" xml:space="preserve">
+    <value>Generate cache gagal: {0}</value>
+  </data>
+  <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
+    <value>Permintaan cache tidak valid: {0}</value>
+  </data>
+  <data name="Cache_NoMatchingRequest" xml:space="preserve">
+    <value>Tidak ada permintaan yang cocok untuk cache worker: {0}</value>
+  </data>
+  <data name="Cache_Stopped" xml:space="preserve">
+    <value>Pembaruan cache telah dihentikan</value>
+  </data>
+  <data name="Cache_Updated" xml:space="preserve">
+    <value>Cache sudah diperbarui: {0}[{1}] @ {2} bytes</value>
+  </data>
+  <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
+    <value>Cache gagal di perbarui: {0} @ {1}</value>
+  </data>
+  <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
+    <value>Worker pembaruan cache terkunci: {0}</value>
+  </data>
+  <data name="Cache_WorkerCancelled" xml:space="preserve">
+    <value>Worker pembaruan cache berhenti karena tugas telah dibatalkan</value>
+  </data>
+  <data name="Cache_WorkerStarted" xml:space="preserve">
+    <value>Worker pembaruan cache sudah dimulai</value>
+  </data>
+  <data name="Cache_WorkerStopped" xml:space="preserve">
+    <value>Worker pembaruan cache sudah dihentikan</value>
+  </data>
+  <data name="Challenge_NotFound" xml:space="preserve">
+    <value>Challenge tidak ditemukan</value>
+  </data>
+  <data name="Config_GlobalConfigAdded" xml:space="preserve">
+    <value>Konfigurasi global ditambahkan: {0} =&gt; {1}</value>
+  </data>
+  <data name="Config_GlobalConfigUpdated" xml:space="preserve">
+    <value>Konfigurasi global diperbaru: {0} =&gt; {1}</value>
+  </data>
+  <data name="Config_InitializingDatabase" xml:space="preserve">
+    <value>Sedang melakukan inisialisasi database...</value>
+  </data>
+  <data name="Config_ReloadFailed" xml:space="preserve">
+    <value>Gagal memuat ulang keseluruhan konfigurasi</value>
+  </data>
+  <data name="Config_TypeNotSupported" xml:space="preserve">
+    <value>Tipe konfigurasi tidak didukung</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
+    <value>Gagal membuat container {0}</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
+    <value>Gagal membuat container {0}, response: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
+    <value>Gagal membuat container {0}, status: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
+    <value>Gagal menghapus container {0}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
+    <value>Gagal menghapus container {0}, response: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
+    <value>Gagal menghapus container {0}, status: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
+    <value>Container {0} berhasil dihapus</value>
+  </data>
+  <data name="ContainerManager_ContainerExisted" xml:space="preserve">
+    <value>Container {0} sudah ada, coba hapus dan buat ulang lagi</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
+    <value>Gagal membuat instance container {0}</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
+    <value>Kesalahan membuat instance {0}: {1}</value>
+  </data>
+  <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
+    <value>Gagal memulai container instanse {0} ({1})</value>
+  </data>
+  <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
+    <value>Gagal mendapatkan informasi eksposur port setelah kontainer {0} dibuat</value>
+  </data>
+  <data name="ContainerManager_DockerMode" xml:space="preserve">
+    <value>Mode container ： kontrol container instance docker instance</value>
+  </data>
+  <data name="ContainerManager_K8sMode" xml:space="preserve">
+    <value>Mode Kontainer ： kontrol container Pod cluster K8s</value>
+  </data>
+  <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
+    <value>Tidak dapat mengonversi nomor port：{0}, ini adalah tindakan yang tidak terduga</value>
+  </data>
+  <data name="ContainerManager_PullContainerImage" xml:space="preserve">
+    <value>Menarik container image {0}</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
+    <value>Layanan {0} gagal dibuat</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
+    <value>Layanan {0} gagal dibuat, respons: {1}</value>
+  </data>
+  <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
+    <value>Layanan {0} gagal dibuat, status: {1}</value>
+  </data>
+  <data name="ContainerManager_SwarmMode" xml:space="preserve">
+    <value>Mode container ： docker swarm cluster kontrol container</value>
+  </data>
+  <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
+    <value>Tidak dapat mengurai nama gambar `{0}'</value>
+  </data>
+  <data name="ContainerProvider_DockerInited" xml:space="preserve">
+    <value>Inisialisasi docker berhasil ({0})</value>
+  </data>
+  <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
+    <value>Tidak dapat memuat profil K8s, pastikan profil tersebut ada di {0}</value>
+  </data>
+  <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
+    <value>Inisialisasi K8s Berhasil ({0})</value>
+  </data>
+  <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
+    <value>Inisialisasi K8s gagal, silakan periksa apakah konfigurasi sudah benar ({0})</value>
+  </data>
+  <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
+    <value>Permainan #{0} akan segera dimulai, menambahkan cache papan skor ke antrean cache</value>
+  </data>
+  <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
+    <value>Container yang sudah expired [{0}] telah dihapus</value>
+  </data>
+  <data name="CronJob_Started" xml:space="preserve">
+    <value>Cron job berhasil dijalankan</value>
+  </data>
+  <data name="CronJob_Stopped" xml:space="preserve">
+    <value>Cron job dihentikan</value>
+  </data>
+  <data name="Database_ConnectionFailed" xml:space="preserve">
+    <value>Gagal terhubung ke database ({0}), silakan periksa string koneksi database</value>
+  </data>
+  <data name="Database_CurrentConnectionString" xml:space="preserve">
+    <value>String koneksi saat ini: {0}</value>
+  </data>
+  <data name="Database_NoConnectionString" xml:space="preserve">
+    <value>Field string koneksi database 'ConnectionStrings' tidak ditemukan, silakan periksa apakah appsettings.json sudah dipasang dan dikonfigurasi dengan benar</value>
+  </data>
+  <data name="FileRepository_CacheLocation" xml:space="preserve">
+    <value>Lokasi cache: {0}</value>
+  </data>
+  <data name="FileRepository_DeleteFile" xml:space="preserve">
+    <value>Menghapus file [{0}] {1}</value>
+  </data>
+  <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
+    <value>Gagal menyimpan gambar: {0}</value>
+  </data>
+  <data name="FileRepository_ReferenceCounting" xml:space="preserve">
+    <value>Jumlah referensi file [{0}] {1} =&gt; {2}</value>
+  </data>
+  <data name="File_DeletionFailed" xml:space="preserve">
+    <value>Gagal menghapus file</value>
+  </data>
+  <data name="File_NotFound" xml:space="preserve">
+    <value>File tidak tersedia</value>
+  </data>
+  <data name="File_PdfOnly" xml:space="preserve">
+    <value>Mohon upload file PDF</value>
+  </data>
+  <data name="File_SizeTooLarge" xml:space="preserve">
+    <value>File terlalu besar</value>
+  </data>
+  <data name="File_SizeZero" xml:space="preserve">
+    <value>File tidak valid</value>
+  </data>
+  <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
+    <value>[AC] Tim [{0}] mengirim jawaban [{2}] untuk challenge [{1}]</value>
+  </data>
+  <data name="FlagChecker_AnswerRejected" xml:space="preserve">
+    <value>[WA] Tim [{0}] mengirim jawaban [{2}] untuk challenge [{1}]</value>
+  </data>
+  <data name="FlagChecker_CheatDetected" xml:space="preserve">
+    <value>[Kecurangan] Tim [{0}] menggunakan flag tim [{2}] di tantangan [{1}]</value>
+  </data>
+  <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
+    <value>[CONCURRENCY] Gagal memperbarui status pengiriman #{0}</value>
+  </data>
+  <data name="FlagChecker_UnknownInstance" xml:space="preserve">
+    <value>[UNKNOWN] Tidak ada instance ditemukan untuk tim [{0}] di challenge [{1}]</value>
+  </data>
+  <data name="FlagsChecker_Recheck" xml:space="preserve">
+    <value>Periksa ulang flag {0}</value>
+  </data>
+  <data name="FlagsChecker_Started" xml:space="preserve">
+    <value>Pemeriksaan flag telah dimulai</value>
+  </data>
+  <data name="FlagsChecker_Stopped" xml:space="preserve">
+    <value>Pemeriksa flag telah dihentikan</value>
+  </data>
+  <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
+    <value>Tugas pemeriksaan dibatalkan, worker pemeriksa #{0} akan berhenti</value>
+  </data>
+  <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
+    <value>Worker pemeriksa #{0} mengalami pengecualian</value>
+  </data>
+  <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
+    <value>Worker pemeriksa #{0} telah dimulai</value>
+  </data>
+  <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
+    <value>Worker pemeriksa #{0} mulai memproses pengiriman: {1}</value>
+  </data>
+  <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
+    <value>Worker pemeriksa #{0} telah dihentikan</value>
+  </data>
+  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
+    <value>Membersihkan {1} lampiran challenge untuk game {0}...</value>
+  </data>
+  <data name="Game_DeletionFailed" xml:space="preserve">
+    <value>Gagal menghapus game, file terkait mungkin telah korup, silakan coba lagi</value>
+  </data>
+  <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
+    <value>Membersihkan file tim {1} untuk game {0}...</value>
+  </data>
+  <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
+    <value>Key yang berbeda atau key didalam file konfigurasi belum diatur, dan key pertandingan akan disimpan secara eksplisit di dalam database.</value>
+  </data>
+  <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
+    <value>Tidak bisa keluar dari game setelah persetujuan masuk</value>
+  </data>
+  <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
+    <value>Tidak bisa keluar dari game karena kamu tidak bergabung</value>
+  </data>
+  <data name="Game_CaptureNotFound" xml:space="preserve">
+    <value>Tidak ada traffic yang tertangkap</value>
+  </data>
+  <data name="Game_ChallengeNotFound" xml:space="preserve">
+    <value>Judul tidak ditemukan atau alokasi lampiran dinamis gagal</value>
+  </data>
+  <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
+    <value>Container untuk challenge ini sudah ada</value>
+  </data>
+  <data name="Game_ContainerCreationFailed" xml:space="preserve">
+    <value>Gagal membuat container untuk challenge</value>
+  </data>
+  <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
+    <value>Judul tidak bisa membuat container</value>
+  </data>
+  <data name="Game_ContainerDeleted" xml:space="preserve">
+    <value>{0} telah menghapus container [{2}] dari tantangan {1}</value>
+  </data>
+  <data name="Game_ContainerDeletionFailed" xml:space="preserve">
+    <value>Gagal menghapus container untuk challenge</value>
+  </data>
+  <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
+    <value>Masa hidup Container belum bisa diperpanjang</value>
+  </data>
+  <data name="Game_ContainerNotCreated" xml:space="preserve">
+    <value>Container untuk tantangan ini belum dibuat</value>
+  </data>
+  <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
+    <value>Jumlah container tim tidak boleh melebihi {0}</value>
+  </data>
+  <data name="Game_DeadlineExpired" xml:space="preserve">
+    <value>Batas waktu pengumpulan sudah lewat</value>
+  </data>
+  <data name="Game_Ended" xml:space="preserve">
+    <value>Game telah selesai</value>
+  </data>
+  <data name="Game_InOtherTeam" xml:space="preserve">
+    <value>Anda telah bergabung kedalam game dari tim lain</value>
+  </data>
+  <data name="Game_InvalidInvitationCode" xml:space="preserve">
+    <value>Kode undangan tidak valid</value>
+  </data>
+  <data name="Game_InvalidOrganization" xml:space="preserve">
+    <value>Organisasi tidak valid</value>
+  </data>
+  <data name="Game_JoinSucceeded" xml:space="preserve">
+    <value>{0} telah berhasil bergabung kedalam game {1}</value>
+  </data>
+  <data name="Game_NotFound" xml:space="preserve">
+    <value>Game tidak ditemukan</value>
+  </data>
+  <data name="Game_NotMemberOfTeam" xml:space="preserve">
+    <value>Anda bukan anggota tim</value>
+  </data>
+  <data name="Game_NotParticipated" xml:space="preserve">
+    <value>Kamu belum berpartisipasi dalam game</value>
+  </data>
+  <data name="Game_NotStarted" xml:space="preserve">
+    <value>Game belum dimulai</value>
+  </data>
+  <data name="Game_OperationTooFrequent" xml:space="preserve">
+    <value>Terlalu sering pengoperasian container</value>
+  </data>
+  <data name="Game_ParticipationNotAccepted" xml:space="preserve">
+    <value>Pendaftaranmu telah ditolak atau dibanned</value>
+  </data>
+  <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
+    <value>Gagal mengunduh scoreboard</value>
+  </data>
+  <data name="Game_SubmissionNotFound" xml:space="preserve">
+    <value>Submission tidak ditemukan</value>
+  </data>
+  <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
+    <value>Jumlah peserta dalam tim melebihi batas</value>
+  </data>
+  <data name="Game_WriteupSubmitted" xml:space="preserve">
+    <value>{0} berhasil mengirim Write-Up {1}</value>
+  </data>
+  <data name="Header_Captain" xml:space="preserve">
+    <value>Kapten</value>
+  </data>
+  <data name="Header_Challenge" xml:space="preserve">
+    <value>Challenge</value>
+  </data>
+  <data name="Header_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Header_Member" xml:space="preserve">
+    <value>Anggota</value>
+  </data>
+  <data name="Header_PhoneNumber" xml:space="preserve">
+    <value>Nomor Handphone</value>
+  </data>
+  <data name="Header_Ranking" xml:space="preserve">
+    <value>Ranking</value>
+  </data>
+  <data name="Header_ScoringTime" xml:space="preserve">
+    <value>Waktu</value>
+  </data>
+  <data name="Header_SolvedNumber" xml:space="preserve">
+    <value>Solved</value>
+  </data>
+  <data name="Header_StdNumber" xml:space="preserve">
+    <value>Nomor siswa</value>
+  </data>
+  <data name="Header_SubmitContent" xml:space="preserve">
+    <value>Submission</value>
+  </data>
+  <data name="Header_SubmitStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Header_SubmitTime" xml:space="preserve">
+    <value>Waktu</value>
+  </data>
+  <data name="Header_Team" xml:space="preserve">
+    <value>Tim</value>
+  </data>
+  <data name="Header_TotalScore" xml:space="preserve">
+    <value>Skor</value>
+  </data>
+  <data name="Header_User" xml:space="preserve">
+    <value>Pengguna</value>
+  </data>
+  <data name="Identity_ConcurrencyFailure" xml:space="preserve">
+    <value>Terjadi kesalahan Concurrent, silakan coba lagi nanti</value>
+  </data>
+  <data name="Identity_DefaultError" xml:space="preserve">
+    <value>Terjadi kesalahan, silakan coba lagi nanti.</value>
+  </data>
+  <data name="Identity_DuplicateEmail" xml:space="preserve">
+    <value>Alamat email {0} telah terdaftar</value>
+  </data>
+  <data name="Identity_DuplicateRoleName" xml:space="preserve">
+    <value>Role name {0} telah terdaftar</value>
+  </data>
+  <data name="Identity_DuplicateUserName" xml:space="preserve">
+    <value>Nama pengguna {0} telah terdaftar</value>
+  </data>
+  <data name="Identity_InvalidEmail" xml:space="preserve">
+    <value>Alamat email {0} tidak valid</value>
+  </data>
+  <data name="Identity_InvalidRoleName" xml:space="preserve">
+    <value>Role name {0} tidak valid</value>
+  </data>
+  <data name="Identity_InvalidToken" xml:space="preserve">
+    <value>Kode verifikasi tidak valid</value>
+  </data>
+  <data name="Identity_InvalidUserName" xml:space="preserve">
+    <value>Nama pengguna {0} tidak valid</value>
+  </data>
+  <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
+    <value>Login sudah terhubung</value>
+  </data>
+  <data name="Identity_PasswordMismatch" xml:space="preserve">
+    <value>Kata sandi yang dimasukkan salah</value>
+  </data>
+  <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
+    <value>Kata sandi harus mengandung angka</value>
+  </data>
+  <data name="Identity_PasswordRequiresLower" xml:space="preserve">
+    <value>Kata sandi harus mengandung huruf kecil</value>
+  </data>
+  <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Kata sandi harus mengandung simbol</value>
+  </data>
+  <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
+    <value>Kata sandi perlu setidaknya {0} karakter yang berbeda</value>
+  </data>
+  <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
+    <value>Password requires uppercase letters</value>
+  </data>
+  <data name="Identity_PasswordTooShort" xml:space="preserve">
+    <value>Panjang kata sandi {0} terlalu pendek</value>
+  </data>
+  <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
+    <value>Gagal mengambil kode pemulihan</value>
+  </data>
+  <data name="Identity_UnknownError" xml:space="preserve">
+    <value>Kesalahan tidak diketahui</value>
+  </data>
+  <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
+    <value>Kata sandi pengguna sudah ada</value>
+  </data>
+  <data name="Identity_UserAlreadyInRole" xml:space="preserve">
+    <value>Pengguna sudah berada dalam role {0}</value>
+  </data>
+  <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
+    <value>Kunci pengguna tidak diaktifkan</value>
+  </data>
+  <data name="Identity_UserNotInRole" xml:space="preserve">
+    <value>Pengguna tidak ada dalam role {0}</value>
+  </data>
+  <data name="Init_AdminCreationFailed" xml:space="preserve">
+    <value>Gagal membuat akun administrator, pesan error: {0}</value>
+  </data>
+  <data name="Init_NoFilesDir" xml:space="preserve">
+    <value>Direktori data {0} tidak terpasang, file mungkin akan hilang. Silakan atur direktori penyimpanan data dengan benar!</value>
+  </data>
+  <data name="Init_CaptureNotAvailable" xml:space="preserve">
+    <value>Tidak bisa menangkap traffic jika tidak menggunakan mode proxy platform!</value>
+  </data>
+  <data name="Init_InvalidCacheConfig" xml:space="preserve">
+    <value>Konfigurasi cache tidak valid, silakan periksa konfigurasi field 'RedisCache'. Jika kamu tidak menggunakan Redis, biarkan item konfigurasi kosong.</value>
+  </data>
+  <data name="Init_PostContent" xml:space="preserve">
+    <value>Proyek ini berbasis pada lisensi AGPL-3.0 dan bersifat open source di [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
+  </data>
+  <data name="Init_PostSummary" xml:space="preserve">
+    <value>Sebuah platform CTF open source</value>
+  </data>
+  <data name="Init_PostTitle" xml:space="preserve">
+    <value>Selamat datang di GZ::CTF!</value>
+  </data>
+  <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
+    <value>{0} secara otomatis menghapus container [{2}] dari challenge {1}</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
+    <value>{0} meluncurkan instance kontainer dari challenge {1} [{2}]</value>
+  </data>
+  <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
+    <value>Tidak bisa memulai instance container untuk challenge {0}</value>
+  </data>
+  <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
+    <value>Menghapus container [{0}] ({1}): {2}</value>
+  </data>
+  <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
+    <value>Jumlah lampiran dinamis yang dialokasikan untuk challenge {0}#{1} tidak mencukupi</value>
+  </data>
+  <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
+    <value>{0} gagal membuat instance untuk tantangan {1}#{2} (mungkin disebabkan oleh konflik concurrent), Rollback dikit...</value>
+  </data>
+  <data name="InstanceRepository_InvalidPort" xml:space="preserve">
+    <value>Port tidak valid saat membuat container</value>
+  </data>
+  <data name="InstanceRepository_NoInstance" xml:space="preserve">
+    <value>Peserta tim kosong, ini mungkin tidak terduga [{0}, {1}]</value>
+  </data>
+  <data name="MailSender_ChangeEmailButton" xml:space="preserve">
+    <value>Verifikasi Email</value>
+  </data>
+  <data name="MailSender_ChangeEmailContent" xml:space="preserve">
+    <value>Kamu sedang melakukan proses perubahan email akun. Silakan klik tombol di bawah ini untuk memverifikasi email barumu.</value>
+  </data>
+  <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
+    <value>Ubah email</value>
+  </data>
+  <data name="MailSender_InvalidRequest" xml:space="preserve">
+    <value>Permintaan email tidak valid</value>
+  </data>
+  <data name="MailSender_MailSendFailed" xml:space="preserve">
+    <value>Gagal mengirim email</value>
+  </data>
+  <data name="MailSender_ResetPasswordButton" xml:space="preserve">
+    <value>Konfirmasi reset password</value>
+  </data>
+  <data name="MailSender_ResetPasswordContent" xml:space="preserve">
+    <value>Kamu sedang melakukan proses reset kata sandi akun. Silakan klik tombol di bawah ini untuk mereset kata sandimu.</value>
+  </data>
+  <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
+    <value>Atur ulang kata sandi</value>
+  </data>
+  <data name="MailSender_SendMail" xml:space="preserve">
+    <value>Kirim email: {0}</value>
+  </data>
+  <data name="MailSender_Template" xml:space="preserve">
+    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Halo, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            Jika tombol di atas tidak berfungsi, silakan salin tautan ini ke browser kamu: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;Jika kamu belum melakukannya, silakan abaikan email ini. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+  </data>
+  <data name="MailSender_VerifyEmailButton" xml:space="preserve">
+    <value>Verifikasi email</value>
+  </data>
+  <data name="MailSender_VerifyEmailContent" xml:space="preserve">
+    <value>Kamu sedang dalam proses mendaftarkan akunmu. Kami perlu memverifikasi email pendaftaran: {0}. Silakan klik tombol di bawah ini untuk memverifikasinya.</value>
+  </data>
+  <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
+    <value>Verifikasi Email</value>
+  </data>
+  <data name="Model_BioTooLong" xml:space="preserve">
+    <value>Deskripsi terlalu panjang</value>
+  </data>
+  <data name="Model_ContentRequired" xml:space="preserve">
+    <value>Konten diperlukan</value>
+  </data>
+  <data name="Model_EmailMalformed" xml:space="preserve">
+    <value>Email tidak valid</value>
+  </data>
+  <data name="Model_EmailRequired" xml:space="preserve">
+    <value>Email diperlukan</value>
+  </data>
+  <data name="Model_FlagRequired" xml:space="preserve">
+    <value>Flag diperlukan</value>
+  </data>
+  <data name="Model_FlagTooLong" xml:space="preserve">
+    <value>Flag terlalu panjang</value>
+  </data>
+  <data name="Model_InvitationCodeTooLong" xml:space="preserve">
+    <value>Kode undangan terlalu panjang</value>
+  </data>
+  <data name="Model_MalformedPhoneNumber" xml:space="preserve">
+    <value>Nomor telepon tidak valid</value>
+  </data>
+  <data name="Model_NewPasswordRequired" xml:space="preserve">
+    <value>Kata sandi baru diperlukan</value>
+  </data>
+  <data name="Model_NewPasswordTooShort" xml:space="preserve">
+    <value>Kata sandi baru terlalu pendek</value>
+  </data>
+  <data name="Model_OldPasswordRequired" xml:space="preserve">
+    <value>Kata sandi lama diperlukan</value>
+  </data>
+  <data name="Model_OldPasswordTooShort" xml:space="preserve">
+    <value>Kata sandi lama terlalu pendek</value>
+  </data>
+  <data name="Model_OutOfRange" xml:space="preserve">
+    <value>Nilai {0} harus antara {1} dan {2}</value>
+  </data>
+  <data name="Model_PasswordRequired" xml:space="preserve">
+    <value>Password diperlukan</value>
+  </data>
+  <data name="Model_RealNameTooLong" xml:space="preserve">
+    <value>Nama asli terlalu panjang</value>
+  </data>
+  <data name="Model_StdNumberTooLong" xml:space="preserve">
+    <value>Nomor siswa terlalu panjang</value>
+  </data>
+  <data name="Model_TeamBioTooLong" xml:space="preserve">
+    <value>Bio tim terlalu panjang</value>
+  </data>
+  <data name="Model_TeamNameTooLong" xml:space="preserve">
+    <value>Nama tim terlalu panjang</value>
+  </data>
+  <data name="Model_TitleRequired" xml:space="preserve">
+    <value>Judul diperlukan</value>
+  </data>
+  <data name="Model_TitleTooLong" xml:space="preserve">
+    <value>Judul terlalu panjang</value>
+  </data>
+  <data name="Model_TitleTooShort" xml:space="preserve">
+    <value>Judul terlalu pendek</value>
+  </data>
+  <data name="Model_TokenRequired" xml:space="preserve">
+    <value>Token di perlukan</value>
+  </data>
+  <data name="Model_UserNameRequired" xml:space="preserve">
+    <value>Username diperlukan</value>
+  </data>
+  <data name="Model_UserNameTooLong" xml:space="preserve">
+    <value>Username terlalu panjang</value>
+  </data>
+  <data name="Model_UserNameTooShort" xml:space="preserve">
+    <value>Username terlalu pendek</value>
+  </data>
+  <data name="Model_ValidationFailed" xml:space="preserve">
+    <value>Gagal memvalidasi inputan, silakan periksa kembali</value>
+  </data>
+  <data name="Post_NotFound" xml:space="preserve">
+    <value>Postingan tidak ditemukan</value>
+  </data>
+  <data name="RateLimit_TooManyRequests" xml:space="preserve">
+    <value>Terlalu banyak permintaan. Silakan coba lagi dalam {0} detik.</value>
+  </data>
+  <data name="Scoreboard_AllSubmissions" xml:space="preserve">
+    <value>Semua submission</value>
+  </data>
+  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+    <value>Organisasi</value>
+  </data>
+  <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
+    <value>Tim belum dimuat</value>
+  </data>
+  <data name="Scoreboard_Title" xml:space="preserve">
+    <value>Papan Skor</value>
+  </data>
+  <data name="Server_Exited" xml:space="preserve">
+    <value>Server keluar</value>
+  </data>
+  <data name="Server_Failed" xml:space="preserve">
+    <value>Server keluar secara tidak terduga karena kesalahan</value>
+  </data>
+  <data name="Submission_Accepted" xml:space="preserve">
+    <value>DITERIMA</value>
+  </data>
+  <data name="Submission_CheatDetected" xml:space="preserve">
+    <value>Kecurangan terdeteksi</value>
+  </data>
+  <data name="Submission_FirstBlood" xml:space="preserve">
+    <value>First Blood</value>
+  </data>
+  <data name="Submission_FlagSubmitted" xml:space="preserve">
+    <value>Berhasil dikirimkan</value>
+  </data>
+  <data name="Submission_NotFound" xml:space="preserve">
+    <value>Submission tidak ditemukan</value>
+  </data>
+  <data name="Submission_SecondBlood" xml:space="preserve">
+    <value>Second blood</value>
+  </data>
+  <data name="Submission_ThirdBlood" xml:space="preserve">
+    <value>Third Blood</value>
+  </data>
+  <data name="Submission_UnknownInstance" xml:space="preserve">
+    <value>Unknown instance</value>
+  </data>
+  <data name="Submission_WrongAnswer" xml:space="preserve">
+    <value>Jawaban salah</value>
+  </data>
+  <data name="Game_CreationFailed" xml:space="preserve">
+    <value>Gagal membuat game</value>
+  </data>
+  <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
+    <value>Aktifkan penangkapan traffic untuk challenge dengan container</value>
+  </data>
+  <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
+    <value>Dynamic attachment tidak boleh kosong</value>
+  </data>
+  <data name="Challenge_FlagTooTrivial" xml:space="preserve">
+    <value>Flag tidak cukup rumit, harap pertimbangkan untuk menambahkan hash tim atau menambah panjang flagnya</value>
+  </data>
+  <data name="Challenge_NoFlag" xml:space="preserve">
+    <value>Challenge tidak memiliki flag dan tidak dapat diaktifkan</value>
+  </data>
+  <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
+    <value>Gunakan aset API untuk mengunggah lampiran</value>
+  </data>
+  <data name="Container_AddressResolveFailed" xml:space="preserve">
+    <value>Gagal mem-parsing alamat container</value>
+  </data>
+  <data name="Container_ConfigError" xml:space="preserve">
+    <value>Konfigurasi container error</value>
+  </data>
+  <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
+    <value>Batas koneksi container sudah tercapai</value>
+  </data>
+  <data name="Container_CreationFailed" xml:space="preserve">
+    <value>Gagal membuat container</value>
+  </data>
+  <data name="Container_InvalidClientAddress" xml:space="preserve">
+    <value>Alamat akses tidak valid</value>
+  </data>
+  <data name="Container_InvalidPort" xml:space="preserve">
+    <value>Port tidak valid saat membuat container</value>
+  </data>
+  <data name="Container_NotFound" xml:space="preserve">
+    <value>Container tidak ditemukan</value>
+  </data>
+  <data name="Container_TestContainerCreated" xml:space="preserve">
+    <value>Container percobaan {0} berhasil dibuat</value>
+  </data>
+  <data name="File_CreationFailed" xml:space="preserve">
+    <value>Gagal membuat file</value>
+  </data>
+  <data name="Notification_NotFound" xml:space="preserve">
+    <value>Notifikasi tidak ditemukan</value>
+  </data>
+  <data name="Notification_SystemNotDeletable" xml:space="preserve">
+    <value>Notifikasi sistem tidak bisa dihapus</value>
+  </data>
+  <data name="Notification_SystemNotEditable" xml:space="preserve">
+    <value>Notifikasi sistem tidak dapat diubah</value>
+  </data>
+  <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
+    <value>Gagal terhubung ke container ({0})</value>
+  </data>
+  <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
+    <value>Koneksi ke container gagal ({0}), mungkin sedang dalam proses startup atau periksa konfigurasi jaringan -&gt; {1}</value>
+  </data>
+  <data name="Proxy_Error" xml:space="preserve">
+    <value>Terjadi kesalahan selama proses proxy</value>
+  </data>
+  <data name="Proxy_TcpDisabled" xml:space="preserve">
+    <value>TCP proxy dinonaktifkan</value>
+  </data>
+  <data name="Team_AvatarUpdated" xml:space="preserve">
+    <value>Tim {0} mengganti avatar: [{1}]</value>
+  </data>
+  <data name="Team_AvatarUpdateFailed" xml:space="preserve">
+    <value>Avatar tim gagal diperbarui</value>
+  </data>
+  <data name="Team_Created" xml:space="preserve">
+    <value>Buat team {0}</value>
+  </data>
+  <data name="Team_CreationFailed" xml:space="preserve">
+    <value>Pembuatan tim gagal</value>
+  </data>
+  <data name="Team_Deleted" xml:space="preserve">
+    <value>Hapus team {0}</value>
+  </data>
+  <data name="Team_IdTransformFailed" xml:space="preserve">
+    <value>Kesalahan konversi Id tim: {0}</value>
+  </data>
+  <data name="Team_InvalidCode" xml:space="preserve">
+    <value>Kode tidak valid</value>
+  </data>
+  <data name="Team_Locked" xml:space="preserve">
+    <value>Tim terkunci</value>
+  </data>
+  <data name="Team_MemberRemoved" xml:space="preserve">
+    <value>Kick {0} dari tim {1}</value>
+  </data>
+  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
+    <value>Tidak diizinkan membuat lebih dari satu tim</value>
+  </data>
+  <data name="Team_NameEmpty" xml:space="preserve">
+    <value>Nama tim tidak boleh kosong</value>
+  </data>
+  <data name="Team_NameInvalidInvitation" xml:space="preserve">
+    <value>Undangan {0} tidak valid</value>
+  </data>
+  <data name="Team_NameLocked" xml:space="preserve">
+    <value>Tim {0} terkunci</value>
+  </data>
+  <data name="Team_NameNotFound" xml:space="preserve">
+    <value>Tim {0} tidak ditemukan</value>
+  </data>
+  <data name="Team_NewCaptainNotFound" xml:space="preserve">
+    <value>Pengguna yang dipindahkan tidak ada</value>
+  </data>
+  <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
+    <value>Terlalu banyak tim yang menyerahkan</value>
+  </data>
+  <data name="Team_UserJoined" xml:space="preserve">
+    <value>Bergabun dengan tim {0}</value>
+  </data>
+  <data name="Team_UserLeft" xml:space="preserve">
+    <value>Keluar dari tim {0}</value>
+  </data>
+  <data name="User_AlreadyInTeam" xml:space="preserve">
+    <value>Kamu sudah bergabung dengan tim ini, tidak perlu bergabung lagi</value>
+  </data>
+  <data name="User_LeaveNotInTeam" xml:space="preserve">
+    <value>Kamu tidak ada di tim ini dan tidak bisa keluar</value>
+  </data>
+  <data name="User_NotInTeam" xml:space="preserve">
+    <value>Pengguna tidak didalam tim</value>
+  </data>
+  <data name="Game_WriteupNotNeeded" xml:space="preserve">
+    <value>Writeup di nonaktifkan pada game ini.</value>
+  </data>
+  <data name="Signature_Invalid" xml:space="preserve">
+    <value>Signature tidak valid</value>
+  </data>
+  <data name="Error_InternalServerError" xml:space="preserve">
+    <value>Kesalahan server internal</value>
+  </data>
+  <data name="Admin_LogoUpdateFailed" xml:space="preserve">
+    <value>Gagal perbarui logo</value>
+  </data>
+  <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
+    <value>Berhasil terhubung ke server SMTP: {0}</value>
+  </data>
+  <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
+    <value>Konfigurasi email tidak valid, tetapi autentikasi email diaktifkan</value>
+  </data>
+</root>

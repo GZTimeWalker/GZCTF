@@ -1,0 +1,245 @@
+{
+  "button": {
+    "challenges": "Défis",
+    "delete": {
+      "all_traffic": "Supprimer tout le trafic listé"
+    },
+    "download": {
+      "all_traffic": "Télécharger tout le trafic listé",
+      "scoreboard": "Tableau des scores",
+      "submissionsheet": "Soumissions"
+    },
+    "finished": "Jeu Terminé",
+    "hide_solved": "Masquer Résolu",
+    "join": "Rejoindre",
+    "leave": "Quitter le jeu",
+    "login_required": "Veuillez vous connecter",
+    "scoreboard": "Tableau des scores",
+    "submit_writeup": "Writeup",
+    "writeup": {
+      "upload": "Soumettre",
+      "uploading": "Téléchargement..."
+    }
+  },
+  "content": {
+    "all_solved": {
+      "comment": "Peut-être que des défis plus difficiles vous attendent...",
+      "title": "Tous les défis ont été résolus !"
+    },
+    "duration": "{{hours}} heure(s)",
+    "end_at": "Se termine à",
+    "end_time": "Heure de fin",
+    "game_ended": "Terminé",
+    "game_lasts_long": "Le jeu durera longtemps",
+    "hide_container_events": {
+      "description": "Masquer les événements de création/destruction de conteneur",
+      "label": "Masquer les événements de conteneur"
+    },
+    "join": {
+      "confirm": "Confirmer l'inscription",
+      "content": [
+        "Êtes-vous sûr de vouloir vous inscrire à ce jeu ?",
+        "Après vous être inscrit avec succès à la compétition et avoir réussi la révision, l'équipe sera verrouillée et <strong>vous ne pourrez plus retirer aucun membre de l'équipe.</strong> L'équipe sera déverrouillée après la fin du match ou lorsque la demande de participation est rejetée.",
+        "La limite sur le nombre de joueurs fait référence au nombre de membres qui ont décidé de participer en tant que partie de l'équipe spécifique, <strong>peu importe l'équipe avec laquelle vous choisissez de jouer.</strong>"
+      ],
+      "invite_code": {
+        "description": "Ce jeu est uniquement sur invitation. Pour y participer, veuillez entrer un code d'invitation.",
+        "label": "Veuillez entrer le code d'invitation"
+      },
+      "organization": {
+        "description": "Ce jeu a plusieurs divisions disponibles. Veuillez sélectionner votre division.",
+        "label": "Sélectionner la division"
+      },
+      "team": {
+        "description": "Veuillez sélectionner une équipe avec laquelle vous souhaitez participer à ce jeu. Cela ne peut être changé après l'approbation de la demande de participation.",
+        "label": "Sélectionnez votre équipe"
+      },
+      "title": "Informations sur l'inscription"
+    },
+    "joined_status": "<strong>{{count}}</strong> équipes ont déjà rejoint",
+    "leave": {
+      "confirm": "Confirmer l'abandon",
+      "content": [
+        "Êtes-vous sûr de vouloir quitter ce jeu ?",
+        "Si le nombre de membres de l'équipe est zéro après votre départ, les données de participation de l'équipe seront supprimées."
+      ]
+    },
+    "no_challenge": "Aïe! Aucun défi disponible pour ce jeu.",
+    "no_cheat": {
+      "comment": "Il semble que tout le monde ait joué honnêtement!",
+      "title": "Aucune tricherie détectée pour l'instant"
+    },
+    "no_notice": "Rien ici.",
+    "no_traffic": {
+      "comment": "La plateforme et le défi doivent être configurés pour permettre la capture",
+      "title": "Aucun défi n'a activé la capture de trafic"
+    },
+    "remaining_duration": "{{hours}} h restantes",
+    "remaining_time": "Temps restant",
+    "scoreboard_not_ready": {
+      "comment": "La patience est une vertu, veuillez patienter…",
+      "title": "Chargement des défis"
+    },
+    "scoreboard_note": "Note : Les équipes à égalité sont classées par soumission.",
+    "scoreboard_tip": "Astuce : Faites défiler la liste des défis avec les flèches gauche et droite !",
+    "start_at": "Commence à",
+    "start_time": "Heure de début",
+    "team_view": {
+      "description": "Afficher les informations de triche par équipes",
+      "label": "Voir en tant qu'équipe"
+    },
+    "total_duration": "{{hours}} h au total",
+    "total_time": "Durée",
+    "traffic": {
+      "delete_confirm": "Supprimer ce fichier de trafic ?",
+      "deleted_all_confirm": "Supprimer tout le trafic listé ?"
+    },
+    "writeup": {
+      "current": "Rédaction actuelle",
+      "deadline_exceeded": "La date limite de soumission est dépassée",
+      "instructions": {
+        "additional": "Notes supplémentaires",
+        "deadline": "Veuillez soumettre la rédaction avant le <1>{{datetime}}</1>. Les soumissions tardives ou non soumises seront considérées comme un abandon des résultats de ce jeu.",
+        "file_format": "Veuillez organiser la rédaction de tous les défis résolus dans <1>un document PDF standard de moins de 20 Mo</1>.",
+        "title": "Instructions de soumission"
+      },
+      "submitted": "Soumis avec succès",
+      "title": "Gestion du Writeup",
+      "unsubmitted": "Pas encore soumis",
+      "unsubmitted_note": "Votre équipe n'a pas encore soumis"
+    }
+  },
+  "event": {
+    "answer": {
+      "accepted": "Drapeau accepté",
+      "cheat": "Tricherie",
+      "not_found": "Inconnu",
+      "submitted": "Soumis avec succès",
+      "wrong": "Drapeau incorrect"
+    },
+    "cheat_detected": "Triche détectée dans le défi {{chal}}, l'équipe {{team}} a utilisé le drapeau de {{steam}}.",
+    "container": {
+      "destroy": "Instance de défi détruite pour {{chal}}#{{id}}",
+      "start": "Instance de défi créée pour {{chal}}#{{id}}"
+    },
+    "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
+  },
+  "label": {
+    "cheat_info": {
+      "owned_team": "Équipe source",
+      "submit_team": "Équipe soumissionnaire",
+      "submit_user": "Utilisateur soumissionnaire"
+    },
+    "notice_type": {
+      "all": "Tous",
+      "challenge": "Défi",
+      "events": "Actualités",
+      "game": "Avis"
+    },
+    "score": "Score",
+    "score_formatter": "{value} point",
+    "score_table": {
+      "rank_organization": "Rang",
+      "rank_total": "Global",
+      "score": "Score",
+      "score_total": "Score",
+      "solved_count": "Résolu",
+      "team": "Équipe",
+      "type": "Type"
+    },
+    "traffic": "Trafic"
+  },
+  "notice": {
+    "blood": "Félicitations à {{team}} pour le {{blood}} sur {{chal}}.",
+    "new_challenge": "Nouveau défi [{{title}}] a été publié.",
+    "new_hint": "Des indices pour [{{title}}] ont été mis à jour."
+  },
+  "notification": {
+    "connected": {
+      "event": "Événement en temps réel connecté",
+      "submission": "Soumission en temps réel connectée"
+    },
+    "ended": "Le jeu est terminé",
+    "fetch_failed": {
+      "event": "Échec de la récupération des événements",
+      "notice": "Échec de la récupération des notifications",
+      "submission": "Échec de la récupération des soumissions"
+    },
+    "joined": "Inscription réussie",
+    "left": "Annulation réussie",
+    "no_invite_code": "Le code d'invitation ne peut pas être vide",
+    "no_organization": "Veuillez sélectionner la division",
+    "no_team": "Veuillez sélectionner l'équipe pour participer",
+    "not_started": "Le jeu n'a pas encore commencé",
+    "select_chal_and_part": "Veuillez d'abord sélectionner les défis et les équipes",
+    "suspended": "Vous avez été banni",
+    "traffic": {
+      "deleted": "Le(s) fichier(s) de trafic a été supprimé"
+    },
+    "writeup": {
+      "submitted": "Le compte rendu a été soumis avec succès"
+    }
+  },
+  "participation": {
+    "actions": {
+      "accepted": "Approuvé",
+      "pending": "En attente de révision",
+      "rejected": "Réinscription",
+      "suspended": "Banni",
+      "unsubmitted": "Rejoindre le jeu"
+    },
+    "alert": {
+      "not_started": {
+        "content": "Vous vous êtes inscrit avec succès et avez passé la révision en tant que membre de l'équipe {{team}}. Veuillez attendre le début du jeu.",
+        "mobile": "Veuillez utiliser le site de bureau pour voir les détails du jeu.",
+        "title": "Jeu pas encore commencé"
+      },
+      "pending": {
+        "content": "Veuillez attendre les résultats de l'examen",
+        "title": "Vous vous êtes enregistré avec succès en tant que membre de l'équipe {{team}}"
+      },
+      "rejected": {
+        "content": "Veuillez vous assurer que vous êtes éligible pour vous inscrire au jeu et vous réinscrire après avoir satisfait aux exigences",
+        "title": "Votre demande de participation a été refusée"
+      },
+      "suspended": {
+        "content": "Si vous avez des objections, veuillez contacter l'administrateur pour faire appel.",
+        "title": "Votre équipe {{team}} a été suspendue"
+      },
+      "team_required": {
+        "content": "Vous n'avez rejoint aucune équipe, veuillez créer ou rejoindre une équipe sur la page <1> Gestion d'équipe </1>.",
+        "title": "Impossible de s'inscrire pour le moment"
+      }
+    },
+    "status": {
+      "accepted": "Approuvé",
+      "pending": "En attente",
+      "rejected": "Rejeté",
+      "suspended": "Banni"
+    }
+  },
+  "placeholder": {
+    "no_solved": "Aïe ! Cette équipe n'a résolu aucun défi...",
+    "search_team": "Rechercher une équipe"
+  },
+  "tab": {
+    "challenge": "Défis",
+    "monitor": {
+      "cheatinfo": "Tricheries",
+      "events": "Événements",
+      "index": "Surveillance",
+      "submissions": "Soumissions",
+      "traffic": "Trafic"
+    },
+    "scoreboard": "Tableau des scores"
+  },
+  "tag": {
+    "hidden": "Caché",
+    "individual": "Personnel",
+    "limited": "{{count}} joueur",
+    "multiplayer": "Équipe"
+  },
+  "title": {
+    "index": "Jeux"
+  }
+}

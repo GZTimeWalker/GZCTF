@@ -1,18 +1,22 @@
 .card {
-  height: 200px;
+  height: 25vh;
+  max-height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   background-size: cover;
   background-position: center;
+  background-blend-mode: plus-darker;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 80%),
+    var(--slide-image);
 }
 
 .title {
   font-weight: bold;
   color: var(--mantine-color-white);
-  line-height: 1.4;
-  font-size: 24px;
+  line-height: 1.2;
+  font-size: 1.5rem;
   margin-top: var(--mantine-spacing-xs);
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 10px rgba(6, 5, 5, 0.5);
 }

@@ -1,0 +1,129 @@
+{
+  "avatar": {
+    "save": "Sauvegarder l'avatar",
+    "upload_failed": "Échec de la mise à jour de l'avatar",
+    "uploaded": "Avatar mis à jour",
+    "uploading": "Téléchargement de l'avatar"
+  },
+  "button": {
+    "copy": "Copier dans le presse-papier",
+    "reset": "Réinitialiser",
+    "select_file": "Sélectionner un fichier",
+    "try_again": "Réessayer",
+    "uploading": "Téléchargement en cours"
+  },
+  "content": {
+    "404": {
+      "text": "Une désolation, pourquoi est-ce ici",
+      "title": "Page inexistante"
+    },
+    "about": {
+      "slogan": "Hack for fun not for profit"
+    },
+    "color": {
+      "custom": {
+        "description": "Sélectionnez la couleur de base que vous souhaitez utiliser",
+        "label": "Couleur de base personnalisée",
+        "placeholder": "Utiliser la couleur par défaut"
+      },
+      "palette": {
+        "description": "Palette de couleurs générée à partir de la couleur de base personnalisée",
+        "label": "Palette de couleurs"
+      },
+      "provider": {
+        "custom": "Personnalisé",
+        "default": "Par défaut",
+        "description": "Sélectionnez comment la couleur de base est déterminée",
+        "label": "Fournisseur de couleur de thème",
+        "managed": "Fourni par l'administrateur"
+      },
+      "title": "Personnaliser la couleur"
+    },
+    "drop_zone": {
+      "content": "Faites glisser et déposez une image ou cliquez ici pour sélectionner {{type}}",
+      "limit": "Veuillez sélectionner une image de moins de 3MB",
+      "type": {
+        "avatar": "avatar",
+        "poster": "affiche"
+      }
+    },
+    "external_link": "Lien externe",
+    "home": {
+      "recent_games": "Jeux récents"
+    },
+    "no_data": "Pas de données",
+    "report_error": "Veuillez signaler cette erreur à l'administrateur si vous pensez que c'est un bug",
+    "wider": {
+      "text": "Essayez d'utiliser un appareil plus large",
+      "title": "Pas assez large"
+    }
+  },
+  "download": {
+    "failed": "Échec du téléchargement",
+    "started": "Téléchargement en cours",
+    "success": "Téléchargé"
+  },
+  "email": {
+    "sent": {
+      "message": "Veuillez vérifier votre email et spam !",
+      "title": "Email envoyé"
+    }
+  },
+  "error": {
+    "check_input": "Veuillez vérifier votre saisie",
+    "empty": "Le contenu ne peut pas être vide",
+    "encountered": "Une erreur s'est produite",
+    "file_invalid": {
+      "message": "Veuillez vérifier le format et la taille du fichier",
+      "title": "Échec du chargement du fichier"
+    },
+    "invalid_username_or_password": "Nom d'utilisateur ou mot de passe incorrect",
+    "no_change": "Il semble qu'il n'y ait aucun changement",
+    "param_error": "Paramètre incorrect, veuillez vérifier",
+    "param_invalid": "Paramètre invalide",
+    "param_missing": "Paramètre manquant",
+    "param_unknown": "Paramètre inconnu",
+    "request_too_frequent": "Trop de requêtes",
+    "try_later": "Veuillez réessayer plus tard",
+    "unknown": "Erreur inconnue"
+  },
+  "label": {
+    "challenge": "Défi",
+    "flag": "drapeau",
+    "game": "Jeu",
+    "ip": "IP",
+    "team": "Équipe",
+    "time": "Temps",
+    "user": "Utilisateur"
+  },
+  "modal": {
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "confirm_delete": "Confirmer la suppression",
+    "confirm_update": "Confirmer la mise à jour",
+    "delete": "Supprimer"
+  },
+  "tab": {
+    "about": "À propos",
+    "account": {
+      "clean_cache": "Vider le cache",
+      "login": "Connexion",
+      "logout": "Déconnexion",
+      "profile": "Profil"
+    },
+    "admin": "Admin",
+    "game": "Jeux",
+    "home": "Accueil",
+    "post": "Articles",
+    "team": "Équipe",
+    "theme": {
+      "dark": "mode sombre",
+      "light": "mode clair",
+      "switch_to": "Passer à {{theme}}"
+    }
+  },
+  "title": {
+    "404": "The Nowhere",
+    "about": "À propos"
+  }
+}
