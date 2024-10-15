@@ -71,7 +71,7 @@
     },
     "no_notice": "Tak ada apa-apa di sini.",
     "no_traffic": {
-      "comment": "Baik platform maupun tantangan harus diatur untuk mengaktifkan penangkapan",
+      "comment": "Baik platform maupun challenge harus diatur untuk mengaktifkan capture traffic",
       "title": "Tidak ada game yang mengaktifkan tangkapan traffic"
     },
     "remaining_duration": "{{hours}} jam tersisa",
