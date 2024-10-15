@@ -6,7 +6,7 @@
     },
     "download": {
       "all_traffic": "Descargar todo el tráfico listado",
-      "scoreboard": "Tabla de puntuación",
+      "scoreboard": "Marcador",
       "submissionsheet": "Envíos"
     },
     "finished": "Juego terminado",
@@ -14,7 +14,7 @@
     "join": "Unirse",
     "leave": "Salir del juego",
     "login_required": "Por favor, inicie sesión",
-    "scoreboard": "Tabla de puntuación",
+    "scoreboard": "Marcador",
     "submit_writeup": "Enviar Writeup",
     "writeup": {
       "upload": "Enviar Writeup",
@@ -80,7 +80,7 @@
       "comment": "La paciencia es una virtud, por favor espere…",
       "title": "Cargando desafíos"
     },
-    "scoreboard_note": "Nota: los equipos con la misma puntuación se clasifican por el tiempo de envío.",
+    "scoreboard_note": "Nota: en caso de empate, se clasifica por tiempo de envío.",
     "scoreboard_tip": "Consejo: ¡Desplázate por la lista de desafíos con las flechas izquierda y derecha!",
     "start_at": "Comienza en",
     "start_time": "Hora de inicio",
@@ -136,14 +136,14 @@
       "events": "Noticias",
       "game": "Aviso"
     },
-    "score": "Puntuación",
+    "score": "Puntaje",
     "score_formatter": "{value} pts",
     "score_table": {
       "rank_organization": "Rango",
       "rank_total": "General",
-      "score": "Puntuación",
-      "score_total": "Puntuación",
-      "solved_count": "Resuelto",
+      "score": "Puntaje",
+      "score_total": "Puntaje",
+      "solved_count": "Hecho",
       "team": "Equipo",
       "type": "Tipo"
     },
