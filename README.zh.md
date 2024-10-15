@@ -19,9 +19,11 @@
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 > [!IMPORTANT]
+>
 > **为了避免不必要的时间浪费，使用前请详细阅读使用文档：[https://docs.ctf.gzti.me/zh](https://docs.ctf.gzti.me/zh)**
 
 > [!WARNING]
+>
 > **升级和迁移注意事项：**
 >
 > 1. 如需升级平台，只需拉取最新的镜像并重新启动，数据库迁移会自动进行。
@@ -70,6 +72,30 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - 支持测量和分布式追踪
 - 以及更多……
 
+## 关于 i18n 🌐
+
+目前，该平台支持多种语言，翻译进度如下：
+
+### 由社区翻译
+
+- 英语 (en-US)：完全支持，默认语言
+- 简体中文 (zh-CN)：完全支持
+- 繁体中文 (zh-TW)：完全支持
+- 日语 (ja-JP)：完全支持，由 [Steve](https://github.com/hez2010) 翻译
+- 印度尼西亚语 (id-ID)：完全支持，由 [Rio](https://github.com/riodrwn) 翻译
+- 韩语 (ko-KR)：翻译进行中，由 [Sy2n0](https://github.com/Sy2n0) 翻译
+- 俄语 (ru-RU)：翻译进行中，由 [FazaN](https://github.com/CyberFazaN) 翻译
+
+### 由机器和 AI 翻译
+
+- 德语 (de-DE)
+- 法语 (fr-FR)
+- 西班牙语 (es-ES)
+
+这些翻译并不完美，我们需要你的帮助来改进它们。
+
+如果你有兴趣为翻译作出贡献，请参考 [Crowdin 项目](https://crowdin.com/project/gzctf)。
+
 ## Demo 🗿
 
 ![index.webp](docs/public/images/index.webp)
@@ -86,10 +112,6 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
 ![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
 
-## 关于 i18n 🌐
-
-请在 [translate.ctf.gzti.me](https://translate.ctf.gzti.me) 中了解详情或参与翻译工作。
-
 ## 贡献者 👋
 
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
@@ -99,6 +121,14 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ## 赛事案例 🏆
 
 已经有一些赛事的举办者选择了 GZCTF 并圆满完赛，他们的信任、支持和及时的反馈是 GZCTF 不断完善的第一推动力。
+
+### 国际赛事
+
+- [**San Diego CTF 2024: Organized by University of California, San Diego**](https://ctftime.org/event/2325)
+- [**R3CTF 2024: Organized by r3kapig**](https://ctftime.org/event/2273)
+- [**TCP1P CTF 2024: Exploring Nusantara's Digital Realm**](https://ctftime.org/event/2256/)
+
+### 其他赛事
 
 - **清华大学网络安全技术挑战赛 THUCTF 2022**
 - **浙江大学 ZJUCTF 2022/2023**
@@ -122,8 +152,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - **苏州市职业大学 2023 年冬季新生赛 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
 - **北京经济管理职业学院 首届 BIEM“信安杯”CTF 竞赛**
 - **北京航空航天大学 BUAACTF 2024**
-- **加州大学圣迭戈分校 San Diego CTF 2024**
-- **曲阜师范大学第一届“曲star”网络安全技能竞赛**
+- **曲阜师范大学第一届“曲 star”网络安全技能竞赛**
 
 _排名不分先后，欢迎提交 PR 进行补充。_
 

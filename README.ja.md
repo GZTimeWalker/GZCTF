@@ -19,9 +19,11 @@
 GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラットフォーム。
 
 > [!IMPORTANT]
+>
 > **お使いの前にドキュメントを読むことは極めてお勧めします：[https://docs.ctf.gzti.me/ja](https://docs.ctf.gzti.me/ja)**
 
 > [!WARNING]
+>
 > **アップグレードと移行に関する注意事項:**
 >
 > 1. プラットフォームをアップグレードするには、最新のイメージを取得して再起動するだけで、データベースの移行が自動的に行われます。
@@ -70,6 +72,30 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - マトリクスと分散トレーシングのサポート
 - その他...
 
+## i18n について 🌐
+
+現在、このプラットフォームは複数の言語をサポートしており、翻訳の進捗状況は以下の通りです。
+
+### コミュニティによる翻訳
+
+- 英語 (en-US)：完全対応、デフォルト言語
+- 簡体字中国語 (zh-CN)：完全対応
+- 繁体字中国語 (zh-TW)：完全対応
+- 日本語 (ja-JP)：完全対応、[Steve](http://github.com/hez2010) による翻訳
+- インドネシア語 (id-ID)：完全対応、[Rio](https://github.com/riodrwn) による翻訳
+- 韓国語 (ko-KR)：翻訳中、 [Sy2n0](https://github.com/Sy2n0) による翻訳
+- ロシア語 (ru-RU)：翻訳中、[FazaN](https://github.com/CyberFazaN) による翻訳
+
+### 機械および AI による翻訳
+
+- ドイツ語 (de-DE)
+- フランス語 (fr-FR)
+- スペイン語 (es-ES)
+
+これらの翻訳は完全ではないため、改善のために皆さんの協力が必要です。
+
+翻訳に貢献することに興味がある方は、[Crowdin プロジェクト](https://crowdin.com/project/gzctf) を参照してください。
+
 ## Demo 🗿
 
 ![index.webp](docs/public/images/index.webp)
@@ -86,10 +112,6 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 ![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
 ![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
 
-## i18n について 🌐
-
-翻訳について詳しくは [translate.ctf.gzti.me](https://translate.ctf.gzti.me) を参照してください。
-
 ## 貢献者 👋
 
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
@@ -99,6 +121,14 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 ## 大会事例 🏆
 
 以下は GZCTF を使った CTF 大会事例の一部です。主催者たちの信頼、サポートと大切なフィードバックが GZCTF の継続的改善の原動力となっております。
+
+### 国際イベント
+
+- [**San Diego CTF 2024: Organized by University of California, San Diego**](https://ctftime.org/event/2325)
+- [**R3CTF 2024: Organized by r3kapig**](https://ctftime.org/event/2273)
+- [**TCP1P CTF 2024: Exploring Nusantara's Digital Realm**](https://ctftime.org/event/2256/)
+
+### その他のイベント
 
 - **清華大学ネットワークセキュリティ技術チャレンジ THUCTF 2022**
 - **浙江大学 ZJUCTF 2022/2023**
@@ -121,8 +151,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **商丘師範学院初回ネットワークセキュリティ新人戦**
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
 - **北京航空航天大学 BUAACTF 2024**
-- **カリフォルニア大学サンディエゴ校 San Diego CTF 2024**
-- **曲阜師範大学第1回“曲star”サイバーセキュリティスキルコンテスト**
+- **曲阜師範大学第 1 回“曲 star”サイバーセキュリティスキルコンテスト**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 
