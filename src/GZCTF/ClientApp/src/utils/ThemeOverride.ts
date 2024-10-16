@@ -166,41 +166,74 @@ const CustomTheme: MantineThemeOverride = {
   },
 }
 
+export enum ColorProvider {
+  Managed = 'Managed',
+  Default = 'Default',
+  Custom = 'Custom',
+}
+
+export interface CustomColor {
+  provider: ColorProvider
+  color: string
+}
+
 export const useCustomColor = () => {
-  const [color, setColorInner] = useLocalStorage({
+  const [customColor, setCustomColor] = useLocalStorage<CustomColor>({
     key: 'custom-theme',
-    defaultValue: '',
+    defaultValue: { provider: ColorProvider.Managed, color: '' } as CustomColor,
     getInitialValueInEffect: false,
+    serialize: (value: CustomColor) => {
+      console.log('Store', value)
+      if (value.provider === ColorProvider.Custom && /^#[0-9A-F]{6}$/i.test(value.color)) {
+        return value.color
+      } else if (value.provider === ColorProvider.Managed) {
+        return ''
+      } else {
+        return 'brand'
+      }
+    },
+    deserialize: (value?: string) => {
+      if (typeof value !== 'string') return { provider: ColorProvider.Managed, color: '' }
+
+      if (value === 'brand') {
+        return { provider: ColorProvider.Default, color: '' }
+      } else if (/^#[0-9A-F]{6}$/i.test(value)) {
+        return { provider: ColorProvider.Custom, color: value }
+      } else {
+        return { provider: ColorProvider.Managed, color: '' }
+      }
+    },
   })
-
-  const setCustomColor = (newColor: string) => {
-    if (newColor === color) return
-
-    if (/^#[0-9A-F]{6}$/i.test(newColor) || newColor === 'brand') {
-      setColorInner(newColor)
-    } else {
-      setColorInner('')
-    }
-  }
 
   // color: null for use platform color, 'brand' for default theme
   //        or hex color string for custom color
-  return { color, setCustomColor }
+  return { customColor, setCustomColor }
 }
 
 export const useCustomTheme = () => {
   const { config } = useConfig()
-  const { color } = useCustomColor()
+  const { customColor } = useCustomColor()
 
-  const testColor = (color: string | null | undefined) => {
-    return color && /^#[0-9A-F]{6}$/i.test(color) ? color : undefined
+  const resolveManaged = (color: string | null | undefined) => {
+    return color && /^#[0-9A-F]{6}$/i.test(color) ? color : null
   }
 
   const [theme, setTheme] = useState<MantineThemeOverride>(createTheme(CustomTheme))
 
   useEffect(() => {
-    const resolvedColor = testColor(color) || testColor(config.customTheme)
-    if (resolvedColor && color !== 'brand') {
+    if (customColor.provider === ColorProvider.Default) {
+      setTheme(CustomTheme)
+      return
+    }
+
+    const resolvedColor =
+      customColor.provider === ColorProvider.Custom
+        ? customColor.color
+        : customColor.provider === ColorProvider.Managed
+          ? resolveManaged(config.customTheme)
+          : null
+
+    if (resolvedColor) {
       setTheme({
         ...CustomTheme,
         colors: {
@@ -220,7 +253,7 @@ export const useCustomTheme = () => {
     } else {
       setTheme(CustomTheme)
     }
-  }, [color, config.customTheme])
+  }, [customColor, config.customTheme])
 
   return { theme }
 }
