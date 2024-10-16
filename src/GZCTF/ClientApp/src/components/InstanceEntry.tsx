@@ -248,7 +248,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             </Text>
           </Stack>
           <Group justify="right" wrap="nowrap" gap="xs">
-            <Button color="orange" onClick={onExtend} disabled={!canExtend}>
+            <Button color="orange" onClick={onExtend} disabled={!canExtend || disabled}>
               {t('challenge.button.instance.extend')}
             </Button>
             <Button color="red" onClick={onDestroy} disabled={disabled}>
