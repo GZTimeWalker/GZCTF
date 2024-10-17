@@ -67,11 +67,11 @@
     "no_challenge": "Waduh! Tidak ada game yang tersedia untuk permainan ini.",
     "no_cheat": {
       "comment": "Sepertinya semua orang bermain dengan adil!",
-      "title": "Belum ada kecurangan yang terdeteksi"
+      "title": "Belum ada kecurangan yang terdeteksi cuy"
     },
     "no_notice": "Tak ada apa-apa di sini.",
     "no_traffic": {
-      "comment": "Baik platform maupun tantangan harus diatur untuk mengaktifkan penangkapan",
+      "comment": "Baik platform maupun challenge harus diatur untuk mengaktifkan capture traffic",
       "title": "Tidak ada game yang mengaktifkan tangkapan traffic"
     },
     "remaining_duration": "{{hours}} jam tersisa",
@@ -119,8 +119,8 @@
     },
     "cheat_detected": "Kecurangan terdeteksi di tantangan {{chal}}, tim {{team}} menggunakan flag milik {{steam}}.",
     "container": {
-      "destroy": "Instance tantangan untuk {{chal}}#{{id}} telah dihapus",
-      "start": "Instance tantangan telah dibuat untuk {{chal}}#{{id}}"
+      "destroy": "Instance challenge untuk {{chal}}#{{id}} telah dihapus",
+      "start": "Instance challenge telah dibuat untuk {{chal}}#{{id}}"
     },
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
   },
