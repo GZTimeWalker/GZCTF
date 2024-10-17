@@ -43,66 +43,66 @@
   },
   "notification": {
     "captcha": {
-      "not_valid": "Please wait for captcha...",
+      "not_valid": "Пожалуйста, дождитесь появления captcha...",
       "request_sent": {
-        "message": "Waiting for server verification",
-        "title": "Request sent..."
+        "message": "Ожидание подтверждения сервером",
+        "title": "Запрос отправлен..."
       }
     },
     "confirm": {
-      "failed": "Failed to verify email",
-      "success": "Email has been verified"
+      "failed": "Не удалось подтвердить Email",
+      "success": "Email подтвержден"
     },
     "login": {
-      "banned": "User has been banned",
+      "banned": "Пользователь заблокирован",
       "invalid": "Неверное имя пользователя или пароль",
       "success": {
         "message": "Перенаправление на предыдущую страницу",
-        "title": "Login succeeded"
+        "title": "Авторизация успешна"
       }
     },
-    "logout": "Logout successfully",
+    "logout": "Вы вышли из аккаунта",
     "profile": {
-      "password_updated": "Password has been changed, please login again",
-      "profile_updated": "Profile updated"
+      "password_updated": "Пароль изменён, пожалуйста, войдите снова",
+      "profile_updated": "Данные профиля обновлены"
     },
     "register": {
       "logged_in": "Регистрация успешна",
       "request_sent": {
-        "message": "Please wait for administrator's approval for activation~",
-        "title": "Registration request sent"
+        "message": "Пожалуйста, дождитесь одобрения вашей регистрации администратором~",
+        "title": "Заявка на регистрацию отправлена"
       }
     },
     "reset": {
       "success": {
-        "message": "Please login again",
-        "title": "Password has been reset"
+        "message": "Пожалуйста, войдите снова",
+        "title": "Ваш пароль был сброшен"
       }
     },
     "verify": {
-      "failed": "Failed to verify the account",
-      "success": "Account has been verified, please login"
+      "failed": "Не удалось верифицировать аккаунт",
+      "success": "Аккаунт подтверждён, пожалуйста, войдите в аккаунт"
     }
   },
   "password": {
-    "empty": "Password cannot be empty",
-    "include_lowercase": "Include lower case letters",
-    "include_number": "Include numbers",
-    "include_symbol": "Include special characters",
-    "include_uppercase": "Include upper case letters",
-    "min_length": "At least 6 characters",
-    "not_match": "The repeated password is incorrect"
+    "empty": "Пароль не может быть пустым",
+    "include_lowercase": "Строчные буквы",
+    "include_number": "Цифры",
+    "include_symbol": "Спецсимволы",
+    "include_uppercase": "Заглавные буквы",
+    "min_length": "Минимум 6 символов",
+    "not_match": "Введённые пароли не соответствуют"
   },
   "placeholder": {
-    "bio": "This person is lazy, nothing written"
+    "bio": "Пару строк о себе, если не против..."
   },
   "title": {
-    "confirm": "Email Verification",
-    "login": "Login",
-    "profile": "Profile",
-    "recovery": "Recover account",
-    "register": "Register",
-    "reset": "Reset password",
-    "verify": "Account Verification"
+    "confirm": "Подтверждение электронной почты",
+    "login": "Вход",
+    "profile": "Профиль",
+    "recovery": "Восстановление аккаунта",
+    "register": "Регистрация",
+    "reset": "Сбросить пароль",
+    "verify": "Подтверждение аккаунта"
   }
 }
