@@ -9,7 +9,7 @@
   "content": {
     "delete": "Apakah kamu yakin ingin menghapus postingan {{title}}?",
     "details": "Lihat detail",
-    "metadata": "{{author}} mempublish pada {{date}}",
+    "metadata": "{{author}} dipublikasikan pada {{date}}",
     "pinned": "[Pinned]",
     "updated": {
       "content": "Postingan telah diubah. Simpan?",
