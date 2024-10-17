@@ -3,6 +3,28 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.24.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.3..v0.24.4) - 2024-10-17
+
+### ⛰️ Features
+
+- **(i18n)** add es-ES (MT) - ([cd6727](https://github.com/GZTimeWalker/GZCTF/commit/cd6727)) by **GZTime**
+- **(i18n)** show note message when switch - ([ee72f9](https://github.com/GZTimeWalker/GZCTF/commit/ee72f9)) by **GZTime**
+- **(i18n)** add zh-TW - ([5110ea](https://github.com/GZTimeWalker/GZCTF/commit/5110ea)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(admin)** overflow on review page - ([f057e1](https://github.com/GZTimeWalker/GZCTF/commit/f057e1)) by **GZTime**
+- **(challenge)** title overflow - ([295dbc](https://github.com/GZTimeWalker/GZCTF/commit/295dbc)) by **GZTime**
+- **(frontend)** missing css vars may cause `NaNem` in media query - ([d08f36](https://github.com/GZTimeWalker/GZCTF/commit/d08f36)) by **GZTime**
+- **(instance)** extend button not disable when destroy container - ([4944b5](https://github.com/GZTimeWalker/GZCTF/commit/4944b5)) by **GZTime**
+- **(theme)** sync theme colors between tabs - ([38cbbe](https://github.com/GZTimeWalker/GZCTF/commit/38cbbe)) by **GZTime**
+- Fix wrong port color in light mode - ([4e0566](https://github.com/GZTimeWalker/GZCTF/commit/4e0566)) by **Kengwang**
+
+### 🎨 Styling
+
+- **(slide)** update slide style on mobile - ([dc759e](https://github.com/GZTimeWalker/GZCTF/commit/dc759e)) by **GZTime**
+
+---
 ## [0.24.3](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.2-patch.1..v0.24.3) - 2024-10-10
 
 ### ⛰️ Features
