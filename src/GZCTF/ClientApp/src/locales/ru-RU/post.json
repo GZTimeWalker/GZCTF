@@ -1,33 +1,33 @@
 {
   "button": {
-    "delete": "Delete Post",
-    "edit": "Edit Post",
-    "goto": "Go to Post",
-    "new": "New Post",
-    "save": "Save Post"
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "goto": "Перейти к записи",
+    "new": "Новая запись",
+    "save": "Сохранить"
   },
   "content": {
-    "delete": "Are you sure you want to delete post {{title}}?",
-    "details": "View Details",
-    "metadata": "{{author}} published on {{date}}",
-    "pinned": "[Pinned]",
+    "delete": "Вы уверены, что хотите удалить запись {{title}}?",
+    "details": "Подробнее",
+    "metadata": "Опубликовано {{author}}, {{date}}",
+    "pinned": "[Закреплено]",
     "updated": {
-      "content": "The post has been changed. Save it?",
-      "title": "Post has been changed"
+      "content": "Запись была изменена. Сохранить?",
+      "title": "Несохранённые изменения"
     }
   },
   "label": {
-    "add_tag": "Enter to add tag",
-    "content": "Content",
-    "summary": "Summary",
-    "tag": "Tags",
-    "title": "Title"
+    "add_tag": "Введите тег и нажмите Enter",
+    "content": "Содержание",
+    "summary": "Сводка",
+    "tag": "Теги",
+    "title": "Заголовок"
   },
   "notification": {
-    "created": "Post has been created",
-    "saved": "Post has been saved"
+    "created": "Запись создана",
+    "saved": "Запись сохранена"
   },
   "title": {
-    "index": "Posts"
+    "index": "Посты"
   }
 }
