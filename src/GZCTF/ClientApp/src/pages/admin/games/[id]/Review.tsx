@@ -132,8 +132,8 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
     <Accordion.Item value={participation.id!.toString()}>
       <Box style={{ alignItems: 'center' }} display="flex">
         <Accordion.Control>
-          <Group justify="space-between">
-            <Group>
+          <Group justify="space-between" wrap="nowrap">
+            <Group wrap="nowrap">
               <Avatar alt="avatar" src={participation.team?.avatar}>
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
               </Avatar>
@@ -150,9 +150,9 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 </Text>
               </Box>
             </Group>
-            <Group wrap="nowrap" justify="space-between" w="32%" miw="350px">
-              <Box>
-                <Text>{participation.organization}</Text>
+            <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
+              <Box w="10em">
+                <Text truncate>{participation.organization}</Text>
                 <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
@@ -160,7 +160,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                   })}
                 </Text>
               </Box>
-              <Center w="6em">
+              <Center miw="5.5em">
                 <Badge color={part.color}>{part.title}</Badge>
               </Center>
               <ParticipationStatusControl
