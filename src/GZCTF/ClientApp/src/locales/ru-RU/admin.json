@@ -1,66 +1,66 @@
 {
   "button": {
-    "back": "Go Back",
+    "back": "Назад",
     "challenges": {
       "attachment": {
-        "save_url": "Save Link",
-        "upload": "Upload",
-        "uploading": "Uploading..."
+        "save_url": "Сохранить",
+        "upload": "Загрузить",
+        "uploading": "Загрузка..."
       },
-      "bonus": "Triple Blood Bonus",
-      "delete": "Delete",
-      "disable": "Disable",
-      "edit": "Edit Challenge",
-      "edit_more": "Edit Flags",
-      "enable": "Enable",
+      "bonus": "Бонус тройной крови",
+      "delete": "Удалить",
+      "disable": "Отключить",
+      "edit": "Редактировать испытание",
+      "edit_more": "Редактировать флаги",
+      "enable": "Включить",
       "flag": {
         "add": {
-          "dynamic": "Upload Attachments",
-          "normal": "Add Flag",
-          "remote": "Add Remote"
+          "dynamic": "Загрузить вложения",
+          "normal": "Добавить флаг",
+          "remote": "Добавить сторонние"
         },
-        "delete": "Delete",
-        "save": "Save Template"
+        "delete": "Удалить",
+        "save": "Сохранить шаблон"
       },
       "hint": {
-        "add": "Add Hint"
+        "add": "Добавить подсказку"
       },
-      "new": "New Challenge",
-      "next": "Next",
-      "preview": "Preview",
-      "previous": "Previous",
+      "new": "Новое испытание",
+      "next": "Следующее",
+      "preview": "Предпросмотр",
+      "previous": "Предыдущее",
       "test_container": {
-        "create": "Create",
-        "destroy": "Destroy"
+        "create": "Создать",
+        "destroy": "Уничтожить"
       },
-      "update_accept_count": "Update AC Counter"
+      "update_accept_count": "Обновить счетчик решений"
     },
     "games": {
       "challenges": {
         "attachment": {
-          "batch_add": "Batch Add"
+          "batch_add": "Добавить"
         }
       },
-      "copy_public_key": "Copy Public Key",
-      "delete": "Delete",
-      "new": "New Game"
+      "copy_public_key": "Копировать открытый ключ",
+      "delete": "Удалить",
+      "new": "Новая Игра"
     },
     "notices": {
-      "delete": "Delete",
-      "edit": "Edit Notice",
-      "new": "New Notice"
+      "delete": "Удалить",
+      "edit": "Редактировать",
+      "new": "Новое объявление"
     },
-    "save": "Save Changes",
+    "save": "Сохранить",
     "teams": {
-      "do_lock": "Lock",
-      "do_unlock": "Unlock",
-      "edit": "Edit Team"
+      "do_lock": "Закрыть",
+      "do_unlock": "Открыть",
+      "edit": "Редактировать"
     },
     "users": {
-      "edit": "Edit User"
+      "edit": "Редактировать"
     },
     "writeups": {
-      "download_all": "Download All"
+      "download_all": "Скачать всё"
     }
   },
   "content": {
@@ -68,31 +68,31 @@
       "challenges": {
         "attachment": {
           "clear": {
-            "description": "Are you sure you want to remove the attachment of this challenge?",
-            "title": "Clear Attachment"
+            "description": "Вы уверены, что хотите удалить вложение этого испытания?",
+            "title": "Удалить вложение"
           },
           "instruction": {
-            "amount_double": "It is recommended to upload dynamic attachments that are twice the expected number of participating teams.",
+            "amount_double": "Рекомендация: количество динамических вложений должно вдвое превышать количество участвующих команд..",
             "dynamic": {
-              "content": "Batch upload dynamic attachments, all of which will be distributed with the same file name.",
-              "format": "Please use each flag as the file name for the corresponding attachment."
+              "content": "Множественная загрузка динамических вложений. Каждое вложение будет распределено с одинаковым именем файла.",
+              "format": "Пожалуйста, используйте значение флага в качестве имени файла для соответствующего вложения."
             },
             "remote": {
-              "content": "Batch set remote attachments and corresponding flags, with one group per line.",
-              "format": "Please separate the flag and the URL with a space."
+              "content": "Укажите сторонние вложения и соответствующие им флаги, каждая запись с новой строки.",
+              "format": "Используйте пробел как разделитель флага и ссылки на вложение."
             }
           },
-          "link": "Attachment Link",
-          "title": "Attachment Management",
-          "type": "Attachment Type"
+          "link": "Ссылка на вложение",
+          "title": "Управление вложениями",
+          "type": "Тип вложения"
         },
         "attachment_name": {
-          "description": "All dynamic attachments will be downloaded under this filename",
-          "label": "Global Attachment Name"
+          "description": "Все динамические вложения будут загружены под этим именем файла",
+          "label": "Общее имя вложения"
         },
         "bonus": {
-          "description": "The Triple Blood Bonus refers to the additional points awarded when a challenge is solved by the first three teams. Each team can receive a scoring bonus based on the current points of the challenge. The bonus will be added to the team's score in the form of a fixed percentage.",
-          "first_blood": "First Blood Reward (%)",
+          "description": "Тройной Бонус Крови - это дополнительные очки, начисляемые при решении испытания первыми тремя командами. Каждая команда может получить бонус к очкам, основанный на текущих очках испытания. Бонус будет добавлен к очкам команды в виде фиксированного процента.",
+          "first_blood": "Награда за первую кровь (%)",
           "second_blood": "Second Blood Reward (%)",
           "third_blood": "Third Blood Reward (%)"
         },
@@ -172,34 +172,34 @@
         },
         "content": "Game Details",
         "delete": "Are you sure you want to delete game {{name}}?",
-        "end_date": "End Date",
-        "end_time": "End Time",
+        "end_date": "Дата окончания",
+        "end_time": "Время окончания",
         "invite_code": {
-          "description": "Leave empty for no invitation code",
-          "label": "Invitation Code"
+          "description": "Оставьте пустым для отключения",
+          "label": "Код приглашения"
         },
         "member_limit": {
-          "description": "0 means unlimited members of team",
-          "label": "Maximum Team Member"
+          "description": "Используйте 0 для отключения ограничения",
+          "label": "Ограничение размера команды"
         },
         "organizations": {
           "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"
         },
-        "poster": "Poster",
+        "poster": "Постер",
         "practice_mode": {
-          "description": "View challenges after the game ends",
-          "label": "Practice Mode"
+          "description": "Просмотр испытаний после окончания игры",
+          "label": "Режим тренировки"
         },
-        "start_date": "Start Date",
-        "start_time": "Start Time",
+        "start_date": "Дата начала",
+        "start_time": "Время начала",
         "summary": {
-          "description": "Will be displayed in the game list",
-          "label": "Summary"
+          "description": "Будет отображаться в списке игр",
+          "label": "Сводка"
         },
         "title": {
           "description": "Excessive length may affect the display effect",
-          "label": "Title"
+          "label": "Заголовок"
         },
         "writeup_deadline": {
           "description": "Hours to submit writeups after game ends",
