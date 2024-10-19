@@ -122,7 +122,7 @@ Here is a complete example of configuration:
     }
   },
   "ForwardedOptions": {
-    "ForwardedHeaders": 5, // a flag enum, see following link
+    "ForwardedHeaders": 7, // a flag enum, see following link
     "ForwardLimit": 1,
     "ForwardedForHeaderName": "X-Forwarded-For",
     // use the following options to allow proxy
@@ -327,7 +327,7 @@ Configure the Google Recaptcha v3 related information, optional.
 
 Here we can configure the reverse proxy, which is used to get the real IP address, optional.
 
-- **ForwardedHeaders:** Enum for ForwardedHeaders in reverse proxy, please use `5` as the default value. For more details, see [ForwardedHeaders Enum](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders)
+- **ForwardedHeaders:** Enum for ForwardedHeaders in reverse proxy, please use `7` as the default value. For more details, see [ForwardedHeaders Enum](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders)
 - **ForwardLimit:** Limit the number of proxy hops allowed, the default is `1`
 - **ForwardedForHeaderName:** The name of the reverse proxy IP address header
 - **TrustedNetworks:** List of trusted networks for reverse proxy, represented by CIDR.

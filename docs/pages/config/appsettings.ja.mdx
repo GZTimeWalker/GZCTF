@@ -122,7 +122,7 @@ import { Callout } from "nextra-theme-docs";
     }
   },
   "ForwardedOptions": {
-    "ForwardedHeaders": 5, // a flag enum, see following link
+    "ForwardedHeaders": 7, // a flag enum, see following link
     "ForwardLimit": 1,
     "ForwardedForHeaderName": "X-Forwarded-For",
     // use the following options to allow proxy
@@ -327,7 +327,7 @@ Google Recaptcha v3 の関連情報を設定します。オプションです。
 
 ここでは、リバースプロキシの関連情報を設定します。これは、実際の IP アドレスを取得するために使用されます。オプションです。
 
-- **ForwardedHeaders:** リバースプロキシが転送するヘッダーの列挙型。デフォルトは`5`を使用してください。詳細は [ForwardedHeaders 列挙型](https://learn.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders)を参照してください。
+- **ForwardedHeaders:** リバースプロキシが転送するヘッダーの列挙型。デフォルトは`7`を使用してください。詳細は [ForwardedHeaders 列挙型](https://learn.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.httpoverrides.forwardedheaders)を参照してください。
 - **ForwardLimit:** リバースプロキシの層数制限
 - **ForwardedForHeaderName:** リバースプロキシの IP アドレスヘッダー名
 - **TrustedNetworks:** リバースプロキシが信頼するネットワークのリスト。CIDR で表現します。
