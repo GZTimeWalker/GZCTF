@@ -131,7 +131,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 ### Other Events
 
 - **THUCTF 2022: Tsinghua University Network Security Technology Challenge**
-- **ZJUCTF 2022/2023: Zhejiang University CTF**
+- **ZJUCTF 2022/2023/2024: Zhejiang University CTF**
 - **SUSCTF 2022/2023/2024: Southeast University Tiger Crouching, Dragon Coiling Cup Network Security Challenge**
 - **DIDCTF 2022/2023: Gansu Political and Legal University CTF**
 - **Woodpecker: The First Network Security Practice Competition of Shandong University of Science and Technology**
