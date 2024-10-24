@@ -369,7 +369,7 @@
     <value>Mode container ： docker swarm cluster kontrol container</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>Tidak dapat mengurai nama gambar `{0}'</value>
+    <value>Tidak dapat mengurai nama gambar '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Inisialisasi docker berhasil ({0})</value>
