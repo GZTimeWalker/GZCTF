@@ -369,7 +369,7 @@
     <value>容器管理模式：Docker Swarm 集群容器控制</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>Could not parse image name '{0}'</value>
+    <value>无法解析镜像名称 '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Docker 初始化成功 ({0})</value>
