@@ -55,8 +55,16 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
         string[] supportedCultures = [
-            "en-US", "zh-CN", "zh-TW", "ja-JP", "id-ID",
-            "ko-KR", "ru-RU", "de-DE", "fr-FR", "es-ES"
+            "en-US",
+            "zh-CN",
+            "zh-TW",
+            "ja-JP",
+            "id-ID",
+            "ko-KR",
+            "ru-RU",
+            "de-DE",
+            "fr-FR",
+            "es-ES"
         ];
 
         options

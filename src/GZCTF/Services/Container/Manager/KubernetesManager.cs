@@ -34,16 +34,17 @@ public class KubernetesManager : IContainerManager
         CancellationToken token = default)
     {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
-        var authSecretName = _meta.AuthSecretName;
-        KubernetesConfig options = _meta.Config;
 
-        if (imageName is null)
+        if (string.IsNullOrWhiteSpace(imageName))
         {
             _logger.SystemLog(
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
+
+        var authSecretName = _meta.AuthSecretName;
+        KubernetesConfig options = _meta.Config;
 
         var chalImage = imageName.ToValidRFC1123String("chal");
 

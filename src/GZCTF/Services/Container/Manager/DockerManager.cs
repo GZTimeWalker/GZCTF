@@ -72,6 +72,16 @@ public class DockerManager : IContainerManager
     public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
         CancellationToken token = default)
     {
+        var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
+
+        if (string.IsNullOrWhiteSpace(imageName))
+        {
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
+                TaskStatus.Failed, LogLevel.Warning);
+            return null;
+        }
+
         CreateContainerParameters parameters = GetCreateContainerParameters(config);
 
         if (_meta.ExposePort)
