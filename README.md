@@ -134,11 +134,11 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **ZJUCTF 2022/2023/2024: Zhejiang University CTF**
 - **SUSCTF 2022/2023/2024: Southeast University Tiger Crouching, Dragon Coiling Cup Network Security Challenge**
 - **DIDCTF 2022/2023/2024: Gansu Political and Legal University CTF**
+- **W4terCTF [2023](https://github.com/W4terDr0p/W4terCTF-2023)/2024: Information Security Novice Competition of Sun Yat-sen University**
 - **Woodpecker: The First Network Security Practice Competition of Shandong University of Science and Technology**
 - **NPUCTF 2022: Northwestern Polytechnical University CTF**
 - **SkyNICO Network Space Security Tri-school Competition (Xiamen University of Technology, Fujian Normal University, Qilu University of Technology)**
 - **Hunan Police Academy Network Security Attack and Defense Competition**
-- **W4terCTF 2023: The First Information Security Novice Competition of Sun Yat-sen University**
 - **TongjiCTF 2023: The Fifth Network Security Competition of Tongji University**
 - **CatCTF 2023/2024: Network Security Competition of Tongji University (Elementary Level)**
 - **CTBUCTF 2023: The First Network Security Competition of Chongqing Technology and Business University**
