@@ -369,7 +369,7 @@
     <value>Container mode：Docker Swarm Cluster Container Control</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>Could not parse image name `{0}'</value>
+    <value>Could not parse image name '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Docker Initialization Success ({0})</value>
