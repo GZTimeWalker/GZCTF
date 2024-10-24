@@ -369,7 +369,7 @@
     <value>コンテナ管理モード：Docker Swarm クラスタコンテナー制御</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>コンテナイメージ名 '{0}' を解析できませんでした</value>
+    <value>Could not parse image name '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Docker が正常に初期化されました ({0})</value>
