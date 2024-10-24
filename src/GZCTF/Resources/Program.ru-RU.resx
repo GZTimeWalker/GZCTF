@@ -291,7 +291,7 @@
     <value>Обработчик обновления кэша остановлен</value>
   </data>
   <data name="Challenge_NotFound" xml:space="preserve">
-    <value>Задание не найдено</value>
+    <value>Испытание не найдено</value>
   </data>
   <data name="Config_GlobalConfigAdded" xml:space="preserve">
     <value>Добавлен параметр настроек платформы: {0} =&gt; {1}</value>
