@@ -12,7 +12,7 @@
     "genapi": "swagger-typescript-api -p http://localhost:55000/swagger/v1/swagger.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
-    "@babel/core": "^7.25.9",
+    "@babel/core": "^7.26.0",
     "@emotion/react": "^11.13.3",
     "@mantine/carousel": "^7.13.4",
     "@mantine/colors-generator": "^7.13.4",
@@ -36,7 +36,7 @@
     "embla-carousel": "^8.3.0",
     "embla-carousel-autoplay": "^8.3.0",
     "embla-carousel-react": "^8.3.0",
-    "i18next": "^23.16.3",
+    "i18next": "^23.16.4",
     "i18next-browser-languagedetector": "^8.0.0",
     "katex": "^0.16.11",
     "lz-string": "^1.5.0",

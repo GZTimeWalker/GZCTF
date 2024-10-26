@@ -462,7 +462,7 @@ public class GameController(
     [HttpGet("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
+    public IActionResult GetAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
         var filePath = Path.Combine(FilePath.Capture, $"{challengeId}", $"{partId}");
@@ -472,10 +472,8 @@ public class GameController(
                 StatusCodes.Status404NotFound));
 
         var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
-        Stream stream = await Codec.ZipFilesAsync(filePath, filename, token);
-        stream.Seek(0, SeekOrigin.Begin);
 
-        return File(stream, "application/zip", $"{filename}.zip");
+        return new TarDirectoryResult(filePath, filename, token);
     }
 
     /// <summary>
@@ -994,8 +992,7 @@ public class GameController(
 
         if (instance.IsContainerOperationTooFrequent)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests))
-            { StatusCode = StatusCodes.Status429TooManyRequests };
+                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
 
         if (instance.Container is not null)
         {
@@ -1008,15 +1005,15 @@ public class GameController(
 
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
                 context.Game!, token) switch
-        {
-            null or (TaskStatus.Failed, null) => BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
-            (TaskStatus.Denied, null) => BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
-                    context.Game!.ContainerCountLimit])),
-            (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
-            _ => throw new UnreachableException()
-        };
+            {
+                null or (TaskStatus.Failed, null) => BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
+                (TaskStatus.Denied, null) => BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
+                        context.Game!.ContainerCountLimit])),
+                (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
+                _ => throw new UnreachableException()
+            };
     }
 
     /// <summary>
@@ -1111,8 +1108,7 @@ public class GameController(
 
         if (instance.IsContainerOperationTooFrequent)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests))
-            { StatusCode = StatusCodes.Status429TooManyRequests };
+                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
 
         var destroyId = instance.Container.ContainerId;
 
@@ -1145,8 +1141,7 @@ public class GameController(
     {
         ContextInfo res = new()
         {
-            User = await userManager.GetUserAsync(User),
-            Game = await gameRepository.GetGameById(id, token)
+            User = await userManager.GetUserAsync(User), Game = await gameRepository.GetGameById(id, token)
         };
 
         if (res.Game is null)

@@ -69,68 +69,7 @@ public static partial class Codec
             res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
         return res;
     }
-
-    /// <summary>
-    /// 将文件打包为 zip 文件
-    /// </summary>
-    /// <param name="files">文件列表</param>
-    /// <param name="basePath">根目录</param>
-    /// <param name="zipName">压缩包根目录</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public static async Task<Stream> ZipFilesAsync(IEnumerable<LocalFile> files, string basePath, string zipName,
-        CancellationToken token = default)
-    {
-        LocalFile[] localFiles = files as LocalFile[] ?? files.ToArray();
-        var size = localFiles.Select(f => f.FileSize).Sum();
-
-        Stream tmp = size <= 64 * 1024 * 1024
-            ? new MemoryStream()
-            : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
-
-        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
-
-        foreach (LocalFile file in localFiles)
-        {
-            ZipArchiveEntry entry = zip.CreateEntry(Path.Combine(zipName, file.Name), CompressionLevel.Optimal);
-            await using Stream entryStream = entry.Open();
-            await using FileStream fileStream = File.OpenRead(Path.Combine(basePath, file.Location, file.Hash));
-            await fileStream.CopyToAsync(entryStream, token);
-        }
-
-        await tmp.FlushAsync(token);
-        return tmp;
-    }
-
-    /// <summary>
-    /// 将文件夹打包为 zip 文件
-    /// </summary>
-    /// <param name="basePath">根目录</param>
-    /// <param name="zipName">压缩包根目录</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public static async Task<Stream> ZipFilesAsync(string basePath, string zipName, CancellationToken token = default)
-    {
-        List<FileRecord> records = FilePath.GetFileRecords(basePath, out var size);
-
-        Stream tmp = size <= 64 * 1024 * 1024
-            ? new MemoryStream()
-            : File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
-
-        using var zip = new ZipArchive(tmp, ZipArchiveMode.Create, true);
-
-        foreach (FileRecord file in records)
-        {
-            ZipArchiveEntry entry = zip.CreateEntry(Path.Combine(zipName, file.FileName), CompressionLevel.Optimal);
-            await using Stream entryStream = entry.Open();
-            await using FileStream fileStream = File.OpenRead(Path.Combine(basePath, file.FileName));
-            await fileStream.CopyToAsync(entryStream, token);
-        }
-
-        await tmp.FlushAsync(token);
-        return tmp;
-    }
-
+    
     /// <summary>
     /// Base64编解码
     /// </summary>

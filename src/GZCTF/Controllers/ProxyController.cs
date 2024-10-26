@@ -29,13 +29,13 @@ public class ProxyController(
     const int BufferSize = 1024 * 4;
     const uint ConnectionLimit = 64;
 
-    static readonly JsonSerializerOptions _jsonOptions =
+    static readonly JsonSerializerOptions JsonOptions =
         new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
 
-    static readonly DistributedCacheEntryOptions _storeOption =
+    static readonly DistributedCacheEntryOptions StoreOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
 
-    static readonly DistributedCacheEntryOptions _validOption =
+    static readonly DistributedCacheEntryOptions ValidOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
 
     readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
@@ -89,7 +89,7 @@ public class ProxyController(
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
 
-        var metadata = enable ? container.GenerateMetadata(_jsonOptions) : null;
+        var metadata = enable ? container.GenerateMetadata(JsonOptions) : null;
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
@@ -178,8 +178,7 @@ public class ProxyController(
                     TaskStatus.Failed, LogLevel.Debug);
                 return new JsonResult(new RequestResponse(
                     localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
-                    StatusCodes.Status418ImATeapot))
-                { StatusCode = StatusCodes.Status418ImATeapot };
+                    StatusCodes.Status418ImATeapot)) { StatusCode = StatusCodes.Status418ImATeapot };
             }
 
             using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
@@ -202,7 +201,8 @@ public class ProxyController(
         }
         finally
         {
-            stream?.Dispose();
+            if (stream is not null)
+                await stream.DisposeAsync();
         }
     }
 
@@ -242,11 +242,11 @@ public class ProxyController(
                     WebSocketReceiveResult status = await ws.ReceiveAsync(buffer, ct);
                     if (status.CloseStatus.HasValue)
                         break;
-                    if (status.Count > 0)
-                    {
-                        tx += (ulong)status.Count;
-                        await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
-                    }
+                    if (status.Count <= 0)
+                        continue;
+
+                    tx += (ulong)status.Count;
+                    await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
                 }
             }
             catch (TaskCanceledException) { }
@@ -297,7 +297,7 @@ public class ProxyController(
 
         var valid = await containerRepository.ValidateContainer(id, token);
 
-        await cache.SetAsync(key, BitConverter.GetBytes(valid ? 0 : -1), _validOption, token);
+        await cache.SetAsync(key, BitConverter.GetBytes(valid ? 0 : -1), ValidOption, token);
 
         return valid;
     }
@@ -319,7 +319,7 @@ public class ProxyController(
         if (count > ConnectionLimit)
             return false;
 
-        await cache.SetAsync(key, BitConverter.GetBytes(count + 1), _storeOption);
+        await cache.SetAsync(key, BitConverter.GetBytes(count + 1), StoreOption);
 
         return true;
     }
@@ -339,8 +339,8 @@ public class ProxyController(
         var count = BitConverter.ToInt32(bytes);
 
         if (count > 1)
-            await cache.SetAsync(key, BitConverter.GetBytes(count - 1), _storeOption);
+            await cache.SetAsync(key, BitConverter.GetBytes(count - 1), StoreOption);
         else
-            await cache.SetAsync(key, BitConverter.GetBytes(0), _validOption);
+            await cache.SetAsync(key, BitConverter.GetBytes(0), ValidOption);
     }
 }

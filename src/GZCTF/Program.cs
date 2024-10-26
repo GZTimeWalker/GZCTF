@@ -293,7 +293,9 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         [
             // See others in ResponseCompressionDefaults.MimeTypes
-            MediaTypeNames.Application.Pdf
+            MediaTypeNames.Application.Pdf,
+            // Transfer tar files with compression
+            "application/x-tar",
         ]
     );
     options.EnableForHttps = true;
