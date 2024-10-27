@@ -98,19 +98,19 @@ If you are interested in contributing to the translation, please refer to the [C
 
 ## Demo 🗿
 
-![index.webp](docs/public/images/index.webp)
-![game.challenges.webp](docs/public/images/game.challenges.webp)
-![game.scoreboard.webp](docs/public/images/game.scoreboard.webp)
-![admin.settings.webp](docs/public/images/admin.settings.webp)
-![admin.challenges.webp](docs/public/images/admin.challenges.webp)
-![admin.challenge.info.webp](docs/public/images/admin.challenge.info.webp)
-![admin.challenge.flags.webp](docs/public/images/admin.challenge.flags.webp)
-![admin.game.info.webp](docs/public/images/admin.game.info.webp)
-![admin.game.review.webp](docs/public/images/admin.game.review.webp)
-![admin.teams.webp](docs/public/images/admin.teams.webp)
-![admin.instances.webp](docs/public/images/admin.instances.webp)
-![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
-![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
+![index.webp](assets/images/index.webp)
+![game.challenges.webp](assets/images/game.challenges.webp)
+![game.scoreboard.webp](assets/images/game.scoreboard.webp)
+![admin.settings.webp](assets/images/admin.settings.webp)
+![admin.challenges.webp](assets/images/admin.challenges.webp)
+![admin.challenge.info.webp](assets/images/admin.challenge.info.webp)
+![admin.challenge.flags.webp](assets/images/admin.challenge.flags.webp)
+![admin.game.info.webp](assets/images/admin.game.info.webp)
+![admin.game.review.webp](assets/images/admin.game.review.webp)
+![admin.teams.webp](assets/images/admin.teams.webp)
+![admin.instances.webp](assets/images/admin.instances.webp)
+![monitor.game.events.webp](assets/images/monitor.game.events.webp)
+![monitor.game.submissions.webp](assets/images/monitor.game.submissions.webp)
 
 ## Contributors 👋
 
