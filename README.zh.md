@@ -20,7 +20,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 > [!IMPORTANT]
 >
-> **为了避免不必要的时间浪费，使用前请详细阅读使用文档：[https://docs.ctf.gzti.me/zh](https://docs.ctf.gzti.me/zh)**
+> **为了避免不必要的时间浪费，使用前请详细阅读使用文档：[https://ctf.gzti.me/](https://ctf.gzti.me/zh)**
 
 > [!WARNING]
 >
