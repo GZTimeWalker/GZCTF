@@ -1,18 +1,18 @@
 {
   "button": {
-    "create": "Create Team",
-    "disband": "Disband Team",
-    "edit": "Team Details",
-    "join": "Join Team",
-    "leave": "Quit Team",
-    "save": "Update Info"
+    "create": "Создать",
+    "disband": "Расформировать",
+    "edit": "Информация о команде",
+    "join": "Присоединиться",
+    "leave": "Покинуть",
+    "save": "Сохранить"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "Вы можете создать команду и пригласить других игроков. Каждый игрок может создать только одну команду.",
     "disband": {
       "confirm": {
-        "message": "Are you sure you want to disband team \"{{team}}\"?",
-        "title": "Confirm Disband Team"
+        "message": "Вы уверены, что хотите расформировать \"{{team}}\"?",
+        "title": "Подтверждение действия"
       }
     },
     "join": "Please get the invitation code from the team creator, use it to join the team.",
