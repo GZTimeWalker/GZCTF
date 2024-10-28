@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [0.24.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.4..v0.24.5) - 2024-10-27
+
+### ⛰️ Features
+
+- **(backend)** use tarball to send files in stream - ([e4521b](https://github.com/GZTimeWalker/GZCTF/commit/e4521b)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(container)** check if image is valid - ([a5e2a2](https://github.com/GZTimeWalker/GZCTF/commit/a5e2a2)) by **GZTime**
+
+---
 ## [0.24.4](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.3..v0.24.4) - 2024-10-17
 
 ### ⛰️ Features
