@@ -1,39 +1,39 @@
 {
   "button": {
-    "challenges": "Испытания",
+    "challenges": "Задания",
     "delete": {
-      "all_traffic": "Delete all listed traffic"
+      "all_traffic": "Удалить выбранный трафик"
     },
     "download": {
-      "all_traffic": "Download all listed traffic",
-      "scoreboard": "Scoreboard",
-      "submissionsheet": "Submissions"
+      "all_traffic": "Скачать выбранный трафик",
+      "scoreboard": "Рейтинг CSV",
+      "submissionsheet": "Отправления"
     },
     "finished": "Игра завершилась",
-    "hide_solved": "Спрятать решённые",
-    "join": "Присоединиться",
+    "hide_solved": "Спрятать решенные",
+    "join": "Вступить",
     "leave": "Покинуть",
-    "login_required": "Please Login",
-    "scoreboard": "Scoreboard",
-    "submit_writeup": "Submit Writeup",
+    "login_required": "Требуется авторизация",
+    "scoreboard": "Рейтинг",
+    "submit_writeup": "Отправить",
     "writeup": {
-      "upload": "Submit Writeup",
-      "uploading": "Отправка..."
+      "upload": "Загрузить",
+      "uploading": "Загрузка..."
     }
   },
   "content": {
     "all_solved": {
-      "comment": "Perhaps more difficult challenges are waiting for you...",
-      "title": "Все испытания пройдены!"
+      "comment": "Кажется, вы всё решили. Возможно, более сложные задания появятся позже...",
+      "title": "Все задания решены!"
     },
     "duration": "{{hours}} час(-а/-ов)",
     "end_at": "Ends at",
-    "end_time": "End Time",
-    "game_ended": "Ended",
-    "game_lasts_long": "The game will last for a long time",
+    "end_time": "Завершение",
+    "game_ended": "Завершено",
+    "game_lasts_long": "Эта игра ещё не скоро завершится",
     "hide_container_events": {
-      "description": "Hide container creation/destroying events",
-      "label": "Hide container events"
+      "description": "Спрятать события создания/уничтожения контейнеров",
+      "label": "Спрятать события контейнеров"
     },
     "join": {
       "confirm": "Confirm Registration",
@@ -52,7 +52,7 @@
       },
       "team": {
         "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
-        "label": "Select your team"
+        "label": "Выберите команду"
       },
       "title": "Registration Information"
     },
@@ -64,7 +64,7 @@
         "If the number of team members is zero after you quit, the team's participation data will be deleted."
       ]
     },
-    "no_challenge": "Ouch! No challenges available for this game.",
+    "no_challenge": "Жаль, но у этой игры ещё нет доступных заданий.",
     "no_cheat": {
       "comment": "It looks like everyone played fair!",
       "title": "No cheating detected yet"
@@ -83,7 +83,7 @@
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
     "start_at": "Starts at",
-    "start_time": "Start Time",
+    "start_time": "Начало",
     "team_view": {
       "description": "Display cheating information by teams",
       "label": "View as Team"
@@ -170,7 +170,7 @@
     "no_invite_code": "Invitation code cannot be empty",
     "no_organization": "Please select the division",
     "no_team": "Please select the team to participate with",
-    "not_started": "Game not yet started",
+    "not_started": "Игра ещё не началась",
     "select_chal_and_part": "Please select challenges and teams first",
     "suspended": "You have been banned",
     "traffic": {
@@ -192,7 +192,7 @@
       "not_started": {
         "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
         "mobile": "Please use desktop site to see the details of the game.",
-        "title": "Game not yet started"
+        "title": "Игра ещё не началась"
       },
       "pending": {
         "content": "Please wait for review results",
