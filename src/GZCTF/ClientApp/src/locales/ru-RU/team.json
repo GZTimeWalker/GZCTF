@@ -15,79 +15,79 @@
         "title": "Подтверждение действия"
       }
     },
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
+    "join": "Для присоединения к команде Вас необходимо получить код приглашения от капитана.",
     "kick": {
       "confirm": {
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
-        "title": "Confirm removing member."
+        "message": "Вы уверены, что хотите исключить \"{{user}}\"?",
+        "title": "Подтверждение действия"
       }
     },
     "leave": {
       "confirm": {
-        "message": "Are you sure you want to leave the team \"{{team}}\"?",
-        "title": "Confirm Quit"
+        "message": "Вы уверены, что хотите покинуть \"{{team}}\"?",
+        "title": "Подтверждение действия"
       }
     },
     "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+      "content": "Каждый игрок может создать только одну команду.<br/>Вы можете расформировать текущую команду и создать новую.",
+      "title": "Вы уже создали команду"
     },
     "role": {
-      "captain": "Captain",
-      "member": "Member"
+      "captain": "Капитан",
+      "member": "Участник"
     },
     "transfer": {
       "confirm": {
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
-        "title": "Confirm Transfer"
+        "message": "Вы уверены, что хотите передать права на команду \"{{team}}\" участнику \"{{user}}\"?",
+        "title": "Подтверждение действия"
       }
     }
   },
   "label": {
-    "bio": "Biography",
-    "invite_code": "Invitation Code",
-    "kick": "Kick out",
-    "members": "Members",
-    "name": "Team Name",
-    "role": "Role",
-    "transfer": "Transfer"
+    "bio": "О команде",
+    "invite_code": "Код приглашения",
+    "kick": "Исключить",
+    "members": "Участники",
+    "name": "Название команды",
+    "role": "Роль",
+    "transfer": "Передать права"
   },
   "notification": {
     "create": {
       "success": {
-        "message": "{{team}} has been created, invite your teammates now!",
-        "title": "Successfully created team"
+        "message": "Команда \"{{team}}\" создана. Чтобы пригласить новых участников, отправьте им код приглашения.",
+        "title": "Команда успешно создана"
       }
     },
     "disband": {
-      "success": "Successfully disbanded team"
+      "success": "Команда успешно расформирована"
     },
     "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "copied": "Код приглашения скопирован в буфер обмена",
+      "updated": "Код приглашения обновлён"
     },
     "join": {
-      "success": "Successfully joined team",
-      "wrong_invite_code": "Incorrect team invitation code"
+      "success": "Вы присоединились к команде",
+      "wrong_invite_code": "Некорректный код приглашения"
     },
     "kick": {
-      "success": "Successfully removed member"
+      "success": "Участник исключён"
     },
     "leave": {
-      "success": "Successfully quit"
+      "success": "Вы покинули команду"
     },
     "token": {
-      "copied": "Team token copied to clipboard"
+      "copied": "Токен команды скопирован в буфер обмена"
     },
     "transfer": {
-      "success": "Successfully transferred team"
+      "success": "Права переданы успешно"
     },
-    "updated": "Team information has been updated"
+    "updated": "Информация о команде обновлена"
   },
   "placeholder": {
-    "bio": "This team is lazy, nothing written"
+    "bio": "Пару строк о вашей команде"
   },
   "title": {
-    "index": "Team management"
+    "index": "Управление командой"
   }
 }
