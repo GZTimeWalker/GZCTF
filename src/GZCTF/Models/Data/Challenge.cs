@@ -29,14 +29,14 @@ public class Challenge
     /// 题目类别
     /// </summary>
     [Required]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<ChallengeCategory>))]
     public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
     /// 题目类型，创建后不可更改
     /// </summary>
     [Required]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<ChallengeType>))]
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>

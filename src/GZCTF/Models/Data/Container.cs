@@ -105,31 +105,29 @@ public class Container
     /// 生成容器的元数据信息
     /// </summary>
     /// <returns></returns>
-    public byte[]? GenerateMetadata(JsonSerializerOptions? options = null)
+    public byte[]? GenerateMetadata(JsonSerializerOptions options)
     {
         if (GameInstance is not null)
             return JsonSerializer.SerializeToUtf8Bytes(
-                new
-                {
-                    Challenge = GameInstance.Challenge.Title,
+                new GameMetadata(
+                    GameInstance.Challenge.Title,
                     GameInstance.ChallengeId,
-                    Team = GameInstance.Participation.Team.Name,
+                    GameInstance.Participation.Team.Name,
                     GameInstance.Participation.TeamId,
                     ContainerId,
                     GameInstance.FlagContext?.Flag
-                }, options);
+                ), options);
 
         if (ExerciseInstance is not null)
             return JsonSerializer.SerializeToUtf8Bytes(
-                new
-                {
-                    Challenge = ExerciseInstance.Exercise.Title,
+                new ExerciseMetadata(
+                    ExerciseInstance.Exercise.Title,
                     ExerciseInstance.ExerciseId,
                     ExerciseInstance.User.UserName,
                     ExerciseInstance.UserId,
                     ContainerId,
                     ExerciseInstance.FlagContext?.Flag
-                }, options);
+                ), options);
 
         return null;
     }
@@ -158,3 +156,6 @@ public class Container
 
     #endregion Db Relationship
 }
+
+internal record GameMetadata(string Challenge, int ChallengeId, string Team, int TeamId, string ContainerId, string? Flag);
+internal record ExerciseMetadata(string Challenge, int ExerciseId, string? UserName, Guid UserId, string ContainerId, string? Flag);

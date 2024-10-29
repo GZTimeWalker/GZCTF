@@ -24,6 +24,7 @@
     <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
     <EFOptimizeContext>true</EFOptimizeContext>
     <EFPrecompileQueriesStage>disabled</EFPrecompileQueriesStage>
+    <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
   </PropertyGroup>
 
   <ItemGroup>

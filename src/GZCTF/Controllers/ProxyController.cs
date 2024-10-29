@@ -30,7 +30,12 @@ public class ProxyController(
     const uint ConnectionLimit = 64;
 
     static readonly JsonSerializerOptions JsonOptions =
-        new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
+        new()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true,
+            TypeInfoResolver = new AppJsonSerializerContext()
+        };
 
     static readonly DistributedCacheEntryOptions StoreOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
@@ -178,7 +183,8 @@ public class ProxyController(
                     TaskStatus.Failed, LogLevel.Debug);
                 return new JsonResult(new RequestResponse(
                     localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
-                    StatusCodes.Status418ImATeapot)) { StatusCode = StatusCodes.Status418ImATeapot };
+                    StatusCodes.Status418ImATeapot))
+                { StatusCode = StatusCodes.Status418ImATeapot };
             }
 
             using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();

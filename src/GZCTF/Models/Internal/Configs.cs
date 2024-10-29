@@ -243,14 +243,14 @@ public class EmailConfig
 
 #region Container Provider
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ContainerProviderType>))]
 public enum ContainerProviderType
 {
     Docker,
     Kubernetes
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ContainerPortMappingType>))]
 public enum ContainerPortMappingType
 {
     // Use default to map the container port to a random port on the host
@@ -300,7 +300,7 @@ public class RegistryConfig
 
 #region Captcha Provider
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<CaptchaProvider>))]
 public enum CaptchaProvider
 {
     None,

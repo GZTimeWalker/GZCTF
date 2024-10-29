@@ -138,17 +138,14 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             return;
 
         var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
-        var dockerJsonObj = new
-        {
-            auths = new Dictionary<string, object>
+        var dockerJsonObj = new DockerRegistryOptions(
+            new Dictionary<string, DockerRegistryEntry>
             {
-                {
-                    registry.ServerAddress, new { auth, username = registry.UserName, password = registry.Password }
-                }
+                [registry.ServerAddress] = new DockerRegistryEntry(auth, registry.UserName, registry.Password)
             }
-        };
+        );
 
-        var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj);
+        var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj, AppJsonSerializerContext.Default.DockerRegistryOptions);
         var secret = new V1Secret
         {
             Metadata =
@@ -172,3 +169,6 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         }
     }
 }
+
+internal record DockerRegistryOptions(Dictionary<string, DockerRegistryEntry> auths);
+internal record DockerRegistryEntry(string auth, string? username, string? password);

@@ -49,6 +49,12 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 GZCTF.Program.Banner();
 
+#region Json
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.TypeInfoResolverChain.Insert(
+        0, AppJsonSerializerContext.Default));
+#endregion Json
+
 #region Host
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
