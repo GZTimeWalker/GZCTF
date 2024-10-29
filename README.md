@@ -20,7 +20,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 > [!IMPORTANT]
 >
-> **To save your effort, please read the documentation carefully before using: [https://docs.ctf.gzti.me/en](https://docs.ctf.gzti.me/en)**
+> **To save your effort, please read the documentation carefully before using: [https://gzctf.gzti.me/](https://gzctf.gzti.me/)**
 
 > [!WARNING]
 >
@@ -98,19 +98,19 @@ If you are interested in contributing to the translation, please refer to the [C
 
 ## Demo 🗿
 
-![index.webp](docs/public/images/index.webp)
-![game.challenges.webp](docs/public/images/game.challenges.webp)
-![game.scoreboard.webp](docs/public/images/game.scoreboard.webp)
-![admin.settings.webp](docs/public/images/admin.settings.webp)
-![admin.challenges.webp](docs/public/images/admin.challenges.webp)
-![admin.challenge.info.webp](docs/public/images/admin.challenge.info.webp)
-![admin.challenge.flags.webp](docs/public/images/admin.challenge.flags.webp)
-![admin.game.info.webp](docs/public/images/admin.game.info.webp)
-![admin.game.review.webp](docs/public/images/admin.game.review.webp)
-![admin.teams.webp](docs/public/images/admin.teams.webp)
-![admin.instances.webp](docs/public/images/admin.instances.webp)
-![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
-![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
+![index.webp](assets/images/index.webp)
+![game.challenges.webp](assets/images/game.challenges.webp)
+![game.scoreboard.webp](assets/images/game.scoreboard.webp)
+![admin.settings.webp](assets/images/admin.settings.webp)
+![admin.challenges.webp](assets/images/admin.challenges.webp)
+![admin.challenge.info.webp](assets/images/admin.challenge.info.webp)
+![admin.challenge.flags.webp](assets/images/admin.challenge.flags.webp)
+![admin.game.info.webp](assets/images/admin.game.info.webp)
+![admin.game.review.webp](assets/images/admin.game.review.webp)
+![admin.teams.webp](assets/images/admin.teams.webp)
+![admin.instances.webp](assets/images/admin.instances.webp)
+![monitor.game.events.webp](assets/images/monitor.game.events.webp)
+![monitor.game.submissions.webp](assets/images/monitor.game.submissions.webp)
 
 ## Contributors 👋
 
@@ -131,15 +131,16 @@ Some event organizers have already chosen GZCTF and successfully completed their
 ### Other Events
 
 - **THUCTF 2022: Tsinghua University Network Security Technology Challenge**
-- **ZJUCTF 2022/2023: Zhejiang University CTF**
+- **ZJUCTF 2022/2023/2024: Zhejiang University CTF**
 - **SUSCTF 2022/2023/2024: Southeast University Tiger Crouching, Dragon Coiling Cup Network Security Challenge**
-- **DIDCTF 2022/2023: Gansu Political and Legal University CTF**
+- **DIDCTF 2022/2023/2024: Gansu Political and Legal University CTF**
+- **W4terCTF [2023](https://github.com/W4terDr0p/W4terCTF-2023)/2024: Information Security Novice Competition of Sun Yat-sen University**
 - **Woodpecker: The First Network Security Practice Competition of Shandong University of Science and Technology**
 - **NPUCTF 2022: Northwestern Polytechnical University CTF**
 - **SkyNICO Network Space Security Tri-school Competition (Xiamen University of Technology, Fujian Normal University, Qilu University of Technology)**
 - **Hunan Police Academy Network Security Attack and Defense Competition**
-- **W4terCTF 2023: The First Information Security Novice Competition of Sun Yat-sen University**
 - **TongjiCTF 2023: The Fifth Network Security Competition of Tongji University**
+- **CatCTF 2023/2024: Network Security Competition of Tongji University (Elementary Level)**
 - **CTBUCTF 2023: The First Network Security Competition of Chongqing Technology and Business University**
 - **NPUCTF 2023 - The First Security Experimental Skills Competition of Northwestern Polytechnical University**
 - **XZCTF 2023: The First Network Security Novice Competition of Zhejiang Normal University Xingzhi College**

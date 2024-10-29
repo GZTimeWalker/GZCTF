@@ -68,7 +68,7 @@
         "label": "Informasi instance"
       },
       "no_container": {
-        "message": "Tantangan ini memerlukan pembuatan instance",
+        "message": "Challenge ini memerlukan pembuatan instance",
         "note": "Instance akan aktif selama {{min}} menit."
       },
       "open": {

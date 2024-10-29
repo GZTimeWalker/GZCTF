@@ -55,8 +55,16 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
         string[] supportedCultures = [
-            "en-US", "zh-CN", "zh-TW", "ja-JP", "id-ID",
-            "ko-KR", "ru-RU", "de-DE", "fr-FR", "es-ES"
+            "en-US",
+            "zh-CN",
+            "zh-TW",
+            "ja-JP",
+            "id-ID",
+            "ko-KR",
+            "ru-RU",
+            "de-DE",
+            "fr-FR",
+            "es-ES"
         ];
 
         options
@@ -285,7 +293,9 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         [
             // See others in ResponseCompressionDefaults.MimeTypes
-            MediaTypeNames.Application.Pdf
+            MediaTypeNames.Application.Pdf,
+            // Transfer tar files with compression
+            "application/x-tar",
         ]
     );
     options.EnableForHttps = true;

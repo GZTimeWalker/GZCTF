@@ -613,10 +613,8 @@ public class AdminController(
 
         WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
-        Stream stream = await Codec.ZipFilesAsync(wps.Select(p => p.File), FilePath.Uploads, filename, token);
-        stream.Seek(0, SeekOrigin.Begin);
 
-        return File(stream, "application/zip", $"{filename}.zip");
+        return new TarFilesResult(wps.Select(p => p.File), FilePath.Uploads, filename, token);
     }
 
     /// <summary>

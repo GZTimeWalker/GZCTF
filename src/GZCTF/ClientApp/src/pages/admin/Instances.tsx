@@ -326,7 +326,7 @@ const Instances: FC = () => {
                             }}
                           >
                             {`${inst.ip}:`}
-                            <Text span fw="bold" c="white">
+                            <Text span fw="bold">
                               {inst.port}
                             </Text>
                           </Text>

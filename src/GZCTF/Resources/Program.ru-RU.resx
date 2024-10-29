@@ -291,7 +291,7 @@
     <value>Обработчик обновления кэша остановлен</value>
   </data>
   <data name="Challenge_NotFound" xml:space="preserve">
-    <value>Задание не найдено</value>
+    <value>Испытание не найдено</value>
   </data>
   <data name="Config_GlobalConfigAdded" xml:space="preserve">
     <value>Добавлен параметр настроек платформы: {0} =&gt; {1}</value>
@@ -369,7 +369,7 @@
     <value>Режим контейнера：Docker Swarm Cluster Container Control</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>Could not parse image name `{0}'</value>
+    <value>Could not parse image name '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Docker Initialization Success ({0})</value>

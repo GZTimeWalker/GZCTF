@@ -34,16 +34,17 @@ public class KubernetesManager : IContainerManager
         CancellationToken token = default)
     {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
-        var authSecretName = _meta.AuthSecretName;
-        KubernetesConfig options = _meta.Config;
 
-        if (imageName is null)
+        if (string.IsNullOrWhiteSpace(imageName))
         {
             _logger.SystemLog(
                 Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
+
+        var authSecretName = _meta.AuthSecretName;
+        KubernetesConfig options = _meta.Config;
 
         var chalImage = imageName.ToValidRFC1123String("chal");
 
@@ -57,11 +58,11 @@ public class KubernetesManager : IContainerManager
                 NamespaceProperty = options.Namespace,
                 Labels = new Dictionary<string, string>
                 {
-                    ["ctf.gzti.me/ResourceId"] = name,
-                    ["ctf.gzti.me/Image"] = chalImage,
-                    ["ctf.gzti.me/TeamId"] = config.TeamId,
-                    ["ctf.gzti.me/UserId"] = config.UserId.ToString(),
-                    ["ctf.gzti.me/ChallengeId"] = config.ChallengeId.ToString()
+                    ["gzctf.gzti.me/ResourceId"] = name,
+                    ["gzctf.gzti.me/Image"] = chalImage,
+                    ["gzctf.gzti.me/TeamId"] = config.TeamId,
+                    ["gzctf.gzti.me/UserId"] = config.UserId.ToString(),
+                    ["gzctf.gzti.me/ChallengeId"] = config.ChallengeId.ToString()
                 }
             },
             Spec = new V1PodSpec
@@ -145,13 +146,13 @@ public class KubernetesManager : IContainerManager
             {
                 Name = name,
                 NamespaceProperty = _meta.Config.Namespace,
-                Labels = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
+                Labels = new Dictionary<string, string> { ["gzctf.gzti.me/ResourceId"] = name }
             },
             Spec = new V1ServiceSpec
             {
                 Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
                 Ports = [new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort)],
-                Selector = new Dictionary<string, string> { ["ctf.gzti.me/ResourceId"] = name }
+                Selector = new Dictionary<string, string> { ["gzctf.gzti.me/ResourceId"] = name }
             }
         };
 

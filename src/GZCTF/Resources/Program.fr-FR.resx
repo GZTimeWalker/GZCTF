@@ -369,7 +369,7 @@
     <value>Mode de conteneur : Docker Swarm Cluster Container Control</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>Impossible d'analyser le nom de l'image `{0}'</value>
+    <value>Impossible d'analyser le nom de l'image '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Initialisation de Docker réussie ({0})</value>

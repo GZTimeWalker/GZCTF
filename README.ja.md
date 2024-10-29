@@ -20,7 +20,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 > [!IMPORTANT]
 >
-> **お使いの前にドキュメントを読むことは極めてお勧めします：[https://docs.ctf.gzti.me/ja](https://docs.ctf.gzti.me/ja)**
+> **お使いの前にドキュメントを読むことは極めてお勧めします：[https://gzctf.gzti.me/](https://gzctf.gzti.me/ja)**
 
 > [!WARNING]
 >
@@ -98,19 +98,19 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 ## Demo 🗿
 
-![index.webp](docs/public/images/index.webp)
-![game.challenges.webp](docs/public/images/game.challenges.webp)
-![game.scoreboard.webp](docs/public/images/game.scoreboard.webp)
-![admin.settings.webp](docs/public/images/admin.settings.webp)
-![admin.challenges.webp](docs/public/images/admin.challenges.webp)
-![admin.challenge.info.webp](docs/public/images/admin.challenge.info.webp)
-![admin.challenge.flags.webp](docs/public/images/admin.challenge.flags.webp)
-![admin.game.info.webp](docs/public/images/admin.game.info.webp)
-![admin.game.review.webp](docs/public/images/admin.game.review.webp)
-![admin.teams.webp](docs/public/images/admin.teams.webp)
-![admin.instances.webp](docs/public/images/admin.instances.webp)
-![monitor.game.events.webp](docs/public/images/monitor.game.events.webp)
-![monitor.game.submissions.webp](docs/public/images/monitor.game.submissions.webp)
+![index.webp](assets/images/index.webp)
+![game.challenges.webp](assets/images/game.challenges.webp)
+![game.scoreboard.webp](assets/images/game.scoreboard.webp)
+![admin.settings.webp](assets/images/admin.settings.webp)
+![admin.challenges.webp](assets/images/admin.challenges.webp)
+![admin.challenge.info.webp](assets/images/admin.challenge.info.webp)
+![admin.challenge.flags.webp](assets/images/admin.challenge.flags.webp)
+![admin.game.info.webp](assets/images/admin.game.info.webp)
+![admin.game.review.webp](assets/images/admin.game.review.webp)
+![admin.teams.webp](assets/images/admin.teams.webp)
+![admin.instances.webp](assets/images/admin.instances.webp)
+![monitor.game.events.webp](assets/images/monitor.game.events.webp)
+![monitor.game.submissions.webp](assets/images/monitor.game.submissions.webp)
 
 ## 貢献者 👋
 
@@ -131,15 +131,16 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 ### その他のイベント
 
 - **清華大学ネットワークセキュリティ技術チャレンジ THUCTF 2022**
-- **浙江大学 ZJUCTF 2022/2023**
+- **浙江大学 ZJUCTF 2022/2023/2024**
 - **東南大学虎踞龍蟠杯ネットワークセキュリティチャレンジ SUSCTF 2022/2023/2024**
-- **甘粛政法大学 DIDCTF 2022/2023**
+- **甘粛政法大学 DIDCTF 2022/2023/2024**
 - **山東科技大学第一回ネットワークセキュリティ実践大会 woodpecker**
 - **西北工業大学 NPUCTF 2022**
 - **SkyNICO ネットワーク空間セキュリティ三校連合大会 (厦門理工学院、福建師範大学、齐鲁工業大学)**
 - **湖南警察学院ネットワークセキュリティ攻防大会**
-- **中山大学第一回情報セキュリティ新人戦 [W4terCTF 2023](https://github.com/W4terDr0p/W4terCTF-2023)**
+- **中山大学情報セキュリティ新人戦 W4terCTF [2023](https://github.com/W4terDr0p/W4terCTF-2023)/2024**
 - **同済大学第五回ネットワークセキュリティ大会 TongjiCTF 2023**
+- **同済大学ネットワークセキュリティ大会（新入生コンクール） CatCTF 2023/2024**
 - **重慶工商大学第一回ネットワークセキュリティ大会 CTBUCTF 2023**
 - **西北工業大学第一回セキュリティ実験技能大会 NPUCTF 2023**
 - **浙江師範大学行知学院第一回ネットワークセキュリティ新人戦 XZCTF 2023**

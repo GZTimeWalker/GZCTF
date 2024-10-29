@@ -71,6 +71,16 @@ public class SwarmManager : IContainerManager
     public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
         CancellationToken token = default)
     {
+        var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
+
+        if (string.IsNullOrWhiteSpace(imageName))
+        {
+            _logger.SystemLog(
+                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
+                TaskStatus.Failed, LogLevel.Warning);
+            return null;
+        }
+
         ServiceCreateParameters parameters = GetServiceCreateParameters(config);
         ServiceCreateResponse? serviceRes;
         var retry = 0;

@@ -1,4 +1,0 @@
-{
-  "docker-k8s": "Docker + K8s のデプロイ",
-  "k8s-only": "K8s のみのデプロイ"
-}

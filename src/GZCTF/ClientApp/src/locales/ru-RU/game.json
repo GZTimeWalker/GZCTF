@@ -1,6 +1,6 @@
 {
   "button": {
-    "challenges": "Challenges",
+    "challenges": "Испытания",
     "delete": {
       "all_traffic": "Delete all listed traffic"
     },
@@ -9,24 +9,24 @@
       "scoreboard": "Scoreboard",
       "submissionsheet": "Submissions"
     },
-    "finished": "Game Ended",
-    "hide_solved": "Hide Solved",
-    "join": "Join",
-    "leave": "Leave Game",
+    "finished": "Игра завершилась",
+    "hide_solved": "Спрятать решённые",
+    "join": "Присоединиться",
+    "leave": "Покинуть",
     "login_required": "Please Login",
     "scoreboard": "Scoreboard",
     "submit_writeup": "Submit Writeup",
     "writeup": {
       "upload": "Submit Writeup",
-      "uploading": "Uploading..."
+      "uploading": "Отправка..."
     }
   },
   "content": {
     "all_solved": {
       "comment": "Perhaps more difficult challenges are waiting for you...",
-      "title": "All challenges were solved!"
+      "title": "Все испытания пройдены!"
     },
-    "duration": "{{hours}} hour(s)",
+    "duration": "{{hours}} час(-а/-ов)",
     "end_at": "Ends at",
     "end_time": "End Time",
     "game_ended": "Ended",

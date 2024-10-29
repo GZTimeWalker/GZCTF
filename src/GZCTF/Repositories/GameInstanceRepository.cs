@@ -60,10 +60,7 @@ public class GameInstanceRepository(
                     instance.FlagContext = new()
                     {
                         Challenge = challenge,
-                        Flag
-                            // tiny probability will produce the same FLAG,
-                            // but this will not affect the correctness of the answer
-                            = challenge.GenerateDynamicFlag(part),
+                        Flag = challenge.GenerateDynamicFlag(part),
                         IsOccupied = true
                     };
                     break;
