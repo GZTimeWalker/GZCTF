@@ -2,10 +2,10 @@
   "button": {
     "challenges": "Задания",
     "delete": {
-      "all_traffic": "Удалить выбранный трафик"
+      "all_traffic": "Удалить перечисленный трафик"
     },
     "download": {
-      "all_traffic": "Скачать выбранный трафик",
+      "all_traffic": "Скачать перечисленный трафик",
       "scoreboard": "Рейтинг CSV",
       "submissionsheet": "Отправления"
     },
@@ -38,7 +38,7 @@
     "join": {
       "confirm": "Confirm Registration",
       "content": [
-        "Are you sure you want to register for this game?",
+        "Вы уверены, что хотите зарегистрироваться для участия в этой игре?",
         "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
         "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
