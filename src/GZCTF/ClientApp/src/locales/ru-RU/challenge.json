@@ -1,37 +1,37 @@
 {
   "bonus": {
-    "first_blood": "first blood",
-    "second_blood": "second blood",
-    "third_blood": "third blood"
+    "first_blood": "Первая кровь",
+    "second_blood": "Вторая кровь",
+    "third_blood": "Третья кровь"
   },
   "button": {
     "download": {
-      "attachment": "Download Attachment"
+      "attachment": "Скачать вложение"
     },
     "instance": {
-      "create": "Create",
-      "destroy": "Destroy",
-      "extend": "Extend"
+      "create": "Создать",
+      "destroy": "Уничтожить",
+      "extend": "Продлить"
     },
-    "submit_flag": "Submit Flag"
+    "submit_flag": "Отправить"
   },
   "category": {
-    "ai": "AI security",
-    "blockchain": "Blockchain",
-    "crypto": "Cryptography",
-    "forensics": "Digital forensics",
-    "hardware": "Hardware security",
-    "misc": "Miscellaneous",
-    "mobile": "Mobile security",
-    "osint": "Open-source intelligence",
-    "pentest": "Penetration testing",
-    "ppc": "Programming",
-    "pwn": "Binary exploitation",
-    "reverse": "Reverse engineering",
-    "web": "Web security"
+    "ai": "Искусственный интеллект",
+    "blockchain": "Блокчейн",
+    "crypto": "Криптография",
+    "forensics": "Цифровая криминалистика",
+    "hardware": "Безопасность аппаратных решений",
+    "misc": "Прочее",
+    "mobile": "Безопасность мобильных приложений",
+    "osint": "Разведка по открытым источникам",
+    "pentest": "Тестирование на проникновение",
+    "ppc": "Программирование",
+    "pwn": "Бинарная эксплуатация",
+    "reverse": "Обратная инженерия",
+    "web": "Безопасность web-приложений"
   },
   "content": {
-    "already_solved": "This challenge has been solved",
+    "already_solved": "Задание решено",
     "flag_placeholders": [
       "To be, or not to be, flag is the question",
       "All that glisters is not flag",
