@@ -249,7 +249,7 @@
     <value>Файл обновлен [{0}] {1} @ {2} байт</value>
   </data>
   <data name="Auth_AccessForbidden" xml:space="preserve">
-    <value>Доступ запрещён</value>
+    <value>Отказано в доступе</value>
   </data>
   <data name="Auth_LoginRequired" xml:space="preserve">
     <value>Сначала войдите в аккаунт</value>
@@ -297,7 +297,7 @@
     <value>Добавлен параметр настроек платформы: {0} =&gt; {1}</value>
   </data>
   <data name="Config_GlobalConfigUpdated" xml:space="preserve">
-    <value>Изменён параметр настроек платформы: {0} =&gt; {1}</value>
+    <value>Изменен параметр настроек платформы: {0} =&gt; {1}</value>
   </data>
   <data name="Config_InitializingDatabase" xml:space="preserve">
     <value>Инициализация базы данных...</value>
