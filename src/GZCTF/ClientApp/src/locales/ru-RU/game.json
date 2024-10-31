@@ -36,7 +36,7 @@
       "label": "Спрятать события контейнеров"
     },
     "join": {
-      "confirm": "Confirm Registration",
+      "confirm": "Подтвердите регистрацию",
       "content": [
         "Вы уверены, что хотите зарегистрироваться для участия в этой игре?",
         "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
@@ -44,11 +44,11 @@
       ],
       "invite_code": {
         "description": "This game is invitation-only. To participate in, please enter an invitation code.",
-        "label": "Please enter the invitation code"
+        "label": "Введите код приглашения"
       },
       "organization": {
         "description": "This game has multiple division available. Please select your division.",
-        "label": "Select Division"
+        "label": "Выберите подразделение"
       },
       "team": {
         "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
@@ -66,10 +66,10 @@
     },
     "no_challenge": "Жаль, но у этой игры ещё нет доступных заданий.",
     "no_cheat": {
-      "comment": "It looks like everyone played fair!",
-      "title": "No cheating detected yet"
+      "comment": "Похоже, все играют честно (наверное)!",
+      "title": "Флаг-шейринг не обнаружен"
     },
-    "no_notice": "Nothing here.",
+    "no_notice": "Уведомлений нет.",
     "no_traffic": {
       "comment": "Both platform and challenge need to be set up to enable capture",
       "title": "No challenge has traffic capture enabled"
@@ -78,7 +78,7 @@
     "remaining_time": "Remaining time",
     "scoreboard_not_ready": {
       "comment": "Patience is a virtue, please hold on…",
-      "title": "Loading challenges"
+      "title": "Загрузка рейтинга..."
     },
     "scoreboard_note": "Note: teams with same score are ranked by submission time.",
     "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
@@ -111,11 +111,11 @@
   },
   "event": {
     "answer": {
-      "accepted": "Flag accepted",
-      "cheat": "Cheating",
+      "accepted": "Флаг принят",
+      "cheat": "Флаг-шейринг",
       "not_found": "Unknown",
-      "submitted": "Successfully submitted",
-      "wrong": "Incorrect flag"
+      "submitted": "Успешно отправлено",
+      "wrong": "Неверный флаг"
     },
     "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
     "container": {
@@ -143,11 +143,11 @@
       "rank_total": "Overall",
       "score": "Score",
       "score_total": "Score",
-      "solved_count": "Solved",
-      "team": "Team",
-      "type": "Type"
+      "solved_count": "Решено",
+      "team": "Команда",
+      "type": "Тип"
     },
-    "traffic": "Traffic"
+    "traffic": "Трафик"
   },
   "notice": {
     "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
@@ -208,7 +208,7 @@
       },
       "team_required": {
         "content": "You didn't join any team, please create or join a team on the <1> Team Management </1> page.",
-        "title": "Unable to register at this time"
+        "title": "Невозможно зарегистрироваться"
       }
     },
     "status": {
@@ -220,26 +220,26 @@
   },
   "placeholder": {
     "no_solved": "Ouch! This team has not solved any challenges...",
-    "search_team": "Search Team"
+    "search_team": "Поиск команды"
   },
   "tab": {
-    "challenge": "Challenges",
+    "challenge": "Задания",
     "monitor": {
-      "cheatinfo": "Cheats",
-      "events": "Events",
-      "index": "Monitoring",
-      "submissions": "Submissions",
-      "traffic": "Traffics"
+      "cheatinfo": "Флаг-шейринг",
+      "events": "События",
+      "index": "Монитор",
+      "submissions": "Отправления",
+      "traffic": "Трафик"
     },
-    "scoreboard": "Scoreboard"
+    "scoreboard": "Рейтинг"
   },
   "tag": {
     "hidden": "Hidden",
-    "individual": "Personal",
-    "limited": "{{count}} players",
-    "multiplayer": "Team"
+    "individual": "Индивидуальный",
+    "limited": "{{count}} игроков",
+    "multiplayer": "Командный"
   },
   "title": {
-    "index": "Games"
+    "index": "Игры"
   }
 }
