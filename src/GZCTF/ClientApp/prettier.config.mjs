@@ -8,10 +8,7 @@ export default {
   printWidth: 100,
   htmlWhitespaceSensitivity: 'ignore',
   jsonRecursiveSort: true,
-  plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-sort-json'
-  ],
+  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-sort-json'],
   importOrder: [
     '<THIRD_PARTY_MODULES>',
     '^@Components/(.*)$',

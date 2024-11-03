@@ -178,12 +178,11 @@ export interface CustomColor {
 }
 
 export const useCustomColor = () => {
-  const [customColor, setCustomColor] = useLocalStorage<CustomColor>({
+  const [customColor, setCustomColorInner] = useLocalStorage<CustomColor>({
     key: 'custom-theme',
     defaultValue: { provider: ColorProvider.Managed, color: '' } as CustomColor,
     getInitialValueInEffect: false,
     serialize: (value: CustomColor) => {
-      console.log('Store', value)
       if (value.provider === ColorProvider.Custom && /^#[0-9A-F]{6}$/i.test(value.color)) {
         return value.color
       } else if (value.provider === ColorProvider.Managed) {
@@ -204,6 +203,13 @@ export const useCustomColor = () => {
       }
     },
   })
+
+  const setCustomColor = (color: CustomColor) => {
+    // validate custom color, do not save invalid values
+    if (color.provider === ColorProvider.Custom && !/^#[0-9A-F]{6}$/i.test(color.color)) return
+
+    setCustomColorInner(color)
+  }
 
   // color: null for use platform color, 'brand' for default theme
   //        or hex color string for custom color

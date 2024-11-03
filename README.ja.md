@@ -139,6 +139,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **SkyNICO ネットワーク空間セキュリティ三校連合大会 (厦門理工学院、福建師範大学、齐鲁工業大学)**
 - **湖南警察学院ネットワークセキュリティ攻防大会**
 - **中山大学情報セキュリティ新人戦 W4terCTF [2023](https://github.com/W4terDr0p/W4terCTF-2023)/2024**
+- **浙江師範大学 ZJNUCTF [2023](https://github.com/A1natas/zjnuctf-school-contest-2023)/[2024](https://github.com/A1natas/zjnuctf-school-contest-2024)**
 - **同済大学第五回ネットワークセキュリティ大会 TongjiCTF 2023**
 - **同済大学ネットワークセキュリティ大会（新入生コンクール） CatCTF 2023/2024**
 - **重慶工商大学第一回ネットワークセキュリティ大会 CTBUCTF 2023**
@@ -153,6 +154,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
 - **北京航空航天大学 BUAACTF 2024**
 - **曲阜師範大学第 1 回“曲 star”サイバーセキュリティスキルコンテスト**
+- **成都理工大学第4回、第5回情報セキュリティ・コンペティション DinoCTF**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 

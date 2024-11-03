@@ -135,6 +135,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - **东南大学虎踞龙蟠杯网络安全挑战赛 SUSCTF 2022/2023/2024**
 - **甘肃政法大学 DIDCTF 2022/2023/2024**
 - **中山大学信息安全新手赛 W4terCTF [2023](https://github.com/W4terDr0p/W4terCTF-2023)/2024**
+- **浙江师范大学 ZJNUCTF [2023](https://github.com/A1natas/zjnuctf-school-contest-2023)/[2024](https://github.com/A1natas/zjnuctf-school-contest-2024)**
 - **山东科技大学第一届网络安全实践大赛 woodpecker**
 - **西北工业大学 NPUCTF 2022**
 - **SkyNICO 网络空间安全三校联赛 (厦门理工学院、福建师范大学、齐鲁工业大学)**
@@ -154,6 +155,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - **北京经济管理职业学院 首届 BIEM“信安杯”CTF 竞赛**
 - **北京航空航天大学 BUAACTF 2024**
 - **曲阜师范大学第一届“曲 star”网络安全技能竞赛**
+- **成都理工大学第四届/第五届信安大挑战 DinoCTF**
 
 _排名不分先后，欢迎提交 PR 进行补充。_
 

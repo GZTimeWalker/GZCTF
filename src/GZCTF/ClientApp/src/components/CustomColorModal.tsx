@@ -13,8 +13,10 @@ import {
 import { useDebouncedValue } from '@mantine/hooks'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import ColorPreview from '@Components/ColorPreview'
 import { ColorProvider, CustomColor, useCustomColor } from '@Utils/ThemeOverride'
-import ColorPreview from './ColorPreview'
+
+const colorRegex = /^#[0-9A-F]{6}$/i
 
 const CustomColorModal: FC<ModalProps> = (props) => {
   const { customColor, setCustomColor } = useCustomColor()
@@ -24,8 +26,10 @@ const CustomColorModal: FC<ModalProps> = (props) => {
 
   const { t } = useTranslation()
 
+  const valid = colorRegex.test(color.color)
+
   const colors =
-    color.provider === ColorProvider.Custom && /^#[0-9A-F]{6}$/i.test(color.color)
+    color.provider === ColorProvider.Custom && valid
       ? generateColors(color.color)
       : theme.colors.brand
 
@@ -82,6 +86,7 @@ const CustomColorModal: FC<ModalProps> = (props) => {
           description={t('common.content.color.custom.description')}
           placeholder={t('common.content.color.custom.placeholder')}
           disabled={color.provider !== ColorProvider.Custom}
+          error={color.provider === ColorProvider.Custom && !valid}
           value={color.provider === ColorProvider.Custom ? color.color : ''}
           onChange={(value) => setColor({ ...color, color: value })}
         />
