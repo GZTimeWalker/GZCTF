@@ -155,6 +155,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **BIEM CTF 2024：Beijing Institute Of Economics And Management - The first BIEM "Xin'an Cup" CTF competition**
 - **BUAACTF 2024: Beihang University CTF**
 - **The first "Qu STAR" network security skills competition of Qufu Normal University**
+- **DinoCTF: The 4th & 5th Information Security Competition of Chengdu University of Technology**
 
 _These list is not in any particular order, and PRs are welcome for additions._
 
