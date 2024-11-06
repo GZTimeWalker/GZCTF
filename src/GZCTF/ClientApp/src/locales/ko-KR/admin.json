@@ -1,37 +1,37 @@
 {
   "button": {
-    "back": "Go Back",
+    "back": "뒤로 가기",
     "challenges": {
       "attachment": {
-        "save_url": "Save Link",
-        "upload": "Upload",
-        "uploading": "Uploading..."
+        "save_url": "링크 저장",
+        "upload": "업로드",
+        "uploading": "업로드 중..."
       },
       "bonus": "Triple Blood Bonus",
-      "delete": "Delete",
-      "disable": "Disable",
-      "edit": "Edit Challenge",
-      "edit_more": "Edit Flags",
-      "enable": "Enable",
+      "delete": "삭제",
+      "disable": "해제",
+      "edit": "문제 수정",
+      "edit_more": "플래그 수정",
+      "enable": "활성화",
       "flag": {
         "add": {
-          "dynamic": "Upload Attachments",
-          "normal": "Add Flag",
-          "remote": "Add Remote"
+          "dynamic": "첨부 파일",
+          "normal": "플래그 추가",
+          "remote": "서버 추가"
         },
-        "delete": "Delete",
-        "save": "Save Template"
+        "delete": "삭제",
+        "save": "템플릿 저장"
       },
       "hint": {
-        "add": "Add Hint"
+        "add": "힌트 추가"
       },
-      "new": "New Challenge",
-      "next": "Next",
-      "preview": "Preview",
-      "previous": "Previous",
+      "new": "문제 추가",
+      "next": "다음",
+      "preview": "미리보기",
+      "previous": "이전",
       "test_container": {
-        "create": "Create",
-        "destroy": "Destroy"
+        "create": "생성",
+        "destroy": "삭제"
       },
       "update_accept_count": "Update AC Counter"
     },
@@ -42,25 +42,25 @@
         }
       },
       "copy_public_key": "Copy Public Key",
-      "delete": "Delete",
+      "delete": "삭제",
       "new": "New Game"
     },
     "notices": {
-      "delete": "Delete",
-      "edit": "Edit Notice",
-      "new": "New Notice"
+      "delete": "삭제",
+      "edit": "알림 수정",
+      "new": "알림 생성"
     },
-    "save": "Save Changes",
+    "save": "저장",
     "teams": {
-      "do_lock": "Lock",
-      "do_unlock": "Unlock",
-      "edit": "Edit Team"
+      "do_lock": "잠금",
+      "do_unlock": "잠금해제",
+      "edit": "팀 편집"
     },
     "users": {
-      "edit": "Edit User"
+      "edit": "사용자 편집"
     },
     "writeups": {
-      "download_all": "Download All"
+      "download_all": "모두 설치"
     }
   },
   "content": {
@@ -68,7 +68,7 @@
       "challenges": {
         "attachment": {
           "clear": {
-            "description": "Are you sure you want to remove the attachment of this challenge?",
+            "description": "정말로 ",
             "title": "Clear Attachment"
           },
           "instruction": {
