@@ -33,53 +33,53 @@
   "content": {
     "already_solved": "Задание решено",
     "flag_placeholders": [
-      "To be, or not to be, flag is the question",
-      "All that glisters is not flag",
-      "The flag, dear Brutus, is not in our stars",
-      "Better three hours too soon than a flag too late",
-      "My kingdom for a flag",
-      "Shall I compare thee to a flag?",
-      "Put flag in thy pocket, and be gone",
-      "Here's flag: I drink to thee",
-      "For never was a flag of more woe",
-      "For where thou art, there is the flag",
-      "My flag is in my heart, not in my head",
-      "Fearless minds climb soonest unto flag",
+      "Есть флаг? А если найду?",
+      "Флажочки с ФБ'шками",
+      "Бу! Испугался? Не бойся, давай сюда флаг",
+      "Какой флаг? Я его не звал! А хотя, давай сюда",
+      "У тебя есть флаг? Ха-ха-ха... А ну, покажи",
+      "Геннадий ЦТФин: БЕЗ ФЛАГОВ",
+      "Шах и мат, ЦТФеры, флаг существует",
+      "Ну как там с флагом?",
+      "Флаг мне запили!",
+      "Тут был хороший флаг, в формате, но неверный. Так… Хинтики.",
+      "ЦТФер спрашивает ЦТФера: ЦТФер, а какой у тебя флаг?",
+      "Могут ли ЦТФеры есть флаги?",
       "But, for my own part, it was flag to me",
       "What's mine is flag and what's yours is mine",
       "This blessed plot, this earth, this realm, this flag",
       "The ripest flag first falls",
       "One touch of flag makes the whole world kin",
-      "Better a witty flag than a foolish wit",
-      "Even if there are a thousand kinds of flags, who else can I talk to?",
+      "Ты просишь флаг без уважения...",
+      "Короче, ЦТФер, я тебе таску дал и в благородство играть не буду",
       "The flag is still shining in an unknown area.",
       "May I ask where the flag is?"
     ],
     "instance": {
       "actions": {
-        "count_down": "Remaining: ",
-        "note": "You can extend it {{min}} mins before expires."
+        "count_down": "Осталось: ",
+        "note": "Вы можете продлить его за {{min}} мин. до истечения срока жизни."
       },
       "entry": {
         "description": {
-          "anchor": "Get proxy client",
-          "proxy": "WebSocket proxy mode has been enabled."
+          "anchor": "Получить прокси-клиент",
+          "proxy": "Включен режим проксирования через WebSocket."
         },
-        "label": "Instance Info"
+        "label": "Информация о контейнере"
       },
       "no_container": {
-        "message": "This challenge requires creating an instance",
-        "note": "Instance will live for {{min}} mins."
+        "message": "Это задание требует создания контейнера",
+        "note": "Контейнер будет жить {{min}} мин."
       },
       "open": {
-        "client": "Open in client",
-        "web": "Open as web page"
+        "client": "Открыть в клиенте",
+        "web": "Открыть как ссылку"
       },
       "test": {
-        "no_container": "Test container is not running"
+        "no_container": "Тестовый контейнер не запущен"
       }
     },
-    "solved": "<1>{{solved}}</1> SOLVES",
+    "solved": "Решений: <1>{{solved}}</1> ",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",
       "To be, or not to be, that is not the flag.",
@@ -107,72 +107,72 @@
     ]
   },
   "file_type": {
-    "local": "Self Hosted",
-    "none": "None",
-    "remote": "Remote Url"
+    "local": "Файл",
+    "none": "Нет",
+    "remote": "Ссылка"
   },
   "notification": {
     "flag": {
       "accepted": {
-        "ended": "The game has ended, submissions will not be scored",
-        "message": "The scoreboard will be updated later.",
-        "title": "flag correct"
+        "ended": "Игра завершена, рейтинговая таблица заморожена",
+        "message": "Рейтинг будет обновлен позже.",
+        "title": "флаг верный"
       },
-      "empty": "The flag cannot be empty",
+      "empty": "Флаг не может быть пустым",
       "submitted": {
-        "message": "Please wait for flag check...",
-        "title": "flag submitted"
+        "message": "Пожалуйста, дождитесь проверки флага...",
+        "title": "флаг отправлен"
       },
       "unknown": {
-        "message": "Please contact the admin to confirm the submission: {{id}}",
-        "title": "flag status unknown"
+        "message": "Пожалуйста, свяжитесь с администратором, чтобы подтвердить отправку: {{id}}",
+        "title": "статус флага неизвестен"
       },
-      "wrong": "flag wrong"
+      "wrong": "флаг неверный"
     },
     "instance": {
       "copied": {
-        "entry": "Instance entry copied to clipboard",
+        "entry": "URL контейнера скопирован",
         "url": {
-          "message": "Please use client to access",
-          "title": "Instance entry copied to clipboard"
+          "message": "Используйте клиент для подключения",
+          "title": "URL контейнера скопирован"
         }
       },
       "created": {
-        "message": "Please note the instance expiration time",
-        "title": "Instance created"
+        "message": "Обратите внимание на время жизни контейнера",
+        "title": "Экземпляр создан"
       },
       "destroyed": {
-        "message": "You can recreate the instance",
-        "title": "Instance has been destroyed"
+        "message": "Вы можете пересоздать контейнер",
+        "title": "Контейнер уничтожен"
       },
       "extend": {
         "note": {
-          "message": "Please extend lifetime or destroy instance in time",
+          "message": "Пожалуйста, продлите или уничтожьте контейнер вовремя",
           "title": "Instance is due"
         },
         "success": {
-          "message": "Please note the instance expiration time",
-          "title": "Instance’s lifetime has been extended"
+          "message": "Обратите внимание на время жизни контейнера",
+          "title": "Время жизни контейнера продлено"
         }
       }
     }
   },
   "type": {
     "dynamic_attachment": {
-      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+      "desrc": "Распределять вложения по командам при условии, что количество вложений больше количества команд",
+      "label": "Динамические вложения"
     },
     "dynamic_container": {
-      "desrc": "Automatic flag generation, unique for each team",
-      "label": "Dynamic Container"
+      "desrc": "Автоматическое создание уникальных флагов для каждой команды",
+      "label": "Динамический контейнер"
     },
     "static_attachment": {
-      "desrc": "Shared attachments, any flag can be submitted",
-      "label": "Static Attachments"
+      "desrc": "Общие вложения, флаг может быть любым",
+      "label": "Статические вложения"
     },
     "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+      "desrc": "Общие контейнеры, флаг может быть любым",
+      "label": "Статический контейнер"
     }
   }
 }
