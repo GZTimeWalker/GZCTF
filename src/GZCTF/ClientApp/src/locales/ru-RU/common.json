@@ -1,129 +1,129 @@
 {
   "avatar": {
-    "save": "Save Avatar",
-    "upload_failed": "Failed to update avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar"
+    "save": "Сохранить",
+    "upload_failed": "Не удалось обновить аватар",
+    "uploaded": "Аватар обновлен",
+    "uploading": "Загрузка аватара"
   },
   "button": {
-    "copy": "Copy to Clipboard",
-    "reset": "Reset",
-    "select_file": "Select File",
-    "try_again": "Try Again",
-    "uploading": "Uploading"
+    "copy": "Скопировать",
+    "reset": "Сбросить",
+    "select_file": "Выбрать файл",
+    "try_again": "Повторить",
+    "uploading": "Загрузка"
   },
   "content": {
     "404": {
-      "text": "A desolation, why is it here",
-      "title": "Page does not exist"
+      "text": "Вы точно хотели попасть именно сюда?",
+      "title": "Страница не существует"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "slogan": "Играй в удовольствие, а не ради денег"
     },
     "color": {
       "custom": {
-        "description": "Select the base color you want to use",
-        "label": "Custom Base Color",
-        "placeholder": "Use default color"
+        "description": "Выберите основной цвет, который хотите использовать",
+        "label": "Основной цвет",
+        "placeholder": "Использовать цвета по умолчанию"
       },
       "palette": {
-        "description": "Color palette generated from the custom base color",
-        "label": "Color Palette"
+        "description": "Цветовая палитра, созданная из основного цвета",
+        "label": "Цветовая палитра"
       },
       "provider": {
-        "custom": "Customized",
-        "default": "Default",
-        "description": "Select how the base color is determined",
-        "label": "Theme color provider",
-        "managed": "Admin Provided"
+        "custom": "Настраиваемая",
+        "default": "По умолчанию",
+        "description": "Выберите, как определяется основной цвет",
+        "label": "Провайдер цветовой схемы",
+        "managed": "Поставляется администратором"
       },
-      "title": "Customize Color"
+      "title": "Настроить цветовую схему"
     },
     "drop_zone": {
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB",
+      "content": "Перетащите изображение или нажмите здесь для выбора {{type}}",
+      "limit": "Размер изображения должен быть меньше 3МБ",
       "type": {
-        "avatar": "avatar",
-        "poster": "poster"
+        "avatar": "аватар",
+        "poster": "постер"
       }
     },
-    "external_link": "External Link",
+    "external_link": "Внешняя ссылка",
     "home": {
-      "recent_games": "Recent Games"
+      "recent_games": "Последние игры"
     },
-    "no_data": "No data",
-    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "no_data": "Нет данных",
+    "report_error": "Пожалуйста, сообщите об этой ошибке администратору, если вы считаете, что это баг",
     "wider": {
-      "text": "Try to use a wider device",
-      "title": "Not wide enough"
+      "text": "Для просмотра страницы необходим более широкий экран",
+      "title": "Недостаточно ширины"
     }
   },
   "download": {
-    "failed": "Failed to download",
-    "started": "Downloading",
-    "success": "Downloaded"
+    "failed": "Ошибка при загрузке",
+    "started": "Загрузка...",
+    "success": "Загружено"
   },
   "email": {
     "sent": {
-      "message": "Please check your email and spam mail!",
-      "title": "Email Sent"
+      "message": "Проверьте входящую почту и папку \"Спам\"",
+      "title": "Письмо отправлено"
     }
   },
   "error": {
-    "check_input": "Please check your input",
-    "empty": "Content can't be empty",
-    "encountered": "An error has occurred",
+    "check_input": "Проверьте введенные данные",
+    "empty": "Содержимое не может быть пустым",
+    "encountered": "Произошла ошибка",
     "file_invalid": {
-      "message": "Please check file format and size",
-      "title": "Failed to load file"
+      "message": "Проверьте формат и размер файла",
+      "title": "Не удалось загрузить файл"
     },
-    "invalid_username_or_password": "Incorrect username or password",
-    "no_change": "There seems to be no change",
-    "param_error": "Incorrect parameter, please check",
-    "param_invalid": "Invalid parameter",
-    "param_missing": "Missing parameter",
-    "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too many requests",
-    "try_later": "Please try again later",
-    "unknown": "Unknown error"
+    "invalid_username_or_password": "Неверное имя пользователя или пароль",
+    "no_change": "Похоже, что ничего не изменилось",
+    "param_error": "Некорректный параметр",
+    "param_invalid": "Недопустимый параметр",
+    "param_missing": "Отсутствует параметр",
+    "param_unknown": "Неизвестный параметр",
+    "request_too_frequent": "Слишком много запросов",
+    "try_later": "Пожалуйста, попробуйте позже",
+    "unknown": "Неизвестная ошибка"
   },
   "label": {
-    "challenge": "Challenge",
-    "flag": "flag",
-    "game": "Game",
+    "challenge": "Задание",
+    "flag": "флаг",
+    "game": "Игра",
     "ip": "IP",
-    "team": "Team",
-    "time": "Time",
-    "user": "User"
+    "team": "Команда",
+    "time": "Время",
+    "user": "Пользователь"
   },
   "modal": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm Update",
-    "delete": "Delete"
+    "cancel": "Отмена",
+    "confirm": "Подтверждение",
+    "confirm_delete": "Подтверждение удаления",
+    "confirm_update": "Подтверждение обновления",
+    "delete": "Удаление"
   },
   "tab": {
-    "about": "About",
+    "about": "Информация",
     "account": {
-      "clean_cache": "Clear Cache",
-      "login": "Login",
-      "logout": "Logout",
-      "profile": "Profile"
+      "clean_cache": "Очистить кэш",
+      "login": "Войти",
+      "logout": "Выйти",
+      "profile": "Профиль"
     },
-    "admin": "Admin",
-    "game": "Games",
-    "home": "Home",
-    "post": "Posts",
-    "team": "Team",
+    "admin": "Управление",
+    "game": "Игры",
+    "home": "Главная",
+    "post": "Посты",
+    "team": "Команда",
     "theme": {
-      "dark": "dark mode",
-      "light": "light mode",
-      "switch_to": "Switch to {{theme}}"
+      "dark": "темный режим",
+      "light": "светлый режим",
+      "switch_to": "Переключиться на {{theme}}"
     }
   },
   "title": {
-    "404": "The Nowhere",
-    "about": "About"
+    "404": "Не найдено",
+    "about": "Информация"
   }
 }
