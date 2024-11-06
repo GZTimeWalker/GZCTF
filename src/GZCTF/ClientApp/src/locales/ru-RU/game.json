@@ -27,7 +27,7 @@
       "title": "Все задания решены!"
     },
     "duration": "{{hours}} час(-а/-ов)",
-    "end_at": "Ends at",
+    "end_at": "Завершится",
     "end_time": "Завершение",
     "game_ended": "Завершено",
     "game_lasts_long": "Эта игра ещё не скоро завершится",
@@ -39,29 +39,29 @@
       "confirm": "Подтвердите регистрацию",
       "content": [
         "Вы уверены, что хотите зарегистрироваться для участия в этой игре?",
-        "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
-        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
+        "После успешной регистрации на соревнование и прохождения отбора, команда будет заблокирована и <strong>вы больше не сможете удалять участников из команды.</strong> Команда будет разблокирована после окончания соревнования или после отклонения запроса на участие.",
+        "Ограничение по количеству игроков относится к количеству пользователей, которые решили участвовать в конкретной команде, <strong>независимо от того, с какой командой вы решили играть</strong>"
       ],
       "invite_code": {
-        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
+        "description": "Эта игра приватная. Чтобы принять участие, введите код приглашения.",
         "label": "Введите код приглашения"
       },
       "organization": {
-        "description": "This game has multiple division available. Please select your division.",
-        "label": "Выберите подразделение"
+        "description": "В этой игре доступно несколько дивизионов. Пожалуйста, выберите свой дивизион.",
+        "label": "Выберите дивизион"
       },
       "team": {
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
+        "description": "Пожалуйста, выберите команду, с которой вы хотите участвовать в этой игре. Этот выбор не может быть изменен после одобрения заявки на участие.",
         "label": "Выберите команду"
       },
-      "title": "Registration Information"
+      "title": "Информация о регистрации"
     },
-    "joined_status": "<strong>{{count}}</strong> teams have already joined",
+    "joined_status": "Команд участвует: <strong>{{count}}</strong>",
     "leave": {
-      "confirm": "Confirm quitting",
+      "confirm": "Подтвердите выход",
       "content": [
-        "Are you sure you want to quit this game?",
-        "If the number of team members is zero after you quit, the team's participation data will be deleted."
+        "Вы уверены, что хотите покинуть эту игру?",
+        "Участие команды будет аннулировано, если Вы единственный игрок, участвующий в этой игре от этой команды."
       ]
     },
     "no_challenge": "Жаль, но у этой игры ещё нет доступных заданий.",
@@ -71,28 +71,28 @@
     },
     "no_notice": "Уведомлений нет.",
     "no_traffic": {
-      "comment": "Both platform and challenge need to be set up to enable capture",
-      "title": "No challenge has traffic capture enabled"
+      "comment": "Для того чтобы включить захват трафика, необходимо настроить как платформу, так и задание",
+      "title": "Нет заданий с включенным захватом трафика"
     },
-    "remaining_duration": "{{hours}}h left",
-    "remaining_time": "Remaining time",
+    "remaining_duration": "Часов осталось: {{hours}}",
+    "remaining_time": "Оставшееся время",
     "scoreboard_not_ready": {
-      "comment": "Patience is a virtue, please hold on…",
+      "comment": "Терпение - это добродетель, пожалуйста, подождите…",
       "title": "Загрузка рейтинга..."
     },
-    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
-    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
-    "start_at": "Starts at",
+    "scoreboard_note": "Команды с одинаковым счетом ранжируются по времени сдачи.",
+    "scoreboard_tip": "Совет: Вы можете листать таблицу с помощью стрелок на клавиатуре!",
+    "start_at": "Начнется",
     "start_time": "Начало",
     "team_view": {
-      "description": "Display cheating information by teams",
-      "label": "View as Team"
+      "description": "Отображать команды вместо игроков",
+      "label": "Просмотр по командам"
     },
-    "total_duration": "{{hours}}h in total",
-    "total_time": "Duration",
+    "total_duration": "Всего: {{hours}}",
+    "total_time": "Длительность",
     "traffic": {
-      "delete_confirm": "Delete this traffic file?",
-      "deleted_all_confirm": "Delete all listed traffic?"
+      "delete_confirm": "Удалить этот файл трафика?",
+      "deleted_all_confirm": "Удалить весь перечисленный трафик?"
     },
     "writeup": {
       "current": "Current Writeup",
@@ -136,13 +136,13 @@
       "events": "News",
       "game": "Notice"
     },
-    "score": "Score",
+    "score": "Счёт",
     "score_formatter": "{value} pts",
     "score_table": {
       "rank_organization": "Rank",
       "rank_total": "Overall",
-      "score": "Score",
-      "score_total": "Score",
+      "score": "Счёт",
+      "score_total": "Счёт",
       "solved_count": "Решено",
       "team": "Команда",
       "type": "Тип"
