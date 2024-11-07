@@ -139,11 +139,11 @@
     "score": "Счёт",
     "score_formatter": "{value} очков",
     "score_table": {
-      "rank_organization": "Rank",
-      "rank_total": "Overall",
+      "rank_organization": "Место",
+      "rank_total": "№",
       "score": "Счёт",
       "score_total": "Счёт",
-      "solved_count": "Решено",
+      "solved_count": "Решений",
       "team": "Команда",
       "type": "Тип"
     },
