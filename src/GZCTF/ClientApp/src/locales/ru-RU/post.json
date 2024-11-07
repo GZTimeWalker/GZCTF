@@ -9,7 +9,7 @@
   "content": {
     "delete": "Вы уверены, что хотите удалить запись {{title}}?",
     "details": "Подробнее",
-    "metadata": "Опубликовано {{author}}, {{date}}",
+    "metadata": "Опубликовал {{author}}, {{date}}",
     "pinned": "[Закреплено]",
     "updated": {
       "content": "Запись была изменена. Сохранить?",
