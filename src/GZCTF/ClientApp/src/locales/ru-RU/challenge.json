@@ -45,15 +45,15 @@
       "Тут был хороший флаг, в формате, но неверный. Так… Хинтики.",
       "ЦТФер спрашивает ЦТФера: ЦТФер, а какой у тебя флаг?",
       "Могут ли ЦТФеры есть флаги?",
-      "But, for my own part, it was flag to me",
-      "What's mine is flag and what's yours is mine",
-      "This blessed plot, this earth, this realm, this flag",
-      "The ripest flag first falls",
-      "One touch of flag makes the whole world kin",
+      "Однажды, на этом месте появится правильный флаг...",
+      "Говорят, что Танос так и не нашел все 6 флагов бесконечности...",
+      "Это поле ввода верит в тебя, отдай ему флаг",
+      "Скажи мне, какой флаг ты нашел, а я скажу тебе, кто ты",
+      "Говорят, прикосновение к флагу прибавляет мотивации...",
       "Ты просишь флаг без уважения...",
       "Короче, ЦТФер, я тебе таску дал и в благородство играть не буду",
-      "The flag is still shining in an unknown area.",
-      "May I ask where the flag is?"
+      "Флаг - эта та штука, которую ты должен ввести сюда",
+      "Админы видят всё, что ты сюда вводишь - подумай..."
     ],
     "instance": {
       "actions": {
@@ -81,29 +81,29 @@
     },
     "solved": "Решений: <1>{{solved}}</1> ",
     "wrong_flag_hints": [
-      "Where there's a will, there's a flag.",
-      "To be, or not to be, that is not the flag.",
-      "Pride hurts, flag benefits.",
-      "Failure teaches flags.",
-      "No, no, it's not this flag.",
-      "Eyes wide open, but the flag is not here.",
-      "Don't be impetuous, think carefully.",
-      "Searching everywhere, this is not the answer.",
-      "Superficially looking, you haven't found the flag.",
-      "The answer should be right at your fingertips.",
-      "Careful planning and consideration, flag is not that simple.",
-      "The flag is really well hidden!",
-      "Is it loneliness that crushes you when your luck is bad?",
-      "Too excited! You still need to learn to think more calmly.",
-      "Hit a wall, could it be that you have reached the peak?",
-      "The years are peaceful, but the flag has gone far away.",
-      "The shallow water has dried up, the flag is still not found.",
-      "Where this flag can be found?",
-      "Beautiful thumbnails like smoke. Where did the flag go?",
-      "The quagmire is deep in depth, and the flag is still not found.",
-      "All is quiet, only the error prompt of the flag is here.",
-      "The correct flag is still not obtained.",
-      "The winds are bitter and cold, and the flag is still not on your hand."
+      "А ты уверен, что этот тот флаг?",
+      "Кажется, кого-то надули =D",
+      "Обидно-досадно...",
+      "Боги отвергли твой ответ",
+      "Так и будем угадывать?",
+      "Чувствуется привкус уцуцуги...",
+      "Не переживай, повезет в следующий раз",
+      "Мы обыскали весь интернет, но не смогли узнать, что это такое",
+      "Подожди, ещё раз проверю... Нет, это не флаг",
+      "Возможно, всё гораздо проще?",
+      "Где ты это взял???",
+      "Неверные флаги: Том первый",
+      "NEVER GONNA GIVE YOU a FLAG... (FlagRolled LMAO)",
+      "Ты втираешь мне какую-то дичь!",
+      "Пожалуйста, положи это туда, откуда ты это взял",
+      "Возможно, админы когда-нибудь увидят это... Пожелаем им крепкого здоровья",
+      "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'flag'",
+      "Где ты? Я бегу за тобою. Разрываюсь с мечтою. Растворяюсь в ночи. Не молчи...",
+      "Отправь ещё раз - а вдруг сработает? (нет)",
+      "Вселенная распалась после таких заявлений",
+      "Сложно искать черную кошку в черной комнате, лучше поищи флаг",
+      "Отправили этот флаг на проверку в Пентагон - сервера больше не отвечают...",
+      "Время выпрашивать хинты у организаторов ;D"
     ]
   },
   "file_type": {
@@ -116,18 +116,18 @@
       "accepted": {
         "ended": "Игра завершена, рейтинговая таблица заморожена",
         "message": "Рейтинг будет обновлен позже.",
-        "title": "флаг верный"
+        "title": "Флаг принят"
       },
       "empty": "Флаг не может быть пустым",
       "submitted": {
         "message": "Пожалуйста, дождитесь проверки флага...",
-        "title": "флаг отправлен"
+        "title": "Флаг отправлен"
       },
       "unknown": {
         "message": "Пожалуйста, свяжитесь с администратором, чтобы подтвердить отправку: {{id}}",
-        "title": "статус флага неизвестен"
+        "title": "Статус флага неизвестен"
       },
-      "wrong": "флаг неверный"
+      "wrong": "Неверный флаг"
     },
     "instance": {
       "copied": {
