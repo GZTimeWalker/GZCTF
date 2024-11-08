@@ -480,7 +480,7 @@
     <value>Nettoyage des fichiers de l'équipe {1} pour le jeu {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>La clé différente ou clé dans le fichier de configuration n'est pas définie et la clé de correspondance sera stockée explicitement dans la base de données.</value>
+    <value>La clé XOR dans le fichier de configuration n'est pas définie et la clé de compétition sera stockée explicitement dans la base de données.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Impossible de quitter le jeu après approbation de l'entrée</value>

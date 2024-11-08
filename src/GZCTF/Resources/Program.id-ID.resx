@@ -480,7 +480,7 @@
     <value>Membersihkan file tim {1} untuk game {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>Key yang berbeda atau key didalam file konfigurasi belum diatur, dan key pertandingan akan disimpan secara eksplisit di dalam database.</value>
+    <value>Kunci XOR dalam file konfigurasi tidak diatur dan kunci kompetisi akan disimpan secara eksplisit di dalam basis data.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Tidak bisa keluar dari game setelah persetujuan masuk</value>

@@ -480,7 +480,7 @@
     <value>Limpiando {1} archivos de equipos para el juego {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>La llave diferente o clave en el archivo de configuración no está configurada y la clave de coincidencia se almacenará explícitamente en la base de datos.</value>
+    <value>La clave XOR en el archivo de configuración no está configurada y la clave de competencia se almacenará explícitamente en la base de datos.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>No se puede salir del juego después de la aprobación de la entrada</value>

@@ -27,7 +27,7 @@
       "title": "Все задания решены!"
     },
     "duration": "{{hours}} час(-а/-ов)",
-    "end_at": "Ends at",
+    "end_at": "Завершится",
     "end_time": "Завершение",
     "game_ended": "Завершено",
     "game_lasts_long": "Эта игра ещё не скоро завершится",
@@ -39,29 +39,29 @@
       "confirm": "Подтвердите регистрацию",
       "content": [
         "Вы уверены, что хотите зарегистрироваться для участия в этой игре?",
-        "After successfully registering for the competition and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
-        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
+        "После успешной регистрации на соревнование и прохождения отбора, команда будет заблокирована и <strong>вы больше не сможете удалять участников из команды.</strong> Команда будет разблокирована после окончания соревнования или после отклонения запроса на участие.",
+        "Ограничение по количеству игроков относится к количеству пользователей, которые решили участвовать в конкретной команде, <strong>независимо от того, с какой командой вы решили играть</strong>"
       ],
       "invite_code": {
-        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
+        "description": "Эта игра приватная. Чтобы принять участие, введите код приглашения.",
         "label": "Введите код приглашения"
       },
       "organization": {
-        "description": "This game has multiple division available. Please select your division.",
-        "label": "Выберите подразделение"
+        "description": "В этой игре доступно несколько дивизионов. Пожалуйста, выберите свой дивизион.",
+        "label": "Выберите дивизион"
       },
       "team": {
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
+        "description": "Пожалуйста, выберите команду, с которой вы хотите участвовать в этой игре. Этот выбор не может быть изменен после одобрения заявки на участие.",
         "label": "Выберите команду"
       },
-      "title": "Registration Information"
+      "title": "Информация о регистрации"
     },
-    "joined_status": "<strong>{{count}}</strong> teams have already joined",
+    "joined_status": "Команд участвует: <strong>{{count}}</strong>",
     "leave": {
-      "confirm": "Confirm quitting",
+      "confirm": "Подтвердите выход",
       "content": [
-        "Are you sure you want to quit this game?",
-        "If the number of team members is zero after you quit, the team's participation data will be deleted."
+        "Вы уверены, что хотите покинуть эту игру?",
+        "Участие команды будет аннулировано, если Вы единственный игрок, участвующий в этой игре от этой команды."
       ]
     },
     "no_challenge": "Жаль, но у этой игры ещё нет доступных заданий.",
@@ -71,49 +71,49 @@
     },
     "no_notice": "Уведомлений нет.",
     "no_traffic": {
-      "comment": "Both platform and challenge need to be set up to enable capture",
-      "title": "No challenge has traffic capture enabled"
+      "comment": "Для того чтобы включить захват трафика, необходимо настроить как платформу, так и задание",
+      "title": "Нет заданий с включенным захватом трафика"
     },
-    "remaining_duration": "{{hours}}h left",
-    "remaining_time": "Remaining time",
+    "remaining_duration": "Часов осталось: {{hours}}",
+    "remaining_time": "Оставшееся время",
     "scoreboard_not_ready": {
-      "comment": "Patience is a virtue, please hold on…",
+      "comment": "Терпение - это добродетель, пожалуйста, подождите…",
       "title": "Загрузка рейтинга..."
     },
-    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
-    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
-    "start_at": "Starts at",
+    "scoreboard_note": "Команды с одинаковым счетом ранжируются по времени сдачи.",
+    "scoreboard_tip": "Совет: Вы можете листать таблицу с помощью стрелок на клавиатуре!",
+    "start_at": "Начнется",
     "start_time": "Начало",
     "team_view": {
-      "description": "Display cheating information by teams",
-      "label": "View as Team"
+      "description": "Отображать команды вместо игроков",
+      "label": "Просмотр по командам"
     },
-    "total_duration": "{{hours}}h in total",
-    "total_time": "Duration",
+    "total_duration": "Всего: {{hours}}",
+    "total_time": "Длительность",
     "traffic": {
-      "delete_confirm": "Delete this traffic file?",
-      "deleted_all_confirm": "Delete all listed traffic?"
+      "delete_confirm": "Удалить этот файл трафика?",
+      "deleted_all_confirm": "Удалить весь перечисленный трафик?"
     },
     "writeup": {
-      "current": "Current Writeup",
-      "deadline_exceeded": "Submission deadline has passed",
+      "current": "Текущий отчет",
+      "deadline_exceeded": "Крайний срок сдачи отчетов вышел",
       "instructions": {
-        "additional": "Additional Notes",
-        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
-        "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
-        "title": "Submission Instructions"
+        "additional": "Дополнительные сведения",
+        "deadline": "Пожалуйста, отправьте отчет до <1>{{datetime}}</1>, просрочка или неподача отчета будет расценена как отказ от результатов участия в этой игре.",
+        "file_format": "Пожалуйста, составьте отчет о решенных вами заданиях в виде <1> стандартного PDF-документа размером менее 20МБ</1>.",
+        "title": "Инструкции по представлению"
       },
-      "submitted": "Successfully submitted",
-      "title": "Writeup Management",
-      "unsubmitted": "Not yet submitted",
-      "unsubmitted_note": "Your team has not submitted yet"
+      "submitted": "Успешно отправлено",
+      "title": "Управление отчетами",
+      "unsubmitted": "Ещё не отправлено",
+      "unsubmitted_note": "Ваша команда еще не отправила отчет"
     }
   },
   "event": {
     "answer": {
       "accepted": "Флаг принят",
       "cheat": "Флаг-шейринг",
-      "not_found": "Unknown",
+      "not_found": "Неизвестно",
       "submitted": "Успешно отправлено",
       "wrong": "Неверный флаг"
     },
@@ -131,95 +131,95 @@
       "submit_user": "Submit User"
     },
     "notice_type": {
-      "all": "All",
-      "challenge": "Challenge",
-      "events": "News",
-      "game": "Notice"
+      "all": "Все",
+      "challenge": "Задания",
+      "events": "Новости",
+      "game": "Уведомления"
     },
-    "score": "Score",
-    "score_formatter": "{value} pts",
+    "score": "Счёт",
+    "score_formatter": "{value} очков",
     "score_table": {
-      "rank_organization": "Rank",
-      "rank_total": "Overall",
-      "score": "Score",
-      "score_total": "Score",
-      "solved_count": "Решено",
+      "rank_organization": "Место",
+      "rank_total": "№",
+      "score": "Счёт",
+      "score_total": "Счёт",
+      "solved_count": "Решений",
       "team": "Команда",
       "type": "Тип"
     },
     "traffic": "Трафик"
   },
   "notice": {
-    "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
-    "new_challenge": "New challenge [{{title}}] has been released.",
-    "new_hint": "Hints for [{{title}}] has been updated."
+    "blood": "Команда {{team}} получила достижение \"{{blood}}\" на задании [{{chal}}].",
+    "new_challenge": "Появилось новое задание [{{title}}].",
+    "new_hint": "Подсказки для задания [{{title}}] обновлены."
   },
   "notification": {
     "connected": {
-      "event": "Real-time event connected",
-      "submission": "Real-time submission connected"
+      "event": "Получение событий в реальном времени",
+      "submission": "Получение отправлений в реальном времени"
     },
-    "ended": "The game has ended",
+    "ended": "Игра завершена",
     "fetch_failed": {
-      "event": "Failed to fetch events",
-      "notice": "Failed to fetch notifications",
-      "submission": "Failed to fetch submissions"
+      "event": "Не удалось получить события",
+      "notice": "Не удалось получить уведомления",
+      "submission": "Не удалось получить отправления"
     },
-    "joined": "Registration successful",
-    "left": "Successfully cancel",
-    "no_invite_code": "Invitation code cannot be empty",
-    "no_organization": "Please select the division",
-    "no_team": "Please select the team to participate with",
+    "joined": "Регистрация прошла успешно",
+    "left": "Регистрация отменена",
+    "no_invite_code": "Код приглашения не может быть пустым",
+    "no_organization": "Выберите дивизион",
+    "no_team": "Выберите команду для участия",
     "not_started": "Игра ещё не началась",
-    "select_chal_and_part": "Please select challenges and teams first",
-    "suspended": "You have been banned",
+    "select_chal_and_part": "Сначала выберите задания и команды",
+    "suspended": "Доступ для вашей учетной записи заблокирован",
     "traffic": {
-      "deleted": "Traffic file(s) has been deleted"
+      "deleted": "Файлы трафика удалены"
     },
     "writeup": {
-      "submitted": "Writeup was successfully submitted"
+      "submitted": "Отчет успешно отправлен"
     }
   },
   "participation": {
     "actions": {
-      "accepted": "Approved",
-      "pending": "Pending review",
-      "rejected": "Re-Sign Up",
-      "suspended": "Banned",
-      "unsubmitted": "Join game"
+      "accepted": "Одобрено",
+      "pending": "Ожидает одобрения",
+      "rejected": "Попробовать снова",
+      "suspended": "Запрещено",
+      "unsubmitted": "Вступить"
     },
     "alert": {
       "not_started": {
-        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
-        "mobile": "Please use desktop site to see the details of the game.",
+        "content": "Вы успешно зарегистрировались и прошли рецензирование в качестве члена команды {{team}}. Пожалуйста, дождитесь начала игры.",
+        "mobile": "Для просмотра информации об игре воспользуйтесь полной версией сайта.",
         "title": "Игра ещё не началась"
       },
       "pending": {
-        "content": "Please wait for review results",
-        "title": "You have successfully registered as a member of team {{team}}"
+        "content": "Пожалуйста, дождитесь результатов рассмотрения заявки на участие вашей команды",
+        "title": "Вы успешно зарегистрировались в качестве члена команды {{team}}"
       },
       "rejected": {
-        "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements",
-        "title": "Your participating request was rejected"
+        "content": "Пожалуйста, убедитесь, что вы имеете право на участие в этой игре, и пройдите повторную регистрацию после того, как будете уверены, что все требования выполнены",
+        "title": "Ваш запрос на участие был отклонен"
       },
       "suspended": {
-        "content": "If you have any objections, please contact the administrator to appeal.",
-        "title": "Your team {{team}} has been suspended"
+        "content": "Свяжитесь с администратором, если Вы считаете, что команда была заблокирована по ошибке",
+        "title": "Ваша команда {{team}} была заблокирована"
       },
       "team_required": {
-        "content": "You didn't join any team, please create or join a team on the <1> Team Management </1> page.",
+        "content": "Вы не присоединились к команде, пожалуйста, создайте или присоединитесь к команде на странице <1> Управления командами </1>.",
         "title": "Невозможно зарегистрироваться"
       }
     },
     "status": {
-      "accepted": "Approved",
-      "pending": "Pending",
-      "rejected": "Rejected",
-      "suspended": "Banned"
+      "accepted": "Одобрено",
+      "pending": "В обработке",
+      "rejected": "Отклонено",
+      "suspended": "Запрещено"
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not solved any challenges...",
+    "no_solved": "Эта команда не решила ни одного задания...",
     "search_team": "Поиск команды"
   },
   "tab": {
@@ -234,7 +234,7 @@
     "scoreboard": "Рейтинг"
   },
   "tag": {
-    "hidden": "Hidden",
+    "hidden": "Скрытый",
     "individual": "Индивидуальный",
     "limited": "{{count}} игроков",
     "multiplayer": "Командный"

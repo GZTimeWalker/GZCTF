@@ -480,7 +480,7 @@
     <value>Bereinige {1} Teamdateien für Spiel {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>Der Unterschied oder Schlüssel in der Konfigurationsdatei ist nicht gesetzt und der Übereinstimmungsschlüssel wird explizit in der Datenbank gespeichert.</value>
+    <value>Der XOR-Schlüssel in der Konfigurationsdatei ist nicht festgelegt und der Wettbewerbsschlüssel wird explizit in der Datenbank gespeichert.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Das Spiel kann nach Genehmigung des Eintritts nicht verlassen werden</value>
