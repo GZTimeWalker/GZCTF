@@ -7,7 +7,7 @@
     "download": {
       "all_traffic": "Скачать перечисленный трафик",
       "scoreboard": "Рейтинг CSV",
-      "submissionsheet": "Отправления"
+      "submissionsheet": "Скачать CSV"
     },
     "finished": "Игра завершилась",
     "hide_solved": "Спрятать решенные",
@@ -67,7 +67,7 @@
     "no_challenge": "Жаль, но у этой игры ещё нет доступных заданий.",
     "no_cheat": {
       "comment": "Похоже, все играют честно (наверное)!",
-      "title": "Флаг-шейринг не обнаружен"
+      "title": "Читеры не обнаружены"
     },
     "no_notice": "Уведомлений нет.",
     "no_traffic": {
@@ -112,7 +112,7 @@
   "event": {
     "answer": {
       "accepted": "Флаг принят",
-      "cheat": "Флаг-шейринг",
+      "cheat": "Читерство",
       "not_found": "Неизвестно",
       "submitted": "Успешно отправлено",
       "wrong": "Неверный флаг"
@@ -139,7 +139,7 @@
     "score": "Счёт",
     "score_formatter": "{value} очков",
     "score_table": {
-      "all_teams": "Общий зачет",
+      "all_teams": "Все команды",
       "rank_organization": "Место",
       "rank_total": "№",
       "score": "Счёт",
@@ -226,10 +226,10 @@
   "tab": {
     "challenge": "Задания",
     "monitor": {
-      "cheatinfo": "Флаг-шейринг",
+      "cheatinfo": "Читеры",
       "events": "События",
       "index": "Монитор",
-      "submissions": "Отправления",
+      "submissions": "Флаги",
       "traffic": "Трафик"
     },
     "scoreboard": "Рейтинг"
