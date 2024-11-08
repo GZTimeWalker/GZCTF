@@ -112,7 +112,7 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
           <Select
             defaultValue="all"
             data={[
-              { value: 'all', label: t('game.label.score_table.rank_total') },
+              { value: 'all', label: t('game.label.score_table.all_teams') },
               ...Object.keys(scoreboard.timeLines)
                 .filter((k) => k !== 'all')
                 .map((o) => ({

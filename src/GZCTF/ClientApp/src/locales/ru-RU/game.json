@@ -139,6 +139,7 @@
     "score": "Счёт",
     "score_formatter": "{value} очков",
     "score_table": {
+      "all_teams": "Общий зачет",
       "rank_organization": "Место",
       "rank_total": "№",
       "score": "Счёт",

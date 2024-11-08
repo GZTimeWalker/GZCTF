@@ -139,6 +139,7 @@
     "score": "Skor",
     "score_formatter": "{value} poin",
     "score_table": {
+      "all_teams": "Semua Tim",
       "rank_organization": "Ranking",
       "rank_total": "Overall",
       "score": "Skor",
