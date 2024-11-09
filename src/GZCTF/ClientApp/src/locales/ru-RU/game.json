@@ -6,8 +6,8 @@
     },
     "download": {
       "all_traffic": "Скачать перечисленный трафик",
-      "scoreboard": "Рейтинг CSV",
-      "submissionsheet": "Скачать CSV"
+      "scoreboard": "Рейтинг",
+      "submissionsheet": "Отправления"
     },
     "finished": "Игра завершилась",
     "hide_solved": "Спрятать решенные",
