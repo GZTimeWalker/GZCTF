@@ -32,6 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
+import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, EventType, GameEvent } from '@Api'
@@ -120,6 +121,8 @@ const Events: FC = () => {
     defaultValue: false,
     getInitialValueInEffect: false,
   })
+
+  const { locale } = useLanguage()
 
   const [activePage, setPage] = useState(1)
 
@@ -258,7 +261,7 @@ const Events: FC = () => {
                       {event.team}, {event.user}
                     </Text>
                     <Text size="xs" fw={500} c="dimmed">
-                      {dayjs(event.time).format('MM/DD HH:mm:ss')}
+                      {dayjs(event.time).locale(locale).format('SL LTS')}
                     </Text>
                   </Group>
                 </Stack>

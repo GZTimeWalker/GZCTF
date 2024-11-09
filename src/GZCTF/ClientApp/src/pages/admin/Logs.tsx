@@ -19,6 +19,7 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AdminPage from '@Components/admin/AdminPage'
+import { useLanguage } from '@Utils/I18n'
 import { TaskStatusColorMap } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import api, { LogMessageModel, TaskStatus } from '@Api'
@@ -43,6 +44,7 @@ const Logs: FC = () => {
   const [logs, setLogs] = useState<LogMessageModel[]>()
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
   const viewport = useRef<HTMLDivElement>(null)
   const { classes: inputClasses } = useDisplayInputStyles({ fw: 500, ff: 'monospace' })
 
@@ -129,7 +131,7 @@ const Logs: FC = () => {
       >
         <Table.Td>
           <Badge size="sm" color="indigo">
-            {dayjs(item.time).format('MM/DD HH:mm:ss')}
+            {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
         </Table.Td>
         <Table.Td>

@@ -15,6 +15,7 @@ import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
@@ -38,6 +39,7 @@ interface GameCardProps {
 const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   const { summary, title, poster, limit } = game
   const { startTime, endTime, status } = getGameStatus(game)
@@ -78,11 +80,11 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
               </Stack>
               <Group mt={4} wrap="nowrap" gap={3}>
                 <Badge size="xs" color={color}>
-                  {startTime.format('YYYY/MM/DD HH:mm:ss')}
+                  {startTime.locale(locale).format('L LTS')}
                 </Badge>
                 <Icon path={mdiChevronTripleRight} size={1} />
                 <Badge size="xs" color={color}>
-                  {endTime.format('YYYY/MM/DD HH:mm:ss')}
+                  {endTime.locale(locale).format('L LTS')}
                 </Badge>
               </Group>
             </Group>

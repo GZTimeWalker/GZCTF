@@ -85,7 +85,7 @@ const Home: FC = () => {
               <nav className={classes.wrapper}>
                 <div className={classes.inner}>
                   <Stack>
-                    <Group wrap='nowrap'>
+                    <Group wrap="nowrap">
                       <Icon
                         path={mdiFlagCheckered}
                         size={1.5}

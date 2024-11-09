@@ -18,6 +18,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScoreboardItemModalProps } from '@Components/ScoreboardItemModal'
 import TeamRadarMap from '@Components/TeamRadarMap'
+import { useLanguage } from '@Utils/I18n'
 import { ChallengeInfo } from '@Api'
 import inputClasses from '@Styles/Input.module.css'
 import tableClasses from '@Styles/Table.module.css'
@@ -25,6 +26,7 @@ import tableClasses from '@Styles/Table.module.css'
 const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, scoreboard, ...modalProps } = props
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   const challenges = scoreboard?.challenges
   const challengeIdMap =
@@ -153,7 +155,7 @@ const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                             />
                           </Table.Td>
                           <Table.Td>{chal.score}</Table.Td>
-                          <Table.Td>{dayjs(chal.time).format('MM/DD HH:mm')}</Table.Td>
+                          <Table.Td>{dayjs(chal.time).locale(locale).format('SL HH:mm')}</Table.Td>
                         </Table.Tr>
                       )
                     })}

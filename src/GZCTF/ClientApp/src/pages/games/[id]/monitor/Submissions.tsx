@@ -32,6 +32,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
 import { downloadBlob } from '@Utils/ApiHelper'
+import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Utils/useGame'
 import api, { AnswerResult, Submission } from '@Api'
@@ -92,6 +93,7 @@ const Submissions: FC = () => {
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
   const viewport = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -176,7 +178,7 @@ const Submissions: FC = () => {
         </Table.Td>
         <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
-            {dayjs(item.time).format('MM/DD HH:mm:ss')}
+            {dayjs(item.time).locale(locale).format('SL LTS')}
           </Badge>
         </Table.Td>
         <Table.Td>

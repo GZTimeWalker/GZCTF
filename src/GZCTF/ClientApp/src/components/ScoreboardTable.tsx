@@ -26,6 +26,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ScoreboardItemModal from '@Components/ScoreboardItemModal'
+import { useLanguage } from '@Utils/I18n'
 import {
   BloodBonus,
   BloodsTypes,
@@ -148,6 +149,7 @@ const TableRow: FC<{
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const solved = item.solvedChallenges
   const theme = useMantineTheme()
+  const { locale } = useLanguage()
 
   return (
     <Table.Tr>
@@ -221,7 +223,7 @@ const TableRow: FC<{
                         + {chal?.score} pts
                       </Text>
                       <Text c="dimmed" fz="xs" className={classes.text}>
-                        # {dayjs(chal?.time).format('MM/DD HH:mm:ss')}
+                        # {dayjs(chal?.time).locale(locale).format('L LTS')}
                       </Text>
                     </Stack>
                   }

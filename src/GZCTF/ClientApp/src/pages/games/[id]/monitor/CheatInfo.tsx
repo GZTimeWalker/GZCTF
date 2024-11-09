@@ -28,6 +28,7 @@ import { RequireRole } from '@Components/WithRole'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { useLanguage } from '@Utils/I18n'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Utils/useConfig'
@@ -144,6 +145,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
   const theme = useMantineTheme()
   const type = CheatTypeMap.get(submissionInfo.cheatType)!
   const { classes } = useDisplayInputStyles({ ff: 'monospace' })
+  const { locale } = useLanguage()
 
   return (
     <Group justify="space-between" w="100%" gap={0}>
@@ -151,7 +153,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
         <Group justify="left">
           <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
           <Badge size="sm" color="indigo">
-            {dayjs(submissionInfo.time).format('MM/DD HH:mm:ss')}
+            {dayjs(submissionInfo.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
           <Text lineClamp={1} fw="bold">
             {submissionInfo.relatedTeam}
@@ -190,6 +192,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
   const part = useParticipationStatusMap().get(cheatTeamInfo.status!)!
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   return (
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
@@ -214,7 +217,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                   )}
                 </Group>
                 <Text size="sm" lineClamp={1}>
-                  {dayjs(cheatTeamInfo.lastSubmitTime).format('MM/DD HH:mm:ss')}
+                  {dayjs(cheatTeamInfo.lastSubmitTime).locale(locale).format('SL LTS')}
                 </Text>
               </Stack>
             </Group>
@@ -307,6 +310,7 @@ interface CheatInfoTableViewProps {
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   const rows = props.cheatInfo
     .sort(
@@ -316,7 +320,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
       <Table.Tr key={`${item.submission?.time}@${i}`}>
         <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
-            {dayjs(item.submission?.time).format('MM/DD HH:mm:ss')}
+            {dayjs(item.submission?.time).locale(locale).format('SL LTS')}
           </Badge>
         </Table.Td>
         <Table.Td>

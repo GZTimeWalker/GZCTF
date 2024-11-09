@@ -97,12 +97,13 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 export interface FileItemProps extends SelectableItemProps {
   t: (key: string) => string
   disabled: boolean
+  locale: string
   onDownload: (file: FileRecord) => void
   onDelete: (file: FileRecord) => Promise<void>
 }
 
 export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps) => {
-  const { item, onDownload, onDelete, disabled, t, ...props } = itemProps
+  const { item, onDownload, onDelete, disabled, t, locale, ...props } = itemProps
 
   return (
     <SelectableItem h={itemHeight} active={false} {...props}>
@@ -122,7 +123,7 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
                 {item.fileName}
               </Text>
               <Badge size="sm" color="indigo">
-                {dayjs(item.updateTime).format('MM/DD HH:mm:ss')}
+                {dayjs(item.updateTime).locale(locale).format('SL LTS')}
               </Badge>
             </Stack>
           </Group>

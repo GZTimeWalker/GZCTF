@@ -13,6 +13,7 @@ import { mdiDownload } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
+import { useLanguage } from '@Utils/I18n'
 import { WriteupInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
 
@@ -24,6 +25,7 @@ interface TeamWriteupCardProps extends CardProps {
 
 const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props }) => {
   const { colorScheme } = useMantineColorScheme()
+  const { locale } = useLanguage()
   const theme = useMantineTheme()
   return (
     <Card
@@ -52,7 +54,7 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
               {writeup.team?.name}
             </Text>
             <Text size="xs" lineClamp={1} c="dimmed">
-              {dayjs(writeup.uploadTimeUtc).format('YY/MM/DD HH:mm')}
+              {dayjs(writeup.uploadTimeUtc).locale(locale).format('SLL LT')}
             </Text>
           </Stack>
         </Group>
