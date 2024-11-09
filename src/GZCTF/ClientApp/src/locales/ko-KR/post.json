@@ -1,33 +1,33 @@
 {
   "button": {
-    "delete": "Delete Post",
-    "edit": "Edit Post",
-    "goto": "Go to Post",
-    "new": "New Post",
-    "save": "Save Post"
+    "delete": "게시물 삭제",
+    "edit": "게시물 수정",
+    "goto": "이동",
+    "new": "글쓰기",
+    "save": "저장"
   },
   "content": {
-    "delete": "Are you sure you want to delete post {{title}}?",
-    "details": "View Details",
-    "metadata": "{{author}} published on {{date}}",
-    "pinned": "[Pinned]",
+    "delete": "정말로 {{title}} 게시글을 삭제하시겠습니까?",
+    "details": "자세히 보기",
+    "metadata": "{{author}} 가 {{date}} 에 작성하였습니다.",
+    "pinned": "[고정]",
     "updated": {
-      "content": "The post has been changed. Save it?",
-      "title": "Post has been changed"
+      "content": "글이 변경되었습니다. 저장하시겠습니까?",
+      "title": "글 변경됨"
     }
   },
   "label": {
-    "add_tag": "Enter to add tag",
-    "content": "Content",
-    "summary": "Summary",
-    "tag": "Tags",
-    "title": "Title"
+    "add_tag": "태그를 추가하세요",
+    "content": "내용",
+    "summary": "요약",
+    "tag": "태그",
+    "title": "제목"
   },
   "notification": {
-    "created": "Post has been created",
-    "saved": "Post has been saved"
+    "created": "글이 생성되었습니다.",
+    "saved": "글이 저장되었습니다."
   },
   "title": {
-    "index": "Posts"
+    "index": "게시글"
   }
 }
