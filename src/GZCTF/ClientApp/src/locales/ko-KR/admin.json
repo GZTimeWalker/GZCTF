@@ -7,7 +7,7 @@
         "upload": "업로드",
         "uploading": "업로드 중..."
       },
-      "bonus": "Triple Blood Bonus",
+      "bonus": "Triple Blood 보너스",
       "delete": "삭제",
       "disable": "해제",
       "edit": "문제 수정",
@@ -33,17 +33,17 @@
         "create": "생성",
         "destroy": "삭제"
       },
-      "update_accept_count": "Update AC Counter"
+      "update_accept_count": "초대 인원 늘리기"
     },
     "games": {
       "challenges": {
         "attachment": {
-          "batch_add": "Batch Add"
+          "batch_add": "일괄 추가"
         }
       },
-      "copy_public_key": "Copy Public Key",
+      "copy_public_key": "공개키 복사",
       "delete": "삭제",
-      "new": "New Game"
+      "new": "새 게임"
     },
     "notices": {
       "delete": "삭제",
@@ -53,7 +53,7 @@
     "save": "저장",
     "teams": {
       "do_lock": "잠금",
-      "do_unlock": "잠금해제",
+      "do_unlock": "잠금 해제",
       "edit": "팀 편집"
     },
     "users": {
@@ -69,7 +69,7 @@
         "attachment": {
           "clear": {
             "description": "정말로 ",
-            "title": "Clear Attachment"
+            "title": "첨부 파일 일괄 제거"
           },
           "instruction": {
             "amount_double": "It is recommended to upload dynamic attachments that are twice the expected number of participating teams.",
@@ -91,26 +91,26 @@
           "label": "Global Attachment Name"
         },
         "bonus": {
-          "description": "The Triple Blood Bonus refers to the additional points awarded when a challenge is solved by the first three teams. Each team can receive a scoring bonus based on the current points of the challenge. The bonus will be added to the team's score in the form of a fixed percentage.",
-          "first_blood": "First Blood Reward (%)",
-          "second_blood": "Second Blood Reward (%)",
-          "third_blood": "Third Blood Reward (%)"
+          "description": "",
+          "first_blood": "First Blood 보상 (%)",
+          "second_blood": "Second Blood 보상 (%)",
+          "third_blood": "Third Blood 보상 (%)"
         },
-        "category": "Category",
-        "container_image": "Container Image",
+        "category": "분야",
+        "container_image": "컨테이너 이미지",
         "cpu_limit": {
-          "description": "Multiplication of 0.1 CPU core",
-          "label": "CPU Limit (0.1 CPUs)"
+          "description": "0.1 CPU 코어 개수",
+          "label": "CPU 사용 한도 (단위: 0.1 CPU)"
         },
-        "delete": "Are you sure you want to delete challenge {{name}}?",
-        "description": "Description",
-        "difficulty": "Difficulty Factor",
-        "disable": "Are you sure you want to disable challenge {{name}}?",
+        "delete": "{{name}} 챌린지를 삭제하시겠습니까?",
+        "description": "상세정보",
+        "difficulty": "난이도",
+        "disable": "{{name}} 챌린지를 비활성화 하시겠습니까?",
         "empty": {
-          "description": "Click the top right to create the first challenge",
-          "title": "Ouch! This game has no challenge yet."
+          "description": "우측 상단을 클릭하여 첫 챌린지를 생성하세요",
+          "title": "앗! 아직 이 게임에는 챌린지가 없어요."
         },
-        "enable": "Are you sure you want to enable challenge {{name}}?",
+        "enable": "{{name}} 챌린지를 활성화 하시겠습니까?",
         "flag": {
           "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br /> Each challenge can have multiple flags. Any configured flags can be accepted.",
           "delete": "Are you sure you want to delete this flag?",
