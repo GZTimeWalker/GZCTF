@@ -16,7 +16,7 @@ import MainIcon from '@Components/icon/MainIcon'
 import { useConfig, ValidatedRepoMeta } from '@Utils/useConfig'
 import { usePageTitle } from '@Utils/usePageTitle'
 import logoClasses from '@Styles/LogoHeader.module.css'
-import classes from './About.module.css'
+import classes from '@Styles/About.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()

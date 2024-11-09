@@ -39,7 +39,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 import classes from '@Styles/Accordion.module.css'
-import reviewClasses from './Review.module.css'
+import reviewClasses from '@Styles/Review.module.css'
 
 interface MemberItemProps {
   user: ProfileUserInfoModel

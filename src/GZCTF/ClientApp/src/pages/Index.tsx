@@ -12,7 +12,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api, { PostInfoModel } from '@Api'
-import classes from './Index.module.css'
+import classes from '@Styles/Index.module.css'
 
 const Home: FC = () => {
   const { t } = useTranslation()
@@ -85,7 +85,7 @@ const Home: FC = () => {
               <nav className={classes.wrapper}>
                 <div className={classes.inner}>
                   <Stack>
-                    <Group>
+                    <Group wrap='nowrap'>
                       <Icon
                         path={mdiFlagCheckered}
                         size={1.5}
