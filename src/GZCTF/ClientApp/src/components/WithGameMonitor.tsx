@@ -1,10 +1,10 @@
 import { Button, Group, LoadingOverlay, Stack, Tabs } from '@mantine/core'
 import {
   mdiExclamationThick,
-  mdiFileTableOutline,
   mdiFlag,
   mdiLightningBolt,
   mdiPackageVariant,
+  mdiTableArrowDown,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
@@ -68,7 +68,7 @@ const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading }) => {
                 disabled={disabled}
                 w="9rem"
                 styles={{ inner: { justifyContent: 'space-between' } }}
-                leftSection={<Icon path={mdiFileTableOutline} size={1} />}
+                leftSection={<Icon path={mdiTableArrowDown} size={1} />}
                 onClick={onDownloadScoreboardSheet}
               >
                 {t('game.button.download.scoreboard')}
