@@ -6,70 +6,70 @@
   },
   "button": {
     "download": {
-      "attachment": "Download Attachment"
+      "attachment": "파일 다운로드"
     },
     "instance": {
-      "create": "Create",
-      "destroy": "Destroy",
-      "extend": "Extend"
+      "create": "인스턴스 생성",
+      "destroy": "삭제",
+      "extend": "시간 연장"
     },
-    "submit_flag": "Submit Flag"
+    "submit_flag": "제출"
   },
   "category": {
-    "ai": "AI security",
-    "blockchain": "Blockchain",
-    "crypto": "Cryptography",
-    "forensics": "Digital forensics",
-    "hardware": "Hardware security",
-    "misc": "Miscellaneous",
-    "mobile": "Mobile security",
-    "osint": "Open-source intelligence",
-    "pentest": "Penetration testing",
-    "ppc": "Programming",
-    "pwn": "Binary exploitation",
-    "reverse": "Reverse engineering",
-    "web": "Web security"
+    "ai": "AI 보안",
+    "blockchain": "블록체인",
+    "crypto": "암호학",
+    "forensics": "디지털 포렌식",
+    "hardware": "하드웨어 보안",
+    "misc": "MISC",
+    "mobile": "모바일 보안",
+    "osint": "OSINT",
+    "pentest": "Pentst",
+    "ppc": "프로그래밍",
+    "pwn": "PWN",
+    "reverse": "Reversing",
+    "web": "Web"
   },
   "content": {
-    "already_solved": "This challenge has been solved",
+    "already_solved": "이미 해결한 문제입니다.",
     "flag_placeholders": [
-      "To be, or not to be, flag is the question",
-      "All that glisters is not flag",
-      "The flag, dear Brutus, is not in our stars",
-      "Better three hours too soon than a flag too late",
-      "My kingdom for a flag",
-      "Shall I compare thee to a flag?",
-      "Put flag in thy pocket, and be gone",
-      "Here's flag: I drink to thee",
-      "For never was a flag of more woe",
-      "For where thou art, there is the flag",
-      "My flag is in my heart, not in my head",
-      "Fearless minds climb soonest unto flag",
-      "But, for my own part, it was flag to me",
-      "What's mine is flag and what's yours is mine",
-      "This blessed plot, this earth, this realm, this flag",
-      "The ripest flag first falls",
-      "One touch of flag makes the whole world kin",
-      "Better a witty flag than a foolish wit",
-      "Even if there are a thousand kinds of flags, who else can I talk to?",
-      "The flag is still shining in an unknown area.",
-      "May I ask where the flag is?"
+      "죽느냐, 사느냐, Flag 가 문제로다.",
+      "Flag, 누구냐 넌?",
+      "거 Flag 제출하기 딱 좋은 날씨네",
+      "낮말은 새가 듣고 Flag 는 솔로가 듣는다.",
+      "누워서 Flag 먹기",
+      "Flag 묻고 더블로 가!",
+      "Flag 는 버려요. 깊은 데 빠뜨려서, 아무도 못 찾게 해요.",
+      "주문하신 Flag 나왔습니다!",
+      "흠... Flag 가 어디있죠?",
+      "누가 내 머리 위에 Flag 놨어!?",
+      "Flag 한 마디에 천리 간다.",
+      "가는 말이 고와야 Flag 가 온다.",
+      "넌 나에게 Flag 를 줬어",
+      "Flag wins all",
+      "Flag 하나 주면 안 잡아먹지!",
+      "이 Flag 가 네 것이냐",
+      "Flag 를 믿으십니까?",
+      "이 Flag 또한 지나가리라.",
+      "그래도 Flag 는 돈다.",
+      "Flag 는 나의 것.",
+      "Flag 를 찾으셨나요?"
     ],
     "instance": {
       "actions": {
-        "count_down": "Remaining: ",
-        "note": "You can extend it {{min}} mins before expires."
+        "count_down": "남은 시간: ",
+        "note": "{{min}} 분이 지나기 전에 늘릴 수 있습니다."
       },
       "entry": {
         "description": {
-          "anchor": "Get proxy client",
-          "proxy": "WebSocket proxy mode has been enabled."
+          "anchor": "프록시 클라이언트",
+          "proxy": "웹소켓 프록시 모드가 활성화 되었습니다."
         },
-        "label": "Instance Info"
+        "label": "인스턴스 정보"
       },
       "no_container": {
-        "message": "This challenge requires creating an instance",
-        "note": "Instance will live for {{min}} mins."
+        "message": "이 문제는 인스턴스를 생성해야합니다.",
+        "note": "{{min}} 분 동안 인스턴스가 실행됩니다."
       },
       "open": {
         "client": "Open in client",
