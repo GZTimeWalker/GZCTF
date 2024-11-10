@@ -106,19 +106,28 @@ else
         GZCTF.Program.ExitWithFatalMessage(
             GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_NoConnectionString)]);
 
-    builder.Services.AddDbContext<AppDbContext>(
-        options =>
-        {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
-                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+    var poolSize = builder.Configuration.GetValue("DatabaseConnectionPoolSize", 0);
 
-            if (!builder.Environment.IsDevelopment())
-                return;
+    void BuildDbContextOptions(DbContextOptionsBuilder options)
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
+            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
-        }
-    );
+        if (!builder.Environment.IsDevelopment())
+            return;
+
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
+    }
+
+    if (poolSize == 0)
+    {
+        builder.Services.AddDbContext<AppDbContext>(BuildDbContextOptions);
+    }
+    else
+    {
+        builder.Services.AddDbContextPool<AppDbContext>(BuildDbContextOptions, poolSize);
+    }
 }
 
 #endregion AppDbContext
