@@ -1041,6 +1041,6 @@
     <value>Konfigurasi email tidak valid, tetapi autentikasi email diaktifkan</value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>Fail to init storage provider: {0}</value>
+    <value>Failed to initialize storage provider: {0}</value>
   </data>
 </root>
