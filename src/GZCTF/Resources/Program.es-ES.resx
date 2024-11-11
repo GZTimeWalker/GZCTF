@@ -1057,6 +1057,6 @@
     </value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>Fail to init storage provider: {0}</value>
+    <value>Error al inicializar el proveedor de almacenamiento: {0}</value>
   </data>
 </root>
