@@ -1061,6 +1061,6 @@
     <value>Ungültige E-Mail-Konfiguration, aber E-Mail-Authentifizierung ist aktiviert</value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>Fail to init storage provider: {0}</value>
+    <value>Fehler bei der Initialisierung des Speicheranbieters: {0}</value>
   </data>
 </root>
