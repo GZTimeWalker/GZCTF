@@ -1054,6 +1054,6 @@
     <value>Configuration de l'email invalide, mais l'authentification email est activée</value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>Échec de l'initialisation du fournisseur de stockage : {0}</value>
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
