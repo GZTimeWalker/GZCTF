@@ -1,129 +1,129 @@
 {
   "avatar": {
-    "save": "Save Avatar",
-    "upload_failed": "Failed to update avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar"
+    "save": "프로필 사진 저장",
+    "upload_failed": "프로필 사진 업데이트 실패",
+    "uploaded": "프로필 사진이 업데이트 되었습니다.",
+    "uploading": "프로필 사진 업로드 중"
   },
   "button": {
-    "copy": "Copy to Clipboard",
-    "reset": "Reset",
-    "select_file": "Select File",
-    "try_again": "Try Again",
-    "uploading": "Uploading"
+    "copy": "클립보드에 저장",
+    "reset": "설정 초기화",
+    "select_file": "파일 선택",
+    "try_again": "다시 시도해주세요",
+    "uploading": "업로드 중"
   },
   "content": {
     "404": {
-      "text": "A desolation, why is it here",
-      "title": "Page does not exist"
+      "text": "아무것도 없어요!",
+      "title": "페이지가 존재하지 않습니다"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "slogan": "수익이 아니라 재미를 위해 해킹을 하세요!"
     },
     "color": {
       "custom": {
-        "description": "Select the base color you want to use",
-        "label": "Custom Base Color",
-        "placeholder": "Use default color"
+        "description": "당신이 원하는 베이스 색상을 선택해주세요",
+        "label": "커스텀 베이스 색상",
+        "placeholder": "기본 색상 사용"
       },
       "palette": {
-        "description": "Color palette generated from the custom base color",
-        "label": "Color Palette"
+        "description": "베이스 색상으로부터 생성된 팔레트",
+        "label": "색상 팔레트"
       },
       "provider": {
-        "custom": "Customized",
-        "default": "Default",
-        "description": "Select how the base color is determined",
-        "label": "Theme color provider",
-        "managed": "Admin Provided"
+        "custom": "커스터마이징",
+        "default": "기본 설정",
+        "description": "베이스 색상이 결정되는 방식을 선택하세요",
+        "label": "테마 색상 추천",
+        "managed": "관리자 추천"
       },
-      "title": "Customize Color"
+      "title": "색상 커스터마이징"
     },
     "drop_zone": {
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB",
+      "content": "이미지를 드래그 앤 드롭하거나 이곳을 클릭하여 {{type}}을 선택하세요",
+      "limit": "이미지는 3MB를 넘을 수 없습니다",
       "type": {
-        "avatar": "avatar",
-        "poster": "poster"
+        "avatar": "프로필 사진",
+        "poster": "포스터"
       }
     },
-    "external_link": "External Link",
+    "external_link": "외부 링크",
     "home": {
-      "recent_games": "Recent Games"
+      "recent_games": "최근 대회"
     },
-    "no_data": "No data",
-    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "no_data": "데이터 없음",
+    "report_error": "이것이 버그라고 생각되시면, 관리자에게 제보해주세요",
     "wider": {
-      "text": "Try to use a wider device",
-      "title": "Not wide enough"
+      "text": "화면이 더 넓은 기기를 사용해주세요",
+      "title": "화면이 충분히 넓지 않습니다"
     }
   },
   "download": {
-    "failed": "Failed to download",
-    "started": "Downloading",
-    "success": "Downloaded"
+    "failed": "다운로드 실패",
+    "started": "다운로드 중",
+    "success": "다운로드 완료"
   },
   "email": {
     "sent": {
-      "message": "Please check your email and spam mail!",
-      "title": "Email Sent"
+      "message": "이메일 또는 스팸 메일을 확인해주세요",
+      "title": "이메일 전송"
     }
   },
   "error": {
-    "check_input": "Please check your input",
-    "empty": "Content can't be empty",
-    "encountered": "An error has occurred",
+    "check_input": "잘못된 입력입니다",
+    "empty": "내용이 반드시 입력되어야 합니다",
+    "encountered": "에러가 발생했습니다",
     "file_invalid": {
-      "message": "Please check file format and size",
-      "title": "Failed to load file"
+      "message": "파일의 포맷 또는 크기가 잘못되었습니다",
+      "title": "파일 불러오기 실패"
     },
-    "invalid_username_or_password": "Incorrect username or password",
-    "no_change": "There seems to be no change",
-    "param_error": "Incorrect parameter, please check",
-    "param_invalid": "Invalid parameter",
-    "param_missing": "Missing parameter",
-    "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too many requests",
-    "try_later": "Please try again later",
-    "unknown": "Unknown error"
+    "invalid_username_or_password": "사용자 이름 또는 비밀번호가 잘못되었습니다",
+    "no_change": "이전과 같은 사용자 이름 또는 비밀번호입니다",
+    "param_error": "잘못된 파라미터입니다",
+    "param_invalid": "유효하지 않은 파라미터입니다",
+    "param_missing": "파라미터가 누락되었습니다",
+    "param_unknown": "알 수 없는 파라미터입니다",
+    "request_too_frequent": "요청이 너무 많습니다",
+    "try_later": "나중에 다시 시도해주세요",
+    "unknown": "알 수 없는 오류"
   },
   "label": {
-    "challenge": "Challenge",
+    "challenge": "문제",
     "flag": "flag",
-    "game": "Game",
+    "game": "대회",
     "ip": "IP",
-    "team": "Team",
-    "time": "Time",
-    "user": "User"
+    "team": "팀",
+    "time": "시간",
+    "user": "유저"
   },
   "modal": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm Update",
-    "delete": "Delete"
+    "cancel": "취소",
+    "confirm": "확인",
+    "confirm_delete": "삭제 확인",
+    "confirm_update": "업데이트 확인",
+    "delete": "삭제"
   },
   "tab": {
-    "about": "About",
+    "about": "정보",
     "account": {
-      "clean_cache": "Clear Cache",
-      "login": "Login",
-      "logout": "Logout",
-      "profile": "Profile"
+      "clean_cache": "캐시 초기화",
+      "login": "로그인",
+      "logout": "로그아웃",
+      "profile": "프로필"
     },
-    "admin": "Admin",
-    "game": "Games",
-    "home": "Home",
-    "post": "Posts",
-    "team": "Team",
+    "admin": "관리자",
+    "game": "대회",
+    "home": "홈",
+    "post": "게시글",
+    "team": "팀",
     "theme": {
-      "dark": "dark mode",
-      "light": "light mode",
-      "switch_to": "Switch to {{theme}}"
+      "dark": "다크 모드",
+      "light": "라이트 모드",
+      "switch_to": "{{theme}}로 바꾸기"
     }
   },
   "title": {
-    "404": "The Nowhere",
-    "about": "About"
+    "404": "아무것도 없습니다",
+    "about": "정보"
   }
 }
