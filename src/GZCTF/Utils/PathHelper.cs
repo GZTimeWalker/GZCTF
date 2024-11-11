@@ -9,7 +9,7 @@ enum DirType : byte
 
 static class PathHelper
 {
-    const string Base = "files";
+    internal const string Base = "files";
 
     internal static readonly string Logs = GetDir(DirType.Logs);
     internal static readonly string Uploads = GetDir(DirType.Uploads);

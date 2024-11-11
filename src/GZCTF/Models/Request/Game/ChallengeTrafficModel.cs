@@ -52,9 +52,7 @@ public class ChallengeTrafficModel
             Category = chal.Category,
             Type = chal.Type,
             IsEnabled = chal.IsEnabled,
-            Count = await storage.ExistsAsync(path, token)
-                ? (await storage.ListAsync(path, cancellationToken: token)).Count
-                : 0
+            Count = (await storage.ListAsync(path, cancellationToken: token)).Count
         };
     }
 }

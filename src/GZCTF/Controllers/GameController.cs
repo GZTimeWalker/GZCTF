@@ -418,14 +418,14 @@ public class GameController(
     {
         var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}");
 
-        if (!await storage.ExistsAsync(path, token))
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
-                StatusCodes.Status404NotFound));
-
         var entries = await storage.ListAsync(path, cancellationToken: token);
         var participationIds = entries.Select(
                 e => int.TryParse(e.Name, out var id) ? id : -1)
             .Where(id => id > 0).ToArray();
+
+        if (participationIds.Length == 0)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
+                StatusCodes.Status404NotFound));
 
         Participation[] participation = await participationRepository.GetParticipationsByIds(participationIds, token);
 
@@ -450,17 +450,21 @@ public class GameController(
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}/{partId:int}")]
     [ProducesResponseType(typeof(FileRecord[]), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
         var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}", $"{partId}");
 
-        if (!await storage.ExistsAsync(path, token))
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
-                StatusCodes.Status404NotFound));
+        var blobs = await storage.ListAsync(path, cancellationToken: token);
 
-        return Ok(await storage.GetFileRecordsAsync(path, token));
+        var results = blobs.Select(blob => new FileRecord
+        {
+            FileName = blob.Name,
+            Size = blob.Size ?? 0,
+            UpdateTime = blob.LastModificationTime ?? DateTimeOffset.MinValue
+        }).ToArray();
+
+        return Ok(results);
     }
 
     /// <summary>
@@ -477,15 +481,10 @@ public class GameController(
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
+    public IActionResult GetAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
         var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}", $"{partId}");
-
-        if (!await storage.ExistsAsync(path, token))
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)],
-                StatusCodes.Status404NotFound));
 
         var filename = $"Capture-{challengeId}-{partId}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
 
@@ -506,16 +505,12 @@ public class GameController(
     [RequireMonitor]
     [HttpDelete("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAllTeamTraffic([FromRoute] int challengeId, [FromRoute] int partId,
         CancellationToken token)
     {
         try
         {
             var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}", $"{partId}");
-
-            if (!await storage.ExistsAsync(path, token))
-                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
 
             await storage.DeleteAsync(path, token);
 

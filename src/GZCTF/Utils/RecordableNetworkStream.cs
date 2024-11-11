@@ -12,28 +12,28 @@ namespace GZCTF.Utils;
 public class RecordableNetworkStreamOptions
 {
     /// <summary>
-    /// 流量源地址
+    /// The source address of the traffic
     /// </summary>
     public IPEndPoint Source { get; init; } = new(0, 0);
 
     /// <summary>
-    /// 流量目的地址
+    /// The destination address of the traffic
     /// </summary>
     public IPEndPoint Dest { get; init; } = new(0, 0);
 
     /// <summary>
-    /// 记录文件位置
+    /// The path to store the captured traffic
     /// </summary>
     public string BlobPath { get; init; } = string.Empty;
 
     /// <summary>
-    /// 启用文件流量捕获
+    /// Is the capture enabled
     /// </summary>
     public bool EnableCapture { get; init; }
 }
 
 /// <summary>
-/// 捕获网络流（Socket）
+/// The network stream that can record the traffic
 /// </summary>
 public sealed class RecordableNetworkStream : NetworkStream
 {
@@ -60,6 +60,7 @@ public sealed class RecordableNetworkStream : NetworkStream
 
         _storage = storage;
         _tempFile = Path.GetTempFileName();
+
         _device = new(_tempFile, FileMode.Open);
 
         _device.Open();

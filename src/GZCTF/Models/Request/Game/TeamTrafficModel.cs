@@ -50,9 +50,7 @@ public class TeamTrafficModel
             Name = part.Team.Name,
             Organization = part.Organization,
             Avatar = part.Team.AvatarUrl,
-            Count = await storage.ExistsAsync(path, token)
-                ? (await storage.ListAsync(path, cancellationToken: token)).Count
-                : 0
+            Count = (await storage.ListAsync(path, cancellationToken: token)).Count
         };
     }
 }

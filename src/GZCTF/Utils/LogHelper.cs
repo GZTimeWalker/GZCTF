@@ -143,14 +143,15 @@ public static class LogHelper
                 new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
                 LogEventLevel.Debug))
             .WriteTo.Async(t => t.File(
-                path: $"{PathHelper.Logs}/log_.log",
+                path: Path.Combine(PathHelper.Base, PathHelper.Logs, "log_.log"),
                 formatter: new ExpressionTemplate(LogTemplate),
                 rollingInterval: RollingInterval.Day,
                 fileSizeLimitBytes: 10 * 1024 * 1024,
                 restrictedToMinimumLevel: LogEventLevel.Debug,
                 rollOnFileSizeLimit: true,
                 retainedFileCountLimit: 5,
-                hooks: new ArchiveHooks(CompressionLevel.Optimal, $"{PathHelper.Logs}/archive/{{UtcDate:yyyy-MM}}")
+                hooks: new ArchiveHooks(CompressionLevel.Optimal,
+                    Path.Combine(PathHelper.Base, PathHelper.Logs, "archive", "{UtcDate:yyyy-MM}"))
             ))
             .WriteTo.Database(serviceProvider)
             .WriteTo.SignalR(serviceProvider);
