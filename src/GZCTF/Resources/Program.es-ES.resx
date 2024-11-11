@@ -168,7 +168,8 @@
     <value>El registro ha sido deshabilitado</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>La verificación por correo electrónico no está habilitada, por favor contacte al administrador para restablecer la contraseña</value>
+    <value>La verificación por correo electrónico no está habilitada, por favor contacte al administrador      para restablecer la contraseña
+</value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>Enviar correo electrónico al usuario para cambiar de correo</value>
@@ -282,7 +283,9 @@
     <value>Trabajador de actualización de caché bloqueado: {0}</value>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
-    <value>El trabajador de actualización de caché se detiene porque la tarea ha sido cancelada</value>
+    <value>
+      El trabajador de actualización de caché se detiene porque la tarea ha sido cancelada
+    </value>
   </data>
   <data name="Cache_WorkerStarted" xml:space="preserve">
     <value>El trabajador de actualización de caché ha comenzado</value>
@@ -342,7 +345,10 @@
     <value>No se pudo iniciar la instancia del contenedor {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>No se pudo obtener la información de exposición del puerto después de que se creó el contenedor {0}</value>
+    <value>
+      No se pudo obtener la información de exposición del puerto después de que se creó el
+      contenedor {0}
+    </value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Modo de contenedor: Controles de contenedor de instancia Docker</value>
@@ -384,7 +390,9 @@
     <value>La inicialización de K8s falló, verifique que la configuración sea correcta ({0})</value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
-    <value>El juego n.º {0} está a punto de comenzar, agregando la caché del marcador a la cola de caché</value>
+    <value>
+      El juego n.º {0} está a punto de comenzar, agregando la caché del marcador a la cola de caché
+    </value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>El contenedor caducado [{0}] ha sido eliminado</value>
@@ -396,13 +404,14 @@
     <value>El trabajo cron se ha detenido</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
-    <value>No se pudo conectar a la base de datos ({0}), por favor verifique la cadena de conexión de la base de datos</value>
+    <value>No se pudo conectar a la base de datos ({0}), por favor verifique la cadena de conexión de la      base de datos
+</value>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>Cadena de conexión actual: {0}</value>
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
-    <value>No se encontró el campo de cadena de conexión de la base de datos 'ConnectionStrings', por favor verifique si appsettings.json ha sido montado y configurado correctamente</value>
+    <value>The database connection string field 'ConnectionStrings' was not found, please check if appsettings.json has been properly mounted and configured</value>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
     <value>Ubicación de la caché: {0}</value>
@@ -456,7 +465,10 @@
     <value>El comprobador de banderas ha sido detenido</value>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
-    <value>La tarea de comprobación fue cancelada, el trabajador del comprobador #{0} está a punto de detenerse</value>
+    <value>
+      La tarea de comprobación fue cancelada, el trabajador del comprobador #{0} está a punto de
+      detenerse
+    </value>
   </data>
   <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
     <value>El trabajador del comprobador #{0} encontró una excepción</value>
@@ -474,7 +486,10 @@
     <value>Limpiando {1} archivos adjuntos de desafíos para el juego {0}...</value>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>No se pudo eliminar el juego, los archivos relacionados pueden haberse dañado, por favor intente de nuevo</value>
+    <value>
+      No se pudo eliminar el juego, los archivos relacionados pueden haberse dañado, por favor
+      intente de nuevo
+    </value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Limpiando {1} archivos de equipos para el juego {0}...</value>
@@ -684,16 +699,16 @@
     <value>No se pudo crear la cuenta de administrador, mensaje de error: {0}</value>
   </data>
   <data name="Init_NoFilesDir" xml:space="preserve">
-    <value>El directorio de datos {0} no está montado, los archivos pueden perderse, ¡configure correctamente el directorio de persistencia de datos!</value>
+    <value>Data directory {0} is not mounted, files may be lost, please configure the data persistence directory correctly!</value>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>¡No se puede capturar el tráfico cuando no se usa el modo proxy de la plataforma!</value>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
-    <value>Configuración de caché inválida, por favor, verifique la configuración del campo "RedisCache". Si no está usando Redis, deje el ítem de configuración vacío.</value>
+    <value>Invalid cache configuration, please check the "RedisCache" field configuration. If you're not using Redis, please leave the configuration item empty.</value>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
-    <value>El proyecto está basado en la licencia AGPL-3.0, código abierto en [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
+    <value>The project is based on the AGPL-3.0 license, open sourced at [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
     <value>Una plataforma CTF de código abierto</value>
@@ -717,7 +732,7 @@
     <value>Número insuficiente de adjuntos dinámicos asignados para el desafío {0}#{1}</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>{0} no pudo crear la instancia para el desafío {1}#{2} (puede ser causado por conflictos concurrentes), haciendo rollback...</value>
+    <value>{0} fail to create instance for challenge {1}#{2} (may cause by concurrent conflicts), rolling back...</value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>Puerto inválido al crear un contenedor</value>
@@ -729,7 +744,7 @@
     <value>Verificar correo electrónico</value>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>Está realizando una operación de cambio de correo electrónico de la cuenta, por favor haga clic en el botón de abajo para verificar su nuevo correo electrónico.</value>
+    <value>You are performing an account email change operation, please click the button below to verify your new email.</value>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>Cambiar correo electrónico</value>
@@ -744,7 +759,7 @@
     <value>Confirmar restablecimiento de contraseña</value>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>Está realizando una operación de restablecimiento de contraseña de cuenta. Por favor, haga clic en el botón de abajo para restablecer su contraseña.</value>
+    <value>You are performing an account password reset operation. Please click the button below to reset your password.</value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>Restablecer contraseña</value>
@@ -759,7 +774,7 @@
     <value>Verificar correo electrónico</value>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>Está en el proceso de registrar su cuenta. Necesitamos verificar su correo electrónico de registro: {0}. Por favor, haga clic en el botón de abajo para verificarlo.</value>
+    <value>You are in the process of registering your account. We need to verify your registration email：{0}. Please click the button below to verify it.</value>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>Verificar correo electrónico</value>
@@ -903,7 +918,8 @@
     <value>El nombre del adjunto dinámico no puede estar vacío</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>La bandera no es lo suficientemente complicada, por favor considere agregar un hash de equipo o aumentar la longitud</value>
+    <value>La bandera no es lo suficientemente complicada, por favor considere agregar un hash de equipo      o aumentar la longitud
+</value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>El desafío no tiene bandera y no se puede habilitar</value>
@@ -951,7 +967,8 @@
     <value>Error al conectar con el contenedor ({0})</value>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
-    <value>Fallo en la conexión al contenedor ({0}), puede estar iniciándose o revise la configuración de red -&gt; {1}</value>
+    <value>Fallo en la conexión al contenedor ({0}), puede estar iniciándose o revise la configuración de      red -&gt; {1}
+</value>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
     <value>Ocurrió un error durante el proceso del proxy</value>
@@ -1038,6 +1055,12 @@
     <value>Conectado exitosamente al servidor SMTP: {0}</value>
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
-    <value>Configuración de correo electrónico inválida, pero la autenticación de correo electrónico está habilitada</value>
+    <value>
+      Configuración de correo electrónico inválida, pero la autenticación de correo electrónico está
+      habilitada
+    </value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
