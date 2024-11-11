@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using System.Reflection;
+using FluentStorage.Blobs;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
@@ -31,7 +32,8 @@ namespace GZCTF.Controllers;
 public class AdminController(
     UserManager<UserInfo> userManager,
     ILogger<AdminController> logger,
-    IFileRepository fileService,
+    IBlobStorage storage,
+    IBlobRepository blobService,
     ILogRepository logRepository,
     IConfigService configService,
     IGameRepository gameRepository,
@@ -117,11 +119,11 @@ public class AdminController(
         if (!await DeleteCurrentLogo(token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
-        LocalFile? logo = await fileService.CreateOrUpdateImage(file, "logo", 640, token);
+        LocalFile? logo = await blobService.CreateOrUpdateImage(file, "logo", 640, token);
         if (logo is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
-        LocalFile? favicon = await fileService.CreateOrUpdateImage(file, "favicon", 256, token);
+        LocalFile? favicon = await blobService.CreateOrUpdateImage(file, "favicon", 256, token);
         if (favicon is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
@@ -174,7 +176,7 @@ public class AdminController(
     async Task<bool> DeleteByHash(string? hash, CancellationToken token)
     {
         if (hash is not null && Codec.FileHashRegex().IsMatch(hash))
-            return await fileService.DeleteFileByHash(hash, token) switch
+            return await blobService.DeleteBlobByHash(hash, token) switch
             {
                 TaskStatus.Success or TaskStatus.NotFound => true,
                 _ => false
@@ -614,7 +616,7 @@ public class AdminController(
         WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
 
-        return new TarFilesResult(wps.Select(p => p.File), FilePath.Uploads, filename, token);
+        return new TarFilesResult(storage, wps.Select(p => p.File), PathHelper.Uploads, filename, token);
     }
 
     /// <summary>
@@ -675,7 +677,7 @@ public class AdminController(
     [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
-        Ok(new ArrayResponse<LocalFile>(await fileService.GetFiles(count, skip, token)));
+        Ok(new ArrayResponse<LocalFile>(await blobService.GetBlobs(count, skip, token)));
 
     IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??

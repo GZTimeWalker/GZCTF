@@ -95,7 +95,7 @@ public class Container
 
         var shortId = Id.ToString("N")[..8];
 
-        return Path.Combine(FilePath.Capture,
+        return Path.Combine(PathHelper.Capture,
             GameInstance.ChallengeId.ToString(),
             GameInstance.ParticipationId.ToString(),
             $"{shortId}-{conn}.pcap");

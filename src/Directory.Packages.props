@@ -7,6 +7,9 @@
         <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0"/>
         <PackageVersion Include="Docker.DotNet" Version="3.125.15"/>
         <PackageVersion Include="Docker.DotNet.BasicAuth" Version="3.125.15"/>
+        <PackageVersion Include="FluentStorage" Version="5.6.0"/>
+        <PackageVersion Include="FluentStorage.AWS" Version="5.5.0"/>
+        <PackageVersion Include="FluentStorage.Azure.Blobs" Version="5.3.0"/>
         <PackageVersion Include="KubernetesClient" Version="15.0.1"/>
         <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10"/>
         <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="8.0.10"/>

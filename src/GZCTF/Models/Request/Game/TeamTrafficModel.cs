@@ -1,3 +1,6 @@
+using FluentStorage;
+using FluentStorage.Blobs;
+
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
@@ -35,9 +38,10 @@ public class TeamTrafficModel
     /// </summary>
     public int Count { get; set; }
 
-    internal static TeamTrafficModel FromParticipation(Participation part, int challengeId)
+    internal static async Task<TeamTrafficModel> FromParticipation(Participation part, int challengeId,
+        IBlobStorage storage, CancellationToken token)
     {
-        var trafficPath = $"{FilePath.Capture}/{challengeId}/{part.Id}";
+        var path = StoragePath.Combine(PathHelper.Capture, challengeId.ToString(), part.Id.ToString());
 
         return new()
         {
@@ -46,8 +50,8 @@ public class TeamTrafficModel
             Name = part.Team.Name,
             Organization = part.Organization,
             Avatar = part.Team.AvatarUrl,
-            Count = Directory.Exists(trafficPath)
-                ? Directory.GetFiles(trafficPath, "*", SearchOption.TopDirectoryOnly).Length
+            Count = await storage.ExistsAsync(path, token)
+                ? (await storage.ListAsync(path, cancellationToken: token)).Count
                 : 0
         };
     }

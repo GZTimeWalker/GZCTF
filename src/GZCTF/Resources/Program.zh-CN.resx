@@ -1040,4 +1040,7 @@
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>无效的邮件配置，但邮件验证已启用</value>
   </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>数据存储初始化失败：{0}</value>
+  </data>
 </root>

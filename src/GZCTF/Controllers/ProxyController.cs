@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using FluentStorage.Blobs;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -22,6 +23,7 @@ namespace GZCTF.Controllers;
 public class ProxyController(
     ILogger<ProxyController> logger,
     IDistributedCache cache,
+    IBlobStorage storage,
     IOptions<ContainerProvider> provider,
     IContainerRepository containerRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
@@ -100,7 +102,7 @@ public class ProxyController(
                 Source = client,
                 Dest = target,
                 EnableCapture = enable,
-                FilePath = container.TrafficPath(HttpContext.Connection.Id)
+                BlobPath = container.TrafficPath(HttpContext.Connection.Id)
             }, token);
     }
 
@@ -167,7 +169,7 @@ public class ProxyController(
                 if (!socket.Connected)
                     throw new SocketException((int)SocketError.NotConnected);
 
-                stream = new RecordableNetworkStream(socket, metadata, options);
+                stream = new RecordableNetworkStream(socket, metadata, storage, options);
             }
             catch (SocketException e)
             {
@@ -178,7 +180,8 @@ public class ProxyController(
                     TaskStatus.Failed, LogLevel.Debug);
                 return new JsonResult(new RequestResponse(
                     localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
-                    StatusCodes.Status418ImATeapot)) { StatusCode = StatusCodes.Status418ImATeapot };
+                    StatusCodes.Status418ImATeapot))
+                { StatusCode = StatusCodes.Status418ImATeapot };
             }
 
             using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
