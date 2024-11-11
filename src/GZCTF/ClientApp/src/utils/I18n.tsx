@@ -41,6 +41,7 @@ const shortLocalFormat = new Map<string, ShortLocalFormat>([
   ['ko', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
   ['ru', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
   ['de', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
+  ['id', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
   ['fr', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
   ['es', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
 ])

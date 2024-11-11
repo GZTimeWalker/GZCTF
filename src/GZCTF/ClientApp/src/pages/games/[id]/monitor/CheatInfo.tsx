@@ -320,7 +320,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
       <Table.Tr key={`${item.submission?.time}@${i}`}>
         <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
-            {dayjs(item.submission?.time).locale(locale).format('SL LTS')}
+            {dayjs(item.submission?.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
         </Table.Td>
         <Table.Td>

@@ -178,7 +178,7 @@ const Submissions: FC = () => {
         </Table.Td>
         <Table.Td ff="monospace">
           <Badge size="sm" color="indigo">
-            {dayjs(item.time).locale(locale).format('SL LTS')}
+            {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
         </Table.Td>
         <Table.Td>
