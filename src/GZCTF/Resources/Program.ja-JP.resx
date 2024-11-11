@@ -480,7 +480,7 @@
     <value>ゲーム {0} での {1} 個のチームに関するファイルを削除しています...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>設定ファイルの XOR キーが指定されていません。ゲームキーはデータベースに暗号化せず保存します。</value>
+    <value>The XOR key in the configuration file is not set and the game key will be stored explicitly in the database.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>参加承認後はゲームから抜けられません</value>
@@ -1039,5 +1039,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>無効な電子メール設定ですが、電子メール認証は有効です</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
