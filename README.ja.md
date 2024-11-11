@@ -83,7 +83,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - 繁体字中国語 (zh-TW)：完全対応
 - 日本語 (ja-JP)：完全対応、[Steve](http://github.com/hez2010) による翻訳
 - インドネシア語 (id-ID)：完全対応、[Rio](https://github.com/riodrwn) による翻訳
-- 韓国語 (ko-KR)：翻訳中、 [Sy2n0](https://github.com/Sy2n0) による翻訳
+- 韓国語 (ko-KR)：翻訳中、 [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim), [blluv](https://github.com/blluv) による翻訳
 - ロシア語 (ru-RU)：翻訳中、[FazaN](https://github.com/CyberFazaN) による翻訳
 
 ### 機械および AI による翻訳
