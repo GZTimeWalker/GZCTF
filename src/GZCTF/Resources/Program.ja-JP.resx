@@ -1041,6 +1041,6 @@
     <value>無効な電子メール設定ですが、電子メール認証は有効です</value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>ストレージプロバイダーの初期化に失敗しました：{0}</value>
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
