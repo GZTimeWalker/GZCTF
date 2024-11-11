@@ -117,18 +117,18 @@
       "submitted": "Успешно отправлено",
       "wrong": "Неверный флаг"
     },
-    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
+    "cheat_detected": "На задании {{chal}} обнаружены читеры, команда {{team}} использовала флаг команды {{steam}}.",
     "container": {
-      "destroy": "Destroyed challenge instance for {{chal}}#{{id}}",
-      "start": "Created challenge instance for {{chal}}#{{id}}"
+      "destroy": "Уничтожен экземпляр контейнера для задания {{chal}}#{{id}}",
+      "start": "Создан экземпляр контейнера для задания {{chal}}#{{id}}"
     },
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
   },
   "label": {
     "cheat_info": {
-      "owned_team": "Source Team",
-      "submit_team": "Submit Team",
-      "submit_user": "Submit User"
+      "owned_team": "К. Источник",
+      "submit_team": "К. Сдатчик",
+      "submit_user": "Нарушитель"
     },
     "notice_type": {
       "all": "Все",
@@ -137,7 +137,7 @@
       "game": "Уведомления"
     },
     "score": "Счёт",
-    "score_formatter": "{value} очков",
+    "score_formatter": "{value}",
     "score_table": {
       "all_teams": "Все команды",
       "rank_organization": "Место",
