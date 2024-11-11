@@ -22,7 +22,7 @@ namespace GZCTF.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class AccountController(
     IMailSender mailSender,
-    IFileRepository fileService,
+    IBlobRepository blobService,
     IHostEnvironment environment,
     ICaptchaExtension captcha,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
@@ -520,9 +520,9 @@ public class AccountController(
         UserInfo? user = await userManager.GetUserAsync(User);
 
         if (user!.AvatarHash is not null)
-            await fileService.DeleteFileByHash(user.AvatarHash, token);
+            await blobService.DeleteBlobByHash(user.AvatarHash, token);
 
-        LocalFile? avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
+        LocalFile? avatar = await blobService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Avatar_UpdateFailed)]));

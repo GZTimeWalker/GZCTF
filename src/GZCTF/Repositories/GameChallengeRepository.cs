@@ -8,7 +8,7 @@ namespace GZCTF.Repositories;
 
 public class GameChallengeRepository(
     AppDbContext context,
-    IFileRepository fileRepository,
+    IBlobRepository blobRepository,
     CacheHelper cacheHelper
 ) : RepositoryBase(context),
     IGameChallengeRepository
@@ -17,7 +17,7 @@ public class GameChallengeRepository(
     {
         foreach (FlagCreateModel model in models)
         {
-            var attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
+            var attachment = model.ToAttachment(await blobRepository.GetBlobByHash(model.FileHash, token));
 
             challenge.Flags.Add(new() { Flag = model.Flag, Challenge = challenge, Attachment = attachment });
         }
@@ -81,7 +81,7 @@ public class GameChallengeRepository(
         if (flag is null)
             return TaskStatus.NotFound;
 
-        await fileRepository.DeleteAttachment(flag.Attachment, token);
+        await blobRepository.DeleteAttachment(flag.Attachment, token);
 
         Context.Remove(flag);
 
@@ -137,7 +137,7 @@ public class GameChallengeRepository(
     public async Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
         CancellationToken token = default)
     {
-        var attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
+        var attachment = model.ToAttachment(await blobRepository.GetBlobByHash(model.FileHash, token));
 
         await DeleteAllAttachment(challenge, false, token);
 
@@ -152,12 +152,12 @@ public class GameChallengeRepository(
     internal async Task DeleteAllAttachment(GameChallenge challenge, bool purge = false,
         CancellationToken token = default)
     {
-        await fileRepository.DeleteAttachment(challenge.Attachment, token);
+        await blobRepository.DeleteAttachment(challenge.Attachment, token);
 
         if (purge && challenge.Type == ChallengeType.DynamicAttachment)
         {
             foreach (FlagContext flag in challenge.Flags)
-                await fileRepository.DeleteAttachment(flag.Attachment, token);
+                await blobRepository.DeleteAttachment(flag.Attachment, token);
 
             Context.RemoveRange(challenge.Flags);
         }

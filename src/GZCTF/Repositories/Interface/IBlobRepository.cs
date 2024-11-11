@@ -1,6 +1,6 @@
 ﻿namespace GZCTF.Repositories.Interface;
 
-public interface IFileRepository : IRepository
+public interface IBlobRepository : IRepository
 {
     /// <summary>
     /// 创建或更新一个文件
@@ -9,7 +9,7 @@ public interface IFileRepository : IRepository
     /// <param name="fileName">保存文件名</param>
     /// <param name="token">取消Token</param>
     /// <returns>文件Id</returns>
-    public Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
+    public Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default);
 
     /// <summary>
@@ -29,7 +29,7 @@ public interface IFileRepository : IRepository
     /// <param name="file">文件对象</param>
     /// <param name="token">取消Token</param>
     /// <returns>任务状态</returns>
-    public Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default);
+    public Task<TaskStatus> DeleteBlob(LocalFile file, CancellationToken token = default);
 
     /// <summary>
     /// 根据哈希删除一个文件
@@ -37,7 +37,7 @@ public interface IFileRepository : IRepository
     /// <param name="fileHash">文件哈希</param>
     /// <param name="token">取消Token</param>
     /// <returns>任务状态</returns>
-    public Task<TaskStatus> DeleteFileByHash(string fileHash, CancellationToken token = default);
+    public Task<TaskStatus> DeleteBlobByHash(string fileHash, CancellationToken token = default);
 
     /// <summary>
     /// 根据文件哈希获取文件
@@ -45,7 +45,7 @@ public interface IFileRepository : IRepository
     /// <param name="fileHash">文件哈希</param>
     /// <param name="token">取消Token</param>
     /// <returns>文件对象</returns>
-    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default);
+    public Task<LocalFile?> GetBlobByHash(string? fileHash, CancellationToken token = default);
 
     /// <summary>
     /// 获取全部文件
@@ -54,7 +54,7 @@ public interface IFileRepository : IRepository
     /// <param name="skip">跳过</param>
     /// <param name="token">取消Token</param>
     /// <returns>文件对象列表</returns>
-    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default);
+    public Task<LocalFile[]> GetBlobs(int count, int skip, CancellationToken token = default);
 
     /// <summary>
     /// 删除一个附件

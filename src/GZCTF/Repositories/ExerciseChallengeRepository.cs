@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class ExerciseChallengeRepository(AppDbContext context, IFileRepository fileRepository)
+public class ExerciseChallengeRepository(AppDbContext context, IBlobRepository blobRepository)
     : RepositoryBase(context),
         IExerciseChallengeRepository
 {
@@ -20,7 +20,7 @@ public class ExerciseChallengeRepository(AppDbContext context, IFileRepository f
 
     public async Task RemoveExercise(ExerciseChallenge exercise, CancellationToken token = default)
     {
-        await fileRepository.DeleteAttachment(exercise.Attachment, token);
+        await blobRepository.DeleteAttachment(exercise.Attachment, token);
 
         Context.Remove(exercise);
         await SaveAsync(token);
@@ -29,9 +29,9 @@ public class ExerciseChallengeRepository(AppDbContext context, IFileRepository f
     public async Task UpdateAttachment(ExerciseChallenge exercise, AttachmentCreateModel model,
         CancellationToken token = default)
     {
-        var attachment = model.ToAttachment(await fileRepository.GetFileByHash(model.FileHash, token));
+        var attachment = model.ToAttachment(await blobRepository.GetBlobByHash(model.FileHash, token));
 
-        await fileRepository.DeleteAttachment(exercise.Attachment, token);
+        await blobRepository.DeleteAttachment(exercise.Attachment, token);
 
         if (attachment is not null)
             await Context.AddAsync(attachment, token);

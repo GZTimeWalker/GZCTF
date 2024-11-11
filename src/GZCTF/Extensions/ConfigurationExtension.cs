@@ -11,7 +11,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Extensions;
 
-public static class ConfigurationExtensions
+public static class ConfigurationExtension
 {
     static readonly DistributedCacheEntryOptions FaviconOptions = new()
     {
@@ -75,7 +75,7 @@ public static class ConfigurationExtensions
         if (hash == Program.DefaultFaviconHash)
             goto SendDefaultIcon;
 
-        var path = Path.GetFullPath(Path.Combine(FilePath.Uploads, hash[..2], hash[2..4], hash));
+        var path = Path.GetFullPath(Path.Combine(PathHelper.Uploads, hash[..2], hash[2..4], hash));
         if (!File.Exists(path))
             goto FallbackToDefaultIcon;
 

@@ -1,6 +1,8 @@
 using System.Formats.Tar;
-using Microsoft.AspNetCore.Mvc;
 using System.IO.Compression;
+using FluentStorage;
+using FluentStorage.Blobs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GZCTF.Utils;
 
@@ -8,9 +10,9 @@ public static class TarHelper
 {
     static void SetHeaders(HttpContext context, string fileName)
     {
-        var downloadFilename = fileName.EndsWith(".tar") ? fileName : $"{fileName}.tar";
-        
-        context.Response.ContentType = "application/x-tar";
+        var downloadFilename = fileName.EndsWith(".tar.gz") ? fileName : $"{fileName}.tar.gz";
+
+        context.Response.ContentType = "application/gzip";
         context.Response.Headers.ContentDisposition = $"attachment; filename=\"{downloadFilename}\"";
     }
 
@@ -18,26 +20,35 @@ public static class TarHelper
     /// Archive files to a tarball
     /// </summary>
     /// <param name="context">HTTP Context</param>
+    /// <param name="storage">Blob Storage Backend</param>
     /// <param name="files">Files to archive</param>
     /// <param name="basePath">The base path for files</param>
     /// <param name="fileName">The archive file name</param>
     /// <param name="token"></param>
     public static async Task SendFilesAsync(
         HttpContext context,
+        IBlobStorage storage,
         IEnumerable<LocalFile> files, string basePath, string fileName,
         CancellationToken token = default
     )
     {
         SetHeaders(context, fileName);
-        
-        await using var compression = new GZipStream(context.Response.Body, CompressionMode.Compress);
-        await using var tar = new TarWriter(compression);
+
+        await using var compress = new GZipStream(context.Response.Body, CompressionMode.Compress);
+        await using var writer = new TarWriter(context.Response.Body);
 
         foreach (var file in files)
         {
-            var filePath = Path.Combine(basePath, file.Location, file.Hash);
-            var entry = Path.Combine(fileName, file.Name);
-            await tar.WriteEntryAsync(filePath, entry, token);
+            var filePath = StoragePath.Combine(basePath, file.Location, file.Hash);
+            var entryPath = $"{fileName}/{file.Name}";
+            var blob = await storage.GetBlobAsync(filePath, token);
+            await using var stream = await storage.OpenReadAsync(filePath, token);
+            var entry = new PaxTarEntry(TarEntryType.RegularFile, entryPath)
+            {
+                DataStream = stream,
+                ModificationTime = blob.LastModificationTime ?? DateTimeOffset.Now
+            };
+            await writer.WriteEntryAsync(entry, token);
         }
     }
 
@@ -46,29 +57,38 @@ public static class TarHelper
     /// </summary>
     /// <param name="context">HTTP Context</param>
     /// <param name="directory">Directory to archive</param>
+    /// <param name="storage">Blob Storage Backend</param>
     /// <param name="fileName">The archive file name</param>
     /// <param name="token"></param>
     public static async Task SendDirectoryAsync(
         HttpContext context,
+        IBlobStorage storage,
         string directory, string fileName,
         CancellationToken token = default
     )
     {
         SetHeaders(context, fileName);
 
-        await using var compression = new GZipStream(context.Response.Body, CompressionMode.Compress);
-        await using var tar = new TarWriter(compression);
+        await using var compress = new GZipStream(context.Response.Body, CompressionMode.Compress);
+        await using var writer = new TarWriter(context.Response.Body);
 
-        var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
-        foreach (var file in files)
+        var files = await storage.ListAsync(directory, cancellationToken: token);
+        foreach (var blob in files)
         {
-            var entry = Path.Combine(fileName, Path.GetRelativePath(directory, file));
-            await tar.WriteEntryAsync(file, entry, token);
+            var entryPath = $"{fileName}/{blob.Name}";
+            await using var stream = await storage.OpenReadAsync(blob.FullPath, token);
+            var entry = new PaxTarEntry(TarEntryType.RegularFile, entryPath)
+            {
+                DataStream = stream,
+                ModificationTime = blob.LastModificationTime ?? DateTimeOffset.Now
+            };
+            await writer.WriteEntryAsync(entry, token);
         }
     }
 }
 
 public class TarFilesResult(
+    IBlobStorage storage,
     IEnumerable<LocalFile> files,
     string basePath,
     string fileName,
@@ -79,7 +99,7 @@ public class TarFilesResult(
     {
         try
         {
-            await TarHelper.SendFilesAsync(context.HttpContext, files, basePath, fileName, token);
+            await TarHelper.SendFilesAsync(context.HttpContext, storage, files, basePath, fileName, token);
         }
         catch (OperationCanceledException)
         {
@@ -88,14 +108,14 @@ public class TarFilesResult(
     }
 }
 
-public class TarDirectoryResult(string directory, string fileName, CancellationToken token)
+public class TarDirectoryResult(IBlobStorage storage, string directory, string fileName, CancellationToken token)
     : IActionResult
 {
     public async Task ExecuteResultAsync(ActionContext context)
     {
         try
         {
-            await TarHelper.SendDirectoryAsync(context.HttpContext, directory, fileName, token);
+            await TarHelper.SendDirectoryAsync(context.HttpContext, storage, directory, fileName, token);
         }
         catch (OperationCanceledException)
         {

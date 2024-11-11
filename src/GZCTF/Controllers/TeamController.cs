@@ -21,7 +21,7 @@ namespace GZCTF.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public partial class TeamController(
     UserManager<UserInfo> userManager,
-    IFileRepository fileService,
+    IBlobRepository blobService,
     ILogger<TeamController> logger,
     ITeamRepository teamRepository,
     IParticipationRepository participationRepository,
@@ -503,9 +503,9 @@ public partial class TeamController(
         }
 
         if (team.AvatarHash is not null)
-            _ = await fileService.DeleteFileByHash(team.AvatarHash, token);
+            _ = await blobService.DeleteBlobByHash(team.AvatarHash, token);
 
-        LocalFile? avatar = await fileService.CreateOrUpdateImage(file, "avatar", 300, token);
+        LocalFile? avatar = await blobService.CreateOrUpdateImage(file, "avatar", 300, token);
 
         if (avatar is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_AvatarUpdateFailed)]));

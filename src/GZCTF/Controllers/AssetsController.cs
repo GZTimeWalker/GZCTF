@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
+using FluentStorage;
+using FluentStorage.Blobs;
 using GZCTF.Middlewares;
 using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Localization;
+using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Controllers;
 
@@ -15,7 +18,8 @@ namespace GZCTF.Controllers;
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
 public class AssetsController(
-    IFileRepository fileService,
+    IBlobStorage storage,
+    IBlobRepository blobService,
     ILogger<AssetsController> logger,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
@@ -29,17 +33,19 @@ public class AssetsController(
     /// </remarks>
     /// <param name="hash">文件哈希</param>
     /// <param name="filename">下载文件名</param>
+    /// <param name="token"></param>
     /// <response code="200">成功获取文件</response>
     /// <response code="404">文件未找到</response>
     [HttpGet("[controller]/{hash:length(64)}/{filename:minlength(1)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public IActionResult GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename)
+    public async Task<IActionResult> GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename,
+        CancellationToken token)
     {
-        var path = Path.GetFullPath(Path.Combine(FilePath.Uploads, hash[..2], hash[2..4], hash));
+        var path = StoragePath.Combine(PathHelper.Uploads, hash[..2], hash[2..4], hash);
 
-        if (!System.IO.File.Exists(path))
+        if (!await storage.ExistsAsync(path, token))
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
             logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip,
@@ -52,9 +58,14 @@ public class AssetsController(
         if (!_extProvider.TryGetContentType(filename, out var contentType))
             contentType = MediaTypeNames.Application.Octet;
 
+        var blob = await storage.GetBlobAsync(path, token);
+
         HttpContext.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
 
-        return new PhysicalFileResult(path, contentType) { FileDownloadName = filename };
+        var stream = await storage.OpenReadAsync(path, token);
+        var etag = new EntityTagHeaderValue($"\"{hash[8..16]}\"");
+
+        return File(stream, contentType, filename, blob.LastModificationTime, etag);
     }
 
     /// <summary>
@@ -80,10 +91,10 @@ public class AssetsController(
     {
         try
         {
-            List<LocalFile> results = new();
+            List<LocalFile> results = [];
             foreach (IFormFile? file in files.Where(file => file.Length > 0))
             {
-                LocalFile res = await fileService.CreateOrUpdateFile(file, filename, token);
+                LocalFile res = await blobService.CreateOrUpdateBlob(file, filename, token);
                 logger.SystemLog(
                     Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8],
                         filename ?? file.FileName, file.Length],
@@ -119,7 +130,7 @@ public class AssetsController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
-        TaskStatus result = await fileService.DeleteFileByHash(hash, token);
+        TaskStatus result = await blobService.DeleteBlobByHash(hash, token);
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result,
             LogLevel.Information);
