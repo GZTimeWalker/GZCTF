@@ -534,7 +534,7 @@
     <value>기관이 유효하지 않습니다.</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
-    <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다. </value>
+    <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다.</value>
   </data>
   <data name="Game_NotFound" xml:space="preserve">
     <value>게임을 찾을 수 없습니다.</value>
@@ -714,7 +714,7 @@
     <value>컨테이너 삭제 [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>문제 {0}#{1} 에 할당된 동적 인스턴스  수가 부족합니다.</value>
+    <value>문제 {0}#{1} 에 할당된 동적 인스턴스 수가 부족합니다.</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>{0} 팀이 문제 {1}#{2} 인스턴스 생성에 실패했습니다. 되돌리는 중..</value>
@@ -1039,5 +1039,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>잘못된 이메일 설정이지만 이메일 인증이 활성화되었습니다.</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>저장소 초기화에 실패했습니다: {0}</value>
   </data>
 </root>
