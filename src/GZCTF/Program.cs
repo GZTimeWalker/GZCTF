@@ -149,7 +149,7 @@ if (!GZCTF.Program.IsTesting)
     }
 }
 
-var storage = builder.Configuration.GetSection("ConnectionStrings").GetSection("Storage").Get<string>();
+var storage = builder.Configuration.GetConnectionString("Storage");
 builder.AddStorage(storage);
 
 #endregion Configuration
