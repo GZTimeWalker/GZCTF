@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <!--
+  <!--
       Microsoft ResX Schema
   
       Version 2.0
@@ -59,723 +59,718 @@
               : using a System.ComponentModel.TypeConverter
               : and then encoded with base64 encoding.
       -->
-    <xsd:schema
-        xmlns=""
-        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-        xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
-        id="root"
-    >
-        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-        <xsd:element name="root" msdata:IsDataSet="true">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
             <xsd:complexType>
-                <xsd:choice maxOccurs="unbounded">
-                    <xsd:element name="metadata">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" use="required" type="xsd:string"/>
-                            <xsd:attribute name="type" type="xsd:string"/>
-                            <xsd:attribute name="mimetype" type="xsd:string"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="assembly">
-                        <xsd:complexType>
-                            <xsd:attribute name="alias" type="xsd:string"/>
-                            <xsd:attribute name="name" type="xsd:string"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="data">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="resheader">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:choice>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
-        </xsd:element>
-    </xsd:schema>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>2.0</value>
-    </resheader>
-    <resheader name="reader">
-        <value>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>
             System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
         </value>
-    </resheader>
-    <resheader name="writer">
-        <value>
+  </resheader>
+  <resheader name="writer">
+    <value>
             System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
             PublicKeyToken=b77a5c561934e089
         </value>
-    </resheader>
-    <data name="Account_AvailableEmailDomain" xml:space="preserve">
+  </resheader>
+  <data name="Account_AvailableEmailDomain" xml:space="preserve">
     <value>사용 가능한 이메일 접미사: {0}</value>
   </data>
-    <data name="Account_AvatarUpdated" xml:space="preserve">
+  <data name="Account_AvatarUpdated" xml:space="preserve">
     <value>아바타 변경하기: [{0}]</value>
   </data>
-    <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
+  <data name="Account_ChangeEmailFromAdmin" xml:space="preserve">
     <value>이메일을 변경하려면 관리자에게 문의하세요.</value>
   </data>
-    <data name="Account_EmailChanged" xml:space="preserve">
+  <data name="Account_EmailChanged" xml:space="preserve">
     <value>이메일이 성공적으로 변경되었습니다.</value>
   </data>
-    <data name="Account_EmailNotConfirmed" xml:space="preserve">
+  <data name="Account_EmailNotConfirmed" xml:space="preserve">
     <value>계정이 활성화되지 않았습니다. 다시 등록하십시오</value>
   </data>
-    <data name="Account_EmailSendFailed" xml:space="preserve">
+  <data name="Account_EmailSendFailed" xml:space="preserve">
     <value>이메일을 보낼 수 없습니다. 관리자에게 문의하세요</value>
   </data>
-    <data name="Account_EmailSent" xml:space="preserve">
+  <data name="Account_EmailSent" xml:space="preserve">
     <value>이메일을 성공적으로 전송하였습니다.</value>
   </data>
-    <data name="Account_EmailUsed" xml:space="preserve">
+  <data name="Account_EmailUsed" xml:space="preserve">
     <value>이미 사용 중인 이메일입니다.</value>
   </data>
-    <data name="Account_EmailVerificationFailed" xml:space="preserve">
+  <data name="Account_EmailVerificationFailed" xml:space="preserve">
     <value>이메일 인증에 실패하였습니다.</value>
   </data>
-    <data name="Account_EmailVerificationPending" xml:space="preserve">
+  <data name="Account_EmailVerificationPending" xml:space="preserve">
     <value>확인 대기 중인 이메일입니다.</value>
   </data>
-    <data name="Account_EmailVerified" xml:space="preserve">
+  <data name="Account_EmailVerified" xml:space="preserve">
     <value>이메일 인증이 완료되었습니다.</value>
   </data>
-    <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
+  <data name="Account_IncorrectUserNameOrPassword" xml:space="preserve">
     <value>잘못된 사용자 이름 또는 비밀번호 입니다.</value>
   </data>
-    <data name="Account_InvalidEmail" xml:space="preserve">
+  <data name="Account_InvalidEmail" xml:space="preserve">
     <value>잘못된 이메일 주소입니다.</value>
   </data>
-    <data name="Account_PasswordChanged" xml:space="preserve">
+  <data name="Account_PasswordChanged" xml:space="preserve">
     <value>업데이트 할 계정 비밀번호</value>
   </data>
-    <data name="Account_PasswordReset" xml:space="preserve">
+  <data name="Account_PasswordReset" xml:space="preserve">
     <value>성공적으로 계정 비밀번호를 초기화하였습니다.</value>
   </data>
-    <data name="Account_RegisterNotEnabled" xml:space="preserve">
+  <data name="Account_RegisterNotEnabled" xml:space="preserve">
     <value>등록이 비활성화 되었습니다.</value>
   </data>
-    <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
+  <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
     <value>
       이메일 인증이 활성화되어 있지 않습니다. 관리자에게 문의하여 비밀번호를 재설정하세요.
     </value>
   </data>
-    <data name="Account_SendEmailChange" xml:space="preserve">
+  <data name="Account_SendEmailChange" xml:space="preserve">
     <value>이메일 변경을 위해 사용자에게 메일을 보냈습니다.</value>
   </data>
-    <data name="Account_SendEmailVerification" xml:space="preserve">
+  <data name="Account_SendEmailVerification" xml:space="preserve">
     <value>이메일 확인을 위하여 사용자에게 이메일을 보냈습니다.</value>
   </data>
-    <data name="Account_TokenValidationFailed" xml:space="preserve">
+  <data name="Account_TokenValidationFailed" xml:space="preserve">
     <value>인증에 실패하였습니다.</value>
   </data>
-    <data name="Account_UserDisabled" xml:space="preserve">
+  <data name="Account_UserDisabled" xml:space="preserve">
     <value>사용자가 차단되었습니다.</value>
   </data>
-    <data name="Account_UserExisting" xml:space="preserve">
+  <data name="Account_UserExisting" xml:space="preserve">
     <value>이미 존재하는 계정입니다.</value>
   </data>
-    <data name="Account_UserLogined" xml:space="preserve">
+  <data name="Account_UserLogined" xml:space="preserve">
     <value>성공적으로 로그인 하였습니다.</value>
   </data>
-    <data name="Account_UserNotExist" xml:space="preserve">
+  <data name="Account_UserNotExist" xml:space="preserve">
     <value>사용자가 존재하지 않습니다.</value>
   </data>
-    <data name="Account_UserRegistered" xml:space="preserve">
+  <data name="Account_UserRegistered" xml:space="preserve">
     <value>성공적으로 회원가입을 했습니다.</value>
   </data>
-    <data name="Account_UserRegisteredLog" xml:space="preserve">
+  <data name="Account_UserRegisteredLog" xml:space="preserve">
     <value>성공적으로 회원가입을 했습니다.</value>
   </data>
-    <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
+  <data name="Account_UserRegisteredWaitingApproval" xml:space="preserve">
     <value>성공적으로 회원가입이 되었으며 관리자 승인을 기다리고 있습니다.</value>
   </data>
-    <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
+  <data name="Account_UserRegisteredWaitingApprovalLog" xml:space="preserve">
     <value>계정이 성공적으로 등록되었으며 승인 대기 중입니다.</value>
   </data>
-    <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
+  <data name="Account_UserRegisteredWaitingEmailVerification" xml:space="preserve">
     <value>성공적으로 등록이 되었으며 이메일 인증 대기 중입니다.</value>
   </data>
-    <data name="Account_UserUpdated" xml:space="preserve">
+  <data name="Account_UserUpdated" xml:space="preserve">
     <value>사용자가 업데이트 되었습니다: {0} =&gt;{1}</value>
   </data>
-    <data name="Account_UserUpdateFailed" xml:space="preserve">
+  <data name="Account_UserUpdateFailed" xml:space="preserve">
     <value>사용자 업데이트 실패</value>
   </data>
-    <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
+  <data name="Admin_CaptainDeletionNotAllowed" xml:space="preserve">
     <value>팀장은 삭제할 수 없습니다.</value>
   </data>
-    <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
+  <data name="Admin_ContainerInstanceDestroyFailed" xml:space="preserve">
     <value>컨테이너 삭제에 실패하였습니다.</value>
   </data>
-    <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
+  <data name="Admin_ContainerInstanceNotFound" xml:space="preserve">
     <value>컨테이너를 찾을 수 없습니다.</value>
   </data>
-    <data name="Admin_ParticipationNotFound" xml:space="preserve">
+  <data name="Admin_ParticipationNotFound" xml:space="preserve">
     <value>참여자를 찾을 수 없습니다.</value>
   </data>
-    <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
+  <data name="Admin_SelfDeletionNotAllowed" xml:space="preserve">
     <value>자신을 삭제할 수 없습니다.</value>
   </data>
-    <data name="Team_NotFound" xml:space="preserve">
+  <data name="Team_NotFound" xml:space="preserve">
     <value>팀을 찾을 수 없습니다.</value>
   </data>
-    <data name="Admin_UserBatchAdded" xml:space="preserve">
+  <data name="Admin_UserBatchAdded" xml:space="preserve">
     <value>{0} 사용자들을 성공적으로 추가하였습니다.</value>
   </data>
-    <data name="Admin_UserNotFound" xml:space="preserve">
+  <data name="Admin_UserNotFound" xml:space="preserve">
     <value>사용자를 찾을 수 없습니다.</value>
   </data>
-    <data name="Assets_DeleteFile" xml:space="preserve">
+  <data name="Assets_DeleteFile" xml:space="preserve">
     <value>[{0}] 파일을 삭제 중입니다...</value>
   </data>
-    <data name="Assets_IOError" xml:space="preserve">
+  <data name="Assets_IOError" xml:space="preserve">
     <value>IO 오류가 발생하였습니다.</value>
   </data>
-    <data name="Assets_FileNotFound" xml:space="preserve">
+  <data name="Assets_FileNotFound" xml:space="preserve">
     <value>존재하지 않는 파일 [{0}] {1} 을 가져오는 중입니다.</value>
   </data>
-    <data name="Assets_UpdateFile" xml:space="preserve">
+  <data name="Assets_UpdateFile" xml:space="preserve">
     <value>파일 업데이트 완료 [{0}] {1} @ {2} bytes</value>
   </data>
-    <data name="Auth_AccessForbidden" xml:space="preserve">
+  <data name="Auth_AccessForbidden" xml:space="preserve">
     <value>액세스 거부</value>
   </data>
-    <data name="Auth_LoginRequired" xml:space="preserve">
+  <data name="Auth_LoginRequired" xml:space="preserve">
     <value>로그인을 먼저 해주세요.</value>
   </data>
-    <data name="Auth_PathAccessForbidden" xml:space="preserve">
+  <data name="Auth_PathAccessForbidden" xml:space="preserve">
     <value>무단 액세스: {0}</value>
   </data>
-    <data name="Avatar_UpdateFailed" xml:space="preserve">
+  <data name="Avatar_UpdateFailed" xml:space="preserve">
     <value>사용자 아바타 업데이트 실패</value>
   </data>
-    <data name="Cache_GenerationFailed" xml:space="preserve">
+  <data name="Cache_GenerationFailed" xml:space="preserve">
     <value>캐시 생성 실패: {0}</value>
   </data>
-    <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
+  <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
     <value>유효하지 않은 캐시 요청: {0}</value>
   </data>
-    <data name="Cache_NoMatchingRequest" xml:space="preserve">
+  <data name="Cache_NoMatchingRequest" xml:space="preserve">
     <value>캐시 워커에 일치하는 요청이 없습니다: {0}</value>
   </data>
-    <data name="Cache_Stopped" xml:space="preserve">
+  <data name="Cache_Stopped" xml:space="preserve">
     <value>캐시 업데이트가 중단되었습니다.</value>
   </data>
-    <data name="Cache_Updated" xml:space="preserve">
+  <data name="Cache_Updated" xml:space="preserve">
     <value>캐시 업데이트됨: {0}[{1}] @ {2} bytes</value>
   </data>
-    <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
+  <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
     <value>캐시 업데이트 실패: {0} @ {1}</value>
   </data>
-    <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
+  <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
     <value>캐시 업데이트 워커 잠김: {0}</value>
   </data>
-    <data name="Cache_WorkerCancelled" xml:space="preserve">
+  <data name="Cache_WorkerCancelled" xml:space="preserve">
     <value>캐시 업데이터 워커가 중단되었습니다.</value>
   </data>
-    <data name="Cache_WorkerStarted" xml:space="preserve">
+  <data name="Cache_WorkerStarted" xml:space="preserve">
     <value>캐시 업데이트 워커가 실행되었습니다.</value>
   </data>
-    <data name="Cache_WorkerStopped" xml:space="preserve">
+  <data name="Cache_WorkerStopped" xml:space="preserve">
     <value>캐시 업데이트 워커가 중단되었습니다.</value>
   </data>
-    <data name="Challenge_NotFound" xml:space="preserve">
+  <data name="Challenge_NotFound" xml:space="preserve">
     <value>해당 문제를 찾을 수 없습니다.</value>
   </data>
-    <data name="Config_GlobalConfigAdded" xml:space="preserve">
+  <data name="Config_GlobalConfigAdded" xml:space="preserve">
     <value>전역 설정 추가됨: {0} =&gt; {1}</value>
   </data>
-    <data name="Config_GlobalConfigUpdated" xml:space="preserve">
+  <data name="Config_GlobalConfigUpdated" xml:space="preserve">
     <value>전역 설정 업데이트됨: {0} =&gt; {1}</value>
   </data>
-    <data name="Config_InitializingDatabase" xml:space="preserve">
+  <data name="Config_InitializingDatabase" xml:space="preserve">
     <value>데이터베이스 초기화중...</value>
   </data>
-    <data name="Config_ReloadFailed" xml:space="preserve">
+  <data name="Config_ReloadFailed" xml:space="preserve">
     <value>전역 설정을 불러오는데 실패했습니다.</value>
   </data>
-    <data name="Config_TypeNotSupported" xml:space="preserve">
+  <data name="Config_TypeNotSupported" xml:space="preserve">
     <value>지원하지 않는 설정 타입입니다.</value>
   </data>
-    <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
+  <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
     <value>컨테이너 생성 실패 {0}</value>
   </data>
-    <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
+  <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
     <value>컨테이너 생성 실패 {0}, 응답: {1}</value>
   </data>
-    <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
+  <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
     <value>컨테이너 생성 실패 {0}, status: {1}</value>
   </data>
-    <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
+  <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
     <value>컨테이너 삭제 실패 {0}</value>
   </data>
-    <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
+  <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
     <value>컨테이너 삭제 실패 {0}, 응답: {1}</value>
   </data>
-    <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
+  <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
     <value>컨테이너 삭제 실패 {0}, status: {1}</value>
   </data>
-    <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
+  <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
     <value>컨테이너 {0} 가 삭제되었습니다.</value>
   </data>
-    <data name="ContainerManager_ContainerExisted" xml:space="preserve">
+  <data name="ContainerManager_ContainerExisted" xml:space="preserve">
     <value>컨테이너 {0} 가 이미 존재합니다. 삭제 후 다시 생성하십시오.</value>
   </data>
-    <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
+  <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
     <value>컨테이너 인스턴스 {0} 생성 실패</value>
   </data>
-    <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
+  <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
     <value>{0} 인스턴스 생성 실패 : {1}</value>
   </data>
-    <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
+  <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
     <value>컨테이너 인스턴스 {0} 실행 실패 ({1})</value>
   </data>
-    <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
+  <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
     <value>{0} 컨테이너 생성 후 외부 port 연결에 실패했습니다.</value>
   </data>
-    <data name="ContainerManager_DockerMode" xml:space="preserve">
+  <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>컨테이너 모드: Docker Instance 컨테이너 제어</value>
   </data>
-    <data name="ContainerManager_K8sMode" xml:space="preserve">
+  <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>컨테이너 모드 : K8s Cluster Pod 컨테이너 제어</value>
   </data>
-    <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
+  <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
     <value>port 는 숫자여야합니다 : {0}</value>
   </data>
-    <data name="ContainerManager_PullContainerImage" xml:space="preserve">
+  <data name="ContainerManager_PullContainerImage" xml:space="preserve">
     <value>{0} 컨테이너 이미지 가져오기</value>
   </data>
-    <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
+  <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
     <value>서비스 {0} 생성 실패</value>
   </data>
-    <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
+  <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
     <value>서비스 {0} 생성 실패, 응답: {1}</value>
   </data>
-    <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
+  <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
     <value>서비스 {0} 생성 실패, status: {1}</value>
   </data>
-    <data name="ContainerManager_SwarmMode" xml:space="preserve">
+  <data name="ContainerManager_SwarmMode" xml:space="preserve">
     <value>컨테이너 모드: Docker Swarm Cluster 컨테이너 제어</value>
   </data>
-    <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
+  <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
     <value>'{0}' 이미지를 찾을 수 없습니다.</value>
   </data>
-    <data name="ContainerProvider_DockerInited" xml:space="preserve">
+  <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Docker 초기화 성공 ({0})</value>
   </data>
-    <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
+  <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
     <value>K8s 프로필을 로드할 수 없습니다. {0} 에 프로필이 존재하는지 확인하십시오.</value>
   </data>
-    <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
+  <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
     <value>K8s 초기화 성공 ({0})</value>
   </data>
-    <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
+  <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s 초기화 실패. 설정이 올바른지 확인하십시오. ({0})</value>
   </data>
-    <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
+  <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>#{0} 시작됨. 캐시 큐에 스코어보드 캐시를 추가합니다.</value>
   </data>
-    <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
+  <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>유효기간이 지난 컨테이너 [{0}] 이 삭제되었습니다.</value>
   </data>
-    <data name="CronJob_Started" xml:space="preserve">
+  <data name="CronJob_Started" xml:space="preserve">
     <value>Cron 작업이 시작되었습니다.</value>
   </data>
-    <data name="CronJob_Stopped" xml:space="preserve">
+  <data name="CronJob_Stopped" xml:space="preserve">
     <value>Cron 작업이 중단되었습니다.</value>
   </data>
-    <data name="Database_ConnectionFailed" xml:space="preserve">
+  <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>({0}) 데이터베이스에 연결하지 못했습니다. 연결 정보를 확인하십시오.</value>
   </data>
-    <data name="Database_CurrentConnectionString" xml:space="preserve">
+  <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>현재 연결 정보: {0}</value>
   </data>
-    <data name="Database_NoConnectionString" xml:space="preserve">
+  <data name="Database_NoConnectionString" xml:space="preserve">
     <value>
       데이터베이스 연결 정보 중 'ConnectionStrings' 를 찾지 못했습니다. appsettings.json 을
       확인하십시오.
     </value>
   </data>
-    <data name="FileRepository_CacheLocation" xml:space="preserve">
+  <data name="FileRepository_CacheLocation" xml:space="preserve">
     <value>캐시 위치: {0}</value>
   </data>
-    <data name="FileRepository_DeleteFile" xml:space="preserve">
+  <data name="FileRepository_DeleteFile" xml:space="preserve">
     <value>파일 삭제 [{0}] {1}</value>
   </data>
-    <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
+  <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
     <value>이미지 저장 실패: {0}</value>
   </data>
-    <data name="FileRepository_ReferenceCounting" xml:space="preserve">
+  <data name="FileRepository_ReferenceCounting" xml:space="preserve">
     <value>파일 참조 수 [{0}] {1} = &gt; {2}</value>
   </data>
-    <data name="File_DeletionFailed" xml:space="preserve">
+  <data name="File_DeletionFailed" xml:space="preserve">
     <value>파일 삭제 실패</value>
   </data>
-    <data name="File_NotFound" xml:space="preserve">
+  <data name="File_NotFound" xml:space="preserve">
     <value>파일이 존재하지 않습니다.</value>
   </data>
-    <data name="File_PdfOnly" xml:space="preserve">
+  <data name="File_PdfOnly" xml:space="preserve">
     <value>PDF 파일을 업로드해주십시오.</value>
   </data>
-    <data name="File_SizeTooLarge" xml:space="preserve">
+  <data name="File_SizeTooLarge" xml:space="preserve">
     <value>파일이 너무 큽니다!</value>
   </data>
-    <data name="File_SizeZero" xml:space="preserve">
+  <data name="File_SizeZero" xml:space="preserve">
     <value>유효하지 않은 파일</value>
   </data>
-    <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
+  <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] [{0}] 팀이 [{1}] 문제 답으로 [{2}] 를 제출했습니다</value>
   </data>
-    <data name="FlagChecker_AnswerRejected" xml:space="preserve">
+  <data name="FlagChecker_AnswerRejected" xml:space="preserve">
     <value>[WA] [{0}] 팀이 [{1}] 문제 답으로 [{2}] 를 제출했습니다</value>
   </data>
-    <data name="FlagChecker_CheatDetected" xml:space="preserve">
+  <data name="FlagChecker_CheatDetected" xml:space="preserve">
     <value>[CHEAT] [{0}] 팀이 [{1} 문제에 [{2}] 팀의 플래그를 제출했습니다</value>
   </data>
-    <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
+  <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
     <value>[CONCURRENCY] #{0} 제출이 실패했습니다.</value>
   </data>
-    <data name="FlagChecker_UnknownInstance" xml:space="preserve">
+  <data name="FlagChecker_UnknownInstance" xml:space="preserve">
     <value>[UNKNOWN] [{0}] 팀에 [{1}] 문제 인스턴스가 없습니다.</value>
   </data>
-    <data name="FlagsChecker_Recheck" xml:space="preserve">
+  <data name="FlagsChecker_Recheck" xml:space="preserve">
     <value>플래그 {0} 재확인</value>
   </data>
-    <data name="FlagsChecker_Started" xml:space="preserve">
+  <data name="FlagsChecker_Started" xml:space="preserve">
     <value>플래그 체커가 시작되었습니다.</value>
   </data>
-    <data name="FlagsChecker_Stopped" xml:space="preserve">
+  <data name="FlagsChecker_Stopped" xml:space="preserve">
     <value>플래그 체커가 중단되었습니다.</value>
   </data>
-    <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
+  <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
     <value>#{0} 이 중단되어 검사 작업이 중단되었습니다.</value>
   </data>
-    <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
+  <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
     <value>검사기 #{0} 에서 오류가 발생했습니다.</value>
   </data>
-    <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
+  <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
     <value>검사기 #{0} 이 시작되었습니다.</value>
   </data>
-    <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
+  <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
     <value>검사기 #{0} 가 {1} 제출을 검사하고 있습니다.</value>
   </data>
-    <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
+  <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>검사기 #{0} 가 중단되었습니다.</value>
   </data>
-    <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
+  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
     <value>게임 {0} 의 {1} 문제 인스턴스 삭제 중..</value>
   </data>
-    <data name="Game_DeletionFailed" xml:space="preserve">
+  <data name="Game_DeletionFailed" xml:space="preserve">
     <value>게임 삭제 실패. 관련 파일이 손상되었습니다.</value>
   </data>
-    <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
+  <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>{1} 팀의 {0} 게임 정보 삭제 중...</value>
   </data>
-    <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
+  <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
     <value>설정 파일에 XOR 키가 없어 게임 키가 그대로 데이터베이스에 저장됩니다.</value>
   </data>
-    <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
+  <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>입장 승인 후 게임을 종료할 수 없습니다</value>
   </data>
-    <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
+  <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
     <value>참가하지 않은 상태에서 게임을 종료할 수 없습니다.</value>
   </data>
-    <data name="Game_CaptureNotFound" xml:space="preserve">
+  <data name="Game_CaptureNotFound" xml:space="preserve">
     <value>캡처된 트래픽이 없습니다.</value>
   </data>
-    <data name="Game_ChallengeNotFound" xml:space="preserve">
+  <data name="Game_ChallengeNotFound" xml:space="preserve">
     <value>제목을 찾을 수 없거나 동적 인스턴스 할당에 실패했습니다</value>
   </data>
-    <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
+  <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>해당 문제의 컨테이너가 이미 존재합니다.</value>
   </data>
-    <data name="Game_ContainerCreationFailed" xml:space="preserve">
+  <data name="Game_ContainerCreationFailed" xml:space="preserve">
     <value>해당 문제의 컨테이너 생성 실패</value>
   </data>
-    <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
+  <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
     <value>해당 제목의 컨테이너 생성 실패</value>
   </data>
-    <data name="Game_ContainerDeleted" xml:space="preserve">
+  <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} 의 문제 {1} 컨테이너 [{2}]가 삭제되었습니다.</value>
   </data>
-    <data name="Game_ContainerDeletionFailed" xml:space="preserve">
+  <data name="Game_ContainerDeletionFailed" xml:space="preserve">
     <value>해당 문제의 컨테이너 삭제 실패</value>
   </data>
-    <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
+  <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
     <value>컨테이너를 연장시킬 수 없습니다.</value>
   </data>
-    <data name="Game_ContainerNotCreated" xml:space="preserve">
+  <data name="Game_ContainerNotCreated" xml:space="preserve">
     <value>해당 문제의 컨테이너가 생성되지 않았습니다.</value>
   </data>
-    <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
+  <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
     <value>팀 컨테이너의 수는 {0}을 초과할 수 없습니다</value>
   </data>
-    <data name="Game_DeadlineExpired" xml:space="preserve">
+  <data name="Game_DeadlineExpired" xml:space="preserve">
     <value>제출 기간이 지났습니다.</value>
   </data>
-    <data name="Game_Ended" xml:space="preserve">
+  <data name="Game_Ended" xml:space="preserve">
     <value>게임이 종료되었습니다.</value>
   </data>
-    <data name="Game_InOtherTeam" xml:space="preserve">
+  <data name="Game_InOtherTeam" xml:space="preserve">
     <value>이미 다른 팀에 가입되어있습니다.</value>
   </data>
-    <data name="Game_InvalidInvitationCode" xml:space="preserve">
+  <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>초대 코드가 유효하지 않습니다.</value>
   </data>
-    <data name="Game_InvalidOrganization" xml:space="preserve">
+  <data name="Game_InvalidOrganization" xml:space="preserve">
     <value>기관이 유효하지 않습니다.</value>
   </data>
-    <data name="Game_JoinSucceeded" xml:space="preserve">
+  <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다.</value>
   </data>
-    <data name="Game_NotFound" xml:space="preserve">
+  <data name="Game_NotFound" xml:space="preserve">
     <value>게임을 찾을 수 없습니다.</value>
   </data>
-    <data name="Game_NotMemberOfTeam" xml:space="preserve">
+  <data name="Game_NotMemberOfTeam" xml:space="preserve">
     <value>해당 팀원이 아닙니다.</value>
   </data>
-    <data name="Game_NotParticipated" xml:space="preserve">
+  <data name="Game_NotParticipated" xml:space="preserve">
     <value>해당 게임에 참여하지 않았습니다.</value>
   </data>
-    <data name="Game_NotStarted" xml:space="preserve">
+  <data name="Game_NotStarted" xml:space="preserve">
     <value>게임이 시작되었습니다.</value>
   </data>
-    <data name="Game_OperationTooFrequent" xml:space="preserve">
+  <data name="Game_OperationTooFrequent" xml:space="preserve">
     <value>컨테이너가 바쁩니다.</value>
   </data>
-    <data name="Game_ParticipationNotAccepted" xml:space="preserve">
+  <data name="Game_ParticipationNotAccepted" xml:space="preserve">
     <value>당신의 가입이 거부되었거나 금지되었습니다!</value>
   </data>
-    <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
+  <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
     <value>스코어보드 다운 실패</value>
   </data>
-    <data name="Game_SubmissionNotFound" xml:space="preserve">
+  <data name="Game_SubmissionNotFound" xml:space="preserve">
     <value>제출된 것이 없습니다.</value>
   </data>
-    <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
+  <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
     <value>팀원 수가 최대에 도달했습니다.</value>
   </data>
-    <data name="Game_WriteupSubmitted" xml:space="preserve">
+  <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} 팀 {1} 풀이 제출 완료.</value>
   </data>
-    <data name="Header_Captain" xml:space="preserve">
+  <data name="Header_Captain" xml:space="preserve">
     <value>팀장</value>
   </data>
-    <data name="Header_Challenge" xml:space="preserve">
+  <data name="Header_Challenge" xml:space="preserve">
     <value>문제</value>
   </data>
-    <data name="Header_Email" xml:space="preserve">
+  <data name="Header_Email" xml:space="preserve">
     <value>Email</value>
   </data>
-    <data name="Header_Member" xml:space="preserve">
+  <data name="Header_Member" xml:space="preserve">
     <value>팀원</value>
   </data>
-    <data name="Header_PhoneNumber" xml:space="preserve">
+  <data name="Header_PhoneNumber" xml:space="preserve">
     <value>전화번호</value>
   </data>
-    <data name="Header_Ranking" xml:space="preserve">
+  <data name="Header_Ranking" xml:space="preserve">
     <value>순위</value>
   </data>
-    <data name="Header_ScoringTime" xml:space="preserve">
+  <data name="Header_ScoringTime" xml:space="preserve">
     <value>시각</value>
   </data>
-    <data name="Header_SolvedNumber" xml:space="preserve">
+  <data name="Header_SolvedNumber" xml:space="preserve">
     <value>Solved</value>
   </data>
-    <data name="Header_StdNumber" xml:space="preserve">
+  <data name="Header_StdNumber" xml:space="preserve">
     <value>학번</value>
   </data>
-    <data name="Header_SubmitContent" xml:space="preserve">
+  <data name="Header_SubmitContent" xml:space="preserve">
     <value>제출</value>
   </data>
-    <data name="Header_SubmitStatus" xml:space="preserve">
+  <data name="Header_SubmitStatus" xml:space="preserve">
     <value>상태</value>
   </data>
-    <data name="Header_SubmitTime" xml:space="preserve">
+  <data name="Header_SubmitTime" xml:space="preserve">
     <value>제출 시각</value>
   </data>
-    <data name="Header_Team" xml:space="preserve">
+  <data name="Header_Team" xml:space="preserve">
     <value>팀</value>
   </data>
-    <data name="Header_TotalScore" xml:space="preserve">
+  <data name="Header_TotalScore" xml:space="preserve">
     <value>점수</value>
   </data>
-    <data name="Header_User" xml:space="preserve">
+  <data name="Header_User" xml:space="preserve">
     <value>사용자</value>
   </data>
-    <data name="Identity_ConcurrencyFailure" xml:space="preserve">
+  <data name="Identity_ConcurrencyFailure" xml:space="preserve">
     <value>오류 발생, 다시 시도해주세요.</value>
   </data>
-    <data name="Identity_DefaultError" xml:space="preserve">
+  <data name="Identity_DefaultError" xml:space="preserve">
     <value>오류 발생, 다시 시도해주세요.</value>
   </data>
-    <data name="Identity_DuplicateEmail" xml:space="preserve">
+  <data name="Identity_DuplicateEmail" xml:space="preserve">
     <value>{0} 은 이미 사용 중인 이메일입니다.</value>
   </data>
-    <data name="Identity_DuplicateRoleName" xml:space="preserve">
+  <data name="Identity_DuplicateRoleName" xml:space="preserve">
     <value>{0} 은 이미 사용된 역할입니다.</value>
   </data>
-    <data name="Identity_DuplicateUserName" xml:space="preserve">
+  <data name="Identity_DuplicateUserName" xml:space="preserve">
     <value>{0} 은 이미 사용 중인 이름입니다.</value>
   </data>
-    <data name="Identity_InvalidEmail" xml:space="preserve">
+  <data name="Identity_InvalidEmail" xml:space="preserve">
     <value>{0} 은 유효하지 않은 이메일입니다.</value>
   </data>
-    <data name="Identity_InvalidRoleName" xml:space="preserve">
+  <data name="Identity_InvalidRoleName" xml:space="preserve">
     <value>{0} 은 유효하지 않은 역할입니다.</value>
   </data>
-    <data name="Identity_InvalidToken" xml:space="preserve">
+  <data name="Identity_InvalidToken" xml:space="preserve">
     <value>인증 코드 오류</value>
   </data>
-    <data name="Identity_InvalidUserName" xml:space="preserve">
+  <data name="Identity_InvalidUserName" xml:space="preserve">
     <value>{0} 은 유효하지 않은 이름입니다.</value>
   </data>
-    <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
+  <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
     <value>이미 로그인되었습니다.</value>
   </data>
-    <data name="Identity_PasswordMismatch" xml:space="preserve">
+  <data name="Identity_PasswordMismatch" xml:space="preserve">
     <value>비밀번호가 일치하지 않습니다.</value>
   </data>
-    <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
+  <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
     <value>비밀번호에는 숫자가 포함되어야 합니다.</value>
   </data>
-    <data name="Identity_PasswordRequiresLower" xml:space="preserve">
+  <data name="Identity_PasswordRequiresLower" xml:space="preserve">
     <value>비밀번호에는 소문자가 포함되어야 합니다.</value>
   </data>
-    <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
+  <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
     <value>비밀번호에는 특수문자가 포함되어야 합니다.</value>
   </data>
-    <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
+  <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
     <value>비밀번호에 최소 {0} 개 다른 문자가 있어야 합니다.</value>
   </data>
-    <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
+  <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
     <value>비밀번호에는 대문자가 포함되어야 합니다.</value>
   </data>
-    <data name="Identity_PasswordTooShort" xml:space="preserve">
+  <data name="Identity_PasswordTooShort" xml:space="preserve">
     <value>비밀번호 길이 {0} 가 너무 짧습니다.</value>
   </data>
-    <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
+  <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
     <value>복구 코드 오류</value>
   </data>
-    <data name="Identity_UnknownError" xml:space="preserve">
+  <data name="Identity_UnknownError" xml:space="preserve">
     <value>알수없는 오류</value>
   </data>
-    <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
+  <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
     <value>사용자에게 이미 비밀번호가 존재합니다.</value>
   </data>
-    <data name="Identity_UserAlreadyInRole" xml:space="preserve">
+  <data name="Identity_UserAlreadyInRole" xml:space="preserve">
     <value>사용자는 이미 {0} 입니다.</value>
   </data>
-    <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
+  <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
     <value>사용자 잠금이 활성화되지 않았습니다.</value>
   </data>
-    <data name="Identity_UserNotInRole" xml:space="preserve">
+  <data name="Identity_UserNotInRole" xml:space="preserve">
     <value>사용자가 {0} 이 아닙니다.</value>
   </data>
-    <data name="Init_AdminCreationFailed" xml:space="preserve">
+  <data name="Init_AdminCreationFailed" xml:space="preserve">
     <value>관리자 계정을 만들지 못했습니다. 오류 메시지: {0}</value>
   </data>
-    <data name="Init_NoFilesDir" xml:space="preserve">
+  <data name="Init_NoFilesDir" xml:space="preserve">
     <value>
       데이터 디렉토리 {0}이(가) 마운트되지 않았으며 파일이 손실될 수 있습니다. 데이터 지속성
       디렉토리를 올바르게 구성하십시오!
     </value>
   </data>
-    <data name="Init_CaptureNotAvailable" xml:space="preserve">
+  <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>플랫폼 프록시 모드를 사용하지 않아 트래픽을 캡처할 수 없습니다!</value>
   </data>
-    <data name="Init_InvalidCacheConfig" xml:space="preserve">
+  <data name="Init_InvalidCacheConfig" xml:space="preserve">
     <value>
       캐시 구성이 잘못되었습니다. "RedisCache" 필드 구성을 확인하십시오. Redis를 사용하지 않는 경우
       구성 항목을 비워두세요.
     </value>
   </data>
-    <data name="Init_PostContent" xml:space="preserve">
+  <data name="Init_PostContent" xml:space="preserve">
     <value>
       The project is based on the AGPL-3.0 license, open sourced at
       [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).
     </value>
   </data>
-    <data name="Init_PostSummary" xml:space="preserve">
+  <data name="Init_PostSummary" xml:space="preserve">
     <value>An open-source CTF platform</value>
   </data>
-    <data name="Init_PostTitle" xml:space="preserve">
+  <data name="Init_PostTitle" xml:space="preserve">
     <value>Welcome to GZ::CTF!</value>
   </data>
-    <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
+  <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>문제 {1}의 {0} 컨테이너 [{2}]가 자동으로 삭제되었습니다</value>
   </data>
-    <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
+  <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
     <value>{0} 팀이 문제 {1} 의 컨테이너 인스턴스를 생성했습니다. [{2}]</value>
   </data>
-    <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
+  <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>문제 {0} 의 컨테이너 인스턴스를 시작할 수 없습니다.</value>
   </data>
-    <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
+  <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
     <value>컨테이너 삭제 [{0}] ({1}): {2}</value>
   </data>
-    <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
+  <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
     <value>문제 {0}#{1} 에 할당된 동적 인스턴스 수가 부족합니다.</value>
   </data>
-    <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
+  <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>{0} 팀이 문제 {1}#{2} 인스턴스 생성에 실패했습니다. 되돌리는 중..</value>
   </data>
-    <data name="InstanceRepository_InvalidPort" xml:space="preserve">
+  <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>컨테이너 생성 중 잘못된 port 발견</value>
   </data>
-    <data name="InstanceRepository_NoInstance" xml:space="preserve">
+  <data name="InstanceRepository_NoInstance" xml:space="preserve">
     <value>팀 참가자가 비어 있습니다. [{0}, {1}]</value>
   </data>
-    <data name="MailSender_ChangeEmailButton" xml:space="preserve">
+  <data name="MailSender_ChangeEmailButton" xml:space="preserve">
     <value>Email 인증</value>
   </data>
-    <data name="MailSender_ChangeEmailContent" xml:space="preserve">
+  <data name="MailSender_ChangeEmailContent" xml:space="preserve">
     <value>버튼을 눌러 새로운 이메일을 인증하세요.</value>
   </data>
-    <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
+  <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>이메일 변경</value>
   </data>
-    <data name="MailSender_InvalidRequest" xml:space="preserve">
+  <data name="MailSender_InvalidRequest" xml:space="preserve">
     <value>잘못된 이메일 요청</value>
   </data>
-    <data name="MailSender_MailSendFailed" xml:space="preserve">
+  <data name="MailSender_MailSendFailed" xml:space="preserve">
     <value>이메일 전송 실패</value>
   </data>
-    <data name="MailSender_ResetPasswordButton" xml:space="preserve">
+  <data name="MailSender_ResetPasswordButton" xml:space="preserve">
     <value>비밀번호 재설정</value>
   </data>
-    <data name="MailSender_ResetPasswordContent" xml:space="preserve">
+  <data name="MailSender_ResetPasswordContent" xml:space="preserve">
     <value>버튼을 눌러 비밀번호를 재설정하세요.</value>
   </data>
-    <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
+  <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>비밀번호 초기화</value>
   </data>
-    <data name="MailSender_SendMail" xml:space="preserve">
+  <data name="MailSender_SendMail" xml:space="preserve">
     <value>이메일 전송: {0}</value>
   </data>
-    <data name="MailSender_Template" xml:space="preserve">
+  <data name="MailSender_Template" xml:space="preserve">
     <value>
       &lt;head&gt; &lt;meta content="text/html; charset=utf-8"
       http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px;
@@ -792,292 +787,292 @@
       #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;
     </value>
   </data>
-    <data name="MailSender_VerifyEmailButton" xml:space="preserve">
+  <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>이메일 인증</value>
   </data>
-    <data name="MailSender_VerifyEmailContent" xml:space="preserve">
+  <data name="MailSender_VerifyEmailContent" xml:space="preserve">
     <value>가입한 이메일 주소 {0}를 인증해야합니다. 아래 버튼을 눌러 인증하세요.</value>
   </data>
-    <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
+  <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>이메일 인증</value>
   </data>
-    <data name="Model_BioTooLong" xml:space="preserve">
+  <data name="Model_BioTooLong" xml:space="preserve">
     <value>설명이 너무 깁니다.</value>
   </data>
-    <data name="Model_ContentRequired" xml:space="preserve">
+  <data name="Model_ContentRequired" xml:space="preserve">
     <value>내용을 적어주세요.</value>
   </data>
-    <data name="Model_EmailMalformed" xml:space="preserve">
+  <data name="Model_EmailMalformed" xml:space="preserve">
     <value>잘못된 이메일</value>
   </data>
-    <data name="Model_EmailRequired" xml:space="preserve">
+  <data name="Model_EmailRequired" xml:space="preserve">
     <value>이메일을 입력하세요</value>
   </data>
-    <data name="Model_FlagRequired" xml:space="preserve">
+  <data name="Model_FlagRequired" xml:space="preserve">
     <value>플래그를 입력하세요</value>
   </data>
-    <data name="Model_FlagTooLong" xml:space="preserve">
+  <data name="Model_FlagTooLong" xml:space="preserve">
     <value>플래그가 너무 깁니다</value>
   </data>
-    <data name="Model_InvitationCodeTooLong" xml:space="preserve">
+  <data name="Model_InvitationCodeTooLong" xml:space="preserve">
     <value>초대 코드가 너무 깁니다.</value>
   </data>
-    <data name="Model_MalformedPhoneNumber" xml:space="preserve">
+  <data name="Model_MalformedPhoneNumber" xml:space="preserve">
     <value>유효하지 않은 전화번호</value>
   </data>
-    <data name="Model_NewPasswordRequired" xml:space="preserve">
+  <data name="Model_NewPasswordRequired" xml:space="preserve">
     <value>새 비밀번호가 필요합니다.</value>
   </data>
-    <data name="Model_NewPasswordTooShort" xml:space="preserve">
+  <data name="Model_NewPasswordTooShort" xml:space="preserve">
     <value>새 비밀번호가 너무 짧습니다.</value>
   </data>
-    <data name="Model_OldPasswordRequired" xml:space="preserve">
+  <data name="Model_OldPasswordRequired" xml:space="preserve">
     <value>예전 비밀번호가 필요합니다.</value>
   </data>
-    <data name="Model_OldPasswordTooShort" xml:space="preserve">
+  <data name="Model_OldPasswordTooShort" xml:space="preserve">
     <value>예전 비밀번호가 너무 짧습니다.</value>
   </data>
-    <data name="Model_OutOfRange" xml:space="preserve">
+  <data name="Model_OutOfRange" xml:space="preserve">
     <value>{0} 의 길이를 {1} 에서 {2} 사이로 입력해주세요</value>
   </data>
-    <data name="Model_PasswordRequired" xml:space="preserve">
+  <data name="Model_PasswordRequired" xml:space="preserve">
     <value>비밀번호를 적어주세요.</value>
   </data>
-    <data name="Model_RealNameTooLong" xml:space="preserve">
+  <data name="Model_RealNameTooLong" xml:space="preserve">
     <value>실제 이름이 너무 깁니다.</value>
   </data>
-    <data name="Model_StdNumberTooLong" xml:space="preserve">
+  <data name="Model_StdNumberTooLong" xml:space="preserve">
     <value>학번이 너무 깁니다.</value>
   </data>
-    <data name="Model_TeamBioTooLong" xml:space="preserve">
+  <data name="Model_TeamBioTooLong" xml:space="preserve">
     <value>팀 bio 가 너무 깁니다.</value>
   </data>
-    <data name="Model_TeamNameTooLong" xml:space="preserve">
+  <data name="Model_TeamNameTooLong" xml:space="preserve">
     <value>팀 이름이 너무 깁니다.</value>
   </data>
-    <data name="Model_TitleRequired" xml:space="preserve">
+  <data name="Model_TitleRequired" xml:space="preserve">
     <value>제목을 적어주세요.</value>
   </data>
-    <data name="Model_TitleTooLong" xml:space="preserve">
+  <data name="Model_TitleTooLong" xml:space="preserve">
     <value>제목이 너무 깁니다.</value>
   </data>
-    <data name="Model_TitleTooShort" xml:space="preserve">
+  <data name="Model_TitleTooShort" xml:space="preserve">
     <value>제목이 너무 짧습니다.</value>
   </data>
-    <data name="Model_TokenRequired" xml:space="preserve">
+  <data name="Model_TokenRequired" xml:space="preserve">
     <value>토큰이 필요합니다.</value>
   </data>
-    <data name="Model_UserNameRequired" xml:space="preserve">
+  <data name="Model_UserNameRequired" xml:space="preserve">
     <value>이름을 적어주세요</value>
   </data>
-    <data name="Model_UserNameTooLong" xml:space="preserve">
+  <data name="Model_UserNameTooLong" xml:space="preserve">
     <value>이름이 너무 깁니다.</value>
   </data>
-    <data name="Model_UserNameTooShort" xml:space="preserve">
+  <data name="Model_UserNameTooShort" xml:space="preserve">
     <value>이름이 너무 짧습니다.</value>
   </data>
-    <data name="Model_ValidationFailed" xml:space="preserve">
+  <data name="Model_ValidationFailed" xml:space="preserve">
     <value>입력 인증 실패. 다시 시도해주세요</value>
   </data>
-    <data name="Post_NotFound" xml:space="preserve">
+  <data name="Post_NotFound" xml:space="preserve">
     <value>해당 글을 찾을 수 없습니다.</value>
   </data>
-    <data name="RateLimit_TooManyRequests" xml:space="preserve">
+  <data name="RateLimit_TooManyRequests" xml:space="preserve">
     <value>너무 많은 요청. {0} 초 후 다시 시도해주세요.</value>
   </data>
-    <data name="Scoreboard_AllSubmissions" xml:space="preserve">
+  <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>제출</value>
   </data>
-    <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
     <value>기관</value>
   </data>
-    <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
+  <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
     <value>팀이 로드되지 않았습니다.</value>
   </data>
-    <data name="Scoreboard_Title" xml:space="preserve">
+  <data name="Scoreboard_Title" xml:space="preserve">
     <value>스코어보드</value>
   </data>
-    <data name="Server_Exited" xml:space="preserve">
+  <data name="Server_Exited" xml:space="preserve">
     <value>서버 종료됨</value>
   </data>
-    <data name="Server_Failed" xml:space="preserve">
+  <data name="Server_Failed" xml:space="preserve">
     <value>오류로 인해 서버가 예기치 않게 종료되었습니다.</value>
   </data>
-    <data name="Submission_Accepted" xml:space="preserve">
+  <data name="Submission_Accepted" xml:space="preserve">
     <value>승인됨</value>
   </data>
-    <data name="Submission_CheatDetected" xml:space="preserve">
+  <data name="Submission_CheatDetected" xml:space="preserve">
     <value>부정 행위 감지됨</value>
   </data>
-    <data name="Submission_FirstBlood" xml:space="preserve">
+  <data name="Submission_FirstBlood" xml:space="preserve">
     <value>First blood</value>
   </data>
-    <data name="Submission_FlagSubmitted" xml:space="preserve">
+  <data name="Submission_FlagSubmitted" xml:space="preserve">
     <value>제출 완료</value>
   </data>
-    <data name="Submission_NotFound" xml:space="preserve">
+  <data name="Submission_NotFound" xml:space="preserve">
     <value>제출 실패</value>
   </data>
-    <data name="Submission_SecondBlood" xml:space="preserve">
+  <data name="Submission_SecondBlood" xml:space="preserve">
     <value>Second blood</value>
   </data>
-    <data name="Submission_ThirdBlood" xml:space="preserve">
+  <data name="Submission_ThirdBlood" xml:space="preserve">
     <value>Third blood</value>
   </data>
-    <data name="Submission_UnknownInstance" xml:space="preserve">
+  <data name="Submission_UnknownInstance" xml:space="preserve">
     <value>알 수 없는 인스턴스</value>
   </data>
-    <data name="Submission_WrongAnswer" xml:space="preserve">
+  <data name="Submission_WrongAnswer" xml:space="preserve">
     <value>오답입니다</value>
   </data>
-    <data name="Game_CreationFailed" xml:space="preserve">
+  <data name="Game_CreationFailed" xml:space="preserve">
     <value>게임 생성 실패</value>
   </data>
-    <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
+  <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
     <value>컨테이너 문제에만 트래픽 캡처를 허용할 수 있습니다.</value>
   </data>
-    <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
+  <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
     <value>동적 인스턴스 이름을 적어주세요.</value>
   </data>
-    <data name="Challenge_FlagTooTrivial" xml:space="preserve">
+  <data name="Challenge_FlagTooTrivial" xml:space="preserve">
     <value>플래그가 충분히 복잡하지 않습니다. 해시값을 추가하거나 길이를 늘리세요</value>
   </data>
-    <data name="Challenge_NoFlag" xml:space="preserve">
+  <data name="Challenge_NoFlag" xml:space="preserve">
     <value>문제에 플래그가 설정되지 않았습니다.</value>
   </data>
-    <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
+  <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>assets API 를 이용하여 첨부 파일을 업로드하세요.</value>
   </data>
-    <data name="Container_AddressResolveFailed" xml:space="preserve">
+  <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>컨테이너 주소가 잘못되었습니다.</value>
   </data>
-    <data name="Container_ConfigError" xml:space="preserve">
+  <data name="Container_ConfigError" xml:space="preserve">
     <value>컨테이너 설정 오류</value>
   </data>
-    <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
+  <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
     <value>컨테이너 연결 수 최대치 도달</value>
   </data>
-    <data name="Container_CreationFailed" xml:space="preserve">
+  <data name="Container_CreationFailed" xml:space="preserve">
     <value>컨테이너 생성 실패</value>
   </data>
-    <data name="Container_InvalidClientAddress" xml:space="preserve">
+  <data name="Container_InvalidClientAddress" xml:space="preserve">
     <value>유효하지 않은 주소</value>
   </data>
-    <data name="Container_InvalidPort" xml:space="preserve">
+  <data name="Container_InvalidPort" xml:space="preserve">
     <value>잘못된 port</value>
   </data>
-    <data name="Container_NotFound" xml:space="preserve">
+  <data name="Container_NotFound" xml:space="preserve">
     <value>컨테이너가 존재하지 않습니다.</value>
   </data>
-    <data name="Container_TestContainerCreated" xml:space="preserve">
+  <data name="Container_TestContainerCreated" xml:space="preserve">
     <value>테스트 컨테이너 {0} 생성 성공</value>
   </data>
-    <data name="File_CreationFailed" xml:space="preserve">
+  <data name="File_CreationFailed" xml:space="preserve">
     <value>파일 생성 실패</value>
   </data>
-    <data name="Notification_NotFound" xml:space="preserve">
+  <data name="Notification_NotFound" xml:space="preserve">
     <value>알림을 찾을 수 없습니다.</value>
   </data>
-    <data name="Notification_SystemNotDeletable" xml:space="preserve">
+  <data name="Notification_SystemNotDeletable" xml:space="preserve">
     <value>시스템 알림을 삭제할 수 없습니다.</value>
   </data>
-    <data name="Notification_SystemNotEditable" xml:space="preserve">
+  <data name="Notification_SystemNotEditable" xml:space="preserve">
     <value>시스템 알림을 수정할 수 없습니다.</value>
   </data>
-    <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
+  <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
     <value>컨테이너 ({0}) 접속 실패</value>
   </data>
-    <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
+  <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
     <value>컨테이너 접속 실패 ({0}), 시작 중이거나 네트워크 설정을 확인하세요. - &gt; {1}</value>
   </data>
-    <data name="Proxy_Error" xml:space="preserve">
+  <data name="Proxy_Error" xml:space="preserve">
     <value>프록시 오류 발생</value>
   </data>
-    <data name="Proxy_TcpDisabled" xml:space="preserve">
+  <data name="Proxy_TcpDisabled" xml:space="preserve">
     <value>TCP 프록시 비활성화됨</value>
   </data>
-    <data name="Team_AvatarUpdated" xml:space="preserve">
+  <data name="Team_AvatarUpdated" xml:space="preserve">
     <value>{0} 팀이 아바타를 변경함: [{1}]</value>
   </data>
-    <data name="Team_AvatarUpdateFailed" xml:space="preserve">
+  <data name="Team_AvatarUpdateFailed" xml:space="preserve">
     <value>팀 아바타 업데이트 실패</value>
   </data>
-    <data name="Team_Created" xml:space="preserve">
+  <data name="Team_Created" xml:space="preserve">
     <value>{0} 팀 생성</value>
   </data>
-    <data name="Team_CreationFailed" xml:space="preserve">
+  <data name="Team_CreationFailed" xml:space="preserve">
     <value>팀 생성 실패</value>
   </data>
-    <data name="Team_Deleted" xml:space="preserve">
+  <data name="Team_Deleted" xml:space="preserve">
     <value>{0} 팀 삭제</value>
   </data>
-    <data name="Team_IdTransformFailed" xml:space="preserve">
+  <data name="Team_IdTransformFailed" xml:space="preserve">
     <value>팀 Id 변환 오류 : {0}</value>
   </data>
-    <data name="Team_InvalidCode" xml:space="preserve">
+  <data name="Team_InvalidCode" xml:space="preserve">
     <value>유효하지 않은 코드</value>
   </data>
-    <data name="Team_Locked" xml:space="preserve">
+  <data name="Team_Locked" xml:space="preserve">
     <value>팀 잠금됨</value>
   </data>
-    <data name="Team_MemberRemoved" xml:space="preserve">
+  <data name="Team_MemberRemoved" xml:space="preserve">
     <value>{1} 팀에서 {0} 방출</value>
   </data>
-    <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
+  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
     <value>한 팀 이상 생성할 수 없습니다.</value>
   </data>
-    <data name="Team_NameEmpty" xml:space="preserve">
+  <data name="Team_NameEmpty" xml:space="preserve">
     <value>팀 이름을 입력하세요.</value>
   </data>
-    <data name="Team_NameInvalidInvitation" xml:space="preserve">
+  <data name="Team_NameInvalidInvitation" xml:space="preserve">
     <value>유효하지 않은 초대 {0}</value>
   </data>
-    <data name="Team_NameLocked" xml:space="preserve">
+  <data name="Team_NameLocked" xml:space="preserve">
     <value>{0} 팀 잠금됨</value>
   </data>
-    <data name="Team_NameNotFound" xml:space="preserve">
+  <data name="Team_NameNotFound" xml:space="preserve">
     <value>{0} 팀을 찾을 수 없습니다.</value>
   </data>
-    <data name="Team_NewCaptainNotFound" xml:space="preserve">
+  <data name="Team_NewCaptainNotFound" xml:space="preserve">
     <value>사용자가 존재하지 않습니다.</value>
   </data>
-    <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
+  <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
     <value>팀에 팀장이 너무 많습니다.</value>
   </data>
-    <data name="Team_UserJoined" xml:space="preserve">
+  <data name="Team_UserJoined" xml:space="preserve">
     <value>{0} 팀에 참가</value>
   </data>
-    <data name="Team_UserLeft" xml:space="preserve">
+  <data name="Team_UserLeft" xml:space="preserve">
     <value>{0} 팀 나가기</value>
   </data>
-    <data name="User_AlreadyInTeam" xml:space="preserve">
+  <data name="User_AlreadyInTeam" xml:space="preserve">
     <value>이미 해당 팀에 있습니다.</value>
   </data>
-    <data name="User_LeaveNotInTeam" xml:space="preserve">
+  <data name="User_LeaveNotInTeam" xml:space="preserve">
     <value>해당 팀에 있지 않습니다.</value>
   </data>
-    <data name="User_NotInTeam" xml:space="preserve">
+  <data name="User_NotInTeam" xml:space="preserve">
     <value>해당 팀에 있지 않습니다.</value>
   </data>
-    <data name="Game_WriteupNotNeeded" xml:space="preserve">
+  <data name="Game_WriteupNotNeeded" xml:space="preserve">
     <value>이 게임은 Writeup 을 제출하지 않아도 됩니다.</value>
   </data>
-    <data name="Signature_Invalid" xml:space="preserve">
+  <data name="Signature_Invalid" xml:space="preserve">
     <value>유효하지 않은 시그니처</value>
   </data>
-    <data name="Error_InternalServerError" xml:space="preserve">
+  <data name="Error_InternalServerError" xml:space="preserve">
     <value>Internal server error</value>
   </data>
-    <data name="Admin_LogoUpdateFailed" xml:space="preserve">
+  <data name="Admin_LogoUpdateFailed" xml:space="preserve">
     <value>로고 업데이트 실패</value>
   </data>
-    <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
+  <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
     <value>SMTP 서버 접속 성공: {0}</value>
   </data>
-    <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
+  <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>잘못된 이메일 설정이지만 이메일 인증이 활성화되었습니다.</value>
   </data>
-    <data name="Init_StorageInitFailed" xml:space="preserve">
+  <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
