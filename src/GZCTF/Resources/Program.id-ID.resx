@@ -1040,4 +1040,7 @@
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Konfigurasi email tidak valid, tetapi autentikasi email diaktifkan</value>
   </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Gagal menginisialisasi penyedia penyimpanan: {0}</value>
+  </data>
 </root>

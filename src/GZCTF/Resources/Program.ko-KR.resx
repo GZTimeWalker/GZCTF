@@ -534,7 +534,7 @@
     <value>기관이 유효하지 않습니다.</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
-    <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다. </value>
+    <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다.</value>
   </data>
   <data name="Game_NotFound" xml:space="preserve">
     <value>게임을 찾을 수 없습니다.</value>
@@ -714,7 +714,7 @@
     <value>컨테이너 삭제 [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>문제 {0}#{1} 에 할당된 동적 인스턴스  수가 부족합니다.</value>
+    <value>문제 {0}#{1} 에 할당된 동적 인스턴스 수가 부족합니다.</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>{0} 팀이 문제 {1}#{2} 인스턴스 생성에 실패했습니다. 되돌리는 중..</value>
@@ -753,7 +753,7 @@
     <value>이메일 전송: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Hello, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;If the above button is not valid, please copy this link to your browser: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you have not done so, please ignore this email. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;{userName} 님 안녕하세요!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt; 만약 위 버튼이 작동하지 않으면, 아래 링크를 브라우저에 입력하세요: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;만약 가입한 적이 없다면, 이 메일을 무시해주세요&lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>이메일 인증</value>
@@ -1039,5 +1039,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>잘못된 이메일 설정이지만 이메일 인증이 활성화되었습니다.</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Failed to initialize storage provider: {0}</value>
   </data>
 </root>

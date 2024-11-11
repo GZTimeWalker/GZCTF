@@ -435,7 +435,7 @@
     }
   },
   "placeholder": {
-    "empty": "Empty",
+    "empty": "Пусто",
     "games": {
       "challenges": {
         "attachment": {
@@ -447,18 +447,18 @@
       },
       "organizations": "Enter to add a division.",
       "participation": {
-        "bio": "(no bio)",
-        "team": "(no name)"
+        "bio": "(нет описания)",
+        "team": "(нет имени)"
       }
     },
     "instances": {
       "challenges": {
         "not_found": "No challenge found",
-        "select": "All challenges"
+        "select": "Все задания"
       },
       "teams": {
         "not_found": "Команда не найдена",
-        "select": "All Teams"
+        "select": "Все команды"
       }
     },
     "settings": {
@@ -473,7 +473,7 @@
       "search": "Search by name"
     },
     "users": {
-      "real_name": "Empty",
+      "real_name": "Пусто",
       "search": "Search by ID/username/email/student ID/real name",
       "student_id": "00000000"
     }
