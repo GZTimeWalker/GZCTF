@@ -1,64 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
+      Microsoft ResX Schema
+  
+      Version 2.0
+  
+      The primary goals of this format is to allow a simple XML format
+      that is mostly human readable. The generation and parsing of the
+      various data types are done through the TypeConverter classes
+      associated with the data types.
+  
+      Example:
+  
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+  
+      There are any number of "resheader" rows that contain simple
+      name/value pairs.
+  
+      Each data row contains a name, and value. The row also contains a
+      type or mimetype. Type corresponds to a .NET class that support
+      text/value conversion through the TypeConverter architecture.
+      Classes that don't support this are serialized and stored with the
+      mimetype set.
+  
+      The mimetype is used for serialized objects, and tells the
+      ResXResourceReader how to depersist the object. This is currently not
+      extensible. For a given mimetype the value must be set accordingly:
+  
+      Note - application/x-microsoft.net.object.binary.base64 is the format
+      that the ResXResourceWriter will generate, however the reader can
+      read any of the formats listed below.
+  
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -112,12 +112,16 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>
+            System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>
+            System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
     <value>有効なメールドメイン：{0}</value>
@@ -168,7 +172,9 @@
     <value>登録機能は無効になっています</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>メールによる認証は有効化していません、パスワードをリセットするには管理者にお問い合わせてください</value>
+    <value>
+      メールによる認証は有効化していません、パスワードをリセットするには管理者にお問い合わせてください
+    </value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>メールアドレスの更新メールを送信します</value>
@@ -396,13 +402,19 @@
     <value>スケジュールされたタスクが停止されました</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
-    <value>データベースに接続できませんでした({0})、データベースの接続文字列を確認してください</value>
+    <value>
+      データベースに接続できませんでした({0})、データベースの接続文字列を確認してください
+    </value>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>使っているデータベースの接続文字列：{0}</value>
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
-    <value>データベースの接続文字列フィールド 'ConnectionStrings' が検出されていませんでした、appsettings.json が正しくマウントおよび設定されていますでしょうか？</value>
+    <value>
+      データベースの接続文字列フィールド 'ConnectionStrings'
+      が検出されていませんでした、appsettings.json
+      が正しくマウントおよび設定されていますでしょうか？
+    </value>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
     <value>キャッシュの場所：{0}</value>
@@ -480,7 +492,9 @@
     <value>ゲーム {0} での {1} 個のチームに関するファイルを削除しています...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>設定ファイルの XOR キーが指定されていません。ゲームキーはデータベースに暗号化せず保存します。</value>
+    <value>
+      設定ファイルの XOR キーが指定されていません。ゲームキーはデータベースに暗号化せず保存します。
+    </value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>参加承認後はゲームから抜けられません</value>
@@ -684,16 +698,25 @@
     <value>管理者のアカウント作成に失敗しました。エラー：{0}</value>
   </data>
   <data name="Init_NoFilesDir" xml:space="preserve">
-    <value>データディレクトリ {0} がマウントされていません、ファイルが失われる可能性があります、データ永続化ディレクトリを正しく設定してください！</value>
+    <value>
+      データディレクトリ {0}
+      がマウントされていません、ファイルが失われる可能性があります、データ永続化ディレクトリを正しく設定してください！
+    </value>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>プラットフォームプロキシを利用していない時にトラフィックのキャプチャを行うことができません！</value>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
-    <value>キャッシュ構成は無効です。RedisCache フィールドを確認してください。Redis を使用しない場合は、構成を空に設定してください。</value>
+    <value>
+      キャッシュ構成は無効です。RedisCache フィールドを確認してください。Redis
+      を使用しない場合は、構成を空に設定してください。
+    </value>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
-    <value>プロジェクトは AGPL-3.0 ライセンスで [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF) にオープンソースされています。</value>
+    <value>
+      プロジェクトは AGPL-3.0 ライセンスで
+      [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF) にオープンソースされています。
+    </value>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
     <value>オープンソース CTF プラットフォーム</value>
@@ -717,7 +740,10 @@
     <value>チャレンジ {0}#{1} がリクエストした動的添付数量は不足しています</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>{0} のチャレンジ {1}#{2} のインスタンスを取得中に問題が発生しました（同時実行エラーが原因である可能性があります）。ロールバックします。</value>
+    <value>
+      {0} のチャレンジ {1}#{2}
+      のインスタンスを取得中に問題が発生しました（同時実行エラーが原因である可能性があります）。ロールバックします。
+    </value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>コンテナの作成中に無効なポートを遭遇しました</value>
@@ -729,7 +755,9 @@
     <value>メールを認証する</value>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>アカウントのメールアドレスの変更を行っています。下のボタンをクリックして新しいメールアドレスを認証してください。</value>
+    <value>
+      アカウントのメールアドレスの変更を行っています。下のボタンをクリックして新しいメールアドレスを認証してください。
+    </value>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>メールの変更</value>
@@ -744,7 +772,9 @@
     <value>パスワードをリセットする</value>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>アカウントのパスワードのリセットを行っています。パスワードをリセットするには、下のボタンをクリックしてパスワードをリセットしてください。</value>
+    <value>
+      アカウントのパスワードのリセットを行っています。パスワードをリセットするには、下のボタンをクリックしてパスワードをリセットしてください。
+    </value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>パスワードのリセット</value>
@@ -753,13 +783,31 @@
     <value>{0} にメールを送信します</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;ようこそ，{userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            上のボタンが機能しない場合は、このリンクをブラウザにコピーしてアクセスしてください：&lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;このメールに心当たりがない場合はこのメールを無視してください。&lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>
+      &lt;head&gt; &lt;meta content="text/html; charset=utf-8"
+      http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px;
+      margin: 0 auto; padding: 20px"&gt; &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;
+      &lt;p&gt;ようこそ，{userName}！&lt;/p&gt; &lt;p style="text-indent:
+      2em"&gt;{information}&lt;/p&gt; &lt;p style="text-align: center; padding: 20px"&gt; &lt;a
+      href="{url}" style=" font: 1rem Arial; white-space: nowrap; text-decoration: none;
+      background-color: #000000; color: #ffffff; padding: 10px 20px 10px 20px; border: 1px solid
+      #888888; border-radius: 7px; margin: 10px auto; " &gt; {btnmsg} &lt;/a&gt; &lt;/p&gt; &lt;div
+      style="font-size: 0.8rem"&gt; &lt;p&gt;
+      上のボタンが機能しない場合は、このリンクをブラウザにコピーしてアクセスしてください：&lt;br/&gt;&lt;span
+      style="word-break: break-all; font: 0.8em monospace" &gt;{url} &lt;/span&gt; &lt;/p&gt;
+      &lt;p&gt;このメールに心当たりがない場合はこのメールを無視してください。&lt;/p&gt; &lt;/div&gt;
+      &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @
+      {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;
+    </value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>メールを確認する</value>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>アカウント登録を行っています。メールアドレス {0} を確認し、以下のボタンをクリックして認証を実行してください。</value>
+    <value>
+      アカウント登録を行っています。メールアドレス {0}
+      を確認し、以下のボタンをクリックして認証を実行してください。
+    </value>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>メール認証</value>
@@ -903,7 +951,9 @@
     <value>動的添付名は空にはできません</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>フラッグの複雑性は不十分です。チームハッシュを追加するか長さを増やすことを検討してください。</value>
+    <value>
+      フラッグの複雑性は不十分です。チームハッシュを追加するか長さを増やすことを検討してください。
+    </value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>チャレンジは フラッグがないため使用できません</value>
@@ -951,7 +1001,10 @@
     <value>コンテナへの接続に失敗しました ({0})</value>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
-    <value>コンテナへの接続に失敗しました ({0})。起動中であるか、ネットワーク構成を確認してください -&gt; {1}</value>
+    <value>
+      コンテナへの接続に失敗しました ({0})。起動中であるか、ネットワーク構成を確認してください -&gt;
+      {1}
+    </value>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
     <value>プロキシ処理中にエラーが発生しました</value>
@@ -1039,5 +1092,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>無効な電子メール設定ですが、電子メール認証は有効です</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
