@@ -282,7 +282,9 @@
     <value>Trabajador de actualización de caché bloqueado: {0}</value>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
-    <value>El trabajador de actualización de caché se detiene porque la tarea ha sido cancelada</value>
+    <value>
+      El trabajador de actualización de caché se detiene porque la tarea ha sido cancelada
+    </value>
   </data>
   <data name="Cache_WorkerStarted" xml:space="preserve">
     <value>El trabajador de actualización de caché ha comenzado</value>
@@ -342,7 +344,10 @@
     <value>No se pudo iniciar la instancia del contenedor {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>No se pudo obtener la información de exposición del puerto después de que se creó el contenedor {0}</value>
+    <value>
+      No se pudo obtener la información de exposición del puerto después de que se creó el
+      contenedor {0}
+    </value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Modo de contenedor: Controles de contenedor de instancia Docker</value>
@@ -384,7 +389,9 @@
     <value>La inicialización de K8s falló, verifique que la configuración sea correcta ({0})</value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
-    <value>El juego n.º {0} está a punto de comenzar, agregando la caché del marcador a la cola de caché</value>
+    <value>
+      El juego n.º {0} está a punto de comenzar, agregando la caché del marcador a la cola de caché
+    </value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>El contenedor caducado [{0}] ha sido eliminado</value>
@@ -456,7 +463,10 @@
     <value>El comprobador de banderas ha sido detenido</value>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
-    <value>La tarea de comprobación fue cancelada, el trabajador del comprobador #{0} está a punto de detenerse</value>
+    <value>
+      La tarea de comprobación fue cancelada, el trabajador del comprobador #{0} está a punto de
+      detenerse
+    </value>
   </data>
   <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
     <value>El trabajador del comprobador #{0} encontró una excepción</value>
@@ -474,7 +484,10 @@
     <value>Limpiando {1} archivos adjuntos de desafíos para el juego {0}...</value>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>No se pudo eliminar el juego, los archivos relacionados pueden haberse dañado, por favor intente de nuevo</value>
+    <value>
+      No se pudo eliminar el juego, los archivos relacionados pueden haberse dañado, por favor
+      intente de nuevo
+    </value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Limpiando {1} archivos de equipos para el juego {0}...</value>
@@ -1038,6 +1051,12 @@
     <value>Conectado exitosamente al servidor SMTP: {0}</value>
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
-    <value>Configuración de correo electrónico inválida, pero la autenticación de correo electrónico está habilitada</value>
+    <value>
+      Configuración de correo electrónico inválida, pero la autenticación de correo electrónico está
+      habilitada
+    </value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
