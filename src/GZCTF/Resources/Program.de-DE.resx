@@ -330,7 +330,9 @@
     <value>Container {0} wurde zerstört</value>
   </data>
   <data name="ContainerManager_ContainerExisted" xml:space="preserve">
-    <value>Container {0} existiert bereits, versuchen Sie, ihn zu entfernen und erneut zu erstellen</value>
+    <value>
+      Container {0} existiert bereits, versuchen Sie, ihn zu entfernen und erneut zu erstellen
+    </value>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
     <value>Erstellung der Containerinstanz {0} fehlgeschlagen</value>
@@ -342,7 +344,9 @@
     <value>Starten der Containerinstanz {0} ({1}) fehlgeschlagen</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>Fehler beim Abrufen der Port-Expositionsinformationen nach Erstellung des Containers {0}</value>
+    <value>
+      Fehler beim Abrufen der Port-Expositionsinformationen nach Erstellung des Containers {0}
+    </value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Containermodus: Docker-Instanz-Containersteuerung</value>
@@ -375,16 +379,23 @@
     <value>Docker-Initialisierung erfolgreich ({0})</value>
   </data>
   <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
-    <value>K8s-Profil konnte nicht geladen werden, stellen Sie sicher, dass das Profil in {0} existiert</value>
+    <value>
+      K8s-Profil konnte nicht geladen werden, stellen Sie sicher, dass das Profil in {0} existiert
+    </value>
   </data>
   <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
     <value>K8s-Initialisierung erfolgreich ({0})</value>
   </data>
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
-    <value>K8s-Initialisierung fehlgeschlagen, bitte überprüfen Sie, ob die Konfiguration korrekt ist ({0})</value>
+    <value>
+      K8s-Initialisierung fehlgeschlagen, bitte überprüfen Sie, ob die Konfiguration korrekt ist
+      ({0})
+    </value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
-    <value>Spiel #{0} steht kurz vor dem Start, fügt die Punktetafel-Cache zur Cache-Warteschlange hinzu</value>
+    <value>
+      Spiel #{0} steht kurz vor dem Start, fügt die Punktetafel-Cache zur Cache-Warteschlange hinzu
+    </value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>Abgelaufener Container [{0}] wurde entfernt</value>
@@ -438,7 +449,9 @@
     <value>[WA] Team [{0}] hat die Antwort [{2}] für die Herausforderung [{1}] eingereicht</value>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
-    <value>[CHEAT] Team [{0}] hat das Flag von Team [{2}] in der Herausforderung [{1}] verwendet</value>
+    <value>
+      [CHEAT] Team [{0}] hat das Flag von Team [{2}] in der Herausforderung [{1}] verwendet
+    </value>
   </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
     <value>[KONKURRENZ] Status der Einreichung #{0} konnte nicht aktualisiert werden</value>
@@ -474,7 +487,10 @@
     <value>Bereinige {1} Herausforderungsspeicher für Spiel {0}...</value>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>Fehler beim Löschen des Spiels, verwandte Dateien könnten beschädigt sein, bitte versuchen Sie es erneut</value>
+    <value>
+      Fehler beim Löschen des Spiels, verwandte Dateien könnten beschädigt sein, bitte versuchen Sie
+      es erneut
+    </value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Bereinige {1} Teamdateien für Spiel {0}...</value>
@@ -687,7 +703,9 @@
     <value>Datenverzeichnis {0} ist nicht eingebunden, Dateien können verloren gehen, bitte das Datenpersistenzverzeichnis korrekt konfigurieren!</value>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
-    <value>Verkehrserfassung nicht möglich, wenn die Plattform-Proxy-Modus nicht verwendet wird!</value>
+    <value>
+      Verkehrserfassung nicht möglich, wenn die Plattform-Proxy-Modus nicht verwendet wird!
+    </value>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
     <value>Ungültige Cache-Konfiguration, bitte prüfen Sie die Konfiguration des "RedisCache"-Feldes. Wenn Sie Redis nicht verwenden, lassen Sie das Konfigurationselement bitte leer.</value>
@@ -714,7 +732,9 @@
     <value>Zerstöre Container [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>Ungenügende Anzahl von dynamischen Anhängen für die Herausforderung {0}#{1} zugewiesen</value>
+    <value>
+      Ungenügende Anzahl von dynamischen Anhängen für die Herausforderung {0}#{1} zugewiesen
+    </value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
     <value>{0} konnte keine Instanz für die Herausforderung {1}#{2} erstellen (möglicherweise durch gleichzeitige Konflikte verursacht), wird zurückgesetzt...</value>
@@ -1039,5 +1059,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Ungültige E-Mail-Konfiguration, aber E-Mail-Authentifizierung ist aktiviert</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
