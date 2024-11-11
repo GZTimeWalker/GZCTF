@@ -35,7 +35,7 @@ public static class TarHelper
         SetHeaders(context, fileName);
 
         await using var compress = new GZipStream(context.Response.Body, CompressionMode.Compress);
-        await using var writer = new TarWriter(context.Response.Body);
+        await using var writer = new TarWriter(compress);
 
         foreach (var file in files)
         {
@@ -70,7 +70,7 @@ public static class TarHelper
         SetHeaders(context, fileName);
 
         await using var compress = new GZipStream(context.Response.Body, CompressionMode.Compress);
-        await using var writer = new TarWriter(context.Response.Body);
+        await using var writer = new TarWriter(compress);
 
         var files = await storage.ListAsync(directory, cancellationToken: token);
         foreach (var blob in files)
