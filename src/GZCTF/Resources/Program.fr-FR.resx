@@ -342,7 +342,9 @@
     <value>Échec du démarrage de l'instance de conteneur {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>Échec de l'obtention des informations d'exposition du port après la création du conteneur {0}</value>
+    <value>
+      Échec de l'obtention des informations d'exposition du port après la création du conteneur {0}
+    </value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Mode conteneur：Contrôles de conteneur d'instance Docker</value>
@@ -381,10 +383,15 @@
     <value>Initialisation de K8s réussie ({0})</value>
   </data>
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
-    <value>Échec de l'initialisation de K8s, veuillez vérifier si la configuration est correcte ({0})</value>
+    <value>
+      Échec de l'initialisation de K8s, veuillez vérifier si la configuration est correcte ({0})
+    </value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
-    <value>Le jeu n°{0} est sur le point de commencer, ajout de la cache du tableau de scores à la file d'attente de cache</value>
+    <value>
+      Le jeu n°{0} est sur le point de commencer, ajout de la cache du tableau de scores à la file
+      d'attente de cache
+    </value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>Le conteneur expiré [{0}] a été supprimé</value>
@@ -456,7 +463,10 @@
     <value>Le vérificateur de drapeaux a été arrêté</value>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
-    <value>La tâche de vérification a été annulée, le travailleur du vérificateur #{0} est sur le point de s'arrêter</value>
+    <value>
+      La tâche de vérification a été annulée, le travailleur du vérificateur #{0} est sur le point
+      de s'arrêter
+    </value>
   </data>
   <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
     <value>Le travailleur du vérificateur #{0} a rencontré une exception</value>
@@ -474,7 +484,10 @@
     <value>Nettoyage de {1} pièces jointes de défis pour le jeu {0}...</value>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>Échec de la suppression du jeu, les fichiers associés peuvent avoir été corrompus, veuillez réessayer</value>
+    <value>
+      Échec de la suppression du jeu, les fichiers associés peuvent avoir été corrompus, veuillez
+      réessayer
+    </value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Nettoyage des fichiers de l'équipe {1} pour le jeu {0}...</value>
@@ -1039,5 +1052,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Configuration de l'email invalide, mais l'authentification email est activée</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
