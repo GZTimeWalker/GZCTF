@@ -1041,6 +1041,6 @@
     <value>無效的郵件配置，但郵件驗證已啟用</value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>Fail to init storage provider: {0}</value>
+    <value>無法初始化儲存提供者：{0}</value>
   </data>
 </root>
