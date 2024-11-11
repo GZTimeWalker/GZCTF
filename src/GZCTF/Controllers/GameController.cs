@@ -393,7 +393,11 @@ public class GameController(
     {
         var challenges = await challengeRepository.GetChallengesWithTrafficCapturing(id, token);
 
-        return Ok(challenges.Select(async c => await ChallengeTrafficModel.FromChallenge(c, storage, token)));
+        var results = await Task.WhenAll(
+            challenges.Select(c => ChallengeTrafficModel.FromChallengeAsync(c, storage, token))
+        );
+
+        return Ok(results);
     }
 
     /// <summary>
@@ -425,7 +429,11 @@ public class GameController(
 
         Participation[] participation = await participationRepository.GetParticipationsByIds(participationIds, token);
 
-        return Ok(participation.Select(async p => await TeamTrafficModel.FromParticipation(p, challengeId, storage, token)));
+        var results = await Task.WhenAll(
+            participation.Select(p => TeamTrafficModel.FromParticipationAsync(p, challengeId, storage, token))
+        );
+
+        return Ok(results);
     }
 
     /// <summary>

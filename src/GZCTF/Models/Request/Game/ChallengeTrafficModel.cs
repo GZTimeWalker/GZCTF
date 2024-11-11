@@ -40,7 +40,7 @@ public class ChallengeTrafficModel
     /// </summary>
     public int Count { get; set; }
 
-    internal static async Task<ChallengeTrafficModel> FromChallenge(GameChallenge chal, IBlobStorage storage,
+    internal static async Task<ChallengeTrafficModel> FromChallengeAsync(GameChallenge chal, IBlobStorage storage,
         CancellationToken token)
     {
         var path = StoragePath.Combine(PathHelper.Capture, chal.Id.ToString());

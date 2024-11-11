@@ -38,7 +38,7 @@ public class TeamTrafficModel
     /// </summary>
     public int Count { get; set; }
 
-    internal static async Task<TeamTrafficModel> FromParticipation(Participation part, int challengeId,
+    internal static async Task<TeamTrafficModel> FromParticipationAsync(Participation part, int challengeId,
         IBlobStorage storage, CancellationToken token)
     {
         var path = StoragePath.Combine(PathHelper.Capture, challengeId.ToString(), part.Id.ToString());
