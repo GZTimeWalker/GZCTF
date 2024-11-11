@@ -1,64 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
+      Microsoft ResX Schema
+  
+      Version 2.0
+  
+      The primary goals of this format is to allow a simple XML format
+      that is mostly human readable. The generation and parsing of the
+      various data types are done through the TypeConverter classes
+      associated with the data types.
+  
+      Example:
+  
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+  
+      There are any number of "resheader" rows that contain simple
+      name/value pairs.
+  
+      Each data row contains a name, and value. The row also contains a
+      type or mimetype. Type corresponds to a .NET class that support
+      text/value conversion through the TypeConverter architecture.
+      Classes that don't support this are serialized and stored with the
+      mimetype set.
+  
+      The mimetype is used for serialized objects, and tells the
+      ResXResourceReader how to depersist the object. This is currently not
+      extensible. For a given mimetype the value must be set accordingly:
+  
+      Note - application/x-microsoft.net.object.binary.base64 is the format
+      that the ResXResourceWriter will generate, however the reader can
+      read any of the formats listed below.
+  
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -112,12 +112,16 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>
+            System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>
+            System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
     <value>Akhiran alamat email yang tersedia: {0}</value>
@@ -402,7 +406,10 @@
     <value>String koneksi saat ini: {0}</value>
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
-    <value>Field string koneksi database 'ConnectionStrings' tidak ditemukan, silakan periksa apakah appsettings.json sudah dipasang dan dikonfigurasi dengan benar</value>
+    <value>
+      Field string koneksi database 'ConnectionStrings' tidak ditemukan, silakan periksa apakah
+      appsettings.json sudah dipasang dan dikonfigurasi dengan benar
+    </value>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
     <value>Lokasi cache: {0}</value>
@@ -480,7 +487,10 @@
     <value>Membersihkan file tim {1} untuk game {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>Kunci XOR dalam file konfigurasi tidak diatur dan kunci kompetisi akan disimpan secara eksplisit di dalam basis data.</value>
+    <value>
+      Kunci XOR dalam file konfigurasi tidak diatur dan kunci kompetisi akan disimpan secara
+      eksplisit di dalam basis data.
+    </value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Tidak bisa keluar dari game setelah persetujuan masuk</value>
@@ -684,16 +694,25 @@
     <value>Gagal membuat akun administrator, pesan error: {0}</value>
   </data>
   <data name="Init_NoFilesDir" xml:space="preserve">
-    <value>Direktori data {0} tidak terpasang, file mungkin akan hilang. Silakan atur direktori penyimpanan data dengan benar!</value>
+    <value>
+      Direktori data {0} tidak terpasang, file mungkin akan hilang. Silakan atur direktori
+      penyimpanan data dengan benar!
+    </value>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>Tidak bisa menangkap traffic jika tidak menggunakan mode proxy platform!</value>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
-    <value>Konfigurasi cache tidak valid, silakan periksa konfigurasi field 'RedisCache'. Jika kamu tidak menggunakan Redis, biarkan item konfigurasi kosong.</value>
+    <value>
+      Konfigurasi cache tidak valid, silakan periksa konfigurasi field 'RedisCache'. Jika kamu tidak
+      menggunakan Redis, biarkan item konfigurasi kosong.
+    </value>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
-    <value>Proyek ini berbasis pada lisensi AGPL-3.0 dan bersifat open source di [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
+    <value>
+      Proyek ini berbasis pada lisensi AGPL-3.0 dan bersifat open source di
+      [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).
+    </value>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
     <value>Sebuah platform CTF open source</value>
@@ -717,7 +736,10 @@
     <value>Jumlah lampiran dinamis yang dialokasikan untuk challenge {0}#{1} tidak mencukupi</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>{0} gagal membuat instance untuk tantangan {1}#{2} (mungkin disebabkan oleh konflik concurrent), Rollback dikit...</value>
+    <value>
+      {0} gagal membuat instance untuk tantangan {1}#{2} (mungkin disebabkan oleh konflik
+      concurrent), Rollback dikit...
+    </value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>Port tidak valid saat membuat container</value>
@@ -729,7 +751,10 @@
     <value>Verifikasi Email</value>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>Kamu sedang melakukan proses perubahan email akun. Silakan klik tombol di bawah ini untuk memverifikasi email barumu.</value>
+    <value>
+      Kamu sedang melakukan proses perubahan email akun. Silakan klik tombol di bawah ini untuk
+      memverifikasi email barumu.
+    </value>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>Ubah email</value>
@@ -744,7 +769,10 @@
     <value>Konfirmasi reset password</value>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>Kamu sedang melakukan proses reset kata sandi akun. Silakan klik tombol di bawah ini untuk mereset kata sandimu.</value>
+    <value>
+      Kamu sedang melakukan proses reset kata sandi akun. Silakan klik tombol di bawah ini untuk
+      mereset kata sandimu.
+    </value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>Atur ulang kata sandi</value>
@@ -753,13 +781,30 @@
     <value>Kirim email: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Halo, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            Jika tombol di atas tidak berfungsi, silakan salin tautan ini ke browser kamu: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;Jika kamu belum melakukannya, silakan abaikan email ini. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>
+      &lt;head&gt; &lt;meta content="text/html; charset=utf-8"
+      http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px;
+      margin: 0 auto; padding: 20px"&gt; &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;
+      &lt;p&gt;Halo, {userName}！&lt;/p&gt; &lt;p style="text-indent:
+      2em"&gt;{information}&lt;/p&gt; &lt;p style="text-align: center; padding: 20px"&gt; &lt;a
+      href="{url}" style=" font: 1rem Arial; white-space: nowrap; text-decoration: none;
+      background-color: #000000; color: #ffffff; padding: 10px 20px 10px 20px; border: 1px solid
+      #888888; border-radius: 7px; margin: 10px auto; " &gt; {btnmsg} &lt;/a&gt; &lt;/p&gt; &lt;div
+      style="font-size: 0.8rem"&gt; &lt;p&gt; Jika tombol di atas tidak berfungsi, silakan salin
+      tautan ini ke browser kamu: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em
+      monospace" &gt;{url} &lt;/span&gt; &lt;/p&gt; &lt;p&gt;Jika kamu belum melakukannya, silakan
+      abaikan email ini. &lt;/p&gt; &lt;/div&gt; &lt;p style="font-size: 0.7em; text-align: right;
+      color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;
+    </value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>Verifikasi email</value>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>Kamu sedang dalam proses mendaftarkan akunmu. Kami perlu memverifikasi email pendaftaran: {0}. Silakan klik tombol di bawah ini untuk memverifikasinya.</value>
+    <value>
+      Kamu sedang dalam proses mendaftarkan akunmu. Kami perlu memverifikasi email pendaftaran: {0}.
+      Silakan klik tombol di bawah ini untuk memverifikasinya.
+    </value>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>Verifikasi Email</value>
@@ -903,7 +948,10 @@
     <value>Dynamic attachment tidak boleh kosong</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>Flag tidak cukup rumit, harap pertimbangkan untuk menambahkan hash tim atau menambah panjang flagnya</value>
+    <value>
+      Flag tidak cukup rumit, harap pertimbangkan untuk menambahkan hash tim atau menambah panjang
+      flagnya
+    </value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>Challenge tidak memiliki flag dan tidak dapat diaktifkan</value>
@@ -951,7 +999,10 @@
     <value>Gagal terhubung ke container ({0})</value>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
-    <value>Koneksi ke container gagal ({0}), mungkin sedang dalam proses startup atau periksa konfigurasi jaringan -&gt; {1}</value>
+    <value>
+      Koneksi ke container gagal ({0}), mungkin sedang dalam proses startup atau periksa konfigurasi
+      jaringan -&gt; {1}
+    </value>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
     <value>Terjadi kesalahan selama proses proxy</value>
@@ -1039,5 +1090,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Konfigurasi email tidak valid, tetapi autentikasi email diaktifkan</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
