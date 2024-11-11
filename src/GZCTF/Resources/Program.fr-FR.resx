@@ -1,64 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
+      Microsoft ResX Schema
+  
+      Version 2.0
+  
+      The primary goals of this format is to allow a simple XML format
+      that is mostly human readable. The generation and parsing of the
+      various data types are done through the TypeConverter classes
+      associated with the data types.
+  
+      Example:
+  
+      ... ado.net/XML headers & schema ...
+      <resheader name="resmimetype">text/microsoft-resx</resheader>
+      <resheader name="version">2.0</resheader>
+      <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+      <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+      <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+      <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+      <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+          <value>[base64 mime encoded serialized .NET Framework object]</value>
+      </data>
+      <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+          <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+          <comment>This is a comment</comment>
+      </data>
+  
+      There are any number of "resheader" rows that contain simple
+      name/value pairs.
+  
+      Each data row contains a name, and value. The row also contains a
+      type or mimetype. Type corresponds to a .NET class that support
+      text/value conversion through the TypeConverter architecture.
+      Classes that don't support this are serialized and stored with the
+      mimetype set.
+  
+      The mimetype is used for serialized objects, and tells the
+      ResXResourceReader how to depersist the object. This is currently not
+      extensible. For a given mimetype the value must be set accordingly:
+  
+      Note - application/x-microsoft.net.object.binary.base64 is the format
+      that the ResXResourceWriter will generate, however the reader can
+      read any of the formats listed below.
+  
+      mimetype: application/x-microsoft.net.object.binary.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.soap.base64
+      value   : The object must be serialized with
+              : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+              : and then encoded with base64 encoding.
+  
+      mimetype: application/x-microsoft.net.object.bytearray.base64
+      value   : The object must be serialized into a byte array
+              : using a System.ComponentModel.TypeConverter
+              : and then encoded with base64 encoding.
+      -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -112,12 +112,16 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>
+            System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>
+            System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
   </resheader>
   <data name="Account_AvailableEmailDomain" xml:space="preserve">
     <value>Suffixe de l'email disponible : {0}</value>
@@ -168,7 +172,10 @@
     <value>L'enregistrement a été désactivé</value>
   </data>
   <data name="Account_ResetPasswordFromAdmin" xml:space="preserve">
-    <value>La vérification par email n'est pas activée, veuillez contacter l'administrateur pour réinitialiser le mot de passe</value>
+    <value>
+      La vérification par email n'est pas activée, veuillez contacter l'administrateur pour
+      réinitialiser le mot de passe
+    </value>
   </data>
   <data name="Account_SendEmailChange" xml:space="preserve">
     <value>Envoyer un email à l'utilisateur pour le changement d'email</value>
@@ -342,7 +349,9 @@
     <value>Échec du démarrage de l'instance de conteneur {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>Échec de l'obtention des informations d'exposition du port après la création du conteneur {0}</value>
+    <value>
+      Échec de l'obtention des informations d'exposition du port après la création du conteneur {0}
+    </value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Mode conteneur：Contrôles de conteneur d'instance Docker</value>
@@ -381,10 +390,15 @@
     <value>Initialisation de K8s réussie ({0})</value>
   </data>
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
-    <value>Échec de l'initialisation de K8s, veuillez vérifier si la configuration est correcte ({0})</value>
+    <value>
+      Échec de l'initialisation de K8s, veuillez vérifier si la configuration est correcte ({0})
+    </value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
-    <value>Le jeu n°{0} est sur le point de commencer, ajout de la cache du tableau de scores à la file d'attente de cache</value>
+    <value>
+      Le jeu n°{0} est sur le point de commencer, ajout de la cache du tableau de scores à la file
+      d'attente de cache
+    </value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>Le conteneur expiré [{0}] a été supprimé</value>
@@ -396,13 +410,19 @@
     <value>La tâche cron a été arrêtée</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
-    <value>Échec de la connexion à la base de données ({0}), veuillez vérifier la chaîne de connexion de la base de données</value>
+    <value>
+      Échec de la connexion à la base de données ({0}), veuillez vérifier la chaîne de connexion de
+      la base de données
+    </value>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
     <value>Chaîne de connexion actuelle : {0}</value>
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
-    <value>Le champ de chaîne de connexion à la base de données 'ConnectionStrings' n'a pas été trouvé, veuillez vérifier si appsettings.json a été correctement monté et configuré</value>
+    <value>
+      Le champ de chaîne de connexion à la base de données 'ConnectionStrings' n'a pas été trouvé,
+      veuillez vérifier si appsettings.json a été correctement monté et configuré
+    </value>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
     <value>Emplacement du cache : {0}</value>
@@ -456,7 +476,10 @@
     <value>Le vérificateur de drapeaux a été arrêté</value>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
-    <value>La tâche de vérification a été annulée, le travailleur du vérificateur #{0} est sur le point de s'arrêter</value>
+    <value>
+      La tâche de vérification a été annulée, le travailleur du vérificateur #{0} est sur le point
+      de s'arrêter
+    </value>
   </data>
   <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
     <value>Le travailleur du vérificateur #{0} a rencontré une exception</value>
@@ -474,13 +497,19 @@
     <value>Nettoyage de {1} pièces jointes de défis pour le jeu {0}...</value>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>Échec de la suppression du jeu, les fichiers associés peuvent avoir été corrompus, veuillez réessayer</value>
+    <value>
+      Échec de la suppression du jeu, les fichiers associés peuvent avoir été corrompus, veuillez
+      réessayer
+    </value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Nettoyage des fichiers de l'équipe {1} pour le jeu {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>La clé XOR dans le fichier de configuration n'est pas définie et la clé de compétition sera stockée explicitement dans la base de données.</value>
+    <value>
+      La clé XOR dans le fichier de configuration n'est pas définie et la clé de compétition sera
+      stockée explicitement dans la base de données.
+    </value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Impossible de quitter le jeu après approbation de l'entrée</value>
@@ -684,16 +713,25 @@
     <value>Échec de la création du compte administrateur, message d'erreur : {0}</value>
   </data>
   <data name="Init_NoFilesDir" xml:space="preserve">
-    <value>Le répertoire de données {0} n'est pas monté, les fichiers peuvent être perdus, veuillez configurer correctement le répertoire de persistance des données !</value>
+    <value>
+      Le répertoire de données {0} n'est pas monté, les fichiers peuvent être perdus, veuillez
+      configurer correctement le répertoire de persistance des données !
+    </value>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>Impossible de capturer le trafic sans utiliser le mode proxy de la plateforme !</value>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
-    <value>Configuration de cache invalide, veuillez vérifier la configuration du champ "RedisCache". Si vous n'utilisez pas Redis, veuillez laisser l'élément de configuration vide.</value>
+    <value>
+      Configuration de cache invalide, veuillez vérifier la configuration du champ "RedisCache". Si
+      vous n'utilisez pas Redis, veuillez laisser l'élément de configuration vide.
+    </value>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
-    <value>Le projet est basé sur la licence AGPL-3.0, open source sur [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
+    <value>
+      Le projet est basé sur la licence AGPL-3.0, open source sur
+      [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).
+    </value>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
     <value>Une plateforme CTF open source</value>
@@ -717,7 +755,10 @@
     <value>Nombre insuffisant de pièces jointes dynamiques allouées pour le défi {0}#{1}</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>{0} n'a pas pu créer d'instance pour le défi {1}#{2} (peut être causé par des conflits concurrents), retour en arrière...</value>
+    <value>
+      {0} n'a pas pu créer d'instance pour le défi {1}#{2} (peut être causé par des conflits
+      concurrents), retour en arrière...
+    </value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>Port invalide lors de la création d'un conteneur</value>
@@ -729,7 +770,10 @@
     <value>Vérifier l'email</value>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>Vous effectuez une opération de changement d'email de compte, veuillez cliquer sur le bouton ci-dessous pour vérifier votre nouvel email.</value>
+    <value>
+      Vous effectuez une opération de changement d'email de compte, veuillez cliquer sur le bouton
+      ci-dessous pour vérifier votre nouvel email.
+    </value>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>Changer l'email</value>
@@ -744,7 +788,10 @@
     <value>Confirmer la réinitialisation du mot de passe</value>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>Vous effectuez une opération de réinitialisation du mot de passe du compte. Veuillez cliquer sur le bouton ci-dessous pour réinitialiser votre mot de passe.</value>
+    <value>
+      Vous effectuez une opération de réinitialisation du mot de passe du compte. Veuillez cliquer
+      sur le bouton ci-dessous pour réinitialiser votre mot de passe.
+    </value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>Réinitialiser le mot de passe</value>
@@ -753,13 +800,30 @@
     <value>Envoyer le mail : {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Bonjour, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            Si le bouton ci-dessus n'est pas valide, veuillez copier ce lien dans votre navigateur : &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;Si vous ne l'avez pas fait, veuillez ignorer cet e-mail. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>
+      &lt;head&gt; &lt;meta content="text/html; charset=utf-8"
+      http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px;
+      margin: 0 auto; padding: 20px"&gt; &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;
+      &lt;p&gt;Bonjour, {userName}！&lt;/p&gt; &lt;p style="text-indent:
+      2em"&gt;{information}&lt;/p&gt; &lt;p style="text-align: center; padding: 20px"&gt; &lt;a
+      href="{url}" style=" font: 1rem Arial; white-space: nowrap; text-decoration: none;
+      background-color: #000000; color: #ffffff; padding: 10px 20px 10px 20px; border: 1px solid
+      #888888; border-radius: 7px; margin: 10px auto; " &gt; {btnmsg} &lt;/a&gt; &lt;/p&gt; &lt;div
+      style="font-size: 0.8rem"&gt; &lt;p&gt; Si le bouton ci-dessus n'est pas valide, veuillez
+      copier ce lien dans votre navigateur : &lt;br/&gt;&lt;span style="word-break: break-all; font:
+      0.8em monospace" &gt;{url} &lt;/span&gt; &lt;/p&gt; &lt;p&gt;Si vous ne l'avez pas fait,
+      veuillez ignorer cet e-mail. &lt;/p&gt; &lt;/div&gt; &lt;p style="font-size: 0.7em;
+      text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;
+    </value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>Vérifier l'e-mail</value>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>Vous êtes en train d'enregistrer votre compte. Nous devons vérifier votre e-mail d'enregistrement : {0}. Veuillez cliquer sur le bouton ci-dessous pour le vérifier.</value>
+    <value>
+      Vous êtes en train d'enregistrer votre compte. Nous devons vérifier votre e-mail
+      d'enregistrement : {0}. Veuillez cliquer sur le bouton ci-dessous pour le vérifier.
+    </value>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>Vérifier l'e-mail</value>
@@ -903,7 +967,10 @@
     <value>Le nom de pièce jointe dynamique ne peut pas être vide</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>Le drapeau n'est pas suffisamment compliqué, veuillez envisager d'ajouter un hash d'équipe ou d'augmenter la longueur</value>
+    <value>
+      Le drapeau n'est pas suffisamment compliqué, veuillez envisager d'ajouter un hash d'équipe ou
+      d'augmenter la longueur
+    </value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
     <value>Le défi n'a pas de drapeau et ne peut pas être activé</value>
@@ -951,7 +1018,10 @@
     <value>Échec de la connexion au conteneur ({0})</value>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
-    <value>Échec de la connexion au conteneur ({0}), peut être en train de démarrer ou vérifier la configuration réseau -&gt; {1}</value>
+    <value>
+      Échec de la connexion au conteneur ({0}), peut être en train de démarrer ou vérifier la
+      configuration réseau -&gt; {1}
+    </value>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
     <value>Une erreur s'est produite lors du processus proxy</value>
@@ -1039,5 +1109,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Configuration de l'email invalide, mais l'authentification email est activée</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Fail to init storage provider: {0}</value>
   </data>
 </root>
