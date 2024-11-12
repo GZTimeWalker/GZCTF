@@ -72,107 +72,107 @@
         "note": "{{min}} 분 동안 인스턴스가 실행됩니다."
       },
       "open": {
-        "client": "Open in client",
-        "web": "Open as web page"
+        "client": "클라이언트에서 열기",
+        "web": "웹페이지로 열기"
       },
       "test": {
-        "no_container": "Test container is not running"
+        "no_container": "테스트 컨테이너가 동작하고 있지 않습니다"
       }
     },
-    "solved": "<1>{{solved}}</1> SOLVES",
+    "solved": "<1>{{solved}}</1>개 해결",
     "wrong_flag_hints": [
-      "Where there's a will, there's a flag.",
-      "To be, or not to be, that is not the flag.",
-      "Pride hurts, flag benefits.",
-      "Failure teaches flags.",
-      "No, no, it's not this flag.",
-      "Eyes wide open, but the flag is not here.",
-      "Don't be impetuous, think carefully.",
-      "Searching everywhere, this is not the answer.",
-      "Superficially looking, you haven't found the flag.",
-      "The answer should be right at your fingertips.",
-      "Careful planning and consideration, flag is not that simple.",
-      "The flag is really well hidden!",
-      "Is it loneliness that crushes you when your luck is bad?",
-      "Too excited! You still need to learn to think more calmly.",
-      "Hit a wall, could it be that you have reached the peak?",
-      "The years are peaceful, but the flag has gone far away.",
-      "The shallow water has dried up, the flag is still not found.",
-      "Where this flag can be found?",
-      "Beautiful thumbnails like smoke. Where did the flag go?",
-      "The quagmire is deep in depth, and the flag is still not found.",
-      "All is quiet, only the error prompt of the flag is here.",
-      "The correct flag is still not obtained.",
-      "The winds are bitter and cold, and the flag is still not on your hand."
+      "뜻이 있는 곳에 플래그가 있을 것이다.",
+      "사느냐 죽느냐, 그것은 플래그가 아니로다.",
+      "자존심은 상처이며, 플래그는 행복이니라.",
+      "실패는 플래그의 어머니.",
+      "어어 그건 플래그 아니다.",
+      "눈을 크게 떴지만 그곳에 플래그는 없었다.",
+      "급하게 생각하지 말고 천천히 숙고하시오.",
+      "모든 곳을 찾아 돌아다녔지만, 이것은 정답이 아니었다.",
+      "언뜻 보면 당신은 플래그를 찾지 못했어요.",
+      "정답은 당신 손끝에 있을 텐데 말이죠.",
+      "심사숙고와 완벽한 계획을 했지만, 플래그는 만만하지 않죠.",
+      "플래그가 정말 꼼꼼히 숨겨져 있군요!",
+      "행운이 당신을 저버렸을때, 당신을 괴롭히는 것은 외로움인가요?",
+      "너무 들떴네요! 침착하게 생각하는 방법을 익히셔야겠습니다.",
+      "벽에 부딫혔다. 혹시 남들은 벌써 정상에 오른 것은 아닐까?",
+      "평온한 나날들이지만, 플래그는 이미 멀리 떠나버렸다.",
+      "물이 다 말라서 바닥이 보이지만, 플래그는 발견되지 않았다.",
+      "플래그는 어디서 찾나요?",
+      "신기루처럼 사라져 버린 플래그.",
+      "깊은 수렁에 빠져들고, 플래그는 여전히 찾을 수 없었다.",
+      "모두가 조용할 때, 홀로 일어선 것은 플래그 오답 표시였다.",
+      "옳은 플래그를 아직 획득하지 못하였다.",
+      "바람은 차갑고 매서우며, 플래그는 당신의 손에 없습니다."
     ]
   },
   "file_type": {
-    "local": "Self Hosted",
-    "none": "None",
-    "remote": "Remote Url"
+    "local": "자체 호스팅",
+    "none": "없음",
+    "remote": "원격 Url"
   },
   "notification": {
     "flag": {
       "accepted": {
-        "ended": "The game has ended, submissions will not be scored",
-        "message": "The scoreboard will be updated later.",
-        "title": "flag correct"
+        "ended": "게임 종료 후의 제출은 점수에 영향을 미치지 않습니다.",
+        "message": "스코어보드에 곧 반영됩니다.",
+        "title": "정답"
       },
-      "empty": "The flag cannot be empty",
+      "empty": "플래그를 입력하세요.",
       "submitted": {
-        "message": "Please wait for flag check...",
-        "title": "flag submitted"
+        "message": "플래그를 검사하는 중...",
+        "title": "플래그가 제출되었습니다"
       },
       "unknown": {
-        "message": "Please contact the admin to confirm the submission: {{id}}",
-        "title": "flag status unknown"
+        "message": "제출에 관하여 관리자에게 문의하세요: {{id}}",
+        "title": "알 수 없는 플래그 상태"
       },
-      "wrong": "flag wrong"
+      "wrong": "올바르지 않은 플래그"
     },
     "instance": {
       "copied": {
-        "entry": "Instance entry copied to clipboard",
+        "entry": "인스턴스 정보가 클립보드에 복사되었습니다.",
         "url": {
-          "message": "Please use client to access",
-          "title": "Instance entry copied to clipboard"
+          "message": "클라이언트로 접근하세요.",
+          "title": "인스턴스 정보가 클립보드에 복사되었습니다."
         }
       },
       "created": {
-        "message": "Please note the instance expiration time",
-        "title": "Instance created"
+        "message": "인스턴스의 만료 시간을 확인하세요.",
+        "title": "인스턴스가 생성되었습니다."
       },
       "destroyed": {
-        "message": "You can recreate the instance",
-        "title": "Instance has been destroyed"
+        "message": "인스턴스를 재생성 할 수 있습니다.",
+        "title": "인스턴스가 삭제되었습니다."
       },
       "extend": {
         "note": {
-          "message": "Please extend lifetime or destroy instance in time",
-          "title": "Instance is due"
+          "message": "인스턴스를 연장하거나 시간 안에 삭제하세요.",
+          "title": "인스턴스가 만료되었습니다."
         },
         "success": {
-          "message": "Please note the instance expiration time",
-          "title": "Instance’s lifetime has been extended"
+          "message": "인스턴스의 만료 시간을 확인하세요.",
+          "title": "인스턴스가 연장되었습니다."
         }
       }
     }
   },
   "type": {
     "dynamic_attachment": {
-      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+      "desrc": "각 팀에게 첨부 파일이 나눠지므로 전체 팀 수보다 첨부 파일 수가 많아야 합니다.",
+      "label": "동적 첨부 파일"
     },
     "dynamic_container": {
-      "desrc": "Automatic flag generation, unique for each team",
-      "label": "Dynamic Container"
+      "desrc": "팀 별로 다른 플래그 자동 생성",
+      "label": "동적 컨테이너"
     },
     "static_attachment": {
-      "desrc": "Shared attachments, any flag can be submitted",
-      "label": "Static Attachments"
+      "desrc": "공유 첨부 파일, 어떤 플래그나 제출 가능",
+      "label": "정적 첨부 파일"
     },
     "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+      "desrc": "컨테이너 공유됨, 어떤 플래그나 제출 가능",
+      "label": "정적 컨테이너"
     }
   }
 }
