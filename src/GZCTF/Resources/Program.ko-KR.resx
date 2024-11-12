@@ -939,13 +939,13 @@
     <value>파일 생성 실패</value>
   </data>
   <data name="Notification_NotFound" xml:space="preserve">
-    <value>알림을 찾을 수 없습니다.</value>
+    <value>공지사항을 찾을 수 없습니다.</value>
   </data>
   <data name="Notification_SystemNotDeletable" xml:space="preserve">
-    <value>시스템 알림을 삭제할 수 없습니다.</value>
+    <value>시스템 공지사항을 삭제할 수 없습니다.</value>
   </data>
   <data name="Notification_SystemNotEditable" xml:space="preserve">
-    <value>시스템 알림을 수정할 수 없습니다.</value>
+    <value>시스템 공지사항을 수정할 수 없습니다.</value>
   </data>
   <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
     <value>컨테이너 ({0}) 접속 실패</value>
