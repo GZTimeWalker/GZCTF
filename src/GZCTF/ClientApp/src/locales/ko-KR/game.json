@@ -10,7 +10,7 @@
       "submissionsheet": "제출"
     },
     "finished": "게임 종료",
-    "hide_solved": "미해결 문제 보기",
+    "hide_solved": "못 푼 문제",
     "join": "참가",
     "leave": "게임 나가기",
     "login_required": "로그인 필요",
@@ -133,7 +133,7 @@
     "notice_type": {
       "all": "모두",
       "challenge": "문제",
-      "events": "알림",
+      "events": "소식",
       "game": "알림"
     },
     "score": "점수",
