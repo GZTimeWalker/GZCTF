@@ -342,7 +342,7 @@
     <value>Не удалось запустить экземпляр контейнера {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>Failed to get port exposure information after container {0} was created</value>
+    <value>Ошибка при получении информации о взаимодействии после создания контейнера '{0}'</value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Режим контейнеризации：Docker Instance Container Controls</value>
@@ -351,7 +351,7 @@
     <value>Режим контейнеризации：K8s Cluster Pod Container Control</value>
   </data>
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
-    <value>Cannot convert port number：{0}, this is an unexpected action</value>
+    <value>Не удалось перевести номер порта: '{0}', действие не определено</value>
   </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
     <value>Получение образа контейнера {0}</value>
@@ -369,7 +369,7 @@
     <value>Режим контейнера：Docker Swarm Cluster Container Control</value>
   </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
-    <value>Could not parse image name '{0}'</value>
+    <value>Не удалось извлечь название изображения '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
     <value>Успешная инициализация Docker ({0})</value>
@@ -387,304 +387,304 @@
     <value>Игра #{0} скоро начнётся, добавление кэша таблицы лидеров в очередь кэша</value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
-    <value>Expired container [{0}] has been removed</value>
+    <value>Недействительный контейнер '{0}' был удален</value>
   </data>
   <data name="CronJob_Started" xml:space="preserve">
-    <value>Cron job has been started</value>
+    <value>Выполнение запланированного действия </value>
   </data>
   <data name="CronJob_Stopped" xml:space="preserve">
-    <value>Cron job has been stopped</value>
+    <value>Выполнение запланированного действия было приостановлено</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
-    <value>Failed to connect to the database ({0}), please check the database connection string</value>
+    <value>Не удалось подключиться к базе данных ({0}), пожалуйста, проверьте строку подключения к базе данных</value>
   </data>
   <data name="Database_CurrentConnectionString" xml:space="preserve">
-    <value>Current connection string: {0}</value>
+    <value>Текущая строка подключения: '{0}'</value>
   </data>
   <data name="Database_NoConnectionString" xml:space="preserve">
-    <value>The database connection string field 'ConnectionStrings' was not found, please check if appsettings.json has been properly mounted and configured</value>
+    <value>Поле строки подключения к базе данных 'ConnectionStrings' не было найдено, пожалуйста проверьте правильность установки и конфигурации appsettings.json</value>
   </data>
   <data name="FileRepository_CacheLocation" xml:space="preserve">
-    <value>Cache location: {0}</value>
+    <value>Расположение кэша: {0}</value>
   </data>
   <data name="FileRepository_DeleteFile" xml:space="preserve">
-    <value>Delete file [{0}] {1}</value>
+    <value>Удалить файл [{0}] {1}</value>
   </data>
   <data name="FileRepository_ImageSaveFailed" xml:space="preserve">
-    <value>Unable to save image: {0}</value>
+    <value>Не удалось сохранить изображение: {0}</value>
   </data>
   <data name="FileRepository_ReferenceCounting" xml:space="preserve">
-    <value>File reference count [{0}] {1} =&gt; {2}</value>
+    <value>Число ссылок на файл [{0}] {1} =&gt; {2}</value>
   </data>
   <data name="File_DeletionFailed" xml:space="preserve">
-    <value>Failed to delete file</value>
+    <value>Не удалось удалить файл </value>
   </data>
   <data name="File_NotFound" xml:space="preserve">
-    <value>File not exists</value>
+    <value>Файл не найден</value>
   </data>
   <data name="File_PdfOnly" xml:space="preserve">
-    <value>Please upload a PDF file</value>
+    <value>Пожалуйста, загрузите PDF-файл</value>
   </data>
   <data name="File_SizeTooLarge" xml:space="preserve">
-    <value>File too large</value>
+    <value>Файл слишком большой</value>
   </data>
   <data name="File_SizeZero" xml:space="preserve">
-    <value>Invalid file</value>
+    <value>Недопустимый файл</value>
   </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
-    <value>[AC] Team [{0}] submitted the answer [{2}] for challenge [{1}]</value>
+    <value>[AC] Команда [{0}] представила ответ [{2}] на задание [{1}]</value>
   </data>
   <data name="FlagChecker_AnswerRejected" xml:space="preserve">
-    <value>[WA] Team [{0}] submitted answer [{2}] for challenge [{1}]</value>
+    <value>[AC] Команда [{0}] представила ответ [{2}] на задание [{1}]</value>
   </data>
   <data name="FlagChecker_CheatDetected" xml:space="preserve">
-    <value>[CHEAT] Team [{0}] used team [{2}]'s flag in challenge [{1}]</value>
+    <value>[CHEAT] Команда [{0}] использовала флаг команды [{2}]в задании [{1}]</value>
   </data>
   <data name="FlagChecker_ConcurrencyFailed" xml:space="preserve">
-    <value>[CONCURRENCY] Failed to update the status of submission #{0}</value>
+    <value>[CONCURRENCY] Не удалось обновить статус предоставления #{0}</value>
   </data>
   <data name="FlagChecker_UnknownInstance" xml:space="preserve">
-    <value>[UNKNOWN] No instance found for team [{0}] in challenge [{1}]</value>
+    <value>[UNKNOWN] Не найден экземпляр для команды [{0}] в задании [{1}]</value>
   </data>
   <data name="FlagsChecker_Recheck" xml:space="preserve">
-    <value>Recheck {0} flags</value>
+    <value>Перепроверить {0} флаги</value>
   </data>
   <data name="FlagsChecker_Started" xml:space="preserve">
-    <value>Flag checker has been started</value>
+    <value>Проверка флага запущена</value>
   </data>
   <data name="FlagsChecker_Stopped" xml:space="preserve">
-    <value>Flag checker has been stopped</value>
+    <value>Проверка флага приостановлена</value>
   </data>
   <data name="FlagsChecker_WorkerCancelled" xml:space="preserve">
-    <value>Checking task was cancelled, checker worker #{0} is about to stop</value>
+    <value>Проверка задачи отменена, контроллер #{0}  собирается остановиться</value>
   </data>
   <data name="FlagsChecker_WorkerExceptionOccurred" xml:space="preserve">
-    <value>Checker worker #{0} encountered an exception</value>
+    <value>Контроллер #{0} обнаружил исключение</value>
   </data>
   <data name="FlagsChecker_WorkerStarted" xml:space="preserve">
-    <value>Checker worker #{0} has been started</value>
+    <value>Контроллер #{0} был запущен</value>
   </data>
   <data name="FlagsChecker_WorkerStartProcessing" xml:space="preserve">
-    <value>Checker worker #{0} starts to process submission: {1}</value>
+    <value>Контроллер #{0} начинает обработку отправки: {1}</value>
   </data>
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
-    <value>Checker worker #{0} has been stopped</value>
+    <value>Контроллер  #{0} был остановлен</value>
   </data>
   <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
-    <value>Cleaning up {1} challenge attachments for game {0}...</value>
+    <value>Очистка вложений для {1} игры {0}...</value>
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>Failed to delete game, related files may have been corrupted, please try again</value>
+    <value>Не удалось удалить игру, связанные файлы могли быть повреждены, пожалуйста, попробуйте снова</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
-    <value>Cleaning up {1} team files for game {0}...</value>
+    <value>Очистка файлов команды {1}  для игры {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>The XOR key in the configuration file is not set and the game key will be stored explicitly in the database.</value>
+    <value>Ключ XOR в конфигурационном файле не задан и ключ игры будет сохранен в базе данных в открытом виде.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
-    <value>Can not exit the game after entrance approval</value>
+    <value>Не удается выйти из игры после одобрения входа</value>
   </data>
   <data name="Game_CannotLeaveWithoutJoin" xml:space="preserve">
-    <value>Can not exit the game you are not joining</value>
+    <value>Не удается выйти из игры, к которой вы не присоединились</value>
   </data>
   <data name="Game_CaptureNotFound" xml:space="preserve">
-    <value>No captured traffic found</value>
+    <value>Захваченный трафик не найден</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Title not found or dynamic attachment allocation failed</value>
+    <value>Не удалось распределить динамические вложение или найти название</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
-    <value>The container of this challenge already exists</value>
+    <value>Контейнер этого испытания уже существует</value>
   </data>
   <data name="Game_ContainerCreationFailed" xml:space="preserve">
-    <value>Failed to create container for challenge</value>
+    <value>Не удалось создать контейнер для испытания</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
-    <value>The title cannot create a container</value>
+    <value>Заголовок не может создать контейнер</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
-    <value>{0} has destroyed container [{2}] of challenge {1}</value>
+    <value>{0} уничтожил контейнер [{2}] из испытания {1}</value>
   </data>
   <data name="Game_ContainerDeletionFailed" xml:space="preserve">
-    <value>Failed to delete container for challenge</value>
+    <value>Не удалось удалить контейнер для испытания</value>
   </data>
   <data name="Game_ContainerExtensionNotAvailable" xml:space="preserve">
-    <value>Container's lifetime cannot be extended yet</value>
+    <value>Время жизни контейнера пока не может быть продлено</value>
   </data>
   <data name="Game_ContainerNotCreated" xml:space="preserve">
-    <value>The container of this challenge hasn't been created</value>
+    <value>Контейнер этого испытания не был создан</value>
   </data>
   <data name="Game_ContainerNumberLimitExceeded" xml:space="preserve">
-    <value>The number of team containers cannot exceed {0}</value>
+    <value>Количество контейнеров команды не может превышать {0}</value>
   </data>
   <data name="Game_DeadlineExpired" xml:space="preserve">
-    <value>Submission due date has passed</value>
+    <value>Срок сдачи вышел</value>
   </data>
   <data name="Game_Ended" xml:space="preserve">
-    <value>The game has ended</value>
+    <value>Игра завершена</value>
   </data>
   <data name="Game_InOtherTeam" xml:space="preserve">
-    <value>You have joined the game from other team</value>
+    <value>Вы присоединились к игре от другой команды</value>
   </data>
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
-    <value>Invalid game invitation code</value>
+    <value>Неверный код приглашения в игру</value>
   </data>
   <data name="Game_InvalidOrganization" xml:space="preserve">
-    <value>Invalid organization</value>
+    <value>Недопустимая организация</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
-    <value>{0} has successfully joined game {1}</value>
+    <value>{0} успешно присоединился к игре {1}</value>
   </data>
   <data name="Game_NotFound" xml:space="preserve">
-    <value>The game was not found</value>
+    <value>Игра не найдена</value>
   </data>
   <data name="Game_NotMemberOfTeam" xml:space="preserve">
-    <value>You are not a member of the team</value>
+    <value>Вы не являетесь участником команды</value>
   </data>
   <data name="Game_NotParticipated" xml:space="preserve">
-    <value>You have not participated in the game</value>
+    <value>Вы не участвовали в игре</value>
   </data>
   <data name="Game_NotStarted" xml:space="preserve">
-    <value>The game has not started</value>
+    <value>Игра не началась</value>
   </data>
   <data name="Game_OperationTooFrequent" xml:space="preserve">
-    <value>Container operation too often</value>
+    <value>Слишком частый запуск контейнера</value>
   </data>
   <data name="Game_ParticipationNotAccepted" xml:space="preserve">
-    <value>Your registration has been rejected or banned</value>
+    <value>Ваша регистрация была отклонена или заблокирована</value>
   </data>
   <data name="Game_ScoreboardDownloadFailed" xml:space="preserve">
-    <value>Failed to download scoreboard</value>
+    <value>Не удалось загрузить таблицу результатов</value>
   </data>
   <data name="Game_SubmissionNotFound" xml:space="preserve">
-    <value>The submission was not found</value>
+    <value>Отправка не найдена</value>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
-    <value>The number of participants in the team exceeds the limit</value>
+    <value>Количество участников в команде превышает лимит</value>
   </data>
   <data name="Game_WriteupSubmitted" xml:space="preserve">
-    <value>{0} successfully submitted {1} Write-Up</value>
+    <value>{0} успешно отправил отчет {1}</value>
   </data>
   <data name="Header_Captain" xml:space="preserve">
-    <value>Captain</value>
+    <value>Капитан</value>
   </data>
   <data name="Header_Challenge" xml:space="preserve">
-    <value>Challenge</value>
+    <value>Испытание</value>
   </data>
   <data name="Header_Email" xml:space="preserve">
-    <value>Email</value>
+    <value>Электронная почта</value>
   </data>
   <data name="Header_Member" xml:space="preserve">
-    <value>Crew</value>
+    <value>Команда</value>
   </data>
   <data name="Header_PhoneNumber" xml:space="preserve">
-    <value>Phone</value>
+    <value>Телефон</value>
   </data>
   <data name="Header_Ranking" xml:space="preserve">
-    <value>Rank</value>
+    <value>Место</value>
   </data>
   <data name="Header_ScoringTime" xml:space="preserve">
-    <value>Time</value>
+    <value>Время</value>
   </data>
   <data name="Header_SolvedNumber" xml:space="preserve">
-    <value>Solved</value>
+    <value>Решено</value>
   </data>
   <data name="Header_StdNumber" xml:space="preserve">
-    <value>Student Number</value>
+    <value>Количество учеников</value>
   </data>
   <data name="Header_SubmitContent" xml:space="preserve">
-    <value>Submission</value>
+    <value>Отправка</value>
   </data>
   <data name="Header_SubmitStatus" xml:space="preserve">
-    <value>Status</value>
+    <value>Статус</value>
   </data>
   <data name="Header_SubmitTime" xml:space="preserve">
-    <value>Time</value>
+    <value>Время</value>
   </data>
   <data name="Header_Team" xml:space="preserve">
-    <value>Team</value>
+    <value>Команда</value>
   </data>
   <data name="Header_TotalScore" xml:space="preserve">
-    <value>Score</value>
+    <value>Очки</value>
   </data>
   <data name="Header_User" xml:space="preserve">
-    <value>User</value>
+    <value>Игрок</value>
   </data>
   <data name="Identity_ConcurrencyFailure" xml:space="preserve">
-    <value>Concurrent error occurred, please try again later</value>
+    <value>Произошла параллельная ошибка, пожалуйста повторите попытку позже</value>
   </data>
   <data name="Identity_DefaultError" xml:space="preserve">
-    <value>An error has occurred. Please try again later.</value>
+    <value>Произошла ошибка. Пожалуйста, попробуйте позже.</value>
   </data>
   <data name="Identity_DuplicateEmail" xml:space="preserve">
-    <value>Email address {0} already exists</value>
+    <value>Почта {0} уже зарегистрирована</value>
   </data>
   <data name="Identity_DuplicateRoleName" xml:space="preserve">
-    <value>Role name {0} already exists</value>
+    <value>Роль {0} уже существует</value>
   </data>
   <data name="Identity_DuplicateUserName" xml:space="preserve">
-    <value>Username {0} already exists</value>
+    <value>Пользователь {0} уже существует</value>
   </data>
   <data name="Identity_InvalidEmail" xml:space="preserve">
-    <value>Email address {0} is invalid</value>
+    <value>Адрес электронной почты {0} недопустим</value>
   </data>
   <data name="Identity_InvalidRoleName" xml:space="preserve">
-    <value>Role name {0} is invalid</value>
+    <value>Роль {0} недопустима</value>
   </data>
   <data name="Identity_InvalidToken" xml:space="preserve">
-    <value>Invalid verification code</value>
+    <value>Неверный код приглашения в игру</value>
   </data>
   <data name="Identity_InvalidUserName" xml:space="preserve">
-    <value>Invalid username {0}</value>
+    <value>Неверное имя пользователя {0}</value>
   </data>
   <data name="Identity_LoginAlreadyAssociated" xml:space="preserve">
-    <value>Login already associated</value>
+    <value>Вход уже связан</value>
   </data>
   <data name="Identity_PasswordMismatch" xml:space="preserve">
-    <value>Wrong password entered</value>
+    <value>Неверный пароль</value>
   </data>
   <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
-    <value>Password requires digits</value>
+    <value>Пароль должен содержать цифры</value>
   </data>
   <data name="Identity_PasswordRequiresLower" xml:space="preserve">
-    <value>Password requires lowercase letters</value>
+    <value>Пароль должен содержать строчные буквы</value>
   </data>
   <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
-    <value>Password requires symbols</value>
+    <value>Пароль должен содержать символы</value>
   </data>
   <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
-    <value>The password needs at least {0} different characters</value>
+    <value>Пароль должен содержать не менее {0} различных символов</value>
   </data>
   <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
-    <value>Password requires uppercase letters</value>
+    <value>Пароль должен содержать заглавные буквы</value>
   </data>
   <data name="Identity_PasswordTooShort" xml:space="preserve">
-    <value>Password length {0} is too short</value>
+    <value>Недостаточная длина пароля ({0})</value>
   </data>
   <data name="Identity_RecoveryCodeRedemptionFailed" xml:space="preserve">
-    <value>Recovery code retrieval failed</value>
+    <value>Ошибка при получении кода восстановления</value>
   </data>
   <data name="Identity_UnknownError" xml:space="preserve">
-    <value>Unknown error</value>
+    <value>Неизвестная ошибка</value>
   </data>
   <data name="Identity_UserAlreadyHasPassword" xml:space="preserve">
-    <value>User password already exists</value>
+    <value>Пароль уже существует</value>
   </data>
   <data name="Identity_UserAlreadyInRole" xml:space="preserve">
-    <value>User already in role {0}</value>
+    <value>Пользователь уже имеет роль {0}</value>
   </data>
   <data name="Identity_UserLockoutNotEnabled" xml:space="preserve">
-    <value>User Lock is not enabled</value>
+    <value>Блокировка пользователя не включена</value>
   </data>
   <data name="Identity_UserNotInRole" xml:space="preserve">
-    <value>User does not exist in role {0}</value>
+    <value>Пользователь не найден в роли {0}</value>
   </data>
   <data name="Init_AdminCreationFailed" xml:space="preserve">
-    <value>Failed to create the administrator account, error message: {0}</value>
+    <value>Не удалось создать учётную запись администратора, сообщение об ошибке: {0}</value>
   </data>
   <data name="Init_NoFilesDir" xml:space="preserve">
-    <value>Data directory {0} is not mounted, files may be lost, please configure the data persistence directory correctly!</value>
+    <value/>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
     <value>Unable to capture traffic when not using platform proxy mode!</value>
