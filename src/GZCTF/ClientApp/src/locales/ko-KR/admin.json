@@ -285,7 +285,7 @@
           "label": "갱신 기간 (분)"
         },
         "renewal_window": {
-          "description": "The time window before the container expires to renew",
+          "description": "컨테이너가 만료되어 갱신되기 전의 창",
           "label": "창 새로고침 (분)"
         },
         "title": "컨테이너 정책"
@@ -300,7 +300,7 @@
           "label": "색상 팔레트"
         },
         "description": {
-          "description": "Site description provided for SEO",
+          "description": "SEO 를 위해 제공된 설명입니다.",
           "label": "사이트 설명"
         },
         "footer": {
@@ -312,7 +312,7 @@
           "label": "플랫폼 로고"
         },
         "name": {
-          "description": "Platform name will be displayed with ::CTF",
+          "description": "플랫폼 이름에 ::CTF 가 함께 표시될 것입니다.",
           "label": "플랫폼 이름"
         },
         "slogan": {
@@ -337,7 +337,7 @@
         "message": "정말로 {{name}} 의 비밀번호를 초기화 하시겠습니까?",
         "title": "{{name}} 의 비밀번호 초기화"
       },
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
+      "stats": "<1>{{total}}</1> 명 중 <1>{{current}}</1> 명 표시됨"
     }
   },
   "label": {
@@ -347,11 +347,11 @@
     },
     "instances": {
       "container_id": "컨테이어 ID",
-      "entry": "Instance Entry",
-      "life_cycle": "Lifecycle"
+      "entry": "인스턴스 정보",
+      "life_cycle": "수명 주기"
     },
     "logs": {
-      "message": "Message",
+      "message": "메시지",
       "status": "상태"
     },
     "teams": {
@@ -368,13 +368,13 @@
     "games": {
       "challenges": {
         "attachment": {
-          "no_selected": "Please select at least one file",
+          "no_selected": "하나 이상의 파일을 선택하세요.",
           "updated": "첨부파일이 업로드되었습니다"
         },
         "created": "문제가 생성되었습니다",
         "deleted": "문제가 삭제되었습니다",
         "flag": {
-          "copied": "Flag copied to clipboard",
+          "copied": "플래그가 클립보드에 복사되었습니다.",
           "created": "플래그가 생성되었습니다",
           "deleted": "플래그가 삭제되었습니다"
         },
@@ -382,115 +382,115 @@
           "updated": "플래그 템플릿 업데이트됨"
         },
         "preview": {
-          "attachment_downloaded": "Pretend the attachment has been downloaded!",
+          "attachment_downloaded": "첨부파일이 다운로드되었습니다!",
           "flag_submitted": "플래그가 제출되었습니다"
         },
-        "updated": "Challenge updated"
+        "updated": "문제가 업데이트 되었습니다."
       },
-      "created": "Game created",
+      "created": "게임이 생성되었습니다.",
       "info": {
-        "accept_count_updated": "AC counter updated",
+        "accept_count_updated": "문제 풀이 수가 업데이트 되었습니다.",
         "deleted": "게임이 삭제되었습니다",
-        "info_updated": "Game updated",
+        "info_updated": "게임이 업데이트 되었습니다.",
         "poster": {
-          "upload_failed": "Post upload failed",
-          "uploaded": "Poster successfully uploaded",
-          "uploading": "Uploading poster..."
+          "upload_failed": "글 업로드 실패",
+          "uploaded": "포스터가 업로드되었습니다.",
+          "uploading": "포스터 업로드 중..."
         },
-        "public_key_copied": "Public key copied to clipboard"
+        "public_key_copied": "공개키가 클립보드에 복사되었습니다."
       },
       "instances": {
-        "created": "Instance created",
-        "deleted": "Instances destroyed"
+        "created": "인스턴스가 생성되었습니다.",
+        "deleted": "인스턴스가 삭제되었습니다."
       },
-      "no_title_time": "Please enter title and time of the game",
+      "no_title_time": "게임의 제목과 시간을 설정해주세요.",
       "notices": {
-        "created": "Notice created",
-        "deleted": "Notice deleted",
-        "updated": "Notice updated"
+        "created": "알림이 생성되었습니다.",
+        "deleted": "알림이 삭제되었습니다.",
+        "updated": "알림이 수정되었습니다."
       },
       "participation": {
-        "updated": "Team status has been updated"
+        "updated": "팀 상태가 변경되었습니다."
       }
     },
     "instances": {
-      "destroyed": "Instances destroyed",
-      "entry_copied": "Instance entry copied to clipboard",
+      "destroyed": "인스턴스가 삭제되었습니다.",
+      "entry_copied": "인스턴스 정보가 클립보드에 복사되었습니다.",
       "url_copied": {
-        "message": "Please use client to access",
-        "title": "Proxy URL copied to clipboard"
+        "message": "클라이언트로 접근하세요.",
+        "title": "프록시 URL 이 클립보드에 복사되었습니다."
       }
     },
     "logs": {
-      "connected": "Real-time log connected",
-      "fetch_failed": "Failed to fetch logs"
+      "connected": "실시간 로그 접속됨",
+      "fetch_failed": "로그를 불러오는데 실패했습니다."
     },
     "teams": {
-      "deleted": "{{name}} has been deleted"
+      "deleted": "{{name}} 팀을 삭제했습니다."
     },
     "users": {
-      "deleted": "{{name}} has been deleted",
-      "password_copied": "Password copied to clipboard",
-      "updated": "User profile updated"
+      "deleted": "{{name}} 사용자를 삭제했습니다.",
+      "password_copied": "비밀번호가 클립보드에 복사되었습니다.",
+      "updated": "프로필이 수정되었습니다."
     }
   },
   "placeholder": {
-    "empty": "Empty",
+    "empty": "비어 있음",
     "games": {
       "challenges": {
         "attachment": {
           "no_file_selected": {
-            "comment": "The selected file will be displayed here",
-            "title": "You haven't selected any file"
+            "comment": "선택된 파일이 여기에 표시됩니다.",
+            "title": "아무 파일도 선택되지 않았습니다."
           }
         }
       },
-      "organizations": "Enter to add a division.",
+      "organizations": "부문을 추가하시려면 입력하세요.",
       "participation": {
-        "bio": "(no bio)",
-        "team": "(no name)"
+        "bio": "(이력 없음)",
+        "team": "(이름 없음)"
       }
     },
     "instances": {
       "challenges": {
-        "not_found": "No challenge found",
+        "not_found": "문제를 찾을 수 없습니다.",
         "select": "모든 문제"
       },
       "teams": {
-        "not_found": "Team not found",
-        "select": "All Teams"
+        "not_found": "팀을 찾을 수 없습니다.",
+        "select": "전체 팀"
       }
     },
     "settings": {
-      "email_domain_list": "No restrictions",
-      "footer": "`Test` <mbr/> Something...",
+      "email_domain_list": "제한 없음",
+      "footer": "`Test` <mbr/> 중...",
       "logo": {
-        "custom": "Custom Logo",
-        "default": "Use GZCTF Icon"
+        "custom": "커스텀 로고",
+        "default": "GZCTF 아이콘 사용하기"
       }
     },
     "teams": {
-      "search": "Search by name"
+      "search": "이름으로 검색"
     },
     "users": {
-      "real_name": "Empty",
-      "search": "Search by ID/username/email/student ID/real name",
+      "real_name": "비어 있음",
+      "search": "ID/사용자 이름/이메일/학생 ID/실제 이름 으로 검색",
       "student_id": "00000000"
     }
   },
   "tab": {
     "games": {
       "challenges": "문제",
-      "index": "Games",
-      "info": "Information",
-      "notices": "Notices",
-      "review": "Teams",
-      "writeups": "Writeups"
+      "index": "게임",
+      "info": "정보",
+      "notices": "알림",
+      "review": "팀",
+      "writeups": "풀이"
     },
-    "instances": "Instances",
-    "logs": "Logs",
-    "settings": "Settings",
-    "teams": "Teams",
-    "users": "Users"
+    "instances": "인스턴스",
+    "logs": "로그",
+    "settings": "설정",
+    "teams": "팀",
+    "users": "사용자"
   }
 }
