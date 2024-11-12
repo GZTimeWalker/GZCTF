@@ -34,7 +34,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+      <Group justify="space-between" gap="sm" w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
           <Icon
             path={data.icon}
@@ -48,9 +48,8 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
             </Badge>
           </Stack>
         </Group>
-
         <Group justify="right" gap={2} wrap="nowrap" w="6rem">
-          <Text c="dimmed" size="xs" lineClamp={1}>
+          <Text c="dimmed" size="xs" truncate>
             {item.count}&nbsp;{t('common.label.team')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
@@ -68,7 +67,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+      <Group justify="space-between" gap="sm" w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
           <Avatar alt="avatar" src={item.avatar} radius="xl" size={30}>
             {item.name?.slice(0, 1) ?? 'T'}
@@ -82,9 +81,8 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
             )}
           </Stack>
         </Group>
-
         <Group justify="right" gap={2} wrap="nowrap" w="6rem">
-          <Text c="dimmed" size="xs" lineClamp={1}>
+          <Text c="dimmed" size="xs" truncate>
             {item.count}&nbsp;{t('game.label.traffic')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
