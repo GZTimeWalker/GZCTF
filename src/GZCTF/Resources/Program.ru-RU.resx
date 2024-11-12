@@ -333,37 +333,37 @@
     <value>Контейнер {0} уже существует, попробуйте сначала уничтожить его</value>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
-    <value>Container instance {0} failed to create</value>
+    <value>Не удалось создать экземпляр контейнера {0}</value>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
-    <value>Error creating {0} instance：{1}</value>
+    <value>Ошибка создания экземпляра {0}：{1}</value>
   </data>
   <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
-    <value>Failed to start container instance {0} ({1})</value>
+    <value>Не удалось запустить экземпляр контейнера {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
     <value>Failed to get port exposure information after container {0} was created</value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
-    <value>Container mode：Docker Instance Container Controls</value>
+    <value>Режим контейнеризации：Docker Instance Container Controls</value>
   </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
-    <value>Container Mode：K8s Cluster Pod Container Control</value>
+    <value>Режим контейнеризации：K8s Cluster Pod Container Control</value>
   </data>
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
     <value>Cannot convert port number：{0}, this is an unexpected action</value>
   </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
-    <value>Pull container image {0}</value>
+    <value>Получение образа контейнера {0}</value>
   </data>
   <data name="ContainerManager_ServiceCreationFailed" xml:space="preserve">
-    <value>Service {0} failed to create</value>
+    <value>Не удалось создать службу {0}</value>
   </data>
   <data name="ContainerManager_ServiceCreationFailedResponse" xml:space="preserve">
-    <value>The service {0} failed to create, response: {1}</value>
+    <value>Не удалось создать службу {0}, ответ: {1}</value>
   </data>
   <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
-    <value>The service {0} failed to create, status: {1}</value>
+    <value>Не удалось создать службу {0}, статус: {1}</value>
   </data>
   <data name="ContainerManager_SwarmMode" xml:space="preserve">
     <value>Режим контейнера：Docker Swarm Cluster Container Control</value>
@@ -372,19 +372,19 @@
     <value>Could not parse image name '{0}'</value>
   </data>
   <data name="ContainerProvider_DockerInited" xml:space="preserve">
-    <value>Docker Initialization Success ({0})</value>
+    <value>Успешная инициализация Docker ({0})</value>
   </data>
   <data name="ContainerProvider_KubernetesConfigLoadFailed" xml:space="preserve">
-    <value>Could not load K8s profile, make sure that the profile exists in {0}</value>
+    <value>Не удалось загрузить профиль K8s, убедитесь, что профиль существует в {0}</value>
   </data>
   <data name="ContainerProvider_KubernetesInited" xml:space="preserve">
-    <value>K8s Initialization Success ({0})</value>
+    <value>Успешная инициализация K8 ({0})</value>
   </data>
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
-    <value>K8s initialization failed, please check if the configuration is correct ({0})</value>
+    <value>Ошибка инициализации K8s, проверьте правильность конфигурации ({0})</value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
-    <value>Game #{0} is about to start, adding scoreboard cache to the cache queue</value>
+    <value>Игра #{0} скоро начнётся, добавление кэша таблицы лидеров в очередь кэша</value>
   </data>
   <data name="CronJob_RemoveExpiredContainer" xml:space="preserve">
     <value>Expired container [{0}] has been removed</value>
