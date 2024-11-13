@@ -702,10 +702,10 @@
     <value>Добро пожаловать на GZ::CTF!</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
-    <value>{0} destroyed container [{2}] of challenge {1} automatically</value>
+    <value>{0} автоматически уничтожил контейнер [{2}] из испытания {1}</value>
   </data>
   <data name="InstanceRepository_ContainerCreated" xml:space="preserve">
-    <value>{0} launches container instance of challenge {1} [{2}]</value>
+    <value/>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
     <value>Could not start container instance for challenge {0}</value>
@@ -852,139 +852,139 @@
     <value>All Submissions</value>
   </data>
   <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
-    <value>Organization</value>
+    <value>Организация</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
-    <value>Team not loaded yet</value>
+    <value>Команда еще не загружена</value>
   </data>
   <data name="Scoreboard_Title" xml:space="preserve">
-    <value>Scoreboard</value>
+    <value>Рейтинг</value>
   </data>
   <data name="Server_Exited" xml:space="preserve">
-    <value>Server exited</value>
+    <value> Сервер отключился</value>
   </data>
   <data name="Server_Failed" xml:space="preserve">
-    <value>Server exited unexpectedly due to exceptions</value>
+    <value>Сервер неожиданно вышел из-за исключений</value>
   </data>
   <data name="Submission_Accepted" xml:space="preserve">
-    <value>ACCEPTED</value>
+    <value>ПРИНЯТО</value>
   </data>
   <data name="Submission_CheatDetected" xml:space="preserve">
-    <value>Cheat detection</value>
+    <value>Обнаружение плагиата</value>
   </data>
   <data name="Submission_FirstBlood" xml:space="preserve">
-    <value>First blood</value>
+    <value>Первая кровь</value>
   </data>
   <data name="Submission_FlagSubmitted" xml:space="preserve">
-    <value>Successfully submitted</value>
+    <value>Успешно отправлено</value>
   </data>
   <data name="Submission_NotFound" xml:space="preserve">
-    <value>The submission was not found</value>
+    <value>Отправка не найдена</value>
   </data>
   <data name="Submission_SecondBlood" xml:space="preserve">
-    <value>Second blood</value>
+    <value>Вторая кровь</value>
   </data>
   <data name="Submission_ThirdBlood" xml:space="preserve">
-    <value>Third blood</value>
+    <value>Третья кровь</value>
   </data>
   <data name="Submission_UnknownInstance" xml:space="preserve">
-    <value>Unknown instance</value>
+    <value>Неизвестный экземпляр</value>
   </data>
   <data name="Submission_WrongAnswer" xml:space="preserve">
-    <value>WRONG</value>
+    <value>НЕПРАВИЛЬНО</value>
   </data>
   <data name="Game_CreationFailed" xml:space="preserve">
-    <value>Failed to create game</value>
+    <value>Не удалось создать игру</value>
   </data>
   <data name="Challenge_CaptureNotAllowed" xml:space="preserve">
-    <value>Enable traffic capture only for challenge with containers</value>
+    <value>Включить захват трафика только для заданий с контейнерами</value>
   </data>
   <data name="Challenge_DynamicAssetsNotNullable" xml:space="preserve">
-    <value>Dynamic attachment name cannot be empty</value>
+    <value>Имя динамического вложения не может быть пустым</value>
   </data>
   <data name="Challenge_FlagTooTrivial" xml:space="preserve">
-    <value>Flag is not sufficiently complicated, please consider adding team hash or adding length</value>
+    <value>Флаг недостаточно сложен, пожалуйста, подумайте о добавлении в команду хэш или о дополнительной длине</value>
   </data>
   <data name="Challenge_NoFlag" xml:space="preserve">
-    <value>The challenge has no flag and cannot be enabled</value>
+    <value>Испытание не имеет флага и не может быть активировано </value>
   </data>
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
-    <value>Use assets API to upload attachments</value>
+    <value>Используйте API ресурсов, чтобы загрузить вложения</value>
   </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
-    <value>Container address parse failed</value>
+    <value>Не удалось разобрать адрес контейнера</value>
   </data>
   <data name="Container_ConfigError" xml:space="preserve">
-    <value>Container Configuration Error</value>
+    <value>Ошибка конфигурации контейнера</value>
   </data>
   <data name="Container_ConnectionLimitExceeded" xml:space="preserve">
-    <value>Container connection limit reached</value>
+    <value>Достигнут лимит подключения контейнера</value>
   </data>
   <data name="Container_CreationFailed" xml:space="preserve">
-    <value>Failed to create container</value>
+    <value>Не удалось создать контейнер</value>
   </data>
   <data name="Container_InvalidClientAddress" xml:space="preserve">
-    <value>Invalid access address</value>
+    <value>Неверный адрес доступа</value>
   </data>
   <data name="Container_InvalidPort" xml:space="preserve">
-    <value>Invalid port when creating a container</value>
+    <value>Неверный порт при создании контейнера</value>
   </data>
   <data name="Container_NotFound" xml:space="preserve">
-    <value>Container does not exist</value>
+    <value>Контейнер не существует</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>Successfully created test container {0}</value>
+    <value>Успешно создан тестовый контейнер {0}</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
-    <value>Failed to create file</value>
+    <value>Не удалось создать файл</value>
   </data>
   <data name="Notification_NotFound" xml:space="preserve">
-    <value>Notification not found</value>
+    <value>Уведомление не найдено</value>
   </data>
   <data name="Notification_SystemNotDeletable" xml:space="preserve">
-    <value>System notifications could not be deleted</value>
+    <value>Системные уведомления не могут быть удалены</value>
   </data>
   <data name="Notification_SystemNotEditable" xml:space="preserve">
-    <value>System notifications cannot be modified</value>
+    <value>Системные уведомления не могут быть изменены</value>
   </data>
   <data name="Proxy_ContainerConnectionFailed" xml:space="preserve">
-    <value>Failed to connect to the container ({0})</value>
+    <value>Не удалось подключиться к контейнеру ({0})</value>
   </data>
   <data name="Proxy_ContainerConnectionFailedLog" xml:space="preserve">
-    <value>Container connection failed ({0}), may be starting up or check network configuration -&gt; {1}</value>
+    <value>Не удалось подключить контейнер ({0}), может быть запущена или проверена конфигурация сети -&gt; {1}</value>
   </data>
   <data name="Proxy_Error" xml:space="preserve">
-    <value>An error occurred during the proxy process</value>
+    <value>Произошла ошибка во время процесса прокси-сервера</value>
   </data>
   <data name="Proxy_TcpDisabled" xml:space="preserve">
-    <value>TCP proxy is disabled</value>
+    <value>TCP-прокси отключен</value>
   </data>
   <data name="Team_AvatarUpdated" xml:space="preserve">
-    <value>Team {0} changed avatar: [{1}]</value>
+    <value>Команда {0} изменена на аватаре: [{1}]</value>
   </data>
   <data name="Team_AvatarUpdateFailed" xml:space="preserve">
-    <value>Team avatar update failed</value>
+    <value>Сбой обновления аватара команды</value>
   </data>
   <data name="Team_Created" xml:space="preserve">
-    <value>Create team {0}</value>
+    <value>Создать команду {0}</value>
   </data>
   <data name="Team_CreationFailed" xml:space="preserve">
-    <value>Team creation failed</value>
+    <value>Не удалось создать команду</value>
   </data>
   <data name="Team_Deleted" xml:space="preserve">
-    <value>Delete team {0}</value>
+    <value>Удалить команду {0}</value>
   </data>
   <data name="Team_IdTransformFailed" xml:space="preserve">
-    <value>Team Id conversion error：{0}</value>
+    <value>Ошибка преобразования Id команды：{0}</value>
   </data>
   <data name="Team_InvalidCode" xml:space="preserve">
-    <value>Invalid code</value>
+    <value>Неверный код</value>
   </data>
   <data name="Team_Locked" xml:space="preserve">
-    <value>Team is locked</value>
+    <value>Команда закрыта</value>
   </data>
   <data name="Team_MemberRemoved" xml:space="preserve">
-    <value>Kick {0} from Team {1}</value>
+    <value>Выгнать {0} из команды {1}</value>
   </data>
   <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
     <value>Нельзя создать больше одной команды</value>
@@ -1005,7 +1005,7 @@
     <value>Переведенный пользователь не существует </value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>Too many handed over teams</value>
+    <value>Слишком много управляемых команд</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>Вступить в команду {0} </value>
