@@ -987,37 +987,37 @@
     <value>Kick {0} from Team {1}</value>
   </data>
   <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>Not allowed creating more than one team</value>
+    <value>Нельзя создать больше одной команды</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
-    <value>Team name cannot be empty</value>
+    <value>Название команды не может быть пустым</value>
   </data>
   <data name="Team_NameInvalidInvitation" xml:space="preserve">
-    <value>{0} invitation is invalid</value>
+    <value>{0} приглашение недействительно </value>
   </data>
   <data name="Team_NameLocked" xml:space="preserve">
-    <value>The team {0} is locked</value>
+    <value>Команда {0} закрыта</value>
   </data>
   <data name="Team_NameNotFound" xml:space="preserve">
-    <value>Team {0} not found</value>
+    <value>Команда {0} не найдена</value>
   </data>
   <data name="Team_NewCaptainNotFound" xml:space="preserve">
-    <value>Transferred user does not exist</value>
+    <value>Переведенный пользователь не существует </value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
     <value>Too many handed over teams</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
-    <value>Join Team {0}</value>
+    <value>Вступить в команду {0} </value>
   </data>
   <data name="Team_UserLeft" xml:space="preserve">
-    <value>Left the team {0}</value>
+    <value>Покинуть команду {0} </value>
   </data>
   <data name="User_AlreadyInTeam" xml:space="preserve">
-    <value>You have already joined this team, no need to join again</value>
+    <value>Вы уже вступили в эту команду, повторное вступление не требуется </value>
   </data>
   <data name="User_LeaveNotInTeam" xml:space="preserve">
-    <value>You are not in this team and cannot leave</value>
+    <value>Вы не</value>
   </data>
   <data name="User_NotInTeam" xml:space="preserve">
     <value>User not in the team</value>
