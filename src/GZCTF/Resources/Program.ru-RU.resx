@@ -687,19 +687,19 @@
     <value/>
   </data>
   <data name="Init_CaptureNotAvailable" xml:space="preserve">
-    <value>Unable to capture traffic when not using platform proxy mode!</value>
+    <value>Невозможно перехватить трафик, не используя прокси сервис платформы!</value>
   </data>
   <data name="Init_InvalidCacheConfig" xml:space="preserve">
-    <value>Invalid cache configuration, please check the "RedisCache" field configuration. If you're not using Redis, please leave the configuration item empty.</value>
+    <value>Неверная конфигурация кэша, пожалуйста проверьте поле "RedisCache". Если не используете Redis, пожалуйста оставьте модель конфигурации пустой.</value>
   </data>
   <data name="Init_PostContent" xml:space="preserve">
-    <value>The project is based on the AGPL-3.0 license, open sourced at [GZTimeWalker/GZCTF](https://github.com/GZTimeWalker/GZCTF).</value>
+    <value>Проект основан на лицензии AGPL-3.0 в открытых источниках [GZTimeWalker/GZCTF] (https://github.com/GZTimeWalker/GZCTF).</value>
   </data>
   <data name="Init_PostSummary" xml:space="preserve">
-    <value>An open-source CTF platform</value>
+    <value>CTF платформа из открытых источников</value>
   </data>
   <data name="Init_PostTitle" xml:space="preserve">
-    <value>Welcome to GZ::CTF!</value>
+    <value>Добро пожаловать на GZ::CTF!</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} destroyed container [{2}] of challenge {1} automatically</value>
@@ -1020,27 +1020,27 @@
     <value>Вы не</value>
   </data>
   <data name="User_NotInTeam" xml:space="preserve">
-    <value>User not in the team</value>
+    <value>Пользователь не вступил в команду </value>
   </data>
   <data name="Game_WriteupNotNeeded" xml:space="preserve">
-    <value>Writeup is disabled for this game.</value>
+    <value>Отчет для этой игры отключен.</value>
   </data>
   <data name="Signature_Invalid" xml:space="preserve">
-    <value>Invalid signature</value>
+    <value>Неверная подпись</value>
   </data>
   <data name="Error_InternalServerError" xml:space="preserve">
-    <value>Internal server error</value>
+    <value>Внутренняя ошибка сервера </value>
   </data>
   <data name="Admin_LogoUpdateFailed" xml:space="preserve">
-    <value>Failed to update logo</value>
+    <value>Ошибка при обновлении логотипа</value>
   </data>
   <data name="MailSender_ConnectedToSmtp" xml:space="preserve">
-    <value>Successfully connected to SMTP server: {0}</value>
+    <value>Успешное соединение с SMTP сервером: {0}</value>
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
-    <value>Invalid email configuration, but email authentication is enabled</value>
+    <value>Неверная конфигурация электронной почты, но вход через электронную почту возможен</value>
   </data>
   <data name="Init_StorageInitFailed" xml:space="preserve">
-    <value>Failed to initialize storage provider: {0}</value>
+    <value>Ошибка инициализации поставщика хранилища: {0}</value>
   </data>
 </root>
