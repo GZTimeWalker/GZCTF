@@ -708,10 +708,10 @@
     <value>Команда {0} создала контейнер [{2}] для задания {1}</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
-    <value>Could not start container instance for challenge {0}</value>
+    <value>Экземпляр контейнера для испытания {0} не может быть запущен</value>
   </data>
   <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
-    <value>Destroy container [{0}] ({1}): {2}</value>
+    <value>Уничтожить контейнер [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
     <value>Insufficient number of dynamic attachments allocated for challenge {0}#{1}</value>
