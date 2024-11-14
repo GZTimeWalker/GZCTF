@@ -501,7 +501,7 @@
     <value>Gagal membuat container untuk challenge</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
-    <value>Judul tidak bisa membuat container</value>
+    <value>Tantangan ini tidak dapat membuat wadah</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} telah menghapus container [{2}] dari tantangan {1}</value>

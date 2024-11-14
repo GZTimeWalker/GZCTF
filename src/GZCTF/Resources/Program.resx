@@ -501,7 +501,7 @@
     <value>Failed to create container for challenge</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
-    <value>The title cannot create a container</value>
+    <value>This challenge cannot create a container</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} has destroyed container [{2}] of challenge {1}</value>
