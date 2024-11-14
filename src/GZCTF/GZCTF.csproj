@@ -21,7 +21,6 @@
         <ReleaseVersion>0.24.5</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <ServerGarbageCollection>true</ServerGarbageCollection>
-        <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
         <EFOptimizeContext>true</EFOptimizeContext>
         <EFPrecompileQueriesStage>disabled</EFPrecompileQueriesStage>
         <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
