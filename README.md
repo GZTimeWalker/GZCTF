@@ -83,7 +83,7 @@ Currently, the platform supports multiple languages, and the translation progres
 - Traditional Chinese (zh-TW): Fully supported
 - Japanese (ja-JP): Fully supported, translated by [Steve](https://github.com/hez2010)
 - Indonesian (id-ID): Fully supported, translated by [Rio](https://github.com/riodrwn)
-- Korean (ko-KR): Work in progress, translated by [Sy2n0](https://github.com/Sy2n0)
+- Korean (ko-KR): Fully supported, translated by [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim) and [blluv](https://github.com/blluv)
 - Russian (ru-RU): Work in progress, translated by [FazaN](https://github.com/CyberFazaN)
 
 ### Translated by Machine and AI
@@ -155,6 +155,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **BIEM CTF 2024：Beijing Institute Of Economics And Management - The first BIEM "Xin'an Cup" CTF competition**
 - **BUAACTF 2024: Beihang University CTF**
 - **The first "Qu STAR" network security skills competition of Qufu Normal University**
+- **DinoCTF: The 4th & 5th Information Security Competition of Chengdu University of Technology**
 
 _These list is not in any particular order, and PRs are welcome for additions._
 

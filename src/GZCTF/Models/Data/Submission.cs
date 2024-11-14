@@ -59,7 +59,7 @@ public class Submission
     /// 用户
     /// </summary>
     [JsonIgnore]
-    public UserInfo User { get; set; } = default!;
+    public UserInfo? User { get; set; }
 
     /// <summary>
     /// 参与队伍 Id
@@ -71,7 +71,7 @@ public class Submission
     /// 队伍
     /// </summary>
     [JsonIgnore]
-    public Team Team { get; set; } = default!;
+    public Team? Team { get; set; }
 
     /// <summary>
     /// 参与对象 Id
@@ -95,7 +95,7 @@ public class Submission
     /// 比赛
     /// </summary>
     [JsonIgnore]
-    public Game Game { get; set; } = default!;
+    public Game? Game { get; set; } = default!;
 
     /// <summary>
     /// 题目数据库Id
@@ -107,7 +107,7 @@ public class Submission
     /// 题目
     /// </summary>
     [JsonIgnore]
-    public GameChallenge GameChallenge { get; set; } = default!;
+    public GameChallenge? GameChallenge { get; set; }
 
     #endregion Db Relationship
 }

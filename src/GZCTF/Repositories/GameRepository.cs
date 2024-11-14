@@ -199,6 +199,7 @@ public class GameRepository(
                 .Include(s => s.GameChallenge)
                 .Where(s => s.Status == AnswerResult.Accepted
                             && s.GameId == game.Id
+                            && s.GameChallenge != null
                             && s.GameChallenge.IsEnabled
                             && s.SubmitTimeUtc < game.EndTimeUtc)
                 .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
@@ -211,7 +212,7 @@ public class GameRepository(
                                 new ChallengeItem
                                 {
                                     Id = s.ChallengeId,
-                                    UserName = s.User.UserName,
+                                    UserName = s.UserName,
                                     SubmitTimeUtc = s.SubmitTimeUtc,
                                     ParticipantId = s.ParticipationId,
                                     // pending fields

@@ -18,6 +18,7 @@ import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import TeamRadarMap from '@Components/TeamRadarMap'
+import { useLanguage } from '@Utils/I18n'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { ChallengeInfo, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
 import inputClasses from '@Styles/Input.module.css'
@@ -33,6 +34,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, scoreboard, bloodBonusMap, ...modalProps } = props
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   const challenges = scoreboard?.challenges
   const challengeIdMap =
@@ -162,7 +164,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                               value={info.title}
                               readOnly
                               size="sm"
-                              miw="16rem"
+                              miw="14rem"
                               maw="20rem"
                               __vars={{
                                 '--input-height': 'var(--mantine-line-height-sm)',
@@ -188,7 +190,7 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                               )}
                           </Table.Td>
                           <Table.Td ff="monospace" fz="sm">
-                            {dayjs(chal.time).format('MM/DD HH:mm:ss')}
+                            {dayjs(chal.time).locale(locale).format('SL HH:mm:ss')}
                           </Table.Td>
                         </Table.Tr>
                       )

@@ -139,6 +139,7 @@
     "score": "分數",
     "score_formatter": "{value} 分",
     "score_table": {
+      "all_teams": "所有隊伍",
       "rank_organization": "排名",
       "rank_total": "總排名",
       "score": "得分",

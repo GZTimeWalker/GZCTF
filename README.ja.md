@@ -83,7 +83,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - 繁体字中国語 (zh-TW)：完全対応
 - 日本語 (ja-JP)：完全対応、[Steve](http://github.com/hez2010) による翻訳
 - インドネシア語 (id-ID)：完全対応、[Rio](https://github.com/riodrwn) による翻訳
-- 韓国語 (ko-KR)：翻訳中、 [Sy2n0](https://github.com/Sy2n0) による翻訳
+- 韓国語 (ko-KR)：完全対応、 [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim), [blluv](https://github.com/blluv) による翻訳
 - ロシア語 (ru-RU)：翻訳中、[FazaN](https://github.com/CyberFazaN) による翻訳
 
 ### 機械および AI による翻訳
@@ -154,6 +154,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
 - **北京航空航天大学 BUAACTF 2024**
 - **曲阜師範大学第 1 回“曲 star”サイバーセキュリティスキルコンテスト**
+- **成都理工大学第4回、第5回情報セキュリティ・コンペティション DinoCTF**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 

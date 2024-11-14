@@ -1,108 +1,108 @@
 {
   "anchor": {
-    "login": "Already have account?",
-    "recovery": "Forgot password?"
+    "login": "이미 계정이 있으신가요?",
+    "recovery": "비밀번호를 잊으셨나요?"
   },
   "button": {
-    "change_password": "Change Password",
-    "confirm_email": "Confirm Email",
-    "login": "Login",
-    "recovery": "Send Reset Email",
-    "register": "Register",
-    "reset": "Reset Password",
-    "save_profile": "Save Profile",
-    "update_email": "Change Email",
-    "verify_account": "Verify Account"
+    "change_password": "비밀번호 변경",
+    "confirm_email": "이메일 인증",
+    "login": "로그인",
+    "recovery": "비밀번호 재설정 이메일 보내기",
+    "register": "회원가입",
+    "reset": "비밀번호 재설정",
+    "save_profile": "프로필 저장",
+    "update_email": "이메일 변경",
+    "verify_account": "계정 인증"
   },
   "content": {
     "confirm": {
-      "message": "Please click the button below to verify your email."
+      "message": "이메일 인증을 위해 아래에 버튼을 클릭해주세요."
     },
-    "link_check": "Please check your activation link and try again",
-    "link_invalid": "Ouch! There's something wrong with your activation link",
+    "link_check": "인증 링크가 올바른지 확인하고, 다시 시도해주세요.",
+    "link_invalid": "앗! 인증 링크가 잘못되었습니다.",
     "profile": {
-      "update_email_note": "After changing your email, you will no longer be able to log in using your original email.<br/>An email will be sent to your new email address, click on the link in it to complete the verification."
+      "update_email_note": "이메일을 변경한 후에는 더 이상 원래 이메일을 사용하여 로그인할 수 없습니다.<br/>새 이메일 주소로 이메일이 전송됩니다. 이메일에 포함된 링크를 클릭하여 인증을 완료하세요."
     },
     "verify": {
-      "message": "Please click the button below to verify the account."
+      "message": "계정 인증을 위해 아래에 버튼을 클릭해주세요."
     },
-    "welcome": "Hello, {{decodeEmail}}👋"
+    "welcome": "안녕, {{decodeEmail}}👋"
   },
   "label": {
-    "bio": "Description",
-    "email": "Email",
-    "email_new": "New Email",
-    "password": "Password",
-    "password_old": "Original password",
-    "password_retype": "Confirm password",
-    "phone": "Phone number",
-    "real_name": "Real Name",
-    "student_id": "Student ID",
-    "username": "Username",
-    "username_or_email": "Username or Email"
+    "bio": "설명",
+    "email": "이메일",
+    "email_new": "새 이메일",
+    "password": "비밀번호",
+    "password_old": "기존 비밀번호",
+    "password_retype": "비밀번호 재확인",
+    "phone": "휴대전화",
+    "real_name": "실명",
+    "student_id": "학번",
+    "username": "사용자명",
+    "username_or_email": "사용자명 또는 이메일"
   },
   "notification": {
     "captcha": {
-      "not_valid": "Please wait for captcha...",
+      "not_valid": "Captcha 인증을 기다리고 있습니다...",
       "request_sent": {
-        "message": "Waiting for server verification",
-        "title": "Request sent..."
+        "message": "서버 인증을 기다리고 있습니다.",
+        "title": "요청을 전송했습니다..."
       }
     },
     "confirm": {
-      "failed": "Failed to verify email",
-      "success": "Email has been verified"
+      "failed": "이메일 인증에 실패했습니다.",
+      "success": "이메일이 인증되었습니다."
     },
     "login": {
-      "banned": "User has been banned",
+      "banned": "차단된 사용자입니다.",
       "invalid": "잘못된 사용자 이름 또는 비밀번호 입니다.",
       "success": {
-        "message": "Redirect to the previous page before login",
-        "title": "Login succeeded"
+        "message": "로그인 이전 페이지로 되돌아가는 중",
+        "title": "로그인 성공"
       }
     },
-    "logout": "Logout successfully",
+    "logout": "로그아웃 완료",
     "profile": {
-      "password_updated": "Password has been changed, please login again",
-      "profile_updated": "Profile updated"
+      "password_updated": "비밀번호가 변경되었습니다. 다시 로그인해주세요.",
+      "profile_updated": "프로필이 수정되었습니다."
     },
     "register": {
       "logged_in": "성공적으로 회원가입을 했습니다.",
       "request_sent": {
-        "message": "Please wait for administrator's approval for activation~",
-        "title": "Registration request sent"
+        "message": "관리자의 승인을 기다려주세요.",
+        "title": "회원가입 요청 전송"
       }
     },
     "reset": {
       "success": {
-        "message": "Please login again",
-        "title": "Password has been reset"
+        "message": "다시 로그인 해주세요",
+        "title": "비밀번호가 재설정 되었습니다!"
       }
     },
     "verify": {
-      "failed": "Failed to verify the account",
-      "success": "Account has been verified, please login"
+      "failed": "계정 인증에 실패하였습니다",
+      "success": "계정이 인증되었습니다. 로그인 해주세요."
     }
   },
   "password": {
-    "empty": "Password cannot be empty",
-    "include_lowercase": "Include lower case letters",
-    "include_number": "Include numbers",
-    "include_symbol": "Include special characters",
-    "include_uppercase": "Include upper case letters",
-    "min_length": "At least 6 characters",
-    "not_match": "The repeated password is incorrect"
+    "empty": "비밀번호를 입력해주세요.",
+    "include_lowercase": "영어 소문자가 반드시 포함되어야 합니다.",
+    "include_number": "숫자가 반드시 포함되어야 합니다.",
+    "include_symbol": "특수문자가 반드시 포함되어야 합니다.",
+    "include_uppercase": "영어 대문자가 반드시 포함되어야 합니다.",
+    "min_length": "반드시 6 글자 이상어야 합니다.",
+    "not_match": "비밀번호가 동일하지 않습니다."
   },
   "placeholder": {
-    "bio": "This person is lazy, nothing written"
+    "bio": "게으른 사람이네요! 아무것도 적혀있지 않습니다."
   },
   "title": {
-    "confirm": "Email Verification",
-    "login": "Login",
-    "profile": "Profile",
-    "recovery": "Recover account",
-    "register": "Register",
-    "reset": "Reset password",
-    "verify": "Account Verification"
+    "confirm": "이메일 인증",
+    "login": "로그인",
+    "profile": "프로필",
+    "recovery": "계정 복구",
+    "register": "회원가입",
+    "reset": "비밀번호 재설정",
+    "verify": "계정 인증"
   }
 }

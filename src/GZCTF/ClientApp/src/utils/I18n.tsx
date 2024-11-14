@@ -22,16 +22,48 @@ export const LanguageMap = {
   'zh-TW': '🇨🇳 繁體中文',
   'ja-JP': '🇯🇵 日本語',
   'id-ID': '🇮🇩 Bahasa',
-  'ko-KR': '🇰🇷 한국어 (WIP)',
+  'ko-KR': '🇰🇷 한국어',
   'ru-RU': '🇷🇺 Русский (WIP)',
   'de-DE': '🇩🇪 Deutsch (MT)',
   'fr-FR': '🇫🇷 Français (MT)',
   'es-ES': '🇪🇸 Español (MT)',
 }
 
+interface ShortLocalFormat {
+  SL: string
+  SLL: string
+}
+
+const shortLocalFormat = new Map<string, ShortLocalFormat>([
+  ['en', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
+  ['zh', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
+  ['ja', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
+  ['ko', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
+  ['ru', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
+  ['de', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
+  ['id', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
+  ['fr', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
+  ['es', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
+])
+
+dayjs.extend((_o, c, _d) => {
+  const proto = c.prototype
+  const oldFormat = proto.format
+
+  proto.format = function (fmt: string) {
+    const locale = this.locale().split('-')[0]
+    const shortLocal = shortLocalFormat.get(locale)
+    if (shortLocal) {
+      fmt = fmt.replace(/SL{1,2}/g, (a) => {
+        return shortLocal[a as keyof ShortLocalFormat]
+      })
+    }
+    return oldFormat.call(this, fmt)
+  }
+})
+
 export const defaultLanguage = 'en-US'
 export let apiLanguage: string = defaultLanguage
-
 export type SupportedLanguages = keyof typeof LanguageMap
 
 export const useLanguage = () => {

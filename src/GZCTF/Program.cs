@@ -60,7 +60,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
-        string[] supportedCultures = [
+        string[] supportedCultures =
+        [
             "en-US",
             "zh-CN",
             "zh-TW",
@@ -93,7 +94,7 @@ builder.Host.UseSerilog(dispose: true);
 builder.Configuration.AddEnvironmentVariables("GZCTF_");
 Log.Logger = LogHelper.GetInitLogger();
 
-await FilePath.EnsureDirsAsync(builder.Environment);
+await PathHelper.EnsureDirsAsync(builder.Environment);
 
 #endregion Host
 
@@ -132,6 +133,7 @@ else
 #region Configuration
 
 if (!GZCTF.Program.IsTesting)
+{
     try
     {
         builder.Configuration.AddEntityConfiguration(options =>
@@ -151,6 +153,10 @@ if (!GZCTF.Program.IsTesting)
         GZCTF.Program.ExitWithFatalMessage(
             GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
     }
+}
+
+var storage = builder.Configuration.GetConnectionString("Storage");
+builder.AddStorage(storage);
 
 #endregion Configuration
 
@@ -264,7 +270,7 @@ builder.Services.AddContainerService(builder.Configuration);
 
 builder.Services.AddScoped<IConfigService, ConfigService>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
-builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IBlobRepository, BlobRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
@@ -299,9 +305,7 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         [
             // See others in ResponseCompressionDefaults.MimeTypes
-            MediaTypeNames.Application.Pdf,
-            // Transfer tar files with compression
-            "application/x-tar",
+            MediaTypeNames.Application.Pdf
         ]
     );
     options.EnableForHttps = true;
@@ -458,7 +462,8 @@ namespace GZCTF
             string[] machineTranslated = ["de-DE", "fr-FR", "es-ES"];
             if (machineTranslated.Contains(CultureInfo.CurrentCulture.Name))
                 // ReSharper disable once LocalizableElement
-                Console.WriteLine($"Warning: Current language {CultureInfo.CurrentCulture.DisplayName} is machine translated and may not be accurate.\n");
+                Console.WriteLine(
+                    $"Warning: Current language {CultureInfo.CurrentCulture.DisplayName} is machine translated and may not be accurate.\n");
         }
 
         public static void ExitWithFatalMessage(string msg)

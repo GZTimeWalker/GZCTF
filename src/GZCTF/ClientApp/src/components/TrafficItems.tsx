@@ -34,7 +34,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+      <Group justify="space-between" gap="sm" w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
           <Icon
             path={data.icon}
@@ -48,9 +48,8 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
             </Badge>
           </Stack>
         </Group>
-
         <Group justify="right" gap={2} wrap="nowrap" w="6rem">
-          <Text c="dimmed" size="xs" lineClamp={1}>
+          <Text c="dimmed" size="xs" truncate>
             {item.count}&nbsp;{t('common.label.team')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
@@ -68,7 +67,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 
   return (
     <SelectableItem h={itemHeight} pr={5} {...props}>
-      <Group justify="space-between" gap={0} w="100%" wrap="nowrap">
+      <Group justify="space-between" gap="sm" w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
           <Avatar alt="avatar" src={item.avatar} radius="xl" size={30}>
             {item.name?.slice(0, 1) ?? 'T'}
@@ -82,9 +81,8 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
             )}
           </Stack>
         </Group>
-
         <Group justify="right" gap={2} wrap="nowrap" w="6rem">
-          <Text c="dimmed" size="xs" lineClamp={1}>
+          <Text c="dimmed" size="xs" truncate>
             {item.count}&nbsp;{t('game.label.traffic')}
           </Text>
           <Icon path={mdiMenuRight} size={1} />
@@ -97,12 +95,13 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
 export interface FileItemProps extends SelectableItemProps {
   t: (key: string) => string
   disabled: boolean
+  locale: string
   onDownload: (file: FileRecord) => void
   onDelete: (file: FileRecord) => Promise<void>
 }
 
 export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps) => {
-  const { item, onDownload, onDelete, disabled, t, ...props } = itemProps
+  const { item, onDownload, onDelete, disabled, t, locale, ...props } = itemProps
 
   return (
     <SelectableItem h={itemHeight} active={false} {...props}>
@@ -122,7 +121,7 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
                 {item.fileName}
               </Text>
               <Badge size="sm" color="indigo">
-                {dayjs(item.updateTime).format('MM/DD HH:mm:ss')}
+                {dayjs(item.updateTime).locale(locale).format('SL LTS')}
               </Badge>
             </Stack>
           </Group>

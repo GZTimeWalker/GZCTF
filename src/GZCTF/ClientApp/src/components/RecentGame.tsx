@@ -16,6 +16,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
+import { useLanguage } from '@Utils/I18n'
 import { getGameStatus } from '@Utils/useGame'
 import { BasicGameInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
@@ -28,6 +29,7 @@ const POSTER_HEIGHT = '9rem'
 
 const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   const { title, poster } = game
   const { startTime, endTime, status } = getGameStatus(game)
@@ -88,8 +90,8 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
           </Text>
           <Badge size="xs" color={color} variant="light">
             {status === GameStatus.Coming
-              ? dayjs(startTime).format('YY/MM/DD HH:mm')
-              : dayjs(endTime).format('YY/MM/DD HH:mm')}
+              ? dayjs(startTime).locale(locale).format('L LT')
+              : dayjs(endTime).locale(locale).format('L LT')}
           </Badge>
         </Group>
         <Group wrap="nowrap" gap={0} justify="space-between">

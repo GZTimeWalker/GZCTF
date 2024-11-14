@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using FluentStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
@@ -95,7 +96,7 @@ public class Container
 
         var shortId = Id.ToString("N")[..8];
 
-        return Path.Combine(FilePath.Capture,
+        return StoragePath.Combine(PathHelper.Capture,
             GameInstance.ChallengeId.ToString(),
             GameInstance.ParticipationId.ToString(),
             $"{shortId}-{conn}.pcap");

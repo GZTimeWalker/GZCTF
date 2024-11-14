@@ -1,4 +1,6 @@
 ﻿using System.Security.Cryptography;
+using FluentStorage;
+using FluentStorage.Blobs;
 using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
@@ -7,13 +9,13 @@ using SixLabors.ImageSharp.Processing;
 
 namespace GZCTF.Repositories;
 
-public class FileRepository(AppDbContext context, ILogger<FileRepository> logger)
-    : RepositoryBase(context), IFileRepository
+public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger, IBlobStorage storage)
+    : RepositoryBase(context), IBlobRepository
 {
     public override Task<int> CountAsync(CancellationToken token = default) =>
         Context.Files.CountAsync(token);
 
-    public async Task<LocalFile> CreateOrUpdateFile(IFormFile file, string? fileName = null,
+    public async Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
         await using Stream tmp = GetTempStream(file.Length);
@@ -24,7 +26,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
-        return await StoreLocalFile(fileName ?? file.FileName, tmp, token);
+        return await StoreBlob(fileName ?? file.FileName, tmp, token);
     }
 
     public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName,
@@ -46,7 +48,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
                 using Image image = await Image.LoadAsync(tmp, token);
 
                 if (image.Metadata.DecodedImageFormat is GifFormat)
-                    return await StoreLocalFile($"{fileName}.gif", tmp, token);
+                    return await StoreBlob($"{fileName}.gif", tmp, token);
 
                 if (resize > 0)
                     image.Mutate(im => im.Resize(resize, 0));
@@ -54,7 +56,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
                 await image.SaveAsWebpAsync(webpStream, token);
             }
 
-            return await StoreLocalFile($"{fileName}.webp", webpStream, token);
+            return await StoreBlob($"{fileName}.webp", webpStream, token);
         }
         catch
         {
@@ -66,12 +68,12 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         }
     }
 
-    public async Task<TaskStatus> DeleteFile(LocalFile file, CancellationToken token = default)
+    public async Task<TaskStatus> DeleteBlob(LocalFile file, CancellationToken token = default)
     {
-        var path = Path.Combine(FilePath.Uploads, file.Location, file.Hash);
+        var path = StoragePath.Combine(PathHelper.Uploads, file.Location, file.Hash);
 
         // check if file exists
-        if (!File.Exists(path))
+        if (!await storage.ExistsAsync(path, token))
         {
             Context.Files.Remove(file);
             await SaveAsync(token);
@@ -96,7 +98,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         // delete file
         try
         {
-            File.Delete(path);
+            await storage.DeleteAsync(path, token);
         }
         catch (Exception e)
         {
@@ -121,18 +123,18 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return TaskStatus.Success;
     }
 
-    public async Task<TaskStatus> DeleteFileByHash(string fileHash,
+    public async Task<TaskStatus> DeleteBlobByHash(string fileHash,
         CancellationToken token = default)
     {
-        LocalFile? file = await GetFileByHash(fileHash, token);
+        LocalFile? file = await GetBlobByHash(fileHash, token);
 
         if (file is null)
             return TaskStatus.NotFound;
 
-        return await DeleteFile(file, token);
+        return await DeleteBlob(file, token);
     }
 
-    public Task<LocalFile?> GetFileByHash(string? fileHash, CancellationToken token = default)
+    public Task<LocalFile?> GetBlobByHash(string? fileHash, CancellationToken token = default)
     {
         if (fileHash is null)
             return Task.FromResult<LocalFile?>(null);
@@ -140,7 +142,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return Context.Files.SingleOrDefaultAsync(e => e.Hash == fileHash, token);
     }
 
-    public Task<LocalFile[]> GetFiles(int count, int skip, CancellationToken token = default) =>
+    public Task<LocalFile[]> GetBlobs(int count, int skip, CancellationToken token = default) =>
         Context.Files.OrderBy(e => e.Name).Skip(skip).Take(count).ToArrayAsync(token);
 
     public async Task DeleteAttachment(Attachment? attachment, CancellationToken token = default)
@@ -150,7 +152,7 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             case null:
                 return;
             case { Type: FileType.Local, LocalFile: not null }:
-                await DeleteFile(attachment.LocalFile, token);
+                await DeleteBlob(attachment.LocalFile, token);
                 break;
         }
 
@@ -165,14 +167,14 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
         return File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
     }
 
-    async Task<LocalFile> StoreLocalFile(string fileName, Stream contentStream,
+    async Task<LocalFile> StoreBlob(string fileName, Stream contentStream,
         CancellationToken token = default)
     {
         contentStream.Position = 0;
         var hash = await SHA256.HashDataAsync(contentStream, token);
         var fileHash = Convert.ToHexStringLower(hash);
 
-        LocalFile? localFile = await GetFileByHash(fileHash, token);
+        LocalFile? localFile = await GetBlobByHash(fileHash, token);
 
         if (localFile is not null)
         {
@@ -195,16 +197,10 @@ public class FileRepository(AppDbContext context, ILogger<FileRepository> logger
             await Context.AddAsync(localFile, token);
         }
 
-        var path = Path.Combine(FilePath.Uploads, localFile.Location);
+        var path = StoragePath.Combine(PathHelper.Uploads, localFile.Location, localFile.Hash);
 
-        if (!Directory.Exists(path))
-            Directory.CreateDirectory(path);
-
-        await using FileStream fileStream = File.Create(Path.Combine(path, localFile.Hash));
-
-        // always overwrite the file in file system
         contentStream.Position = 0;
-        await contentStream.CopyToAsync(fileStream, token);
+        await storage.WriteAsync(path, contentStream, false, token);
 
         await SaveAsync(token);
         return localFile;

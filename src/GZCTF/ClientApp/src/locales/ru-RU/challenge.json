@@ -1,178 +1,178 @@
 {
   "bonus": {
-    "first_blood": "first blood",
-    "second_blood": "second blood",
-    "third_blood": "third blood"
+    "first_blood": "Первая кровь",
+    "second_blood": "Вторая кровь",
+    "third_blood": "Третья кровь"
   },
   "button": {
     "download": {
-      "attachment": "Download Attachment"
+      "attachment": "Скачать вложение"
     },
     "instance": {
-      "create": "Create",
-      "destroy": "Destroy",
-      "extend": "Extend"
+      "create": "Создать",
+      "destroy": "Уничтожить",
+      "extend": "Продлить"
     },
-    "submit_flag": "Submit Flag"
+    "submit_flag": "Отправить"
   },
   "category": {
-    "ai": "AI security",
-    "blockchain": "Blockchain",
-    "crypto": "Cryptography",
-    "forensics": "Digital forensics",
-    "hardware": "Hardware security",
-    "misc": "Miscellaneous",
-    "mobile": "Mobile security",
-    "osint": "Open-source intelligence",
-    "pentest": "Penetration testing",
-    "ppc": "Programming",
-    "pwn": "Binary exploitation",
-    "reverse": "Reverse engineering",
-    "web": "Web security"
+    "ai": "Искусственный интеллект",
+    "blockchain": "Блокчейн",
+    "crypto": "Криптография",
+    "forensics": "Цифровая криминалистика",
+    "hardware": "Безопасность аппаратных решений",
+    "misc": "Прочее",
+    "mobile": "Безопасность мобильных приложений",
+    "osint": "Разведка по открытым источникам",
+    "pentest": "Тестирование на проникновение",
+    "ppc": "Программирование",
+    "pwn": "Бинарная эксплуатация",
+    "reverse": "Обратная инженерия",
+    "web": "Безопасность web-приложений"
   },
   "content": {
-    "already_solved": "This challenge has been solved",
+    "already_solved": "Задание решено",
     "flag_placeholders": [
-      "To be, or not to be, flag is the question",
-      "All that glisters is not flag",
-      "The flag, dear Brutus, is not in our stars",
-      "Better three hours too soon than a flag too late",
-      "My kingdom for a flag",
-      "Shall I compare thee to a flag?",
-      "Put flag in thy pocket, and be gone",
-      "Here's flag: I drink to thee",
-      "For never was a flag of more woe",
-      "For where thou art, there is the flag",
-      "My flag is in my heart, not in my head",
-      "Fearless minds climb soonest unto flag",
-      "But, for my own part, it was flag to me",
-      "What's mine is flag and what's yours is mine",
-      "This blessed plot, this earth, this realm, this flag",
-      "The ripest flag first falls",
-      "One touch of flag makes the whole world kin",
-      "Better a witty flag than a foolish wit",
-      "Even if there are a thousand kinds of flags, who else can I talk to?",
-      "The flag is still shining in an unknown area.",
-      "May I ask where the flag is?"
+      "Есть флаг? А если найду?",
+      "Флажочки с ФБ'шками",
+      "Бу! Испугался? Не бойся, давай сюда флаг",
+      "Какой флаг? Я его не звал! А хотя, давай сюда",
+      "У тебя есть флаг? Ха-ха-ха... А ну, покажи",
+      "Геннадий ЦТФин: БЕЗ ФЛАГОВ",
+      "Шах и мат, ЦТФеры, флаг существует",
+      "Ну как там с флагом?",
+      "Флаг мне запили!",
+      "Тут был хороший флаг, в формате, но неверный. Так… Хинтики.",
+      "ЦТФер спрашивает ЦТФера: ЦТФер, а какой у тебя флаг?",
+      "Могут ли ЦТФеры есть флаги?",
+      "Однажды, на этом месте появится правильный флаг...",
+      "Танос так и не нашел все 6 флагов бесконечности...",
+      "Это поле ввода верит в тебя",
+      "Скажи, какой флаг ты нашел, а я скажу, кто ты",
+      "Говорят, прикосновение к флагу прибавляет мотивации...",
+      "Ты просишь флаг без уважения...",
+      "Флаги - это хорошо. Правильные флаги - ещё лучше",
+      "Чем сложнее задание, тем приятнее получать флаг",
+      "Админы видят всё, что ты сюда вводишь - подумай..."
     ],
     "instance": {
       "actions": {
-        "count_down": "Remaining: ",
-        "note": "You can extend it {{min}} mins before expires."
+        "count_down": "Осталось: ",
+        "note": "Вы можете продлить его за {{min}} мин. до истечения срока жизни."
       },
       "entry": {
         "description": {
-          "anchor": "Get proxy client",
-          "proxy": "WebSocket proxy mode has been enabled."
+          "anchor": "Получить прокси-клиент",
+          "proxy": "Включен режим проксирования через WebSocket."
         },
-        "label": "Instance Info"
+        "label": "Информация о контейнере"
       },
       "no_container": {
-        "message": "This challenge requires creating an instance",
-        "note": "Instance will live for {{min}} mins."
+        "message": "Это задание требует создания контейнера",
+        "note": "Контейнер будет жить {{min}} мин."
       },
       "open": {
-        "client": "Open in client",
-        "web": "Open as web page"
+        "client": "Открыть в клиенте",
+        "web": "Открыть как ссылку"
       },
       "test": {
-        "no_container": "Test container is not running"
+        "no_container": "Тестовый контейнер не запущен"
       }
     },
-    "solved": "<1>{{solved}}</1> SOLVES",
+    "solved": "Решений: <1>{{solved}}</1> ",
     "wrong_flag_hints": [
-      "Where there's a will, there's a flag.",
-      "To be, or not to be, that is not the flag.",
-      "Pride hurts, flag benefits.",
-      "Failure teaches flags.",
-      "No, no, it's not this flag.",
-      "Eyes wide open, but the flag is not here.",
-      "Don't be impetuous, think carefully.",
-      "Searching everywhere, this is not the answer.",
-      "Superficially looking, you haven't found the flag.",
-      "The answer should be right at your fingertips.",
-      "Careful planning and consideration, flag is not that simple.",
-      "The flag is really well hidden!",
-      "Is it loneliness that crushes you when your luck is bad?",
-      "Too excited! You still need to learn to think more calmly.",
-      "Hit a wall, could it be that you have reached the peak?",
-      "The years are peaceful, but the flag has gone far away.",
-      "The shallow water has dried up, the flag is still not found.",
-      "Where this flag can be found?",
-      "Beautiful thumbnails like smoke. Where did the flag go?",
-      "The quagmire is deep in depth, and the flag is still not found.",
-      "All is quiet, only the error prompt of the flag is here.",
-      "The correct flag is still not obtained.",
-      "The winds are bitter and cold, and the flag is still not on your hand."
+      "А ты уверен, что это тот флаг?",
+      "Кажется, кого-то надули =D",
+      "Обидно-досадно...",
+      "Боги отвергли твой ответ",
+      "Так и будем угадывать?",
+      "Чувствуется привкус уцуцуги...",
+      "Не переживай, повезет в следующий раз",
+      "Мы обыскали весь интернет, но не смогли узнать, что это такое",
+      "Подожди, ещё раз проверю... Нет, это не флаг",
+      "Возможно, всё гораздо проще?",
+      "Где ты это взял???",
+      "Неверные флаги: Том первый",
+      "NEVER GONNA GIVE YOU a FLAG... (FlagRolled LMAO)",
+      "Ты втираешь мне какую-то дичь!",
+      "Это фиаско, братан",
+      "Возможно, админы когда-нибудь увидят это... Пожелаем им крепкого здоровья",
+      "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'flag'",
+      "Где ты? Я бегу за тобою. Разрываюсь с мечтою. Растворяюсь в ночи. Не молчи...",
+      "Отправь ещё раз - а вдруг сработает? (нет)",
+      "Вселенная распалась после таких заявлений",
+      "Сложно искать черную кошку в черной комнате, лучше поищи флаг",
+      "Отправили этот флаг на проверку в Пентагон - сервера больше не отвечают...",
+      "Время выпрашивать хинты у организаторов ;D"
     ]
   },
   "file_type": {
-    "local": "Self Hosted",
-    "none": "None",
-    "remote": "Remote Url"
+    "local": "Файл",
+    "none": "Нет",
+    "remote": "Ссылка"
   },
   "notification": {
     "flag": {
       "accepted": {
-        "ended": "The game has ended, submissions will not be scored",
-        "message": "The scoreboard will be updated later.",
-        "title": "flag correct"
+        "ended": "Игра завершена, рейтинговая таблица заморожена",
+        "message": "Рейтинг будет обновлен позже.",
+        "title": "Флаг принят"
       },
-      "empty": "The flag cannot be empty",
+      "empty": "Флаг не может быть пустым",
       "submitted": {
-        "message": "Please wait for flag check...",
-        "title": "flag submitted"
+        "message": "Пожалуйста, дождитесь проверки флага...",
+        "title": "Флаг отправлен"
       },
       "unknown": {
-        "message": "Please contact the admin to confirm the submission: {{id}}",
-        "title": "flag status unknown"
+        "message": "Пожалуйста, свяжитесь с администратором, чтобы подтвердить отправку: {{id}}",
+        "title": "Статус флага неизвестен"
       },
-      "wrong": "flag wrong"
+      "wrong": "Неверный флаг"
     },
     "instance": {
       "copied": {
-        "entry": "Instance entry copied to clipboard",
+        "entry": "URL контейнера скопирован",
         "url": {
-          "message": "Please use client to access",
-          "title": "Instance entry copied to clipboard"
+          "message": "Используйте клиент для подключения",
+          "title": "URL контейнера скопирован"
         }
       },
       "created": {
-        "message": "Please note the instance expiration time",
-        "title": "Instance created"
+        "message": "Обратите внимание на время жизни контейнера",
+        "title": "Экземпляр создан"
       },
       "destroyed": {
-        "message": "You can recreate the instance",
-        "title": "Instance has been destroyed"
+        "message": "Вы можете пересоздать контейнер",
+        "title": "Контейнер уничтожен"
       },
       "extend": {
         "note": {
-          "message": "Please extend lifetime or destroy instance in time",
-          "title": "Instance is due"
+          "message": "Пожалуйста, продлите или уничтожьте контейнер вовремя",
+          "title": "Время жизни контейнера истекло"
         },
         "success": {
-          "message": "Please note the instance expiration time",
-          "title": "Instance’s lifetime has been extended"
+          "message": "Обратите внимание на время жизни контейнера",
+          "title": "Время жизни контейнера продлено"
         }
       }
     }
   },
   "type": {
     "dynamic_attachment": {
-      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+      "desrc": "Распределять вложения по командам при условии, что количество вложений больше количества команд",
+      "label": "Динамические вложения"
     },
     "dynamic_container": {
-      "desrc": "Automatic flag generation, unique for each team",
-      "label": "Dynamic Container"
+      "desrc": "Автоматическое создание уникальных флагов для каждой команды",
+      "label": "Динамический контейнер"
     },
     "static_attachment": {
-      "desrc": "Shared attachments, any flag can be submitted",
-      "label": "Static Attachments"
+      "desrc": "Общие вложения, флаг может быть любым",
+      "label": "Статические вложения"
     },
     "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+      "desrc": "Общие контейнеры, флаг может быть любым",
+      "label": "Статический контейнер"
     }
   }
 }

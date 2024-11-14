@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FluentStorage;
+using FluentStorage.Blobs;
 
 namespace GZCTF.Models.Request.Game;
 
@@ -38,20 +40,19 @@ public class ChallengeTrafficModel
     /// </summary>
     public int Count { get; set; }
 
-    internal static ChallengeTrafficModel FromChallenge(GameChallenge challenge)
+    internal static async Task<ChallengeTrafficModel> FromChallengeAsync(GameChallenge chal, IBlobStorage storage,
+        CancellationToken token)
     {
-        var trafficPath = $"{FilePath.Capture}/{challenge.Id}";
+        var path = StoragePath.Combine(PathHelper.Capture, chal.Id.ToString());
 
         return new()
         {
-            Id = challenge.Id,
-            Title = challenge.Title,
-            Category = challenge.Category,
-            Type = challenge.Type,
-            IsEnabled = challenge.IsEnabled,
-            Count = Directory.Exists(trafficPath)
-                ? Directory.GetDirectories(trafficPath, "*", SearchOption.TopDirectoryOnly).Length
-                : 0
+            Id = chal.Id,
+            Title = chal.Title,
+            Category = chal.Category,
+            Type = chal.Type,
+            IsEnabled = chal.IsEnabled,
+            Count = (await storage.ListAsync(path, cancellationToken: token)).Count
         };
     }
 }

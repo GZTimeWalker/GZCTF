@@ -10,7 +10,7 @@
       "bonus": "Бонус тройной крови",
       "delete": "Удалить",
       "disable": "Отключить",
-      "edit": "Редактировать испытание",
+      "edit": "Редактировать задание",
       "edit_more": "Редактировать флаги",
       "enable": "Включить",
       "flag": {
@@ -25,7 +25,7 @@
       "hint": {
         "add": "Добавить подсказку"
       },
-      "new": "Новое испытание",
+      "new": "Новое задание",
       "next": "Следующее",
       "preview": "Предпросмотр",
       "previous": "Предыдущее",
@@ -60,7 +60,7 @@
       "edit": "Редактировать"
     },
     "writeups": {
-      "download_all": "Скачать всё"
+      "download_all": "Скачать все"
     }
   },
   "content": {
@@ -68,7 +68,7 @@
       "challenges": {
         "attachment": {
           "clear": {
-            "description": "Вы уверены, что хотите удалить вложение этого испытания?",
+            "description": "Вы уверены, что хотите удалить вложение этого задания?",
             "title": "Удалить вложение"
           },
           "instruction": {
@@ -91,74 +91,74 @@
           "label": "Общее имя вложения"
         },
         "bonus": {
-          "description": "Тройной Бонус Крови - это дополнительные очки, начисляемые при решении испытания первыми тремя командами. Каждая команда может получить бонус к очкам, основанный на текущих очках испытания. Бонус будет добавлен к очкам команды в виде фиксированного процента.",
+          "description": "Тройной Бонус Крови - это дополнительные очки, начисляемые при решении задания первыми тремя командами. Каждая команда может получить бонус к очкам, основанный на текущих очках задания. Бонус будет добавлен к очкам команды в виде фиксированного процента.",
           "first_blood": "Награда за первую кровь (%)",
-          "second_blood": "Second Blood Reward (%)",
-          "third_blood": "Third Blood Reward (%)"
+          "second_blood": "Награда за вторую кровь (%)",
+          "third_blood": "Награда за третью кровь (%)"
         },
-        "category": "Category",
-        "container_image": "Container Image",
+        "category": "Категория",
+        "container_image": "Образ контейнера",
         "cpu_limit": {
-          "description": "Multiplication of 0.1 CPU core",
-          "label": "CPU Limit (0.1 CPUs)"
+          "description": "Максимальная нагрузка на ядра (умножается на 0.1)",
+          "label": "Лимит ЦП (0.1 ядра)"
         },
-        "delete": "Are you sure you want to delete challenge {{name}}?",
-        "description": "Description",
-        "difficulty": "Difficulty Factor",
-        "disable": "Are you sure you want to disable challenge {{name}}?",
+        "delete": "Вы уверены, что хотите удалить задание {{name}}?",
+        "description": "Описание",
+        "difficulty": "Коэффициент сложности",
+        "disable": "Вы уверены, что хотите отключить задание {{name}}?",
         "empty": {
-          "description": "Click the top right to create the first challenge",
-          "title": "Ouch! This game has no challenge yet."
+          "description": "Нажмите кнопку в правом верхнем углу для создания первого задания",
+          "title": "У этой игры ещё нет заданий"
         },
-        "enable": "Are you sure you want to enable challenge {{name}}?",
+        "enable": "Вы уверены, что хотите включить задание {{name}}?",
         "flag": {
           "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br /> Each challenge can have multiple flags. Any configured flags can be accepted.",
-          "delete": "Are you sure you want to delete this flag?",
+          "delete": "Вы уверены, что хотите удалить этот флаг?",
           "empty": {
-            "description": "Please add flag via top right corner",
-            "title": "The flag list is empty"
+            "description": "Нажмите кнопку в правом верхнем углу для добавления флага",
+            "title": "Список флагов пуст"
           },
           "instructions": {
             "both": "If you need to enable leet flag with <1>[TEAM_HASH]</1>, add the <2>[LEET]</2> tag <strong> before </strong> the flag template string. The entropy of the flag template string will not be checked.",
             "complex": "If you need to enable special characters in flag generation, use <1>[CLEET]</1> instead of <2>[LEET]</2> at the beginning of the string. This may cause injection issues.",
             "description": "Please enter flag template string, leave it blank to generate random GUID as flag",
-            "example": "Examples",
+            "example": "Примеры",
             "guid": "Specify <1>[GUID]</1> to replace only placeholder here with random GUID",
-            "leave_empty": "Leave it blank",
+            "leave_empty": "Оставьте это поле пустым",
             "leet": "Leet will be enabled if <1>[TEAM_HASH]</1> is not specified and will change strings in braces based on the template. Please make sure the entropy of flag template is high enough.",
             "team_hash": "If <1>[TEAM_HASH]</1> is specified, it will be automatically replaced with the hash generated by team token and contest's information",
-            "will_generate": "will generate"
+            "will_generate": "будет сгенерировано"
           },
-          "template": "Flag Template",
-          "title": "Flag Management"
+          "template": "Шаблон Флага",
+          "title": "Управление флагами"
         },
-        "hints": "Hints",
+        "hints": "Подсказки",
         "memory_limit": {
-          "description": "RAM limitation of containers",
-          "label": "Memory Limit (MB)"
+          "description": "Максимальное потребление ОЗУ",
+          "label": "Лимит памяти (МБ)"
         },
         "min_score_radio": {
           "description": "Min score: {{min_score}}pts",
           "label": "Minimum Score Ratio"
         },
-        "score": "Score",
+        "score": "Счёт",
         "service_port": {
           "description": "Port of container services",
-          "label": "Service Port"
+          "label": "Служебный порт"
         },
-        "solve_count": "Solves",
+        "solve_count": "Решения",
         "storage_limit": {
-          "description": "Storage (including image)",
-          "label": "Storage Limit (MB)"
+          "description": "Ограничение размера контейнера (включая образ)",
+          "label": "Лимит памяти (МБ)"
         },
-        "title": "Title",
+        "title": "Название",
         "traffic_capture": {
           "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",
-          "label": "Enable Traffic Capture"
+          "label": "Включить захват трафика"
         },
         "type": {
           "description": "Cannot be changed after creation",
-          "label": "Type"
+          "label": "Тип"
         }
       },
       "info": {
@@ -170,7 +170,7 @@
           "description": "Containers shared by one team (0 = unlimited)",
           "label": "Team Container Limit"
         },
-        "content": "Game Details",
+        "content": "Информация об игре",
         "delete": "Are you sure you want to delete game {{name}}?",
         "end_date": "Дата окончания",
         "end_time": "Время окончания",
@@ -188,7 +188,7 @@
         },
         "poster": "Постер",
         "practice_mode": {
-          "description": "Просмотр испытаний после окончания игры",
+          "description": "Просмотр заданий после игры",
           "label": "Режим тренировки"
         },
         "start_date": "Дата начала",
@@ -203,19 +203,19 @@
         },
         "writeup_deadline": {
           "description": "Hours to submit writeups after game ends",
-          "label": "Writeup Deadline"
+          "label": "Срок сдачи отчета"
         },
-        "writeup_instruction": "Writeup Instructions",
+        "writeup_instruction": "Инструкции по написанию отчета",
         "writeup_required": {
           "description": "Enable writeup submission",
-          "label": "Writeup Required"
+          "label": "Требуется отчет"
         }
       },
       "notices": {
-        "delete": "Are you sure you want to delete this notice?",
+        "delete": "Вы уверены, что хотите удалить эту заметку?",
         "empty": {
           "description": "Click on the top right button to create a new notice",
-          "title": "No notice yet"
+          "title": "Уведомлений ещё нет"
         }
       },
       "review": {
@@ -225,7 +225,7 @@
         },
         "participation": {
           "joined": "Joined",
-          "not_joined": "Not Registered",
+          "not_joined": "Не зарегистрирован",
           "stats": "{{count}}/{{total}} joined",
           "update": "Set this team's status to: \"{{status}}\"?"
         }
@@ -236,7 +236,7 @@
           "description": "New writeups will appear here",
           "title": "Ouch! No writeup yet"
         },
-        "pdf_fallback": "Failed to load PDF"
+        "pdf_fallback": "Не удалось загрузить файл PDF"
       }
     },
     "instances": {
@@ -246,39 +246,39 @@
     },
     "markdown_inline_support": "Styling with inline Markdown is supported",
     "markdown_support": "Styling with Markdown is supported",
-    "nothing_found": "Nothing found",
+    "nothing_found": "Не найдено",
     "settings": {
       "account": {
         "allow_register": {
-          "description": "Allow users to register new accounts",
-          "label": "Allow Register"
+          "description": "Разрешить пользователям регистрировать новые учетные записи",
+          "label": "Разрешить регистрацию"
         },
         "auto_active": {
           "description": "Whether to activate users after registered",
-          "label": "Auto-activate"
+          "label": "Автоматическая активация"
         },
         "email_confirmation_required": {
           "description": "Whether user verification email is required",
-          "label": "Email Verification Required"
+          "label": "Требуется подтверждение электронной почты"
         },
         "email_domain_list": {
           "description": "List of allowed email domains to register. Separate multiple domains with commas, leave empty to disable.",
-          "label": "Email Domain Whitelist"
+          "label": "Белый список почтовых доменов"
         },
-        "title": "Account Policy",
+        "title": "Политика учётной записи",
         "use_captcha": {
           "description": "Verify on login, registration and recovery",
-          "label": "Enable CAPTCHA"
+          "label": "Включить CAPTCHA"
         }
       },
       "container": {
         "auto_destroy": {
           "description": "Whether to auto-destroy the old instance when meets the limit",
-          "label": "Auto-destroy Old Instances"
+          "label": "Автоматически уничтожать старые экземпляры"
         },
         "default_lifetime": {
-          "description": "The default lifetime of the container",
-          "label": "Default Lifetime (min)"
+          "description": "Время жизни контейнера по умолчанию",
+          "label": "Время жизни по умолчанию (мин.)"
         },
         "extension_duration": {
           "description": "The duration of each renewal of the container",
@@ -322,9 +322,9 @@
         "title": "Platform Settings"
       }
     },
-    "show_all": "Show All",
+    "show_all": "Показать всё",
     "teams": {
-      "delete": "Are you sure you want to delete team {{name}} ?",
+      "delete": "Вы уверены, что хотите удалить команду {{name}}?",
       "lock": "Are you sure you want to {{action}} team {{name}} ?",
       "locked": "Locked",
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> teams displayed",
@@ -435,7 +435,7 @@
     }
   },
   "placeholder": {
-    "empty": "Empty",
+    "empty": "Пусто",
     "games": {
       "challenges": {
         "attachment": {
@@ -447,18 +447,18 @@
       },
       "organizations": "Enter to add a division.",
       "participation": {
-        "bio": "(no bio)",
-        "team": "(no name)"
+        "bio": "(нет описания)",
+        "team": "(нет имени)"
       }
     },
     "instances": {
       "challenges": {
         "not_found": "No challenge found",
-        "select": "All challenges"
+        "select": "Все задания"
       },
       "teams": {
         "not_found": "Команда не найдена",
-        "select": "All Teams"
+        "select": "Все команды"
       }
     },
     "settings": {
@@ -473,7 +473,7 @@
       "search": "Search by name"
     },
     "users": {
-      "real_name": "Empty",
+      "real_name": "Пусто",
       "search": "Search by ID/username/email/student ID/real name",
       "student_id": "00000000"
     }

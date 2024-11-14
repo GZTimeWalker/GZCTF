@@ -7,9 +7,9 @@ enum DirType : byte
     Capture
 }
 
-static class FilePath
+static class PathHelper
 {
-    const string Base = "files";
+    internal const string Base = "files";
 
     internal static readonly string Logs = GetDir(DirType.Logs);
     internal static readonly string Uploads = GetDir(DirType.Uploads);
@@ -41,12 +41,10 @@ static class FilePath
             await writer.WriteLineAsync(typeof(Program).Assembly.GetName().Version?.ToString() ?? "unknown");
         }
 
-        foreach (DirType type in Enum.GetValues<DirType>())
-        {
-            var path = Path.Combine(Base, type.ToString().ToLower());
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
+        // only create logs directory
+        var path = Path.Combine(Base, GetDir(DirType.Logs));
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
     }
 
     /// <summary>
@@ -54,28 +52,5 @@ static class FilePath
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    static string GetDir(DirType type) => Path.Combine(Base, type.ToString().ToLower());
-
-    /// <summary>
-    /// 获取文件夹内容
-    /// </summary>
-    /// <param name="dir">文件夹</param>
-    /// <param name="totSize">总大小</param>
-    /// <returns></returns>
-    internal static List<FileRecord> GetFileRecords(string dir, out long totSize)
-    {
-        totSize = 0;
-        var records = new List<FileRecord>();
-
-        foreach (var file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
-        {
-            var info = new FileInfo(file);
-
-            records.Add(FileRecord.FromFileInfo(info));
-
-            totSize += info.Length;
-        }
-
-        return records;
-    }
+    static string GetDir(DirType type) => type.ToString().ToLower();
 }

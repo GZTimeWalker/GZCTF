@@ -59,9 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns=""
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -482,7 +480,7 @@
     <value>Cleaning up {1} team files for game {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>The different or key in the configuration file is not set and the match key will be stored explicitly in the database.</value>
+    <value>The XOR key in the configuration file is not set and the game key will be stored explicitly in the database.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Can not exit the game after entrance approval</value>
@@ -503,7 +501,7 @@
     <value>Failed to create container for challenge</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
-    <value>The title cannot create a container</value>
+    <value>This challenge cannot create a container</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} has destroyed container [{2}] of challenge {1}</value>
@@ -755,7 +753,7 @@
     <value>Send mail: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Hello, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            If the above button is not valid, please copy this link to your browser: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;If you have not done so, please ignore this email. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Hello, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;If the above button is not valid, please copy this link to your browser: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you have not done so, please ignore this email. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>Verify Email</value>
@@ -1041,5 +1039,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Invalid email configuration, but email authentication is enabled</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Failed to initialize storage provider: {0}</value>
   </data>
 </root>

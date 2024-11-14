@@ -34,7 +34,7 @@ public class EditController(
     IGameNoticeRepository gameNoticeRepository,
     IGameRepository gameRepository,
     IContainerManager containerService,
-    IFileRepository fileService,
+    IBlobRepository blobService,
     IStringLocalizer<Program> localizer) : Controller
 {
     /// <summary>
@@ -309,7 +309,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        LocalFile? poster = await fileService.CreateOrUpdateImage(file, "poster", 0, token);
+        LocalFile? poster = await blobService.CreateOrUpdateImage(file, "poster", 0, token);
 
         if (poster is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_CreationFailed)]));

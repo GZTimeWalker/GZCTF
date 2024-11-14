@@ -83,7 +83,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - 繁体中文 (zh-TW)：完全支持
 - 日语 (ja-JP)：完全支持，由 [Steve](https://github.com/hez2010) 翻译
 - 印度尼西亚语 (id-ID)：完全支持，由 [Rio](https://github.com/riodrwn) 翻译
-- 韩语 (ko-KR)：翻译进行中，由 [Sy2n0](https://github.com/Sy2n0) 翻译
+- 韩语 (ko-KR)：完全支持，由 [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim) 和 [blluv](https://github.com/blluv) 翻译
 - 俄语 (ru-RU)：翻译进行中，由 [FazaN](https://github.com/CyberFazaN) 翻译
 
 ### 由机器和 AI 翻译
@@ -155,6 +155,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - **北京经济管理职业学院 首届 BIEM“信安杯”CTF 竞赛**
 - **北京航空航天大学 BUAACTF 2024**
 - **曲阜师范大学第一届“曲 star”网络安全技能竞赛**
+- **成都理工大学第四届/第五届信安大挑战 DinoCTF**
 
 _排名不分先后，欢迎提交 PR 进行补充。_
 

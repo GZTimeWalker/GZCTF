@@ -25,9 +25,9 @@
   padding-top: 0;
   padding-bottom: var(--mantine-spacing-xl);
   padding-left: var(--mantine-spacing-md);
-  width: 18vw;
-  max-width: 320px;
-  min-width: 230px;
+  width: 260px;
+  max-width: 260px;
+  min-width: 260px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

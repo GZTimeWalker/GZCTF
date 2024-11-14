@@ -139,6 +139,7 @@
     "score": "Score",
     "score_formatter": "{value} pts",
     "score_table": {
+      "all_teams": "All Teams",
       "rank_organization": "Rank",
       "rank_total": "Overall",
       "score": "Score",

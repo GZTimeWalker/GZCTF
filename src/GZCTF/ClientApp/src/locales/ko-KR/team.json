@@ -1,93 +1,93 @@
 {
   "button": {
-    "create": "Create Team",
-    "disband": "Disband Team",
-    "edit": "Team Details",
-    "join": "Join Team",
-    "leave": "Quit Team",
-    "save": "Update Info"
+    "create": "팀 생성",
+    "disband": "팀 삭제",
+    "edit": "팀 정보",
+    "join": "팀 참가",
+    "leave": "팀 나가기",
+    "save": "정보 수정"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "팀을 생성하여 다른 사람들을 초대할 수 있습니다. 각 유저는 오직 한 팀만 생성할 수 있습니다.",
     "disband": {
       "confirm": {
-        "message": "Are you sure you want to disband team \"{{team}}\"?",
-        "title": "Confirm Disband Team"
+        "message": "정말로 \"{{team}}\" 을 삭제하시겠습니까?",
+        "title": "팀 삭제 확인"
       }
     },
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
+    "join": "팀장에게 초대 코드를 받아 팀에 참가하세요.",
     "kick": {
       "confirm": {
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
-        "title": "Confirm removing member."
+        "message": "정말로 \"{{user}}\" 를 팀에서 내보내시겠습니까?",
+        "title": "팀원 추방 확인"
       }
     },
     "leave": {
       "confirm": {
-        "message": "Are you sure you want to leave the team \"{{team}}\"?",
-        "title": "Confirm Quit"
+        "message": "정말로 \"{{team}}\" 에서 나가시겠습니까?",
+        "title": "팀 나가기 확인"
       }
     },
     "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+      "content": "각 플레이어는 오직 한 팀만 생성할 수 있습니다.<br/>이미 있는 팀을 삭제하고 다시 만드세요.",
+      "title": "팀을 생성하였습니다."
     },
     "role": {
-      "captain": "Captain",
-      "member": "Member"
+      "captain": "팀장",
+      "member": "팀원"
     },
     "transfer": {
       "confirm": {
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
-        "title": "Confirm Transfer"
+        "message": "정말로 \"{{user}}\" 에게 \"{{team}}\" 을 이전할 것입니까?",
+        "title": "팀 이전 확인"
       }
     }
   },
   "label": {
-    "bio": "Biography",
-    "invite_code": "Invitation Code",
-    "kick": "Kick out",
-    "members": "Members",
-    "name": "Team Name",
-    "role": "Role",
-    "transfer": "Transfer"
+    "bio": "이력",
+    "invite_code": "초대 코드",
+    "kick": "추방",
+    "members": "팀원",
+    "name": "팀 이름",
+    "role": "역할",
+    "transfer": "이전"
   },
   "notification": {
     "create": {
       "success": {
-        "message": "{{team}} has been created, invite your teammates now!",
-        "title": "Successfully created team"
+        "message": "{{team}} 팀이 생성되었습니다. 팀원들을 초대하세요!",
+        "title": "팀 생성 완료"
       }
     },
     "disband": {
-      "success": "Successfully disbanded team"
+      "success": "팀 삭제 완료"
     },
     "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "copied": "초대 코드가 클립보드에 복사 되었습니다.",
+      "updated": "팀 초대 코드가 업데이트 되었습니다."
     },
     "join": {
-      "success": "Successfully joined team",
-      "wrong_invite_code": "Incorrect team invitation code"
+      "success": "팀에 성공적으로 가입했습니다.",
+      "wrong_invite_code": "초대 코드가 올바르지 않습니다."
     },
     "kick": {
-      "success": "Successfully removed member"
+      "success": "성공적으로 멤버를 추방했습니다."
     },
     "leave": {
-      "success": "Successfully quit"
+      "success": "성공적으로 팀에서 나갔습니다."
     },
     "token": {
-      "copied": "Team token copied to clipboard"
+      "copied": "팀 토큰이 클립보드에 복사 되었습니다."
     },
     "transfer": {
-      "success": "Successfully transferred team"
+      "success": "성공적으로 팀이 이전 되었습니다."
     },
-    "updated": "Team information has been updated"
+    "updated": "팀 정보가 업데이트 되었습니다."
   },
   "placeholder": {
-    "bio": "This team is lazy, nothing written"
+    "bio": "게으른 사람이네요! 아무것도 적혀있지 않습니다."
   },
   "title": {
-    "index": "Team management"
+    "index": "팀 관리"
   }
 }

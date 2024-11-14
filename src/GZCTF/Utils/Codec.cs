@@ -69,7 +69,7 @@ public static partial class Codec
             res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
         return res;
     }
-    
+
     /// <summary>
     /// Base64编解码
     /// </summary>

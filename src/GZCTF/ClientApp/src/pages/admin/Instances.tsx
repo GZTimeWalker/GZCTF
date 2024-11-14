@@ -30,6 +30,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import AdminPage from '@Components/admin/AdminPage'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { useLanguage } from '@Utils/I18n'
 import { useChallengeCategoryLabelMap, getProxyUrl } from '@Utils/Shared'
 import api, { ChallengeModel, ChallengeCategory, TeamModel } from '@Api'
 import tableClasses from '@Styles/Table.module.css'
@@ -85,6 +86,7 @@ const Instances: FC = () => {
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
 
   useEffect(() => {
     if (instances) {
@@ -263,11 +265,11 @@ const Instances: FC = () => {
                       <Table.Td>
                         <Group wrap="nowrap" gap="xs">
                           <Badge size="xs" color={color} variant="dot">
-                            {dayjs(inst.startedAt).format('MM/DD HH:mm')}
+                            {dayjs(inst.startedAt).locale(locale).format('SL HH:mm')}
                           </Badge>
                           <Icon path={mdiChevronTripleRight} size={1} />
                           <Badge size="xs" color={color} variant="dot">
-                            {dayjs(inst.expectStopAt).format('MM/DD HH:mm')}
+                            {dayjs(inst.expectStopAt).locale(locale).format('SL HH:mm')}
                           </Badge>
                         </Group>
                       </Table.Td>

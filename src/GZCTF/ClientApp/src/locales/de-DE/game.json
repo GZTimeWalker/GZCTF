@@ -139,6 +139,7 @@
     "score": "Punktzahl",
     "score_formatter": "{value} Pkt.",
     "score_table": {
+      "all_teams": "Alle Teams",
       "rank_organization": "Rang",
       "rank_total": "Gesamt",
       "score": "Punkte",

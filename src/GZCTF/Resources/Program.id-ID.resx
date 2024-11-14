@@ -480,7 +480,7 @@
     <value>Membersihkan file tim {1} untuk game {0}...</value>
   </data>
   <data name="GameRepository_XorKeyNotConfigured" xml:space="preserve">
-    <value>Key yang berbeda atau key didalam file konfigurasi belum diatur, dan key pertandingan akan disimpan secara eksplisit di dalam database.</value>
+    <value>Kunci XOR dalam file konfigurasi tidak diatur dan kunci kompetisi akan disimpan secara eksplisit di dalam basis data.</value>
   </data>
   <data name="Game_CannotLeaveAfterApproval" xml:space="preserve">
     <value>Tidak bisa keluar dari game setelah persetujuan masuk</value>
@@ -501,7 +501,7 @@
     <value>Gagal membuat container untuk challenge</value>
   </data>
   <data name="Game_ContainerCreationNotAllowed" xml:space="preserve">
-    <value>Judul tidak bisa membuat container</value>
+    <value>Tantangan ini tidak dapat membuat wadah</value>
   </data>
   <data name="Game_ContainerDeleted" xml:space="preserve">
     <value>{0} telah menghapus container [{2}] dari tantangan {1}</value>
@@ -753,7 +753,7 @@
     <value>Kirim email: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;    &lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;    &lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;    &lt;p&gt;Halo, {userName}！&lt;/p&gt;    &lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;    &lt;p style="text-align: center; padding: 20px"&gt;        &lt;a href="{url}" style="          font: 1rem Arial;          white-space: nowrap;          text-decoration: none;          background-color: #000000;          color: #ffffff;          padding: 10px 20px 10px 20px;          border: 1px solid #888888;          border-radius: 7px;          margin: 10px auto;        "        &gt;            {btnmsg}        &lt;/a&gt;    &lt;/p&gt;    &lt;div style="font-size: 0.8rem"&gt;        &lt;p&gt;            Jika tombol di atas tidak berfungsi, silakan salin tautan ini ke browser kamu: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"        &gt;{url}        &lt;/span&gt;        &lt;/p&gt;        &lt;p&gt;Jika kamu belum melakukannya, silakan abaikan email ini. &lt;/p&gt;    &lt;/div&gt;    &lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Halo, {userName}！&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;Jika tombol di atas tidak berfungsi, silakan salin tautan ini ke browser kamu: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Jika kamu belum melakukannya, silakan abaikan email ini.&lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
     <value>Verifikasi email</value>
@@ -1039,5 +1039,8 @@
   </data>
   <data name="MailSender_InvalidEmailConfig" xml:space="preserve">
     <value>Konfigurasi email tidak valid, tetapi autentikasi email diaktifkan</value>
+  </data>
+  <data name="Init_StorageInitFailed" xml:space="preserve">
+    <value>Gagal menginisialisasi penyedia penyimpanan: {0}</value>
   </data>
 </root>

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Extensions;
 
-public static class CacheExtensions
+public static class CacheExtension
 {
     /// <summary>
     /// Get or create cache, if cache not exists will block

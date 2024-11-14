@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import Empty from '@Components/Empty'
 import { InlineMarkdown } from '@Components/MarkdownRenderer'
+import { useLanguage } from '@Utils/I18n'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
 import typoClasses from '@Styles/Typography.module.css'
@@ -100,6 +101,7 @@ const GameNoticePanel: FC = () => {
   const iconMap = NoticTypeIconMap(0.8)
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
   const theme = useMantineTheme()
 
   useEffect(() => {
@@ -209,7 +211,7 @@ const GameNoticePanel: FC = () => {
                 <List.Item key={notice.id} icon={<Icon {...iconMap.get(notice.type)!} />}>
                   <Stack gap={1}>
                     <Text fz="xs" fw="bold" c="dimmed">
-                      {dayjs(notice.time).format('YY/MM/DD HH:mm:ss')}
+                      {dayjs(notice.time).locale(locale).format('SLL TLS')}
                     </Text>
                     {notice.type === NoticeType.Normal ? (
                       <InlineMarkdown

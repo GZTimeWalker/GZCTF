@@ -24,6 +24,7 @@ import { useParams } from 'react-router-dom'
 import ScrollSelect from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import api, { FileRecord } from '@Api'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -44,6 +45,7 @@ const Traffic: FC = () => {
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
+  const { locale } = useLanguage()
   const { colorScheme } = useMantineColorScheme()
   const modals = useModals()
 
@@ -227,7 +229,7 @@ const Traffic: FC = () => {
               <Divider size="sm" />
               <ScrollSelect
                 itemComponent={FileItem}
-                itemComponentProps={{ onDownload, onDelete, disabled, t }}
+                itemComponentProps={{ onDownload, onDelete, disabled, t, locale }}
                 items={orderedFileRecords}
                 h={srollHeight}
               />
