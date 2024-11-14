@@ -100,7 +100,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             row.CreateCell(3).SetCellValue(item.UserName);
             row.CreateCell(4).SetCellValue(item.ChallengeName);
             row.CreateCell(5).SetCellValue(item.Answer);
-            row.CreateCell(6).SetCellValue(item.User.Email);
+            row.CreateCell(6).SetCellValue(item.User?.Email ?? string.Empty);
 
             rowIndex++;
         }

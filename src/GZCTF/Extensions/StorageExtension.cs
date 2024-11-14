@@ -5,7 +5,7 @@ namespace GZCTF.Extensions;
 public static class StorageExtension
 {
     const string DefaultConnectionString = "disk://path=./files";
-    
+
     public static void AddStorage(this WebApplicationBuilder builder, string? connectionString)
     {
         var isEmpty = string.IsNullOrWhiteSpace(connectionString);
@@ -26,7 +26,7 @@ public static class StorageExtension
                 StorageFactory.Modules.UseAzureBlobStorage();
                 break;
         }
-       
+
         try
         {
             var storage = StorageFactory.Blobs.FromConnectionString(connectionString);

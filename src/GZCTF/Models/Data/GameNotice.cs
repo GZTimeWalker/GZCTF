@@ -44,6 +44,6 @@ public partial class GameNotice : FormattableData<NoticeType>
                 _ => NoticeType.Normal
             },
             GameId = submission.GameId,
-            Values = [submission.Team.Name, submission.GameChallenge.Title]
+            Values = [submission.TeamName, submission.ChallengeName]
         };
 }

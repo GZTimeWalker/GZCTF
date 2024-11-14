@@ -100,8 +100,8 @@ public class FlagChecker(
                         case AnswerResult.NotFound:
                             logger.Log(
                                 Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_UnknownInstance),
-                                    item.Team.Name,
-                                    item.GameChallenge.Title],
+                                    item.TeamName,
+                                    item.ChallengeName],
                                 item.User,
                                 TaskStatus.NotFound, LogLevel.Warning);
                             break;
@@ -109,8 +109,8 @@ public class FlagChecker(
                             {
                                 logger.Log(
                                     Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerAccepted),
-                                        item.Team.Name,
-                                        item.GameChallenge.Title,
+                                        item.TeamName,
+                                        item.ChallengeName,
                                         item.Answer],
                                     item.User, TaskStatus.Success, LogLevel.Information);
 
@@ -118,7 +118,7 @@ public class FlagChecker(
                                     GameEvent.FromSubmission(item, type, ans, Program.StaticLocalizer), token);
 
                                 // only flush the scoreboard if the contest is not ended and the submission is accepted
-                                if (item.Game.EndTimeUtc > item.SubmitTimeUtc)
+                                if (item.Game!.EndTimeUtc > item.SubmitTimeUtc)
                                     await cacheHelper.FlushScoreboardCache(item.GameId, token);
                                 break;
                             }
@@ -126,8 +126,8 @@ public class FlagChecker(
                             {
                                 logger.Log(
                                     Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_AnswerRejected),
-                                        item.Team.Name,
-                                        item.GameChallenge.Title,
+                                        item.TeamName,
+                                        item.ChallengeName,
                                         item.Answer],
                                     item.User, TaskStatus.Failed, LogLevel.Information);
 
@@ -141,8 +141,8 @@ public class FlagChecker(
                                 {
                                     logger.Log(
                                         Program.StaticLocalizer[nameof(Resources.Program.FlagChecker_CheatDetected),
-                                            item.Team.Name,
-                                            item.GameChallenge.Title,
+                                            item.TeamName,
+                                            item.ChallengeName,
                                             result.SourceTeamName ?? ""],
                                         item.User, TaskStatus.Success, LogLevel.Information);
 
@@ -151,7 +151,7 @@ public class FlagChecker(
                                         {
                                             Type = EventType.CheatDetected,
                                             Values =
-                                                [item.GameChallenge.Title, item.Team.Name, result.SourceTeamName ?? ""],
+                                                [item.ChallengeName, item.TeamName, result.SourceTeamName ?? ""],
                                             TeamId = item.TeamId,
                                             UserId = item.UserId,
                                             GameId = item.GameId
@@ -162,7 +162,7 @@ public class FlagChecker(
                             }
                     }
 
-                    if (item.Game.EndTimeUtc > DateTimeOffset.UtcNow
+                    if (item.Game!.EndTimeUtc > DateTimeOffset.UtcNow
                         && type != SubmissionType.Unaccepted
                         && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(

@@ -64,7 +64,7 @@ public class GameEvent : FormattableData<EventType>
             [
                 ans.ToString(),
                 submission.Answer,
-                submission.GameChallenge.Title,
+                submission.ChallengeName,
                 submission.ChallengeId.ToString()
             ]
         };

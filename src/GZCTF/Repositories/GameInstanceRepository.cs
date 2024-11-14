@@ -273,7 +273,7 @@ public class GameInstanceRepository(
             // we need to fetch the entity again to ensure it is being tracked correctly
             Submission updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
-            if (instance.FlagContext is null && submission.GameChallenge.Type.IsStatic())
+            if (instance.FlagContext is null && submission.GameChallenge?.Type.IsStatic() is true)
                 updateSub.Status = await Context.FlagContexts.AsNoTracking()
                     .AnyAsync(
                         f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
@@ -286,9 +286,9 @@ public class GameInstanceRepository(
                     : AnswerResult.WrongAnswer;
 
             var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
-            var beforeEnd = submission.Game.EndTimeUtc > submission.SubmitTimeUtc;
+            var beforeEnd = submission.Game!.EndTimeUtc > submission.SubmitTimeUtc;
 
-            updateSub.GameChallenge.SubmissionCount++;
+            updateSub.GameChallenge!.SubmissionCount++;
 
             if (firstTime && beforeEnd)
             {

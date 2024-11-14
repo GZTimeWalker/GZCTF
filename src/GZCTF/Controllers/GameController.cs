@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Threading.Channels;
 using FluentStorage;
 using FluentStorage.Blobs;
-using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
