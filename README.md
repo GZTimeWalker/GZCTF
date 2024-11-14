@@ -68,7 +68,10 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 - Monitor submissions and major event logs during the competition
 - Challenges traffic forwarding based on **TCP over WebSocket proxy**, configurable traffic capture
 - Cluster cache based on Redis, database storage backend based on PGSQL
+- Storage backend based on local disk and **object storage (MinIO, S3, etc.)**
 - Customizable global configuration, platform title, record information
+- Support for **dark mode**, multiple languages, and custom themes
+- Customizable **website footer**, **website favicon**, and **html description** for SEO
 - Support metrics and distributed tracing
 - And more...
 
