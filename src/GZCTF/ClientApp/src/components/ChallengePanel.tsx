@@ -17,9 +17,9 @@ import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import ChallengeCard from '@Components/ChallengeCard'
 import Empty from '@Components/Empty'
 import GameChallengeModal from '@Components/GameChallengeModal'
@@ -30,6 +30,7 @@ import { ChallengeInfo, ChallengeCategory, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
 
 const ChallengePanel: FC = () => {
+  const { hash } = useLocation()
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
@@ -62,6 +63,21 @@ const ChallengePanel: FC = () => {
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const { t } = useTranslation()
+
+  useEffect(() => {
+    const challId = hash.slice(1).split('-')[0]
+    if (challId && allChallenges) {
+      const id = parseInt(challId)
+      if (isNaN(id) || id < 0) return
+      if (challenge?.id === id) return
+
+      const chal = allChallenges.find((c) => c.id === id)
+      if (chal) {
+        setChallenge(chal)
+        setDetailOpened(true)
+      }
+    }
+  }, [hash, challenge, allChallenges])
 
   // skeleton for loading
   if (!challenges) {
@@ -234,6 +250,8 @@ const ChallengePanel: FC = () => {
                   onClick={() => {
                     setChallenge(chal)
                     setDetailOpened(true)
+                    // update hash after modal opened, so don't trigger useEffect
+                    window.location.hash = `#${chal.id}-${encodeURIComponent(chal.title?.replace(/ /g, '-') ?? '')}`
                   }}
                   solved={solved}
                   teamId={teamInfo?.rank?.id}
@@ -265,7 +283,10 @@ const ChallengePanel: FC = () => {
           gameId={numId}
           opened={detailOpened}
           withCloseButton={false}
-          onClose={() => setDetailOpened(false)}
+          onClose={() => {
+            window.location.hash = ''
+            setDetailOpened(false)
+          }}
           gameEnded={dayjs(game?.end) < dayjs()}
           status={teamInfo?.rank?.solvedChallenges?.find((c) => c.id === challenge?.id)?.type}
           cateData={
