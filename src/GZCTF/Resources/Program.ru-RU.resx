@@ -711,7 +711,7 @@
     <value>Экземпляр контейнера для испытания {0} не может быть запущен</value>
   </data>
   <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
-    <value>Уничтожить контейнер [{0}] ({1}): {2}</value>
+    <value>Уничтожение контейнера [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
     <value>Insufficient number of dynamic attachments allocated for challenge {0}#{1}</value>
