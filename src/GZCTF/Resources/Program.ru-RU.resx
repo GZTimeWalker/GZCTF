@@ -708,7 +708,7 @@
     <value>Команда {0} создала контейнер [{2}] для задания {1}</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
-    <value>Экземпляр контейнера для испытания {0} не может быть запущен</value>
+    <value>Не удалось запустить экземпляр контейнера для задания {0}</value>
   </data>
   <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
     <value>Уничтожение контейнера [{0}] ({1}): {2}</value>
