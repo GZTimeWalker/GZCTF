@@ -3,7 +3,37 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [0.24.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.4..v0.24.5) - 2024-10-27
+## [0.25.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.5-patch.1..v0.25.0) - 2024-11-15
+
+### ⛰️ Features
+
+- **(chal)** challenge id & name in url hash - ([b27873](https://github.com/GZTimeWalker/GZCTF/commit/b27873)) by **GZTime**
+- **(i18n)** fix date format in some locale - ([66677e](https://github.com/GZTimeWalker/GZCTF/commit/66677e)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(api)** return expected model instead of task - ([8f766b](https://github.com/GZTimeWalker/GZCTF/commit/8f766b)) by **GZTime**
+- **(storage)** use `Exists` only for files - ([29fa27](https://github.com/GZTimeWalker/GZCTF/commit/29fa27)) by **GZTime**
+- **(style)** unexpected ellipses - ([7bf435](https://github.com/GZTimeWalker/GZCTF/commit/7bf435)) by **GZTime**
+- **(tar)** wrong stream is used in writer - ([4270b7](https://github.com/GZTimeWalker/GZCTF/commit/4270b7)) by **GZTime**
+
+### 🎨 Styling
+
+- **(icon)** scoreboard download button - ([c11ae8](https://github.com/GZTimeWalker/GZCTF/commit/c11ae8)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(storage)** support different storage backends - ([9d2a89](https://github.com/GZTimeWalker/GZCTF/commit/9d2a89)) by **GZTime**
+
+---
+## [0.24.5-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.5..v0.24.5-patch.1) - 2024-10-31
+
+### 🐛 Bug Fixes
+
+- **(frontend)** error when set to invalid color - ([db012a](https://github.com/GZTimeWalker/GZCTF/commit/db012a)) by **GZTime**
+
+---
+## [0.24.5](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.4..v0.24.5) - 2024-10-28
 
 ### ⛰️ Features
 
