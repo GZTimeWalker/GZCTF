@@ -213,8 +213,7 @@ public class SwarmManager : IContainerManager
                     [
                         new()
                         {
-                            PublishMode = _meta.ExposePort ? "global" : "vip",
-                            TargetPort = (uint)config.ExposedPort
+                            PublishMode = _meta.ExposePort ? "global" : "vip", TargetPort = (uint)config.ExposedPort
                         }
                     ]
                 }

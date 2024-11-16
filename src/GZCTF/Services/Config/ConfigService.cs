@@ -16,10 +16,12 @@ public class ConfigService(
 {
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
 
-    public Task SaveConfig([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, object? value, CancellationToken token = default) =>
+    public Task SaveConfig([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
+        object? value, CancellationToken token = default) =>
         SaveConfigSet(GetConfigs(type, value), token);
 
-    public Task SaveConfig<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config, CancellationToken token = default) where T : class =>
+    public Task SaveConfig<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config,
+        CancellationToken token = default) where T : class =>
         SaveConfigSet(GetConfigs(config), token);
 
     public void ReloadConfig() => _configuration?.Reload();
@@ -95,7 +97,8 @@ public class ConfigService(
         }
     }
 
-    static HashSet<ConfigModel> GetConfigs([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, object? value)
+    static HashSet<ConfigModel> GetConfigs(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, object? value)
     {
         HashSet<ConfigModel> configs = [];
 
@@ -105,7 +108,8 @@ public class ConfigService(
         return configs;
     }
 
-    public static HashSet<ConfigModel> GetConfigs<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config) where T : class
+    public static HashSet<ConfigModel> GetConfigs<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config) where T : class
     {
         HashSet<ConfigModel> configs = [];
         Type type = typeof(T);

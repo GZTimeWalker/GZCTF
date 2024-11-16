@@ -145,7 +145,8 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             }
         );
 
-        var dockerJsonBytes = JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj, AppJsonSerializerContext.Default.DockerRegistryOptions);
+        var dockerJsonBytes =
+            JsonSerializer.SerializeToUtf8Bytes(dockerJsonObj, AppJsonSerializerContext.Default.DockerRegistryOptions);
         var secret = new V1Secret
         {
             Metadata =
@@ -171,4 +172,5 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 }
 
 internal record DockerRegistryOptions(Dictionary<string, DockerRegistryEntry> auths);
+
 internal record DockerRegistryEntry(string auth, string? username, string? password);

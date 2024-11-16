@@ -158,5 +158,18 @@ public class Container
     #endregion Db Relationship
 }
 
-internal record GameMetadata(string Challenge, int ChallengeId, string Team, int TeamId, string ContainerId, string? Flag);
-internal record ExerciseMetadata(string Challenge, int ExerciseId, string? UserName, Guid UserId, string ContainerId, string? Flag);
+internal record GameMetadata(
+    string Challenge,
+    int ChallengeId,
+    string Team,
+    int TeamId,
+    string ContainerId,
+    string? Flag);
+
+internal record ExerciseMetadata(
+    string Challenge,
+    int ExerciseId,
+    string? UserName,
+    Guid UserId,
+    string ContainerId,
+    string? Flag);

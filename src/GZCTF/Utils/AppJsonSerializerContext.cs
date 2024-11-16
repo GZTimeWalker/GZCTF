@@ -9,6 +9,10 @@ using GZCTF.Services.Container.Provider;
 
 namespace GZCTF.Utils;
 
+[JsonSerializable(typeof(int))]
+[JsonSerializable(typeof(string))]
+[JsonSerializable(typeof(TaskStatus))]
+[JsonSerializable(typeof(AnswerResult))]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(HashSet<string>))]
 [JsonSerializable(typeof(DockerRegistryOptions))]
@@ -17,7 +21,6 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(RequestResponse))]
 [JsonSerializable(typeof(RequestResponse<RegisterStatus>))]
 [JsonSerializable(typeof(RequestResponse<bool>))]
-[JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(ProfileUserInfoModel))]
 [JsonSerializable(typeof(ConfigEditModel))]
 [JsonSerializable(typeof(ArrayResponse<UserInfoModel>))]
@@ -35,8 +38,6 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(ChallengeEditDetailModel))]
 [JsonSerializable(typeof(ChallengeInfoModel[]))]
 [JsonSerializable(typeof(ContainerInfoModel))]
-[JsonSerializable(typeof(int))]
-[JsonSerializable(typeof(TaskStatus))]
 [JsonSerializable(typeof(BasicGameInfoModel[]))]
 [JsonSerializable(typeof(DetailedGameInfoModel))]
 [JsonSerializable(typeof(ScoreboardModel))]
@@ -49,11 +50,10 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(GameDetailModel))]
 [JsonSerializable(typeof(ParticipationInfoModel[]))]
 [JsonSerializable(typeof(ChallengeDetailModel))]
-[JsonSerializable(typeof(AnswerResult))]
 [JsonSerializable(typeof(BasicWriteupInfoModel))]
 [JsonSerializable(typeof(PostInfoModel[]))]
 [JsonSerializable(typeof(ClientConfig))]
 [JsonSerializable(typeof(ClientCaptchaInfoModel))]
 [JsonSerializable(typeof(TeamInfoModel))]
 [JsonSerializable(typeof(TeamInfoModel[]))]
-internal sealed partial class AppJsonSerializerContext : JsonSerializerContext { }
+internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;

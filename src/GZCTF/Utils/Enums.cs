@@ -345,9 +345,11 @@ public enum ChallengeCategory : byte
     Hardware = 7,
     Mobile = 8,
     PPC = 9,
+
     // ReSharper disable once InconsistentNaming
     AI = 10,
     Pentest = 11,
+
     // ReSharper disable once InconsistentNaming
     OSINT = 12,
 }
