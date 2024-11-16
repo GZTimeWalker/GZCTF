@@ -377,7 +377,7 @@ app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
 
 app.UseTelemetry(telemetryOptions);
 
-app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/healthz").DisableHttpMetrics();
 app.MapControllers();
 
 app.MapHub<UserHub>("/hub/user");
