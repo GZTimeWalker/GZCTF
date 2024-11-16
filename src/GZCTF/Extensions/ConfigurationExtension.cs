@@ -1,6 +1,8 @@
 ﻿using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Text.Encodings.Web;
+using FluentStorage;
+using FluentStorage.Blobs;
 using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
@@ -56,6 +58,7 @@ public static class ConfigurationExtension
 
     static async Task<IResult> FaviconHandler(
         HttpContext context,
+        IBlobStorage storage,
         IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default)
@@ -75,24 +78,25 @@ public static class ConfigurationExtension
         if (hash == Program.DefaultFaviconHash)
             goto SendDefaultIcon;
 
-        var path = Path.GetFullPath(Path.Combine(PathHelper.Uploads, hash[..2], hash[2..4], hash));
-        if (!File.Exists(path))
+        var path = StoragePath.Combine(PathHelper.Uploads, hash[..2], hash[2..4], hash);
+        if (!await storage.ExistsAsync(path, token))
             goto FallbackToDefaultIcon;
 
         await cache.SetStringAsync(CacheKey.Favicon, hash, FaviconOptions, token);
+        Stream stream = await storage.OpenReadAsync(path, token);
 
         return Results.File(
-            path,
+            stream,
             MediaTypeNames.Image.Webp,
             "favicon.webp",
             entityTag: EntityTagHeaderValue.Parse(eTag));
 
-    FallbackToDefaultIcon:
+        FallbackToDefaultIcon:
 
         eTag = GetETag(Program.DefaultFaviconHash[..8]);
         await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash, FaviconOptions, token);
 
-    SendDefaultIcon:
+        SendDefaultIcon:
 
         return Results.File(
             Program.DefaultFavicon,
@@ -119,7 +123,7 @@ public static class ConfigurationExtension
 
         await cache.SetStringAsync(CacheKey.Index, content, token);
 
-    SendContent:
+        SendContent:
 
         var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(12));
 
