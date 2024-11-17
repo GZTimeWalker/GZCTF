@@ -1,0 +1,10 @@
+[files]
+extend-exclude = [
+    # use gitignore syntax
+    "cliff.toml",
+    "CHANGELOG.md",
+    "*.DotSettings",
+    "src/GZCTF/Migrations/**",
+    "src/GZCTF/Resources/**",
+    "src/GZCTF/ClientApp/src/locales/**",
+]

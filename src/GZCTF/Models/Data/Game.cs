@@ -75,9 +75,9 @@ public class Game
     public string? InviteCode { get; set; }
 
     /// <summary>
-    /// 参赛所属单位列表
+    /// 参赛所属分组列表
     /// </summary>
-    public HashSet<string>? Organizations { get; set; }
+    public HashSet<string>? Divisions { get; set; }
 
     /// <summary>
     /// 队员数量限制, 0 为无上限
@@ -177,7 +177,7 @@ public class Game
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
-        Organizations = model.Organizations?.ToHashSet() ?? Organizations;
+        Divisions = model.Divisions?.ToHashSet() ?? Divisions;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;

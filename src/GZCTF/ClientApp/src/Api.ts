@@ -759,8 +759,8 @@ export interface GameInfoModel {
    * @maxLength 32
    */
   inviteCode?: string | null;
-  /** 参赛所属单位列表 */
-  organizations?: string[] | null;
+  /** 参赛所属分组列表 */
+  divisions?: string[] | null;
   /**
    * 队员数量限制, 0 为无上限
    * @format int32
@@ -1193,8 +1193,8 @@ export interface DetailedGameInfoModel {
   content?: string;
   /** 是否为隐藏比赛 */
   hidden?: boolean;
-  /** 参赛所属单位列表 */
-  organizations?: string[] | null;
+  /** 参赛分组列表 */
+  divisions?: string[] | null;
   /** 是否需要邀请码 */
   inviteCodeRequired?: boolean;
   /** 是否需要提交 Writeup */
@@ -1211,8 +1211,8 @@ export interface DetailedGameInfoModel {
    * @format int32
    */
   teamCount?: number;
-  /** 当前报名的组织 */
-  organization?: string | null;
+  /** 当前报名的分组 */
+  division?: string | null;
   /** 参赛队伍名称 */
   teamName?: string | null;
   /** 比赛是否为练习模式（比赛结束够依然可以访问） */
@@ -1237,8 +1237,8 @@ export interface GameJoinModel {
    * @format int32
    */
   teamId?: number;
-  /** 参赛单位 */
-  organization?: string | null;
+  /** 参赛分组 */
+  division?: string | null;
   /** 参赛邀请码 */
   inviteCode?: string | null;
 }
@@ -1304,8 +1304,8 @@ export interface ScoreboardItem {
   name?: string;
   /** 队伍 Bio */
   bio?: string | null;
-  /** 参赛所属组织 */
-  organization?: string | null;
+  /** 参赛所属分组 */
+  division?: string | null;
   /** 队伍头像 */
   avatar?: string | null;
   /**
@@ -1319,10 +1319,10 @@ export interface ScoreboardItem {
    */
   rank?: number;
   /**
-   * 参赛所属组织排名
+   * 参赛所属分组排名
    * @format int32
    */
-  organizationRank?: number | null;
+  divisionRank?: number | null;
   /**
    * 得分时间
    * @format date-time
@@ -1483,7 +1483,7 @@ export interface CheatInfoModel {
   submission?: Submission;
 }
 
-/** 队伍参与信息 */
+/** 队伍参赛信息 */
 export interface ParticipationModel {
   /**
    * 参与 Id
@@ -1494,8 +1494,8 @@ export interface ParticipationModel {
   team?: TeamModel;
   /** 队伍参与状态 */
   status?: ParticipationStatus;
-  /** 队伍所属组织 */
-  organization?: string | null;
+  /** 队伍所属分组 */
+  division?: string | null;
 }
 
 export interface ChallengeTrafficModel {
@@ -1536,8 +1536,8 @@ export interface TeamTrafficModel {
   teamId?: number;
   /** 队伍名称 */
   name?: string | null;
-  /** 参赛所属组织 */
-  organization?: string | null;
+  /** 参赛所属分组 */
+  division?: string | null;
   /** 头像链接 */
   avatar?: string | null;
   /**
@@ -1599,8 +1599,8 @@ export interface ParticipationInfoModel {
   team?: TeamWithDetailedUserInfo;
   /** 注册的成员 */
   registeredMembers?: string[];
-  /** 参赛所属组织 */
-  organization?: string | null;
+  /** 参赛所属分组 */
+  division?: string | null;
   /** 参与状态 */
   status?: ParticipationStatus;
 }

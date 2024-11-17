@@ -115,9 +115,9 @@ public partial class ScoreboardItem
     public string? Bio { get; set; } = string.Empty;
 
     /// <summary>
-    /// 参赛所属组织
+    /// 参赛所属分组
     /// </summary>
-    public string? Organization { get; set; }
+    public string? Division { get; set; }
 
     /// <summary>
     /// 队伍头像
@@ -135,9 +135,9 @@ public partial class ScoreboardItem
     public int Rank { get; set; }
 
     /// <summary>
-    /// 参赛所属组织排名
+    /// 参赛所属分组排名
     /// </summary>
-    public int? OrganizationRank { get; set; }
+    public int? DivisionRank { get; set; }
 
     /// <summary>
     /// 得分时间

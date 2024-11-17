@@ -182,7 +182,7 @@
           "description": "0 means unlimited members of team",
           "label": "Maximum Team Member"
         },
-        "organizations": {
+        "divisions": {
           "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "Enter to add a division.",
+      "divisions": "Enter to add a division.",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"

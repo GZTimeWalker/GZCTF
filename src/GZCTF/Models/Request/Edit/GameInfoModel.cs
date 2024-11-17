@@ -53,9 +53,9 @@ public class GameInfoModel
     public string? InviteCode { get; set; }
 
     /// <summary>
-    /// 参赛所属单位列表
+    /// 参赛所属分组列表
     /// </summary>
-    public List<string>? Organizations { get; set; }
+    public List<string>? Divisions { get; set; }
 
     /// <summary>
     /// 队员数量限制, 0 为无上限
@@ -125,7 +125,7 @@ public class GameInfoModel
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
-            Organizations = game.Organizations?.ToList(),
+            Divisions = game.Divisions?.ToList(),
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,

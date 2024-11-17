@@ -414,16 +414,16 @@ const GameInfoEdit: FC = () => {
         <TagsInput
           label={
             <Group gap="sm">
-              <Text size="sm"> {t('admin.content.games.info.organizations.label')}</Text>
+              <Text size="sm"> {t('admin.content.games.info.divisions.label')}</Text>
               <Text size="xs" c="dimmed">
-                {t('admin.content.games.info.organizations.description')}
+                {t('admin.content.games.info.divisions.description')}
               </Text>
             </Group>
           }
           disabled={disabled}
-          placeholder={t('admin.placeholder.games.organizations')}
+          placeholder={t('admin.placeholder.games.divisions')}
           maxDropdownHeight={300}
-          value={game?.organizations ?? []}
+          value={game?.divisions ?? []}
           styles={{
             input: {
               minHeight: 79,
@@ -431,8 +431,8 @@ const GameInfoEdit: FC = () => {
               overflow: 'auto',
             },
           }}
-          onChange={(e) => game && setGame({ ...game, organizations: e })}
-          onClear={() => game && setGame({ ...game, organizations: [] })}
+          onChange={(e) => game && setGame({ ...game, divisions: e })}
+          onClear={() => game && setGame({ ...game, divisions: [] })}
         />
       </Group>
       <Grid grow>

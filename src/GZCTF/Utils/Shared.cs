@@ -67,16 +67,16 @@ public record ChallengeModel(int Id, string Title, ChallengeCategory Category)
 }
 
 /// <summary>
-/// 队伍参与信息
+/// 队伍参赛信息
 /// </summary>
 /// <param name="Id">参与 Id</param>
 /// <param name="Team">队伍信息</param>
 /// <param name="Status">队伍参与状态</param>
-/// <param name="Organization">队伍所属组织</param>
-public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Organization)
+/// <param name="Division">队伍所属分组</param>
+public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Division)
 {
     internal static ParticipationModel FromParticipation(Participation part) =>
-        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Organization);
+        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division);
 }
 
 /// <summary>

@@ -164,7 +164,7 @@ public class GameRepository(
                     Bio = p.Team.Bio,
                     Name = p.Team.Name,
                     Avatar = p.Team.AvatarUrl,
-                    Organization = p.Organization,
+                    Division = p.Division,
                     ParticipantId = p.Id,
                     TeamInfo = p.Team,
                     // pending fields: SolvedChallenges
@@ -301,21 +301,21 @@ public class GameRepository(
             if (item.Rank <= 10)
                 orgTeams["all"].Add(item.Id);
 
-            if (item.Organization is null)
+            if (item.Division is null)
                 continue;
 
-            if (ranks.TryGetValue(item.Organization, out var rank))
+            if (ranks.TryGetValue(item.Division, out var rank))
             {
-                item.OrganizationRank = rank + 1;
-                ranks[item.Organization]++;
-                if (item.OrganizationRank <= 10)
-                    orgTeams[item.Organization].Add(item.Id);
+                item.DivisionRank = rank + 1;
+                ranks[item.Division]++;
+                if (item.DivisionRank <= 10)
+                    orgTeams[item.Division].Add(item.Id);
             }
             else
             {
-                item.OrganizationRank = 1;
-                ranks[item.Organization] = 1;
-                orgTeams[item.Organization] = [item.Id];
+                item.DivisionRank = 1;
+                ranks[item.Division] = 1;
+                orgTeams[item.Division] = [item.Id];
             }
         }
 
