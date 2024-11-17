@@ -182,7 +182,7 @@
           "description": "0 表示不限制隊伍人數",
           "label": "隊伍人數限制"
         },
-        "organizations": {
+        "divisions": {
           "description": "添加參賽組織以開啟分組榜單，留空則不分組",
           "label": "參賽可選組織列表"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "回車添加參賽組織",
+      "divisions": "回車添加參賽組織",
       "participation": {
         "bio": "（無簡介）",
         "team": "（無名隊伍）"
