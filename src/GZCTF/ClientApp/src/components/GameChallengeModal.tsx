@@ -5,7 +5,7 @@ import { mdiCheck, mdiClose, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ChallengeModal from '@Components/ChallengeModal'
+import { ChallengeModal } from '@Components/ChallengeModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
@@ -20,7 +20,7 @@ interface GameChallengeModalProps extends ModalProps {
   status?: SubmissionType
 }
 
-const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
+export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const { gameId, gameEnded, challengeId, cateData, status, title, score, ...modalProps } = props
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
@@ -228,5 +228,3 @@ const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     />
   )
 }
-
-export default GameChallengeModal

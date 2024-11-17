@@ -6,7 +6,7 @@ import { BloodBonus } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { SubmissionType } from '@Api'
 
-const BloodBonusModel: FC<ModalProps> = (props) => {
+export const BloodBonusModel: FC<ModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, OnceSWRConfig)
@@ -99,5 +99,3 @@ const BloodBonusModel: FC<ModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default BloodBonusModel

@@ -96,7 +96,7 @@ function calcTextRenderedRect(text: string, fontSize: number, fontFamily: string
   return rect
 }
 
-const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
+export const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
   show = true,
   text,
   textColor = '#cccccc',
@@ -220,5 +220,3 @@ const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
     </Wrapper>
   )
 }
-
-export default Watermark

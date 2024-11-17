@@ -8,7 +8,7 @@ import {
 } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import React, { FC, useEffect, useState } from 'react'
-import LogoHeader from '@Components/LogoHeader'
+import { LogoHeader } from '@Components/LogoHeader'
 import classes from '@Styles/IconTabs.module.css'
 
 interface TabProps {
@@ -56,7 +56,7 @@ const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boo
   )
 }
 
-const IconTabs: FC<IconTabsProps> = (props) => {
+export const IconTabs: FC<IconTabsProps> = (props) => {
   const { active, onTabChange, tabs, withIcon, aside, disabled, ...others } = props
   const [activeTab, setActiveTab] = useState(active ?? 0)
   const theme = useMantineTheme()
@@ -93,5 +93,3 @@ const IconTabs: FC<IconTabsProps> = (props) => {
     </Group>
   )
 }
-
-export default IconTabs

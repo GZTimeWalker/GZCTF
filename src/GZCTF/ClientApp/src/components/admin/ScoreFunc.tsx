@@ -10,7 +10,7 @@ interface ScoreFuncProps {
   currentAcceptCount: number
 }
 
-const ScoreFunc: FC<ScoreFuncProps> = ({
+export const ScoreFunc: FC<ScoreFuncProps> = ({
   originalScore,
   difficulty,
   minScoreRate,
@@ -102,5 +102,3 @@ const ScoreFunc: FC<ScoreFuncProps> = ({
     />
   )
 }
-
-export default ScoreFunc

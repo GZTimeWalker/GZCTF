@@ -18,7 +18,7 @@ export interface GameProgressProps extends BoxProps {
   color?: MantineColor
 }
 
-const GameProgress: FC<GameProgressProps> = (props: GameProgressProps) => {
+export const GameProgress: FC<GameProgressProps> = (props: GameProgressProps) => {
   const { thickness = 4, spikeLength = 250, percentage, color, ...others } = props
 
   const theme = useMantineTheme()
@@ -63,5 +63,3 @@ const GameProgress: FC<GameProgressProps> = (props: GameProgressProps) => {
     </Center>
   )
 }
-
-export default GameProgress

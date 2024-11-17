@@ -13,7 +13,7 @@ interface EmptyProps {
   iconSize?: number
 }
 
-const Empty: FC<EmptyProps> = (props) => {
+export const Empty: FC<EmptyProps> = (props) => {
   const { t } = useTranslation()
 
   return (
@@ -25,5 +25,3 @@ const Empty: FC<EmptyProps> = (props) => {
     </Stack>
   )
 }
-
-export default Empty

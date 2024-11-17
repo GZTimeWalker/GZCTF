@@ -11,7 +11,7 @@ interface TimeLineProps {
   division: string | null
 }
 
-const TimeLine: FC<TimeLineProps> = ({ division }) => {
+export const TimeLine: FC<TimeLineProps> = ({ division }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const theme = useMantineTheme()
@@ -194,5 +194,3 @@ const TimeLine: FC<TimeLineProps> = ({ division }) => {
     />
   )
 }
-
-export default TimeLine

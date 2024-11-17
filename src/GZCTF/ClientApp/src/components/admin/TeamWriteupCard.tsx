@@ -23,7 +23,7 @@ interface TeamWriteupCardProps extends CardProps {
   onClick: () => void
 }
 
-const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props }) => {
+export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props }) => {
   const { colorScheme } = useMantineColorScheme()
   const { locale } = useLanguage()
   const theme = useMantineTheme()
@@ -65,5 +65,3 @@ const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props
     </Card>
   )
 }
-
-export default TeamWriteupCard

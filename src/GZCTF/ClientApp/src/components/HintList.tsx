@@ -68,5 +68,3 @@ export const HintList: FC<HintListProps> = (props) => {
     </Input.Wrapper>
   )
 }
-
-export default HintList

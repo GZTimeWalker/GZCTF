@@ -13,7 +13,7 @@ interface GameNoticeEditModalProps extends ModalProps {
   mutateGameNotice: (gameNotice: GameNotice) => void
 }
 
-const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
+export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { gameNotice, mutateGameNotice, ...modalProps } = props
@@ -108,5 +108,3 @@ const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default GameNoticeEditModal

@@ -16,9 +16,9 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import Markdown from '@Components/MarkdownRenderer'
-import WithNavBar from '@Components/WithNavbar'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Markdown } from '@Components/MarkdownRenderer'
+import { WithNavBar } from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { useLanguage } from '@Utils/I18n'
 import { usePageTitle } from '@Utils/usePageTitle'
@@ -113,12 +113,13 @@ const Post: FC = () => {
       </Container>
       {RequireRole(Role.Admin, role) && (
         <Button
+          component={Link}
           className={btnClasses.root}
           variant="filled"
           radius="xl"
           size="md"
           leftSection={<Icon path={mdiPencilOutline} size={1} />}
-          onClick={() => navigate(`/posts/${postId}/edit`)}
+          to={`/posts/${postId}/edit`}
         >
           {t('post.button.edit')}
         </Button>

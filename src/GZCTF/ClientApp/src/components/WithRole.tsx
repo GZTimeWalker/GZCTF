@@ -19,7 +19,7 @@ export const RoleMap = new Map<Role, number>([
 export const RequireRole = (requiredRole: Role, role?: Role | null) =>
   RoleMap.get(role ?? Role.User)! >= RoleMap.get(requiredRole)!
 
-const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
+export const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
   const { role, error } = useUserRole()
   const navigate = useNavigate()
   const location = useLocation()
@@ -47,5 +47,3 @@ const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
 
   return <>{children}</>
 }
-
-export default WithRole

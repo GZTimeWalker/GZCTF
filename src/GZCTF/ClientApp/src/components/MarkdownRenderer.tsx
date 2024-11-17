@@ -64,5 +64,3 @@ export const Markdown = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) =
     </TypographyStylesProvider>
   )
 })
-
-export default Markdown

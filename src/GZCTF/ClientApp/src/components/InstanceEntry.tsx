@@ -260,5 +260,3 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     </Stack>
   )
 }
-
-export default InstanceEntry

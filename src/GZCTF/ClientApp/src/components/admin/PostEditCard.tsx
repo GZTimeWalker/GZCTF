@@ -11,7 +11,7 @@ import {
 import { mdiDeleteOutline, mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
-import Markdown from '@Components/MarkdownRenderer'
+import { Markdown } from '@Components/MarkdownRenderer'
 import { PostInfoModel } from '@Api'
 
 interface PostEditCardProps extends CardProps {
@@ -21,7 +21,13 @@ interface PostEditCardProps extends CardProps {
   onPin: () => void
 }
 
-const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ...props }) => {
+export const PostEditCard: FC<PostEditCardProps> = ({
+  post,
+  onDelete,
+  onEdit,
+  onPin,
+  ...props
+}) => {
   const theme = useMantineTheme()
   return (
     <Card {...props} shadow="sm" p="lg">
@@ -57,5 +63,3 @@ const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ..
     </Card>
   )
 }
-
-export default PostEditCard

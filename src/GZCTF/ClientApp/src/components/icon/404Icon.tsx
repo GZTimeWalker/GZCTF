@@ -2,7 +2,7 @@ import cx from 'clsx'
 import { FC } from 'react'
 import classes from '@Styles/Icon.module.css'
 
-const Icon404: FC = () => {
+export const Icon404: FC = () => {
   return (
     <svg
       id="main_logo"
@@ -54,5 +54,3 @@ const Icon404: FC = () => {
     </svg>
   )
 }
-
-export default Icon404

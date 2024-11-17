@@ -14,7 +14,7 @@ import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useChallengeCategoryLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeCategory } from '@Api'
 
@@ -23,11 +23,10 @@ interface ChallengeEditCardProps {
   onToggle: (challenge: ChallengeInfoModel, setDisabled: Dispatch<SetStateAction<boolean>>) => void
 }
 
-const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) => {
+export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) => {
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const data = challengeCategoryLabelMap.get(challenge.category as ChallengeCategory)
   const theme = useMantineTheme()
-  const navigate = useNavigate()
   const { id } = useParams()
 
   const [disabled, setDisabled] = useState(false)
@@ -94,9 +93,8 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         >
           <ActionIcon
             c={color}
-            onClick={() => {
-              navigate(`/admin/games/${id}/challenges/${challenge.id}`)
-            }}
+            component={Link}
+            to={`/admin/games/${id}/challenges/${challenge.id}`}
           >
             <Icon path={mdiPuzzleEditOutline} size={1} />
           </ActionIcon>
@@ -110,9 +108,8 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
         >
           <ActionIcon
             c={color}
-            onClick={() => {
-              navigate(`/admin/games/${id}/challenges/${challenge.id}/flags`)
-            }}
+            component={Link}
+            to={`/admin/games/${id}/challenges/${challenge.id}/flags`}
           >
             <Icon path={mdiDatabaseEditOutline} size={1} />
           </ActionIcon>
@@ -128,5 +125,3 @@ const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) 
     </Card>
   )
 }
-
-export default ChallengeEditCard

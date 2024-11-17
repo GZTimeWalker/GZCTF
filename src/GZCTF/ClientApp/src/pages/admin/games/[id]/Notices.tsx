@@ -7,9 +7,9 @@ import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { InlineMarkdown } from '@Components/MarkdownRenderer'
-import GameNoticeEditCard from '@Components/admin/GameNoticeEditCard'
-import GameNoticeEditModal from '@Components/admin/GameNoticeEditModal'
-import WithGameTab from '@Components/admin/WithGameEditTab'
+import { GameNoticeEditCard } from '@Components/admin/GameNoticeEditCard'
+import { GameNoticeEditModal } from '@Components/admin/GameNoticeEditModal'
+import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { GameNotice } from '@Api'
@@ -55,7 +55,7 @@ const GameNoticeEdit: FC = () => {
   }
 
   return (
-    <WithGameTab
+    <WithGameEditTab
       headProps={{ justify: 'space-between' }}
       contentPos="right"
       head={
@@ -107,7 +107,7 @@ const GameNoticeEdit: FC = () => {
           mutate([gameNotice, ...(gameNotices?.filter((n) => n.id !== gameNotice.id) ?? [])])
         }}
       />
-    </WithGameTab>
+    </WithGameEditTab>
   )
 }
 

@@ -3,15 +3,14 @@ import { mdiArrowLeft, mdiArrowRight } from '@mdi/js'
 import Icon from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { Link, useParams, useLocation } from 'react-router-dom'
 import { useChallengeCategoryLabelMap } from '@Utils/Shared'
 import { useEditChallenges } from '@Utils/useEdit'
 import { ChallengeInfoModel, ChallengeCategory } from '@Api'
-import WithGameEditTab, { GameEditTabProps } from './WithGameEditTab'
+import { WithGameEditTab, GameEditTabProps } from './WithGameEditTab'
 
-const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
+export const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const { children, isLoading, ...rest } = props
-  const navigate = useNavigate()
   const location = useLocation()
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
@@ -52,9 +51,10 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
         <Group justify="space-between" w="100%" wrap="nowrap">
           <Button
             justify="space-between"
+            component={Link}
             disabled={isLoading || !previous}
             leftSection={<Icon path={mdiArrowLeft} size={1} />}
-            onClick={() => navigate(`/admin/games/${numId}/challenges/${previous?.id}${restpath}`)}
+            to={`/admin/games/${numId}/challenges/${previous?.id}${restpath}`}
           >
             {t('admin.button.challenges.previous')}
           </Button>
@@ -74,8 +74,9 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
           <Button
             disabled={isLoading || !next}
             justify="space-between"
+            component={Link}
             rightSection={<Icon path={mdiArrowRight} size={1} />}
-            onClick={() => navigate(`/admin/games/${numId}/challenges/${next?.id}${restpath}`)}
+            to={`/admin/games/${numId}/challenges/${next?.id}${restpath}`}
           >
             {t('admin.button.challenges.next')}
           </Button>
@@ -84,5 +85,3 @@ const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
     </WithGameEditTab>
   )
 }
-
-export default WithChallengeEdit

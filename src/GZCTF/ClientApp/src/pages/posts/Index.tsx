@@ -3,9 +3,9 @@ import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
-import PostCard from '@Components/PostCard'
-import WithNavBar from '@Components/WithNavbar'
+import { Link } from 'react-router-dom'
+import { PostCard } from '@Components/PostCard'
+import { WithNavBar } from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { OnceSWRConfig } from '@Utils/useConfig'
@@ -20,7 +20,6 @@ const Posts: FC = () => {
   const { data: posts, mutate } = api.info.useInfoGetPosts(OnceSWRConfig)
 
   const [activePage, setPage] = useState(1)
-  const navigate = useNavigate()
   const { role } = useUserRole()
 
   const { t } = useTranslation()
@@ -77,6 +76,7 @@ const Posts: FC = () => {
       </Stack>
       {RequireRole(Role.Admin, role) && (
         <Button
+          component={Link}
           className={btnClasses.root}
           __vars={{
             '--fixed-right': 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
@@ -85,7 +85,7 @@ const Posts: FC = () => {
           radius="xl"
           size="md"
           leftSection={<Icon path={mdiPlus} size={1} />}
-          onClick={() => navigate('/posts/new/edit')}
+          to="/posts/new/edit"
         >
           {t('post.button.new')}
         </Button>

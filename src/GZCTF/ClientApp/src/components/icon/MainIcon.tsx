@@ -7,7 +7,7 @@ export interface MainIconProps {
   size?: StyleProp<React.CSSProperties['width']>
 }
 
-const MainIcon: FC<MainIconProps & SVGProps<SVGSVGElement>> = ({
+export const MainIcon: FC<MainIconProps & SVGProps<SVGSVGElement>> = ({
   ignoreTheme,
   size,
   ...svgProps
@@ -61,5 +61,3 @@ const MainIcon: FC<MainIconProps & SVGProps<SVGSVGElement>> = ({
     </svg>
   )
 }
-
-export default MainIcon

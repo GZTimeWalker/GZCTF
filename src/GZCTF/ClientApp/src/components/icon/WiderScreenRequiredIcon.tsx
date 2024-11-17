@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import classes from '@Styles/Icon.module.css'
 
-const IconWiderScreenRequired: FC = () => {
+export const IconWiderScreenRequired: FC = () => {
   return (
     <svg
       id="IconWiderScreenRequired"
@@ -49,5 +49,3 @@ const IconWiderScreenRequired: FC = () => {
     </svg>
   )
 }
-
-export default IconWiderScreenRequired

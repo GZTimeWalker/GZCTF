@@ -18,7 +18,7 @@ interface PDFViewerProps {
   height?: number | string
 }
 
-const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
+export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
   const [numPages, setNumPages] = useState(0)
   const { t } = useTranslation()
 
@@ -71,5 +71,3 @@ const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
     </ErrorBoundary>
   )
 }
-
-export default PDFViewer

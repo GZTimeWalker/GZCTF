@@ -28,7 +28,7 @@ import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType } from '@Api'
 import uploadClasses from '@Styles/Upload.module.css'
 
-const AttachmentUploadModal: FC<ModalProps> = (props) => {
+export const AttachmentUploadModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const uploadFileName = `DYN_ATTACHMENT_${numCId}`
@@ -185,5 +185,3 @@ const AttachmentUploadModal: FC<ModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default AttachmentUploadModal

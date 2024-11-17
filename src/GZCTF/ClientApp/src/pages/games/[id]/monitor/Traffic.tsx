@@ -21,9 +21,9 @@ import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import ScrollSelect from '@Components/ScrollSelect'
+import { ScrollSelect } from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
-import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import api, { FileRecord } from '@Api'
@@ -144,7 +144,7 @@ const Traffic: FC = () => {
   teamTraffic?.sort((a, b) => (a.teamId ?? 0) - (b.teamId ?? 0))
 
   return (
-    <WithGameMonitorTab isLoading={!challengeTraffic}>
+    <WithGameMonitor isLoading={!challengeTraffic}>
       {!challengeTraffic || challengeTraffic?.length === 0 ? (
         <Center h="calc(100vh - 140px)">
           <Stack gap={0}>
@@ -237,7 +237,7 @@ const Traffic: FC = () => {
           </Grid>
         </Paper>
       )}
-    </WithGameMonitorTab>
+    </WithGameMonitor>
   )
 }
 

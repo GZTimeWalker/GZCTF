@@ -49,7 +49,7 @@ export const SelectableItem = forwardRef<HTMLButtonElement, SelectableItemProps>
   )
 })
 
-const ScrollSelect: FC<ScrollSelectProps> = (props) => {
+export const ScrollSelect: FC<ScrollSelectProps> = (props) => {
   const {
     itemComponent: ItemComponent,
     itemComponentProps,
@@ -80,5 +80,3 @@ const ScrollSelect: FC<ScrollSelectProps> = (props) => {
     </ScrollArea>
   )
 }
-
-export default ScrollSelect

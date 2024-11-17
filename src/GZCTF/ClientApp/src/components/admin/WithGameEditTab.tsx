@@ -10,8 +10,8 @@ import {
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import AdminPage from '@Components/admin/AdminPage'
+import { useLocation, Link, useNavigate, useParams } from 'react-router-dom'
+import { AdminPage } from '@Components/admin/AdminPage'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 
 export interface GameEditTabProps extends React.PropsWithChildren {
@@ -22,7 +22,7 @@ export interface GameEditTabProps extends React.PropsWithChildren {
   backUrl?: string
 }
 
-const WithGameEditTab: FC<GameEditTabProps> = ({
+export const WithGameEditTab: FC<GameEditTabProps> = ({
   children,
   isLoading,
   contentPos,
@@ -63,9 +63,10 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
         <>
           <Button
             w="9rem"
+            component={Link}
             styles={{ inner: { justifyContent: 'space-between' } }}
             leftSection={<Icon path={mdiKeyboardBackspace} size={1} />}
-            onClick={() => navigate(backUrl ?? '/admin/games')}
+            to={backUrl ?? '/admin/games'}
           >
             {t('admin.button.back')}
           </Button>
@@ -110,5 +111,3 @@ const WithGameEditTab: FC<GameEditTabProps> = ({
     </AdminPage>
   )
 }
-
-export default WithGameEditTab

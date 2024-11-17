@@ -20,7 +20,7 @@ interface ChallengeCreateModalProps extends ModalProps {
   onAddChallenge: (game: ChallengeInfoModel) => void
 }
 
-const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
+export const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
   const { id } = useParams()
   const { onAddChallenge, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
@@ -104,5 +104,3 @@ const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default ChallengeCreateModal

@@ -16,8 +16,8 @@ import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@m
 import Icon from '@mdi/react'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import InstanceEntry from '@Components/InstanceEntry'
-import Markdown, { InlineMarkdown } from '@Components/MarkdownRenderer'
+import { InstanceEntry } from '@Components/InstanceEntry'
+import { InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
@@ -36,7 +36,7 @@ export interface ChallengeModalProps extends ModalProps {
   onDownload?: () => void
 }
 
-const ChallengeModal: FC<ChallengeModalProps> = (props) => {
+export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const {
     challenge,
     cateData,
@@ -223,5 +223,3 @@ const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     </Modal.Root>
   )
 }
-
-export default ChallengeModal

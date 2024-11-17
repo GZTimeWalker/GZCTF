@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import React, { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ChallengeModal from '@Components/ChallengeModal'
+import { ChallengeModal } from '@Components/ChallengeModal'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel } from '@Api'
 
@@ -21,7 +21,7 @@ interface FakeContext {
   url: string
 }
 
-const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
+export const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
   const { challenge, cateData, ...modalProps } = props
 
   const [context, setContext] = useState<FakeContext>({
@@ -90,5 +90,3 @@ const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => {
     />
   )
 }
-
-export default ChallengePreviewModal

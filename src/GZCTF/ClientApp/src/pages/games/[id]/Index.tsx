@@ -20,10 +20,10 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import GameJoinModal from '@Components/GameJoinModal'
-import GameProgress from '@Components/GameProgress'
-import Markdown from '@Components/MarkdownRenderer'
-import WithNavBar from '@Components/WithNavbar'
+import { GameJoinModal } from '@Components/GameJoinModal'
+import { GameProgress } from '@Components/GameProgress'
+import { Markdown } from '@Components/MarkdownRenderer'
+import { WithNavBar } from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -206,7 +206,7 @@ const GameDetail: FC = () => {
             : GameActionMap.get(status)}
       </Button>
       {started && (
-        <Button onClick={() => navigate(`/games/${numId}/scoreboard`)}>
+        <Button component={Link} to={`/games/${numId}/scoreboard`}>
           {t('game.button.scoreboard')}
         </Button>
       )}
@@ -219,7 +219,7 @@ const GameDetail: FC = () => {
         started &&
         !isMobile &&
         (!finished || game?.practiceMode) && (
-          <Button onClick={() => navigate(`/games/${numId}/challenges`)}>
+          <Button component={Link} to={`/games/${numId}/challenges`}>
             {t('game.button.challenges')}
           </Button>
         )}

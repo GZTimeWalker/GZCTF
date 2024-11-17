@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { clearLocalCache } from '@Utils/useConfig'
 
-const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: FallbackProps) => {
+export const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: FallbackProps) => {
   const theme = useMantineTheme()
   const { t } = useTranslation()
   const isMobile = useIsMobile()
@@ -47,5 +47,3 @@ const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: Fallbac
     </Center>
   )
 }
-
-export default ErrorFallback

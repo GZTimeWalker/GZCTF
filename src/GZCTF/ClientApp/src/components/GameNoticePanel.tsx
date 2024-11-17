@@ -17,7 +17,7 @@ import { TFunction } from 'i18next'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import Empty from '@Components/Empty'
+import { Empty } from '@Components/Empty'
 import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
 import { NoticTypeIconMap } from '@Utils/Shared'
@@ -90,7 +90,7 @@ const formatNotice = (t: TFunction, notice: GameNotice) => {
 
 const PANEL_HEIGHT = 'calc(100vh - 25rem)'
 
-const GameNoticePanel: FC = () => {
+export const GameNoticePanel: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
@@ -239,5 +239,3 @@ const GameNoticePanel: FC = () => {
     </Card>
   )
 }
-
-export default GameNoticePanel

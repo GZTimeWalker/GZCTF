@@ -25,5 +25,3 @@ export const FooterRender = forwardRef<HTMLDivElement, MarkdownProps>((props, re
     </TypographyStylesProvider>
   )
 })
-
-export default FooterRender

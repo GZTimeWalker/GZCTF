@@ -23,7 +23,7 @@ interface TeamEditModalProps extends ModalProps {
   mutate: () => void
 }
 
-const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
+export const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
   const { isOwnTeam, mutate, ...modalProps } = props
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
   const [disabled, setDisabled] = useState(false)
@@ -95,5 +95,3 @@ const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default TeamCreateModal

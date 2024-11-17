@@ -1,6 +1,6 @@
 import { Box, Group, Text, Title } from '@mantine/core'
 import { FC } from 'react'
-import LogoHeader from '@Components/LogoHeader'
+import { LogoHeader } from '@Components/LogoHeader'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useConfig } from '@Utils/useConfig'
 import classes from '@Styles/IconHeader.module.css'
@@ -10,7 +10,7 @@ interface StickyHeaderProps {
   px?: string
 }
 
-const IconHeader: FC<StickyHeaderProps> = ({ sticky, px }) => {
+export const IconHeader: FC<StickyHeaderProps> = ({ sticky, px }) => {
   const { config } = useConfig()
   const isMobile = useIsMobile()
 
@@ -34,5 +34,3 @@ const IconHeader: FC<StickyHeaderProps> = ({ sticky, px }) => {
     </Group>
   )
 }
-
-export default IconHeader
