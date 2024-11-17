@@ -47,8 +47,8 @@
         "label": "招待コードをご入力ください"
       },
       "division": {
-        "description": "このゲームは複数の組織によって開催されていますので、参加組織を選択してください",
-        "label": "参加組織を選択"
+        "description": "このゲームには複数の参加区分がありますので、あなたの参加区分を選択してください",
+        "label": "参加区分を選択"
       },
       "team": {
         "description": "ゲームに参加するにはチームを選択してください。選択後は変更できません。",
@@ -140,7 +140,7 @@
     "score_formatter": "{value} 点",
     "score_table": {
       "all_teams": "すべてのチーム",
-      "rank_division": "順位",
+      "rank_division": "グループ順位",
       "rank_total": "総合順位",
       "score": "得点",
       "score_total": "合計得点",
@@ -169,7 +169,7 @@
     "joined": "申請に成功しました",
     "left": "申請をキャンセルしました",
     "no_invite_code": "招待コードは空にできません",
-    "no_division": "参加する組織を選択してください",
+    "no_division": "参加区分を選択してください",
     "no_team": "参加するチームを選択してください",
     "not_started": "ゲームはまだ開始されていません",
     "select_chal_and_part": "まずチャレンジとチームを選んでください",
