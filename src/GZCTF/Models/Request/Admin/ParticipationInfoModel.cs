@@ -21,9 +21,9 @@ public class ParticipationInfoModel
     public Guid[] RegisteredMembers { get; set; } = [];
 
     /// <summary>
-    /// 参赛所属组织
+    /// 参赛所属分组
     /// </summary>
-    public string? Organization { get; set; }
+    public string? Division { get; set; }
 
     /// <summary>
     /// 参与状态
@@ -35,7 +35,7 @@ public class ParticipationInfoModel
         {
             Id = part.Id,
             Status = part.Status,
-            Organization = part.Organization,
+            Division = part.Division,
             RegisteredMembers = part.Members.Select(m => m.UserId).ToArray(),
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };

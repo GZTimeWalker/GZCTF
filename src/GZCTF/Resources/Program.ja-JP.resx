@@ -530,7 +530,7 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>無効なゲーム招待コード</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
+  <data name="Game_InvalidDivision" xml:space="preserve">
     <value>無効な参戦組織</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
@@ -851,7 +851,7 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>すべて提出します</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>所属組織</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">

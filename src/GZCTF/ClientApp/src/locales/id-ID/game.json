@@ -46,7 +46,7 @@
         "description": "Permainan ini hanya dengan undangan. Untuk berpartisipasi, harap masukkan kode undangan.",
         "label": "Harap masukkan kode undangan"
       },
-      "organization": {
+      "division": {
         "description": "Permainan ini memiliki beberapa divisi yang tersedia. Harap pilih divisi kamu.",
         "label": "Pilih divisi"
       },
@@ -140,7 +140,7 @@
     "score_formatter": "{value} poin",
     "score_table": {
       "all_teams": "Semua Tim",
-      "rank_organization": "Ranking",
+      "rank_division": "Ranking",
       "rank_total": "Overall",
       "score": "Skor",
       "score_total": "Skor",
@@ -169,7 +169,7 @@
     "joined": "Pendaftaran berhasil",
     "left": "Berhasil dibatalkan",
     "no_invite_code": "Kode undangan tidak boleh kosong",
-    "no_organization": "Silakan pilih divisi",
+    "no_division": "Silakan pilih divisi",
     "no_team": "Silakan pilih tim untuk ikut serta",
     "not_started": "Game belum dimulai",
     "select_chal_and_part": "Silakan pilih tantangan dan tim terlebih dahulu",

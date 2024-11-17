@@ -73,9 +73,9 @@ const TeamRank: FC<CardProps> = (props) => {
               <Title order={3} lineClamp={1}>
                 {rank?.name ?? 'Team'}
               </Title>
-              {rank?.organization && (
+              {rank?.division && (
                 <Badge size="xs" variant="outline">
-                  {rank.organization}
+                  {rank.division}
                 </Badge>
               )}
             </Stack>
@@ -83,8 +83,7 @@ const TeamRank: FC<CardProps> = (props) => {
         </Group>
         <Group grow ta="center">
           {item(t('game.label.score_table.rank_total'), rank?.rank)}
-          {rank?.organization &&
-            item(t('game.label.score_table.rank_organization'), rank?.organizationRank)}
+          {rank?.division && item(t('game.label.score_table.rank_division'), rank?.divisionRank)}
           {item(t('game.label.score_table.score'), rank?.score)}
           {item(t('game.label.score_table.solved_count'), rank?.solvedCount)}
         </Group>

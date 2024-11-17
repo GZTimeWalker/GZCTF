@@ -530,8 +530,8 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>比赛邀请码错误</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
-    <value>无效的参赛单位</value>
+  <data name="Game_InvalidDivision" xml:space="preserve">
+    <value>无效的参赛分组</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} 成功报名了比赛 {1}</value>
@@ -851,8 +851,8 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>全部提交</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
-    <value>所属组织</value>
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
+    <value>所属分组</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
     <value>队伍尚未加载</value>

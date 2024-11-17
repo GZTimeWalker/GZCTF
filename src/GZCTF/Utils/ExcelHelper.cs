@@ -111,7 +111,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         IRow? row = sheet.CreateRow(0);
         var colIndex = 0;
         var challIds = new List<int>();
-        var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
+        var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
 
         foreach (var col in _commonScoreboardHeader)
         {
@@ -123,7 +123,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
                 continue;
 
             cell = row.CreateCell(colIndex++);
-            cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingOrganization)]);
+            cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingDivision)]);
             cell.CellStyle = style;
         }
 
@@ -142,7 +142,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
     {
         var rowIndex = 1;
-        var withOrg = game.Organizations is not null && game.Organizations.Count > 0;
+        var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
 
         foreach (ScoreboardItem item in scoreboard.Items.Values)
         {
@@ -152,7 +152,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
             if (withOrg)
-                row.CreateCell(colIndex++).SetCellValue(item.Organization);
+                row.CreateCell(colIndex++).SetCellValue(item.Division);
 
             row.CreateCell(colIndex++).SetCellValue(item.TeamInfo?.Captain?.RealName ?? string.Empty);
 

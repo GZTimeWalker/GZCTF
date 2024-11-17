@@ -119,8 +119,8 @@ public class GameController(
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
 
-        if (game.Organizations is { Count: > 0 } && game.Organizations.All(o => o != model.Organization))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidOrganization)]));
+        if (game.Divisions is { Count: > 0 } && game.Divisions.All(o => o != model.Division))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
 
         UserInfo? user = await userManager.GetUserAsync(User);
         Team? team = await teamRepository.GetTeamById(model.TeamId, token);
@@ -150,7 +150,7 @@ public class GameController(
             {
                 Game = game,
                 Team = team,
-                Organization = model.Organization,
+                Division = model.Division,
                 Token = gameRepository.GetToken(game, team)
             };
 
@@ -163,7 +163,7 @@ public class GameController(
         // 报名当前成员
         part.Members.Add(new(user!, game, team));
 
-        part.Organization = model.Organization;
+        part.Division = model.Division;
 
         if (part.Status == ParticipationStatus.Rejected)
             part.Status = ParticipationStatus.Pending;

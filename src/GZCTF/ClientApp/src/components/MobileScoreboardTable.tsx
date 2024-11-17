@@ -76,7 +76,7 @@ const TableRow: FC<{
 
 const ITEM_COUNT_PER_PAGE = 10
 
-const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
+const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const [activePage, setPage] = useState(1)
@@ -85,9 +85,9 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
   const { scoreboard } = useGameScoreboard(numId)
 
   const filtered =
-    organization === 'all'
+    division === 'all'
       ? scoreboard?.items
-      : scoreboard?.items?.filter((s) => s.organization === organization)
+      : scoreboard?.items?.filter((s) => s.division === division)
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)
@@ -120,9 +120,9 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganizat
                   label: o === 'all' ? t('game.label.score_table.rank_total') : o,
                 })),
             ]}
-            value={organization}
-            onChange={(org) => {
-              setOrganization(org)
+            value={division}
+            onChange={(div) => {
+              setDivision(div)
               setPage(1)
             }}
           />

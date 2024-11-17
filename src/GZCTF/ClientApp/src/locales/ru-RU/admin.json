@@ -182,7 +182,7 @@
           "description": "Используйте 0 для отключения ограничения",
           "label": "Ограничение размера команды"
         },
-        "organizations": {
+        "divisions": {
           "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "Enter to add a division.",
+      "divisions": "Enter to add a division.",
       "participation": {
         "bio": "(нет описания)",
         "team": "(нет имени)"

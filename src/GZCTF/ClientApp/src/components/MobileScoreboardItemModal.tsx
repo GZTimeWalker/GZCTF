@@ -69,9 +69,9 @@ const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
               <Title order={4} lineClamp={1}>
                 {item?.name ?? 'Team'}
               </Title>
-              {item?.organization && (
+              {item?.division && (
                 <Badge size="sm" variant="outline">
-                  {item.organization}
+                  {item.division}
                 </Badge>
               )}
             </Group>
@@ -97,12 +97,12 @@ const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
-            {item?.organization && (
+            {item?.division && (
               <Stack gap={1}>
                 <Text fw="bold" size="sm" ff="monospace">
-                  {item?.organizationRank}
+                  {item?.divisionRank}
                 </Text>
-                <Text size="xs">{t('game.label.score_table.rank_organization')}</Text>
+                <Text size="xs">{t('game.label.score_table.rank_division')}</Text>
               </Stack>
             )}
             <Stack gap={1}>

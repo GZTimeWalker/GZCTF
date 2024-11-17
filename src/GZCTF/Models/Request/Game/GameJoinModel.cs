@@ -8,9 +8,9 @@ public class GameJoinModel
     public int TeamId { get; set; }
 
     /// <summary>
-    /// 参赛单位
+    /// 参赛分组
     /// </summary>
-    public string? Organization { get; set; }
+    public string? Division { get; set; }
 
     /// <summary>
     /// 参赛邀请码

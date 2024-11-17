@@ -21,7 +21,7 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const { game } = useGame(numId)
 
   const [inviteCode, setInviteCode] = useState('')
-  const [organization, setOrganization] = useState('')
+  const [division, setDivision] = useState('')
   const [team, setTeam] = useState('')
   const [disabled, setDisabled] = useState(false)
 
@@ -56,10 +56,10 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
       return
     }
 
-    if (game?.organizations && game.organizations.length > 0 && !organization) {
+    if (game?.divisions && game.divisions.length > 0 && !division) {
       showNotification({
         color: 'orange',
-        message: t('game.notification.no_organization'),
+        message: t('game.notification.no_division'),
         icon: <Icon path={mdiClose} size={1} />,
       })
       setDisabled(false)
@@ -69,10 +69,10 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     onSubmitJoin({
       teamId: parseInt(team),
       inviteCode: game?.inviteCodeRequired ? inviteCode : undefined,
-      organization: game?.organizations && game.organizations.length > 0 ? organization : undefined,
+      division: game?.divisions && game.divisions.length > 0 ? division : undefined,
     }).finally(() => {
       setInviteCode('')
-      setOrganization('')
+      setDivision('')
       setDisabled(false)
       props.onClose()
     })
@@ -100,15 +100,15 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
             disabled={disabled}
           />
         )}
-        {game?.organizations && game.organizations.length > 0 && (
+        {game?.divisions && game.divisions.length > 0 && (
           <Select
             required
-            label={t('game.content.join.organization.label')}
-            description={t('game.content.join.organization.description')}
-            data={game.organizations}
+            label={t('game.content.join.division.label')}
+            description={t('game.content.join.division.description')}
+            data={game.divisions}
             disabled={disabled}
-            value={organization}
-            onChange={(e) => setOrganization(e ?? '')}
+            value={division}
+            onChange={(e) => setDivision(e ?? '')}
           />
         )}
         <Button disabled={disabled} onClick={onJoinGame}>

@@ -24,9 +24,9 @@ public class TeamTrafficModel
     public string? Name { get; set; }
 
     /// <summary>
-    /// 参赛所属组织
+    /// 参赛所属分组
     /// </summary>
-    public string? Organization { get; set; }
+    public string? Division { get; set; }
 
     /// <summary>
     /// 头像链接
@@ -48,7 +48,7 @@ public class TeamTrafficModel
             Id = part.Id,
             TeamId = part.Team.Id,
             Name = part.Team.Name,
-            Organization = part.Organization,
+            Division = part.Division,
             Avatar = part.Team.AvatarUrl,
             Count = (await storage.ListAsync(path, cancellationToken: token)).Count
         };
