@@ -26,7 +26,7 @@ interface TeamEditModalProps extends ModalProps {
   mutateTeam: (team: TeamInfoModel) => void
 }
 
-const TeamEditModal: FC<TeamEditModalProps> = (props) => {
+export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const { team, mutateTeam, ...modalProps } = props
 
   const theme = useMantineTheme()
@@ -138,5 +138,3 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default TeamEditModal

@@ -13,7 +13,7 @@ interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
 }
 
-const GameJoinModal: FC<GameJoinModalProps> = (props) => {
+export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { onSubmitJoin, ...modalProps } = props
@@ -118,5 +118,3 @@ const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default GameJoinModal

@@ -11,7 +11,7 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
-import IconTabs from '@Components/IconTabs'
+import { IconTabs } from '@Components/IconTabs'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { usePageTitle } from '@Utils/usePageTitle'
 
@@ -21,7 +21,7 @@ export interface AdminTabProps extends React.PropsWithChildren {
   headProps?: GroupProps
 }
 
-const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children }) => {
+export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -81,5 +81,3 @@ const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, children 
     </Stack>
   )
 }
-
-export default WithAdminTab

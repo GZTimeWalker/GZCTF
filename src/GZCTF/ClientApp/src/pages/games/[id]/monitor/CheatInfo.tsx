@@ -23,7 +23,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { RequireRole } from '@Components/WithRole'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
@@ -435,7 +435,7 @@ const CheatInfo: FC = () => {
   }
 
   return (
-    <WithGameMonitorTab isLoading={!cheatInfo}>
+    <WithGameMonitor isLoading={!cheatInfo}>
       <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(
@@ -455,7 +455,7 @@ const CheatInfo: FC = () => {
       ) : (
         <CheatInfoTableView cheatInfo={cheatInfo ?? []} />
       )}
-    </WithGameMonitorTab>
+    </WithGameMonitor>
   )
 }
 

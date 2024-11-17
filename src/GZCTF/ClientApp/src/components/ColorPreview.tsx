@@ -7,7 +7,7 @@ interface ColorsPreviewProps extends GroupProps {
   displayColorsInfo: boolean | undefined
 }
 
-const ColorPreview: FC<ColorsPreviewProps> = ({ colors, displayColorsInfo, ...others }) => {
+export const ColorPreview: FC<ColorsPreviewProps> = ({ colors, displayColorsInfo, ...others }) => {
   const items = colors.map((color, index) => (
     <div key={index} className={classes.item}>
       <ColorSwatch
@@ -32,5 +32,3 @@ const ColorPreview: FC<ColorsPreviewProps> = ({ colors, displayColorsInfo, ...ot
     </Group>
   )
 }
-
-export default ColorPreview

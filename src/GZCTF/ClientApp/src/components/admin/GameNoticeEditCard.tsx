@@ -13,7 +13,7 @@ interface GameNoticeEditCardProps extends CardProps {
   onEdit: () => void
 }
 
-const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
+export const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
   gameNotice,
   onDelete,
   onEdit,
@@ -42,5 +42,3 @@ const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
     </Card>
   )
 }
-
-export default GameNoticeEditCard

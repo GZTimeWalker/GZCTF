@@ -1,7 +1,7 @@
 import { Anchor, Center, Divider, Stack, Text } from '@mantine/core'
 import { FC } from 'react'
-import FooterRender from '@Components/FooterRender'
-import MainIcon from '@Components/icon/MainIcon'
+import { FooterRender } from '@Components/FooterRender'
+import { MainIcon } from '@Components/icon/MainIcon'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useConfig } from '@Utils/useConfig'
 import classes from '@Styles/AppFooter.module.css'
@@ -9,7 +9,7 @@ import logoClasses from '@Styles/LogoHeader.module.css'
 
 // COPYRIGHT © 2022-now @GZTimeWalker, All Rights Reserved.
 // NO MODIFICATION HERE IS ALLOWED
-const AppFooter: FC = () => {
+export const AppFooter: FC = () => {
   const { config } = useConfig()
   const isMobile = useIsMobile()
 
@@ -51,5 +51,3 @@ const AppFooter: FC = () => {
     </>
   )
 }
-
-export default AppFooter

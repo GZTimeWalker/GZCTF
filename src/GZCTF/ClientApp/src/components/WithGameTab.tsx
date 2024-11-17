@@ -7,8 +7,8 @@ import duration from 'dayjs/plugin/duration'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import GameProgress from '@Components/GameProgress'
-import IconTabs from '@Components/IconTabs'
+import { GameProgress } from '@Components/GameProgress'
+import { IconTabs } from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { getGameStatus, useGame } from '@Utils/useGame'
@@ -56,7 +56,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   )
 }
 
-const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
+export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const location = useLocation()
@@ -183,5 +183,3 @@ const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
     </Stack>
   )
 }
-
-export default WithGameTab

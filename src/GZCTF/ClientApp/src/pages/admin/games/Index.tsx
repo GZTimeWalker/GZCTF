@@ -22,10 +22,10 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { GameColorMap } from '@Components/GameCard'
-import AdminPage from '@Components/admin/AdminPage'
-import GameCreateModal from '@Components/admin/GameCreateModal'
+import { AdminPage } from '@Components/admin/AdminPage'
+import { GameCreateModal } from '@Components/admin/GameCreateModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useArrayResponse } from '@Utils/useArrayResponse'
 import { getGameStatus } from '@Utils/useGame'
@@ -181,11 +181,7 @@ const Games: FC = () => {
                       </Table.Td>
                       <Table.Td>
                         <Group justify="right">
-                          <ActionIcon
-                            onClick={() => {
-                              navigate(`/admin/games/${game.id}/info`)
-                            }}
-                          >
+                          <ActionIcon component={Link} to={`/admin/games/${game.id}/info`}>
                             <Icon path={mdiPencilOutline} size={1} />
                           </ActionIcon>
                         </Group>

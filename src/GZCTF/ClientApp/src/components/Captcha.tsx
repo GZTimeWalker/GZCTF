@@ -51,7 +51,7 @@ const ReCaptchaBox = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   return <Box {...others} />
 })
 
-const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
+export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const { action, ...others } = props
 
   const { info, error } = useCaptchaConfig()
@@ -123,5 +123,3 @@ const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
     </Box>
   )
 })
-
-export default Captcha

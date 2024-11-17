@@ -10,7 +10,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useEditChallenge } from '@Utils/useEdit'
 import api from '@Api'
 
-const FlagCreateModal: FC<ModalProps> = (props) => {
+export const FlagCreateModal: FC<ModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
 
   const { id, chalId } = useParams()
@@ -86,5 +86,3 @@ const FlagCreateModal: FC<ModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default FlagCreateModal

@@ -17,7 +17,7 @@ import {
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import TeamRadarMap from '@Components/TeamRadarMap'
+import { TeamRadarMap } from '@Components/TeamRadarMap'
 import { useLanguage } from '@Utils/I18n'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { ChallengeInfo, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
@@ -30,7 +30,7 @@ export interface ScoreboardItemModalProps extends ModalProps {
   scoreboard?: ScoreboardModel
 }
 
-const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
+export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, scoreboard, bloodBonusMap, ...modalProps } = props
 
   const { t } = useTranslation()
@@ -207,5 +207,3 @@ const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default ScoreboardItemModal

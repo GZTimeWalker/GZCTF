@@ -14,7 +14,7 @@ import cx from 'clsx'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import MobileScoreboardItemModal from '@Components/MobileScoreboardItemModal'
+import { MobileScoreboardItemModal } from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps } from '@Components/ScoreboardTable'
 import { BloodBonus, useBonusLabels } from '@Utils/Shared'
 import { useGameScoreboard } from '@Utils/useGame'
@@ -76,7 +76,7 @@ const TableRow: FC<{
 
 const ITEM_COUNT_PER_PAGE = 10
 
-const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
+export const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const [activePage, setPage] = useState(1)
@@ -187,5 +187,3 @@ const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) =
     </Paper>
   )
 }
-
-export default MobileScoreboardTable

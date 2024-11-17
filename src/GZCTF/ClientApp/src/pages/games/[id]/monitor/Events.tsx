@@ -30,7 +30,7 @@ import { TFunction } from 'i18next'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
@@ -209,7 +209,7 @@ const Events: FC = () => {
   )
 
   return (
-    <WithGameMonitorTab isLoading={!events}>
+    <WithGameMonitor isLoading={!events}>
       <Group justify="space-between" w="100%">
         <Switch
           label={SwitchLabel(
@@ -270,7 +270,7 @@ const Events: FC = () => {
           ))}
         </Stack>
       </ScrollArea>
-    </WithGameMonitorTab>
+    </WithGameMonitor>
   )
 }
 

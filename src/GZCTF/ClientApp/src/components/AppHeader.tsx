@@ -13,7 +13,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import LogoHeader from '@Components/LogoHeader'
+import { LogoHeader } from '@Components/LogoHeader'
 import { AppControlProps } from '@Components/WithNavbar'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -21,7 +21,7 @@ import { clearLocalCache } from '@Utils/useConfig'
 import { useLogOut, useUser } from '@Utils/useUser'
 import classes from '@Styles/AppHeader.module.css'
 
-const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
+export const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
   const [opened, setOpened] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
@@ -131,5 +131,3 @@ const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
     </AppShell.Header>
   )
 }
-
-export default AppHeader

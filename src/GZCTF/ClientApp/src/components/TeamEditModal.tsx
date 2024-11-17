@@ -79,7 +79,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   )
 }
 
-const TeamEditModal: FC<TeamEditModalProps> = (props) => {
+export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const { team, isCaptain, ...modalProps } = props
 
   const teamId = team?.id
@@ -496,5 +496,3 @@ const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default TeamEditModal

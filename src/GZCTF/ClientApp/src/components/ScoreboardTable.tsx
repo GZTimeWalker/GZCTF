@@ -25,7 +25,7 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import ScoreboardItemModal from '@Components/ScoreboardItemModal'
+import { ScoreboardItemModal } from '@Components/ScoreboardItemModal'
 import { useLanguage } from '@Utils/I18n'
 import {
   BloodBonus,
@@ -247,7 +247,7 @@ export interface ScoreboardProps {
   setDivision: (div: string | null) => void
 }
 
-const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
+export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { iconMap } = SubmissionTypeIconMap(1)
@@ -418,5 +418,3 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
     </Paper>
   )
 }
-
-export default ScoreboardTable

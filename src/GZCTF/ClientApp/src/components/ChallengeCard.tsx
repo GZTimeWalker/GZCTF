@@ -34,7 +34,7 @@ interface ChallengeCardProps {
   teamId?: number
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
+export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
   const { challenge, solved, onClick, iconMap, teamId, colorMap } = props
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const cateData = challengeCategoryLabelMap.get(challenge.category!)
@@ -131,5 +131,3 @@ const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
     </Card>
   )
 }
-
-export default ChallengeCard

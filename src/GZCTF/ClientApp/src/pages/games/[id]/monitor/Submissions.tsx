@@ -30,7 +30,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import WithGameMonitorTab from '@Components/WithGameMonitor'
+import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { downloadBlob } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
@@ -220,7 +220,7 @@ const Submissions: FC = () => {
     )
 
   return (
-    <WithGameMonitorTab isLoading={!submissions}>
+    <WithGameMonitor isLoading={!submissions}>
       <Group justify="space-between" w="100%">
         <SegmentedControl
           color={theme.primaryColor}
@@ -286,7 +286,7 @@ const Submissions: FC = () => {
           </Table>
         </ScrollArea>
       </Paper>
-    </WithGameMonitorTab>
+    </WithGameMonitor>
   )
 }
 

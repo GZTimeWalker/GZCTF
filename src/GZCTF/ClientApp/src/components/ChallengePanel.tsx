@@ -20,16 +20,16 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useParams } from 'react-router-dom'
-import ChallengeCard from '@Components/ChallengeCard'
-import Empty from '@Components/Empty'
-import GameChallengeModal from '@Components/GameChallengeModal'
-import WriteupSubmitModal from '@Components/WriteupSubmitModal'
+import { ChallengeCard } from '@Components/ChallengeCard'
+import { Empty } from '@Components/Empty'
+import { GameChallengeModal } from '@Components/GameChallengeModal'
+import { WriteupSubmitModal } from '@Components/WriteupSubmitModal'
 import { useChallengeCategoryLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Utils/useGame'
 import { ChallengeInfo, ChallengeCategory, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
 
-const ChallengePanel: FC = () => {
+export const ChallengePanel: FC = () => {
   const { hash } = useLocation()
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
@@ -302,5 +302,3 @@ const ChallengePanel: FC = () => {
     </>
   )
 }
-
-export default ChallengePanel

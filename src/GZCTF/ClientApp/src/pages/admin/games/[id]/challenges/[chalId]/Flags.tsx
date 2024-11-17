@@ -25,12 +25,12 @@ import { mdiCheck, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import AttachmentRemoteEditModal from '@Components/admin/AttachmentRemoteEditModal'
-import AttachmentUploadModal from '@Components/admin/AttachmentUploadModal'
-import FlagCreateModal from '@Components/admin/FlagCreateModal'
-import FlagEditPanel from '@Components/admin/FlagEditPanel'
-import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
+import { Link, useParams } from 'react-router-dom'
+import { AttachmentRemoteEditModal } from '@Components/admin/AttachmentRemoteEditModal'
+import { AttachmentUploadModal } from '@Components/admin/AttachmentUploadModal'
+import { FlagCreateModal } from '@Components/admin/FlagCreateModal'
+import { FlagEditPanel } from '@Components/admin/FlagEditPanel'
+import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Utils/useEdit'
@@ -458,7 +458,6 @@ const FlagsWithAttachments: FC<FlagEditProps> = ({ onDelete }) => {
 }
 
 const GameChallengeEdit: FC = () => {
-  const navigate = useNavigate()
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
   const modals = useModals()
@@ -519,8 +518,9 @@ const GameChallengeEdit: FC = () => {
           </Title>
           <Group wrap="nowrap" justify="right">
             <Button
+              component={Link}
               leftSection={<Icon path={mdiPuzzleEditOutline} size={1} />}
-              onClick={() => navigate(`/admin/games/${id}/challenges/${numCId}`)}
+              to={`/admin/games/${id}/challenges/${numCId}`}
             >
               {t('admin.button.challenges.edit')}
             </Button>

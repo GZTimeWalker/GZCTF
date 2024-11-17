@@ -9,7 +9,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useEditChallenge } from '@Utils/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
 
-const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
+export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
@@ -92,5 +92,3 @@ const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default AttachmentRemoteEditModal

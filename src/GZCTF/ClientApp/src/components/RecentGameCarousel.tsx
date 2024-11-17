@@ -1,14 +1,14 @@
 import { Carousel, CarouselProps } from '@mantine/carousel'
 import Autoplay from 'embla-carousel-autoplay'
 import { FC, useRef } from 'react'
-import RecentGameSlide from '@Components/RecentGameSlide'
+import { RecentGameSlide } from '@Components/RecentGameSlide'
 import { BasicGameInfoModel } from '@Api'
 
 interface RecentGameCarouselProps extends CarouselProps {
   games: BasicGameInfoModel[]
 }
 
-const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...props }) => {
+export const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...props }) => {
   const autoplay = useRef(Autoplay({ delay: 5000 }))
 
   return (
@@ -31,5 +31,3 @@ const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...props }) =>
     </Carousel>
   )
 }
-
-export default RecentGameCarousel

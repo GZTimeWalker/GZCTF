@@ -20,7 +20,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import Markdown from '@Components/MarkdownRenderer'
+import { Markdown } from '@Components/MarkdownRenderer'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
@@ -220,5 +220,3 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     </Modal>
   )
 }
-
-export default WriteupSubmitModal

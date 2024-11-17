@@ -22,7 +22,7 @@ import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useGameTeamInfo } from '@Utils/useGame'
 
-const TeamRank: FC<CardProps> = (props) => {
+export const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
@@ -114,5 +114,3 @@ const TeamRank: FC<CardProps> = (props) => {
     </Card>
   )
 }
-
-export default TeamRank

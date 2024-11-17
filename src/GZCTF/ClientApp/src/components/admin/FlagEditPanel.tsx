@@ -54,13 +54,13 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
   )
 }
 
-interface FladEditPanelProps {
+interface FlagEditPanelProps {
   flags?: FlagInfoModel[]
   onDelete: (flag: FlagInfoModel) => void
   unifiedAttachment?: Attachment | null
 }
 
-const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachment }) => {
+export const FlagEditPanel: FC<FlagEditPanelProps> = ({ flags, onDelete, unifiedAttachment }) => {
   return (
     <Stack>
       <SimpleGrid spacing="sm" cols={{ base: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}>
@@ -77,5 +77,3 @@ const FladEditPanel: FC<FladEditPanelProps> = ({ flags, onDelete, unifiedAttachm
     </Stack>
   )
 }
-
-export default FladEditPanel

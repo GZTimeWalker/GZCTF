@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
-import AccountView from '@Components/AccountView'
+import { AccountView } from '@Components/AccountView'
 import { usePageTitle } from '@Utils/usePageTitle'
 import api from '@Api'
 

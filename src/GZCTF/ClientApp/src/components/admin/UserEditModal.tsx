@@ -35,7 +35,7 @@ interface UserEditModalProps extends ModalProps {
   mutateUser: (user: UserInfoModel) => void
 }
 
-const UserEditModal: FC<UserEditModalProps> = (props) => {
+export const UserEditModal: FC<UserEditModalProps> = (props) => {
   const { user, mutateUser, ...modalProps } = props
   const { user: self } = useUser()
 
@@ -189,5 +189,3 @@ const UserEditModal: FC<UserEditModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default UserEditModal

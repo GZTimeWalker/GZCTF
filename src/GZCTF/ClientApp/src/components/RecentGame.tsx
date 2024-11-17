@@ -27,7 +27,7 @@ export interface RecentGameProps {
 
 const POSTER_HEIGHT = '9rem'
 
-const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
+export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const { t } = useTranslation()
   const { locale } = useLanguage()
 
@@ -108,5 +108,3 @@ const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
     </Card>
   )
 }
-
-export default RecentGame

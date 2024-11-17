@@ -7,13 +7,13 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import React, { FC, useState } from 'react'
-import AppFooter from '@Components/AppFooter'
-import AppHeader from '@Components/AppHeader'
-import AppNavbar from '@Components/AppNavbar'
-import CustomColorModal from '@Components/CustomColorModal'
-import IconHeader from '@Components/IconHeader'
-import Watermark from '@Components/Watermark'
-import WithWiderScreen from '@Components/WithWiderScreen'
+import { AppFooter } from '@Components/AppFooter'
+import { AppHeader } from '@Components/AppHeader'
+import { AppNavbar } from '@Components/AppNavbar'
+import { CustomColorModal } from '@Components/CustomColorModal'
+import { IconHeader } from '@Components/IconHeader'
+import { Watermark } from '@Components/Watermark'
+import { WithWiderScreen } from '@Components/WithWiderScreen'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useUser } from '@Utils/useUser'
@@ -31,7 +31,7 @@ export interface AppControlProps {
   openColorModal: () => void
 }
 
-const WithNavBar: FC<WithNavBarProps> = ({
+export const WithNavBar: FC<WithNavBarProps> = ({
   children,
   width,
   isLoading,
@@ -112,5 +112,3 @@ const WithNavBar: FC<WithNavBarProps> = ({
     </WithWiderScreen>
   )
 }
-
-export default WithNavBar

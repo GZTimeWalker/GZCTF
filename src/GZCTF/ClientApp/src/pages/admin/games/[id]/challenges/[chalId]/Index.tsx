@@ -27,13 +27,13 @@ import {
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-import HintList from '@Components/HintList'
-import InstanceEntry from '@Components/InstanceEntry'
-import ChallengePreviewModal from '@Components/admin/ChallengePreviewModal'
-import ScoreFunc from '@Components/admin/ScoreFunc'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { HintList } from '@Components/HintList'
+import { InstanceEntry } from '@Components/InstanceEntry'
+import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'
+import { ScoreFunc } from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import WithChallengeEdit from '@Components/admin/WithChallengeEdit'
+import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeCategoryItem,
@@ -227,8 +227,9 @@ const GameChallengeEdit: FC = () => {
             </Button>
             <Button
               disabled={disabled}
+              component={Link}
               leftSection={<Icon path={mdiDatabaseEditOutline} size={1} />}
-              onClick={() => navigate(`/admin/games/${numId}/challenges/${numCId}/flags`)}
+              to={`/admin/games/${numId}/challenges/${numCId}/flags`}
             >
               {t('admin.button.challenges.edit_more')}
             </Button>

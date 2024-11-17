@@ -13,12 +13,12 @@ import {
 import { useDebouncedValue } from '@mantine/hooks'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import ColorPreview from '@Components/ColorPreview'
+import { ColorPreview } from '@Components/ColorPreview'
 import { ColorProvider, CustomColor, useCustomColor } from '@Utils/ThemeOverride'
 
 const colorRegex = /^#[0-9A-F]{6}$/i
 
-const CustomColorModal: FC<ModalProps> = (props) => {
+export const CustomColorModal: FC<ModalProps> = (props) => {
   const { customColor, setCustomColor } = useCustomColor()
   const [color, setColor] = useState<CustomColor>(customColor || '')
   const [debouncedColor] = useDebouncedValue(color, 200)
@@ -94,5 +94,3 @@ const CustomColorModal: FC<ModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default CustomColorModal

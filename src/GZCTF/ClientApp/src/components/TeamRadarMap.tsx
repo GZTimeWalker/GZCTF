@@ -8,7 +8,7 @@ interface TeamRadarMapProps {
   name: string
 }
 
-const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
+export const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
 
@@ -51,5 +51,3 @@ const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) => {
     />
   )
 }
-
-export default TeamRadarMap

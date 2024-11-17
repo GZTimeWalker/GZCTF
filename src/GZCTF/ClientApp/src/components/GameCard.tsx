@@ -36,7 +36,7 @@ interface GameCardProps {
   game: BasicGameInfoModel
 }
 
-const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
+export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
   const { t } = useTranslation()
   const { locale } = useLanguage()
@@ -97,5 +97,3 @@ const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
     </Card>
   )
 }
-
-export default GameCard

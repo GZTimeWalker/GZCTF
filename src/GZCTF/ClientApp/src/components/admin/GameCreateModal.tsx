@@ -15,7 +15,7 @@ interface GameCreateModalProps extends ModalProps {
   onAddGame: (game: GameInfoModel) => void
 }
 
-const GameCreateModal: FC<GameCreateModalProps> = (props) => {
+export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
   const { onAddGame, ...modalProps } = props
   const [disabled, setDisabled] = useState(false)
   const navigate = useNavigate()
@@ -144,5 +144,3 @@ const GameCreateModal: FC<GameCreateModalProps> = (props) => {
     </Modal>
   )
 }
-
-export default GameCreateModal

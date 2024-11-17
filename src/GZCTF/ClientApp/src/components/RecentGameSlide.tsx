@@ -8,7 +8,7 @@ import { RecentGameProps } from '@Components/RecentGame'
 import { getGameStatus } from '@Utils/useGame'
 import classes from '@Styles/RecentGameSlide.module.css'
 
-const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
+export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
   const { title, poster } = game
   const { startTime, endTime, status } = getGameStatus(game)
 
@@ -53,5 +53,3 @@ const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
     </Paper>
   )
 }
-
-export default RecentGameSlide

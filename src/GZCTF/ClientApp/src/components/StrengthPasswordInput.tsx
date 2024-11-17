@@ -25,7 +25,7 @@ interface StrengthPasswordInputProps {
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
 }
 
-const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
+export const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
   const [opened, { close, open }] = useDisclosure(false)
   const pwd = props.value
   const isMobile = useIsMobile()
@@ -102,5 +102,3 @@ const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => {
     </Popover>
   )
 }
-
-export default StrengthPasswordInput
