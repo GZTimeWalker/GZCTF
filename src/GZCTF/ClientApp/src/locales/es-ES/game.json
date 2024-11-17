@@ -46,7 +46,7 @@
         "description": "Este juego es solo por invitación. Para participar, por favor ingrese un código de invitación.",
         "label": "Por favor ingrese el código de invitación"
       },
-      "organization": {
+      "division": {
         "description": "Este juego tiene varias divisiones disponibles. Por favor, selecciona tu división.",
         "label": "Seleccionar División"
       },
@@ -140,7 +140,7 @@
     "score_formatter": "{value} pts",
     "score_table": {
       "all_teams": "Todos los Equipos",
-      "rank_organization": "Rango",
+      "rank_division": "Rango",
       "rank_total": "General",
       "score": "Puntaje",
       "score_total": "Puntaje",
@@ -169,7 +169,7 @@
     "joined": "Registro exitoso",
     "left": "Cancelado con éxito",
     "no_invite_code": "El código de invitación no puede estar vacío",
-    "no_organization": "Por favor seleccione la división",
+    "no_division": "Por favor seleccione la división",
     "no_team": "Por favor seleccione el equipo con el que participar",
     "not_started": "El juego aún no ha comenzado",
     "select_chal_and_part": "Por favor seleccione primero desafíos y equipos",
