@@ -74,9 +74,9 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
           </Avatar>
           <Stack gap={0} align="flex-start">
             <Input variant="unstyled" value={item.name ?? 'Team'} readOnly classNames={classes} />
-            {item.organization && (
+            {item.division && (
               <Badge size="xs" variant="outline">
-                {item.organization}
+                {item.division}
               </Badge>
             )}
           </Stack>

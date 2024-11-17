@@ -546,8 +546,8 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>Ungültiger Spieleinladungscode</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
-    <value>Ungültige Organisation</value>
+  <data name="Game_InvalidDivision" xml:space="preserve">
+    <value>Ungültige Abteilung</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} hat erfolgreich am Spiel {1} teilgenommen</value>
@@ -871,7 +871,7 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>Alle Einreichungen</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>Organisation</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">

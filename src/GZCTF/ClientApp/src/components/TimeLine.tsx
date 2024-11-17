@@ -8,10 +8,10 @@ import { normalizeLanguage, useLanguage } from '@Utils/I18n'
 import { getGameStatus, useGame, useGameScoreboard } from '@Utils/useGame'
 
 interface TimeLineProps {
-  organization: string | null
+  division: string | null
 }
 
-const TimeLine: FC<TimeLineProps> = ({ organization }) => {
+const TimeLine: FC<TimeLineProps> = ({ division }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const theme = useMantineTheme()
@@ -43,7 +43,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
   useEffect(() => {
     if (!scoreboard?.timeLines || !game) return
 
-    const timeLine = scoreboard?.timeLines[organization ?? 'all'] ?? []
+    const timeLine = scoreboard?.timeLines[division ?? 'all'] ?? []
     const current = dayjs()
     const last = endTime.diff(current, 's') < 0 ? endTime : current
 
@@ -86,7 +86,7 @@ const TimeLine: FC<TimeLineProps> = ({ organization }) => {
     ])
 
     setNow(new Date())
-  }, [scoreboard, organization, game])
+  }, [scoreboard, division, game])
 
   return (
     <ReactEcharts

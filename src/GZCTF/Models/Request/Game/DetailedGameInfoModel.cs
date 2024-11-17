@@ -32,9 +32,9 @@ public class DetailedGameInfoModel
     public bool Hidden { get; set; }
 
     /// <summary>
-    /// 参赛所属单位列表
+    /// 参赛分组列表
     /// </summary>
-    public HashSet<string>? Organizations { get; set; }
+    public HashSet<string>? Divisions { get; set; }
 
     /// <summary>
     /// 是否需要邀请码
@@ -64,9 +64,9 @@ public class DetailedGameInfoModel
     public int TeamCount { get; set; }
 
     /// <summary>
-    /// 当前报名的组织
+    /// 当前报名的分组
     /// </summary>
-    public string? Organization { get; set; }
+    public string? Division { get; set; }
 
     /// <summary>
     /// 参赛队伍名称
@@ -100,7 +100,7 @@ public class DetailedGameInfoModel
     {
         Status = part?.Status ?? ParticipationStatus.Unsubmitted;
         TeamName = part?.Team.Name;
-        Organization = part?.Organization;
+        Division = part?.Division;
         return this;
     }
 
@@ -113,7 +113,7 @@ public class DetailedGameInfoModel
             Summary = game.Summary,
             Content = game.Content,
             PracticeMode = game.PracticeMode,
-            Organizations = game.Organizations,
+            Divisions = game.Divisions,
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             WriteupRequired = game.WriteupRequired,
             TeamCount = count,

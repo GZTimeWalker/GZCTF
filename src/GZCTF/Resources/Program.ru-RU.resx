@@ -530,7 +530,7 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>Неверный код приглашения</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
+  <data name="Game_InvalidDivision" xml:space="preserve">
     <value>Недопустимый дивизион</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
@@ -708,10 +708,10 @@
     <value>Команда {0} создала контейнер [{2}] для задания {1}</value>
   </data>
   <data name="InstanceRepository_ContainerCreationFailed" xml:space="preserve">
-    <value>Could not start container instance for challenge {0}</value>
+    <value>Не удалось запустить экземпляр контейнера для задания {0}</value>
   </data>
   <data name="ContainerRepository_ContainerDestroyFailed" xml:space="preserve">
-    <value>Destroy container [{0}] ({1}): {2}</value>
+    <value>Уничтожение контейнера [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
     <value>Insufficient number of dynamic attachments allocated for challenge {0}#{1}</value>
@@ -851,7 +851,7 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>All Submissions</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>Дивизион</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">

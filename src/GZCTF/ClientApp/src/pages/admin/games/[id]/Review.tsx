@@ -152,7 +152,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
             <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
               <Box w="10em">
-                <Text truncate>{participation.organization}</Text>
+                <Text truncate>{participation.division}</Text>
                 <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
@@ -246,14 +246,14 @@ const GameTeamReview: FC = () => {
     })
   }, [])
 
-  const orgs = Array.from(new Set(participations?.map((p) => p.organization ?? '') ?? [])).filter(
-    (org) => !!org
+  const divs = Array.from(new Set(participations?.map((p) => p.division ?? '') ?? [])).filter(
+    (div) => !!div
   )
 
   const filteredParticipations = participations?.filter(
     (participation) =>
       (selectedStatus === null || participation.status === selectedStatus) &&
-      (selectedOrg === null || participation.organization === selectedOrg) &&
+      (selectedOrg === null || participation.division === selectedOrg) &&
       (search === '' || participation.team?.name?.toLowerCase().includes(search.toLowerCase()))
   )
 
@@ -276,11 +276,11 @@ const GameTeamReview: FC = () => {
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
           <Group justify="right" wrap="nowrap">
-            {orgs.length && (
+            {divs.length && (
               <Select
                 placeholder={t('admin.content.show_all')}
                 clearable
-                data={orgs.map((org) => ({ value: org, label: org }))}
+                data={divs.map((div) => ({ value: div, label: div }))}
                 value={selectedOrg}
                 onChange={(value) => setSelectedOrg(value)}
               />

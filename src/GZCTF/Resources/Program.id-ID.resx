@@ -530,8 +530,8 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>Kode undangan tidak valid</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
-    <value>Organisasi tidak valid</value>
+  <data name="Game_InvalidDivision" xml:space="preserve">
+    <value>Divisi tidak valid</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} telah berhasil bergabung kedalam game {1}</value>
@@ -851,7 +851,7 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>Semua submission</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>Organisasi</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">

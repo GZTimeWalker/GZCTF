@@ -182,9 +182,9 @@
           "description": "0 表示不限制队伍人数",
           "label": "队伍人数限制"
         },
-        "organizations": {
-          "description": "添加参赛组织以开启分组榜单，留空则不分组",
-          "label": "参赛可选组织列表"
+        "divisions": {
+          "description": "添加参赛分组以开启分组榜单，留空则不分组",
+          "label": "参赛可选分组列表"
         },
         "poster": "比赛海报",
         "practice_mode": {
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "回车添加参赛组织",
+      "divisions": "回车添加参赛分组",
       "participation": {
         "bio": "（无简介）",
         "team": "（无名队伍）"

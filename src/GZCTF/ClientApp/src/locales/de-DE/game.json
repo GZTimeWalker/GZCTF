@@ -46,7 +46,7 @@
         "description": "Dieses Spiel ist nur auf Einladung. Um teilzunehmen, geben Sie bitte einen Einladungscode ein.",
         "label": "Bitte geben Sie den Einladungscode ein"
       },
-      "organization": {
+      "division": {
         "description": "Dieses Spiel hat mehrere verfügbare Divisionen. Bitte wählen Sie Ihre Division aus.",
         "label": "Division auswählen"
       },
@@ -140,7 +140,7 @@
     "score_formatter": "{value} Pkt.",
     "score_table": {
       "all_teams": "Alle Teams",
-      "rank_organization": "Rang",
+      "rank_division": "Rang",
       "rank_total": "Gesamt",
       "score": "Punkte",
       "score_total": "Punkte",
@@ -169,7 +169,7 @@
     "joined": "Anmeldung erfolgreich",
     "left": "Erfolgreich storniert",
     "no_invite_code": "Einladungscode darf nicht leer sein",
-    "no_organization": "Bitte wählen Sie die Abteilung",
+    "no_division": "Bitte wählen Sie die Abteilung",
     "no_team": "Bitte wählen Sie das Team zur Teilnahme",
     "not_started": "Spiel noch nicht gestartet",
     "select_chal_and_part": "Bitte wählen Sie zuerst Herausforderungen und Teams aus",

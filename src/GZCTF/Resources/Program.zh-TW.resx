@@ -530,7 +530,7 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>比賽邀請碼錯誤</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
+  <data name="Game_InvalidDivision" xml:space="preserve">
     <value>無效的參賽單位</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
@@ -851,7 +851,7 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>全部提交</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>所屬組織</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">

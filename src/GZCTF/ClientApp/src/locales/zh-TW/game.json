@@ -46,7 +46,7 @@
         "description": "本場比賽開啟了邀請參賽，報名參賽需提供邀請碼",
         "label": "請輸入邀請碼"
       },
-      "organization": {
+      "division": {
         "description": "本場比賽具有多個參賽組織，請選擇你的參賽組織",
         "label": "選擇參賽組織"
       },
@@ -140,7 +140,7 @@
     "score_formatter": "{value} 分",
     "score_table": {
       "all_teams": "所有隊伍",
-      "rank_organization": "排名",
+      "rank_division": "排名",
       "rank_total": "總排名",
       "score": "得分",
       "score_total": "總分",
@@ -169,7 +169,7 @@
     "joined": "報名成功",
     "left": "取消報名成功",
     "no_invite_code": "邀請碼不能為空",
-    "no_organization": "請選擇參賽組織",
+    "no_division": "請選擇參賽組織",
     "no_team": "請選擇參賽隊伍",
     "not_started": "比賽尚未開始",
     "select_chal_and_part": "請先選擇題目和隊伍",

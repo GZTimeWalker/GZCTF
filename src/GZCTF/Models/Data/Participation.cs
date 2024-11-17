@@ -29,9 +29,9 @@ public class Participation
     public string Token { get; set; } = string.Empty;
 
     /// <summary>
-    /// 参赛所属组织
+    /// 参赛所属分组
     /// </summary>
-    public string? Organization { get; set; }
+    public string? Division { get; set; }
 
     /// <summary>
     /// 队伍题解

@@ -182,7 +182,7 @@
           "description": "無制限の場合は 0 を記入してください",
           "label": "チーム人数制限"
         },
-        "organizations": {
+        "divisions": {
           "description": "組織を追加してランキングを開始し、空欄の場合は全員が自動的に参加します",
           "label": "参加できる一組織覧"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "参加団体を追加する",
+      "divisions": "参加団体を追加する",
       "participation": {
         "bio": "（自己紹介なし）",
         "team": "（チーム名なし）"

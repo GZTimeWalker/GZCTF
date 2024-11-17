@@ -113,7 +113,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       <Table.Tr>
         {[
           t('game.label.score_table.rank_total'),
-          t('game.label.score_table.rank_organization'),
+          t('game.label.score_table.rank_division'),
           t('common.label.team'),
           t('game.label.score_table.solved_count'),
           t('game.label.score_table.score_total'),
@@ -157,7 +157,7 @@ const TableRow: FC<{
         {item.rank}
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[1] }}>
-        {allRank ? item.rank : (item.organizationRank ?? tableRank)}
+        {allRank ? item.rank : (item.divisionRank ?? tableRank)}
       </Table.Td>
       <Table.Td className={classes.left} style={{ left: Lefts[2] }}>
         <Group
@@ -185,9 +185,9 @@ const TableRow: FC<{
                 input: cx(classes.pointer, classes.input),
               }}
             />
-            {!!item.organization && (
+            {!!item.division && (
               <Text size="xs" c="dimmed" ta="start" truncate className={classes.text}>
-                {item.organization}
+                {item.division}
               </Text>
             )}
           </Stack>
@@ -243,11 +243,11 @@ const TableRow: FC<{
 const ITEM_COUNT_PER_PAGE = 30
 
 export interface ScoreboardProps {
-  organization: string | null
-  setOrganization: (org: string | null) => void
+  division: string | null
+  setDivision: (div: string | null) => void
 }
 
-const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization }) => {
+const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { iconMap } = SubmissionTypeIconMap(1)
@@ -263,7 +263,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
 
   useEffect(() => {
     setPage(1)
-    setOrganization('all')
+    setDivision('all')
     setKeyword('')
   }, [id])
 
@@ -279,13 +279,13 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
       return
     }
 
-    if (organization !== 'all') {
-      setFilteredList(scoreboard.items.filter((s) => s.organization === organization))
+    if (division !== 'all') {
+      setFilteredList(scoreboard.items.filter((s) => s.division === division))
       return
     }
 
     setFilteredList(scoreboard.items)
-  }, [scoreboard, debouncedKeyword, organization])
+  }, [scoreboard, debouncedKeyword, division])
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = filteredList?.slice(base, base + ITEM_COUNT_PER_PAGE)
@@ -320,10 +320,10 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                     label: o === 'all' ? t('game.label.score_table.rank_total') : o,
                   })),
               ]}
-              value={organization}
+              value={division}
               readOnly={!multiTimeline}
-              onChange={(org) => {
-                setOrganization(org)
+              onChange={(div) => {
+                setDivision(div)
                 setPage(1)
               }}
               leftSection={<Icon path={mdiAccountGroup} size={1} />}
@@ -356,7 +356,7 @@ const ScoreboardTable: FC<ScoreboardProps> = ({ organization, setOrganization })
                   currentItems?.map((item, idx) => (
                     <TableRow
                       key={base + idx}
-                      allRank={organization === 'all'}
+                      allRank={division === 'all'}
                       tableRank={base + idx + 1}
                       item={item}
                       onOpenDetail={() => {

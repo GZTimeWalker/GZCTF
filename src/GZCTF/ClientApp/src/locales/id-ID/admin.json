@@ -182,7 +182,7 @@
           "description": "0 berarti anggota tim tidak terbatas",
           "label": "Batas maks anggota tim"
         },
-        "organizations": {
+        "divisions": {
           "description": "Tambah divisi untuk aktifkan grup papan skor, kosongkan untuk menonaktifkan",
           "label": "Daftar Divisi yang Berpartisipasi"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "Tekan Enter untuk menambahkan divisi.",
+      "divisions": "Tekan Enter untuk menambahkan divisi.",
       "participation": {
         "bio": "(bio kosong)",
         "team": "(tanpa nama)"

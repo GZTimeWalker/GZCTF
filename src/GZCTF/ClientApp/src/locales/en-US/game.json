@@ -46,7 +46,7 @@
         "description": "This game is invitation-only. To participate in, please enter an invitation code.",
         "label": "Please enter the invitation code"
       },
-      "organization": {
+      "division": {
         "description": "This game has multiple division available. Please select your division.",
         "label": "Select Division"
       },
@@ -140,7 +140,7 @@
     "score_formatter": "{value} pts",
     "score_table": {
       "all_teams": "All Teams",
-      "rank_organization": "Rank",
+      "rank_division": "Rank",
       "rank_total": "Overall",
       "score": "Score",
       "score_total": "Score",
@@ -169,7 +169,7 @@
     "joined": "Registration successful",
     "left": "Successfully cancel",
     "no_invite_code": "Invitation code cannot be empty",
-    "no_organization": "Please select the division",
+    "no_division": "Please select the division",
     "no_team": "Please select the team to participate with",
     "not_started": "Game not yet started",
     "select_chal_and_part": "Please select challenges and teams first",

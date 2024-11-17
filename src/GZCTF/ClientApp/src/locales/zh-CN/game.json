@@ -46,9 +46,9 @@
         "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码",
         "label": "请输入邀请码"
       },
-      "organization": {
-        "description": "本场比赛具有多个参赛组织，请选择你的参赛组织",
-        "label": "选择参赛组织"
+      "division": {
+        "description": "本场比赛具有多个参赛分组，请选择你的参赛分组",
+        "label": "选择参赛分组"
       },
       "team": {
         "description": "请选择一个队伍参与比赛，选定后不可更改",
@@ -140,7 +140,7 @@
     "score_formatter": "{value} 分",
     "score_table": {
       "all_teams": "所有队伍",
-      "rank_organization": "排名",
+      "rank_division": "排名",
       "rank_total": "总排名",
       "score": "得分",
       "score_total": "总分",
@@ -169,7 +169,7 @@
     "joined": "报名成功",
     "left": "取消报名成功",
     "no_invite_code": "邀请码不能为空",
-    "no_organization": "请选择参赛组织",
+    "no_division": "请选择参赛分组",
     "no_team": "请选择参赛队伍",
     "not_started": "比赛尚未开始",
     "select_chal_and_part": "请先选择题目和队伍",

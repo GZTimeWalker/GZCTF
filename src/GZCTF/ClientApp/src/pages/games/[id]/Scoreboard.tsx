@@ -15,7 +15,7 @@ const Scoreboard: FC = () => {
   const numId = parseInt(id ?? '-1')
   const { teamInfo, error } = useGameTeamInfo(numId)
 
-  const [organization, setOrganization] = useState<string | null>('all')
+  const [division, setDivision] = useState<string | null>('all')
   const isMobile = useIsMobile(1080)
   const isVertical = useIsMobile()
 
@@ -25,25 +25,16 @@ const Scoreboard: FC = () => {
         <Stack pt="md">
           {teamInfo && !error && <TeamRank />}
           {isVertical ? (
-            <MobileScoreboardTable
-              organization={organization ?? 'all'}
-              setOrganization={setOrganization}
-            />
+            <MobileScoreboardTable division={division ?? 'all'} setDivision={setDivision} />
           ) : (
-            <ScoreboardTable
-              organization={organization ?? 'all'}
-              setOrganization={setOrganization}
-            />
+            <ScoreboardTable division={division ?? 'all'} setDivision={setDivision} />
           )}
         </Stack>
       ) : (
         <WithGameTab>
           <Stack pb="2rem">
-            <TimeLine organization={organization ?? 'all'} />
-            <ScoreboardTable
-              organization={organization ?? 'all'}
-              setOrganization={setOrganization}
-            />
+            <TimeLine division={division ?? 'all'} />
+            <ScoreboardTable division={division ?? 'all'} setDivision={setDivision} />
           </Stack>
         </WithGameTab>
       )}

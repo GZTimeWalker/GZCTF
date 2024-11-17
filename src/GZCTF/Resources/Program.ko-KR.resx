@@ -530,8 +530,8 @@
   <data name="Game_InvalidInvitationCode" xml:space="preserve">
     <value>초대 코드가 유효하지 않습니다.</value>
   </data>
-  <data name="Game_InvalidOrganization" xml:space="preserve">
-    <value>기관이 유효하지 않습니다.</value>
+  <data name="Game_InvalidDivision" xml:space="preserve">
+    <value>그룹화가 유효하지 않습니다.</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다.</value>
@@ -851,7 +851,7 @@
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
     <value>제출</value>
   </data>
-  <data name="Scoreboard_BelongingOrganization" xml:space="preserve">
+  <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>기관</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">

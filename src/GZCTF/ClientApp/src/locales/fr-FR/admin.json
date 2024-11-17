@@ -182,7 +182,7 @@
           "description": "0 signifie membres illimités de l'équipe",
           "label": "Nombre maximal de membres de l'équipe"
         },
-        "organizations": {
+        "divisions": {
           "description": "Ajoutez des divisions pour activer le tableau de scores groupé, laissez vide pour désactiver",
           "label": "Liste des divisions participantes"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "Appuyez sur Entrée pour ajouter une division.",
+      "divisions": "Appuyez sur Entrée pour ajouter une division.",
       "participation": {
         "bio": "(pas de bio)",
         "team": "(pas de nom)"
