@@ -182,7 +182,7 @@
           "description": "0 significa miembros ilimitados del equipo",
           "label": "Máximo de Miembros del Equipo"
         },
-        "organizations": {
+        "divisions": {
           "description": "Agrega divisiones para habilitar el marcador agrupado, deja en blanco para deshabilitar",
           "label": "Lista de Divisiones Participantes"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "Presiona Enter para añadir una división.",
+      "divisions": "Presiona Enter para añadir una división.",
       "participation": {
         "bio": "(sin biografía)",
         "team": "(sin nombre)"
