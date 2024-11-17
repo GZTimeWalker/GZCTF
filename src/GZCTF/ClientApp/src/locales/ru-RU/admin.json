@@ -144,7 +144,7 @@
         "score": "Счёт",
         "service_port": {
           "description": "Port of container services",
-          "label": "Служебный порт"
+          "label": "Порт службы"
         },
         "solve_count": "Решения",
         "storage_limit": {
@@ -170,7 +170,7 @@
           "description": "Containers shared by one team (0 = unlimited)",
           "label": "Team Container Limit"
         },
-        "content": "Информация об игре",
+        "content": "Детали игры",
         "delete": "Are you sure you want to delete game {{name}}?",
         "end_date": "Дата окончания",
         "end_time": "Время окончания",
@@ -208,7 +208,7 @@
         "writeup_instruction": "Инструкции по написанию отчета",
         "writeup_required": {
           "description": "Enable writeup submission",
-          "label": "Требуется отчет"
+          "label": "Требовать отчеты"
         }
       },
       "notices": {
@@ -255,17 +255,17 @@
         },
         "auto_active": {
           "description": "Whether to activate users after registered",
-          "label": "Автоматическая активация"
+          "label": "Авто-активация"
         },
         "email_confirmation_required": {
           "description": "Whether user verification email is required",
-          "label": "Требуется подтверждение электронной почты"
+          "label": "Требовать верификацию Email"
         },
         "email_domain_list": {
           "description": "List of allowed email domains to register. Separate multiple domains with commas, leave empty to disable.",
           "label": "Белый список почтовых доменов"
         },
-        "title": "Политика учётной записи",
+        "title": "Политика аккаунтов",
         "use_captcha": {
           "description": "Verify on login, registration and recovery",
           "label": "Включить CAPTCHA"
@@ -274,11 +274,11 @@
       "container": {
         "auto_destroy": {
           "description": "Whether to auto-destroy the old instance when meets the limit",
-          "label": "Автоматически уничтожать старые экземпляры"
+          "label": "Уничтожение старых экземпляров"
         },
         "default_lifetime": {
           "description": "Время жизни контейнера по умолчанию",
-          "label": "Время жизни по умолчанию (мин.)"
+          "label": "Время жизни (мин.)"
         },
         "extension_duration": {
           "description": "The duration of each renewal of the container",
