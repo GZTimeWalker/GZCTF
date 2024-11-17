@@ -46,7 +46,7 @@
         "description": "Ce jeu est uniquement sur invitation. Pour y participer, veuillez entrer un code d'invitation.",
         "label": "Veuillez entrer le code d'invitation"
       },
-      "organization": {
+      "division": {
         "description": "Ce jeu a plusieurs divisions disponibles. Veuillez sélectionner votre division.",
         "label": "Sélectionner la division"
       },
@@ -140,7 +140,7 @@
     "score_formatter": "{value} point",
     "score_table": {
       "all_teams": "Toutes les équipes",
-      "rank_organization": "Rang",
+      "rank_division": "Rang",
       "rank_total": "Global",
       "score": "Score",
       "score_total": "Score",
@@ -169,7 +169,7 @@
     "joined": "Inscription réussie",
     "left": "Annulation réussie",
     "no_invite_code": "Le code d'invitation ne peut pas être vide",
-    "no_organization": "Veuillez sélectionner la division",
+    "no_division": "Veuillez sélectionner la division",
     "no_team": "Veuillez sélectionner l'équipe pour participer",
     "not_started": "Le jeu n'a pas encore commencé",
     "select_chal_and_part": "Veuillez d'abord sélectionner les défis et les équipes",
