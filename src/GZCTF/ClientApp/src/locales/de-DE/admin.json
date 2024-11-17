@@ -182,7 +182,7 @@
           "description": "0 bedeutet unbegrenzte Teammitglieder",
           "label": "Maximale Teammitglieder"
         },
-        "organizations": {
+        "divisions": {
           "description": "Divisionen hinzufügen, um die Ergebnisliste zu gruppieren; leer lassen, um sie zu deaktivieren",
           "label": "Liste der teilnehmenden Abteilungen"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "Eingeben, um eine Abteilung hinzuzufügen.",
+      "divisions": "Eingeben, um eine Abteilung hinzuzufügen.",
       "participation": {
         "bio": "(kein Lebenslauf)",
         "team": "(kein Name)"
