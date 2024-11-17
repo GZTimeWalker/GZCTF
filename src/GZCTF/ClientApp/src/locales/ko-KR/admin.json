@@ -182,7 +182,7 @@
           "description": "0은 팀 멤버 수 제한이 없음을 의미합니다.",
           "label": "최대 팀 멤버 수"
         },
-        "organizations": {
+        "divisions": {
           "description": "스코어보드를 그룹으로 나누려면 부문을 추가하고, 아니면 빈 칸으로 두세요.",
           "label": "부문 별 참가 목록"
         },
@@ -445,7 +445,7 @@
           }
         }
       },
-      "organizations": "부문을 추가하시려면 입력하세요.",
+      "divisions": "부문을 추가하시려면 입력하세요.",
       "participation": {
         "bio": "(이력 없음)",
         "team": "(이름 없음)"
