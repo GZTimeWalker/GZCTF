@@ -531,7 +531,7 @@
     <value>無効なゲーム招待コード</value>
   </data>
   <data name="Game_InvalidDivision" xml:space="preserve">
-    <value>無効な参戦組織</value>
+    <value>無効な参加区分</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} はゲーム {1} に正常に参加しました</value>
@@ -852,7 +852,7 @@
     <value>すべて提出します</value>
   </data>
   <data name="Scoreboard_BelongingDivision" xml:space="preserve">
-    <value>所属組織</value>
+    <value>参加区分</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
     <value>チームがロードされていません</value>
