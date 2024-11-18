@@ -183,7 +183,7 @@
           "label": "Batas maks anggota tim"
         },
         "divisions": {
-          "description": "Tambah divisi untuk aktifkan grup papan skor, kosongkan untuk menonaktifkan",
+          "description": "Tambah divisi untuk pengelompokan scoreboard, kosongkan untuk menonaktifkan",
           "label": "Daftar Divisi yang Berpartisipasi"
         },
         "poster": "Poster",
