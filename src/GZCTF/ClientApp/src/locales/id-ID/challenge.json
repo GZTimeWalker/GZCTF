@@ -115,7 +115,7 @@
     "flag": {
       "accepted": {
         "ended": "Game telah selesai, submission tidak akan dinilai",
-        "message": "Papan skor akan diperbarui nanti.",
+        "message": "Scoreboard akan diperbarui nanti.",
         "title": "flag benar"
       },
       "empty": "Flag tidak boleh kosong",
