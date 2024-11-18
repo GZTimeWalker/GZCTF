@@ -747,100 +747,100 @@
     <value>You are performing an account password reset operation. Please click the button below to reset your password.</value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
-    <value>Reset password</value>
+    <value>Сброс пароля</value>
   </data>
   <data name="MailSender_SendMail" xml:space="preserve">
     <value>Отправить письмо:{0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Hello, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;If the above button is not valid, please copy this link to your browser: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you have not done so, please ignore this email. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Здравствуйте, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;Если кнопка выше недействительна, скопируйте эту ссылку в ваш браузер: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Если вы еще не сделали этого, игнорируйте это письмо. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
-    <value>Verify Email</value>
+    <value>Подтвердить электронную почту</value>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>You are in the process of registering your account. We need to verify your registration email：{0}. Please click the button below to verify it.</value>
+    <value>Вы в процессе регистрации вашего аккаунта. Нам нужно проверить регистрационный адрес электронной почты: {0}. Пожалуйста нажмите на кнопку ниже, чтобы подтвердить его.</value>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
-    <value>Verify Email</value>
+    <value>Подтвердить электронную почту</value>
   </data>
   <data name="Model_BioTooLong" xml:space="preserve">
-    <value>Description is too long</value>
+    <value>Описание слишком длинное</value>
   </data>
   <data name="Model_ContentRequired" xml:space="preserve">
-    <value>Content is required</value>
+    <value>Содержание обязательно</value>
   </data>
   <data name="Model_EmailMalformed" xml:space="preserve">
-    <value>Email is invalid</value>
+    <value>Недопустимый адрес электронной почты</value>
   </data>
   <data name="Model_EmailRequired" xml:space="preserve">
-    <value>Email is required</value>
+    <value>Электронная почта обязательна</value>
   </data>
   <data name="Model_FlagRequired" xml:space="preserve">
-    <value>Flag is required</value>
+    <value>Требуется флаг</value>
   </data>
   <data name="Model_FlagTooLong" xml:space="preserve">
-    <value>Flag is too long</value>
+    <value>Флаг слишком длинный</value>
   </data>
   <data name="Model_InvitationCodeTooLong" xml:space="preserve">
-    <value>Invitation code is too long</value>
+    <value>Код приглашения слишком длинный</value>
   </data>
   <data name="Model_MalformedPhoneNumber" xml:space="preserve">
     <value>Некорректный номер телефона</value>
   </data>
   <data name="Model_NewPasswordRequired" xml:space="preserve">
-    <value>A new password is required</value>
+    <value>Требуется новый пароль.</value>
   </data>
   <data name="Model_NewPasswordTooShort" xml:space="preserve">
-    <value>New password is too short</value>
+    <value>Новый пароль слишком короткий</value>
   </data>
   <data name="Model_OldPasswordRequired" xml:space="preserve">
-    <value>The old password is required</value>
+    <value>Необходимо ввести старый пароль</value>
   </data>
   <data name="Model_OldPasswordTooShort" xml:space="preserve">
-    <value>Old password is too short</value>
+    <value>Старый пароль слишком короткий</value>
   </data>
   <data name="Model_OutOfRange" xml:space="preserve">
-    <value>The value of {0} must be between {1} and {2}</value>
+    <value>Значение {0} должно быть между {1} и {2}</value>
   </data>
   <data name="Model_PasswordRequired" xml:space="preserve">
-    <value>Password is required</value>
+    <value>Необходимо указать пароль</value>
   </data>
   <data name="Model_RealNameTooLong" xml:space="preserve">
-    <value>Real name is too long</value>
+    <value>Реальное имя слишком длинное</value>
   </data>
   <data name="Model_StdNumberTooLong" xml:space="preserve">
-    <value>Student number is too long</value>
+    <value>Номер студента слишком длинный</value>
   </data>
   <data name="Model_TeamBioTooLong" xml:space="preserve">
-    <value>Team bio is too long</value>
+    <value>Они аниме команды слишком длинное</value>
   </data>
   <data name="Model_TeamNameTooLong" xml:space="preserve">
-    <value>Team name is too long</value>
+    <value>Название команды слишком длинное</value>
   </data>
   <data name="Model_TitleRequired" xml:space="preserve">
-    <value>Title is required</value>
+    <value>Название обязательно</value>
   </data>
   <data name="Model_TitleTooLong" xml:space="preserve">
-    <value>Title is too long</value>
+    <value>Название слишком длинное</value>
   </data>
   <data name="Model_TitleTooShort" xml:space="preserve">
-    <value>Title is too short</value>
+    <value>Название слишком короткое</value>
   </data>
   <data name="Model_TokenRequired" xml:space="preserve">
-    <value>Token is required</value>
+    <value>Требуется токен</value>
   </data>
   <data name="Model_UserNameRequired" xml:space="preserve">
-    <value>Username is required</value>
+    <value>Требуется имя пользователя</value>
   </data>
   <data name="Model_UserNameTooLong" xml:space="preserve">
-    <value>Username is too long</value>
+    <value>Слишком длинное имя пользователя</value>
   </data>
   <data name="Model_UserNameTooShort" xml:space="preserve">
     <value>Слишком короткое имя пользователя</value>
   </data>
   <data name="Model_ValidationFailed" xml:space="preserve">
-    <value>Failed to validate the input, please check again</value>
+    <value>Не удалось проверить ввод, пожалуйста, проверьте еще раз</value>
   </data>
   <data name="Post_NotFound" xml:space="preserve">
     <value>Пост не найден</value>
