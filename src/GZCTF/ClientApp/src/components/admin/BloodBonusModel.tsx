@@ -6,6 +6,14 @@ import { BloodBonus } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Utils/useConfig'
 import api, { SubmissionType } from '@Api'
 
+const toNumber = (value: string | number) => {
+  if (typeof value === 'string') {
+    const val = Number(value)
+    return isNaN(val) ? 0 : val
+  }
+  return value
+}
+
 export const BloodBonusModel: FC<ModalProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
@@ -58,9 +66,7 @@ export const BloodBonusModel: FC<ModalProps> = (props) => {
           max={100}
           disabled={disabled}
           value={firstBloodBonus / 10}
-          onChange={(value) =>
-            typeof value === 'number' && setFirstBloodBonus(Math.floor(value * 10))
-          }
+          onChange={(value) => setFirstBloodBonus(Math.floor(toNumber(value) * 10))}
         />
         <NumberInput
           label={t('admin.content.games.challenges.bonus.second_blood')}
@@ -72,9 +78,7 @@ export const BloodBonusModel: FC<ModalProps> = (props) => {
           max={100}
           disabled={disabled}
           value={secondBloodBonus / 10}
-          onChange={(value) =>
-            typeof value === 'number' && setSecondBloodBonus(Math.floor(value * 10))
-          }
+          onChange={(value) => setSecondBloodBonus(Math.floor(toNumber(value) * 10))}
         />
         <NumberInput
           label={t('admin.content.games.challenges.bonus.third_blood')}
@@ -86,9 +90,7 @@ export const BloodBonusModel: FC<ModalProps> = (props) => {
           max={100}
           disabled={disabled}
           value={thirdBloodBonus / 10}
-          onChange={(value) =>
-            typeof value === 'number' && setThirdBloodBonus(Math.floor(value * 10))
-          }
+          onChange={(value) => setThirdBloodBonus(Math.floor(toNumber(value) * 10))}
         />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onUpdate}>
