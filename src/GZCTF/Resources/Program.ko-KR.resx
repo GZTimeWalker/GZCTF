@@ -531,7 +531,7 @@
     <value>초대 코드가 유효하지 않습니다.</value>
   </data>
   <data name="Game_InvalidDivision" xml:space="preserve">
-    <value>그룹화가 유효하지 않습니다.</value>
+    <value>부문이 유효하지 않습니다.</value>
   </data>
   <data name="Game_JoinSucceeded" xml:space="preserve">
     <value>{0} 이 성공적으로 {1} 게임에 참여하였습니다.</value>
@@ -852,7 +852,7 @@
     <value>제출</value>
   </data>
   <data name="Scoreboard_BelongingDivision" xml:space="preserve">
-    <value>기관</value>
+    <value>부문</value>
   </data>
   <data name="Scoreboard_TeamNotLoaded" xml:space="preserve">
     <value>팀이 로드되지 않았습니다.</value>
