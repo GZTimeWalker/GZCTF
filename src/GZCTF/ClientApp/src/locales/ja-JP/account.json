@@ -30,7 +30,7 @@
   },
   "label": {
     "bio": "一言",
-    "captcha": "Captcha",
+    "captcha": "CAPTCHA",
     "email": "メール",
     "email_new": "新メール",
     "password": "パスワード",
@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "この怠け者は何でも書いていない",
-    "computing": "Computing..."
+    "computing": "計算しています..."
   },
   "title": {
     "confirm": "メールによる認証",
