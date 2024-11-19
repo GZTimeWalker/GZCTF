@@ -714,43 +714,43 @@
     <value>Уничтожение контейнера [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>Insufficient number of dynamic attachments allocated for challenge {0}#{1}</value>
+    <value>Недостаточное количество вложений, выделенных для этого испытания {0}#{1}</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>{0} fail to create instance for challenge {1}#{2} (may cause by concurrent conflicts), rolling back...</value>
+    <value>{0} ошибка при создании экземпляра для испытания{1}#{2} (могло произойти из-за параллельных сбоев), откатываем обратно...</value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
-    <value>Invalid port when creating a container</value>
+    <value>Неверный порт при создании контейнера</value>
   </data>
   <data name="InstanceRepository_NoInstance" xml:space="preserve">
-    <value>Team participants are empty, this may be unexpectedly [{0}, {1}]</value>
+    <value>Команда не имеет участников, это может быть незапланированно [{0}, {1}]</value>
   </data>
   <data name="MailSender_ChangeEmailButton" xml:space="preserve">
-    <value>Подтвердить электронную почту</value>
+    <value>Подтвердить почту</value>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>You are performing an account email change operation, please click the button below to verify your new email.</value>
+    <value>Вы в процессе смены электронной почты к аккаунту, пожалуйста нажмите на кнопку ниже, чтобы подтвердить ваш новый почтовый адрес.</value>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>Изменить адрес эл. почты</value>
   </data>
   <data name="MailSender_InvalidRequest" xml:space="preserve">
-    <value>Invalid mail request</value>
+    <value>Неверный адрес электронной почты</value>
   </data>
   <data name="MailSender_MailSendFailed" xml:space="preserve">
     <value>Не удалось доставить письмо</value>
   </data>
   <data name="MailSender_ResetPasswordButton" xml:space="preserve">
-    <value>Confirm reset password</value>
+    <value>Подтвердите сброс пароля</value>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>You are performing an account password reset operation. Please click the button below to reset your password.</value>
+    <value>Вы в процессе смены пароля в аккаунте. Пожалуйста, нажмите на кнопку ниже, чтобы сбросить пароль.</value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>Сброс пароля</value>
   </data>
   <data name="MailSender_SendMail" xml:space="preserve">
-    <value>Отправить письмо:{0}</value>
+    <value>Отправка письма: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
     <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Здравствуйте, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;Если кнопка выше недействительна, скопируйте эту ссылку в ваш браузер: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Если вы еще не сделали этого, игнорируйте это письмо. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
@@ -849,7 +849,7 @@
     <value>Слишком много запросов. Пожалуйста, повторите попытку через {0} секунд.</value>
   </data>
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
-    <value>All Submissions</value>
+    <value>Все отправки</value>
   </data>
   <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>Дивизион</value>
