@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -11,7 +12,12 @@ namespace GZCTF.Models;
 public class AppDbContext(DbContextOptions<AppDbContext> options) :
     IdentityDbContext<UserInfo, IdentityRole<Guid>, Guid>(options), IDataProtectionKeyContext
 {
-    internal static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
+    public static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = false,
+        TypeInfoResolver = new AppJsonSerializerContext()
+    };
+
     public DbSet<Post> Posts { get; set; } = default!;
     public DbSet<Game> Games { get; set; } = default!;
     public DbSet<Team> Teams { get; set; } = default!;

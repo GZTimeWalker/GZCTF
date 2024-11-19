@@ -49,6 +49,14 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 GZCTF.Program.Banner();
 
+#region Json
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.TypeInfoResolverChain.Insert(
+        0, AppJsonSerializerContext.Default));
+
+#endregion Json
+
 #region Host
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
@@ -369,7 +377,7 @@ app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
 
 app.UseTelemetry(telemetryOptions);
 
-app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/healthz").DisableHttpMetrics();
 app.MapControllers();
 
 app.MapHub<UserHub>("/hub/user");
@@ -412,8 +420,7 @@ namespace GZCTF
             DefaultFavicon = new byte[stream.Length];
 
             stream.ReadExactly(DefaultFavicon);
-            DefaultFaviconHash = BitConverter.ToString(SHA256.HashData(DefaultFavicon))
-                .Replace("-", "").ToLowerInvariant();
+            DefaultFaviconHash = Convert.ToHexStringLower(SHA256.HashData(DefaultFavicon));
         }
 
         public static bool IsTesting { get; set; }

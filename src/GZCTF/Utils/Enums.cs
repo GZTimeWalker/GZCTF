@@ -6,7 +6,7 @@ namespace GZCTF.Utils;
 /// <summary>
 /// 用户权限枚举
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Role>))]
 public enum Role : byte
 {
     /// <summary>
@@ -33,7 +33,7 @@ public enum Role : byte
 /// <summary>
 /// 登录响应状态
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<RegisterStatus>))]
 public enum RegisterStatus : byte
 {
     /// <summary>
@@ -55,7 +55,7 @@ public enum RegisterStatus : byte
 /// <summary>
 /// 任务执行状态
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<TaskStatus>))]
 public enum TaskStatus : sbyte
 {
     /// <summary>
@@ -94,7 +94,7 @@ public enum TaskStatus : sbyte
     Exit = 5
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<FileType>))]
 public enum FileType : byte
 {
     /// <summary>
@@ -117,7 +117,7 @@ public enum FileType : byte
 /// <summary>
 /// 容器状态
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ContainerStatus>))]
 public enum ContainerStatus : byte
 {
     /// <summary>
@@ -139,7 +139,7 @@ public enum ContainerStatus : byte
 /// <summary>
 /// 比赛公告类型
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<NoticeType>))]
 public enum NoticeType : byte
 {
     /// <summary>
@@ -188,7 +188,7 @@ public static class SubmissionTypeExtensions
 /// <summary>
 /// 比赛事件类型
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<EventType>))]
 public enum EventType : byte
 {
     /// <summary>
@@ -220,7 +220,7 @@ public enum EventType : byte
 /// <summary>
 /// 提交类型
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<SubmissionType>))]
 public enum SubmissionType : byte
 {
     /// <summary>
@@ -249,7 +249,7 @@ public enum SubmissionType : byte
     Normal = 4
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ParticipationStatus>))]
 public enum ParticipationStatus : byte
 {
     /// <summary>
@@ -278,7 +278,7 @@ public enum ParticipationStatus : byte
     Unsubmitted = 4
 }
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ChallengeType>))]
 public enum ChallengeType : byte
 {
     /// <summary>
@@ -332,7 +332,7 @@ public static class ChallengeTypeExtensions
 /// <summary>
 /// 题目类别
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<ChallengeCategory>))]
 public enum ChallengeCategory : byte
 {
     Misc = 0,
@@ -345,9 +345,11 @@ public enum ChallengeCategory : byte
     Hardware = 7,
     Mobile = 8,
     PPC = 9,
+
     // ReSharper disable once InconsistentNaming
     AI = 10,
     Pentest = 11,
+
     // ReSharper disable once InconsistentNaming
     OSINT = 12,
 }
@@ -355,7 +357,7 @@ public enum ChallengeCategory : byte
 /// <summary>
 /// 题目难度
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<Difficulty>))]
 public enum Difficulty : byte
 {
     Baby = 0,
@@ -371,7 +373,7 @@ public enum Difficulty : byte
 /// <summary>
 /// 判定结果
 /// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<AnswerResult>))]
 public enum AnswerResult : sbyte
 {
     /// <summary>

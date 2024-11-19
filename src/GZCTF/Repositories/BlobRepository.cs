@@ -172,7 +172,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     {
         contentStream.Position = 0;
         var hash = await SHA256.HashDataAsync(contentStream, token);
-        var fileHash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+        var fileHash = Convert.ToHexStringLower(hash);
 
         LocalFile? localFile = await GetBlobByHash(fileHash, token);
 

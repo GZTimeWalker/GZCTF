@@ -103,8 +103,7 @@ public class KubernetesManager : IContainerManager
                             },
                             Requests = new Dictionary<string, ResourceQuantity>
                             {
-                                ["cpu"] = new("10m"),
-                                ["memory"] = new("32Mi")
+                                ["cpu"] = new("10m"), ["memory"] = new("32Mi")
                             }
                         }
                     }

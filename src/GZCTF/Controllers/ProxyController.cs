@@ -32,7 +32,12 @@ public class ProxyController(
     const uint ConnectionLimit = 64;
 
     static readonly JsonSerializerOptions JsonOptions =
-        new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
+        new()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            WriteIndented = true,
+            TypeInfoResolver = new AppJsonSerializerContext()
+        };
 
     static readonly DistributedCacheEntryOptions StoreOption =
         new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };

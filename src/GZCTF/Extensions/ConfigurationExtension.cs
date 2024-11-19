@@ -51,7 +51,9 @@ public static class ConfigurationExtension
         using var streamReader = new StreamReader(stream);
         var template = await streamReader.ReadToEndAsync();
 
+#pragma warning disable RDG002 // Unable to resolve endpoint handler: https://github.com/dotnet/core/issues/8288
         app.MapFallback(IndexHandler(template));
+#pragma warning restore RDG002
     }
 
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
