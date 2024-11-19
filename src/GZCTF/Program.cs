@@ -151,14 +151,16 @@ builder.AddStorage(storage);
 #region OpenApiDocument
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddOpenApiDocument(settings =>
-{
-    settings.DocumentName = "v1";
-    settings.Version = "v1";
-    settings.Title = "GZCTF Server API";
-    settings.Description = "GZCTF Server API Document";
-    settings.UseControllerSummaryAsTagDescription = true;
-});
+
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddOpenApiDocument(settings =>
+    {
+        settings.DocumentName = "v1";
+        settings.Version = "v1";
+        settings.Title = "GZCTF Server API";
+        settings.Description = "GZCTF Server API Document";
+        settings.UseControllerSummaryAsTagDescription = true;
+    });
 
 #endregion OpenApiDocument
 
@@ -360,7 +362,6 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Request
     app.UseRequestLogging();
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromMinutes(30) });
-
 app.UseTelemetry(telemetryOptions);
 
 app.MapHealthChecks("/healthz").DisableHttpMetrics();
@@ -409,8 +410,6 @@ namespace GZCTF
             stream.ReadExactly(DefaultFavicon);
             DefaultFaviconHash = Convert.ToHexStringLower(SHA256.HashData(DefaultFavicon));
         }
-
-        public static bool IsTesting { get; set; }
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);

@@ -11,6 +11,7 @@ public static class StorageExtension
         var isEmpty = string.IsNullOrWhiteSpace(connectionString);
         var useDisk = !isEmpty && connectionString!.StartsWith("disk://");
 
+        // force the path used by the disk storage to avoid unintended behavior
         if (isEmpty || useDisk)
             connectionString = DefaultConnectionString;
 

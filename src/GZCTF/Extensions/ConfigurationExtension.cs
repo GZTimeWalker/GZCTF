@@ -107,7 +107,7 @@ public static class ConfigurationExtension
             entityTag: EntityTagHeaderValue.Parse(eTag));
     }
 
-    static HomePageHandlerDelegate IndexHandler(string template) => async (
+    static IndexHandlerDelegate IndexHandler(string template) => async (
         HttpContext context,
         IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
@@ -115,17 +115,15 @@ public static class ConfigurationExtension
     {
         var content = await cache.GetStringAsync(CacheKey.Index, token);
 
-        if (content is not null)
-            goto SendContent;
+        if (content is null)
+        {
+            GlobalConfig config = globalConfig.Value;
+            var title = HtmlEncoder.Default.Encode(config.Platform);
+            var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
+            content = template.Replace("%title%", title).Replace("%description%", description);
 
-        GlobalConfig config = globalConfig.Value;
-        var title = HtmlEncoder.Default.Encode(config.Platform);
-        var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
-        content = template.Replace("%title%", title).Replace("%description%", description);
-
-        await cache.SetStringAsync(CacheKey.Index, content, token);
-
-    SendContent:
+            await cache.SetStringAsync(CacheKey.Index, content, token);
+        }
 
         var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(12));
 
@@ -134,7 +132,7 @@ public static class ConfigurationExtension
         return Results.Text(content.Replace("%nonce%", nonce), MediaTypeNames.Text.Html);
     };
 
-    delegate Task<IResult> HomePageHandlerDelegate(
+    delegate Task<IResult> IndexHandlerDelegate(
         HttpContext context,
         IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
