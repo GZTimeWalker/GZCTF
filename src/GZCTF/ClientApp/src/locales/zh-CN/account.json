@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "描述",
+    "captcha": "验证码",
     "email": "邮箱",
     "email_new": "新邮箱",
     "password": "密码",
@@ -94,7 +95,8 @@
     "not_match": "重复密码有误"
   },
   "placeholder": {
-    "bio": "这个人很懒，什么都没有写"
+    "bio": "这个人很懒，什么都没有写",
+    "computing": "计算中……"
   },
   "title": {
     "confirm": "邮箱验证",
