@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "Description",
+    "captcha": "Captcha",
     "email": "Email",
     "email_new": "Nouvel Email",
     "password": "Mot de passe",
@@ -94,7 +95,8 @@
     "not_match": "Le mot de passe répété est incorrect"
   },
   "placeholder": {
-    "bio": "Cette personne est paresseuse, rien n'est écrit"
+    "bio": "Cette personne est paresseuse, rien n'est écrit",
+    "computing": "Computing..."
   },
   "title": {
     "confirm": "Vérification de l'email",
