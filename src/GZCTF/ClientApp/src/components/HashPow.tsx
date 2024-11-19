@@ -31,7 +31,6 @@ export const usePowChallenge = () => {
   const { data: chall, mutate } = api.info.useInfoPowChallenge({
     revalidateOnFocus: false,
     revalidateOnMount: false,
-    revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshInterval: 4 * 60 * 1000,
   })
@@ -64,6 +63,8 @@ export const usePowChallenge = () => {
         diff: chall.difficulty,
       } as PowRequest)
       setPending(true)
+    } else if (!worker && !chall) {
+      mutate()
     }
   }, [worker, chall])
 
