@@ -14,7 +14,7 @@ import api from '@Api'
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
   const [disabled, setDisabled] = useState(false)
-  const { captchaRef, getToken } = useCaptchaRef()
+  const { captchaRef, getToken, cleanUp } = useCaptchaRef()
 
   const { t } = useTranslation()
 
@@ -61,6 +61,7 @@ const Recovery: FC = () => {
         loading: false,
         autoClose: true,
       })
+      cleanUp(true)
     } catch (err: any) {
       updateNotification({
         id: 'recovery-status',
@@ -71,6 +72,7 @@ const Recovery: FC = () => {
         loading: false,
         autoClose: true,
       })
+      cleanUp(false)
     } finally {
       setDisabled(false)
     }

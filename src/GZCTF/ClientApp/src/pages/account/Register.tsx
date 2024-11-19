@@ -20,7 +20,7 @@ const Register: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const navigate = useNavigate()
-  const { captchaRef, getToken } = useCaptchaRef()
+  const { captchaRef, getToken, cleanUp } = useCaptchaRef()
 
   const { t } = useTranslation()
 
@@ -104,6 +104,7 @@ const Register: FC = () => {
           loading: false,
           autoClose: true,
         })
+        cleanUp(true)
 
         if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
         else navigate('/account/login')
@@ -118,6 +119,7 @@ const Register: FC = () => {
         loading: false,
         autoClose: true,
       })
+      cleanUp(false)
     } finally {
       setDisabled(false)
     }

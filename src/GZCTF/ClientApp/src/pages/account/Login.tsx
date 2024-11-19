@@ -21,7 +21,7 @@ const Login: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [needRedirect, setNeedRedirect] = useState(false)
 
-  const { captchaRef, getToken } = useCaptchaRef()
+  const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
 
   const { t } = useTranslation()
@@ -90,6 +90,7 @@ const Login: FC = () => {
         autoClose: true,
         loading: false,
       })
+      cleanUp(true)
       setNeedRedirect(true)
       mutate()
     } catch (err: any) {
@@ -102,6 +103,7 @@ const Login: FC = () => {
         autoClose: true,
         loading: false,
       })
+      cleanUp(false)
     } finally {
       setDisabled(false)
     }

@@ -27,18 +27,19 @@ export interface PowResult {
   rate: number
 }
 
-export const HashPow = forwardRef<CaptchaInstance, InputBaseProps>((props, ref) => {
-  const { data: chall } = api.info.useInfoPowChallenge({
+export const usePowChallenge = () => {
+  const { data: chall, mutate } = api.info.useInfoPowChallenge({
     revalidateOnFocus: false,
+    revalidateOnMount: false,
     revalidateOnReconnect: false,
     refreshWhenHidden: false,
     refreshInterval: 4 * 60 * 1000,
   })
-  const { t } = useTranslation()
-  const [pending, setPending] = useState(false)
-  const [error, setError] = useState<boolean>(false)
+
   const [result, setNonce] = useState<PowResult | null>(null)
+  const [error, setError] = useState<boolean>(false)
   const [worker, setWorker] = useState<Worker | null>(null)
+  const [pending, setPending] = useState(false)
 
   useEffect(() => {
     const worker = new Worker(workerScript)
@@ -66,18 +67,31 @@ export const HashPow = forwardRef<CaptchaInstance, InputBaseProps>((props, ref) 
     }
   }, [worker, chall])
 
+  return { chall, error, mutate, result: pending ? null : result }
+}
+
+export const HashPow = forwardRef<CaptchaInstance, InputBaseProps>((props, ref) => {
+  const { t } = useTranslation()
+  const { chall, result, error, mutate } = usePowChallenge()
+
   useImperativeHandle(
     ref,
     () => ({
       getToken: async () => {
-        if (chall && !pending && result) {
-          return { valid: true, token: `${chall?.id}:${result}` }
+        if (chall && result) {
+          return { valid: true, token: `${chall?.id}:${result.nonce}` }
         } else {
           return { valid: false }
         }
       },
+      cleanUp: (success?: boolean) => {
+        if (!success) {
+          // refresh challenge on failure
+          mutate()
+        }
+      },
     }),
-    [chall, pending, result]
+    [chall, result]
   )
 
   return (
@@ -88,9 +102,7 @@ export const HashPow = forwardRef<CaptchaInstance, InputBaseProps>((props, ref) 
       readOnly
       label={t('account.label.captcha')}
       description={
-        pending || error || !result
-          ? undefined
-          : `${result.time / 1000}s @ ${result.rate.toFixed(2)} H/s`
+        error || !result ? undefined : `${result.time / 1000}s @ ${result.rate.toFixed(2)} H/s`
       }
       value={result ? `>>> ${result.nonce} <<<` : ''}
       placeholder={t('account.placeholder.computing')}

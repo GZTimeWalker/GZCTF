@@ -17,6 +17,7 @@ export interface CaptchaResult {
 
 export interface CaptchaInstance {
   getToken: () => Promise<CaptchaResult>
+  cleanUp?: (success?: boolean) => void
 }
 
 export const useCaptchaRef = () => {
@@ -27,7 +28,11 @@ export const useCaptchaRef = () => {
     return res ?? { valid: false }
   }
 
-  return { captchaRef, getToken } as const
+  const cleanUp = (success?: boolean) => {
+    captchaRef.current?.cleanUp?.(success)
+  }
+
+  return { captchaRef, getToken, cleanUp } as const
 }
 
 const ReCaptchaBox = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
@@ -58,9 +63,12 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
   const { info, error } = useCaptchaConfig()
   const { colorScheme } = useMantineColorScheme()
   const type = info?.type ?? CaptchaProvider.None
-  const hashPowRef = useRef<CaptchaInstance>(null)
-  const reCaptchaRef = useRef<CaptchaInstance>(null)
+
+  const backendRef = useRef<CaptchaInstance>(null)
+
+  // warp it into CaptchaInstance if nessary in the future
   const turnstileRef = useRef<TurnstileInstance>(null)
+
   const nonce = document.getElementById('nonce-container')?.getAttribute('data-nonce') ?? undefined
 
   useImperativeHandle(
@@ -72,7 +80,7 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
         }
 
         if (type === CaptchaProvider.HashPow) {
-          return hashPowRef.current?.getToken() ?? { valid: false }
+          return backendRef.current?.getToken() ?? { valid: false }
         }
 
         // following providers need siteKey
@@ -81,18 +89,23 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
         }
 
         if (type === CaptchaProvider.GoogleRecaptcha) {
-          return reCaptchaRef.current?.getToken() ?? { valid: false }
+          return backendRef.current?.getToken() ?? { valid: false }
         }
 
         const token = turnstileRef.current?.getResponse()
         return { valid: !!token, token }
+      },
+      cleanUp: (success?: boolean) => {
+        if (type === CaptchaProvider.HashPow) {
+          backendRef.current?.cleanUp?.(success)
+        }
       },
     }),
     [error, info, type]
   )
 
   if (type === CaptchaProvider.HashPow) {
-    return <HashPow ref={hashPowRef} />
+    return <HashPow ref={backendRef} />
   }
 
   if (error || !info?.siteKey || type === CaptchaProvider.None) {
@@ -112,7 +125,7 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
           },
         }}
       >
-        <ReCaptchaBox ref={reCaptchaRef} action={action} {...others} />
+        <ReCaptchaBox ref={backendRef} action={action} {...others} />
       </GoogleReCaptchaProvider>
     )
   }

@@ -103,8 +103,8 @@ public static class RateLimiter
         });
         options.AddTokenBucketLimiter(nameof(LimitPolicy.PowChallenge), o =>
         {
-            o.TokenLimit = 120;
-            o.TokensPerPeriod = 30;
+            o.TokenLimit = 40;
+            o.TokensPerPeriod = 5;
             o.ReplenishmentPeriod = TimeSpan.FromSeconds(30);
         });
         options.AddTokenBucketLimiter(nameof(LimitPolicy.Container), o =>
