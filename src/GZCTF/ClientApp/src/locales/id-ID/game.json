@@ -183,7 +183,7 @@
   },
   "participation": {
     "actions": {
-      "accepted": "Disetujui",
+      "accepted": "Approved",
       "pending": "Tinjauan tertunda",
       "rejected": "Daftar ulang",
       "suspended": "Banned",
@@ -213,7 +213,7 @@
       }
     },
     "status": {
-      "accepted": "Disetujui",
+      "accepted": "Approved",
       "pending": "Pending",
       "rejected": "Ditolak",
       "suspended": "Banned"
