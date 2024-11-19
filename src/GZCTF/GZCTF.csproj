@@ -75,7 +75,6 @@
         <PackageReference Include="Serilog.Sinks.File"/>
         <PackageReference Include="Serilog.Sinks.File.Archive"/>
         <PackageReference Include="MailKit"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis"/>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis"/>

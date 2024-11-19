@@ -32,6 +32,7 @@ using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Container;
 using GZCTF.Services.Mail;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -102,59 +103,43 @@ await PathHelper.EnsureDirsAsync(builder.Environment);
 
 #region AppDbContext
 
-if (GZCTF.Program.IsTesting || (builder.Environment.IsDevelopment() &&
-                                !builder.Configuration.GetSection("ConnectionStrings").Exists()))
-{
-    builder.Services.AddDbContext<AppDbContext>(
-        options => options.UseInMemoryDatabase("TestDb")
-    );
-}
-else
-{
-    if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-        GZCTF.Program.ExitWithFatalMessage(
-            GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_NoConnectionString)]);
+if (!builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+    GZCTF.Program.ExitWithFatalMessage(
+        GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_NoConnectionString)]);
 
-    builder.Services.AddDbContext<AppDbContext>(
-        options =>
-        {
-            options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
-                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+builder.Services.AddDbContext<AppDbContext>(
+    options =>
+    {
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
+            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
-            if (!builder.Environment.IsDevelopment())
-                return;
+        if (!builder.Environment.IsDevelopment())
+            return;
 
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
-        }
-    );
-}
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
+    }
+);
 
 #endregion AppDbContext
 
 #region Configuration
 
-if (!GZCTF.Program.IsTesting)
+try
 {
-    try
+    builder.Configuration.AddEntityConfiguration(options =>
     {
-        builder.Configuration.AddEntityConfiguration(options =>
-        {
-            if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-            else
-                options.UseInMemoryDatabase("TestDb");
-        });
-    }
-    catch (Exception e)
-    {
-        if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-            Log.Logger.Error(GZCTF.Program.StaticLocalizer[
-                nameof(GZCTF.Resources.Program.Database_CurrentConnectionString),
-                builder.Configuration.GetConnectionString("Database") ?? "null"]);
-        GZCTF.Program.ExitWithFatalMessage(
-            GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
-    }
+        options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+    });
+}
+catch (Exception e)
+{
+    if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
+        Log.Logger.Error(GZCTF.Program.StaticLocalizer[
+            nameof(GZCTF.Resources.Program.Database_CurrentConnectionString),
+            builder.Configuration.GetConnectionString("Database") ?? "null"]);
+    GZCTF.Program.ExitWithFatalMessage(
+        GZCTF.Program.StaticLocalizer[nameof(GZCTF.Resources.Program.Database_ConnectionFailed), e.Message]);
 }
 
 var storage = builder.Configuration.GetConnectionString("Storage");

@@ -93,12 +93,12 @@ public static class ConfigurationExtension
             "favicon.webp",
             entityTag: EntityTagHeaderValue.Parse(eTag));
 
-        FallbackToDefaultIcon:
+    FallbackToDefaultIcon:
 
         eTag = GetETag(Program.DefaultFaviconHash[..8]);
         await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash, FaviconOptions, token);
 
-        SendDefaultIcon:
+    SendDefaultIcon:
 
         return Results.File(
             Program.DefaultFavicon,
@@ -125,7 +125,7 @@ public static class ConfigurationExtension
 
         await cache.SetStringAsync(CacheKey.Index, content, token);
 
-        SendContent:
+    SendContent:
 
         var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(12));
 

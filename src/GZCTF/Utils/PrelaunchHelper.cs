@@ -17,7 +17,7 @@ public static class PrelaunchHelper
         var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
         var cache = serviceScope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
-        if (!context.Database.IsInMemory())
+        if (context.Database.GetMigrations().Any())
             await context.Database.MigrateAsync();
 
         await context.Database.EnsureCreatedAsync();

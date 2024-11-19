@@ -98,7 +98,8 @@ public class ConfigService(
     }
 
     static HashSet<ConfigModel> GetConfigs(
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type, object? value)
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+        Type type, object? value)
     {
         HashSet<ConfigModel> configs = [];
 
@@ -109,7 +110,8 @@ public class ConfigService(
     }
 
     public static HashSet<ConfigModel> GetConfigs<
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config) where T : class
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+    T>(T config) where T : class
     {
         HashSet<ConfigModel> configs = [];
         Type type = typeof(T);

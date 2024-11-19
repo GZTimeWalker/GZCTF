@@ -94,7 +94,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         AppDbContext context = CreateAppDbContext();
 
-        if (!context.Database.IsInMemory() && context.Database.GetMigrations().Any())
+        if (context.Database.GetMigrations().Any())
             await context.Database.MigrateAsync();
 
         await context.Database.EnsureCreatedAsync();
