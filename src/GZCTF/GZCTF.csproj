@@ -22,7 +22,7 @@
         <WarningLevel>4</WarningLevel>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <EFOptimizeContext>true</EFOptimizeContext>
-        <EFPrecompileQueriesStage>disabled</EFPrecompileQueriesStage>
+        <EFPrecompileQueriesStage>none</EFPrecompileQueriesStage>
         <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
     </PropertyGroup>
 
