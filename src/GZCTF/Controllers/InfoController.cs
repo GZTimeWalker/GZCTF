@@ -1,9 +1,13 @@
-﻿using GZCTF.Extensions;
+﻿using System.Security.Cryptography;
+using GZCTF.Extensions;
+using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -20,6 +24,7 @@ public class InfoController(
     ICaptchaExtension captcha,
     IPostRepository postRepository,
     ILogger<InfoController> logger,
+    IOptionsSnapshot<CaptchaConfig> captchaConfig,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     IOptionsSnapshot<ContainerPolicy> containerPolicy,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
@@ -118,4 +123,38 @@ public class InfoController(
 
         return Ok(data);
     }
+
+    /// <summary>
+    /// 创建 Pow 验证码
+    /// </summary>
+    /// <remarks>
+    /// 创建 Pow 验证码，有效期 5 分钟
+    /// </remarks>
+    /// <response code="200">成功获取 Pow Challenge</response>
+    /// <response code="404">Pow 已禁用</response>
+    [HttpGet("Captcha/PowChallenge")]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.PowChallenge))]
+    [ProducesResponseType(typeof(HashPowChallenge), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PowChallenge(CancellationToken token = default)
+    {
+        if (captchaConfig.Value.Provider != CaptchaProvider.HashPow)
+            return NotFound();
+
+        byte[] challenge = RandomNumberGenerator.GetBytes(8);
+        string id = RandomNumberGenerator.GetHexString(12, true);
+        await cache.SetAsync(CacheKey.HashPow(id), challenge, PowChallengeCacheOptions, token);
+
+        return Ok(new HashPowChallenge
+        {
+            Id = id,
+            Challenge = Convert.ToHexStringLower(challenge),
+            Difficulty = captchaConfig.Value.HashPow.Difficulty
+        });
+    }
+
+    static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+    };
 }

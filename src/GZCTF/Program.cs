@@ -54,8 +54,7 @@ GZCTF.Program.Banner();
 #region Json
 
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.TypeInfoResolverChain.Insert(
-        0, AppJsonSerializerContext.Default));
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
 
 #endregion Json
 
@@ -160,6 +159,8 @@ if (builder.Environment.IsDevelopment())
         settings.Title = "GZCTF Server API";
         settings.Description = "GZCTF Server API Document";
         settings.UseControllerSummaryAsTagDescription = true;
+
+        settings.SchemaSettings.ReflectionService = new GenericsSystemTextJsonReflectionService();
     });
 
 #endregion OpenApiDocument

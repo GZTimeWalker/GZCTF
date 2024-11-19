@@ -2,6 +2,7 @@ import { Box, BoxProps, useMantineColorScheme } from '@mantine/core'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { HashPow } from '@Components/HashPow'
 import { useCaptchaConfig } from '@Utils/useConfig'
 import { CaptchaProvider } from '@Api'
 
@@ -9,7 +10,7 @@ interface CaptchaProps extends BoxProps {
   action: string
 }
 
-interface CaptchaResult {
+export interface CaptchaResult {
   valid: boolean
   token?: string | null
 }
@@ -57,8 +58,9 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
   const { info, error } = useCaptchaConfig()
   const { colorScheme } = useMantineColorScheme()
   const type = info?.type ?? CaptchaProvider.None
-  const turnstileRef = useRef<TurnstileInstance>(null)
+  const hashPowRef = useRef<CaptchaInstance>(null)
   const reCaptchaRef = useRef<CaptchaInstance>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
   const nonce = document.getElementById('nonce-container')?.getAttribute('data-nonce') ?? undefined
 
   useImperativeHandle(
@@ -69,13 +71,17 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
           return { valid: false }
         }
 
+        if (type === CaptchaProvider.HashPow) {
+          return hashPowRef.current?.getToken() ?? { valid: false }
+        }
+
+        // following providers need siteKey
         if (!info?.siteKey || type === CaptchaProvider.None) {
           return { valid: true }
         }
 
         if (type === CaptchaProvider.GoogleRecaptcha) {
-          const res = await reCaptchaRef.current?.getToken()
-          return res ?? { valid: false }
+          return reCaptchaRef.current?.getToken() ?? { valid: false }
         }
 
         const token = turnstileRef.current?.getResponse()
@@ -84,6 +90,10 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
     }),
     [error, info, type]
   )
+
+  if (type === CaptchaProvider.HashPow) {
+    return <HashPow ref={hashPowRef} />
+  }
 
   if (error || !info?.siteKey || type === CaptchaProvider.None) {
     return <Box {...others} />

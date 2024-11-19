@@ -83,4 +83,9 @@ public static class CacheKey
     /// Container connection counter
     /// </summary>
     public static string ConnectionCount(Guid id) => $"_Container_Conn_{id}";
+
+    /// <summary>
+    /// HashPow cache
+    /// </summary>
+    public static string HashPow(string key) => $"_HP_{key}";
 }

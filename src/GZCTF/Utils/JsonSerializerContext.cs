@@ -6,6 +6,8 @@ using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
 using GZCTF.Services.Container.Provider;
+using Namotion.Reflection;
+using NJsonSchema.Generation;
 
 namespace GZCTF.Utils;
 
@@ -57,3 +59,31 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(TeamInfoModel))]
 [JsonSerializable(typeof(TeamInfoModel[]))]
 internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;
+
+// wait for https://github.com/RicoSuter/NJsonSchema/issues/1741
+internal class GenericsSystemTextJsonReflectionService : SystemTextJsonReflectionService
+{
+    private static bool HasStringEnumConverter(ContextualType contextualType)
+    {
+        dynamic? jsonConverterAttribute = contextualType
+            .GetContextOrTypeAttributes(true)?
+            .FirstOrDefault(a => a.GetType().Name == "JsonConverterAttribute");
+
+        if (jsonConverterAttribute == null ||
+            !ObjectExtensions.HasProperty(jsonConverterAttribute, "ConverterType"))
+            return false;
+
+        if (jsonConverterAttribute?.ConverterType is Type converterType)
+        {
+            return converterType.IsAssignableToTypeName("StringEnumConverter", TypeNameStyle.Name) ||
+                   converterType.IsAssignableToTypeName("JsonStringEnumConverter`1", TypeNameStyle.Name) ||
+                   converterType.IsAssignableToTypeName("System.Text.Json.Serialization.JsonStringEnumConverter",
+                       TypeNameStyle.FullName);
+        }
+
+        return false;
+    }
+
+    public override bool IsStringEnum(ContextualType contextualType, SystemTextJsonSchemaGeneratorSettings settings)
+        => contextualType.TypeInfo.IsEnum && HasStringEnumConverter(contextualType);
+}

@@ -304,8 +304,21 @@ public class RegistryConfig
 public enum CaptchaProvider
 {
     None,
+    HashPow,
     GoogleRecaptcha,
     CloudflareTurnstile
+}
+
+public class HashPowConfig
+{
+    // How many leading zeros the hash should have
+    private int _difficulty = 18;
+
+    public int Difficulty
+    {
+        set => _difficulty = value;
+        get => _difficulty = Math.Clamp(_difficulty, 8, 48);
+    }
 }
 
 public class CaptchaConfig
@@ -315,6 +328,8 @@ public class CaptchaConfig
     public string? SiteKey { get; set; }
 
     public GoogleRecaptchaConfig GoogleRecaptcha { get; set; } = new();
+
+    public HashPowConfig HashPow { get; set; } = new();
 }
 
 public class GoogleRecaptchaConfig

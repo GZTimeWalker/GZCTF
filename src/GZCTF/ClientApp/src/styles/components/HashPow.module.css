@@ -1,0 +1,32 @@
+@keyframes colors {
+  0% {
+    background-position: 0% 30%;
+  }
+  50% {
+    background-position: 100% 70%;
+  }
+  100% {
+    background-position: 0% 30%;
+  }
+}
+
+.input {
+  background: linear-gradient(
+    120deg,
+    var(--pow-color-0),
+    var(--pow-color-1),
+    var(--pow-color-2),
+    var(--pow-color-3)
+  );
+
+  background-clip: text;
+  color: transparent;
+  border: none;
+
+  background-size: 400% 400%;
+  animation: colors 10s linear infinite;
+
+  text-align: center;
+  font-weight: bold;
+  font-family: var(--mantine-font-family-monospace);
+}

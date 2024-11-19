@@ -1,7 +1,6 @@
 import { App } from '@App'
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
-import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { initReactI18next } from 'react-i18next'
 import { BrowserRouter as Router } from 'react-router-dom'
@@ -23,9 +22,7 @@ i18n
   })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Router>
-      <App />
-    </Router>
-  </StrictMode>
+  <Router>
+    <App />
+  </Router>
 )

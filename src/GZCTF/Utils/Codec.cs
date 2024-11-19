@@ -350,4 +350,30 @@ public static partial class CodecExtensions
     /// <param name="str">原始字符串</param>
     /// <returns></returns>
     public static byte[] ToUTF8Bytes(this string str) => Encoding.UTF8.GetBytes(str);
+
+    /// <summary>
+    /// Get leading zeros in bits
+    /// </summary>
+    public static int LeadingZeros(this byte[] hash)
+    {
+        var leadingZeros = 0;
+        foreach (var t in hash)
+        {
+            if (t == 0)
+                leadingZeros += 8;
+            else
+            {
+                var b = t;
+                while ((b & 0x80) == 0)
+                {
+                    b <<= 1;
+                    leadingZeros++;
+                }
+
+                break;
+            }
+        }
+
+        return leadingZeros;
+    }
 }

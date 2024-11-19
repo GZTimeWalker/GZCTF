@@ -1,6 +1,9 @@
 ﻿using System.Net;
+using System.Security.Cryptography;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Info;
+using GZCTF.Services.Cache;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
 namespace GZCTF.Extensions;
@@ -42,7 +45,7 @@ public class CaptchaExtensionBase(IOptions<CaptchaConfig>? options) : ICaptchaEx
         Task.FromResult(true);
 }
 
-public sealed class GoogleRecaptchaExtension(IOptions<CaptchaConfig>? options) : CaptchaExtensionBase(options)
+public sealed class GoogleRecaptcha(IOptions<CaptchaConfig>? options) : CaptchaExtensionBase(options)
 {
     readonly HttpClient _httpClient = new();
 
@@ -98,6 +101,45 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
     }
 }
 
+public sealed class HashPow(IOptions<CaptchaConfig>? options, IDistributedCache cache) :
+    CaptchaExtensionBase(options)
+{
+    const int AnswerLength = 8;
+
+    public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context,
+        CancellationToken token = default)
+    {
+        if (Config is null)
+            return true;
+
+        if (string.IsNullOrWhiteSpace(model.Challenge))
+            return false;
+
+        string[] parts = model.Challenge.Split(':');
+        if (parts.Length != 2)
+            return false;
+
+        string id = parts[0];
+        string ans = parts[1];
+        if (ans.Length != AnswerLength * 2)
+            return false;
+
+        var key = CacheKey.HashPow(id);
+        byte[]? challenge = await cache.GetAsync(key, token);
+        if (challenge is null)
+            return false;
+
+        Span<byte> span = stackalloc byte[challenge.Length + AnswerLength];
+        challenge.CopyTo(span);
+        Convert.FromHexString(ans).CopyTo(span[challenge.Length..]);
+
+        var hash = SHA256.HashData(span);
+        var leadingZeros = hash.LeadingZeros();
+
+        return leadingZeros >= Config.HashPow.Difficulty;
+    }
+}
+
 public static class CaptchaServiceExtension
 {
     internal static IServiceCollection AddCaptchaService(this IServiceCollection services,
@@ -109,7 +151,8 @@ public static class CaptchaServiceExtension
 
         return config.Provider switch
         {
-            CaptchaProvider.GoogleRecaptcha => services.AddSingleton<ICaptchaExtension, GoogleRecaptchaExtension>(),
+            CaptchaProvider.HashPow => services.AddSingleton<ICaptchaExtension, HashPow>(),
+            CaptchaProvider.GoogleRecaptcha => services.AddSingleton<ICaptchaExtension, GoogleRecaptcha>(),
             CaptchaProvider.CloudflareTurnstile => services.AddSingleton<ICaptchaExtension, CloudflareTurnstile>(),
             _ => services.AddSingleton<ICaptchaExtension, CaptchaExtensionBase>()
         };

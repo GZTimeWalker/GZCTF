@@ -1760,18 +1760,32 @@ export interface ClientConfig {
   renewalWindow?: number;
 }
 
-/** 验证码配置 */
+/** Client Captcha Info Model */
 export interface ClientCaptchaInfoModel {
-  /** 验证码类型 */
+  /** Captcha Provider Type */
   type?: CaptchaProvider;
-  /** 客户端密钥 */
+  /** Site Key */
   siteKey?: string;
 }
 
 export enum CaptchaProvider {
   None = "None",
+  HashPow = "HashPow",
   GoogleRecaptcha = "GoogleRecaptcha",
   CloudflareTurnstile = "CloudflareTurnstile",
+}
+
+/** 哈希 Pow 验证 */
+export interface HashPowChallenge {
+  /** 挑战 Id */
+  id?: string;
+  /** 验证挑战 */
+  challenge?: string;
+  /**
+   * 难度系数
+   * @format int32
+   */
+  difficulty?: number;
 }
 
 /** 队伍信息更新 */
@@ -4695,6 +4709,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateInfoGetPosts: (data?: PostInfoModel[] | Promise<PostInfoModel[]>, options?: MutatorOptions) =>
       mutate<PostInfoModel[]>(`/api/posts`, data, options),
+
+    /**
+     * @description 创建 Pow 验证码，有效期 5 分钟
+     *
+     * @tags Info
+     * @name InfoPowChallenge
+     * @summary 创建 Pow 验证码
+     * @request GET:/api/captcha/powchallenge
+     */
+    infoPowChallenge: (params: RequestParams = {}) =>
+      this.request<HashPowChallenge, RequestResponse>({
+        path: `/api/captcha/powchallenge`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description 创建 Pow 验证码，有效期 5 分钟
+     *
+     * @tags Info
+     * @name InfoPowChallenge
+     * @summary 创建 Pow 验证码
+     * @request GET:/api/captcha/powchallenge
+     */
+    useInfoPowChallenge: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<HashPowChallenge, RequestResponse>(doFetch ? `/api/captcha/powchallenge` : null, options),
+
+    /**
+     * @description 创建 Pow 验证码，有效期 5 分钟
+     *
+     * @tags Info
+     * @name InfoPowChallenge
+     * @summary 创建 Pow 验证码
+     * @request GET:/api/captcha/powchallenge
+     */
+    mutateInfoPowChallenge: (data?: HashPowChallenge | Promise<HashPowChallenge>, options?: MutatorOptions) =>
+      mutate<HashPowChallenge>(`/api/captcha/powchallenge`, data, options),
   };
   proxy = {
     /**

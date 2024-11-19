@@ -33,7 +33,12 @@ public static class RateLimiter
         /// <summary>
         /// Flag submit limit
         /// </summary>
-        Submit
+        Submit,
+
+        /// <summary>
+        /// Pow challenge generation limit
+        /// </summary>
+        PowChallenge
     }
 
     public static void ConfigureRateLimiter(RateLimiterOptions options)
@@ -91,10 +96,16 @@ public static class RateLimiter
             o.PermitLimit = 1;
             o.QueueLimit = 20;
         });
-        options.AddFixedWindowLimiter(nameof(LimitPolicy.Register), o =>
+        options.AddSlidingWindowLimiter(nameof(LimitPolicy.Register), o =>
         {
             o.PermitLimit = 20;
             o.Window = TimeSpan.FromSeconds(150);
+        });
+        options.AddTokenBucketLimiter(nameof(LimitPolicy.PowChallenge), o =>
+        {
+            o.TokenLimit = 120;
+            o.TokensPerPeriod = 30;
+            o.ReplenishmentPeriod = TimeSpan.FromSeconds(30);
         });
         options.AddTokenBucketLimiter(nameof(LimitPolicy.Container), o =>
         {

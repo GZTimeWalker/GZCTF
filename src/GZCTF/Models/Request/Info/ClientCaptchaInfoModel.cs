@@ -4,7 +4,7 @@ using MemoryPack;
 namespace GZCTF.Models.Request.Info;
 
 /// <summary>
-/// 验证码配置
+/// Client Captcha Info Model
 /// </summary>
 [MemoryPackable]
 public partial class ClientCaptchaInfoModel
@@ -14,20 +14,20 @@ public partial class ClientCaptchaInfoModel
 
     public ClientCaptchaInfoModel(CaptchaConfig? config)
     {
-        if (config?.SiteKey is null || config.Provider == CaptchaProvider.None)
+        if (config is null)
             return;
 
         Type = config.Provider;
-        SiteKey = config.SiteKey;
+        SiteKey = config.SiteKey ?? string.Empty;
     }
 
     /// <summary>
-    /// 验证码类型
+    /// Captcha Provider Type
     /// </summary>
     public CaptchaProvider Type { get; set; } = CaptchaProvider.None;
 
     /// <summary>
-    /// 客户端密钥
+    /// Site Key
     /// </summary>
     public string SiteKey { get; set; } = string.Empty;
 }
