@@ -103,7 +103,7 @@ export const HashPow = forwardRef<CaptchaInstance, InputBaseProps>((props, ref) 
       readOnly
       label={t('account.label.captcha')}
       description={
-        error || !result ? undefined : `${result.time / 1000}s @ ${result.rate.toFixed(2)} H/s`
+        error || !result ? undefined : `${result.time / 1000}s @ ${result.rate.toFixed(2)} kH/s`
       }
       value={result ? `>>> ${result.nonce} <<<` : ''}
       placeholder={t('account.placeholder.computing')}
