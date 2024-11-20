@@ -110,6 +110,10 @@
         "description": "题目描述",
         "difficulty": "难度系数",
         "disable": "你确定要禁用题目 {{name}} 吗？",
+        "blood_bonus": {
+          "description": "启用题目的三血加分",
+          "label": "三血奖励"
+        },
         "empty": {
           "description": "点击右上角创建第一个题目",
           "title": "Ouch! 这个比赛还没有题目"

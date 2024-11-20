@@ -106,6 +106,10 @@
         "description": "Beschreibung",
         "difficulty": "Schwierigkeitsgrad",
         "disable": "Sind Sie sicher, dass Sie die Herausforderung {{name}} deaktivieren möchten?",
+        "blood_bonus": {
+          "description": "Blutbonus für diese Herausforderung aktivieren",
+          "label": "Blutbonus"
+        },
         "empty": {
           "description": "Klicken Sie oben rechts, um die erste Herausforderung zu erstellen",
           "title": "Autsch! Dieses Spiel hat noch keine Herausforderung."
@@ -172,6 +176,10 @@
         },
         "content": "Spieldetails",
         "delete": "Sind Sie sicher, dass Sie das Spiel {{name}} löschen möchten?",
+        "divisions": {
+          "description": "Divisionen hinzufügen, um die Ergebnisliste zu gruppieren; leer lassen, um sie zu deaktivieren",
+          "label": "Liste der teilnehmenden Abteilungen"
+        },
         "end_date": "Enddatum",
         "end_time": "Endzeit",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "0 bedeutet unbegrenzte Teammitglieder",
           "label": "Maximale Teammitglieder"
-        },
-        "divisions": {
-          "description": "Divisionen hinzufügen, um die Ergebnisliste zu gruppieren; leer lassen, um sie zu deaktivieren",
-          "label": "Liste der teilnehmenden Abteilungen"
         },
         "poster": "Poster",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "Team-Division bearbeiten",
         "empty": {
           "description": "Unterwegs... Keine Sorge!",
           "title": "Autsch! Noch keine Teams haben diesem Spiel beigetreten"

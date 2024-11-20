@@ -106,6 +106,10 @@
         "description": "題目描述",
         "difficulty": "難度係數",
         "disable": "你確定要禁用題目 {{name}} 嗎？",
+        "blood_bonus": {
+          "description": "啟用此挑戰的三血加分",
+          "label": "三血獎勵"
+        },
         "empty": {
           "description": "點擊右上角創建第一個題目",
           "title": "Ouch! 這個比賽還沒有題目"
@@ -172,6 +176,10 @@
         },
         "content": "比賽詳情",
         "delete": "你確定要刪除比賽 {{name}} 嗎？",
+        "divisions": {
+          "description": "添加參賽組織以開啟分組榜單，留空則不分組",
+          "label": "參賽可選組織列表"
+        },
         "end_date": "結束日期",
         "end_time": "結束時間",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "0 表示不限制隊伍人數",
           "label": "隊伍人數限制"
-        },
-        "divisions": {
-          "description": "添加參賽組織以開啟分組榜單，留空則不分組",
-          "label": "參賽可選組織列表"
         },
         "poster": "比賽海報",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "編輯隊伍分組",
         "empty": {
           "description": "在路上了……別急！",
           "title": "Ouch! 還沒有隊伍報名這個比賽"

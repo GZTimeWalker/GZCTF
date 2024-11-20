@@ -106,6 +106,10 @@
         "description": "Descripción",
         "difficulty": "Factor de Dificultad",
         "disable": "¿Está seguro de que desea deshabilitar el desafío {{name}}?",
+        "blood_bonus": {
+          "description": "Habilitar bonificación de sangre para este desafío",
+          "label": "Bonificación de sangre"
+        },
         "empty": {
           "description": "Haga clic en la parte superior derecha para crear el primer desafío",
           "title": "¡Vaya! Este juego aún no tiene desafíos."
@@ -172,6 +176,10 @@
         },
         "content": "Detalles del Juego",
         "delete": "¿Estás seguro de que deseas eliminar el juego {{name}}?",
+        "divisions": {
+          "description": "Agrega divisiones para habilitar el marcador agrupado, deja en blanco para deshabilitar",
+          "label": "Lista de Divisiones Participantes"
+        },
         "end_date": "Fecha de Finalización",
         "end_time": "Hora de Finalización",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "0 significa miembros ilimitados del equipo",
           "label": "Máximo de Miembros del Equipo"
-        },
-        "divisions": {
-          "description": "Agrega divisiones para habilitar el marcador agrupado, deja en blanco para deshabilitar",
-          "label": "Lista de Divisiones Participantes"
         },
         "poster": "Cartel",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "Editar división de equipo",
         "empty": {
           "description": "En camino... ¡No te preocupes!",
           "title": "¡Ay! Ningún equipo se ha unido a este juego todavía"

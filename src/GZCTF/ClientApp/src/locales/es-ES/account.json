@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "Descripción",
+    "captcha": "Captcha",
     "email": "Correo electrónico",
     "email_new": "Nuevo correo electrónico",
     "password": "Contraseña",
@@ -94,7 +95,8 @@
     "not_match": "La contraseña repetida es incorrecta"
   },
   "placeholder": {
-    "bio": "Esta persona es perezosa, no escribió nada"
+    "bio": "Esta persona es perezosa, no escribió nada",
+    "computing": "Computing..."
   },
   "title": {
     "confirm": "Verificación de correo electrónico",

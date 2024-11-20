@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "설명",
+    "captcha": "CAPTCHA",
     "email": "이메일",
     "email_new": "새 이메일",
     "password": "비밀번호",
@@ -94,7 +95,8 @@
     "not_match": "비밀번호가 동일하지 않습니다."
   },
   "placeholder": {
-    "bio": "게으른 사람이네요! 아무것도 적혀있지 않습니다."
+    "bio": "게으른 사람이네요! 아무것도 적혀있지 않습니다.",
+    "computing": "계산 중..."
   },
   "title": {
     "confirm": "이메일 인증",

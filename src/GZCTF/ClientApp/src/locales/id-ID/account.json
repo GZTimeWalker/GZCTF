@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "Deskripsi",
+    "captcha": "Captcha",
     "email": "Email",
     "email_new": "Email baru",
     "password": "Kata sandi",
@@ -94,7 +95,8 @@
     "not_match": "Password yang diulang salah"
   },
   "placeholder": {
-    "bio": "Orang ini Malas, tidak ada yang ditulis"
+    "bio": "Orang ini Malas, tidak ada yang ditulis",
+    "computing": "Perhitungan..."
   },
   "title": {
     "confirm": "Verifikasi Email",

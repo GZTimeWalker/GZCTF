@@ -106,6 +106,10 @@
         "description": "설명",
         "difficulty": "난이도",
         "disable": "{{name}} 챌린지를 비활성화 하시겠습니까?",
+        "blood_bonus": {
+          "description": "이 문제의 blood 보너스를 활성화합니다",
+          "label": "Blood 보너스"
+        },
         "empty": {
           "description": "우측 상단을 클릭하여 첫 챌린지를 생성하세요",
           "title": "앗! 아직 이 게임에는 챌린지가 없어요."
@@ -172,6 +176,10 @@
         },
         "content": "게임 정보",
         "delete": "정말로 {{name}} 게임을 삭제하시겠습니까?",
+        "divisions": {
+          "description": "스코어보드를 그룹으로 나누려면 부문을 추가하고, 아니면 빈 칸으로 두세요.",
+          "label": "부문 별 참가 목록"
+        },
         "end_date": "종료 날짜",
         "end_time": "종료 시간",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "0은 팀 멤버 수 제한이 없음을 의미합니다.",
           "label": "최대 팀 멤버 수"
-        },
-        "divisions": {
-          "description": "스코어보드를 그룹으로 나누려면 부문을 추가하고, 아니면 빈 칸으로 두세요.",
-          "label": "부문 별 참가 목록"
         },
         "poster": "포스터",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "팀 부문 편집",
         "empty": {
           "description": "진행 중... 걱정 마세요!",
           "title": "이런! 아직 게임에 참가한 팀이 없습니다."

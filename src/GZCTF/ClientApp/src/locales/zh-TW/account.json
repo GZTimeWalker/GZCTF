@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "描述",
+    "captcha": "驗證碼",
     "email": "郵箱",
     "email_new": "新郵箱",
     "password": "密碼",
@@ -94,7 +95,8 @@
     "not_match": "重複密碼有誤"
   },
   "placeholder": {
-    "bio": "這個人很懶，什麼都沒有寫"
+    "bio": "這個人很懶，什麼都沒有寫",
+    "computing": "計算中..."
   },
   "title": {
     "confirm": "郵箱驗證",

@@ -30,6 +30,7 @@
   },
   "label": {
     "bio": "一言",
+    "captcha": "CAPTCHA",
     "email": "メール",
     "email_new": "新メール",
     "password": "パスワード",
@@ -94,7 +95,8 @@
     "not_match": "パスワードが一致しません"
   },
   "placeholder": {
-    "bio": "この怠け者は何でも書いていない"
+    "bio": "この怠け者は何でも書いていない",
+    "computing": "計算しています..."
   },
   "title": {
     "confirm": "メールによる認証",

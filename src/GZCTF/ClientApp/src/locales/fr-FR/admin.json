@@ -106,6 +106,10 @@
         "description": "Description",
         "difficulty": "Facteur de difficulté",
         "disable": "Êtes-vous sûr de vouloir désactiver le défi {{name}} ?",
+        "blood_bonus": {
+          "description": "Activer le bonus de sang pour ce défi",
+          "label": "Bonus de sang"
+        },
         "empty": {
           "description": "Cliquez en haut à droite pour créer le premier défi",
           "title": "Oups ! Ce jeu n'a pas encore de défi."
@@ -172,6 +176,10 @@
         },
         "content": "Détails du jeu",
         "delete": "Êtes-vous sûr de vouloir supprimer le jeu {{name}} ?",
+        "divisions": {
+          "description": "Ajoutez des divisions pour activer le tableau de scores groupé, laissez vide pour désactiver",
+          "label": "Liste des divisions participantes"
+        },
         "end_date": "Date de fin",
         "end_time": "Heure de fin",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "0 signifie membres illimités de l'équipe",
           "label": "Nombre maximal de membres de l'équipe"
-        },
-        "divisions": {
-          "description": "Ajoutez des divisions pour activer le tableau de scores groupé, laissez vide pour désactiver",
-          "label": "Liste des divisions participantes"
         },
         "poster": "Affiche",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "Modifier la division de l'équipe",
         "empty": {
           "description": "En chemin... Ne vous inquiétez pas !",
           "title": "Aïe ! Aucune équipe n'a encore rejoint ce jeu"
