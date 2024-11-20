@@ -107,8 +107,8 @@
         "difficulty": "Schwierigkeitsgrad",
         "disable": "Sind Sie sicher, dass Sie die Herausforderung {{name}} deaktivieren möchten?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "Blutbonus für diese Herausforderung aktivieren",
+          "label": "Blutbonus"
         },
         "empty": {
           "description": "Klicken Sie oben rechts, um die erste Herausforderung zu erstellen",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "Team-Division bearbeiten",
         "empty": {
           "description": "Unterwegs... Keine Sorge!",
           "title": "Autsch! Noch keine Teams haben diesem Spiel beigetreten"
