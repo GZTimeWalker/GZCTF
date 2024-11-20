@@ -30,7 +30,7 @@
   },
   "label": {
     "bio": "설명",
-    "captcha": "캡차",
+    "captcha": "CAPTCHA",
     "email": "이메일",
     "email_new": "새 이메일",
     "password": "비밀번호",
