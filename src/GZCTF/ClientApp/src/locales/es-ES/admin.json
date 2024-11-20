@@ -107,8 +107,8 @@
         "difficulty": "Factor de Dificultad",
         "disable": "¿Está seguro de que desea deshabilitar el desafío {{name}}?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "Habilitar bonificación de sangre para este desafío",
+          "label": "Bonificación de sangre"
         },
         "empty": {
           "description": "Haga clic en la parte superior derecha para crear el primer desafío",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "Editar división de equipo",
         "empty": {
           "description": "En camino... ¡No te preocupes!",
           "title": "¡Ay! Ningún equipo se ha unido a este juego todavía"
