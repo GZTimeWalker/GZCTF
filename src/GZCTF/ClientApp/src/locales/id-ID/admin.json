@@ -106,6 +106,10 @@
         "description": "Deskripsi",
         "difficulty": "Tingkat kesulitan",
         "disable": "Apakah kamu yakin ingin menonaktifkan challenge {{name}}?",
+        "blood_bonus": {
+          "description": "Enable blood bonus for this challenge",
+          "label": "Blood Bonus"
+        },
         "empty": {
           "description": "Klik pojok kanan atas untuk membuat challenge pertama",
           "title": "Waduh! Permainan ini belum memiliki challenge."
@@ -172,6 +176,10 @@
         },
         "content": "Detil game",
         "delete": "Apakah kamu yakin ingin menghapus game {{name}}?",
+        "divisions": {
+          "description": "Tambah divisi untuk pengelompokan scoreboard, kosongkan untuk menonaktifkan",
+          "label": "Daftar Divisi yang Berpartisipasi"
+        },
         "end_date": "Tanggal Berakhir",
         "end_time": "Waktu Selesai",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "0 berarti anggota tim tidak terbatas",
           "label": "Batas maks anggota tim"
-        },
-        "divisions": {
-          "description": "Tambah divisi untuk pengelompokan scoreboard, kosongkan untuk menonaktifkan",
-          "label": "Daftar Divisi yang Berpartisipasi"
         },
         "poster": "Poster",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "Edit Team Division",
         "empty": {
           "description": "Dalam proses... jangan khawatir!",
           "title": "Waduch! Belum ada tim yang bergabung di game ini"
@@ -410,7 +415,7 @@
         "updated": "Notice diperbarui"
       },
       "participation": {
-        "updated": "Status tim sudah diperbarui"
+        "updated": "Status tim telah diperbarui"
       }
     },
     "instances": {
