@@ -106,6 +106,10 @@
         "description": "Description",
         "difficulty": "Difficulty Factor",
         "disable": "Are you sure you want to disable challenge {{name}}?",
+        "blood_bonus": {
+          "description": "Enable blood bonus for this challenge",
+          "label": "Blood Bonus"
+        },
         "empty": {
           "description": "Click the top right to create the first challenge",
           "title": "Ouch! This game has no challenge yet."
