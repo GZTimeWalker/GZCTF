@@ -172,6 +172,10 @@
         },
         "content": "Game Details",
         "delete": "Are you sure you want to delete game {{name}}?",
+        "divisions": {
+          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
+          "label": "List of Participating Divisions"
+        },
         "end_date": "End Date",
         "end_time": "End Time",
         "invite_code": {
@@ -181,10 +185,6 @@
         "member_limit": {
           "description": "0 means unlimited members of team",
           "label": "Maximum Team Member"
-        },
-        "divisions": {
-          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
-          "label": "List of Participating Divisions"
         },
         "poster": "Poster",
         "practice_mode": {
@@ -219,6 +219,7 @@
         }
       },
       "review": {
+        "edit_division": "Edit Team Division",
         "empty": {
           "description": "On the way... Don't worry!",
           "title": "Ouch! No teams have joined this game yet"
