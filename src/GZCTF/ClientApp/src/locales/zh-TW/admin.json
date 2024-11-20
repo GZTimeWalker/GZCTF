@@ -107,8 +107,8 @@
         "difficulty": "難度係數",
         "disable": "你確定要禁用題目 {{name}} 嗎？",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "啟用此挑戰的三血加分",
+          "label": "三血獎勵"
         },
         "empty": {
           "description": "點擊右上角創建第一個題目",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "編輯隊伍分組",
         "empty": {
           "description": "在路上了……別急！",
           "title": "Ouch! 還沒有隊伍報名這個比賽"
