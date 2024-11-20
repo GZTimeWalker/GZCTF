@@ -338,36 +338,40 @@ const GameChallengeEdit: FC = () => {
             </Stack>
           </Grid.Col>
           <Grid.Col span={1}>
-            <Stack gap="sm">
-              <NumberInput
-                label={t('admin.content.games.challenges.score')}
-                min={0}
-                required
-                disabled={disabled}
-                stepHoldDelay={500}
-                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                value={challengeInfo?.originalScore ?? 500}
-                onChange={(e) =>
-                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, originalScore: e })
-                }
-              />
-              <NumberInput
-                label={t('admin.content.games.challenges.difficulty')}
-                decimalScale={2}
-                fixedDecimalScale
-                step={0.2}
-                min={0.1}
-                required
-                disabled={disabled}
-                value={challengeInfo?.difficulty ?? 100}
-                stepHoldDelay={500}
-                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                onChange={(e) =>
-                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })
-                }
-              />
+            <Stack h="100%">
+              <Group wrap="nowrap">
+                <NumberInput
+                  label={t('admin.content.games.challenges.score')}
+                  min={0}
+                  required
+                  disabled={disabled}
+                  stepHoldDelay={500}
+                  stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                  value={challengeInfo?.originalScore ?? 500}
+                  onChange={(e) =>
+                    typeof e !== 'string' &&
+                    setChallengeInfo({ ...challengeInfo, originalScore: e })
+                  }
+                />
+                <NumberInput
+                  label={t('admin.content.games.challenges.difficulty')}
+                  decimalScale={2}
+                  fixedDecimalScale
+                  step={0.2}
+                  min={0.1}
+                  required
+                  disabled={disabled}
+                  value={challengeInfo?.difficulty ?? 100}
+                  stepHoldDelay={500}
+                  stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                  onChange={(e) =>
+                    typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })
+                  }
+                />
+              </Group>
               <Input.Wrapper
                 label={t('admin.content.games.challenges.min_score_radio.label')}
+                h="3.8rem"
                 required
               >
                 <Slider
@@ -392,6 +396,17 @@ const GameChallengeEdit: FC = () => {
                   })}
                 />
               </Input.Wrapper>
+              <Switch
+                disabled={disabled}
+                checked={!challengeInfo?.disableBloodBonus}
+                label={SwitchLabel(
+                  t('admin.content.games.challenges.blood_bonus.label'),
+                  t('admin.content.games.challenges.blood_bonus.description')
+                )}
+                onChange={(e) =>
+                  setChallengeInfo({ ...challengeInfo, disableBloodBonus: !e.target.checked })
+                }
+              />
             </Stack>
           </Grid.Col>
           <Grid.Col span={1}>

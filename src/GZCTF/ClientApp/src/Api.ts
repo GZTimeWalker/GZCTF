@@ -936,6 +936,8 @@ export interface ChallengeEditDetailModel {
   containerExposePort: number;
   /** 是否需要记录访问流量 */
   enableTrafficCapture?: boolean | null;
+  /** 是否禁用三血奖励 */
+  disableBloodBonus?: boolean | null;
   /**
    * 初始分数
    * @format int32
@@ -1106,6 +1108,8 @@ export interface ChallengeUpdateModel {
   containerExposePort?: number | null;
   /** 是否需要记录访问流量 */
   enableTrafficCapture?: boolean | null;
+  /** 是否禁用三血奖励 */
+  disableBloodBonus?: boolean | null;
   /**
    * 初始分数
    * @format int32
@@ -1398,6 +1402,8 @@ export interface ChallengeInfo {
   solved?: number;
   /** 题目三血 */
   bloods?: Blood[];
+  /** 是否禁用三血奖励 */
+  disableBloodBonus?: boolean;
 }
 
 export interface Blood {

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using MemoryPack;
 
@@ -240,6 +241,13 @@ public partial class ChallengeInfo
     /// 题目三血
     /// </summary>
     public List<Blood> Bloods { get; set; } = [];
+
+    /// <summary>
+    /// 是否禁用三血奖励
+    /// </summary>
+    [NotMapped]
+    [MemoryPackIgnore]
+    public bool DisableBloodBonus { get; set; }
 }
 
 [MemoryPackable]

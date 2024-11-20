@@ -12,6 +12,11 @@ public class GameChallenge : Challenge
     public bool EnableTrafficCapture { get; set; }
 
     /// <summary>
+    /// 是否禁用三血奖励
+    /// </summary>
+    public bool DisableBloodBonus { get; set; }
+
+    /// <summary>
     /// 初始分数
     /// </summary>
     [Required]
@@ -58,8 +63,9 @@ public class GameChallenge : Challenge
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;
         Difficulty = model.Difficulty ?? Difficulty;
         FileName = model.FileName ?? FileName;
+        DisableBloodBonus = model.DisableBloodBonus ?? DisableBloodBonus;
 
-        // only set FlagTemplate to null when it pass an empty string (but not null)
+        // only set FlagTemplate to null when pass an empty string (but not null)
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
             string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;
 

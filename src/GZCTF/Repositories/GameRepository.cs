@@ -187,6 +187,7 @@ public class GameRepository(
                     Category = c.Category,
                     Score = c.CurrentScore,
                     SolvedCount = c.AcceptedCount,
+                    DisableBloodBonus = c.DisableBloodBonus
                     // pending fields: Bloods
                 }).ToDictionaryAsync(c => c.Id, token);
 
@@ -243,7 +244,7 @@ public class GameRepository(
             var scoreboardItem = items[item.ParticipantId];
 
             // 4.1. generate bloods
-            if (challenge.Bloods.Count < 3)
+            if (challenge is { DisableBloodBonus: false, Bloods.Count: < 3 })
             {
                 item.Type = challenge.Bloods.Count switch
                 {

@@ -120,6 +120,11 @@ public class ChallengeEditDetailModel
     public bool? EnableTrafficCapture { get; set; } = false;
 
     /// <summary>
+    /// 是否禁用三血奖励
+    /// </summary>
+    public bool? DisableBloodBonus { get; set; } = false;
+
+    /// <summary>
     /// 初始分数
     /// </summary>
     [Required]
@@ -155,6 +160,7 @@ public class ChallengeEditDetailModel
             StorageLimit = chal.StorageLimit,
             ContainerExposePort = chal.ContainerExposePort,
             EnableTrafficCapture = chal.EnableTrafficCapture,
+            DisableBloodBonus = chal.DisableBloodBonus,
             OriginalScore = chal.OriginalScore,
             MinScoreRate = chal.MinScoreRate,
             Difficulty = chal.Difficulty,

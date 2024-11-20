@@ -81,7 +81,12 @@ public class ChallengeUpdateModel
     /// <summary>
     /// 是否需要记录访问流量
     /// </summary>
-    public bool? EnableTrafficCapture { get; set; } = false;
+    public bool? EnableTrafficCapture { get; set; }
+
+    /// <summary>
+    /// 是否禁用三血奖励
+    /// </summary>
+    public bool? DisableBloodBonus { get; set; }
 
     /// <summary>
     /// 初始分数
