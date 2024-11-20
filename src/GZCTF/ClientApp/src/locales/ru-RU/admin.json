@@ -106,6 +106,10 @@
         "description": "Описание",
         "difficulty": "Коэффициент сложности",
         "disable": "Вы уверены, что хотите отключить задание {{name}}?",
+        "blood_bonus": {
+          "description": "Enable blood bonus for this challenge",
+          "label": "Blood Bonus"
+        },
         "empty": {
           "description": "Нажмите кнопку в правом верхнем углу для создания первого задания",
           "title": "У этой игры ещё нет заданий"
@@ -172,6 +176,10 @@
         },
         "content": "Детали игры",
         "delete": "Are you sure you want to delete game {{name}}?",
+        "divisions": {
+          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
+          "label": "List of Participating Divisions"
+        },
         "end_date": "Дата окончания",
         "end_time": "Время окончания",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "Используйте 0 для отключения ограничения",
           "label": "Ограничение размера команды"
-        },
-        "divisions": {
-          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
-          "label": "List of Participating Divisions"
         },
         "poster": "Постер",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "Edit Team Division",
         "empty": {
           "description": "On the way... Don't worry!",
           "title": "Ouch! No teams have joined this game yet"
@@ -410,7 +415,7 @@
         "updated": "Notice updated"
       },
       "participation": {
-        "updated": "Team status has been updated"
+        "updated": "Team participation has been updated"
       }
     },
     "instances": {
