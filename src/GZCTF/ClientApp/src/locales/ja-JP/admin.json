@@ -7,7 +7,7 @@
         "upload": "アップロード",
         "uploading": "アップロード中……"
       },
-      "bonus": "ブラッドボーナス",
+      "bonus": "トリプルブラッドボーナス",
       "delete": "チャレンジを削除",
       "disable": "チャレンジを無効にする",
       "edit": "チャレンジを編集",
@@ -107,8 +107,8 @@
         "difficulty": "難易度",
         "disable": "チャレンジ {{name}} を無効にしてもよろしいですか？",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "このチャレンジのブラッドボーナスを有効する",
+          "label": "ブラッドボーナス"
         },
         "empty": {
           "description": "右上のボタンをクリックして最初のチャレンジを作成する",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "チーム区分の編集",
         "empty": {
           "description": "しばらくお待ちください",
           "title": "あかん！ まだこのゲームに参加するチームはありません"
