@@ -106,6 +106,10 @@
         "description": "説明",
         "difficulty": "難易度",
         "disable": "チャレンジ {{name}} を無効にしてもよろしいですか？",
+        "blood_bonus": {
+          "description": "Enable blood bonus for this challenge",
+          "label": "Blood Bonus"
+        },
         "empty": {
           "description": "右上のボタンをクリックして最初のチャレンジを作成する",
           "title": "あかん！このゲームにはまだチャレンジがありません"
@@ -172,6 +176,10 @@
         },
         "content": "詳細",
         "delete": "ゲーム {{name}} を削除してもよろしいですか？",
+        "divisions": {
+          "description": "参加区分を追加してグループランキングを開始します。空欄の場合はグループランキングが無効化されます",
+          "label": "参加区分"
+        },
         "end_date": "終了日",
         "end_time": "終了時間",
         "invite_code": {
@@ -181,10 +189,6 @@
         "member_limit": {
           "description": "無制限の場合は 0 を記入してください",
           "label": "チーム人数制限"
-        },
-        "divisions": {
-          "description": "参加区分を追加してグループランキングを開始します。空欄の場合はグループランキングが無効化されます",
-          "label": "参加区分"
         },
         "poster": "ポスター",
         "practice_mode": {
@@ -219,6 +223,7 @@
         }
       },
       "review": {
+        "edit_division": "Edit Team Division",
         "empty": {
           "description": "しばらくお待ちください",
           "title": "あかん！ まだこのゲームに参加するチームはありません"
