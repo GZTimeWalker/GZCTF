@@ -25,8 +25,8 @@ import { WithNavBar } from '@Components/WithNavbar'
 import { WithRole } from '@Components/WithRole'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { usePageTitle } from '@Utils/usePageTitle'
-import { useTeams, useUser } from '@Utils/useUser'
+import { usePageTitle } from '@Hooks/usePageTitle'
+import { useTeams, useUser } from '@Hooks/useUser'
 import api, { Role, TeamInfoModel } from '@Api'
 
 const Teams: FC = () => {

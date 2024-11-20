@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
-import { usePageTitle } from '@Utils/usePageTitle'
-import { useUser } from '@Utils/useUser'
+import { usePageTitle } from '@Hooks/usePageTitle'
+import { useUser } from '@Hooks/useUser'
 import api from '@Api'
 
 const Login: FC = () => {

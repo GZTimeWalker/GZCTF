@@ -11,9 +11,9 @@ import { GameProgress } from '@Components/GameProgress'
 import { IconTabs } from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
-import { getGameStatus, useGame } from '@Utils/useGame'
-import { usePageTitle } from '@Utils/usePageTitle'
-import { useUserRole } from '@Utils/useUser'
+import { getGameStatus, useGame } from '@Hooks/useGame'
+import { usePageTitle } from '@Hooks/usePageTitle'
+import { useUserRole } from '@Hooks/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 
 dayjs.extend(duration)

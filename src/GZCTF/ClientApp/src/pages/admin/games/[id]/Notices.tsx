@@ -11,7 +11,7 @@ import { GameNoticeEditCard } from '@Components/admin/GameNoticeEditCard'
 import { GameNoticeEditModal } from '@Components/admin/GameNoticeEditModal'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { GameNotice } from '@Api'
 
 const GameNoticeEdit: FC = () => {

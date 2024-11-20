@@ -5,8 +5,8 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { useGame } from '@Utils/useGame'
-import { useTeams } from '@Utils/useUser'
+import { useGame } from '@Hooks/useGame'
+import { useTeams } from '@Hooks/useUser'
 import { GameJoinModel } from '@Api'
 
 interface GameJoinModalProps extends ModalProps {

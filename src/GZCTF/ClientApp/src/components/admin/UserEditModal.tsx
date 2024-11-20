@@ -20,7 +20,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useUser } from '@Utils/useUser'
+import { useUser } from '@Hooks/useUser'
 import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
 
 export const RoleColorMap = new Map<Role, string>([

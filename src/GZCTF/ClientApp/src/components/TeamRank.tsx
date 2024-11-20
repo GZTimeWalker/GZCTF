@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useGameTeamInfo } from '@Utils/useGame'
+import { useGameTeamInfo } from '@Hooks/useGame'
 
 export const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()

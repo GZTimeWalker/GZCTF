@@ -24,7 +24,7 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useEditChallenge } from '@Utils/useEdit'
+import { useEditChallenge } from '@Hooks/useEdit'
 import api, { FileType } from '@Api'
 import uploadClasses from '@Styles/Upload.module.css'
 

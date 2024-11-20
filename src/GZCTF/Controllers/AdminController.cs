@@ -551,10 +551,10 @@ public class AdminController(
     /// <response code="401">未授权用户</response>
     /// <response code="403">禁止访问</response>
     /// <response code="404">参与对象未找到</response>
-    [HttpPut("Participation/{id:int}/{status}")]
+    [HttpPut("Participation/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Participation(int id, ParticipationStatus status,
+    public async Task<IActionResult> Participation(int id, [FromBody] ParticipationEditModel model,
         CancellationToken token = default)
     {
         Participation? participation = await participationRepository.GetParticipationById(id, token);
@@ -563,7 +563,7 @@ public class AdminController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
                 StatusCodes.Status404NotFound));
 
-        await participationRepository.UpdateParticipationStatus(participation, status, token);
+        await participationRepository.UpdateParticipation(participation, model, token);
 
         return Ok();
     }

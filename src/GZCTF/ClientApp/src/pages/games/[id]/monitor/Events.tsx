@@ -34,7 +34,7 @@ import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
-import { useGame } from '@Utils/useGame'
+import { useGame } from '@Hooks/useGame'
 import api, { AnswerResult, EventType, GameEvent } from '@Api'
 import tableClasses from '@Styles/Table.module.css'
 

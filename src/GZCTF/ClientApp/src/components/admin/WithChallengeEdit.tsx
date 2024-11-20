@@ -5,7 +5,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useLocation } from 'react-router-dom'
 import { useChallengeCategoryLabelMap } from '@Utils/Shared'
-import { useEditChallenges } from '@Utils/useEdit'
+import { useEditChallenges } from '@Hooks/useEdit'
 import { ChallengeInfoModel, ChallengeCategory } from '@Api'
 import { WithGameEditTab, GameEditTabProps } from './WithGameEditTab'
 

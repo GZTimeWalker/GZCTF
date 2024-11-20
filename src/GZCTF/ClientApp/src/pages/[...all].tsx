@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { WithNavBar } from '@Components/WithNavbar'
 import { Icon404 } from '@Components/icon/404Icon'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import classes from '@Styles/Placeholder.module.css'
 
 const Error404: FC = () => {

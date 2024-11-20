@@ -8,7 +8,7 @@ import { TimeLine } from '@Components/TimeLine'
 import { WithGameTab } from '@Components/WithGameTab'
 import { WithNavBar } from '@Components/WithNavbar'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useGameTeamInfo } from '@Utils/useGame'
+import { useGameTeamInfo } from '@Hooks/useGame'
 
 const Scoreboard: FC = () => {
   const { id } = useParams()

@@ -410,7 +410,7 @@
         "updated": "공지사항이 수정되었습니다."
       },
       "participation": {
-        "updated": "팀 상태가 변경되었습니다."
+        "updated": "팀 참여 상태 업데이트."
       }
     },
     "instances": {

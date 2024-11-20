@@ -172,6 +172,10 @@
         },
         "content": "比赛详情",
         "delete": "你确定要删除比赛 {{name}} 吗？",
+        "divisions": {
+          "description": "添加参赛分组以开启分组榜单，留空则不分组",
+          "label": "参赛可选分组列表"
+        },
         "end_date": "结束日期",
         "end_time": "结束时间",
         "invite_code": {
@@ -181,10 +185,6 @@
         "member_limit": {
           "description": "0 表示不限制队伍人数",
           "label": "队伍人数限制"
-        },
-        "divisions": {
-          "description": "添加参赛分组以开启分组榜单，留空则不分组",
-          "label": "参赛可选分组列表"
         },
         "poster": "比赛海报",
         "practice_mode": {
@@ -219,6 +219,7 @@
         }
       },
       "review": {
+        "edit_division": "编辑队伍分组",
         "empty": {
           "description": "在路上了……别急！",
           "title": "Ouch! 还没有队伍报名这个比赛"
@@ -410,7 +411,7 @@
         "updated": "公告已更新"
       },
       "participation": {
-        "updated": "队伍审核状态已更新"
+        "updated": "队伍参与状态已更新"
       }
     },
     "instances": {

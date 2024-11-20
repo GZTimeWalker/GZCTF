@@ -33,7 +33,7 @@ import { FlagEditPanel } from '@Components/admin/FlagEditPanel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
-import { useEditChallenge } from '@Utils/useEdit'
+import { useEditChallenge } from '@Hooks/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 import uploadClasses from '@Styles/Upload.module.css'
 

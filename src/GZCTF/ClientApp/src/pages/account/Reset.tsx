@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { AccountView } from '@Components/AccountView'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 
 const Reset: FC = () => {

@@ -19,7 +19,8 @@
       "@Pages/*": ["src/pages/*"],
       "@Resources/*": ["src/resources/*"],
       "@Styles/*": ["src/styles/components/*", "src/styles/shared/*", "src/styles/pages/*"],
-      "@Utils/*": ["src/utils/*"]
+      "@Utils/*": ["src/utils/*"],
+      "@Hooks/*": ["src/hooks/*"],
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

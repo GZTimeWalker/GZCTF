@@ -6,7 +6,7 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AccountView } from '@Components/AccountView'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 
 const Confirm: FC = () => {

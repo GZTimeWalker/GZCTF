@@ -27,8 +27,8 @@ import { WithNavBar } from '@Components/WithNavbar'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { usePageTitle } from '@Utils/usePageTitle'
-import { useUser } from '@Utils/useUser'
+import { usePageTitle } from '@Hooks/usePageTitle'
+import { useUser } from '@Hooks/useUser'
 import api, { ProfileUpdateModel } from '@Api'
 
 const Profile: FC = () => {

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 
 const Recovery: FC = () => {

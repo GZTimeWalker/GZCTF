@@ -1,7 +1,7 @@
 import { Box, BoxProps, createPolymorphicComponent, ElementProps, em, Image } from '@mantine/core'
 import { forwardRef } from 'react'
 import { MainIcon, MainIconProps } from '@Components/icon/MainIcon'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 
 type LogoProps = MainIconProps & BoxProps & ElementProps<'div'> & { url?: string }
 

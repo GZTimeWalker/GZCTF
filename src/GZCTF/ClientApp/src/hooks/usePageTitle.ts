@@ -1,5 +1,5 @@
 import { useDocumentTitle } from '@mantine/hooks'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 
 export const usePageTitle = (title?: string) => {
   const { config, error } = useConfig()

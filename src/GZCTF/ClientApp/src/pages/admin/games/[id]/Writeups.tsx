@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { PDFViewer } from '@Components/admin/PDFViewer'
 import { TeamWriteupCard } from '@Components/admin/TeamWriteupCard'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { WriteupInfoModel } from '@Api'
 
 const GameWriteups: FC = () => {

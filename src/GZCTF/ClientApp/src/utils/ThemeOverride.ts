@@ -16,7 +16,7 @@ import {
 import { createStyles } from '@mantine/emotion'
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks'
 import { useEffect, useState } from 'react'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 
 const CustomTheme: MantineThemeOverride = {
   colors: {

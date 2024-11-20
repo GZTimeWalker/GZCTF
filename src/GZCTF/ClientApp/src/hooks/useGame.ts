@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { GameStatus } from '@Components/GameCard'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
 
 export const getGameStatus = (game?: DetailedGameInfoModel) => {
@@ -24,6 +24,12 @@ export const getGameStatus = (game?: DetailedGameInfoModel) => {
     total,
     status,
   }
+}
+
+export const useAdminGame = (numId: number) => {
+  const { data: game, mutate, error } = api.edit.useEditGetGame(numId, OnceSWRConfig)
+
+  return { game, error, mutate }
 }
 
 export const useGame = (numId: number) => {

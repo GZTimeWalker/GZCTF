@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { FooterRender } from '@Components/FooterRender'
 import { MainIcon } from '@Components/icon/MainIcon'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 import classes from '@Styles/AppFooter.module.css'
 import logoClasses from '@Styles/LogoHeader.module.css'
 

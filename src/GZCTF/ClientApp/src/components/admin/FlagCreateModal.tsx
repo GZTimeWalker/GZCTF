@@ -7,7 +7,7 @@ import { FC, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { showErrorNotification } from '@Utils/ApiHelper'
-import { useEditChallenge } from '@Utils/useEdit'
+import { useEditChallenge } from '@Hooks/useEdit'
 import api from '@Api'
 
 export const FlagCreateModal: FC<ModalProps> = (props) => {

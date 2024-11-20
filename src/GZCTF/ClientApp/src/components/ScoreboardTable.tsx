@@ -35,7 +35,7 @@ import {
   useBonusLabels,
   PartialIconProps,
 } from '@Utils/Shared'
-import { useGameScoreboard } from '@Utils/useGame'
+import { useGameScoreboard } from '@Hooks/useGame'
 import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'

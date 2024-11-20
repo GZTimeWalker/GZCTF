@@ -42,7 +42,7 @@ import {
   useChallengeTypeLabelMap,
   ChallengeCategoryList,
 } from '@Utils/Shared'
-import { useEditChallenge, useEditChallenges } from '@Utils/useEdit'
+import { useEditChallenge, useEditChallenges } from '@Hooks/useEdit'
 import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel } from '@Api'
 
 const GameChallengeEdit: FC = () => {

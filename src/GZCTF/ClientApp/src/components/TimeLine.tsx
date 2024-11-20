@@ -5,7 +5,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { normalizeLanguage, useLanguage } from '@Utils/I18n'
-import { getGameStatus, useGame, useGameScoreboard } from '@Utils/useGame'
+import { getGameStatus, useGame, useGameScoreboard } from '@Hooks/useGame'
 
 interface TimeLineProps {
   division: string | null

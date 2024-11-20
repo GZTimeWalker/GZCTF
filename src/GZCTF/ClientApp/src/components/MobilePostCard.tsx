@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom'
 import { Markdown } from '@Components/MarkdownRenderer'
 import { PostCardProps } from '@Components/PostCard'
 import { RequireRole } from '@Components/WithRole'
-import { useUserRole } from '@Utils/useUser'
+import { useUserRole } from '@Hooks/useUser'
 import { Role } from '@Api'
 
 export const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {

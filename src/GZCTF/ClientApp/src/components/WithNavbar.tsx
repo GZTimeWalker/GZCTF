@@ -16,7 +16,7 @@ import { Watermark } from '@Components/Watermark'
 import { WithWiderScreen } from '@Components/WithWiderScreen'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useUser } from '@Utils/useUser'
+import { useUser } from '@Hooks/useUser'
 
 interface WithNavBarProps extends React.PropsWithChildren {
   width?: string

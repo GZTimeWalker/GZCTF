@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom'
 import { Markdown } from '@Components/MarkdownRenderer'
 import { RequireRole } from '@Components/WithRole'
 import { useLanguage } from '@Utils/I18n'
-import { useUserRole } from '@Utils/useUser'
+import { useUserRole } from '@Hooks/useUser'
 import { PostInfoModel, Role } from '@Api'
 
 export interface PostCardProps {

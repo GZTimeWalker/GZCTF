@@ -10,7 +10,7 @@ import { RecentGameCarousel } from '@Components/RecentGameCarousel'
 import { WithNavBar } from '@Components/WithNavbar'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import api, { PostInfoModel } from '@Api'
 import classes from '@Styles/Index.module.css'
 

@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { BloodBonus } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { SubmissionType } from '@Api'
 
 const toNumber = (value: string | number) => {

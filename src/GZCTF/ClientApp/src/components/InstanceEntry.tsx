@@ -27,7 +27,7 @@ import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 import { ClientFlagContext } from '@Api'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 

@@ -2,7 +2,7 @@ import { Box, Group, Text, Title } from '@mantine/core'
 import { FC } from 'react'
 import { LogoHeader } from '@Components/LogoHeader'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 import classes from '@Styles/IconHeader.module.css'
 
 interface StickyHeaderProps {

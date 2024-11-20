@@ -3,8 +3,8 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GameCard } from '@Components/GameCard'
 import { WithNavBar } from '@Components/WithNavbar'
-import { OnceSWRConfig } from '@Utils/useConfig'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { OnceSWRConfig } from '@Hooks/useConfig'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 
 const Games: FC = () => {

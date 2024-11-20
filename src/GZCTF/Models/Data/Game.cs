@@ -168,6 +168,14 @@ public class Game
         return DigitalSignature.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
     }
 
+    internal bool IsValidDivision(string? division)
+    {
+        if (Divisions is not { Count: > 0 } || string.IsNullOrWhiteSpace(division))
+            return false;
+
+        return Divisions.Contains(division);
+    }
+
     internal Game Update(GameInfoModel model)
     {
         Title = model.Title;

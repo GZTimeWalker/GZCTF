@@ -13,6 +13,7 @@ export default {
     '<THIRD_PARTY_MODULES>',
     '^@Components/(.*)$',
     '^@Utils/(.*)$',
+    '^@Hooks/(.*)$',
     '^@Api$',
     '^@Styles/(.*)$',
     '^@(.*).css$',

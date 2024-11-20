@@ -3,7 +3,7 @@ import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { HashPow } from '@Components/HashPow'
-import { useCaptchaConfig } from '@Utils/useConfig'
+import { useCaptchaConfig } from '@Hooks/useConfig'
 import { CaptchaProvider } from '@Api'
 
 interface CaptchaProps extends BoxProps {

@@ -31,9 +31,9 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
-import { OnceSWRConfig } from '@Utils/useConfig'
-import { useUserRole } from '@Utils/useUser'
-import api, { CheatInfoModel, ParticipationStatus, Role } from '@Api'
+import { OnceSWRConfig } from '@Hooks/useConfig'
+import { useUserRole } from '@Hooks/useUser'
+import api, { CheatInfoModel, ParticipationEditModel, ParticipationStatus, Role } from '@Api'
 import classes from '@Styles/Accordion.module.css'
 
 enum CheatType {
@@ -183,11 +183,11 @@ interface CheatInfoItemProps {
   userRole: Role
   disabled: boolean
   cheatTeamInfo: CheatTeamInfo
-  setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
+  setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }
 
 const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
-  const { cheatTeamInfo, disabled, userRole, setParticipationStatus } = props
+  const { cheatTeamInfo, disabled, userRole, setParticipation } = props
   const theme = useMantineTheme()
   const part = useParticipationStatusMap().get(cheatTeamInfo.status!)!
 
@@ -230,7 +230,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                   disabled={disabled}
                   participateId={cheatTeamInfo.participateId!}
                   status={cheatTeamInfo.status!}
-                  setParticipationStatus={setParticipationStatus}
+                  setParticipation={setParticipation}
                   m={`0 ${theme.spacing.xl}`}
                   miw={theme.spacing.xl}
                 />
@@ -258,12 +258,12 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
 interface CheatInfoTeamViewProps {
   disabled: boolean
   cheatTeamInfo: Map<number, CheatTeamInfo>
-  setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
+  setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }
 
 const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
   const { role } = useUserRole()
-  const { cheatTeamInfo, disabled, setParticipationStatus } = props
+  const { cheatTeamInfo, disabled, setParticipation } = props
 
   const { t } = useTranslation()
 
@@ -293,7 +293,7 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
                   userRole={role ?? Role.User}
                   cheatTeamInfo={cheatInfo}
                   disabled={disabled}
-                  setParticipationStatus={setParticipationStatus}
+                  setParticipation={setParticipation}
                 />
               ))}
           </Accordion>
@@ -411,15 +411,18 @@ const CheatInfo: FC = () => {
     setCheatTeamInfo(ToCheatTeamInfo(cheatInfo))
   }, [cheatInfo])
 
-  const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
+  const setParticipation = async (id: number, model: ParticipationEditModel) => {
     setDisabled(true)
     try {
-      await api.admin.adminParticipation(id, status)
+      await api.admin.adminParticipation(id, model)
+      const current = cheatTeamInfo?.get(id)
       cheatTeamInfo &&
+        current &&
         setCheatTeamInfo(
           cheatTeamInfo.set(id, {
-            ...cheatTeamInfo.get(id)!,
-            status,
+            ...current,
+            // only update status in cheatTeamInfo
+            status: model.status ?? current.status,
           })
         )
       showNotification({
@@ -450,7 +453,7 @@ const CheatInfo: FC = () => {
         <CheatInfoTeamView
           disabled={disabled}
           cheatTeamInfo={cheatTeamInfo ?? new Map()}
-          setParticipationStatus={setParticipationStatus}
+          setParticipation={setParticipation}
         />
       ) : (
         <CheatInfoTableView cheatInfo={cheatInfo ?? []} />

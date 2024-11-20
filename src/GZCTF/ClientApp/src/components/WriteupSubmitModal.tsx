@@ -24,7 +24,7 @@ import { Markdown } from '@Components/MarkdownRenderer'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api from '@Api'
 import uploadClasses from '@Styles/Upload.module.css'
 

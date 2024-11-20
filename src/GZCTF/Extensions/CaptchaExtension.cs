@@ -132,7 +132,7 @@ public sealed class HashPow(IOptions<CaptchaConfig>? options, IDistributedCache 
         Span<byte> span = stackalloc byte[challenge.Length + AnswerLength];
         challenge.CopyTo(span);
         Convert.FromHexString(ans).CopyTo(span[challenge.Length..]);
-        
+
         var leadingZeros = SHA256.HashData(span).LeadingZeros();
 
         var result = leadingZeros >= Config.HashPow.Difficulty;

@@ -119,7 +119,7 @@ public class GameController(
         if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
 
-        if (game.Divisions is { Count: > 0 } && game.Divisions.All(o => o != model.Division))
+        if (!game.IsValidDivision(model.Division))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
 
         UserInfo? user = await userManager.GetUserAsync(User);
@@ -132,20 +132,20 @@ public class GameController(
         if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotMemberOfTeam)]));
 
-        // 如果已经报名（非拒绝状态）
+        // if already joined (not rejected)
         if (await participationRepository.CheckRepeatParticipation(user!, game, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InOtherTeam)]));
 
-        // 移除所有的已经存在的报名
+        // remove all existing participations
         await participationRepository.RemoveUserParticipations(user!, game, token);
 
-        // 根据队伍获取报名信息
+        // try get participation object
         Participation? part = await participationRepository.GetParticipation(team, game, token);
 
-        // 如果队伍未报名
+        // if the team is not in the game, create a new participation object
         if (part is null)
         {
-            // 创建新的队伍参与对象，不添加三元组
+            // create new participation object, do not update team-game-user triple tuple 
             part = new()
             {
                 Game = game,
@@ -160,9 +160,10 @@ public class GameController(
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_TeamMemberLimitExceeded)]));
 
-        // 报名当前成员
+        // add current user to the team
         part.Members.Add(new(user!, game, team));
 
+        // set division as the last request
         part.Division = model.Division;
 
         if (part.Status == ParticipationStatus.Rejected)
@@ -171,7 +172,8 @@ public class GameController(
         await participationRepository.SaveAsync(token);
 
         if (game.AcceptWithoutReview)
-            await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
+            await participationRepository.UpdateParticipation(part,
+                new ParticipationEditModel(status: ParticipationStatus.Accepted), token);
 
         logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user,
             TaskStatus.Success);

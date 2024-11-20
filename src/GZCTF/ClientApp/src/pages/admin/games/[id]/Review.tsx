@@ -1,5 +1,6 @@
 import {
   Accordion,
+  ActionIcon,
   Avatar,
   Badge,
   Box,
@@ -26,6 +27,7 @@ import {
   mdiClose,
   mdiEmailOutline,
   mdiIdentifier,
+  mdiPencil,
   mdiPhoneOutline,
   mdiStar,
 } from '@mdi/js'
@@ -33,11 +35,18 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
+import { DivisionEditModal } from '@Components/admin/DivisionEditModal'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import api, { ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
+import { useAdminGame } from '@Hooks/useGame'
+import api, {
+  ParticipationEditModel,
+  ParticipationInfoModel,
+  ParticipationStatus,
+  ProfileUserInfoModel,
+} from '@Api'
 import classes from '@Styles/Accordion.module.css'
 import reviewClasses from '@Styles/Review.module.css'
 
@@ -119,11 +128,12 @@ const MemberItem: FC<MemberItemProps> = (props) => {
 interface ParticipationItemProps {
   participation: ParticipationInfoModel
   disabled: boolean
-  setParticipationStatus: (id: number, status: ParticipationStatus) => Promise<void>
+  onEditDiv: () => void
+  setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
-  const { participation, disabled, setParticipationStatus } = props
+  const { participation, disabled, onEditDiv, setParticipation } = props
   const part = useParticipationStatusMap().get(participation.status!)!
 
   const { t } = useTranslation()
@@ -152,7 +162,16 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
             <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
               <Box w="10em">
-                <Text truncate>{participation.division}</Text>
+                {participation.division && (
+                  <Group gap={0} wrap="nowrap">
+                    <Text fw={500} truncate>
+                      {participation.division}
+                    </Text>
+                    <ActionIcon size="sm" onClick={onEditDiv} disabled={disabled}>
+                      <Icon path={mdiPencil} size={0.6} />
+                    </ActionIcon>
+                  </Group>
+                )}
                 <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
@@ -167,7 +186,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                 disabled={disabled}
                 participateId={participation.id!}
                 status={participation.status!}
-                setParticipationStatus={setParticipationStatus}
+                setParticipation={setParticipation}
               />
             </Group>
           </Group>
@@ -197,6 +216,8 @@ const GameTeamReview: FC = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
+  const { game } = useAdminGame(numId)
+
   const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
   const [selectedOrg, setSelectedOrg] = useState<string | null>(null)
@@ -204,15 +225,26 @@ const GameTeamReview: FC = () => {
   const [search, setSearch] = useInputState('')
   const participationStatusMap = useParticipationStatusMap()
 
+  const [divModalOpened, setDivModalOpened] = useState(false)
+  const [curParticipation, setCurParticipation] = useState<ParticipationInfoModel | null>(null)
+
   const { t } = useTranslation()
   const [activePage, setPage] = useState(1)
 
-  const setParticipationStatus = async (id: number, status: ParticipationStatus) => {
+  const setParticipation = async (id: number, model: ParticipationEditModel) => {
     setDisabled(true)
     try {
-      await api.admin.adminParticipation(id, status)
+      await api.admin.adminParticipation(id, model)
       setParticipations(
-        participations?.map((value) => (value.id === id ? { ...value, status } : value))
+        participations?.map((value) =>
+          value.id === id
+            ? {
+                ...value,
+                status: model.status ?? value.status,
+                division: model.division ?? value.division,
+              }
+            : value
+        )
       )
       showNotification({
         color: 'teal',
@@ -316,7 +348,11 @@ const GameTeamReview: FC = () => {
                 key={participation.id}
                 participation={participation}
                 disabled={disabled}
-                setParticipationStatus={setParticipationStatus}
+                onEditDiv={() => {
+                  setCurParticipation(participation)
+                  setDivModalOpened(true)
+                }}
+                setParticipation={setParticipation}
               />
             ))}
           </Accordion>
@@ -334,6 +370,20 @@ const GameTeamReview: FC = () => {
           },
         }}
       />
+      {game?.divisions?.length && curParticipation && (
+        <DivisionEditModal
+          title={t('admin.content.games.review.edit_division')}
+          opened={divModalOpened}
+          divisions={game.divisions}
+          participateId={curParticipation?.id ?? -1}
+          currentDivision={curParticipation?.division ?? ''}
+          setParticipation={setParticipation}
+          onClose={() => {
+            setDivModalOpened(false)
+            setCurParticipation(null)
+          }}
+        />
+      )}
     </WithGameEditTab>
   )
 }

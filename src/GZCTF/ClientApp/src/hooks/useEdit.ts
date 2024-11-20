@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { OnceSWRConfig } from '@Utils/useConfig'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { ChallengeInfoModel } from '@Api'
 
 export const useEditChallenge = (numId: number, numCId: number) => {

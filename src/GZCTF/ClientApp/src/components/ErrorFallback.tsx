@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { FallbackProps } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { clearLocalCache } from '@Utils/useConfig'
+import { clearLocalCache } from '@Hooks/useConfig'
 
 export const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: FallbackProps) => {
   const theme = useMantineTheme()

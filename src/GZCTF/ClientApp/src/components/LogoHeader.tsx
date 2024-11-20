@@ -1,7 +1,7 @@
 import { Group, GroupProps, Title } from '@mantine/core'
 import { forwardRef } from 'react'
 import { LogoBox } from '@Components/LogoBox'
-import { useConfig } from '@Utils/useConfig'
+import { useConfig } from '@Hooks/useConfig'
 import classes from '@Styles/LogoHeader.module.css'
 
 export const LogoHeader = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {

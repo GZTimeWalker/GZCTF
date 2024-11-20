@@ -518,6 +518,14 @@ export interface LogMessageModel {
   status?: string | null;
 }
 
+/** Modify the participation information */
+export interface ParticipationEditModel {
+  /** Participation Status */
+  status?: ParticipationStatus | null;
+  /** The division of the participated team */
+  division?: string | null;
+}
+
 export enum ParticipationStatus {
   Pending = "Pending",
   Accepted = "Accepted",
@@ -2528,12 +2536,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags Admin
      * @name AdminParticipation
      * @summary 更新参与状态
-     * @request PUT:/api/admin/participation/{id}/{status}
+     * @request PUT:/api/admin/participation/{id}
      */
-    adminParticipation: (id: number, status: ParticipationStatus, params: RequestParams = {}) =>
+    adminParticipation: (id: number, data: ParticipationEditModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
-        path: `/api/admin/participation/${id}/${status}`,
+        path: `/api/admin/participation/${id}`,
         method: "PUT",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 

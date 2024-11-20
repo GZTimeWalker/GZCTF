@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
-import { usePageTitle } from '@Utils/usePageTitle'
+import { usePageTitle } from '@Hooks/usePageTitle'
 import api, { RegisterStatus } from '@Api'
 
 const Register: FC = () => {

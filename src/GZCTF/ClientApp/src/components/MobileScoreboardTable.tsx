@@ -17,7 +17,7 @@ import { useParams } from 'react-router-dom'
 import { MobileScoreboardItemModal } from '@Components/MobileScoreboardItemModal'
 import { ScoreboardProps } from '@Components/ScoreboardTable'
 import { BloodBonus, useBonusLabels } from '@Utils/Shared'
-import { useGameScoreboard } from '@Utils/useGame'
+import { useGameScoreboard } from '@Hooks/useGame'
 import { ScoreboardItem } from '@Api'
 import classes from '@Styles/ScoreboardTable.module.css'
 

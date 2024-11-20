@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
-import { getGameStatus } from '@Utils/useGame'
+import { getGameStatus } from '@Hooks/useGame'
 import classes from '@Styles/RecentGameSlide.module.css'
 
 export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {

@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { useLanguage } from '@Utils/I18n'
-import { getGameStatus } from '@Utils/useGame'
+import { getGameStatus } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
 

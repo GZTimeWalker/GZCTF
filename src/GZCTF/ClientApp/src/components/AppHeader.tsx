@@ -17,8 +17,8 @@ import { LogoHeader } from '@Components/LogoHeader'
 import { AppControlProps } from '@Components/WithNavbar'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { clearLocalCache } from '@Utils/useConfig'
-import { useLogOut, useUser } from '@Utils/useUser'
+import { clearLocalCache } from '@Hooks/useConfig'
+import { useLogOut, useUser } from '@Hooks/useUser'
 import classes from '@Styles/AppHeader.module.css'
 
 export const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
