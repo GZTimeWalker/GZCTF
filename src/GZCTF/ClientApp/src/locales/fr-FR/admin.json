@@ -107,8 +107,8 @@
         "difficulty": "Facteur de difficulté",
         "disable": "Êtes-vous sûr de vouloir désactiver le défi {{name}} ?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "Activer le bonus de sang pour ce défi",
+          "label": "Bonus de sang"
         },
         "empty": {
           "description": "Cliquez en haut à droite pour créer le premier défi",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "Modifier la division de l'équipe",
         "empty": {
           "description": "En chemin... Ne vous inquiétez pas !",
           "title": "Aïe ! Aucune équipe n'a encore rejoint ce jeu"
