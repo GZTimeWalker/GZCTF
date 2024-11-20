@@ -211,7 +211,7 @@ export const GameNoticePanel: FC = () => {
                 <List.Item key={notice.id} icon={<Icon {...iconMap.get(notice.type)!} />}>
                   <Stack gap={1}>
                     <Text fz="xs" fw="bold" c="dimmed">
-                      {dayjs(notice.time).locale(locale).format('SLL TLS')}
+                      {dayjs(notice.time).locale(locale).format('SLL LTS')}
                     </Text>
                     {notice.type === NoticeType.Normal ? (
                       <InlineMarkdown
