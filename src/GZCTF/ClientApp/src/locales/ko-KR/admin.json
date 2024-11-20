@@ -107,8 +107,8 @@
         "difficulty": "난이도",
         "disable": "{{name}} 챌린지를 비활성화 하시겠습니까?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "이 문제의 blood 보너스를 활성화합니다",
+          "label": "Blood 보너스"
         },
         "empty": {
           "description": "우측 상단을 클릭하여 첫 챌린지를 생성하세요",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "팀 부문 편집",
         "empty": {
           "description": "진행 중... 걱정 마세요!",
           "title": "이런! 아직 게임에 참가한 팀이 없습니다."
