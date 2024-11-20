@@ -7,8 +7,8 @@ const workerFunction = function () {
       return { nonce: null, time: 0, rate: 0 }
     }
 
-    let prefix = parsePrefix(req.chall)
-    let diff = req.diff
+    const prefix = parsePrefix(req.chall)
+    const diff = req.diff
 
     let nonce = Math.floor(Math.random() * 0xffffffff)
     const originalNonce = nonce

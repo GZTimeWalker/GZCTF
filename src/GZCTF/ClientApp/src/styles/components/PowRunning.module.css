@@ -1,0 +1,86 @@
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes stroke-move {
+  from {
+    stroke-dashoffset: 87px;
+  }
+  to {
+    stroke-dashoffset: -87px;
+  }
+}
+
+.box {
+  stroke: var(--mantine-color-text);
+}
+
+.box[data-done] {
+  stroke: var(--mantine-primary-color-5);
+}
+
+.left {
+  transform-origin: 12px center;
+  animation-name: rotating;
+  animation-duration: 0.7s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.left[data-done] {
+  animation-duration: 3s;
+  animation-direction: reverse;
+}
+
+.l {
+  stroke-dashoffset: 87px;
+
+  animation-name: stroke-move;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.l[data-done] {
+  animation-direction: reverse;
+}
+
+.l1 {
+  stroke-dasharray: 87px 87px;
+
+  animation-delay: 0.3s;
+  animation-duration: 2.3s;
+}
+
+.l2 {
+  stroke-dasharray: 70px 104px;
+
+  animation-delay: 0.3s;
+  animation-duration: 1.2s;
+}
+
+.l3 {
+  stroke-dasharray: 80px 94px;
+
+  animation-delay: 0.9s;
+  animation-duration: 1.3s;
+}
+
+.l1[data-done] {
+  animation-delay: 1.3s;
+  animation-duration: 3.4s;
+}
+
+.l2[data-done] {
+  animation-duration: 5.2s;
+  animation-delay: 0s;
+}
+
+.l3[data-done] {
+  animation-duration: 4.3s;
+  animation-delay: 2s;
+}

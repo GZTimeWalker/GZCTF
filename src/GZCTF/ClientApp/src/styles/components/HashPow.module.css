@@ -1,32 +1,43 @@
-@keyframes colors {
+.text {
+  color: var(--mantine-color-text);
+  font-weight: 500;
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.container {
+  height: var(--input-height);
+  line-height: var(--input-line-height);
+  border-radius: var(--input-radius);
+  border: none;
+  text-align: center;
+}
+
+@keyframes bg-move {
   0% {
-    background-position: 0% 30%;
+    background-position: 0% 50%;
   }
   50% {
-    background-position: 100% 70%;
+    background-position: 100% 50%;
   }
   100% {
-    background-position: 0% 30%;
+    background-position: 0% 50%;
   }
 }
 
-.input {
+.text[data-done] {
   background: linear-gradient(
     120deg,
-    var(--pow-color-0),
-    var(--pow-color-1),
-    var(--pow-color-2),
-    var(--pow-color-3)
+    var(--mantine-primary-color-7),
+    var(--mantine-primary-color-3),
+    var(--mantine-primary-color-7),
+    var(--mantine-primary-color-3)
   );
 
-  background-clip: text;
   color: transparent;
-  border: none;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 
   background-size: 400% 400%;
-  animation: colors 10s linear infinite;
-
-  text-align: center;
-  font-weight: bold;
-  font-family: var(--mantine-font-family-monospace);
+  animation: bg-move 10s linear infinite;
 }
