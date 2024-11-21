@@ -99,25 +99,25 @@ public class GameChallengeRepository(
 
         try
         {
-            foreach (var cId in await Context.GameChallenges.IgnoreAutoIncludes()
-                         .Where(c => c.GameId == game.Id)
-                         .Select(c => c.Id)
-                         .ToArrayAsync(token))
+            var result = await Context.GameInstances.AsNoTracking()
+                .IgnoreAutoIncludes()
+                .Include(i => i.Participation)
+                .Include(i => i.Challenge)
+                .Where(i => i.Challenge.GameId == game.Id && i.IsSolved &&
+                            i.Participation.Status == ParticipationStatus.Accepted)
+                .GroupBy(i => i.ChallengeId)
+                .Select(g => new { ChallengeId = g.Key, Count = g.Count() })
+                .ToArrayAsync(token);
+
+            foreach (var item in result)
             {
-                var count = await Context.GameInstances
-                    .IgnoreAutoIncludes()
-                    .Include(i => i.Participation)
-                    .Where(i => i.ChallengeId == cId && i.IsSolved &&
-                                i.Participation.Status == ParticipationStatus.Accepted)
-                    .CountAsync(token);
+                GameChallenge? chal = await Context.GameChallenges.IgnoreAutoIncludes()
+                    .SingleOrDefaultAsync(c => c.Id == item.ChallengeId, token);
 
-                GameChallenge chal = await Context.GameChallenges.IgnoreAutoIncludes()
-                    .SingleAsync(c => c.Id == cId, token);
-
-                if (chal.AcceptedCount == count)
+                if (chal is null || chal.AcceptedCount == item.Count)
                     continue;
 
-                chal.AcceptedCount = count;
+                chal.AcceptedCount = item.Count;
                 Context.Update(chal);
                 await SaveAsync(token);
             }

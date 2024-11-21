@@ -86,7 +86,6 @@
         <PackageReference Include="BouncyCastle.Cryptography"/>
         <PackageReference Include="PacketDotNet"/>
         <PackageReference Include="SharpPcap"/>
-        <PackageReference Include="Ulid"/>
         <PackageReference Include="ZstdSharp.Port"/>
     </ItemGroup>
 

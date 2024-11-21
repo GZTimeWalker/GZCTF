@@ -78,5 +78,5 @@ public partial class Post
         return this;
     }
 
-    internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUtc:s}:{Ulid.NewUlid()}".ToSHA256String()[4..12];
+    internal void UpdateKeyWithHash() => Id = $"{Title}:{UpdateTimeUtc:s}:{Guid.NewGuid()}".ToSHA256String()[4..12];
 }

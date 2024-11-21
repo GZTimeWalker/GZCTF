@@ -118,7 +118,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   </Avatar>
                   <Stack gap={0}>
                     <Text fw={500}>{user.userName}</Text>
-                    <Text size="xs" c="dimmed">{`#${user.id?.substring(0, 8)}`}</Text>
+                    <Text size="xs" c="dimmed">{`#${user.id?.substring(28)}`}</Text>
                   </Stack>
                 </Group>
                 <Group justify="right">
