@@ -17,9 +17,10 @@ public interface IGameChallengeRepository : IRepository
     /// 移除题目对象
     /// </summary>
     /// <param name="challenge">题目对象</param>
+    /// <param name="save"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task RemoveChallenge(GameChallenge challenge, CancellationToken token = default);
+    public Task RemoveChallenge(GameChallenge challenge, bool save = true, CancellationToken token = default);
 
     /// <summary>
     /// 获取全部题目

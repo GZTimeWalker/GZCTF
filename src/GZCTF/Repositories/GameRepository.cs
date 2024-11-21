@@ -88,8 +88,8 @@ public class GameRepository(
                 LogLevel.Debug
             );
 
-            foreach (GameChallenge chal in await Context.GameChallenges.Where(c => c.Game == game).ToArrayAsync(token))
-                await challengeRepository.RemoveChallenge(chal, token);
+            foreach (GameChallenge chal in await Context.GameChallenges.Include(c => c.Flags).Where(c => c.Game == game).ToArrayAsync(token))
+                await challengeRepository.RemoveChallenge(chal, false, token);
 
             count = await Context.Participations.Where(i => i.Game == game).CountAsync(token);
 
@@ -99,7 +99,7 @@ public class GameRepository(
             );
 
             foreach (Participation part in await Context.Participations.Where(p => p.Game == game).ToArrayAsync(token))
-                await participationRepository.RemoveParticipation(part, token);
+                await participationRepository.RemoveParticipation(part, false, token);
 
             Context.Remove(game);
 

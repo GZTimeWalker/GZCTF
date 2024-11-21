@@ -66,12 +66,13 @@ public class GameChallengeRepository(
         Context.GameChallenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
             .ToArrayAsync(token);
 
-    public async Task RemoveChallenge(GameChallenge challenge, CancellationToken token = default)
+    public async Task RemoveChallenge(GameChallenge challenge, bool save = true, CancellationToken token = default)
     {
         await DeleteAllAttachment(challenge, true, token);
 
         Context.Remove(challenge);
-        await SaveAsync(token);
+        if (save)
+            await SaveAsync(token);
     }
 
     public async Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default)
@@ -152,8 +153,8 @@ public class GameChallengeRepository(
         {
             foreach (FlagContext flag in challenge.Flags)
                 await blobRepository.DeleteAttachment(flag.Attachment, token);
-
-            Context.RemoveRange(challenge.Flags);
         }
+
+        Context.RemoveRange(challenge.Flags);
     }
 }

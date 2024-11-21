@@ -744,7 +744,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        await challengeRepository.RemoveChallenge(res, token);
+        await challengeRepository.RemoveChallenge(res, true, token);
 
         // always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);

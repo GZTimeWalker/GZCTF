@@ -220,7 +220,7 @@ public class GameController(
         part.Members.RemoveWhere(u => u.UserId == user!.Id);
 
         if (part.Members.Count == 0)
-            await participationRepository.RemoveParticipation(part, token);
+            await participationRepository.RemoveParticipation(part, true, token);
         else
             await participationRepository.SaveAsync(token);
 
