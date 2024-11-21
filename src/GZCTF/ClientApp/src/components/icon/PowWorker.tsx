@@ -1,6 +1,6 @@
 import cx from 'clsx'
 import { FC } from 'react'
-import classes from '@Styles/PowRunning.module.css'
+import classes from '@Styles/PowWorker.module.css'
 
 interface PowWorkerProps {
   done?: boolean
@@ -17,13 +17,13 @@ export const PowWorker: FC<PowWorkerProps> = ({ done }) => {
       className={classes.box}
       data-done={done}
     >
-      <g fill="none" stroke-width="1.6">
+      <g fill="none" strokeWidth="1.6">
         <path
           className={classes.left}
           data-done={done}
-          stroke-linecap="square"
-          stroke-width="4"
-          stroke-linejoin="bevel"
+          strokeWidth="4"
+          strokeLinecap="square"
+          strokeLinejoin="bevel"
           d="M 16.943392,20.175366 2.7831628,11.99999 16.943392,3.8246236 Z"
         />
         <path data-done={done} className={cx(classes.l, classes.l1)} d="M 30,6 H 117" />
