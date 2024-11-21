@@ -170,10 +170,10 @@ public class Game
 
     internal bool IsValidDivision(string? division)
     {
-        if (Divisions is not { Count: > 0 } || string.IsNullOrWhiteSpace(division))
-            return false;
+        if (Divisions is not { Count: > 0 })
+            return division is null;
 
-        return Divisions.Contains(division);
+        return !string.IsNullOrWhiteSpace(division) && Divisions.Contains(division);
     }
 
     internal Game Update(GameInfoModel model)
