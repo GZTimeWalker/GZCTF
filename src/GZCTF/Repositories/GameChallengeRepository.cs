@@ -99,28 +99,22 @@ public class GameChallengeRepository(
 
         try
         {
-            var result = await Context.GameInstances.AsNoTracking()
+            var query = Context.GameInstances.AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Include(i => i.Participation)
                 .Include(i => i.Challenge)
                 .Where(i => i.Challenge.GameId == game.Id && i.IsSolved &&
                             i.Participation.Status == ParticipationStatus.Accepted)
                 .GroupBy(i => i.ChallengeId)
-                .Select(g => new { ChallengeId = g.Key, Count = g.Count() })
-                .ToArrayAsync(token);
+                .Select(g => new { ChallengeId = g.Key, Count = g.Count() });
 
-            foreach (var item in result)
-            {
-                GameChallenge? chal = await Context.GameChallenges.IgnoreAutoIncludes()
-                    .SingleOrDefaultAsync(c => c.Id == item.ChallengeId, token);
-
-                if (chal is null || chal.AcceptedCount == item.Count)
-                    continue;
-
-                chal.AcceptedCount = item.Count;
-                Context.Update(chal);
-                await SaveAsync(token);
-            }
+            await Context.GameChallenges.IgnoreAutoIncludes()
+                .Where(c => query.Any(r => r.ChallengeId == c.Id))
+                .ExecuteUpdateAsync(setter => 
+                    setter.SetProperty(
+                        c => c.AcceptedCount,
+                        c => query.First(r => r.ChallengeId == c.Id).Count),
+                    token);
 
             await cacheHelper.FlushScoreboardCache(game.Id, token);
             await trans.CommitAsync(token);
