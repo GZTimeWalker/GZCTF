@@ -107,7 +107,7 @@
         "difficulty": "Коэффициент сложности",
         "disable": "Вы уверены, что хотите отключить задание {{name}}?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
+          "description": "Включить бонус тройной крови для задания",
           "label": "Blood Bonus"
         },
         "empty": {
