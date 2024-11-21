@@ -9,7 +9,7 @@ export const LogoHeader = forwardRef<HTMLDivElement, GroupProps>((props, ref) =>
   return (
     <Group ref={ref} wrap="nowrap" align="center" justify="flex-start" gap="sm" {...props}>
       <LogoBox size="50px" pr="sm" />
-      <Title className={classes.title}>
+      <Title textWrap="nowrap" className={classes.title}>
         {config?.title ?? 'GZ'}
         <span className={classes.brand}>::</span>CTF
       </Title>

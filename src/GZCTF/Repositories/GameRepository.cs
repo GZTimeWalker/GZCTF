@@ -156,7 +156,7 @@ public class GameRepository(
             items = await Context.Participations
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
-                .Where(p => p.GameId == game.Id)
+                .Where(p => p.GameId == game.Id && p.Status == ParticipationStatus.Accepted)
                 .Include(p => p.Team)
                 .Select(p => new ScoreboardItem
                 {
@@ -240,8 +240,11 @@ public class GameRepository(
 
         foreach (var item in submissions.OrderBy(s => s.SubmitTimeUtc))
         {
+            // skip if the team is not in the scoreboard
+            if (!items.TryGetValue(item.ParticipantId, out var scoreboardItem))
+                continue;
+
             var challenge = challenges[item.Id];
-            var scoreboardItem = items[item.ParticipantId];
 
             // 4.1. generate bloods
             if (challenge is { DisableBloodBonus: false, Bloods.Count: < 3 })
