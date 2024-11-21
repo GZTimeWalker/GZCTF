@@ -59,6 +59,11 @@ public class GameChallengeRepository(
         return challenges.FirstOrDefaultAsync(token);
     }
 
+    public Task<FlagContext[]> GetFlags(int challengeId, CancellationToken token = default) =>
+        Context.FlagContexts
+            .Where(c => c.Id == challengeId)
+            .ToArrayAsync(token);
+
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default) =>
         Context.GameChallenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
@@ -111,7 +116,7 @@ public class GameChallengeRepository(
 
             await Context.GameChallenges.IgnoreAutoIncludes()
                 .Where(c => query.Any(r => r.ChallengeId == c.Id))
-                .ExecuteUpdateAsync(setter => 
+                .ExecuteUpdateAsync(setter =>
                     setter.SetProperty(
                         c => c.AcceptedCount,
                         c => query.First(r => r.ChallengeId == c.Id).Count),

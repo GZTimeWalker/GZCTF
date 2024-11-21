@@ -517,7 +517,7 @@ public class EditController(
     /// <param name="id">比赛Id</param>
     /// <param name="cId">题目Id</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">成功获取比赛题目</response>
     [HttpGet("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -529,11 +529,14 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, false, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
+
+        if (res.Type != ChallengeType.DynamicContainer)
+            res.Flags = (await challengeRepository.GetFlags(res.Id, token)).ToList();
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }

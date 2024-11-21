@@ -42,6 +42,13 @@ public interface IGameChallengeRepository : IRepository
         CancellationToken token = default);
 
     /// <summary>
+    /// 获取 Flags
+    /// </summary>
+    /// <param name="challengeId">题目Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<FlagContext[]> GetFlags(int challengeId, CancellationToken token = default);
+    /// <summary>
     /// 获取全部需要捕获流量的题目
     /// </summary>
     /// <param name="gameId">比赛Id</param>
