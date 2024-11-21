@@ -48,7 +48,7 @@ public class KubernetesManager : IContainerManager
 
         var chalImage = imageName.ToValidRFC1123String("chal");
 
-        var name = $"{chalImage}-{Ulid.NewUlid().ToString().ToLowerInvariant()}";
+        var name = $"{chalImage}-{Guid.NewGuid().ToString("N")[..16]}";
 
         var pod = new V1Pod("v1", "Pod")
         {

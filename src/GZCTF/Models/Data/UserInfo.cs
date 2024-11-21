@@ -15,7 +15,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// Override Guid to use Ulid
     /// </summary>
     [PersonalData]
-    public override Guid Id { get; set; } = Ulid.NewUlid().ToGuid();
+    public override Guid Id { get; set; } = Guid.CreateVersion7();
 
     /// <summary>
     /// 用户角色
