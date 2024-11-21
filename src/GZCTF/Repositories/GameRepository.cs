@@ -88,7 +88,7 @@ public class GameRepository(
                 LogLevel.Debug
             );
 
-            foreach (GameChallenge chal in Context.GameChallenges.Where(c => c.Game == game))
+            foreach (GameChallenge chal in await Context.GameChallenges.Where(c => c.Game == game).ToArrayAsync(token))
                 await challengeRepository.RemoveChallenge(chal, token);
 
             count = await Context.Participations.Where(i => i.Game == game).CountAsync(token);
@@ -98,7 +98,7 @@ public class GameRepository(
                 TaskStatus.Pending, LogLevel.Debug
             );
 
-            foreach (Participation part in Context.Participations.Where(p => p.Game == game))
+            foreach (Participation part in await Context.Participations.Where(p => p.Game == game).ToArrayAsync(token))
                 await participationRepository.RemoveParticipation(part, token);
 
             Context.Remove(game);
