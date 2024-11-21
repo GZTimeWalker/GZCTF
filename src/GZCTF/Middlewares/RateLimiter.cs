@@ -52,9 +52,9 @@ public static class RateLimiter
                 return RateLimitPartition.GetSlidingWindowLimiter(userId,
                     _ => new()
                     {
+                        QueueLimit = 60,
                         PermitLimit = 150,
                         Window = TimeSpan.FromMinutes(1),
-                        QueueLimit = 60,
                         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                         SegmentsPerWindow = 6
                     });
@@ -67,9 +67,9 @@ public static class RateLimiter
             return RateLimitPartition.GetSlidingWindowLimiter(address.ToString(),
                 _ => new()
                 {
+                    QueueLimit = 60,
                     PermitLimit = 150,
                     Window = TimeSpan.FromMinutes(1),
-                    QueueLimit = 60,
                     QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                     SegmentsPerWindow = 6
                 });
@@ -98,8 +98,11 @@ public static class RateLimiter
         });
         options.AddSlidingWindowLimiter(nameof(LimitPolicy.Register), o =>
         {
+            o.QueueLimit = 10;
             o.PermitLimit = 20;
             o.Window = TimeSpan.FromSeconds(150);
+            o.QueueProcessingOrder = QueueProcessingOrder.NewestFirst;
+            o.SegmentsPerWindow = 5;
         });
         options.AddTokenBucketLimiter(nameof(LimitPolicy.PowChallenge), o =>
         {
