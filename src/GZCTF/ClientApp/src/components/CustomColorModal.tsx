@@ -15,6 +15,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ColorPreview } from '@Components/ColorPreview'
 import { ColorProvider, CustomColor, useCustomColor } from '@Utils/ThemeOverride'
+import misc from '@Styles/Misc.module.css'
 
 const colorRegex = /^#[0-9A-F]{6}$/i
 
@@ -75,11 +76,7 @@ export const CustomColorModal: FC<ModalProps> = (props) => {
           h="100%"
           colors={colors}
           displayColorsInfo={false}
-          styles={{
-            input: {
-              display: 'flex',
-            },
-          }}
+          classNames={{ input: misc.flex }}
         />
         <ColorInput
           label={t('common.content.color.custom.label')}

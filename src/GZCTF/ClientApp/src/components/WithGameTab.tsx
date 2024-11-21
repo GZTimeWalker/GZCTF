@@ -15,6 +15,7 @@ import { getGameStatus, useGame } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUserRole } from '@Hooks/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 dayjs.extend(duration)
 
@@ -34,14 +35,7 @@ const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   const countdown = dayjs.duration(endTime.diff(now))
 
   return (
-    <Card
-      miw="9rem"
-      ta="center"
-      pt={4}
-      style={{
-        overflow: 'visible',
-      }}
-    >
+    <Card miw="9rem" ta="center" pt={4} className={misc.overflowVisible}>
       <Text fw="bold" lineClamp={1}>
         {countdown.asHours() > 999
           ? t('game.content.game_lasts_long')

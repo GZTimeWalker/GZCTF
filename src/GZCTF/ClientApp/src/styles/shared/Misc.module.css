@@ -1,0 +1,157 @@
+.noScrollBars {
+  /* Hide scrollbar (type = "never" for ScrollArea) */
+  --scrollarea-scrollbar-size: 0;
+}
+
+.noPointerEvents {
+  pointer-events: none;
+}
+
+.noUserSelect {
+  user-select: none;
+}
+
+.noBorder {
+  border: none;
+}
+
+.m0 {
+  margin: 0;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.h100 {
+  height: 100%;
+}
+
+.w9rem {
+  width: 9rem;
+}
+
+.cCopy {
+  cursor: copy;
+}
+
+.cPointer {
+  cursor: pointer;
+}
+
+.overflowHidden {
+  overflow: hidden;
+}
+
+.overflowVisible {
+  overflow: visible;
+}
+
+.flex {
+  display: flex;
+}
+
+.flexNoWrap {
+  flex-wrap: nowrap;
+}
+
+.flexGrow {
+  flex-grow: 1;
+}
+
+.flexRow {
+  flex-direction: row;
+}
+
+.alignCenter {
+  align-items: center;
+}
+
+.alignEnd {
+  align-items: flex-end;
+}
+
+.alignSelfEnd {
+  align-self: end;
+}
+
+.justifyEnd {
+  justify-content: flex-end;
+}
+
+.justifyCenter {
+  justify-content: center;
+}
+
+.justifyBetween {
+  justify-content: space-between;
+}
+
+.ffmono {
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.fwBold {
+  font-weight: bold;
+}
+
+.fw700 {
+  font-weight: 700;
+}
+
+.wordBreakAll {
+  word-break: break-all;
+}
+
+.wsPreWrap {
+  white-space: pre-wrap;
+}
+
+/* components specific */
+
+.accountForm {
+  max-width: 300px;
+  min-width: 300px;
+  width: 300px;
+}
+
+.listItemWrapper {
+  max-width: calc(100% - 2rem);
+}
+
+.teamNameWrapper {
+  max-width: calc(100% - 3rem);
+  flex-grow: 1;
+}
+
+.gameDivEdit {
+  min-height: 79px;
+  max-height: 79px;
+  overflow: auto;
+}
+
+.gamePoster {
+  height: 211px;
+  padding: 16px;
+}
+
+.gamePoster[data-poster] {
+  padding: 0;
+}
+
+.alignNormal {
+  align-items: normal;
+}
+
+.challEditLabel {
+  background: light-dark(rgba(0, 0, 0, 0.8), var(--mantine-color-dark-4));
+}
+
+.dropdown {
+  margin-left: 2rem;
+  width: 10rem;
+}
+
+.dropdown[data-mobile] {
+  width: 50vw;
+}

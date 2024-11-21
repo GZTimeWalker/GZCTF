@@ -11,6 +11,7 @@ import { Captcha, useCaptchaRef } from '@Components/Captcha'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api, { RegisterStatus } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -162,7 +163,7 @@ const Register: FC = () => {
         error={pwd !== retypedPwd}
       />
       <Captcha action="register" ref={captchaRef} />
-      <Anchor fz="xs" style={{ alignSelf: 'end' }} component={Link} to="/account/login">
+      <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">
         {t('account.anchor.login')}
       </Anchor>
       <Button type="submit" fullWidth onClick={onRegister} disabled={disabled}>

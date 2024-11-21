@@ -3,6 +3,7 @@ import { FC } from 'react'
 import { PropsWithChildren } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LogoHeader } from '@Components/LogoHeader'
+import misc from '@Styles/Misc.module.css'
 
 interface AccountViewProps extends PropsWithChildren {
   onSubmit?: (event: React.FormEvent) => Promise<void>
@@ -15,14 +16,7 @@ export const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {
     <Center h="100vh">
       <Stack align="center" justify="center">
         <LogoHeader onClick={() => navigate('/')} />
-        <form
-          style={{
-            width: '300px',
-            minWidth: '300px',
-            maxWidth: '300px',
-          }}
-          onSubmit={onSubmit}
-        >
+        <form className={misc.accountForm} onSubmit={onSubmit}>
           <Stack gap="xs" align="center" justify="center">
             {children}
           </Stack>

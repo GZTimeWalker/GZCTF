@@ -35,6 +35,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Hooks/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import uploadClasses from '@Styles/Upload.module.css'
 
 interface FlagEditProps {
@@ -304,11 +305,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             value={flagTemplate}
             placeholder="flag{[GUID]}"
             onChange={(e) => setFlagTemplate(e.target.value)}
-            styles={{
-              input: {
-                fontFamily: theme.fontFamilyMonospace,
-              },
-            }}
+            classNames={{ input: misc.ffmono }}
           />
           <Stack gap={6} pb={8}>
             <Text size="sm">
@@ -513,7 +510,7 @@ const GameChallengeEdit: FC = () => {
       backUrl={`/admin/games/${id}/challenges`}
       head={
         <>
-          <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
+          <Title lineClamp={1} className={misc.wordBreakAll}>
             # {challenge?.title}
           </Title>
           <Group wrap="nowrap" justify="right">

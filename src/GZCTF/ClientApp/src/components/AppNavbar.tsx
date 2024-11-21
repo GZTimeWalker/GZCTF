@@ -25,6 +25,7 @@ import {
   mdiWrenchOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
@@ -35,6 +36,7 @@ import { clearLocalCache } from '@Hooks/useConfig'
 import { useLogOut, useUser } from '@Hooks/useUser'
 import { Role } from '@Api'
 import classes from '@Styles/AppNavBar.module.css'
+import misc from '@Styles/Misc.module.css'
 
 interface NavbarItem {
   icon: string
@@ -120,11 +122,11 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       </AppShell.Section>
 
       {/* Common Nav */}
-      <AppShell.Section className={classes.section} style={{ justifyContent: 'center' }}>
+      <AppShell.Section className={cx(classes.section, misc.justifyCenter)}>
         {links}
       </AppShell.Section>
 
-      <AppShell.Section className={classes.section} style={{ justifyContent: 'end' }}>
+      <AppShell.Section className={cx(classes.section, misc.justifyEnd)}>
         <Stack w="100%" align="center" justify="center" gap={5}>
           {/* Language */}
           <Menu position="right" offset={24} width={160}>

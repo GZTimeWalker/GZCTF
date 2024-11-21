@@ -32,6 +32,7 @@ import {
   mdiStar,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -48,6 +49,7 @@ import api, {
   ProfileUserInfoModel,
 } from '@Api'
 import classes from '@Styles/Accordion.module.css'
+import misc from '@Styles/Misc.module.css'
 import reviewClasses from '@Styles/Review.module.css'
 
 interface MemberItemProps {
@@ -140,7 +142,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
 
   return (
     <Accordion.Item value={participation.id!.toString()}>
-      <Box style={{ alignItems: 'center' }} display="flex">
+      <Box className={misc.alignCenter} display="flex">
         <Accordion.Control>
           <Group justify="space-between" wrap="nowrap">
             <Group wrap="nowrap">
@@ -362,12 +364,8 @@ const GameTeamReview: FC = () => {
         value={activePage}
         onChange={setPage}
         total={Math.ceil((filteredParticipations?.length ?? 1) / PART_NUM_PER_PAGE)}
-        styles={{
-          root: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            flexDirection: 'row',
-          },
+        classNames={{
+          root: cx(misc.flex, misc.flexRow, misc.justifyEnd),
         }}
       />
       {game?.divisions?.length && curParticipation && (

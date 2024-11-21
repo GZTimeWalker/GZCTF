@@ -17,6 +17,7 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
@@ -26,6 +27,7 @@ import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import api from '@Api'
+import misc from '@Styles/Misc.module.css'
 import uploadClasses from '@Styles/Upload.module.css'
 
 interface WriteupSubmitModalProps extends ModalProps {
@@ -109,27 +111,15 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         </Group>
       }
       {...props}
-      styles={{
-        ...props.styles,
-        header: {
-          margin: 0,
-        },
-        title: {
-          width: '100%',
-          margin: 0,
-        },
+      classNames={{
+        header: misc.m0,
+        title: cx(misc.w100, misc.m0),
       }}
     >
       <Stack gap="xs" mt={0}>
         <Divider />
         <Title order={5}>{t('game.content.writeup.instructions.title')}</Title>
-        <List
-          styles={{
-            itemWrapper: {
-              maxWidth: 'calc(100% - 2rem)',
-            },
-          }}
-        >
+        <List classNames={{ itemWrapper: misc.listItemWrapper }}>
           <List.Item>
             <Text>
               <Trans

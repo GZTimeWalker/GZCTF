@@ -30,6 +30,7 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import { getGameStatus } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
@@ -123,7 +124,7 @@ const Games: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.games.hide')}</Table.Th>
+                <Table.Th miw="1.8rem">{t('admin.label.games.hide')}</Table.Th>
                 <Table.Th>{t('common.label.game')}</Table.Th>
                 <Table.Th>{t('common.label.time')}</Table.Th>
                 <Table.Th>{t('admin.label.games.summary')}</Table.Th>
@@ -151,7 +152,7 @@ const Games: FC = () => {
                             wrap="nowrap"
                             justify="left"
                             onClick={() => navigate(`/games/${game.id}`)}
-                            style={{ cursor: 'pointer' }}
+                            className={misc.cPointer}
                           >
                             <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}

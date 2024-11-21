@@ -11,6 +11,7 @@ import {
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import misc from '@Styles/Misc.module.css'
 
 export interface ActionIconWithConfirmProps {
   iconPath: string
@@ -42,15 +43,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
       </Popover.Target>
       <Popover.Dropdown>
         <Stack align="center" gap={6}>
-          <Text
-            size="sm"
-            fw="bold"
-            h="auto"
-            ta="center"
-            style={{
-              whiteSpace: 'pre-wrap',
-            }}
-          >
+          <Text size="sm" fw="bold" h="auto" ta="center" className={misc.wsPreWrap}>
             {props.message}
           </Text>
 

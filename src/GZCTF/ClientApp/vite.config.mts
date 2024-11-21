@@ -3,6 +3,7 @@ import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react'
 import process from 'process'
 import { defineConfig, loadEnv } from 'vite'
+import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import Pages from 'vite-plugin-pages'
 import { prismjsPlugin } from 'vite-plugin-prismjs'
 import webfontDownload from 'vite-plugin-webfont-dl'
@@ -72,6 +73,7 @@ export default defineConfig(({ mode }) => {
         paths: ['./src/locales'],
         include: ['**/*.json'],
       }),
+      optimizeCssModules(),
     ],
   }
 })

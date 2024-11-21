@@ -1,0 +1,4 @@
+.tooltip {
+  color: light-dark(black, white);
+  background-color: light-dark(white, var(--mantine-color-dark-6));
+}

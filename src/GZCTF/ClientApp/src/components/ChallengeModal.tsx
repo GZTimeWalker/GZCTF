@@ -21,6 +21,7 @@ import { InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
+import misc from '@Styles/Misc.module.css'
 
 export interface ChallengeModalProps extends ModalProps {
   challenge?: ChallengeDetailModel
@@ -180,12 +181,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
             value={solved ? t('challenge.content.already_solved') : flag}
             disabled={disabled || solved}
             onChange={setFlag}
-            style={{ flexGrow: 1 }}
-            styles={{
-              input: {
-                fontFamily: 'var(--mantine-font-family-monospace)',
-              },
-            }}
+            classNames={{ root: misc.flexGrow, input: misc.ffmono }}
           />
           <Button miw="6rem" type="submit" disabled={disabled || solved}>
             {t('challenge.button.submit_flag')}

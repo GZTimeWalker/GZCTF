@@ -10,6 +10,7 @@ import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 const Recovery: FC = () => {
   const [email, setEmail] = useInputState('')
@@ -91,7 +92,7 @@ const Recovery: FC = () => {
         onChange={(event) => setEmail(event.currentTarget.value)}
       />
       <Captcha action="recovery" ref={captchaRef} />
-      <Anchor fz="xs" style={{ alignSelf: 'end' }} component={Link} to="/account/login">
+      <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">
         {t('account.anchor.login')}
       </Anchor>
       <Button disabled={disabled} fullWidth onClick={onRecovery}>

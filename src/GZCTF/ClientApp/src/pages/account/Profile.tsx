@@ -30,6 +30,7 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUser } from '@Hooks/useUser'
 import api, { ProfileUpdateModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 const Profile: FC = () => {
   const [dropzoneOpened, setDropzoneOpened] = useState(false)
@@ -330,7 +331,7 @@ const Profile: FC = () => {
           maxSize={3 * 1024 * 1024}
           accept={IMAGE_MIME_TYPES}
         >
-          <Group justify="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
+          <Group justify="center" gap="xl" mih={240} className={misc.noPointerEvents}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

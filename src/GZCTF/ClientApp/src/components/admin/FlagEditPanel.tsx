@@ -18,7 +18,7 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
   const clipboard = useClipboard()
   const attachment = unifiedAttachment ?? flag.attachment
   const shortURL = attachment?.url?.split('/').slice(-2)[0].slice(0, 8)
-  const { classes } = useDisplayInputStyles({ fw: 'bold', ff: 'monospace' })
+  const { classes } = useDisplayInputStyles({ fw: 'bold', ff: 'monospace', cs: 'pointer' })
   const { t } = useTranslation()
 
   return (
@@ -40,7 +40,6 @@ const FlagCard: FC<FlagCardProps> = ({ flag, onDelete, unifiedAttachment }) => {
               })
             }}
             classNames={classes}
-            styles={{ input: { cursor: 'pointer' } }}
           />
           <Text c="dimmed" size="sm" ff="monospace">
             {attachment?.type} {shortURL}

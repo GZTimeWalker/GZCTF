@@ -35,6 +35,7 @@ import { OnceSWRConfig } from '@Hooks/useConfig'
 import { useUserRole } from '@Hooks/useUser'
 import api, { CheatInfoModel, ParticipationEditModel, ParticipationStatus, Role } from '@Api'
 import classes from '@Styles/Accordion.module.css'
+import misc from '@Styles/Misc.module.css'
 
 enum CheatType {
   Submit = 'Submit',
@@ -196,7 +197,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
 
   return (
     <Accordion.Item value={cheatTeamInfo.participateId!.toString()}>
-      <Box display="flex" style={{ alignItems: 'center' }}>
+      <Box display="flex" className={misc.alignCenter}>
         <Accordion.Control>
           <Group justify="space-between">
             <Group justify="left">
@@ -344,12 +345,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
           </Text>
         </Table.Td>
         <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
-        <Table.Td
-          style={{
-            width: '24vw',
-            padding: 0,
-          }}
-        >
+        <Table.Td p="0" w="24vw">
           <Input
             variant="unstyled"
             value={item.submission?.answer}
@@ -367,18 +363,12 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
         <Table className={classes.table}>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th style={{ width: '8rem' }}>{t('common.label.time')}</Table.Th>
-              <Table.Th style={{ minWidth: '5rem' }}>
-                {t('game.label.cheat_info.owned_team')}
-              </Table.Th>
+              <Table.Th w="8rem">{t('common.label.time')}</Table.Th>
+              <Table.Th miw="5rem">{t('game.label.cheat_info.owned_team')}</Table.Th>
               <Table.Th />
-              <Table.Th style={{ minWidth: '5rem' }}>
-                {t('game.label.cheat_info.submit_team')}
-              </Table.Th>
-              <Table.Th style={{ minWidth: '5rem' }}>
-                {t('game.label.cheat_info.submit_user')}
-              </Table.Th>
-              <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+              <Table.Th miw="5rem">{t('game.label.cheat_info.submit_team')}</Table.Th>
+              <Table.Th miw="5rem">{t('game.label.cheat_info.submit_user')}</Table.Th>
+              <Table.Th miw="3rem">{t('common.label.challenge')}</Table.Th>
               <Table.Th className={classes.mono}>{t('common.label.flag')}</Table.Th>
             </Table.Tr>
           </Table.Thead>

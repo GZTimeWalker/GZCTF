@@ -17,6 +17,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TeamInfoModel } from '@Api'
 import cardClasses from '@Styles/HoverCard.module.css'
+import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface TeamCardProps {
@@ -38,8 +39,8 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
 
   return (
     <Card shadow="sm" onClick={onEdit} classNames={cardClasses}>
-      <Group align="stretch" style={{ flexWrap: 'nowrap', alignItems: 'center' }}>
-        <Stack style={{ flexGrow: 1 }}>
+      <Group align="center" wrap="nowrap">
+        <Stack className={misc.flexGrow}>
           <Group align="stretch" justify="space-between">
             <Avatar alt="avatar" size="lg" radius="md" src={team.avatar}>
               {team.name?.slice(0, 1) ?? 'T'}
@@ -76,7 +77,7 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
               <Text tt="uppercase" c="dimmed">
                 {t('team.label.members')}
               </Text>
-              <Box style={{ flexGrow: 1 }} />
+              <Box className={misc.flexGrow} />
               {team.locked && (
                 <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
               )}
@@ -87,9 +88,7 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
                       alt="avatar"
                       radius="xl"
                       src={captain?.avatar}
-                      style={{
-                        border: 'none',
-                      }}
+                      className={misc.noBorder}
                     >
                       {captain?.userName?.slice(0, 1) ?? 'C'}
                     </Avatar>
@@ -97,14 +96,7 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
                   {members &&
                     members.slice(0, AVATAR_LIMIT).map((m) => (
                       <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
-                        <Avatar
-                          alt="avatar"
-                          radius="xl"
-                          src={m.avatar}
-                          style={{
-                            border: 'none',
-                          }}
-                        >
+                        <Avatar alt="avatar" radius="xl" src={m.avatar} className={misc.noBorder}>
                           {m.userName?.slice(0, 1) ?? 'U'}
                         </Avatar>
                       </Tooltip>

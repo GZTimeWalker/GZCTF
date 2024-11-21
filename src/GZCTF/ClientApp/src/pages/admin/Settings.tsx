@@ -31,6 +31,7 @@ import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
 import btnClasses from '@Styles/FixedButton.module.css'
+import misc from '@Styles/Misc.module.css'
 
 const Configs: FC = () => {
   const { data: configs, mutate } = api.admin.useAdminGetConfigs(OnceSWRConfig)
@@ -223,10 +224,8 @@ const Configs: FC = () => {
                 component={ColorPreview}
                 colors={colors}
                 displayColorsInfo={false}
-                styles={{
-                  input: {
-                    display: 'flex',
-                  },
+                classNames={{
+                  input: misc.flex,
                 }}
               />
             </Grid.Col>
@@ -318,7 +317,7 @@ const Configs: FC = () => {
         <Stack gap="sm">
           <Title order={2}>{t('admin.content.settings.container.title')}</Title>
           <Divider />
-          <SimpleGrid cols={4} style={{ alignItems: 'center' }}>
+          <SimpleGrid cols={4} className={misc.alignCenter}>
             <NumberInput
               label={t('admin.content.settings.container.default_lifetime.label')}
               description={t('admin.content.settings.container.default_lifetime.description')}

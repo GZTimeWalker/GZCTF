@@ -13,7 +13,6 @@ import {
   Textarea,
   TextInput,
   Title,
-  useMantineColorScheme,
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
@@ -44,6 +43,7 @@ import {
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Hooks/useEdit'
 import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -68,7 +68,6 @@ const GameChallengeEdit: FC = () => {
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
-  const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -192,7 +191,7 @@ const GameChallengeEdit: FC = () => {
       backUrl={`/admin/games/${id}/challenges`}
       head={
         <>
-          <Title lineClamp={1} style={{ wordBreak: 'break-all' }}>
+          <Title lineClamp={1} className={misc.wordBreakAll}>
             # {challengeInfo?.title}
           </Title>
           <Group wrap="nowrap" justify="right">
@@ -388,12 +387,7 @@ const GameChallengeEdit: FC = () => {
                     { value: 80, label: '80%' },
                   ]}
                   onChange={setMinRate}
-                  styles={(theme) => ({
-                    label: {
-                      background:
-                        colorScheme === 'dark' ? theme.colors.dark[4] : 'rgba(0, 0, 0, 0.8)',
-                    },
-                  })}
+                  classNames={{ label: misc.challEditLabel }}
                 />
               </Input.Wrapper>
               <Switch
@@ -439,7 +433,7 @@ const GameChallengeEdit: FC = () => {
                   onChange={(e) =>
                     setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
                   }
-                  styles={{ root: { flexGrow: 1 } }}
+                  classNames={{ root: misc.flexGrow }}
                 />
                 <Button
                   miw="8rem"
@@ -528,7 +522,7 @@ const GameChallengeEdit: FC = () => {
                 }
               />
             </Grid.Col>
-            <Grid.Col span={4} style={{ alignItems: 'center', display: 'flex' }}>
+            <Grid.Col span={4} display="flex" className={misc.alignCenter}>
               <Switch
                 disabled={disabled}
                 checked={challengeInfo.enableTrafficCapture ?? false}

@@ -20,6 +20,7 @@ import { useLanguage } from '@Utils/I18n'
 import { getGameStatus } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
+import misc from '@Styles/Misc.module.css'
 
 export interface RecentGameProps {
   game: BasicGameInfoModel
@@ -56,9 +57,7 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         inheritPadding
         pos="relative"
         mt={`calc(16px - ${POSTER_HEIGHT})`}
-        style={{
-          alignContent: 'flex-end',
-        }}
+        className={misc.alignEnd}
       >
         <Group wrap="nowrap" gap="xs" justify="right">
           <Badge size="xs" color={color} variant="filled">
@@ -74,9 +73,7 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         bg="rgba(0,0,0,.5)"
         display="flex"
         p="0 16px"
-        style={{
-          alignItems: 'center',
-        }}
+        className={misc.alignCenter}
       >
         <Title lineClamp={1} order={4} ta="left" c={theme.colors.gray[0]}>
           &gt; {title}

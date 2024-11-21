@@ -39,6 +39,7 @@ import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 const GenerateRandomCode = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -424,13 +425,7 @@ const GameInfoEdit: FC = () => {
           placeholder={t('admin.placeholder.games.divisions')}
           maxDropdownHeight={300}
           value={game?.divisions ?? []}
-          styles={{
-            input: {
-              minHeight: 79,
-              maxHeight: 79,
-              overflow: 'auto',
-            },
-          }}
+          classNames={{ input: misc.gameDivEdit }}
           onChange={(e) => game && setGame({ ...game, divisions: e })}
           onClear={() => game && setGame({ ...game, divisions: [] })}
         />
@@ -470,14 +465,10 @@ const GameInfoEdit: FC = () => {
               maxSize={3 * 1024 * 1024}
               accept={IMAGE_MIME_TYPES}
               disabled={disabled}
-              styles={{
-                root: {
-                  height: '211px',
-                  padding: game?.poster ? '0' : '16px',
-                },
-              }}
+              data-poster={game?.poster || undefined}
+              classNames={{ root: misc.gamePoster }}
             >
-              <Center style={{ pointerEvents: 'none' }}>
+              <Center className={misc.noPointerEvents}>
                 {game?.poster ? (
                   <Image height="209px" fit="contain" src={game.poster} alt="poster" />
                 ) : (

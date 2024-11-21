@@ -69,7 +69,7 @@ const Post: FC = () => {
           p={`0 ${theme.spacing.xs}`}
           className={classes.container}
         >
-          <Title order={2} pb="1.5rem" className={classes.title} style={{ fontSize: 36 }}>
+          <Title order={2} pb="1.5rem" fz={36} className={classes.title}>
             {post?.title}
           </Title>
           <Avatar

@@ -192,13 +192,7 @@ const Submissions: FC = () => {
           </Text>
         </Table.Td>
         <Table.Td>{item.challenge ?? 'Challenge'}</Table.Td>
-        <Table.Td
-          style={{
-            width: '36vw',
-            maxWidth: '100%',
-            padding: 0,
-          }}
-        >
+        <Table.Td w="36vw" maw="100%" p="0">
           <Input
             variant="unstyled"
             value={item.answer}
@@ -270,15 +264,15 @@ const Submissions: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: '0.6rem' }}>
+                <Table.Th w="0.6rem">
                   <Group align="center">
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </Table.Th>
-                <Table.Th style={{ width: '9rem' }}>{t('common.label.time')}</Table.Th>
-                <Table.Th style={{ minWidth: '4.5rem' }}>{t('common.label.team')}</Table.Th>
-                <Table.Th style={{ minWidth: '4.5rem' }}>{t('common.label.user')}</Table.Th>
-                <Table.Th style={{ minWidth: '3rem' }}>{t('common.label.challenge')}</Table.Th>
+                <Table.Th w="9rem">{t('common.label.time')}</Table.Th>
+                <Table.Th miw="4.5rem">{t('common.label.team')}</Table.Th>
+                <Table.Th miw="4.5rem">{t('common.label.user')}</Table.Th>
+                <Table.Th miw="3rem">{t('common.label.challenge')}</Table.Th>
                 <Table.Th ff="monospace">{t('common.label.flag')}</Table.Th>
               </Table.Tr>
             </Table.Thead>

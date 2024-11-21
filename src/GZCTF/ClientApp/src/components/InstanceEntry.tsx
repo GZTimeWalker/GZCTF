@@ -8,7 +8,6 @@ import {
   Text,
   TextInput,
   Tooltip,
-  useMantineTheme,
 } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
@@ -29,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { ClientFlagContext } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 dayjs.extend(duration)
@@ -91,7 +91,6 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const [canExtend, setCanExtend] = useDebouncedState(false, 500)
 
   const { t } = useTranslation()
-  const theme = useMantineTheme()
 
   const enableExtend = useDebouncedCallback(() => {
     showNotification({
@@ -196,11 +195,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         leftSection={<Icon path={mdiServerNetwork} size={1} />}
         value={copyEntry}
         readOnly
-        styles={{
-          input: {
-            fontFamily: theme.fontFamilyMonospace,
-          },
-        }}
+        classNames={{ input: misc.ffmono }}
         rightSection={
           <Group gap={2}>
             <Divider orientation="vertical" pr={4} />

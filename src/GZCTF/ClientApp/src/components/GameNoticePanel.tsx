@@ -22,6 +22,7 @@ import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
 import { NoticTypeIconMap } from '@Utils/Shared'
 import api, { GameNotice, NoticeType } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import typoClasses from '@Styles/Typography.module.css'
 
 enum NoticeFilter {
@@ -198,15 +199,7 @@ export const GameNoticePanel: FC = () => {
         />
         {filteredNotices.length ? (
           <ScrollArea offsetScrollbars scrollbarSize={0} h={PANEL_HEIGHT}>
-            <List
-              size="sm"
-              spacing={3}
-              styles={{
-                itemWrapper: {
-                  alignItems: 'normal',
-                },
-              }}
-            >
+            <List size="sm" spacing={3} classNames={{ itemWrapper: misc.alignNormal }}>
               {filteredNotices.map((notice) => (
                 <List.Item key={notice.id} icon={<Icon {...iconMap.get(notice.type)!} />}>
                   <Stack gap={1}>

@@ -33,6 +33,8 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useChallengeCategoryLabelMap, getProxyUrl } from '@Utils/Shared'
 import api, { ChallengeModel, ChallengeCategory, TeamModel } from '@Api'
+import classes from '@Styles/Instances.module.css'
+import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
@@ -44,7 +46,7 @@ const SelectTeamItem: SelectProps['renderOption'] = ({ option }) => {
 
   return (
     <Group {...others} gap={0} wrap="nowrap">
-      <Text fw={500} size="sm" lineClamp={1} style={{ wordBreak: 'break-all' }}>
+      <Text fw={500} size="sm" lineClamp={1} className={misc.wordBreakAll}>
         <Text span c="dimmed">
           {`#${id} `}
         </Text>
@@ -63,7 +65,7 @@ const SelectChallengeItem: SelectProps['renderOption'] = ({ option }) => {
   return (
     <Group wrap="nowrap" gap="sm">
       <Icon color={theme.colors[cateData.color][4]} path={cateData.icon} size={1} />
-      <Text fw={500} size="sm" lineClamp={1} style={{ wordBreak: 'break-all' }}>
+      <Text fw={500} size="sm" lineClamp={1} className={misc.wordBreakAll}>
         <Text span c="dimmed">
           {`#${id} `}
         </Text>
@@ -234,14 +236,7 @@ const Instances: FC = () => {
                             variant="unstyled"
                             value={inst.team?.name ?? 'Team'}
                             readOnly
-                            styles={{
-                              input: {
-                                userSelect: 'none',
-                                lineHeight: 1,
-                                fontWeight: 700,
-                                height: '1.5rem',
-                              },
-                            }}
+                            classNames={classes}
                           />
                         </Box>
                       </Table.Td>
@@ -251,14 +246,7 @@ const Instances: FC = () => {
                             variant="unstyled"
                             value={inst.challenge?.title ?? 'Challenge'}
                             readOnly
-                            styles={{
-                              input: {
-                                userSelect: 'none',
-                                lineHeight: 1,
-                                fontWeight: 700,
-                                height: '1.5rem',
-                              },
-                            }}
+                            classNames={classes}
                           />
                         </Box>
                       </Table.Td>

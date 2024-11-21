@@ -29,6 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -472,7 +473,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           maxSize={3 * 1024 * 1024}
           accept={IMAGE_MIME_TYPES}
         >
-          <Group justify="center" gap="xl" mih={240} style={{ pointerEvents: 'none' }}>
+          <Group justify="center" gap="xl" mih={240} className={misc.n}>
             {avatarFile ? (
               <Image fit="contain" src={URL.createObjectURL(avatarFile)} alt="avatar" />
             ) : (

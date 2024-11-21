@@ -19,6 +19,7 @@ import { ScoreboardProps } from '@Components/ScoreboardTable'
 import { BloodBonus, useBonusLabels } from '@Utils/Shared'
 import { useGameScoreboard } from '@Hooks/useGame'
 import { ScoreboardItem } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import classes from '@Styles/ScoreboardTable.module.css'
 
 const TableRow: FC<{
@@ -38,33 +39,11 @@ const TableRow: FC<{
             radius="xl"
             size={30}
             color={theme.primaryColor}
-            style={{
-              '&:hover': {
-                cursor: 'pointer',
-              },
-            }}
+            className={misc.cPointer}
           >
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Input
-            variant="unstyled"
-            value={item.name}
-            readOnly
-            size="sm"
-            style={{
-              wrapper: {
-                width: '100%',
-              },
-
-              input: {
-                userSelect: 'none',
-
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-              },
-            }}
-          />
+          <Input variant="unstyled" value={item.name} readOnly size="sm" />
         </Group>
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)}>

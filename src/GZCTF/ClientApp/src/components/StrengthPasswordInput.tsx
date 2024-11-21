@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react'
 import React, { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import misc from '@Styles/Misc.module.css'
 
 const PasswordRequirement: FC<{ meets: boolean; label: string }> = ({ meets, label }) => {
   return (
@@ -71,15 +72,11 @@ export const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => 
 
   return (
     <Popover
+      withArrow
       opened={opened}
       position={isMobile ? 'top' : 'right'}
-      styles={{
-        dropdown: {
-          marginLeft: '2rem',
-          width: isMobile ? '50vw' : '10rem',
-        },
-      }}
-      withArrow
+      data-mobile={isMobile || undefined}
+      classNames={{ dropdown: misc.dropdown }}
       transitionProps={{ transition: 'pop-bottom-left' }}
     >
       <Popover.Target>

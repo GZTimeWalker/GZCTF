@@ -26,6 +26,7 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
@@ -34,6 +35,7 @@ import { TeamEditModal } from '@Components/admin/TeamEditModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
@@ -211,7 +213,7 @@ const Teams: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ width: '35vw', minWidth: '400px' }}>
+                <Table.Th w="35vw" miw="400px">
                   {t('common.label.team')}
                 </Table.Th>
                 <Table.Th>{t('admin.label.teams.members')}</Table.Th>
@@ -238,16 +240,9 @@ const Teams: FC = () => {
                               variant="unstyled"
                               value={team.name ?? 'team'}
                               readOnly
-                              styles={{
-                                wrapper: {
-                                  flexGrow: 1,
-                                  width: 'calc(100% - 3rem)',
-                                },
-                                input: {
-                                  userSelect: 'none',
-                                  fontWeight: 'bold',
-                                  width: '100%',
-                                },
+                              classNames={{
+                                wrapper: misc.teamNameWrapper,
+                                input: cx(misc.w100, misc.fwBold, misc.noUserSelect),
                               }}
                             />
                           </Group>
@@ -260,14 +255,7 @@ const Teams: FC = () => {
                       </Table.Td>
                       <Table.Td>
                         <Tooltip.Group openDelay={300} closeDelay={100}>
-                          <Avatar.Group
-                            spacing="md"
-                            styles={{
-                              child: {
-                                border: 'none',
-                              },
-                            }}
-                          >
+                          <Avatar.Group spacing="md">
                             {members &&
                               members.slice(0, 8).map((m) => (
                                 <Tooltip

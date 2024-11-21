@@ -1,6 +1,7 @@
 import { Button, Pagination, Stack } from '@mantine/core'
 import { mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -13,6 +14,7 @@ import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUserRole } from '@Hooks/useUser'
 import api, { PostInfoModel, Role } from '@Api'
 import btnClasses from '@Styles/FixedButton.module.css'
+import misc from '@Styles/Misc.module.css'
 
 const ITEMS_PER_PAGE = 10
 
@@ -64,12 +66,8 @@ const Posts: FC = () => {
             value={activePage}
             onChange={setPage}
             total={Math.ceil((posts?.length ?? 0) / ITEMS_PER_PAGE)}
-            styles={{
-              root: {
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'row',
-              },
+            classNames={{
+              root: cx(misc.flex, misc.justifyCenter, misc.flexRow),
             }}
           />
         )}

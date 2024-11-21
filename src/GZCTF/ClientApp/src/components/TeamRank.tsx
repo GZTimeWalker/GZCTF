@@ -15,12 +15,14 @@ import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import cx from 'clsx'
 import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ErrorCodes } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useGameTeamInfo } from '@Hooks/useGame'
+import misc from '@Styles/Misc.module.css'
 
 export const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
@@ -102,12 +104,7 @@ export const TeamRank: FC<CardProps> = (props) => {
                 icon: <Icon path={mdiCheck} size={1} />,
               })
             }}
-            styles={{
-              innerInput: {
-                cursor: 'copy',
-                fontFamily: 'var(--mantine-font-family-monospace)',
-              },
-            }}
+            classNames={{ innerInput: cx(misc.cCopy, misc.ffmono) }}
           />
         )}
       </Stack>

@@ -16,6 +16,7 @@ import { WithRole } from '@Components/WithRole'
 import { downloadBlob } from '@Utils/ApiHelper'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import api, { Role } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 interface WithGameMonitorProps extends React.PropsWithChildren {
   isLoading?: boolean
@@ -67,7 +68,7 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
               <Button
                 disabled={disabled}
                 w="9rem"
-                styles={{ inner: { justifyContent: 'space-between' } }}
+                classNames={{ inner: misc.justifyBetween }}
                 leftSection={<Icon path={mdiTableArrowDown} size={1} />}
                 onClick={onDownloadScoreboardSheet}
               >
@@ -77,13 +78,9 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
                 orientation="vertical"
                 value={activeTab}
                 onChange={(value) => value && navigate(`/games/${id}/monitor/${value}`)}
-                styles={{
-                  root: {
-                    width: '9rem',
-                  },
-                  list: {
-                    width: '9rem',
-                  },
+                classNames={{
+                  root: misc.w9rem,
+                  list: misc.w9rem,
                 }}
               >
                 <Tabs.List>

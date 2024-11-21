@@ -251,7 +251,7 @@ const Users: FC = () => {
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th style={{ minWidth: '1.8rem' }}>{t('admin.label.users.active')}</Table.Th>
+                <Table.Th miw="1.8rem">{t('admin.label.users.active')}</Table.Th>
                 <Table.Th>{t('common.label.user')}</Table.Th>
                 <Table.Th>{t('account.label.email')}</Table.Th>
                 <Table.Th>{t('common.label.ip')}</Table.Th>

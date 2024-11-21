@@ -37,6 +37,7 @@ import {
 } from '@Utils/Shared'
 import { useGameScoreboard } from '@Hooks/useGame'
 import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from '@Api'
+import misc from '@Styles/Misc.module.css'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
@@ -72,7 +73,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
 
   return (
     <Table.Thead className={classes.thead}>
-      <Table.Tr style={{ border: 'none' }}>
+      <Table.Tr className={misc.noBorder}>
         {hiddenCol}
         {Object.keys(table).map((key) => {
           const cate = challengeCategoryLabelMap.get(key as ChallengeCategory)!
@@ -342,11 +343,8 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
         <Box pos="relative" mih="calc(100vh - 14rem)">
           <Table.ScrollContainer
             minWidth="100%"
-            styles={{
-              scrollContainer: {
-                // Hide scrollbar (type = "never" for ScrollArea)
-                '--scrollarea-scrollbar-size': '0pt',
-              },
+            classNames={{
+              scrollContainer: misc.noScrollBars,
             }}
           >
             <Table className={classes.table}>

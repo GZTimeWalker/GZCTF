@@ -11,6 +11,7 @@ import { Captcha, useCaptchaRef } from '@Components/Captcha'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUser } from '@Hooks/useUser'
 import api from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 const Login: FC = () => {
   const params = useSearchParams()[0]
@@ -132,7 +133,7 @@ const Login: FC = () => {
         onChange={(event) => setPwd(event.currentTarget.value)}
       />
       <Captcha action="login" ref={captchaRef} />
-      <Anchor fz="xs" style={{ alignSelf: 'end' }} component={Link} to="/account/recovery">
+      <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/recovery">
         {t('account.anchor.recovery')}
       </Anchor>
       <Grid grow w="100%">

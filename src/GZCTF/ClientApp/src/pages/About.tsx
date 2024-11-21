@@ -17,6 +17,7 @@ import { useConfig, ValidatedRepoMeta } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import classes from '@Styles/About.module.css'
 import logoClasses from '@Styles/LogoHeader.module.css'
+import misc from '@Styles/Misc.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()
@@ -45,9 +46,7 @@ const About: FC = () => {
             <HoverCard.Target>
               <Badge
                 onClick={() => window.open(repo, '_blank')}
-                style={{
-                  cursor: 'pointer',
-                }}
+                className={misc.cPointer}
                 size="lg"
                 variant="outline"
               >

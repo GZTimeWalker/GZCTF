@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 import { useChallengeCategoryLabelMap } from '@Utils/Shared'
 import { ChallengeInfoModel, ChallengeCategory } from '@Api'
+import classes from '@Styles/ChallengeEditCard.module.css'
 
 interface ChallengeEditCardProps {
   challenge: ChallengeInfoModel
@@ -33,13 +34,6 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
 
   const { t } = useTranslation()
   const { colorScheme } = useMantineColorScheme()
-
-  const tooltipStyle = {
-    tooltip: {
-      color: colorScheme === 'dark' ? 'white' : 'black',
-      backgroundColor: colorScheme === 'dark' ? theme.colors.dark[6] : 'white',
-    },
-  }
 
   const color = data?.color ?? theme.primaryColor
   const colors = theme.colors[color]
@@ -89,7 +83,7 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           label={t('admin.button.challenges.edit')}
           position="left"
           offset={10}
-          styles={tooltipStyle}
+          classNames={classes}
         >
           <ActionIcon
             c={color}
@@ -104,7 +98,7 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           ta="end"
           position="left"
           offset={54}
-          styles={tooltipStyle}
+          classNames={classes}
         >
           <ActionIcon
             c={color}

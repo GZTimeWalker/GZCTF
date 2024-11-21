@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, Link, useNavigate, useParams } from 'react-router-dom'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
+import misc from '@Styles/Misc.module.css'
 
 export interface GameEditTabProps extends React.PropsWithChildren {
   head?: React.ReactNode
@@ -64,7 +65,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
           <Button
             w="9rem"
             component={Link}
-            styles={{ inner: { justifyContent: 'space-between' } }}
+            classNames={{ inner: misc.justifyBetween }}
             leftSection={<Icon path={mdiKeyboardBackspace} size={1} />}
             to={backUrl ?? '/admin/games'}
           >
@@ -81,13 +82,9 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
           orientation="vertical"
           value={activeTab}
           onChange={(value) => value && navigate(`/admin/games/${id}/${value}`)}
-          styles={{
-            root: {
-              width: '9rem',
-            },
-            list: {
-              width: '9rem',
-            },
+          classNames={{
+            root: misc.w9rem,
+            list: misc.w9rem,
           }}
         >
           <Tabs.List>

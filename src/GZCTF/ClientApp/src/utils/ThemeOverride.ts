@@ -274,10 +274,14 @@ interface UseDisplayInputStylesProps {
   ff?: 'monospace' | 'text'
   fw?: React.CSSProperties['fontWeight']
   lh?: React.CSSProperties['lineHeight']
+  cs?: React.CSSProperties['cursor']
 }
 
 export const useDisplayInputStyles = createStyles(
-  (theme, { fw = 'normal', lh = '1.5rem', ff = 'text' }: UseDisplayInputStylesProps) => ({
+  (
+    theme,
+    { fw = 'normal', lh = '1.5rem', ff = 'text', cs = 'auto' }: UseDisplayInputStylesProps
+  ) => ({
     wrapper: {
       width: '100%',
     },
@@ -286,7 +290,7 @@ export const useDisplayInputStyles = createStyles(
       fontFamily: ff === 'text' ? theme.fontFamily : theme.fontFamilyMonospace,
       height: lh,
       lineHeight: lh,
-      cursor: 'auto',
+      cursor: cs,
       userSelect: 'none',
       minHeight: '1rem',
       maxHeight: '2rem',

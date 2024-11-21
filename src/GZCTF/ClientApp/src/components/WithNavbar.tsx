@@ -59,12 +59,7 @@ export const WithNavBar: FC<WithNavBarProps> = ({
         opacity={colorScheme === 'dark' ? 0.018 : 0.025}
       >
         <AppShell
-          padding={0}
-          styles={{
-            body: {
-              overflow: 'hidden',
-            },
-          }}
+          p={0}
           header={{ height: 60, collapsed: !isMobile }}
           navbar={{
             width: 65,
