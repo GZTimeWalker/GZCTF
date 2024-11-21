@@ -47,22 +47,12 @@ public class GameChallengeRepository(
         return update;
     }
 
-    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false,
-        CancellationToken token = default)
-    {
-        IQueryable<GameChallenge> challenges = Context.GameChallenges
-            .Where(c => c.Id == id && c.GameId == gameId);
+    public Task<GameChallenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
+        => Context.GameChallenges
+            .Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
 
-        if (withFlag)
-            challenges = challenges.Include(e => e.Flags);
-
-        return challenges.FirstOrDefaultAsync(token);
-    }
-
-    public Task<FlagContext[]> GetFlags(int challengeId, CancellationToken token = default) =>
-        Context.FlagContexts
-            .Where(c => c.Id == challengeId)
-            .ToArrayAsync(token);
+    public Task LoadFlags(GameChallenge challenge, CancellationToken token = default) =>
+        Context.Entry(challenge).Collection(c => c.Flags).LoadAsync(token);
 
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default) =>
         Context.GameChallenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
@@ -116,10 +106,11 @@ public class GameChallengeRepository(
 
             await Context.GameChallenges.IgnoreAutoIncludes()
                 .Where(c => query.Any(r => r.ChallengeId == c.Id))
-                .ExecuteUpdateAsync(setter =>
-                    setter.SetProperty(
-                        c => c.AcceptedCount,
-                        c => query.First(r => r.ChallengeId == c.Id).Count),
+                .ExecuteUpdateAsync(
+                    setter =>
+                        setter.SetProperty(
+                            c => c.AcceptedCount,
+                            c => query.First(r => r.ChallengeId == c.Id).Count),
                     token);
 
             await cacheHelper.FlushScoreboardCache(game.Id, token);

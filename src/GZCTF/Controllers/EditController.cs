@@ -297,11 +297,13 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateGamePoster([FromRoute] int id, IFormFile file, CancellationToken token)
     {
-        if (file.Length == 0)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
-
-        if (file.Length > 3 * 1024 * 1024)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        switch (file.Length)
+        {
+            case 0:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+            case > 3 * 1024 * 1024:
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        }
 
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -529,16 +531,17 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, false, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
 
-        if (res is null)
+        if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (res.Type != ChallengeType.DynamicContainer)
-            res.Flags = (await challengeRepository.GetFlags(res.Id, token)).ToList();
+        // do not load flags for dynamic containers
+        if (challenge.Type != ChallengeType.DynamicContainer)
+            await challengeRepository.LoadFlags(challenge, token);
 
-        return Ok(ChallengeEditDetailModel.FromChallenge(res));
+        return Ok(ChallengeEditDetailModel.FromChallenge(challenge));
     }
 
     /// <summary>
@@ -564,15 +567,20 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
         // NOTE: IsEnabled can only be updated outside the edit page
-        if (model.IsEnabled == true && res.Flags.Count == 0 && res.Type != ChallengeType.DynamicContainer)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NoFlag)]));
+        if (model.IsEnabled is true && !res.IsEnabled && res.Type != ChallengeType.DynamicContainer)
+        {
+            await challengeRepository.LoadFlags(res, token);
+
+            if (res.Flags.Count == 0)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NoFlag)]));
+        }
 
         if (model.EnableTrafficCapture is true && !res.Type.IsContainer())
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_CaptureNotAllowed)]));
@@ -639,7 +647,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -705,7 +713,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -741,7 +749,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -778,7 +786,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -816,12 +824,13 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
+        await challengeRepository.LoadFlags(challenge, token);
         await challengeRepository.AddFlags(challenge, models, token);
 
         return Ok();
@@ -850,12 +859,13 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, true, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
+        await challengeRepository.LoadFlags(challenge, token);
         return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
     }
 }

@@ -1190,12 +1190,15 @@ public class GameController(
         if (challengeId <= 0)
             return res;
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, challengeId, withFlag, token);
+        GameChallenge? challenge = await challengeRepository.GetChallenge(id, challengeId, token);
 
         if (challenge is null)
             return res.WithResult(NotFound(new RequestResponse(
                 localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound)));
+
+        if (withFlag)
+            await challengeRepository.LoadFlags(challenge, token);
 
         res.Challenge = challenge;
 

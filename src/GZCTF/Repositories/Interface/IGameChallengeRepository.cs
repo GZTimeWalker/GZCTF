@@ -31,23 +31,22 @@ public interface IGameChallengeRepository : IRepository
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default);
 
     /// <summary>
-    /// 获取题目
+    /// 获取题目信息，不包含 Flag
     /// </summary>
     /// <param name="gameId">比赛Id</param>
     /// <param name="id">题目Id</param>
-    /// <param name="withFlag">是否加载Flag</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false,
-        CancellationToken token = default);
+    public Task<GameChallenge?> GetChallenge(int gameId, int id, CancellationToken token = default);
 
     /// <summary>
-    /// 获取 Flags
+    /// 加载 Flags
     /// </summary>
-    /// <param name="challengeId">题目Id</param>
+    /// <param name="challenge">题目</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<FlagContext[]> GetFlags(int challengeId, CancellationToken token = default);
+    public Task LoadFlags(GameChallenge challenge, CancellationToken token = default);
+
     /// <summary>
     /// 获取全部需要捕获流量的题目
     /// </summary>
@@ -81,8 +80,7 @@ public interface IGameChallengeRepository : IRepository
     /// <param name="model">附件信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
-        CancellationToken token = default);
+    public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model, CancellationToken token = default);
 
     /// <summary>
     /// 删除 Flag，确保 Flags 字段已加载
