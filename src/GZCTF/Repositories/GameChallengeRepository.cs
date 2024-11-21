@@ -47,17 +47,12 @@ public class GameChallengeRepository(
         return update;
     }
 
-    public Task<GameChallenge?> GetChallenge(int gameId, int id, bool withFlag = false,
-        CancellationToken token = default)
-    {
-        IQueryable<GameChallenge> challenges = Context.GameChallenges
-            .Where(c => c.Id == id && c.GameId == gameId);
+    public Task<GameChallenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
+        => Context.GameChallenges
+            .Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
 
-        if (withFlag)
-            challenges = challenges.Include(e => e.Flags);
-
-        return challenges.FirstOrDefaultAsync(token);
-    }
+    public Task LoadFlags(GameChallenge challenge, CancellationToken token = default) =>
+        Context.Entry(challenge).Collection(c => c.Flags).LoadAsync(token);
 
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default) =>
         Context.GameChallenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
@@ -66,12 +61,13 @@ public class GameChallengeRepository(
         Context.GameChallenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
             .ToArrayAsync(token);
 
-    public async Task RemoveChallenge(GameChallenge challenge, CancellationToken token = default)
+    public async Task RemoveChallenge(GameChallenge challenge, bool save = true, CancellationToken token = default)
     {
         await DeleteAllAttachment(challenge, true, token);
 
         Context.Remove(challenge);
-        await SaveAsync(token);
+        if (save)
+            await SaveAsync(token);
     }
 
     public async Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default)
@@ -99,28 +95,23 @@ public class GameChallengeRepository(
 
         try
         {
-            var result = await Context.GameInstances.AsNoTracking()
+            var query = Context.GameInstances.AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Include(i => i.Participation)
                 .Include(i => i.Challenge)
                 .Where(i => i.Challenge.GameId == game.Id && i.IsSolved &&
                             i.Participation.Status == ParticipationStatus.Accepted)
                 .GroupBy(i => i.ChallengeId)
-                .Select(g => new { ChallengeId = g.Key, Count = g.Count() })
-                .ToArrayAsync(token);
+                .Select(g => new { ChallengeId = g.Key, Count = g.Count() });
 
-            foreach (var item in result)
-            {
-                GameChallenge? chal = await Context.GameChallenges.IgnoreAutoIncludes()
-                    .SingleOrDefaultAsync(c => c.Id == item.ChallengeId, token);
-
-                if (chal is null || chal.AcceptedCount == item.Count)
-                    continue;
-
-                chal.AcceptedCount = item.Count;
-                Context.Update(chal);
-                await SaveAsync(token);
-            }
+            await Context.GameChallenges.IgnoreAutoIncludes()
+                .Where(c => query.Any(r => r.ChallengeId == c.Id))
+                .ExecuteUpdateAsync(
+                    setter =>
+                        setter.SetProperty(
+                            c => c.AcceptedCount,
+                            c => query.First(r => r.ChallengeId == c.Id).Count),
+                    token);
 
             await cacheHelper.FlushScoreboardCache(game.Id, token);
             await trans.CommitAsync(token);
@@ -158,8 +149,8 @@ public class GameChallengeRepository(
         {
             foreach (FlagContext flag in challenge.Flags)
                 await blobRepository.DeleteAttachment(flag.Attachment, token);
-
-            Context.RemoveRange(challenge.Flags);
         }
+
+        Context.RemoveRange(challenge.Flags);
     }
 }

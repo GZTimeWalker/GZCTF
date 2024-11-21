@@ -119,12 +119,13 @@ public class ParticipationRepository(
         Context.RemoveRange(await Context.UserParticipations
             .Where(p => p.User == user && p.Team == team).ToArrayAsync(token));
 
-    public async Task RemoveParticipation(Participation part, CancellationToken token = default)
+    public async Task RemoveParticipation(Participation part, bool save = true, CancellationToken token = default)
     {
         await DeleteParticipationWriteUp(part, token);
 
         Context.Remove(part);
-        await SaveAsync(token);
+        if (save)
+            await SaveAsync(token);
     }
 
     public Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default)

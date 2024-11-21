@@ -106,7 +106,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             HashSet<Config> configs = DefaultConfigs();
 
             context.Configs.AddRange(configs);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             Data = configs.ToDictionary(c => c.ConfigKey, c => c.Value, StringComparer.OrdinalIgnoreCase);
         }

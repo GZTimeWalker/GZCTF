@@ -73,7 +73,7 @@ const PowBox = forwardRef<HTMLDivElement, PowBoxProps>((props, ref) => {
   useEffect(() => {
     if (nonce) return
 
-    let array = new Uint32Array(2)
+    const array = new Uint32Array(2)
     const interval = setInterval(() => {
       crypto.getRandomValues(array)
       setRand(array.reduce((acc, val) => acc + val.toString(16).padStart(8, '0'), ''))

@@ -7,12 +7,12 @@
   }
 }
 
-@keyframes stroke-move {
+@keyframes stroke {
   from {
-    stroke-dashoffset: 87px;
+    stroke-dashoffset: 87;
   }
   to {
-    stroke-dashoffset: -87px;
+    stroke-dashoffset: -87;
   }
 }
 
@@ -38,9 +38,9 @@
 }
 
 .l {
-  stroke-dashoffset: 87px;
+  stroke-dashoffset: 87;
 
-  animation-name: stroke-move;
+  animation-name: stroke;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
@@ -50,21 +50,21 @@
 }
 
 .l1 {
-  stroke-dasharray: 87px 87px;
+  stroke-dasharray: 87 87;
 
   animation-delay: 0.3s;
   animation-duration: 2.3s;
 }
 
 .l2 {
-  stroke-dasharray: 70px 104px;
+  stroke-dasharray: 70 104;
 
   animation-delay: 0.3s;
   animation-duration: 1.2s;
 }
 
 .l3 {
-  stroke-dasharray: 80px 94px;
+  stroke-dasharray: 80 94;
 
   animation-delay: 0.9s;
   animation-duration: 1.3s;

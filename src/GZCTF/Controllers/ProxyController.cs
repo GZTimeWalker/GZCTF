@@ -276,7 +276,8 @@ public class ProxyController(
                     }
 
                     rx += (ulong)count;
-                    await ws.SendAsync(buffer.AsMemory(0, count), WebSocketMessageType.Binary, true, ct);
+                    await ws.SendAsync(
+                        buffer.AsMemory(0, count), WebSocketMessageType.Binary, true, ct);
                 }
             }
             catch (TaskCanceledException) { }
