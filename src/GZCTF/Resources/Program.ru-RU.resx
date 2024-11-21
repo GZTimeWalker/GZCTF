@@ -714,37 +714,37 @@
     <value>Уничтожение контейнера [{0}] ({1}): {2}</value>
   </data>
   <data name="InstanceRepository_DynamicFlagsNotEnough" xml:space="preserve">
-    <value>Недостаточное количество вложений, выделенных для этого испытания {0}#{1}</value>
+    <value>Недостаточное количество динамических вложений, выделенных для задания {0}#{1}</value>
   </data>
   <data name="InstanceRepository_GetInstanceFailed" xml:space="preserve">
-    <value>{0} ошибка при создании экземпляра для испытания{1}#{2} (могло произойти из-за параллельных сбоев), откатываем обратно...</value>
+    <value>Команда {0} неудачно попыталась создать контейнер для задания {1}#{2} (возможно, ошибки многозадачности), производится откат...</value>
   </data>
   <data name="InstanceRepository_InvalidPort" xml:space="preserve">
     <value>Неверный порт при создании контейнера</value>
   </data>
   <data name="InstanceRepository_NoInstance" xml:space="preserve">
-    <value>Команда не имеет участников, это может быть незапланированно [{0}, {1}]</value>
+    <value>Неожиданная ошибка: команда не имеет участников при получении экземпляра задания [{0}, {1}]</value>
   </data>
   <data name="MailSender_ChangeEmailButton" xml:space="preserve">
     <value>Подтвердить почту</value>
   </data>
   <data name="MailSender_ChangeEmailContent" xml:space="preserve">
-    <value>Вы в процессе смены электронной почты к аккаунту, пожалуйста нажмите на кнопку ниже, чтобы подтвердить ваш новый почтовый адрес.</value>
+    <value>Для Вашего аккаунта запрошено изменение привязанной почты. Чтобы подтвердить изменение и верифицировать новую почту, нажмите кнопку ниже.</value>
   </data>
   <data name="MailSender_ChangeEmailTitle" xml:space="preserve">
     <value>Изменить адрес эл. почты</value>
   </data>
   <data name="MailSender_InvalidRequest" xml:space="preserve">
-    <value>Неверный адрес электронной почты</value>
+    <value>Недопустимый почтовый запрос</value>
   </data>
   <data name="MailSender_MailSendFailed" xml:space="preserve">
     <value>Не удалось доставить письмо</value>
   </data>
   <data name="MailSender_ResetPasswordButton" xml:space="preserve">
-    <value>Подтвердите сброс пароля</value>
+    <value>Подтвердить сброс пароля</value>
   </data>
   <data name="MailSender_ResetPasswordContent" xml:space="preserve">
-    <value>Вы в процессе смены пароля в аккаунте. Пожалуйста, нажмите на кнопку ниже, чтобы сбросить пароль.</value>
+    <value>Для Вашего аккаунта запрошен сброс пароля. Чтобы подтвердить сброс, нажмите кнопку ниже.</value>
   </data>
   <data name="MailSender_ResetPasswordTitle" xml:space="preserve">
     <value>Сброс пароля</value>
@@ -753,31 +753,31 @@
     <value>Отправка письма: {0}</value>
   </data>
   <data name="MailSender_Template" xml:space="preserve">
-    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Здравствуйте, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;Если кнопка выше недействительна, скопируйте эту ссылку в ваш браузер: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Если вы еще не сделали этого, игнорируйте это письмо. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
+    <value>&lt;head&gt;&lt;meta content="text/html; charset=utf-8" http-equiv="Content-Type"/&gt;&lt;/head&gt;&lt;body&gt;&lt;div style="max-width: 544px; margin: 0 auto; padding: 20px"&gt;&lt;h2 style="text-align: center"&gt;{title}&lt;/h2&gt;&lt;p&gt;Здравствуйте, {userName}!&lt;/p&gt;&lt;p style="text-indent: 2em"&gt;{information}&lt;/p&gt;&lt;p style="text-align: center; padding: 20px"&gt;&lt;a href="{url}" style="font: 1rem Arial;white-space: nowrap;text-decoration: none;background-color: #000000;color: #ffffff;padding: 10px 20px 10px 20px;border: 1px solid #888888;border-radius: 7px;margin: 10px auto;"&gt;{btnmsg}&lt;/a&gt;&lt;/p&gt;&lt;div style="font-size: 0.8rem"&gt;&lt;p&gt;Если кнопка выше не работает, откройте следующую ссылку в Вашем браузере: &lt;br/&gt;&lt;span style="word-break: break-all; font: 0.8em monospace"&gt;{url}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Если Вы не запрашивали это действие, просто проигнорируйте это письмо. &lt;/p&gt;&lt;/div&gt;&lt;p style="font-size: 0.7em; text-align: right; color: #333"&gt;{platform} @ {nowtime}&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;</value>
   </data>
   <data name="MailSender_VerifyEmailButton" xml:space="preserve">
-    <value>Подтвердить электронную почту</value>
+    <value>Подтвердить E-mail</value>
   </data>
   <data name="MailSender_VerifyEmailContent" xml:space="preserve">
-    <value>Вы в процессе регистрации вашего аккаунта. Нам нужно проверить регистрационный адрес электронной почты: {0}. Пожалуйста нажмите на кнопку ниже, чтобы подтвердить его.</value>
+    <value>Вы получили это письмо, так как указали почту {0} при регистрации аккаунта на платформе. Пожалуйста, нажмите кнопку ниже, чтобы подтвердить E-mail и активировать Ваш аккаунт.</value>
   </data>
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
-    <value>Подтвердить электронную почту</value>
+    <value>Подтверждение E-mail</value>
   </data>
   <data name="Model_BioTooLong" xml:space="preserve">
     <value>Описание слишком длинное</value>
   </data>
   <data name="Model_ContentRequired" xml:space="preserve">
-    <value>Содержание обязательно</value>
+    <value>Отсутствует содержимое</value>
   </data>
   <data name="Model_EmailMalformed" xml:space="preserve">
-    <value>Недопустимый адрес электронной почты</value>
+    <value>Недопустимый E-mail</value>
   </data>
   <data name="Model_EmailRequired" xml:space="preserve">
-    <value>Электронная почта обязательна</value>
+    <value>Необходимо указать E-mail</value>
   </data>
   <data name="Model_FlagRequired" xml:space="preserve">
-    <value>Требуется флаг</value>
+    <value>Необходимо указать флаг</value>
   </data>
   <data name="Model_FlagTooLong" xml:space="preserve">
     <value>Флаг слишком длинный</value>
@@ -789,7 +789,7 @@
     <value>Некорректный номер телефона</value>
   </data>
   <data name="Model_NewPasswordRequired" xml:space="preserve">
-    <value>Требуется новый пароль.</value>
+    <value>Необходимо ввести новый пароль</value>
   </data>
   <data name="Model_NewPasswordTooShort" xml:space="preserve">
     <value>Новый пароль слишком короткий</value>
@@ -801,37 +801,37 @@
     <value>Старый пароль слишком короткий</value>
   </data>
   <data name="Model_OutOfRange" xml:space="preserve">
-    <value>Значение {0} должно быть между {1} и {2}</value>
+    <value>Значение параметра {0} должно находиться между {1} и {2}</value>
   </data>
   <data name="Model_PasswordRequired" xml:space="preserve">
-    <value>Необходимо указать пароль</value>
+    <value>Необходимо ввести пароль</value>
   </data>
   <data name="Model_RealNameTooLong" xml:space="preserve">
-    <value>Реальное имя слишком длинное</value>
+    <value>Настоящее имя слишком длинное</value>
   </data>
   <data name="Model_StdNumberTooLong" xml:space="preserve">
-    <value>Номер студента слишком длинный</value>
+    <value>Номер билета слишком длинный</value>
   </data>
   <data name="Model_TeamBioTooLong" xml:space="preserve">
-    <value>Они аниме команды слишком длинное</value>
+    <value>Описание команды слишком длинное</value>
   </data>
   <data name="Model_TeamNameTooLong" xml:space="preserve">
     <value>Название команды слишком длинное</value>
   </data>
   <data name="Model_TitleRequired" xml:space="preserve">
-    <value>Название обязательно</value>
+    <value>Необходимо указать заголовок</value>
   </data>
   <data name="Model_TitleTooLong" xml:space="preserve">
-    <value>Название слишком длинное</value>
+    <value>Заголовок слишком длинный</value>
   </data>
   <data name="Model_TitleTooShort" xml:space="preserve">
-    <value>Название слишком короткое</value>
+    <value>Заголовок слишком короткий</value>
   </data>
   <data name="Model_TokenRequired" xml:space="preserve">
-    <value>Требуется токен</value>
+    <value>Необходимо ввести токен</value>
   </data>
   <data name="Model_UserNameRequired" xml:space="preserve">
-    <value>Требуется имя пользователя</value>
+    <value>Необходимо ввести имя пользователя</value>
   </data>
   <data name="Model_UserNameTooLong" xml:space="preserve">
     <value>Слишком длинное имя пользователя</value>
@@ -840,7 +840,7 @@
     <value>Слишком короткое имя пользователя</value>
   </data>
   <data name="Model_ValidationFailed" xml:space="preserve">
-    <value>Не удалось проверить ввод, пожалуйста, проверьте еще раз</value>
+    <value>Не удалось проверить ввод. Пожалуйста, убедитесь, что он соответствует требованиям</value>
   </data>
   <data name="Post_NotFound" xml:space="preserve">
     <value>Пост не найден</value>
@@ -849,7 +849,7 @@
     <value>Слишком много запросов. Пожалуйста, повторите попытку через {0} секунд.</value>
   </data>
   <data name="Scoreboard_AllSubmissions" xml:space="preserve">
-    <value>Все отправки</value>
+    <value>Все отправления</value>
   </data>
   <data name="Scoreboard_BelongingDivision" xml:space="preserve">
     <value>Дивизион</value>
