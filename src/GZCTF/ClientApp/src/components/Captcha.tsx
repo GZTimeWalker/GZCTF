@@ -66,7 +66,7 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
 
   const backendRef = useRef<CaptchaInstance>(null)
 
-  // warp it into CaptchaInstance if nessary in the future
+  // warp it into CaptchaInstance if necessary in the future
   const turnstileRef = useRef<TurnstileInstance>(null)
 
   const nonce = document.getElementById('nonce-container')?.getAttribute('data-nonce') ?? undefined
