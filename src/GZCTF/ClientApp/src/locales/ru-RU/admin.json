@@ -107,8 +107,8 @@
         "difficulty": "Коэффициент сложности",
         "disable": "Вы уверены, что хотите отключить задание {{name}}?",
         "blood_bonus": {
-          "description": "Включить бонус тройной крови для задания",
-          "label": "Blood Bonus"
+          "description": "Включить тройной бонус для задания",
+          "label": "Бонус крови"
         },
         "empty": {
           "description": "Нажмите кнопку в правом верхнем углу для создания первого задания",
@@ -116,7 +116,7 @@
         },
         "enable": "Вы уверены, что хотите включить задание {{name}}?",
         "flag": {
-          "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br /> Each challenge can have multiple flags. Any configured flags can be accepted.",
+          "create": "Создание флагов. Если флагов несколько, то они должны быть разделены строками, по одному флагу на строку.<br /> Каждое задание может иметь несколько флагов. Любой из настроенных флагов может быть принят.",
           "delete": "Вы уверены, что хотите удалить этот флаг?",
           "empty": {
             "description": "Нажмите кнопку в правом верхнем углу для добавления флага",
@@ -161,24 +161,24 @@
           "label": "Включить захват трафика"
         },
         "type": {
-          "description": "Cannot be changed after creation",
+          "description": "Нельзя изменить после создания",
           "label": "Тип"
         }
       },
       "info": {
         "accept_without_review": {
-          "description": "Accept directly after team registration",
-          "label": "Accept Without Review"
+          "description": "Принимать команды сразу после регистрации",
+          "label": "Принимать без проверки"
         },
         "container_limit": {
           "description": "Containers shared by one team (0 = unlimited)",
           "label": "Team Container Limit"
         },
         "content": "Детали игры",
-        "delete": "Are you sure you want to delete game {{name}}?",
+        "delete": "Вы уверены, что хотите удалить игру {{name}}?",
         "divisions": {
           "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
-          "label": "List of Participating Divisions"
+          "label": "Список участвующих дивизионов"
         },
         "end_date": "Дата окончания",
         "end_time": "Время окончания",
@@ -202,16 +202,16 @@
           "label": "Сводка"
         },
         "title": {
-          "description": "Excessive length may affect the display effect",
+          "description": "Чрезмерная длина может повлиять на отображение",
           "label": "Заголовок"
         },
         "writeup_deadline": {
-          "description": "Hours to submit writeups after game ends",
-          "label": "Срок сдачи отчета"
+          "description": "Кол-во часов после окончания игры",
+          "label": "Дедлайн отчетов"
         },
         "writeup_instruction": "Инструкции по написанию отчета",
         "writeup_required": {
-          "description": "Enable writeup submission",
+          "description": "Включить отправку отчетов",
           "label": "Требовать отчеты"
         }
       },
@@ -238,8 +238,8 @@
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> games displayed",
       "writeups": {
         "empty": {
-          "description": "New writeups will appear here",
-          "title": "Ouch! No writeup yet"
+          "description": "Отправленные отчеты появятся здесь",
+          "title": "Отчетов пока что нет"
         },
         "pdf_fallback": "Не удалось загрузить файл PDF"
       }
@@ -490,7 +490,7 @@
       "info": "Information",
       "notices": "Notices",
       "review": "Teams",
-      "writeups": "Writeups"
+      "writeups": "Отчеты"
     },
     "instances": "Instances",
     "logs": "Logs",
