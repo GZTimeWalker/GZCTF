@@ -34,7 +34,6 @@
 
 .left[data-done] {
   animation-duration: 3s;
-  animation-direction: reverse;
 }
 
 .l {
@@ -43,10 +42,6 @@
   animation-name: stroke;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-}
-
-.l[data-done] {
-  animation-direction: reverse;
 }
 
 .l1 {
@@ -76,11 +71,11 @@
 }
 
 .l2[data-done] {
-  animation-duration: 5.2s;
   animation-delay: 0s;
+  animation-duration: 5.2s;
 }
 
 .l3[data-done] {
-  animation-duration: 4.3s;
   animation-delay: 2s;
+  animation-duration: 4.3s;
 }
