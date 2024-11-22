@@ -123,9 +123,9 @@
             "title": "Список флагов пуст"
           },
           "instructions": {
-            "both": "If you need to enable leet flag with <1>[TEAM_HASH]</1>, add the <2>[LEET]</2> tag <strong> before </strong> the flag template string. The entropy of the flag template string will not be checked.",
-            "complex": "If you need to enable special characters in flag generation, use <1>[CLEET]</1> instead of <2>[LEET]</2> at the beginning of the string. This may cause injection issues.",
-            "description": "Please enter flag template string, leave it blank to generate random GUID as flag",
+            "both": "Если Вы хотите включить leet-флаги с <1>[TEAM_HASH]</1>, добавьте <2>[LEET]</2> тег <strong> перед </strong> шаблоном флага. Энтропия для такого шаблона не будет проверяться.",
+            "complex": "Если Вы хотите включить специальные символы при генерации флагов, используйте <1>[CLEET]</1> вместо <2>[LEET]</2> в начале шаблона. Учтите, что это может привести к таким проблемам, как инъекции.",
+            "description": "Введите шаблон флага, или оставьте его пустым для создания случайного GUID в качестве флага",
             "example": "Примеры",
             "guid": "Specify <1>[GUID]</1> to replace only placeholder here with random GUID",
             "leave_empty": "Оставьте это поле пустым",
