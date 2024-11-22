@@ -10,7 +10,7 @@ import {
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import { IconTabs } from '@Components/IconTabs'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { usePageTitle } from '@Hooks/usePageTitle'

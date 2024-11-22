@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core'
 import { FC, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { MobileScoreboardTable } from '@Components/MobileScoreboardTable'
 import { ScoreboardTable } from '@Components/ScoreboardTable'
 import { TeamRank } from '@Components/TeamRank'

@@ -24,7 +24,7 @@ import cx from 'clsx'
 import dayjs from 'dayjs'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { ScoreboardItemModal } from '@Components/ScoreboardItemModal'
 import { useLanguage } from '@Utils/I18n'
 import {

@@ -3,11 +3,11 @@ import { mdiArrowLeft, mdiArrowRight } from '@mdi/js'
 import Icon from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useParams, useLocation } from 'react-router-dom'
+import { Link, useParams, useLocation } from 'react-router'
+import { WithGameEditTab, GameEditTabProps } from '@Components/admin/WithGameEditTab'
 import { useChallengeCategoryLabelMap } from '@Utils/Shared'
 import { useEditChallenges } from '@Hooks/useEdit'
 import { ChallengeInfoModel, ChallengeCategory } from '@Api'
-import { WithGameEditTab, GameEditTabProps } from './WithGameEditTab'
 
 export const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const { children, isLoading, ...rest } = props
@@ -21,15 +21,15 @@ export const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const getBeforeNext = (challenges: ChallengeInfoModel[], id: number) => {
     const index = challenges.findIndex((chal) => chal.id === id)
     return {
-      previous: challenges[index - 1],
+      prev: challenges[index - 1],
       current: challenges[index],
       next: challenges[index + 1],
     }
   }
 
-  const { previous, current, next } = challenges
+  const { prev, current, next } = challenges
     ? getBeforeNext(challenges, numCId)
-    : { previous: null, current: null, next: null }
+    : { prev: null, current: null, next: null }
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
 
   const color = (chal: ChallengeInfoModel | null) => {
@@ -52,16 +52,16 @@ export const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
           <Button
             justify="space-between"
             component={Link}
-            disabled={isLoading || !previous}
+            disabled={isLoading || !prev}
             leftSection={<Icon path={mdiArrowLeft} size={1} />}
-            to={`/admin/games/${numId}/challenges/${previous?.id}${restpath}`}
+            to={prev?.id ? `/admin/games/${numId}/challenges/${prev?.id}${restpath}` : '#'}
           >
             {t('admin.button.challenges.previous')}
           </Button>
 
           <Group justify="space-between" gap="xs" wrap="nowrap" maw="calc(100% - 16rem)">
             <Text c="dimmed" truncate>
-              {previous?.title ?? ''}
+              {prev?.title ?? ''}
             </Text>
             <Text fw="bold" c={color(current)} truncate>
               {current?.title ?? ''}
@@ -76,7 +76,7 @@ export const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
             justify="space-between"
             component={Link}
             rightSection={<Icon path={mdiArrowRight} size={1} />}
-            to={`/admin/games/${numId}/challenges/${next?.id}${restpath}`}
+            to={next?.id ? `/admin/games/${numId}/challenges/${next?.id}${restpath}` : '#'}
           >
             {t('admin.button.challenges.next')}
           </Button>

@@ -1,7 +1,7 @@
 import { Center, Stack } from '@mantine/core'
 import { FC } from 'react'
 import { PropsWithChildren } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { LogoHeader } from '@Components/LogoHeader'
 import misc from '@Styles/Misc.module.css'
 

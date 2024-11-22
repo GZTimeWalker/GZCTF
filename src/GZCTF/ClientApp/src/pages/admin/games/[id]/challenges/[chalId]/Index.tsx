@@ -26,7 +26,7 @@ import {
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router'
 import { HintList } from '@Components/HintList'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'

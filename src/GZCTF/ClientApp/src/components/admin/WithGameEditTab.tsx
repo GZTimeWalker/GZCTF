@@ -10,7 +10,7 @@ import {
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, Link, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, Link, useNavigate, useParams } from 'react-router'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import misc from '@Styles/Misc.module.css'

@@ -12,7 +12,7 @@ import {
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { LogoHeader } from '@Components/LogoHeader'
 import { AppControlProps } from '@Components/WithNavbar'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'

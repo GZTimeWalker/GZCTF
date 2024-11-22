@@ -3,7 +3,7 @@ import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import ReactDOM from 'react-dom/client'
 import { initReactI18next } from 'react-i18next'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 import resources from 'virtual:i18next-loader'
 import { convertLanguage } from '@Utils/I18n'
 
@@ -21,8 +21,10 @@ i18n
     },
   })
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <Router>
+const app = ReactDOM.createRoot(document.getElementById('root')!)
+
+app.render(
+  <BrowserRouter>
     <App />
-  </Router>
+  </BrowserRouter>
 )

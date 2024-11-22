@@ -52,8 +52,8 @@ const workerFunction = function () {
     return `${random}${nonce.toString(16).padStart(8, '0')}`
   }
 
-  const toHex = (bytes: ArrayBuffer): string => {
-    return Array.from(new Uint8Array(bytes))
+  const toHex = (bytes: Uint8Array): string => {
+    return Array.from(bytes)
       .map((byte) => byte.toString(16).padStart(2, '0'))
       .join('')
   }

@@ -7,7 +7,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import api, { GameInfoModel } from '@Api'
 

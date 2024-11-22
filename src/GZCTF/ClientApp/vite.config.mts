@@ -3,6 +3,7 @@ import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react'
 import process from 'process'
 import { defineConfig, loadEnv } from 'vite'
+import banner from 'vite-plugin-banner'
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import Pages from 'vite-plugin-pages'
 import { prismjsPlugin } from 'vite-plugin-prismjs'
@@ -13,6 +14,13 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
   const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:55000'
+
+  const BANNER =
+    `/* The GZCTF Project @${env.VITE_APP_GIT_NAME ?? 'unknown'}\n * \n` +
+    ` * Commit  : ${env.VITE_APP_GIT_SHA ?? 'Unofficial build version'}\n` +
+    ` * Build   : ${env.VITE_APP_BUILD_TIMESTAMP ?? new Date().toISOString()}\n` +
+    ' * License : GNU Affero General Public License v3.0\n * \n' +
+    ' * Copyright © 2022-now @GZTimeWalker, All Rights Reserved.\n*/'
 
   return {
     server: {
@@ -32,13 +40,16 @@ export default defineConfig(({ mode }) => {
       outDir: 'build',
       target: ['es2020'],
       assetsDir: 'static',
+      cssCodeSplit: false,
       chunkSizeWarningLimit: 2000,
+      reportCompressedSize: false,
       rollupOptions: {
         output: {
+          compact: true,
+          hashCharacters: 'base36',
           chunkFileNames: 'static/[hash].js',
           assetFileNames: 'static/[hash].[ext]',
           entryFileNames: 'static/[name].[hash].js',
-          compact: true,
         },
       },
     },
@@ -47,6 +58,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
+      banner(BANNER),
       tsconfigPaths(),
       eslintPlugin(), // only for development
       webfontDownload(

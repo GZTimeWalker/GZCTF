@@ -5,7 +5,7 @@ import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeCategoryItem,
