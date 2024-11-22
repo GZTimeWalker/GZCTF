@@ -24,6 +24,7 @@ const About: FC = () => {
   const { repo, valid, rawTag: tag, sha, buildTime } = ValidatedRepoMeta()
   const { t } = useTranslation()
   const theme = useMantineTheme()
+  const shortSha = `#${sha.substring(0, 8)}`
 
   usePageTitle(t('common.title.about'))
 
@@ -50,7 +51,7 @@ const About: FC = () => {
                 size="lg"
                 variant="outline"
               >
-                © 2022-Now GZTime {valid ? `#${sha.substring(0, 6)}` : ''}
+                © 2022-Now GZTime {valid ? shortSha : ''}
               </Badge>
             </HoverCard.Target>
             <HoverCard.Dropdown>
@@ -76,7 +77,7 @@ const About: FC = () => {
                         color={valid ? theme.primaryColor : 'alert'}
                         size="xs"
                       >
-                        {valid ? `${tag}#${sha.substring(0, 6)}` : 'UNOFFICIAL'}
+                        {valid ? `${tag}${shortSha}` : 'UNOFFICIAL'}
                       </Badge>
                     </Group>
                   </Stack>
