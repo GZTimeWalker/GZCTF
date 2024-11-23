@@ -505,7 +505,7 @@
     <value>Aucun trafic capturé trouvé</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Titre introuvable ou échec de l'allocation de la pièce jointe dynamique</value>
+    <value>Défi non trouvé ou échec de l'allocation dynamique de pièce jointe</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>Le conteneur de ce défi existe déjà</value>

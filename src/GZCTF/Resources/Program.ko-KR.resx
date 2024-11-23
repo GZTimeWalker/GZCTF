@@ -492,7 +492,7 @@
     <value>캡처된 트래픽이 없습니다.</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>제목을 찾을 수 없거나 동적 인스턴스 할당에 실패했습니다</value>
+    <value>문제를 찾을 수 없거나 동적 인스턴스 할당에 실패했습니다</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>해당 문제의 컨테이너가 이미 존재합니다.</value>

@@ -508,7 +508,7 @@
     <value>Kein erfasster Datenverkehr gefunden</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Titel nicht gefunden oder dynamische Anhangszuteilung fehlgeschlagen</value>
+    <value>Herausforderung nicht gefunden oder dynamische Anhangszuteilung fehlgeschlagen</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>Der Container dieser Herausforderung existiert bereits</value>

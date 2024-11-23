@@ -505,7 +505,7 @@
     <value>No se encontró tráfico capturado</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Título no encontrado o fallo en la asignación dinámica de adjuntos</value>
+    <value>Desafío no encontrado o asignación de adjunto dinámico fallida</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>El contenedor de este desafío ya existe</value>
