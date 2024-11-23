@@ -492,7 +492,7 @@
     <value>No captured traffic found</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Title not found or dynamic attachment allocation failed</value>
+    <value>Challenge not found or dynamic attachment allocation failed</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>The container of this challenge already exists</value>
