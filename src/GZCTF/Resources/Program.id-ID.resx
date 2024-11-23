@@ -492,7 +492,7 @@
     <value>Tidak ada traffic yang tertangkap</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Judul tidak ditemukan atau alokasi lampiran dinamis gagal</value>
+    <value>Challenge not found or dynamic attachment allocation failed</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>Container untuk challenge ini sudah ada</value>
