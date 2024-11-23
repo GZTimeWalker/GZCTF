@@ -24,6 +24,7 @@
         <EFOptimizeContext>true</EFOptimizeContext>
         <EFPrecompileQueriesStage>none</EFPrecompileQueriesStage>
         <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
+        <CETCompat>false</CETCompat>
     </PropertyGroup>
 
     <ItemGroup>
