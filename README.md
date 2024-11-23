@@ -87,7 +87,7 @@ Currently, the platform supports multiple languages, and the translation progres
 - Japanese (ja-JP): Fully supported, translated by [Steve](https://github.com/hez2010)
 - Indonesian (id-ID): Fully supported, translated by [Rio](https://github.com/riodrwn)
 - Korean (ko-KR): Fully supported, translated by [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim) and [blluv](https://github.com/blluv)
-- Russian (ru-RU): Work in progress, translated by [FazaN](https://github.com/CyberFazaN)
+- Russian (ru-RU): Fully supported, translated by [FazaN](https://github.com/CyberFazaN)
 
 ### Translated by Machine and AI
 

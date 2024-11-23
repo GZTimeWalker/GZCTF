@@ -68,10 +68,10 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - ゲーム中の審判監視、提出とメインイベントのログ
 - チャレンジに対するトラフィック **TCP over WebSocket プロキシ転送**、トラフィック キャプチャの設定ができます
 - Redis ベースのクラスター キャッシュ、PGSQL をデータベースとして使用
-- ローカルディスクおよび**オブジェクトストレージ（MinIO、S3など）**に基づくストレージバックエンド
+- ローカルディスクおよび**オブジェクトストレージ（MinIO、S3 など）**に基づくストレージバックエンド
 - グローバル設定でプラットフォームタイトルと他の情報を設定可能
 - **ダークモード**、多言語、カスタムテーマのサポート
-- **ウェブサイトのフッター**、**ファビコン**、SEO向け**HTMLの説明**のカスタマイズ可能
+- **ウェブサイトのフッター**、**ファビコン**、SEO 向け**HTML の説明**のカスタマイズ可能
 - マトリクスと分散トレーシングのサポート
 - その他...
 
@@ -87,7 +87,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - 日本語 (ja-JP)：完全対応、[Steve](http://github.com/hez2010) による翻訳
 - インドネシア語 (id-ID)：完全対応、[Rio](https://github.com/riodrwn) による翻訳
 - 韓国語 (ko-KR)：完全対応、 [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim), [blluv](https://github.com/blluv) による翻訳
-- ロシア語 (ru-RU)：翻訳中、[FazaN](https://github.com/CyberFazaN) による翻訳
+- ロシア語 (ru-RU)：完全対応、 [FazaN](https://github.com/CyberFazaN) による翻訳
 
 ### 機械および AI による翻訳
 
@@ -157,7 +157,7 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 - **蘇州市職業大学 2023 年冬季新人戦 [SVUCTF-WINTER-2023](https://github.com/SVUCTF/SVUCTF-WINTER-2023)**
 - **北京航空航天大学 BUAACTF 2024**
 - **曲阜師範大学第 1 回“曲 star”サイバーセキュリティスキルコンテスト**
-- **成都理工大学第4回、第5回情報セキュリティ・コンペティション DinoCTF**
+- **成都理工大学第 4 回、第 5 回情報セキュリティ・コンペティション DinoCTF**
 
 _順番は順位との関係はありません。追加ための PR は大歓迎。_
 

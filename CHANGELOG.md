@@ -3,6 +3,55 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.0.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.25.0-patch.1..v1.0.0) - 2024-11-23
+
+### ⛰️ Features
+
+- **(admin)** edit team division - ([326d20](https://github.com/GZTimeWalker/GZCTF/commit/326d20)) by **GZTime**
+- **(captcha)** add hash pow captcha - ([8ea621](https://github.com/GZTimeWalker/GZCTF/commit/8ea621)) by **GZTime**
+- **(challenge)** disable blood bonus for challenges - ([59b953](https://github.com/GZTimeWalker/GZCTF/commit/59b953)) by **GZTime**
+- design time DbContext factory - ([a4edc4](https://github.com/GZTimeWalker/GZCTF/commit/a4edc4)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(captcha)** not initialized on initial load - ([6750d5](https://github.com/GZTimeWalker/GZCTF/commit/6750d5)) by **GZTime**
+- **(date)** wrong date format - ([9a5b43](https://github.com/GZTimeWalker/GZCTF/commit/9a5b43)) by **GZTime**
+- **(frontend)** cannot set bonus to 0 via input - ([e3527b](https://github.com/GZTimeWalker/GZCTF/commit/e3527b)) by **GZTime**
+- **(game)** join game without division - ([42df97](https://github.com/GZTimeWalker/GZCTF/commit/42df97)) by **GZTime**
+- **(scoreboard)** filter out banned team - ([75c05c](https://github.com/GZTimeWalker/GZCTF/commit/75c05c)) by **GZTime**
+- **(style)** animation not works on safari - ([bab710](https://github.com/GZTimeWalker/GZCTF/commit/bab710)) by **GZTime**
+- **(worker)** class failed to init after release build - ([07296c](https://github.com/GZTimeWalker/GZCTF/commit/07296c)) by **GZTime**
+- filter out flags for dynamic container challenge - ([e28ad0](https://github.com/GZTimeWalker/GZCTF/commit/e28ad0)) by **Steven He**
+- unable to delete a game - ([3a2300](https://github.com/GZTimeWalker/GZCTF/commit/3a2300)) by **Steven He**
+
+### 🎨 Styling
+
+- **(captcha)** refactor animation - ([9b351d](https://github.com/GZTimeWalker/GZCTF/commit/9b351d)) by **GZTime**
+- **(game)** update layout for i18n - ([336c19](https://github.com/GZTimeWalker/GZCTF/commit/336c19)) by **GZTime**
+- **(pow)** do not reverse animation - ([12217b](https://github.com/GZTimeWalker/GZCTF/commit/12217b)) by **GZTime**
+
+### 🚀 Performances
+
+- **(guid)** Use `Guid.CreateVersion7` instead of Ulid - ([00fff6](https://github.com/GZTimeWalker/GZCTF/commit/00fff6)) by **GZTime**
+- **(query)** update RecalculateAcceptedCount - ([5e80ea](https://github.com/GZTimeWalker/GZCTF/commit/5e80ea)) by **GZTime**
+- reduce style api usage - ([2aedee](https://github.com/GZTimeWalker/GZCTF/commit/2aedee)) by **GZTime**
+- always load flags later - ([b4b57e](https://github.com/GZTimeWalker/GZCTF/commit/b4b57e)) by **GZTime**
+- use async query while deleting games - ([88abdb](https://github.com/GZTimeWalker/GZCTF/commit/88abdb)) by **Steven He**
+- Bulk update - ([9525c1](https://github.com/GZTimeWalker/GZCTF/commit/9525c1)) by **Steven He**
+
+### 🔨 Refactor
+
+- **(frontend)** use polymorphic components for links & tidy up - ([cd0aaf](https://github.com/GZTimeWalker/GZCTF/commit/cd0aaf)) by **GZTime**
+- rename 'Organization' to 'Division' globally - ([248e6c](https://github.com/GZTimeWalker/GZCTF/commit/248e6c)) by **GZTime**
+
+---
+## [0.25.0-patch.1](https://github.com/GZTimeWalker/GZCTF/compare/v0.25.0..v0.25.0-patch.1) - 2024-11-16
+
+### 🐛 Bug Fixes
+
+- **(favicon)** get from blob storage - ([b7a146](https://github.com/GZTimeWalker/GZCTF/commit/b7a146)) by **GZTime**
+
+---
 ## [0.25.0](https://github.com/GZTimeWalker/GZCTF/compare/v0.24.5-patch.1..v0.25.0) - 2024-11-15
 
 ### ⛰️ Features
