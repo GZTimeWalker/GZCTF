@@ -107,8 +107,8 @@
         "difficulty": "Tingkat kesulitan",
         "disable": "Apakah kamu yakin ingin menonaktifkan challenge {{name}}?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "Aktifkan bonus blood untuk challenge ini",
+          "label": "Bonus Blood"
         },
         "empty": {
           "description": "Klik pojok kanan atas untuk membuat challenge pertama",
@@ -223,7 +223,7 @@
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "Ubah Divisi Tim",
         "empty": {
           "description": "Dalam proses... jangan khawatir!",
           "title": "Waduch! Belum ada tim yang bergabung di game ini"
