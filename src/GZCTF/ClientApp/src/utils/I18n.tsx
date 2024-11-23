@@ -23,7 +23,7 @@ export const LanguageMap = {
   'ja-JP': '🇯🇵 日本語',
   'id-ID': '🇮🇩 Bahasa',
   'ko-KR': '🇰🇷 한국어',
-  'ru-RU': '🇷🇺 Русский (WIP)',
+  'ru-RU': '🇷🇺 Русский',
   'de-DE': '🇩🇪 Deutsch (MT)',
   'fr-FR': '🇫🇷 Français (MT)',
   'es-ES': '🇪🇸 Español (MT)',
