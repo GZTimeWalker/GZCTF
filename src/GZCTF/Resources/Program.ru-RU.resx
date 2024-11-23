@@ -492,7 +492,7 @@
     <value>Захваченный трафик не найден</value>
   </data>
   <data name="Game_ChallengeNotFound" xml:space="preserve">
-    <value>Заголовок не найден или не удалось распределить динамические вложения</value>
+    <value>Задание не найдено или не удалось распределить динамические вложения</value>
   </data>
   <data name="Game_ContainerAlreadyCreated" xml:space="preserve">
     <value>Контейнер для этого задания уже существует</value>
@@ -819,13 +819,13 @@
     <value>Название команды слишком длинное</value>
   </data>
   <data name="Model_TitleRequired" xml:space="preserve">
-    <value>Необходимо указать заголовок</value>
+    <value>Необходимо указать название</value>
   </data>
   <data name="Model_TitleTooLong" xml:space="preserve">
-    <value>Заголовок слишком длинный</value>
+    <value>Название слишком длинное</value>
   </data>
   <data name="Model_TitleTooShort" xml:space="preserve">
-    <value>Заголовок слишком короткий</value>
+    <value>Название слишком короткое</value>
   </data>
   <data name="Model_TokenRequired" xml:space="preserve">
     <value>Необходимо ввести токен</value>
