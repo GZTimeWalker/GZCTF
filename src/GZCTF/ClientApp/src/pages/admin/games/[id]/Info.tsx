@@ -396,14 +396,8 @@ const GameInfoEdit: FC = () => {
       </Grid>
       <Group grow justify="space-between">
         <Textarea
-          label={
-            <Group gap="sm">
-              <Text size="sm">{t('admin.content.games.info.writeup_instruction')}</Text>
-              <Text size="xs" c="dimmed">
-                {t('admin.content.markdown_support')}
-              </Text>
-            </Group>
-          }
+          label={t('admin.content.games.info.writeup_instruction')}
+          description={t('admin.content.markdown_support')}
           value={game?.writeupNote}
           w="100%"
           autosize
@@ -413,14 +407,8 @@ const GameInfoEdit: FC = () => {
           onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
         />
         <TagsInput
-          label={
-            <Group gap="sm">
-              <Text size="sm"> {t('admin.content.games.info.divisions.label')}</Text>
-              <Text size="xs" c="dimmed">
-                {t('admin.content.games.info.divisions.description')}
-              </Text>
-            </Group>
-          }
+          label={t('admin.content.games.info.divisions.label')}
+          description={t('admin.content.games.info.divisions.description')}
           disabled={disabled}
           placeholder={t('admin.placeholder.games.divisions')}
           maxDropdownHeight={300}

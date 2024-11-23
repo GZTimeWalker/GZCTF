@@ -132,7 +132,7 @@
 
 .gamePoster {
   height: 211px;
-  padding: 16px;
+  padding: 0 16px;
 }
 
 .gamePoster[data-poster] {
