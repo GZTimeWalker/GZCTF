@@ -90,10 +90,6 @@
           "description": "所有动态附件均会以此文件名下载",
           "label": "全局附件名"
         },
-        "blood_bonus": {
-          "description": "启用题目的三血加分",
-          "label": "三血奖励"
-        },
         "bonus": {
           "description": "三血奖励加成是指当一个题目被前三个队伍解出时，每个队伍可以得到的分值奖励。三血的奖励基于题目的当前分值，并以一个固定百分比的形式累加至该队伍的得分中。",
           "first_blood": "一血奖励 (%)",
@@ -419,7 +415,7 @@
         "updated": "公告已更新"
       },
       "participation": {
-        "updated": "队伍参与状态已更新"
+        "updated": "队伍审核状态已更新"
       }
     },
     "instances": {
