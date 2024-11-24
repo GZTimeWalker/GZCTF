@@ -1,5 +1,6 @@
 using System.Formats.Tar;
 using System.IO.Compression;
+using System.Web;
 using FluentStorage;
 using FluentStorage.Blobs;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ public static class TarHelper
         var downloadFilename = fileName.EndsWith(".tar.gz") ? fileName : $"{fileName}.tar.gz";
 
         context.Response.ContentType = "application/gzip";
-        context.Response.Headers.ContentDisposition = $"attachment; filename=\"{downloadFilename}\"";
+        context.Response.Headers.ContentDisposition = $"attachment; filename=\"{HttpUtility.UrlEncode(downloadFilename)}\"";
     }
 
     /// <summary>
