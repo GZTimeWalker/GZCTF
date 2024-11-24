@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
     ` * Commit  : ${env.VITE_APP_GIT_SHA ?? 'Unofficial build version'}\n` +
     ` * Build   : ${env.VITE_APP_BUILD_TIMESTAMP ?? new Date().toISOString()}\n` +
     ' * License : GNU Affero General Public License v3.0\n * \n' +
-    ' * Copyright © 2022-now @GZTimeWalker, All Rights Reserved.\n*/'
+    ' * Copyright © 2022-now @GZTimeWalker, All Rights Reserved.\n */'
 
   return {
     server: {
