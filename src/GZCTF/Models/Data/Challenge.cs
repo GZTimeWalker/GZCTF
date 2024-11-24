@@ -204,12 +204,13 @@ public class Challenge
         if (FlagTemplate.Contains("[GUID]"))
             return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
 
+        var flag = FlagTemplate;
         if (FlagTemplate.StartsWith("[LEET]"))
-            return Codec.Leet.LeetFlag(FlagTemplate[6..]);
+            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
 
         if (FlagTemplate.StartsWith("[CLEET]"))
-            return Codec.Leet.LeetFlag(FlagTemplate[7..], true);
+            flag = Codec.Leet.LeetFlag(FlagTemplate[7..], true);
 
-        return Codec.Leet.LeetFlag(FlagTemplate);
+        return flag.Replace("[TEAM_HASH]", "TestTeamHash");
     }
 }
