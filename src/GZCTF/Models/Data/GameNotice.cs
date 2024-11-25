@@ -7,8 +7,8 @@ using Microsoft.Extensions.Localization;
 namespace GZCTF.Models.Data;
 
 /// <summary>
-/// 比赛通知，会发往客户端。
-/// 信息涵盖一二三血通知、提示发布通知、题目开启通知等
+/// Game notice, which will be sent to the client.
+/// Information includes first, second, and third blood notifications, hint release notifications, challenging opening notifications, etc.
 /// </summary>
 [MemoryPackable]
 public partial class GameNotice : FormattableData<NoticeType>
@@ -18,7 +18,7 @@ public partial class GameNotice : FormattableData<NoticeType>
     public int Id { get; set; }
 
     /// <summary>
-    /// 发布时间
+    /// Publish time
     /// </summary>
     [Required]
     [JsonPropertyName("time")]

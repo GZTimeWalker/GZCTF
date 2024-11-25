@@ -3,51 +3,51 @@
 namespace GZCTF.Models.Request.Info;
 
 /// <summary>
-/// 文章信息
+/// Post information
 /// </summary>
 public class PostInfoModel
 {
     /// <summary>
-    /// 文章 Id
+    /// Post ID
     /// </summary>
     [Required]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文章标题
+    /// Post title
     /// </summary>
     [Required]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文章总结
+    /// Post summary
     /// </summary>
     [Required]
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是否置顶
+    /// Is pinned
     /// </summary>
     [Required]
     public bool IsPinned { get; set; }
 
     /// <summary>
-    /// 文章标签
+    /// Post tags
     /// </summary>
     public List<string>? Tags { get; set; }
 
     /// <summary>
-    /// 作者头像
+    /// Author avatar
     /// </summary>
     public string? AuthorAvatar { get; set; }
 
     /// <summary>
-    /// 作者名称
+    /// Author name
     /// </summary>
     public string? AuthorName { get; set; }
 
     /// <summary>
-    /// 更新时间
+    /// Update time
     /// </summary>
     [Required]
     public DateTimeOffset Time { get; set; } = DateTimeOffset.UtcNow;

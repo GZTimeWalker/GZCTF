@@ -19,7 +19,7 @@ using Microsoft.Extensions.Options;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 比赛数据交互接口
+/// Game related APIs
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -48,28 +48,28 @@ public class GameController(
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
-    /// 获取最新的比赛
+    /// Get the latest games
     /// </summary>
     /// <remarks>
-    /// 获取最近十个比赛
+    /// Retrieves the latest ten games
     /// </remarks>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛信息</response>
+    /// <response code="200">Successfully retrieved game information</response>
     [HttpGet]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Games(CancellationToken token) =>
         Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
 
     /// <summary>
-    /// 获取比赛详细信息
+    /// Get detailed game information
     /// </summary>
     /// <remarks>
-    /// 获取比赛的详细信息
+    /// Retrieves detailed information about the game
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛信息</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game information</response>
+    /// <response code="404">Game not found</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(DetailedGameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -88,17 +88,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 加入一个比赛
+    /// Join a game
     /// </summary>
     /// <remarks>
-    /// 加入一场比赛，需要User权限
+    /// Join a game; requires User permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功加入比赛</response>
-    /// <response code="403">无权操作或操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully joined the game</response>
+    /// <response code="403">Unauthorized operation or invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpPost("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -132,20 +132,20 @@ public class GameController(
         if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotMemberOfTeam)]));
 
-        // if already joined (not rejected)
+        // If already joined (not rejected)
         if (await participationRepository.CheckRepeatParticipation(user!, game, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InOtherTeam)]));
 
-        // remove all existing participations
+        // Remove all existing participations
         await participationRepository.RemoveUserParticipations(user!, game, token);
 
-        // try get participation object
+        // Try to get participation object
         Participation? part = await participationRepository.GetParticipation(team, game, token);
 
-        // if the team is not in the game, create a new participation object
+        // If the team is not in the game, create a new participation object
         if (part is null)
         {
-            // create new participation object, do not update team-game-user triple tuple 
+            // Create new participation object, do not update team-game-user triple tuple
             part = new()
             {
                 Game = game,
@@ -160,10 +160,10 @@ public class GameController(
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_TeamMemberLimitExceeded)]));
 
-        // add current user to the team
+        // Add current user to the team
         part.Members.Add(new(user!, game, team));
 
-        // set division as the last request
+        // Set division as the last request
         part.Division = model.Division;
 
         if (part.Status == ParticipationStatus.Rejected)
@@ -182,16 +182,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 退出一个比赛
+    /// Leave a game
     /// </summary>
     /// <remarks>
-    /// 退出一场比赛，需要User权限
+    /// Leave a game; requires User permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功退出比赛</response>
-    /// <response code="403">无权操作或操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully left the game</response>
+    /// <response code="403">Unauthorized operation or invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -215,7 +215,7 @@ public class GameController(
         if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Rejected)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CannotLeaveAfterApproval)]));
 
-        // FIXME: 审核通过后可以添加新用户、但不能退出？
+        // FIXME: After approval, new users can be added, but cannot exit?
 
         part.Members.RemoveWhere(u => u.UserId == user!.Id);
 
@@ -228,15 +228,15 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取积分榜
+    /// Get the scoreboard
     /// </summary>
     /// <remarks>
-    /// 获取积分榜数据
+    /// Retrieves the scoreboard data
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛信息</response>
-    /// <response code="400">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game information</response>
+    /// <response code="400">Game not found</response>
     [HttpGet("{id:int}/Scoreboard")]
     [ProducesResponseType(typeof(ScoreboardModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -255,17 +255,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛通知
+    /// Get game notices
     /// </summary>
     /// <remarks>
-    /// 获取比赛通知数据
+    /// Retrieves game notice data
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛通知</response>
-    /// <response code="400">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game notices</response>
+    /// <response code="400">Game not found</response>
     [HttpGet("{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -285,18 +285,18 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛事件
+    /// Get game events
     /// </summary>
     /// <remarks>
-    /// 获取比赛事件数据，需要Monitor权限
+    /// Retrieves game event data; requires Monitor permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="count"></param>
-    /// <param name="hideContainer">隐藏容器</param>
+    /// <param name="hideContainer">Hide container events</param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛事件</response>
-    /// <response code="400">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game events</response>
+    /// <response code="400">Game not found</response>
     [RequireMonitor]
     [HttpGet("{id:int}/Events")]
     [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
@@ -317,18 +317,18 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛提交
+    /// Get game submissions
     /// </summary>
     /// <remarks>
-    /// 获取比赛提交数据，需要Monitor权限
+    /// Retrieves game submission data; requires Monitor permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="type">提交类型</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="type">Submission type</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛提交</response>
-    /// <response code="400">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game submissions</response>
+    /// <response code="400">Game not found</response>
     [RequireMonitor]
     [HttpGet("{id:int}/Submissions")]
     [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
@@ -349,15 +349,15 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛作弊信息
+    /// Get game cheat information
     /// </summary>
     /// <remarks>
-    /// 获取比赛作弊数据，需要Monitor权限
+    /// Retrieves game cheat data; requires Monitor permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛作弊数据</response>
-    /// <response code="400">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game cheat data</response>
+    /// <response code="400">Game not found</response>
     [RequireMonitor]
     [HttpGet("{id:int}/CheatInfo")]
     [ProducesResponseType(typeof(CheatInfoModel[]), StatusCodes.Status200OK)]
@@ -378,15 +378,15 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取开启了流量捕获的比赛题目
+    /// Get challenges with traffic capturing enabled
     /// </summary>
     /// <remarks>
-    /// 获取开启了流量捕获的比赛题目，需要Monitor权限
+    /// Retrieves challenges with traffic capturing enabled; requires Monitor permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取题目列表</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <response code="200">Successfully retrieved challenge list</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpGet("Games/{id:int}/Captures")]
     [ProducesResponseType(typeof(ChallengeTrafficModel[]), StatusCodes.Status200OK)]
@@ -402,15 +402,15 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛题目中捕获到到队伍信息
+    /// Get team captures in a challenge
     /// </summary>
     /// <remarks>
-    /// 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+    /// Retrieves the list of captured teams for a game challenge; requires Monitor permission
     /// </remarks>
-    /// <param name="challengeId">题目 Id</param>
+    /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件列表</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <response code="200">Successfully retrieved file list</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}")]
     [ProducesResponseType(typeof(TeamTrafficModel[]), StatusCodes.Status200OK)]
@@ -438,16 +438,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛题目中捕获到到队伍的流量包列表
+    /// Get traffic files
     /// </summary>
     /// <remarks>
-    /// 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+    /// Retrieves traffic packet files for a team and challenge; requires Monitor permission
     /// </remarks>
-    /// <param name="challengeId">题目 Id</param>
-    /// <param name="partId">队伍参与 Id</param>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="partId">Team participation ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件列表</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <response code="200">Successfully retrieved file list</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}/{partId:int}")]
     [ProducesResponseType(typeof(FileRecord[]), StatusCodes.Status200OK)]
@@ -469,16 +469,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取流量包文件压缩包
+    /// Download all traffic files
     /// </summary>
     /// <remarks>
-    /// 获取流量包文件，需要Monitor权限
+    /// Downloads all traffic packet files for a team and challenge; requires Monitor permission
     /// </remarks>
-    /// <param name="challengeId">题目 Id</param>
-    /// <param name="partId">队伍参与 Id</param>
-    /// <param name="token">token</param>
-    /// <response code="200">成功获取文件</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="partId">Team participation ID</param>
+    /// <param name="token">Token</param>
+    /// <response code="200">Successfully retrieved files</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -493,16 +493,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 删除某队伍的全部流量包文件
+    /// Deletes all traffic files
     /// </summary>
     /// <remarks>
-    /// 删除某队伍的流量包文件，需要Monitor权限
+    /// Deletes a team's traffic packet files for a challenge; requires Monitor permission
     /// </remarks>
-    /// <param name="challengeId">题目 Id</param>
-    /// <param name="partId">队伍参与 Id</param>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="partId">Team participation ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <response code="200">Successfully deleted files</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpDelete("Captures/{challengeId:int}/{partId:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -524,17 +524,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取流量包文件
+    /// Get a traffic file
     /// </summary>
     /// <remarks>
-    /// 获取流量包文件，需要Monitor权限
+    /// Retrieves a traffic packet file; requires Monitor permission
     /// </remarks>
-    /// <param name="challengeId">题目 Id</param>
-    /// <param name="partId">队伍参与 Id</param>
-    /// <param name="filename">流量包文件名</param>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="partId">Team participation ID</param>
+    /// <param name="filename">Traffic packet filename</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <response code="200">Successfully retrieved file</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpGet("Captures/{challengeId:int}/{partId:int}/{filename}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -560,17 +560,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 删除流量包文件
+    /// Deletes a traffic file
     /// </summary>
     /// <remarks>
-    /// 删除流量包文件，需要Monitor权限
+    /// Deletes a traffic packet file; requires Monitor permission
     /// </remarks>
-    /// <param name="challengeId">题目 Id</param>
-    /// <param name="partId">队伍参与 Id</param>
-    /// <param name="filename">流量包文件名</param>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="partId">Team participation ID</param>
+    /// <param name="filename">Traffic packet filename</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    /// <response code="404">未找到相关捕获信息</response>
+    /// <response code="200">Successfully deleted file</response>
+    /// <response code="404">Capture information not found</response>
     [RequireMonitor]
     [HttpDelete("Captures/{challengeId:int}/{partId:int}/{filename}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -596,16 +596,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取全部比赛题目信息及当前队伍信息
+    /// Get team details in a game
     /// </summary>
     /// <remarks>
-    /// 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
+    /// Retrieves all challenges of the game; requires User permission and active team participation
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game challenge information</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpGet("{id:int}/Details")]
     [ProducesResponseType(typeof(GameDetailModel), StatusCodes.Status200OK)]
@@ -642,16 +642,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取全部比赛参与信息
+    /// Get all game participations
     /// </summary>
     /// <remarks>
-    /// 获取比赛的全部题目参与信息，需要Admin权限
+    /// Retrieves all participation information of the game; requires Admin permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛参与信息</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game participation information</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireAdmin]
     [HttpGet("{id:int}/Participations")]
     [ProducesResponseType(typeof(ParticipationInfoModel[]), StatusCodes.Status200OK)]
@@ -669,17 +669,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 下载比赛积分榜
+    /// Downloads the scoreboard
     /// </summary>
     /// <remarks>
-    /// 下载比赛积分榜，需要Monitor权限
+    /// Downloads the game scoreboard; requires Monitor permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="excelHelper"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功下载比赛积分榜</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully downloaded game scoreboard</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireMonitor]
     [HttpGet("{id:int}/ScoreboardSheet")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -717,17 +717,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 下载比赛全部提交
+    /// Downloads all submissions
     /// </summary>
     /// <remarks>
-    /// 下载比赛全部提交，需要Monitor权限
+    /// Downloads all submissions of the game; requires Monitor permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="excelHelper"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功下载比赛全部提交</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully downloaded all game submissions</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireMonitor]
     [HttpGet("{id:int}/SubmissionSheet")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -756,17 +756,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取比赛题目信息
+    /// Get challenge information
     /// </summary>
     /// <remarks>
-    /// 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+    /// Retrieves challenge information; requires User permission and active team participation
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game challenge information</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpGet("{id:int}/Challenges/{challengeId:int}")]
     [ProducesResponseType(typeof(ChallengeDetailModel), StatusCodes.Status200OK)]
@@ -794,18 +794,18 @@ public class GameController(
     }
 
     /// <summary>
-    /// 提交 flag
+    /// Submits a flag
     /// </summary>
     /// <remarks>
-    /// 提交 flag，需要User权限，需要当前激活队伍已经报名
+    /// Submits a flag; requires User permission and active team participation
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
-    /// <param name="model">提交Flag</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="model">Flag submission</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
-    /// <response code="400">操作无效</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully retrieved game challenge information</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpPost("{id:int}/Challenges/{challengeId:int}")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Submit))]
@@ -841,17 +841,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 查询 flag 状态
+    /// Queries flag status
     /// </summary>
     /// <remarks>
-    /// 查询 flag 状态，需要User权限
+    /// Queries flag status; requires User permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
-    /// <param name="submitId">提交id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="challengeId">Challenge ID</param>
+    /// <param name="submitId">Submission ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛提交状态</response>
-    /// <response code="404">提交未找到</response>
+    /// <response code="200">Successfully retrieved submission status</response>
+    /// <response code="404">Submission not found</response>
     [RequireUser]
     [HttpGet("{id:int}/Challenges/{challengeId:int}/Status/{submitId:int}")]
     [ProducesResponseType(typeof(AnswerResult), StatusCodes.Status200OK)]
@@ -880,16 +880,16 @@ public class GameController(
     }
 
     /// <summary>
-    /// 获取 Writeup 信息
+    /// Get writeup information
     /// </summary>
     /// <remarks>
-    /// 获取赛后题解提交情况，需要User权限
+    /// Retrieves post-game writeup submission information; requires User permission
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功提交 Writeup </response>
-    /// <response code="400">提交不符合要求</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully submitted writeup</response>
+    /// <response code="400">Submission does not meet requirements</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpGet("{id:int}/Writeup")]
     [ProducesResponseType(typeof(BasicWriteupInfoModel), StatusCodes.Status200OK)]
@@ -906,17 +906,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 提交 Writeup
+    /// Submits a writeup
     /// </summary>
     /// <remarks>
-    /// 提交赛后题解，需要User权限
+    /// Submits a post-game writeup; requires User permission
     /// </remarks>
     /// <param name="id"></param>
-    /// <param name="file">文件</param>
+    /// <param name="file">File</param>
     /// <param name="token"></param>
-    /// <response code="200">成功提交 Writeup </response>
-    /// <response code="400">提交不符合要求</response>
-    /// <response code="404">比赛未找到</response>
+    /// <response code="200">Successfully submitted writeup</response>
+    /// <response code="400">Submission does not meet requirements</response>
+    /// <response code="404">Game not found</response>
     [RequireUser]
     [HttpPost("{id:int}/Writeup")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -969,17 +969,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 创建容器
+    /// Creates a container
     /// </summary>
     /// <remarks>
-    /// 创建容器，需要User权限
+    /// Creates a container; requires User permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目信息</response>
-    /// <response code="404">题目未找到</response>
-    /// <response code="400">题目不可创建容器</response>
+    /// <response code="200">Successfully retrieved game challenge information</response>
+    /// <response code="404">Challenge not found</response>
+    /// <response code="400">Container creation not allowed for challenge</response>
     [RequireUser]
     [HttpPost("{id:int}/Container/{challengeId:int}")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
@@ -1033,17 +1033,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 延长容器时间
+    /// Extends container lifetime
     /// </summary>
     /// <remarks>
-    /// 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
+    /// Extends container lifetime; requires User permission and can only be extended two hours within ten minutes before expiration
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目容器信息</response>
-    /// <response code="404">题目未找到</response>
-    /// <response code="400">容器未创建或无法延期</response>
+    /// <response code="200">Successfully retrieved game challenge container information</response>
+    /// <response code="404">Challenge not found</response>
+    /// <response code="400">Container not created or cannot be extended</response>
     [RequireUser]
     [HttpPost("{id:int}/Container/{challengeId:int}/Extend")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]
@@ -1083,17 +1083,17 @@ public class GameController(
     }
 
     /// <summary>
-    /// 删除容器
+    /// Deletes a container
     /// </summary>
     /// <remarks>
-    /// 删除，需要User权限
+    /// Deletes a container; requires User permission
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="challengeId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">删除容器成功</response>
-    /// <response code="404">题目未找到</response>
-    /// <response code="400">题目不可创建容器</response>
+    /// <response code="200">Successfully deleted container</response>
+    /// <response code="404">Challenge not found</response>
+    /// <response code="400">Container creation not allowed for challenge</response>
     [RequireUser]
     [HttpDelete("{id:int}/Container/{challengeId:int}")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Container))]

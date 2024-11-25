@@ -80,7 +80,8 @@ public interface IGameChallengeRepository : IRepository
     /// <param name="model">附件信息</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model, CancellationToken token = default);
+    public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
+        CancellationToken token = default);
 
     /// <summary>
     /// 删除 Flag，确保 Flags 字段已加载

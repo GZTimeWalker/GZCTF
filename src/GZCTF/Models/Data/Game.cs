@@ -17,100 +17,100 @@ public class Game
     public int Id { get; set; }
 
     /// <summary>
-    /// 比赛标题
+    /// Game title
     /// </summary>
     [Required]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// Token 签名公钥
+    /// Token signature public key
     /// </summary>
     [Required]
     [MaxLength(Limits.GameKeyLength)]
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
-    /// Token 签名私钥
+    /// Token signature private key
     /// </summary>
     [Required]
     [MaxLength(Limits.GameKeyLength)]
     public string PrivateKey { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是否隐藏
+    /// Whether to hide
     /// </summary>
     [Required]
     public bool Hidden { get; set; }
 
     /// <summary>
-    /// 头图哈希
+    /// Poster hash
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
     public string? PosterHash { get; set; }
 
     /// <summary>
-    /// 比赛描述
+    /// Game description
     /// </summary>
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛详细介绍
+    /// Detailed introduction of the game
     /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 报名队伍免审核
+    /// Teams can join without review
     /// </summary>
     public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
-    /// 是否需要提交 Writeup
+    /// Whether writeup is required
     /// </summary>
     public bool WriteupRequired { get; set; }
 
     /// <summary>
-    /// 比赛邀请码
+    /// Game invitation code
     /// </summary>
     [MaxLength(Limits.InviteTokenLength)]
     public string? InviteCode { get; set; }
 
     /// <summary>
-    /// 参赛所属分组列表
+    /// List of divisions for the game
     /// </summary>
     public HashSet<string>? Divisions { get; set; }
 
     /// <summary>
-    /// 队员数量限制, 0 为无上限
+    /// Limit on the number of team members, 0 means no limit
     /// </summary>
     public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
-    /// 队伍同时开启的容器数量限制
+    /// Limit on the number of containers a team can have simultaneously
     /// </summary>
     public int ContainerCountLimit { get; set; } = 3;
 
     /// <summary>
-    /// 开始时间
+    /// Start time
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
     public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// 结束时间
+    /// End time
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// Writeup 提交截止时间
+    /// Writeup submission deadline
     /// </summary>
     [Required]
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// Writeup 附加说明
+    /// Additional notes for writeup
     /// </summary>
     [Required]
     public string WriteupNote { get; set; } = string.Empty;
@@ -120,7 +120,7 @@ public class Game
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
     /// <summary>
-    /// 三血加分
+    /// Blood bonus
     /// </summary>
     [NotMapped]
     [Required]
@@ -130,13 +130,22 @@ public class Game
         set => BloodBonusValue = value.Val;
     }
 
+    /// <summary>
+    /// Whether the game is active
+    /// </summary>
     [NotMapped]
     [JsonIgnore]
     public bool IsActive => StartTimeUtc <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUtc;
 
+    /// <summary>
+    /// Poster URL
+    /// </summary>
     [NotMapped]
     public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
 
+    /// <summary>
+    /// Team hash salt
+    /// </summary>
     [NotMapped]
     public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".ToSHA256String();
 
@@ -201,43 +210,43 @@ public class Game
     #region Db Relationship
 
     /// <summary>
-    /// 比赛事件
+    /// Game events
     /// </summary>
     [JsonIgnore]
     public List<GameEvent> GameEvents { get; set; } = [];
 
     /// <summary>
-    /// 比赛通知
+    /// Game notices
     /// </summary>
     [JsonIgnore]
     public List<GameNotice> GameNotices { get; set; } = [];
 
     /// <summary>
-    /// 比赛题目
+    /// Game challenges
     /// </summary>
     [JsonIgnore]
     public List<GameChallenge> Challenges { get; set; } = [];
 
     /// <summary>
-    /// 比赛提交
+    /// Game submissions
     /// </summary>
     [JsonIgnore]
     public List<Submission> Submissions { get; set; } = [];
 
     /// <summary>
-    /// 比赛队伍参赛对象
+    /// Game participations
     /// </summary>
     [JsonIgnore]
     public HashSet<Participation> Participations { get; set; } = [];
 
     /// <summary>
-    /// 比赛队伍
+    /// Game teams
     /// </summary>
     [JsonIgnore]
     public ICollection<Team>? Teams { get; set; }
 
     /// <summary>
-    /// 比赛是否为练习模式（比赛结束够依然可以进行大部分操作）
+    /// Whether the game is in practice mode (most operations can still be performed after the game ends)
     /// </summary>
     public bool PracticeMode { get; set; } = true;
 

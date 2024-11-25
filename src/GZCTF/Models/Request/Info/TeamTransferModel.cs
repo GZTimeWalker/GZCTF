@@ -5,7 +5,7 @@ namespace GZCTF.Models.Request.Info;
 public class TeamTransferModel
 {
     /// <summary>
-    /// 新队长 Id
+    /// New captain ID
     /// </summary>
     [Required]
     public Guid NewCaptainId { get; set; }

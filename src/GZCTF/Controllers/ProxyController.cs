@@ -16,7 +16,7 @@ using Microsoft.Extensions.Options;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 容器 TCP 流量代理、记录
+/// Container TCP traffic proxy and logging APIs
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -49,9 +49,9 @@ public class ProxyController(
     readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
     /// <summary>
-    /// 采用 websocket 代理 TCP 流量
+    /// Proxy TCP over websocket
     /// </summary>
-    /// <param name="id">容器 id</param>
+    /// <param name="id">Container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     [Route("{id:guid}")]
@@ -112,9 +112,9 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// 采用 websocket 代理 TCP 流量，为测试容器使用
+    /// Proxy TCP over websocket for admins
     /// </summary>
-    /// <param name="id">测试容器 id</param>
+    /// <param name="id">Test container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     [Route("NoInst/{id:guid}")]
@@ -225,7 +225,7 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// 采用 websocket 代理 TCP 流量
+    /// Proxy TCP traffic using websocket
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="ws"></param>
@@ -290,9 +290,9 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// 容器存在性校验
+    /// Validate container existence
     /// </summary>
-    /// <param name="id">容器 id</param>
+    /// <param name="id">Container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     async Task<bool> ValidateContainer(Guid id, CancellationToken token = default)
@@ -312,9 +312,9 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// 实现容器 TCP 连接计数的 Fetch-Add 操作
+    /// Implement Fetch-Add operation for container TCP connection count
     /// </summary>
-    /// <param name="key">缓存键值</param>
+    /// <param name="key">Cache key</param>
     /// <returns></returns>
     async Task<bool> IncrementConnectionCount(string key)
     {
@@ -334,9 +334,9 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// 实现容器 TCP 连接计数的减少操作
+    /// Implement decrement operation for container TCP connection count
     /// </summary>
-    /// <param name="key">缓存键值</param>
+    /// <param name="key">Cache key</param>
     /// <returns></returns>
     async Task DecrementConnectionCount(string key)
     {

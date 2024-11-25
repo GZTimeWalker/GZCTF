@@ -572,6 +572,9 @@
   <data name="Header_Challenge" xml:space="preserve">
     <value>Challenge</value>
   </data>
+  <data name="Header_RealName" xml:space="preserve">
+    <value>Real Name</value>
+  </data>
   <data name="Header_Email" xml:space="preserve">
     <value>Email</value>
   </data>

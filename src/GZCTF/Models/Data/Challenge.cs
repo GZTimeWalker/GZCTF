@@ -10,7 +10,7 @@ public class Challenge
     public int Id { get; set; }
 
     /// <summary>
-    /// 题目名称
+    /// Challenge title
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -19,87 +19,87 @@ public class Challenge
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目内容
+    /// Challenge content
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目类别
+    /// Challenge category
     /// </summary>
     [Required]
     [JsonConverter(typeof(JsonStringEnumConverter<ChallengeCategory>))]
     public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
-    /// 题目类型，创建后不可更改
+    /// Challenge type, cannot be changed after creation
     /// </summary>
     [Required]
     [JsonConverter(typeof(JsonStringEnumConverter<ChallengeType>))]
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>
-    /// 题目提示
+    /// Challenge hints
     /// </summary>
     public List<string>? Hints { get; set; }
 
     /// <summary>
-    /// 是否启用题目
+    /// Whether the challenge is enabled
     /// </summary>
     public bool IsEnabled { get; set; }
 
     /// <summary>
-    /// 解决题目人数
+    /// Number of people who solved the challenge
     /// </summary>
     [Required]
     public int AcceptedCount { get; set; }
 
     /// <summary>
-    /// 提交答案的数量
+    /// Number of submissions
     /// </summary>
     [Required]
     public int SubmissionCount { get; set; }
 
     /// <summary>
-    /// 镜像名称与标签
+    /// Image name and tag
     /// </summary>
     public string? ContainerImage { get; set; } = string.Empty;
 
     /// <summary>
-    /// 运行内存限制 (MB)
+    /// Memory limit (MB)
     /// </summary>
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    /// 存储限制 (MB)
+    /// Storage limit (MB)
     /// </summary>
     public int? StorageLimit { get; set; } = 256;
 
     /// <summary>
-    /// CPU 限制 (0.1 CPUs)
+    /// CPU limit (0.1 CPUs)
     /// </summary>
     public int? CPUCount { get; set; } = 1;
 
     /// <summary>
-    /// 镜像暴露端口
+    /// Container exposed port
     /// </summary>
     public int? ContainerExposePort { get; set; } = 80;
 
     /// <summary>
-    /// 下载文件名称，仅用于动态附件统一文件名
+    /// Download file name, used only for dynamic attachment unified file name
     /// </summary>
     public string? FileName { get; set; } = "attachment";
 
     /// <summary>
-    /// 并发检查
+    /// Concurrency check
     /// </summary>
     [JsonIgnore]
     [ConcurrencyCheck]
     public Guid ConcurrencyStamp { get; set; }
 
     /// <summary>
-    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// Flag template, used to generate flags based on token and challenge, game information
     /// </summary>
     [MaxLength(Limits.MaxFlagTemplateLength)]
     public string? FlagTemplate { get; set; }
@@ -107,34 +107,34 @@ public class Challenge
     #region Db Relationship
 
     /// <summary>
-    /// 题目附件 Id
+    /// Challenge attachment ID
     /// </summary>
     public int? AttachmentId { get; set; }
 
     /// <summary>
-    /// 题目附件（动态附件存放于 FlagContext）
+    /// Challenge attachment (dynamic attachments are stored in FlagContext)
     /// </summary>
     public Attachment? Attachment { get; set; }
 
     /// <summary>
-    /// 测试容器 Id
+    /// Test container ID
     /// </summary>
     public Guid? TestContainerId { get; set; }
 
     /// <summary>
-    /// 测试容器
+    /// Test container
     /// </summary>
     public Container? TestContainer { get; set; }
 
     /// <summary>
-    /// 题目对应的 Flag 列表
+    /// List of flags for the challenge
     /// </summary>
     public List<FlagContext> Flags { get; set; } = [];
 
     #endregion
 
     /// <summary>
-    /// 为参赛对象生成动态 Flag
+    /// Generate dynamic flag for the participant
     /// </summary>
     /// <param name="part"></param>
     /// <returns></returns>
@@ -172,7 +172,7 @@ public class Challenge
     }
 
     /// <summary>
-    /// 直接生成动态 Flag
+    /// Directly generate dynamic flag
     /// </summary>
     internal string GenerateDynamicFlag()
     {

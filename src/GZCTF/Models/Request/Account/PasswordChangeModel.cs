@@ -3,12 +3,12 @@
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 密码更改
+/// Password change
 /// </summary>
 public class PasswordChangeModel
 {
     /// <summary>
-    /// 旧密码
+    /// Old password
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_OldPasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -17,7 +17,7 @@ public class PasswordChangeModel
     public string Old { get; set; } = string.Empty;
 
     /// <summary>
-    /// 新密码
+    /// New password
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_NewPasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

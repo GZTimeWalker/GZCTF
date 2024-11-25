@@ -3,27 +3,27 @@
 public class CheatCheckInfo
 {
     /// <summary>
-    /// 检查结果
+    /// Check result
     /// </summary>
     public AnswerResult AnswerResult { get; set; } = AnswerResult.WrongAnswer;
 
     /// <summary>
-    /// 作弊队伍名称
+    /// Cheating team name
     /// </summary>
     public string? SubmitTeamName { get; set; }
 
     /// <summary>
-    /// Flag 原属队伍
+    /// Original team owns the flag
     /// </summary>
     public string? SourceTeamName { get; set; }
 
     /// <summary>
-    /// 作弊用户
+    /// Cheating user
     /// </summary>
     public string? CheatUserName { get; set; }
 
     /// <summary>
-    /// Flag 文本
+    /// Flag text
     /// </summary>
     public string? Flag { get; set; }
 

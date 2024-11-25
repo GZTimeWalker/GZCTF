@@ -12,7 +12,7 @@ using Microsoft.Net.Http.Headers;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 文件交互接口
+/// File APIs
 /// </summary>
 [ApiController]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -26,16 +26,17 @@ public class AssetsController(
     readonly FileExtensionContentTypeProvider _extProvider = new();
 
     /// <summary>
-    /// 获取文件接口
+    /// File retrieval interface
     /// </summary>
     /// <remarks>
-    /// 根据哈希获取文件，不匹配文件名
+    /// Retrieve a file by hash, filename is not matched
     /// </remarks>
-    /// <param name="hash">文件哈希</param>
-    /// <param name="filename">下载文件名</param>
+    /// <param name="hash">File hash</param>
+    /// <param name="filename">Download filename</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文件</response>
-    /// <response code="404">文件未找到</response>
+    /// <response code="200">File retrieved successfully</response>
+    /// <response code="404">File not found</response>
+    /// <response code="400">Failed to retrieve file</response>
     [HttpGet("[controller]/{hash:length(64)}/{filename:minlength(1)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -69,18 +70,18 @@ public class AssetsController(
     }
 
     /// <summary>
-    /// 上传文件接口
+    /// File upload interface
     /// </summary>
     /// <remarks>
-    /// 上传一个或多个文件
+    /// Upload one or more files
     /// </remarks>
     /// <param name="files"></param>
-    /// <param name="filename">统一文件名</param>
+    /// <param name="filename">Unified filename</param>
     /// <param name="token"></param>
-    /// <response code="200">成功上传文件</response>
-    /// <response code="400">上传文件失败</response>
-    /// <response code="401">未授权用户</response>
-    /// <response code="403">无权访问</response>
+    /// <response code="200">File(s) uploaded successfully</response>
+    /// <response code="400">Failed to upload file(s)</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Access denied</response>
     [RequireAdmin]
     [HttpPost("api/[controller]")]
     [ProducesResponseType(typeof(List<LocalFile>), StatusCodes.Status200OK)]
@@ -112,17 +113,17 @@ public class AssetsController(
     }
 
     /// <summary>
-    /// 删除文件接口
+    /// File deletion interface
     /// </summary>
     /// <remarks>
-    /// 按照文件哈希删除文件
+    /// Delete a file by hash
     /// </remarks>
     /// <param name="hash"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除文件</response>
-    /// <response code="400">上传文件失败</response>
-    /// <response code="401">未授权用户</response>
-    /// <response code="403">无权访问</response>
+    /// <response code="200">File deleted successfully</response>
+    /// <response code="400">Failed to delete file</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Access denied</response>
     [RequireAdmin]
     [HttpDelete("api/[controller]/{hash:length(64)}")]
     [ProducesResponseType(StatusCodes.Status200OK)]

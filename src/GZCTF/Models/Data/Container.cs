@@ -14,80 +14,80 @@ public class Container
     public Guid Id { get; set; }
 
     /// <summary>
-    /// 镜像名称
+    /// Image name
     /// </summary>
     [Required]
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
-    /// 容器 ID
+    /// Container ID
     /// </summary>
     [Required]
     public string ContainerId { get; set; } = string.Empty;
 
     /// <summary>
-    /// 容器状态
+    /// Container status
     /// </summary>
     [Required]
     public ContainerStatus Status { get; set; } = ContainerStatus.Pending;
 
     /// <summary>
-    /// 容器创建时间
+    /// Container creation time
     /// </summary>
     [Required]
     public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// 容器期望终止时间
+    /// Expected container stop time
     /// </summary>
     /// <remarks>
-    /// 此处设置 2 小时避免创建后立即被销毁，实际销毁时间由容器管理器决定
+    /// Set to 2 hours to avoid immediate destruction after creation, actual destruction time is determined by the container manager
     /// </remarks>
     [Required]
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
-    /// 是否具备反向代理
+    /// Whether the container has a reverse proxy
     /// </summary>
     [Required]
     public bool IsProxy { get; set; }
 
     /// <summary>
-    /// 本地 IP
+    /// Local IP
     /// </summary>
     [Required]
     public string IP { get; set; } = string.Empty;
 
     /// <summary>
-    /// 本地端口
+    /// Local port
     /// </summary>
     [Required]
     public int Port { get; set; }
 
     /// <summary>
-    /// 公开 IP
+    /// Public IP
     /// </summary>
     public string? PublicIP { get; set; }
 
     /// <summary>
-    /// 公开端口
+    /// Public port
     /// </summary>
     public int? PublicPort { get; set; }
 
     /// <summary>
-    /// 容器实例访问方式
+    /// Container instance access method
     /// </summary>
     [NotMapped]
     public string Entry => IsProxy ? Id.ToString() : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
 
     /// <summary>
-    /// 是否启用流量捕获
+    /// Whether traffic capture is enabled
     /// </summary>
     [NotMapped]
     public bool EnableTrafficCapture => GameInstance?.Challenge.EnableTrafficCapture ?? false;
 
     /// <summary>
-    /// 容器实例流量捕获存储路径
+    /// Container instance traffic capture storage path
     /// </summary>
     public string TrafficPath(string conn)
     {
@@ -103,7 +103,7 @@ public class Container
     }
 
     /// <summary>
-    /// 生成容器的元数据信息
+    /// Generate metadata for the container
     /// </summary>
     /// <returns></returns>
     public byte[]? GenerateMetadata(JsonSerializerOptions options)
@@ -136,22 +136,22 @@ public class Container
     #region Db Relationship
 
     /// <summary>
-    /// 比赛题目实例对象
+    /// Game challenge instance object
     /// </summary>
     public GameInstance? GameInstance { get; set; }
 
     /// <summary>
-    /// 比赛题目实例对象 ID
+    /// Game challenge instance object ID
     /// </summary>
     public int? GameInstanceId { get; set; }
 
     /// <summary>
-    /// 练习题目实例对象
+    /// Exercise challenge instance object
     /// </summary>
     public ExerciseInstance? ExerciseInstance { get; set; }
 
     /// <summary>
-    /// 练习题目实例对象 ID
+    /// Exercise challenge instance object ID
     /// </summary>
     public int? ExerciseInstanceId { get; set; }
 

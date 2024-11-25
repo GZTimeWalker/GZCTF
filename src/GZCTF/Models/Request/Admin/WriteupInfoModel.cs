@@ -4,32 +4,32 @@ using GZCTF.Models.Request.Info;
 namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
-/// 比赛 Writeup 信息
+/// Game writeup information
 /// </summary>
 public class WriteupInfoModel
 {
     /// <summary>
-    /// 参与对象 Id
+    /// Participation ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 队伍信息
+    /// Team information
     /// </summary>
     public TeamInfoModel Team { get; set; } = default!;
 
     /// <summary>
-    /// 文件链接
+    /// File URL
     /// </summary>
     public string Url { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文件上传时间
+    /// File upload time
     /// </summary>
     public DateTimeOffset UploadTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// Writeup 文件对象
+    /// Writeup file object
     /// </summary>
     [JsonIgnore]
     public LocalFile File { get; set; } = default!;

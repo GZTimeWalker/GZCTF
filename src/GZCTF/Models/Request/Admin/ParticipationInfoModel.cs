@@ -1,32 +1,32 @@
 ﻿namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
-/// 比赛参与对象，用于审核查看（Admin）
+/// Participation for review (Admin)
 /// </summary>
 public class ParticipationInfoModel
 {
     /// <summary>
-    /// 参与对象 Id
+    /// Participation ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 参与队伍
+    /// Participating team
     /// </summary>
     public TeamWithDetailedUserInfo Team { get; set; } = default!;
 
     /// <summary>
-    /// 注册的成员
+    /// Registered members
     /// </summary>
     public Guid[] RegisteredMembers { get; set; } = [];
 
     /// <summary>
-    /// 参赛所属分组
+    /// Division of the game
     /// </summary>
     public string? Division { get; set; }
 
     /// <summary>
-    /// 参与状态
+    /// Participation status
     /// </summary>
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 

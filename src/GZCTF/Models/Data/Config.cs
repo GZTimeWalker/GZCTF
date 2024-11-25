@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace GZCTF.Models.Data;
 
 /// <summary>
-/// 用于存放配置项
+/// Used to store configuration items
 /// </summary>
 public record Config
 {
@@ -30,10 +30,10 @@ public record Config
     public string? Value { get; set; }
 
     /// <summary>
-    /// 在更新配置时使用，若不为空则会删除对应缓存
+    /// Used when updating the configuration, if not empty, the corresponding cache will be deleted
     /// </summary>
     /// <remarks>
-    /// 仅在 <see cref="GZCTF.Services.Config.ConfigService.SaveConfigSet" /> 中使用
+    /// Only used in <see cref="GZCTF.Services.Config.ConfigService.SaveConfigSet" />
     /// </remarks>
     [NotMapped]
     [JsonIgnore]

@@ -3,12 +3,12 @@
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 邮箱更改
+/// Email change
 /// </summary>
 public class MailChangeModel
 {
     /// <summary>
-    /// 新邮箱
+    /// New email
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

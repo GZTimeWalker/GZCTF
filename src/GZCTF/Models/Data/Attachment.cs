@@ -11,43 +11,43 @@ public class Attachment
     public int Id { get; set; }
 
     /// <summary>
-    /// 附件类型
+    /// Attachment type
     /// </summary>
     [Required]
     public FileType Type { get; set; } = FileType.None;
 
     /// <summary>
-    /// Flag 对应附件 (远程文件）
+    /// Flag corresponding attachment (remote file)
     /// </summary>
     [JsonIgnore]
     public string? RemoteUrl { get; set; } = string.Empty;
 
     /// <summary>
-    /// 本地文件 Id
+    /// Local file ID
     /// </summary>
     [JsonIgnore]
     public int? LocalFileId { get; set; }
 
     /// <summary>
-    /// Flag 对应文件（本地文件）
+    /// Flag corresponding file (local file)
     /// </summary>
     [JsonIgnore]
     public LocalFile? LocalFile { get; set; }
 
     /// <summary>
-    /// 文件默认 Url
+    /// Default file URL
     /// </summary>
     [NotMapped]
     public string? Url => UrlWithName();
 
     /// <summary>
-    /// 获取附件大小
+    /// Get attachment size
     /// </summary>
     [NotMapped]
     public long? FileSize => LocalFile?.FileSize;
 
     /// <summary>
-    /// 附件访问链接
+    /// Attachment access link
     /// </summary>
     public string? UrlWithName(string? filename = null) =>
         Type switch

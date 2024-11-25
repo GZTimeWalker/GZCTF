@@ -8,14 +8,14 @@ namespace GZCTF.Models.Data;
 public class GameInstance : Instance
 {
     /// <summary>
-    /// 获取实例附件
+    /// Get instance attachment
     /// </summary>
     internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
         ? FlagContext?.Attachment
         : Challenge.Attachment;
 
     /// <summary>
-    /// 获取实例附件链接
+    /// Get instance attachment URL
     /// </summary>
     internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
         ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
@@ -27,7 +27,7 @@ public class GameInstance : Instance
     public int ChallengeId { get; set; }
 
     /// <summary>
-    /// 赛题对象
+    /// Challenge object
     /// </summary>
     public GameChallenge Challenge { get; set; } = default!;
 
@@ -35,7 +35,7 @@ public class GameInstance : Instance
     public int ParticipationId { get; set; }
 
     /// <summary>
-    /// 参与队伍对象
+    /// Participation team object
     /// </summary>
     public Participation Participation { get; set; } = default!;
 

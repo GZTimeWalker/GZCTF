@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write src",
-    "genapi": "swagger-typescript-api -p http://localhost:55000/swagger/v1/swagger.json -t template -o src --module-name-first-tag --sort-routes"
+    "genapi": "swagger-typescript-api -p http://localhost:55000/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
     "@babel/core": "^7.26.0",
@@ -36,7 +36,7 @@
     "embla-carousel": "^8.5.1",
     "embla-carousel-autoplay": "^8.5.1",
     "embla-carousel-react": "^8.5.1",
-    "i18next": "^24.0.0",
+    "i18next": "^24.0.2",
     "i18next-browser-languagedetector": "^8.0.0",
     "katex": "^0.16.11",
     "lz-string": "^1.5.0",

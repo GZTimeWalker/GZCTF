@@ -3,12 +3,12 @@
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// 比赛通知（Edit）
+/// Game notice (Edit)
 /// </summary>
 public class GameNoticeModel
 {
     /// <summary>
-    /// 通知内容
+    /// Notice content
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_ContentRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

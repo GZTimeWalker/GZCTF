@@ -4,48 +4,48 @@ using System.Text.Json.Serialization;
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// 比赛信息（Edit）
+/// Game information (Edit)
 /// </summary>
 public class GameInfoModel
 {
     /// <summary>
-    /// 比赛 Id
+    /// Game Id
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 比赛标题
+    /// Game title
     /// </summary>
     [Required]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是否隐藏
+    /// Is hidden
     /// </summary>
     public bool Hidden { get; set; }
 
     /// <summary>
-    /// 比赛描述
+    /// Game summary
     /// </summary>
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛详细介绍
+    /// Game detailed description
     /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 报名队伍免审核
+    /// Accept teams without review
     /// </summary>
     public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
-    /// 是否需要提交 Writeup
+    /// Is writeup required
     /// </summary>
     public bool WriteupRequired { get; set; }
 
     /// <summary>
-    /// 比赛邀请码
+    /// Game invitation code
     /// </summary>
     [MaxLength(Limits.InviteTokenLength,
         ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong),
@@ -53,62 +53,62 @@ public class GameInfoModel
     public string? InviteCode { get; set; }
 
     /// <summary>
-    /// 参赛所属分组列表
+    /// List of divisions the game belongs to
     /// </summary>
     public List<string>? Divisions { get; set; }
 
     /// <summary>
-    /// 队员数量限制, 0 为无上限
+    /// Team member count limit, 0 means no limit
     /// </summary>
     public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
-    /// 队伍同时开启的容器数量限制
+    /// Container count limit per team
     /// </summary>
     public int ContainerCountLimit { get; set; } = 3;
 
     /// <summary>
-    /// 比赛头图
+    /// Game poster URL
     /// </summary>
     [JsonPropertyName("poster")]
     public string? PosterUrl { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛签名公钥
+    /// Game public key
     /// </summary>
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛是否为练习模式（比赛结束够依然可以访问）
+    /// Is the game in practice mode (accessible even after the game ends)
     /// </summary>
     public bool PracticeMode { get; set; } = true;
 
     /// <summary>
-    /// 开始时间
+    /// Start time
     /// </summary>
     [Required]
     [JsonPropertyName("start")]
     public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// 结束时间
+    /// End time
     /// </summary>
     [Required]
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// Writeup 提交截止时间
+    /// Writeup submission deadline
     /// </summary>
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// Writeup 附加说明
+    /// Writeup additional notes
     /// </summary>
     public string WriteupNote { get; set; } = string.Empty;
 
     /// <summary>
-    /// 三血加分
+    /// Blood bonus points
     /// </summary>
     [JsonPropertyName("bloodBonus")]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;

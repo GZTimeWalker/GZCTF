@@ -5,23 +5,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--mantine-color-gray-1);
   cursor: pointer;
 
-  &:hover {
-    background-color: alpha(var(--mantine-color-gray-6), 0.5);
+  @mixin dark {
+    color: var(--mantine-color-gray-0);
+
+    &:hover {
+      background-color: alpha(var(--mantine-color-gray-6), 0.5);
+    }
+
+    &[data-active] {
+      background-color: alpha(var(--mantine-primary-color-7), 0.25);
+      color: var(--mantine-primary-color-4);
+    }
   }
 
-  &[data-active] {
-    background-color: alpha(var(--mantine-primary-color-7), 0.25);
-    color: var(--mantine-primary-color-4);
+  @mixin light {
+    color: var(--mantine-color-gray-7);
+
+    &:hover {
+      background-color: var(--mantine-color-gray-1);
+    }
+
+    &[data-active] {
+      background-color: var(--mantine-primary-color-filled);
+      color: var(--mantine-color-white);
+    }
   }
 }
 
 .navbar {
-  background-color: var(--mantine-color-gray-8);
   padding: var(--mantine-spacing-xs);
   border: none;
+  box-shadow: var(--mantine-shadow-lg);
+  background-color: light-dark(var(--mantine-color-light-0), var(--mantine-color-gray-8));
 
   @media (max-width: $mantine-breakpoint-xs) {
     display: none;
@@ -36,7 +53,7 @@
 
   @mixin dark {
     background-color: darken(var(--mantine-primary-color-8), 0.45);
-    color: var(--mantine-primary-color-4);
+    color: var(--mantine-primary-color-2);
   }
 }
 

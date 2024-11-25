@@ -5,17 +5,17 @@ namespace GZCTF.Models.Data;
 public class Instance
 {
     /// <summary>
-    /// 题目是否已经解决
+    /// Whether the challenge is solved
     /// </summary>
     public bool IsSolved { get; set; }
 
     /// <summary>
-    /// 题目是否已经加载
+    /// Whether the challenge is loaded
     /// </summary>
     public bool IsLoaded { get; set; }
 
     /// <summary>
-    /// 最后一次容器操作的时间，确保单题目容器操作不会过于频繁
+    /// Last container operation time to ensure operations are not too frequent
     /// </summary>
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
 
@@ -28,14 +28,14 @@ public class Instance
     public int? FlagId { get; set; }
 
     /// <summary>
-    /// Flag 上下文对象
+    /// Flag context object
     /// </summary>
     public FlagContext? FlagContext { get; set; }
 
     public Guid? ContainerId { get; set; }
 
     /// <summary>
-    /// 容器对象
+    /// Container object
     /// </summary>
     public Container? Container { get; set; }
 

@@ -4,12 +4,12 @@ using GZCTF.Extensions;
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 找回账号
+/// Account recovery
 /// </summary>
 public class RecoveryModel : ModelWithCaptcha
 {
     /// <summary>
-    /// 用户邮箱
+    /// User email
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

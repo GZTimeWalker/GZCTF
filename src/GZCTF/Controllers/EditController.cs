@@ -15,7 +15,7 @@ using NSwag.Annotations;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 数据修改交互接口
+/// Data Modification APIs
 /// </summary>
 [RequireAdmin]
 [ApiController]
@@ -38,14 +38,14 @@ public class EditController(
     IStringLocalizer<Program> localizer) : Controller
 {
     /// <summary>
-    /// 添加文章
+    /// Add Post
     /// </summary>
     /// <remarks>
-    /// 添加文章，需要管理员权限
+    /// Adding a post requires administrator privileges
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加文章</response>
+    /// <response code="200">Successfully added post</response>
     [HttpPost("Posts")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddPost([FromBody] PostEditModel model, CancellationToken token)
@@ -56,16 +56,16 @@ public class EditController(
     }
 
     /// <summary>
-    /// 修改文章
+    /// Update Post
     /// </summary>
     /// <remarks>
-    /// 修改文章，需要管理员权限
+    /// Updating a post requires administrator privileges
     /// </remarks>
-    /// <param name="id">文章Id</param>
+    /// <param name="id">Post ID</param>
     /// <param name="token"></param>
     /// <param name="model"></param>
-    /// <response code="200">成功修改文章</response>
-    /// <response code="404">未找到文章</response>
+    /// <response code="200">Successfully updated post</response>
+    /// <response code="404">Post not found</response>
     [HttpPut("Posts/{id}")]
     [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -85,15 +85,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 删除文章
+    /// Delete Post
     /// </summary>
     /// <remarks>
-    /// 删除文章，需要管理员权限
+    /// Deleting a post requires administrator privileges
     /// </remarks>
-    /// <param name="id">文章Id</param>
+    /// <param name="id">Post ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除文章</response>
-    /// <response code="404">未找到文章</response>
+    /// <response code="200">Successfully deleted post</response>
+    /// <response code="404">Post not found</response>
     [HttpDelete("Posts/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -111,14 +111,14 @@ public class EditController(
     }
 
     /// <summary>
-    /// 添加比赛
+    /// Add Game
     /// </summary>
     /// <remarks>
-    /// 添加比赛，需要管理员权限
+    /// Adding a game requires administrator privileges
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛</response>
+    /// <response code="200">Successfully added game</response>
     [HttpPost("Games")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -135,15 +135,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 获取比赛列表
+    /// Get Game List
     /// </summary>
     /// <remarks>
-    /// 获取比赛列表，需要管理员权限
+    /// Retrieving the game list requires administrator privileges
     /// </remarks>
     /// <param name="count"></param>
     /// <param name="skip"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛列表</response>
+    /// <response code="200">Successfully retrieved game list</response>
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token) =>
@@ -152,14 +152,14 @@ public class EditController(
             .ToResponse(await gameRepository.CountAsync(token)));
 
     /// <summary>
-    /// 获取比赛
+    /// Get Game
     /// </summary>
     /// <remarks>
-    /// 获取比赛，需要管理员权限
+    /// Retrieving a game requires administrator privileges
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛</response>
+    /// <response code="200">Successfully retrieved game</response>
     [HttpGet("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -175,14 +175,14 @@ public class EditController(
     }
 
     /// <summary>
-    /// 获取比赛哈希盐
+    /// Get Game Hash Salt
     /// </summary>
     /// <remarks>
-    /// 获取比赛哈希盐，需要管理员权限
+    /// Retrieving the game hash salt requires administrator privileges
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛哈希加盐</response>
+    /// <response code="200">Successfully retrieved game hash salt</response>
     [OpenApiIgnore]
     [HttpGet("Games/{id:int}/HashSalt")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -199,15 +199,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 修改比赛
+    /// Update Game
     /// </summary>
     /// <remarks>
-    /// 修改比赛，需要管理员权限
+    /// Updating a game requires administrator privileges
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功修改比赛</response>
+    /// <response code="200">Successfully updated game</response>
     [HttpPut("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -229,14 +229,14 @@ public class EditController(
     }
 
     /// <summary>
-    /// 删除比赛
+    /// Delete Game
     /// </summary>
     /// <remarks>
-    /// 删除比赛，需要管理员权限
+    /// Deleting a game requires administrator privileges
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除比赛</response>
+    /// <response code="200">Successfully deleted game</response>
     [HttpDelete("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -258,14 +258,14 @@ public class EditController(
     }
 
     /// <summary>
-    /// 删除比赛的全部 WriteUp
+    /// Delete All WriteUps
     /// </summary>
     /// <remarks>
-    /// 删除比赛的全部 WriteUp，需要管理员权限
+    /// Deleting all WriteUps for a game requires administrator privileges
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除比赛 WriteUps</response>
+    /// <response code="200">Successfully deleted game WriteUps</response>
     [HttpDelete("Games/{id:int}/WriteUps")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -283,14 +283,14 @@ public class EditController(
     }
 
     /// <summary>
-    /// 更新比赛头图
+    /// Update Game Poster
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新比赛头图，需要Admin权限
+    /// Use this endpoint to update the game poster; administrator privileges required
     /// </remarks>
-    /// <response code="200">比赛头图URL</response>
-    /// <response code="400">非法请求</response>
-    /// <response code="401">未授权用户</response>
+    /// <response code="200">Game poster URL</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="401">Unauthorized user</response>
     [HttpPut("Games/{id:int}/Poster")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -324,15 +324,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 添加比赛通知
+    /// Add Game Notice
     /// </summary>
     /// <remarks>
-    /// 添加比赛通知，需要管理员权限
+    /// Adding a game notice requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="model">通知内容</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="model">Notice content</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛通知</response>
+    /// <response code="200">Successfully added game notice</response>
     [HttpPost("Games/{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -358,14 +358,14 @@ public class EditController(
     }
 
     /// <summary>
-    /// 获取比赛通知
+    /// Get Game Notices
     /// </summary>
     /// <remarks>
-    /// 获取比赛通知，需要管理员权限
+    /// Retrieving game notices requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛通知</response>
+    /// <response code="200">Successfully retrieved game notices</response>
     [HttpGet("Games/{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -381,16 +381,16 @@ public class EditController(
     }
 
     /// <summary>
-    /// 更新比赛通知
+    /// Update Game Notice
     /// </summary>
     /// <remarks>
-    /// 更新比赛通知，需要管理员权限
+    /// Updating a game notice requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="noticeId">通知Id</param>
-    /// <param name="model">通知内容</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="noticeId">Notice ID</param>
+    /// <param name="model">Notice content</param>
     /// <param name="token"></param>
-    /// <response code="200">成功更新通知</response>
+    /// <response code="200">Successfully updated notice</response>
     [HttpPut("Games/{id:int}/Notices/{noticeId:int}")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -411,16 +411,16 @@ public class EditController(
     }
 
     /// <summary>
-    /// 删除比赛通知
+    /// Delete Game Notice
     /// </summary>
     /// <remarks>
-    /// 删除比赛通知，需要管理员权限
+    /// Deleting a game notice requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="noticeId">文章Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="noticeId">Post ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功删除文章</response>
-    /// <response code="404">未找到文章</response>
+    /// <response code="200">Successfully deleted post</response>
+    /// <response code="404">Post not found</response>
     [HttpDelete("Games/{id:int}/Notices/{noticeId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -443,15 +443,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 添加比赛题目
+    /// Add Game Challenge
     /// </summary>
     /// <remarks>
-    /// 添加比赛题目，需要管理员权限
+    /// Adding a game challenge requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">Successfully added game challenge</response>
     [HttpPost("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -471,28 +471,28 @@ public class EditController(
     }
 
     /// <summary>
-    /// 获取全部比赛题目
+    /// Get All Game Challenges
     /// </summary>
     /// <remarks>
-    /// 获取全部比赛题目，需要管理员权限
+    /// Retrieving all game challenges requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目</response>
+    /// <response code="200">Successfully retrieved game challenges</response>
     [HttpGet("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token) =>
         Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
-    /// 更新全部比赛题目解出数量
+    /// Update AC Counter for Challenges
     /// </summary>
     /// <remarks>
-    /// 更新全部比赛题目解出数量，需要管理员权限
+    /// Updating the accepted count for all game challenges requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目</response>
+    /// <response code="200">Successfully updated accepted counts</response>
     [HttpPost("Games/{id:int}/Challenges/UpdateAccepted")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateGameChallengesAcceptedCount([FromRoute] int id, CancellationToken token)
@@ -509,17 +509,16 @@ public class EditController(
         return BadRequest();
     }
 
-
     /// <summary>
-    /// 获取比赛题目
+    /// Get Game Challenge
     /// </summary>
     /// <remarks>
-    /// 获取比赛题目，需要管理员权限
+    /// Retrieving a game challenge requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取比赛题目</response>
+    /// <response code="200">Successfully retrieved game challenge</response>
     [HttpGet("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -537,7 +536,7 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        // do not load flags for dynamic containers
+        // Do not load flags for dynamic containers
         if (challenge.Type != ChallengeType.DynamicContainer)
             await challengeRepository.LoadFlags(challenge, token);
 
@@ -545,16 +544,16 @@ public class EditController(
     }
 
     /// <summary>
-    /// 修改比赛题目信息，Flags 不受更改，使用 Flag 相关 API 修改
+    /// Update Game Challenge Information
     /// </summary>
     /// <remarks>
-    /// 修改比赛题目，需要管理员权限
+    /// Updating a game challenge, requires administrator privileges. Flags are not affected; use Flag-related APIs to modify
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
-    /// <param name="model">题目信息</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
+    /// <param name="model">Challenge information</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">Successfully updated game challenge</response>
     [HttpPut("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -599,7 +598,7 @@ public class EditController(
 
         if (model.IsEnabled == true)
         {
-            // will also update IsEnabled
+            // Will also update IsEnabled
             await challengeRepository.EnsureInstances(res, game, token);
 
             if (game.IsActive)
@@ -619,22 +618,22 @@ public class EditController(
                 new() { Game = game, Type = NoticeType.NewHint, Values = [res.Title] },
                 token);
 
-        // always flush scoreboard
+        // Always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }
 
     /// <summary>
-    /// 测试比赛题目容器
+    /// Test Game Challenge Container
     /// </summary>
     /// <remarks>
-    /// 测试比赛题目容器，需要管理员权限
+    /// Testing a game challenge container requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功开启比赛题目容器</response>
+    /// <response code="200">Successfully started game challenge container</response>
     [HttpPost("Games/{id:int}/Challenges/{cId:int}/Container")]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -692,15 +691,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 关闭测试比赛题目容器
+    /// Destroy Test Game Challenge Container
     /// </summary>
     /// <remarks>
-    /// 关闭测试比赛题目容器，需要管理员权限
+    /// Destroying a test game challenge container requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">Successfully destroyed game challenge container</response>
     [HttpDelete("Games/{id:int}/Challenges/{cId:int}/Container")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -728,15 +727,15 @@ public class EditController(
     }
 
     /// <summary>
-    /// 删除比赛题目
+    /// Delete Game Challenge
     /// </summary>
     /// <remarks>
-    /// 删除比赛题目，需要管理员权限
+    /// Deleting a game challenge requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">Successfully deleted game challenge</response>
     [HttpDelete("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -757,23 +756,23 @@ public class EditController(
 
         await challengeRepository.RemoveChallenge(res, true, token);
 
-        // always flush scoreboard
+        // Always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok();
     }
 
     /// <summary>
-    /// 更新比赛题目附件
+    /// Update Game Challenge Attachment
     /// </summary>
     /// <remarks>
-    /// 更新比赛题目附件，需要管理员权限，仅用于非动态附件题目
+    /// Updating a game challenge attachment requires administrator privileges; only for non-dynamic attachment challenges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目数量</response>
+    /// <response code="200">Successfully updated game challenge</response>
     [HttpPost("Games/{id:int}/Challenges/{cId:int}/Attachment")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -802,16 +801,16 @@ public class EditController(
     }
 
     /// <summary>
-    /// 添加比赛题目 Flag
+    /// Add Game Challenge Flag
     /// </summary>
     /// <remarks>
-    /// 添加比赛题目 Flag，需要管理员权限
+    /// Adding a game challenge flag requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="models"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目数量</response>
+    /// <response code="200">Successfully added game challenge flags</response>
     [HttpPost("Games/{id:int}/Challenges/{cId:int}/Flags")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -837,16 +836,16 @@ public class EditController(
     }
 
     /// <summary>
-    /// 删除比赛题目 Flag
+    /// Delete Game Challenge Flag
     /// </summary>
     /// <remarks>
-    /// 删除比赛题目 Flag，需要管理员权限
+    /// Deleting a game challenge flag requires administrator privileges
     /// </remarks>
-    /// <param name="id">比赛Id</param>
-    /// <param name="cId">题目Id</param>
+    /// <param name="id">Game ID</param>
+    /// <param name="cId">Challenge ID</param>
     /// <param name="fId">Flag ID</param>
     /// <param name="token"></param>
-    /// <response code="200">成功添加比赛题目</response>
+    /// <response code="200">Successfully deleted game challenge flag</response>
     [HttpDelete("Games/{id:int}/Challenges/{cId:int}/Flags/{fId:int}")]
     [ProducesResponseType(typeof(TaskStatus), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]

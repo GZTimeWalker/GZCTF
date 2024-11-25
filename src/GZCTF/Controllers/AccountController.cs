@@ -15,7 +15,7 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 用户账户相关接口
+/// User account related APIs
 /// </summary>
 [ApiController]
 [Route("api/[controller]/[action]")]
@@ -33,15 +33,15 @@ public class AccountController(
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
-    /// 用户注册接口
+    /// User registration
     /// </summary>
     /// <remarks>
-    /// 使用此接口注册新用户，Dev 环境下不校验，邮件URL：/verify
+    /// Use this API to register a new user. In development environment, no verification. Email URL: /verify
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">注册成功</response>
-    /// <response code="400">校验失败或用户已存在</response>
+    /// <response code="200">Registration successful</response>
+    /// <response code="400">Validation failed or user already exists</response>
     [HttpPost]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse<RegisterStatus>), StatusCodes.Status200OK)]
@@ -131,16 +131,16 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户找回密码请求接口
+    /// User password recovery request
     /// </summary>
     /// <remarks>
-    /// 使用此接口请求找回密码，向用户邮箱发送邮件，邮件URL：/reset
+    /// Use this API to request password recovery. Sends an email to the user. Email URL: /reset
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">用户密码重置邮件发送成功</response>
-    /// <response code="400">校验失败</response>
-    /// <response code="404">用户不存在</response>
+    /// <response code="200">Password reset email sent successfully</response>
+    /// <response code="400">Validation failed</response>
+    /// <response code="404">User does not exist</response>
     [HttpPost]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status200OK)]
@@ -183,14 +183,14 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户重置密码接口
+    /// User password reset
     /// </summary>
     /// <remarks>
-    /// 使用此接口重置密码，需要邮箱验证码
+    /// Use this API to reset the password. Email verification code is required.
     /// </remarks>
     /// <param name="model"></param>
-    /// <response code="200">用户成功重置密码</response>
-    /// <response code="400">校验失败</response>
+    /// <response code="200">Password reset successfully</response>
+    /// <response code="400">Validation failed</response>
     [HttpPost]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -215,15 +215,15 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户邮箱确认接口
+    /// User email confirmation
     /// </summary>
     /// <remarks>
-    /// 使用此接口通过邮箱验证码确认邮箱
+    /// Use this API to confirm email using the verification code.
     /// </remarks>
     /// <param name="model"></param>
-    /// <response code="200">用户通过邮箱验证</response>
-    /// <response code="400">校验失败</response>
-    /// <response code="401">邮箱验证失败</response>
+    /// <response code="200">Email verified successfully</response>
+    /// <response code="400">Validation failed</response>
+    /// <response code="401">Email verification failed</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -258,16 +258,16 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户登录接口
+    /// User login
     /// </summary>
     /// <remarks>
-    /// 使用此接口登录账户
+    /// Use this API to log in to the account.
     /// </remarks>
     /// <param name="model"></param>
     /// <param name="token"></param>
-    /// <response code="200">用户成功登录</response>
-    /// <response code="400">校验失败</response>
-    /// <response code="401">用户名或密码错误</response>
+    /// <response code="200">Login successful</response>
+    /// <response code="400">Validation failed</response>
+    /// <response code="401">Incorrect username or password</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
@@ -307,13 +307,13 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户登出接口
+    /// User logout
     /// </summary>
     /// <remarks>
-    /// 使用此接口登出账户，需要User权限
+    /// Use this API to log out of the account. User permissions required.
     /// </remarks>
-    /// <response code="200">用户已登出</response>
-    /// <response code="401">无权访问</response>
+    /// <response code="200">Logged out successfully</response>
+    /// <response code="401">Unauthorized</response>
     [HttpPost]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -325,15 +325,15 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户数据更新接口
+    /// User data update
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新用户用户名和描述，需要User权限
+    /// Use this API to update username and description. User permissions required.
     /// </remarks>
     /// <param name="model"></param>
-    /// <response code="200">用户数据成功更新</response>
-    /// <response code="400">校验失败或用户数据更新失败</response>
-    /// <response code="401">无权访问</response>
+    /// <response code="200">User data updated successfully</response>
+    /// <response code="400">Validation failed or user data update failed</response>
+    /// <response code="401">Unauthorized</response>
     [HttpPut]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -365,15 +365,15 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户密码更改接口
+    /// User password change
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新用户密码，需要User权限
+    /// Use this API to change user's password. User permissions required.
     /// </remarks>
     /// <param name="model"></param>
-    /// <response code="200">用户成功更新密码</response>
-    /// <response code="400">校验失败或用户密码更新失败</response>
-    /// <response code="401">无权访问</response>
+    /// <response code="200">Password changed successfully</response>
+    /// <response code="400">Validation failed or password change failed</response>
+    /// <response code="401">Unauthorized</response>
     [HttpPut]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -393,15 +393,15 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户邮箱更改接口
+    /// User email change
     /// </summary>
     /// <remarks>
-    /// 使用此接口更改用户邮箱，需要User权限，邮件URL：/confirm
+    /// Use this API to change user's email. User permissions required. Email URL: /confirm
     /// </remarks>
     /// <param name="model"></param>
-    /// <response code="200">成功发送用户邮箱更改邮件，布尔值表示是否需要邮箱验证</response>
-    /// <response code="400">校验失败或邮箱已经被占用</response>
-    /// <response code="401">无权访问</response>
+    /// <response code="200">Email change email sent successfully. Boolean indicates whether email verification is required</response>
+    /// <response code="400">Validation failed or email already in use</response>
+    /// <response code="401">Unauthorized</response>
     [HttpPut]
     [RequireUser]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Register))]
@@ -444,16 +444,16 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 用户邮箱更改确认接口
+    /// User email change confirmation
     /// </summary>
     /// <remarks>
-    /// 使用此接口确认更改用户邮箱，需要邮箱验证码，需要User权限
+    /// Use this API to confirm email change. Email verification code required. User permissions required.
     /// </remarks>
     /// <param name="model"></param>
-    /// <response code="200">用户成功更改邮箱</response>
-    /// <response code="400">校验失败或无效邮箱</response>
-    /// <response code="401">未授权用户</response>
-    /// <response code="403">无权访问</response>
+    /// <response code="200">Email changed successfully</response>
+    /// <response code="400">Validation failed or invalid email</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="403">Forbidden</response>
     [HttpPost]
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -474,13 +474,13 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 获取用户信息接口
+    /// Get user information
     /// </summary>
     /// <remarks>
-    /// 使用此接口获取用户信息，需要User权限
+    /// Use this API to get user information. User permissions required.
     /// </remarks>
-    /// <response code="200">用户成功获取信息</response>
-    /// <response code="401">未授权用户</response>
+    /// <response code="200">User information retrieved successfully</response>
+    /// <response code="401">Unauthorized</response>
     [HttpGet]
     [RequireUser]
     [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
@@ -494,14 +494,14 @@ public class AccountController(
     }
 
     /// <summary>
-    /// 更新用户头像接口
+    /// Update user avatar
     /// </summary>
     /// <remarks>
-    /// 使用此接口更新用户头像，需要User权限
+    /// Use this API to update user's avatar. User permissions required.
     /// </remarks>
-    /// <response code="200">用户头像URL</response>
-    /// <response code="400">非法请求</response>
-    /// <response code="401">未授权用户</response>
+    /// <response code="200">User avatar URL</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="401">Unauthorized</response>
     [HttpPut]
     [RequireUser]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]

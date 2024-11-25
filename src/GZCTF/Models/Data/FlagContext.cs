@@ -10,46 +10,46 @@ public class FlagContext
     public int Id { get; set; }
 
     /// <summary>
-    /// Flag 内容
+    /// Flag content
     /// </summary>
     [Required]
     [MaxLength(Limits.MaxFlagLength)]
     public string Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是否已被占用
+    /// Whether it is occupied
     /// </summary>
     public bool IsOccupied { get; set; } = false;
 
     #region Db Relationship
 
     /// <summary>
-    /// 附件 Id
+    /// Attachment ID
     /// </summary>
     public int? AttachmentId { get; set; }
 
     /// <summary>
-    /// 附件
+    /// Attachment
     /// </summary>
     public Attachment? Attachment { get; set; }
 
     /// <summary>
-    /// 赛题Id
+    /// Challenge ID
     /// </summary>
     public int? ChallengeId { get; set; }
 
     /// <summary>
-    /// 赛题
+    /// Challenge
     /// </summary>
     public GameChallenge? Challenge { get; set; }
 
     /// <summary>
-    /// 练习题Id
+    /// Exercise ID
     /// </summary>
     public int? ExerciseId { get; set; }
 
     /// <summary>
-    /// 练习题
+    /// Exercise
     /// </summary>
     public ExerciseChallenge? Exercise { get; set; }
 

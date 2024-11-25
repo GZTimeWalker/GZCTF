@@ -5,22 +5,12 @@ version: 2
 updates:
   # Check for updates to NPM packages daily
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/src/GZCTF/ClientApp"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 1
     ignore:
       - dependency-name: "pdfjs-dist"
-      - dependency-name: "@types/*"
-
-  # Check for updates to NuGet packages daily
-  - package-ecosystem: "nuget"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 1
-    ignore:
-      - dependency-name: "MailKit"
 
   # Check for updates to GitHub Actions workflows weekly
   - package-ecosystem: "github-actions"
