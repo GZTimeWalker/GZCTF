@@ -42,6 +42,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Scalar.AspNetCore;
 using Serilog;
 using StackExchange.Redis;
 
@@ -342,8 +343,9 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi(options =>
     {
         options.PostProcess += (document, _) => document.Servers.Clear();
+        options.Path = "/openapi/{documentName}.json";
     });
-    app.UseSwaggerUi();
+    app.MapScalarApiReference();
 }
 else
 {
