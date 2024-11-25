@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.0.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.1..v1.0.2) - 2024-11-25
+
+### ⛰️ Features
+
+- **(admin)** replace `[TEAM_HASH]` in test flags - ([0e857d](https://github.com/GZTimeWalker/GZCTF/commit/0e857d)) by **GZTime**
+
+### 🎨 Styling
+
+- **(light)** navbar in light theme - ([d8737f](https://github.com/GZTimeWalker/GZCTF/commit/d8737f)) by **GZTime**
+
+---
 ## [1.0.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.0..v1.0.1) - 2024-11-24
 
 ### 🐛 Bug Fixes
