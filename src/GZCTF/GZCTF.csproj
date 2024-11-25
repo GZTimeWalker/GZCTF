@@ -28,10 +28,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aigamo.ResXGenerator">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="Aigamo.ResXGenerator"/>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="Docker.DotNet" />
         <PackageReference Include="Docker.DotNet.BasicAuth" />
@@ -43,22 +40,13 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="Npgsql.OpenTelemetry" />
         <PackageReference Include="NPOI" />
         <PackageReference Include="NSwag.AspNetCore" />
-        <PackageReference Include="NSwag.MSBuild">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="NSwag.MSBuild"/>
         <PackageReference Include="OpenTelemetry.Exporter.Console" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
         <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />

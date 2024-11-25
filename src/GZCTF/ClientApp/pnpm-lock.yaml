@@ -84,8 +84,8 @@ importers:
         specifier: ^8.5.1
         version: 8.5.1(react@18.3.1)
       i18next:
-        specifier: ^24.0.0
-        version: 24.0.0(typescript@5.7.2)
+        specifier: ^24.0.1
+        version: 24.0.1(typescript@5.7.2)
       i18next-browser-languagedetector:
         specifier: ^8.0.0
         version: 8.0.0
@@ -121,7 +121,7 @@ importers:
         version: 1.10.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-i18next:
         specifier: ^15.1.1
-        version: 15.1.1(i18next@24.0.0(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 15.1.1(i18next@24.0.1(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-pdf:
         specifier: ^9.1.1
         version: 9.1.1(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1723,8 +1723,8 @@ packages:
   i18next-browser-languagedetector@8.0.0:
     resolution: {integrity: sha512-zhXdJXTTCoG39QsrOCiOabnWj2jecouOqbchu3EfhtSHxIB5Uugnm9JaizenOy39h7ne3+fLikIjeW88+rgszw==}
 
-  i18next@24.0.0:
-    resolution: {integrity: sha512-ORGCwMrXxpmB/AljFbGEe0UK/9Pz6umb9aZgLZ9qJGE+kjKhlnLj423WX2mt+N0MlEJ78pQXFMBmeMzrkLxriQ==}
+  i18next@24.0.1:
+    resolution: {integrity: sha512-cB/kMidgV6sZ3+vfsUaPOgMWAFJ0kEIeMZZYqUMNtbpXx9E4Nrn+nkkeeSOBk5iZYvjsz8+ZOX39msw19b9klQ==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -4609,7 +4609,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.26.0
 
-  i18next@24.0.0(typescript@5.7.2):
+  i18next@24.0.1(typescript@5.7.2):
     dependencies:
       '@babel/runtime': 7.26.0
     optionalDependencies:
@@ -5109,11 +5109,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-i18next@15.1.1(i18next@24.0.0(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-i18next@15.1.1(i18next@24.0.1(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.26.0
       html-parse-stringify: 3.0.1
-      i18next: 24.0.0(typescript@5.7.2)
+      i18next: 24.0.1(typescript@5.7.2)
       react: 18.3.1
     optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)

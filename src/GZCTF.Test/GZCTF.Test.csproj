@@ -1,42 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <CollectCoverage>true</CollectCoverage>
+        <Configurations>Debug;Release;GenAPI</Configurations>
+        <ReleaseVersion>1.0.2</ReleaseVersion>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <IsPackable>false</IsPackable>
-    <CollectCoverage>true</CollectCoverage>
-    <Configurations>Debug;Release;GenAPI</Configurations>
-    <ReleaseVersion>1.0.2</ReleaseVersion>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="xunit.runner.console"/>
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="coverlet.msbuild"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-    <PackageReference Include="xunit"/>
-    <PackageReference Include="xunit.runner.visualstudio">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.runner.console">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.msbuild">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\GZCTF\GZCTF.csproj"/>
-    <None Include="..\GZCTF\appsettings*"/>
-  </ItemGroup>
-
+    <ItemGroup>
+        <ProjectReference Include="..\GZCTF\GZCTF.csproj" />
+        <None Include="..\GZCTF\appsettings*" />
+    </ItemGroup>
 </Project>

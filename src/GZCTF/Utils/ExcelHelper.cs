@@ -13,6 +13,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_Captain)],
         localizer[nameof(Resources.Program.Header_Member)],
+        localizer[nameof(Resources.Program.Header_Email)],
         localizer[nameof(Resources.Program.Header_StdNumber)],
         localizer[nameof(Resources.Program.Header_PhoneNumber)],
         localizer[nameof(Resources.Program.Header_SolvedNumber)],
@@ -93,14 +94,15 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
         foreach (Submission item in submissions)
         {
+            var colIndex = 0;
             IRow? row = sheet.CreateRow(rowIndex);
-            row.CreateCell(0).SetCellValue(item.Status.ToShortString(localizer));
-            row.CreateCell(1).SetCellValue(item.SubmitTimeUtc.ToString("u"));
-            row.CreateCell(2).SetCellValue(item.TeamName);
-            row.CreateCell(3).SetCellValue(item.UserName);
-            row.CreateCell(4).SetCellValue(item.ChallengeName);
-            row.CreateCell(5).SetCellValue(item.Answer);
-            row.CreateCell(6).SetCellValue(item.User?.Email ?? string.Empty);
+            row.CreateCell(colIndex++).SetCellValue(item.Status.ToShortString(localizer));
+            row.CreateCell(colIndex++).SetCellValue(item.SubmitTimeUtc.ToString("u"));
+            row.CreateCell(colIndex++).SetCellValue(item.TeamName);
+            row.CreateCell(colIndex++).SetCellValue(item.UserName);
+            row.CreateCell(colIndex++).SetCellValue(item.ChallengeName);
+            row.CreateCell(colIndex++).SetCellValue(item.Answer);
+            row.CreateCell(colIndex).SetCellValue(item.User?.Email ?? string.Empty);
 
             rowIndex++;
         }
@@ -160,6 +162,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
             row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.RealName))));
+            row.CreateCell(colIndex++)
+                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.Email))));
             row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.StdNumber))));
             row.CreateCell(colIndex++)

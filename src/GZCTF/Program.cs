@@ -345,6 +345,7 @@ if (app.Environment.IsDevelopment())
         options.PostProcess += (document, _) => document.Servers.Clear();
         options.Path = "/openapi/{documentName}.json";
     });
+    // open ui in `/scalar/v1`
     app.MapScalarApiReference();
 }
 else
