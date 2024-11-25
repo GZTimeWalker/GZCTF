@@ -3,22 +3,22 @@
 public class ContainerInfoModel
 {
     /// <summary>
-    /// 容器状态
+    /// Container status
     /// </summary>
     public ContainerStatus Status { get; set; } = ContainerStatus.Pending;
 
     /// <summary>
-    /// 容器创建时间
+    /// Container creation time
     /// </summary>
     public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// 容器期望终止时间
+    /// Expected container stop time
     /// </summary>
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
-    /// 题目入口
+    /// Challenge entry point
     /// </summary>
     public string Entry { get; set; } = string.Empty;
 

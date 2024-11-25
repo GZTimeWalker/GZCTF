@@ -1,52 +1,52 @@
 ﻿namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
-/// 容器实例信息（Admin）
+/// Container instance information (Admin)
 /// </summary>
 public class ContainerInstanceModel
 {
     /// <summary>
-    /// 队伍
+    /// Team
     /// </summary>
     public TeamModel? Team { get; set; }
 
     /// <summary>
-    /// 题目
+    /// Challenge
     /// </summary>
     public ChallengeModel? Challenge { get; set; }
 
     /// <summary>
-    /// 容器镜像
+    /// Container image
     /// </summary>
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
-    /// 容器数据库 ID
+    /// Container database ID
     /// </summary>
     public Guid ContainerGuid { get; set; }
 
     /// <summary>
-    /// 容器 ID
+    /// Container ID
     /// </summary>
     public string ContainerId { get; set; } = string.Empty;
 
     /// <summary>
-    /// 容器创建时间
+    /// Container creation time
     /// </summary>
     public DateTimeOffset StartedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// 容器期望终止时间
+    /// Expected container stop time
     /// </summary>
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
-    /// 访问 IP
+    /// Access IP
     /// </summary>
     public string IP { get; set; } = string.Empty;
 
     /// <summary>
-    /// 访问端口
+    /// Access port
     /// </summary>
     public int Port { get; set; }
 

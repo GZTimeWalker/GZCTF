@@ -3,47 +3,47 @@
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
-/// 题目详细信息
+/// Challenge detailed information
 /// </summary>
 public class ChallengeDetailModel
 {
     /// <summary>
-    /// 题目 Id
+    /// Challenge ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 题目名称
+    /// Challenge title
     /// </summary>
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目内容
+    /// Challenge content
     /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目类别
+    /// Challenge category
     /// </summary>
     public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
-    /// 题目提示
+    /// Challenge hints
     /// </summary>
     public List<string>? Hints { get; set; }
 
     /// <summary>
-    /// 题目当前分值
+    /// Current score of the challenge
     /// </summary>
     public int Score { get; set; }
 
     /// <summary>
-    /// 题目类型
+    /// Challenge type
     /// </summary>
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>
-    /// Flag 上下文
+    /// Flag context
     /// </summary>
     public ClientFlagContext Context { get; set; } = default!;
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Models.Data;
 
 /// <summary>
-/// 比赛参与信息
+/// Participation information
 /// </summary>
 [Index(nameof(GameId))]
 [Index(nameof(TeamId))]
@@ -17,57 +17,69 @@ public class Participation
     public int Id { get; set; }
 
     /// <summary>
-    /// 参与状态
+    /// Participation status
     /// </summary>
     [Required]
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
     /// <summary>
-    /// 队伍 Token
+    /// Team token
     /// </summary>
     [Required]
     public string Token { get; set; } = string.Empty;
 
     /// <summary>
-    /// 参赛所属分组
+    /// Division the team belongs to
     /// </summary>
     public string? Division { get; set; }
 
     /// <summary>
-    /// 队伍题解
+    /// Team writeup
     /// </summary>
     public LocalFile? Writeup { get; set; }
 
     #region Db Relationship
 
     /// <summary>
-    /// 队伍参与的队员
+    /// Members participating in the team
     /// </summary>
     public HashSet<UserParticipation> Members { get; set; } = [];
 
     /// <summary>
-    /// 队伍激活的题目
+    /// Challenges activated by the team
     /// </summary>
     public HashSet<GameChallenge> Challenges { get; set; } = [];
 
     /// <summary>
-    /// 赛题实例
+    /// Game instances
     /// </summary>
     public List<GameInstance> Instances { get; set; } = [];
 
     /// <summary>
-    /// 提交
+    /// Submissions
     /// </summary>
     public List<Submission> Submissions { get; set; } = [];
 
+    /// <summary>
+    /// Game ID
+    /// </summary>
     [Required]
     public int GameId { get; set; }
 
+    /// <summary>
+    /// Game
+    /// </summary>
     public Game Game { get; set; } = default!;
 
+    /// <summary>
+    /// Team ID
+    /// </summary>
     [Required]
     public int TeamId { get; set; }
 
+    /// <summary>
+    /// Team
+    /// </summary>
     public Team Team { get; set; } = default!;
 
     #endregion Db Relationship

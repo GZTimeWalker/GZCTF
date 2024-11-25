@@ -3,22 +3,22 @@ namespace GZCTF.Models.Request.Shared;
 public class ClientFlagContext
 {
     /// <summary>
-    /// 题目实例的关闭时间
+    /// Close time of the challenge instance
     /// </summary>
     public DateTimeOffset? CloseTime { get; set; }
 
     /// <summary>
-    /// 题目实例的连接方式
+    /// Connection method of the challenge instance
     /// </summary>
     public string? InstanceEntry { get; set; }
 
     /// <summary>
-    /// 附件 Url
+    /// Attachment URL
     /// </summary>
     public string? Url { get; set; }
 
     /// <summary>
-    /// 附件文件大小
+    /// Attachment file size
     /// </summary>
     public long? FileSize { get; set; }
 }

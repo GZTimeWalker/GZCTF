@@ -3,22 +3,22 @@
 namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
-/// 全局配置更新对象
+/// Global configuration update
 /// </summary>
 public class ConfigEditModel
 {
     /// <summary>
-    /// 用户策略
+    /// User policy
     /// </summary>
     public AccountPolicy? AccountPolicy { get; set; }
 
     /// <summary>
-    /// 全局配置项
+    /// Global configuration
     /// </summary>
     public GlobalConfig? GlobalConfig { get; set; }
 
     /// <summary>
-    /// 比赛策略
+    /// Game policy
     /// </summary>
     public ContainerPolicy? ContainerPolicy { get; set; }
 }

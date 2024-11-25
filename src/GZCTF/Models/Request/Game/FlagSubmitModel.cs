@@ -3,13 +3,13 @@
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
-/// flag 提交
+/// Flag submission
 /// </summary>
 public class FlagSubmitModel
 {
     /// <summary>
-    /// flag 内容
-    /// fix: 防止前端的意外提交 (number/float/null) 可能被错误转换
+    /// Flag content
+    /// Fix: Prevent accidental submissions from the frontend (number/float/null) that may be incorrectly converted
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_FlagRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

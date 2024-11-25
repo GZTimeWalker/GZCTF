@@ -4,7 +4,7 @@ using MemoryPack;
 namespace GZCTF.Models.Request.Info;
 
 /// <summary>
-/// Client Captcha Info Model
+/// Client CAPTCHA information
 /// </summary>
 [MemoryPackable]
 public partial class ClientCaptchaInfoModel

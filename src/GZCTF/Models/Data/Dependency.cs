@@ -9,31 +9,31 @@ namespace GZCTF.Models.Data;
 public abstract class Dependency<T> where T : class
 {
     /// <summary>
-    /// 源实体
+    /// Source entity ID
     /// </summary>
     [Required]
     public int SourceId { get; set; }
 
     /// <summary>
-    /// 源实体
+    /// Source entity
     /// </summary>
     [Required]
     public T? Source { get; set; }
 
     /// <summary>
-    /// 依赖实体
+    /// Dependent entity ID
     /// </summary>
     [Required]
     public int TargetId { get; set; }
 
     /// <summary>
-    /// 依赖实体
+    /// Dependent entity
     /// </summary>
     [Required]
     public T? Target { get; set; }
 }
 
 /// <summary>
-/// 练习题目依赖关系
+/// Dependency relationship for exercise challenges
 /// </summary>
 public class ExerciseDependency : Dependency<ExerciseChallenge>;

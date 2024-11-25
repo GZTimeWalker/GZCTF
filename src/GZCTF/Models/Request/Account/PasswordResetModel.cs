@@ -3,26 +3,26 @@
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 账号密码重置
+/// Account password reset
 /// </summary>
 public class PasswordResetModel
 {
     /// <summary>
-    /// 密码
+    /// Password
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
-    /// 邮箱
+    /// Email
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// 邮箱接收到的Base64格式Token
+    /// Base64 formatted token received via email
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TokenRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

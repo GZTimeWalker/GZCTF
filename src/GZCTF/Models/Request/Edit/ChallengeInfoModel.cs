@@ -3,17 +3,17 @@
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// 基础题目信息（Edit）
+/// Basic challenge information (Edit)
 /// </summary>
 public class ChallengeInfoModel
 {
     /// <summary>
-    /// 题目Id
+    /// Challenge Id
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 题目名称
+    /// Challenge title
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -22,32 +22,32 @@ public class ChallengeInfoModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目类别
+    /// Challenge category
     /// </summary>
     public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
-    /// 题目类型
+    /// Challenge type
     /// </summary>
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>
-    /// 是否启用题目
+    /// Is the challenge enabled
     /// </summary>
     public bool IsEnabled { get; set; }
 
     /// <summary>
-    /// 题目分值
+    /// Challenge score
     /// </summary>
     public int Score { get; set; } = 500;
 
     /// <summary>
-    /// 最低分值
+    /// Minimum score
     /// </summary>
     public int MinScore { get; set; }
 
     /// <summary>
-    /// 最初分值
+    /// Original score
     /// </summary>
     public int OriginalScore { get; set; } = 500;
 

@@ -4,116 +4,116 @@ using GZCTF.Extensions;
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// 题目更新信息（Edit）
+/// Challenge update information (Edit)
 /// </summary>
 public class ChallengeUpdateModel
 {
     /// <summary>
-    /// 题目名称
+    /// Challenge title
     /// </summary>
     [MinLength(1, ErrorMessageResourceName = nameof(Resources.Program.Model_TitleTooShort),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Title { get; set; }
 
     /// <summary>
-    /// 题目内容
+    /// Challenge content
     /// </summary>
     public string? Content { get; set; }
 
     /// <summary>
-    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// Flag template, used to generate Flag based on Token and challenge/game information
     /// </summary>
     [MaxLength(Limits.MaxFlagTemplateLength, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? FlagTemplate { get; set; }
 
     /// <summary>
-    /// 题目类别
+    /// Challenge category
     /// </summary>
     public ChallengeCategory? Category { get; set; }
 
     /// <summary>
-    /// 题目提示
+    /// Challenge hints
     /// </summary>
     public List<string>? Hints { get; set; }
 
     /// <summary>
-    /// 是否启用题目
+    /// Is the challenge enabled
     /// </summary>
     public bool? IsEnabled { get; set; }
 
     /// <summary>
-    /// 统一文件名
+    /// Unified file name
     /// </summary>
     public string? FileName { get; set; }
 
     /// <summary>
-    /// 镜像名称与标签
+    /// Container image name and tag
     /// </summary>
     public string? ContainerImage { get; set; }
 
     /// <summary>
-    /// 运行内存限制 (MB)
+    /// Memory limit (MB)
     /// </summary>
     [Range(32, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int? MemoryLimit { get; set; }
 
     /// <summary>
-    /// CPU 限制 (0.1 CPUs)
+    /// CPU limit (0.1 CPUs)
     /// </summary>
     [Range(1, 1024, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int? CPUCount { get; set; }
 
     /// <summary>
-    /// 存储限制 (MB)
+    /// Storage limit (MB)
     /// </summary>
     [Range(128, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int? StorageLimit { get; set; }
 
     /// <summary>
-    /// 镜像暴露端口
+    /// Container exposed port
     /// </summary>
     public int? ContainerExposePort { get; set; }
 
     /// <summary>
-    /// 是否需要记录访问流量
+    /// Is traffic capture enabled
     /// </summary>
     public bool? EnableTrafficCapture { get; set; }
 
     /// <summary>
-    /// 是否禁用三血奖励
+    /// Is blood bonus disabled
     /// </summary>
     public bool? DisableBloodBonus { get; set; }
 
     /// <summary>
-    /// 初始分数
+    /// Initial score
     /// </summary>
     public int? OriginalScore { get; set; }
 
     /// <summary>
-    /// 最低分数比例
+    /// Minimum score rate
     /// </summary>
     [Range(0, 1)]
     public double? MinScoreRate { get; set; }
 
     /// <summary>
-    /// 难度系数
+    /// Difficulty coefficient
     /// </summary>
     public double? Difficulty { get; set; }
 
     /// <summary>
-    /// 提示是否存在更新
+    /// Check if hints are updated
     /// </summary>
-    /// <param name="originalHash">原有哈希</param>
+    /// <param name="originalHash">Original hash</param>
     /// <returns></returns>
     internal bool IsHintUpdated(int? originalHash) =>
         Hints is not null && Hints.GetSetHashCode() != originalHash;
 
     /// <summary>
-    /// 是否为有效的 Flag 模板
+    /// Check if the Flag template is valid
     /// </summary>
     /// <returns></returns>
     internal bool IsValidFlagTemplate()

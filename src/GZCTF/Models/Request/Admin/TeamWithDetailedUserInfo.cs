@@ -3,42 +3,42 @@
 namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
-/// 比赛队伍详细信息，用于审核查看（Admin）
+/// Detailed team information for review (Admin)
 /// </summary>
 public class TeamWithDetailedUserInfo
 {
     /// <summary>
-    /// 队伍 Id
+    /// Team ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 队伍名称
+    /// Team name
     /// </summary>
     public string? Name { get; set; }
 
     /// <summary>
-    /// 队伍签名
+    /// Team bio
     /// </summary>
     public string? Bio { get; set; }
 
     /// <summary>
-    /// 头像链接
+    /// Avatar URL
     /// </summary>
     public string? Avatar { get; set; }
 
     /// <summary>
-    /// 是否锁定
+    /// Is locked
     /// </summary>
     public bool Locked { get; set; }
 
     /// <summary>
-    /// 队长 Id
+    /// Captain Id
     /// </summary>
     public Guid CaptainId { get; set; }
 
     /// <summary>
-    /// 队伍成员
+    /// Team members
     /// </summary>
     public ProfileUserInfoModel[]? Members { get; set; }
 

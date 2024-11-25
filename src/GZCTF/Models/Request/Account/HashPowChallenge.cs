@@ -1,22 +1,22 @@
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 哈希 Pow 验证
+/// Hash Pow verification
 /// </summary>
 public class HashPowChallenge
 {
     /// <summary>
-    /// 挑战 Id
+    /// Challenge ID
     /// </summary>
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// 验证挑战
+    /// Verification challenge
     /// </summary>
     public string Challenge { get; set; } = string.Empty;
 
     /// <summary>
-    /// 难度系数
+    /// Difficulty coefficient
     /// </summary>
     public int Difficulty { get; set; }
 }

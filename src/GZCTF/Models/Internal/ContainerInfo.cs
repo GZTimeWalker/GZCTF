@@ -3,22 +3,22 @@
 public class ContainerInfo
 {
     /// <summary>
-    /// 容器 Id
+    /// Container ID
     /// </summary>
     public string Id { get; set; } = default!;
 
     /// <summary>
-    /// 容器名称
+    /// Container name
     /// </summary>
     public string Name { get; set; } = default!;
 
     /// <summary>
-    /// 容器镜像
+    /// Container image
     /// </summary>
     public string Image { get; set; } = default!;
 
     /// <summary>
-    /// 容器状态
+    /// Container state
     /// </summary>
     public string State { get; set; } = default!;
 }

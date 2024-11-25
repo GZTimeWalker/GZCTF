@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 全局信息接口
+/// Global Information APIs
 /// </summary>
 [Route("api")]
 [ApiController]
@@ -31,41 +31,41 @@ public class InfoController(
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
-    /// 获取最新文章
+    /// Get the latest posts
     /// </summary>
     /// <remarks>
-    /// 获取最新文章
+    /// Get the latest posts
     /// </remarks>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文章</response>
+    /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLatestPosts(CancellationToken token) =>
         Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
 
     /// <summary>
-    /// 获取全部文章
+    /// Get all posts
     /// </summary>
     /// <remarks>
-    /// 获取全部文章
+    /// Get all posts
     /// </remarks>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文章</response>
+    /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token) =>
         Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
 
     /// <summary>
-    /// 获取文章详情
+    /// Get post details
     /// </summary>
     /// <remarks>
-    /// 获取文章详情
+    /// Get post details
     /// </remarks>
     /// <param name="id"></param>
     /// <param name="token"></param>
-    /// <response code="200">成功获取文章详情</response>
-    /// <response code="404">文章未找到</response>
+    /// <response code="200">Successfully retrieved post details</response>
+    /// <response code="404">Post not found</response>
     [HttpGet("Posts/{id}")]
     [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -81,12 +81,12 @@ public class InfoController(
     }
 
     /// <summary>
-    /// 获取客户端设置
+    /// Get client configuration
     /// </summary>
     /// <remarks>
-    /// 获取客户端设置
+    /// Get client configuration
     /// </remarks>
-    /// <response code="200">成功获取配置信息</response>
+    /// <response code="200">Successfully retrieved configuration</response>
     [HttpGet("Config")]
     [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
@@ -102,12 +102,12 @@ public class InfoController(
     }
 
     /// <summary>
-    /// 获取 Captcha 配置
+    /// Get Captcha configuration
     /// </summary>
     /// <remarks>
-    /// 获取 Captcha 配置
+    /// Get Captcha configuration
     /// </remarks>
-    /// <response code="200">成功获取 Captcha 配置</response>
+    /// <response code="200">Successfully retrieved Captcha configuration</response>
     [HttpGet("Captcha")]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
@@ -125,13 +125,13 @@ public class InfoController(
     }
 
     /// <summary>
-    /// 创建 Pow 验证码
+    /// Create Pow Captcha
     /// </summary>
     /// <remarks>
-    /// 创建 Pow 验证码，有效期 5 分钟
+    /// Create Pow Captcha, valid for 5 minutes
     /// </remarks>
-    /// <response code="200">成功获取 Pow Challenge</response>
-    /// <response code="404">Pow 已禁用</response>
+    /// <response code="200">Successfully retrieved Pow Challenge</response>
+    /// <response code="404">Pow is disabled</response>
     [HttpGet("Captcha/PowChallenge")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.PowChallenge))]
     [ProducesResponseType(typeof(HashPowChallenge), StatusCodes.Status200OK)]

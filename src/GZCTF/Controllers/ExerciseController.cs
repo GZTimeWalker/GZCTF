@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GZCTF.Controllers;
 
 /// <summary>
-/// 练习相关接口
+/// Exercise related APIs
 /// </summary>
 [RequireUser]
 [ApiController]

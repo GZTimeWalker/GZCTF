@@ -4,37 +4,37 @@ using FluentStorage.Blobs;
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
-/// 队伍流量获取信息
+/// Team traffic information
 /// </summary>
 public class TeamTrafficModel
 {
     /// <summary>
-    /// 参与 Id
+    /// Participation ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 队伍 Id
+    /// Team Id
     /// </summary>
     public int TeamId { get; set; }
 
     /// <summary>
-    /// 队伍名称
+    /// Team name
     /// </summary>
     public string? Name { get; set; }
 
     /// <summary>
-    /// 参赛所属分组
+    /// Division of participation
     /// </summary>
     public string? Division { get; set; }
 
     /// <summary>
-    /// 头像链接
+    /// Avatar URL
     /// </summary>
     public string? Avatar { get; set; }
 
     /// <summary>
-    /// 题目所捕获到的流量数量
+    /// Number of traffic captured by the challenge
     /// </summary>
     public int Count { get; set; }
 

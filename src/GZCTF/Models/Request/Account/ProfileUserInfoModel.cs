@@ -1,52 +1,52 @@
 ﻿namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 基本账号信息
+/// Basic account information
 /// </summary>
 public class ProfileUserInfoModel
 {
     /// <summary>
-    /// 用户ID
+    /// User ID
     /// </summary>
     public Guid? UserId { get; set; }
 
     /// <summary>
-    /// 用户名
+    /// Username
     /// </summary>
     public string? UserName { get; set; }
 
     /// <summary>
-    /// 邮箱
+    /// Email
     /// </summary>
     public string? Email { get; set; }
 
     /// <summary>
-    /// 签名
+    /// Bio
     /// </summary>
     public string? Bio { get; set; }
 
     /// <summary>
-    /// 手机号码
+    /// Phone number
     /// </summary>
     public string? Phone { get; set; }
 
     /// <summary>
-    /// 真实姓名
+    /// Real name
     /// </summary>
     public string? RealName { get; set; }
 
     /// <summary>
-    /// 学工号
+    /// Student ID
     /// </summary>
     public string? StdNumber { get; set; }
 
     /// <summary>
-    /// 头像链接
+    /// Avatar URL
     /// </summary>
     public string? Avatar { get; set; }
 
     /// <summary>
-    /// 用户角色
+    /// User role
     /// </summary>
     public Role? Role { get; set; }
 

@@ -4,12 +4,12 @@ using GZCTF.Extensions;
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>
-/// 注册账号
+/// Account registration
 /// </summary>
 public class RegisterModel : ModelWithCaptcha
 {
     /// <summary>
-    /// 用户名
+    /// Username
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -20,14 +20,14 @@ public class RegisterModel : ModelWithCaptcha
     public string UserName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 密码
+    /// Password
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
-    /// 邮箱
+    /// Email
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]

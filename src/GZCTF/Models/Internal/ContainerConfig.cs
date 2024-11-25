@@ -3,52 +3,52 @@
 public class ContainerConfig
 {
     /// <summary>
-    /// 容器镜像
+    /// Container image
     /// </summary>
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
-    /// 队伍 Id
+    /// Team ID
     /// </summary>
     public string TeamId { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目 Id
+    /// Challenge ID
     /// </summary>
     public int ChallengeId { get; set; }
 
     /// <summary>
-    /// 用户 Id
+    /// User ID
     /// </summary>
     public Guid UserId { get; set; }
 
     /// <summary>
-    /// 容器需要暴露的端口
+    /// Port to be exposed by the container
     /// </summary>
     public int ExposedPort { get; set; }
 
     /// <summary>
-    /// Flag文本
+    /// Flag text
     /// </summary>
     public string? Flag { get; set; } = string.Empty;
 
     /// <summary>
-    /// 是否需要记录访问流量
+    /// Whether to record traffic
     /// </summary>
     public bool EnableTrafficCapture { get; set; }
 
     /// <summary>
-    /// 内存限制（MB）
+    /// Memory limit (MB)
     /// </summary>
     public int MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    /// CPU 限制 (0.1 CPUs)
+    /// CPU limit (0.1 CPUs)
     /// </summary>
     public int CPUCount { get; set; } = 1;
 
     /// <summary>
-    /// 存储写入限制
+    /// Storage write limit
     /// </summary>
     public int StorageLimit { get; set; } = 256;
 }

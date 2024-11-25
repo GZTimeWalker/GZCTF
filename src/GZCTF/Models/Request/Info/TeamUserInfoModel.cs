@@ -3,43 +3,43 @@
 namespace GZCTF.Models.Request.Info;
 
 /// <summary>
-/// 队员信息
+/// Team member information
 /// </summary>
 public class TeamUserInfoModel
 {
     /// <summary>
-    /// 用户ID
+    /// User ID
     /// </summary>
     public Guid? Id { get; set; }
 
     /// <summary>
-    /// 用户名
+    /// Username
     /// </summary>
     public string? UserName { get; set; }
 
     /// <summary>
-    /// 签名
+    /// Bio
     /// </summary>
     public string? Bio { get; set; }
 
     /// <summary>
-    /// 头像链接
+    /// Avatar URL
     /// </summary>
     public string? Avatar { get; set; }
 
     /// <summary>
-    /// 是否是队长
+    /// Is Captain
     /// </summary>
     public bool Captain { get; set; }
 
     /// <summary>
-    /// 真实姓名，用于生成积分榜
+    /// Real name, used for generating the scoreboard
     /// </summary>
     [JsonIgnore]
     public string? RealName { get; set; }
 
     /// <summary>
-    /// 学号，用于生成积分榜
+    /// Student number, used for generating the scoreboard
     /// </summary>
     [JsonIgnore]
     public string? StudentNumber { get; set; }

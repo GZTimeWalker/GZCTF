@@ -3,7 +3,7 @@
 namespace GZCTF.Models.Data;
 
 /// <summary>
-/// 抄袭行为记录
+/// Record of cheating behavior
 /// </summary>
 [Index(nameof(GameId))]
 [Index(nameof(SubmissionId), IsUnique = true)]
@@ -12,42 +12,42 @@ public class CheatInfo
     #region Db Relationship
 
     /// <summary>
-    /// 比赛对象
+    /// Game object
     /// </summary>
     public Game Game { get; set; } = default!;
 
     /// <summary>
-    /// 比赛对象 ID
+    /// Game object ID
     /// </summary>
     public int GameId { get; set; }
 
     /// <summary>
-    /// 提交对应 flag 的队伍
+    /// Team that submitted the corresponding flag
     /// </summary>
     public Participation SubmitTeam { get; set; } = default!;
 
     /// <summary>
-    /// 提交对应 flag 的队伍 ID
+    /// Team ID that submitted the corresponding flag
     /// </summary>
     public int SubmitTeamId { get; set; }
 
     /// <summary>
-    /// 对应 flag 所属队伍
+    /// Team that owns the corresponding flag
     /// </summary>
     public Participation SourceTeam { get; set; } = default!;
 
     /// <summary>
-    /// 对应 flag 所属队伍 ID
+    /// Team ID that owns the corresponding flag
     /// </summary>
     public int SourceTeamId { get; set; }
 
     /// <summary>
-    /// 本次抄袭行为对应的提交
+    /// Submission corresponding to this cheating behavior
     /// </summary>
     public Submission Submission { get; set; } = default!;
 
     /// <summary>
-    /// 本次抄袭行为对应的提交 ID
+    /// Submission ID corresponding to this cheating behavior
     /// </summary>
     public int SubmissionId { get; set; }
 

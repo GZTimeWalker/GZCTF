@@ -3,12 +3,12 @@
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// 文章对象（Edit）
+/// Post item (Edit)
 /// </summary>
 public class PostEditModel
 {
     /// <summary>
-    /// 文章标题
+    /// Post title
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -17,22 +17,22 @@ public class PostEditModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文章总结
+    /// Post summary
     /// </summary>
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文章内容
+    /// Post content
     /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 文章标签
+    /// Post tags
     /// </summary>
     public List<string>? Tags { get; set; } = [];
 
     /// <summary>
-    /// 是否置顶
+    /// Is pinned
     /// </summary>
     public bool IsPinned { get; set; } = false;
 }

@@ -13,12 +13,12 @@ using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 namespace GZCTF.Models.Internal;
 
 /// <summary>
-/// 在主动保存时忽略
+/// Ignore when saving automatically
 /// </summary>
 public sealed class AutoSaveIgnoreAttribute : Attribute;
 
 /// <summary>
-/// 更改该属性时需要更新缓存
+/// Update cache when this property changes
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
 public sealed class CacheFlushAttribute(string cacheKey) : Attribute
@@ -27,54 +27,54 @@ public sealed class CacheFlushAttribute(string cacheKey) : Attribute
 }
 
 /// <summary>
-/// 账户策略
+/// Account policy
 /// </summary>
 public class AccountPolicy
 {
     /// <summary>
-    /// 允许用户注册
+    /// Allow user registration
     /// </summary>
     public bool AllowRegister { get; set; } = true;
 
     /// <summary>
-    /// 注册时直接激活账户
+    /// Activate account upon registration
     /// </summary>
     public bool ActiveOnRegister { get; set; } = true;
 
     /// <summary>
-    /// 使用验证码校验
+    /// Use captcha verification
     /// </summary>
     [CacheFlush(CacheKey.CaptchaConfig)]
     public bool UseCaptcha { get; set; }
 
     /// <summary>
-    /// 注册、更换邮箱、找回密码需要邮件确认
+    /// Email confirmation required for registration, email change, and password recovery
     /// </summary>
     public bool EmailConfirmationRequired { get; set; }
 
     /// <summary>
-    /// 邮箱后缀域名，以逗号分割
+    /// Email domain list, separated by commas
     /// </summary>
     public string EmailDomainList { get; set; } = string.Empty;
 }
 
 /// <summary>
-/// 容器策略
+/// Container policy
 /// </summary>
 public class ContainerPolicy
 {
     /// <summary>
-    /// 是否在达到数量限制时自动销毁最早的容器
+    /// Automatically destroy the oldest container when the limit is reached
     /// </summary>
     public bool AutoDestroyOnLimitReached { get; set; }
 
     /// <summary>
-    /// 用户容器数量限制，用于限制练习题目的容器数量
+    /// User container limit, used to limit the number of exercise containers
     /// </summary>
     public int MaxExerciseContainerCountPerUser { get; set; } = 1;
 
     /// <summary>
-    /// 容器的默认生命周期，以分钟计
+    /// Default container lifetime in minutes
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     [Range(1, 7200, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
@@ -82,7 +82,7 @@ public class ContainerPolicy
     public int DefaultLifetime { get; set; } = 120;
 
     /// <summary>
-    /// 容器每次续期的时长，以分钟计
+    /// Extension duration for each renewal in minutes
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     [Range(1, 7200, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
@@ -90,7 +90,7 @@ public class ContainerPolicy
     public int ExtensionDuration { get; set; } = 120;
 
     /// <summary>
-    /// 容器停止前的可续期时间段，以分钟计
+    /// Renewal window before container stops in minutes
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     [Range(1, 360, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
@@ -99,54 +99,54 @@ public class ContainerPolicy
 }
 
 /// <summary>
-/// 全局设置
+/// Global settings
 /// </summary>
 public class GlobalConfig
 {
     /// <summary>
-    /// 默认站点描述
+    /// Default site description
     /// </summary>
     public const string DefaultDescription = "GZ::CTF is an open source CTF platform";
 
     /// <summary>
-    /// 平台前缀名称
+    /// Platform prefix name
     /// </summary>
     [CacheFlush(CacheKey.Index)]
     [CacheFlush(CacheKey.ClientConfig)]
     public string Title { get; set; } = "GZ";
 
     /// <summary>
-    /// 平台标语
+    /// Platform slogan
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     public string Slogan { get; set; } = "Hack for fun not for profit";
 
     /// <summary>
-    /// 站点描述显示的信息
+    /// Site description information
     /// </summary>
     [CacheFlush(CacheKey.Index)]
     public string? Description { get; set; } = DefaultDescription;
 
     /// <summary>
-    /// 页脚显示的信息
+    /// Footer information
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     public string? FooterInfo { get; set; }
 
     /// <summary>
-    /// 自定义主题颜色
+    /// Custom theme color
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     public string? CustomTheme { get; set; }
 
     /// <summary>
-    /// 平台 logo 哈希
+    /// Platform logo hash
     /// </summary>
     [AutoSaveIgnore]
     public string? LogoHash { get; set; }
 
     /// <summary>
-    /// 平台 favicon 哈希
+    /// Platform favicon hash
     /// </summary>
     [AutoSaveIgnore]
     public string? FaviconHash { get; set; }
@@ -155,55 +155,55 @@ public class GlobalConfig
     public string? LogoUrl => LogoHash.IsNullOrEmpty() ? null : $"/assets/{LogoHash}/logo";
 
     /// <summary>
-    /// 平台名称，用于邮件和主页渲染
+    /// Platform name, used for email and homepage rendering
     /// </summary>
     [JsonIgnore]
     public string Platform => Title.IsNullOrEmpty() ? "GZ::CTF" : $"{Title}::CTF";
 }
 
 /// <summary>
-/// 客户端配置
+/// Client configuration
 /// </summary>
 [MemoryPackable]
 public partial class ClientConfig
 {
     /// <summary>
-    /// 平台前缀名称
+    /// Platform prefix name
     /// </summary>
     public string Title { get; set; } = "GZ";
 
     /// <summary>
-    /// 平台标语
+    /// Platform slogan
     /// </summary>
     public string Slogan { get; set; } = "Hack for fun not for profit";
 
     /// <summary>
-    /// 页脚显示的信息
+    /// Footer information
     /// </summary>
     public string? FooterInfo { get; set; }
 
     /// <summary>
-    /// 自定义主题颜色
+    /// Custom theme color
     /// </summary>
     public string? CustomTheme { get; set; }
 
     /// <summary>
-    /// 平台 Logo
+    /// Platform logo URL
     /// </summary>
     public string? LogoUrl { get; set; }
 
     /// <summary>
-    /// 容器的默认生命周期，以分钟计
+    /// Default container lifetime in minutes
     /// </summary>
     public int DefaultLifetime { get; set; } = 120;
 
     /// <summary>
-    /// 容器每次续期的时长，以分钟计
+    /// Extension duration for each renewal in minutes
     /// </summary>
     public int ExtensionDuration { get; set; } = 120;
 
     /// <summary>
-    /// 容器停止前的可续期时间段，以分钟计
+    /// Renewal window before container stops in minutes
     /// </summary>
     public int RenewalWindow { get; set; } = 10;
 

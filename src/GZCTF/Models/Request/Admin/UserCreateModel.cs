@@ -3,12 +3,12 @@
 namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
-/// 批量用户创建（Admin）
+/// Batch user creation (Admin)
 /// </summary>
 public class UserCreateModel
 {
     /// <summary>
-    /// 用户名
+    /// Username
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_UserNameRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -19,14 +19,14 @@ public class UserCreateModel
     public string UserName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 密码
+    /// Password
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
-    /// 邮箱
+    /// Email
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -35,28 +35,28 @@ public class UserCreateModel
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// 真实姓名
+    /// Real name
     /// </summary>
     [MaxLength(Limits.MaxUserDataLength, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? RealName { get; set; }
 
     /// <summary>
-    /// 学号
+    /// Student number
     /// </summary>
     [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? StdNumber { get; set; }
 
     /// <summary>
-    /// 联系电话
+    /// Contact phone number
     /// </summary>
     [Phone(ErrorMessageResourceName = nameof(Resources.Program.Model_MalformedPhoneNumber),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Phone { get; set; }
 
     /// <summary>
-    /// 用户加入的队伍
+    /// Team the user joins
     /// </summary>
     [MaxLength(Limits.MaxUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]

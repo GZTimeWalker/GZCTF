@@ -4,17 +4,17 @@ using GZCTF.Models.Request.Game;
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// 题目详细信息（Edit）
+/// Challenge detailed information (Edit)
 /// </summary>
 public class ChallengeEditDetailModel
 {
     /// <summary>
-    /// 题目Id
+    /// Challenge Id
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 题目名称
+    /// Challenge title
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_TitleRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
@@ -23,122 +23,122 @@ public class ChallengeEditDetailModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目内容
+    /// Challenge content
     /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目类别
+    /// Challenge category
     /// </summary>
     [Required]
     public ChallengeCategory Category { get; set; } = ChallengeCategory.Misc;
 
     /// <summary>
-    /// 题目类型
+    /// Challenge type
     /// </summary>
     [Required]
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
 
     /// <summary>
-    /// 题目提示
+    /// Challenge hints
     /// </summary>
     public List<string> Hints { get; set; } = [];
 
     /// <summary>
-    /// Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+    /// Flag template, used to generate Flag based on Token and challenge, game information
     /// </summary>
     [MaxLength(Limits.MaxFlagTemplateLength, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? FlagTemplate { get; set; }
 
     /// <summary>
-    /// 是否启用题目
+    /// Is the challenge enabled
     /// </summary>
     [Required]
     public bool IsEnabled { get; set; }
 
     /// <summary>
-    /// 通过人数
+    /// Number of people who passed
     /// </summary>
     [Required]
     public int AcceptedCount { get; set; }
 
     /// <summary>
-    /// 统一文件名（仅用于动态附件）
+    /// Unified file name (only for dynamic attachments)
     /// </summary>
     public string? FileName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 题目附件（动态附件存放于 FlagInfoModel）
+    /// Challenge attachment (dynamic attachments are stored in FlagInfoModel)
     /// </summary>
     public Attachment? Attachment { get; set; }
 
     /// <summary>
-    /// 测试容器
+    /// Test container
     /// </summary>
     public ContainerInfoModel? TestContainer { get; set; }
 
     /// <summary>
-    /// 题目 Flag 信息
+    /// Challenge Flag information
     /// </summary>
     [Required]
     public List<FlagInfoModel> Flags { get; set; } = [];
 
     /// <summary>
-    /// 镜像名称与标签
+    /// Image name and tag
     /// </summary>
     [Required]
     public string? ContainerImage { get; set; } = string.Empty;
 
     /// <summary>
-    /// 运行内存限制 (MB)
+    /// Memory limit (MB)
     /// </summary>
     [Required]
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
-    /// CPU 限制 (0.1 CPUs)
+    /// CPU limit (0.1 CPUs)
     /// </summary>
     [Required]
     public int? CPUCount { get; set; } = 1;
 
     /// <summary>
-    /// 存储限制 (MB)
+    /// Storage limit (MB)
     /// </summary>
     [Required]
     public int? StorageLimit { get; set; } = 256;
 
     /// <summary>
-    /// 镜像暴露端口
+    /// Container exposed port
     /// </summary>
     [Required]
     public int? ContainerExposePort { get; set; } = 80;
 
     /// <summary>
-    /// 是否需要记录访问流量
+    /// Whether to record traffic
     /// </summary>
     public bool? EnableTrafficCapture { get; set; } = false;
 
     /// <summary>
-    /// 是否禁用三血奖励
+    /// Whether to disable blood bonus
     /// </summary>
     public bool? DisableBloodBonus { get; set; } = false;
 
     /// <summary>
-    /// 初始分数
+    /// Initial score
     /// </summary>
     [Required]
     public int OriginalScore { get; set; } = 500;
 
     /// <summary>
-    /// 最低分数比例
+    /// Minimum score rate
     /// </summary>
     [Required]
     [Range(0, 1)]
     public double MinScoreRate { get; set; } = 0.25;
 
     /// <summary>
-    /// 难度系数
+    /// Difficulty coefficient
     /// </summary>
     [Required]
     public double Difficulty { get; set; } = 3;

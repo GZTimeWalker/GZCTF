@@ -5,7 +5,7 @@ using MemoryPack;
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
-/// 比赛基本信息，不包含详细介绍与当前队伍报名状态
+/// Basic game information, excluding detailed description and current team registration status
 /// </summary>
 [MemoryPackable]
 public partial class BasicGameInfoModel
@@ -14,35 +14,35 @@ public partial class BasicGameInfoModel
     public int Id { get; set; }
 
     /// <summary>
-    /// 比赛标题
+    /// Game title
     /// </summary>
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 比赛描述
+    /// Game description
     /// </summary>
     public string Summary { get; set; } = string.Empty;
 
     /// <summary>
-    /// 头图
+    /// Poster image URL
     /// </summary>
     [JsonPropertyName("poster")]
     public string? PosterUrl { get; set; } = string.Empty;
 
     /// <summary>
-    /// 队员数量限制
+    /// Team member limit
     /// </summary>
     [JsonPropertyName("limit")]
     public int TeamMemberLimitCount { get; set; }
 
     /// <summary>
-    /// 开始时间
+    /// Start time
     /// </summary>
     [JsonPropertyName("start")]
     public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
-    /// 结束时间
+    /// End time
     /// </summary>
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);

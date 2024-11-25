@@ -1,47 +1,47 @@
 namespace GZCTF.Models.Request.Exercise;
 
 /// <summary>
-/// 练习基本信息
+/// Basic exercise information
 /// </summary>
 public class ExerciseInfoModel
 {
     /// <summary>
-    /// 练习 Id
+    /// Exercise ID
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// 练习名称
+    /// Exercise title
     /// </summary>
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// 练习题目的难度，用作标签、排序等
+    /// Difficulty of the exercise, used for tags, sorting, etc.
     /// </summary>
     public Difficulty Difficulty { get; set; }
 
     /// <summary>
-    /// 练习标签
+    /// Exercise category
     /// </summary>
     public ChallengeCategory Category { get; set; }
 
     /// <summary>
-    /// 练习附加标签
+    /// Additional tags for the exercise
     /// </summary>
     public List<string>? Tags { get; set; } = new();
 
     /// <summary>
-    /// 练习积分
+    /// Exercise points
     /// </summary>
     public int Credit { get; set; }
 
     /// <summary>
-    /// 解决题目人数
+    /// Number of people who solved the exercise
     /// </summary>
     public int AcceptedCount { get; set; }
 
     /// <summary>
-    /// 提交答案的数量
+    /// Number of submissions
     /// </summary>
     public int SubmissionCount { get; set; }
 }

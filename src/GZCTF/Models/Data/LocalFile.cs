@@ -13,44 +13,44 @@ public class LocalFile
     public int Id { get; set; }
 
     /// <summary>
-    /// 文件哈希
+    /// File hash
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
     public string Hash { get; set; } = string.Empty;
 
     /// <summary>
-    /// 上传时间
+    /// Upload time
     /// </summary>
     [JsonIgnore]
     public DateTimeOffset UploadTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
-    /// 文件大小
+    /// File size
     /// </summary>
     [JsonIgnore]
     public long FileSize { get; set; }
 
     /// <summary>
-    /// 文件名
+    /// File name
     /// </summary>
     [Required]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// 引用计数
+    /// Reference count
     /// </summary>
     [JsonIgnore]
     public uint ReferenceCount { get; set; } = 1;
 
     /// <summary>
-    /// 文件存储位置
+    /// File storage location
     /// </summary>
     [NotMapped]
     [JsonIgnore]
     public string Location => $"{Hash[..2]}/{Hash[2..4]}";
 
     /// <summary>
-    /// 获取文件Url
+    /// URL for fetching the file
     /// </summary>
     public string Url(string? filename = null) => $"/assets/{Hash}/{filename ?? Name}";
 }
