@@ -572,9 +572,6 @@
   <data name="Header_Challenge" xml:space="preserve">
     <value>题目</value>
   </data>
-  <data name="Header_RealName" xml:space="preserve">
-    <value>真实姓名</value>
-  </data>
   <data name="Header_Email" xml:space="preserve">
     <value>用户邮箱</value>
   </data>
