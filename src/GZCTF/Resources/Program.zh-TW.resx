@@ -575,6 +575,9 @@
   <data name="Header_Email" xml:space="preserve">
     <value>用戶郵箱</value>
   </data>
+  <data name="Header_RealName" xml:space="preserve">
+    <value>真實姓名</value>
+  </data>
   <data name="Header_Member" xml:space="preserve">
     <value>隊員</value>
   </data>
