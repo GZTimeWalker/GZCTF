@@ -572,6 +572,9 @@
   <data name="Header_Challenge" xml:space="preserve">
     <value>チャレンジ</value>
   </data>
+  <data name="Header_RealName" xml:space="preserve">
+    <value>氏名</value>
+  </data>
   <data name="Header_Email" xml:space="preserve">
     <value>メール</value>
   </data>
