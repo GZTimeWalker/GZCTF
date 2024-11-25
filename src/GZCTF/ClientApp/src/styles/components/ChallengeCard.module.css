@@ -18,7 +18,7 @@
   z-index: 91;
   animation: spike 2s linear 0s infinite alternate;
 
-  filter: light-dark(brightness(0.8) saturate(0.5), brightness(1.2) saturate(0.8));
+  filter: light-dark(brightness(0.97) saturate(0.7), brightness(1.2) saturate(0.8));
 
   &[data-blood] {
     display: block;

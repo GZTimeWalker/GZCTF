@@ -30,6 +30,8 @@ export const ScoreFunc: FC<ScoreFuncProps> = ({
   const plotData = [...Array(100).keys()].map((x) => [toX(x), func(toX(x))])
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
+  const primaryColors = theme.colors[theme.primaryColor]
+  const color = primaryColors[colorScheme === 'dark' ? 8 : 6]
 
   return (
     <ReactEcharts
@@ -57,7 +59,7 @@ export const ScoreFunc: FC<ScoreFuncProps> = ({
             type: 'line',
             showSymbol: false,
             clip: true,
-            color: theme.colors[theme.primaryColor][8],
+            color: color,
             data: plotData,
             markPoint: {
               label: {
