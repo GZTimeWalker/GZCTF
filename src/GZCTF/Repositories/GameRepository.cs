@@ -69,8 +69,31 @@ public class GameRepository(
         // In most cases, we can get the scoreboard from the cache
         ScoreboardModel scoreboard = await GetScoreboard(game, token);
 
-        foreach (ScoreboardItem item in scoreboard.Items.Values)
-            item.TeamInfo = await teamRepository.GetTeamById(item.Id, token);
+        // load team info & participants
+        var ids = scoreboard.Items.Values.Select(i => i.Id).ToArray();
+        var teams = await Context.Teams
+            .IgnoreAutoIncludes().Include(t => t.Captain)
+            .Where(t => ids.Contains(t.Id))
+            .Include(t => t.Members).ToHashSetAsync(token);
+
+        // load participants with team id and game id, select all UserInfos
+        Dictionary<int, HashSet<UserInfo>> participants = await Context.UserParticipations
+            .Where(p => ids.Contains(p.TeamId) && p.GameId == game.Id)
+            .Include(p => p.User)
+            .Select(p => new { p.TeamId, p.User })
+            .GroupBy(p => p.TeamId)
+            .ToDictionaryAsync(g => g.Key,
+                g => g.Select(p => p.User).ToHashSet(), token);
+
+        // update scoreboard items
+        foreach (var item in scoreboard.Items.Values)
+        {
+            if (teams.FirstOrDefault(t => t.Id == item.Id) is { } team)
+                item.TeamInfo = team;
+
+            if (participants.TryGetValue(item.Id, out var users))
+                item.Participants = users;
+        }
 
         return scoreboard;
     }
@@ -88,7 +111,8 @@ public class GameRepository(
                 LogLevel.Debug
             );
 
-            foreach (GameChallenge chal in await Context.GameChallenges.Include(c => c.Flags).Where(c => c.Game == game).ToArrayAsync(token))
+            foreach (GameChallenge chal in await Context.GameChallenges.Include(c => c.Flags).Where(c => c.Game == game)
+                         .ToArrayAsync(token))
                 await challengeRepository.RemoveChallenge(chal, false, token);
 
             count = await Context.Participations.Where(i => i.Game == game).CountAsync(token);

@@ -258,7 +258,7 @@ public class EditController(
     }
 
     /// <summary>
-    /// Delete All WriteUps for Game
+    /// Delete All WriteUps
     /// </summary>
     /// <remarks>
     /// Deleting all WriteUps for a game requires administrator privileges
@@ -485,7 +485,7 @@ public class EditController(
         Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
-    /// Update Accepted Count for All Game Challenges
+    /// Update AC Counter for Challenges
     /// </summary>
     /// <remarks>
     /// Updating the accepted count for all game challenges requires administrator privileges
@@ -544,10 +544,10 @@ public class EditController(
     }
 
     /// <summary>
-    /// Update Game Challenge Information (Flags are not affected; use Flag-related APIs to modify)
+    /// Update Game Challenge Information
     /// </summary>
     /// <remarks>
-    /// Updating a game challenge requires administrator privileges
+    /// Updating a game challenge, requires administrator privileges. Flags are not affected; use Flag-related APIs to modify
     /// </remarks>
     /// <param name="id">Game ID</param>
     /// <param name="cId">Challenge ID</param>

@@ -48,7 +48,7 @@ public class GameController(
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
-    /// Gets the latest games
+    /// Get the latest games
     /// </summary>
     /// <remarks>
     /// Retrieves the latest ten games
@@ -61,7 +61,7 @@ public class GameController(
         Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
 
     /// <summary>
-    /// Gets detailed game information
+    /// Get detailed game information
     /// </summary>
     /// <remarks>
     /// Retrieves detailed information about the game
@@ -145,7 +145,7 @@ public class GameController(
         // If the team is not in the game, create a new participation object
         if (part is null)
         {
-            // Create new participation object, do not update team-game-user triple tuple 
+            // Create new participation object, do not update team-game-user triple tuple
             part = new()
             {
                 Game = game,
@@ -228,7 +228,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets the scoreboard
+    /// Get the scoreboard
     /// </summary>
     /// <remarks>
     /// Retrieves the scoreboard data
@@ -255,7 +255,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets game notices
+    /// Get game notices
     /// </summary>
     /// <remarks>
     /// Retrieves game notice data
@@ -285,7 +285,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets game events
+    /// Get game events
     /// </summary>
     /// <remarks>
     /// Retrieves game event data; requires Monitor permission
@@ -317,7 +317,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets game submissions
+    /// Get game submissions
     /// </summary>
     /// <remarks>
     /// Retrieves game submission data; requires Monitor permission
@@ -349,7 +349,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets game cheat information
+    /// Get game cheat information
     /// </summary>
     /// <remarks>
     /// Retrieves game cheat data; requires Monitor permission
@@ -378,7 +378,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets challenges with traffic capturing enabled
+    /// Get challenges with traffic capturing enabled
     /// </summary>
     /// <remarks>
     /// Retrieves challenges with traffic capturing enabled; requires Monitor permission
@@ -402,10 +402,10 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets team information captured in game challenges
+    /// Get team captures in a challenge
     /// </summary>
     /// <remarks>
-    /// Retrieves team information captured in game challenges; requires Monitor permission
+    /// Retrieves the list of captured teams for a game challenge; requires Monitor permission
     /// </remarks>
     /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
@@ -438,10 +438,10 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets the list of traffic packet files captured by a team in a game challenge
+    /// Get traffic files
     /// </summary>
     /// <remarks>
-    /// Retrieves the list of traffic packet files captured by a team in a game challenge; requires Monitor permission
+    /// Retrieves traffic packet files for a team and challenge; requires Monitor permission
     /// </remarks>
     /// <param name="challengeId">Challenge ID</param>
     /// <param name="partId">Team participation ID</param>
@@ -469,10 +469,10 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets the compressed package of traffic packet files
+    /// Download all traffic files
     /// </summary>
     /// <remarks>
-    /// Retrieves traffic packet files; requires Monitor permission
+    /// Downloads all traffic packet files for a team and challenge; requires Monitor permission
     /// </remarks>
     /// <param name="challengeId">Challenge ID</param>
     /// <param name="partId">Team participation ID</param>
@@ -493,10 +493,10 @@ public class GameController(
     }
 
     /// <summary>
-    /// Deletes all traffic packet files of a team
+    /// Deletes all traffic files
     /// </summary>
     /// <remarks>
-    /// Deletes a team's traffic packet files; requires Monitor permission
+    /// Deletes a team's traffic packet files for a challenge; requires Monitor permission
     /// </remarks>
     /// <param name="challengeId">Challenge ID</param>
     /// <param name="partId">Team participation ID</param>
@@ -524,7 +524,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets a traffic packet file
+    /// Get a traffic file
     /// </summary>
     /// <remarks>
     /// Retrieves a traffic packet file; requires Monitor permission
@@ -560,7 +560,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Deletes a traffic packet file
+    /// Deletes a traffic file
     /// </summary>
     /// <remarks>
     /// Deletes a traffic packet file; requires Monitor permission
@@ -596,7 +596,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets all challenge information of the game and current team information
+    /// Get team details in a game
     /// </summary>
     /// <remarks>
     /// Retrieves all challenges of the game; requires User permission and active team participation
@@ -642,7 +642,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets all game participation information
+    /// Get all game participations
     /// </summary>
     /// <remarks>
     /// Retrieves all participation information of the game; requires Admin permission
@@ -669,7 +669,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Downloads the game scoreboard
+    /// Downloads the scoreboard
     /// </summary>
     /// <remarks>
     /// Downloads the game scoreboard; requires Monitor permission
@@ -717,7 +717,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Downloads all submissions of the game
+    /// Downloads all submissions
     /// </summary>
     /// <remarks>
     /// Downloads all submissions of the game; requires Monitor permission
@@ -756,7 +756,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets challenge information
+    /// Get challenge information
     /// </summary>
     /// <remarks>
     /// Retrieves challenge information; requires User permission and active team participation
@@ -880,7 +880,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Gets writeup information
+    /// Get writeup information
     /// </summary>
     /// <remarks>
     /// Retrieves post-game writeup submission information; requires User permission

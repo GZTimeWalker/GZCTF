@@ -9,52 +9,52 @@
  * ---------------------------------------------------------------
  */
 
-/** 请求响应 */
+/** Request response */
 export interface RequestResponseOfRegisterStatus {
-  /** 响应信息 */
+  /** Response message */
   title?: string;
-  /** 数据 */
+  /** Data */
   data?: RegisterStatus;
   /**
-   * 状态码
+   * Status code
    * @format int32
    */
   status?: number;
 }
 
-/** 登录响应状态 */
+/** Login response status */
 export enum RegisterStatus {
   LoggedIn = "LoggedIn",
   AdminConfirmationRequired = "AdminConfirmationRequired",
   EmailConfirmationRequired = "EmailConfirmationRequired",
 }
 
-/** 请求响应 */
+/** Request response */
 export interface RequestResponse {
-  /** 响应信息 */
+  /** Response message */
   title?: string;
   /**
-   * 状态码
+   * Status code
    * @format int32
    */
   status?: number;
 }
 
-/** 注册账号 */
+/** Account registration */
 export type RegisterModel = ModelWithCaptcha & {
   /**
-   * 用户名
+   * Username
    * @minLength 3
    * @maxLength 15
    */
   userName: string;
   /**
-   * 密码
+   * Password
    * @minLength 1
    */
   password: string;
   /**
-   * 邮箱
+   * Email
    * @format email
    * @minLength 1
    */
@@ -66,156 +66,156 @@ export interface ModelWithCaptcha {
   challenge?: string | null;
 }
 
-/** 找回账号 */
+/** Account recovery */
 export type RecoveryModel = ModelWithCaptcha & {
   /**
-   * 用户邮箱
+   * User email
    * @format email
    * @minLength 1
    */
   email: string;
 };
 
-/** 账号密码重置 */
+/** Account password reset */
 export interface PasswordResetModel {
   /**
-   * 密码
+   * Password
    * @minLength 1
    */
   password: string;
   /**
-   * 邮箱
+   * Email
    * @minLength 1
    */
   email: string;
   /**
-   * 邮箱接收到的Base64格式Token
+   * Base64 formatted token received via email
    * @minLength 1
    */
   rToken: string;
 }
 
-/** 账号验证 */
+/** Account verification */
 export interface AccountVerifyModel {
   /**
-   * 邮箱接收到的Base64格式Token
+   * Base64 formatted token received via email
    * @minLength 1
    */
   token: string;
   /**
-   * 用户邮箱的Base64格式
+   * Base64 formatted user email
    * @minLength 1
    */
   email: string;
 }
 
-/** 登录 */
+/** Login */
 export type LoginModel = ModelWithCaptcha & {
   /**
-   * 用户名或邮箱
+   * Username or email
    * @minLength 1
    */
   userName: string;
   /**
-   * 密码
+   * Password
    * @minLength 1
    */
   password: string;
 };
 
-/** 基本账号信息更改 */
+/** Basic account information update */
 export interface ProfileUpdateModel {
   /**
-   * 用户名
+   * Username
    * @minLength 3
    * @maxLength 15
    */
   userName?: string | null;
   /**
-   * 描述
+   * Description
    * @maxLength 128
    */
   bio?: string | null;
   /**
-   * 手机号
+   * Phone number
    * @format phone
    */
   phone?: string | null;
   /**
-   * 真实姓名
+   * Real name
    * @maxLength 128
    */
   realName?: string | null;
   /**
-   * 学工号
+   * Student ID
    * @maxLength 64
    */
   stdNumber?: string | null;
 }
 
-/** 密码更改 */
+/** Password change */
 export interface PasswordChangeModel {
   /**
-   * 旧密码
+   * Old password
    * @minLength 6
    */
   old: string;
   /**
-   * 新密码
+   * New password
    * @minLength 6
    */
   new: string;
 }
 
-/** 请求响应 */
+/** Request response */
 export interface RequestResponseOfBoolean {
-  /** 响应信息 */
+  /** Response message */
   title?: string;
-  /** 数据 */
+  /** Data */
   data?: boolean;
   /**
-   * 状态码
+   * Status code
    * @format int32
    */
   status?: number;
 }
 
-/** 邮箱更改 */
+/** Email change */
 export interface MailChangeModel {
   /**
-   * 新邮箱
+   * New email
    * @format email
    * @minLength 1
    */
   newMail: string;
 }
 
-/** 基本账号信息 */
+/** Basic account information */
 export interface ProfileUserInfoModel {
   /**
-   * 用户ID
+   * User ID
    * @format guid
    */
   userId?: string | null;
-  /** 用户名 */
+  /** Username */
   userName?: string | null;
-  /** 邮箱 */
+  /** Email */
   email?: string | null;
-  /** 签名 */
+  /** Bio */
   bio?: string | null;
-  /** 手机号码 */
+  /** Phone number */
   phone?: string | null;
-  /** 真实姓名 */
+  /** Real name */
   realName?: string | null;
-  /** 学工号 */
+  /** Student ID */
   stdNumber?: string | null;
-  /** 头像链接 */
+  /** Avatar URL */
   avatar?: string | null;
-  /** 用户角色 */
+  /** User role */
   role?: Role | null;
 }
 
-/** 用户权限枚举 */
+/** User role enumeration */
 export enum Role {
   Banned = "Banned",
   User = "User",
@@ -223,73 +223,73 @@ export enum Role {
   Admin = "Admin",
 }
 
-/** 全局配置更新对象 */
+/** Global configuration update */
 export interface ConfigEditModel {
-  /** 用户策略 */
+  /** User policy */
   accountPolicy?: AccountPolicy | null;
-  /** 全局配置项 */
+  /** Global configuration */
   globalConfig?: GlobalConfig | null;
-  /** 比赛策略 */
+  /** Game policy */
   containerPolicy?: ContainerPolicy | null;
 }
 
-/** 账户策略 */
+/** Account policy */
 export interface AccountPolicy {
-  /** 允许用户注册 */
+  /** Allow user registration */
   allowRegister?: boolean;
-  /** 注册时直接激活账户 */
+  /** Activate account upon registration */
   activeOnRegister?: boolean;
-  /** 使用验证码校验 */
+  /** Use captcha verification */
   useCaptcha?: boolean;
-  /** 注册、更换邮箱、找回密码需要邮件确认 */
+  /** Email confirmation required for registration, email change, and password recovery */
   emailConfirmationRequired?: boolean;
-  /** 邮箱后缀域名，以逗号分割 */
+  /** Email domain list, separated by commas */
   emailDomainList?: string;
 }
 
-/** 全局设置 */
+/** Global settings */
 export interface GlobalConfig {
-  /** 平台前缀名称 */
+  /** Platform prefix name */
   title?: string;
-  /** 平台标语 */
+  /** Platform slogan */
   slogan?: string;
-  /** 站点描述显示的信息 */
+  /** Site description information */
   description?: string | null;
-  /** 页脚显示的信息 */
+  /** Footer information */
   footerInfo?: string | null;
-  /** 自定义主题颜色 */
+  /** Custom theme color */
   customTheme?: string | null;
-  /** 平台 logo 哈希 */
+  /** Platform logo hash */
   logoHash?: string | null;
-  /** 平台 favicon 哈希 */
+  /** Platform favicon hash */
   faviconHash?: string | null;
 }
 
-/** 容器策略 */
+/** Container policy */
 export interface ContainerPolicy {
-  /** 是否在达到数量限制时自动销毁最早的容器 */
+  /** Automatically destroy the oldest container when the limit is reached */
   autoDestroyOnLimitReached?: boolean;
   /**
-   * 用户容器数量限制，用于限制练习题目的容器数量
+   * User container limit, used to limit the number of exercise containers
    * @format int32
    */
   maxExerciseContainerCountPerUser?: number;
   /**
-   * 容器的默认生命周期，以分钟计
+   * Default container lifetime in minutes
    * @format int32
    * @min 1
    * @max 7200
    */
   defaultLifetime?: number;
   /**
-   * 容器每次续期的时长，以分钟计
+   * Extension duration for each renewal in minutes
    * @format int32
    * @min 1
    * @max 7200
    */
   extensionDuration?: number;
   /**
-   * 容器停止前的可续期时间段，以分钟计
+   * Renewal window before container stops in minutes
    * @format int32
    * @min 1
    * @max 360
@@ -297,224 +297,224 @@ export interface ContainerPolicy {
   renewalWindow?: number;
 }
 
-/** 列表响应 */
+/** List response */
 export interface ArrayResponseOfUserInfoModel {
-  /** 数据 */
+  /** Data */
   data: UserInfoModel[];
   /**
-   * 数据长度
+   * Data length
    * @format int32
    */
   length: number;
   /**
-   * 总长度
+   * Total length
    * @format int32
    */
   total?: number;
 }
 
-/** 用户信息（Admin） */
+/** User information (Admin) */
 export interface UserInfoModel {
   /**
-   * 用户ID
+   * User ID
    * @format guid
    */
   id?: string | null;
-  /** 用户名 */
+  /** Username */
   userName?: string | null;
-  /** 真实姓名 */
+  /** Real name */
   realName?: string | null;
-  /** 学号 */
+  /** Student number */
   stdNumber?: string | null;
-  /** 联系电话 */
+  /** Contact phone number */
   phone?: string | null;
-  /** 签名 */
+  /** Bio */
   bio?: string | null;
   /**
-   * 注册时间
+   * Registration time
    * @format date-time
    */
   registerTimeUtc?: string;
   /**
-   * 用户最近访问时间
+   * Last visit time
    * @format date-time
    */
   lastVisitedUtc?: string;
-  /** 用户最近访问IP */
+  /** Last visit IP */
   ip?: string;
-  /** 邮箱 */
+  /** Email */
   email?: string | null;
-  /** 头像链接 */
+  /** Avatar URL */
   avatar?: string | null;
-  /** 用户角色 */
+  /** User role */
   role?: Role | null;
-  /** 用户是否通过邮箱验证（可登录） */
+  /** Is email confirmed (can log in) */
   emailConfirmed?: boolean | null;
 }
 
-/** 批量用户创建（Admin） */
+/** Batch user creation (Admin) */
 export interface UserCreateModel {
   /**
-   * 用户名
+   * Username
    * @minLength 3
    * @maxLength 15
    */
   userName: string;
   /**
-   * 密码
+   * Password
    * @minLength 1
    */
   password: string;
   /**
-   * 邮箱
+   * Email
    * @format email
    * @minLength 1
    */
   email: string;
   /**
-   * 真实姓名
+   * Real name
    * @maxLength 128
    */
   realName?: string | null;
   /**
-   * 学号
+   * Student number
    * @maxLength 64
    */
   stdNumber?: string | null;
   /**
-   * 联系电话
+   * Contact phone number
    * @format phone
    */
   phone?: string | null;
   /**
-   * 用户加入的队伍
+   * Team the user joins
    * @maxLength 15
    */
   teamName?: string | null;
 }
 
-/** 列表响应 */
+/** List response */
 export interface ArrayResponseOfTeamInfoModel {
-  /** 数据 */
+  /** Data */
   data: TeamInfoModel[];
   /**
-   * 数据长度
+   * Data length
    * @format int32
    */
   length: number;
   /**
-   * 总长度
+   * Total length
    * @format int32
    */
   total?: number;
 }
 
-/** 队伍信息 */
+/** Team information */
 export interface TeamInfoModel {
   /**
-   * 队伍 Id
+   * Team ID
    * @format int32
    */
   id?: number;
-  /** 队伍名称 */
+  /** Team name */
   name?: string | null;
-  /** 队伍签名 */
+  /** Team bio */
   bio?: string | null;
-  /** 头像链接 */
+  /** Avatar URL */
   avatar?: string | null;
-  /** 是否锁定 */
+  /** Is locked */
   locked?: boolean;
-  /** 队伍成员 */
+  /** Team members */
   members?: TeamUserInfoModel[] | null;
 }
 
-/** 队员信息 */
+/** Team member information */
 export interface TeamUserInfoModel {
   /**
-   * 用户ID
+   * User ID
    * @format guid
    */
   id?: string | null;
-  /** 用户名 */
+  /** Username */
   userName?: string | null;
-  /** 签名 */
+  /** Bio */
   bio?: string | null;
-  /** 头像链接 */
+  /** Avatar URL */
   avatar?: string | null;
-  /** 是否是队长 */
+  /** Is Captain */
   captain?: boolean;
 }
 
-/** 队伍信息更改（Admin） */
+/** Team information modification (Admin) */
 export interface AdminTeamModel {
   /**
-   * 队伍名称
+   * Team name
    * @maxLength 20
    */
   name?: string | null;
   /**
-   * 队伍签名
+   * Team bio
    * @maxLength 72
    */
   bio?: string | null;
-  /** 是否锁定 */
+  /** Is locked */
   locked?: boolean | null;
 }
 
-/** 用户信息更改（Admin） */
+/** User information modification (Admin) */
 export interface AdminUserInfoModel {
   /**
-   * 用户名
+   * Username
    * @minLength 3
    * @maxLength 15
    */
   userName?: string | null;
   /**
-   * 邮箱
+   * Email
    * @format email
    */
   email?: string | null;
   /**
-   * 签名
+   * Signature
    * @maxLength 128
    */
   bio?: string | null;
   /**
-   * 手机号码
+   * Phone number
    * @format phone
    */
   phone?: string | null;
   /**
-   * 真实姓名
+   * Real name
    * @maxLength 128
    */
   realName?: string | null;
   /**
-   * 学工号
+   * Student number
    * @maxLength 64
    */
   stdNumber?: string | null;
-  /** 用户是否通过邮箱验证（可登录） */
+  /** Is email confirmed (can log in) */
   emailConfirmed?: boolean | null;
-  /** 用户角色 */
+  /** User role */
   role?: Role | null;
 }
 
-/** 日志信息（Admin） */
+/** Log information (Admin) */
 export interface LogMessageModel {
   /**
-   * 日志时间
+   * Log time
    * @format date-time
    */
   time?: string;
-  /** 用户名 */
+  /** Username */
   name?: string | null;
   level?: string | null;
-  /** IP地址 */
+  /** IP address */
   ip?: string | null;
-  /** 日志信息 */
+  /** Log message */
   msg?: string | null;
-  /** 任务状态 */
+  /** Task status */
   status?: string | null;
 }
 
@@ -534,101 +534,101 @@ export enum ParticipationStatus {
   Unsubmitted = "Unsubmitted",
 }
 
-/** 比赛 Writeup 信息 */
+/** Game writeup information */
 export interface WriteupInfoModel {
   /**
-   * 参与对象 Id
+   * Participation ID
    * @format int32
    */
   id?: number;
-  /** 队伍信息 */
+  /** Team information */
   team?: TeamInfoModel;
-  /** 文件链接 */
+  /** File URL */
   url?: string;
   /**
-   * 文件上传时间
+   * File upload time
    * @format date-time
    */
   uploadTimeUtc?: string;
 }
 
-/** 列表响应 */
+/** List response */
 export interface ArrayResponseOfContainerInstanceModel {
-  /** 数据 */
+  /** Data */
   data: ContainerInstanceModel[];
   /**
-   * 数据长度
+   * Data length
    * @format int32
    */
   length: number;
   /**
-   * 总长度
+   * Total length
    * @format int32
    */
   total?: number;
 }
 
-/** 容器实例信息（Admin） */
+/** Container instance information (Admin) */
 export interface ContainerInstanceModel {
-  /** 队伍 */
+  /** Team */
   team?: TeamModel | null;
-  /** 题目 */
+  /** Challenge */
   challenge?: ChallengeModel | null;
-  /** 容器镜像 */
+  /** Container image */
   image?: string;
   /**
-   * 容器数据库 ID
+   * Container database ID
    * @format guid
    */
   containerGuid?: string;
-  /** 容器 ID */
+  /** Container ID */
   containerId?: string;
   /**
-   * 容器创建时间
+   * Container creation time
    * @format date-time
    */
   startedAt?: string;
   /**
-   * 容器期望终止时间
+   * Expected container stop time
    * @format date-time
    */
   expectStopAt?: string;
-  /** 访问 IP */
+  /** Access IP */
   ip?: string;
   /**
-   * 访问端口
+   * Access port
    * @format int32
    */
   port?: number;
 }
 
-/** 队伍信息 */
+/** Team information */
 export interface TeamModel {
   /**
-   * 队伍 ID
+   * Team ID
    * @format int32
    */
   id?: number;
-  /** 队名 */
+  /** Team name */
   name?: string;
-  /** 队伍头像 */
+  /** Team avatar */
   avatar?: string | null;
 }
 
-/** 题目信息 */
+/** Challenge information */
 export interface ChallengeModel {
   /**
-   * 题目 ID
+   * Challenge ID
    * @format int32
    */
   id?: number;
-  /** 题目名称 */
+  /** Challenge title */
   title?: string;
-  /** 题目类别 */
+  /** Challenge category */
   category?: ChallengeCategory;
 }
 
-/** 题目类别 */
+/** Challenge category */
 export enum ChallengeCategory {
   Misc = "Misc",
   Crypto = "Crypto",
@@ -645,17 +645,17 @@ export enum ChallengeCategory {
   OSINT = "OSINT",
 }
 
-/** 列表响应 */
+/** List response */
 export interface ArrayResponseOfLocalFile {
-  /** 数据 */
+  /** Data */
   data: LocalFile[];
   /**
-   * 数据长度
+   * Data length
    * @format int32
    */
   length: number;
   /**
-   * 总长度
+   * Total length
    * @format int32
    */
   total?: number;
@@ -663,12 +663,12 @@ export interface ArrayResponseOfLocalFile {
 
 export interface LocalFile {
   /**
-   * 文件哈希
+   * File hash
    * @maxLength 64
    */
   hash?: string;
   /**
-   * 文件名
+   * File name
    * @minLength 1
    */
   name: string;
@@ -684,173 +684,173 @@ export interface ProblemDetails {
   [key: string]: any;
 }
 
-/** 文章对象（Edit） */
+/** Post item (Edit) */
 export interface PostEditModel {
   /**
-   * 文章标题
+   * Post title
    * @minLength 1
    * @maxLength 50
    */
   title: string;
-  /** 文章总结 */
+  /** Post summary */
   summary?: string;
-  /** 文章内容 */
+  /** Post content */
   content?: string;
-  /** 文章标签 */
+  /** Post tags */
   tags?: string[] | null;
-  /** 是否置顶 */
+  /** Is pinned */
   isPinned?: boolean;
 }
 
-/** 文章详细内容 */
+/** Post details */
 export interface PostDetailModel {
   /**
-   * 文章 Id
+   * Post ID
    * @minLength 1
    */
   id: string;
   /**
-   * 通知标题
+   * Post title
    * @minLength 1
    */
   title: string;
   /**
-   * 文章总结
+   * Post summary
    * @minLength 1
    */
   summary: string;
   /**
-   * 文章内容
+   * Post content
    * @minLength 1
    */
   content: string;
-  /** 是否置顶 */
+  /** Is pinned */
   isPinned: boolean;
-  /** 文章标签 */
+  /** Post tags */
   tags?: string[] | null;
-  /** 作者头像 */
+  /** Author avatar */
   authorAvatar?: string | null;
-  /** 作者名称 */
+  /** Author name */
   authorName?: string | null;
   /**
-   * 发布时间
+   * Publish time
    * @format date-time
    * @minLength 1
    */
   time: string;
 }
 
-/** 比赛信息（Edit） */
+/** Game information (Edit) */
 export interface GameInfoModel {
   /**
-   * 比赛 Id
+   * Game Id
    * @format int32
    */
   id?: number;
   /**
-   * 比赛标题
+   * Game title
    * @minLength 1
    */
   title: string;
-  /** 是否隐藏 */
+  /** Is hidden */
   hidden?: boolean;
-  /** 比赛描述 */
+  /** Game summary */
   summary?: string;
-  /** 比赛详细介绍 */
+  /** Game detailed description */
   content?: string;
-  /** 报名队伍免审核 */
+  /** Accept teams without review */
   acceptWithoutReview?: boolean;
-  /** 是否需要提交 Writeup */
+  /** Is writeup required */
   writeupRequired?: boolean;
   /**
-   * 比赛邀请码
+   * Game invitation code
    * @maxLength 32
    */
   inviteCode?: string | null;
-  /** 参赛所属分组列表 */
+  /** List of divisions the game belongs to */
   divisions?: string[] | null;
   /**
-   * 队员数量限制, 0 为无上限
+   * Team member count limit, 0 means no limit
    * @format int32
    */
   teamMemberCountLimit?: number;
   /**
-   * 队伍同时开启的容器数量限制
+   * Container count limit per team
    * @format int32
    */
   containerCountLimit?: number;
-  /** 比赛头图 */
+  /** Game poster URL */
   poster?: string | null;
-  /** 比赛签名公钥 */
+  /** Game public key */
   publicKey?: string;
-  /** 比赛是否为练习模式（比赛结束够依然可以访问） */
+  /** Is the game in practice mode (accessible even after the game ends) */
   practiceMode?: boolean;
   /**
-   * 开始时间
+   * Start time
    * @format date-time
    * @minLength 1
    */
   start: string;
   /**
-   * 结束时间
+   * End time
    * @format date-time
    * @minLength 1
    */
   end: string;
   /**
-   * Writeup 提交截止时间
+   * Writeup submission deadline
    * @format date-time
    */
   writeupDeadline?: string;
-  /** Writeup 附加说明 */
+  /** Writeup additional notes */
   writeupNote?: string;
   /**
-   * 三血加分
+   * Blood bonus points
    * @format int64
    */
   bloodBonus?: number;
 }
 
-/** 列表响应 */
+/** List response */
 export interface ArrayResponseOfGameInfoModel {
-  /** 数据 */
+  /** Data */
   data: GameInfoModel[];
   /**
-   * 数据长度
+   * Data length
    * @format int32
    */
   length: number;
   /**
-   * 总长度
+   * Total length
    * @format int32
    */
   total?: number;
 }
 
 /**
- * 比赛通知，会发往客户端。
- * 信息涵盖一二三血通知、提示发布通知、题目开启通知等
+ * Game notice, which will be sent to the client.
+ * Information includes first, second, and third blood notifications, hint release notifications, challenging opening notifications, etc.
  */
 export type GameNotice = FormattableDataOfNoticeType & {
   /** @format int32 */
   id: number;
   /**
-   * 发布时间
+   * Publish time
    * @format date-time
    * @minLength 1
    */
   time: string;
 };
 
-/** 格式化数据 */
+/** Formattable data */
 export interface FormattableDataOfNoticeType {
-  /** 数据类型 */
+  /** Data type */
   type: NoticeType;
-  /** 格式化值列表 */
+  /** List of formatted values */
   values: string[];
 }
 
-/** 比赛公告类型 */
+/** Game announcement type */
 export enum NoticeType {
   Normal = "Normal",
   FirstBlood = "FirstBlood",
@@ -860,98 +860,98 @@ export enum NoticeType {
   NewChallenge = "NewChallenge",
 }
 
-/** 比赛通知（Edit） */
+/** Game notice (Edit) */
 export interface GameNoticeModel {
   /**
-   * 通知内容
+   * Notice content
    * @minLength 1
    */
   content: string;
 }
 
-/** 题目详细信息（Edit） */
+/** Challenge detailed information (Edit) */
 export interface ChallengeEditDetailModel {
   /**
-   * 题目Id
+   * Challenge Id
    * @format int32
    */
   id?: number;
   /**
-   * 题目名称
+   * Challenge title
    * @minLength 1
    */
   title: string;
-  /** 题目内容 */
+  /** Challenge content */
   content?: string;
-  /** 题目类别 */
+  /** Challenge category */
   category: ChallengeCategory;
-  /** 题目类型 */
+  /** Challenge type */
   type: ChallengeType;
-  /** 题目提示 */
+  /** Challenge hints */
   hints?: string[];
   /**
-   * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+   * Flag template, used to generate Flag based on Token and challenge, game information
    * @maxLength 120
    */
   flagTemplate?: string | null;
-  /** 是否启用题目 */
+  /** Is the challenge enabled */
   isEnabled: boolean;
   /**
-   * 通过人数
+   * Number of people who passed
    * @format int32
    */
   acceptedCount: number;
-  /** 统一文件名（仅用于动态附件） */
+  /** Unified file name (only for dynamic attachments) */
   fileName?: string | null;
-  /** 题目附件（动态附件存放于 FlagInfoModel） */
+  /** Challenge attachment (dynamic attachments are stored in FlagInfoModel) */
   attachment?: Attachment | null;
-  /** 测试容器 */
+  /** Test container */
   testContainer?: ContainerInfoModel | null;
-  /** 题目 Flag 信息 */
+  /** Challenge Flag information */
   flags: FlagInfoModel[];
   /**
-   * 镜像名称与标签
+   * Image name and tag
    * @minLength 1
    */
   containerImage: string;
   /**
-   * 运行内存限制 (MB)
+   * Memory limit (MB)
    * @format int32
    */
   memoryLimit: number;
   /**
-   * CPU 限制 (0.1 CPUs)
+   * CPU limit (0.1 CPUs)
    * @format int32
    */
   cpuCount: number;
   /**
-   * 存储限制 (MB)
+   * Storage limit (MB)
    * @format int32
    */
   storageLimit: number;
   /**
-   * 镜像暴露端口
+   * Container exposed port
    * @format int32
    */
   containerExposePort: number;
-  /** 是否需要记录访问流量 */
+  /** Whether to record traffic */
   enableTrafficCapture?: boolean | null;
-  /** 是否禁用三血奖励 */
+  /** Whether to disable blood bonus */
   disableBloodBonus?: boolean | null;
   /**
-   * 初始分数
+   * Initial score
    * @format int32
    */
   originalScore: number;
   /**
-   * 最低分数比例
+   * Minimum score rate
    * @format double
    * @min 0
    * @max 1
    */
   minScoreRate: number;
   /**
-   * 难度系数
+   * Difficulty coefficient
    * @format double
    */
   difficulty: number;
@@ -967,12 +967,12 @@ export enum ChallengeType {
 export interface Attachment {
   /** @format int32 */
   id: number;
-  /** 附件类型 */
+  /** Attachment type */
   type: FileType;
-  /** 文件默认 Url */
+  /** Default file URL */
   url?: string | null;
   /**
-   * 获取附件大小
+   * Get attachment size
    * @format int64
    */
   fileSize?: number | null;
@@ -985,177 +985,177 @@ export enum FileType {
 }
 
 export interface ContainerInfoModel {
-  /** 容器状态 */
+  /** Container status */
   status?: ContainerStatus;
   /**
-   * 容器创建时间
+   * Container creation time
    * @format date-time
    */
   startedAt?: string;
   /**
-   * 容器期望终止时间
+   * Expected container stop time
    * @format date-time
    */
   expectStopAt?: string;
-  /** 题目入口 */
+  /** Challenge entry point */
   entry?: string;
 }
 
-/** 容器状态 */
+/** Container status */
 export enum ContainerStatus {
   Pending = "Pending",
   Running = "Running",
   Destroyed = "Destroyed",
 }
 
-/** Flag 信息（Edit） */
+/** Flag information (Edit) */
 export interface FlagInfoModel {
   /**
    * Flag Id
    * @format int32
    */
   id?: number;
-  /** Flag文本 */
+  /** Flag text */
   flag?: string;
-  /** Flag 对应附件 */
+  /** Attachment corresponding to the Flag */
   attachment?: Attachment | null;
 }
 
-/** 基础题目信息（Edit） */
+/** Basic challenge information (Edit) */
 export interface ChallengeInfoModel {
   /**
-   * 题目Id
+   * Challenge Id
    * @format int32
    */
   id?: number;
   /**
-   * 题目名称
+   * Challenge title
    * @minLength 1
    */
   title: string;
-  /** 题目类别 */
+  /** Challenge category */
   category?: ChallengeCategory;
-  /** 题目类型 */
+  /** Challenge type */
   type?: ChallengeType;
-  /** 是否启用题目 */
+  /** Is the challenge enabled */
   isEnabled?: boolean;
   /**
-   * 题目分值
+   * Challenge score
    * @format int32
    */
   score?: number;
   /**
-   * 最低分值
+   * Minimum score
    * @format int32
    */
   minScore?: number;
   /**
-   * 最初分值
+   * Original score
    * @format int32
    */
   originalScore?: number;
 }
 
-/** 题目更新信息（Edit） */
+/** Challenge update information (Edit) */
 export interface ChallengeUpdateModel {
   /**
-   * 题目名称
+   * Challenge title
    * @minLength 1
    */
   title?: string | null;
-  /** 题目内容 */
+  /** Challenge content */
   content?: string | null;
   /**
-   * Flag 模版，用于根据 Token 和题目、比赛信息生成 Flag
+   * Flag template, used to generate Flag based on Token and challenge/game information
    * @maxLength 120
    */
   flagTemplate?: string | null;
-  /** 题目类别 */
+  /** Challenge category */
   category?: ChallengeCategory | null;
-  /** 题目提示 */
+  /** Challenge hints */
   hints?: string[] | null;
-  /** 是否启用题目 */
+  /** Is the challenge enabled */
   isEnabled?: boolean | null;
-  /** 统一文件名 */
+  /** Unified file name */
   fileName?: string | null;
-  /** 镜像名称与标签 */
+  /** Container image name and tag */
   containerImage?: string | null;
   /**
-   * 运行内存限制 (MB)
+   * Memory limit (MB)
    * @format int32
    * @min 32
    * @max 1048576
    */
   memoryLimit?: number | null;
   /**
-   * CPU 限制 (0.1 CPUs)
+   * CPU limit (0.1 CPUs)
    * @format int32
    * @min 1
    * @max 1024
    */
   cpuCount?: number | null;
   /**
-   * 存储限制 (MB)
+   * Storage limit (MB)
    * @format int32
    * @min 128
    * @max 1048576
    */
   storageLimit?: number | null;
   /**
-   * 镜像暴露端口
+   * Container exposed port
    * @format int32
    */
   containerExposePort?: number | null;
-  /** 是否需要记录访问流量 */
+  /** Is traffic capture enabled */
   enableTrafficCapture?: boolean | null;
-  /** 是否禁用三血奖励 */
+  /** Is blood bonus disabled */
   disableBloodBonus?: boolean | null;
   /**
-   * 初始分数
+   * Initial score
    * @format int32
    */
   originalScore?: number | null;
   /**
-   * 最低分数比例
+   * Minimum score rate
    * @format double
    * @min 0
    * @max 1
    */
   minScoreRate?: number | null;
   /**
-   * 难度系数
+   * Difficulty coefficient
    * @format double
    */
   difficulty?: number | null;
 }
 
-/** 新建附件信息（Edit） */
+/** New attachment information (Edit) */
 export interface AttachmentCreateModel {
-  /** 附件类型 */
+  /** Attachment type */
   attachmentType?: FileType;
-  /** 文件哈希（本地文件） */
+  /** File hash (local file) */
   fileHash?: string | null;
-  /** 文件 Url（远程文件） */
+  /** File URL (remote file) */
   remoteUrl?: string | null;
 }
 
-/** 新建 Flag 信息（Edit） */
+/** New Flag information (Edit) */
 export interface FlagCreateModel {
   /**
-   * Flag文本
+   * Flag text
    * @minLength 1
    * @maxLength 127
    */
   flag: string;
-  /** 附件类型 */
+  /** Attachment type */
   attachmentType?: FileType;
-  /** 文件哈希（本地文件） */
+  /** File hash (local file) */
   fileHash?: string | null;
-  /** 文件 Url（远程文件） */
+  /** File URL (remote file) */
   remoteUrl?: string | null;
 }
 
-/** 任务执行状态 */
+/** Task execution status */
 export enum TaskStatus {
   Success = "Success",
   Failed = "Failed",
@@ -1166,78 +1166,78 @@ export enum TaskStatus {
   Pending = "Pending",
 }
 
-/** 比赛基本信息，不包含详细介绍与当前队伍报名状态 */
+/** Basic game information, excluding detailed description and current team registration status */
 export interface BasicGameInfoModel {
   /** @format int32 */
   id?: number;
-  /** 比赛标题 */
+  /** Game title */
   title?: string;
-  /** 比赛描述 */
+  /** Game description */
   summary?: string;
-  /** 头图 */
+  /** Poster image URL */
   poster?: string | null;
   /**
-   * 队员数量限制
+   * Team member limit
    * @format int32
    */
   limit?: number;
   /**
-   * 开始时间
+   * Start time
    * @format date-time
    */
   start?: string;
   /**
-   * 结束时间
+   * End time
    * @format date-time
    */
   end?: string;
 }
 
-/** 比赛详细信息，包含详细介绍与当前队伍报名状态 */
+/** Detailed game information, including detailed introduction and current team registration status */
 export interface DetailedGameInfoModel {
   /** @format int32 */
   id?: number;
-  /** 比赛标题 */
+  /** Game title */
   title?: string;
-  /** 比赛描述 */
+  /** Game description */
   summary?: string;
-  /** 比赛详细介绍 */
+  /** Detailed introduction of the game */
   content?: string;
-  /** 是否为隐藏比赛 */
+  /** Whether the game is hidden */
   hidden?: boolean;
-  /** 参赛分组列表 */
+  /** List of participation divisions */
   divisions?: string[] | null;
-  /** 是否需要邀请码 */
+  /** Whether an invitation code is required */
   inviteCodeRequired?: boolean;
-  /** 是否需要提交 Writeup */
+  /** Whether writeup submission is required */
   writeupRequired?: boolean;
-  /** 比赛头图 */
+  /** Game poster URL */
   poster?: string | null;
   /**
-   * 队员数量限制
+   * Team member count limit
    * @format int32
    */
   limit?: number;
   /**
-   * 报名参赛队伍数量
+   * Number of teams registered for participation
    * @format int32
    */
   teamCount?: number;
-  /** 当前报名的分组 */
+  /** Current registered division */
   division?: string | null;
-  /** 参赛队伍名称 */
+  /** Team name for participation */
   teamName?: string | null;
-  /** 比赛是否为练习模式（比赛结束够依然可以访问） */
+  /** Whether the game is in practice mode (can still be accessed after the game ends) */
   practiceMode?: boolean;
-  /** 队伍参与状态 */
+  /** Team participation status */
   status?: ParticipationStatus;
   /**
-   * 开始时间
+   * Start time
    * @format date-time
    */
   start?: string;
   /**
-   * 结束时间
+   * End time
    * @format date-time
    */
   end?: string;
@@ -1245,37 +1245,37 @@ export interface DetailedGameInfoModel {
 
 export interface GameJoinModel {
   /**
-   * 参赛队伍 Id
+   * Team ID for participation
    * @format int32
    */
   teamId?: number;
-  /** 参赛分组 */
+  /** Division for participation */
   division?: string | null;
-  /** 参赛邀请码 */
+  /** Invitation code for participation */
   inviteCode?: string | null;
 }
 
-/** 排行榜 */
+/** Scoreboard */
 export interface ScoreboardModel {
   /**
-   * 更新时间
+   * Update time
    * @format date-time
    * @minLength 1
    */
   updateTimeUtc: string;
   /**
-   * 三血加分系数
+   * Blood bonus coefficient
    * @format int64
    */
   bloodBonus: number;
-  /** 前十名的时间线 */
+  /** Timeline of the top ten */
   timeLines?: Record<string, TopTimeLine[]>;
-  /** 队伍信息列表 */
+  /** List of team information */
   items?: ScoreboardItem[];
-  /** 题目信息 */
+  /** Challenge information */
   challenges?: Record<string, ChallengeInfo[]>;
   /**
-   * 题目数量
+   * Number of challenges
    * @format int32
    */
   challengeCount?: number;
@@ -1283,24 +1283,24 @@ export interface ScoreboardModel {
 
 export interface TopTimeLine {
   /**
-   * 队伍Id
+   * Team ID
    * @format int32
    */
   id?: number;
-  /** 队伍名称 */
+  /** Team name */
   name?: string;
-  /** 时间线 */
+  /** Timeline */
   items?: TimeLine[];
 }
 
 export interface TimeLine {
   /**
-   * 时间
+   * Time
    * @format date-time
    */
   time?: string;
   /**
-   * 得分
+   * Score
    * @format int32
    */
   score?: number;
@@ -1308,42 +1308,42 @@ export interface TimeLine {
 
 export interface ScoreboardItem {
   /**
-   * 队伍Id
+   * Team ID
    * @format int32
    */
   id?: number;
-  /** 队伍名称 */
+  /** Team name */
   name?: string;
-  /** 队伍 Bio */
+  /** Team Bio */
   bio?: string | null;
-  /** 参赛所属分组 */
+  /** Division of participation */
   division?: string | null;
-  /** 队伍头像 */
+  /** Team avatar */
   avatar?: string | null;
   /**
-   * 分数
+   * Score
    * @format int32
    */
   score?: number;
   /**
-   * 排名
+   * Rank
    * @format int32
    */
   rank?: number;
   /**
-   * 参赛所属分组排名
+   * Division rank
    * @format int32
    */
   divisionRank?: number | null;
   /**
-   * 得分时间
+   * Last submission time
    * @format date-time
    */
   lastSubmissionTime?: string;
-  /** 解出的题目列表 */
+  /** List of solved challenges */
   solvedChallenges?: ChallengeItem[];
   /**
-   * 已解出的题目数量
+   * Number of solved challenges
    * @format int32
    */
   solvedCount?: number;
@@ -1351,27 +1351,27 @@ export interface ScoreboardItem {
 
 export interface ChallengeItem {
   /**
-   * 题目 Id
+   * Challenge ID
    * @format int32
    */
   id?: number;
   /**
-   * 题目分值
+   * Challenge score
    * @format int32
    */
   score?: number;
-  /** 未解出、一血、二血、三血或者其他 */
+  /** Submission type (unsolved, first blood, second blood, third blood, or others) */
   type?: SubmissionType;
-  /** 解题用户名 */
+  /** Username of the solver */
   userName?: string | null;
   /**
-   * 题目提交的时间，为了计算时间线
+   * Submission time for the challenge, used to calculate the timeline
    * @format date-time
    */
   time?: string;
 }
 
-/** 提交类型 */
+/** Submission type */
 export enum SubmissionType {
   Unaccepted = "Unaccepted",
   FirstBlood = "FirstBlood",
@@ -1382,73 +1382,73 @@ export enum SubmissionType {
 
 export interface ChallengeInfo {
   /**
-   * 题目Id
+   * Challenge ID
    * @format int32
    */
   id?: number;
-  /** 题目名称 */
+  /** Challenge title */
   title?: string;
-  /** 题目类别 */
+  /** Challenge category */
   category?: ChallengeCategory;
   /**
-   * 题目分值
+   * Challenge score
    * @format int32
    */
   score?: number;
   /**
-   * 解出队伍数量
+   * Number of teams that solved the challenge
    * @format int32
    */
   solved?: number;
-  /** 题目三血 */
+  /** Bloods for the challenge */
   bloods?: Blood[];
-  /** 是否禁用三血奖励 */
+  /** Whether to disable blood bonus */
   disableBloodBonus?: boolean;
 }
 
 export interface Blood {
   /**
-   * 队伍Id
+   * Team ID
    * @format int32
    */
   id?: number;
-  /** 队伍名称 */
+  /** Team name */
   name?: string;
-  /** 队伍头像 */
+  /** Team avatar */
   avatar?: string | null;
   /**
-   * 获得此血的时间
+   * Time when the blood was obtained
    * @format date-time
    */
   submitTimeUtc?: string | null;
 }
 
 /**
- * 比赛事件，记录但不会发往客户端。
- * 信息涵盖Flag提交信息、容器启动关闭信息、作弊信息、题目分数变更信息
+ * Game event, recorded but not sent to the client.
+ * Information includes flag submission, container start/stop, cheating, and score changes.
  */
 export type GameEvent = FormattableDataOfEventType & {
   /**
-   * 发布时间
+   * Publish time
    * @format date-time
    * @minLength 1
    */
   time: string;
-  /** 相关用户名 */
+  /** Related username */
   user?: string;
-  /** 相关队伍名 */
+  /** Related team name */
   team?: string;
 };
 
-/** 格式化数据 */
+/** Formattable data */
 export interface FormattableDataOfEventType {
-  /** 数据类型 */
+  /** Data type */
   type: EventType;
-  /** 格式化值列表 */
+  /** List of formatted values */
   values: string[];
 }
 
-/** 比赛事件类型 */
+/** Game event type */
 export enum EventType {
   Normal = "Normal",
   ContainerStart = "ContainerStart",
@@ -1459,26 +1459,26 @@ export enum EventType {
 
 export interface Submission {
   /**
-   * 提交的答案字符串
+   * Submitted answer string
    * @maxLength 127
    */
   answer?: string;
-  /** 提交的答案状态 */
+  /** Status of the submitted answer */
   status?: AnswerResult;
   /**
-   * 答案提交的时间
+   * Time the answer was submitted
    * @format date-time
    */
   time?: string;
-  /** 提交用户 */
+  /** User who submitted */
   user?: string;
-  /** 提交队伍 */
+  /** Team that submitted */
   team?: string;
-  /** 提交题目 */
+  /** Challenge that was submitted */
   challenge?: string;
 }
 
-/** 判定结果 */
+/** Judgement result */
 export enum AnswerResult {
   FlagSubmitted = "FlagSubmitted",
   Accepted = "Accepted",
@@ -1487,294 +1487,294 @@ export enum AnswerResult {
   NotFound = "NotFound",
 }
 
-/** 作弊行为信息 */
+/** Cheat behavior information */
 export interface CheatInfoModel {
-  /** flag 所属队伍 */
+  /** Team owning the flag */
   ownedTeam?: ParticipationModel;
-  /** 提交对应 flag 的队伍 */
+  /** Team submitting the flag */
   submitTeam?: ParticipationModel;
-  /** 本次抄袭行为对应的提交 */
+  /** Submission corresponding to this cheating behavior */
   submission?: Submission;
 }
 
-/** 队伍参赛信息 */
+/** Team participation information */
 export interface ParticipationModel {
   /**
-   * 参与 Id
+   * Participation ID
    * @format int32
    */
   id?: number;
-  /** 队伍信息 */
+  /** Team information */
   team?: TeamModel;
-  /** 队伍参与状态 */
+  /** Team participation status */
   status?: ParticipationStatus;
-  /** 队伍所属分组 */
+  /** Team division */
   division?: string | null;
 }
 
 export interface ChallengeTrafficModel {
   /**
-   * 题目Id
+   * Challenge ID
    * @format int32
    */
   id?: number;
   /**
-   * 题目名称
+   * Challenge title
    * @minLength 1
    */
   title: string;
-  /** 题目类别 */
+  /** Challenge category */
   category?: ChallengeCategory;
-  /** 题目类型 */
+  /** Challenge type */
   type?: ChallengeType;
-  /** 是否启用题目 */
+  /** Is the challenge enabled */
   isEnabled?: boolean;
   /**
-   * 题目所捕获到的队伍流量数量
+   * Number of team traffic captured by the challenge
    * @format int32
    */
   count?: number;
 }
 
-/** 队伍流量获取信息 */
+/** Team traffic information */
 export interface TeamTrafficModel {
   /**
-   * 参与 Id
+   * Participation ID
    * @format int32
    */
   id?: number;
   /**
-   * 队伍 Id
+   * Team Id
    * @format int32
    */
   teamId?: number;
-  /** 队伍名称 */
+  /** Team name */
   name?: string | null;
-  /** 参赛所属分组 */
+  /** Division of participation */
   division?: string | null;
-  /** 头像链接 */
+  /** Avatar URL */
   avatar?: string | null;
   /**
-   * 题目所捕获到的流量数量
+   * Number of traffic captured by the challenge
    * @format int32
    */
   count?: number;
 }
 
-/** 文件记录 */
+/** File record */
 export interface FileRecord {
-  /** 文件名 */
+  /** File name */
   fileName?: string;
   /**
-   * 文件大小
+   * File size
    * @format int64
    */
   size?: number;
   /**
-   * 文件修改日期
+   * File modification date
    * @format date-time
    */
   updateTime?: string;
 }
 
 export interface GameDetailModel {
-  /** 题目信息 */
+  /** Challenge information */
   challenges?: Record<string, ChallengeInfo[]>;
   /**
-   * 题目数量
+   * Number of challenges
    * @format int32
    */
   challengeCount?: number;
-  /** 积分榜信息 */
+  /** Scoreboard information */
   rank?: ScoreboardItem | null;
   /**
-   * 队伍 Token
+   * Team token
    * @minLength 1
    */
   teamToken: string;
-  /** 是否需要提交 Writeup */
+  /** Whether writeup submission is required */
   writeupRequired: boolean;
   /**
-   * Writeup 提交截止时间
+   * Writeup submission deadline
    * @format date-time
    * @minLength 1
    */
   writeupDeadline: string;
 }
 
-/** 比赛参与对象，用于审核查看（Admin） */
+/** Participation for review (Admin) */
 export interface ParticipationInfoModel {
   /**
-   * 参与对象 Id
+   * Participation ID
    * @format int32
    */
   id?: number;
-  /** 参与队伍 */
+  /** Participating team */
   team?: TeamWithDetailedUserInfo;
-  /** 注册的成员 */
+  /** Registered members */
   registeredMembers?: string[];
-  /** 参赛所属分组 */
+  /** Division of the game */
   division?: string | null;
-  /** 参与状态 */
+  /** Participation status */
   status?: ParticipationStatus;
 }
 
-/** 比赛队伍详细信息，用于审核查看（Admin） */
+/** Detailed team information for review (Admin) */
 export interface TeamWithDetailedUserInfo {
   /**
-   * 队伍 Id
+   * Team ID
    * @format int32
    */
   id?: number;
-  /** 队伍名称 */
+  /** Team name */
   name?: string | null;
-  /** 队伍签名 */
+  /** Team bio */
   bio?: string | null;
-  /** 头像链接 */
+  /** Avatar URL */
   avatar?: string | null;
-  /** 是否锁定 */
+  /** Is locked */
   locked?: boolean;
   /**
-   * 队长 Id
+   * Captain Id
    * @format guid
    */
   captainId?: string;
-  /** 队伍成员 */
+  /** Team members */
   members?: ProfileUserInfoModel[] | null;
 }
 
-/** 题目详细信息 */
+/** Challenge detailed information */
 export interface ChallengeDetailModel {
   /**
-   * 题目 Id
+   * Challenge ID
    * @format int32
    */
   id?: number;
-  /** 题目名称 */
+  /** Challenge title */
   title?: string;
-  /** 题目内容 */
+  /** Challenge content */
   content?: string;
-  /** 题目类别 */
+  /** Challenge category */
   category?: ChallengeCategory;
-  /** 题目提示 */
+  /** Challenge hints */
   hints?: string[] | null;
   /**
-   * 题目当前分值
+   * Current score of the challenge
    * @format int32
    */
   score?: number;
-  /** 题目类型 */
+  /** Challenge type */
   type?: ChallengeType;
-  /** Flag 上下文 */
+  /** Flag context */
   context?: ClientFlagContext;
 }
 
 export interface ClientFlagContext {
   /**
-   * 题目实例的关闭时间
+   * Close time of the challenge instance
    * @format date-time
    */
   closeTime?: string | null;
-  /** 题目实例的连接方式 */
+  /** Connection method of the challenge instance */
   instanceEntry?: string | null;
-  /** 附件 Url */
+  /** Attachment URL */
   url?: string | null;
   /**
-   * 附件文件大小
+   * Attachment file size
    * @format int64
    */
   fileSize?: number | null;
 }
 
-/** flag 提交 */
+/** Flag submission */
 export interface FlagSubmitModel {
   /**
-   * flag 内容
-   * fix: 防止前端的意外提交 (number/float/null) 可能被错误转换
+   * Flag content
+   * Fix: Prevent accidental submissions from the frontend (number/float/null) that may be incorrectly converted
    * @minLength 1
    * @maxLength 127
    */
   flag: string;
 }
 
-/** 比赛 Writeup 提交信息 */
+/** Game writeup submission information */
 export interface BasicWriteupInfoModel {
-  /** 是否已经提交 */
+  /** Whether it has been submitted */
   submitted?: boolean;
-  /** 文件名称 */
+  /** File name */
   name?: string;
   /**
-   * 文件大小
+   * File size
    * @format int64
    */
   fileSize?: number;
-  /** Writeup 附加说明 */
+  /** Writeup additional notes */
   note?: string;
 }
 
-/** 文章信息 */
+/** Post information */
 export interface PostInfoModel {
   /**
-   * 文章 Id
+   * Post ID
    * @minLength 1
    */
   id: string;
   /**
-   * 文章标题
+   * Post title
    * @minLength 1
    */
   title: string;
   /**
-   * 文章总结
+   * Post summary
    * @minLength 1
    */
   summary: string;
-  /** 是否置顶 */
+  /** Is pinned */
   isPinned: boolean;
-  /** 文章标签 */
+  /** Post tags */
   tags?: string[] | null;
-  /** 作者头像 */
+  /** Author avatar */
   authorAvatar?: string | null;
-  /** 作者名称 */
+  /** Author name */
   authorName?: string | null;
   /**
-   * 更新时间
+   * Update time
    * @format date-time
    * @minLength 1
    */
   time: string;
 }
 
-/** 客户端配置 */
+/** Client configuration */
 export interface ClientConfig {
-  /** 平台前缀名称 */
+  /** Platform prefix name */
   title?: string;
-  /** 平台标语 */
+  /** Platform slogan */
   slogan?: string;
-  /** 页脚显示的信息 */
+  /** Footer information */
   footerInfo?: string | null;
-  /** 自定义主题颜色 */
+  /** Custom theme color */
   customTheme?: string | null;
-  /** 平台 Logo */
+  /** Platform logo URL */
   logoUrl?: string | null;
   /**
-   * 容器的默认生命周期，以分钟计
+   * Default container lifetime in minutes
    * @format int32
    */
   defaultLifetime?: number;
   /**
-   * 容器每次续期的时长，以分钟计
+   * Extension duration for each renewal in minutes
    * @format int32
    */
   extensionDuration?: number;
   /**
-   * 容器停止前的可续期时间段，以分钟计
+   * Renewal window before container stops in minutes
    * @format int32
    */
   renewalWindow?: number;
 }
 
-/** Client Captcha Info Model */
+/** Client CAPTCHA information */
 export interface ClientCaptchaInfoModel {
   /** Captcha Provider Type */
   type?: CaptchaProvider;
@@ -1789,28 +1789,28 @@ export enum CaptchaProvider {
   CloudflareTurnstile = "CloudflareTurnstile",
 }
 
-/** 哈希 Pow 验证 */
+/** Hash Pow verification */
 export interface HashPowChallenge {
-  /** 挑战 Id */
+  /** Challenge ID */
   id?: string;
-  /** 验证挑战 */
+  /** Verification challenge */
   challenge?: string;
   /**
-   * 难度系数
+   * Difficulty coefficient
    * @format int32
    */
   difficulty?: number;
 }
 
-/** 队伍信息更新 */
+/** Team information update */
 export interface TeamUpdateModel {
   /**
-   * 队伍名称
+   * Team name
    * @maxLength 20
    */
   name?: string | null;
   /**
-   * 队伍签名
+   * Team bio
    * @maxLength 72
    */
   bio?: string | null;
@@ -1818,22 +1818,22 @@ export interface TeamUpdateModel {
 
 export interface TeamTransferModel {
   /**
-   * 新队长 Id
+   * New captain ID
    * @format guid
    * @minLength 1
    */
   newCaptainId: string;
 }
 
-/** 签名校验 */
+/** Signature verification */
 export interface SignatureVerifyModel {
   /**
-   * 队伍 Token
+   * Team token
    * @minLength 1
    */
   teamToken: string;
   /**
-   * 比赛公钥，Base64 编码
+   * Game public key, Base64 encoded
    * @minLength 1
    */
   publicKey: string;
@@ -1983,11 +1983,11 @@ import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   account = {
     /**
-     * @description 使用此接口更新用户头像，需要User权限
+     * @description Use this API to update user's avatar. User permissions required.
      *
      * @tags Account
      * @name AccountAvatar
-     * @summary 更新用户头像接口
+     * @summary Update user avatar
      * @request PUT:/api/account/avatar
      */
     accountAvatar: (
@@ -2007,11 +2007,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更改用户邮箱，需要User权限，邮件URL：/confirm
+     * @description Use this API to change user's email. User permissions required. Email URL: /confirm
      *
      * @tags Account
      * @name AccountChangeEmail
-     * @summary 用户邮箱更改接口
+     * @summary User email change
      * @request PUT:/api/account/changeemail
      */
     accountChangeEmail: (data: MailChangeModel, params: RequestParams = {}) =>
@@ -2025,11 +2025,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更新用户密码，需要User权限
+     * @description Use this API to change user's password. User permissions required.
      *
      * @tags Account
      * @name AccountChangePassword
-     * @summary 用户密码更改接口
+     * @summary User password change
      * @request PUT:/api/account/changepassword
      */
     accountChangePassword: (data: PasswordChangeModel, params: RequestParams = {}) =>
@@ -2042,11 +2042,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口登录账户
+     * @description Use this API to log in to the account.
      *
      * @tags Account
      * @name AccountLogIn
-     * @summary 用户登录接口
+     * @summary User login
      * @request POST:/api/account/login
      */
     accountLogIn: (data: LoginModel, params: RequestParams = {}) =>
@@ -2059,11 +2059,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口登出账户，需要User权限
+     * @description Use this API to log out of the account. User permissions required.
      *
      * @tags Account
      * @name AccountLogOut
-     * @summary 用户登出接口
+     * @summary User logout
      * @request POST:/api/account/logout
      */
     accountLogOut: (params: RequestParams = {}) =>
@@ -2074,11 +2074,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口确认更改用户邮箱，需要邮箱验证码，需要User权限
+     * @description Use this API to confirm email change. Email verification code required. User permissions required.
      *
      * @tags Account
      * @name AccountMailChangeConfirm
-     * @summary 用户邮箱更改确认接口
+     * @summary User email change confirmation
      * @request POST:/api/account/mailchangeconfirm
      */
     accountMailChangeConfirm: (data: AccountVerifyModel, params: RequestParams = {}) =>
@@ -2091,11 +2091,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口重置密码，需要邮箱验证码
+     * @description Use this API to reset the password. Email verification code is required.
      *
      * @tags Account
      * @name AccountPasswordReset
-     * @summary 用户重置密码接口
+     * @summary User password reset
      * @request POST:/api/account/passwordreset
      */
     accountPasswordReset: (data: PasswordResetModel, params: RequestParams = {}) =>
@@ -2108,11 +2108,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口获取用户信息，需要User权限
+     * @description Use this API to get user information. User permissions required.
      *
      * @tags Account
      * @name AccountProfile
-     * @summary 获取用户信息接口
+     * @summary Get user information
      * @request GET:/api/account/profile
      */
     accountProfile: (params: RequestParams = {}) =>
@@ -2123,33 +2123,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取用户信息，需要User权限
+     * @description Use this API to get user information. User permissions required.
      *
      * @tags Account
      * @name AccountProfile
-     * @summary 获取用户信息接口
+     * @summary Get user information
      * @request GET:/api/account/profile
      */
     useAccountProfile: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ProfileUserInfoModel, RequestResponse>(doFetch ? `/api/account/profile` : null, options),
 
     /**
-     * @description 使用此接口获取用户信息，需要User权限
+     * @description Use this API to get user information. User permissions required.
      *
      * @tags Account
      * @name AccountProfile
-     * @summary 获取用户信息接口
+     * @summary Get user information
      * @request GET:/api/account/profile
      */
     mutateAccountProfile: (data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>, options?: MutatorOptions) =>
       mutate<ProfileUserInfoModel>(`/api/account/profile`, data, options),
 
     /**
-     * @description 使用此接口请求找回密码，向用户邮箱发送邮件，邮件URL：/reset
+     * @description Use this API to request password recovery. Sends an email to the user. Email URL: /reset
      *
      * @tags Account
      * @name AccountRecovery
-     * @summary 用户找回密码请求接口
+     * @summary User password recovery request
      * @request POST:/api/account/recovery
      */
     accountRecovery: (data: RecoveryModel, params: RequestParams = {}) =>
@@ -2163,11 +2163,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口注册新用户，Dev 环境下不校验，邮件URL：/verify
+     * @description Use this API to register a new user. In development environment, no verification. Email URL: /verify
      *
      * @tags Account
      * @name AccountRegister
-     * @summary 用户注册接口
+     * @summary User registration
      * @request POST:/api/account/register
      */
     accountRegister: (data: RegisterModel, params: RequestParams = {}) =>
@@ -2181,11 +2181,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更新用户用户名和描述，需要User权限
+     * @description Use this API to update username and description. User permissions required.
      *
      * @tags Account
      * @name AccountUpdate
-     * @summary 用户数据更新接口
+     * @summary User data update
      * @request PUT:/api/account/update
      */
     accountUpdate: (data: ProfileUpdateModel, params: RequestParams = {}) =>
@@ -2198,11 +2198,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口通过邮箱验证码确认邮箱
+     * @description Use this API to confirm email using the verification code.
      *
      * @tags Account
      * @name AccountVerify
-     * @summary 用户邮箱确认接口
+     * @summary User email confirmation
      * @request POST:/api/account/verify
      */
     accountVerify: (data: AccountVerifyModel, params: RequestParams = {}) =>
@@ -2216,11 +2216,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   admin = {
     /**
-     * @description 使用此接口批量添加用户，需要Admin权限
+     * @description Use this API to add users in batch, requires Admin permission
      *
      * @tags Admin
      * @name AdminAddUsers
-     * @summary 批量添加用户
+     * @summary Add users in batch
      * @request POST:/api/admin/users
      */
     adminAddUsers: (data: UserCreateModel[], params: RequestParams = {}) =>
@@ -2233,11 +2233,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口删除队伍，需要Admin权限
+     * @description Use this API to delete team, requires Admin permission
      *
      * @tags Admin
      * @name AdminDeleteTeam
-     * @summary 删除队伍
+     * @summary Delete team
      * @request DELETE:/api/admin/teams/{id}
      */
     adminDeleteTeam: (id: number, params: RequestParams = {}) =>
@@ -2249,11 +2249,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口删除用户，需要Admin权限
+     * @description Use this API to delete user, requires Admin permission
      *
      * @tags Admin
      * @name AdminDeleteUser
-     * @summary 删除用户
+     * @summary Delete user
      * @request DELETE:/api/admin/users/{userid}
      */
     adminDeleteUser: (userid: string, params: RequestParams = {}) =>
@@ -2265,11 +2265,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口强制删除容器实例，需要Admin权限
+     * @description Use this API to forcibly delete container instance, requires Admin permission
      *
      * @tags Admin
      * @name AdminDestroyInstance
-     * @summary 删除容器实例
+     * @summary Delete container instance
      * @request DELETE:/api/admin/instances/{id}
      */
     adminDestroyInstance: (id: string, params: RequestParams = {}) =>
@@ -2280,11 +2280,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口下载全部 Writeup，需要Admin权限
+     * @description Use this API to download all Writeups, requires Admin permission
      *
      * @tags Admin
      * @name AdminDownloadAllWriteups
-     * @summary 下载全部 Writeup
+     * @summary Download all Writeups
      * @request GET:/api/admin/writeups/{id}/all
      */
     adminDownloadAllWriteups: (id: number, params: RequestParams = {}) =>
@@ -2295,11 +2295,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口获取全部文件，需要Admin权限
+     * @description Use this API to get all files, requires Admin permission
      *
      * @tags Admin
      * @name AdminFiles
-     * @summary 获取全部文件
+     * @summary Get all files
      * @request GET:/api/admin/files
      */
     adminFiles: (
@@ -2325,11 +2325,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部文件，需要Admin权限
+     * @description Use this API to get all files, requires Admin permission
      *
      * @tags Admin
      * @name AdminFiles
-     * @summary 获取全部文件
+     * @summary Get all files
      * @request GET:/api/admin/files
      */
     useAdminFiles: (
@@ -2350,11 +2350,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<ArrayResponseOfLocalFile, RequestResponse>(doFetch ? [`/api/admin/files`, query] : null, options),
 
     /**
-     * @description 使用此接口获取全部文件，需要Admin权限
+     * @description Use this API to get all files, requires Admin permission
      *
      * @tags Admin
      * @name AdminFiles
-     * @summary 获取全部文件
+     * @summary Get all files
      * @request GET:/api/admin/files
      */
     mutateAdminFiles: (
@@ -2375,11 +2375,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfLocalFile>([`/api/admin/files`, query], data, options),
 
     /**
-     * @description 使用此接口获取全局设置，需要Admin权限
+     * @description Use this API to get global settings, requires Admin permission
      *
      * @tags Admin
      * @name AdminGetConfigs
-     * @summary 获取配置
+     * @summary Get configuration
      * @request GET:/api/admin/config
      */
     adminGetConfigs: (params: RequestParams = {}) =>
@@ -2390,33 +2390,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全局设置，需要Admin权限
+     * @description Use this API to get global settings, requires Admin permission
      *
      * @tags Admin
      * @name AdminGetConfigs
-     * @summary 获取配置
+     * @summary Get configuration
      * @request GET:/api/admin/config
      */
     useAdminGetConfigs: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ConfigEditModel, RequestResponse>(doFetch ? `/api/admin/config` : null, options),
 
     /**
-     * @description 使用此接口获取全局设置，需要Admin权限
+     * @description Use this API to get global settings, requires Admin permission
      *
      * @tags Admin
      * @name AdminGetConfigs
-     * @summary 获取配置
+     * @summary Get configuration
      * @request GET:/api/admin/config
      */
     mutateAdminGetConfigs: (data?: ConfigEditModel | Promise<ConfigEditModel>, options?: MutatorOptions) =>
       mutate<ConfigEditModel>(`/api/admin/config`, data, options),
 
     /**
-     * @description 使用此接口获取全部容器实例，需要Admin权限
+     * @description Use this API to get all container instances, requires Admin permission
      *
      * @tags Admin
      * @name AdminInstances
-     * @summary 获取全部容器实例
+     * @summary Get all container instances
      * @request GET:/api/admin/instances
      */
     adminInstances: (params: RequestParams = {}) =>
@@ -2427,22 +2427,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部容器实例，需要Admin权限
+     * @description Use this API to get all container instances, requires Admin permission
      *
      * @tags Admin
      * @name AdminInstances
-     * @summary 获取全部容器实例
+     * @summary Get all container instances
      * @request GET:/api/admin/instances
      */
     useAdminInstances: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ArrayResponseOfContainerInstanceModel, RequestResponse>(doFetch ? `/api/admin/instances` : null, options),
 
     /**
-     * @description 使用此接口获取全部容器实例，需要Admin权限
+     * @description Use this API to get all container instances, requires Admin permission
      *
      * @tags Admin
      * @name AdminInstances
-     * @summary 获取全部容器实例
+     * @summary Get all container instances
      * @request GET:/api/admin/instances
      */
     mutateAdminInstances: (
@@ -2451,11 +2451,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfContainerInstanceModel>(`/api/admin/instances`, data, options),
 
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description Use this API to get all logs, requires Admin permission
      *
      * @tags Admin
      * @name AdminLogs
-     * @summary 获取全部日志
+     * @summary Get all logs
      * @request GET:/api/admin/logs
      */
     adminLogs: (
@@ -2483,11 +2483,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description Use this API to get all logs, requires Admin permission
      *
      * @tags Admin
      * @name AdminLogs
-     * @summary 获取全部日志
+     * @summary Get all logs
      * @request GET:/api/admin/logs
      */
     useAdminLogs: (
@@ -2510,11 +2510,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<LogMessageModel[], RequestResponse>(doFetch ? [`/api/admin/logs`, query] : null, options),
 
     /**
-     * @description 使用此接口获取全部日志，需要Admin权限
+     * @description Use this API to get all logs, requires Admin permission
      *
      * @tags Admin
      * @name AdminLogs
-     * @summary 获取全部日志
+     * @summary Get all logs
      * @request GET:/api/admin/logs
      */
     mutateAdminLogs: (
@@ -2537,11 +2537,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
 
     /**
-     * @description 使用此接口更新队伍参与状态，审核申请，需要Admin权限
+     * @description Use this API to update team participation status, review application, requires Admin permission
      *
      * @tags Admin
      * @name AdminParticipation
-     * @summary 更新参与状态
+     * @summary Update participation status
      * @request PUT:/api/admin/participation/{id}
      */
     adminParticipation: (id: number, data: ParticipationEditModel, params: RequestParams = {}) =>
@@ -2554,11 +2554,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口重置平台 Logo，需要Admin权限
+     * @description Use this API to reset the platform Logo, requires Admin permission
      *
      * @tags Admin
      * @name AdminResetLogo
-     * @summary 重置平台 Logo
+     * @summary Reset platform Logo
      * @request DELETE:/api/admin/config/logo
      */
     adminResetLogo: (params: RequestParams = {}) =>
@@ -2569,11 +2569,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口重置用户密码，需要Admin权限
+     * @description Use this API to reset user password, requires Admin permission
      *
      * @tags Admin
      * @name AdminResetPassword
-     * @summary 重置用户密码
+     * @summary Reset user password
      * @request DELETE:/api/admin/users/{userid}/password
      */
     adminResetPassword: (userid: string, params: RequestParams = {}) =>
@@ -2585,11 +2585,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口搜索队伍，需要Admin权限
+     * @description Use this API to search teams, requires Admin permission
      *
      * @tags Admin
      * @name AdminSearchTeams
-     * @summary 搜索队伍
+     * @summary Search teams
      * @request POST:/api/admin/teams/search
      */
     adminSearchTeams: (
@@ -2607,11 +2607,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口搜索用户，需要Admin权限
+     * @description Use this API to search users, requires Admin permission
      *
      * @tags Admin
      * @name AdminSearchUsers
-     * @summary 搜索用户
+     * @summary Search users
      * @request POST:/api/admin/users/search
      */
     adminSearchUsers: (
@@ -2629,11 +2629,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口获取全部队伍，需要Admin权限
+     * @description Use this API to get all teams, requires Admin permission
      *
      * @tags Admin
      * @name AdminTeams
-     * @summary 获取全部队伍信息
+     * @summary Get all team information
      * @request GET:/api/admin/teams
      */
     adminTeams: (
@@ -2659,11 +2659,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部队伍，需要Admin权限
+     * @description Use this API to get all teams, requires Admin permission
      *
      * @tags Admin
      * @name AdminTeams
-     * @summary 获取全部队伍信息
+     * @summary Get all team information
      * @request GET:/api/admin/teams
      */
     useAdminTeams: (
@@ -2684,11 +2684,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<ArrayResponseOfTeamInfoModel, RequestResponse>(doFetch ? [`/api/admin/teams`, query] : null, options),
 
     /**
-     * @description 使用此接口获取全部队伍，需要Admin权限
+     * @description Use this API to get all teams, requires Admin permission
      *
      * @tags Admin
      * @name AdminTeams
-     * @summary 获取全部队伍信息
+     * @summary Get all team information
      * @request GET:/api/admin/teams
      */
     mutateAdminTeams: (
@@ -2709,11 +2709,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfTeamInfoModel>([`/api/admin/teams`, query], data, options),
 
     /**
-     * @description 使用此接口更改全局设置，需要Admin权限
+     * @description Use this API to change global settings, requires Admin permission
      *
      * @tags Admin
      * @name AdminUpdateConfigs
-     * @summary 更改配置
+     * @summary Change configuration
      * @request PUT:/api/admin/config
      */
     adminUpdateConfigs: (data: ConfigEditModel, params: RequestParams = {}) =>
@@ -2726,11 +2726,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更改平台 Logo，需要Admin权限
+     * @description Use this API to change the platform Logo, requires Admin permission
      *
      * @tags Admin
      * @name AdminUpdateLogo
-     * @summary 更改平台 Logo
+     * @summary Change platform Logo
      * @request POST:/api/admin/config/logo
      */
     adminUpdateLogo: (
@@ -2749,11 +2749,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口修改队伍信息，需要Admin权限
+     * @description Use this API to modify team information, requires Admin permission
      *
      * @tags Admin
      * @name AdminUpdateTeam
-     * @summary 修改队伍信息
+     * @summary Modify team information
      * @request PUT:/api/admin/teams/{id}
      */
     adminUpdateTeam: (id: number, data: AdminTeamModel, params: RequestParams = {}) =>
@@ -2766,11 +2766,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口修改用户信息，需要Admin权限
+     * @description Use this API to modify user information, requires Admin permission
      *
      * @tags Admin
      * @name AdminUpdateUserInfo
-     * @summary 修改用户信息
+     * @summary Modify user information
      * @request PUT:/api/admin/users/{userid}
      */
     adminUpdateUserInfo: (userid: string, data: AdminUserInfoModel, params: RequestParams = {}) =>
@@ -2783,11 +2783,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口获取用户信息，需要Admin权限
+     * @description Use this API to get user information, requires Admin permission
      *
      * @tags Admin
      * @name AdminUserInfo
-     * @summary 获取用户信息
+     * @summary Get user information
      * @request GET:/api/admin/users/{userid}
      */
     adminUserInfo: (userid: string, params: RequestParams = {}) =>
@@ -2798,22 +2798,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取用户信息，需要Admin权限
+     * @description Use this API to get user information, requires Admin permission
      *
      * @tags Admin
      * @name AdminUserInfo
-     * @summary 获取用户信息
+     * @summary Get user information
      * @request GET:/api/admin/users/{userid}
      */
     useAdminUserInfo: (userid: string, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ProfileUserInfoModel, RequestResponse>(doFetch ? `/api/admin/users/${userid}` : null, options),
 
     /**
-     * @description 使用此接口获取用户信息，需要Admin权限
+     * @description Use this API to get user information, requires Admin permission
      *
      * @tags Admin
      * @name AdminUserInfo
-     * @summary 获取用户信息
+     * @summary Get user information
      * @request GET:/api/admin/users/{userid}
      */
     mutateAdminUserInfo: (
@@ -2823,11 +2823,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ProfileUserInfoModel>(`/api/admin/users/${userid}`, data, options),
 
     /**
-     * @description 使用此接口获取全部用户，需要Admin权限
+     * @description Use this API to get all users, requires Admin permission
      *
      * @tags Admin
      * @name AdminUsers
-     * @summary 获取全部用户
+     * @summary Get all users
      * @request GET:/api/admin/users
      */
     adminUsers: (
@@ -2853,11 +2853,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取全部用户，需要Admin权限
+     * @description Use this API to get all users, requires Admin permission
      *
      * @tags Admin
      * @name AdminUsers
-     * @summary 获取全部用户
+     * @summary Get all users
      * @request GET:/api/admin/users
      */
     useAdminUsers: (
@@ -2878,11 +2878,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<ArrayResponseOfUserInfoModel, RequestResponse>(doFetch ? [`/api/admin/users`, query] : null, options),
 
     /**
-     * @description 使用此接口获取全部用户，需要Admin权限
+     * @description Use this API to get all users, requires Admin permission
      *
      * @tags Admin
      * @name AdminUsers
-     * @summary 获取全部用户
+     * @summary Get all users
      * @request GET:/api/admin/users
      */
     mutateAdminUsers: (
@@ -2903,11 +2903,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfUserInfoModel>([`/api/admin/users`, query], data, options),
 
     /**
-     * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
+     * @description Use this API to get Writeup basic information, requires Admin permission
      *
      * @tags Admin
      * @name AdminWriteups
-     * @summary 获取全部 Writeup 基本信息
+     * @summary Get all Writeup basic information
      * @request GET:/api/admin/writeups/{id}
      */
     adminWriteups: (id: number, params: RequestParams = {}) =>
@@ -2918,22 +2918,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
+     * @description Use this API to get Writeup basic information, requires Admin permission
      *
      * @tags Admin
      * @name AdminWriteups
-     * @summary 获取全部 Writeup 基本信息
+     * @summary Get all Writeup basic information
      * @request GET:/api/admin/writeups/{id}
      */
     useAdminWriteups: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<WriteupInfoModel[], RequestResponse>(doFetch ? `/api/admin/writeups/${id}` : null, options),
 
     /**
-     * @description 使用此接口获取 Writeup 基本信息，需要Admin权限
+     * @description Use this API to get Writeup basic information, requires Admin permission
      *
      * @tags Admin
      * @name AdminWriteups
-     * @summary 获取全部 Writeup 基本信息
+     * @summary Get all Writeup basic information
      * @request GET:/api/admin/writeups/{id}
      */
     mutateAdminWriteups: (
@@ -2944,11 +2944,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   assets = {
     /**
-     * @description 按照文件哈希删除文件
+     * @description Delete a file by hash
      *
      * @tags Assets
      * @name AssetsDelete
-     * @summary 删除文件接口
+     * @summary File deletion interface
      * @request DELETE:/api/assets/{hash}
      */
     assetsDelete: (hash: string, params: RequestParams = {}) =>
@@ -2959,11 +2959,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 根据哈希获取文件，不匹配文件名
+     * @description Retrieve a file by hash, filename is not matched
      *
      * @tags Assets
      * @name AssetsGetFile
-     * @summary 获取文件接口
+     * @summary File retrieval interface
      * @request GET:/assets/{hash}/{filename}
      */
     assetsGetFile: (hash: string, filename: string, params: RequestParams = {}) =>
@@ -2974,11 +2974,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 上传一个或多个文件
+     * @description Upload one or more files
      *
      * @tags Assets
      * @name AssetsUpload
-     * @summary 上传文件接口
+     * @summary File upload interface
      * @request POST:/api/assets
      */
     assetsUpload: (
@@ -2986,7 +2986,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         files?: File[] | null;
       },
       query?: {
-        /** 统一文件名 */
+        /** Unified filename */
         filename?: string | null;
       },
       params: RequestParams = {},
@@ -3003,11 +3003,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   edit = {
     /**
-     * @description 添加比赛题目 Flag，需要管理员权限
+     * @description Adding a game challenge flag requires administrator privileges
      *
      * @tags Edit
      * @name EditAddFlags
-     * @summary 添加比赛题目 Flag
+     * @summary Add Game Challenge Flag
      * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
      */
     editAddFlags: (id: number, cId: number, data: FlagCreateModel[], params: RequestParams = {}) =>
@@ -3020,11 +3020,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加比赛，需要管理员权限
+     * @description Adding a game requires administrator privileges
      *
      * @tags Edit
      * @name EditAddGame
-     * @summary 添加比赛
+     * @summary Add Game
      * @request POST:/api/edit/games
      */
     editAddGame: (data: GameInfoModel, params: RequestParams = {}) =>
@@ -3038,11 +3038,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加比赛题目，需要管理员权限
+     * @description Adding a game challenge requires administrator privileges
      *
      * @tags Edit
      * @name EditAddGameChallenge
-     * @summary 添加比赛题目
+     * @summary Add Game Challenge
      * @request POST:/api/edit/games/{id}/challenges
      */
     editAddGameChallenge: (id: number, data: ChallengeInfoModel, params: RequestParams = {}) =>
@@ -3056,11 +3056,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加比赛通知，需要管理员权限
+     * @description Adding a game notice requires administrator privileges
      *
      * @tags Edit
      * @name EditAddGameNotice
-     * @summary 添加比赛通知
+     * @summary Add Game Notice
      * @request POST:/api/edit/games/{id}/notices
      */
     editAddGameNotice: (id: number, data: GameNoticeModel, params: RequestParams = {}) =>
@@ -3074,11 +3074,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 添加文章，需要管理员权限
+     * @description Adding a post requires administrator privileges
      *
      * @tags Edit
      * @name EditAddPost
-     * @summary 添加文章
+     * @summary Add Post
      * @request POST:/api/edit/posts
      */
     editAddPost: (data: PostEditModel, params: RequestParams = {}) =>
@@ -3092,11 +3092,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 测试比赛题目容器，需要管理员权限
+     * @description Testing a game challenge container requires administrator privileges
      *
      * @tags Edit
      * @name EditCreateTestContainer
-     * @summary 测试比赛题目容器
+     * @summary Test Game Challenge Container
      * @request POST:/api/edit/games/{id}/challenges/{cId}/container
      */
     editCreateTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
@@ -3108,11 +3108,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除比赛，需要管理员权限
+     * @description Deleting a game requires administrator privileges
      *
      * @tags Edit
      * @name EditDeleteGame
-     * @summary 删除比赛
+     * @summary Delete Game
      * @request DELETE:/api/edit/games/{id}
      */
     editDeleteGame: (id: number, params: RequestParams = {}) =>
@@ -3124,11 +3124,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除比赛通知，需要管理员权限
+     * @description Deleting a game notice requires administrator privileges
      *
      * @tags Edit
      * @name EditDeleteGameNotice
-     * @summary 删除比赛通知
+     * @summary Delete Game Notice
      * @request DELETE:/api/edit/games/{id}/notices/{noticeId}
      */
     editDeleteGameNotice: (id: number, noticeId: number, params: RequestParams = {}) =>
@@ -3139,11 +3139,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除比赛的全部 WriteUp，需要管理员权限
+     * @description Deleting all WriteUps for a game requires administrator privileges
      *
      * @tags Edit
      * @name EditDeleteGameWriteUps
-     * @summary 删除比赛的全部 WriteUp
+     * @summary Delete All WriteUps
      * @request DELETE:/api/edit/games/{id}/writeups
      */
     editDeleteGameWriteUps: (id: number, params: RequestParams = {}) =>
@@ -3155,11 +3155,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除文章，需要管理员权限
+     * @description Deleting a post requires administrator privileges
      *
      * @tags Edit
      * @name EditDeletePost
-     * @summary 删除文章
+     * @summary Delete Post
      * @request DELETE:/api/edit/posts/{id}
      */
     editDeletePost: (id: string, params: RequestParams = {}) =>
@@ -3170,11 +3170,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 关闭测试比赛题目容器，需要管理员权限
+     * @description Destroying a test game challenge container requires administrator privileges
      *
      * @tags Edit
      * @name EditDestroyTestContainer
-     * @summary 关闭测试比赛题目容器
+     * @summary Destroy Test Game Challenge Container
      * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
      */
     editDestroyTestContainer: (id: number, cId: number, params: RequestParams = {}) =>
@@ -3185,11 +3185,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛，需要管理员权限
+     * @description Retrieving a game requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGame
-     * @summary 获取比赛
+     * @summary Get Game
      * @request GET:/api/edit/games/{id}
      */
     editGetGame: (id: number, params: RequestParams = {}) =>
@@ -3200,33 +3200,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛，需要管理员权限
+     * @description Retrieving a game requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGame
-     * @summary 获取比赛
+     * @summary Get Game
      * @request GET:/api/edit/games/{id}
      */
     useEditGetGame: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<GameInfoModel, RequestResponse>(doFetch ? `/api/edit/games/${id}` : null, options),
 
     /**
-     * @description 获取比赛，需要管理员权限
+     * @description Retrieving a game requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGame
-     * @summary 获取比赛
+     * @summary Get Game
      * @request GET:/api/edit/games/{id}
      */
     mutateEditGetGame: (id: number, data?: GameInfoModel | Promise<GameInfoModel>, options?: MutatorOptions) =>
       mutate<GameInfoModel>(`/api/edit/games/${id}`, data, options),
 
     /**
-     * @description 获取比赛题目，需要管理员权限
+     * @description Retrieving a game challenge requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameChallenge
-     * @summary 获取比赛题目
+     * @summary Get Game Challenge
      * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
     editGetGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
@@ -3237,11 +3237,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛题目，需要管理员权限
+     * @description Retrieving a game challenge requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameChallenge
-     * @summary 获取比赛题目
+     * @summary Get Game Challenge
      * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
     useEditGetGameChallenge: (id: number, cId: number, options?: SWRConfiguration, doFetch: boolean = true) =>
@@ -3251,11 +3251,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       ),
 
     /**
-     * @description 获取比赛题目，需要管理员权限
+     * @description Retrieving a game challenge requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameChallenge
-     * @summary 获取比赛题目
+     * @summary Get Game Challenge
      * @request GET:/api/edit/games/{id}/challenges/{cId}
      */
     mutateEditGetGameChallenge: (
@@ -3266,11 +3266,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ChallengeEditDetailModel>(`/api/edit/games/${id}/challenges/${cId}`, data, options),
 
     /**
-     * @description 获取全部比赛题目，需要管理员权限
+     * @description Retrieving all game challenges requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameChallenges
-     * @summary 获取全部比赛题目
+     * @summary Get All Game Challenges
      * @request GET:/api/edit/games/{id}/challenges
      */
     editGetGameChallenges: (id: number, params: RequestParams = {}) =>
@@ -3281,22 +3281,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取全部比赛题目，需要管理员权限
+     * @description Retrieving all game challenges requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameChallenges
-     * @summary 获取全部比赛题目
+     * @summary Get All Game Challenges
      * @request GET:/api/edit/games/{id}/challenges
      */
     useEditGetGameChallenges: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ChallengeInfoModel[], RequestResponse>(doFetch ? `/api/edit/games/${id}/challenges` : null, options),
 
     /**
-     * @description 获取全部比赛题目，需要管理员权限
+     * @description Retrieving all game challenges requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameChallenges
-     * @summary 获取全部比赛题目
+     * @summary Get All Game Challenges
      * @request GET:/api/edit/games/{id}/challenges
      */
     mutateEditGetGameChallenges: (
@@ -3306,11 +3306,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ChallengeInfoModel[]>(`/api/edit/games/${id}/challenges`, data, options),
 
     /**
-     * @description 获取比赛通知，需要管理员权限
+     * @description Retrieving game notices requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛通知
+     * @summary Get Game Notices
      * @request GET:/api/edit/games/{id}/notices
      */
     editGetGameNotices: (id: number, params: RequestParams = {}) =>
@@ -3321,33 +3321,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛通知，需要管理员权限
+     * @description Retrieving game notices requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛通知
+     * @summary Get Game Notices
      * @request GET:/api/edit/games/{id}/notices
      */
     useEditGetGameNotices: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<GameNotice[], RequestResponse>(doFetch ? `/api/edit/games/${id}/notices` : null, options),
 
     /**
-     * @description 获取比赛通知，需要管理员权限
+     * @description Retrieving game notices requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGameNotices
-     * @summary 获取比赛通知
+     * @summary Get Game Notices
      * @request GET:/api/edit/games/{id}/notices
      */
     mutateEditGetGameNotices: (id: number, data?: GameNotice[] | Promise<GameNotice[]>, options?: MutatorOptions) =>
       mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
 
     /**
-     * @description 获取比赛列表，需要管理员权限
+     * @description Retrieving the game list requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGames
-     * @summary 获取比赛列表
+     * @summary Get Game List
      * @request GET:/api/edit/games
      */
     editGetGames: (
@@ -3367,11 +3367,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛列表，需要管理员权限
+     * @description Retrieving the game list requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGames
-     * @summary 获取比赛列表
+     * @summary Get Game List
      * @request GET:/api/edit/games
      */
     useEditGetGames: (
@@ -3386,11 +3386,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<ArrayResponseOfGameInfoModel, RequestResponse>(doFetch ? [`/api/edit/games`, query] : null, options),
 
     /**
-     * @description 获取比赛列表，需要管理员权限
+     * @description Retrieving the game list requires administrator privileges
      *
      * @tags Edit
      * @name EditGetGames
-     * @summary 获取比赛列表
+     * @summary Get Game List
      * @request GET:/api/edit/games
      */
     mutateEditGetGames: (
@@ -3405,11 +3405,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ArrayResponseOfGameInfoModel>([`/api/edit/games`, query], data, options),
 
     /**
-     * @description 删除比赛题目 Flag，需要管理员权限
+     * @description Deleting a game challenge flag requires administrator privileges
      *
      * @tags Edit
      * @name EditRemoveFlag
-     * @summary 删除比赛题目 Flag
+     * @summary Delete Game Challenge Flag
      * @request DELETE:/api/edit/games/{id}/challenges/{cId}/flags/{fId}
      */
     editRemoveFlag: (id: number, cId: number, fId: number, params: RequestParams = {}) =>
@@ -3421,11 +3421,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除比赛题目，需要管理员权限
+     * @description Deleting a game challenge requires administrator privileges
      *
      * @tags Edit
      * @name EditRemoveGameChallenge
-     * @summary 删除比赛题目
+     * @summary Delete Game Challenge
      * @request DELETE:/api/edit/games/{id}/challenges/{cId}
      */
     editRemoveGameChallenge: (id: number, cId: number, params: RequestParams = {}) =>
@@ -3436,11 +3436,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 更新比赛题目附件，需要管理员权限，仅用于非动态附件题目
+     * @description Updating a game challenge attachment requires administrator privileges; only for non-dynamic attachment challenges
      *
      * @tags Edit
      * @name EditUpdateAttachment
-     * @summary 更新比赛题目附件
+     * @summary Update Game Challenge Attachment
      * @request POST:/api/edit/games/{id}/challenges/{cId}/attachment
      */
     editUpdateAttachment: (id: number, cId: number, data: AttachmentCreateModel, params: RequestParams = {}) =>
@@ -3454,11 +3454,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 修改比赛，需要管理员权限
+     * @description Updating a game requires administrator privileges
      *
      * @tags Edit
      * @name EditUpdateGame
-     * @summary 修改比赛
+     * @summary Update Game
      * @request PUT:/api/edit/games/{id}
      */
     editUpdateGame: (id: number, data: GameInfoModel, params: RequestParams = {}) =>
@@ -3472,11 +3472,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 修改比赛题目，需要管理员权限
+     * @description Updating a game challenge, requires administrator privileges. Flags are not affected; use Flag-related APIs to modify
      *
      * @tags Edit
      * @name EditUpdateGameChallenge
-     * @summary 修改比赛题目信息，Flags 不受更改，使用 Flag 相关 API 修改
+     * @summary Update Game Challenge Information
      * @request PUT:/api/edit/games/{id}/challenges/{cId}
      */
     editUpdateGameChallenge: (id: number, cId: number, data: ChallengeUpdateModel, params: RequestParams = {}) =>
@@ -3490,11 +3490,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 更新全部比赛题目解出数量，需要管理员权限
+     * @description Updating the accepted count for all game challenges requires administrator privileges
      *
      * @tags Edit
      * @name EditUpdateGameChallengesAcceptedCount
-     * @summary 更新全部比赛题目解出数量
+     * @summary Update AC Counter for Challenges
      * @request POST:/api/edit/games/{id}/challenges/updateaccepted
      */
     editUpdateGameChallengesAcceptedCount: (id: number, params: RequestParams = {}) =>
@@ -3505,11 +3505,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 更新比赛通知，需要管理员权限
+     * @description Updating a game notice requires administrator privileges
      *
      * @tags Edit
      * @name EditUpdateGameNotice
-     * @summary 更新比赛通知
+     * @summary Update Game Notice
      * @request PUT:/api/edit/games/{id}/notices/{noticeId}
      */
     editUpdateGameNotice: (id: number, noticeId: number, data: GameNoticeModel, params: RequestParams = {}) =>
@@ -3523,11 +3523,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更新比赛头图，需要Admin权限
+     * @description Use this endpoint to update the game poster; administrator privileges required
      *
      * @tags Edit
      * @name EditUpdateGamePoster
-     * @summary 更新比赛头图
+     * @summary Update Game Poster
      * @request PUT:/api/edit/games/{id}/poster
      */
     editUpdateGamePoster: (
@@ -3548,11 +3548,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 修改文章，需要管理员权限
+     * @description Updating a post requires administrator privileges
      *
      * @tags Edit
      * @name EditUpdatePost
-     * @summary 修改文章
+     * @summary Update Post
      * @request PUT:/api/edit/posts/{id}
      */
     editUpdatePost: (id: string, data: PostEditModel, params: RequestParams = {}) =>
@@ -3567,11 +3567,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   game = {
     /**
-     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
+     * @description Retrieves all challenges of the game; requires User permission and active team participation
      *
      * @tags Game
      * @name GameChallengesWithTeamInfo
-     * @summary 获取全部比赛题目信息及当前队伍信息
+     * @summary Get team details in a game
      * @request GET:/api/game/{id}/details
      */
     gameChallengesWithTeamInfo: (id: number, params: RequestParams = {}) =>
@@ -3582,22 +3582,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
+     * @description Retrieves all challenges of the game; requires User permission and active team participation
      *
      * @tags Game
      * @name GameChallengesWithTeamInfo
-     * @summary 获取全部比赛题目信息及当前队伍信息
+     * @summary Get team details in a game
      * @request GET:/api/game/{id}/details
      */
     useGameChallengesWithTeamInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<GameDetailModel, RequestResponse>(doFetch ? `/api/game/${id}/details` : null, options),
 
     /**
-     * @description 获取比赛的全部题目，需要User权限，需要当前激活队伍已经报名
+     * @description Retrieves all challenges of the game; requires User permission and active team participation
      *
      * @tags Game
      * @name GameChallengesWithTeamInfo
-     * @summary 获取全部比赛题目信息及当前队伍信息
+     * @summary Get team details in a game
      * @request GET:/api/game/{id}/details
      */
     mutateGameChallengesWithTeamInfo: (
@@ -3607,11 +3607,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameDetailModel>(`/api/game/${id}/details`, data, options),
 
     /**
-     * @description 获取比赛作弊数据，需要Monitor权限
+     * @description Retrieves game cheat data; requires Monitor permission
      *
      * @tags Game
      * @name GameCheatInfo
-     * @summary 获取比赛作弊信息
+     * @summary Get game cheat information
      * @request GET:/api/game/{id}/cheatinfo
      */
     gameCheatInfo: (id: number, params: RequestParams = {}) =>
@@ -3622,33 +3622,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛作弊数据，需要Monitor权限
+     * @description Retrieves game cheat data; requires Monitor permission
      *
      * @tags Game
      * @name GameCheatInfo
-     * @summary 获取比赛作弊信息
+     * @summary Get game cheat information
      * @request GET:/api/game/{id}/cheatinfo
      */
     useGameCheatInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<CheatInfoModel[], RequestResponse>(doFetch ? `/api/game/${id}/cheatinfo` : null, options),
 
     /**
-     * @description 获取比赛作弊数据，需要Monitor权限
+     * @description Retrieves game cheat data; requires Monitor permission
      *
      * @tags Game
      * @name GameCheatInfo
-     * @summary 获取比赛作弊信息
+     * @summary Get game cheat information
      * @request GET:/api/game/{id}/cheatinfo
      */
     mutateGameCheatInfo: (id: number, data?: CheatInfoModel[] | Promise<CheatInfoModel[]>, options?: MutatorOptions) =>
       mutate<CheatInfoModel[]>(`/api/game/${id}/cheatinfo`, data, options),
 
     /**
-     * @description 创建容器，需要User权限
+     * @description Creates a container; requires User permission
      *
      * @tags Game
      * @name GameCreateContainer
-     * @summary 创建容器
+     * @summary Creates a container
      * @request POST:/api/game/{id}/container/{challengeId}
      */
     gameCreateContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
@@ -3660,11 +3660,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除某队伍的流量包文件，需要Monitor权限
+     * @description Deletes a team's traffic packet files for a challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameDeleteAllTeamTraffic
-     * @summary 删除某队伍的全部流量包文件
+     * @summary Deletes all traffic files
      * @request DELETE:/api/game/captures/{challengeId}/{partId}/all
      */
     gameDeleteAllTeamTraffic: (challengeId: number, partId: number, params: RequestParams = {}) =>
@@ -3675,11 +3675,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除，需要User权限
+     * @description Deletes a container; requires User permission
      *
      * @tags Game
      * @name GameDeleteContainer
-     * @summary 删除容器
+     * @summary Deletes a container
      * @request DELETE:/api/game/{id}/container/{challengeId}
      */
     gameDeleteContainer: (id: number, challengeId: number, params: RequestParams = {}) =>
@@ -3690,11 +3690,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 删除流量包文件，需要Monitor权限
+     * @description Deletes a traffic packet file; requires Monitor permission
      *
      * @tags Game
      * @name GameDeleteTeamTraffic
-     * @summary 删除流量包文件
+     * @summary Deletes a traffic file
      * @request DELETE:/api/game/captures/{challengeId}/{partId}/{filename}
      */
     gameDeleteTeamTraffic: (challengeId: number, partId: number, filename: string, params: RequestParams = {}) =>
@@ -3705,18 +3705,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛事件数据，需要Monitor权限
+     * @description Retrieves game event data; requires Monitor permission
      *
      * @tags Game
      * @name GameEvents
-     * @summary 获取比赛事件
+     * @summary Get game events
      * @request GET:/api/game/{id}/events
      */
     gameEvents: (
       id: number,
       query?: {
         /**
-         * 隐藏容器
+         * Hide container events
          * @default false
          */
         hideContainer?: boolean;
@@ -3741,18 +3741,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛事件数据，需要Monitor权限
+     * @description Retrieves game event data; requires Monitor permission
      *
      * @tags Game
      * @name GameEvents
-     * @summary 获取比赛事件
+     * @summary Get game events
      * @request GET:/api/game/{id}/events
      */
     useGameEvents: (
       id: number,
       query?: {
         /**
-         * 隐藏容器
+         * Hide container events
          * @default false
          */
         hideContainer?: boolean;
@@ -3772,18 +3772,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<GameEvent[], RequestResponse>(doFetch ? [`/api/game/${id}/events`, query] : null, options),
 
     /**
-     * @description 获取比赛事件数据，需要Monitor权限
+     * @description Retrieves game event data; requires Monitor permission
      *
      * @tags Game
      * @name GameEvents
-     * @summary 获取比赛事件
+     * @summary Get game events
      * @request GET:/api/game/{id}/events
      */
     mutateGameEvents: (
       id: number,
       query?: {
         /**
-         * 隐藏容器
+         * Hide container events
          * @default false
          */
         hideContainer?: boolean;
@@ -3803,11 +3803,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
 
     /**
-     * @description 延长容器时间，需要User权限，且只能在到期前十分钟延期两小时
+     * @description Extends container lifetime; requires User permission and can only be extended two hours within ten minutes before expiration
      *
      * @tags Game
      * @name GameExtendContainerLifetime
-     * @summary 延长容器时间
+     * @summary Extends container lifetime
      * @request POST:/api/game/{id}/container/{challengeId}/extend
      */
     gameExtendContainerLifetime: (id: number, challengeId: number, params: RequestParams = {}) =>
@@ -3819,11 +3819,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛的详细信息
+     * @description Retrieves detailed information about the game
      *
      * @tags Game
      * @name GameGames
-     * @summary 获取比赛详细信息
+     * @summary Get detailed game information
      * @request GET:/api/game/{id}
      */
     gameGames: (id: number, params: RequestParams = {}) =>
@@ -3834,22 +3834,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛的详细信息
+     * @description Retrieves detailed information about the game
      *
      * @tags Game
      * @name GameGames
-     * @summary 获取比赛详细信息
+     * @summary Get detailed game information
      * @request GET:/api/game/{id}
      */
     useGameGames: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<DetailedGameInfoModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
 
     /**
-     * @description 获取比赛的详细信息
+     * @description Retrieves detailed information about the game
      *
      * @tags Game
      * @name GameGames
-     * @summary 获取比赛详细信息
+     * @summary Get detailed game information
      * @request GET:/api/game/{id}
      */
     mutateGameGames: (
@@ -3859,11 +3859,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
 
     /**
-     * @description 获取最近十个比赛
+     * @description Retrieves the latest ten games
      *
      * @tags Game
      * @name GameGamesAll
-     * @summary 获取最新的比赛
+     * @summary Get the latest games
      * @request GET:/api/game
      */
     gameGamesAll: (params: RequestParams = {}) =>
@@ -3874,33 +3874,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取最近十个比赛
+     * @description Retrieves the latest ten games
      *
      * @tags Game
      * @name GameGamesAll
-     * @summary 获取最新的比赛
+     * @summary Get the latest games
      * @request GET:/api/game
      */
     useGameGamesAll: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? `/api/game` : null, options),
 
     /**
-     * @description 获取最近十个比赛
+     * @description Retrieves the latest ten games
      *
      * @tags Game
      * @name GameGamesAll
-     * @summary 获取最新的比赛
+     * @summary Get the latest games
      * @request GET:/api/game
      */
     mutateGameGamesAll: (data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>, options?: MutatorOptions) =>
       mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
 
     /**
-     * @description 获取流量包文件，需要Monitor权限
+     * @description Downloads all traffic packet files for a team and challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetAllTeamTraffic
-     * @summary 获取流量包文件压缩包
+     * @summary Download all traffic files
      * @request GET:/api/game/captures/{challengeId}/{partId}/all
      */
     gameGetAllTeamTraffic: (challengeId: number, partId: number, params: RequestParams = {}) =>
@@ -3911,11 +3911,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     * @description Retrieves challenge information; requires User permission and active team participation
      *
      * @tags Game
      * @name GameGetChallenge
-     * @summary 获取比赛题目信息
+     * @summary Get challenge information
      * @request GET:/api/game/{id}/challenges/{challengeId}
      */
     gameGetChallenge: (id: number, challengeId: number, params: RequestParams = {}) =>
@@ -3926,11 +3926,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     * @description Retrieves challenge information; requires User permission and active team participation
      *
      * @tags Game
      * @name GameGetChallenge
-     * @summary 获取比赛题目信息
+     * @summary Get challenge information
      * @request GET:/api/game/{id}/challenges/{challengeId}
      */
     useGameGetChallenge: (id: number, challengeId: number, options?: SWRConfiguration, doFetch: boolean = true) =>
@@ -3940,11 +3940,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       ),
 
     /**
-     * @description 获取比赛题目信息，需要User权限，需要当前激活队伍已经报名
+     * @description Retrieves challenge information; requires User permission and active team participation
      *
      * @tags Game
      * @name GameGetChallenge
-     * @summary 获取比赛题目信息
+     * @summary Get challenge information
      * @request GET:/api/game/{id}/challenges/{challengeId}
      */
     mutateGameGetChallenge: (
@@ -3955,11 +3955,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ChallengeDetailModel>(`/api/game/${id}/challenges/${challengeId}`, data, options),
 
     /**
-     * @description 获取开启了流量捕获的比赛题目，需要Monitor权限
+     * @description Retrieves challenges with traffic capturing enabled; requires Monitor permission
      *
      * @tags Game
      * @name GameGetChallengesWithTrafficCapturing
-     * @summary 获取开启了流量捕获的比赛题目
+     * @summary Get challenges with traffic capturing enabled
      * @request GET:/api/game/games/{id}/captures
      */
     gameGetChallengesWithTrafficCapturing: (id: number, params: RequestParams = {}) =>
@@ -3970,22 +3970,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取开启了流量捕获的比赛题目，需要Monitor权限
+     * @description Retrieves challenges with traffic capturing enabled; requires Monitor permission
      *
      * @tags Game
      * @name GameGetChallengesWithTrafficCapturing
-     * @summary 获取开启了流量捕获的比赛题目
+     * @summary Get challenges with traffic capturing enabled
      * @request GET:/api/game/games/{id}/captures
      */
     useGameGetChallengesWithTrafficCapturing: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ChallengeTrafficModel[], RequestResponse>(doFetch ? `/api/game/games/${id}/captures` : null, options),
 
     /**
-     * @description 获取开启了流量捕获的比赛题目，需要Monitor权限
+     * @description Retrieves challenges with traffic capturing enabled; requires Monitor permission
      *
      * @tags Game
      * @name GameGetChallengesWithTrafficCapturing
-     * @summary 获取开启了流量捕获的比赛题目
+     * @summary Get challenges with traffic capturing enabled
      * @request GET:/api/game/games/{id}/captures
      */
     mutateGameGetChallengesWithTrafficCapturing: (
@@ -3995,11 +3995,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ChallengeTrafficModel[]>(`/api/game/games/${id}/captures`, data, options),
 
     /**
-     * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+     * @description Retrieves the list of captured teams for a game challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetChallengeTraffic
-     * @summary 获取比赛题目中捕获到到队伍信息
+     * @summary Get team captures in a challenge
      * @request GET:/api/game/captures/{challengeId}
      */
     gameGetChallengeTraffic: (challengeId: number, params: RequestParams = {}) =>
@@ -4010,22 +4010,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+     * @description Retrieves the list of captured teams for a game challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetChallengeTraffic
-     * @summary 获取比赛题目中捕获到到队伍信息
+     * @summary Get team captures in a challenge
      * @request GET:/api/game/captures/{challengeId}
      */
     useGameGetChallengeTraffic: (challengeId: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<TeamTrafficModel[], RequestResponse>(doFetch ? `/api/game/captures/${challengeId}` : null, options),
 
     /**
-     * @description 获取比赛题目中捕获到到队伍信息，需要Monitor权限
+     * @description Retrieves the list of captured teams for a game challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetChallengeTraffic
-     * @summary 获取比赛题目中捕获到到队伍信息
+     * @summary Get team captures in a challenge
      * @request GET:/api/game/captures/{challengeId}
      */
     mutateGameGetChallengeTraffic: (
@@ -4035,11 +4035,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<TeamTrafficModel[]>(`/api/game/captures/${challengeId}`, data, options),
 
     /**
-     * @description 获取流量包文件，需要Monitor权限
+     * @description Retrieves a traffic packet file; requires Monitor permission
      *
      * @tags Game
      * @name GameGetTeamTraffic
-     * @summary 获取流量包文件
+     * @summary Get a traffic file
      * @request GET:/api/game/captures/{challengeId}/{partId}/{filename}
      */
     gameGetTeamTraffic: (challengeId: number, partId: number, filename: string, params: RequestParams = {}) =>
@@ -4050,11 +4050,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+     * @description Retrieves traffic packet files for a team and challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetTeamTrafficAll
-     * @summary 获取比赛题目中捕获到到队伍的流量包列表
+     * @summary Get traffic files
      * @request GET:/api/game/captures/{challengeId}/{partId}
      */
     gameGetTeamTrafficAll: (challengeId: number, partId: number, params: RequestParams = {}) =>
@@ -4065,11 +4065,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+     * @description Retrieves traffic packet files for a team and challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetTeamTrafficAll
-     * @summary 获取比赛题目中捕获到到队伍的流量包列表
+     * @summary Get traffic files
      * @request GET:/api/game/captures/{challengeId}/{partId}
      */
     useGameGetTeamTrafficAll: (
@@ -4080,11 +4080,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<FileRecord[], RequestResponse>(doFetch ? `/api/game/captures/${challengeId}/${partId}` : null, options),
 
     /**
-     * @description 获取比赛题目中捕获到到队伍的流量包列表，需要Monitor权限
+     * @description Retrieves traffic packet files for a team and challenge; requires Monitor permission
      *
      * @tags Game
      * @name GameGetTeamTrafficAll
-     * @summary 获取比赛题目中捕获到到队伍的流量包列表
+     * @summary Get traffic files
      * @request GET:/api/game/captures/{challengeId}/{partId}
      */
     mutateGameGetTeamTrafficAll: (
@@ -4095,11 +4095,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<FileRecord[]>(`/api/game/captures/${challengeId}/${partId}`, data, options),
 
     /**
-     * @description 获取赛后题解提交情况，需要User权限
+     * @description Retrieves post-game writeup submission information; requires User permission
      *
      * @tags Game
      * @name GameGetWriteup
-     * @summary 获取 Writeup 信息
+     * @summary Get writeup information
      * @request GET:/api/game/{id}/writeup
      */
     gameGetWriteup: (id: number, params: RequestParams = {}) =>
@@ -4110,22 +4110,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取赛后题解提交情况，需要User权限
+     * @description Retrieves post-game writeup submission information; requires User permission
      *
      * @tags Game
      * @name GameGetWriteup
-     * @summary 获取 Writeup 信息
+     * @summary Get writeup information
      * @request GET:/api/game/{id}/writeup
      */
     useGameGetWriteup: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<BasicWriteupInfoModel, RequestResponse>(doFetch ? `/api/game/${id}/writeup` : null, options),
 
     /**
-     * @description 获取赛后题解提交情况，需要User权限
+     * @description Retrieves post-game writeup submission information; requires User permission
      *
      * @tags Game
      * @name GameGetWriteup
-     * @summary 获取 Writeup 信息
+     * @summary Get writeup information
      * @request GET:/api/game/{id}/writeup
      */
     mutateGameGetWriteup: (
@@ -4135,11 +4135,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<BasicWriteupInfoModel>(`/api/game/${id}/writeup`, data, options),
 
     /**
-     * @description 加入一场比赛，需要User权限
+     * @description Join a game; requires User permission
      *
      * @tags Game
      * @name GameJoinGame
-     * @summary 加入一个比赛
+     * @summary Join a game
      * @request POST:/api/game/{id}
      */
     gameJoinGame: (id: number, data: GameJoinModel, params: RequestParams = {}) =>
@@ -4152,11 +4152,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 退出一场比赛，需要User权限
+     * @description Leave a game; requires User permission
      *
      * @tags Game
      * @name GameLeaveGame
-     * @summary 退出一个比赛
+     * @summary Leave a game
      * @request DELETE:/api/game/{id}
      */
     gameLeaveGame: (id: number, params: RequestParams = {}) =>
@@ -4167,11 +4167,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 获取比赛通知数据
+     * @description Retrieves game notice data
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛通知
+     * @summary Get game notices
      * @request GET:/api/game/{id}/notices
      */
     gameNotices: (
@@ -4198,11 +4198,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛通知数据
+     * @description Retrieves game notice data
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛通知
+     * @summary Get game notices
      * @request GET:/api/game/{id}/notices
      */
     useGameNotices: (
@@ -4224,11 +4224,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<GameNotice[], RequestResponse>(doFetch ? [`/api/game/${id}/notices`, query] : null, options),
 
     /**
-     * @description 获取比赛通知数据
+     * @description Retrieves game notice data
      *
      * @tags Game
      * @name GameNotices
-     * @summary 获取比赛通知
+     * @summary Get game notices
      * @request GET:/api/game/{id}/notices
      */
     mutateGameNotices: (
@@ -4250,11 +4250,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
 
     /**
-     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     * @description Retrieves all participation information of the game; requires Admin permission
      *
      * @tags Game
      * @name GameParticipations
-     * @summary 获取全部比赛参与信息
+     * @summary Get all game participations
      * @request GET:/api/game/{id}/participations
      */
     gameParticipations: (id: number, params: RequestParams = {}) =>
@@ -4265,22 +4265,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     * @description Retrieves all participation information of the game; requires Admin permission
      *
      * @tags Game
      * @name GameParticipations
-     * @summary 获取全部比赛参与信息
+     * @summary Get all game participations
      * @request GET:/api/game/{id}/participations
      */
     useGameParticipations: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ParticipationInfoModel[], RequestResponse>(doFetch ? `/api/game/${id}/participations` : null, options),
 
     /**
-     * @description 获取比赛的全部题目参与信息，需要Admin权限
+     * @description Retrieves all participation information of the game; requires Admin permission
      *
      * @tags Game
      * @name GameParticipations
-     * @summary 获取全部比赛参与信息
+     * @summary Get all game participations
      * @request GET:/api/game/{id}/participations
      */
     mutateGameParticipations: (
@@ -4290,11 +4290,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
 
     /**
-     * @description 获取积分榜数据
+     * @description Retrieves the scoreboard data
      *
      * @tags Game
      * @name GameScoreboard
-     * @summary 获取积分榜
+     * @summary Get the scoreboard
      * @request GET:/api/game/{id}/scoreboard
      */
     gameScoreboard: (id: number, params: RequestParams = {}) =>
@@ -4305,33 +4305,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取积分榜数据
+     * @description Retrieves the scoreboard data
      *
      * @tags Game
      * @name GameScoreboard
-     * @summary 获取积分榜
+     * @summary Get the scoreboard
      * @request GET:/api/game/{id}/scoreboard
      */
     useGameScoreboard: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ScoreboardModel, RequestResponse>(doFetch ? `/api/game/${id}/scoreboard` : null, options),
 
     /**
-     * @description 获取积分榜数据
+     * @description Retrieves the scoreboard data
      *
      * @tags Game
      * @name GameScoreboard
-     * @summary 获取积分榜
+     * @summary Get the scoreboard
      * @request GET:/api/game/{id}/scoreboard
      */
     mutateGameScoreboard: (id: number, data?: ScoreboardModel | Promise<ScoreboardModel>, options?: MutatorOptions) =>
       mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
 
     /**
-     * @description 下载比赛积分榜，需要Monitor权限
+     * @description Downloads the game scoreboard; requires Monitor permission
      *
      * @tags Game
      * @name GameScoreboardSheet
-     * @summary 下载比赛积分榜
+     * @summary Downloads the scoreboard
      * @request GET:/api/game/{id}/scoreboardsheet
      */
     gameScoreboardSheet: (id: number, params: RequestParams = {}) =>
@@ -4342,11 +4342,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 查询 flag 状态，需要User权限
+     * @description Queries flag status; requires User permission
      *
      * @tags Game
      * @name GameStatus
-     * @summary 查询 flag 状态
+     * @summary Queries flag status
      * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
      */
     gameStatus: (id: number, challengeId: number, submitId: number, params: RequestParams = {}) =>
@@ -4357,11 +4357,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 查询 flag 状态，需要User权限
+     * @description Queries flag status; requires User permission
      *
      * @tags Game
      * @name GameStatus
-     * @summary 查询 flag 状态
+     * @summary Queries flag status
      * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
      */
     useGameStatus: (
@@ -4377,11 +4377,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       ),
 
     /**
-     * @description 查询 flag 状态，需要User权限
+     * @description Queries flag status; requires User permission
      *
      * @tags Game
      * @name GameStatus
-     * @summary 查询 flag 状态
+     * @summary Queries flag status
      * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
      */
     mutateGameStatus: (
@@ -4393,17 +4393,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<AnswerResult>(`/api/game/${id}/challenges/${challengeId}/status/${submitId}`, data, options),
 
     /**
-     * @description 获取比赛提交数据，需要Monitor权限
+     * @description Retrieves game submission data; requires Monitor permission
      *
      * @tags Game
      * @name GameSubmissions
-     * @summary 获取比赛提交
+     * @summary Get game submissions
      * @request GET:/api/game/{id}/submissions
      */
     gameSubmissions: (
       id: number,
       query?: {
-        /** 提交类型 */
+        /** Submission type */
         type?: AnswerResult | null;
         /**
          * @format int32
@@ -4426,17 +4426,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取比赛提交数据，需要Monitor权限
+     * @description Retrieves game submission data; requires Monitor permission
      *
      * @tags Game
      * @name GameSubmissions
-     * @summary 获取比赛提交
+     * @summary Get game submissions
      * @request GET:/api/game/{id}/submissions
      */
     useGameSubmissions: (
       id: number,
       query?: {
-        /** 提交类型 */
+        /** Submission type */
         type?: AnswerResult | null;
         /**
          * @format int32
@@ -4454,17 +4454,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => useSWR<Submission[], RequestResponse>(doFetch ? [`/api/game/${id}/submissions`, query] : null, options),
 
     /**
-     * @description 获取比赛提交数据，需要Monitor权限
+     * @description Retrieves game submission data; requires Monitor permission
      *
      * @tags Game
      * @name GameSubmissions
-     * @summary 获取比赛提交
+     * @summary Get game submissions
      * @request GET:/api/game/{id}/submissions
      */
     mutateGameSubmissions: (
       id: number,
       query?: {
-        /** 提交类型 */
+        /** Submission type */
         type?: AnswerResult | null;
         /**
          * @format int32
@@ -4482,11 +4482,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<Submission[]>([`/api/game/${id}/submissions`, query], data, options),
 
     /**
-     * @description 下载比赛全部提交，需要Monitor权限
+     * @description Downloads all submissions of the game; requires Monitor permission
      *
      * @tags Game
      * @name GameSubmissionSheet
-     * @summary 下载比赛全部提交
+     * @summary Downloads all submissions
      * @request GET:/api/game/{id}/submissionsheet
      */
     gameSubmissionSheet: (id: number, params: RequestParams = {}) =>
@@ -4497,11 +4497,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 提交 flag，需要User权限，需要当前激活队伍已经报名
+     * @description Submits a flag; requires User permission and active team participation
      *
      * @tags Game
      * @name GameSubmit
-     * @summary 提交 flag
+     * @summary Submits a flag
      * @request POST:/api/game/{id}/challenges/{challengeId}
      */
     gameSubmit: (id: number, challengeId: number, data: FlagSubmitModel, params: RequestParams = {}) =>
@@ -4515,11 +4515,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 提交赛后题解，需要User权限
+     * @description Submits a post-game writeup; requires User permission
      *
      * @tags Game
      * @name GameSubmitWriteup
-     * @summary 提交 Writeup
+     * @summary Submits a writeup
      * @request POST:/api/game/{id}/writeup
      */
     gameSubmitWriteup: (
@@ -4540,11 +4540,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   info = {
     /**
-     * @description 获取 Captcha 配置
+     * @description Get Captcha configuration
      *
      * @tags Info
      * @name InfoGetClientCaptchaInfo
-     * @summary 获取 Captcha 配置
+     * @summary Get Captcha configuration
      * @request GET:/api/captcha
      */
     infoGetClientCaptchaInfo: (params: RequestParams = {}) =>
@@ -4555,22 +4555,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取 Captcha 配置
+     * @description Get Captcha configuration
      *
      * @tags Info
      * @name InfoGetClientCaptchaInfo
-     * @summary 获取 Captcha 配置
+     * @summary Get Captcha configuration
      * @request GET:/api/captcha
      */
     useInfoGetClientCaptchaInfo: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ClientCaptchaInfoModel, any>(doFetch ? `/api/captcha` : null, options),
 
     /**
-     * @description 获取 Captcha 配置
+     * @description Get Captcha configuration
      *
      * @tags Info
      * @name InfoGetClientCaptchaInfo
-     * @summary 获取 Captcha 配置
+     * @summary Get Captcha configuration
      * @request GET:/api/captcha
      */
     mutateInfoGetClientCaptchaInfo: (
@@ -4579,11 +4579,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<ClientCaptchaInfoModel>(`/api/captcha`, data, options),
 
     /**
-     * @description 获取客户端设置
+     * @description Get client configuration
      *
      * @tags Info
      * @name InfoGetClientConfig
-     * @summary 获取客户端设置
+     * @summary Get client configuration
      * @request GET:/api/config
      */
     infoGetClientConfig: (params: RequestParams = {}) =>
@@ -4594,33 +4594,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取客户端设置
+     * @description Get client configuration
      *
      * @tags Info
      * @name InfoGetClientConfig
-     * @summary 获取客户端设置
+     * @summary Get client configuration
      * @request GET:/api/config
      */
     useInfoGetClientConfig: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ClientConfig, any>(doFetch ? `/api/config` : null, options),
 
     /**
-     * @description 获取客户端设置
+     * @description Get client configuration
      *
      * @tags Info
      * @name InfoGetClientConfig
-     * @summary 获取客户端设置
+     * @summary Get client configuration
      * @request GET:/api/config
      */
     mutateInfoGetClientConfig: (data?: ClientConfig | Promise<ClientConfig>, options?: MutatorOptions) =>
       mutate<ClientConfig>(`/api/config`, data, options),
 
     /**
-     * @description 获取最新文章
+     * @description Get the latest posts
      *
      * @tags Info
      * @name InfoGetLatestPosts
-     * @summary 获取最新文章
+     * @summary Get the latest posts
      * @request GET:/api/posts/latest
      */
     infoGetLatestPosts: (params: RequestParams = {}) =>
@@ -4631,33 +4631,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取最新文章
+     * @description Get the latest posts
      *
      * @tags Info
      * @name InfoGetLatestPosts
-     * @summary 获取最新文章
+     * @summary Get the latest posts
      * @request GET:/api/posts/latest
      */
     useInfoGetLatestPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<PostInfoModel[], any>(doFetch ? `/api/posts/latest` : null, options),
 
     /**
-     * @description 获取最新文章
+     * @description Get the latest posts
      *
      * @tags Info
      * @name InfoGetLatestPosts
-     * @summary 获取最新文章
+     * @summary Get the latest posts
      * @request GET:/api/posts/latest
      */
     mutateInfoGetLatestPosts: (data?: PostInfoModel[] | Promise<PostInfoModel[]>, options?: MutatorOptions) =>
       mutate<PostInfoModel[]>(`/api/posts/latest`, data, options),
 
     /**
-     * @description 获取文章详情
+     * @description Get post details
      *
      * @tags Info
      * @name InfoGetPost
-     * @summary 获取文章详情
+     * @summary Get post details
      * @request GET:/api/posts/{id}
      */
     infoGetPost: (id: string, params: RequestParams = {}) =>
@@ -4668,33 +4668,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取文章详情
+     * @description Get post details
      *
      * @tags Info
      * @name InfoGetPost
-     * @summary 获取文章详情
+     * @summary Get post details
      * @request GET:/api/posts/{id}
      */
     useInfoGetPost: (id: string, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<PostDetailModel, RequestResponse>(doFetch ? `/api/posts/${id}` : null, options),
 
     /**
-     * @description 获取文章详情
+     * @description Get post details
      *
      * @tags Info
      * @name InfoGetPost
-     * @summary 获取文章详情
+     * @summary Get post details
      * @request GET:/api/posts/{id}
      */
     mutateInfoGetPost: (id: string, data?: PostDetailModel | Promise<PostDetailModel>, options?: MutatorOptions) =>
       mutate<PostDetailModel>(`/api/posts/${id}`, data, options),
 
     /**
-     * @description 获取全部文章
+     * @description Get all posts
      *
      * @tags Info
      * @name InfoGetPosts
-     * @summary 获取全部文章
+     * @summary Get all posts
      * @request GET:/api/posts
      */
     infoGetPosts: (params: RequestParams = {}) =>
@@ -4705,33 +4705,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取全部文章
+     * @description Get all posts
      *
      * @tags Info
      * @name InfoGetPosts
-     * @summary 获取全部文章
+     * @summary Get all posts
      * @request GET:/api/posts
      */
     useInfoGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<PostInfoModel[], any>(doFetch ? `/api/posts` : null, options),
 
     /**
-     * @description 获取全部文章
+     * @description Get all posts
      *
      * @tags Info
      * @name InfoGetPosts
-     * @summary 获取全部文章
+     * @summary Get all posts
      * @request GET:/api/posts
      */
     mutateInfoGetPosts: (data?: PostInfoModel[] | Promise<PostInfoModel[]>, options?: MutatorOptions) =>
       mutate<PostInfoModel[]>(`/api/posts`, data, options),
 
     /**
-     * @description 创建 Pow 验证码，有效期 5 分钟
+     * @description Create Pow Captcha, valid for 5 minutes
      *
      * @tags Info
      * @name InfoPowChallenge
-     * @summary 创建 Pow 验证码
+     * @summary Create Pow Captcha
      * @request GET:/api/captcha/powchallenge
      */
     infoPowChallenge: (params: RequestParams = {}) =>
@@ -4742,22 +4742,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 创建 Pow 验证码，有效期 5 分钟
+     * @description Create Pow Captcha, valid for 5 minutes
      *
      * @tags Info
      * @name InfoPowChallenge
-     * @summary 创建 Pow 验证码
+     * @summary Create Pow Captcha
      * @request GET:/api/captcha/powchallenge
      */
     useInfoPowChallenge: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<HashPowChallenge, RequestResponse>(doFetch ? `/api/captcha/powchallenge` : null, options),
 
     /**
-     * @description 创建 Pow 验证码，有效期 5 分钟
+     * @description Create Pow Captcha, valid for 5 minutes
      *
      * @tags Info
      * @name InfoPowChallenge
-     * @summary 创建 Pow 验证码
+     * @summary Create Pow Captcha
      * @request GET:/api/captcha/powchallenge
      */
     mutateInfoPowChallenge: (data?: HashPowChallenge | Promise<HashPowChallenge>, options?: MutatorOptions) =>
@@ -4769,7 +4769,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Proxy
      * @name ProxyProxyForInstance
-     * @summary 采用 websocket 代理 TCP 流量
+     * @summary Proxy TCP over websocket
      * @request GET:/api/proxy/{id}
      */
     proxyProxyForInstance: (id: string, params: RequestParams = {}) =>
@@ -4784,7 +4784,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Proxy
      * @name ProxyProxyForNoInstance
-     * @summary 采用 websocket 代理 TCP 流量，为测试容器使用
+     * @summary Proxy TCP over websocket for admins
      * @request GET:/api/proxy/noinst/{id}
      */
     proxyProxyForNoInstance: (id: string, params: RequestParams = {}) =>
@@ -4796,11 +4796,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   team = {
     /**
-     * @description 接受邀请的接口，需要User权限，且不在队伍中
+     * @description Interface to accept invitation, requires User permission and not being in team
      *
      * @tags Team
      * @name TeamAccept
-     * @summary 接受邀请
+     * @summary Accept invitation
      * @request POST:/api/team/accept
      */
     teamAccept: (data: string, params: RequestParams = {}) =>
@@ -4813,11 +4813,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 使用此接口更新队伍头像，需要User权限，且为队伍成员
+     * @description Use this API to update team avatar, requires User permission and team membership
      *
      * @tags Team
      * @name TeamAvatar
-     * @summary 更新队伍头像接口
+     * @summary Update team avatar
      * @request PUT:/api/team/{id}/avatar
      */
     teamAvatar: (
@@ -4838,11 +4838,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 用户创建队伍接口，每个用户只能创建一个队伍
+     * @description User API for creating teams, each user can only create one team
      *
      * @tags Team
      * @name TeamCreateTeam
-     * @summary 创建队伍
+     * @summary Create team
      * @request POST:/api/team
      */
     teamCreateTeam: (data: TeamUpdateModel, params: RequestParams = {}) =>
@@ -4856,11 +4856,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 用户删除队伍接口，需要User权限，且为队伍队长
+     * @description User API for deleting team, requires User permission and team captain status
      *
      * @tags Team
      * @name TeamDeleteTeam
-     * @summary 删除队伍
+     * @summary Delete team
      * @request DELETE:/api/team/{id}
      */
     teamDeleteTeam: (id: number, params: RequestParams = {}) =>
@@ -4872,11 +4872,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 根据 id 获取一个队伍的基本信息
+     * @description Get basic information of a team by ID
      *
      * @tags Team
      * @name TeamGetBasicInfo
-     * @summary 获取队伍信息
+     * @summary Get team information
      * @request GET:/api/team/{id}
      */
     teamGetBasicInfo: (id: number, params: RequestParams = {}) =>
@@ -4887,33 +4887,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 根据 id 获取一个队伍的基本信息
+     * @description Get basic information of a team by ID
      *
      * @tags Team
      * @name TeamGetBasicInfo
-     * @summary 获取队伍信息
+     * @summary Get team information
      * @request GET:/api/team/{id}
      */
     useTeamGetBasicInfo: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<TeamInfoModel, RequestResponse>(doFetch ? `/api/team/${id}` : null, options),
 
     /**
-     * @description 根据 id 获取一个队伍的基本信息
+     * @description Get basic information of a team by ID
      *
      * @tags Team
      * @name TeamGetBasicInfo
-     * @summary 获取队伍信息
+     * @summary Get team information
      * @request GET:/api/team/{id}
      */
     mutateTeamGetBasicInfo: (id: number, data?: TeamInfoModel | Promise<TeamInfoModel>, options?: MutatorOptions) =>
       mutate<TeamInfoModel>(`/api/team/${id}`, data, options),
 
     /**
-     * @description 根据用户获取一个队伍的基本信息
+     * @description Get basic information of a team based on user
      *
      * @tags Team
      * @name TeamGetTeamsInfo
-     * @summary 获取当前自己队伍信息
+     * @summary Get current team information
      * @request GET:/api/team
      */
     teamGetTeamsInfo: (params: RequestParams = {}) =>
@@ -4924,33 +4924,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 根据用户获取一个队伍的基本信息
+     * @description Get basic information of a team based on user
      *
      * @tags Team
      * @name TeamGetTeamsInfo
-     * @summary 获取当前自己队伍信息
+     * @summary Get current team information
      * @request GET:/api/team
      */
     useTeamGetTeamsInfo: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<TeamInfoModel[], RequestResponse>(doFetch ? `/api/team` : null, options),
 
     /**
-     * @description 根据用户获取一个队伍的基本信息
+     * @description Get basic information of a team based on user
      *
      * @tags Team
      * @name TeamGetTeamsInfo
-     * @summary 获取当前自己队伍信息
+     * @summary Get current team information
      * @request GET:/api/team
      */
     mutateTeamGetTeamsInfo: (data?: TeamInfoModel[] | Promise<TeamInfoModel[]>, options?: MutatorOptions) =>
       mutate<TeamInfoModel[]>(`/api/team`, data, options),
 
     /**
-     * @description 获取队伍邀请信息，需要为队伍创建者
+     * @description Get team invitation information, must be team creator
      *
      * @tags Team
      * @name TeamInviteCode
-     * @summary 获取邀请信息
+     * @summary Get invitation information
      * @request GET:/api/team/{id}/invite
      */
     teamInviteCode: (id: number, params: RequestParams = {}) =>
@@ -4961,33 +4961,33 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
     /**
-     * @description 获取队伍邀请信息，需要为队伍创建者
+     * @description Get team invitation information, must be team creator
      *
      * @tags Team
      * @name TeamInviteCode
-     * @summary 获取邀请信息
+     * @summary Get invitation information
      * @request GET:/api/team/{id}/invite
      */
     useTeamInviteCode: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<string, RequestResponse>(doFetch ? `/api/team/${id}/invite` : null, options),
 
     /**
-     * @description 获取队伍邀请信息，需要为队伍创建者
+     * @description Get team invitation information, must be team creator
      *
      * @tags Team
      * @name TeamInviteCode
-     * @summary 获取邀请信息
+     * @summary Get invitation information
      * @request GET:/api/team/{id}/invite
      */
     mutateTeamInviteCode: (id: number, data?: string | Promise<string>, options?: MutatorOptions) =>
       mutate<string>(`/api/team/${id}/invite`, data, options),
 
     /**
-     * @description 踢除用户接口，踢出对应id的用户，需要队伍创建者权限
+     * @description User kick API, kick user with corresponding ID, requires team creator permission
      *
      * @tags Team
      * @name TeamKickUser
-     * @summary 踢除用户接口
+     * @summary Kick user
      * @request POST:/api/team/{id}/kick/{userId}
      */
     teamKickUser: (id: number, userId: string, params: RequestParams = {}) =>
@@ -4999,11 +4999,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 离开队伍的接口，需要User权限，且在队伍中
+     * @description Interface to leave team, requires User permission and being in team
      *
      * @tags Team
      * @name TeamLeave
-     * @summary 离开队伍
+     * @summary Leave team
      * @request POST:/api/team/{id}/leave
      */
     teamLeave: (id: number, params: RequestParams = {}) =>
@@ -5014,11 +5014,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 移交队伍所有权接口，需要为队伍创建者
+     * @description Team ownership transfer API, must be team creator
      *
      * @tags Team
      * @name TeamTransfer
-     * @summary 移交队伍所有权
+     * @summary Transfer team ownership
      * @request PUT:/api/team/{id}/transfer
      */
     teamTransfer: (id: number, data: TeamTransferModel, params: RequestParams = {}) =>
@@ -5032,11 +5032,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 更新邀请 Token 的接口，需要为队伍创建者
+     * @description Interface to update invitation token, must be team creator
      *
      * @tags Team
      * @name TeamUpdateInviteToken
-     * @summary 更新邀请 Token
+     * @summary Update invitation token
      * @request PUT:/api/team/{id}/invite
      */
     teamUpdateInviteToken: (id: number, params: RequestParams = {}) =>
@@ -5048,11 +5048,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 队伍信息更改接口，需要为队伍创建者
+     * @description Team information update API, must be team creator
      *
      * @tags Team
      * @name TeamUpdateTeam
-     * @summary 更改队伍信息
+     * @summary Update team information
      * @request PUT:/api/team/{id}
      */
     teamUpdateTeam: (id: number, data: TeamUpdateModel, params: RequestParams = {}) =>
@@ -5066,11 +5066,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description 进行签名校验
+     * @description Perform signature verification
      *
      * @tags Team
      * @name TeamVerifySignature
-     * @summary 进行签名校验
+     * @summary Verify signature
      * @request POST:/api/team/verify
      */
     teamVerifySignature: (data: SignatureVerifyModel, params: RequestParams = {}) =>

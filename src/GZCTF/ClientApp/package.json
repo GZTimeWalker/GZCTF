@@ -36,7 +36,7 @@
     "embla-carousel": "^8.5.1",
     "embla-carousel-autoplay": "^8.5.1",
     "embla-carousel-react": "^8.5.1",
-    "i18next": "^24.0.1",
+    "i18next": "^24.0.2",
     "i18next-browser-languagedetector": "^8.0.0",
     "katex": "^0.16.11",
     "lz-string": "^1.5.0",

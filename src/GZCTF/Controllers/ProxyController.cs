@@ -49,7 +49,7 @@ public class ProxyController(
     readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
     /// <summary>
-    /// Proxy TCP traffic using websocket
+    /// Proxy TCP over websocket
     /// </summary>
     /// <param name="id">Container ID</param>
     /// <param name="token"></param>
@@ -112,7 +112,7 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// Proxy TCP traffic using websocket for test containers
+    /// Proxy TCP over websocket for admins
     /// </summary>
     /// <param name="id">Test container ID</param>
     /// <param name="token"></param>

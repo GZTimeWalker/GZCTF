@@ -3,7 +3,7 @@
 namespace GZCTF.Models.Request.Game;
 
 /// <summary>
-/// Competition writeup submission information
+/// Game writeup submission information
 /// </summary>
 public class BasicWriteupInfoModel
 {

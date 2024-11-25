@@ -13,6 +13,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_Captain)],
         localizer[nameof(Resources.Program.Header_Member)],
+        localizer[nameof(Resources.Program.Header_RealName)],
         localizer[nameof(Resources.Program.Header_Email)],
         localizer[nameof(Resources.Program.Header_StdNumber)],
         localizer[nameof(Resources.Program.Header_PhoneNumber)],
@@ -156,10 +157,12 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             if (withOrg)
                 row.CreateCell(colIndex++).SetCellValue(item.Division);
 
-            row.CreateCell(colIndex++).SetCellValue(item.TeamInfo?.Captain?.RealName ?? string.Empty);
+            row.CreateCell(colIndex++).SetCellValue(TakeIfNotEmpty(item.TeamInfo?.Captain?.UserName));
 
-            var members = item.TeamInfo?.Members ?? [];
+            var members = item.Participants ?? [];
 
+            row.CreateCell(colIndex++)
+                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.UserName))));
             row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.RealName))));
             row.CreateCell(colIndex++)

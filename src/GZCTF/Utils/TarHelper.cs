@@ -14,7 +14,8 @@ public static class TarHelper
         var downloadFilename = fileName.EndsWith(".tar.gz") ? fileName : $"{fileName}.tar.gz";
 
         context.Response.ContentType = "application/gzip";
-        context.Response.Headers.ContentDisposition = $"attachment; filename=\"{HttpUtility.UrlEncode(downloadFilename)}\"";
+        context.Response.Headers.ContentDisposition =
+            $"attachment; filename=\"{HttpUtility.UrlEncode(downloadFilename)}\"";
     }
 
     /// <summary>
