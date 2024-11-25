@@ -75,7 +75,8 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
             "ru-RU",
             "de-DE",
             "fr-FR",
-            "es-ES"
+            "es-ES",
+            "vi-VN"
         ];
 
         options

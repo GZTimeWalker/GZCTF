@@ -8,6 +8,7 @@ import 'dayjs/locale/id'
 import 'dayjs/locale/ja'
 import 'dayjs/locale/ko'
 import 'dayjs/locale/ru'
+import 'dayjs/locale/vi'
 import 'dayjs/locale/zh'
 import 'dayjs/locale/zh-tw'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
@@ -24,6 +25,7 @@ export const LanguageMap = {
   'id-ID': '🇮🇩 Bahasa',
   'ko-KR': '🇰🇷 한국어',
   'ru-RU': '🇷🇺 Русский',
+  'vi-VN': '🇻🇳 Tiếng việt (WIP)',
   'de-DE': '🇩🇪 Deutsch (MT)',
   'fr-FR': '🇫🇷 Français (MT)',
   'es-ES': '🇪🇸 Español (MT)',
@@ -44,6 +46,7 @@ const shortLocalFormat = new Map<string, ShortLocalFormat>([
   ['id', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
   ['fr', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
   ['es', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
+  ['vi', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
 ])
 
 dayjs.extend((_o, c, _d) => {
