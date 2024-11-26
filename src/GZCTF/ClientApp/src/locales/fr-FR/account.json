@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "Cette personne est paresseuse, rien n'est écrit",
-    "computing": "Computing..."
+    "computing": "Calcul, veuillez patienter..."
   },
   "title": {
     "confirm": "Vérification de l'email",
