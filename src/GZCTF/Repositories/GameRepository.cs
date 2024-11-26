@@ -12,7 +12,6 @@ namespace GZCTF.Repositories;
 
 public class GameRepository(
     IDistributedCache cache,
-    ITeamRepository teamRepository,
     IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
     IConfiguration configuration,
