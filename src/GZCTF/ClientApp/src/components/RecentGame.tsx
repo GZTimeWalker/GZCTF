@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { useLanguage } from '@Utils/I18n'
+import { useForeground } from '@Hooks/useForeground'
 import { getGameStatus } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
@@ -40,6 +41,8 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
 
   const duration =
     status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
+
+  const titleColor = useForeground(poster)
 
   return (
     <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={classes}>
@@ -70,12 +73,11 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         h={34}
         pos="relative"
         mt={`calc(${POSTER_HEIGHT} - 2rem - 34px)`}
-        bg="rgba(0,0,0,.5)"
         display="flex"
         p="0 16px"
         className={misc.alignCenter}
       >
-        <Title lineClamp={1} order={4} ta="left" c={theme.colors.gray[0]}>
+        <Title lineClamp={1} order={4} ta="left" c={titleColor}>
           &gt; {title}
         </Title>
       </Card.Section>
