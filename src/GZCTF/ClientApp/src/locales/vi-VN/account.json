@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "Người dùng này khá lười biếng, không có gì được viết ở đây cả",
-    "computing": "Đang tính toán..."
+    "computing": "Vui lòng chờ trong giây lát..."
   },
   "title": {
     "confirm": "Xác Minh Email",
