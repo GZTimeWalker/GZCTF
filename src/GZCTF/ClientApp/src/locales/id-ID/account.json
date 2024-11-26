@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "Orang ini Malas, tidak ada yang ditulis",
-    "computing": "Perhitungan..."
+    "computing": "Please wait a moment while computing..."
   },
   "title": {
     "confirm": "Verifikasi Email",
