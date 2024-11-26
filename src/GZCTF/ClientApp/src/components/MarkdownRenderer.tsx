@@ -59,8 +59,8 @@ export const Markdown = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) =
   })
 
   return (
-    <TypographyStylesProvider ref={ref} {...others} className={classes.root}>
-      <div dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
+    <TypographyStylesProvider ref={ref} {...others}>
+      <div className={classes.root} dangerouslySetInnerHTML={{ __html: marked.parse(source) }} />
     </TypographyStylesProvider>
   )
 })
