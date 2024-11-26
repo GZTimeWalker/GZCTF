@@ -264,85 +264,85 @@
     <value>Tạo bộ nhớ cache thất bại: {0}</value>
   </data>
   <data name="Cache_InvalidUpdateRequest" xml:space="preserve">
-    <value>Invalid cache request: {0}</value>
+    <value>Yêu cầu bộ nhớ cache không hợp lệ: {0}</value>
   </data>
   <data name="Cache_NoMatchingRequest" xml:space="preserve">
-    <value>No matching request found for cache worker: {0}</value>
+    <value>Không tìm thấy yêu cầu phù hợp cho cache worker: {0}</value>
   </data>
   <data name="Cache_Stopped" xml:space="preserve">
-    <value>Cache update has been stopped</value>
+    <value>Đã dừng cập nhật bộ nhớ cache</value>
   </data>
   <data name="Cache_Updated" xml:space="preserve">
-    <value>Cache updated: {0}[{1}] @ {2} bytes</value>
+    <value>Bộ nhớ cache được cập nhật: {0}[{1}] @ {2} byte</value>
   </data>
   <data name="Cache_UpdateWorkerFailed" xml:space="preserve">
-    <value>Cache update failed: {0} @ {1}</value>
+    <value>Cập nhật bộ nhớ cache thất bại: {0} @ {1}</value>
   </data>
   <data name="Cache_UpdateWorkerLocked" xml:space="preserve">
-    <value>Cache update worker locked: {0}</value>
+    <value>Worker cập nhật bộ nhớ cache bị khóa: {0}</value>
   </data>
   <data name="Cache_WorkerCancelled" xml:space="preserve">
-    <value>Cache update worker is stopping because task has been cancelled</value>
+    <value>Worker cập nhật bộ nhớ cache đang dừng vì tác vụ đã bị hủy</value>
   </data>
   <data name="Cache_WorkerStarted" xml:space="preserve">
-    <value>Cache update worker has been started</value>
+    <value>Worker cập nhật bộ nhớ cache đã chạy</value>
   </data>
   <data name="Cache_WorkerStopped" xml:space="preserve">
-    <value>Cache update worker has been stopped</value>
+    <value>Worker cập nhật bộ nhớ cache đã dừng</value>
   </data>
   <data name="Challenge_NotFound" xml:space="preserve">
-    <value>The challenge was not found</value>
+    <value>Không tìm thấy thử thách</value>
   </data>
   <data name="Config_GlobalConfigAdded" xml:space="preserve">
-    <value>Global configuration added: {0} =&gt; {1}</value>
+    <value>Global Config đã được thêm: {0} =&gt; {1}</value>
   </data>
   <data name="Config_GlobalConfigUpdated" xml:space="preserve">
-    <value>Global configuration updated: {0} =&gt; {1}</value>
+    <value>Global Config đã được cập nhật: {0} =&gt; {1}</value>
   </data>
   <data name="Config_InitializingDatabase" xml:space="preserve">
-    <value>Initializing database...</value>
+    <value>Đang khởi tạo cơ sở dữ liệu...</value>
   </data>
   <data name="Config_ReloadFailed" xml:space="preserve">
-    <value>Failed to reload global configuration</value>
+    <value>Không thể tải lại Global Config</value>
   </data>
   <data name="Config_TypeNotSupported" xml:space="preserve">
-    <value>Unsupported configuration type</value>
+    <value>Loại config không được hỗ trợ</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
-    <value>Failed to create container {0}</value>
+    <value>Không tạo được container {0}</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
-    <value>Failed to create container {0}, response: {1}</value>
+    <value>Không tạo được container {0}, phản hồi: {1}</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
-    <value>Failed to create container {0}, status: {1}</value>
+    <value>Không tạo được container {0}, trạng thái: {1}</value>
   </data>
   <data name="ContainerManager_ContainerDeletionFailed" xml:space="preserve">
-    <value>Failed to delete container {0}</value>
+    <value>Không xóa được container {0}</value>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedResponse" xml:space="preserve">
-    <value>Failed to delete container {0}, response: {1}</value>
+    <value>Không xóa được container {0}, phản hồi: {1}</value>
   </data>
   <data name="ContainerManager_ContainerDeletionFailedStatus" xml:space="preserve">
-    <value>Failed to delete container {0}, status: {1}</value>
+    <value>Không xóa được container {0}, trạng thái: {1}</value>
   </data>
   <data name="ContainerManager_ContainerDestroyed" xml:space="preserve">
-    <value>Container {0} has been destroyed</value>
+    <value>Đã xoá container {0}</value>
   </data>
   <data name="ContainerManager_ContainerExisted" xml:space="preserve">
-    <value>Container {0} already exists, try removing it and recreating it</value>
+    <value>Container {0} đã tồn tại, hãy thử xóa và tạo lại</value>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailed" xml:space="preserve">
-    <value>Container instance {0} failed to create</value>
+    <value>Không tạo được container instance {0}</value>
   </data>
   <data name="ContainerManager_ContainerInstanceCreationFailedWithError" xml:space="preserve">
-    <value>Error creating {0} instance：{1}</value>
+    <value>Lỗi khi tạo instance  {0}: {1}</value>
   </data>
   <data name="ContainerManager_ContainerInstanceStartFailed" xml:space="preserve">
-    <value>Failed to start container instance {0} ({1})</value>
+    <value>Không khởi động được container instance {0} ({1})</value>
   </data>
   <data name="ContainerManager_ContainerPortNotExposed" xml:space="preserve">
-    <value>Failed to get port exposure information after container {0} was created</value>
+    <value>Không lấy được thông tin port sau khi tạo container {0}</value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Container mode：Docker Instance Container Controls</value>
@@ -351,7 +351,7 @@
     <value>Container Mode：K8s Cluster Pod Container Control</value>
   </data>
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
-    <value>Cannot convert port number：{0}, this is an unexpected action</value>
+    <value>Không thể chuyển đổi port: {0}, lỗi không mong muốn</value>
   </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
     <value>Pull container image {0}</value>

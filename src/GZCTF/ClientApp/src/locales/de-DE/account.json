@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "Diese Person ist faul, nichts geschrieben",
-    "computing": "Computing..."
+    "computing": "Bitte warte einen Moment während der Berechnung..."
   },
   "title": {
     "confirm": "E-Mail-Verifizierung",

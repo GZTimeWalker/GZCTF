@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "这个人很懒，什么都没有写",
-    "computing": "计算中……"
+    "computing": "计算中，请稍等..."
   },
   "title": {
     "confirm": "邮箱验证",

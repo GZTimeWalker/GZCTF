@@ -1,66 +1,66 @@
 {
   "button": {
-    "back": "Go Back",
+    "back": "Quay lại",
     "challenges": {
       "attachment": {
-        "save_url": "Save Link",
-        "upload": "Upload",
-        "uploading": "Uploading..."
+        "save_url": "Lưu đường dẫn",
+        "upload": "Tải lên",
+        "uploading": "Đang tải lên..."
       },
-      "bonus": "Triple Blood Bonus",
-      "delete": "Delete",
-      "disable": "Disable",
-      "edit": "Edit Challenge",
-      "edit_more": "Edit Flags",
-      "enable": "Enable",
+      "bonus": "Phần thưởng Triple Blood",
+      "delete": "Xóa",
+      "disable": "Vô hiệu hóa",
+      "edit": "Chỉnh sửa Thử thách",
+      "edit_more": "Chỉnh sửa Flags",
+      "enable": "Cho phép",
       "flag": {
         "add": {
-          "dynamic": "Upload Attachments",
-          "normal": "Add Flag",
-          "remote": "Add Remote"
+          "dynamic": "Tải lên Tệp đính kèm",
+          "normal": "Thêm Flag",
+          "remote": "Thêm Remote"
         },
-        "delete": "Delete",
-        "save": "Save Template"
+        "delete": "Xóa",
+        "save": "Lưu Bản mẫu"
       },
       "hint": {
-        "add": "Add Hint"
+        "add": "Thêm gợi ý"
       },
-      "new": "New Challenge",
-      "next": "Next",
-      "preview": "Preview",
-      "previous": "Previous",
+      "new": "Thử thách mới",
+      "next": "Tiếp theo",
+      "preview": "Xem trước",
+      "previous": "Về trước",
       "test_container": {
-        "create": "Create",
-        "destroy": "Destroy"
+        "create": "Tạo",
+        "destroy": "Phá hủy"
       },
-      "update_accept_count": "Update AC Counter"
+      "update_accept_count": "Cập nhật bộ đếm AC"
     },
     "games": {
       "challenges": {
         "attachment": {
-          "batch_add": "Batch Add"
+          "batch_add": "Thêm hàng loạt"
         }
       },
-      "copy_public_key": "Copy Public Key",
-      "delete": "Delete",
-      "new": "New Game"
+      "copy_public_key": "Sao chép Khóa Công khai",
+      "delete": "Xóa",
+      "new": "Trò chơi Mới"
     },
     "notices": {
-      "delete": "Delete",
-      "edit": "Edit Notice",
-      "new": "New Notice"
+      "delete": "Xóa",
+      "edit": "Chỉnh sửa Thông báo",
+      "new": "Thông báo Mới"
     },
-    "save": "Save Changes",
+    "save": "Lưu Thay đổi",
     "teams": {
-      "do_lock": "Lock",
-      "do_unlock": "Unlock",
-      "edit": "Edit Team"
+      "do_lock": "Khóa",
+      "do_unlock": "Mở khóa",
+      "edit": "Chỉnh sửa Đội"
     },
     "users": {
-      "edit": "Edit User"
+      "edit": "Chỉnh sửa Người dùng"
     },
     "writeups": {
-      "download_all": "Download All"
+      "download_all": "Tải Toàn bộ"
     }
   },
   "content": {
@@ -68,14 +68,14 @@
       "challenges": {
         "attachment": {
           "clear": {
-            "description": "Are you sure you want to remove the attachment of this challenge?",
-            "title": "Clear Attachment"
+            "description": "Bạn có chắc muốn gỡ bỏ tệp đính kèm của thử thách này?",
+            "title": "Gỡ bỏ Tệp đính kèm"
           },
           "instruction": {
-            "amount_double": "It is recommended to upload dynamic attachments that are twice the expected number of participating teams.",
+            "amount_double": "Nên tải tệp đính kèm động có số lượng gấp đôi số đội dự kiến tham gia.",
             "dynamic": {
-              "content": "Batch upload dynamic attachments, all of which will be distributed with the same file name.",
-              "format": "Please use each flag as the file name for the corresponding attachment."
+              "content": "Tải lên hàng loạt các tệp đính kèm động, các tệp này sẽ được phân phối với cùng một tên tệp.",
+              "format": "Xin hãy dùng flag làm tên tệp cho tệp đính kèm tương ứng."
             },
             "remote": {
               "content": "Batch set remote attachments and corresponding flags, with one group per line.",
