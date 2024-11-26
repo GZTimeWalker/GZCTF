@@ -3,6 +3,21 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.0.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.2..v1.0.3) - 2024-11-26
+
+### ⛰️ Features
+
+- **(i18n)** add `vi-VN` support - ([8f8f79](https://github.com/GZTimeWalker/GZCTF/commit/8f8f79)) by **GZTime**
+- **(i18n)** use English for API document - ([39eb32](https://github.com/GZTimeWalker/GZCTF/commit/39eb32)) by **Steven He**
+- **(scoreboard)** record user emails & download only participants - ([014954](https://github.com/GZTimeWalker/GZCTF/commit/014954)) by **GZTime**
+- **(scoreboard)** export user email in scoreboard table - ([75d7e3](https://github.com/GZTimeWalker/GZCTF/commit/75d7e3)) by **GZTime**
+- use Scalar to replace Swagger - ([657fcc](https://github.com/GZTimeWalker/GZCTF/commit/657fcc)) by **Steven He**
+
+### 🎨 Styling
+
+- **(typography)** revert & fix style provided by ui framework - ([84d917](https://github.com/GZTimeWalker/GZCTF/commit/84d917)) by **GZTime**
+
+---
 ## [1.0.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.1..v1.0.2) - 2024-11-25
 
 ### ⛰️ Features

@@ -4,8 +4,8 @@
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
         <CollectCoverage>true</CollectCoverage>
-        <Configurations>Debug;Release;GenAPI</Configurations>
-        <ReleaseVersion>1.0.2</ReleaseVersion>
+        <Configurations>Debug;Release</Configurations>
+        <ReleaseVersion>1.0.3</ReleaseVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>

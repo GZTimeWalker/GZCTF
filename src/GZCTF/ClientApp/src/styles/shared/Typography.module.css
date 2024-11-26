@@ -3,31 +3,57 @@
   max-width: max-content;
   min-width: 100%;
 
-  & p {
+  & :where(p) {
     word-break: break-word;
     word-wrap: break-word;
     overflow: hidden;
     margin-bottom: var(--mantine-spacing-xs);
   }
 
-  & ul,
-  & ol {
-    padding-left: var(--mantine-font-size-lg);
+  & :where(ol, ul):not([data-type='taskList']) {
+    /* revert style set by mantine */
+    list-style-position: outside;
+  }
+
+  & :where(ol):not([data-type='taskList']) {
+    padding-inline-start: calc(2 * var(--mantine-font-size-lg));
 
     @mixin smaller-than $mantine-breakpoint-xs {
-      padding-left: var(--mantine-font-size-xs);
+      padding-inline-start: calc(2 * var(--mantine-font-size-xs));
     }
   }
 
-  & strong {
+  & :where(ul):not([data-type='taskList']) {
+    padding-inline-start: var(--mantine-font-size-lg);
+
+    @mixin smaller-than $mantine-breakpoint-xs {
+      padding-inline-start: var(--mantine-font-size-xs);
+    }
+  }
+
+  & :where(ul, ol):last-child {
+    margin-bottom: 0;
+  }
+
+  & :where(li)::marker {
+    color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-1));
+    font-weight: 500;
+  }
+
+  & :where(table) :where(th) {
+    /* revert style set by mantine */
+    text-align: revert-layer;
+  }
+
+  & :where(strong) {
     color: light-dark(var(--mantine-primary-color-6), var(--mantine-primary-color-5));
 
-    & code {
+    & :where(code) {
       color: inherit;
     }
   }
 
-  & blockquote {
+  & :where(blockquote) {
     padding: calc(var(--mantine-spacing-xs) / 2) var(--mantine-spacing-md);
     margin-bottom: var(--mantine-spacing-md);
     font-size: var(--mantine-font-size-md);
@@ -44,8 +70,7 @@
       4px solid var(--mantine-color-dark-0)
     );
 
-    & pre,
-    & code {
+    & :where(pre, code) {
       background-color: light-dark(
         alpha(var(--mantine-color-light-1), 0.8),
         alpha(var(--mantine-color-dark-6), 0.8)
@@ -53,7 +78,7 @@
     }
   }
 
-  & pre {
+  & :where(pre) {
     background-color: light-dark(var(--mantine-color-light-1), var(--mantine-color-dark-6));
     padding: var(--mantine-spacing-sm);
     white-space: pre;
@@ -71,7 +96,7 @@
     );
   }
 
-  & pre > code {
+  & :where(pre) > code {
     padding: 0;
     background-color: transparent;
     color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-light-2));
@@ -171,7 +196,7 @@
   word-wrap: break-word;
   white-space: pre-wrap;
 
-  & code {
+  & :where(code) {
     white-space: normal;
     font-weight: 500;
     background-color: transparent;
@@ -180,17 +205,16 @@
     border: none;
   }
 
-  & a,
-  & strong {
+  & :where(a, strong) {
     color: light-dark(var(--mantine-primary-color-6), var(--mantine-primary-color-5));
   }
 
-  & a {
+  & :where(a) {
     text-decoration: underline;
     transition: all 0.2s ease-in-out;
   }
 
-  & a:hover {
+  & :where(a):hover {
     text-decoration: none;
   }
 }

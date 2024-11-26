@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
 import { RecentGameProps } from '@Components/RecentGame'
+import { useForeground } from '@Hooks/useForeground'
 import { getGameStatus } from '@Hooks/useGame'
 import classes from '@Styles/RecentGameSlide.module.css'
 
@@ -18,6 +19,8 @@ export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
   const duration =
     status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
+  const titleColor = useForeground(poster)
+
   return (
     <Paper
       {...others}
@@ -28,6 +31,7 @@ export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       radius="md"
       __vars={{
         '--slide-image': `url(${poster})`,
+        '--slide-title-color': titleColor,
       }}
       className={classes.card}
     >
