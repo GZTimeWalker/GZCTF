@@ -96,7 +96,7 @@
   },
   "placeholder": {
     "bio": "この怠け者は何でも書いていない",
-    "computing": "計算しています..."
+    "computing": "計算中にしばらくお待ちください..."
   },
   "title": {
     "confirm": "メールによる認証",
