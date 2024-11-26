@@ -702,7 +702,7 @@
     <value>CTF-платформа с открытым исходным кодом</value>
   </data>
   <data name="Init_PostTitle" xml:space="preserve">
-    <value>Добро пожаловать на GZ::CTF!</value>
+    <value>Добро пожаловать в GZ::CTF!</value>
   </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>Контейнер [{2}] команды {0} из задания {1} автоматически уничтожен</value>
