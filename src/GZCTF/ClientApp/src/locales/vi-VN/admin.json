@@ -78,37 +78,37 @@
               "format": "Xin hãy dùng flag làm tên tệp cho tệp đính kèm tương ứng."
             },
             "remote": {
-              "content": "Batch set remote attachments and corresponding flags, with one group per line.",
-              "format": "Please separate the flag and the URL with a space."
+              "content": "Thiết lập hàng loạt các tệp đính kèm từ xa cùng với flag tương ứng, mỗi nhóm trên một dòng.",
+              "format": "Xin hãy ngăn giữa flag và URL bằng một dấu cách."
             }
           },
-          "link": "Attachment Link",
-          "title": "Attachment Management",
-          "type": "Attachment Type"
+          "link": "Link đính kèm",
+          "title": "Quản lý Tệp đính kèm",
+          "type": "Loại Tệp đính kèm"
         },
         "attachment_name": {
-          "description": "All dynamic attachments will be downloaded under this filename",
-          "label": "Global Attachment Name"
+          "description": "Toàn bộ tệp đính kèm động sẽ được tải xuống bằng tên này",
+          "label": "Tên Tệp đính kèm Toàn cục"
         },
         "bonus": {
-          "description": "The Triple Blood Bonus refers to the additional points awarded when a challenge is solved by the first three teams. Each team can receive a scoring bonus based on the current points of the challenge. The bonus will be added to the team's score in the form of a fixed percentage.",
-          "first_blood": "First Blood Reward (%)",
-          "second_blood": "Second Blood Reward (%)",
-          "third_blood": "Third Blood Reward (%)"
+          "description": "Thưởng Triple Blood là điểm thưởng cộng thêm cho ba đội đầu tiên giải được một thử thách. Lượng điểm cộng thêm cho mỗi đội sẽ được tính dựa trên điểm hiện tại của thử thách đó theo một tỉ lệ phần trăm định trước.",
+          "first_blood": "Thưởng First Blood (%)",
+          "second_blood": "Thưởng Second Blood (%)",
+          "third_blood": "Thưởng Third Blood (%)"
         },
-        "category": "Category",
+        "category": "Danh mục",
         "container_image": "Container Image",
         "cpu_limit": {
-          "description": "Multiplication of 0.1 CPU core",
-          "label": "CPU Limit (0.1 CPUs)"
+          "description": "Bội số của 0,1 nhân CPU",
+          "label": "Giới hạn CPU (đơn vị 0,1 CPU)"
         },
-        "delete": "Are you sure you want to delete challenge {{name}}?",
-        "description": "Description",
-        "difficulty": "Difficulty Factor",
-        "disable": "Are you sure you want to disable challenge {{name}}?",
+        "delete": "Bạn có chắc chắn muốn xóa thử thách {{name}} không?",
+        "description": "Mô tả",
+        "difficulty": "Độ khó",
+        "disable": "Bạn có chắc chắn muốn vô hiệu hóa thử thách {{name}} không?",
         "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
+          "description": "Kích hoạt thưởng blood cho thử thách này",
+          "label": "Thưởng Blood"
         },
         "empty": {
           "description": "Click the top right to create the first challenge",
