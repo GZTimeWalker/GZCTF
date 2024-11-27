@@ -1,33 +1,33 @@
 {
   "button": {
-    "delete": "Delete Post",
-    "edit": "Edit Post",
-    "goto": "Go to Post",
-    "new": "New Post",
-    "save": "Save Post"
+    "delete": "Xóa Bài đăng",
+    "edit": "Chỉnh sửa Bài đăng",
+    "goto": "Đi đến Bài đăng",
+    "new": "Bài đăng Mới",
+    "save": "Lưu Bài đăng"
   },
   "content": {
-    "delete": "Are you sure you want to delete post {{title}}?",
-    "details": "View Details",
-    "metadata": "{{author}} published on {{date}}",
-    "pinned": "[Pinned]",
+    "delete": "Bạn có chắc chắn muốn xóa bài đăng {{title}} không?",
+    "details": "Xem Chi tiết",
+    "metadata": "{{author}} đã đăng vào {{date}}",
+    "pinned": "[Đã ghim]",
     "updated": {
-      "content": "The post has been changed. Save it?",
-      "title": "Post has been changed"
+      "content": "Bài viết đã được chỉnh sửa. Lưu thay đổi?",
+      "title": "Bài viết đã được chỉnh sửa"
     }
   },
   "label": {
-    "add_tag": "Enter to add tag",
-    "content": "Content",
-    "summary": "Summary",
-    "tag": "Tags",
-    "title": "Title"
+    "add_tag": "Enter để thêm tag",
+    "content": "Nội dung",
+    "summary": "Tổng kết",
+    "tag": "Các tag",
+    "title": "Tiêu đề"
   },
   "notification": {
-    "created": "Post has been created",
-    "saved": "Post has been saved"
+    "created": "Đã tạo Bài đăng",
+    "saved": "Đã lưu Bài đăng"
   },
   "title": {
-    "index": "Posts"
+    "index": "Các Bài đăng"
   }
 }
