@@ -1,93 +1,93 @@
 {
   "button": {
-    "create": "Create Team",
-    "disband": "Disband Team",
-    "edit": "Team Details",
-    "join": "Join Team",
-    "leave": "Quit Team",
-    "save": "Update Info"
+    "create": "Tạo Đội",
+    "disband": "Giải tán Đội",
+    "edit": "Thông tin về Đội",
+    "join": "Gia nhập Đội",
+    "leave": "Rời Đội",
+    "save": "Cập nhật Thông tin"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "Bạn có thể tạo một đội và mời người khác gia nhập. Mỗi người chơi chỉ có thể tạo một đội.",
     "disband": {
       "confirm": {
-        "message": "Are you sure you want to disband team \"{{team}}\"?",
-        "title": "Confirm Disband Team"
+        "message": "Bạn có chắc chắn muốn giải tán đội \"{{team}}\" không?",
+        "title": "Xác nhận Giải tán Đội"
       }
     },
-    "join": "Please get the invitation code from the team creator, use it to join the team.",
+    "join": "Vui lòng liên hệ người tạo đội để lấy mã mời, sử dụng mã mòi đó để gia nhập đội.",
     "kick": {
       "confirm": {
-        "message": "Are you sure you want to kick out team member \"{{user}}\"?",
-        "title": "Confirm removing member."
+        "message": "Bạn có chắc chắn muốn khai trừ thành viên \"{{user}}\" khỏi đội?",
+        "title": "Xác nhận khai trừ thành viên."
       }
     },
     "leave": {
       "confirm": {
-        "message": "Are you sure you want to leave the team \"{{team}}\"?",
-        "title": "Confirm Quit"
+        "message": "Bạn có chắc chắn muốn rời đội \"{{team}}\" không?",
+        "title": "Xác nhận Rời đội"
       }
     },
     "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+      "content": "Mỗi người chơi chỉ có thế tạo một đội.<br/>Bạn có thẻ giải tán đội hiện có để tạo đội mới.",
+      "title": "Bạn vừa tạo một đội"
     },
     "role": {
-      "captain": "Captain",
-      "member": "Member"
+      "captain": "Đội trưởng",
+      "member": "Thành viên"
     },
     "transfer": {
       "confirm": {
-        "message": "Are you sure you want to transfer team \"{{team}}\" to \"{{user}}\"?",
-        "title": "Confirm Transfer"
+        "message": "Bạn có chắc chắn muốn chuyển quyền đội trưởng đội \"{{team}}\" sang cho \"{{user}}\" không?",
+        "title": "Xác nhận Chuyển quyền"
       }
     }
   },
   "label": {
-    "bio": "Biography",
-    "invite_code": "Invitation Code",
-    "kick": "Kick out",
-    "members": "Members",
-    "name": "Team Name",
-    "role": "Role",
-    "transfer": "Transfer"
+    "bio": "Tiểu sử",
+    "invite_code": "Mã Mời",
+    "kick": "Khai trừ",
+    "members": "Các Thành viên",
+    "name": "Tên Đội",
+    "role": "Vai trò",
+    "transfer": "Chuyển quyền"
   },
   "notification": {
     "create": {
       "success": {
-        "message": "{{team}} has been created, invite your teammates now!",
-        "title": "Successfully created team"
+        "message": "Đội {{team}} vừa được tạo, mời các đồng đội của bạn vào thôi nào!",
+        "title": "Tạo đội thành công"
       }
     },
     "disband": {
-      "success": "Successfully disbanded team"
+      "success": "Giải tán đội thành công"
     },
     "invite_code": {
-      "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "copied": "Mã mời đã được sao chép vào clipboard",
+      "updated": "Token mời của đội đã được cập nhật"
     },
     "join": {
-      "success": "Successfully joined team",
-      "wrong_invite_code": "Incorrect team invitation code"
+      "success": "Gia nhập đội thành công",
+      "wrong_invite_code": "Mã mời vào đội không đúng"
     },
     "kick": {
-      "success": "Successfully removed member"
+      "success": "Khai trừ thành viên thành công"
     },
     "leave": {
-      "success": "Successfully quit"
+      "success": "Rời đội thành công"
     },
     "token": {
-      "copied": "Team token copied to clipboard"
+      "copied": "Token của đội đã được sao chép vào clipboard"
     },
     "transfer": {
-      "success": "Successfully transferred team"
+      "success": "Chuyển quyền đội thành công"
     },
-    "updated": "Team information has been updated"
+    "updated": "Thông tin của đội đã được cập nhật"
   },
   "placeholder": {
-    "bio": "This team is lazy, nothing written"
+    "bio": "Đội này khá lười biếng, không có gì được viết ở đây cả"
   },
   "title": {
-    "index": "Team management"
+    "index": "Quản lý đội"
   }
 }
