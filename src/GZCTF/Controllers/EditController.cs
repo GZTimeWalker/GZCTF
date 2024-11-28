@@ -829,7 +829,6 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        await challengeRepository.LoadFlags(challenge, token);
         await challengeRepository.AddFlags(challenge, models, token);
 
         return Ok();
@@ -864,7 +863,6 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        await challengeRepository.LoadFlags(challenge, token);
         return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
     }
 }

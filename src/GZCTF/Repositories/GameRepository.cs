@@ -110,7 +110,7 @@ public class GameRepository(
                 LogLevel.Debug
             );
 
-            foreach (GameChallenge chal in await Context.GameChallenges.Include(c => c.Flags).Where(c => c.Game == game)
+            foreach (GameChallenge chal in await Context.GameChallenges.Where(c => c.Game == game)
                          .ToArrayAsync(token))
                 await challengeRepository.RemoveChallenge(chal, false, token);
 

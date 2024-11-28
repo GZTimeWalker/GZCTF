@@ -72,7 +72,8 @@ public class GameChallengeRepository(
 
     public async Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default)
     {
-        FlagContext? flag = challenge.Flags.FirstOrDefault(f => f.Id == flagId);
+        FlagContext? flag = await Context.FlagContexts
+            .FirstOrDefaultAsync(f => f.Challenge == challenge && f.Id == flagId, token);
 
         if (flag is null)
             return TaskStatus.NotFound;
@@ -81,10 +82,13 @@ public class GameChallengeRepository(
 
         Context.Remove(flag);
 
-        if (challenge.Flags.Count == 0)
-            challenge.IsEnabled = false;
-
         await SaveAsync(token);
+
+        if (await Context.FlagContexts.CountAsync(f => f.Challenge == challenge, token) == 0)
+        {
+            challenge.IsEnabled = false;
+            await SaveAsync(token);
+        }
 
         return TaskStatus.Success;
     }
