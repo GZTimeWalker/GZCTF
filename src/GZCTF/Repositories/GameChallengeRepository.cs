@@ -144,6 +144,7 @@ public class GameChallengeRepository(
         CancellationToken token = default)
     {
         await blobRepository.DeleteAttachment(challenge.Attachment, token);
+        await LoadFlags(challenge, token);
 
         if (purge && challenge.Type == ChallengeType.DynamicAttachment)
         {
