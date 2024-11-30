@@ -3,6 +3,21 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.0.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.3..v1.0.4) - 2024-11-30
+
+### ⛰️ Features
+
+- **(team)** allow transfer when team locked - ([e0cb62](https://github.com/GZTimeWalker/GZCTF/commit/e0cb62)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- cannot delete a challenge if any flag is present - ([36482b](https://github.com/GZTimeWalker/GZCTF/commit/36482b)) by **Steven He**
+
+### 🚀 Performances
+
+- improve flags addition and removal performance - ([4ca568](https://github.com/GZTimeWalker/GZCTF/commit/4ca568)) by **Steven He**
+
+---
 ## [1.0.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.2..v1.0.3) - 2024-11-26
 
 ### ⛰️ Features
@@ -11,6 +26,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - **(i18n)** use English for API document - ([39eb32](https://github.com/GZTimeWalker/GZCTF/commit/39eb32)) by **Steven He**
 - **(scoreboard)** record user emails & download only participants - ([014954](https://github.com/GZTimeWalker/GZCTF/commit/014954)) by **GZTime**
 - **(scoreboard)** export user email in scoreboard table - ([75d7e3](https://github.com/GZTimeWalker/GZCTF/commit/75d7e3)) by **GZTime**
+- **(style)** add useForeground hook for dynamic title color based on image - ([2003fe](https://github.com/GZTimeWalker/GZCTF/commit/2003fe)) by **GZTime**
 - use Scalar to replace Swagger - ([657fcc](https://github.com/GZTimeWalker/GZCTF/commit/657fcc)) by **Steven He**
 
 ### 🎨 Styling
