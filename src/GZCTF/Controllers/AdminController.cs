@@ -230,7 +230,10 @@ public class AdminController(
                 IdentityResult result = await userManager.CreateAsync(userInfo, user.Password);
 
                 if (result.Succeeded)
+                {
+                    users.Add((userInfo, user.TeamName));
                     continue;
+                }
 
                 userInfo = result.Errors.FirstOrDefault()?.Code switch
                 {
