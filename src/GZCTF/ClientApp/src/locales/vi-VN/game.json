@@ -139,8 +139,8 @@
     "score": "Điểm số",
     "score_formatter": "{value} điểm",
     "score_table": {
-      "all_teams": "Tất Cả Các team",
-      "rank_division": "Thứ hạng",
+      "all_teams": "Tất Cả Các Đội",
+      "rank_division": "Hạng",
       "rank_total": "Tổng",
       "score": "Điểm",
       "score_total": "Điểm",
@@ -151,7 +151,7 @@
     "traffic": "Traffic"
   },
   "notice": {
-    "blood": "Chúc mừng team {{team}} đã {{blood}} challenge {{chal}}.",
+    "blood": "Chúc mừng đội {{team}} đã {{blood}} thử thách {{chal}}.",
     "new_challenge": "Challenge mới [{{title}}] đã được mở.",
     "new_hint": "Gợi ý cho [{{title}}] đã được cập nhật."
   },
