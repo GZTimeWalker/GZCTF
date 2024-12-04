@@ -74,32 +74,32 @@
       "comment": "Cần thiết lập cả nền tảng và thử thách để thu thập lưu lượng",
       "title": "Không có thử thách nào được kích hoạt thu thập lưu lượng"
     },
-    "remaining_duration": "{{hours}}h left",
-    "remaining_time": "Remaining time",
+    "remaining_duration": "còn lại {{hours}} giờ",
+    "remaining_time": "Thời gian còn lại",
     "scoreboard_not_ready": {
-      "comment": "Patience is a virtue, please hold on…",
-      "title": "Loading challenges"
+      "comment": "Chờ chút nha…",
+      "title": "Đang tải challenges"
     },
-    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
-    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
-    "start_at": "Starts at",
-    "start_time": "Start Time",
+    "scoreboard_note": "Lưu ý: các đội với số điểm bằng nhau sẽ được xếp hạng dựa theo thời gian submit.",
+    "scoreboard_tip": "Mẹo: Xem danh sách challenges bằng phím mũi tên trái và phải!",
+    "start_at": "Bắt đầu lúc",
+    "start_time": "Thời gian bắt đầu",
     "team_view": {
-      "description": "Display cheating information by teams",
-      "label": "View as Team"
+      "description": "Hiển thị thông tin gian lận theo đội",
+      "label": "Xem với tư cách đội"
     },
-    "total_duration": "{{hours}}h in total",
-    "total_time": "Duration",
+    "total_duration": "tổng thời gian là: {{hours}} giờ",
+    "total_time": "Thời gian",
     "traffic": {
-      "delete_confirm": "Delete this traffic file?",
-      "deleted_all_confirm": "Delete all listed traffic?"
+      "delete_confirm": "Xóa traffic file này?",
+      "deleted_all_confirm": "Xóa tất cả traffic đã list?"
     },
     "writeup": {
-      "current": "Current Writeup",
-      "deadline_exceeded": "Submission deadline has passed",
+      "current": "Writeup hiện tại",
+      "deadline_exceeded": "Đã hết thời hạn submit",
       "instructions": {
-        "additional": "Additional Notes",
-        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
+        "additional": "Ghi chú khác",
+        "deadline": "Hãy submit writeup trước <1>{{datetime}}</1>, những writeup nộp muộn hay không nộp thì sẽ đều được tính là bỏ kết quả của giải.",
         "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
         "title": "Submission Instructions"
       },
