@@ -1,129 +1,129 @@
 {
   "avatar": {
-    "save": "Save Avatar",
-    "upload_failed": "Failed to update avatar",
-    "uploaded": "Avatar updated",
-    "uploading": "Uploading avatar"
+    "save": "Lưu ảnh đại diện",
+    "upload_failed": "Cập nhật ảnh đại diện thất bại",
+    "uploaded": "Ảnh đại diện đã được cập nhật",
+    "uploading": "Đang tải ảnh đại diện"
   },
   "button": {
-    "copy": "Copy to Clipboard",
-    "reset": "Reset",
-    "select_file": "Select File",
-    "try_again": "Try Again",
-    "uploading": "Uploading"
+    "copy": "Sao chép vào bộ nhớ tạm",
+    "reset": "Đặt lại",
+    "select_file": "Chọn tệp",
+    "try_again": "Thử lại",
+    "uploading": "Đang tải lên"
   },
   "content": {
     "404": {
-      "text": "A desolation, why is it here",
-      "title": "Page does not exist"
+      "text": "Một sự hoang vắng, tại sao lại ở đây",
+      "title": "Trang không tồn tại"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "slogan": "Hack cho vui, không vì lợi nhuận"
     },
     "color": {
       "custom": {
-        "description": "Select the base color you want to use",
-        "label": "Custom Base Color",
-        "placeholder": "Use default color"
+        "description": "Chọn màu cơ bản bạn muốn sử dụng",
+        "label": "Màu cơ bản tùy chỉnh",
+        "placeholder": "Sử dụng màu mặc định"
       },
       "palette": {
-        "description": "Color palette generated from the custom base color",
-        "label": "Color Palette"
+        "description": "Bảng màu được tạo từ màu cơ bản tùy chỉnh",
+        "label": "Bảng màu"
       },
       "provider": {
-        "custom": "Customized",
-        "default": "Default",
-        "description": "Select how the base color is determined",
-        "label": "Theme color provider",
-        "managed": "Admin Provided"
+        "custom": "Tùy chỉnh",
+        "default": "Mặc định",
+        "description": "Chọn cách màu cơ bản được xác định",
+        "label": "Cung cấp màu chủ đề",
+        "managed": "Do quản trị viên cung cấp"
       },
-      "title": "Customize Color"
+      "title": "Tùy chỉnh màu sắc"
     },
     "drop_zone": {
-      "content": "Drag and drop an image or click here to select {{type}}",
-      "limit": "Please select an image less than 3MB",
+      "content": "Kéo và thả một hình ảnh hoặc nhấp vào đây để chọn {{type}}",
+      "limit": "Vui lòng chọn hình ảnh có dung lượng dưới 3MB",
       "type": {
-        "avatar": "avatar",
+        "avatar": "ảnh đại diện",
         "poster": "poster"
       }
     },
-    "external_link": "External Link",
+    "external_link": "Liên kết bên ngoài",
     "home": {
-      "recent_games": "Recent Games"
+      "recent_games": "Các trò chơi gần đây"
     },
-    "no_data": "No data",
-    "report_error": "Please report this error to the administrator if you think this is a bug",
+    "no_data": "Không có dữ liệu",
+    "report_error": "Vui lòng báo cáo lỗi này cho quản trị viên nếu bạn nghĩ đây là một bug",
     "wider": {
-      "text": "Try to use a wider device",
-      "title": "Not wide enough"
+      "text": "Hãy thử sử dụng một thiết bị rộng hơn",
+      "title": "Không đủ rộng"
     }
   },
   "download": {
-    "failed": "Failed to download",
-    "started": "Downloading",
-    "success": "Downloaded"
+    "failed": "Tải xuống thất bại",
+    "started": "Đang tải xuống",
+    "success": "Đã tải xuống"
   },
   "email": {
     "sent": {
-      "message": "Please check your email and spam mail!",
-      "title": "Email Sent"
+      "message": "Vui lòng kiểm tra email và thư mục spam của bạn!",
+      "title": "Email đã được gửi"
     }
   },
   "error": {
-    "check_input": "Please check your input",
-    "empty": "Content can't be empty",
-    "encountered": "An error has occurred",
+    "check_input": "Vui lòng kiểm tra đầu vào của bạn",
+    "empty": "Nội dung không thể để trống",
+    "encountered": "Đã xảy ra lỗi",
     "file_invalid": {
-      "message": "Please check file format and size",
-      "title": "Failed to load file"
+      "message": "Vui lòng kiểm tra định dạng và kích thước tệp",
+      "title": "Không thể tải tệp"
     },
-    "invalid_username_or_password": "Incorrect username or password",
-    "no_change": "There seems to be no change",
-    "param_error": "Incorrect parameter, please check",
-    "param_invalid": "Invalid parameter",
-    "param_missing": "Missing parameter",
-    "param_unknown": "Unknown parameter",
-    "request_too_frequent": "Too many requests",
-    "try_later": "Please try again later",
-    "unknown": "Unknown error"
+    "invalid_username_or_password": "Tên người dùng hoặc mật khẩu không chính xác",
+    "no_change": "Có vẻ như không có sự thay đổi nào",
+    "param_error": "Tham số không chính xác, vui lòng kiểm tra lại",
+    "param_invalid": "Tham số không hợp lệ",
+    "param_missing": "Thiếu tham số",
+    "param_unknown": "Tham số không xác định",
+    "request_too_frequent": "Quá nhiều yêu cầu",
+    "try_later": "Vui lòng thử lại sau",
+    "unknown": "Lỗi không xác định"
   },
   "label": {
-    "challenge": "Challenge",
-    "flag": "flag",
-    "game": "Game",
+    "challenge": "Thử thách",
+    "flag": "cờ",
+    "game": "Trò chơi",
     "ip": "IP",
-    "team": "Team",
-    "time": "Time",
-    "user": "User"
+    "team": "Đội",
+    "time": "Thời gian",
+    "user": "Người dùng"
   },
   "modal": {
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "confirm_delete": "Confirm delete",
-    "confirm_update": "Confirm Update",
-    "delete": "Delete"
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "confirm_delete": "Xác nhận xóa",
+    "confirm_update": "Xác nhận cập nhật",
+    "delete": "Xóa"
   },
   "tab": {
-    "about": "About",
+    "about": "Giới thiệu",
     "account": {
-      "clean_cache": "Clear Cache",
-      "login": "Login",
-      "logout": "Logout",
-      "profile": "Profile"
+      "clean_cache": "Xóa bộ nhớ đệm",
+      "login": "Đăng nhập",
+      "logout": "Đăng xuất",
+      "profile": "Hồ sơ"
     },
-    "admin": "Admin",
-    "game": "Games",
-    "home": "Home",
-    "post": "Posts",
-    "team": "Team",
+    "admin": "Quản trị viên",
+    "game": "Trò chơi",
+    "home": "Trang chủ",
+    "post": "Bài đăng",
+    "team": "Đội",
     "theme": {
-      "dark": "dark mode",
-      "light": "light mode",
-      "switch_to": "Switch to {{theme}}"
+      "dark": "chế độ tối",
+      "light": "chế độ sáng",
+      "switch_to": "Chuyển sang {{theme}}"
     }
   },
   "title": {
-    "404": "The Nowhere",
-    "about": "About"
+    "404": "Hư vô",
+    "about": "Giới thiệu"
   }
 }

@@ -1,105 +1,105 @@
 {
   "button": {
-    "challenges": "Challenges",
+    "challenges": "Thử thách",
     "delete": {
-      "all_traffic": "Delete all listed traffic"
+      "all_traffic": "Xóa tất cả lưu lượng đã liệt kê"
     },
     "download": {
-      "all_traffic": "Download all listed traffic",
-      "scoreboard": "Scoreboard",
-      "submissionsheet": "Submissions"
+      "all_traffic": "Tải xuống tất cả lưu lượng đã liệt kê",
+      "scoreboard": "Bảng điểm",
+      "submissionsheet": "Bài nộp"
     },
-    "finished": "Game Ended",
-    "hide_solved": "Hide Solved",
-    "join": "Join",
-    "leave": "Leave Game",
-    "login_required": "Please Login",
-    "scoreboard": "Scoreboard",
-    "submit_writeup": "Submit Writeup",
+    "finished": "Trò chơi đã kết thúc",
+    "hide_solved": "Ẩn các thử thách đã giải",
+    "join": "Tham gia",
+    "leave": "Rời trò chơi",
+    "login_required": "Vui lòng đăng nhập",
+    "scoreboard": "Bảng điểm",
+    "submit_writeup": "Nộp Writeup",
     "writeup": {
-      "upload": "Submit Writeup",
-      "uploading": "Uploading..."
+      "upload": "Tải Writeup",
+      "uploading": "Đang tải lên..."
     }
   },
   "content": {
     "all_solved": {
-      "comment": "Perhaps more difficult challenges are waiting for you...",
-      "title": "All challenges were solved!"
+      "comment": "Có thể những thử thách khó khăn hơn đang chờ bạn...",
+      "title": "Tất cả các thử thách đã được giải quyết!"
     },
-    "duration": "{{hours}} hour(s)",
-    "end_at": "Ends at",
-    "end_time": "End Time",
-    "game_ended": "Ended",
-    "game_lasts_long": "The game will last for a long time",
+    "duration": "{{hours}} giờ",
+    "end_at": "Kết thúc lúc",
+    "end_time": "Thời gian kết thúc",
+    "game_ended": "Đã kết thúc",
+    "game_lasts_long": "Trò chơi sẽ kéo dài lâu",
     "hide_container_events": {
-      "description": "Hide container creation/destroying events",
-      "label": "Hide container events"
+      "description": "Ẩn các sự kiện tạo/hủy container",
+      "label": "Ẩn sự kiện container"
     },
     "join": {
-      "confirm": "Confirm Registration",
+      "confirm": "Xác nhận đăng ký",
       "content": [
-        "Are you sure you want to register for this game?",
-        "After successfully registering for the game and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
-        "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
+        "Bạn có chắc chắn muốn đăng ký tham gia trò chơi này không?",
+        "Sau khi đăng ký thành công và qua xét duyệt, đội sẽ bị khóa và <strong>bạn sẽ không thể xóa bất kỳ thành viên nào khỏi đội.</strong> Đội sẽ được mở khóa sau khi trận đấu kết thúc hoặc khi yêu cầu tham gia bị từ chối.",
+        "Giới hạn về số lượng người chơi ám chỉ số thành viên đã quyết định tham gia như một phần của đội cụ thể, <strong>dù bạn chọn đội nào để chơi.</strong>"
       ],
       "invite_code": {
-        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
-        "label": "Please enter the invitation code"
+        "description": "Trò chơi này chỉ dành cho người được mời. Để tham gia, vui lòng nhập mã mời.",
+        "label": "Vui lòng nhập mã mời"
       },
       "division": {
-        "description": "This game has multiple division available. Please select your division.",
-        "label": "Select Division"
+        "description": "Trò chơi này có nhiều bảng. Vui lòng chọn bảng của bạn.",
+        "label": "Chọn bảng"
       },
       "team": {
-        "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
-        "label": "Select your team"
+        "description": "Vui lòng chọn đội bạn muốn tham gia trong trò chơi này. Điều này không thể thay đổi sau khi yêu cầu tham gia được phê duyệt.",
+        "label": "Chọn đội của bạn"
       },
-      "title": "Registration Information"
+      "title": "Thông tin đăng ký"
     },
-    "joined_status": "<strong>{{count}}</strong> teams have already joined",
+    "joined_status": "<strong>{{count}}</strong> đội đã tham gia",
     "leave": {
-      "confirm": "Confirm quitting",
+      "confirm": "Xác nhận rời",
       "content": [
-        "Are you sure you want to quit this game?",
-        "If the number of team members is zero after you quit, the team's participation data will be deleted."
+        "Bạn có chắc chắn muốn rời khỏi trò chơi này không?",
+        "Nếu số lượng thành viên trong đội là không sau khi bạn rời đi, dữ liệu tham gia của đội sẽ bị xóa."
       ]
     },
-    "no_challenge": "Ouch! No challenges available for this game.",
+    "no_challenge": "Ối! Không có thử thách nào cho trò chơi này.",
     "no_cheat": {
-      "comment": "It looks like everyone played fair!",
-      "title": "No cheating detected yet"
+      "comment": "Có vẻ như mọi người đều chơi công bằng!",
+      "title": "Chưa phát hiện gian lận"
     },
-    "no_notice": "Nothing here.",
+    "no_notice": "Không có gì ở đây.",
     "no_traffic": {
-      "comment": "Both platform and challenge need to be set up to enable capture",
-      "title": "No challenge has traffic capture enabled"
+      "comment": "Cần thiết lập cả nền tảng và thử thách để thu thập lưu lượng",
+      "title": "Không có thử thách nào được kích hoạt thu thập lưu lượng"
     },
-    "remaining_duration": "{{hours}}h left",
-    "remaining_time": "Remaining time",
+    "remaining_duration": "còn lại {{hours}} giờ",
+    "remaining_time": "Thời gian còn lại",
     "scoreboard_not_ready": {
-      "comment": "Patience is a virtue, please hold on…",
-      "title": "Loading challenges"
+      "comment": "Chờ chút nha…",
+      "title": "Đang tải challenges"
     },
-    "scoreboard_note": "Note: teams with same score are ranked by submission time.",
-    "scoreboard_tip": "Tip: Scroll through the list of challenges with left and right arrow!",
-    "start_at": "Starts at",
-    "start_time": "Start Time",
+    "scoreboard_note": "Lưu ý: các đội với số điểm bằng nhau sẽ được xếp hạng dựa theo thời gian submit.",
+    "scoreboard_tip": "Mẹo: Xem danh sách challenges bằng phím mũi tên trái và phải!",
+    "start_at": "Bắt đầu lúc",
+    "start_time": "Thời gian bắt đầu",
     "team_view": {
-      "description": "Display cheating information by teams",
-      "label": "View as Team"
+      "description": "Hiển thị thông tin gian lận theo đội",
+      "label": "Xem với tư cách đội"
     },
-    "total_duration": "{{hours}}h in total",
-    "total_time": "Duration",
+    "total_duration": "tổng thời gian là: {{hours}} giờ",
+    "total_time": "Thời gian",
     "traffic": {
-      "delete_confirm": "Delete this traffic file?",
-      "deleted_all_confirm": "Delete all listed traffic?"
+      "delete_confirm": "Xóa traffic file này?",
+      "deleted_all_confirm": "Xóa tất cả traffic đã list?"
     },
     "writeup": {
-      "current": "Current Writeup",
-      "deadline_exceeded": "Submission deadline has passed",
+      "current": "Writeup hiện tại",
+      "deadline_exceeded": "Đã hết thời hạn submit",
       "instructions": {
-        "additional": "Additional Notes",
-        "deadline": "Please submit the writeup before <1>{{datetime}}</1>, overdue or non-submissions will be considered as giving up the results of this game.",
+        "additional": "Ghi chú khác",
+        "deadline": "Hãy submit writeup trước <1>{{datetime}}</1>, những writeup nộp muộn hay không nộp thì sẽ đều được tính là bỏ kết quả của giải.",
         "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
         "title": "Submission Instructions"
       },

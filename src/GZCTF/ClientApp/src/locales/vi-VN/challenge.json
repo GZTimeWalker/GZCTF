@@ -6,14 +6,14 @@
   },
   "button": {
     "download": {
-      "attachment": "Download Attachment"
+      "attachment": "Tải tệp đính kèm"
     },
     "instance": {
-      "create": "Create",
-      "destroy": "Destroy",
-      "extend": "Extend"
+      "create": "Tạo",
+      "destroy": "Xóa",
+      "extend": "Gia hạn"
     },
-    "submit_flag": "Submit Flag"
+    "submit_flag": "Nộp cờ"
   },
   "category": {
     "ai": "AI security",
@@ -23,7 +23,7 @@
     "hardware": "Hardware security",
     "misc": "Miscellaneous",
     "mobile": "Mobile security",
-    "osint": "Open-source intelligence",
+    "osint": "OSINT",
     "pentest": "Penetration testing",
     "ppc": "Programming",
     "pwn": "Binary exploitation",
@@ -31,148 +31,148 @@
     "web": "Web security"
   },
   "content": {
-    "already_solved": "This challenge has been solved",
+    "already_solved": "Thử thách này đã được giải",
     "flag_placeholders": [
-      "To be, or not to be, flag is the question",
-      "All that glisters is not flag",
-      "The flag, dear Brutus, is not in our stars",
-      "Better three hours too soon than a flag too late",
-      "My kingdom for a flag",
-      "Shall I compare thee to a flag?",
-      "Put flag in thy pocket, and be gone",
-      "Here's flag: I drink to thee",
-      "For never was a flag of more woe",
-      "For where thou art, there is the flag",
-      "My flag is in my heart, not in my head",
-      "Fearless minds climb soonest unto flag",
-      "But, for my own part, it was flag to me",
-      "What's mine is flag and what's yours is mine",
-      "This blessed plot, this earth, this realm, this flag",
-      "The ripest flag first falls",
-      "One touch of flag makes the whole world kin",
-      "Better a witty flag than a foolish wit",
-      "Even if there are a thousand kinds of flags, who else can I talk to?",
-      "The flag is still shining in an unknown area.",
-      "May I ask where the flag is?"
+      "Có hay không, flag là câu hỏi",
+      "Không phải tất cả những gì lấp lánh đều là flag",
+      "Flag, Brutus thân mến, không phải do số phận quyết định",
+      "Sớm ba giờ còn hơn muộn một flag",
+      "Ta sẽ đổi cả vương quốc để có một flag",
+      "Ta có nên so sánh ngươi với một flag?",
+      "Cất flag vào túi và đi thôi",
+      "Đây là flag: Ta uống chúc mừng ngươi",
+      "Chưa bao giờ có flag nào đầy đau khổ như thế",
+      "Nơi nào có ngươi, nơi đó có flag",
+      "Flag của ta ở trong tim, không phải trong đầu",
+      "Trí óc dũng cảm sẽ tìm ra flag nhanh nhất",
+      "Với ta, đó là flag",
+      "Của ta là flag, của ngươi cũng là của ta",
+      "Mảnh đất thiêng liêng này, cõi này, chính là flag",
+      "Flag chính chắn sẽ rụng đầu tiên",
+      "Một lần chạm vào flag, cả thế giới sẽ trở thành anh em",
+      "Flag thông minh còn hơn sự khờ dại",
+      "Kể cả có nghìn loại flag, thì ai có thể nói chuyện với tôi?",
+      "Flag vẫn đang tỏa sáng ở hư vô",
+      "Xin hỏi flag ở đâu?"
     ],
     "instance": {
       "actions": {
-        "count_down": "Remaining: ",
-        "note": "You can extend it {{min}} mins before expires."
+        "count_down": "Thời gian còn lại:",
+        "note": "Bạn có thể gia hạn trước khi hết hạn {{min}} phút."
       },
       "entry": {
         "description": {
-          "anchor": "Get proxy client",
-          "proxy": "WebSocket proxy mode has been enabled."
+          "anchor": "Lấy client proxy",
+          "proxy": "Chế độ proxy WebSocket đã được kích hoạt."
         },
-        "label": "Instance Info"
+        "label": "Thông tin Instance"
       },
       "no_container": {
-        "message": "This challenge requires creating an instance",
-        "note": "Instance will live for {{min}} mins."
+        "message": "Thử thách này yêu cầu tạo một instance",
+        "note": "Instance sẽ tồn tại trong {{min}} phút"
       },
       "open": {
-        "client": "Open in client",
-        "web": "Open as web page"
+        "client": "Mở trong client",
+        "web": "Mở dưới dạng trang web"
       },
       "test": {
-        "no_container": "Test container is not running"
+        "no_container": "Container thử nghiệm không hoạt động"
       }
     },
-    "solved": "<1>{{solved}}</1> SOLVES",
+    "solved": "{{solved}} SOLVES",
     "wrong_flag_hints": [
-      "Where there's a will, there's a flag.",
-      "To be, or not to be, that is not the flag.",
-      "Pride hurts, flag benefits.",
-      "Failure teaches flags.",
-      "No, no, it's not this flag.",
-      "Eyes wide open, but the flag is not here.",
-      "Don't be impetuous, think carefully.",
-      "Searching everywhere, this is not the answer.",
-      "Superficially looking, you haven't found the flag.",
-      "The answer should be right at your fingertips.",
-      "Careful planning and consideration, flag is not that simple.",
-      "The flag is really well hidden!",
-      "Is it loneliness that crushes you when your luck is bad?",
-      "Too excited! You still need to learn to think more calmly.",
-      "Hit a wall, could it be that you have reached the peak?",
-      "The years are peaceful, but the flag has gone far away.",
-      "The shallow water has dried up, the flag is still not found.",
-      "Where this flag can be found?",
-      "Beautiful thumbnails like smoke. Where did the flag go?",
-      "The quagmire is deep in depth, and the flag is still not found.",
-      "All is quiet, only the error prompt of the flag is here.",
-      "The correct flag is still not obtained.",
-      "The winds are bitter and cold, and the flag is still not on your hand."
+      "Có chí thì có flag.",
+      "Tồn tại hay không tồn tại, đó không phải là flag.",
+      "Kiêu ngạo chỉ làm đau, còn flag mang lại lợi ích.",
+      "Thất bại là bài học để tìm flag.",
+      "Không, không phải flag này.",
+      "Mắt mở rộng nhưng vẫn không thấy flag.",
+      "Đừng vội vàng, hãy suy nghĩ kỹ càng.",
+      "Tìm khắp nơi, nhưng đây không phải là đáp án.",
+      "Nhìn qua loa, bạn vẫn chưa tìm ra flag.",
+      "Câu trả lời ở ngay trong tầm tay bạn.",
+      "Lên kế hoạch cẩn thận, flag không đơn giản như vậy đâu.",
+      "Flag thật sự được giấu rất kỹ!",
+      "Có phải sự cô đơn đang đè nặng bạn khi vận xui đến?",
+      "Quá hưng phấn! Bạn vẫn cần học cách suy nghĩ bình tĩnh hơn.",
+      "Đụng phải bức tường, liệu bạn đã đạt tới đỉnh cao?",
+      "Những năm tháng bình yên, nhưng flag đã đi xa.",
+      "Nước cạn rồi, nhưng vẫn chưa tìm thấy flag.",
+      "Flag này có thể tìm thấy ở đâu?",
+      "Các ảnh thu nhỏ đẹp như khói. Flag đã đi đâu rồi?",
+      "Lầy lội quá sâu, flag vẫn chưa tìm thấy.",
+      "Mọi thứ đều im ắng, chỉ còn lại thông báo lỗi về flag.",
+      "Flag đúng vẫn chưa được nhận.",
+      "Gió lạnh và buốt, flag vẫn chưa nằm trong tay bạn."
     ]
   },
   "file_type": {
-    "local": "Self Hosted",
-    "none": "None",
+    "local": "Tự lưu trữ",
+    "none": "Không có",
     "remote": "Remote Url"
   },
   "notification": {
     "flag": {
       "accepted": {
-        "ended": "The game has ended, submissions will not be scored",
-        "message": "The scoreboard will be updated later.",
-        "title": "flag correct"
+        "ended": "Trò chơi đã kết thúc, các lượt nộp không được tính điểm.",
+        "message": "Bảng điểm sẽ được cập nhật sau.",
+        "title": "Cờ chính xác"
       },
-      "empty": "The flag cannot be empty",
+      "empty": "Không thể để cờ trống",
       "submitted": {
-        "message": "Please wait for flag check...",
-        "title": "flag submitted"
+        "message": "Vui lòng đợi kiểm tra cờ...",
+        "title": "cờ đã nộp"
       },
       "unknown": {
-        "message": "Please contact the admin to confirm the submission: {{id}}",
-        "title": "flag status unknown"
+        "message": "Vui lòng liên hệ với quản trị viên để xác nhận việc nộp: {{id}}",
+        "title": "Trạng thái cờ không rõ"
       },
-      "wrong": "flag wrong"
+      "wrong": "Cờ sai"
     },
     "instance": {
       "copied": {
-        "entry": "Instance entry copied to clipboard",
+        "entry": "Đã sao chép thông tin Instance vào bộ nhớ tạm",
         "url": {
-          "message": "Please use client to access",
-          "title": "Instance entry copied to clipboard"
+          "message": "Vui lòng sử dụng client để truy cập",
+          "title": "Thông tin Instance đã được sao chép vào bộ nhớ tạm"
         }
       },
       "created": {
-        "message": "Please note the instance expiration time",
-        "title": "Instance created"
+        "message": "Vui lòng lưu ý thời gian hết hạn của Instance",
+        "title": "Instance đã được tạo"
       },
       "destroyed": {
-        "message": "You can recreate the instance",
-        "title": "Instance has been destroyed"
+        "message": "Bạn có thể tạo lại instance",
+        "title": "Instance đã bị hủy"
       },
       "extend": {
         "note": {
-          "message": "Please extend lifetime or destroy instance in time",
-          "title": "Instance is due"
+          "message": "Vui lòng gia hạn hoặc hủy instance kịp thời",
+          "title": "Instance đã hết hạn"
         },
         "success": {
-          "message": "Please note the instance expiration time",
-          "title": "Instance’s lifetime has been extended"
+          "message": "Vui lòng lưu ý thời gian hết hạn của instance",
+          "title": "Thời gian của instance đã được gia hạn"
         }
       }
     }
   },
   "type": {
     "dynamic_attachment": {
-      "desrc": "Distribute attachments by team, ensuring that the number of attachments is greater than the number of teams",
-      "label": "Dynamic Attachments"
+      "desrc": "Phân phối tệp đính kèm theo nhóm, đảm bảo số lượng tệp đính kèm lớn hơn số nhóm",
+      "label": "Tệp đính kèm động"
     },
     "dynamic_container": {
-      "desrc": "Automatic flag generation, unique for each team",
-      "label": "Dynamic Container"
+      "desrc": "Tạo cờ tự động, duy nhất cho mỗi đội",
+      "label": "Container động"
     },
     "static_attachment": {
-      "desrc": "Shared attachments, any flag can be submitted",
-      "label": "Static Attachments"
+      "desrc": "Đính kèm chia sẻ, bất kỳ cờ nào cũng có thể được nộp",
+      "label": "Tệp đính kèm tĩnh"
     },
     "static_container": {
-      "desrc": "Shared containers, any flag can be submitted",
-      "label": "Static Container"
+      "desrc": "Shared containers, bất kỳ cờ nào cũng có thể được nộp",
+      "label": "Container tĩnh"
     }
   }
 }

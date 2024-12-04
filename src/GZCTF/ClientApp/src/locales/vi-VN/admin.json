@@ -147,8 +147,8 @@
         },
         "score": "Điểm",
         "service_port": {
-          "description": "Port of container services",
-          "label": "Service Port"
+          "description": "Cổng dịch vụ của container.",
+          "label": "Cổng dịch vụ."
         },
         "solve_count": "Số bài đã giải",
         "storage_limit": {
@@ -157,8 +157,8 @@
         },
         "title": "Tiêu đề",
         "traffic_capture": {
-          "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",
-          "label": "Enable Traffic Capture"
+          "description": "Ghi lại lưu lượng khi đội giải các thử thách. Cần bật proxy nền tảng.",
+          "label": "Bật ghi lại lưu lượng."
         },
         "type": {
           "description": "Không thể thay đổi một khi đã tạo",
@@ -171,331 +171,331 @@
           "label": "Cho phép mà không cần Đánh giá"
         },
         "container_limit": {
-          "description": "Containers shared by one team (0 = unlimited)",
-          "label": "Team Container Limit"
+          "description": "Số lượng container được chia sẻ bởi một đội (0 = không giới hạn).",
+          "label": "Giới hạn container của đội."
         },
-        "content": "Game Details",
-        "delete": "Are you sure you want to delete game {{name}}?",
+        "content": "Chi tiết trò chơi.",
+        "delete": "Bạn có chắc muốn xóa trò chơi {{name}}?",
         "divisions": {
-          "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
-          "label": "List of Participating Divisions"
+          "description": "Thêm các bảng để kích hoạt bảng điểm theo bảng, để trống để tắt.",
+          "label": "Danh sách nhóm tham gia."
         },
-        "end_date": "End Date",
-        "end_time": "End Time",
+        "end_date": "Ngày kết thúc.",
+        "end_time": "Thời gian kết thúc.",
         "invite_code": {
-          "description": "Leave empty for no invitation code",
-          "label": "Invitation Code"
+          "description": "Để trống nếu không có mã mời.",
+          "label": "Mã mời."
         },
         "member_limit": {
-          "description": "0 means unlimited members of team",
-          "label": "Maximum Team Member"
+          "description": "0 có nghĩa là không giới hạn số lượng thành viên trong đội.",
+          "label": "Số thành viên tối đa trong đội."
         },
         "poster": "Poster",
         "practice_mode": {
-          "description": "View challenges after the game ends",
-          "label": "Practice Mode"
+          "description": "Xem các thử thách sau khi trò chơi kết thúc.",
+          "label": "Chế độ luyện tập."
         },
-        "start_date": "Start Date",
-        "start_time": "Start Time",
+        "start_date": "Ngày bắt đầu.",
+        "start_time": "Thời gian bắt đầu.",
         "summary": {
-          "description": "Will be displayed in the game list",
-          "label": "Summary"
+          "description": "Sẽ được hiển thị trong danh sách trò chơi.",
+          "label": "Tóm tắt."
         },
         "title": {
-          "description": "Excessive length may affect the display effect",
-          "label": "Title"
+          "description": "Độ dài quá mức có thể ảnh hưởng đến hiển thị.",
+          "label": "Tiêu đề."
         },
         "writeup_deadline": {
-          "description": "Hours to submit writeups after game ends",
-          "label": "Writeup Deadline"
+          "description": "Số giờ để nộp bài viết sau khi trò chơi kết thúc.",
+          "label": "Hạn nộp Writeup."
         },
-        "writeup_instruction": "Writeup Instructions",
+        "writeup_instruction": "Cấu trúc Writeup.",
         "writeup_required": {
-          "description": "Enable writeup submission",
-          "label": "Writeup Required"
+          "description": "Bật nộp writeup",
+          "label": "Bắt buộc có Writeup"
         }
       },
       "notices": {
-        "delete": "Are you sure you want to delete this notice?",
+        "delete": "Bạn có chắc muốn xóa thông báo này?",
         "empty": {
-          "description": "Click on the top right button to create a new notice",
-          "title": "No notice yet"
+          "description": "Nhấn nút ở góc trên bên phải để tạo thông báo mới.",
+          "title": "Chưa có thông báo nào."
         }
       },
       "review": {
-        "edit_division": "Edit Team Division",
+        "edit_division": "Chỉnh sửa nhóm đội.",
         "empty": {
           "description": "On the way... Don't worry!",
-          "title": "Ouch! No teams have joined this game yet"
+          "title": "Ối! Chưa có đội nào tham gia trò chơi này."
         },
         "participation": {
-          "joined": "Joined",
-          "not_joined": "Not Registered",
-          "stats": "{{count}}/{{total}} joined",
-          "update": "Set this team's status to: \"{{status}}\"?"
+          "joined": "Đã tham gia.",
+          "not_joined": "Chưa đăng ký.",
+          "stats": "{{count}}/{{total}} đã tham gia.",
+          "update": "Đặt trạng thái của đội này thành: \"{{status}}\"?"
         }
       },
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> games displayed",
+      "stats": "<1>{{current}}</1> trên <1>{{total}}</1> trò chơi được hiển thị.",
       "writeups": {
         "empty": {
-          "description": "New writeups will appear here",
-          "title": "Ouch! No writeup yet"
+          "description": "Các writeups mới sẽ xuất hiện ở đây.",
+          "title": "Ối! Chưa có writeup nào"
         },
-        "pdf_fallback": "Failed to load PDF"
+        "pdf_fallback": "Không thể tải PDF."
       }
     },
     "instances": {
-      "destroy": "Are you sure you want to destroy instance {{name}}?",
-      "note": "Note: Container statistics do not include admin test container and destroyed container",
-      "stats": " <1>{{count}}</1> distributed instances in total"
+      "destroy": "Bạn có chắc muốn hủy instance  {{name}}?",
+      "note": "Lưu ý: Thống kê container không bao gồm container thử nghiệm của admin và container đã bị xoá.",
+      "stats": "Tổng cộng <1>{{count}}</1> instances đã được phân phối."
     },
-    "markdown_inline_support": "Styling with inline Markdown is supported",
-    "markdown_support": "Styling with Markdown is supported",
-    "nothing_found": "Nothing found",
+    "markdown_inline_support": "Hỗ trợ định dạng Markdown nội tuyến.",
+    "markdown_support": "Hỗ trợ định dạng Markdown.",
+    "nothing_found": "Không tìm thấy gì.",
     "settings": {
       "account": {
         "allow_register": {
-          "description": "Allow users to register new accounts",
-          "label": "Allow Register"
+          "description": "Cho phép người dùng đăng ký tài khoản mới.",
+          "label": "Cho phép đăng ký."
         },
         "auto_active": {
-          "description": "Whether to activate users after registered",
-          "label": "Auto-activate"
+          "description": "Có kích hoạt tài khoản người dùng ngay sau khi đăng ký không.",
+          "label": "Tự động kích hoạt."
         },
         "email_confirmation_required": {
-          "description": "Whether user verification email is required",
-          "label": "Email Verification Required"
+          "description": "Yêu cầu email xác minh người dùng.",
+          "label": "Yêu cầu xác minh email."
         },
         "email_domain_list": {
-          "description": "List of allowed email domains to register. Separate multiple domains with commas, leave empty to disable.",
-          "label": "Email Domain Whitelist"
+          "description": "Danh sách các miền email được phép đăng ký. Ngăn cách nhiều miền bằng dấu phẩy, để trống để tắt.",
+          "label": "Danh sách trắng miền email."
         },
-        "title": "Account Policy",
+        "title": "Chính sách tài khoản.",
         "use_captcha": {
-          "description": "Verify on login, registration and recovery",
-          "label": "Enable CAPTCHA"
+          "description": "Xác minh khi đăng nhập, đăng ký và khôi phục.",
+          "label": "Bật CAPTCHA.\n\n"
         }
       },
       "container": {
         "auto_destroy": {
-          "description": "Whether to auto-destroy the old instance when meets the limit",
-          "label": "Auto-destroy Old Instances"
+          "description": "Tự động xoá instance cũ khi đạt giới hạn.",
+          "label": "Tự động xoá instance bản cũ."
         },
         "default_lifetime": {
-          "description": "The default lifetime of the container",
-          "label": "Default Lifetime (min)"
+          "description": "Thời gian tồn tại mặc định của container.",
+          "label": "Thời gian mặc định (phút)."
         },
         "extension_duration": {
-          "description": "The duration of each renewal of the container",
-          "label": "Renewal Duration (min)"
+          "description": "Thời gian gia hạn cho mỗi lần gia hạn container.",
+          "label": "Thời gian gia hạn (phút)."
         },
         "renewal_window": {
-          "description": "The time window before the container expires to renew",
-          "label": "Renewal Window (min)"
+          "description": "Khoảng thời gian trước khi container hết hạn để gia hạn.",
+          "label": "Khung thời gian gia hạn (phút)"
         },
-        "title": "Container Policy"
+        "title": "Chính sách container."
       },
       "platform": {
         "color": {
-          "description": "Custom color for the platform",
-          "label": "Platform Color"
+          "description": "Màu sắc tùy chỉnh cho nền tảng.",
+          "label": "Màu nền tảng."
         },
         "color_palette": {
-          "description": "Color palette generated from the custom color",
-          "label": "Color Palette"
+          "description": "Bảng màu được tạo từ màu tùy chỉnh.",
+          "label": "Bảng màu."
         },
         "description": {
-          "description": "Site description provided for SEO",
-          "label": "Site Description"
+          "description": "Mô tả trang web cung cấp cho SEO.",
+          "label": "Mô tả trang web."
         },
         "footer": {
-          "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
-          "label": "Footer"
+          "description": "Hỗ trợ cú pháp Markdown, <mbr/> sẽ được thay bằng <br/> trên thiết bị di động.",
+          "label": "Chân trang."
         },
         "logo": {
-          "description": "Used for favicon and the logo on pages",
-          "label": "Platform Logo"
+          "description": "Dùng cho favicon và logo trên các trang.",
+          "label": "Logo nền tảng."
         },
         "name": {
-          "description": "Platform name will be displayed with ::CTF",
-          "label": "Platform Name"
+          "description": "Tên nền tảng sẽ được hiển thị với ::CTF.",
+          "label": "Tên nền tảng."
         },
         "slogan": {
-          "description": "Will be displayed at the top of the page",
-          "label": "Platform Slogan"
+          "description": "Sẽ được hiển thị ở đầu trang.",
+          "label": "Khẩu hiệu nền tảng."
         },
-        "title": "Platform Settings"
+        "title": "Cài đặt nền tảng."
       }
     },
-    "show_all": "Show All",
+    "show_all": "Hiển thị tất cả.",
     "teams": {
-      "delete": "Are you sure you want to delete team {{name}} ?",
-      "lock": "Are you sure you want to {{action}} team {{name}} ?",
-      "locked": "Locked",
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> teams displayed",
-      "unlocked": "Unlocked"
+      "delete": "Bạn có chắc muốn xóa đội {{name}} không?",
+      "lock": "Bạn có chắc muốn {{action}} đội {{name}} không?",
+      "locked": "Đã khóa.",
+      "stats": "<1>{{current}}</1> trên tổng số <1>{{total}}</1> đội được hiển thị.",
+      "unlocked": "Đã mở khóa."
     },
     "users": {
-      "delete": "Are you sure you want to delete user {{name}} ?",
+      "delete": "Bạn có chắc muốn xóa người dùng {{name}} không?",
       "reset": {
-        "content": "The user password has been reset, <strong>this password will only show up once</strong>, please save it properly.",
-        "message": "Are you sure you want to reset the password for {{name}}?",
-        "title": "Reset password for {{name}}"
+        "content": "Mật khẩu của người dùng đã được đặt lại, <strong>mật khẩu này chỉ hiển thị một lần</strong>, vui lòng giữ cẩn thận.",
+        "message": "Bạn có chắc muốn đặt lại mật khẩu cho {{name}} không?",
+        "title": "Đặt lại mật khẩu cho {{name}}."
       },
-      "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
+      "stats": "<1>{{current}}</1> trên tổng số <1>{{total}}</1> người dùng được hiển thị."
     }
   },
   "label": {
     "games": {
-      "hide": "Hide",
-      "summary": "Summary"
+      "hide": "Ẩn.",
+      "summary": "Tóm tắt."
     },
     "instances": {
-      "container_id": "Container ID",
+      "container_id": "ID Container.",
       "entry": "Instance Entry",
-      "life_cycle": "Lifecycle"
+      "life_cycle": "Vòng đời."
     },
     "logs": {
-      "message": "Message",
-      "status": "Status"
+      "message": "Tin nhắn.",
+      "status": "Trạng thái."
     },
     "teams": {
-      "bio": "Bio",
-      "members": "Members"
+      "bio": "Tiểu sử.",
+      "members": "Thành viên."
     },
     "users": {
-      "active": "Activate",
-      "last_visit": "Last Visit",
-      "role": "User Roles"
+      "active": "Kích hoạt.",
+      "last_visit": "Lần truy cập cuối.",
+      "role": "Vai trò người dùng."
     }
   },
   "notification": {
     "games": {
       "challenges": {
         "attachment": {
-          "no_selected": "Please select at least one file",
-          "updated": "Attachment updated"
+          "no_selected": "Vui lòng chọn ít nhất một file.",
+          "updated": "Attachment đã được cập nhật."
         },
-        "created": "Challenge created",
-        "deleted": "Challenge deleted",
+        "created": "Thử thách đã được tạo.",
+        "deleted": "Thử thách đã bị xóa.",
         "flag": {
-          "copied": "Flag copied to clipboard",
-          "created": "Flag created",
-          "deleted": "Flag deleted"
+          "copied": "Cờ đã được sao chép vào khay nhớ tạm.",
+          "created": "Cờ đã được tạo.",
+          "deleted": "Cờ đã bị xóa."
         },
         "flag_template": {
-          "updated": "Flag template updated"
+          "updated": "Mẫu cờ đã được cập nhật."
         },
         "preview": {
-          "attachment_downloaded": "Pretend the attachment has been downloaded!",
-          "flag_submitted": "Flag submitted!"
+          "attachment_downloaded": "Giả sử rằng tệp đính kèm đã được tải xuống!",
+          "flag_submitted": "Cờ đã được nộp!"
         },
-        "updated": "Challenge updated"
+        "updated": "Thử thách đã được cập nhật."
       },
-      "created": "Game created",
+      "created": "Trò chơi đã được tạo.",
       "info": {
-        "accept_count_updated": "AC counter updated",
-        "deleted": "Game deleted",
-        "info_updated": "Game updated",
+        "accept_count_updated": "AC counter đã được cập nhật.",
+        "deleted": "Trò chơi đã bị xóa.",
+        "info_updated": "Trò chơi đã được cập nhật.",
         "poster": {
-          "upload_failed": "Post upload failed",
-          "uploaded": "Poster successfully uploaded",
-          "uploading": "Uploading poster..."
+          "upload_failed": "Tải poster lên thất bại.",
+          "uploaded": "Poster đã được tải lên thành công.",
+          "uploading": "Đang tải lên Poster..."
         },
-        "public_key_copied": "Public key copied to clipboard"
+        "public_key_copied": "Public key đã được sao chép vào clipboard."
       },
       "instances": {
-        "created": "Instance created",
-        "deleted": "Instances destroyed"
+        "created": "Instance đã được tạo.",
+        "deleted": "Instances đã bị xóa."
       },
-      "no_title_time": "Please enter title and time of the game",
+      "no_title_time": "Vui lòng nhập title và time của game.",
       "notices": {
-        "created": "Notice created",
-        "deleted": "Notice deleted",
-        "updated": "Notice updated"
+        "created": "Thông báo đã được tạo.",
+        "deleted": "Thông báo đã bị xóa.",
+        "updated": "Thông báo đã được cập nhật."
       },
       "participation": {
-        "updated": "Team status has been updated"
+        "updated": "Trạng thái đội đã được cập nhật."
       }
     },
     "instances": {
-      "destroyed": "Instances destroyed",
-      "entry_copied": "Instance entry copied to clipboard",
+      "destroyed": "Instances đã bị xóa.",
+      "entry_copied": "Instance entry đã được sao chép vào clipboard.",
       "url_copied": {
-        "message": "Please use client to access",
-        "title": "Proxy URL copied to clipboard"
+        "message": "Vui lòng sử dụng client để truy cập.",
+        "title": "Proxy URL đã được sao chép vào clipboard."
       }
     },
     "logs": {
-      "connected": "Real-time log connected",
-      "fetch_failed": "Failed to fetch logs"
+      "connected": "Real-time log đã được kết nối.",
+      "fetch_failed": "Không thể fetch logs."
     },
     "teams": {
-      "deleted": "{{name}} has been deleted"
+      "deleted": "{{name}} đã bị xóa."
     },
     "users": {
-      "deleted": "{{name}} has been deleted",
-      "password_copied": "Password copied to clipboard",
-      "updated": "User profile updated"
+      "deleted": "{{name}} đã bị xóa.",
+      "password_copied": "Password đã được sao chép vào clipboard.",
+      "updated": "User profile đã được cập nhật."
     }
   },
   "placeholder": {
-    "empty": "Empty",
+    "empty": "Empty.",
     "games": {
       "challenges": {
         "attachment": {
           "no_file_selected": {
-            "comment": "The selected file will be displayed here",
-            "title": "You haven't selected any file"
+            "comment": "File đã chọn sẽ được hiển thị ở đây.",
+            "title": "Bạn chưa chọn bất kỳ file nào."
           }
         }
       },
-      "divisions": "Enter to add a division.",
+      "divisions": "Nhấn Enter để thêm bảng.",
       "participation": {
-        "bio": "(no bio)",
-        "team": "(no name)"
+        "bio": "(no bio).",
+        "team": "(no name)."
       }
     },
     "instances": {
       "challenges": {
-        "not_found": "No challenge found",
-        "select": "All challenges"
+        "not_found": "Không tìm thấy thử thách",
+        "select": "Tất cả thử thách"
       },
       "teams": {
-        "not_found": "Team not found",
-        "select": "All Teams"
+        "not_found": "Không tìm thấy đội",
+        "select": "Tất cả đội"
       }
     },
     "settings": {
-      "email_domain_list": "No restrictions",
-      "footer": "`Test` <mbr/> Something...",
+      "email_domain_list": "Không có hạn chế",
+      "footer": "`Kiểm tra` <mbr/> Một cái gì đó...",
       "logo": {
-        "custom": "Custom Logo",
-        "default": "Use GZCTF Icon"
+        "custom": "Logo tùy chỉnh",
+        "default": "Sử dụng biểu tượng GZCTF"
       }
     },
     "teams": {
-      "search": "Search by name"
+      "search": "Tìm kiếm theo tên"
     },
     "users": {
-      "real_name": "Empty",
-      "search": "Search by ID/username/email/student ID/real name",
+      "real_name": "Trống",
+      "search": "Tìm kiếm theo ID/tên người dùng/email/mã sinh viên/tên thật",
       "student_id": "00000000"
     }
   },
   "tab": {
     "games": {
-      "challenges": "Challenges",
-      "index": "Games",
-      "info": "Information",
-      "notices": "Notices",
-      "review": "Teams",
+      "challenges": "Thử thách",
+      "index": "Trò chơi",
+      "info": "Thông tin",
+      "notices": "Thông báo",
+      "review": "Đội",
       "writeups": "Writeups"
     },
     "instances": "Instances",
-    "logs": "Logs",
-    "settings": "Settings",
-    "teams": "Teams",
-    "users": "Users"
+    "logs": "Nhật ký",
+    "settings": "Cài đặt",
+    "teams": "Đội",
+    "users": "Người dùng"
   }
 }
