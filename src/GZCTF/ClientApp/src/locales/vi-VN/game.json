@@ -100,147 +100,147 @@
       "instructions": {
         "additional": "Ghi chú khác",
         "deadline": "Hãy submit writeup trước <1>{{datetime}}</1>, những writeup nộp muộn hay không nộp thì sẽ đều được tính là bỏ kết quả của giải.",
-        "file_format": "Please organize the writeup of all solved challenges into <1>a standard PDF document less than 20MB</1>.",
-        "title": "Submission Instructions"
+        "file_format": "Hãy viết writeup của các challenge mà bạn giải dưới dạng <1> PDF và có dung lượng nhỏ hơn 20MB</1>.",
+        "title": "Hướng dẫn submit"
       },
-      "submitted": "Successfully submitted",
-      "title": "Writeup Management",
-      "unsubmitted": "Not yet submitted",
-      "unsubmitted_note": "Your team has not submitted yet"
+      "submitted": "Submit thành công",
+      "title": "Quản lý writeup",
+      "unsubmitted": "Chưa submit",
+      "unsubmitted_note": "Team của bạn chưa submit"
     }
   },
   "event": {
     "answer": {
-      "accepted": "Flag accepted",
-      "cheat": "Cheating",
-      "not_found": "Unknown",
-      "submitted": "Successfully submitted",
-      "wrong": "Incorrect flag"
+      "accepted": "Flag đã đúng",
+      "cheat": "Đang Gian lận",
+      "not_found": "Không rõ",
+      "submitted": "Submit thành công",
+      "wrong": "Flag sai"
     },
-    "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
+    "cheat_detected": "Phát hiện gian lận của challenge {{chal}}, từ team {{team}} sử dụng flag của {{steam}}.",
     "container": {
-      "destroy": "Destroyed challenge instance for {{chal}}#{{id}}",
-      "start": "Created challenge instance for {{chal}}#{{id}}"
+      "destroy": "Hủy challenge instance cho {{chal}}#{{id}}",
+      "start": "Đã tạo challenge instance cho {{chal}}#{{id}}"
     },
     "flag_submit": "[{{status}}] {{flag}} [{{chal}}#{{id}}]"
   },
   "label": {
     "cheat_info": {
-      "owned_team": "Source Team",
-      "submit_team": "Submit Team",
-      "submit_user": "Submit User"
+      "owned_team": "Source team",
+      "submit_team": "Đội submit",
+      "submit_user": "Người submit"
     },
     "notice_type": {
       "all": "All",
       "challenge": "Challenge",
-      "events": "News",
-      "game": "Notice"
+      "events": "Thông báo",
+      "game": "Chú ý"
     },
-    "score": "Score",
-    "score_formatter": "{value} pts",
+    "score": "Điểm số",
+    "score_formatter": "{value} điểm",
     "score_table": {
-      "all_teams": "All Teams",
-      "rank_division": "Rank",
-      "rank_total": "Overall",
-      "score": "Score",
-      "score_total": "Score",
-      "solved_count": "Solved",
-      "team": "Team",
-      "type": "Type"
+      "all_teams": "Tất Cả Các team",
+      "rank_division": "Thứ hạng",
+      "rank_total": "Tổng",
+      "score": "Điểm",
+      "score_total": "Điểm",
+      "solved_count": "Đã giải",
+      "team": "Đội",
+      "type": "Loại"
     },
     "traffic": "Traffic"
   },
   "notice": {
-    "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",
-    "new_challenge": "New challenge [{{title}}] has been released.",
-    "new_hint": "Hints for [{{title}}] has been updated."
+    "blood": "Chúc mừng team {{team}} đã {{blood}} challenge {{chal}}.",
+    "new_challenge": "Challenge mới [{{title}}] đã được mở.",
+    "new_hint": "Gợi ý cho [{{title}}] đã được cập nhật."
   },
   "notification": {
     "connected": {
-      "event": "Real-time event connected",
-      "submission": "Real-time submission connected"
+      "event": "Sự kiện thời gian thực đã được kết nối",
+      "submission": "Đã kết nối với Real-time submission"
     },
-    "ended": "The game has ended",
+    "ended": "Trò chơi đã kết thúc",
     "fetch_failed": {
-      "event": "Failed to fetch events",
-      "notice": "Failed to fetch notifications",
-      "submission": "Failed to fetch submissions"
+      "event": "Không thể fetch sự kiện",
+      "notice": "Không thể fetch thông báo",
+      "submission": "Không thể fetch bài nộp"
     },
-    "joined": "Registration successful",
-    "left": "Successfully cancel",
-    "no_invite_code": "Invitation code cannot be empty",
-    "no_division": "Please select the division",
-    "no_team": "Please select the team to participate with",
-    "not_started": "Game not yet started",
-    "select_chal_and_part": "Please select challenges and teams first",
-    "suspended": "You have been banned",
+    "joined": "Đăng ký thành công",
+    "left": "Hủy thành công",
+    "no_invite_code": "Mã mời không được để trống",
+    "no_division": "Hãy chọn bảng",
+    "no_team": "Vui lòng chọn đội để tham gia",
+    "not_started": "Trò chơi chưa bắt đầu",
+    "select_chal_and_part": "Hãy lựa chọn challenge và đội trước",
+    "suspended": "Bạn đã bị cấm",
     "traffic": {
-      "deleted": "Traffic file(s) has been deleted"
+      "deleted": "Traffic file đã bị xóa"
     },
     "writeup": {
-      "submitted": "Writeup was successfully submitted"
+      "submitted": "Writeup đã được nộp thành công"
     }
   },
   "participation": {
     "actions": {
-      "accepted": "Approved",
-      "pending": "Pending review",
-      "rejected": "Re-Sign Up",
-      "suspended": "Banned",
-      "unsubmitted": "Join game"
+      "accepted": "Chấp thuận",
+      "pending": "Đang chờ xem xét",
+      "rejected": "Đăng ký lại",
+      "suspended": "Đã bị cấm",
+      "unsubmitted": "Tham gia"
     },
     "alert": {
       "not_started": {
-        "content": "You have successfully registered and passed the review as a member of team {{team}}. Please wait for the game start.",
-        "mobile": "Please use desktop site to see the details of the game.",
-        "title": "Game not yet started"
+        "content": "Bạn đã thành công đăng ký và vượt qua đánh giá thành viên của team {{team}}. Hãy chờ cho trò chơi bắt đầu.",
+        "mobile": "Vui lòng sử dụng trang web dành cho máy tính để xem thông tin chi tiết về trò chơi.",
+        "title": "Trò chơi chưa bắt đầu"
       },
       "pending": {
-        "content": "Please wait for review results",
-        "title": "You have successfully registered as a member of team {{team}}"
+        "content": "Vui lòng chờ kết quả đánh giá",
+        "title": "Bạn đã đăng ký thành công để trở thành thành viên của nhóm {{team}}"
       },
       "rejected": {
-        "content": "Please make sure you are eligible to register in the game and re-register after you meet the requirements",
-        "title": "Your participating request was rejected"
+        "content": "Hãy đảm bảo rằng bạn đủ điều kiện để đăng ký vào trò chơi và thử lại sau khi bạn đáp ứng đủ các yêu cầu",
+        "title": "Yêu cầu tham gia của bạn đã bị từ chối"
       },
       "suspended": {
-        "content": "If you have any objections, please contact the administrator to appeal.",
-        "title": "Your team {{team}} has been suspended"
+        "content": "Nếu bạn có bất kỳ phản đối nào, vui lòng liên hệ với người quản lý để kháng cáo.",
+        "title": "Đội của bạn {{team}} đã bị đình chỉ"
       },
       "team_required": {
-        "content": "You didn't join any team, please create or join a team on the <1> Team Management </1> page.",
-        "title": "Unable to register at this time"
+        "content": "Bạn chưa tham gia đội nào, vui lòng tạo hoặc tham gia đội trên trang <1> Quản lý nhóm </1>.",
+        "title": "Không thể đăng kí ngay lúc này"
       }
     },
     "status": {
-      "accepted": "Approved",
-      "pending": "Pending",
-      "rejected": "Rejected",
-      "suspended": "Banned"
+      "accepted": "Chấp thuận",
+      "pending": "Đợi duyệt",
+      "rejected": "Đã từ chối",
+      "suspended": "Đã bị cấm"
     }
   },
   "placeholder": {
-    "no_solved": "Ouch! This team has not solved any challenges...",
-    "search_team": "Search Team"
+    "no_solved": "Team này chưa giải được bài nào cả...",
+    "search_team": "Tìm đội"
   },
   "tab": {
     "challenge": "Challenges",
     "monitor": {
-      "cheatinfo": "Cheats",
-      "events": "Events",
-      "index": "Monitoring",
-      "submissions": "Submissions",
-      "traffic": "Traffics"
+      "cheatinfo": "Gian lận",
+      "events": "Các sự kiện",
+      "index": "Đang theo dõi",
+      "submissions": "Bài nộp",
+      "traffic": "Lưu lượng"
     },
-    "scoreboard": "Scoreboard"
+    "scoreboard": "Bảng điểm"
   },
   "tag": {
-    "hidden": "Hidden",
-    "individual": "Personal",
-    "limited": "{{count}} players",
-    "multiplayer": "Team"
+    "hidden": "Bị ẩn",
+    "individual": "Cá nhân",
+    "limited": "{{count}} người chơi",
+    "multiplayer": "Đội"
   },
   "title": {
-    "index": "Games"
+    "index": "Trò chơi"
   }
 }
