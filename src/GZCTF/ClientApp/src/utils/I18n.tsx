@@ -25,7 +25,7 @@ export const LanguageMap = {
   'id-ID': '🇮🇩 Bahasa',
   'ko-KR': '🇰🇷 한국어',
   'ru-RU': '🇷🇺 Русский',
-  'vi-VN': '🇻🇳 Tiếng việt (WIP)',
+  'vi-VN': '🇻🇳 Tiếng việt',
   'de-DE': '🇩🇪 Deutsch (MT)',
   'fr-FR': '🇫🇷 Français (MT)',
   'es-ES': '🇪🇸 Español (MT)',

@@ -705,7 +705,7 @@ public class GameController(
 
             return File(stream,
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                $"{game.Title}_Scoreboard_{DateTimeOffset.Now:yyyyMMddHHmmss}.xlsx");
+                $"{game.Title}-Scoreboard-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.xlsx");
         }
         catch (Exception ex)
         {
