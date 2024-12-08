@@ -88,6 +88,7 @@ Currently, the platform supports multiple languages, and the translation progres
 - Indonesian (id-ID): Fully supported, translated by [Rio](https://github.com/riodrwn)
 - Korean (ko-KR): Fully supported, translated by [Sy2n0](https://github.com/Sy2n0), [kimjw0427](https://github.com/kimjw0427), [LittleDev0617](https://github.com/LittleDev0617), [Jungwoong Kim](https://github.com/jungwngkim) and [blluv](https://github.com/blluv)
 - Russian (ru-RU): Fully supported, translated by [FazaN](https://github.com/CyberFazaN)
+- Vietnamese (vi-VN): Fully supported, translated by [Ethical Hacker Club](https://github.com/FPTU-Ethical-Hackers-Club)
 
 ### Translated by Machine and AI
 
