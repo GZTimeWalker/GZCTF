@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.0.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.4..v1.0.5) - 2024-12-08
+
+### 🐛 Bug Fixes
+
+- **(admin)** record user info when create succeeded - ([b041fb](https://github.com/GZTimeWalker/GZCTF/commit/b041fb)) by **GZTime**
+
+---
 ## [1.0.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.3..v1.0.4) - 2024-11-30
 
 ### ⛰️ Features
