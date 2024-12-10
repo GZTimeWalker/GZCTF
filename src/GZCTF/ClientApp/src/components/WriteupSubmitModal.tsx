@@ -32,7 +32,7 @@ import uploadClasses from '@Styles/Upload.module.css'
 
 interface WriteupSubmitModalProps extends ModalProps {
   gameId: number
-  writeupDeadline: string
+  writeupDeadline: number
 }
 
 export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, writeupDeadline: wpddl, ...props }) => {

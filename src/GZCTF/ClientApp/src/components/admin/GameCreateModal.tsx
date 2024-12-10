@@ -41,8 +41,8 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
     try {
       const res = await api.edit.editAddGame({
         title,
-        start: start.toJSON(),
-        end: end.toJSON(),
+        start: start.valueOf(),
+        end: end.valueOf(),
       })
       showNotification({
         color: 'teal',

@@ -16,7 +16,7 @@ interface ChallengePreviewModalProps extends ModalProps {
 }
 
 interface FakeContext {
-  closeTime: string | null
+  closeTime: number | null
   instanceEntry: string | null
   url: string
 }
@@ -36,7 +36,7 @@ export const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => 
   const onCreate = () => {
     setContext({
       ...context,
-      closeTime: dayjs().add(10, 'm').add(10, 's').toJSON(),
+      closeTime: dayjs().add(10, 'm').add(10, 's').valueOf(),
       instanceEntry: 'localhost:2333',
     })
   }
@@ -52,7 +52,7 @@ export const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => 
   const onExtend = () => {
     setContext({
       ...context,
-      closeTime: dayjs(context.closeTime).add(10, 'm').toJSON(),
+      closeTime: dayjs(context.closeTime).add(10, 'm').valueOf(),
       instanceEntry: context.instanceEntry,
     })
   }

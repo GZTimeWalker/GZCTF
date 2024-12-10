@@ -332,14 +332,14 @@ export interface UserInfoModel {
   bio?: string | null;
   /**
    * Registration time
-   * @format date-time
+   * @format uint64
    */
-  registerTimeUtc?: string;
+  registerTimeUtc?: number;
   /**
    * Last visit time
-   * @format date-time
+   * @format uint64
    */
-  lastVisitedUtc?: string;
+  lastVisitedUtc?: number;
   /** Last visit IP */
   ip?: string;
   /** Email */
@@ -504,9 +504,9 @@ export interface AdminUserInfoModel {
 export interface LogMessageModel {
   /**
    * Log time
-   * @format date-time
+   * @format uint64
    */
-  time?: string;
+  time?: number;
   /** Username */
   name?: string | null;
   level?: string | null;
@@ -547,9 +547,9 @@ export interface WriteupInfoModel {
   url?: string;
   /**
    * File upload time
-   * @format date-time
+   * @format uint64
    */
-  uploadTimeUtc?: string;
+  uploadTimeUtc?: number;
 }
 
 /** List response */
@@ -585,14 +585,14 @@ export interface ContainerInstanceModel {
   containerId?: string;
   /**
    * Container creation time
-   * @format date-time
+   * @format uint64
    */
-  startedAt?: string;
+  startedAt?: number;
   /**
    * Expected container stop time
-   * @format date-time
+   * @format uint64
    */
-  expectStopAt?: string;
+  expectStopAt?: number;
   /** Access IP */
   ip?: string;
   /**
@@ -734,10 +734,10 @@ export interface PostDetailModel {
   authorName?: string | null;
   /**
    * Publish time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  time: string;
+  time: number;
 }
 
 /** Game information (Edit) */
@@ -787,21 +787,21 @@ export interface GameInfoModel {
   practiceMode?: boolean;
   /**
    * Start time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  start: string;
+  start: number;
   /**
    * End time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  end: string;
+  end: number;
   /**
    * Writeup submission deadline
-   * @format date-time
+   * @format uint64
    */
-  writeupDeadline?: string;
+  writeupDeadline?: number;
   /** Writeup additional notes */
   writeupNote?: string;
   /**
@@ -836,10 +836,10 @@ export type GameNotice = FormattableDataOfNoticeType & {
   id: number;
   /**
    * Publish time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  time: string;
+  time: number;
 };
 
 /** Formattable data */
@@ -989,14 +989,14 @@ export interface ContainerInfoModel {
   status?: ContainerStatus;
   /**
    * Container creation time
-   * @format date-time
+   * @format uint64
    */
-  startedAt?: string;
+  startedAt?: number;
   /**
    * Expected container stop time
-   * @format date-time
+   * @format uint64
    */
-  expectStopAt?: string;
+  expectStopAt?: number;
   /** Challenge entry point */
   entry?: string;
 }
@@ -1183,14 +1183,14 @@ export interface BasicGameInfoModel {
   limit?: number;
   /**
    * Start time
-   * @format date-time
+   * @format uint64
    */
-  start?: string;
+  start?: number;
   /**
    * End time
-   * @format date-time
+   * @format uint64
    */
-  end?: string;
+  end?: number;
 }
 
 /** Detailed game information, including detailed introduction and current team registration status */
@@ -1233,14 +1233,14 @@ export interface DetailedGameInfoModel {
   status?: ParticipationStatus;
   /**
    * Start time
-   * @format date-time
+   * @format uint64
    */
-  start?: string;
+  start?: number;
   /**
    * End time
-   * @format date-time
+   * @format uint64
    */
-  end?: string;
+  end?: number;
 }
 
 export interface GameJoinModel {
@@ -1259,10 +1259,10 @@ export interface GameJoinModel {
 export interface ScoreboardModel {
   /**
    * Update time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  updateTimeUtc: string;
+  updateTimeUtc: number;
   /**
    * Blood bonus coefficient
    * @format int64
@@ -1296,9 +1296,9 @@ export interface TopTimeLine {
 export interface TimeLine {
   /**
    * Time
-   * @format date-time
+   * @format uint64
    */
-  time?: string;
+  time?: number;
   /**
    * Score
    * @format int32
@@ -1337,9 +1337,9 @@ export interface ScoreboardItem {
   divisionRank?: number | null;
   /**
    * Last submission time
-   * @format date-time
+   * @format uint64
    */
-  lastSubmissionTime?: string;
+  lastSubmissionTime?: number;
   /** List of solved challenges */
   solvedChallenges?: ChallengeItem[];
   /**
@@ -1366,9 +1366,9 @@ export interface ChallengeItem {
   userName?: string | null;
   /**
    * Submission time for the challenge, used to calculate the timeline
-   * @format date-time
+   * @format uint64
    */
-  time?: string;
+  time?: number;
 }
 
 /** Submission type */
@@ -1418,9 +1418,9 @@ export interface Blood {
   avatar?: string | null;
   /**
    * Time when the blood was obtained
-   * @format date-time
+   * @format uint64
    */
-  submitTimeUtc?: string | null;
+  submitTimeUtc?: number | null;
 }
 
 /**
@@ -1430,10 +1430,10 @@ export interface Blood {
 export type GameEvent = FormattableDataOfEventType & {
   /**
    * Publish time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  time: string;
+  time: number;
   /** Related username */
   user?: string;
   /** Related team name */
@@ -1467,9 +1467,9 @@ export interface Submission {
   status?: AnswerResult;
   /**
    * Time the answer was submitted
-   * @format date-time
+   * @format uint64
    */
-  time?: string;
+  time?: number;
   /** User who submitted */
   user?: string;
   /** Team that submitted */
@@ -1572,9 +1572,9 @@ export interface FileRecord {
   size?: number;
   /**
    * File modification date
-   * @format date-time
+   * @format uint64
    */
-  updateTime?: string;
+  updateTime?: number;
 }
 
 export interface GameDetailModel {
@@ -1596,10 +1596,10 @@ export interface GameDetailModel {
   writeupRequired: boolean;
   /**
    * Writeup submission deadline
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  writeupDeadline: string;
+  writeupDeadline: number;
 }
 
 /** Participation for review (Admin) */
@@ -1672,9 +1672,9 @@ export interface ChallengeDetailModel {
 export interface ClientFlagContext {
   /**
    * Close time of the challenge instance
-   * @format date-time
+   * @format uint64
    */
-  closeTime?: string | null;
+  closeTime?: number | null;
   /** Connection method of the challenge instance */
   instanceEntry?: string | null;
   /** Attachment URL */
@@ -1739,10 +1739,10 @@ export interface PostInfoModel {
   authorName?: string | null;
   /**
    * Update time
-   * @format date-time
+   * @format uint64
    * @minLength 1
    */
-  time: string;
+  time: number;
 }
 
 /** Client configuration */

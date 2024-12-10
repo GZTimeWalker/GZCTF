@@ -26,7 +26,7 @@ interface InstanceEntryProps {
 }
 
 interface CountdownProps {
-  time?: string | null
+  time?: number | null
   onTimeout?: () => void
   extendEnabled: boolean
   enableExtend: () => void
