@@ -21,6 +21,7 @@ import { Empty } from '@Components/Empty'
 import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
 import { NoticTypeIconMap } from '@Utils/Shared'
+import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { GameNotice, NoticeType } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import typoClasses from '@Styles/Typography.module.css'
@@ -97,7 +98,6 @@ export const GameNoticePanel: FC = () => {
 
   const [, update] = useState(new Date())
   const newNotices = useRef<GameNotice[]>([])
-  const [notices, setNotices] = useState<GameNotice[]>()
   const [filter, setFilter] = useState<NoticeFilter>(NoticeFilter.All)
   const iconMap = NoticTypeIconMap(0.8)
 
@@ -105,21 +105,7 @@ export const GameNoticePanel: FC = () => {
   const { locale } = useLanguage()
   const theme = useMantineTheme()
 
-  useEffect(() => {
-    api.game
-      .gameNotices(numId)
-      .then((data) => {
-        setNotices(data.data)
-      })
-      .catch((err) => {
-        showNotification({
-          color: 'red',
-          title: t('game.notification.fetch_failed.notice'),
-          message: err.response.data.title,
-          icon: <Icon path={mdiClose} size={1} />,
-        })
-      })
-  }, [numId, t])
+  const { data: notices } = api.game.useGameNotices(numId, {}, OnceSWRConfig)
 
   useEffect(() => {
     newNotices.current = []
@@ -137,7 +123,6 @@ export const GameNoticePanel: FC = () => {
       connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 2
 
       connection.on('ReceivedGameNotice', (message: GameNotice) => {
-        console.log(message)
         newNotices.current = [message, ...newNotices.current]
 
         if (message.type === NoticeType.NewChallenge || message.type === NoticeType.NewHint) {

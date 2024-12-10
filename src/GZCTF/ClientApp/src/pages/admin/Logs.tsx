@@ -19,6 +19,7 @@ import dayjs from 'dayjs'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AdminPage } from '@Components/admin/AdminPage'
+import { handleAxiosError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { TaskStatusColorMap } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
@@ -53,23 +54,26 @@ const Logs: FC = () => {
   }, [activePage, level, viewport])
 
   useEffect(() => {
-    api.admin
-      .adminLogs({
-        level,
-        count: ITEM_COUNT_PER_PAGE,
-        skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
-      })
-      .then((data) => {
-        setLogs(data.data)
-      })
-      .catch((err) => {
+    const fetchLogs = async () => {
+      try {
+        const res = await api.admin.adminLogs({
+          level,
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
+        })
+        setLogs(res.data)
+      } catch (err) {
         showNotification({
           color: 'red',
           title: t('admin.notification.logs.fetch_failed'),
-          message: err.response.data.title,
+          message: await handleAxiosError(err),
           icon: <Icon path={mdiClose} size={1} />,
         })
-      })
+      }
+    }
+
+    fetchLogs()
+
     if (activePage === 1) {
       newLogs.current = []
     }
@@ -95,18 +99,20 @@ const Logs: FC = () => {
       update(new Date(message.time!))
     })
 
-    connection
-      .start()
-      .then(() => {
+    const startConnection = async () => {
+      try {
+        await connection.start()
         showNotification({
           color: 'teal',
           message: t('admin.notification.logs.connected'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    startConnection()
 
     return () => {
       connection.stop().catch((err) => {

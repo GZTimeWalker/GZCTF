@@ -49,25 +49,25 @@ export const UserEditModal: FC<UserEditModalProps> = (props) => {
     setProfile({ ...user })
   }, [user])
 
-  const onChangeProfile = () => {
+  const onChangeProfile = async () => {
     if (!user.id) return
 
     setDisabled(true)
-    api.admin
-      .adminUpdateUserInfo(user.id, profile)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.users.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutateUser({ ...user, ...profile })
-        modalProps.onClose()
+
+    try {
+      await api.admin.adminUpdateUserInfo(user.id, profile)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.users.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      mutateUser({ ...user, ...profile })
+      modalProps.onClose()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

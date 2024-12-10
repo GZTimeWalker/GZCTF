@@ -1972,6 +1972,7 @@ export class HttpClient<SecurityDataType = unknown> {
   };
 }
 
+import { handleAxiosError } from "@Utils/ApiHelper";
 import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 
 /**
@@ -5087,11 +5088,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
 const api = new Api();
 export default api;
 
-export const fetcher = async (path: string, query?: Record<string, unknown>) => {
-  return await api
-    .request({ path, query })
-    .then((res) => res.data)
-    .catch((err) => {
-      throw err.response.data;
-    });
+export const fetcher = async (args: string | [string, Record<string, unknown>]) => {
+  try {
+    if (typeof args === "string") {
+      const response = await api.request({ path: args });
+      return response.data;
+    } else {
+      const [path, query] = args;
+      const response = await api.request({ path, query });
+      return response.data;
+    }
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
 };

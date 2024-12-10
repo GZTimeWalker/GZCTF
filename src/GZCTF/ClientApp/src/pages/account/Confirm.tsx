@@ -35,28 +35,26 @@ const Confirm: FC = () => {
     }
 
     setDisabled(true)
-    api.account
-      .accountMailChangeConfirm({ token, email })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          title: t('account.notification.confirm.success'),
-          message: window.atob(email),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        navigate('/')
+
+    try {
+      await api.account.accountMailChangeConfirm({ token, email })
+      showNotification({
+        color: 'teal',
+        title: t('account.notification.confirm.success'),
+        message: decodeEmail,
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch(() => {
-        showNotification({
-          color: 'red',
-          title: t('account.notification.confirm.failed'),
-          message: t('common.error.param_error'),
-          icon: <Icon path={mdiClose} size={1} />,
-        })
+      navigate('/')
+    } catch (e) {
+      showNotification({
+        color: 'red',
+        title: t('account.notification.confirm.failed'),
+        message: t('common.error.param_error'),
+        icon: <Icon path={mdiClose} size={1} />,
       })
-      .finally(() => {
-        setDisabled(false)
-      })
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

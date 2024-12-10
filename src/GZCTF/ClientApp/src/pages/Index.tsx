@@ -27,30 +27,33 @@ const Home: FC = () => {
 
   allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
 
-  const onTogglePinned = (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
+  const onTogglePinned = async (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
     setDisabled(true)
-    api.edit
-      .editUpdatePost(post.id, { title: post.title, isPinned: !post.isPinned })
-      .then((res) => {
-        if (post.isPinned) {
-          mutate([
-            ...(posts?.filter((p) => p.id !== post.id && p.isPinned) ?? []),
-            { ...res.data },
-            ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
-          ])
-        } else {
-          mutate([
-            { ...res.data },
-            ...(posts?.filter((p) => p.id !== post.id && p.isPinned) ?? []),
-            ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
-          ])
-        }
-        api.info.mutateInfoGetPosts()
+
+    try {
+      const res = await api.edit.editUpdatePost(post.id, {
+        title: post.title,
+        isPinned: !post.isPinned,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      if (post.isPinned) {
+        mutate([
+          ...(posts?.filter((p) => p.id !== post.id && p.isPinned) ?? []),
+          { ...res.data },
+          ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
+        ])
+      } else {
+        mutate([
+          { ...res.data },
+          ...(posts?.filter((p) => p.id !== post.id && p.isPinned) ?? []),
+          ...(posts?.filter((p) => p.id !== post.id && !p.isPinned) ?? []),
+        ])
+      }
+      api.info.mutateInfoGetPosts()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   const now = new Date()

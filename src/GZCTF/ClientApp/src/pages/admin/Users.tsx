@@ -67,70 +67,66 @@ const Users: FC = () => {
   }, [page, viewport])
 
   useEffect(() => {
-    api.admin
-      .adminUsers({
-        count: ITEM_COUNT_PER_PAGE,
-        skip: (page - 1) * ITEM_COUNT_PER_PAGE,
-      })
-      .then((res) => {
-        setUsers(res.data)
-        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
-      })
-  }, [page, update])
-
-  const onSearch = () => {
-    if (!hint) {
-      api.admin
-        .adminUsers({
+    const fetchData = async () => {
+      try {
+        const res = await api.admin.adminUsers({
           count: ITEM_COUNT_PER_PAGE,
           skip: (page - 1) * ITEM_COUNT_PER_PAGE,
         })
-        .then((res) => {
-          setUsers(res.data)
-          setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
-        })
-      return
+        setUsers(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
+      } catch (err) {
+        showErrorNotification(err, t)
+      }
     }
 
-    setSearching(true)
+    fetchData()
+  }, [page, update])
 
-    api.admin
-      .adminSearchUsers({
-        hint,
-      })
-      .then((res) => {
+  const onSearch = async () => {
+    try {
+      if (!hint) {
+        const res = await api.admin.adminUsers({
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (page - 1) * ITEM_COUNT_PER_PAGE,
+        })
+        setUsers(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
+      } else {
+        const res = await api.admin.adminSearchUsers({ hint })
         setUsers(res.data)
         setCurrent(res.data.length)
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setSearching(false)
-      })
+      }
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setSearching(false)
+    }
   }
 
-  const onToggleActive = (user: UserInfoModel) => {
+  const onToggleActive = async (user: UserInfoModel) => {
     setDisabled(true)
-    api.admin
-      .adminUpdateUserInfo(user.id!, {
+
+    try {
+      await api.admin.adminUpdateUserInfo(user.id!, {
         emailConfirmed: !user.emailConfirmed,
       })
-      .then(() => {
-        users &&
-          updateUsers(
-            users.map((u) =>
-              u.id === user.id
-                ? {
-                    ...u,
-                    emailConfirmed: !u.emailConfirmed,
-                  }
-                : u
-            )
+      users &&
+        updateUsers(
+          users.map((u) =>
+            u.id === user.id
+              ? {
+                  ...u,
+                  emailConfirmed: !u.emailConfirmed,
+                }
+              : u
           )
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+        )
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   const onResetPassword = async (user: UserInfoModel) => {

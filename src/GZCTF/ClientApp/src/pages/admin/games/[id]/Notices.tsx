@@ -40,18 +40,18 @@ const GameNoticeEdit: FC = () => {
       confirmProps: { color: 'red' },
     })
   }
-  const onConfirmDelete = (gameNotice: GameNotice) => {
-    api.edit
-      .editDeleteGameNotice(numId, gameNotice.id)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.notices.deleted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
+  const onConfirmDelete = async (gameNotice: GameNotice) => {
+    try {
+      await api.edit.editDeleteGameNotice(numId, gameNotice.id)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.notices.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
   return (

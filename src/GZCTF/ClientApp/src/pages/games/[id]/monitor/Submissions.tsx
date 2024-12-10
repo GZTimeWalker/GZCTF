@@ -23,6 +23,7 @@ import {
   mdiDownload,
   mdiExclamationThick,
   mdiFlag,
+  mdiReplay,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
@@ -31,7 +32,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
-import { downloadBlob } from '@Utils/ApiHelper'
+import { downloadBlob, handleAxiosError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Hooks/useGame'
@@ -101,23 +102,26 @@ const Submissions: FC = () => {
   }, [activePage, viewport])
 
   useEffect(() => {
-    api.game
-      .gameSubmissions(numId, {
-        type: type === 'All' ? undefined : type,
-        count: ITEM_COUNT_PER_PAGE,
-        skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
-      })
-      .then((data) => {
-        setSubmissions(data.data)
-      })
-      .catch((err) => {
+    const fetchSubmissions = async () => {
+      try {
+        const res = await api.game.gameSubmissions(numId, {
+          type: type === 'All' ? undefined : type,
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
+        })
+        setSubmissions(res.data)
+      } catch (err) {
         showNotification({
           color: 'red',
           title: t('game.notification.fetch_failed.submission'),
-          message: err.response.data.title,
+          message: await handleAxiosError(err),
           icon: <Icon path={mdiClose} size={1} />,
         })
-      })
+      }
+    }
+
+    fetchSubmissions()
+
     if (activePage === 1) {
       newSubmissions.current = []
     }
@@ -140,18 +144,20 @@ const Submissions: FC = () => {
         update(new Date(message.time!))
       })
 
-      connection
-        .start()
-        .then(() => {
+      const startConnection = async () => {
+        try {
+          await connection.start()
           showNotification({
             color: 'teal',
             message: t('game.notification.connected.submission'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      startConnection()
 
       return () => {
         connection.stop().catch((err) => {
@@ -247,6 +253,9 @@ const Submissions: FC = () => {
               <Icon path={mdiDownload} size={1} />
             </ActionIcon>
           </Tooltip>
+          <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(1)}>
+            <Icon path={mdiReplay} size={1} />
+          </ActionIcon>
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
             <Icon path={mdiArrowLeftBold} size={1} />
           </ActionIcon>

@@ -66,27 +66,27 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
     }
   }, [challenge])
 
-  const onConfirmClear = () => {
+  const onConfirmClear = async () => {
     setDisabled(true)
-    api.edit
-      .editUpdateAttachment(numId, numCId, { attachmentType: FileType.None })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.attachment.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
+
+    try {
+      await api.edit.editUpdateAttachment(numId, numCId, { attachmentType: FileType.None })
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.attachment.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      setType(FileType.None)
+      challenge &&
+        mutate({
+          ...challenge,
+          attachment: null,
         })
-        setType(FileType.None)
-        challenge &&
-          mutate({
-            ...challenge,
-            attachment: null,
-          })
-      })
-      .catch((err) => showErrorNotification(err, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   const theme = useMantineTheme()
@@ -98,14 +98,14 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
     [FileType.Local, t('challenge.file_type.local')],
   ])
 
-  const onUpload = (file: File | null) => {
+  const onUpload = async (file: File | null) => {
     if (!file) return
 
     setProgress(0)
     setDisabled(true)
 
-    api.assets
-      .assetsUpload(
+    try {
+      const res = await api.assets.assetsUpload(
         {
           files: [file],
         },
@@ -116,77 +116,68 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
           },
         }
       )
-      .then((data) => {
-        const file = data.data[0]
-        setProgress(95)
-        if (file) {
-          api.edit
-            .editUpdateAttachment(numId, numCId, {
-              attachmentType: FileType.Local,
-              fileHash: file.hash,
-            })
-            .then(() => {
-              setProgress(0)
-              setDisabled(false)
-              mutate()
-              showNotification({
-                color: 'teal',
-                message: t('admin.notification.games.challenges.attachment.updated'),
-                icon: <Icon path={mdiCheck} size={1} />,
-              })
-            })
-            .catch((err) => showErrorNotification(err, t))
-            .finally(() => {
-              setDisabled(false)
-            })
-        }
-      })
-      .catch((err) => showErrorNotification(err, t))
-      .finally(() => {
+      const remoteFile = res.data[0]
+      setProgress(95)
+      if (file) {
+        await api.edit.editUpdateAttachment(numId, numCId, {
+          attachmentType: FileType.Local,
+          fileHash: remoteFile.hash,
+        })
+        setProgress(0)
         setDisabled(false)
-      })
-  }
-
-  const onRemote = () => {
-    if (!remoteUrl.startsWith('http')) return
-    setDisabled(true)
-    api.edit
-      .editUpdateAttachment(numId, numCId, {
-        attachmentType: FileType.Remote,
-        remoteUrl: remoteUrl,
-      })
-      .then(() => {
+        mutate()
         showNotification({
           color: 'teal',
           message: t('admin.notification.games.challenges.attachment.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
-      })
-      .catch((err) => showErrorNotification(err, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      }
+    } catch (err) {
+      showErrorNotification(err, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
-  const onChangeFlagTemplate = () => {
-    if (flagTemplate === challenge?.flagTemplate) return
-
+  const onRemote = async () => {
+    if (!remoteUrl.startsWith('http')) return
     setDisabled(true)
-    api.edit
+
+    try {
+      await api.edit.editUpdateAttachment(numId, numCId, {
+        attachmentType: FileType.Remote,
+        remoteUrl: remoteUrl,
+      })
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.attachment.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onChangeFlagTemplate = async () => {
+    if (flagTemplate === challenge?.flagTemplate) return
+    setDisabled(true)
+
+    try {
       // allow empty flag template to be set (but not null or undefined)
-      .editUpdateGameChallenge(numId, numCId, { flagTemplate })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.flag_template.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
+      await api.edit.editUpdateGameChallenge(numId, numCId, { flagTemplate })
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.flag_template.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   const willGenerate =
@@ -485,22 +476,22 @@ const GameChallengeEdit: FC = () => {
     })
   }
 
-  const onConfirmDeleteFlag = (id: number) => {
-    api.edit
-      .editRemoveFlag(numId, numCId, id)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.flag.deleted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        challenge &&
-          mutate({
-            ...challenge,
-            flags: challenge.flags.filter((f) => f.id !== id),
-          })
+  const onConfirmDeleteFlag = async (id: number) => {
+    try {
+      await api.edit.editRemoveFlag(numId, numCId, id)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.flag.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      challenge &&
+        mutate({
+          ...challenge,
+          flags: challenge.flags.filter((f) => f.id !== id),
+        })
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
   return (

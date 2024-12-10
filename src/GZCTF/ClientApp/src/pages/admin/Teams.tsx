@@ -65,45 +65,45 @@ const Teams: FC = () => {
   }, [page, viewport])
 
   useEffect(() => {
-    api.admin
-      .adminTeams({
-        count: ITEM_COUNT_PER_PAGE,
-        skip: (page - 1) * ITEM_COUNT_PER_PAGE,
-      })
-      .then((res) => {
-        setTeams(res.data)
-        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
-      })
-  }, [page, update])
-
-  const onSearch = () => {
-    if (!hint) {
-      api.admin
-        .adminTeams({
+    const fetchData = async () => {
+      try {
+        const res = await api.admin.adminTeams({
           count: ITEM_COUNT_PER_PAGE,
           skip: (page - 1) * ITEM_COUNT_PER_PAGE,
         })
-        .then((res) => {
-          setTeams(res.data)
-          setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
-        })
-      return
+
+        setTeams(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
+      } catch (e) {
+        showErrorNotification(e, t)
+      }
     }
 
-    setSearching(true)
+    fetchData()
+  }, [page, update])
 
-    api.admin
-      .adminSearchTeams({
-        hint,
-      })
-      .then((res) => {
+  const onSearch = async () => {
+    try {
+      if (!hint) {
+        const res = await api.admin.adminTeams({
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (page - 1) * ITEM_COUNT_PER_PAGE,
+        })
+
+        setTeams(res.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
+      } else {
+        setSearching(true)
+
+        const res = await api.admin.adminSearchTeams({ hint })
         setTeams(res.data)
         setCurrent(res.data.length)
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setSearching(false)
-      })
+      }
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setSearching(false)
+    }
   }
 
   const onDelete = async (team: TeamInfoModel) => {

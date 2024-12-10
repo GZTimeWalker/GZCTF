@@ -106,117 +106,125 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   }, [team])
 
   useEffect(() => {
-    if (isCaptain && !inviteCode && teamId) {
-      api.team.teamInviteCode(teamId).then((code) => {
-        setInviteCode(code.data)
-      })
+    const fetchCode = async () => {
+      if (!isCaptain || !teamId || inviteCode) return
+
+      const code = await api.team.teamInviteCode(teamId!)
+      setInviteCode(code.data)
     }
+
+    fetchCode()
   }, [inviteCode, isCaptain, teamId])
 
-  const onConfirmLeaveTeam = () => {
+  const onConfirmLeaveTeam = async () => {
     if (!teamInfo || isCaptain) return
 
-    api.team
-      .teamLeave(teamInfo.id!)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          title: t('team.notification.leave.success'),
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutateTeams(teams?.filter((x) => x.id !== teamInfo?.id))
-        props.onClose()
+    try {
+      await api.team.teamLeave(teamInfo.id!)
+      showNotification({
+        color: 'teal',
+        title: t('team.notification.leave.success'),
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      mutateTeams(
+        teams?.filter((x) => x.id !== teamInfo.id),
+        { revalidate: false }
+      )
+      setInviteCode('')
+      setTeamInfo(null)
+      props.onClose()
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
-  const onConfirmDisbandTeam = () => {
+  const onConfirmDisbandTeam = async () => {
     if (!teamInfo || !isCaptain) return
-    api.team
-      .teamDeleteTeam(teamInfo.id!)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          title: t('team.notification.disband.success'),
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        setInviteCode('')
-        setTeamInfo(null)
-        mutateTeams(
-          teams?.filter((x) => x.id !== teamInfo.id),
-          { revalidate: false }
-        )
-        props.onClose()
+
+    try {
+      await api.team.teamDeleteTeam(teamInfo.id!)
+      showNotification({
+        color: 'teal',
+        title: t('team.notification.disband.success'),
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      setInviteCode('')
+      setTeamInfo(null)
+      mutateTeams(
+        teams?.filter((x) => x.id !== teamInfo.id),
+        { revalidate: false }
+      )
+      props.onClose()
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
-  const onTransferCaptain = (userId: string) => {
+  const onTransferCaptain = async (userId: string) => {
     if (!teamInfo || !isCaptain) return
-    api.team
-      .teamTransfer(teamInfo.id!, {
+
+    try {
+      await api.team.teamTransfer(teamInfo.id!, {
         newCaptainId: userId,
       })
-      .then((team) => {
-        showNotification({
-          color: 'teal',
-          title: t('team.notification.transfer.success'),
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        setTeamInfo(team.data)
-        mutateTeams(
-          teams?.map((x) => (x.id === teamInfo.id ? team.data : x)),
-          {
-            revalidate: false,
-          }
-        )
+      showNotification({
+        color: 'teal',
+        title: t('team.notification.transfer.success'),
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      mutateTeams(
+        teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)),
+        {
+          revalidate: false,
+        }
+      )
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
-  const onConfirmKickUser = (userId: string) => {
+  const onConfirmKickUser = async (userId: string) => {
     if (!teamInfo?.id || !isCaptain) return
 
-    api.team
-      .teamKickUser(teamInfo.id, userId)
-      .then((data) => {
-        showNotification({
-          color: 'teal',
-          title: t('team.notification.kick.success'),
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        setTeamInfo(data.data)
-        mutateTeams(
-          teams?.map((x) => (x.id === teamInfo?.id ? data.data : x)),
-          {
-            revalidate: false,
-          }
-        )
+    try {
+      await api.team.teamKickUser(teamInfo.id, userId)
+      showNotification({
+        color: 'teal',
+        title: t('team.notification.kick.success'),
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      mutateTeams(
+        teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)),
+        {
+          revalidate: false,
+        }
+      )
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
-  const onRefreshInviteCode = () => {
+  const onRefreshInviteCode = async () => {
     if (!inviteCode || !team?.id) return
 
-    api.team
-      .teamUpdateInviteToken(team.id)
-      .then((data) => {
-        setInviteCode(data.data)
-        showNotification({
-          color: 'teal',
-          message: t('team.notification.invite_code.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
+    try {
+      const code = await api.team.teamUpdateInviteToken(team.id)
+      setInviteCode(code.data)
+      showNotification({
+        color: 'teal',
+        message: t('team.notification.invite_code.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
-  const onChangeAvatar = () => {
+  const onChangeAvatar = async () => {
     if (!avatarFile || !teamInfo?.id) return
     setDisabled(true)
     notifications.clean()
@@ -228,64 +236,62 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       autoClose: false,
     })
 
-    api.team
-      .teamAvatar(teamInfo?.id, {
+    try {
+      const data = await api.team.teamAvatar(teamInfo.id, {
         file: avatarFile,
       })
-      .then((data) => {
-        updateNotification({
-          id: 'upload-avatar',
-          color: 'teal',
-          message: t('common.avatar.uploaded'),
-          icon: <Icon path={mdiCheck} size={1} />,
-          autoClose: true,
-          loading: false,
-        })
-        setAvatarFile(null)
-        const newTeamInfo = { ...teamInfo, avatar: data.data }
-        setTeamInfo(newTeamInfo)
-        mutateTeams(
-          teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)),
-          {
-            revalidate: false,
-          }
-        )
+      updateNotification({
+        id: 'upload-avatar',
+        color: 'teal',
+        message: t('common.avatar.uploaded'),
+        icon: <Icon path={mdiCheck} size={1} />,
+        autoClose: true,
+        loading: false,
       })
-      .catch((err) => {
-        updateNotification({
-          id: 'upload-avatar',
-          color: 'red',
-          title: t('common.avatar.upload_failed'),
-          message: tryGetErrorMsg(err, t),
-          icon: <Icon path={mdiClose} size={1} />,
-          autoClose: true,
-          loading: false,
-        })
+      setAvatarFile(null)
+      const newTeamInfo = { ...teamInfo, avatar: data.data }
+      setTeamInfo(newTeamInfo)
+      mutateTeams(
+        teams?.map((x) => (x.id === teamInfo.id ? newTeamInfo : x)),
+        {
+          revalidate: false,
+        }
+      )
+    } catch (err) {
+      updateNotification({
+        id: 'upload-avatar',
+        color: 'red',
+        title: t('common.avatar.upload_failed'),
+        message: tryGetErrorMsg(err, t),
+        icon: <Icon path={mdiClose} size={1} />,
+        autoClose: true,
+        loading: false,
       })
-      .finally(() => {
-        setDisabled(false)
-        setDropzoneOpened(false)
-      })
+    } finally {
+      setDisabled(false)
+      setDropzoneOpened(false)
+    }
   }
 
-  const onSaveChange = () => {
+  const onSaveChange = async () => {
     if (!teamInfo || !teamInfo?.id) return
-    api.team
-      .teamUpdateTeam(teamInfo.id, teamInfo)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutateTeams(
-          teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)),
-          {
-            revalidate: false,
-          }
-        )
+
+    try {
+      await api.team.teamUpdateTeam(teamInfo.id, teamInfo)
+      showNotification({
+        color: 'teal',
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      mutateTeams(
+        teams?.map((x) => (x.id === teamInfo.id ? teamInfo : x)),
+        {
+          revalidate: false,
+        }
+      )
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
   return (

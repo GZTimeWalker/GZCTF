@@ -80,101 +80,113 @@ const GameChallengeEdit: FC = () => {
     }
   }, [challenge])
 
-  const onUpdate = (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
+  const onUpdate = async (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
     if (!challenge) return
-
     setDisabled(true)
-    return api.edit
-      .editUpdateGameChallenge(numId, numCId, {
+
+    try {
+      const res = await api.edit.editUpdateGameChallenge(numId, numCId, {
         ...challenge,
         isEnabled: undefined,
       })
-      .then((data) => {
-        if (!noFeedback) {
-          showNotification({
-            color: 'teal',
-            message: t('admin.notification.games.challenges.updated'),
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-        }
-        mutate(data.data)
-        mutateChals()
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        if (!noFeedback) {
-          setDisabled(false)
-        }
-      })
-  }
-
-  const onConfirmDelete = () => {
-    api.edit
-      .editRemoveGameChallenge(numId, numCId)
-      .then(() => {
+      if (!noFeedback) {
         showNotification({
           color: 'teal',
-          message: t('admin.notification.games.challenges.deleted'),
+          message: t('admin.notification.games.challenges.updated'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        mutateChals(
-          challenges?.filter((chal) => chal.id !== numCId),
-          { revalidate: false }
-        )
-        navigate(`/admin/games/${id}/challenges`)
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
+      }
+      mutate(res.data)
+      mutateChals()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      if (!noFeedback) {
         setDisabled(false)
-      })
+      }
+    }
   }
 
-  const onCreateTestContainer = () => {
-    api.edit
-      .editCreateTestContainer(numId, numCId)
-      .then((res) => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.instances.created'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        if (challenge) mutate({ ...challenge, testContainer: res.data })
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
-  }
-
-  const onDestroyTestContainer = () => {
-    api.edit
-      .editDestroyTestContainer(numId, numCId)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.instances.deleted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        if (challenge) mutate({ ...challenge, testContainer: undefined })
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
-  }
-
-  const onToggleTestContainer = () => {
-    if (!challenge) return
-
+  const onConfirmDelete = async () => {
     setDisabled(true)
-    onUpdate(
+
+    try {
+      await api.edit.editRemoveGameChallenge(numId, numCId)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      mutateChals(
+        challenges?.filter((chal) => chal.id !== numCId),
+        { revalidate: false }
+      )
+      navigate(`/admin/games/${id}/challenges`)
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onCreateTestContainer = async () => {
+    // disabled by Toggle function
+
+    try {
+      const res = await api.edit.editCreateTestContainer(numId, numCId)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.instances.created'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      if (challenge) {
+        mutate({ ...challenge, testContainer: res.data })
+      }
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onDestroyTestContainer = async () => {
+    // disabled by Toggle function
+
+    try {
+      await api.edit.editDestroyTestContainer(numId, numCId)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.instances.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      if (challenge) {
+        mutate({ ...challenge, testContainer: undefined })
+      }
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onToggleTestContainer = async () => {
+    if (!challenge) return
+    setDisabled(true)
+
+    await onUpdate(
       {
         ...challengeInfo,
         category: category as ChallengeCategory,
         minScoreRate: minRate / 100,
       },
       true
-    )?.then(challenge?.testContainer ? onDestroyTestContainer : onCreateTestContainer)
+    )
+
+    if (challenge?.testContainer) {
+      await onDestroyTestContainer()
+    } else {
+      await onCreateTestContainer()
+    }
   }
 
   const tryDefault: <T>(

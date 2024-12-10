@@ -79,10 +79,9 @@ const workerFunction = function () {
     return count
   }
 
-  self.onmessage = (event: MessageEvent<PowRequest>) => {
-    solve(event.data).then((nonce) => {
-      self.postMessage(nonce)
-    })
+  self.onmessage = async (event: MessageEvent<PowRequest>) => {
+    const result = await solve(event.data)
+    self.postMessage(result)
   }
 }
 

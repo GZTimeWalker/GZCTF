@@ -19,7 +19,7 @@ export const PasswordChangeModal: FC<ModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onChangePwd = () => {
+  const onChangePwd = async () => {
     if (!pwd || !retypedPwd) {
       showNotification({
         color: 'red',
@@ -28,22 +28,22 @@ export const PasswordChangeModal: FC<ModalProps> = (props) => {
         icon: <Icon path={mdiClose} size={1} />,
       })
     } else if (pwd === retypedPwd) {
-      api.account
-        .accountChangePassword({
+      try {
+        await api.account.accountChangePassword({
           old: oldPwd,
           new: pwd,
         })
-        .then(() => {
-          showNotification({
-            color: 'teal',
-            message: t('account.notification.profile.password_updated'),
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-          props.onClose()
-          api.account.accountLogOut()
-          navigate('/account/login')
+        showNotification({
+          color: 'teal',
+          message: t('account.notification.profile.password_updated'),
+          icon: <Icon path={mdiCheck} size={1} />,
         })
-        .catch((e) => showErrorNotification(e, t))
+        props.onClose()
+        api.account.accountLogOut()
+        navigate('/account/login')
+      } catch (e) {
+        showErrorNotification(e, t)
+      }
     } else {
       showNotification({
         color: 'red',

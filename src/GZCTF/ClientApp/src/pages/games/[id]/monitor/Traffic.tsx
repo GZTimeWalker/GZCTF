@@ -24,6 +24,7 @@ import { useParams } from 'react-router'
 import { ScrollSelect } from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import api, { FileRecord } from '@Api'
@@ -83,47 +84,47 @@ const Traffic: FC = () => {
     window.open(`/api/game/captures/${challengeId}/${participationId}/all`, '_blank')
   }
 
-  const onDelete = (item: FileRecord) => {
+  const onDelete = async (item: FileRecord) => {
     if (!challengeId || !participationId || !item.fileName) return
 
     setDisabled(true)
 
-    return api.game
-      .gameDeleteTeamTraffic(challengeId, participationId, item.fileName)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('game.notification.traffic.deleted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
+    try {
+      await api.game.gameDeleteTeamTraffic(challengeId, participationId, item.fileName)
+      showNotification({
+        color: 'teal',
+        message: t('game.notification.traffic.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .finally(() => {
-        mutateTeams()
-        mutateTraffic()
-        setDisabled(false)
-      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      mutateTeams()
+      mutateTraffic()
+      setDisabled(false)
+    }
   }
 
-  const onDeleteAll = () => {
+  const onDeleteAll = async () => {
     if (!challengeId || !participationId) return
 
     setDisabled(true)
 
-    api.game
-      .gameDeleteAllTeamTraffic(challengeId, participationId)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('game.notification.traffic.deleted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
+    try {
+      await api.game.gameDeleteAllTeamTraffic(challengeId, participationId)
+      showNotification({
+        color: 'teal',
+        message: t('game.notification.traffic.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .finally(() => {
-        mutateTraffic([], false)
-        mutateTeams()
-        mutateChallenges()
-        setDisabled(false)
-      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      mutateTraffic()
+      mutateTeams()
+      mutateChallenges()
+      setDisabled(false)
+    }
   }
 
   const totalFileSize = fileRecords?.reduce((acc, cur) => acc + (cur?.size ?? 0), 0) ?? 0

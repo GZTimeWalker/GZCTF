@@ -69,52 +69,52 @@ const GameChallengeEdit: FC = () => {
     })
   }
 
-  const onConfirmToggle = (
+  const onConfirmToggle = async (
     challenge: ChallengeInfoModel,
     setDisabled: Dispatch<SetStateAction<boolean>>
   ) => {
     const numId = parseInt(id ?? '-1')
     setDisabled(true)
-    api.edit
-      .editUpdateGameChallenge(numId, challenge.id!, {
+
+    try {
+      await api.edit.editUpdateGameChallenge(numId, challenge.id!, {
         isEnabled: !challenge.isEnabled,
       })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate(
-          challenges?.map((c) =>
-            c.id === challenge.id ? { ...c, isEnabled: !challenge.isEnabled } : c
-          )
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      mutate(
+        challenges?.map((c) =>
+          c.id === challenge.id ? { ...c, isEnabled: !challenge.isEnabled } : c
         )
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      )
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
-  const onUpdateAcceptCount = () => {
+  const onUpdateAcceptCount = async () => {
     if (!numId) return
 
     setDisabled(true)
-    api.edit
-      .editUpdateGameChallengesAcceptedCount(numId)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.info.accept_count_updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate()
+
+    try {
+      await api.edit.editUpdateGameChallengesAcceptedCount(numId)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.info.accept_count_updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch(() => showErrorNotification(t('common.error.try_later'), t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      mutate()
+    } catch (e) {
+      showErrorNotification(t('common.error.try_later'), t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

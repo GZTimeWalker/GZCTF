@@ -7,14 +7,17 @@ export const useForeground = (image?: string | null) => {
   useEffect(() => {
     if (!image) return
 
-    const fac = new FastAverageColor()
-    fac.getColorAsync(image).then((color) => {
+    const getColor = async () => {
+      const fac = new FastAverageColor()
+      const color = await fac.getColorAsync(image)
       if (color.value[3] < 128) {
         setColor('var(--mantine-color-text)')
       } else {
         setColor(color.isDark ? 'white' : 'black')
       }
-    })
+    }
+
+    getColor()
   }, [image])
 
   return color

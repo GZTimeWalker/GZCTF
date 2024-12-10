@@ -41,28 +41,28 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     setActiveTeam(team)
   }, [team])
 
-  const onChangeTeamInfo = () => {
+  const onChangeTeamInfo = async () => {
     setDisabled(true)
-    api.admin
-      .adminUpdateTeam(activeTeam.id!, teamInfo)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutateTeam({
-          ...activeTeam,
-          name: teamInfo.name,
-          bio: teamInfo.bio,
-          locked: teamInfo.locked ?? activeTeam.locked,
-        })
-        modalProps.onClose()
+
+    try {
+      const res = await api.admin.adminUpdateTeam(activeTeam.id!, teamInfo)
+      showNotification({
+        color: 'teal',
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
+      mutateTeam({
+        ...activeTeam,
+        name: teamInfo.name,
+        bio: teamInfo.bio,
+        locked: teamInfo.locked ?? activeTeam.locked,
       })
+      modalProps.onClose()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

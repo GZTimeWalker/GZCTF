@@ -68,7 +68,7 @@ const Profile: FC = () => {
     })
   }, [user])
 
-  const onChangeAvatar = () => {
+  const onChangeAvatar = async () => {
     if (!avatarFile) return
 
     setDisabled(true)
@@ -81,75 +81,70 @@ const Profile: FC = () => {
       autoClose: false,
     })
 
-    api.account
-      .accountAvatar({
-        file: avatarFile,
+    try {
+      await api.account.accountAvatar({ file: avatarFile })
+      updateNotification({
+        id: 'upload-avatar',
+        color: 'teal',
+        message: t('common.avatar.uploaded'),
+        icon: <Icon path={mdiCheck} size={1} />,
+        autoClose: true,
+        loading: false,
       })
-      .then(() => {
-        updateNotification({
-          id: 'upload-avatar',
-          color: 'teal',
-          message: t('common.avatar.uploaded'),
-          icon: <Icon path={mdiCheck} size={1} />,
-          autoClose: true,
-          loading: false,
-        })
-        setDisabled(false)
-        mutate()
-        setAvatarFile(null)
+      setDisabled(false)
+      mutate()
+      setAvatarFile(null)
+    } catch (err) {
+      updateNotification({
+        id: 'upload-avatar',
+        color: 'red',
+        title: t('common.avatar.upload_failed'),
+        message: tryGetErrorMsg(err, t),
+        icon: <Icon path={mdiClose} size={1} />,
+        autoClose: true,
+        loading: false,
       })
-      .catch((err) => {
-        updateNotification({
-          id: 'upload-avatar',
-          color: 'red',
-          title: t('common.avatar.upload_failed'),
-          message: tryGetErrorMsg(err, t),
-          icon: <Icon path={mdiClose} size={1} />,
-          autoClose: true,
-          loading: false,
-        })
-      })
-      .finally(() => {
-        setDisabled(false)
-        setDropzoneOpened(false)
-      })
+    } finally {
+      setDisabled(false)
+      setDropzoneOpened(false)
+    }
   }
 
-  const onChangeProfile = () => {
-    api.account
-      .accountUpdate(profile)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('account.notification.profile.profile_updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate({ ...user })
+  const onChangeProfile = async () => {
+    try {
+      setDisabled(true)
+      await api.account.accountUpdate(profile)
+      showNotification({
+        color: 'teal',
+        message: t('account.notification.profile.profile_updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      mutate({ ...user })
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
-  const onChangeEmail = () => {
+  const onChangeEmail = async () => {
     if (!email) return
 
-    api.account
-      .accountChangeEmail({
-        newMail: email,
-      })
-      .then((res) => {
-        if (res.data.data) {
-          showNotification({
-            color: 'teal',
-            title: t('common.email.sent.title'),
-            message: t('common.email.sent.message'),
-            icon: <Icon path={mdiCheck} size={1} />,
-          })
-        } else {
-          mutate({ ...user, email: email })
-        }
-        setMailEditOpened(false)
-      })
-      .catch((e) => showErrorNotification(e, t))
+    try {
+      const res = await api.account.accountChangeEmail({ newMail: email })
+      if (res.data.data) {
+        showNotification({
+          color: 'teal',
+          title: t('common.email.sent.title'),
+          message: t('common.email.sent.message'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+      } else {
+        mutate({ ...user, email: email })
+      }
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   const context = (

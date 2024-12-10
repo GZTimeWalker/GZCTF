@@ -88,7 +88,7 @@ const GameInfoEdit: FC = () => {
     }
   }, [id, gameSource])
 
-  const onUpdatePoster = (file: File | undefined) => {
+  const onUpdatePoster = async (file: File | undefined) => {
     if (!game || !file) return
 
     setDisabled(true)
@@ -101,75 +101,72 @@ const GameInfoEdit: FC = () => {
       autoClose: false,
     })
 
-    api.edit
-      .editUpdateGamePoster(game.id!, { file })
-      .then((res) => {
-        updateNotification({
-          id: 'upload-poster',
-          color: 'teal',
-          message: t('admin.notification.games.info.poster.uploaded'),
-          icon: <Icon path={mdiCheck} size={1} />,
-          autoClose: true,
-          loading: false,
-        })
-        mutate({ ...game, poster: res.data })
+    try {
+      const res = await api.edit.editUpdateGamePoster(game.id!, { file })
+      updateNotification({
+        id: 'upload-poster',
+        color: 'teal',
+        message: t('admin.notification.games.info.poster.uploaded'),
+        icon: <Icon path={mdiCheck} size={1} />,
+        autoClose: true,
+        loading: false,
       })
-      .catch((err) => {
-        updateNotification({
-          id: 'upload-poster',
-          color: 'red',
-          title: t('admin.notification.games.info.poster.upload_failed'),
-          message: tryGetErrorMsg(err, t),
-          icon: <Icon path={mdiClose} size={1} />,
-          autoClose: true,
-          loading: false,
-        })
+      mutate({ ...game, poster: res.data })
+    } catch (err) {
+      updateNotification({
+        id: 'upload-poster',
+        color: 'red',
+        title: t('admin.notification.games.info.poster.upload_failed'),
+        message: tryGetErrorMsg(err, t),
+        icon: <Icon path={mdiClose} size={1} />,
+        autoClose: true,
+        loading: false,
       })
-      .finally(() => {
-        setDisabled(false)
-      })
+    } finally {
+      setDisabled(false)
+    }
   }
 
-  const onUpdateInfo = () => {
+  const onUpdateInfo = async () => {
     if (!game?.title) return
-
     setDisabled(true)
-    api.edit
-      .editUpdateGame(game.id!, {
+
+    try {
+      await api.edit.editUpdateGame(game.id!, {
         ...game,
         inviteCode: (game.inviteCode?.length ?? 0 > 6) ? game.inviteCode : null,
         start: start.toJSON(),
         end: end.toJSON(),
         writeupDeadline: end.add(wpddl, 'h').toJSON(),
       })
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.info.info_updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate()
-        api.game.mutateGameGamesAll()
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.info.info_updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      mutate()
+      api.game.mutateGameGamesAll()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
-  const onConfirmDelete = () => {
+  const onConfirmDelete = async () => {
     if (!game) return
-    api.edit
-      .editDeleteGame(game.id!)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.info.deleted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        navigate('/admin/games')
+
+    try {
+      await api.edit.editDeleteGame(game.id!)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.info.deleted'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
+      navigate('/admin/games')
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
   const onCopyPublicKey = () => {

@@ -66,60 +66,62 @@ const PostEdit: FC = () => {
   const isMobile = useIsMobile()
   const { colorScheme } = useMantineColorScheme()
 
-  const onUpdate = () => {
+  const onUpdate = async () => {
     if (postId === 'new') {
       setDisabled(true)
-      api.edit
-        .editAddPost(post)
-        .then((res) => {
-          api.info.mutateInfoGetLatestPosts()
-          api.info.mutateInfoGetPosts()
-          showNotification({
-            color: 'teal',
-            message: t('post.notification.created'),
-            icon: <Icon path={mdiCheck} size={24} />,
-          })
-          setHasChanged(false)
-          navigate(`/posts/${res.data}/edit`)
+
+      try {
+        const res = await api.edit.editAddPost(post)
+        api.info.mutateInfoGetLatestPosts()
+        api.info.mutateInfoGetPosts()
+        showNotification({
+          color: 'teal',
+          message: t('post.notification.created'),
+          icon: <Icon path={mdiCheck} size={24} />,
         })
-        .finally(() => {
-          setDisabled(false)
-        })
+        setHasChanged(false)
+        navigate(`/posts/${res.data}/edit`)
+      } catch (e) {
+        showErrorNotification(e, t)
+      } finally {
+        setDisabled(false)
+      }
     } else if (postId?.length === 8) {
       setDisabled(true)
-      api.edit
-        .editUpdatePost(postId, post)
-        .then((res) => {
-          api.info.mutateInfoGetPost(postId, res.data)
-          api.info.mutateInfoGetLatestPosts()
-          api.info.mutateInfoGetPosts()
-          showNotification({
-            color: 'teal',
-            message: t('post.notification.saved'),
-            icon: <Icon path={mdiCheck} size={24} />,
-          })
-          setHasChanged(false)
+
+      try {
+        const res = await api.edit.editUpdatePost(postId, post)
+        api.info.mutateInfoGetPost(postId, res.data)
+        api.info.mutateInfoGetLatestPosts()
+        api.info.mutateInfoGetPosts()
+        showNotification({
+          color: 'teal',
+          message: t('post.notification.saved'),
+          icon: <Icon path={mdiCheck} size={24} />,
         })
-        .finally(() => {
-          setDisabled(false)
-        })
+        setHasChanged(false)
+      } catch (e) {
+        showErrorNotification(e, t)
+      } finally {
+        setDisabled(false)
+      }
     }
   }
 
-  const onDelete = () => {
+  const onDelete = async () => {
     if (!postId) return
     setDisabled(true)
-    api.edit
-      .editDeletePost(postId)
-      .then(() => {
-        api.info.mutateInfoGetPosts()
-        api.info.mutateInfoGetLatestPosts()
-        navigate('/posts')
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+
+    try {
+      await api.edit.editDeletePost(postId)
+      api.info.mutateInfoGetPosts()
+      api.info.mutateInfoGetLatestPosts()
+      navigate('/posts')
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   useEffect(() => {

@@ -44,7 +44,7 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onUpload = () => {
+  const onUpload = async () => {
     if (files.length <= 0) {
       showNotification({
         color: 'red',
@@ -57,8 +57,8 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
     setProgress(0)
     setDisabled(true)
 
-    api.assets
-      .assetsUpload(
+    try {
+      const data = await api.assets.assetsUpload(
         {
           files,
         },
@@ -69,40 +69,34 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
           },
         }
       )
-      .then((data) => {
-        setProgress(95)
-        if (data.data) {
-          api.edit
-            .editAddFlags(
-              numId,
-              numCId,
-              data.data.map((f, idx) => ({
-                flag: files[idx].name,
-                attachmentType: FileType.Local,
-                fileHash: f.hash,
-              }))
-            )
-            .then(() => {
-              setProgress(0)
-              showNotification({
-                color: 'teal',
-                message: t('admin.notification.games.challenges.attachment.updated'),
-                icon: <Icon path={mdiCheck} size={1} />,
-              })
-              setFiles([])
-              mutate()
-              props.onClose()
-            })
-            .catch((err) => showErrorNotification(err, t))
-            .finally(() => {
-              setDisabled(false)
-            })
-        }
-      })
-      .catch((err) => showErrorNotification(err, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+
+      setProgress(95)
+      if (data.data) {
+        const res = await api.edit.editAddFlags(
+          numId,
+          numCId,
+          data.data.map((f, idx) => ({
+            flag: files[idx].name,
+            attachmentType: FileType.Local,
+            fileHash: f.hash,
+          }))
+        )
+
+        setProgress(0)
+        showNotification({
+          color: 'teal',
+          message: t('admin.notification.games.challenges.attachment.updated'),
+          icon: <Icon path={mdiCheck} size={1} />,
+        })
+        setFiles([])
+        mutate()
+        props.onClose()
+      }
+    } catch (err) {
+      showErrorNotification(err, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

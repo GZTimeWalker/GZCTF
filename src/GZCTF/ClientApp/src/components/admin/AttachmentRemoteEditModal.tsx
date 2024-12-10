@@ -39,24 +39,24 @@ export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
     setFlags(list)
   }, [text])
 
-  const onUpload = () => {
+  const onUpload = async () => {
     if (flags.length <= 0) return
-    api.edit
-      .editAddFlags(numId, numCId, flags)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.attachment.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        setText('')
-        mutate()
-        props.onClose()
+
+    try {
+      await api.edit.editAddFlags(numId, numCId, flags)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.attachment.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((err) => showErrorNotification(err, t))
-      .finally(() => {
-        setDisabled(false)
-      })
+      setText('')
+      mutate()
+      props.onClose()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

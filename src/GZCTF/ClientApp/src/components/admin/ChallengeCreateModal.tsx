@@ -34,31 +34,30 @@ export const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onCreate = () => {
+  const onCreate = async () => {
     if (!title || !category || !type) return
 
     setDisabled(true)
     const numId = parseInt(id ?? '-1')
 
-    api.edit
-      .editAddGameChallenge(numId, {
+    try {
+      const res = await api.edit.editAddGameChallenge(numId, {
         title: title,
         category: category as ChallengeCategory,
         type: type as ChallengeType,
       })
-      .then((data) => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.created'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        onAddChallenge(data.data)
-        navigate(`/admin/games/${id}/challenges/${data.data.id}`)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.created'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((err) => {
-        showErrorNotification(err, t)
-        setDisabled(false)
-      })
+      onAddChallenge(res.data)
+      navigate(`/admin/games/${id}/challenges/${res.data.id}`)
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   return (

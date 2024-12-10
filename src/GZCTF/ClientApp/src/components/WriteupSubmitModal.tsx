@@ -56,14 +56,14 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     setDisabled(dayjs().isAfter(wpddl))
   }, [wpddl])
 
-  const onUpload = (file: File | null) => {
+  const onUpload = async (file: File | null) => {
     if (!file || disabled) return
 
     setProgress(0)
     setDisabled(true)
 
-    api.game
-      .gameSubmitWriteup(
+    try {
+      const data = await api.game.gameSubmitWriteup(
         gameId,
         {
           file,
@@ -74,21 +74,20 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
           },
         }
       )
-      .then(() => {
-        setProgress(100)
-        showNotification({
-          color: 'teal',
-          message: t('game.notification.writeup.submitted'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate()
-        setDisabled(false)
+      setProgress(100)
+      showNotification({
+        color: 'teal',
+        message: t('game.notification.writeup.submitted'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((err) => showErrorNotification(err, t))
-      .finally(() => {
-        setProgress(0)
-        setDisabled(false)
-      })
+      mutate()
+      setDisabled(false)
+    } catch (err) {
+      showErrorNotification(err, t)
+    } finally {
+      setProgress(0)
+      setDisabled(false)
+    }
   }
 
   return (

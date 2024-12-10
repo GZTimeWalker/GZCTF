@@ -50,32 +50,38 @@ const Games: FC = () => {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const onToggleHidden = (game: GameInfoModel) => {
+  const onToggleHidden = async (game: GameInfoModel) => {
     if (!game.id) return
-
     setDisabled(true)
-    api.edit
-      .editUpdateGame(game.id, {
+
+    try {
+      await api.edit.editUpdateGame(game.id, {
         ...game,
         hidden: !game.hidden,
       })
-      .then(() => {
-        games && updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => setDisabled(false))
+      games && updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   useEffect(() => {
-    api.edit
-      .editGetGames({
-        count: ITEM_COUNT_PER_PAGE,
-        skip: (page - 1) * ITEM_COUNT_PER_PAGE,
-      })
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        const res = await api.edit.editGetGames({
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (page - 1) * ITEM_COUNT_PER_PAGE,
+        })
         setGames(res.data)
         setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
-      })
+      } catch (e) {
+        showErrorNotification(e, t)
+      }
+    }
+
+    fetchData()
   }, [page])
 
   return (

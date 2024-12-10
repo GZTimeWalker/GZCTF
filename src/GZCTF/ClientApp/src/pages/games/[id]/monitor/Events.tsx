@@ -20,6 +20,7 @@ import {
   mdiExclamationThick,
   mdiFlag,
   mdiLightningBolt,
+  mdiReplay,
   mdiToggleSwitchOffOutline,
   mdiToggleSwitchOutline,
 } from '@mdi/js'
@@ -32,6 +33,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
+import { handleAxiosError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Hooks/useGame'
@@ -142,23 +144,26 @@ const Events: FC = () => {
   }, [activePage, viewport])
 
   useEffect(() => {
-    api.game
-      .gameEvents(numId, {
-        hideContainer: hideContainerEvents,
-        count: ITEM_COUNT_PER_PAGE,
-        skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
-      })
-      .then((data) => {
-        setEvents(data.data)
-      })
-      .catch((err) => {
+    const fetchEvents = async () => {
+      try {
+        const res = await api.game.gameEvents(numId, {
+          hideContainer: hideContainerEvents,
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
+        })
+        setEvents(res.data)
+      } catch (err) {
         showNotification({
           color: 'red',
           title: t('game.notification.fetch_failed.event'),
-          message: err.response.data.title,
+          message: await handleAxiosError(err),
           icon: <Icon path={mdiClose} size={1} />,
         })
-      })
+      }
+    }
+
+    fetchEvents()
+
     if (activePage === 1) {
       newEvents.current = []
     }
@@ -181,18 +186,20 @@ const Events: FC = () => {
         update(new Date(message.time!))
       })
 
-      connection
-        .start()
-        .then(() => {
+      const startConnection = async () => {
+        try {
+          await connection.start()
           showNotification({
             color: 'teal',
             message: t('game.notification.connected.event'),
             icon: <Icon path={mdiCheck} size={1} />,
           })
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      startConnection()
 
       return () => {
         connection.stop().catch((err) => {
@@ -220,6 +227,9 @@ const Events: FC = () => {
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
         />
         <Group justify="right">
+          <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(1)}>
+            <Icon path={mdiReplay} size={1} />
+          </ActionIcon>
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
             <Icon path={mdiArrowLeftBold} size={1} />
           </ActionIcon>

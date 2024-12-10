@@ -41,82 +41,84 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
 
-  const onCreate = () => {
-    if (!challengeId || disabled) return
-    setDisabled(true)
-    api.game
-      .gameCreateContainer(gameId, challengeId)
-      .then((res) => {
-        mutate({
-          ...challenge,
-          context: {
-            ...challenge?.context,
-            closeTime: res.data.expectStopAt,
-            instanceEntry: res.data.entry,
-          },
-        })
-        showNotification({
-          color: 'teal',
-          title: t('challenge.notification.instance.created.title'),
-          message: t('challenge.notification.instance.created.message'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => setDisabled(false))
-  }
-
-  const onDestroy = () => {
+  const onCreate = async () => {
     if (!challengeId || disabled) return
     setDisabled(true)
 
-    mutate()
-      .then((res) => {
-        // the instanceEntry is already destroyed
-        if (!res?.context?.instanceEntry) return
-
-        return api.game
-          .gameDeleteContainer(gameId, challengeId)
-          .then(() => {
-            mutate({
-              ...challenge,
-              context: {
-                ...challenge?.context,
-                closeTime: null,
-                instanceEntry: null,
-              },
-            })
-            showNotification({
-              color: 'teal',
-              title: t('challenge.notification.instance.destroyed.title'),
-              message: t('challenge.notification.instance.destroyed.message'),
-              icon: <Icon path={mdiCheck} size={1} />,
-            })
-          })
-          .catch((e) => showErrorNotification(e, t))
+    try {
+      const res = await api.game.gameCreateContainer(gameId, challengeId)
+      mutate({
+        ...challenge,
+        context: {
+          ...challenge?.context,
+          closeTime: res.data.expectStopAt,
+          instanceEntry: res.data.entry,
+        },
       })
-      .finally(() => setDisabled(false))
+      showNotification({
+        color: 'teal',
+        title: t('challenge.notification.instance.created.title'),
+        message: t('challenge.notification.instance.created.message'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
-  const onExtend = () => {
+  const onDestroy = async () => {
     if (!challengeId || disabled) return
     setDisabled(true)
-    api.game
-      .gameExtendContainerLifetime(gameId, challengeId)
-      .then((res) => {
-        mutate({
-          ...challenge,
-          context: {
-            ...challenge?.context,
-            closeTime: res.data.expectStopAt,
-          },
-        })
+
+    try {
+      await mutate()
+      if (!challenge?.context?.instanceEntry) return
+
+      await api.game.gameDeleteContainer(gameId, challengeId)
+      mutate({
+        ...challenge,
+        context: {
+          ...challenge?.context,
+          closeTime: null,
+          instanceEntry: null,
+        },
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => setDisabled(false))
+      showNotification({
+        color: 'teal',
+        title: t('challenge.notification.instance.destroyed.title'),
+        message: t('challenge.notification.instance.destroyed.message'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
-  const onSubmit = () => {
+  const onExtend = async () => {
+    if (!challengeId || disabled) return
+    setDisabled(true)
+
+    try {
+      const res = await api.game.gameExtendContainerLifetime(gameId, challengeId)
+      mutate({
+        ...challenge,
+        context: {
+          ...challenge?.context,
+          closeTime: res.data.expectStopAt,
+        },
+      })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
+  }
+
+  const onSubmit = async () => {
     if (!challengeId || !flag) {
       showNotification({
         color: 'red',
@@ -127,51 +129,49 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     }
 
     setDisabled(true)
-    api.game
-      .gameSubmit(gameId, challengeId, {
+
+    try {
+      const res = await api.game.gameSubmit(gameId, challengeId, {
         flag,
       })
-      .then((res) => {
-        setSubmitId(res.data)
-        notifications.clean()
-        showNotification({
-          id: 'flag-submitted',
-          color: 'orange',
-          title: t('challenge.notification.flag.submitted.title'),
-          message: t('challenge.notification.flag.submitted.message'),
-          loading: true,
-          autoClose: false,
-        })
+      setSubmitId(res.data)
+      notifications.clean()
+      showNotification({
+        id: 'flag-submitted',
+        color: 'orange',
+        title: t('challenge.notification.flag.submitted.title'),
+        message: t('challenge.notification.flag.submitted.message'),
+        loading: true,
+        autoClose: false,
       })
-      .catch((e) => showErrorNotification(e, t))
+    } catch (e) {
+      showErrorNotification(e, t)
+    }
   }
 
   useEffect(() => {
     // submitId initialization will trigger useEffect
     if (!submitId) return
 
-    const polling = setInterval(() => {
-      api.game
-        .gameStatus(gameId, challengeId, submitId)
-        .then((res) => {
-          if (res.data !== AnswerResult.FlagSubmitted) {
-            setDisabled(false)
-            setFlag('')
-            checkDataFlag(submitId, res.data)
-            clearInterval(polling)
-          }
-        })
-        .catch((err) => {
-          setDisabled(false)
-          setFlag('')
-          showErrorNotification(err, t)
-          clearInterval(polling)
-        })
-    }, 500)
+    const pollingStatus = async () => {
+      try {
+        const res = await api.game.gameStatus(gameId, challengeId, submitId)
+        if (res.data === AnswerResult.FlagSubmitted) return
+        setDisabled(false)
+        setFlag('')
+        checkDataFlag(submitId, res.data)
+      } catch (err) {
+        setDisabled(false)
+        setFlag('')
+        showErrorNotification(err, t)
+      }
+    }
+
+    const polling = setInterval(pollingStatus, 500)
     return () => clearInterval(polling)
   }, [submitId])
 
-  const checkDataFlag = (id: number, data: string) => {
+  const checkDataFlag = async (id: number, data: string) => {
     if (data === AnswerResult.Accepted) {
       updateNotification({
         id: 'flag-submitted',
@@ -184,8 +184,8 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         autoClose: 8000,
         loading: false,
       })
-      if (isDynamic && challenge.context?.instanceEntry) onDestroy()
-      mutate()
+      if (isDynamic && challenge.context?.instanceEntry) await onDestroy()
+      await mutate()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
       updateNotification({

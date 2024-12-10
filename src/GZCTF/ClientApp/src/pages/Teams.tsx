@@ -56,7 +56,7 @@ const Teams: FC = () => {
 
   const codePartten = /:\d+:[0-9a-f]{32}$/
 
-  const onJoinTeam = () => {
+  const onJoinTeam = async () => {
     if (!codePartten.test(joinTeamCode)) {
       showNotification({
         color: 'red',
@@ -67,22 +67,21 @@ const Teams: FC = () => {
       return
     }
 
-    api.team
-      .teamAccept(joinTeamCode)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          title: t('team.notification.join.success'),
-          message: t('team.notification.updated'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutateTeams()
+    try {
+      await api.team.teamAccept(joinTeamCode)
+      showNotification({
+        color: 'teal',
+        title: t('team.notification.join.success'),
+        message: t('team.notification.updated'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setJoinTeamCode('')
-        setJoinOpened(false)
-      })
+      mutateTeams()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setJoinTeamCode('')
+      setJoinOpened(false)
+    }
   }
 
   const { colorScheme } = useMantineColorScheme()

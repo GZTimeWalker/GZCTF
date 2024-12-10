@@ -4,6 +4,32 @@ import { Icon } from '@mdi/react'
 import { AxiosError, AxiosResponse } from 'axios'
 import { ContentType } from '@Api'
 
+export const tryGetErrorMsg = (err: any, t: (key: string) => string) => {
+  return err?.response?.data?.title ?? err?.title ?? err ?? t('common.error.unknown')
+}
+
+export const handleAxiosError = async (err: unknown) => {
+  if (err instanceof AxiosError) {
+    if (err.response?.data instanceof Blob) {
+      const data = err.response.data
+
+      if (data.type === ContentType.Text) {
+        return await data.text()
+      }
+
+      if (data.type === ContentType.Json) {
+        const res = window.JSON.parse(await data.text())
+        if (res.title) {
+          return res.title
+        }
+      }
+    }
+    return err.message
+  } else {
+    return err
+  }
+}
+
 const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) => {
   if (res.data instanceof Blob) {
     const blobURL = window.URL.createObjectURL(res.data)
@@ -24,25 +50,7 @@ const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) =>
   }
 }
 
-const handleAxiosBlobError = async (err: AxiosError) => {
-  if (err.response?.data instanceof Blob) {
-    const data = err.response.data
-
-    if (data.type === ContentType.Text) {
-      return await data.text()
-    }
-
-    if (data.type === ContentType.Json) {
-      const res = window.JSON.parse(await data.text())
-      if (res.title) {
-        return res.title
-      }
-    }
-  }
-  return err.message
-}
-
-export const downloadBlob = (
+export const downloadBlob = async (
   promise: Promise<AxiosResponse>,
   filename: string | undefined,
   setDisabled: (value: React.SetStateAction<boolean>) => void,
@@ -58,36 +66,30 @@ export const downloadBlob = (
     autoClose: false,
   })
 
-  promise
-    .then((res) => {
-      updateNotification({
-        id: 'blob-download',
-        color: 'teal',
-        message: t('common.download.success'),
-        icon: <Icon path={mdiCheck} size={1} />,
-        loading: false,
-        autoClose: true,
-      })
-      openAxiosBlobResponse(res, filename)
+  try {
+    const res = await promise
+    updateNotification({
+      id: 'blob-download',
+      color: 'teal',
+      message: t('common.download.success'),
+      icon: <Icon path={mdiCheck} size={1} />,
+      loading: false,
+      autoClose: true,
     })
-    .catch(async (err: AxiosError) => {
-      updateNotification({
-        id: 'blob-download',
-        color: 'red',
-        title: t('common.download.failed'),
-        message: await handleAxiosBlobError(err),
-        icon: <Icon path={mdiClose} size={1} />,
-        autoClose: false,
-        withCloseButton: true,
-      })
+    openAxiosBlobResponse(res, filename)
+  } catch (err) {
+    updateNotification({
+      id: 'blob-download',
+      color: 'red',
+      title: t('common.download.failed'),
+      message: await handleAxiosError(err),
+      icon: <Icon path={mdiClose} size={1} />,
+      autoClose: false,
+      withCloseButton: true,
     })
-    .finally(() => {
-      setDisabled(false)
-    })
-}
-
-export const tryGetErrorMsg = (err: any, t: (key: string) => string) => {
-  return err?.response?.data?.title ?? err?.title ?? err ?? t('common.error.unknown')
+  } finally {
+    setDisabled(false)
+  }
 }
 
 export const showErrorNotification = (err: any, t: (key: string) => string) => {

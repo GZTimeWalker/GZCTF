@@ -79,20 +79,19 @@ const Configs: FC = () => {
     }
   }
 
-  const onResetLogo = () => {
+  const onResetLogo = async () => {
     setDisabled(true)
     setLogoFile(null)
 
-    api.admin
-      .adminResetLogo()
-      .then(() => {
-        mutate({ ...configs, globalConfig: { ...globalConfig, faviconHash: '' } })
-      })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        mutateConfig({ ...configs, logoUrl: '' })
-        setDisabled(false)
-      })
+    try {
+      await api.admin.adminResetLogo()
+      mutate({ ...configs, globalConfig: { ...globalConfig, faviconHash: '' } })
+      mutateConfig({ ...configs, logoUrl: '' })
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+    }
   }
 
   const colors = color && /^#[0-9A-F]{6}$/i.test(color) ? generateColors(color) : theme.colors.brand

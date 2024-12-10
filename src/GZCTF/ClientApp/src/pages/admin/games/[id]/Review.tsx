@@ -275,9 +275,16 @@ const GameTeamReview: FC = () => {
       return
     }
 
-    api.game.gameParticipations(numId).then((res) => {
-      setParticipations(res.data)
-    })
+    const fetchData = async () => {
+      try {
+        const res = await api.game.gameParticipations(numId)
+        setParticipations(res.data)
+      } catch (err: any) {
+        showErrorNotification(err, t)
+      }
+    }
+
+    fetchData()
   }, [])
 
   const divs = Array.from(new Set(participations?.map((p) => p.division ?? '') ?? [])).filter(

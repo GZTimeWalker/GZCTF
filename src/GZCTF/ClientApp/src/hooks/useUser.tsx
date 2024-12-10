@@ -18,15 +18,14 @@ export const useUser = () => {
     refreshInterval: 0,
     shouldRetryOnError: false,
     revalidateOnFocus: false,
-    onErrorRetry: (err, _key, _config, revalidate, { retryCount }) => {
+    onErrorRetry: async (err, _key, _config, revalidate, { retryCount }) => {
       if (err?.status === 403) {
-        api.account.accountLogOut().then(() => {
-          navigate('/')
-          showNotification({
-            color: 'red',
-            message: t('account.notification.login.banned'),
-            icon: <Icon path={mdiClose} size={1} />,
-          })
+        await api.account.accountLogOut()
+        navigate('/')
+        showNotification({
+          color: 'red',
+          message: t('account.notification.login.banned'),
+          icon: <Icon path={mdiClose} size={1} />,
         })
         return
       }
@@ -70,24 +69,22 @@ export const useLogOut = () => {
   const { mutate: mutateProfile } = useUser()
   const { t } = useTranslation()
 
-  return () => {
-    api.account
-      .accountLogOut()
-      .then(() => {
-        navigate('/')
-        mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
-          revalidate: false,
-        })
-        mutateProfile(undefined, { revalidate: false })
-        showNotification({
-          color: 'teal',
-          message: t('account.notification.logout'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
+  return async () => {
+    try {
+      await api.account.accountLogOut()
+      navigate('/')
+      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
+        revalidate: false,
       })
-      .catch(() => {
-        navigate('/')
-        mutateProfile(undefined, { revalidate: false })
+      mutateProfile(undefined, { revalidate: false })
+      showNotification({
+        color: 'teal',
+        message: t('account.notification.logout'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
+    } catch (e) {
+      navigate('/')
+      mutateProfile(undefined, { revalidate: false })
+    }
   }
 }

@@ -25,7 +25,7 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onCreate = () => {
+  const onCreate = async () => {
     if (!title || end < start) {
       showNotification({
         color: 'red',
@@ -37,25 +37,24 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
     }
 
     setDisabled(true)
-    api.edit
-      .editAddGame({
+
+    try {
+      const res = await api.edit.editAddGame({
         title,
         start: start.toJSON(),
         end: end.toJSON(),
       })
-      .then((data) => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.created'),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        onAddGame(data.data)
-        navigate(`/admin/games/${data.data.id}/info`)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.created'),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((err) => {
-        showErrorNotification(err, t)
-        setDisabled(false)
-      })
+      onAddGame(res.data)
+      navigate(`/admin/games/${res.data.id}/info`)
+    } catch (e) {
+      showErrorNotification(e, t)
+      setDisabled(false)
+    }
   }
 
   return (

@@ -31,25 +31,24 @@ export const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onCreateTeam = () => {
+  const onCreateTeam = async () => {
     setDisabled(true)
 
-    api.team
-      .teamCreateTeam(createTeam)
-      .then((res) => {
-        showNotification({
-          color: 'teal',
-          title: t('team.notification.create.success.title'),
-          message: t('team.notification.create.success.message', { team: res.data.name }),
-          icon: <Icon path={mdiCheck} size={1} />,
-        })
-        mutate()
+    try {
+      const res = await api.team.teamCreateTeam(createTeam)
+      showNotification({
+        color: 'teal',
+        title: t('team.notification.create.success.title'),
+        message: t('team.notification.create.success.message', { team: res.data.name }),
+        icon: <Icon path={mdiCheck} size={1} />,
       })
-      .catch((e) => showErrorNotification(e, t))
-      .finally(() => {
-        setDisabled(false)
-        modalProps.onClose()
-      })
+      mutate()
+    } catch (e) {
+      showErrorNotification(e, t)
+    } finally {
+      setDisabled(false)
+      modalProps.onClose()
+    }
   }
 
   return (

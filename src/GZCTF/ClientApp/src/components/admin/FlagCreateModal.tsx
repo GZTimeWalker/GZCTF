@@ -21,7 +21,7 @@ export const FlagCreateModal: FC<ModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onCreate = () => {
+  const onCreate = async () => {
     if (!flags) {
       return
     }
@@ -32,29 +32,25 @@ export const FlagCreateModal: FC<ModalProps> = (props) => {
       .map((x) => ({ flag: x }))
 
     setDisabled(true)
-    api.edit
-      .editAddFlags(numId, numCId, flagList)
-      .then(() => {
-        showNotification({
-          color: 'teal',
-          message: t('admin.notification.games.challenges.flag.created'),
-          icon: <Icon path={mdiCheck} size={1} />,
+
+    try {
+      const res = await api.edit.editAddFlags(numId, numCId, flagList)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.games.challenges.flag.created'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      challenge &&
+        mutate({
+          ...challenge,
+          flags: [...(challenge.flags ?? []), ...flagList],
         })
-        challenge &&
-          mutate({
-            ...challenge,
-            flags: [...(challenge.flags ?? []), ...flagList],
-          })
-      })
-      .catch((err) => {
-        showErrorNotification(err, t)
-        setDisabled(false)
-      })
-      .finally(() => {
-        setFlags('')
-        setDisabled(false)
-        props.onClose()
-      })
+      setFlags('')
+      props.onClose()
+    } catch (e) {
+      showErrorNotification(e, t)
+      setDisabled(false)
+    }
   }
 
   return (

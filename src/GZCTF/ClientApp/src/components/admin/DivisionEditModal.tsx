@@ -17,13 +17,17 @@ export const DivisionEditModal: FC<DivisionEditModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (!division) return
     setDisabled(true)
-    setParticipation(participateId, { division }).then(() => {
+
+    try {
+      await setParticipation(participateId, { division })
       setDisabled(false)
       modalProps.onClose()
-    })
+    } catch (e) {
+      setDisabled(false)
+    }
   }
 
   return (

@@ -101,7 +101,7 @@ export const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
   text,
   textColor = '#cccccc',
   textSize = 24,
-  fontFamily = '"JetBrains Mono", "Ubuntu Mono", Courier, Consolas, monospace',
+  fontFamily = 'JetBrains Mono, ui-monospace, Monaco, Consolas, Courier New, monospace, sans-serif',
   opacity = 0.2,
   lineHeight = '1.2rem',
   multiline = false,
@@ -162,8 +162,8 @@ export const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
     .map(([key, value]) => `${kebabCase(key)}:${value}`)
     .join(';')
 
-  const wrapperRef = useRef<HTMLDivElement>()
-  const watermarkRef = useRef<HTMLDivElement>()
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const watermarkRef = useRef<HTMLDivElement>(null)
 
   const watermarkBox: (layers: number, child: HTMLDivElement) => HTMLDivElement = (
     layers,
