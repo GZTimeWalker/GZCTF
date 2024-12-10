@@ -3,6 +3,22 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.1.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.5..v1.1.0) - 2024-12-10
+
+### ⛰️ Features
+
+- **(frontend)** use timestamp for api - ([79d44e](https://github.com/GZTimeWalker/GZCTF/commit/79d44e)) by **GZTime**
+- replace lang in index.html - ([4fa607](https://github.com/GZTimeWalker/GZCTF/commit/4fa607)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(frontend)** use modern async - ([fb2a66](https://github.com/GZTimeWalker/GZCTF/commit/fb2a66)) by **GZTime**
+
+### 📦 Other Changes
+
+- use long to present time in json - ([5f26b3](https://github.com/GZTimeWalker/GZCTF/commit/5f26b3)) by **Kengwang**
+
+---
 ## [1.0.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.0.4..v1.0.5) - 2024-12-08
 
 ### 🐛 Bug Fixes
