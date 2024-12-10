@@ -107,7 +107,7 @@ public static class LogHelper
 
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
-                diagnosticContext.Set("IP", httpContext.Connection.RemoteIpAddress);
+                diagnosticContext.Set("IP", httpContext.Connection.RemoteIpAddress?.ToString() ?? "");
             };
         });
 

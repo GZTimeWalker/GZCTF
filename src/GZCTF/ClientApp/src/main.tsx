@@ -11,7 +11,6 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources,
     fallbackLng: convertLanguage,
     interpolation: {
       escapeValue: false,
@@ -19,6 +18,14 @@ i18n
     detection: {
       convertDetectedLanguage: convertLanguage,
     },
+    resources: Object.fromEntries(
+      Object.entries(resources).map(([lang, res]) => [
+        lang,
+        {
+          translation: res,
+        },
+      ])
+    ),
   })
 
 const app = ReactDOM.createRoot(document.getElementById('root')!)

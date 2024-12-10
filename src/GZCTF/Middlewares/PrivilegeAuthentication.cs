@@ -39,8 +39,8 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         }
 
         diagnosticContext.Set("UserId", user.Id);
-        diagnosticContext.Set("UserName", user.UserName);
-        diagnosticContext.Set("IP", context.HttpContext.Connection.RemoteIpAddress);
+        diagnosticContext.Set("UserName", user.UserName ?? "Anonymous");
+        diagnosticContext.Set("IP", context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "");
 
         if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
         {
