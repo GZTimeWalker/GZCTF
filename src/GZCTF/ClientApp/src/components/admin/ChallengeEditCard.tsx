@@ -41,11 +41,7 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
   const minIdx = colorScheme === 'dark' ? 8 : 6
   const curIdx = colorScheme === 'dark' ? 6 : 4
 
-  const [min, cur, tot] = [
-    challenge.minScore ?? 0,
-    challenge.score ?? 500,
-    challenge.originalScore ?? 500,
-  ]
+  const [min, cur, tot] = [challenge.minScore ?? 0, challenge.score ?? 500, challenge.originalScore ?? 500]
   const minRate = (min / tot) * 100
   const curRate = (cur / tot) * 100
 
@@ -61,11 +57,7 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           onChange={() => onToggle(challenge, setDisabled)}
         />
 
-        <Icon
-          path={data!.icon}
-          color={theme.colors[data?.color ?? theme.primaryColor][5]}
-          size={1.2}
-        />
+        <Icon path={data!.icon} color={theme.colors[data?.color ?? theme.primaryColor][5]} size={1.2} />
 
         <Stack gap={0} maw={contentWidth} miw={contentWidth}>
           <Text truncate fw="bold">
@@ -79,17 +71,8 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           </Text>
         </Stack>
 
-        <Tooltip
-          label={t('admin.button.challenges.edit')}
-          position="left"
-          offset={10}
-          classNames={classes}
-        >
-          <ActionIcon
-            c={color}
-            component={Link}
-            to={`/admin/games/${id}/challenges/${challenge.id}`}
-          >
+        <Tooltip label={t('admin.button.challenges.edit')} position="left" offset={10} classNames={classes}>
+          <ActionIcon c={color} component={Link} to={`/admin/games/${id}/challenges/${challenge.id}`}>
             <Icon path={mdiPuzzleEditOutline} size={1} />
           </ActionIcon>
         </Tooltip>
@@ -100,11 +83,7 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           offset={54}
           classNames={classes}
         >
-          <ActionIcon
-            c={color}
-            component={Link}
-            to={`/admin/games/${id}/challenges/${challenge.id}/flags`}
-          >
+          <ActionIcon c={color} component={Link} to={`/admin/games/${id}/challenges/${challenge.id}/flags`}>
             <Icon path={mdiDatabaseEditOutline} size={1} />
           </ActionIcon>
         </Tooltip>

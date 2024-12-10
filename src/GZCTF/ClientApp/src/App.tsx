@@ -34,9 +34,7 @@ export const App: FC = () => {
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Notifications zIndex={5000} />
           <DatesProvider settings={{ locale }}>
-            <ModalsProvider
-              labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}
-            >
+            <ModalsProvider labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}>
               <SWRConfig
                 value={{
                   refreshInterval: 10000,

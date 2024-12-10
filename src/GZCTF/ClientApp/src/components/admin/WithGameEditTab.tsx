@@ -89,11 +89,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
         >
           <Tabs.List>
             {pages.map((page) => (
-              <Tabs.Tab
-                key={page.path}
-                leftSection={<Icon path={page.icon} size={1} />}
-                value={page.path}
-              >
+              <Tabs.Tab key={page.path} leftSection={<Icon path={page.icon} size={1} />} value={page.path}>
                 {page.title}
               </Tabs.Tab>
             ))}

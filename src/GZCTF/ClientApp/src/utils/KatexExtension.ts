@@ -23,8 +23,7 @@ function createRenderer(options: MarkedOptions, newlineAfter: boolean): Renderer
   return (token: Tokens.Generic) => {
     if (token.type === 'inlineKatex' || token.type === 'blockKatex') {
       return (
-        katex.renderToString(token.text, { ...options, displayMode: token.displayMode }) +
-        (newlineAfter ? '\n' : '')
+        katex.renderToString(token.text, { ...options, displayMode: token.displayMode }) + (newlineAfter ? '\n' : '')
       )
     }
   }
@@ -37,10 +36,7 @@ interface InlineKatex extends Tokens.Generic {
   displayMode: boolean
 }
 
-function inlineKatex(
-  options: MarkedOptions,
-  renderer: RendererExtensionFunction
-): TokenizerAndRendererExtension {
+function inlineKatex(options: MarkedOptions, renderer: RendererExtensionFunction): TokenizerAndRendererExtension {
   return {
     name: 'inlineKatex',
     level: 'inline',
@@ -87,10 +83,7 @@ interface BlockKatex extends Tokens.Generic {
   displayMode: boolean
 }
 
-function blockKatex(
-  options: MarkedOptions,
-  renderer: RendererExtensionFunction
-): TokenizerAndRendererExtension {
+function blockKatex(options: MarkedOptions, renderer: RendererExtensionFunction): TokenizerAndRendererExtension {
   return {
     name: 'blockKatex',
     level: 'block',

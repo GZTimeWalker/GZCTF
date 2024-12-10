@@ -1,15 +1,5 @@
-import {
-  Card,
-  Center,
-  List,
-  ScrollArea,
-  SegmentedControl,
-  Stack,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
+import { Card, Center, List, ScrollArea, SegmentedControl, Stack, Text, useMantineTheme } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
@@ -38,9 +28,7 @@ const ApplyFilter = (notices: GameNotice[], filter: NoticeFilter) => {
     case NoticeFilter.All:
       return notices
     case NoticeFilter.Challenge:
-      return notices.filter(
-        (notice) => notice.type === NoticeType.NewChallenge || notice.type === NoticeType.NewHint
-      )
+      return notices.filter((notice) => notice.type === NoticeType.NewChallenge || notice.type === NoticeType.NewHint)
     case NoticeFilter.Events:
       return notices.filter(
         (notice) =>
@@ -192,12 +180,7 @@ export const GameNoticePanel: FC = () => {
                       {dayjs(notice.time).locale(locale).format('SLL LTS')}
                     </Text>
                     {notice.type === NoticeType.Normal ? (
-                      <InlineMarkdown
-                        fz="sm"
-                        fw={500}
-                        c="dimmed"
-                        source={formatNotice(t, notice)}
-                      />
+                      <InlineMarkdown fz="sm" fw={500} c="dimmed" source={formatNotice(t, notice)} />
                     ) : (
                       <Text fz="sm" fw={500} c="dimmed" className={typoClasses.inline}>
                         {formatNotice(t, notice)}

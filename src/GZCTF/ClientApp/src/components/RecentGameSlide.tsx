@@ -16,8 +16,7 @@ export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
   const { t } = useTranslation()
   const color = GameColorMap.get(status)
 
-  const duration =
-    status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
+  const duration = status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
   const titleColor = useForeground(poster)
 

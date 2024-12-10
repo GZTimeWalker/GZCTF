@@ -16,13 +16,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import {
-  mdiCheck,
-  mdiContentSaveOutline,
-  mdiDatabaseEditOutline,
-  mdiDeleteOutline,
-  mdiEyeOutline,
-} from '@mdi/js'
+import { mdiCheck, mdiContentSaveOutline, mdiDatabaseEditOutline, mdiDeleteOutline, mdiEyeOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -57,9 +51,7 @@ const GameChallengeEdit: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const [minRate, setMinRate] = useState((challenge?.minScoreRate ?? 0.25) * 100)
-  const [category, setCategory] = useState<string | null>(
-    challenge?.category ?? ChallengeCategory.Misc
-  )
+  const [category, setCategory] = useState<string | null>(challenge?.category ?? ChallengeCategory.Misc)
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
   const [previewOpened, setPreviewOpened] = useState(false)
@@ -189,10 +181,7 @@ const GameChallengeEdit: FC = () => {
     }
   }
 
-  const tryDefault: <T>(
-    values: T[],
-    defaultValue?: NonNullable<T>
-  ) => NonNullable<T> | undefined = (vs, d) => {
+  const tryDefault: <T>(values: T[], defaultValue?: NonNullable<T>) => NonNullable<T> | undefined = (vs, d) => {
     return vs.find((v) => !!v) ?? d
   }
 
@@ -359,10 +348,7 @@ const GameChallengeEdit: FC = () => {
                   stepHoldDelay={500}
                   stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                   value={challengeInfo?.originalScore ?? 500}
-                  onChange={(e) =>
-                    typeof e !== 'string' &&
-                    setChallengeInfo({ ...challengeInfo, originalScore: e })
-                  }
+                  onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, originalScore: e })}
                 />
                 <NumberInput
                   label={t('admin.content.games.challenges.difficulty')}
@@ -375,16 +361,10 @@ const GameChallengeEdit: FC = () => {
                   value={challengeInfo?.difficulty ?? 100}
                   stepHoldDelay={500}
                   stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                  onChange={(e) =>
-                    typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })
-                  }
+                  onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
                 />
               </Group>
-              <Input.Wrapper
-                label={t('admin.content.games.challenges.min_score_radio.label')}
-                h="3.8rem"
-                required
-              >
+              <Input.Wrapper label={t('admin.content.games.challenges.min_score_radio.label')} h="3.8rem" required>
                 <Slider
                   label={(value) =>
                     t('admin.content.games.challenges.min_score_radio.description', {
@@ -409,9 +389,7 @@ const GameChallengeEdit: FC = () => {
                   t('admin.content.games.challenges.blood_bonus.label'),
                   t('admin.content.games.challenges.blood_bonus.description')
                 )}
-                onChange={(e) =>
-                  setChallengeInfo({ ...challengeInfo, disableBloodBonus: !e.target.checked })
-                }
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, disableBloodBonus: !e.target.checked })}
               />
             </Stack>
           </Grid.Col>
@@ -442,9 +420,7 @@ const GameChallengeEdit: FC = () => {
                   disabled={disabled}
                   value={challengeInfo.containerImage ?? ''}
                   required
-                  onChange={(e) =>
-                    setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })
-                  }
+                  onChange={(e) => setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })}
                   classNames={{ root: misc.flexGrow }}
                 />
                 <Button
@@ -481,8 +457,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.containerExposePort ?? 1}
                 onChange={(e) =>
-                  typeof e !== 'string' &&
-                  setChallengeInfo({ ...challengeInfo, containerExposePort: e })
+                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })
                 }
               />
             </Grid.Col>
@@ -497,9 +472,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.cpuCount ?? 1}
-                onChange={(e) =>
-                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, cpuCount: e })
-                }
+                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, cpuCount: e })}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -513,9 +486,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.memoryLimit ?? 32}
-                onChange={(e) =>
-                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })
-                }
+                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -529,9 +500,7 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.storageLimit ?? 128}
-                onChange={(e) =>
-                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, storageLimit: e })
-                }
+                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, storageLimit: e })}
               />
             </Grid.Col>
             <Grid.Col span={4} display="flex" className={misc.alignCenter}>
@@ -542,9 +511,7 @@ const GameChallengeEdit: FC = () => {
                   t('admin.content.games.challenges.traffic_capture.label'),
                   t('admin.content.games.challenges.traffic_capture.description')
                 )}
-                onChange={(e) =>
-                  setChallengeInfo({ ...challengeInfo, enableTrafficCapture: e.target.checked })
-                }
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, enableTrafficCapture: e.target.checked })}
               />
             </Grid.Col>
           </Grid>
@@ -562,9 +529,7 @@ const GameChallengeEdit: FC = () => {
         opened={previewOpened}
         onClose={() => setPreviewOpened(false)}
         cateData={
-          challengeCategoryLabelMap.get(
-            (challengeInfo?.category as ChallengeCategory) ?? ChallengeCategory.Misc
-          )!
+          challengeCategoryLabelMap.get((challengeInfo?.category as ChallengeCategory) ?? ChallengeCategory.Misc)!
         }
       />
     </WithChallengeEdit>

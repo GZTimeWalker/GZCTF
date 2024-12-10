@@ -180,14 +180,11 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                           </Table.Td>
                           <Table.Td ff="monospace" fz="sm">
                             {chal.score}
-                            {info.score &&
-                              chal.score! > info.score &&
-                              chal.type &&
-                              BloodsTypes.includes(chal.type) && (
-                                <Text size="sm" c="dimmed" span>
-                                  {`(${bloodBonusMap.get(chal.type)?.descr})`}
-                                </Text>
-                              )}
+                            {info.score && chal.score! > info.score && chal.type && BloodsTypes.includes(chal.type) && (
+                              <Text size="sm" c="dimmed" span>
+                                {`(${bloodBonusMap.get(chal.type)?.descr})`}
+                              </Text>
+                            )}
                           </Table.Td>
                           <Table.Td ff="monospace" fz="sm">
                             {dayjs(chal.time).locale(locale).format('SL HH:mm:ss')}

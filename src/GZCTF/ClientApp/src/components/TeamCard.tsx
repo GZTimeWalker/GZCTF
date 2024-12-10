@@ -1,16 +1,4 @@
-import {
-  Avatar,
-  Badge,
-  Box,
-  Card,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  Title,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core'
+import { Avatar, Badge, Box, Card, Divider, Group, Stack, Text, Title, Tooltip, useMantineTheme } from '@mantine/core'
 import { mdiLockOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
@@ -78,18 +66,11 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
                 {t('team.label.members')}
               </Text>
               <Box className={misc.flexGrow} />
-              {team.locked && (
-                <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />
-              )}
+              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />}
               <Tooltip.Group openDelay={300} closeDelay={100}>
                 <Avatar.Group spacing="md">
                   <Tooltip label={captain?.userName} withArrow classNames={tooltipClasses}>
-                    <Avatar
-                      alt="avatar"
-                      radius="xl"
-                      src={captain?.avatar}
-                      className={misc.noBorder}
-                    >
+                    <Avatar alt="avatar" radius="xl" src={captain?.avatar} className={misc.noBorder}>
                       {captain?.userName?.slice(0, 1) ?? 'C'}
                     </Avatar>
                   </Tooltip>

@@ -72,7 +72,7 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
 
       setProgress(95)
       if (data.data) {
-        const res = await api.edit.editAddFlags(
+        await api.edit.editAddFlags(
           numId,
           numCId,
           data.data.map((f, idx) => ({
@@ -120,12 +120,8 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
               <Overlay opacity={0.3} color={colorScheme === 'dark' ? 'black' : 'white'} />
               <Center h="calc(40vh - 20px)">
                 <Stack gap={0}>
-                  <Title order={2}>
-                    {t('admin.placeholder.games.challenges.attachment.no_file_selected.title')}
-                  </Title>
-                  <Text>
-                    {t('admin.placeholder.games.challenges.attachment.no_file_selected.comment')}
-                  </Text>
+                  <Title order={2}>{t('admin.placeholder.games.challenges.attachment.no_file_selected.title')}</Title>
+                  <Text>{t('admin.placeholder.games.challenges.attachment.no_file_selected.comment')}</Text>
                 </Stack>
               </Center>
             </>
@@ -161,9 +157,7 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
             color={progress !== 0 ? 'cyan' : theme.primaryColor}
           >
             <div className={uploadClasses.label}>
-              {progress !== 0
-                ? t('common.button.uploading')
-                : t('admin.button.challenges.flag.add.dynamic')}
+              {progress !== 0 ? t('common.button.uploading') : t('admin.button.challenges.flag.add.dynamic')}
             </div>
             {progress !== 0 && (
               <Progress

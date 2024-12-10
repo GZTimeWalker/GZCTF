@@ -90,11 +90,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
               }}
             >
               <Group gap={4} wrap="nowrap" justify="center" w="100%">
-                <Icon
-                  path={cate.icon}
-                  size={1}
-                  color={theme.colors[cate.color][colorScheme === 'dark' ? 8 : 6]}
-                />
+                <Icon path={cate.icon} size={1} color={theme.colors[cate.color][colorScheme === 'dark' ? 8 : 6]} />
                 <Text c={cate.color} className={classes.text} ff="text" fz="sm">
                   {key}
                 </Text>
@@ -106,9 +102,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
       {/* Challenge Name */}
       <Table.Tr>
         {hiddenCol}
-        {Object.keys(table).map((key) =>
-          table[key].map((item) => <Table.Th key={item.id}>{item.title}</Table.Th>)
-        )}
+        {Object.keys(table).map((key) => table[key].map((item) => <Table.Th key={item.id}>{item.title}</Table.Th>))}
       </Table.Tr>
       {/* Headers & Score */}
       <Table.Tr>
@@ -119,11 +113,7 @@ const TableHeader = (table: Record<string, ChallengeInfo[]>) => {
           t('game.label.score_table.solved_count'),
           t('game.label.score_table.score_total'),
         ].map((header, idx) => (
-          <Table.Th
-            key={idx}
-            className={cx(classes.left, classes.header)}
-            style={{ left: Lefts[idx] }}
-          >
+          <Table.Th key={idx} className={cx(classes.left, classes.header)} style={{ left: Lefts[idx] }}>
             {header}
           </Table.Th>
         ))}
@@ -272,11 +262,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
     if (!scoreboard?.items) return
 
     if (!!debouncedKeyword && debouncedKeyword.length > 0) {
-      setFilteredList(
-        scoreboard.items.filter((s) =>
-          s.name?.toLowerCase().includes(debouncedKeyword.toLowerCase())
-        )
-      )
+      setFilteredList(scoreboard.items.filter((s) => s.name?.toLowerCase().includes(debouncedKeyword.toLowerCase())))
       return
     }
 
@@ -373,11 +359,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
               <Tooltip.Group>
                 <Group gap="lg">
                   {BloodsTypes.map((type, idx) => (
-                    <Tooltip
-                      key={idx}
-                      label={bloodData.get(type)?.name}
-                      transitionProps={{ transition: 'pop' }}
-                    >
+                    <Tooltip key={idx} label={bloodData.get(type)?.name} transitionProps={{ transition: 'pop' }}>
                       <Group justify="left" gap={2}>
                         <Icon {...iconMap.get(type)!} />
                         <Text>{bloodData.get(type)?.descr}</Text>

@@ -278,10 +278,7 @@ interface UseDisplayInputStylesProps {
 }
 
 export const useDisplayInputStyles = createStyles(
-  (
-    theme,
-    { fw = 'normal', lh = '1.5rem', ff = 'text', cs = 'auto' }: UseDisplayInputStylesProps
-  ) => ({
+  (theme, { fw = 'normal', lh = '1.5rem', ff = 'text', cs = 'auto' }: UseDisplayInputStylesProps) => ({
     wrapper: {
       width: '100%',
     },

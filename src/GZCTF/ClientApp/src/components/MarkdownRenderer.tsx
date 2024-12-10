@@ -15,27 +15,25 @@ interface InlineMarkdownProps extends TextProps {
   source: string
 }
 
-export const InlineMarkdown = forwardRef<HTMLParagraphElement, InlineMarkdownProps>(
-  (props, ref) => {
-    const { source, ...others } = props
-    const marked = new Marked()
+export const InlineMarkdown = forwardRef<HTMLParagraphElement, InlineMarkdownProps>((props, ref) => {
+  const { source, ...others } = props
+  const marked = new Marked()
 
-    marked.use(KatexExtension()).setOptions({
-      silent: true,
-    })
+  marked.use(KatexExtension()).setOptions({
+    silent: true,
+  })
 
-    return (
-      <Text
-        ref={ref}
-        {...others}
-        className={classes.inline}
-        dangerouslySetInnerHTML={{
-          __html: marked.parseInline(source) ?? '',
-        }}
-      />
-    )
-  }
-)
+  return (
+    <Text
+      ref={ref}
+      {...others}
+      className={classes.inline}
+      dangerouslySetInnerHTML={{
+        __html: marked.parseInline(source) ?? '',
+      }}
+    />
+  )
+})
 
 export const Markdown = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) => {
   const { source, ...others } = props

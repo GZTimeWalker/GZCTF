@@ -92,15 +92,11 @@ const Instances: FC = () => {
 
   useEffect(() => {
     if (instances) {
-      const teams = [
-        ...new Map(instances.data.map((instance) => [instance.team!.id, instance.team!])).values(),
-      ]
+      const teams = [...new Map(instances.data.map((instance) => [instance.team!.id, instance.team!])).values()]
       setTeams(teams)
 
       const challenges = [
-        ...new Map(
-          instances.data.map((instance) => [instance.challenge!.id, instance.challenge!])
-        ).values(),
+        ...new Map(instances.data.map((instance) => [instance.challenge!.id, instance.challenge!])).values(),
       ]
       setChallenge(challenges)
     }
@@ -121,9 +117,7 @@ const Instances: FC = () => {
     }
 
     if (selectedChallengeId) {
-      filtered = filtered.filter(
-        (instance) => instance.challenge?.id === Number(selectedChallengeId)
-      )
+      filtered = filtered.filter((instance) => instance.challenge?.id === Number(selectedChallengeId))
     }
 
     setFilteredInstances(filtered)
@@ -142,12 +136,13 @@ const Instances: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
 
-      instances &&
+      if (instances) {
         mutate({
           total: (instances.total ?? instances.length) - 1,
           length: instances.length - 1,
           data: instances.data.filter((instance) => instance.containerGuid !== instanceGuid),
         })
+      }
     } catch (e: any) {
       showErrorNotification(e, t)
     } finally {
@@ -171,11 +166,7 @@ const Instances: FC = () => {
               leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}
               nothingFoundMessage={t('admin.placeholder.instances.teams.not_found')}
               renderOption={SelectTeamItem}
-              data={
-                teams?.map(
-                  (team) => ({ value: String(team.id), label: team.name, ...team }) as ComboboxItem
-                ) ?? []
-              }
+              data={teams?.map((team) => ({ value: String(team.id), label: team.name, ...team }) as ComboboxItem) ?? []}
             />
             <Select
               w="48%"
@@ -225,19 +216,12 @@ const Instances: FC = () => {
             <Table.Tbody>
               {filteredInstances &&
                 filteredInstances.map((inst) => {
-                  const color = challengeCategoryLabelMap.get(
-                    inst.challenge?.category ?? ChallengeCategory.Misc
-                  )!.color
+                  const color = challengeCategoryLabelMap.get(inst.challenge?.category ?? ChallengeCategory.Misc)!.color
                   return (
                     <Table.Tr key={inst.containerGuid}>
                       <Table.Td>
                         <Box w="100%" h="100%">
-                          <Input
-                            variant="unstyled"
-                            value={inst.team?.name ?? 'Team'}
-                            readOnly
-                            classNames={classes}
-                          />
+                          <Input variant="unstyled" value={inst.team?.name ?? 'Team'} readOnly classNames={classes} />
                         </Box>
                       </Table.Td>
                       <Table.Td>
@@ -276,9 +260,7 @@ const Instances: FC = () => {
                               fz="sm"
                               className={tableClasses.clickable}
                               onClick={() => {
-                                clipBoard.copy(
-                                  inst.containerGuid && getProxyUrl(inst.containerGuid)
-                                )
+                                clipBoard.copy(inst.containerGuid && getProxyUrl(inst.containerGuid))
                                 showNotification({
                                   color: 'teal',
                                   title: t('admin.notification.instances.url_copied.title'),
@@ -293,12 +275,7 @@ const Instances: FC = () => {
                         </Text>
                       </Table.Td>
                       <Table.Td>
-                        <Tooltip
-                          label={t('common.button.copy')}
-                          withArrow
-                          position="left"
-                          classNames={tooltipClasses}
-                        >
+                        <Tooltip label={t('common.button.copy')} withArrow position="left" classNames={tooltipClasses}>
                           <Text
                             size="sm"
                             c="dimmed"

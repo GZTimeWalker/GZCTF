@@ -5,7 +5,7 @@ export default {
   singleQuote: true,
   trailingComma: 'es5',
   semi: false,
-  printWidth: 100,
+  printWidth: 120,
   htmlWhitespaceSensitivity: 'ignore',
   jsonRecursiveSort: true,
   plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-sort-json'],

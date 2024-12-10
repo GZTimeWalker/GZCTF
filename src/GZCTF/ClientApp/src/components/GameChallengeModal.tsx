@@ -34,8 +34,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   }) as string[]
 
   const isDynamic =
-    challenge?.type === ChallengeType.StaticContainer ||
-    challenge?.type === ChallengeType.DynamicContainer
+    challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer
 
   const [disabled, setDisabled] = useState(false)
   const [submitId, setSubmitId] = useState(0)

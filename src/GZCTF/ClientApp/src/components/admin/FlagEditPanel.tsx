@@ -65,12 +65,7 @@ export const FlagEditPanel: FC<FlagEditPanelProps> = ({ flags, onDelete, unified
       <SimpleGrid spacing="sm" cols={{ base: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}>
         {flags &&
           flags.map((flag, i) => (
-            <FlagCard
-              key={i}
-              flag={flag}
-              onDelete={() => onDelete(flag)}
-              unifiedAttachment={unifiedAttachment}
-            />
+            <FlagCard key={i} flag={flag} onDelete={() => onDelete(flag)} unifiedAttachment={unifiedAttachment} />
           ))}
       </SimpleGrid>
     </Stack>

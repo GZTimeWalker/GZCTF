@@ -1,15 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Group,
-  Input,
-  Pagination,
-  Paper,
-  Select,
-  Stack,
-  Table,
-  useMantineTheme,
-} from '@mantine/core'
+import { Avatar, Box, Group, Input, Pagination, Paper, Select, Stack, Table, useMantineTheme } from '@mantine/core'
 import cx from 'clsx'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -63,10 +52,7 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivisi
 
   const { scoreboard } = useGameScoreboard(numId)
 
-  const filtered =
-    division === 'all'
-      ? scoreboard?.items
-      : scoreboard?.items?.filter((s) => s.division === division)
+  const filtered = division === 'all' ? scoreboard?.items : scoreboard?.items?.filter((s) => s.division === division)
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)

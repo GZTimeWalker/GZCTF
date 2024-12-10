@@ -66,16 +66,13 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   }, [challenge])
 
   const isContainer =
-    challenge?.type === ChallengeType.StaticContainer ||
-    challenge?.type === ChallengeType.DynamicContainer
+    challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer
 
   const title = (
     <Stack gap="xs">
       <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
         <Group wrap="nowrap" gap="sm" w="calc(100% - 6.75rem)">
-          {cateData && (
-            <Icon path={cateData.icon} size={1.2} color={theme.colors[cateData?.color][5]} />
-          )}
+          {cateData && <Icon path={cateData.icon} size={1.2} color={theme.colors[cateData?.color][5]} />}
           <Title order={4} lineClamp={1}>
             {challenge?.title ?? ''}
           </Title>

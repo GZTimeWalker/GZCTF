@@ -55,24 +55,14 @@ export const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
               ))}
             </Menu.Dropdown>
           </Menu>
-          <Menu
-            shadow="md"
-            opened={opened}
-            onClose={() => setOpened(false)}
-            width={200}
-            offset={13}
-          >
+          <Menu shadow="md" opened={opened} onClose={() => setOpened(false)} width={200} offset={13}>
             <Menu.Target>
               <Burger opened={opened} onClick={() => setOpened((o) => !o)} />
             </Menu.Target>
             <Menu.Dropdown>
               {user && !error ? (
                 <>
-                  <Menu.Item
-                    component={Link}
-                    to="/teams"
-                    leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}
-                  >
+                  <Menu.Item component={Link} to="/teams" leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}>
                     {t('common.tab.team')}
                   </Menu.Item>
                   <Menu.Item
@@ -82,11 +72,7 @@ export const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
                   >
                     {t('common.tab.account.profile')}
                   </Menu.Item>
-                  <Menu.Item
-                    color="red"
-                    onClick={logout}
-                    leftSection={<Icon path={mdiLogout} size={1} />}
-                  >
+                  <Menu.Item color="red" onClick={logout} leftSection={<Icon path={mdiLogout} size={1} />}>
                     {t('common.tab.account.logout')}
                   </Menu.Item>
                 </>
@@ -112,10 +98,7 @@ export const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
                 onClick={() => toggleColorScheme()}
               >
                 {t('common.tab.theme.switch_to', {
-                  theme:
-                    colorScheme === 'dark'
-                      ? t('common.tab.theme.light')
-                      : t('common.tab.theme.dark'),
+                  theme: colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
                 })}
               </Menu.Item>
               <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>

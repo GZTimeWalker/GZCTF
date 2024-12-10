@@ -1,13 +1,4 @@
-import {
-  ActionIcon,
-  AppShell,
-  Avatar,
-  Menu,
-  MenuDivider,
-  Stack,
-  Tooltip,
-  useMantineColorScheme,
-} from '@mantine/core'
+import { ActionIcon, AppShell, Avatar, Menu, MenuDivider, Stack, Tooltip, useMantineColorScheme } from '@mantine/core'
 import {
   mdiAccountCircleOutline,
   mdiAccountGroupOutline,
@@ -122,9 +113,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       </AppShell.Section>
 
       {/* Common Nav */}
-      <AppShell.Section className={cx(classes.section, misc.justifyCenter)}>
-        {links}
-      </AppShell.Section>
+      <AppShell.Section className={cx(classes.section, misc.justifyCenter)}>{links}</AppShell.Section>
 
       <AppShell.Section className={cx(classes.section, misc.justifyEnd)}>
         <Stack w="100%" align="center" justify="center" gap={5}>
@@ -148,8 +137,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
           {/* Color Mode */}
           <Tooltip
             label={t('common.tab.theme.switch_to', {
-              theme:
-                colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
+              theme: colorScheme === 'dark' ? t('common.tab.theme.light') : t('common.tab.theme.dark'),
             })}
             classNames={classes}
             position="right"
@@ -197,11 +185,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
               </Menu.Item>
               <MenuDivider />
               {loggedIn ? (
-                <Menu.Item
-                  color="red"
-                  onClick={logout}
-                  leftSection={<Icon path={mdiLogout} size={1} />}
-                >
+                <Menu.Item color="red" onClick={logout} leftSection={<Icon path={mdiLogout} size={1} />}>
                   {t('common.tab.account.logout')}
                 </Menu.Item>
               ) : (

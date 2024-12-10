@@ -53,9 +53,7 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
       <Card.Section>
         <Group wrap="nowrap" align="flex-start">
           <BackgroundImage src={poster ?? ''} h="10rem" maw="20rem" miw="20rem">
-            <Center h="100%">
-              {!poster && <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />}
-            </Center>
+            <Center h="100%">{!poster && <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />}</Center>
           </BackgroundImage>
           <Stack gap="sm" p="md" w="100%">
             <Group gap={0} justify="space-between" align="flex-start">

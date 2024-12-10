@@ -20,14 +20,7 @@ import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import {
-  mdiCheck,
-  mdiClipboard,
-  mdiClose,
-  mdiContentSaveOutline,
-  mdiDeleteOutline,
-  mdiRefresh,
-} from '@mdi/js'
+import { mdiCheck, mdiClipboard, mdiClose, mdiContentSaveOutline, mdiDeleteOutline, mdiRefresh } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
@@ -193,11 +186,7 @@ const GameInfoEdit: FC = () => {
             onClick={() =>
               modals.openConfirmModal({
                 title: t('admin.button.games.delete'),
-                children: (
-                  <Text size="sm">
-                    {t('admin.content.games.info.delete', { name: game?.title })}
-                  </Text>
-                ),
+                children: <Text size="sm">{t('admin.content.games.info.delete', { name: game?.title })}</Text>,
                 onConfirm: () => onConfirmDelete(),
                 confirmProps: { color: 'red' },
               })
@@ -205,11 +194,7 @@ const GameInfoEdit: FC = () => {
           >
             {t('admin.button.games.delete')}
           </Button>
-          <Button
-            leftSection={<Icon path={mdiClipboard} size={1} />}
-            disabled={disabled}
-            onClick={onCopyPublicKey}
-          >
+          <Button leftSection={<Icon path={mdiClipboard} size={1} />} disabled={disabled} onClick={onCopyPublicKey}>
             {t('admin.button.games.copy_public_key')}
           </Button>
           <Button
@@ -257,9 +242,7 @@ const GameInfoEdit: FC = () => {
           disabled={disabled}
           onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
           rightSection={
-            <ActionIcon
-              onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}
-            >
+            <ActionIcon onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}>
               <Icon path={mdiRefresh} size={1} />
             </ActionIcon>
           }
@@ -270,10 +253,7 @@ const GameInfoEdit: FC = () => {
           disabled={disabled}
           clearable={false}
           onChange={(e) => {
-            const newDate = dayjs(e)
-              .hour(start.hour())
-              .minute(start.minute())
-              .second(start.second())
+            const newDate = dayjs(e).hour(start.hour()).minute(start.minute()).second(start.second())
             setStart(newDate)
             if (newDate && end < newDate) {
               setEnd(newDate.add(2, 'h'))

@@ -1,14 +1,4 @@
-import {
-  Badge,
-  Card,
-  Center,
-  Group,
-  Image,
-  Stack,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core'
+import { Badge, Card, Center, Group, Image, Stack, Text, Title, useMantineTheme } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -39,8 +29,7 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
 
   const color = GameColorMap.get(status)
 
-  const duration =
-    status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
+  const duration = status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
   const titleColor = useForeground(poster)
 
@@ -56,12 +45,7 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         )}
       </Card.Section>
 
-      <Card.Section
-        inheritPadding
-        pos="relative"
-        mt={`calc(16px - ${POSTER_HEIGHT})`}
-        className={misc.alignEnd}
-      >
+      <Card.Section inheritPadding pos="relative" mt={`calc(16px - ${POSTER_HEIGHT})`} className={misc.alignEnd}>
         <Group wrap="nowrap" gap="xs" justify="right">
           <Badge size="xs" color={color} variant="filled">
             {status}
@@ -95,9 +79,7 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         </Group>
         <Group wrap="nowrap" gap={0} justify="space-between">
           <Text size="sm" fw="bold">
-            {status === GameStatus.OnGoing
-              ? t('game.content.remaining_time')
-              : t('game.content.total_time')}
+            {status === GameStatus.OnGoing ? t('game.content.remaining_time') : t('game.content.total_time')}
           </Text>
           <Badge size="xs" color={color} variant="light">
             {t('game.content.duration', { hours: duration })}

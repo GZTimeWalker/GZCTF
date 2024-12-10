@@ -1,13 +1,4 @@
-import {
-  ActionIcon,
-  Button,
-  Group,
-  MantineColor,
-  MantineSpacing,
-  Popover,
-  Stack,
-  Text,
-} from '@mantine/core'
+import { ActionIcon, Button, Group, MantineColor, MantineSpacing, Popover, Stack, Text } from '@mantine/core'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -48,13 +39,7 @@ export const ActionIconWithConfirm: FC<ActionIconWithConfirmProps> = (props) => 
           </Text>
 
           <Group w="100%" justify="space-between">
-            <Button
-              size="xs"
-              py={2}
-              variant="outline"
-              disabled={props.disabled}
-              onClick={() => setOpened(false)}
-            >
+            <Button size="xs" py={2} variant="outline" disabled={props.disabled} onClick={() => setOpened(false)}>
               {t('common.modal.cancel')}
             </Button>
             <Button

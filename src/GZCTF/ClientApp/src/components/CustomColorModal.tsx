@@ -1,15 +1,5 @@
 import { generateColors } from '@mantine/colors-generator'
-import {
-  Text,
-  ColorInput,
-  Group,
-  Modal,
-  ModalProps,
-  Radio,
-  Stack,
-  InputBase,
-  useMantineTheme,
-} from '@mantine/core'
+import { Text, ColorInput, Group, Modal, ModalProps, Radio, Stack, InputBase, useMantineTheme } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -29,10 +19,7 @@ export const CustomColorModal: FC<ModalProps> = (props) => {
 
   const valid = colorRegex.test(color.color)
 
-  const colors =
-    color.provider === ColorProvider.Custom && valid
-      ? generateColors(color.color)
-      : theme.colors.brand
+  const colors = color.provider === ColorProvider.Custom && valid ? generateColors(color.color) : theme.colors.brand
 
   useEffect(() => {
     setColor(customColor)

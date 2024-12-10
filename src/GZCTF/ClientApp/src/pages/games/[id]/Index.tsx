@@ -107,13 +107,13 @@ const GameDetail: FC = () => {
       showErrorNotification(error, t)
       navigate('/games')
     }
-  }, [error])
+  }, [error, navigate])
 
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>()
 
   const [joinModalOpen, setJoinModalOpen] = useState(false)
 
-  useEffect(() => scrollIntoView({ alignment: 'center' }), [])
+  useEffect(() => scrollIntoView({ alignment: 'center' }), [scrollIntoView])
 
   const GameActionMap = new Map([
     [ParticipationStatus.Pending, t('game.participation.actions.pending')],
@@ -162,8 +162,7 @@ const GameDetail: FC = () => {
     teams &&
     teams.length > 0
 
-  const teamRequire =
-    user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
+  const teamRequire = user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
 
   const onJoin = () =>
     modals.openConfirmModal({
@@ -199,11 +198,7 @@ const GameDetail: FC = () => {
   const ControlButtons = (
     <>
       <Button disabled={!canSubmit} onClick={onJoin}>
-        {finished
-          ? t('game.button.finished')
-          : !user
-            ? t('game.button.login_required')
-            : GameActionMap.get(status)}
+        {finished ? t('game.button.finished') : !user ? t('game.button.login_required') : GameActionMap.get(status)}
       </Button>
       {started && (
         <Button component={Link} to={`/games/${numId}/scoreboard`}>
@@ -215,27 +210,18 @@ const GameDetail: FC = () => {
           {t('game.button.leave')}
         </Button>
       )}
-      {status === ParticipationStatus.Accepted &&
-        started &&
-        !isMobile &&
-        (!finished || game?.practiceMode) && (
-          <Button component={Link} to={`/games/${numId}/challenges`}>
-            {t('game.button.challenges')}
-          </Button>
-        )}
+      {status === ParticipationStatus.Accepted && started && !isMobile && (!finished || game?.practiceMode) && (
+        <Button component={Link} to={`/games/${numId}/challenges`}>
+          {t('game.button.challenges')}
+        </Button>
+      )}
     </>
   )
 
   return (
     <WithNavBar width="100%" isLoading={!game} minWidth={0} withFooter>
       <div ref={targetRef} className={classes.root}>
-        <Group
-          wrap="nowrap"
-          justify="space-between"
-          w="100%"
-          p={`0 ${theme.spacing.md}`}
-          className={classes.container}
-        >
+        <Group wrap="nowrap" justify="space-between" w="100%" p={`0 ${theme.spacing.md}`} className={classes.container}>
           <Stack gap={6} className={classes.flexGrowAtSm}>
             <Group>
               <Badge variant="outline">
@@ -250,10 +236,7 @@ const GameDetail: FC = () => {
             <Stack gap={2}>
               <Title className={classes.title}>{game?.title}</Title>
               <Text size="sm" c="dimmed">
-                <Trans
-                  i18nKey="game.content.joined_status"
-                  values={{ count: game?.teamCount ?? 0 }}
-                />
+                <Trans i18nKey="game.content.joined_status" values={{ count: game?.teamCount ?? 0 }} />
               </Text>
             </Stack>
             <Group justify="space-between">
@@ -279,9 +262,7 @@ const GameDetail: FC = () => {
           </Stack>
           <BackgroundImage className={classes.banner} src={game?.poster ?? ''} radius="sm">
             <Center h="100%">
-              {!game?.poster && (
-                <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />
-              )}
+              {!game?.poster && <Icon path={mdiFlagOutline} size={4} color={theme.colors.gray[5]} />}
             </Center>
           </BackgroundImage>
         </Group>
@@ -305,11 +286,7 @@ const GameDetail: FC = () => {
             </Alert>
           )}
           {status === ParticipationStatus.Accepted && !started && (
-            <Alert
-              color="teal"
-              icon={<Icon path={mdiCheck} />}
-              title={t('game.participation.alert.not_started.title')}
-            >
+            <Alert color="teal" icon={<Icon path={mdiCheck} />} title={t('game.participation.alert.not_started.title')}>
               {t('game.participation.alert.not_started.content', {
                 team: game?.teamName ?? '',
               })}

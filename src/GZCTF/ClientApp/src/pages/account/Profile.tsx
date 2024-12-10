@@ -162,13 +162,7 @@ const Profile: FC = () => {
             onChange={(event) => setProfile({ ...profile, userName: event.target.value })}
           />
           <Center>
-            <Avatar
-              alt="avatar"
-              radius={40}
-              size={80}
-              src={user?.avatar}
-              onClick={() => setDropzoneOpened(true)}
-            >
+            <Avatar alt="avatar" radius={40} size={80} src={user?.avatar} onClick={() => setDropzoneOpened(true)}>
               {user?.userName?.slice(0, 1) ?? 'U'}
             </Avatar>
           </Center>
@@ -220,22 +214,12 @@ const Profile: FC = () => {
         <Box m="auto" w="100%">
           <Grid grow>
             <Grid.Col span={4}>
-              <Button
-                fullWidth
-                variant="outline"
-                disabled={disabled}
-                onClick={() => setMailEditOpened(true)}
-              >
+              <Button fullWidth variant="outline" disabled={disabled} onClick={() => setMailEditOpened(true)}>
                 {t('account.button.update_email')}
               </Button>
             </Grid.Col>
             <Grid.Col span={4}>
-              <Button
-                fullWidth
-                variant="outline"
-                disabled={disabled}
-                onClick={() => setPwdChangeOpened(true)}
-              >
+              <Button fullWidth variant="outline" disabled={disabled} onClick={() => setPwdChangeOpened(true)}>
                 {t('account.button.change_password')}
               </Button>
             </Grid.Col>
@@ -270,11 +254,7 @@ const Profile: FC = () => {
         title={t('account.button.change_password')}
       />
 
-      <Modal
-        opened={mailEditOpened}
-        onClose={() => setMailEditOpened(false)}
-        title={t('account.button.update_email')}
-      >
+      <Modal opened={mailEditOpened} onClose={() => setMailEditOpened(false)} title={t('account.button.update_email')}>
         <Stack>
           <Text>
             <Trans i18nKey="account.content.profile.update_email_note"></Trans>
@@ -305,11 +285,7 @@ const Profile: FC = () => {
         </Stack>
       </Modal>
 
-      <Modal
-        opened={dropzoneOpened}
-        onClose={() => setDropzoneOpened(false)}
-        withCloseButton={false}
-      >
+      <Modal opened={dropzoneOpened} onClose={() => setDropzoneOpened(false)} withCloseButton={false}>
         <Dropzone
           onDrop={(files) => setAvatarFile(files[0])}
           onReject={() => {

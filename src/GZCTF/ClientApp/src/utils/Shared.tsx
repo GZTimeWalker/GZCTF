@@ -39,14 +39,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { useTranslation } from 'react-i18next'
-import {
-  ChallengeCategory,
-  ChallengeType,
-  NoticeType,
-  ParticipationStatus,
-  SubmissionType,
-  TaskStatus,
-} from '@Api'
+import { ChallengeCategory, ChallengeType, NoticeType, ParticipationStatus, SubmissionType, TaskStatus } from '@Api'
 
 export const useChallengeTypeLabelMap = () => {
   const { t } = useTranslation()
@@ -271,11 +264,7 @@ export const ChallengeCategoryItem: SelectProps['renderOption'] = ({ option }) =
   )
 }
 
-export const BloodsTypes = [
-  SubmissionType.FirstBlood,
-  SubmissionType.SecondBlood,
-  SubmissionType.ThirdBlood,
-]
+export const BloodsTypes = [SubmissionType.FirstBlood, SubmissionType.SecondBlood, SubmissionType.ThirdBlood]
 
 export const SubmissionTypeColorMap = () => {
   const theme = useMantineTheme()
@@ -287,15 +276,11 @@ export const SubmissionTypeColorMap = () => {
     [SubmissionType.FirstBlood, theme.colors.yellow[5]],
     [
       SubmissionType.SecondBlood,
-      colorScheme === 'dark'
-        ? lighten(theme.colors.gray[2], 0.3)
-        : darken(theme.colors.gray[1], 0.2),
+      colorScheme === 'dark' ? lighten(theme.colors.gray[2], 0.3) : darken(theme.colors.gray[1], 0.2),
     ],
     [
       SubmissionType.ThirdBlood,
-      colorScheme === 'dark'
-        ? darken(theme.colors.orange[7], 0.25)
-        : lighten(theme.colors.orange[7], 0.2),
+      colorScheme === 'dark' ? darken(theme.colors.orange[7], 0.25) : lighten(theme.colors.orange[7], 0.2),
     ],
   ])
 }
@@ -305,10 +290,7 @@ export const SubmissionTypeIconMap = (size: number) => {
   return {
     iconMap: new Map<SubmissionType, PartialIconProps | undefined>([
       [SubmissionType.Unaccepted, undefined],
-      [
-        SubmissionType.Normal,
-        { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Normal) },
-      ],
+      [SubmissionType.Normal, { path: mdiFlag, size: size, color: colorMap.get(SubmissionType.Normal) }],
       [
         SubmissionType.FirstBlood,
         { path: mdiHexagonSlice6, size: size, color: colorMap.get(SubmissionType.FirstBlood) },
@@ -333,14 +315,8 @@ export const NoticTypeIconMap = (size: number) => {
   const colorIdx = colorScheme === 'dark' ? 4 : 7
 
   return new Map([
-    [
-      NoticeType.Normal,
-      { path: mdiBullhornOutline, size: size, color: theme.colors[theme.primaryColor][colorIdx] },
-    ],
-    [
-      NoticeType.NewHint,
-      { path: mdiLightbulbOnOutline, size: size, color: theme.colors.yellow[colorIdx] },
-    ],
+    [NoticeType.Normal, { path: mdiBullhornOutline, size: size, color: theme.colors[theme.primaryColor][colorIdx] }],
+    [NoticeType.NewHint, { path: mdiLightbulbOnOutline, size: size, color: theme.colors.yellow[colorIdx] }],
     [NoticeType.NewChallenge, { path: mdiPlus, size: size, color: theme.colors.green[colorIdx] }],
     [NoticeType.FirstBlood, iconMap.get(SubmissionType.FirstBlood)],
     [NoticeType.SecondBlood, iconMap.get(SubmissionType.SecondBlood)],
@@ -496,14 +472,7 @@ export const DEFAULT_LOADING_OVERLAY: OverlayProps = {
   blur: 8,
 }
 
-export const IMAGE_MIME_TYPES = [
-  'image/png',
-  'image/gif',
-  'image/jpeg',
-  'image/webp',
-  'image/avif',
-  'image/heic',
-]
+export const IMAGE_MIME_TYPES = ['image/png', 'image/gif', 'image/jpeg', 'image/webp', 'image/avif', 'image/heic']
 
 /** 系统错误信息 */
 export const enum ErrorCodes {

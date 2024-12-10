@@ -53,17 +53,9 @@ export const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => 
   }
 
   const checks = [
-    <PasswordRequirement
-      key={0}
-      label={t('account.password.min_length')}
-      meets={pwd.length >= 6}
-    />,
+    <PasswordRequirement key={0} label={t('account.password.min_length')} meets={pwd.length >= 6} />,
     ...requirements.map((requirement, index) => (
-      <PasswordRequirement
-        key={index + 1}
-        label={requirement.label}
-        meets={requirement.re.test(pwd)}
-      />
+      <PasswordRequirement key={index + 1} label={requirement.label} meets={requirement.re.test(pwd)} />
     )),
   ]
 

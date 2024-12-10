@@ -127,10 +127,7 @@ const Logs: FC = () => {
       <Table.Tr
         key={`${item.time}@${i}`}
         className={
-          i === 0 &&
-          activePage === 1 &&
-          newLogs.current.length > 0 &&
-          newLogs.current[0].level === level
+          i === 0 && activePage === 1 && newLogs.current.length > 0 && newLogs.current[0].level === level
             ? tableClasses.fade
             : undefined
         }
@@ -141,13 +138,7 @@ const Logs: FC = () => {
           </Badge>
         </Table.Td>
         <Table.Td>
-          <Input
-            variant="unstyled"
-            value={item.ip || ''}
-            readOnly
-            size="sm"
-            classNames={inputClasses}
-          />
+          <Input variant="unstyled" value={item.ip || ''} readOnly size="sm" classNames={inputClasses} />
         </Table.Td>
         <Table.Td>
           <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
@@ -183,11 +174,7 @@ const Logs: FC = () => {
             }))}
           />
           <Group justify="right">
-            <ActionIcon
-              size="lg"
-              disabled={activePage <= 1}
-              onClick={() => setPage(activePage - 1)}
-            >
+            <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>
               <Icon path={mdiArrowLeftBold} size={1} />
             </ActionIcon>
             <Text fw="bold" size="sm">
@@ -205,12 +192,7 @@ const Logs: FC = () => {
       }
     >
       <Paper shadow="md" p="md" w="100%">
-        <ScrollArea
-          viewportRef={viewport}
-          offsetScrollbars
-          scrollbarSize={4}
-          h="calc(100vh - 190px)"
-        >
+        <ScrollArea viewportRef={viewport} offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
           <Table className={cx(tableClasses.table, tableClasses.nopadding)}>
             <Table.Thead>
               <Table.Tr>

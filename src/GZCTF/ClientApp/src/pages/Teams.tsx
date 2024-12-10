@@ -159,11 +159,7 @@ const Teams: FC = () => {
           )}
         </Stack>
 
-        <Modal
-          opened={joinOpened}
-          title={t('team.button.join')}
-          onClose={() => setJoinOpened(false)}
-        >
+        <Modal opened={joinOpened} title={t('team.button.join')} onClose={() => setJoinOpened(false)}>
           <Stack>
             <Text size="sm">{t('team.content.join')}</Text>
             <TextInput

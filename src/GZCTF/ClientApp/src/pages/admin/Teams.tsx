@@ -44,12 +44,7 @@ const ITEM_COUNT_PER_PAGE = 30
 const Teams: FC = () => {
   const [page, setPage] = useState(1)
   const [update, setUpdate] = useState(new Date())
-  const {
-    data: teams,
-    total,
-    setData: setTeams,
-    updateData: updateTeams,
-  } = useArrayResponse<TeamInfoModel>()
+  const { data: teams, total, setData: setTeams, updateData: updateTeams } = useArrayResponse<TeamInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -120,7 +115,7 @@ const Teams: FC = () => {
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
       })
-      teams && updateTeams(teams.filter((x) => x.id !== team.id))
+      if (teams) updateTeams(teams.filter((x) => x.id !== team.id))
       setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
@@ -146,8 +141,8 @@ const Teams: FC = () => {
       })
 
       updateTeams(
-        [{ ...team, locked: !team.locked }, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort(
-          (a, b) => (a.id! < b.id! ? -1 : 1)
+        [{ ...team, locked: !team.locked }, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort((a, b) =>
+          a.id! < b.id! ? -1 : 1
         )
       )
       setUpdate(new Date())
@@ -170,7 +165,7 @@ const Teams: FC = () => {
             value={hint}
             onChange={setHint}
             onKeyDown={(e) => {
-              !searching && e.key === 'Enter' && onSearch()
+              if (!searching && e.key === 'Enter') onSearch()
             }}
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
@@ -192,11 +187,7 @@ const Teams: FC = () => {
             <Text fw="bold" size="sm">
               {page}
             </Text>
-            <ActionIcon
-              size="lg"
-              disabled={page * ITEM_COUNT_PER_PAGE >= total}
-              onClick={() => setPage(page + 1)}
-            >
+            <ActionIcon size="lg" disabled={page * ITEM_COUNT_PER_PAGE >= total} onClick={() => setPage(page + 1)}>
               <Icon path={mdiArrowRightBold} size={1} />
             </ActionIcon>
           </Group>
@@ -204,12 +195,7 @@ const Teams: FC = () => {
       }
     >
       <Paper shadow="md" p="md" w="100%">
-        <ScrollArea
-          viewportRef={viewport}
-          offsetScrollbars
-          scrollbarSize={4}
-          h="calc(100vh - 190px)"
-        >
+        <ScrollArea viewportRef={viewport} offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
@@ -224,9 +210,7 @@ const Teams: FC = () => {
             <Table.Tbody>
               {teams &&
                 teams.map((team) => {
-                  const members = team.members?.sort((a, b) =>
-                    a.captain ? (b.captain ? 0 : -1) : 1
-                  )
+                  const members = team.members?.sort((a, b) => (a.captain ? (b.captain ? 0 : -1) : 1))
 
                   return (
                     <Table.Tr key={team.id}>
@@ -247,9 +231,7 @@ const Teams: FC = () => {
                             />
                           </Group>
                           <Badge size="md" color={team.locked ? 'yellow' : 'gray'}>
-                            {team.locked
-                              ? t('admin.content.teams.locked')
-                              : t('admin.content.teams.unlocked')}
+                            {team.locked ? t('admin.content.teams.locked') : t('admin.content.teams.unlocked')}
                           </Badge>
                         </Group>
                       </Table.Td>
@@ -258,12 +240,7 @@ const Teams: FC = () => {
                           <Avatar.Group spacing="md">
                             {members &&
                               members.slice(0, 8).map((m) => (
-                                <Tooltip
-                                  key={m.id}
-                                  label={m.userName}
-                                  withArrow
-                                  classNames={tooltipClasses}
-                                >
+                                <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
                                   <Avatar alt="avatar" radius="xl" src={m.avatar}>
                                     {m.userName?.slice(0, 1) ?? 'U'}
                                   </Avatar>
@@ -311,9 +288,7 @@ const Teams: FC = () => {
                             color={team.locked ? 'gray' : 'yellow'}
                             message={t('admin.content.teams.lock', {
                               name: team.name,
-                              action: team.locked
-                                ? t('admin.button.teams.do_unlock')
-                                : t('admin.button.teams.do_lock'),
+                              action: team.locked ? t('admin.button.teams.do_unlock') : t('admin.button.teams.do_lock'),
                             })}
                             disabled={disabled}
                             onClick={() => onToggleLock(team)}
@@ -344,9 +319,7 @@ const Teams: FC = () => {
           onClose={() => setIsEditModalOpen(false)}
           mutateTeam={(team: TeamWithDetailedUserInfo) => {
             updateTeams(
-              [team, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort((a, b) =>
-                a.id! < b.id! ? -1 : 1
-              )
+              [team, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort((a, b) => (a.id! < b.id! ? -1 : 1))
             )
           }}
         />

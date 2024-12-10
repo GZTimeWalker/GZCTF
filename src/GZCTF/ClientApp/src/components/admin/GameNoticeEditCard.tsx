@@ -13,12 +13,7 @@ interface GameNoticeEditCardProps extends CardProps {
   onEdit: () => void
 }
 
-export const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({
-  gameNotice,
-  onDelete,
-  onEdit,
-  ...props
-}) => {
+export const GameNoticeEditCard: FC<GameNoticeEditCardProps> = ({ gameNotice, onDelete, onEdit, ...props }) => {
   const { locale } = useLanguage()
 
   return (

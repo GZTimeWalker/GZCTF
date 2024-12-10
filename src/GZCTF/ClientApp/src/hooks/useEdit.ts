@@ -3,11 +3,7 @@ import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { ChallengeInfoModel } from '@Api'
 
 export const useEditChallenge = (numId: number, numCId: number) => {
-  const {
-    data: challenge,
-    error,
-    mutate,
-  } = api.edit.useEditGetGameChallenge(numId, numCId, OnceSWRConfig)
+  const { data: challenge, error, mutate } = api.edit.useEditGetGameChallenge(numId, numCId, OnceSWRConfig)
 
   return { challenge, error, mutate }
 }
@@ -19,9 +15,7 @@ export const useEditChallenges = (numId: number) => {
 
   useEffect(() => {
     if (data) {
-      setSortedChallenges(
-        data.toSorted((a, b) => ((a.category ?? '') > (b.category ?? '') ? -1 : 1))
-      )
+      setSortedChallenges(data.toSorted((a, b) => ((a.category ?? '') > (b.category ?? '') ? -1 : 1)))
     }
   }, [data])
 

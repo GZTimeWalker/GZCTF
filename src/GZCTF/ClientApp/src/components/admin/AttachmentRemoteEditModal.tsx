@@ -76,9 +76,7 @@ export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
         </Text>
         <Textarea
           ff="monospace"
-          placeholder={
-            'flag{hello_world} http://example.com/1.zip\nflag{he11o_world} http://example.com/2.zip'
-          }
+          placeholder={'flag{hello_world} http://example.com/1.zip\nflag{he11o_world} http://example.com/2.zip'}
           minRows={8}
           maxRows={12}
           value={text}

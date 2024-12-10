@@ -1,14 +1,4 @@
-import {
-  Anchor,
-  Badge,
-  Center,
-  Group,
-  HoverCard,
-  Stack,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core'
+import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title, useMantineTheme } from '@mantine/core'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { WithNavBar } from '@Components/WithNavbar'
@@ -45,12 +35,7 @@ const About: FC = () => {
         <Group justify="right">
           <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
             <HoverCard.Target>
-              <Badge
-                onClick={() => window.open(repo, '_blank')}
-                className={misc.cPointer}
-                size="lg"
-                variant="outline"
-              >
+              <Badge onClick={() => window.open(repo, '_blank')} className={misc.cPointer} size="lg" variant="outline">
                 © 2022-Now GZTime {valid ? shortSha : ''}
               </Badge>
             </HoverCard.Target>
@@ -63,13 +48,7 @@ const About: FC = () => {
                       GZ<span className={logoClasses.brand}>::</span>CTF
                     </Title>
                     <Group ml="-18px" mt="-5px">
-                      <Anchor
-                        href="https://github.com/GZTimeWalker"
-                        c="dimmed"
-                        size="sm"
-                        fw={500}
-                        lh={1}
-                      >
+                      <Anchor href="https://github.com/GZTimeWalker" c="dimmed" size="sm" fw={500} lh={1}>
                         @GZTimeWalker
                       </Anchor>
                       <Badge

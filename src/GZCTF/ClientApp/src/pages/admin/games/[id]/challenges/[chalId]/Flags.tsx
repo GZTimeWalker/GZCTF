@@ -77,11 +77,12 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
       setType(FileType.None)
-      challenge &&
+      if (challenge) {
         mutate({
           ...challenge,
           attachment: null,
         })
+      }
     } catch (e) {
       showErrorNotification(e, t)
     } finally {
@@ -172,7 +173,12 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         message: t('admin.notification.games.challenges.flag_template.updated'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
-      challenge && mutate({ ...challenge, flagTemplate: flagTemplate })
+      if (challenge) {
+        mutate({
+          ...challenge,
+          flagTemplate,
+        })
+      }
     } catch (e) {
       showErrorNotification(e, t)
     } finally {
@@ -180,8 +186,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
     }
   }
 
-  const willGenerate =
-    ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
+  const willGenerate = ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
 
   return (
     <Stack>
@@ -230,11 +235,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               if (e === FileType.None) {
                 modals.openConfirmModal({
                   title: t('admin.content.games.challenges.attachment.clear.title'),
-                  children: (
-                    <Text size="sm">
-                      {t('admin.content.games.challenges.attachment.clear.description')}
-                    </Text>
-                  ),
+                  children: <Text size="sm">{t('admin.content.games.challenges.attachment.clear.description')}</Text>,
                   onConfirm: onConfirmClear,
                   confirmProps: { color: 'orange' },
                 })
@@ -260,9 +261,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             value={challenge?.attachment?.url ?? ''}
             w="calc(100% - 400px)"
             classNames={{ input: uploadClasses.hover }}
-            onClick={() =>
-              challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')
-            }
+            onClick={() => challenge?.attachment?.url && window.open(challenge?.attachment?.url, '_blank')}
           />
         ) : (
           <TextInput
@@ -299,9 +298,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
             classNames={{ input: misc.ffmono }}
           />
           <Stack gap={6} pb={8}>
-            <Text size="sm">
-              {t('admin.content.games.challenges.flag.instructions.description')}
-            </Text>
+            <Text size="sm">{t('admin.content.games.challenges.flag.instructions.description')}</Text>
             <Text size="sm">
               <Trans i18nKey="admin.content.games.challenges.flag.instructions.guid">
                 _<Code>_</Code>_
@@ -374,11 +371,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
               </Center>
             </>
           )}
-          <FlagEditPanel
-            flags={challenge?.flags}
-            onDelete={onDelete}
-            unifiedAttachment={challenge?.attachment}
-          />
+          <FlagEditPanel flags={challenge?.flags} onDelete={onDelete} unifiedAttachment={challenge?.attachment} />
         </ScrollArea>
       )}
       <FlagCreateModal
@@ -461,14 +454,7 @@ const GameChallengeEdit: FC = () => {
       children: (
         <Stack>
           <Text>{t('admin.content.games.challenges.flag.delete')}</Text>
-          <Input
-            variant="unstyled"
-            value={flag.flag}
-            w="100%"
-            size="md"
-            readOnly
-            classNames={classes}
-          />
+          <Input variant="unstyled" value={flag.flag} w="100%" size="md" readOnly classNames={classes} />
         </Stack>
       ),
       onConfirm: () => flag.id && onConfirmDeleteFlag(flag.id),
@@ -484,11 +470,12 @@ const GameChallengeEdit: FC = () => {
         message: t('admin.notification.games.challenges.flag.deleted'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
-      challenge &&
+      if (challenge) {
         mutate({
           ...challenge,
           flags: challenge.flags.filter((f) => f.id !== id),
         })
+      }
     } catch (e) {
       showErrorNotification(e, t)
     }

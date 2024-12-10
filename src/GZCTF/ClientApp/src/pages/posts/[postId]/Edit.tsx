@@ -37,7 +37,7 @@ const PostEdit: FC = () => {
       navigate('/404')
       return
     }
-  }, [postId])
+  }, [postId, navigate])
 
   const { data: curPost } = api.info.useInfoGetPost(
     postId ?? '',
@@ -172,13 +172,7 @@ const PostEdit: FC = () => {
         <Stack mt={isMobile ? 25 : 30}>
           <Group justify={isMobile ? 'right' : 'space-between'}>
             {!isMobile && (
-              <Title
-                order={1}
-                c={alpha(
-                  colorScheme === 'dark' ? theme.colors.light[6] : theme.colors.gray[7],
-                  0.5
-                )}
-              >
+              <Title order={1} c={alpha(colorScheme === 'dark' ? theme.colors.light[6] : theme.colors.gray[7], 0.5)}>
                 {`> ${postId === 'new' ? t('post.button.new') : t('post.button.edit')}`}
               </Title>
             )}

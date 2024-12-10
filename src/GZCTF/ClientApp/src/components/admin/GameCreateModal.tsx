@@ -75,10 +75,7 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             value={start.toDate()}
             clearable={false}
             onChange={(e) => {
-              const newDate = dayjs(e)
-                .hour(start.hour())
-                .minute(start.minute())
-                .second(start.second())
+              const newDate = dayjs(e).hour(start.hour()).minute(start.minute()).second(start.second())
               setStart(newDate)
               if (newDate && end < newDate) {
                 setEnd(newDate.add(2, 'h'))
@@ -123,10 +120,7 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
             value={end.format('HH:mm:ss')}
             onChange={(e) => {
               const newTime = e.target.value.split(':')
-              const newDate = dayjs(end)
-                .hour(Number(newTime[0]))
-                .minute(Number(newTime[1]))
-                .second(Number(newTime[2]))
+              const newDate = dayjs(end).hour(Number(newTime[0])).minute(Number(newTime[1])).second(Number(newTime[2]))
               setEnd(newDate)
             }}
             error={end < start}

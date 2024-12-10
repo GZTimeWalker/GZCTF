@@ -1,23 +1,5 @@
-import {
-  ActionIcon,
-  Avatar,
-  Badge,
-  Button,
-  Code,
-  Group,
-  Paper,
-  ScrollArea,
-  Switch,
-  Table,
-  Text,
-} from '@mantine/core'
-import {
-  mdiArrowLeftBold,
-  mdiArrowRightBold,
-  mdiChevronTripleRight,
-  mdiPencilOutline,
-  mdiPlus,
-} from '@mdi/js'
+import { ActionIcon, Avatar, Badge, Button, Code, Group, Paper, ScrollArea, Switch, Table, Text } from '@mantine/core'
+import { mdiArrowLeftBold, mdiArrowRightBold, mdiChevronTripleRight, mdiPencilOutline, mdiPlus } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
@@ -39,12 +21,7 @@ const Games: FC = () => {
   const [page, setPage] = useState(1)
   const [createOpened, setCreateOpened] = useState(false)
   const [disabled, setDisabled] = useState(false)
-  const {
-    data: games,
-    total,
-    setData: setGames,
-    updateData: updateGames,
-  } = useArrayResponse<GameInfoModel>()
+  const { data: games, total, setData: setGames, updateData: updateGames } = useArrayResponse<GameInfoModel>()
   const [current, setCurrent] = useState(0)
 
   const navigate = useNavigate()
@@ -59,7 +36,16 @@ const Games: FC = () => {
         ...game,
         hidden: !game.hidden,
       })
-      games && updateGames(games.map((g) => (g.id === game.id ? { ...g, hidden: !g.hidden } : g)))
+      if (games) {
+        updateGames(
+          games.map((g) => {
+            if (g.id === game.id) {
+              return { ...g, hidden: !g.hidden }
+            }
+            return g
+          })
+        )
+      }
     } catch (e) {
       showErrorNotification(e, t)
     } finally {
@@ -90,10 +76,7 @@ const Games: FC = () => {
       headProps={{ justify: 'apart' }}
       head={
         <>
-          <Button
-            leftSection={<Icon path={mdiPlus} size={1} />}
-            onClick={() => setCreateOpened(true)}
-          >
+          <Button leftSection={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
             {t('admin.button.games.new')}
           </Button>
           <Group w="calc(100% - 9rem)" justify="right">
@@ -114,11 +97,7 @@ const Games: FC = () => {
             <Text fw="bold" size="sm">
               {page}
             </Text>
-            <ActionIcon
-              size="lg"
-              disabled={page * ITEM_COUNT_PER_PAGE >= total}
-              onClick={() => setPage(page + 1)}
-            >
+            <ActionIcon size="lg" disabled={page * ITEM_COUNT_PER_PAGE >= total} onClick={() => setPage(page + 1)}>
               <Icon path={mdiArrowRightBold} size={1} />
             </ActionIcon>
           </Group>
@@ -146,11 +125,7 @@ const Games: FC = () => {
                   return (
                     <Table.Tr key={game.id}>
                       <Table.Td>
-                        <Switch
-                          disabled={disabled}
-                          checked={game.hidden}
-                          onChange={() => onToggleHidden(game)}
-                        />
+                        <Switch disabled={disabled} checked={game.hidden} onChange={() => onToggleHidden(game)} />
                       </Table.Td>
                       <Table.Td>
                         <Group wrap="nowrap" justify="space-between">

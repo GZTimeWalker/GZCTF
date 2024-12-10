@@ -1,11 +1,4 @@
-import {
-  Box,
-  Group,
-  GroupProps,
-  MantineColor,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { Box, Group, GroupProps, MantineColor, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import { clamp } from '@mantine/hooks'
 import React, { FC, useEffect, useState } from 'react'
 import { LogoHeader } from '@Components/LogoHeader'
@@ -29,9 +22,7 @@ interface IconTabsProps extends GroupProps {
   onTabChange?: (tabIndex: number, tabKey: string) => void
 }
 
-const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boolean }> = (
-  props
-) => {
+const Tab: FC<TabProps & { active: boolean; onClick?: () => void; disabled?: boolean }> = (props) => {
   const { color, label, active, icon, tabKey, disabled, ...others } = props
 
   return (
@@ -78,7 +69,7 @@ export const IconTabs: FC<IconTabsProps> = (props) => {
       active={current === index}
       onClick={() => {
         setActiveTab(index)
-        onTabChange && onTabChange(index, tab.tabKey)
+        if (onTabChange) onTabChange(index, tab.tabKey)
       }}
     />
   ))

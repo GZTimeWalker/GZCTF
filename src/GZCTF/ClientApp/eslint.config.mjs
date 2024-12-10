@@ -49,9 +49,6 @@ export default [
 
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
-      '@typescript-eslint/no-unused-expressions': 'off',
       'react-hooks/exhaustive-deps': 'off',
       'react/display-name': 'off',
       'react/jsx-key': 'off',

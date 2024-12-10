@@ -35,9 +35,7 @@ export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, .
       classNames={classes}
       style={{
         border: `2px solid ${
-          selected
-            ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6]
-            : 'transparent'
+          selected ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6] : 'transparent'
         }`,
       }}
     >

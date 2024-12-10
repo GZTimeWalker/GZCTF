@@ -34,17 +34,18 @@ export const FlagCreateModal: FC<ModalProps> = (props) => {
     setDisabled(true)
 
     try {
-      const res = await api.edit.editAddFlags(numId, numCId, flagList)
+      await api.edit.editAddFlags(numId, numCId, flagList)
       showNotification({
         color: 'teal',
         message: t('admin.notification.games.challenges.flag.created'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
-      challenge &&
+      if (challenge) {
         mutate({
           ...challenge,
           flags: [...(challenge.flags ?? []), ...flagList],
         })
+      }
       setFlags('')
       props.onClose()
     } catch (e) {

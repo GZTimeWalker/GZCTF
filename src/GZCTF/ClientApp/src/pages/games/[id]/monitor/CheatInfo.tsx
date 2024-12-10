@@ -168,13 +168,7 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
         <Text fw="bold" size="xs" lineClamp={1}>
           {submissionInfo.challenge}
         </Text>
-        <Input
-          variant="unstyled"
-          value={submissionInfo.answer}
-          readOnly
-          size="xs"
-          classNames={classes}
-        />
+        <Input variant="unstyled" value={submissionInfo.answer} readOnly size="xs" classNames={classes} />
       </Stack>
     </Group>
   )
@@ -207,9 +201,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
               <Stack gap={0}>
                 <Group gap={4}>
                   <Title order={4} lineClamp={1} fw="bold">
-                    {!cheatTeamInfo.name
-                      ? t('admin.placeholder.games.participation.team')
-                      : cheatTeamInfo.name}
+                    {!cheatTeamInfo.name ? t('admin.placeholder.games.participation.team') : cheatTeamInfo.name}
                   </Title>
                   {cheatTeamInfo?.division && (
                     <Badge size="sm" variant="outline">
@@ -245,10 +237,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
           {[...cheatTeamInfo.submissionInfo]
             .sort((a, b) => (b.time?.unix() ?? 0) - (a.time?.unix() ?? 0))
             .map((submissionInfo) => (
-              <CheatSubmissionInfo
-                key={submissionInfo.time?.unix()}
-                submissionInfo={submissionInfo}
-              />
+              <CheatSubmissionInfo key={submissionInfo.time?.unix()} submissionInfo={submissionInfo} />
             ))}
         </Stack>
       </Accordion.Panel>
@@ -279,13 +268,7 @@ const CheatInfoTeamView: FC<CheatInfoTeamViewProps> = (props) => {
             </Stack>
           </Center>
         ) : (
-          <Accordion
-            multiple
-            variant="contained"
-            chevronPosition="left"
-            classNames={classes}
-            className={classes.root}
-          >
+          <Accordion multiple variant="contained" chevronPosition="left" classNames={classes} className={classes.root}>
             {[...cheatTeamInfo.values()]
               .sort((a, b) => (b.lastSubmitTime?.unix() ?? 0) - (a.lastSubmitTime?.unix() ?? 0))
               .map((cheatInfo) => (
@@ -314,9 +297,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const { locale } = useLanguage()
 
   const rows = props.cheatInfo
-    .sort(
-      (a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0)
-    )
+    .sort((a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0))
     .map((item, i) => (
       <Table.Tr key={`${item.submission?.time}@${i}`}>
         <Table.Td ff="monospace">
@@ -346,13 +327,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
         </Table.Td>
         <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
         <Table.Td p="0" w="24vw">
-          <Input
-            variant="unstyled"
-            value={item.submission?.answer}
-            readOnly
-            size="sm"
-            classNames={inputClasses}
-          />
+          <Input variant="unstyled" value={item.submission?.answer} readOnly size="sm" classNames={inputClasses} />
         </Table.Td>
       </Table.Tr>
     ))
@@ -406,8 +381,7 @@ const CheatInfo: FC = () => {
     try {
       await api.admin.adminParticipation(id, model)
       const current = cheatTeamInfo?.get(id)
-      cheatTeamInfo &&
-        current &&
+      if (cheatTeamInfo && current) {
         setCheatTeamInfo(
           cheatTeamInfo.set(id, {
             ...current,
@@ -415,6 +389,7 @@ const CheatInfo: FC = () => {
             status: model.status ?? current.status,
           })
         )
+      }
       showNotification({
         color: 'teal',
         message: t('admin.notification.games.participation.updated'),
@@ -431,10 +406,7 @@ const CheatInfo: FC = () => {
     <WithGameMonitor isLoading={!cheatInfo}>
       <Group justify="space-between" w="100%">
         <Switch
-          label={SwitchLabel(
-            t('game.content.team_view.label'),
-            t('game.content.team_view.description')
-          )}
+          label={SwitchLabel(t('game.content.team_view.label'), t('game.content.team_view.description'))}
           checked={teamView}
           onChange={(e) => setTeamView(e.currentTarget.checked)}
         />

@@ -1,25 +1,8 @@
-import {
-  ActionIcon,
-  Anchor,
-  Button,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  TextInput,
-  Tooltip,
-} from '@mantine/core'
+import { ActionIcon, Anchor, Button, Divider, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import {
-  mdiCheck,
-  mdiContentCopy,
-  mdiExclamation,
-  mdiOpenInApp,
-  mdiOpenInNew,
-  mdiServerNetwork,
-} from '@mdi/js'
+import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInApp, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -64,8 +47,7 @@ const Countdown: FC<CountdownProps> = (props) => {
   }, [])
 
   useEffect(() => {
-    if (!extendEnabled && config.renewalWindow && countdown.asMinutes() < config.renewalWindow)
-      enableExtend()
+    if (!extendEnabled && config.renewalWindow && countdown.asMinutes() < config.renewalWindow) enableExtend()
     if (onTimeout && countdown.asSeconds() <= 0) onTimeout()
   }, [countdown])
 
@@ -182,11 +164,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             <Text size="sm">
               {t('challenge.content.instance.entry.description.proxy')}
               &nbsp;
-              <Anchor
-                href="https://github.com/XDSEC/WebSocketReflectorX/releases"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <Anchor href="https://github.com/XDSEC/WebSocketReflectorX/releases" target="_blank" rel="noreferrer">
                 {t('challenge.content.instance.entry.description.anchor')}
               </Anchor>
             </Text>
@@ -206,19 +184,12 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             </Tooltip>
             <Tooltip
               label={
-                isPlatformProxy
-                  ? t('challenge.content.instance.open.client')
-                  : t('challenge.content.instance.open.web')
+                isPlatformProxy ? t('challenge.content.instance.open.client') : t('challenge.content.instance.open.web')
               }
               withArrow
               classNames={tooltipClasses}
             >
-              <ActionIcon
-                component="a"
-                href={openUrl}
-                target={isPlatformProxy ? '_self' : '_blank'}
-                rel="noreferrer"
-              >
+              <ActionIcon component="a" href={openUrl} target={isPlatformProxy ? '_self' : '_blank'} rel="noreferrer">
                 <Icon path={isPlatformProxy ? mdiOpenInApp : mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>

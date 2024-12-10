@@ -22,7 +22,7 @@ const GameWriteups: FC = () => {
     if (writeups?.length && !selected) {
       setSelected(writeups[0])
     }
-  }, [writeups])
+  }, [writeups, selected])
 
   return (
     <WithGameEditTab

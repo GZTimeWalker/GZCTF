@@ -58,20 +58,9 @@ const AnswerResultIconMap = (size: number) => {
   return new Map([
     [AnswerResult.Accepted, { path: mdiCheck, size, color: theme.colors.green[colorIdx] }],
     [AnswerResult.WrongAnswer, { path: mdiClose, size, color: theme.colors.red[colorIdx] }],
-    [
-      AnswerResult.NotFound,
-
-      { path: mdiCrosshairsQuestion, size, color: theme.colors.gray[colorIdx] },
-    ],
-    [
-      AnswerResult.CheatDetected,
-
-      { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] },
-    ],
-    [
-      AnswerResult.FlagSubmitted,
-      { path: mdiDotsHorizontal, size, color: theme.colors.gray[colorIdx] },
-    ],
+    [AnswerResult.NotFound, { path: mdiCrosshairsQuestion, size, color: theme.colors.gray[colorIdx] }],
+    [AnswerResult.CheatDetected, { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] }],
+    [AnswerResult.FlagSubmitted, { path: mdiDotsHorizontal, size, color: theme.colors.gray[colorIdx] }],
   ])
 }
 
@@ -167,49 +156,37 @@ const Submissions: FC = () => {
     }
   }, [game, numId, t])
 
-  const filteredSubs = newSubmissions.current.filter(
-    (item) => type === 'All' || item.status === type
-  )
+  const filteredSubs = newSubmissions.current.filter((item) => type === 'All' || item.status === type)
 
-  const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map(
-    (item, i) => (
-      <Table.Tr
-        key={`${item.time}@${i}`}
-        className={
-          i === 0 && activePage === 1 && filteredSubs.length > 0 ? tableClasses.fade : undefined
-        }
-      >
-        <Table.Td>
-          <Icon {...iconMap.get(item.status ?? AnswerResult.FlagSubmitted)!} />
-        </Table.Td>
-        <Table.Td ff="monospace">
-          <Badge size="sm" color="indigo">
-            {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
-          </Badge>
-        </Table.Td>
-        <Table.Td>
-          <Text size="sm" fw="bold">
-            {item.team ?? 'Team'}
-          </Text>
-        </Table.Td>
-        <Table.Td>
-          <Text ff="monospace" size="sm" fw="bold">
-            {item.user ?? 'User'}
-          </Text>
-        </Table.Td>
-        <Table.Td>{item.challenge ?? 'Challenge'}</Table.Td>
-        <Table.Td w="36vw" maw="100%" p="0">
-          <Input
-            variant="unstyled"
-            value={item.answer}
-            readOnly
-            size="sm"
-            classNames={inputClasses}
-          />
-        </Table.Td>
-      </Table.Tr>
-    )
-  )
+  const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map((item, i) => (
+    <Table.Tr
+      key={`${item.time}@${i}`}
+      className={i === 0 && activePage === 1 && filteredSubs.length > 0 ? tableClasses.fade : undefined}
+    >
+      <Table.Td>
+        <Icon {...iconMap.get(item.status ?? AnswerResult.FlagSubmitted)!} />
+      </Table.Td>
+      <Table.Td ff="monospace">
+        <Badge size="sm" color="indigo">
+          {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
+        </Badge>
+      </Table.Td>
+      <Table.Td>
+        <Text size="sm" fw="bold">
+          {item.team ?? 'Team'}
+        </Text>
+      </Table.Td>
+      <Table.Td>
+        <Text ff="monospace" size="sm" fw="bold">
+          {item.user ?? 'User'}
+        </Text>
+      </Table.Td>
+      <Table.Td>{item.challenge ?? 'Challenge'}</Table.Td>
+      <Table.Td w="36vw" maw="100%" p="0">
+        <Input variant="unstyled" value={item.answer} readOnly size="sm" classNames={inputClasses} />
+      </Table.Td>
+    </Table.Tr>
+  ))
 
   const onDownloadSubmissionSheet = () =>
     downloadBlob(
@@ -244,11 +221,7 @@ const Submissions: FC = () => {
           ]}
         />
         <Group justify="right">
-          <Tooltip
-            label={t('game.button.download.submissionsheet')}
-            position="left"
-            classNames={tooltipClasses}
-          >
+          <Tooltip label={t('game.button.download.submissionsheet')} position="left" classNames={tooltipClasses}>
             <ActionIcon disabled={disabled} size="lg" onClick={onDownloadSubmissionSheet}>
               <Icon path={mdiDownload} size={1} />
             </ActionIcon>

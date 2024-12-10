@@ -148,11 +148,7 @@ const Register: FC = () => {
         disabled={disabled}
         onChange={(event) => setUname(event.currentTarget.value)}
       />
-      <StrengthPasswordInput
-        value={pwd}
-        onChange={(event) => setPwd(event.currentTarget.value)}
-        disabled={disabled}
-      />
+      <StrengthPasswordInput value={pwd} onChange={(event) => setPwd(event.currentTarget.value)} disabled={disabled} />
       <PasswordInput
         required
         label={t('account.label.password_retype')}

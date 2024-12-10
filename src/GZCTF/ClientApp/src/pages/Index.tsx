@@ -70,30 +70,20 @@ const Home: FC = () => {
   return (
     <WithNavBar minWidth={0} withFooter withHeader stickyHeader>
       <Stack justify="flex-start">
-        {isMobile && recentGames && recentGames.length > 0 && (
-          <RecentGameCarousel games={recentGames} />
-        )}
+        {isMobile && recentGames && recentGames.length > 0 && <RecentGameCarousel games={recentGames} />}
         <Stack align="center">
           <Group wrap="nowrap" gap={4} justify="space-between" align="flex-start" w="100%">
             <Stack className={classes.posts}>
               {isMobile
-                ? posts?.map((post) => (
-                    <MobilePostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
-                  ))
-                : posts?.map((post) => (
-                    <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
-                  ))}
+                ? posts?.map((post) => <MobilePostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)
+                : posts?.map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
             </Stack>
             {!isMobile && (
               <nav className={classes.wrapper}>
                 <div className={classes.inner}>
                   <Stack>
                     <Group wrap="nowrap">
-                      <Icon
-                        path={mdiFlagCheckered}
-                        size={1.5}
-                        color={theme.colors[theme.primaryColor][4]}
-                      />
+                      <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors[theme.primaryColor][4]} />
                       <Title order={3}>{t('common.content.home.recent_games')}</Title>
                     </Group>
                     {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}

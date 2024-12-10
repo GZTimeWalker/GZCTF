@@ -1,11 +1,4 @@
-import {
-  AppShell,
-  Box,
-  LoadingOverlay,
-  Stack,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { AppShell, Box, LoadingOverlay, Stack, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import React, { FC, useState } from 'react'
 import { AppFooter } from '@Components/AppFooter'
 import { AppHeader } from '@Components/AppHeader'
@@ -81,8 +74,7 @@ export const WithNavBar: FC<WithNavBarProps> = ({
               style={{
                 zIndex: 10,
                 boxShadow: theme.shadows.sm,
-                backgroundColor:
-                  colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
+                backgroundColor: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
               }}
             >
               <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
@@ -95,10 +87,7 @@ export const WithNavBar: FC<WithNavBarProps> = ({
               >
                 {children}
               </Box>
-              <CustomColorModal
-                opened={colorModalOpened}
-                onClose={() => setColorModalOpened(false)}
-              />
+              <CustomColorModal opened={colorModalOpened} onClose={() => setColorModalOpened(false)} />
             </Stack>
             {withFooter && <AppFooter />}
           </AppShell.Main>

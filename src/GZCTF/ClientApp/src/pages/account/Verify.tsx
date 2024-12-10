@@ -45,7 +45,7 @@ const Verify: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
       navigate('/account/login')
-    } catch (e) {
+    } catch {
       showNotification({
         color: 'red',
         title: t('account.notification.verify.failed'),

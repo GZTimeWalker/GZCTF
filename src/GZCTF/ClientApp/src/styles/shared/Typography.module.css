@@ -57,24 +57,12 @@
     padding: calc(var(--mantine-spacing-xs) / 2) var(--mantine-spacing-md);
     margin-bottom: var(--mantine-spacing-md);
     font-size: var(--mantine-font-size-md);
-    color: light-dark(
-      alpha(var(--mantine-color-gray-7), 0.9),
-      alpha(var(--mantine-color-dark-0), 0.9)
-    );
-    background-color: light-dark(
-      alpha(var(--mantine-color-dark-1), 0.1),
-      alpha(var(--mantine-color-light-2), 0.03)
-    );
-    border-left: light-dark(
-      4px solid var(--mantine-color-gray-5),
-      4px solid var(--mantine-color-dark-0)
-    );
+    color: light-dark(alpha(var(--mantine-color-gray-7), 0.9), alpha(var(--mantine-color-dark-0), 0.9));
+    background-color: light-dark(alpha(var(--mantine-color-dark-1), 0.1), alpha(var(--mantine-color-light-2), 0.03));
+    border-left: light-dark(4px solid var(--mantine-color-gray-5), 4px solid var(--mantine-color-dark-0));
 
     & :where(pre, code) {
-      background-color: light-dark(
-        alpha(var(--mantine-color-light-1), 0.8),
-        alpha(var(--mantine-color-dark-6), 0.8)
-      );
+      background-color: light-dark(alpha(var(--mantine-color-light-1), 0.8), alpha(var(--mantine-color-dark-6), 0.8));
     }
   }
 
@@ -90,10 +78,7 @@
     font-size: 0.95rem;
     padding: 1px calc(var(--mantine-spacing-xs) / 2);
     border: none;
-    background-color: light-dark(
-      alpha(var(--mantine-white), 0.05),
-      alpha(var(--mantine-black), 0.1)
-    );
+    background-color: light-dark(alpha(var(--mantine-white), 0.05), alpha(var(--mantine-black), 0.1));
   }
 
   & :where(pre) > code {

@@ -35,8 +35,7 @@ export const WithChallengeEdit: FC<GameEditTabProps> = (props) => {
   const color = (chal: ChallengeInfoModel | null) => {
     const c = !chal
       ? theme.primaryColor
-      : (challengeCategoryLabelMap.get(chal.category as ChallengeCategory)?.color ??
-        theme.primaryColor)
+      : (challengeCategoryLabelMap.get(chal.category as ChallengeCategory)?.color ?? theme.primaryColor)
 
     return c
   }

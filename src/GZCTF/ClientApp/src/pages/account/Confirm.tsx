@@ -45,7 +45,7 @@ const Confirm: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
       navigate('/')
-    } catch (e) {
+    } catch {
       showNotification({
         color: 'red',
         title: t('account.notification.confirm.failed'),

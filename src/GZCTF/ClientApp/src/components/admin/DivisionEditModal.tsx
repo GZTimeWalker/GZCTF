@@ -25,7 +25,7 @@ export const DivisionEditModal: FC<DivisionEditModalProps> = (props) => {
       await setParticipation(participateId, { division })
       setDisabled(false)
       modalProps.onClose()
-    } catch (e) {
+    } finally {
       setDisabled(false)
     }
   }

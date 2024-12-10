@@ -45,12 +45,7 @@ const Users: FC = () => {
   const [update, setUpdate] = useState(new Date())
   const [editModalOpened, setEditModalOpened] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
-  const {
-    data: users,
-    total,
-    setData: setUsers,
-    updateData: updateUsers,
-  } = useArrayResponse<UserInfoModel>()
+  const { data: users, total, setData: setUsers, updateData: updateUsers } = useArrayResponse<UserInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
   const [disabled, setDisabled] = useState(false)
@@ -111,7 +106,7 @@ const Users: FC = () => {
       await api.admin.adminUpdateUserInfo(user.id!, {
         emailConfirmed: !user.emailConfirmed,
       })
-      users &&
+      if (users) {
         updateUsers(
           users.map((u) =>
             u.id === user.id
@@ -122,6 +117,7 @@ const Users: FC = () => {
               : u
           )
         )
+      }
     } catch (e) {
       showErrorNotification(e, t)
     } finally {
@@ -182,7 +178,9 @@ const Users: FC = () => {
         color: 'teal',
         icon: <Icon path={mdiCheck} size={1} />,
       })
-      users && updateUsers(users.filter((x) => x.id !== user.id))
+      if (users) {
+        updateUsers(users.filter((x) => x.id !== user.id))
+      }
       setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
@@ -204,7 +202,7 @@ const Users: FC = () => {
             value={hint}
             onChange={setHint}
             onKeyDown={(e) => {
-              !searching && e.key === 'Enter' && onSearch()
+              if (!searching && e.key === 'Enter') onSearch()
             }}
             rightSection={<Icon path={mdiAccountOutline} size={1} />}
           />
@@ -226,11 +224,7 @@ const Users: FC = () => {
             <Text fw="bold" size="sm">
               {page}
             </Text>
-            <ActionIcon
-              size="lg"
-              disabled={page * ITEM_COUNT_PER_PAGE >= total}
-              onClick={() => setPage(page + 1)}
-            >
+            <ActionIcon size="lg" disabled={page * ITEM_COUNT_PER_PAGE >= total} onClick={() => setPage(page + 1)}>
               <Icon path={mdiArrowRightBold} size={1} />
             </ActionIcon>
           </Group>
@@ -238,12 +232,7 @@ const Users: FC = () => {
       }
     >
       <Paper shadow="md" p="xs" w="100%">
-        <ScrollArea
-          viewportRef={viewport}
-          offsetScrollbars
-          scrollbarSize={4}
-          h="calc(100vh - 190px)"
-        >
+        <ScrollArea viewportRef={viewport} offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
           <Table className={tableClasses.table}>
             <Table.Thead>
               <Table.Tr>
@@ -342,9 +331,7 @@ const Users: FC = () => {
           onClose={() => setEditModalOpened(false)}
           mutateUser={(user: UserInfoModel) => {
             updateUsers(
-              [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) =>
-                a.id! < b.id! ? -1 : 1
-              )
+              [user, ...(users?.filter((n) => n.id !== user.id) ?? [])].sort((a, b) => (a.id! < b.id! ? -1 : 1))
             )
           }}
         />

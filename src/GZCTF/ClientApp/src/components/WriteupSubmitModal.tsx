@@ -35,11 +35,7 @@ interface WriteupSubmitModalProps extends ModalProps {
   writeupDeadline: string
 }
 
-export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
-  gameId,
-  writeupDeadline: wpddl,
-  ...props
-}) => {
+export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, writeupDeadline: wpddl, ...props }) => {
   const { data, mutate } = api.game.useGameGetWriteup(gameId, OnceSWRConfig)
 
   const theme = useMantineTheme()
@@ -63,7 +59,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
     setDisabled(true)
 
     try {
-      const data = await api.game.gameSubmitWriteup(
+      await api.game.gameSubmitWriteup(
         gameId,
         {
           file,
@@ -96,15 +92,9 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({
         <Group w="100%" justify="space-between">
           <Title order={4}>{t('game.content.writeup.title')}</Title>
           <Group gap={4}>
-            <Icon
-              path={data?.submitted ? mdiCheck : mdiExclamationThick}
-              size={0.9}
-              color={noteColor}
-            />
+            <Icon path={data?.submitted ? mdiCheck : mdiExclamationThick} size={0.9} color={noteColor} />
             <Text fw={600} size="md" c={noteColor}>
-              {data?.submitted
-                ? t('game.content.writeup.submitted')
-                : t('game.content.writeup.unsubmitted')}
+              {data?.submitted ? t('game.content.writeup.submitted') : t('game.content.writeup.unsubmitted')}
             </Text>
           </Group>
         </Group>

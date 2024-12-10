@@ -1,13 +1,4 @@
-import {
-  ActionIcon,
-  Badge,
-  Card,
-  CardProps,
-  Group,
-  Stack,
-  Title,
-  useMantineTheme,
-} from '@mantine/core'
+import { ActionIcon, Badge, Card, CardProps, Group, Stack, Title, useMantineTheme } from '@mantine/core'
 import { mdiDeleteOutline, mdiPencilOutline, mdiPinOffOutline, mdiPinOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
@@ -21,13 +12,7 @@ interface PostEditCardProps extends CardProps {
   onPin: () => void
 }
 
-export const PostEditCard: FC<PostEditCardProps> = ({
-  post,
-  onDelete,
-  onEdit,
-  onPin,
-  ...props
-}) => {
+export const PostEditCard: FC<PostEditCardProps> = ({ post, onDelete, onEdit, onPin, ...props }) => {
   const theme = useMantineTheme()
   return (
     <Card {...props} shadow="sm" p="lg">
@@ -39,11 +24,7 @@ export const PostEditCard: FC<PostEditCardProps> = ({
           </Group>
           <Group justify="right">
             <ActionIcon onClick={onPin}>
-              {post.isPinned ? (
-                <Icon path={mdiPinOffOutline} size={1} />
-              ) : (
-                <Icon path={mdiPinOutline} size={1} />
-              )}
+              {post.isPinned ? <Icon path={mdiPinOffOutline} size={1} /> : <Icon path={mdiPinOutline} size={1} />}
             </ActionIcon>
             <ActionIcon onClick={onEdit}>
               <Icon path={mdiPencilOutline} size={1} />

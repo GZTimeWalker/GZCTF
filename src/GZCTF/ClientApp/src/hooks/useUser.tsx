@@ -82,7 +82,7 @@ export const useLogOut = () => {
         message: t('account.notification.logout'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
-    } catch (e) {
+    } catch {
       navigate('/')
       mutateProfile(undefined, { revalidate: false })
     }

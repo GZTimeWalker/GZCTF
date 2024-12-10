@@ -4,19 +4,9 @@ import classes from '@Styles/Icon.module.css'
 
 export const Icon404: FC = () => {
   return (
-    <svg
-      id="main_logo"
-      xmlns="http://www.w3.org/2000/svg"
-      width="320"
-      height="320"
-      viewBox="0 0 6400 6400"
-    >
+    <svg id="main_logo" xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 6400 6400">
       <g id="Num4_left">
-        <path
-          className={classes.back}
-          fillRule="evenodd"
-          d="M5000,2400l282.84,282.84-800.11,800.11-282.84-282.84Z"
-        />
+        <path className={classes.back} fillRule="evenodd" d="M5000,2400l282.84,282.84-800.11,800.11-282.84-282.84Z" />
         <rect className={classes.mid} x="4200" y="3200" width="1600" height="400" />
         <rect className={classes.front} x="5000" y="2400" width="400" height="1600" />
       </g>

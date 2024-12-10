@@ -180,10 +180,7 @@ const Configs: FC = () => {
               <Group gap="sm" align="flex-end" justify="center">
                 {[20, 40, 60, 80].map((size) => (
                   <Stack align="center" justify="space-between" gap={0} key={size}>
-                    <LogoBox
-                      size={size}
-                      url={logoFile ? URL.createObjectURL(logoFile) : undefined}
-                    />
+                    <LogoBox size={size} url={logoFile ? URL.createObjectURL(logoFile) : undefined} />
                     <Text fw="bold" ta="center" size="xs">
                       {size}px
                     </Text>

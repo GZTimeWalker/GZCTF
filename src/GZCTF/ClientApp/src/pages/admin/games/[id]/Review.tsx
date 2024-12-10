@@ -42,12 +42,7 @@ import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
-import api, {
-  ParticipationEditModel,
-  ParticipationInfoModel,
-  ParticipationStatus,
-  ProfileUserInfoModel,
-} from '@Api'
+import api, { ParticipationEditModel, ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 import classes from '@Styles/Accordion.module.css'
 import misc from '@Styles/Misc.module.css'
 import reviewClasses from '@Styles/Review.module.css'
@@ -156,9 +151,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
                     : participation.team.name}
                 </Text>
                 <Text truncate size="sm" c="dimmed">
-                  {!participation.team?.bio
-                    ? t('admin.placeholder.games.participation.bio')
-                    : participation.team.bio}
+                  {!participation.team?.bio ? t('admin.placeholder.games.participation.bio') : participation.team.bio}
                 </Text>
               </Box>
             </Group>
@@ -200,9 +193,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             <MemberItem
               key={user.userId}
               user={user}
-              isRegistered={
-                participation.registeredMembers?.some((u) => u === user.userId) ?? false
-              }
+              isRegistered={participation.registeredMembers?.some((u) => u === user.userId) ?? false}
               isCaptain={participation.team?.captainId === user.userId}
             />
           ))}
@@ -285,11 +276,9 @@ const GameTeamReview: FC = () => {
     }
 
     fetchData()
-  }, [])
+  }, [navigate, numId, t])
 
-  const divs = Array.from(new Set(participations?.map((p) => p.division ?? '') ?? [])).filter(
-    (div) => !!div
-  )
+  const divs = Array.from(new Set(participations?.map((p) => p.division ?? '') ?? [])).filter((div) => !!div)
 
   const filteredParticipations = participations?.filter(
     (participation) =>
@@ -346,12 +335,7 @@ const GameTeamReview: FC = () => {
             </Stack>
           </Center>
         ) : (
-          <Accordion
-            variant="contained"
-            chevronPosition="left"
-            classNames={classes}
-            className={classes.root}
-          >
+          <Accordion variant="contained" chevronPosition="left" classNames={classes} className={classes.root}>
             {pagedParticipations?.map((participation) => (
               <ParticipationItem
                 key={participation.id}

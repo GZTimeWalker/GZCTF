@@ -50,8 +50,10 @@ const Traffic: FC = () => {
   const { colorScheme } = useMantineColorScheme()
   const modals = useModals()
 
-  const { data: challengeTraffic, mutate: mutateChallenges } =
-    api.game.useGameGetChallengesWithTrafficCapturing(gameId, SWROptions)
+  const { data: challengeTraffic, mutate: mutateChallenges } = api.game.useGameGetChallengesWithTrafficCapturing(
+    gameId,
+    SWROptions
+  )
   const { data: teamTraffic, mutate: mutateTeams } = api.game.useGameGetChallengeTraffic(
     challengeId ?? 0,
     SWROptions,
@@ -129,13 +131,10 @@ const Traffic: FC = () => {
 
   const totalFileSize = fileRecords?.reduce((acc, cur) => acc + (cur?.size ?? 0), 0) ?? 0
 
-  const orderedFileRecords =
-    fileRecords?.sort((a, b) => dayjs(b.updateTime).diff(dayjs(a.updateTime))) ?? []
+  const orderedFileRecords = fileRecords?.sort((a, b) => dayjs(b.updateTime).diff(dayjs(a.updateTime))) ?? []
 
   const innerStyle: CSSProperties = {
-    borderRight: `${rem(2)} solid ${
-      colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]
-    }`,
+    borderRight: `${rem(2)} solid ${colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]}`,
   }
 
   const srollHeight = 'calc(100vh - 174px)'
@@ -195,19 +194,13 @@ const Traffic: FC = () => {
                   </Text>
                 </Text>
                 <Group justify="right" gap="sm" wrap="nowrap">
-                  <Tooltip
-                    label={t('game.button.delete.all_traffic')}
-                    position="left"
-                    classNames={tooltipClasses}
-                  >
+                  <Tooltip label={t('game.button.delete.all_traffic')} position="left" classNames={tooltipClasses}>
                     <ActionIcon
                       size="md"
                       onClick={() =>
                         modals.openConfirmModal({
                           title: t('game.button.delete.all_traffic'),
-                          children: (
-                            <Text size="sm">{t('game.content.traffic.deleted_all_confirm')}</Text>
-                          ),
+                          children: <Text size="sm">{t('game.content.traffic.deleted_all_confirm')}</Text>,
                           onConfirm: onDeleteAll,
                           confirmProps: { color: 'red' },
                         })
@@ -216,11 +209,7 @@ const Traffic: FC = () => {
                       <Icon path={mdiDeleteForeverOutline} size={1} />
                     </ActionIcon>
                   </Tooltip>
-                  <Tooltip
-                    label={t('game.button.download.all_traffic')}
-                    position="left"
-                    classNames={tooltipClasses}
-                  >
+                  <Tooltip label={t('game.button.download.all_traffic')} position="left" classNames={tooltipClasses}>
                     <ActionIcon size="md" onClick={onDownloadAll}>
                       <Icon path={mdiDownloadMultiple} size={1} />
                     </ActionIcon>

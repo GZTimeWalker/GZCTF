@@ -8,10 +8,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import classes from '@Styles/PDFViewer.module.css'
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString()
+pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
 
 interface PDFViewerProps {
   url?: string
@@ -56,12 +53,7 @@ export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
             <Stack ref={ref}>
               {Array.from(Array.from({ length: numPages }), (_, index) => (
                 <Paper className={classes.paper} key={`page_${index + 1}`}>
-                  <Page
-                    width={renderWidth}
-                    scale={ratio}
-                    pageNumber={index + 1}
-                    renderAnnotationLayer={false}
-                  />
+                  <Page width={renderWidth} scale={ratio} pageNumber={index + 1} renderAnnotationLayer={false} />
                 </Paper>
               ))}
             </Stack>

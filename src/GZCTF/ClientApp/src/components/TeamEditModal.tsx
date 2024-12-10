@@ -51,11 +51,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   const { t } = useTranslation()
 
   return (
-    <Group
-      justify="space-between"
-      onMouseEnter={() => setShowBtns(true)}
-      onMouseLeave={() => setShowBtns(false)}
-    >
+    <Group justify="space-between" onMouseEnter={() => setShowBtns(true)} onMouseLeave={() => setShowBtns(false)}>
       <Group justify="left">
         <Avatar alt="avatar" src={user.avatar} radius="xl">
           {user.userName?.slice(0, 1) ?? 'U'}
@@ -427,9 +423,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
             variant="outline"
             onClick={() => {
               modals.openConfirmModal({
-                title: isCaptain
-                  ? t('team.content.disband.confirm.title')
-                  : t('team.content.leave.confirm.title'),
+                title: isCaptain ? t('team.content.disband.confirm.title') : t('team.content.leave.confirm.title'),
                 children: (
                   <Text size="sm">
                     {isCaptain
@@ -456,12 +450,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       </Stack>
 
       {/* 更新头像浮窗 */}
-      <Modal
-        opened={dropzoneOpened}
-        onClose={() => setDropzoneOpened(false)}
-        withCloseButton={false}
-        zIndex={1000}
-      >
+      <Modal opened={dropzoneOpened} onClose={() => setDropzoneOpened(false)} withCloseButton={false} zIndex={1000}>
         <Dropzone
           onDrop={(files) => setAvatarFile(files[0])}
           onReject={() => {

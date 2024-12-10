@@ -60,11 +60,8 @@ export interface WatermarkProps {
 /**
  * generate svg string for watermark
  */
-function generateSvg(
-  options: Required<Omit<WatermarkProps, 'wrapperStyle' | 'wrapperElement' | 'show'>>
-) {
-  const { text, textColor, textSize, fontFamily, lineHeight, multiline, opacity, gutter, rotate } =
-    options
+function generateSvg(options: Required<Omit<WatermarkProps, 'wrapperStyle' | 'wrapperElement' | 'show'>>) {
+  const { text, textColor, textSize, fontFamily, lineHeight, multiline, opacity, gutter, rotate } = options
   const rect = calcTextRenderedRect(text, textSize, fontFamily)
   const size = Math.sqrt(rect.width * rect.width + rect.height * rect.height) + gutter * 2
   const center = size / 2
@@ -79,9 +76,7 @@ function generateSvg(
 
   const textEl = `<text fill='${textColor}' x='50%' y='50%' font-size='${textSize}' text-anchor='middle' font-family='${fontFamily}' transform='rotate(${rotate} ${center} ${center})' opacity='${opacity}'>${textContent}</text>`
 
-  return `<svg width='${size}' height='${Math.ceil(
-    size / 3
-  )}' xmlns='http://www.w3.org/2000/svg'>${textEl}</svg>`
+  return `<svg width='${size}' height='${Math.ceil(size / 3)}' xmlns='http://www.w3.org/2000/svg'>${textEl}</svg>`
 }
 
 function calcTextRenderedRect(text: string, fontSize: number, fontFamily: string): DOMRect {
@@ -165,10 +160,7 @@ export const Watermark: React.FC<React.PropsWithChildren<WatermarkProps>> = ({
   const wrapperRef = useRef<HTMLDivElement>(null)
   const watermarkRef = useRef<HTMLDivElement>(null)
 
-  const watermarkBox: (layers: number, child: HTMLDivElement) => HTMLDivElement = (
-    layers,
-    child
-  ) => {
+  const watermarkBox: (layers: number, child: HTMLDivElement) => HTMLDivElement = (layers, child) => {
     if (layers > 0) {
       const box = document.createElement('div')
       box.appendChild(child)

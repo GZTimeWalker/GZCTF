@@ -49,18 +49,9 @@ const EventTypeIconMap = (size: number) => {
 
   return new Map([
     [EventType.FlagSubmit, { path: mdiFlag, size, color: theme.colors.cyan[colorIdx] }],
-    [
-      EventType.ContainerStart,
-      { path: mdiToggleSwitchOutline, size, color: theme.colors.green[colorIdx] },
-    ],
-    [
-      EventType.ContainerDestroy,
-      { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] },
-    ],
-    [
-      EventType.CheatDetected,
-      { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] },
-    ],
+    [EventType.ContainerStart, { path: mdiToggleSwitchOutline, size, color: theme.colors.green[colorIdx] }],
+    [EventType.ContainerDestroy, { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] }],
+    [EventType.CheatDetected, { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] }],
     [EventType.Normal, { path: mdiLightningBolt, size, color: theme.colors.light[colorIdx] }],
   ])
 }
@@ -210,9 +201,7 @@ const Events: FC = () => {
   }, [game, numId, t])
 
   const filteredEvents = newEvents.current.filter(
-    (e) =>
-      !hideContainerEvents ||
-      (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
+    (e) => !hideContainerEvents || (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
   )
 
   return (
@@ -250,11 +239,7 @@ const Events: FC = () => {
               radius="sm"
               p="xs"
               key={`${event.time}@${i}`}
-              className={
-                i === 0 && activePage === 1 && filteredEvents.length > 0
-                  ? tableClasses.fade
-                  : undefined
-              }
+              className={i === 0 && activePage === 1 && filteredEvents.length > 0 ? tableClasses.fade : undefined}
             >
               <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
                 <Icon {...iconMap.get(event.type)!} />

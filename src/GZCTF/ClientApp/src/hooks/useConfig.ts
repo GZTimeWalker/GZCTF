@@ -135,9 +135,7 @@ export const useBanner = () => {
 }
 
 const cacheKey = 'gzctf-cache'
-const cacheMap = new Map(
-  JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]')
-)
+const cacheMap = new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
 
 const saveCache = () => {
   const appCache = LZString.compress(JSON.stringify(Array.from(cacheMap.entries())))

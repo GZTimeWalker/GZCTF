@@ -45,7 +45,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
     setDisabled(true)
 
     try {
-      const res = await api.admin.adminUpdateTeam(activeTeam.id!, teamInfo)
+      await api.admin.adminUpdateTeam(activeTeam.id!, teamInfo)
       showNotification({
         color: 'teal',
         message: t('team.notification.updated'),

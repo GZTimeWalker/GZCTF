@@ -1,11 +1,5 @@
 import { Button, Group, LoadingOverlay, Stack, Tabs } from '@mantine/core'
-import {
-  mdiExclamationThick,
-  mdiFlag,
-  mdiLightningBolt,
-  mdiPackageVariant,
-  mdiTableArrowDown,
-} from '@mdi/js'
+import { mdiExclamationThick, mdiFlag, mdiLightningBolt, mdiPackageVariant, mdiTableArrowDown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -85,11 +79,7 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
               >
                 <Tabs.List>
                   {pages.map((page) => (
-                    <Tabs.Tab
-                      key={page.path}
-                      leftSection={<Icon path={page.icon} size={1} />}
-                      value={page.path}
-                    >
+                    <Tabs.Tab key={page.path} leftSection={<Icon path={page.icon} size={1} />} value={page.path}>
                       {page.title}
                     </Tabs.Tab>
                   ))}

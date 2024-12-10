@@ -84,7 +84,7 @@ export const useLanguage = () => {
     const pageLang = language.toLowerCase()
     dayjs.locale(pageLang)
     document.documentElement.setAttribute('lang', pageLang)
-  }, [language])
+  }, [i18n, language])
 
   const supportedLanguages = Object.keys(LanguageMap) as SupportedLanguages[]
 
@@ -101,9 +101,7 @@ export const useLanguage = () => {
       modals.openConfirmModal({
         w: '30vw',
         maw: '30rem',
-        title: (
-          <Text fw="bold">{isMT ? '🤖 Machine Translation' : '🚀 Incompleted Translation'}</Text>
-        ),
+        title: <Text fw="bold">{isMT ? '🤖 Machine Translation' : '🚀 Incompleted Translation'}</Text>,
         children: (
           <>
             <Text>
@@ -124,11 +122,7 @@ export const useLanguage = () => {
               </List.Item>
               <List.Item>
                 Contact us on{' '}
-                <Anchor
-                  href="https://github.com/GZTimeWalker/GZCTF"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <Anchor href="https://github.com/GZTimeWalker/GZCTF" target="_blank" rel="noreferrer">
                   GitHub
                 </Anchor>
               </List.Item>
@@ -161,9 +155,7 @@ export const normalizeLanguage = (language: string) => language.toUpperCase().re
 export const convertLanguage = (language: string): SupportedLanguages => {
   const normalizedLanguage = normalizeLanguage(language)
 
-  const matchedLanguage = Object.keys(LanguageMap).filter(
-    (lang) => normalizeLanguage(lang) === normalizedLanguage
-  )
+  const matchedLanguage = Object.keys(LanguageMap).filter((lang) => normalizeLanguage(lang) === normalizedLanguage)
   if (matchedLanguage.length > 0) {
     return matchedLanguage.at(0) as SupportedLanguages
   }

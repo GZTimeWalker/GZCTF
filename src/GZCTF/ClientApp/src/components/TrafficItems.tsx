@@ -4,21 +4,10 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  PropsWithItem,
-  SelectableItem,
-  SelectableItemComponent,
-  SelectableItemProps,
-} from '@Components/ScrollSelect'
+import { PropsWithItem, SelectableItem, SelectableItemComponent, SelectableItemProps } from '@Components/ScrollSelect'
 import { useChallengeCategoryLabelMap, HunamizeSize } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
-import {
-  ChallengeCategory,
-  ChallengeTrafficModel,
-  ChallengeType,
-  FileRecord,
-  TeamTrafficModel,
-} from '@Api'
+import { ChallengeCategory, ChallengeTrafficModel, ChallengeType, FileRecord, TeamTrafficModel } from '@Api'
 import { ActionIconWithConfirm } from './ActionIconWithConfirm'
 
 const itemHeight = rem(60)
@@ -36,11 +25,7 @@ export const ChallengeItem: SelectableItemComponent<ChallengeTrafficModel> = (it
     <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group justify="space-between" gap="sm" w="100%" wrap="nowrap">
         <Group justify="left" gap="xs" wrap="nowrap">
-          <Icon
-            path={data.icon}
-            color={theme.colors[data.color ?? theme.primaryColor][5]}
-            size={1}
-          />
+          <Icon path={data.icon} color={theme.colors[data.color ?? theme.primaryColor][5]} size={1} />
           <Stack gap={0} align="flex-start">
             <Input variant="unstyled" value={item.title ?? 'Team'} readOnly classNames={classes} />
             <Badge color={data.color} size="xs" variant="dot">
@@ -106,13 +91,7 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
   return (
     <SelectableItem h={itemHeight} active={false} {...props}>
       <Group justify="space-between" gap={0} wrap="nowrap" w="100%">
-        <Group
-          justify="space-between"
-          gap={0}
-          wrap="nowrap"
-          w="calc(100% - 2.5rem)"
-          onClick={() => onDownload(item)}
-        >
+        <Group justify="space-between" gap={0} wrap="nowrap" w="calc(100% - 2.5rem)" onClick={() => onDownload(item)}>
           <Group justify="left" gap="sm" wrap="nowrap">
             <Icon path={mdiFileDownloadOutline} size={1.2} />
 

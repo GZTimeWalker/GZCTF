@@ -1,12 +1,4 @@
-import {
-  BoxProps,
-  Center,
-  Group,
-  MantineColor,
-  em,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core'
+import { BoxProps, Center, Group, MantineColor, em, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import cx from 'clsx'
 import { FC } from 'react'
 import classes from '@Styles/GameProgress.module.css'
@@ -25,11 +17,7 @@ export const GameProgress: FC<GameProgressProps> = (props: GameProgressProps) =>
   const { colorScheme } = useMantineColorScheme()
 
   const pulsing = percentage < 100
-  const resolvedColor = pulsing
-    ? colorScheme === 'dark'
-      ? 'light'
-      : (color ?? theme.primaryColor)
-    : 'gray'
+  const resolvedColor = pulsing ? (colorScheme === 'dark' ? 'light' : (color ?? theme.primaryColor)) : 'gray'
   const spikeColor = theme.colors[resolvedColor][5]
   const bgColor = theme.colors[resolvedColor][2]
 

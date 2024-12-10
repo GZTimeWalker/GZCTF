@@ -53,8 +53,7 @@ export const ChallengePanel: FC = () => {
     challenges &&
     (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
       (chal) =>
-        !hideSolved ||
-        (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
+        !hideSolved || (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
     )
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
@@ -194,12 +193,7 @@ export const ChallengePanel: FC = () => {
             {categories.map((tab) => {
               const data = challengeCategoryLabelMap.get(tab as ChallengeCategory)!
               return (
-                <Tabs.Tab
-                  key={tab}
-                  value={tab}
-                  leftSection={<Icon path={data?.icon} size={1} />}
-                  color={data?.color}
-                >
+                <Tabs.Tab key={tab} value={tab} leftSection={<Icon path={data?.icon} size={1} />} color={data?.color}>
                   <Group justify="space-between" wrap="nowrap" gap={2}>
                     <Text fz="sm" fw="bold">
                       {data?.name}
@@ -290,9 +284,7 @@ export const ChallengePanel: FC = () => {
           gameEnded={dayjs(game?.end) < dayjs()}
           status={teamInfo?.rank?.solvedChallenges?.find((c) => c.id === challenge?.id)?.type}
           cateData={
-            challengeCategoryLabelMap.get(
-              (challenge?.category as ChallengeCategory) ?? ChallengeCategory.Misc
-            )!
+            challengeCategoryLabelMap.get((challenge?.category as ChallengeCategory) ?? ChallengeCategory.Misc)!
           }
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}
