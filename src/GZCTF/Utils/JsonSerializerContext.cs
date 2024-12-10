@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
@@ -7,7 +8,9 @@ using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
 using GZCTF.Services.Container.Provider;
 using Namotion.Reflection;
+using NJsonSchema;
 using NJsonSchema.Generation;
+using NJsonSchema.Generation.TypeMappers;
 
 namespace GZCTF.Utils;
 
@@ -59,6 +62,28 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(TeamInfoModel))]
 [JsonSerializable(typeof(TeamInfoModel[]))]
 internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;
+
+public class DateTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
+{
+    public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
+        reader.TokenType == JsonTokenType.Number ?
+            DateTimeOffset.FromUnixTimeMilliseconds(reader.GetInt64()) : reader.GetDateTimeOffset();
+
+    public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options) =>
+        writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
+}
+
+public class OpenApiDateTimeOffsetToUIntMapper : ITypeMapper
+{
+    public void GenerateSchema(JsonSchema schema, TypeMapperContext context)
+    {
+        schema.Type = JsonObjectType.Integer;
+        schema.Format = JsonFormatStrings.ULong;
+    }
+
+    public Type MappedType => typeof(DateTimeOffset);
+    public bool UseReference => false;
+}
 
 // wait for https://github.com/RicoSuter/NJsonSchema/issues/1741
 internal class GenericsSystemTextJsonReflectionService : SystemTextJsonReflectionService

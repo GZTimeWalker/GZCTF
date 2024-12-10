@@ -55,7 +55,10 @@ GZCTF.Program.Banner();
 #region Json
 
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
+{
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+    options.SerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
+});
 
 #endregion Json
 
@@ -64,24 +67,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
     .Configure<RequestLocalizationOptions>(options =>
     {
-        string[] supportedCultures =
-        [
-            "en-US",
-            "zh-CN",
-            "zh-TW",
-            "ja-JP",
-            "id-ID",
-            "ko-KR",
-            "ru-RU",
-            "de-DE",
-            "fr-FR",
-            "es-ES",
-            "vi-VN"
-        ];
-
         options
-            .AddSupportedCultures(supportedCultures)
-            .AddSupportedUICultures(supportedCultures);
+            .AddSupportedCultures(GZCTF.Program.SupportedCultures)
+            .AddSupportedUICultures(GZCTF.Program.SupportedCultures);
 
         options.ApplyCurrentCultureToResponseHeaders = true;
     });
@@ -127,11 +115,6 @@ builder.Services.AddDbContext<AppDbContext>(
 
 #region Configuration
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
-});
-
 try
 {
     builder.Configuration.AddEntityConfiguration(options =>
@@ -166,7 +149,7 @@ if (builder.Environment.IsDevelopment())
         settings.Title = "GZCTF Server API";
         settings.Description = "GZCTF Server API Document";
         settings.UseControllerSummaryAsTagDescription = true;
-        settings.SchemaSettings.TypeMappers.Add(new OpenAPIDateTimeOffsetToUIntMapper());
+        settings.SchemaSettings.TypeMappers.Add(new OpenApiDateTimeOffsetToUIntMapper());
         settings.SchemaSettings.ReflectionService = new GenericsSystemTextJsonReflectionService();
     });
 
@@ -318,6 +301,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
         factory.Create(typeof(GZCTF.Resources.Program));
 }).AddJsonOptions(options =>
 {
+    options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
     options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
 });
 
@@ -423,6 +407,21 @@ namespace GZCTF
             stream.ReadExactly(DefaultFavicon);
             DefaultFaviconHash = Convert.ToHexStringLower(SHA256.HashData(DefaultFavicon));
         }
+
+        internal static readonly string[] SupportedCultures =
+        [
+            "en-US",
+            "zh-CN",
+            "zh-TW",
+            "ja-JP",
+            "id-ID",
+            "ko-KR",
+            "ru-RU",
+            "de-DE",
+            "fr-FR",
+            "es-ES",
+            "vi-VN"
+        ];
 
         internal static IStringLocalizer<Program> StaticLocalizer { get; } =
             new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);

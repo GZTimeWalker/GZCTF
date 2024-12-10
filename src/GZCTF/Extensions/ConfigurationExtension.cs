@@ -1,11 +1,13 @@
 ﻿using System.Net.Mime;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Encodings.Web;
 using FluentStorage;
 using FluentStorage.Blobs;
 using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -24,6 +26,15 @@ public static class ConfigurationExtension
                                "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
                                "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
                                "connect-src 'self'; base-uri 'none';";
+
+    static readonly HashSet<string> SupportedCultures = Program.SupportedCultures
+        .Select(c => c.ToLower()).ToHashSet();
+
+    static readonly HashSet<string> ShortSupportedCultures = SupportedCultures
+        .Select(c => c.Split('-')[0]).ToHashSet();
+
+    const StringSplitOptions DefaultSplitOptions =
+        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
 
     public static void AddEntityConfiguration(this IConfigurationBuilder builder,
         Action<DbContextOptionsBuilder> optionsAction) =>
@@ -51,7 +62,8 @@ public static class ConfigurationExtension
         using var streamReader = new StreamReader(stream);
         var template = await streamReader.ReadToEndAsync();
 
-#pragma warning disable RDG002 // Unable to resolve endpoint handler: https://github.com/dotnet/core/issues/8288
+#pragma warning disable RDG002
+        // Unable to resolve endpoint handler: https://github.com/dotnet/core/issues/8288
         app.MapFallback(IndexHandler(template));
 #pragma warning restore RDG002
     }
@@ -107,6 +119,28 @@ public static class ConfigurationExtension
             entityTag: EntityTagHeaderValue.Parse(eTag));
     }
 
+    static string ExtractLanguage(string? acceptLanguage)
+    {
+        if (string.IsNullOrWhiteSpace(acceptLanguage) || acceptLanguage.Length > 100)
+            return "en-us";
+
+        foreach (var language in acceptLanguage.Split(',', DefaultSplitOptions))
+        {
+            var culture = language.Split(';', DefaultSplitOptions).First().ToLower();
+            if (SupportedCultures.Contains(culture))
+                return culture;
+
+            if (culture is "*")
+                return "en-us";
+
+            var shortCulture = culture.Split('-', DefaultSplitOptions).First();
+            if (ShortSupportedCultures.Contains(shortCulture))
+                return shortCulture;
+        }
+
+        return "en-us";
+    }
+
     static IndexHandlerDelegate IndexHandler(string template) => async (
         HttpContext context,
         IDistributedCache cache,
@@ -125,11 +159,16 @@ public static class ConfigurationExtension
             await cache.SetStringAsync(CacheKey.Index, content, token);
         }
 
+        var builder = new StringBuilder(content);
+
+        var acceptLanguage = context.Request.Headers.AcceptLanguage;
+        builder.Replace("%lang%", ExtractLanguage(acceptLanguage));
+
         var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(12));
-
         context.Response.Headers.ContentSecurityPolicy = string.Format(CspTemplate, nonce);
+        builder.Replace("%nonce%", nonce);
 
-        return Results.Text(content.Replace("%nonce%", nonce), MediaTypeNames.Text.Html);
+        return Results.Text(builder.ToString(), MediaTypeNames.Text.Html);
     };
 
     delegate Task<IResult> IndexHandlerDelegate(
