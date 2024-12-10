@@ -127,6 +127,11 @@ builder.Services.AddDbContext<AppDbContext>(
 
 #region Configuration
 
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
+});
+
 try
 {
     builder.Configuration.AddEntityConfiguration(options =>
@@ -161,7 +166,7 @@ if (builder.Environment.IsDevelopment())
         settings.Title = "GZCTF Server API";
         settings.Description = "GZCTF Server API Document";
         settings.UseControllerSummaryAsTagDescription = true;
-
+        settings.SchemaSettings.TypeMappers.Add(new OpenAPIDateTimeOffsetToUIntMapper());
         settings.SchemaSettings.ReflectionService = new GenericsSystemTextJsonReflectionService();
     });
 
@@ -311,6 +316,9 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 {
     options.DataAnnotationLocalizerProvider = (_, factory) =>
         factory.Create(typeof(GZCTF.Resources.Program));
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
 });
 
 #endregion Services and Repositories
@@ -471,16 +479,14 @@ namespace GZCTF
             var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             if (context.ModelState.ErrorCount <= 0)
                 return new JsonResult(new RequestResponse(
-                    localizer[nameof(Resources.Program.Model_ValidationFailed)]))
-                { StatusCode = 400 };
+                    localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
 
             var error = context.ModelState.Values.Where(v => v.Errors.Count > 0)
                 .Select(v => v.Errors.FirstOrDefault()?.ErrorMessage).FirstOrDefault();
 
             return new JsonResult(new RequestResponse(error is [_, ..]
                 ? error
-                : localizer[nameof(Resources.Program.Model_ValidationFailed)]))
-            { StatusCode = 400 };
+                : localizer[nameof(Resources.Program.Model_ValidationFailed)])) { StatusCode = 400 };
         }
     }
 }
