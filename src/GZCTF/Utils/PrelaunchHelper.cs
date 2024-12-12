@@ -73,6 +73,7 @@ public static class PrelaunchHelper
             Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
 
         await cache.RemoveAsync(CacheKey.Index);
+        await cache.RemoveAsync(CacheKey.ClientConfig);
         await cache.RemoveAsync(CacheKey.CaptchaConfig);
     }
 
