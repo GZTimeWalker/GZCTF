@@ -1757,6 +1757,8 @@ export interface ClientConfig {
   customTheme?: string | null;
   /** Platform logo URL */
   logoUrl?: string | null;
+  /** Container port mapping type */
+  portMapping?: ContainerPortMappingType;
   /**
    * Default container lifetime in minutes
    * @format int32
@@ -1772,6 +1774,11 @@ export interface ClientConfig {
    * @format int32
    */
   renewalWindow?: number;
+}
+
+export enum ContainerPortMappingType {
+  Default = "Default",
+  PlatformProxy = "PlatformProxy",
 }
 
 /** Client CAPTCHA information */

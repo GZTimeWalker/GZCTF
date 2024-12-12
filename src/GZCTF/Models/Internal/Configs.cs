@@ -193,6 +193,11 @@ public partial class ClientConfig
     public string? LogoUrl { get; set; }
 
     /// <summary>
+    /// Container port mapping type
+    /// </summary>
+    public ContainerPortMappingType PortMapping { get; set; } = ContainerPortMappingType.Default;
+
+    /// <summary>
     /// Default container lifetime in minutes
     /// </summary>
     public int DefaultLifetime { get; set; } = 120;
@@ -207,7 +212,8 @@ public partial class ClientConfig
     /// </summary>
     public int RenewalWindow { get; set; } = 10;
 
-    public static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy) =>
+    public static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy,
+        ContainerProvider containerProvider) =>
         new()
         {
             Title = globalConfig.Title,
@@ -215,6 +221,7 @@ public partial class ClientConfig
             FooterInfo = globalConfig.FooterInfo,
             CustomTheme = globalConfig.CustomTheme,
             LogoUrl = globalConfig.LogoUrl,
+            PortMapping = containerProvider.PortMappingType,
             DefaultLifetime = containerPolicy.DefaultLifetime,
             ExtensionDuration = containerPolicy.ExtensionDuration,
             RenewalWindow = containerPolicy.RenewalWindow
@@ -253,10 +260,10 @@ public enum ContainerProviderType
 [JsonConverter(typeof(JsonStringEnumConverter<ContainerPortMappingType>))]
 public enum ContainerPortMappingType
 {
-    // Use default to map the container port to a random port on the host
+    /// Use default to map the container port to a random port on the host
     Default,
 
-    // Use platform proxy to map the container tcp to wss
+    /// Use platform proxy to map the container tcp to wss
     PlatformProxy
 }
 
@@ -265,9 +272,7 @@ public class ContainerProvider
     public ContainerProviderType Type { get; set; } = ContainerProviderType.Docker;
     public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
     public bool EnableTrafficCapture { get; set; }
-
     public string PublicEntry { get; set; } = string.Empty;
-
     public KubernetesConfig? KubernetesConfig { get; set; }
     public DockerConfig? DockerConfig { get; set; }
 }
