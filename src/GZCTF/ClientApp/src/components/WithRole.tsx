@@ -27,7 +27,9 @@ export const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
   const required = RoleMap.get(requiredRole)!
 
   useEffect(() => {
-    if (error && error.status === 401) navigate(`/account/login?from=${location.pathname}`, { replace: true })
+    if (error && error.status === 401) {
+      navigate(`/account/login?from=${location.pathname}`, { replace: true })
+    }
 
     if (!role) return
 
