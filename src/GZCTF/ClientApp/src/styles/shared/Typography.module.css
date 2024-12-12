@@ -10,11 +10,6 @@
     margin-bottom: var(--mantine-spacing-xs);
   }
 
-  & :where(ol, ul):not([data-type='taskList']) {
-    /* revert style set by mantine */
-    list-style-position: outside;
-  }
-
   & :where(ol):not([data-type='taskList']) {
     padding-inline-start: calc(2 * var(--mantine-font-size-lg));
 
@@ -25,10 +20,6 @@
 
   & :where(ul):not([data-type='taskList']) {
     padding-inline-start: var(--mantine-font-size-lg);
-
-    @mixin smaller-than $mantine-breakpoint-xs {
-      padding-inline-start: var(--mantine-font-size-xs);
-    }
   }
 
   & :where(ul, ol):last-child {
