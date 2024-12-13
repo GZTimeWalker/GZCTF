@@ -989,8 +989,8 @@
   <data name="Team_MemberRemoved" xml:space="preserve">
     <value>チーム {0} から {1} を追放しました</value>
   </data>
-  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>複数のチームを作成することはできません</value>
+  <data name="Team_ExceededCreationLimit" xml:space="preserve">
+    <value>Exceeded the limit of owned teams</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>チーム名は空にできません</value>

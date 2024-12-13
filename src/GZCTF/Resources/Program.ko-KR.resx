@@ -989,8 +989,8 @@
   <data name="Team_MemberRemoved" xml:space="preserve">
     <value>{1} 팀에서 {0} 방출</value>
   </data>
-  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>한 팀 이상 생성할 수 없습니다.</value>
+  <data name="Team_ExceededCreationLimit" xml:space="preserve">
+    <value>Exceeded the limit of owned teams</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>팀 이름을 입력하세요.</value>
@@ -1008,7 +1008,7 @@
     <value>사용자가 존재하지 않습니다.</value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>팀에 팀장이 너무 많습니다.</value>
+    <value>The new captain has too many teams</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>{0} 팀에 참가</value>

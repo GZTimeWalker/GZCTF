@@ -28,9 +28,9 @@
         "title": "Verlassen bestätigen"
       }
     },
-    "no_create": {
-      "content": "Jeder Spieler kann nur ein Team erstellen.<br/>Sie können das bestehende Team auflösen und ein neues erstellen.",
-      "title": "Sie haben ein Team erstellt"
+    "disallow_create": {
+      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
+      "title": "You've exceeded the limit"
     },
     "role": {
       "captain": "Kapitän",

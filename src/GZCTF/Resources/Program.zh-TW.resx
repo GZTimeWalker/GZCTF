@@ -989,8 +989,8 @@
   <data name="Team_MemberRemoved" xml:space="preserve">
     <value>從隊伍 {0} 踢除 {1}</value>
   </data>
-  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>不允許創建多個隊伍</value>
+  <data name="Team_ExceededCreationLimit" xml:space="preserve">
+    <value>隊伍創建數量超過限制</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>隊伍名不能為空</value>

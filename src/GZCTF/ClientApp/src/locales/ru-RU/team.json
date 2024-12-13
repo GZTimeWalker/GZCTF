@@ -28,9 +28,9 @@
         "title": "Подтвердите выход"
       }
     },
-    "no_create": {
-      "content": "Каждый игрок может создать только одну команду.<br/>Вы можете расформировать текущую команду и создать новую.",
-      "title": "Вы уже создали команду"
+    "disallow_create": {
+      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
+      "title": "You've exceeded the limit"
     },
     "role": {
       "captain": "Капитан",

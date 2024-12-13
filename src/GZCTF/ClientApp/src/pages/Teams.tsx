@@ -43,7 +43,8 @@ const Teams: FC = () => {
 
   const [editTeam, setEditTeam] = useState<TeamInfoModel | null>(null)
 
-  const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id === user?.userId))
+  const teamsOwned = teams?.filter((t) => t.members?.some((m) => m?.captain && m.id === user?.userId))
+  const disallowCreate = (teamsOwned?.length ?? 0) >= 3
 
   const isMobile = useIsMobile()
 
@@ -179,7 +180,7 @@ const Teams: FC = () => {
         <TeamCreateModal
           opened={createOpened}
           title={t('team.button.create')}
-          isOwnTeam={ownTeam ?? false}
+          disallowCreate={disallowCreate ?? false}
           onClose={() => setCreateOpened(false)}
           mutate={mutateTeams}
         />
