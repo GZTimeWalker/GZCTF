@@ -27,6 +27,8 @@ public partial class TeamController(
     IParticipationRepository participationRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
+    const int MaxTeamsAllowed = 3;
+
     /// <summary>
     /// Get team information
     /// </summary>
@@ -94,9 +96,9 @@ public partial class TeamController(
 
         Team[] teams = await teamRepository.GetUserTeams(user!, token);
 
-        if (teams.Any(t => t.CaptainId == user!.Id))
+        if (teams.Count(t => t.CaptainId == user!.Id) >= MaxTeamsAllowed)
             return BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Team_MultipleCreationNotAllowed)]));
+                new RequestResponse(localizer[nameof(Resources.Program.Team_ExceededCreationLimit)]));
 
         if (string.IsNullOrEmpty(model.Name))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NameEmpty)]));
@@ -199,7 +201,7 @@ public partial class TeamController(
 
             Team[] newCaptainTeams = await teamRepository.GetUserTeams(newCaptain, token);
 
-            if (newCaptainTeams.Count(t => t.CaptainId == newCaptain.Id) >= 3)
+            if (newCaptainTeams.Count(t => t.CaptainId == newCaptain.Id) >= MaxTeamsAllowed)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NewCaptainTeamTooMany)]));
 
             await teamRepository.Transfer(team, newCaptain, token);
