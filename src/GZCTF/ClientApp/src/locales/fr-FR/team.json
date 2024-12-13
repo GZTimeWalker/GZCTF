@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "Vous avez dépassé la limite du nombre d'équipes que vous êtes autorisé à avoir.<br/>Vous pouvez dissoudre l'équipe existante et en créer une nouvelle.",
+      "title": "Vous avez dépassé la limite"
     },
     "role": {
       "captain": "Capitaine",
