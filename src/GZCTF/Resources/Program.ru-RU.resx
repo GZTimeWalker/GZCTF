@@ -990,7 +990,7 @@
     <value>{0} выгнан из команды {1}</value>
   </data>
   <data name="Team_ExceededCreationLimit" xml:space="preserve">
-    <value>Exceeded the limit of owned teams</value>
+    <value>Превышен лимит собственных команд</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>Название команды не может быть пустым</value>
@@ -1008,7 +1008,7 @@
     <value>Указанный пользователь не найден</value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>The new captain has too many teams</value>
+    <value>Новый капитан владеет максимальным количеством команд</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>Вступил в команду {0}</value>
