@@ -1003,7 +1003,7 @@
     <value>Exclure {0} de l'équipe {1}</value>
   </data>
   <data name="Team_ExceededCreationLimit" xml:space="preserve">
-    <value>Exceeded the limit of owned teams</value>
+    <value>Limite de création d'équipes dépassée</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>Le nom de l'équipe ne peut pas être vide</value>
@@ -1021,7 +1021,7 @@
     <value>L'utilisateur transféré n'existe pas</value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>The new captain has too many teams</value>
+    <value>Le nouveau capitaine a trop d'équipes</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>Rejoindre l'équipe {0}</value>
