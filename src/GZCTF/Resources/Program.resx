@@ -989,8 +989,8 @@
   <data name="Team_MemberRemoved" xml:space="preserve">
     <value>Kick {0} from Team {1}</value>
   </data>
-  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>Not allowed creating more than one team</value>
+  <data name="Team_ExceededCreationLimit" xml:space="preserve">
+    <value>Exceeded the limit of owned teams</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>Team name cannot be empty</value>
@@ -1008,7 +1008,7 @@
     <value>Transferred user does not exist</value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>Too many handed over teams</value>
+    <value>The new captain has too many teams</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>Join Team {0}</value>
