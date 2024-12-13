@@ -1009,8 +1009,8 @@
   <data name="Team_MemberRemoved" xml:space="preserve">
     <value>{0} aus Team {1} entfernen</value>
   </data>
-  <data name="Team_MultipleCreationNotAllowed" xml:space="preserve">
-    <value>Nicht erlaubt, mehr als ein Team zu erstellen</value>
+  <data name="Team_ExceededCreationLimit" xml:space="preserve">
+    <value>Exceeded the limit of owned teams</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>Teamname darf nicht leer sein</value>
@@ -1028,7 +1028,7 @@
     <value>Der übertragene Benutzer existiert nicht</value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>Zu viele übergebene Teams</value>
+    <value>The new captain has too many teams</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>Team {0} beitreten</value>
