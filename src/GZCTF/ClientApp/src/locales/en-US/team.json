@@ -28,9 +28,9 @@
         "title": "Confirm Quit"
       }
     },
-    "no_create": {
-      "content": "Each player can only create one team.<br/>You can disband the existed team and create a new one.",
-      "title": "You've created a team"
+    "disallow_create": {
+      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
+      "title": "You've exceeded the limit"
     },
     "role": {
       "captain": "Captain",
