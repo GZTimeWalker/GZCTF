@@ -990,7 +990,7 @@
     <value>Kick {0} dari tim {1}</value>
   </data>
   <data name="Team_ExceededCreationLimit" xml:space="preserve">
-    <value>Exceeded the limit of owned teams</value>
+    <value>Anda telah melebihi batas jumlah tim yang dimiliki</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>Nama tim tidak boleh kosong</value>
@@ -1008,7 +1008,7 @@
     <value>Pengguna yang dipindahkan tidak ada</value>
   </data>
   <data name="Team_NewCaptainTeamTooMany" xml:space="preserve">
-    <value>The new captain has too many teams</value>
+    <value>Kapten baru memiliki terlalu banyak tim</value>
   </data>
   <data name="Team_UserJoined" xml:space="preserve">
     <value>Bergabun dengan tim {0}</value>
