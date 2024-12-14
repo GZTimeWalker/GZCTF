@@ -161,6 +161,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **The first "Qu STAR" network security skills competition of Qufu Normal University**
 - **DinoCTF: The 4th & 5th Information Security Competition of Chengdu University of Technology**
 - **RedrockCTF 2024：Information Security Novice Competition of Chongqing University Of Posts And Telecommunications**
+- **WAXFCTF 2024：Chongqing Vocational Institute of Safety Technology "Pioneer Cup" Cybersecurity Skills Competition**
 
 _These list is not in any particular order, and PRs are welcome for additions._
 

@@ -28,9 +28,9 @@
         "title": "Xác nhận Rời đội"
       }
     },
-    "no_create": {
-      "content": "Mỗi người chơi chỉ có thế tạo một đội.<br/>Bạn có thẻ giải tán đội hiện có để tạo đội mới.",
-      "title": "Bạn vừa tạo một đội"
+    "disallow_create": {
+      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
+      "title": "You've exceeded the limit"
     },
     "role": {
       "captain": "Đội trưởng",

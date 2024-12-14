@@ -19,12 +19,12 @@ import { showErrorNotification } from '@Utils/ApiHelper'
 import api, { TeamUpdateModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
-  isOwnTeam: boolean
+  disallowCreate: boolean
   mutate: () => void
 }
 
 export const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
-  const { isOwnTeam, mutate, ...modalProps } = props
+  const { disallowCreate, mutate, ...modalProps } = props
   const [createTeam, setCreateTeam] = useState<TeamUpdateModel>({ name: '', bio: '' })
   const [disabled, setDisabled] = useState(false)
   const theme = useMantineTheme()
@@ -53,14 +53,14 @@ export const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
 
   return (
     <Modal {...modalProps}>
-      {isOwnTeam ? (
+      {disallowCreate ? (
         <Stack gap="lg" p={40} ta="center">
           <Center>
             <Icon color={theme.colors.red[7]} path={mdiCloseCircle} size={4} />
           </Center>
-          <Title order={3}>{t('team.content.no_create.title')}</Title>
+          <Title order={3}>{t('team.content.disallow_create.title')}</Title>
           <Text>
-            <Trans i18nKey="team.content.no_create.content" />
+            <Trans i18nKey="team.content.disallow_create.content" />
           </Text>
         </Stack>
       ) : (

@@ -28,9 +28,9 @@
         "title": "Confirmar salida"
       }
     },
-    "no_create": {
-      "content": "Cada jugador solo puede crear un equipo.<br/>Puedes disolver el equipo existente y crear uno nuevo.",
-      "title": "Has creado un equipo"
+    "disallow_create": {
+      "content": "Has superado el límite en el número de equipos que puedes tener.<br/>Puedes disolver el equipo existente y crear uno nuevo.",
+      "title": "Has superado el límite"
     },
     "role": {
       "captain": "Capitán",

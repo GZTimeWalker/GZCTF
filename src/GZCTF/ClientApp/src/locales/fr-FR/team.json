@@ -28,9 +28,9 @@
         "title": "Confirmer le départ"
       }
     },
-    "no_create": {
-      "content": "Chaque joueur ne peut créer qu'une seule équipe.<br/>Vous pouvez dissoudre l'équipe existante et en créer une nouvelle.",
-      "title": "Vous avez créé une équipe"
+    "disallow_create": {
+      "content": "Vous avez dépassé la limite du nombre d'équipes que vous êtes autorisé à avoir.<br/>Vous pouvez dissoudre l'équipe existante et en créer une nouvelle.",
+      "title": "Vous avez dépassé la limite"
     },
     "role": {
       "captain": "Capitaine",
