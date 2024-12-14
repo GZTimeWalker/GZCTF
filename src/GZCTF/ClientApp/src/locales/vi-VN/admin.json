@@ -99,7 +99,7 @@
         "category": "Danh mục",
         "container_image": "Container Image",
         "cpu_limit": {
-          "description": "Bội số của 0,1 nhân CPU",
+          "description": "Bội của 0.1 CPU",
           "label": "Giới hạn CPU (đơn vị 0,1 CPU)"
         },
         "delete": "Bạn có chắc chắn muốn xóa thử thách {{name}} không?",
@@ -168,7 +168,7 @@
       "info": {
         "accept_without_review": {
           "description": "Cho phép trực tiếp ngay sau khi đăng ký đội",
-          "label": "Cho phép mà không cần Đánh giá"
+          "label": "Tự động duyệt các đội"
         },
         "container_limit": {
           "description": "Số lượng container được chia sẻ bởi một đội (0 = không giới hạn).",
@@ -187,12 +187,12 @@
           "label": "Mã mời."
         },
         "member_limit": {
-          "description": "0 có nghĩa là không giới hạn số lượng thành viên trong đội.",
+          "description": "Đặt 0 để không giới hạn số thành viên",
           "label": "Số thành viên tối đa trong đội."
         },
         "poster": "Poster",
         "practice_mode": {
-          "description": "Xem các thử thách sau khi trò chơi kết thúc.",
+          "description": "Xem thử thách sau khi kết thúc",
           "label": "Chế độ luyện tập."
         },
         "start_date": "Ngày bắt đầu.",
@@ -415,7 +415,7 @@
         "updated": "Thông báo đã được cập nhật."
       },
       "participation": {
-        "updated": "Trạng thái đội đã được cập nhật."
+        "updated": "Đã cập nhật trạng thái của đội"
       }
     },
     "instances": {
