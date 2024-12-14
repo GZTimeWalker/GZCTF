@@ -1757,6 +1757,8 @@ export interface ClientConfig {
   customTheme?: string | null;
   /** Platform logo URL */
   logoUrl?: string | null;
+  /** Container port mapping type */
+  portMapping?: ContainerPortMappingType;
   /**
    * Default container lifetime in minutes
    * @format int32
@@ -1772,6 +1774,11 @@ export interface ClientConfig {
    * @format int32
    */
   renewalWindow?: number;
+}
+
+export enum ContainerPortMappingType {
+  Default = "Default",
+  PlatformProxy = "PlatformProxy",
 }
 
 /** Client CAPTCHA information */
@@ -5089,16 +5096,12 @@ const api = new Api();
 export default api;
 
 export const fetcher = async (args: string | [string, Record<string, unknown>]) => {
-  try {
-    if (typeof args === "string") {
-      const response = await api.request({ path: args });
-      return response.data;
-    } else {
-      const [path, query] = args;
-      const response = await api.request({ path, query });
-      return response.data;
-    }
-  } catch (error) {
-    throw handleAxiosError(error);
+  if (typeof args === "string") {
+    const response = await api.request({ path: args });
+    return response.data;
+  } else {
+    const [path, query] = args;
+    const response = await api.request({ path, query });
+    return response.data;
   }
 };

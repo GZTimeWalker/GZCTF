@@ -27,6 +27,7 @@ public class InfoController(
     IOptionsSnapshot<CaptchaConfig> captchaConfig,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     IOptionsSnapshot<ContainerPolicy> containerPolicy,
+    IOptionsSnapshot<ContainerProvider> containerProvider,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
@@ -95,7 +96,8 @@ public class InfoController(
             entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
-                return Task.FromResult(ClientConfig.FromConfigs(globalConfig.Value, containerPolicy.Value));
+                return Task.FromResult(ClientConfig.FromConfigs(globalConfig.Value, containerPolicy.Value,
+                    containerProvider.Value));
             }, token);
 
         return Ok(data);

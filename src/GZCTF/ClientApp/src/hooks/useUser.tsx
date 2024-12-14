@@ -30,9 +30,7 @@ export const useUser = () => {
         return
       }
 
-      if (err?.status === 401) return
-
-      if (retryCount >= 5) {
+      if (err?.status === 401 || retryCount >= 5) {
         mutate(undefined, false)
         return
       }

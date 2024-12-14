@@ -41,6 +41,7 @@ export const useConfig = () => {
     defaultValue: {
       title: 'GZ',
       slogan: 'Hack for fun not for profit',
+      portMapping: 'Default',
       footerInfo: null,
       customTheme: null,
       defaultLifetime: 120,

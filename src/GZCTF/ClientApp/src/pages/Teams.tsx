@@ -39,8 +39,8 @@ const Teams: FC = () => {
   const [joinTeamCode, setJoinTeamCode] = useState('')
 
   const [createOpened, setCreateOpened] = useState(false)
-
   const [editOpened, setEditOpened] = useState(false)
+
   const [editTeam, setEditTeam] = useState<TeamInfoModel | null>(null)
 
   const ownTeam = teams?.some((t) => t.members?.some((m) => m?.captain && m.id === user?.userId))
@@ -48,6 +48,8 @@ const Teams: FC = () => {
   const isMobile = useIsMobile()
 
   const { t } = useTranslation()
+
+  usePageTitle(t('team.title.index'))
 
   const onEditTeam = (team: TeamInfoModel) => {
     setEditTeam(team)
@@ -85,8 +87,6 @@ const Teams: FC = () => {
   }
 
   const { colorScheme } = useMantineColorScheme()
-
-  usePageTitle(t('team.title.index'))
 
   const btns = (
     <>
