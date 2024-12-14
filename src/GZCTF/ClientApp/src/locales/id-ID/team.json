@@ -8,7 +8,7 @@
     "save": "Perbarui Info"
   },
   "content": {
-    "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung. Setiap pemain hanya bisa membuat satu tim.",
+    "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung.",
     "disband": {
       "confirm": {
         "message": "Apakah kamu yakin ingin membubarkan tim \"{{team}}\"?",
