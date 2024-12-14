@@ -990,7 +990,7 @@
     <value>{1} 팀에서 {0} 방출</value>
   </data>
   <data name="Team_ExceededCreationLimit" xml:space="preserve">
-    <value>Exceeded the limit of owned teams</value>
+    <value>보유할 수 있는 팀 수를 초과했습니다</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>팀 이름을 입력하세요.</value>
