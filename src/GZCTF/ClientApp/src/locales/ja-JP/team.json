@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "作成できるチーム数の上限を達しました。<br/>既存のチームを解散して新しいチームを作成することができます。",
+      "title": "作成できるチーム数の上限を達しました"
     },
     "role": {
       "captain": "リーダー",
