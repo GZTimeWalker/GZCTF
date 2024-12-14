@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You have reached the maximum number of teams you can have.<br/>Please disband an existing team to create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "Anda telah mencapai jumlah maksimum tim yang dapat Anda miliki.<br/>Mohon untuk membubarkan tim yang ada untuk membuat tim baru.",
+      "title": "Anda telah melebihi batas"
     },
     "role": {
       "captain": "Kapten",
