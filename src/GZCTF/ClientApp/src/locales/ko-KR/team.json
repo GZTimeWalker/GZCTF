@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "생성할 수 있는 팀 수를 초과하였습니다.<br/>기존 팀을 삭제하고 새 팀을 생성하세요.",
+      "title": "팀 수 한도 초과"
     },
     "role": {
       "captain": "팀장",
