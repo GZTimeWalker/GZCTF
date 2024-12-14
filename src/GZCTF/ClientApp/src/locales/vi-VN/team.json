@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "Bạn đã đạt giới hạn tối đa số đội có thể tạo.<br/>Vui lòng giải tán một đội hiện có để tạo đội mới.",
+      "title": "Bạn đã vượt quá giới hạn"
     },
     "role": {
       "captain": "Đội trưởng",

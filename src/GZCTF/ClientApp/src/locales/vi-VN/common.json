@@ -33,9 +33,9 @@
       "provider": {
         "custom": "Tùy chỉnh",
         "default": "Mặc định",
-        "description": "Chọn cách màu cơ bản được xác định",
-        "label": "Cung cấp màu chủ đề",
-        "managed": "Do quản trị viên cung cấp"
+        "description": "Chọn cách xác định màu cơ bản của chủ đề",
+        "label": "Chọn chủ đề màu",
+        "managed": "Do Admin cung cấp"
       },
       "title": "Tùy chỉnh màu sắc"
     },
@@ -49,7 +49,7 @@
     },
     "external_link": "Liên kết bên ngoài",
     "home": {
-      "recent_games": "Các trò chơi gần đây"
+      "recent_games": "Trò chơi gần đây"
     },
     "no_data": "Không có dữ liệu",
     "report_error": "Vui lòng báo cáo lỗi này cho quản trị viên nếu bạn nghĩ đây là một bug",
