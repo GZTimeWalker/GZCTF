@@ -8,7 +8,7 @@
     "save": "Mettre à jour les infos"
   },
   "content": {
-    "create": "Vous pouvez créer une équipe et inviter d'autres à se joindre. Chaque joueur peut créer une seule équipe.",
+    "create": "Vous pouvez créer une équipe et inviter d'autres à se joindre.",
     "disband": {
       "confirm": {
         "message": "Êtes-vous sûr de vouloir dissoudre l'équipe \"{{team}}\" ?",

@@ -8,7 +8,7 @@
     "save": "Informationen aktualisieren"
   },
   "content": {
-    "create": "Sie können ein Team erstellen und andere einladen, beizutreten. Jeder Spieler kann nur ein Team erstellen.",
+    "create": "Sie können ein Team erstellen und andere einladen, beizutreten.",
     "disband": {
       "confirm": {
         "message": "Sind Sie sicher, dass Sie das Team \"{{team}}\" auflösen möchten?",

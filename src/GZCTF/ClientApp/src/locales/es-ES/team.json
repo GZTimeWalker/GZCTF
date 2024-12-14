@@ -8,7 +8,7 @@
     "save": "Actualizar info"
   },
   "content": {
-    "create": "Puedes crear un equipo e invitar a otros a unirse. Cada jugador solo puede crear un equipo.",
+    "create": "Puedes crear un equipo e invitar a otros a unirse.",
     "disband": {
       "confirm": {
         "message": "¿Estás seguro de que deseas disolver el equipo \"{{team}}\"?",

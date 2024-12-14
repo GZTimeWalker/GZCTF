@@ -8,7 +8,7 @@
     "save": "Update Info"
   },
   "content": {
-    "create": "You can create a team and invite others to join. Each player can only create one team.",
+    "create": "You can create a team and invite others to join.",
     "disband": {
       "confirm": {
         "message": "Are you sure you want to disband team \"{{team}}\"?",
