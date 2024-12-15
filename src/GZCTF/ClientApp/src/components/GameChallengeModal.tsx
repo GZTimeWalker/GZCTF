@@ -152,21 +152,21 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     // submitId initialization will trigger useEffect
     if (!submitId) return
 
-    const pollingStatus = async () => {
+    const polling = setInterval(async () => {
       try {
         const res = await api.game.gameStatus(gameId, challengeId, submitId)
-        if (res.data === AnswerResult.FlagSubmitted) return
-        setDisabled(false)
-        setFlag('')
-        checkDataFlag(submitId, res.data)
+        if (res.data !== AnswerResult.FlagSubmitted) {
+          checkDataFlag(submitId, res.data)
+        }
       } catch (err) {
+        showErrorNotification(err, t)
+      } finally {
         setDisabled(false)
         setFlag('')
-        showErrorNotification(err, t)
+        clearInterval(polling)
       }
-    }
+    }, 500)
 
-    const polling = setInterval(pollingStatus, 500)
     return () => clearInterval(polling)
   }, [submitId])
 

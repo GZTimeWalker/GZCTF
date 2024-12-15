@@ -22,6 +22,8 @@ export default defineConfig(({ mode }) => {
     ' * License : GNU Affero General Public License v3.0\n * \n' +
     ' * Copyright © 2022-now @GZTimeWalker, All Rights Reserved.\n */'
 
+  console.log(`Using backend URL: ${TARGET}`)
+
   return {
     server: {
       port: 63000,
