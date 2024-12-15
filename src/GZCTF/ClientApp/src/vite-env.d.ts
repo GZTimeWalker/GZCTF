@@ -11,8 +11,8 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-declare module 'virtual:i18next-loader' {
-  declare const resources: import('i18next').Resource
+declare module 'virtual:i18n-manifest' {
+  declare const manifest: Record<string, string>
 
-  export default resources
+  export default manifest
 }
