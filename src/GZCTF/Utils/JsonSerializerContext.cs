@@ -66,8 +66,9 @@ internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;
 public class DateTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
 {
     public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-        reader.TokenType == JsonTokenType.Number ?
-            DateTimeOffset.FromUnixTimeMilliseconds(reader.GetInt64()) : reader.GetDateTimeOffset();
+        reader.TokenType == JsonTokenType.Number
+            ? DateTimeOffset.FromUnixTimeMilliseconds(reader.GetInt64())
+            : reader.GetDateTimeOffset();
 
     public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options) =>
         writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
