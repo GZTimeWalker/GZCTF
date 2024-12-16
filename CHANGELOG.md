@@ -7,6 +7,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### ⛰️ Features
 
+- **(frontend)** dynamic load i18n resources - ([ab0689](https://github.com/GZTimeWalker/GZCTF/commit/ab0689)) by **GZTime**
 - **(team)** allow to have 3 teams per user - ([318f19](https://github.com/GZTimeWalker/GZCTF/commit/318f19)) by **GZTime**
 - **(wsrx)** expose port mapping type to frontend - ([803bfe](https://github.com/GZTimeWalker/GZCTF/commit/803bfe)) by **GZTime**
 
