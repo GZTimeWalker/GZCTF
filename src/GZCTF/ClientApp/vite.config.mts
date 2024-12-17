@@ -40,10 +40,9 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'build',
-      target: ['es2020'],
       assetsDir: 'static',
       cssCodeSplit: false,
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 1600,
       reportCompressedSize: false,
       rollupOptions: {
         output: {

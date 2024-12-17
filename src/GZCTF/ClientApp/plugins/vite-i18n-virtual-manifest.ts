@@ -72,7 +72,7 @@ export default function i18nVirtualManifest(): Plugin {
     },
 
     configureServer(server) {
-      // handle requests for i18n resources like `/static/${file}`
+      // handle requests for i18n resources like `/static/${lang}.${hash}.json`
       server.middlewares.use((req, res, next) => {
         if (!req.url?.startsWith('/static/')) {
           return next()
@@ -82,9 +82,7 @@ export default function i18nVirtualManifest(): Plugin {
         const content = contents[file]
 
         if (!content) {
-          res.statusCode = 404
-          res.end('File not found')
-          return
+          return next()
         }
 
         res.setHeader('Content-Type', 'application/json')
