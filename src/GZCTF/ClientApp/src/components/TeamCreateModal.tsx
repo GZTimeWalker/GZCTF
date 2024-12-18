@@ -42,12 +42,13 @@ export const TeamCreateModal: FC<TeamEditModalProps> = (props) => {
         message: t('team.notification.create.success.message', { team: res.data.name }),
         icon: <Icon path={mdiCheck} size={1} />,
       })
+      setCreateTeam({ name: '', bio: '' })
       mutate()
+      modalProps.onClose()
     } catch (e) {
       showErrorNotification(e, t)
     } finally {
       setDisabled(false)
-      modalProps.onClose()
     }
   }
 
