@@ -39,6 +39,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -79,6 +80,8 @@ builder.WebHost.ConfigureKestrel(options =>
     IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
+    options.ConfigureEndpointDefaults(defaultsOptions =>
+        defaultsOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
 });
 
 builder.Logging.ClearProviders();
