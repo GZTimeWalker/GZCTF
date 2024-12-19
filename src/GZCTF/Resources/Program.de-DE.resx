@@ -406,6 +406,12 @@
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>Cron-Job wurde gestoppt</value>
   </data>
+  <data name="CronJob_ExecuteFailed" xml:space="preserve">
+    <value>Ausführung des Cronjobs {0} fehlgeschlagen: {1}</value>
+  </data>
+  <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
+    <value>Ein anderes Exemplar hält die Cronjobs, lassen Sie uns den Wachhund laufen lassen.</value>
+  </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>Fehler beim Verbinden mit der Datenbank ({0}), bitte prüfen Sie die Datenbank-Verbindungszeichenfolge</value>
   </data>

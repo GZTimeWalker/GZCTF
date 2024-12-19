@@ -402,6 +402,12 @@
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>La tâche cron a été arrêtée</value>
   </data>
+  <data name="CronJob_ExecuteFailed" xml:space="preserve">
+    <value>Échec de l'exécution du cronjob {0} : {1}</value>
+  </data>
+  <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
+    <value>Une autre instance détient les cronjobs, lançons le chien de garde.</value>
+  </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>Échec de la connexion à la base de données ({0}), veuillez vérifier la chaîne de connexion de la base de données</value>
   </data>

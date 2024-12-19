@@ -395,6 +395,12 @@
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>Cron job đã bị dừng.</value>
   </data>
+  <data name="CronJob_ExecuteFailed" xml:space="preserve">
+    <value>Failed to execute cronjob {0}: {1}</value>
+  </data>
+  <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
+    <value>Another instance is holding the cronjobs, let's run the watchdog.</value>
+  </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>Không thể kết nối tới cơ sở dữ liệu ({0}), vui lòng kiểm tra database connection string.</value>
   </data>
