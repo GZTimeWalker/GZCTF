@@ -118,7 +118,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
     void LaunchWatchDog()
     {
-        var delay = Random.Shared.Next(30, 60);
+        var delay = Random.Shared.Next(30, 120);
 
         _timer = new Timer(async void (_) =>
         {
@@ -139,7 +139,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
                         "WatchDog", e.Message],
                     TaskStatus.Failed, LogLevel.Warning);
             }
-        }, null, TimeSpan.FromSeconds(delay), TimeSpan.FromMinutes(1));
+        }, null, TimeSpan.FromSeconds(delay), TimeSpan.FromMinutes(5));
 
         logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_LaunchedWatchDog)],
             TaskStatus.Pending, LogLevel.Debug);
