@@ -1,25 +1,13 @@
-﻿using System.Threading.Channels;
+﻿using System.Reflection;
 using Cronos;
-using GZCTF.Repositories;
-using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace GZCTF.Services;
+namespace GZCTF.Services.CronJob;
 
 public delegate Task CronJob(AsyncServiceScope scope, ILogger<CronJobService> logger);
 
-public record CronJobEntry(CronJob Job, CronExpression Expression)
-{
-    /// <summary>
-    /// Create a cron job entry
-    /// </summary>
-    /// <param name="job"></param>
-    /// <param name="expression"></param>
-    /// <returns></returns>
-    public static CronJobEntry Create(CronJob job, string expression) =>
-        new(job, CronExpression.Parse(expression));
-}
+public record CronJobEntry(CronJob Job, CronExpression Expression);
 
 public class CronJobService(IDistributedCache cache, IServiceScopeFactory provider, ILogger<CronJobService> logger)
     : IHostedService, IDisposable
@@ -37,11 +25,12 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
     /// <summary>
     /// Add a job to the cron job service
     /// </summary>
-    public bool AddJob(string job, CronJobEntry task)
+    public bool AddJob(CronJob job)
     {
         lock (_jobs)
         {
-            if (!_jobs.TryAdd(job, task))
+            (string name, CronJobEntry entry) = job.ToEntry();
+            if (!_jobs.TryAdd(name, entry))
                 return false;
         }
 
@@ -65,13 +54,15 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
     void LaunchCronJob()
     {
-        // container checker, every 3min
-        AddJob(nameof(CronJobs.ContainerChecker),
-            CronJobEntry.Create(CronJobs.ContainerChecker, "* * * * *"));
+        var methods = typeof(DefaultCronJobs).GetMethods(BindingFlags.Static | BindingFlags.Public);
+        foreach (var method in methods)
+        {
+            var attr = method.GetCustomAttribute<CronJobAttribute>();
+            if (attr is null)
+                continue;
 
-        // bootstrap cache, every 10min
-        AddJob(nameof(CronJobs.BootstrapCache),
-            CronJobEntry.Create(CronJobs.BootstrapCache, "*/10 * * * *"));
+            AddJob(method.CreateDelegate<CronJob>());
+        }
 
         _timer = new Timer(_ => Task.Run(Execute),
             null, TimeSpan.FromSeconds(60 - DateTime.UtcNow.Second), TimeSpan.FromMinutes(1));
@@ -194,47 +185,5 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         }
 
         await Task.WhenAll(handles);
-    }
-}
-
-public static class CronJobs
-{
-    public static async Task ContainerChecker(AsyncServiceScope scope, ILogger<CronJobService> logger)
-    {
-        var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
-
-        foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
-        {
-            await containerRepo.DestroyContainer(container);
-            logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
-                    container.ContainerId],
-                TaskStatus.Success, LogLevel.Debug);
-        }
-    }
-
-    public static async Task BootstrapCache(AsyncServiceScope scope, ILogger<CronJobService> logger)
-    {
-        var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-        var upcoming = await gameRepo.GetUpcomingGames();
-
-        if (upcoming.Length <= 0)
-            return;
-
-        var channelWriter = scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
-        var cache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
-
-        foreach (var game in upcoming)
-        {
-            var key = CacheKey.ScoreBoard(game);
-            var value = await cache.GetAsync(key);
-            if (value is not null)
-                continue;
-
-            await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
-                TaskStatus.Success,
-                LogLevel.Debug);
-        }
     }
 }

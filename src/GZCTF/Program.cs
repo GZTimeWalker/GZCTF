@@ -33,6 +33,7 @@ using GZCTF.Services;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Container;
+using GZCTF.Services.CronJob;
 using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
