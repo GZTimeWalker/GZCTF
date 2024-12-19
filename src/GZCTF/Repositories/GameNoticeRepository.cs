@@ -40,7 +40,7 @@ public class GameNoticeRepository(
         GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            entry.SlidingExpiration = TimeSpan.FromMinutes(30);
             return Context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUtc)
                 .Skip(skip).Take(count).ToArrayAsync(token);

@@ -15,7 +15,7 @@ public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
 public static class CacheKey
 {
     /// <summary>
-    /// Favicon 
+    /// Favicon
     /// </summary>
     public const string Favicon = "_Favicon";
 
@@ -38,6 +38,11 @@ public static class CacheKey
     /// Posts
     /// </summary>
     public const string Posts = "_Posts";
+
+    /// <summary>
+    /// The cron job lock
+    /// </summary>
+    public const string CronJobLock = "_CronJobLock";
 
     /// <summary>
     /// Is exercise available

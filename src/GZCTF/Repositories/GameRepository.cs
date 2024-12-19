@@ -43,14 +43,14 @@ public class GameRepository(
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
         Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
-                                 && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(8))
+                                 && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(15))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
     public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0,
         CancellationToken token = default) =>
         await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2);
+            entry.SlidingExpiration = TimeSpan.FromHours(2);
             return Context.Games.Where(g => !g.Hidden)
                 .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
@@ -59,7 +59,7 @@ public class GameRepository(
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+            entry.SlidingExpiration = TimeSpan.FromDays(7);
             return GenScoreboard(game, token);
         }, token);
 
@@ -421,5 +421,5 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
 
     public static CacheRequest MakeCacheRequest(int id) =>
         new(Services.Cache.CacheKey.ScoreBoardBase,
-            new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14) }, id.ToString());
+            new() { SlidingExpiration = TimeSpan.FromDays(14) }, id.ToString());
 }

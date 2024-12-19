@@ -95,7 +95,7 @@ public class InfoController(
         ClientConfig data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
             entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return Task.FromResult(ClientConfig.FromConfigs(globalConfig.Value, containerPolicy.Value,
                     containerProvider.Value));
             }, token);
@@ -117,7 +117,7 @@ public class InfoController(
         ClientCaptchaInfoModel data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
             entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return Task.FromResult(accountPolicy.Value.UseCaptcha
                     ? captcha.ClientInfo()
                     : new ClientCaptchaInfoModel());
@@ -157,6 +157,6 @@ public class InfoController(
 
     static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
     {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        SlidingExpiration = TimeSpan.FromMinutes(5)
     };
 }

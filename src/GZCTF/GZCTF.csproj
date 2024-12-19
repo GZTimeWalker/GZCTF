@@ -30,6 +30,7 @@
     <ItemGroup>
         <PackageReference Include="Aigamo.ResXGenerator"/>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+        <PackageReference Include="Cronos" />
         <PackageReference Include="Docker.DotNet" />
         <PackageReference Include="Docker.DotNet.BasicAuth" />
         <PackageReference Include="FluentStorage" />

@@ -17,10 +17,7 @@ namespace GZCTF.Extensions;
 
 public static class ConfigurationExtension
 {
-    static readonly DistributedCacheEntryOptions FaviconOptions = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
-    };
+    static readonly DistributedCacheEntryOptions FaviconOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
     const string CspTemplate = "default-src 'strict-dynamic' 'nonce-{0}' 'unsafe-inline' http: https:; " +
                                "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +

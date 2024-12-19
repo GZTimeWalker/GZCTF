@@ -223,7 +223,7 @@ public class ExerciseInstanceRepository(
     Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24);
+            entry.SlidingExpiration = TimeSpan.FromHours(24);
             return Context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
         }, token);
 
