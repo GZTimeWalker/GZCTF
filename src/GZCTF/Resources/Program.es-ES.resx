@@ -403,10 +403,10 @@
     <value>El trabajo cron se ha detenido</value>
   </data>
   <data name="CronJob_ExecuteFailed" xml:space="preserve">
-    <value>Failed to execute cronjob {0}: {1}</value>
+    <value>Falló al ejecutar el cronjob {0}: {1}</value>
   </data>
   <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
-    <value>Another instance is holding the cronjobs, let's run the watchdog.</value>
+    <value>Otra instancia está reteniendo los cronjobs, ejecutemos el watchdog.</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>No se pudo conectar a la base de datos ({0}), por favor verifique la cadena de conexión de la base de datos</value>
