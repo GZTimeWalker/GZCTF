@@ -40,7 +40,7 @@
     "real_name": "Имя",
     "student_id": "СтудБилет",
     "username": "Имя пользователя",
-    "username_or_email": "Имя пользователя или Email"
+    "username_or_email": "Логин или E-mail"
   },
   "notification": {
     "captcha": {
