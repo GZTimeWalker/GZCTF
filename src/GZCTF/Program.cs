@@ -81,8 +81,10 @@ builder.WebHost.ConfigureKestrel(options =>
     IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
-    options.ConfigureEndpointDefaults(defaultsOptions =>
-        defaultsOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
+
+    if (builder.Configuration.GetValue<bool>("EnableTLS") is true)
+        options.ConfigureEndpointDefaults(defaultsOptions =>
+            defaultsOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
 });
 
 builder.Logging.ClearProviders();
