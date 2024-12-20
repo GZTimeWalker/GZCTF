@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -37,7 +37,7 @@
     "embla-carousel-autoplay": "^8.5.1",
     "embla-carousel-react": "^8.5.1",
     "fast-average-color": "^9.4.0",
-    "i18next": "^24.1.2",
+    "i18next": "^24.2.0",
     "i18next-browser-languagedetector": "^8.0.2",
     "i18next-resources-to-backend": "^1.2.1",
     "katex": "^0.16.18",

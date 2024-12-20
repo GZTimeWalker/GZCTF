@@ -3,6 +3,25 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.1.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.1..v1.1.2) - 2024-12-20
+
+### ⛰️ Features
+
+- **(docker)** destroy container if cannot start - ([3c778f](https://github.com/GZTimeWalker/GZCTF/commit/3c778f)) by **GZTime**
+- **(option)** optional enabling of new http protocols - ([7cde81](https://github.com/GZTimeWalker/GZCTF/commit/7cde81)) by **GZTime**
+- Enable HTTP/3 - ([be8eff](https://github.com/GZTimeWalker/GZCTF/commit/be8eff)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(game)** redirect user if they haven't joined game yet - ([c7304b](https://github.com/GZTimeWalker/GZCTF/commit/c7304b)) by **GZTime**
+- **(team)** clear input on successful creation - ([7f6a17](https://github.com/GZTimeWalker/GZCTF/commit/7f6a17)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(cronjob)** use attribute to get expressions and add job - ([34db95](https://github.com/GZTimeWalker/GZCTF/commit/34db95)) by **GZTime**
+- **(cronjob)** make scheduled tasks more flexible - ([29f4f4](https://github.com/GZTimeWalker/GZCTF/commit/29f4f4)) by **GZTime**
+
+---
 ## [1.1.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.0..v1.1.1) - 2024-12-15
 
 ### ⛰️ Features
