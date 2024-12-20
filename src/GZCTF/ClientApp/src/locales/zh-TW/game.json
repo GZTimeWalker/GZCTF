@@ -42,13 +42,13 @@
         "報名參賽並審核通過後，參賽隊伍將被鎖定，<strong>不能再踢出隊員</strong>，隊伍將在比賽結束後或駁回請求時解鎖。",
         "比賽隊伍人數要求以選擇隊伍的成員數為準，<strong>不論隊員是否以此隊伍身份參加比賽。</strong>"
       ],
-      "invite_code": {
-        "description": "本場比賽開啟了邀請參賽，報名參賽需提供邀請碼",
-        "label": "請輸入邀請碼"
-      },
       "division": {
         "description": "本場比賽具有多個參賽組織，請選擇你的參賽組織",
         "label": "選擇參賽組織"
+      },
+      "invite_code": {
+        "description": "本場比賽開啟了邀請參賽，報名參賽需提供邀請碼",
+        "label": "請輸入邀請碼"
       },
       "team": {
         "description": "請選擇一個隊伍參與比賽，選定後不可更改",
@@ -168,9 +168,10 @@
     },
     "joined": "報名成功",
     "left": "取消報名成功",
-    "no_invite_code": "邀請碼不能為空",
     "no_division": "請選擇參賽組織",
+    "no_invite_code": "邀請碼不能為空",
     "no_team": "請選擇參賽隊伍",
+    "not_joined": "你還沒有加入這個比賽",
     "not_started": "比賽尚未開始",
     "select_chal_and_part": "請先選擇題目和隊伍",
     "suspended": "您已被禁賽",
