@@ -42,13 +42,13 @@
         "Setelah berhasil mendaftar untuk kompetisi dan lulus tinjauan, tim akan terkunci dan <strong>kamu tidak akan bisa lagi menghapus anggota dari tim.</strong> Tim akan dibuka kembali setelah pertandingan berakhir atau ketika permintaan partisipasi ditolak.",
         "Limit pada jumlah pemain mengacu pada jumlah anggota yang telah memutuskan untuk berpartisipasi sebagai bagian dari tim tertentu, <strong>tanpa memandang tim mana yang kamu pilih untuk bermain.</strong>"
       ],
-      "invite_code": {
-        "description": "Permainan ini hanya dengan undangan. Untuk berpartisipasi, harap masukkan kode undangan.",
-        "label": "Harap masukkan kode undangan"
-      },
       "division": {
         "description": "Permainan ini memiliki beberapa divisi yang tersedia. Harap pilih divisi kamu.",
         "label": "Pilih divisi"
+      },
+      "invite_code": {
+        "description": "Permainan ini hanya dengan undangan. Untuk berpartisipasi, harap masukkan kode undangan.",
+        "label": "Harap masukkan kode undangan"
       },
       "team": {
         "description": "Harap pilih tim yang ingin kamu ikuti dalam permainan ini. Ini tidak bisa diubah setelah permintaan partisipasi disetujui.",
@@ -168,9 +168,10 @@
     },
     "joined": "Pendaftaran berhasil",
     "left": "Berhasil dibatalkan",
-    "no_invite_code": "Kode undangan tidak boleh kosong",
     "no_division": "Silakan pilih divisi",
+    "no_invite_code": "Kode undangan tidak boleh kosong",
     "no_team": "Silakan pilih tim untuk ikut serta",
+    "not_joined": "You haven't joined the game yet",
     "not_started": "Game belum dimulai",
     "select_chal_and_part": "Silakan pilih tantangan dan tim terlebih dahulu",
     "suspended": "Kamu telah dibanned",
