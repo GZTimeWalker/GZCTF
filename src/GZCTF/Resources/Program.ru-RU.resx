@@ -396,7 +396,7 @@
     <value>Cron-задание остановлено</value>
   </data>
   <data name="CronJob_ExecuteFailed" xml:space="preserve">
-    <value>Failed to execute cronjob {0}: {1}</value>
+    <value>Не удалось выполнить задачу cron {0}: {1}</value>
   </data>
   <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
     <value>Another instance is holding the cronjobs, let's run the watchdog.</value>
