@@ -156,13 +156,15 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       try {
         const res = await api.game.gameStatus(gameId, challengeId, submitId)
         if (res.data !== AnswerResult.FlagSubmitted) {
+          setDisabled(false)
+          setFlag('')
           checkDataFlag(submitId, res.data)
+          clearInterval(polling)
         }
       } catch (err) {
-        showErrorNotification(err, t)
-      } finally {
         setDisabled(false)
         setFlag('')
+        showErrorNotification(err, t)
         clearInterval(polling)
       }
     }, 500)
