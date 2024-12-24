@@ -42,13 +42,13 @@
         "Después de registrarse exitosamente para la competencia y pasar la revisión, el equipo será bloqueado y <strong>ya no podrá eliminar a ningún miembro del equipo.</strong> El equipo se desbloqueará después de que termine el partido o cuando se rechace la solicitud de participación.",
         "El límite en el número de jugadores se refiere al número de miembros que han decidido participar como parte del equipo específico, <strong>independientemente de con qué equipo elija jugar.</strong>"
       ],
-      "invite_code": {
-        "description": "Este juego es solo por invitación. Para participar, por favor ingrese un código de invitación.",
-        "label": "Por favor ingrese el código de invitación"
-      },
       "division": {
         "description": "Este juego tiene varias divisiones disponibles. Por favor, selecciona tu división.",
         "label": "Seleccionar División"
+      },
+      "invite_code": {
+        "description": "Este juego es solo por invitación. Para participar, por favor ingrese un código de invitación.",
+        "label": "Por favor ingrese el código de invitación"
       },
       "team": {
         "description": "Por favor, selecciona un equipo con el que deseas participar en este juego. Esto no se puede cambiar después de la aprobación de la solicitud de participación.",
@@ -168,9 +168,10 @@
     },
     "joined": "Registro exitoso",
     "left": "Cancelado con éxito",
-    "no_invite_code": "El código de invitación no puede estar vacío",
     "no_division": "Por favor seleccione la división",
+    "no_invite_code": "El código de invitación no puede estar vacío",
     "no_team": "Por favor seleccione el equipo con el que participar",
+    "not_joined": "Aún no te has unido al juego",
     "not_started": "El juego aún no ha comenzado",
     "select_chal_and_part": "Por favor seleccione primero desafíos y equipos",
     "suspended": "Has sido prohibido",
