@@ -34,6 +34,7 @@ using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Container;
 using GZCTF.Services.CronJob;
+using GZCTF.Services.HealthCheck;
 using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -282,7 +283,6 @@ builder.Services.AddHostedService<CacheMaker>();
 builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CronJobService>();
 
-builder.Services.AddHealthChecks();
 builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
 builder.Services.AddResponseCompression(options =>
 {
@@ -312,6 +312,16 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
 });
 
 #endregion Services and Repositories
+
+#region Health Checks
+
+builder.Services.AddHealthChecks()
+    .AddApplicationLifecycleHealthCheck()
+    .AddCheck<StorageHealthCheck>("Storage")
+    .AddCheck<CacheHealthCheck>("Cache")
+    .AddCheck<DatabaseHealthCheck>("Database");
+
+#endregion
 
 #region Middlewares
 

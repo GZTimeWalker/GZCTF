@@ -14,13 +14,18 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 {
     Timer? _timer;
     bool _holdLock;
+    bool _disposed;
     readonly Dictionary<string, CronJobEntry> _jobs = [];
 
     public void Dispose()
     {
+        if (_disposed) return;
+        _disposed = true;
         _timer?.Dispose();
         GC.SuppressFinalize(this);
     }
+
+    ~CronJobService() => Dispose();
 
     /// <summary>
     /// Add a job to the cron job service
