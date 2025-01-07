@@ -1,10 +1,12 @@
 import { BoxProps, Group, InputBase, Text, InputBaseProps } from '@mantine/core'
+import { useLocalStorage } from '@mantine/hooks'
 import { forwardRef, useState, useEffect, useImperativeHandle } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CaptchaInstance } from '@Components/Captcha'
 import { PowWorker } from '@Components/icon/PowWorker'
+import { showErrorNotification } from '@Utils/ApiHelper'
 import workerScript from '@Utils/PowWorker'
-import api from '@Api'
+import api, { HashPowChallenge } from '@Api'
 import classes from '@Styles/HashPow.module.css'
 
 export interface PowRequest {
@@ -18,13 +20,33 @@ export interface PowResult {
   rate: number
 }
 
+interface PowState {
+  chall?: HashPowChallenge
+  time: number
+}
+
 export const usePowChallenge = () => {
-  const { data: chall, mutate } = api.info.useInfoPowChallenge({
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-    refreshWhenHidden: false,
-    refreshInterval: 4 * 60 * 1000,
+  const [data, setData] = useLocalStorage<PowState>({
+    key: 'pow-chall',
+    defaultValue: { time: 0 },
   })
+
+  const { t } = useTranslation()
+
+  const fetchPowChallenge = async () => {
+    try {
+      const data = await api.info.infoPowChallenge()
+      if (data.data) {
+        setData({
+          chall: data.data,
+          time: Date.now(),
+        })
+      }
+    } catch (e) {
+      showErrorNotification(e, t)
+      return null
+    }
+  }
 
   const [result, setNonce] = useState<PowResult | null>(null)
   const [error, setError] = useState<boolean>(false)
@@ -45,21 +67,23 @@ export const usePowChallenge = () => {
     return () => {
       worker.terminate()
     }
-  }, [chall])
+  }, [])
 
   useEffect(() => {
-    if (worker && chall) {
+    if (!worker) return
+
+    if (data.chall && Date.now() - data.time < 4 * 60 * 1000) {
       worker.postMessage({
-        chall: chall.challenge,
-        diff: chall.difficulty,
+        chall: data.chall.challenge,
+        diff: data.chall.difficulty,
       } as PowRequest)
       setPending(true)
-    } else if (!worker && !chall) {
-      mutate()
+    } else {
+      fetchPowChallenge()
     }
-  }, [worker, chall])
+  }, [worker, data])
 
-  return { chall, error, mutate, result: pending ? null : result }
+  return { chall: data.chall, error, mutate: fetchPowChallenge, result: pending ? null : result }
 }
 
 interface PowBoxProps extends BoxProps {

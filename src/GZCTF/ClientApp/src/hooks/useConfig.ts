@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import LZString from 'lz-string'
 import { useEffect, useRef } from 'react'
 import { Cache, SWRConfiguration } from 'swr'
-import api, { ClientConfig } from '@Api'
+import api, { ClientConfig, ContainerPortMappingType } from '@Api'
 
 export const OnceSWRConfig: SWRConfiguration = {
   refreshInterval: 0,
@@ -36,18 +36,18 @@ export const useConfig = () => {
     refreshWhenOffline: false,
   })
 
-  const [clientConfig, setClientConfig] = useLocalStorage({
+  const [clientConfig, setClientConfig] = useLocalStorage<ClientConfig>({
     key: 'client-config',
     defaultValue: {
       title: 'GZ',
       slogan: 'Hack for fun not for profit',
-      portMapping: 'Default',
+      portMapping: ContainerPortMappingType.Default,
       footerInfo: null,
       customTheme: null,
       defaultLifetime: 120,
       extensionDuration: 120,
       renewalWindow: 10,
-    } as ClientConfig,
+    },
   })
 
   useEffect(() => {
