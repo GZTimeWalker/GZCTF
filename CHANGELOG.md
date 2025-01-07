@@ -3,6 +3,18 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.1.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.2..v1.1.3) - 2025-01-07
+
+### ⛰️ Features
+
+- **(hashpow)** remove swr and manually control challenge fetch - ([f9c28f](https://github.com/GZTimeWalker/GZCTF/commit/f9c28f)) by **GZTime**
+- External service health check and telemetry - ([7a0612](https://github.com/GZTimeWalker/GZCTF/commit/7a0612)) by **Steven He**
+
+### 🐛 Bug Fixes
+
+- **(challenge)** auto destory instance after flag accepted - ([bc1e4c](https://github.com/GZTimeWalker/GZCTF/commit/bc1e4c)) by **GZTime**
+
+---
 ## [1.1.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.1..v1.1.2) - 2024-12-20
 
 ### ⛰️ Features
