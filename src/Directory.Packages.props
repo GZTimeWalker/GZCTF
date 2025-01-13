@@ -36,7 +36,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.10.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.10.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.10.0-beta.1" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.72" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="1.2.75" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
@@ -58,9 +58,9 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="xunit" Version="2.9.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.0" />
-    <PackageVersion Include="xunit.runner.console" Version="2.9.2" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" >
+    <PackageVersion Include="xunit.runner.console" Version="2.9.3" />
     <PackageVersion Include="coverlet.collector" Version="6.0.3" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.3" />
     <PackageVersion Include="ZstdSharp.Port" Version="0.8.4" />
