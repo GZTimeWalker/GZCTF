@@ -136,6 +136,11 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         return
       }
 
+      if (location.pathname.includes('monitor') && RequireRole(Role.Monitor, role)) {
+        // allow access to monitor
+        return
+      }
+
       if (now < dayjs(game.end)) {
         if (status === ParticipationStatus.Suspended) {
           navigate(`/games/${numId}`)
