@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.1.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.3..v1.1.4) - 2025-01-14
+
+### 🐛 Bug Fixes
+
+- **(monitor)** allow access to monitor page without join - ([a67e9f](https://github.com/GZTimeWalker/GZCTF/commit/a67e9f)) by **GZTime**
+
+---
 ## [1.1.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.2..v1.1.3) - 2025-01-07
 
 ### ⛰️ Features
