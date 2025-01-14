@@ -20,7 +20,7 @@ import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClipboard, mdiClose, mdiContentSaveOutline, mdiDeleteOutline, mdiRefresh } from '@mdi/js'
+import { mdiCheck, mdiClipboard, mdiClose, mdiContentSaveOutline, mdiDeleteOutline, mdiDice5Outline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
@@ -243,7 +243,7 @@ const GameInfoEdit: FC = () => {
           onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
           rightSection={
             <ActionIcon onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}>
-              <Icon path={mdiRefresh} size={1} />
+              <Icon path={mdiDice5Outline} size={0.85} />
             </ActionIcon>
           }
         />
