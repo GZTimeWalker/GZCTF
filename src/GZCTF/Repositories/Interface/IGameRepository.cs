@@ -11,7 +11,7 @@ public interface IGameRepository : IRepository
     /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default);
+    public Task<BasicGameInfoModel[]> GetBasicGameInfo(CancellationToken token = default);
 
     /// <summary>
     /// 获取指定数量的比赛对象

@@ -38,6 +38,19 @@ public record RequestResponse(string Title, int Status = StatusCodes.Status400Ba
 public record RequestResponse<T>(string Title, T Data, int Status = StatusCodes.Status400BadRequest);
 
 /// <summary>
+/// Pagination response
+/// </summary>
+/// <typeparam name="T">Data type</typeparam>
+/// <param name="Data">Data</param>
+/// <param name="Page">Current page</param>
+/// <param name="PageSize">Page size</param>
+/// <param name="Total">Total data count</param>
+public record PaginationResponse<T>(T[] Data, int Page, int PageSize, int Total)
+{
+    public int TotalPage => (Total + PageSize - 1) / PageSize;
+}
+
+/// <summary>
 /// Answer verification result
 /// </summary>
 /// <param name="SubType">Submission type</param>
