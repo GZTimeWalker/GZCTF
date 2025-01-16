@@ -46,13 +46,13 @@ public class GameRepository(
                                  && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(15))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
-    public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0,
-        CancellationToken token = default) =>
+    public async Task<BasicGameInfoModel[]> GetBasicGameInfo(CancellationToken token = default) =>
         await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(2);
             return Context.Games.Where(g => !g.Hidden)
-                .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
+                .OrderByDescending(g => g.StartTimeUtc)
+                .Take(100) // limit to 100 games
                 .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
         }, token);
 

@@ -1166,6 +1166,18 @@ export enum TaskStatus {
   Pending = "Pending",
 }
 
+export interface PaginationResponseOfBasicGameInfoModel {
+  data?: BasicGameInfoModel[];
+  /** @format int32 */
+  page?: number;
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  total?: number;
+  /** @format int32 */
+  totalPage?: number;
+}
+
 /** Basic game information, excluding detailed description and current team registration status */
 export interface BasicGameInfoModel {
   /** @format int32 */
@@ -1979,7 +1991,6 @@ export class HttpClient<SecurityDataType = unknown> {
   };
 }
 
-import { handleAxiosError } from "@Utils/ApiHelper";
 import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 
 /**
@@ -3867,41 +3878,73 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
 
     /**
-     * @description Retrieves the latest ten games
+     * @description Retrieves games with pagination
      *
      * @tags Game
      * @name GameGamesAll
      * @summary Get the latest games
      * @request GET:/api/game
      */
-    gameGamesAll: (params: RequestParams = {}) =>
-      this.request<BasicGameInfoModel[], RequestResponse>({
+    gameGamesAll: (
+      query?: {
+        /**
+         * Page Number
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<PaginationResponseOfBasicGameInfoModel, RequestResponse>({
         path: `/api/game`,
         method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
     /**
-     * @description Retrieves the latest ten games
+     * @description Retrieves games with pagination
      *
      * @tags Game
      * @name GameGamesAll
      * @summary Get the latest games
      * @request GET:/api/game
      */
-    useGameGamesAll: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? `/api/game` : null, options),
+    useGameGamesAll: (
+      query?: {
+        /**
+         * Page Number
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<PaginationResponseOfBasicGameInfoModel, RequestResponse>(doFetch ? [`/api/game`, query] : null, options),
 
     /**
-     * @description Retrieves the latest ten games
+     * @description Retrieves games with pagination
      *
      * @tags Game
      * @name GameGamesAll
      * @summary Get the latest games
      * @request GET:/api/game
      */
-    mutateGameGamesAll: (data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>, options?: MutatorOptions) =>
-      mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
+    mutateGameGamesAll: (
+      query?: {
+        /**
+         * Page Number
+         * @format int32
+         * @default 0
+         */
+        page?: number;
+      },
+      data?: PaginationResponseOfBasicGameInfoModel | Promise<PaginationResponseOfBasicGameInfoModel>,
+      options?: MutatorOptions,
+    ) => mutate<PaginationResponseOfBasicGameInfoModel>([`/api/game`, query], data, options),
 
     /**
      * @description Downloads all traffic packet files for a team and challenge; requires Monitor permission

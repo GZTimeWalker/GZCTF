@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using NSwag.Annotations;
 
 namespace GZCTF.Controllers;
 
@@ -51,14 +52,23 @@ public class GameController(
     /// Get the latest games
     /// </summary>
     /// <remarks>
-    /// Retrieves the latest ten games
+    /// Retrieves games with pagination
     /// </remarks>
     /// <param name="token"></param>
+    /// <param name="page">Page Number</param>
     /// <response code="200">Successfully retrieved game information</response>
     [HttpGet]
-    [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Games(CancellationToken token) =>
-        Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
+    [OpenApiOperation("Game_GamesAll")] // change the operationId to avoid conflicts with /game/{id}
+    [ProducesResponseType(typeof(PaginationResponse<BasicGameInfoModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Games(CancellationToken token, [FromQuery] int page = 0)
+    {
+        const int pageSize = 10;
+        var games = await gameRepository.GetBasicGameInfo(token);
+        var res = games.Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToArray();
+        return Ok(new PaginationResponse<BasicGameInfoModel>(res, page, pageSize, games.Length));
+    }
 
     /// <summary>
     /// Get detailed game information

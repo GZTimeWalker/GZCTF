@@ -21,11 +21,12 @@ const Home: FC = () => {
     refreshInterval: 5 * 60 * 1000,
   })
 
-  const { data: allGames } = api.game.useGameGamesAll({
+  const { data: allGamesResponse } = api.game.useGameGamesAll({},{
     refreshInterval: 5 * 60 * 1000,
   })
 
-  allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
+  const allGames = allGamesResponse?.data;
+  allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime());
 
   const onTogglePinned = async (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
     setDisabled(true)
