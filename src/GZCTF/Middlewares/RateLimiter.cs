@@ -26,6 +26,11 @@ public static class RateLimiter
         Register,
 
         /// <summary>
+        /// Database query limit
+        /// </summary>
+        Query,
+
+        /// <summary>
         /// Container operation limit
         /// </summary>
         Container,
@@ -103,6 +108,12 @@ public static class RateLimiter
             o.Window = TimeSpan.FromSeconds(150);
             o.QueueProcessingOrder = QueueProcessingOrder.NewestFirst;
             o.SegmentsPerWindow = 5;
+        });
+        options.AddTokenBucketLimiter(nameof(LimitPolicy.Query), o =>
+        {
+            o.TokenLimit = 100;
+            o.TokensPerPeriod = 10;
+            o.ReplenishmentPeriod = TimeSpan.FromSeconds(10);
         });
         options.AddTokenBucketLimiter(nameof(LimitPolicy.PowChallenge), o =>
         {

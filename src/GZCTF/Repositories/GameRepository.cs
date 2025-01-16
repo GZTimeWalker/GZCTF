@@ -12,6 +12,7 @@ namespace GZCTF.Repositories;
 
 public class GameRepository(
     IDistributedCache cache,
+    CacheHelper cacheHelper,
     IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
     IConfiguration configuration,
@@ -41,20 +42,64 @@ public class GameRepository(
     public Task<Game?> GetGameById(int id, CancellationToken token = default) =>
         Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
+    public Task<int> CountGames(CancellationToken token = default) => Context.Games.CountAsync(token);
+
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
         Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
                                  && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(15))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
-    public async Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0,
+    public Task<BasicGameInfoModel[]> GetGameInfo(int count = 50, int skip = 0,
         CancellationToken token = default) =>
-        await cache.GetOrCreateAsync(logger, CacheKey.BasicGameInfo, entry =>
+        Context.Games.Where(g => !g.Hidden)
+            .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
+            .Select(game => new BasicGameInfoModel
+            {
+                Id = game.Id,
+                Title = game.Title,
+                Summary = game.Summary,
+                PosterHash = game.PosterHash,
+                StartTimeUtc = game.StartTimeUtc,
+                EndTimeUtc = game.EndTimeUtc,
+                TeamMemberCountLimit = game.TeamMemberCountLimit
+            }).ToArrayAsync(token);
+
+    public async Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default)
+        => await cache.GetOrCreateAsync(logger, CacheKey.RecentGames, entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromHours(2);
-            return Context.Games.Where(g => !g.Hidden)
-                .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
-                .Select(g => BasicGameInfoModel.FromGame(g)).ToArrayAsync(token);
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+
+            return GenRecentGames(token);
         }, token);
+
+    public Task<BasicGameInfoModel[]> GenRecentGames(CancellationToken token = default) =>
+        // sort by following rules:
+        // 1. ongoing games > upcoming games > ended games
+        // 2. ongoing games: by end time, ascending
+        // 3. upcoming games: by start time, ascending
+        // 4. ended games: by end time, descending
+        Context.Games
+            .Where(g => !g.Hidden)
+            .OrderBy(g =>
+                g.EndTimeUtc <= DateTimeOffset.UtcNow
+                    ? DateTimeOffset.UtcNow - g.EndTimeUtc // ended games
+                    : g.StartTimeUtc >= DateTimeOffset.UtcNow
+                        ? g.StartTimeUtc - DateTimeOffset.UtcNow // upcoming games
+                        : DateTimeOffset.UtcNow - g.StartTimeUtc < g.EndTimeUtc - DateTimeOffset.UtcNow
+                            ? DateTimeOffset.UtcNow - g.StartTimeUtc
+                            : g.EndTimeUtc - DateTimeOffset.UtcNow)
+            .Take(100) // limit to 100 games
+            .Select(game => new BasicGameInfoModel
+            {
+                Id = game.Id,
+                Title = game.Title,
+                Summary = game.Summary,
+                PosterHash = game.PosterHash,
+                StartTimeUtc = game.StartTimeUtc,
+                EndTimeUtc = game.EndTimeUtc,
+                TeamMemberCountLimit = game.TeamMemberCountLimit
+            })
+            .ToArrayAsync(token);
 
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
@@ -129,7 +174,10 @@ public class GameRepository(
             await SaveAsync(token);
             await trans.CommitAsync(token);
 
-            await cache.RemoveAsync(CacheKey.BasicGameInfo, token);
+            await cache.RemoveAsync(CacheKey.BasicGameInfo, token); // TO REMOVE
+
+            await cacheHelper.FlushRecentGamesCache(token);
+
             await cache.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
 
             return TaskStatus.Success;
@@ -383,6 +431,33 @@ public class GameRepository(
             BloodBonusValue = game.BloodBonus.Val
         };
     }
+}
+
+public class RecentGamesCacheHandler : ICacheRequestHandler
+{
+    public string? CacheKey(CacheRequest request) => Services.Cache.CacheKey.RecentGames;
+
+    public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
+    {
+        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+
+        try
+        {
+            BasicGameInfoModel[] games = await gameRepository.GenRecentGames(token);
+            return MemoryPackSerializer.Serialize(games);
+        }
+        catch (Exception e)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<RecentGamesCacheHandler>>();
+            logger.LogError(e, "{msg}",
+                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+            return [];
+        }
+    }
+
+    public static CacheRequest MakeCacheRequest() =>
+        new(Services.Cache.CacheKey.RecentGames,
+            new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1) });
 }
 
 public class ScoreboardCacheHandler : ICacheRequestHandler

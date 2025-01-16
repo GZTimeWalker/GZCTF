@@ -1172,7 +1172,7 @@ export interface BasicGameInfoModel {
   id?: number;
   /** Game title */
   title?: string;
-  /** Game description */
+  /** Game summary */
   summary?: string;
   /** Poster image URL */
   poster?: string | null;
@@ -1191,6 +1191,22 @@ export interface BasicGameInfoModel {
    * @format uint64
    */
   end?: number;
+}
+
+/** List response */
+export interface ArrayResponseOfBasicGameInfoModel {
+  /** Data */
+  data: BasicGameInfoModel[];
+  /**
+   * Data length
+   * @format int32
+   */
+  length: number;
+  /**
+   * Total length
+   * @format int32
+   */
+  total?: number;
 }
 
 /** Detailed game information, including detailed introduction and current team registration status */
@@ -1979,7 +1995,6 @@ export class HttpClient<SecurityDataType = unknown> {
   };
 }
 
-import { handleAxiosError } from "@Utils/ApiHelper";
 import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 
 /**
@@ -2314,6 +2329,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 50
          */
         count?: number;
@@ -2344,6 +2361,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 50
          */
         count?: number;
@@ -2369,6 +2388,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 50
          */
         count?: number;
@@ -2472,6 +2493,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         level?: string | null;
         /**
          * @format int32
+         * @min 0
+         * @max 1000
          * @default 50
          */
         count?: number;
@@ -2504,6 +2527,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         level?: string | null;
         /**
          * @format int32
+         * @min 0
+         * @max 1000
          * @default 50
          */
         count?: number;
@@ -2531,6 +2556,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         level?: string | null;
         /**
          * @format int32
+         * @min 0
+         * @max 1000
          * @default 50
          */
         count?: number;
@@ -2648,6 +2675,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 100
          */
         count?: number;
@@ -2678,6 +2707,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 100
          */
         count?: number;
@@ -2703,6 +2734,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 100
          */
         count?: number;
@@ -2842,6 +2875,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 100
          */
         count?: number;
@@ -2872,6 +2907,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 100
          */
         count?: number;
@@ -2897,6 +2934,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 500
          * @default 100
          */
         count?: number;
@@ -3360,7 +3399,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     editGetGames: (
       query?: {
-        /** @format int32 */
+        /**
+         * @format int32
+         * @min 0
+         * @max 100
+         */
         count?: number;
         /** @format int32 */
         skip?: number;
@@ -3384,7 +3427,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     useEditGetGames: (
       query?: {
-        /** @format int32 */
+        /**
+         * @format int32
+         * @min 0
+         * @max 100
+         */
         count?: number;
         /** @format int32 */
         skip?: number;
@@ -3403,7 +3450,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     mutateEditGetGames: (
       query?: {
-        /** @format int32 */
+        /**
+         * @format int32
+         * @min 0
+         * @max 100
+         */
         count?: number;
         /** @format int32 */
         skip?: number;
@@ -3730,6 +3781,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         hideContainer?: boolean;
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -3766,6 +3819,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         hideContainer?: boolean;
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -3797,6 +3852,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         hideContainer?: boolean;
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -3827,14 +3884,100 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Retrieves detailed information about the game
+     * @description Retrieves game information in specified range
      *
      * @tags Game
      * @name GameGames
+     * @summary Get games
+     * @request GET:/api/game
+     */
+    gameGames: (
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 50
+         * @default 10
+         */
+        count?: number;
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ArrayResponseOfBasicGameInfoModel, RequestResponse>({
+        path: `/api/game`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Retrieves game information in specified range
+     *
+     * @tags Game
+     * @name GameGames
+     * @summary Get games
+     * @request GET:/api/game
+     */
+    useGameGames: (
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 50
+         * @default 10
+         */
+        count?: number;
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) => useSWR<ArrayResponseOfBasicGameInfoModel, RequestResponse>(doFetch ? [`/api/game`, query] : null, options),
+
+    /**
+     * @description Retrieves game information in specified range
+     *
+     * @tags Game
+     * @name GameGames
+     * @summary Get games
+     * @request GET:/api/game
+     */
+    mutateGameGames: (
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 50
+         * @default 10
+         */
+        count?: number;
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number;
+      },
+      data?: ArrayResponseOfBasicGameInfoModel | Promise<ArrayResponseOfBasicGameInfoModel>,
+      options?: MutatorOptions,
+    ) => mutate<ArrayResponseOfBasicGameInfoModel>([`/api/game`, query], data, options),
+
+    /**
+     * @description Retrieves detailed information about the game
+     *
+     * @tags Game
+     * @name GameGames2
      * @summary Get detailed game information
      * @request GET:/api/game/{id}
      */
-    gameGames: (id: number, params: RequestParams = {}) =>
+    gameGames2: (id: number, params: RequestParams = {}) =>
       this.request<DetailedGameInfoModel, RequestResponse>({
         path: `/api/game/${id}`,
         method: "GET",
@@ -3845,63 +3988,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @description Retrieves detailed information about the game
      *
      * @tags Game
-     * @name GameGames
+     * @name GameGames2
      * @summary Get detailed game information
      * @request GET:/api/game/{id}
      */
-    useGameGames: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+    useGameGames2: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<DetailedGameInfoModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
 
     /**
      * @description Retrieves detailed information about the game
      *
      * @tags Game
-     * @name GameGames
+     * @name GameGames2
      * @summary Get detailed game information
      * @request GET:/api/game/{id}
      */
-    mutateGameGames: (
+    mutateGameGames2: (
       id: number,
       data?: DetailedGameInfoModel | Promise<DetailedGameInfoModel>,
       options?: MutatorOptions,
     ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
-
-    /**
-     * @description Retrieves the latest ten games
-     *
-     * @tags Game
-     * @name GameGamesAll
-     * @summary Get the latest games
-     * @request GET:/api/game
-     */
-    gameGamesAll: (params: RequestParams = {}) =>
-      this.request<BasicGameInfoModel[], RequestResponse>({
-        path: `/api/game`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves the latest ten games
-     *
-     * @tags Game
-     * @name GameGamesAll
-     * @summary Get the latest games
-     * @request GET:/api/game
-     */
-    useGameGamesAll: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? `/api/game` : null, options),
-
-    /**
-     * @description Retrieves the latest ten games
-     *
-     * @tags Game
-     * @name GameGamesAll
-     * @summary Get the latest games
-     * @request GET:/api/game
-     */
-    mutateGameGamesAll: (data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>, options?: MutatorOptions) =>
-      mutate<BasicGameInfoModel[]>(`/api/game`, data, options),
 
     /**
      * @description Downloads all traffic packet files for a team and challenge; requires Monitor permission
@@ -4187,6 +4293,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -4218,6 +4326,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -4244,6 +4354,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -4296,6 +4408,77 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
       options?: MutatorOptions,
     ) => mutate<ParticipationInfoModel[]>(`/api/game/${id}/participations`, data, options),
+
+    /**
+     * @description Retrieves recent game in three weeks
+     *
+     * @tags Game
+     * @name GameRecentGames
+     * @summary Get the recent games
+     * @request GET:/api/game/recent
+     */
+    gameRecentGames: (
+      query?: {
+        /**
+         * Limit of the number of games
+         * @format int32
+         * @min 0
+         * @max 100
+         */
+        limit?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<BasicGameInfoModel[], RequestResponse>({
+        path: `/api/game/recent`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Retrieves recent game in three weeks
+     *
+     * @tags Game
+     * @name GameRecentGames
+     * @summary Get the recent games
+     * @request GET:/api/game/recent
+     */
+    useGameRecentGames: (
+      query?: {
+        /**
+         * Limit of the number of games
+         * @format int32
+         * @min 0
+         * @max 100
+         */
+        limit?: number;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) => useSWR<BasicGameInfoModel[], RequestResponse>(doFetch ? [`/api/game/recent`, query] : null, options),
+
+    /**
+     * @description Retrieves recent game in three weeks
+     *
+     * @tags Game
+     * @name GameRecentGames
+     * @summary Get the recent games
+     * @request GET:/api/game/recent
+     */
+    mutateGameRecentGames: (
+      query?: {
+        /**
+         * Limit of the number of games
+         * @format int32
+         * @min 0
+         * @max 100
+         */
+        limit?: number;
+      },
+      data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>,
+      options?: MutatorOptions,
+    ) => mutate<BasicGameInfoModel[]>([`/api/game/recent`, query], data, options),
 
     /**
      * @description Retrieves the scoreboard data
@@ -4415,6 +4598,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         type?: AnswerResult | null;
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -4448,6 +4633,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         type?: AnswerResult | null;
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;
@@ -4476,6 +4663,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         type?: AnswerResult | null;
         /**
          * @format int32
+         * @min 0
+         * @max 100
          * @default 100
          */
         count?: number;

@@ -8,6 +8,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;

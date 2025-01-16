@@ -10,25 +10,15 @@ import api from '@Api'
 const Games: FC = () => {
   const { t } = useTranslation()
 
-  const { data: allGames } = api.game.useGameGamesAll(OnceSWRConfig)
-
-  allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
-
-  const now = new Date()
-  const games = [
-    ...(allGames?.filter((g) => now < new Date(g.end ?? '')) ?? []),
-    ...(allGames?.filter((g) => now >= new Date(g.end ?? '')).reverse() ?? []),
-  ]
+  const { data: games } = api.game.useGameGames({ count: 50, skip: 0 }, OnceSWRConfig)
 
   usePageTitle(t('game.title.index'))
 
+  // TODO: Gantt chart + timeline + waterfall view
+
   return (
     <WithNavBar withHeader stickyHeader>
-      <Stack>
-        {games.map((g) => (
-          <GameCard key={g.id} game={g} />
-        ))}
-      </Stack>
+      <Stack>{games && games.data.map((g) => <GameCard key={g.id} game={g} />)}</Stack>
     </WithNavBar>
   )
 }

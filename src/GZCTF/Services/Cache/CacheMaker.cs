@@ -41,6 +41,7 @@ public class CacheMaker(
         #region Add Handlers
 
         AddCacheRequestHandler<ScoreboardCacheHandler>(CacheKey.ScoreBoardBase);
+        AddCacheRequestHandler<RecentGamesCacheHandler>(CacheKey.RecentGames);
 
         #endregion
 

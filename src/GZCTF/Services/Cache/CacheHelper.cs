@@ -7,6 +7,9 @@ public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
 {
     public async Task FlushScoreboardCache(int gameId, CancellationToken token) =>
         await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
+
+    public async Task FlushRecentGamesCache(CancellationToken token) =>
+        await channelWriter.WriteAsync(RecentGamesCacheHandler.MakeCacheRequest(), token);
 }
 
 /// <summary>
@@ -33,6 +36,11 @@ public static class CacheKey
     /// Basic game info
     /// </summary>
     public const string BasicGameInfo = "_BasicGameInfo";
+
+    /// <summary>
+    /// Recent games
+    /// </summary>
+    public const string RecentGames = "_RecentGames";
 
     /// <summary>
     /// Posts

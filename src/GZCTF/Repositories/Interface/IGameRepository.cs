@@ -11,7 +11,7 @@ public interface IGameRepository : IRepository
     /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<BasicGameInfoModel[]> GetBasicGameInfo(int count = 10, int skip = 0, CancellationToken token = default);
+    public Task<BasicGameInfoModel[]> GetGameInfo(int count = 10, int skip = 0, CancellationToken token = default);
 
     /// <summary>
     /// 获取指定数量的比赛对象
@@ -21,6 +21,13 @@ public interface IGameRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Game[]> GetGames(int count = 10, int skip = 0, CancellationToken token = default);
+
+    /// <summary>
+    /// 获取比赛数量
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<int> CountGames(CancellationToken token = default);
 
     /// <summary>
     /// 获取最近将要开始的比赛 id
@@ -53,6 +60,33 @@ public interface IGameRepository : IRepository
     /// <returns></returns>
     public string GetToken(Game game, Team team);
 
+    #region RecentGames
+
+    /// <summary>
+    /// 生成近期的比赛基本信息
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<BasicGameInfoModel[]> GenRecentGames(CancellationToken token = default);
+
+    /// <summary>
+    /// 获取近期的比赛基本信息
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default);
+
+    #endregion
+
+    #region Scoreboard
+
+    /// <summary>
+    /// 生成排行榜
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    public Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default);
+
     /// <summary>
     /// 获取排行榜
     /// </summary>
@@ -69,6 +103,8 @@ public interface IGameRepository : IRepository
     /// <returns></returns>
     public Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default);
 
+    #endregion
+
     /// <summary>
     /// 删除比赛
     /// </summary>
@@ -84,16 +120,4 @@ public interface IGameRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task DeleteAllWriteUps(Game game, CancellationToken token = default);
-
-    /// <summary>
-    /// 生成排行榜
-    /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="token"></param>
-    public Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default);
-
-    /// <summary>
-    /// 刷新比赛信息缓存
-    /// </summary>
-    public void FlushGameInfoCache();
 }

@@ -141,13 +141,15 @@ public class Game
     /// Poster URL
     /// </summary>
     [NotMapped]
-    public string? PosterUrl => PosterHash is null ? null : $"/assets/{PosterHash}/poster";
+    public string? PosterUrl => GetPosterUrl(PosterHash);
 
     /// <summary>
     /// Team hash salt
     /// </summary>
     [NotMapped]
     public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".ToSHA256String();
+
+    internal static string? GetPosterUrl(string? hash) => hash is null ? null : $"/assets/{hash}/poster";
 
     internal void GenerateKeyPair(byte[]? xorKey)
     {

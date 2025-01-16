@@ -19,7 +19,7 @@ public partial class BasicGameInfoModel
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// Game description
+    /// Game summary
     /// </summary>
     public string Summary { get; set; } = string.Empty;
 
@@ -27,13 +27,19 @@ public partial class BasicGameInfoModel
     /// Poster image URL
     /// </summary>
     [JsonPropertyName("poster")]
-    public string? PosterUrl { get; set; } = string.Empty;
+    public string? PosterUrl => Data.Game.GetPosterUrl(PosterHash);
+
+    /// <summary>
+    /// Poster hash
+    /// </summary>
+    [JsonIgnore]
+    public string? PosterHash { get; set; }
 
     /// <summary>
     /// Team member limit
     /// </summary>
     [JsonPropertyName("limit")]
-    public int TeamMemberLimitCount { get; set; }
+    public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
     /// Start time
@@ -53,9 +59,9 @@ public partial class BasicGameInfoModel
             Id = game.Id,
             Title = game.Title,
             Summary = game.Summary,
-            PosterUrl = game.PosterUrl,
+            PosterHash = game.PosterHash,
             StartTimeUtc = game.StartTimeUtc,
             EndTimeUtc = game.EndTimeUtc,
-            TeamMemberLimitCount = game.TeamMemberCountLimit
+            TeamMemberCountLimit = game.TeamMemberCountLimit
         };
 }

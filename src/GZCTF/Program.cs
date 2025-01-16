@@ -310,6 +310,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
     options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
 });
+builder.Services.AddResponseCaching();
 
 #endregion Services and Repositories
 
@@ -333,6 +334,7 @@ await app.RunPrelaunchWork();
 
 app.UseRequestLocalization();
 
+app.UseResponseCaching();
 app.UseResponseCompression();
 
 app.UseCustomFavicon();
