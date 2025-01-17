@@ -33,7 +33,7 @@ export const useAdminGame = (numId: number) => {
 }
 
 export const useGame = (numId: number) => {
-  const { data: game, error, mutate } = api.game.useGameGames(numId, OnceSWRConfig)
+  const { data: game, error, mutate } = api.game.useGameGame(numId, OnceSWRConfig)
 
   return { game, error, mutate, status: game?.status ?? ParticipationStatus.Unsubmitted }
 }

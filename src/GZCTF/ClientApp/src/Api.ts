@@ -3884,6 +3884,46 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Retrieves detailed information about the game
+     *
+     * @tags Game
+     * @name GameGame
+     * @summary Get detailed game information
+     * @request GET:/api/game/{id}
+     */
+    gameGame: (id: number, params: RequestParams = {}) =>
+      this.request<DetailedGameInfoModel, RequestResponse>({
+        path: `/api/game/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Retrieves detailed information about the game
+     *
+     * @tags Game
+     * @name GameGame
+     * @summary Get detailed game information
+     * @request GET:/api/game/{id}
+     */
+    useGameGame: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<DetailedGameInfoModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
+
+    /**
+     * @description Retrieves detailed information about the game
+     *
+     * @tags Game
+     * @name GameGame
+     * @summary Get detailed game information
+     * @request GET:/api/game/{id}
+     */
+    mutateGameGame: (
+      id: number,
+      data?: DetailedGameInfoModel | Promise<DetailedGameInfoModel>,
+      options?: MutatorOptions,
+    ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
+
+    /**
      * @description Retrieves game information in specified range
      *
      * @tags Game
@@ -3968,46 +4008,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       data?: ArrayResponseOfBasicGameInfoModel | Promise<ArrayResponseOfBasicGameInfoModel>,
       options?: MutatorOptions,
     ) => mutate<ArrayResponseOfBasicGameInfoModel>([`/api/game`, query], data, options),
-
-    /**
-     * @description Retrieves detailed information about the game
-     *
-     * @tags Game
-     * @name GameGames2
-     * @summary Get detailed game information
-     * @request GET:/api/game/{id}
-     */
-    gameGames2: (id: number, params: RequestParams = {}) =>
-      this.request<DetailedGameInfoModel, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves detailed information about the game
-     *
-     * @tags Game
-     * @name GameGames2
-     * @summary Get detailed game information
-     * @request GET:/api/game/{id}
-     */
-    useGameGames2: (id: number, options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<DetailedGameInfoModel, RequestResponse>(doFetch ? `/api/game/${id}` : null, options),
-
-    /**
-     * @description Retrieves detailed information about the game
-     *
-     * @tags Game
-     * @name GameGames2
-     * @summary Get detailed game information
-     * @request GET:/api/game/{id}
-     */
-    mutateGameGames2: (
-      id: number,
-      data?: DetailedGameInfoModel | Promise<DetailedGameInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
 
     /**
      * @description Downloads all traffic packet files for a team and challenge; requires Monitor permission

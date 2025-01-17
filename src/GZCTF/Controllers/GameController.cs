@@ -105,7 +105,7 @@ public class GameController(
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(DetailedGameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Games(int id, CancellationToken token)
+    public async Task<IActionResult> Game(int id, CancellationToken token)
     {
         ContextInfo context = await GetContextInfo(id, token: token);
 
