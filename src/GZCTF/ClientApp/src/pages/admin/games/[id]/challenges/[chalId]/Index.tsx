@@ -24,9 +24,9 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { HintList } from '@Components/HintList'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'
-import { ScoreFunc } from '@Components/admin/ScoreFunc'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
+import { ScoreFunc } from '@Components/charts/ScoreFunc'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import {
   ChallengeCategoryItem,

@@ -1169,7 +1169,7 @@ export enum TaskStatus {
 /** Basic game information, excluding detailed description and current team registration status */
 export interface BasicGameInfoModel {
   /** @format int32 */
-  id?: number;
+  id: number;
   /** Game title */
   title?: string;
   /** Game summary */
@@ -1184,13 +1184,15 @@ export interface BasicGameInfoModel {
   /**
    * Start time
    * @format uint64
+   * @minLength 1
    */
-  start?: number;
+  start: number;
   /**
    * End time
    * @format uint64
+   * @minLength 1
    */
-  end?: number;
+  end: number;
 }
 
 /** List response */

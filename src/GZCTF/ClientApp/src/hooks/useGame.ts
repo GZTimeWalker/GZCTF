@@ -1,7 +1,19 @@
 import dayjs from 'dayjs'
+import { TFunction } from 'i18next'
 import { GameStatus } from '@Components/GameCard'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
+
+export const useRecentGames = () => {
+  const { data, mutate, error } = api.game.useGameRecentGames(
+    { limit: 7 },
+    {
+      refreshInterval: 30 * 60 * 1000,
+    }
+  )
+
+  return { recentGames: data, error, mutate }
+}
 
 export const getGameStatus = (game?: DetailedGameInfoModel) => {
   const startTime = dayjs(game?.start)
@@ -24,6 +36,12 @@ export const getGameStatus = (game?: DetailedGameInfoModel) => {
     total,
     status,
   }
+}
+
+export const toLimitTag = (t: TFunction, limit?: number) => {
+  if (!limit || limit === 0) return t('game.tag.multiplayer')
+  if (limit === 1) return t('game.tag.individual')
+  return t('game.tag.limited', { count: limit })
 }
 
 export const useAdminGame = (numId: number) => {

@@ -70,3 +70,21 @@
   height: auto;
   position: relative;
 }
+
+.main {
+  width: 100%;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  box-shadow: var(--mantine-shadow-sm);
+  background-color: light-dark(var(--mantine-color-light-2), var(--mantine-color-gray-7));
+  min-height: 100vh;
+
+  &[data-mobile] {
+    min-height: calc(100vh - 60pt);
+  }
+
+  &[data-pb] {
+    padding-bottom: var(--mantine-spacing-xl);
+  }
+}

@@ -11,6 +11,7 @@ import { MobilePostCard } from '@Components/mobile/PostCard'
 import { RecentGameCarousel } from '@Components/mobile/RecentGameCarousel'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import { useRecentGames } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api, { PostInfoModel } from '@Api'
 import classes from '@Styles/Index.module.css'
@@ -22,12 +23,7 @@ const Home: FC = () => {
     refreshInterval: 5 * 60 * 1000,
   })
 
-  const { data: recentGames } = api.game.useGameRecentGames(
-    { limit: 5 },
-    {
-      refreshInterval: 5 * 60 * 1000,
-    }
-  )
+  const { recentGames } = useRecentGames()
 
   const onTogglePinned = async (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
     setDisabled(true)

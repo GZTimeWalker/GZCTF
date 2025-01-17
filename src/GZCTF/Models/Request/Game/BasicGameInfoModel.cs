@@ -11,6 +11,7 @@ namespace GZCTF.Models.Request.Game;
 public partial class BasicGameInfoModel
 {
     [Key]
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
@@ -44,12 +45,14 @@ public partial class BasicGameInfoModel
     /// <summary>
     /// Start time
     /// </summary>
+    [Required]
     [JsonPropertyName("start")]
     public DateTimeOffset StartTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
     /// End time
     /// </summary>
+    [Required]
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
