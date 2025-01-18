@@ -103,5 +103,5 @@
       "canvas": "npm:dry-uninstall"
     }
   },
-  "packageManager": "pnpm@8.5.1+sha512.5ba7a52fb370c346bf302202933a646f15ba7fdf5342e5f80ee2680e35a9dfd5f4f0f283904a60e1c823ddde84b606000dc7505a5fde33c35d94b255137460a4"
+  "packageManager": "pnpm@9.15.4"
 }
