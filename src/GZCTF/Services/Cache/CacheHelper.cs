@@ -33,14 +33,14 @@ public static class CacheKey
     public const string ScoreBoardBase = "_ScoreBoard";
 
     /// <summary>
-    /// Basic game info
-    /// </summary>
-    public const string BasicGameInfo = "_BasicGameInfo";
-
-    /// <summary>
     /// Recent games
     /// </summary>
     public const string RecentGames = "_RecentGames";
+
+    /// <summary>
+    /// The game list cache, latest 100 games
+    /// </summary>
+    public const string GameList = "_GameList";
 
     /// <summary>
     /// Posts

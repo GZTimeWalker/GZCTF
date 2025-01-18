@@ -223,9 +223,7 @@ public class EditController(
                 StatusCodes.Status404NotFound));
 
         game.Update(model);
-        await gameRepository.SaveAsync(token);
-        await cacheHelper.FlushRecentGamesCache(token);
-        await cacheHelper.FlushScoreboardCache(game.Id, token);
+        await gameRepository.UpdateGame(game, token);
 
         return Ok(GameInfoModel.FromGame(game));
     }

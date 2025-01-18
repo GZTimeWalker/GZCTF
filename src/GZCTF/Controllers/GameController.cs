@@ -6,7 +6,6 @@ using System.Security.Claims;
 using System.Threading.Channels;
 using FluentStorage;
 using FluentStorage.Blobs;
-using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
@@ -86,11 +85,7 @@ public class GameController(
     [ProducesResponseType(typeof(ArrayResponse<BasicGameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Games([FromQuery][Range(0, 50)] int count = 10,
         [FromQuery] int skip = 0, CancellationToken token = default)
-    {
-        var games = await gameRepository.GetGameInfo(count, skip, token);
-
-        return Ok(games.ToResponse(await gameRepository.CountGames(token)));
-    }
+        => Ok(await gameRepository.GetGameInfo(count, skip, token));
 
     /// <summary>
     /// Get detailed game information

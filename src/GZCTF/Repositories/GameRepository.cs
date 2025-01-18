@@ -34,7 +34,19 @@ public class GameRepository(
 
         await Context.AddAsync(game, token);
         await SaveAsync(token);
+
+        await cache.RemoveAsync(CacheKey.GameList, token);
+
         return game;
+    }
+
+    public async Task UpdateGame(Game game, CancellationToken token = default)
+    {
+        await SaveAsync(token);
+
+        await cacheHelper.FlushRecentGamesCache(token);
+        await cacheHelper.FlushScoreboardCache(game.Id, token);
+        await cache.RemoveAsync(CacheKey.GameList, token);
     }
 
     public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
@@ -49,8 +61,7 @@ public class GameRepository(
                                  && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(15))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
-    public Task<BasicGameInfoModel[]> GetGameInfo(int count = 50, int skip = 0,
-        CancellationToken token = default) =>
+    internal Task<BasicGameInfoModel[]> GetGameList(int count, int skip, CancellationToken token) =>
         Context.Games.Where(g => !g.Hidden)
             .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
             .Select(game => new BasicGameInfoModel
@@ -63,6 +74,26 @@ public class GameRepository(
                 EndTimeUtc = game.EndTimeUtc,
                 TeamMemberCountLimit = game.TeamMemberCountLimit
             }).ToArrayAsync(token);
+
+    public async Task<ArrayResponse<BasicGameInfoModel>> GetGameInfo(int count = 20, int skip = 0,
+        CancellationToken token = default)
+    {
+        var total = await CountGames(token);
+        if (skip >= total)
+            return new([], total);
+
+        if (skip + count > 100)
+            return new(await GetGameList(count, skip, token), total);
+
+        var games = await cache.GetOrCreateAsync(logger, CacheKey.GameList, entry =>
+        {
+            entry.SlidingExpiration = TimeSpan.FromDays(3);
+
+            return GetGameList(100, 0, token);
+        }, token);
+
+        return new(games.Skip(skip).Take(count).ToArray(), total);
+    }
 
     public async Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default)
         => await cache.GetOrCreateAsync(logger, CacheKey.RecentGames, entry =>
@@ -174,11 +205,10 @@ public class GameRepository(
             await SaveAsync(token);
             await trans.CommitAsync(token);
 
-            await cache.RemoveAsync(CacheKey.BasicGameInfo, token); // TO REMOVE
-
             await cacheHelper.FlushRecentGamesCache(token);
 
             await cache.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
+            await cache.RemoveAsync(CacheKey.GameList, token);
 
             return TaskStatus.Success;
         }
@@ -209,8 +239,6 @@ public class GameRepository(
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token) =>
         Context.Games.OrderByDescending(g => g.Id).Skip(skip).Take(count).ToArrayAsync(token);
-
-    public void FlushGameInfoCache() => cache.Remove(CacheKey.BasicGameInfo);
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
     // Refactored by GZTimeWalker @ 2024/08/31
@@ -435,7 +463,7 @@ public class GameRepository(
 
 public class RecentGamesCacheHandler : ICacheRequestHandler
 {
-    public string? CacheKey(CacheRequest request) => Services.Cache.CacheKey.RecentGames;
+    public string CacheKey(CacheRequest request) => Services.Cache.CacheKey.RecentGames;
 
     public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
     {

@@ -83,6 +83,8 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 
+    // "bool? is true" is necessary for if statement
+    // ReSharper disable once RedundantBoolCompare
     if (builder.Configuration.GetValue<bool>("EnableTLS") is true)
         options.ConfigureEndpointDefaults(defaultsOptions =>
             defaultsOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
