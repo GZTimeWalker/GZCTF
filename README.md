@@ -103,6 +103,7 @@ If you are interested in contributing to the translation, please refer to the [C
 ## Demo 🗿
 
 ![index.webp](assets/images/index.webp)
+![game.list.webp](assets/images/game.list.webp)
 ![game.challenges.webp](assets/images/game.challenges.webp)
 ![game.scoreboard.webp](assets/images/game.scoreboard.webp)
 ![admin.settings.webp](assets/images/admin.settings.webp)
