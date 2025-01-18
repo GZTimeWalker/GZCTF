@@ -317,8 +317,7 @@ public class EditController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_CreationFailed)]));
 
         game.PosterHash = poster.Hash;
-        await gameRepository.SaveAsync(token);
-        await cacheHelper.FlushRecentGamesCache(token);
+        await gameRepository.UpdateGame(game, token);
 
         return Ok(poster.Url());
     }
