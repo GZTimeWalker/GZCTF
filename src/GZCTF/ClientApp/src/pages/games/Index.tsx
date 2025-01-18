@@ -59,7 +59,7 @@ const Games: FC = () => {
   const pageCount = Math.ceil((games?.total ?? 0) / ITEM_PER_PAGE)
 
   return (
-    <WithNavBar withHeader stickyHeader>
+    <WithNavBar withFooter withHeader stickyHeader>
       <GanttTimeLine items={recents} />
       <Stack pt="md" mih="calc(100vh - 78px)" justify="space-between">
         <Stack>{games && games.data.map((g) => <GameCard key={g.id} game={g} />)}</Stack>
