@@ -52,6 +52,7 @@
 
 .dataRect {
   display: flex;
+  z-index: 85;
   padding: 0 4px;
   height: 30px;
   margin-top: 1px;
@@ -62,7 +63,6 @@
   left: var(--left);
   width: var(--width);
   position: absolute;
-  z-index: 85;
 
   border-radius: 6px;
   background: var(--data-item-color);
@@ -81,11 +81,11 @@
   --text-fz: var(--mantine-font-size-sm);
 
   width: 300px;
-  z-index: 85;
   pointer-events: none;
   overflow: hidden;
 
   & > p {
+    z-index: 100;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
