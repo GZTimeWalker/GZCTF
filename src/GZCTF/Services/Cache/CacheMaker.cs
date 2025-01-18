@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using GZCTF.Repositories;
+using GZCTF.Services.Cache.Handlers;
 using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -42,6 +42,7 @@ public class CacheMaker(
 
         AddCacheRequestHandler<ScoreboardCacheHandler>(CacheKey.ScoreBoardBase);
         AddCacheRequestHandler<RecentGamesCacheHandler>(CacheKey.RecentGames);
+        AddCacheRequestHandler<GameListCacheHandler>(CacheKey.GameList);
 
         #endregion
 

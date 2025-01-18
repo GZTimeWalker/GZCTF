@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using GZCTF.Repositories;
+using GZCTF.Services.Cache.Handlers;
 
 namespace GZCTF.Services.Cache;
 
@@ -10,6 +10,9 @@ public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
 
     public async Task FlushRecentGamesCache(CancellationToken token) =>
         await channelWriter.WriteAsync(RecentGamesCacheHandler.MakeCacheRequest(), token);
+
+    public async Task FlushGameListCache(CancellationToken token) =>
+        await channelWriter.WriteAsync(GameListCacheHandler.MakeCacheRequest(), token);
 }
 
 /// <summary>

@@ -1,7 +1,7 @@
 using System.Threading.Channels;
-using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Cache.Handlers;
 using Microsoft.Extensions.Caching.Distributed;
 
 // ReSharper disable UnusedMember.Global

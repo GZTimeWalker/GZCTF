@@ -5,7 +5,8 @@ namespace GZCTF.Services.HealthCheck;
 
 public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
 {
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -24,6 +25,7 @@ public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
             {
                 await blobStorage.DeleteAsync(filename, cancellationToken: cancellationToken);
             }
+
             return DateTime.UtcNow - time > TimeSpan.FromSeconds(1)
                 ? HealthCheckResult.Degraded()
                 : HealthCheckResult.Healthy();

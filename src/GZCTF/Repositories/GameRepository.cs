@@ -35,7 +35,7 @@ public class GameRepository(
         await Context.AddAsync(game, token);
         await SaveAsync(token);
 
-        await cache.RemoveAsync(CacheKey.GameList, token);
+        await cacheHelper.FlushGameListCache(token);
 
         return game;
     }
@@ -44,9 +44,9 @@ public class GameRepository(
     {
         await SaveAsync(token);
 
+        await cacheHelper.FlushGameListCache(token);
         await cacheHelper.FlushRecentGamesCache(token);
         await cacheHelper.FlushScoreboardCache(game.Id, token);
-        await cache.RemoveAsync(CacheKey.GameList, token);
     }
 
     public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
@@ -61,7 +61,7 @@ public class GameRepository(
                                  && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(15))
             .OrderBy(g => g.StartTimeUtc).Select(g => g.Id).ToArrayAsync(token);
 
-    internal Task<BasicGameInfoModel[]> GetGameList(int count, int skip, CancellationToken token) =>
+    public Task<BasicGameInfoModel[]> FetchGameList(int count, int skip, CancellationToken token) =>
         Context.Games.Where(g => !g.Hidden)
             .OrderByDescending(g => g.StartTimeUtc).Skip(skip).Take(count)
             .Select(game => new BasicGameInfoModel
@@ -83,13 +83,13 @@ public class GameRepository(
             return new([], total);
 
         if (skip + count > 100)
-            return new(await GetGameList(count, skip, token), total);
+            return new(await FetchGameList(count, skip, token), total);
 
         var games = await cache.GetOrCreateAsync(logger, CacheKey.GameList, entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromDays(3);
 
-            return GetGameList(100, 0, token);
+            return FetchGameList(100, 0, token);
         }, token);
 
         return new(games.Skip(skip).Take(count).ToArray(), total);
@@ -206,9 +206,9 @@ public class GameRepository(
             await trans.CommitAsync(token);
 
             await cacheHelper.FlushRecentGamesCache(token);
+            await cacheHelper.FlushGameListCache(token);
 
             await cache.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
-            await cache.RemoveAsync(CacheKey.GameList, token);
 
             return TaskStatus.Success;
         }
@@ -459,70 +459,4 @@ public class GameRepository(
             BloodBonusValue = game.BloodBonus.Val
         };
     }
-}
-
-public class RecentGamesCacheHandler : ICacheRequestHandler
-{
-    public string CacheKey(CacheRequest request) => Services.Cache.CacheKey.RecentGames;
-
-    public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
-    {
-        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-
-        try
-        {
-            BasicGameInfoModel[] games = await gameRepository.GenRecentGames(token);
-            return MemoryPackSerializer.Serialize(games);
-        }
-        catch (Exception e)
-        {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<RecentGamesCacheHandler>>();
-            logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
-            return [];
-        }
-    }
-
-    public static CacheRequest MakeCacheRequest() =>
-        new(Services.Cache.CacheKey.RecentGames,
-            new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1) });
-}
-
-public class ScoreboardCacheHandler : ICacheRequestHandler
-{
-    public string? CacheKey(CacheRequest request)
-        => request.Params.Length switch
-        {
-            1 => Services.Cache.CacheKey.ScoreBoard(request.Params[0]),
-            _ => null
-        };
-
-    public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
-    {
-        if (!int.TryParse(request.Params[0], out var id))
-            return [];
-
-        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-        Game? game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return [];
-
-        try
-        {
-            ScoreboardModel scoreboard = await gameRepository.GenScoreboard(game, token);
-            return MemoryPackSerializer.Serialize(scoreboard);
-        }
-        catch (Exception e)
-        {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardCacheHandler>>();
-            logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
-            return [];
-        }
-    }
-
-    public static CacheRequest MakeCacheRequest(int id) =>
-        new(Services.Cache.CacheKey.ScoreBoardBase,
-            new() { SlidingExpiration = TimeSpan.FromDays(14) }, id.ToString());
 }

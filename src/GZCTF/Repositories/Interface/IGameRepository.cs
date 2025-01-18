@@ -15,6 +15,15 @@ public interface IGameRepository : IRepository
         CancellationToken token = default);
 
     /// <summary>
+    /// 从数据库中获取比赛基本信息
+    /// </summary>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<BasicGameInfoModel[]> FetchGameList(int count, int skip, CancellationToken token);
+
+    /// <summary>
     /// 获取指定数量的比赛对象
     /// </summary>
     /// <param name="count"></param>
