@@ -3,6 +3,22 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.4..v1.2.0) - 2025-01-18
+
+### ⛰️ Features
+
+- **(game)** add link to gantt item - ([4c8b35](https://github.com/GZTimeWalker/GZCTF/commit/4c8b35)) by **GZTime**
+- **(game)** use cache handler for game list - ([1b10f5](https://github.com/GZTimeWalker/GZCTF/commit/1b10f5)) by **GZTime**
+- **(game)** refactor game list & add gantt timeline (#410) - ([f1b964](https://github.com/GZTimeWalker/GZCTF/commit/f1b964)) by **GZTime**
+- **(posts)** adjust dom struct - ([aecb18](https://github.com/GZTimeWalker/GZCTF/commit/aecb18)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(game)** fail to flush game list cache - ([bf6360](https://github.com/GZTimeWalker/GZCTF/commit/bf6360)) by **GZTime**
+- **(game)** flush cache when upload poster - ([cd0fe4](https://github.com/GZTimeWalker/GZCTF/commit/cd0fe4)) by **GZTime**
+- **(gantt)** add blank row - ([f2d453](https://github.com/GZTimeWalker/GZCTF/commit/f2d453)) by **GZTime**
+
+---
 ## [1.1.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.3..v1.1.4) - 2025-01-14
 
 ### 🐛 Bug Fixes
