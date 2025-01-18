@@ -1,7 +1,16 @@
-import { Badge, Group, Pagination, Stack, Text, useMantineColorScheme, useMantineTheme } from '@mantine/core'
+import {
+  Badge,
+  Group,
+  Pagination,
+  Stack,
+  Text,
+  UnstyledButton,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { GameCard, GameColorMap } from '@Components/GameCard'
 import { WithNavBar } from '@Components/WithNavbar'
 import { GanttTimeLine } from '@Components/charts/GanttTimeline'
@@ -27,7 +36,6 @@ const Games: FC = () => {
 
   usePageTitle(t('game.title.index'))
 
-  const navigate = useNavigate()
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
 
@@ -42,14 +50,16 @@ const Games: FC = () => {
         textTitle: game.title ?? '',
         color: colorHex,
         title: (
-          <Group gap="sm" className={ganttClasses.gameBox} onClick={() => navigate(`/games/${game.id}`)}>
-            <Text size="sm" className={ganttClasses.title}>
-              {game.title}
-            </Text>
-            <Badge size="sm" color={color}>
-              {toLimitTag(t, game.limit)}
-            </Badge>
-          </Group>
+          <UnstyledButton w="100%" component={Link} to={`/games/${game.id}`}>
+            <Group gap="sm" className={ganttClasses.gameBox}>
+              <Text size="sm" className={ganttClasses.title}>
+                {game.title}
+              </Text>
+              <Badge size="sm" color={color}>
+                {toLimitTag(t, game.limit)}
+              </Badge>
+            </Group>
+          </UnstyledButton>
         ),
         start: startTime,
         end: endTime,
