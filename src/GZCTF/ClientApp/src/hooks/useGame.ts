@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { TFunction } from 'i18next'
 import { GameStatus } from '@Components/GameCard'
 import { OnceSWRConfig } from '@Hooks/useConfig'
-import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
+import api, { ParticipationStatus } from '@Api'
 
 export const useRecentGames = () => {
   const { data, mutate, error } = api.game.useGameRecentGames(
@@ -15,7 +15,7 @@ export const useRecentGames = () => {
   return { recentGames: data, error, mutate }
 }
 
-export const getGameStatus = (game?: DetailedGameInfoModel) => {
+export const getGameStatus = (game?: { start?: number; end?: number }) => {
   const startTime = dayjs(game?.start)
   const endTime = dayjs(game?.end)
 

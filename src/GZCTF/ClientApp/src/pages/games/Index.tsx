@@ -1,4 +1,4 @@
-import { Badge, Group, Pagination, Stack, Text } from '@mantine/core'
+import { Badge, Group, Pagination, Stack, Text, useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -28,14 +28,19 @@ const Games: FC = () => {
   usePageTitle(t('game.title.index'))
 
   const navigate = useNavigate()
+  const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
 
   const recents =
     recentGames?.map((game) => {
       const { startTime, endTime, status } = getGameStatus(game)
-      const color = GameColorMap.get(status)
+      const color = GameColorMap.get(status) ?? 'gray'
+      const colorHex = theme.colors[color][colorScheme === 'dark' ? 9 : 4]
+
       return {
         id: game.id,
         textTitle: game.title ?? '',
+        color: colorHex,
         title: (
           <Group gap="sm" className={ganttClasses.gameBox} onClick={() => navigate(`/games/${game.id}`)}>
             <Text size="sm" className={ganttClasses.title}>

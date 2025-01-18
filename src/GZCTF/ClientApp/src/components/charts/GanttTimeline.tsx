@@ -3,6 +3,7 @@ import cx from 'clsx'
 import dayjs, { Dayjs } from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
 import classes from '@Styles/GanttTimeline.module.css'
 
@@ -12,6 +13,7 @@ interface GanttTimeLineProps {
 
 export interface GanttItem {
   id: number
+  color?: string
   textTitle: string
   title: React.ReactNode
   start: Dayjs
@@ -153,14 +155,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
   const scrollPos = scrollPosition.x + EDGE_PADDING
 
   return (
-    <ScrollArea
-      h={VIEW_HEIGHT}
-      scrollbars="x"
-      offsetScrollbars
-      viewportRef={viewport}
-      scrollbarSize={3}
-      onScrollPositionChange={onScrollPositionChange}
-    >
+    <ScrollArea h={VIEW_HEIGHT} scrollbars="x" viewportRef={viewport} onScrollPositionChange={onScrollPositionChange}>
       <Box
         className={classes.view}
         __vars={{
@@ -202,10 +197,13 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
                   '--left': `${left + STICKY_WIDTH}px`,
                   '--right': `${right + STICKY_WIDTH}px`,
                   '--width': `${right - left}px`,
+                  '--color': item.color,
                 }}
               >
-                <div className={cx(classes.dataItem, classes.dataRect)} data-rov={rightOverflow || undefined} />
-                <div className={cx(classes.dataText, classes.dataRect)} data-state={state}>
+                <div className={cx(classes.dataItem, classes.dataRect)} data-rov={rightOverflow || undefined}>
+                  <Link className={classes.dataLink} to={`/games/${item.id}`} />
+                </div>
+                <div data-state={state} className={cx(classes.dataText, classes.dataRect)}>
                   <Text>{item.textTitle}</Text>
                 </div>
               </Box>

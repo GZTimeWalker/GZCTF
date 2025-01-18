@@ -17,9 +17,8 @@
   @mixin dark {
     --view-line-color: var(--mantine-color-gray-6);
     --view-background: var(--mantine-color-gray-7);
-    --accent-color: var(--mantine-primary-color-7);
+    --accent-color: var(--mantine-primary-color-8);
     --striation-color: var(--mantine-color-gray-8);
-    --data-item-color: var(--mantine-primary-color-8);
   }
 
   @mixin light {
@@ -27,7 +26,6 @@
     --view-background: var(--mantine-color-light-1);
     --accent-color: var(--mantine-primary-color-6);
     --striation-color: darken(var(--mantine-color-light-2), 5%);
-    --data-item-color: var(--mantine-primary-color-1);
   }
 }
 
@@ -45,18 +43,22 @@
   display: flex;
   height: 33px;
   width: 100%;
-  cursor: default;
+  z-index: 85;
   isolation: auto;
   overflow: visible;
 }
 
 .dataRect {
   display: flex;
-  z-index: 85;
-  padding: 0 4px;
   height: 30px;
+  z-index: 85;
   margin-top: 1px;
   margin-bottom: 1px;
+
+  &::hover {
+    cursor: pointer;
+    background: var(--mantine-primary-color-7);
+  }
 }
 
 .dataItem {
@@ -65,7 +67,7 @@
   position: absolute;
 
   border-radius: 6px;
-  background: var(--data-item-color);
+  background: var(--color);
   box-shadow:
     rgba(15, 15, 15, 0.2) 0px 0px 0px 1px,
     rgba(15, 15, 15, 0.2) 0px 2px 4px;
@@ -73,15 +75,23 @@
   &[data-rov] {
     border-right: none;
     border-radius: 6px 0 0 6px;
+
+    & > * {
+      border-right: none;
+      border-radius: 6px 0 0 6px;
+    }
   }
 }
 
 .dataText {
   --text-lh: 30px;
   --text-fz: var(--mantine-font-size-sm);
+  --text-color: var(--mantine-color-default-color);
 
+  padding: 0 4px;
   width: 300px;
   pointer-events: none;
+  user-select: none;
   overflow: hidden;
 
   & > p {
@@ -106,6 +116,31 @@
   &[data-state='a'] {
     position: absolute;
     left: var(--right);
+  }
+}
+
+.dataLink {
+  display: flex;
+  color: inherit;
+  text-decoration: none;
+  user-select: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+
+  transition: background 50ms ease-in;
+
+  @mixin hover {
+    @mixin light {
+      background: rgba(55, 53, 47, 0.065);
+      box-shadow: 0 0 2px var(--mantine-color-gray-2);
+    }
+
+    @mixin dark {
+      background: rgba(255, 255, 255, 0.075);
+      box-shadow: 0 0 2px var(--mantine-color-gray-7);
+    }
   }
 }
 
@@ -164,7 +199,7 @@
   & > span {
     position: relative;
     color: white;
-    padding: 2px 7px;
+    font-weight: 700;
   }
 
   &::before {
@@ -186,14 +221,12 @@
   top: 65px;
   width: 7px;
   height: 7px;
-  z-index: 90;
   background: var(--accent-color);
   border-radius: 100%;
 
   &::after {
     content: '';
     position: absolute;
-    z-index: 90;
     left: 3px;
     top: 3px;
     width: 1px;
