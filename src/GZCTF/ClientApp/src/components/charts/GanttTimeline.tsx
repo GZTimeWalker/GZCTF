@@ -77,7 +77,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
 
   const [dateData, setDateData] = useState<DateData>({
     start: dayjs(),
-    now: dayjs().startOf('hour'),
+    now: dayjs().startOf('h'),
     end: dayjs(),
     total: 0,
     duration: 0,
@@ -87,25 +87,25 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
     monthMap: [],
   })
 
-  const [currentMonth, setCurrentMonth] = useState(dayjs().locale(locale).format('SLLL'))
+  const [currentMonth, setCurrentMonth] = useState(dayjs().locale(locale).format('SMY'))
 
   useEffect(() => {
-    const now = dayjs().startOf('hour')
-    const start = now.startOf('week').subtract(3, 'week')
-    const end = start.add(7, 'week').subtract(1, 'day')
-    const total = end.diff(start, 'day')
-    const duration = end.diff(start, 'second')
+    const now = dayjs().startOf('h')
+    const start = now.startOf('w').subtract(3, 'w')
+    const end = start.add(7, 'w').subtract(1, 's')
+    const total = end.diff(start, 'd')
+    const duration = end.diff(start, 's')
 
-    let weekends: React.ReactNode[] = []
-    let days: React.ReactNode[] = []
-    let months: React.ReactNode[] = []
-    let monthMap: MonthHeader[] = []
+    const weekends: React.ReactNode[] = []
+    const days: React.ReactNode[] = []
+    const months: React.ReactNode[] = []
+    const monthMap: MonthHeader[] = []
 
     monthMap.push({ position: 0, time: start })
 
     for (let i = 0; i <= total; i++) {
-      const current = start.add(i, 'day').locale(locale)
-      if (current.isSame(now, 'day')) {
+      const current = start.add(i, 'd').locale(locale)
+      if (current.isSame(now, 'd')) {
         days.push(TodayBox(i, current.format('DD')))
       } else {
         days.push(LabelBox(i, current.format('DD'), classes.day))
@@ -141,7 +141,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
 
     for (let i = 0; i < map.length; i++) {
       if (scrollPosition.x > map[i].position) {
-        const str = map[i].time.locale(locale).format('SLLL')
+        const str = map[i].time.locale(locale).format('SMY')
         if (str === currentMonth) return
         setCurrentMonth(str)
         break
@@ -149,7 +149,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
     }
   }, [scrollPosition, locale, dateData?.monthMap])
 
-  const nowOffset = (dateData.now.diff(dateData.start, 'second') / dateData.duration) * VIEW_WIDTH + STICKY_WIDTH
+  const nowOffset = (dateData.now.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH + STICKY_WIDTH
   const scrollPos = scrollPosition.x + EDGE_PADDING
 
   return (
@@ -158,6 +158,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
       scrollbars="x"
       offsetScrollbars
       viewportRef={viewport}
+      scrollbarSize={3}
       onScrollPositionChange={onScrollPositionChange}
     >
       <Box
@@ -184,12 +185,12 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
               const left =
                 item.start < dateData.start
                   ? -10
-                  : (item.start.diff(dateData.start, 'second') / dateData.duration) * VIEW_WIDTH
+                  : (item.start.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH
 
               const right =
                 item.end > dateData.end
                   ? VIEW_WIDTH + 10
-                  : (item.end.diff(dateData.start, 'second') / dateData.duration) * VIEW_WIDTH
+                  : (item.end.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH
 
               const state = scrollPos < left ? 'before' : scrollPos > right ? 'after' : 'inside'
 
