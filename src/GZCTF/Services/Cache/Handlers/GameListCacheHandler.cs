@@ -19,7 +19,7 @@ public class GameListCacheHandler : ICacheRequestHandler
         }
         catch (Exception e)
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<RecentGamesCacheHandler>>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<GameListCacheHandler>>();
             logger.LogError(e, "{msg}",
                 Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
             return [];
@@ -27,6 +27,6 @@ public class GameListCacheHandler : ICacheRequestHandler
     }
 
     public static CacheRequest MakeCacheRequest() =>
-        new(Cache.CacheKey.RecentGames,
-            new() { SlidingExpiration = TimeSpan.FromHours(1) });
+        new(Cache.CacheKey.GameList,
+            new() { SlidingExpiration = TimeSpan.FromDays(2) });
 }

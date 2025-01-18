@@ -36,6 +36,7 @@ public class GameRepository(
         await SaveAsync(token);
 
         await cacheHelper.FlushGameListCache(token);
+        await cacheHelper.FlushRecentGamesCache(token);
 
         return game;
     }
@@ -87,8 +88,7 @@ public class GameRepository(
 
         var games = await cache.GetOrCreateAsync(logger, CacheKey.GameList, entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromDays(3);
-
+            entry.SlidingExpiration = TimeSpan.FromDays(2);
             return FetchGameList(100, 0, token);
         }, token);
 
@@ -99,7 +99,6 @@ public class GameRepository(
         => await cache.GetOrCreateAsync(logger, CacheKey.RecentGames, entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-
             return GenRecentGames(token);
         }, token);
 
@@ -205,8 +204,8 @@ public class GameRepository(
             await SaveAsync(token);
             await trans.CommitAsync(token);
 
-            await cacheHelper.FlushRecentGamesCache(token);
             await cacheHelper.FlushGameListCache(token);
+            await cacheHelper.FlushRecentGamesCache(token);
 
             await cache.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
 
