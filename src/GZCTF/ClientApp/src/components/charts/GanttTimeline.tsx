@@ -179,7 +179,8 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
         {/* content rows, position: absolute  */}
         <div className={classes.dataPos}>
           {items.map((item) => {
-            if (item.end.isBefore(dateData.start) || item.start.isAfter(dateData.end)) return
+            if (item.end.isBefore(dateData.start) || item.start.isAfter(dateData.end))
+              return <div key={item.id} className={classes.dataRow} />
 
             const left =
               item.start < dateData.start
