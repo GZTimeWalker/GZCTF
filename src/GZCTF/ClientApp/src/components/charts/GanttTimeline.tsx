@@ -178,42 +178,38 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
 
         {/* content rows, position: absolute  */}
         <div className={classes.dataPos}>
-          <Stack gap={0} align="center" className={classes.dataContainer}>
-            {items.map((item) => {
-              if (item.end.isBefore(dateData.start) || item.start.isAfter(dateData.end)) return
+          {items.map((item) => {
+            if (item.end.isBefore(dateData.start) || item.start.isAfter(dateData.end)) return
 
-              const left =
-                item.start < dateData.start
-                  ? -10
-                  : (item.start.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH
+            const left =
+              item.start < dateData.start
+                ? -10
+                : (item.start.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH
 
-              const right =
-                item.end > dateData.end
-                  ? VIEW_WIDTH + 10
-                  : (item.end.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH
+            const rightOverflow = item.end > dateData.end
+            const right = rightOverflow
+              ? VIEW_WIDTH
+              : (item.end.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH
 
-              const state = scrollPos < left ? 'before' : scrollPos > right ? 'after' : 'inside'
+            const state = scrollPos < left ? 'b' : scrollPos > right ? 'a' : 'i'
 
-              return (
-                <Box
-                  key={item.id}
-                  className={classes.dataRow}
-                  __vars={{
-                    '--left': `${left + STICKY_WIDTH}px`,
-                    '--right': `${right + STICKY_WIDTH}px`,
-                    '--width': `${right - left}px`,
-                  }}
-                >
-                  <Box className={cx(classes.dataItem, classes.dataRect)} />
-                  <Box className={classes.dataTextRow}>
-                    <div className={cx(classes.dataText, classes.dataRect)} data-state={state}>
-                      <Text>{item.textTitle}</Text>
-                    </div>
-                  </Box>
-                </Box>
-              )
-            })}
-          </Stack>
+            return (
+              <Box
+                key={item.id}
+                className={classes.dataRow}
+                __vars={{
+                  '--left': `${left + STICKY_WIDTH}px`,
+                  '--right': `${right + STICKY_WIDTH}px`,
+                  '--width': `${right - left}px`,
+                }}
+              >
+                <div className={cx(classes.dataItem, classes.dataRect)} data-rov={rightOverflow || undefined} />
+                <div className={cx(classes.dataText, classes.dataRect)} data-state={state}>
+                  <Text>{item.textTitle}</Text>
+                </div>
+              </Box>
+            )
+          })}
         </div>
 
         {/* headering */}
