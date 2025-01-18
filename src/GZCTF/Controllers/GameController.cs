@@ -61,7 +61,7 @@ public class GameController(
     [HttpGet("Recent")]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> RecentGames(
-        [FromQuery][Range(0, 100)] int limit,
+        [FromQuery][Range(0, 50)] int limit,
         CancellationToken token)
     {
         var games = await gameRepository.GetRecentGames(token);

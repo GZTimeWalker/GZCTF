@@ -4425,7 +4425,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * Limit of the number of games
          * @format int32
          * @min 0
-         * @max 100
+         * @max 50
          */
         limit?: number;
       },
@@ -4452,7 +4452,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * Limit of the number of games
          * @format int32
          * @min 0
-         * @max 100
+         * @max 50
          */
         limit?: number;
       },
@@ -4474,7 +4474,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * Limit of the number of games
          * @format int32
          * @min 0
-         * @max 100
+         * @max 50
          */
         limit?: number;
       },

@@ -88,7 +88,7 @@ public class GameRepository(
                         : DateTimeOffset.UtcNow - g.StartTimeUtc < g.EndTimeUtc - DateTimeOffset.UtcNow
                             ? DateTimeOffset.UtcNow - g.StartTimeUtc
                             : g.EndTimeUtc - DateTimeOffset.UtcNow)
-            .Take(100) // limit to 100 games
+            .Take(50) // limit to 50 games
             .Select(game => new BasicGameInfoModel
             {
                 Id = game.Id,
