@@ -38,6 +38,7 @@ public class AssetsController(
     /// <response code="404">File not found</response>
     /// <response code="400">Failed to retrieve file</response>
     [HttpGet("[controller]/{hash:length(64)}/{filename:minlength(1)}")]
+    [ResponseCache(Duration = 60 * 60 * 24 * 7)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -60,8 +61,6 @@ public class AssetsController(
             contentType = MediaTypeNames.Application.Octet;
 
         var blob = await storage.GetBlobAsync(path, token);
-
-        HttpContext.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
 
         var stream = await storage.OpenReadAsync(path, token);
         var etag = new EntityTagHeaderValue($"\"{hash[8..16]}\"");

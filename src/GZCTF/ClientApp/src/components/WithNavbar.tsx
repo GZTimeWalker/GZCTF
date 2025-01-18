@@ -10,6 +10,7 @@ import { WithWiderScreen } from '@Components/WithWiderScreen'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useUser } from '@Hooks/useUser'
+import classes from '@Styles/AppNavbar.module.css'
 
 interface WithNavBarProps extends React.PropsWithChildren {
   width?: string
@@ -65,18 +66,7 @@ export const WithNavBar: FC<WithNavBarProps> = ({
           <AppHeader openColorModal={openColorModal} />
           <AppNavbar openColorModal={openColorModal} />
           <AppShell.Main w="100%">
-            <Stack
-              w="100%"
-              mih={isMobile ? 'calc(100vh - 60pt)' : '100vh'}
-              pb={withFooter ? 'xl' : 0}
-              pos="relative"
-              align="center"
-              style={{
-                zIndex: 10,
-                boxShadow: theme.shadows.sm,
-                backgroundColor: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.light[2],
-              }}
-            >
+            <Stack data-mobile={isMobile || undefined} data-pb={withFooter || undefined} className={classes.main}>
               <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
               {withHeader && <IconHeader px={isMobile ? '2%' : '10%'} sticky={stickyHeader} />}
               <Box

@@ -83,6 +83,8 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
 
+    // "bool? is true" is necessary for if statement
+    // ReSharper disable once RedundantBoolCompare
     if (builder.Configuration.GetValue<bool>("EnableTLS") is true)
         options.ConfigureEndpointDefaults(defaultsOptions =>
             defaultsOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
@@ -310,6 +312,7 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
     options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
 });
+builder.Services.AddResponseCaching();
 
 #endregion Services and Repositories
 
@@ -333,6 +336,7 @@ await app.RunPrelaunchWork();
 
 app.UseRequestLocalization();
 
+app.UseResponseCaching();
 app.UseResponseCompression();
 
 app.UseCustomFavicon();

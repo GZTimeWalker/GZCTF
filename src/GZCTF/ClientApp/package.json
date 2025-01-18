@@ -52,7 +52,7 @@
     "react-google-recaptcha-v3": "^1.10.1",
     "react-i18next": "^15.4.0",
     "react-pdf": "^9.2.1",
-    "react-router": "^7.1.1",
+    "react-router": "^7.1.2",
     "swr": "^2.3.0"
   },
   "devDependencies": {
@@ -64,7 +64,7 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.1",
     "@types/chroma-js": "^3.1.0",
     "@types/katex": "^0.16.7",
-    "@types/node": "^22.10.6",
+    "@types/node": "^22.10.7",
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

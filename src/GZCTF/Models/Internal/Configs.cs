@@ -152,13 +152,13 @@ public class GlobalConfig
     public string? FaviconHash { get; set; }
 
     [JsonIgnore]
-    public string? LogoUrl => LogoHash.IsNullOrEmpty() ? null : $"/assets/{LogoHash}/logo";
+    public string? LogoUrl => string.IsNullOrEmpty(LogoHash) ? null : $"/assets/{LogoHash}/logo";
 
     /// <summary>
     /// Platform name, used for email and homepage rendering
     /// </summary>
     [JsonIgnore]
-    public string Platform => Title.IsNullOrEmpty() ? "GZ::CTF" : $"{Title}::CTF";
+    public string Platform => string.IsNullOrEmpty(Title) ? "GZ::CTF" : $"{Title}::CTF";
 }
 
 /// <summary>

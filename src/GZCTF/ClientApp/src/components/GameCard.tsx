@@ -16,7 +16,7 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
-import { getGameStatus } from '@Hooks/useGame'
+import { getGameStatus, toLimitTag } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
 
@@ -60,11 +60,7 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
               <Stack gap={2}>
                 <Group wrap="nowrap" gap="xs">
                   <Badge size="xs" color={color}>
-                    {limit === 0
-                      ? t('game.tag.multiplayer')
-                      : limit === 1
-                        ? t('game.tag.individual')
-                        : t('game.tag.limited', { count: limit })}
+                    {toLimitTag(t, limit)}
                   </Badge>
                   <Badge size="xs" color={color}>
                     {t('game.content.duration', {

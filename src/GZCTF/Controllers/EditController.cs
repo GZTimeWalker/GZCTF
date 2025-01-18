@@ -1,4 +1,5 @@
-﻿using System.Net.Mime;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Request.Edit;
@@ -129,7 +130,7 @@ public class EditController(
         if (game is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CreationFailed)]));
 
-        gameRepository.FlushGameInfoCache();
+        await cacheHelper.FlushRecentGamesCache(token);
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -146,7 +147,8 @@ public class EditController(
     /// <response code="200">Successfully retrieved game list</response>
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGames([FromQuery] int count, [FromQuery] int skip, CancellationToken token) =>
+    public async Task<IActionResult> GetGames([FromQuery][Range(0, 100)] int count, [FromQuery] int skip,
+        CancellationToken token) =>
         Ok((await gameRepository.GetGames(count, skip, token))
             .Select(GameInfoModel.FromGame)
             .ToResponse(await gameRepository.CountAsync(token)));
@@ -221,9 +223,7 @@ public class EditController(
                 StatusCodes.Status404NotFound));
 
         game.Update(model);
-        await gameRepository.SaveAsync(token);
-        gameRepository.FlushGameInfoCache();
-        await cacheHelper.FlushScoreboardCache(game.Id, token);
+        await gameRepository.UpdateGame(game, token);
 
         return Ok(GameInfoModel.FromGame(game));
     }
@@ -318,7 +318,7 @@ public class EditController(
 
         game.PosterHash = poster.Hash;
         await gameRepository.SaveAsync(token);
-        gameRepository.FlushGameInfoCache();
+        await cacheHelper.FlushRecentGamesCache(token);
 
         return Ok(poster.Url());
     }

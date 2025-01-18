@@ -21,7 +21,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
     {
         if (_disposed)
             return;
-            
+
         _disposed = true;
         _timer?.Dispose();
         GC.SuppressFinalize(this);

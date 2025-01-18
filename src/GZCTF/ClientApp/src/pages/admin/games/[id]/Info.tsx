@@ -138,7 +138,7 @@ const GameInfoEdit: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
       mutate()
-      api.game.mutateGameGamesAll()
+      api.game.mutateGameGames()
     } catch (e) {
       showErrorNotification(e, t)
     } finally {

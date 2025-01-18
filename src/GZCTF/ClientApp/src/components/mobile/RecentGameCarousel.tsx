@@ -2,7 +2,7 @@ import { Carousel, CarouselProps } from '@mantine/carousel'
 import { Box } from '@mantine/core'
 import Autoplay from 'embla-carousel-autoplay'
 import { FC, useRef } from 'react'
-import { RecentGameSlide } from '@Components/RecentGameSlide'
+import { RecentGameSlide } from '@Components/mobile/RecentGameSlide'
 import { BasicGameInfoModel } from '@Api'
 
 interface RecentGameCarouselProps extends CarouselProps {

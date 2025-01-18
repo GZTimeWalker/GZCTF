@@ -3,6 +3,7 @@ using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.Extensions.Caching.Distributed;
+
 // ReSharper disable UnusedMember.Global
 
 namespace GZCTF.Services.CronJob;
@@ -48,5 +49,13 @@ public static class DefaultCronJobs
                 TaskStatus.Success,
                 LogLevel.Debug);
         }
+    }
+
+    [CronJob("0 * * * *")]
+    public static async Task FlushRecentGames(AsyncServiceScope scope, ILogger<CronJobService> logger)
+    {
+        var helper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
+
+        await helper.FlushRecentGamesCache(CancellationToken.None);
     }
 }
