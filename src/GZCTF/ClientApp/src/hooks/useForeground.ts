@@ -1,6 +1,8 @@
 import { FastAverageColor } from 'fast-average-color'
 import { useState, useEffect } from 'react'
 
+type RenderingCtx = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D
+
 export const useForeground = (image?: string | null) => {
   const [color, setColor] = useState<string>('var(--mantine-color-text)')
 
@@ -23,7 +25,7 @@ export const useForeground = (image?: string | null) => {
           ? new OffscreenCanvas(imgWidth, imgHeight)
           : document.createElement('canvas')
 
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext('2d') as RenderingCtx | null
       if (!ctx) return
 
       ctx.drawImage(img, 0, img.height - imgHeight, imgWidth, imgHeight, 0, 0, imgWidth, imgHeight)
