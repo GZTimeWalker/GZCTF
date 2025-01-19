@@ -58,6 +58,7 @@ public class GameController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game information</response>
     [HttpGet("Recent")]
+    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> RecentGames(
         [FromQuery][Range(0, 50)] int limit,
