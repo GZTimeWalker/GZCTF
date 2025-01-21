@@ -37,11 +37,12 @@ public class RecordableNetworkStreamOptions
 /// </summary>
 public sealed class RecordableNetworkStream : NetworkStream
 {
+    static readonly PhysicalAddress DummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
+    static readonly IPEndPoint Host = new(0, 65535);
+
     readonly CaptureFileWriterDevice? _device;
     readonly IBlobStorage? _storage;
     readonly string _tempFile = string.Empty;
-    readonly PhysicalAddress _dummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
-    readonly IPEndPoint _host = new(0, 65535);
     readonly RecordableNetworkStreamOptions _options;
 
     bool _disposed;
@@ -66,7 +67,7 @@ public sealed class RecordableNetworkStream : NetworkStream
         _device.Open();
 
         if (metadata is not null)
-            WriteCapturedData(_host, _options.Source, metadata);
+            WriteCapturedData(Host, _options.Source, metadata);
     }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
@@ -90,11 +91,11 @@ public sealed class RecordableNetworkStream : NetworkStream
     }
 
     /// <summary>
-    /// 向文件写入一条流量记录
+    /// Write the captured data to the file
     /// </summary>
-    /// <param name="source">源地址</param>
-    /// <param name="dest">目的地址</param>
-    /// <param name="buffer">数据</param>
+    /// <param name="source">Source address</param>
+    /// <param name="dest">Destination address</param>
+    /// <param name="buffer">Data buffer</param>
     void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
     {
         var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
@@ -102,7 +103,7 @@ public sealed class RecordableNetworkStream : NetworkStream
             PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
         };
 
-        var packet = new EthernetPacket(_dummyPhysicalAddress, _dummyPhysicalAddress, EthernetType.IPv6)
+        var packet = new EthernetPacket(DummyPhysicalAddress, DummyPhysicalAddress, EthernetType.IPv6)
         {
             PayloadPacket = new IPv6Packet(source.Address, dest.Address) { PayloadPacket = udp }
         };
@@ -114,20 +115,21 @@ public sealed class RecordableNetworkStream : NetworkStream
 
     public override async ValueTask DisposeAsync()
     {
-        if (!_disposed)
+        if (_disposed)
+            return;
+
+        _device?.Close();
+        _device?.Dispose();
+
+        // move temp file to storage with specified path
+        if (_options.EnableCapture && !string.IsNullOrEmpty(_options.BlobPath) && _storage is not null)
         {
-            _device?.Close();
-            _device?.Dispose();
-
-            // move temp file to storage with specified path
-            if (_options.EnableCapture && !string.IsNullOrEmpty(_options.BlobPath) && _storage is not null)
-            {
-                await _storage.WriteFileAsync(_options.BlobPath, _tempFile);
-                File.Delete(_tempFile);
-            }
-
-            await base.DisposeAsync();
+            await _storage.WriteFileAsync(_options.BlobPath, _tempFile);
+            File.Delete(_tempFile);
         }
+
+        await base.DisposeAsync();
+        GC.SuppressFinalize(this);
 
         _disposed = true;
     }
