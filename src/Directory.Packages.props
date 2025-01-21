@@ -11,7 +11,7 @@
     <PackageVersion Include="FluentStorage" Version="5.6.0" />
     <PackageVersion Include="FluentStorage.AWS" Version="5.5.0" />
     <PackageVersion Include="FluentStorage.Azure.Blobs" Version="5.3.0" />
-    <PackageVersion Include="KubernetesClient" Version="16.0.1" />
+    <PackageVersion Include="KubernetesClient" Version="16.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.1" />

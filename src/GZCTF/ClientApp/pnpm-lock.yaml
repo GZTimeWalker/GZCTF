@@ -152,7 +152,7 @@ importers:
         version: 9.18.0
       '@nabla/vite-plugin-eslint':
         specifier: ^2.0.5
-        version: 2.0.5(eslint@9.18.0)(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
+        version: 2.0.5(eslint@9.18.0)(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^5.2.1
         version: 5.2.1(prettier@3.4.2)
@@ -182,7 +182,7 @@ importers:
         version: 8.21.0(eslint@9.18.0)(typescript@5.7.3)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.3.4(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
+        version: 4.3.4(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
       axios:
         specifier: ^1.7.9
         version: 1.7.9
@@ -241,26 +241,26 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       vite:
-        specifier: ^6.0.10
-        version: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+        specifier: ^6.0.11
+        version: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
       vite-plugin-banner:
         specifier: ^0.8.0
         version: 0.8.0
       vite-plugin-optimize-css-modules:
         specifier: ^1.2.0
-        version: 1.2.0(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
+        version: 1.2.0(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
       vite-plugin-pages:
         specifier: ^0.32.4
-        version: 0.32.4(react-router@7.1.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
+        version: 0.32.4(react-router@7.1.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
       vite-plugin-prismjs:
         specifier: ^0.0.11
         version: 0.0.11(prismjs@1.29.0)
       vite-plugin-webfont-dl:
         specifier: ^3.10.4
-        version: 3.10.4(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
+        version: 3.10.4(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
       vite-tsconfig-paths:
         specifier: ^5.1.4
-        version: 5.1.4(typescript@5.7.3)(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
+        version: 5.1.4(typescript@5.7.3)(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))
 
 packages:
 
@@ -2900,8 +2900,8 @@ packages:
       vite:
         optional: true
 
-  vite@6.0.10:
-    resolution: {integrity: sha512-MEszunEcMo6pFsfXN1GhCFQqnE25tWRH0MA4f0Q7uanACi4y1Us+ZGpTMnITwCTnYzB2b9cpmnelTlxgTBmaBA==}
+  vite@6.0.11:
+    resolution: {integrity: sha512-4VL9mQPKoHy4+FE0NnRE/kbY51TOfaknxAjt3fJbGJxhIpBZiqVzlZDEesWWsuREXHwNdAoOFZ9MkPEVXczHwg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -3513,13 +3513,13 @@ snapshots:
       - encoding
       - utf-8-validate
 
-  '@nabla/vite-plugin-eslint@2.0.5(eslint@9.18.0)(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))':
+  '@nabla/vite-plugin-eslint@2.0.5(eslint@9.18.0)(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))':
     dependencies:
       '@types/eslint': 9.6.1
       chalk: 4.1.2
       debug: 4.4.0
       eslint: 9.18.0
-      vite: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+      vite: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -3769,14 +3769,14 @@ snapshots:
       '@typescript-eslint/types': 8.21.0
       eslint-visitor-keys: 4.2.0
 
-  '@vitejs/plugin-react@4.3.4(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))':
+  '@vitejs/plugin-react@4.3.4(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.0)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.0)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+      vite: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5775,11 +5775,11 @@ snapshots:
 
   vite-plugin-banner@0.8.0: {}
 
-  vite-plugin-optimize-css-modules@1.2.0(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
+  vite-plugin-optimize-css-modules@1.2.0(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
     dependencies:
-      vite: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+      vite: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
 
-  vite-plugin-pages@0.32.4(react-router@7.1.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
+  vite-plugin-pages@0.32.4(react-router@7.1.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
     dependencies:
       '@types/debug': 4.1.12
       debug: 4.4.0
@@ -5789,7 +5789,7 @@ snapshots:
       json5: 2.2.3
       local-pkg: 0.5.1
       picocolors: 1.1.1
-      vite: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+      vite: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
       yaml: 2.7.0
     optionalDependencies:
       react-router: 7.1.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -5804,28 +5804,28 @@ snapshots:
       - prismjs
       - supports-color
 
-  vite-plugin-webfont-dl@3.10.4(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
+  vite-plugin-webfont-dl@3.10.4(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
     dependencies:
       axios: 1.7.9
       clean-css: 5.3.3
       flat-cache: 6.1.5
       picocolors: 1.1.1
-      vite: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+      vite: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
     transitivePeerDependencies:
       - debug
 
-  vite-tsconfig-paths@5.1.4(typescript@5.7.3)(vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
+  vite-tsconfig-paths@5.1.4(typescript@5.7.3)(vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)):
     dependencies:
       debug: 4.4.0
       globrex: 0.1.2
       tsconfck: 3.1.4(typescript@5.7.3)
     optionalDependencies:
-      vite: 6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
+      vite: 6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@6.0.10(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0):
+  vite@6.0.11(@types/node@22.10.7)(sass-embedded@1.81.0)(sugarss@4.0.1(postcss@8.5.1))(yaml@2.7.0):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.5.1
