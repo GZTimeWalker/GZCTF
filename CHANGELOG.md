@@ -3,6 +3,18 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.0..v1.2.1) - 2025-01-21
+
+### ⛰️ Features
+
+- **(cache)** add caching for most apis that will rarely change - ([2b1c8c](https://github.com/GZTimeWalker/GZCTF/commit/2b1c8c)) by **GZTime**
+- **(color)** consider only the average color of the bottom 20% of the image - ([0ae3ff](https://github.com/GZTimeWalker/GZCTF/commit/0ae3ff)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(health)** lowered the threshold for storage checks - ([971c5b](https://github.com/GZTimeWalker/GZCTF/commit/971c5b)) by **GZTime**
+
+---
 ## [1.2.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.1.4..v1.2.0) - 2025-01-18
 
 ### ⛰️ Features
