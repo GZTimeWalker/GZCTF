@@ -11,22 +11,15 @@ public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
         try
         {
             var time = DateTime.UtcNow;
-            var filename = $"{nameof(StorageHealthCheck)}-{Guid.CreateVersion7()}";
-            await blobStorage.WriteTextAsync(filename, "ok", cancellationToken: cancellationToken);
-            try
-            {
-                if (!await blobStorage.ExistsAsync(filename, cancellationToken: cancellationToken) ||
-                    await blobStorage.ReadTextAsync(filename, cancellationToken: cancellationToken) != "ok")
-                {
-                    return HealthCheckResult.Unhealthy();
-                }
-            }
-            finally
-            {
-                await blobStorage.DeleteAsync(filename, cancellationToken: cancellationToken);
-            }
+            const string filename = "GZCTF_HealthCheck";
+            string random = Guid.NewGuid().ToString();
+            await blobStorage.WriteTextAsync(filename, random, cancellationToken: cancellationToken);
 
-            return DateTime.UtcNow - time > TimeSpan.FromSeconds(1)
+            if (!await blobStorage.ExistsAsync(filename, cancellationToken: cancellationToken) ||
+                await blobStorage.ReadTextAsync(filename, cancellationToken: cancellationToken) != random)
+                return HealthCheckResult.Unhealthy();
+
+            return DateTime.UtcNow - time > TimeSpan.FromSeconds(10)
                 ? HealthCheckResult.Degraded()
                 : HealthCheckResult.Healthy();
         }
