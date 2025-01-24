@@ -1810,7 +1810,6 @@ export interface ClientCaptchaInfoModel {
 export enum CaptchaProvider {
   None = "None",
   HashPow = "HashPow",
-  GoogleRecaptcha = "GoogleRecaptcha",
   CloudflareTurnstile = "CloudflareTurnstile",
 }
 

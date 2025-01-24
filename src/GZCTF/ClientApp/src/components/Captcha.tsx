@@ -1,7 +1,6 @@
 import { Box, BoxProps, useMantineColorScheme } from '@mantine/core'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import { forwardRef, useImperativeHandle, useRef } from 'react'
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { HashPow } from '@Components/HashPow'
 import { useCaptchaConfig } from '@Hooks/useConfig'
 import { CaptchaProvider } from '@Api'
@@ -35,28 +34,6 @@ export const useCaptchaRef = () => {
   return { captchaRef, getToken, cleanUp } as const
 }
 
-const ReCaptchaBox = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
-  const { action, ...others } = props
-  const { executeRecaptcha } = useGoogleReCaptcha()
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      getToken: async () => {
-        if (!executeRecaptcha) {
-          return { valid: false }
-        }
-
-        const token = await executeRecaptcha(action)
-        return { valid: !!token, token }
-      },
-    }),
-    [executeRecaptcha, action]
-  )
-
-  return <Box {...others} />
-})
-
 export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) => {
   const { action, ...others } = props
 
@@ -88,10 +65,7 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
           return { valid: true }
         }
 
-        if (type === CaptchaProvider.GoogleRecaptcha) {
-          return backendRef.current?.getToken() ?? { valid: false }
-        }
-
+        // cloudflare turnstile
         const token = turnstileRef.current?.getResponse()
         return { valid: !!token, token }
       },
@@ -110,24 +84,6 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
 
   if (error || !info?.siteKey || type === CaptchaProvider.None) {
     return <Box {...others} />
-  }
-
-  if (type === CaptchaProvider.GoogleRecaptcha) {
-    return (
-      <GoogleReCaptchaProvider
-        reCaptchaKey={info.siteKey}
-        scriptProps={{
-          nonce,
-        }}
-        container={{
-          parameters: {
-            theme: colorScheme == 'auto' ? undefined : colorScheme,
-          },
-        }}
-      >
-        <ReCaptchaBox ref={backendRef} action={action} {...others} />
-      </GoogleReCaptchaProvider>
-    )
   }
 
   return (

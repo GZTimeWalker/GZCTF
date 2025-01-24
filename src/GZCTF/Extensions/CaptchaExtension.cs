@@ -45,31 +45,6 @@ public class CaptchaExtensionBase(IOptions<CaptchaConfig>? options) : ICaptchaEx
         Task.FromResult(true);
 }
 
-public sealed class GoogleRecaptcha(IOptions<CaptchaConfig>? options) : CaptchaExtensionBase(options)
-{
-    readonly HttpClient _httpClient = new();
-
-    public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context,
-        CancellationToken token = default)
-    {
-        if (Config is null || string.IsNullOrWhiteSpace(Config.SecretKey))
-            return true;
-
-        if (string.IsNullOrEmpty(model.Challenge) || context.Connection.RemoteIpAddress is null)
-            return false;
-
-        IPAddress? ip = context.Connection.RemoteIpAddress;
-        var api = Config.GoogleRecaptcha.VerifyApiAddress;
-
-        HttpResponseMessage result =
-            await _httpClient.GetAsync($"{api}?secret={Config.SecretKey}&response={model.Challenge}&remoteip={ip}",
-                token);
-        var res = await result.Content.ReadFromJsonAsync<RecaptchaResponseModel>(token);
-
-        return res is not null && res.Success && res.Score >= Config.GoogleRecaptcha.RecaptchaThreshold;
-    }
-}
-
 public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : CaptchaExtensionBase(options)
 {
     readonly HttpClient _httpClient = new();
@@ -155,7 +130,6 @@ public static class CaptchaServiceExtension
         return config.Provider switch
         {
             CaptchaProvider.HashPow => services.AddSingleton<ICaptchaExtension, HashPow>(),
-            CaptchaProvider.GoogleRecaptcha => services.AddSingleton<ICaptchaExtension, GoogleRecaptcha>(),
             CaptchaProvider.CloudflareTurnstile => services.AddSingleton<ICaptchaExtension, CloudflareTurnstile>(),
             _ => services.AddSingleton<ICaptchaExtension, CaptchaExtensionBase>()
         };

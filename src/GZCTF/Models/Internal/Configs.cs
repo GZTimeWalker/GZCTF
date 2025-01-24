@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using GZCTF.Services.Cache;
 using MemoryPack;
-using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Exporter;
 using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
@@ -310,7 +309,6 @@ public enum CaptchaProvider
 {
     None,
     HashPow,
-    GoogleRecaptcha,
     CloudflareTurnstile
 }
 
