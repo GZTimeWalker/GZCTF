@@ -60,7 +60,7 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 - **分组队伍**得分时间线、分组积分榜
 - 基于 **Docker 或 K8s** 的动态容器分发、管理、多种端口映射方式
 - 基于 SignalR 的**实时**比赛通知、比赛事件和 flag 提交监控及日志监控
-- SMTP 邮件验证功能、基于 Google ReCaptchav3 的恶意注册防护
+- SMTP 邮件验证功能、基于 Cloudflare Turnstile 的恶意注册防护
 - 用户封禁、用户三级权限管理
 - 可选的队伍审核、邀请码、注册邮箱限制
 - 平台内 Writeup 收集、查阅、批量下载

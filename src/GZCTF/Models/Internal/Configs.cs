@@ -329,16 +329,7 @@ public class CaptchaConfig
     public CaptchaProvider Provider { get; set; }
     public string? SecretKey { get; set; }
     public string? SiteKey { get; set; }
-
-    public GoogleRecaptchaConfig GoogleRecaptcha { get; set; } = new();
-
     public HashPowConfig HashPow { get; set; } = new();
-}
-
-public class GoogleRecaptchaConfig
-{
-    public string VerifyApiAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
-    public float RecaptchaThreshold { get; set; } = 0.5f;
 }
 
 #endregion

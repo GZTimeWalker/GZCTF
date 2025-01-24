@@ -60,7 +60,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 - **Teams** score timeline, scoreboard. Teams can be grouped
 - Dynamic container distribution, management, and multiple port mapping methods based on **Docker or K8s**
 - **Real-time** competition notification, competition events and flag submission monitoring, and log monitoring based on SignalR
-- SMTP email verification, malicious registration protection based on Google ReCaptchav3
+- SMTP email verification, malicious registration protection based on Cloudflare Turnstile
 - Ban specific user, three-level user permission management
 - Optional team review, invitation code, registration email restriction
 - Writeup collection, review, and batch download in the platform
