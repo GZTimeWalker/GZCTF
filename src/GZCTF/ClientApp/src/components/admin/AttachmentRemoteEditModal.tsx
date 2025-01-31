@@ -8,6 +8,7 @@ import { useParams } from 'react-router'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useEditChallenge } from '@Hooks/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
+import misc from '@Styles/Misc.module.css'
 
 export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { id, chalId } = useParams()
@@ -75,13 +76,14 @@ export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
           <br />
         </Text>
         <Textarea
-          ff="monospace"
-          placeholder={'flag{hello_world} http://example.com/1.zip\nflag{he11o_world} http://example.com/2.zip'}
+          required
+          autosize
           minRows={8}
           maxRows={12}
           value={text}
+          classNames={{ input: misc.ffmono }}
           onChange={(e) => setText(e.target.value)}
-          required
+          placeholder={'flag{hello_world} http://example.com/1.zip\nflag{he11o_world} http://example.com/2.zip'}
         />
         <Button fullWidth disabled={disabled} onClick={onUpload}>
           {t('admin.button.games.challenges.attachment.batch_add')}

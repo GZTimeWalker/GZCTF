@@ -19,6 +19,7 @@ public static class TelemetryExtension
             or { Console.Enable: true }))
             return;
 
+        services.AddTelemetryHealthCheckPublisher();
         var otl = services.AddOpenTelemetry();
 
         otl.ConfigureResource(resource =>
@@ -31,6 +32,9 @@ public static class TelemetryExtension
             metrics.AddHttpClientInstrumentation();
             metrics.AddRuntimeInstrumentation();
             metrics.AddProcessInstrumentation();
+            metrics.AddNpgsqlInstrumentation();
+            metrics.AddAWSInstrumentation();
+            metrics.AddMeter("Microsoft.Extensions.Diagnostics.HealthChecks");
 
             if (config is { Prometheus.Enable: true })
                 metrics.AddPrometheusExporter(options =>
@@ -49,6 +53,9 @@ public static class TelemetryExtension
             tracing.AddEntityFrameworkCoreInstrumentation();
             tracing.AddRedisInstrumentation();
             tracing.AddNpgsql();
+            tracing.AddAWSInstrumentation();
+            tracing.AddGrpcClientInstrumentation();
+
             if (config is { Console.Enable: true })
                 tracing.AddConsoleExporter();
         });

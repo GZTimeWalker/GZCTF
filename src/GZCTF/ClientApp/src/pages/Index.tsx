@@ -1,15 +1,17 @@
 import { Group, Stack, Title, useMantineTheme } from '@mantine/core'
+import { useViewportSize } from '@mantine/hooks'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MobilePostCard } from '@Components/MobilePostCard'
 import { PostCard } from '@Components/PostCard'
 import { RecentGame } from '@Components/RecentGame'
-import { RecentGameCarousel } from '@Components/RecentGameCarousel'
 import { WithNavBar } from '@Components/WithNavbar'
+import { MobilePostCard } from '@Components/mobile/PostCard'
+import { RecentGameCarousel } from '@Components/mobile/RecentGameCarousel'
 import { showErrorNotification } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import { useRecentGames } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api, { PostInfoModel } from '@Api'
 import classes from '@Styles/Index.module.css'
@@ -21,11 +23,7 @@ const Home: FC = () => {
     refreshInterval: 5 * 60 * 1000,
   })
 
-  const { data: allGames } = api.game.useGameGamesAll({
-    refreshInterval: 5 * 60 * 1000,
-  })
-
-  allGames?.sort((a, b) => new Date(a.end!).getTime() - new Date(b.end!).getTime())
+  const { recentGames } = useRecentGames()
 
   const onTogglePinned = async (post: PostInfoModel, setDisabled: (value: boolean) => void) => {
     setDisabled(true)
@@ -56,21 +54,18 @@ const Home: FC = () => {
     }
   }
 
-  const now = new Date()
-  const recentGames = [
-    ...(allGames?.filter((g) => now < new Date(g.end ?? '')) ?? []),
-    ...(allGames?.filter((g) => now >= new Date(g.end ?? '')).reverse() ?? []),
-  ].slice(0, 3)
-
   const theme = useMantineTheme()
   const isMobile = useIsMobile(900)
+  const { height } = useViewportSize()
+
+  const showGames = isMobile ? recentGames : recentGames?.slice(0, Math.ceil((height - 300) / 240))
 
   usePageTitle()
 
   return (
     <WithNavBar minWidth={0} withFooter withHeader stickyHeader>
       <Stack justify="flex-start">
-        {isMobile && recentGames && recentGames.length > 0 && <RecentGameCarousel games={recentGames} />}
+        {isMobile && showGames && showGames.length > 0 && <RecentGameCarousel games={showGames} />}
         <Stack align="center">
           <Group wrap="nowrap" gap={4} justify="space-between" align="flex-start" w="100%">
             <Stack className={classes.posts}>
@@ -86,7 +81,7 @@ const Home: FC = () => {
                       <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors[theme.primaryColor][4]} />
                       <Title order={3}>{t('common.content.home.recent_games')}</Title>
                     </Group>
-                    {recentGames?.map((game) => <RecentGame key={game.id} game={game} />)}
+                    {showGames?.map((game) => <RecentGame key={game.id} game={game} />)}
                   </Stack>
                 </div>
               </nav>

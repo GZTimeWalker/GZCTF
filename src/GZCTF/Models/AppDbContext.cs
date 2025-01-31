@@ -18,27 +18,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         TypeInfoResolver = new AppJsonSerializerContext()
     };
 
-    public DbSet<Post> Posts { get; set; } = default!;
-    public DbSet<Game> Games { get; set; } = default!;
-    public DbSet<Team> Teams { get; set; } = default!;
-    public DbSet<LogModel> Logs { get; set; } = default!;
-    public DbSet<Config> Configs { get; set; } = default!;
-    public DbSet<LocalFile> Files { get; set; } = default!;
-    public DbSet<CheatInfo> CheatInfo { get; set; } = default!;
-    public DbSet<Container> Containers { get; set; } = default!;
-    public DbSet<GameEvent> GameEvents { get; set; } = default!;
-    public DbSet<Submission> Submissions { get; set; } = default!;
-    public DbSet<Attachment> Attachments { get; set; } = default!;
-    public DbSet<GameNotice> GameNotices { get; set; } = default!;
-    public DbSet<FlagContext> FlagContexts { get; set; } = default!;
-    public DbSet<Participation> Participations { get; set; } = default!;
-    public DbSet<GameInstance> GameInstances { get; set; } = default!;
-    public DbSet<GameChallenge> GameChallenges { get; set; } = default!;
-    public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = default!;
-    public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = default!;
-    public DbSet<UserParticipation> UserParticipations { get; set; } = default!;
-    public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = default!;
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = default!;
+    public DbSet<Post> Posts { get; set; } = null!;
+    public DbSet<Game> Games { get; set; } = null!;
+    public DbSet<Team> Teams { get; set; } = null!;
+    public DbSet<LogModel> Logs { get; set; } = null!;
+    public DbSet<Config> Configs { get; set; } = null!;
+    public DbSet<LocalFile> Files { get; set; } = null!;
+    public DbSet<CheatInfo> CheatInfo { get; set; } = null!;
+    public DbSet<Container> Containers { get; set; } = null!;
+    public DbSet<GameEvent> GameEvents { get; set; } = null!;
+    public DbSet<Submission> Submissions { get; set; } = null!;
+    public DbSet<Attachment> Attachments { get; set; } = null!;
+    public DbSet<GameNotice> GameNotices { get; set; } = null!;
+    public DbSet<FlagContext> FlagContexts { get; set; } = null!;
+    public DbSet<Participation> Participations { get; set; } = null!;
+    public DbSet<GameInstance> GameInstances { get; set; } = null!;
+    public DbSet<GameChallenge> GameChallenges { get; set; } = null!;
+    public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = null!;
+    public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = null!;
+    public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
+    public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(

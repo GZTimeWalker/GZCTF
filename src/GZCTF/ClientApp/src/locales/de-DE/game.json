@@ -42,13 +42,13 @@
         "Nach erfolgreicher Registrierung für den Wettbewerb und Überprüfung wird das Team gesperrt und <strong>Sie können kein Mitglied mehr aus dem Team entfernen.</strong> Das Team wird nach dem Ende des Spiels oder bei Ablehnung der Teilnahme entsperrt.",
         "Die Begrenzung der Spielerzahl bezieht sich auf die Anzahl der Mitglieder, die sich entschieden haben, als Teil des bestimmten Teams teilzunehmen, <strong>unabhängig davon, mit welchem Team Sie spielen möchten.</strong>"
       ],
-      "invite_code": {
-        "description": "Dieses Spiel ist nur auf Einladung. Um teilzunehmen, geben Sie bitte einen Einladungscode ein.",
-        "label": "Bitte geben Sie den Einladungscode ein"
-      },
       "division": {
         "description": "Dieses Spiel hat mehrere verfügbare Divisionen. Bitte wählen Sie Ihre Division aus.",
         "label": "Division auswählen"
+      },
+      "invite_code": {
+        "description": "Dieses Spiel ist nur auf Einladung. Um teilzunehmen, geben Sie bitte einen Einladungscode ein.",
+        "label": "Bitte geben Sie den Einladungscode ein"
       },
       "team": {
         "description": "Bitte wählen Sie ein Team, mit dem Sie an diesem Spiel teilnehmen möchten. Dies kann nach der Genehmigung des Teilnahmegesuchs nicht mehr geändert werden.",
@@ -168,9 +168,10 @@
     },
     "joined": "Anmeldung erfolgreich",
     "left": "Erfolgreich storniert",
-    "no_invite_code": "Einladungscode darf nicht leer sein",
     "no_division": "Bitte wählen Sie die Abteilung",
+    "no_invite_code": "Einladungscode darf nicht leer sein",
     "no_team": "Bitte wählen Sie das Team zur Teilnahme",
+    "not_joined": "Du bist dem Spiel noch nicht beigetreten",
     "not_started": "Spiel noch nicht gestartet",
     "select_chal_and_part": "Bitte wählen Sie zuerst Herausforderungen und Teams aus",
     "suspended": "Sie wurden gesperrt",

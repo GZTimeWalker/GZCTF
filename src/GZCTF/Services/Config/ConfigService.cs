@@ -64,7 +64,7 @@ public class ConfigService(
         }
 
         await context.SaveChangesAsync(token);
-        _configuration?.Reload();
+        ReloadConfig();
 
         // flush cache
         foreach (var key in cacheKeys)

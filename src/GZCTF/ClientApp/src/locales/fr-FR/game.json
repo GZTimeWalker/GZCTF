@@ -42,13 +42,13 @@
         "Après vous être inscrit avec succès à la compétition et avoir réussi la révision, l'équipe sera verrouillée et <strong>vous ne pourrez plus retirer aucun membre de l'équipe.</strong> L'équipe sera déverrouillée après la fin du match ou lorsque la demande de participation est rejetée.",
         "La limite sur le nombre de joueurs fait référence au nombre de membres qui ont décidé de participer en tant que partie de l'équipe spécifique, <strong>peu importe l'équipe avec laquelle vous choisissez de jouer.</strong>"
       ],
-      "invite_code": {
-        "description": "Ce jeu est uniquement sur invitation. Pour y participer, veuillez entrer un code d'invitation.",
-        "label": "Veuillez entrer le code d'invitation"
-      },
       "division": {
         "description": "Ce jeu a plusieurs divisions disponibles. Veuillez sélectionner votre division.",
         "label": "Sélectionner la division"
+      },
+      "invite_code": {
+        "description": "Ce jeu est uniquement sur invitation. Pour y participer, veuillez entrer un code d'invitation.",
+        "label": "Veuillez entrer le code d'invitation"
       },
       "team": {
         "description": "Veuillez sélectionner une équipe avec laquelle vous souhaitez participer à ce jeu. Cela ne peut être changé après l'approbation de la demande de participation.",
@@ -168,9 +168,10 @@
     },
     "joined": "Inscription réussie",
     "left": "Annulation réussie",
-    "no_invite_code": "Le code d'invitation ne peut pas être vide",
     "no_division": "Veuillez sélectionner la division",
+    "no_invite_code": "Le code d'invitation ne peut pas être vide",
     "no_team": "Veuillez sélectionner l'équipe pour participer",
+    "not_joined": "Vous n'avez pas encore rejoint le jeu",
     "not_started": "Le jeu n'a pas encore commencé",
     "select_chal_and_part": "Veuillez d'abord sélectionner les défis et les équipes",
     "suspended": "Vous avez été banni",

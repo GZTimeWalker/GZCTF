@@ -40,10 +40,10 @@ public class ProxyController(
         };
 
     static readonly DistributedCacheEntryOptions StoreOption =
-        new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(10) };
+        new() { SlidingExpiration = TimeSpan.FromHours(10) };
 
     static readonly DistributedCacheEntryOptions ValidOption =
-        new() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
+        new() { SlidingExpiration = TimeSpan.FromMinutes(10) };
 
     readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
     readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;

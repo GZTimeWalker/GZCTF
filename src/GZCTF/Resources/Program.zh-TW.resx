@@ -395,6 +395,12 @@
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>定時任務已停止</value>
   </data>
+  <data name="CronJob_ExecuteFailed" xml:space="preserve">
+    <value>執行定時任務 {0} 失敗：{1}</value>
+  </data>
+  <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
+    <value>有其他實例持有定時任務執行鎖，本實例運行看門狗程序。</value>
+  </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>資料庫連接失敗({0})，請檢查資料庫連接字符串配置</value>
   </data>

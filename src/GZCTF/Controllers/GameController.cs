@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using System.Security.Claims;
@@ -48,17 +49,44 @@ public class GameController(
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
-    /// Get the latest games
+    /// Get the recent games
     /// </summary>
     /// <remarks>
-    /// Retrieves the latest ten games
+    /// Retrieves recent game in three weeks
     /// </remarks>
+    /// <param name="limit">Limit of the number of games</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game information</response>
-    [HttpGet]
+    [HttpGet("Recent")]
+    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Games(CancellationToken token) =>
-        Ok(await gameRepository.GetBasicGameInfo(10, 0, token));
+    public async Task<IActionResult> RecentGames(
+        [FromQuery][Range(0, 50)] int limit,
+        CancellationToken token)
+    {
+        var games = await gameRepository.GetRecentGames(token);
+
+        return Ok(limit > 0 ? games.Take(limit).ToArray() : games);
+    }
+
+    /// <summary>
+    /// Get games
+    /// </summary>
+    /// <remarks>
+    /// Retrieves game information in specified range
+    /// </remarks>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved game notices</response>
+    /// <response code="400">Game not found</response>
+    [HttpGet]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Query))]
+    [ResponseCache(VaryByQueryKeys = ["count", "skip"], Duration = 300)]
+    [ProducesResponseType(typeof(ArrayResponse<BasicGameInfoModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Games([FromQuery][Range(0, 50)] int count = 10,
+        [FromQuery] int skip = 0, CancellationToken token = default)
+        => Ok(await gameRepository.GetGameInfo(count, skip, token));
 
     /// <summary>
     /// Get detailed game information
@@ -73,7 +101,7 @@ public class GameController(
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(DetailedGameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Games(int id, CancellationToken token)
+    public async Task<IActionResult> Game(int id, CancellationToken token)
     {
         ContextInfo context = await GetContextInfo(id, token: token);
 
@@ -269,8 +297,8 @@ public class GameController(
     [HttpGet("{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery] int count = 100, [FromQuery] int skip = 0,
-        CancellationToken token = default)
+    public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery][Range(0, 100)] int count = 100,
+        [FromQuery] int skip = 0, CancellationToken token = default)
     {
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -302,7 +330,7 @@ public class GameController(
     [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Events([FromRoute] int id, [FromQuery] bool hideContainer = false,
-        [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
         Game? game = await gameRepository.GetGameById(id, token);
 
@@ -334,7 +362,7 @@ public class GameController(
     [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] AnswerResult? type = null,
-        [FromQuery] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
         Game? game = await gameRepository.GetGameById(id, token);
 

@@ -1,38 +1,17 @@
-﻿using System.Threading.Channels;
-using GZCTF.Repositories;
+using System.Threading.Channels;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Cache.Handlers;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace GZCTF.Services;
+// ReSharper disable UnusedMember.Global
 
-public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobService> logger) : IHostedService, IDisposable
+namespace GZCTF.Services.CronJob;
+
+public static class DefaultCronJobs
 {
-    Timer? _timer;
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
-        GC.SuppressFinalize(this);
-    }
-
-    public Task StartAsync(CancellationToken token)
-    {
-        _timer = new Timer(Execute, null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)], TaskStatus.Success,
-            LogLevel.Debug);
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken token)
-    {
-        _timer?.Change(Timeout.Infinite, 0);
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit,
-            LogLevel.Debug);
-        return Task.CompletedTask;
-    }
-
-    async Task ContainerChecker(AsyncServiceScope scope)
+    [CronJob("*/3 * * * *")]
+    public static async Task ContainerChecker(AsyncServiceScope scope, ILogger<CronJobService> logger)
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
 
@@ -46,7 +25,8 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         }
     }
 
-    async Task BootstrapCache(AsyncServiceScope scope)
+    [CronJob("*/10 * * * *")]
+    public static async Task BootstrapCache(AsyncServiceScope scope, ILogger<CronJobService> logger)
     {
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var upcoming = await gameRepo.GetUpcomingGames();
@@ -71,11 +51,11 @@ public class CronJobService(IServiceScopeFactory provider, ILogger<CronJobServic
         }
     }
 
-    async void Execute(object? state)
+    [CronJob("0 * * * *")]
+    public static async Task FlushRecentGames(AsyncServiceScope scope, ILogger<CronJobService> logger)
     {
-        await using AsyncServiceScope scope = provider.CreateAsyncScope();
+        var helper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
 
-        await ContainerChecker(scope);
-        await BootstrapCache(scope);
+        await helper.FlushRecentGamesCache(CancellationToken.None);
     }
 }

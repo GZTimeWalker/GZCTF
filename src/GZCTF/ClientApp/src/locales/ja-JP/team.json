@@ -8,7 +8,7 @@
     "save": "変更を保存"
   },
   "content": {
-    "create": "チームを作成する。他の人を招待することができます。1つのチームしか所有できません。",
+    "create": "チームを作成する。他の人を招待することができます。",
     "disband": {
       "confirm": {
         "message": "チーム \"{{team}}\" を解散しますか？",
@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "作成できるチーム数の上限を達しました。<br/>既存のチームを解散して新しいチームを作成することができます。",
+      "title": "作成できるチーム数の上限を達しました"
     },
     "role": {
       "captain": "リーダー",

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using System.Reflection;
 using FluentStorage.Blobs;
@@ -196,12 +197,12 @@ public class AdminController(
     /// <response code="403">Forbidden</response>
     [HttpGet("Users")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Users([FromQuery] int count = 100, [FromQuery] int skip = 0,
+    public async Task<IActionResult> Users([FromQuery][Range(0, 500)] int count = 100, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
-        Ok((await (
-            from user in userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
-            select UserInfoModel.FromUserInfo(user)
-        ).ToArrayAsync(token)).ToResponse(await userManager.Users.CountAsync(token)));
+        Ok((await userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
+                .Select(u => UserInfoModel.FromUserInfo(u))
+                .ToArrayAsync(token))
+            .ToResponse(await userManager.Users.CountAsync(token)));
 
     /// <summary>
     /// Add users in batch
@@ -325,10 +326,9 @@ public class AdminController(
     /// <response code="403">Forbidden</response>
     [HttpGet("Teams")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Teams([FromQuery] int count = 100, [FromQuery] int skip = 0,
+    public async Task<IActionResult> Teams([FromQuery][Range(0, 500)] int count = 100, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
-        Ok((await teamRepository.GetTeams(count, skip, token))
-            .Select(team => TeamInfoModel.FromTeam(team))
+        Ok((await teamRepository.GetTeams(count, skip, token)).Select(team => TeamInfoModel.FromTeam(team))
             .ToResponse(await teamRepository.CountAsync(token)));
 
     /// <summary>
@@ -540,7 +540,8 @@ public class AdminController(
     /// <response code="403">Forbidden</response>
     [HttpGet("Logs")]
     [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Logs([FromQuery] string? level = "All", [FromQuery] int count = 50,
+    public async Task<IActionResult> Logs([FromQuery] string? level = "All",
+        [FromQuery][Range(0, 1000)] int count = 50,
         [FromQuery] int skip = 0, CancellationToken token = default) =>
         Ok(await logRepository.GetLogs(skip, count, level, token));
 
@@ -678,7 +679,7 @@ public class AdminController(
     /// <response code="403">Forbidden</response>
     [HttpGet("Files")]
     [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Files([FromQuery] int count = 50, [FromQuery] int skip = 0,
+    public async Task<IActionResult> Files([FromQuery][Range(0, 500)] int count = 50, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
         Ok(new ArrayResponse<LocalFile>(await blobService.GetBlobs(count, skip, token)));
 

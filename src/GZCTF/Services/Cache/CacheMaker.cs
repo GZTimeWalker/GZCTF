@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using GZCTF.Repositories;
+using GZCTF.Services.Cache.Handlers;
 using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -41,6 +41,8 @@ public class CacheMaker(
         #region Add Handlers
 
         AddCacheRequestHandler<ScoreboardCacheHandler>(CacheKey.ScoreBoardBase);
+        AddCacheRequestHandler<RecentGamesCacheHandler>(CacheKey.RecentGames);
+        AddCacheRequestHandler<GameListCacheHandler>(CacheKey.GameList);
 
         #endregion
 
@@ -120,7 +122,7 @@ public class CacheMaker(
                 try
                 {
                     await cache.SetAsync(updateLock, [],
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1) },
+                        new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(1) },
                         token);
 
                     var bytes = await handler.Handler(scope, item, token);

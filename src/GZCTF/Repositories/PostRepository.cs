@@ -33,7 +33,7 @@ public class PostRepository(
     public Task<Post[]> GetPosts(CancellationToken token = default) =>
         cache.GetOrCreateAsync(logger, CacheKey.Posts, entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12);
+            entry.SlidingExpiration = TimeSpan.FromHours(12);
             return Context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.UpdateTimeUtc).ToArrayAsync(token);
         }, token);

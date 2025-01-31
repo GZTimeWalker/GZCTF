@@ -31,22 +31,23 @@ export const LanguageMap = {
   'es-ES': '🇪🇸 Español (MT)',
 }
 
-interface ShortLocalFormat {
+interface ExtraLocalFormat {
   SL: string
   SLL: string
+  SMY: string
 }
 
-const shortLocalFormat = new Map<string, ShortLocalFormat>([
-  ['en', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
-  ['zh', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
-  ['ja', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
-  ['ko', { SL: 'MM/DD', SLL: 'YY/MM/DD' }],
-  ['ru', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
-  ['de', { SL: 'DD.MM', SLL: 'DD.MM.YY' }],
-  ['id', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
-  ['fr', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
-  ['es', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
-  ['vi', { SL: 'DD/MM', SLL: 'DD/MM/YY' }],
+const shortLocalFormat = new Map<string, ExtraLocalFormat>([
+  ['en', { SL: 'MM/DD', SLL: 'YY/MM/DD', SMY: 'MMMM, YYYY' }],
+  ['zh', { SL: 'MM/DD', SLL: 'YY/MM/DD', SMY: 'YYYY年MMM' }],
+  ['ja', { SL: 'MM/DD', SLL: 'YY/MM/DD', SMY: 'YYYY年MMM' }],
+  ['ko', { SL: 'MM/DD', SLL: 'YY/MM/DD', SMY: 'YYYY년 MMMM' }],
+  ['ru', { SL: 'DD.MM', SLL: 'DD.MM.YY', SMY: 'MMMM YYYY г.' }],
+  ['de', { SL: 'DD.MM', SLL: 'DD.MM.YY', SMY: 'MMMM YYYY' }],
+  ['id', { SL: 'DD/MM', SLL: 'DD/MM/YY', SMY: 'MMMM YYYY' }],
+  ['fr', { SL: 'DD/MM', SLL: 'DD/MM/YY', SMY: 'MMMM YYYY' }],
+  ['es', { SL: 'DD/MM', SLL: 'DD/MM/YY', SMY: 'MMMM [de] YYYY' }],
+  ['vi', { SL: 'DD/MM', SLL: 'DD/MM/YY', SMY: 'MMMM [năm] YYYY' }],
 ])
 
 dayjs.extend((_o, c, _d) => {
@@ -57,9 +58,11 @@ dayjs.extend((_o, c, _d) => {
     const locale = this.locale().split('-')[0]
     const shortLocal = shortLocalFormat.get(locale)
     if (shortLocal) {
-      fmt = fmt.replace(/SL{1,2}/g, (a) => {
-        return shortLocal[a as keyof ShortLocalFormat]
-      })
+      fmt = fmt
+        .replace(/SL{1,2}/g, (a) => {
+          return shortLocal[a as keyof ExtraLocalFormat]
+        })
+        .replace(/SMY/g, shortLocal.SMY)
     }
     return oldFormat.call(this, fmt)
   }

@@ -40,6 +40,7 @@ public class InfoController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts/Latest")]
+    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLatestPosts(CancellationToken token) =>
         Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
@@ -53,6 +54,8 @@ public class InfoController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts")]
+    [ResponseCache(Duration = 300)]
+    [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Query))]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token) =>
         Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
@@ -68,6 +71,7 @@ public class InfoController(
     /// <response code="200">Successfully retrieved post details</response>
     /// <response code="404">Post not found</response>
     [HttpGet("Posts/{id}")]
+    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost(string id, CancellationToken token)
@@ -89,13 +93,14 @@ public class InfoController(
     /// </remarks>
     /// <response code="200">Successfully retrieved configuration</response>
     [HttpGet("Config")]
+    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
     {
         ClientConfig data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
             entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return Task.FromResult(ClientConfig.FromConfigs(globalConfig.Value, containerPolicy.Value,
                     containerProvider.Value));
             }, token);
@@ -111,13 +116,14 @@ public class InfoController(
     /// </remarks>
     /// <response code="200">Successfully retrieved Captcha configuration</response>
     [HttpGet("Captcha")]
+    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
     {
         ClientCaptchaInfoModel data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
             entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return Task.FromResult(accountPolicy.Value.UseCaptcha
                     ? captcha.ClientInfo()
                     : new ClientCaptchaInfoModel());
@@ -157,6 +163,6 @@ public class InfoController(
 
     static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
     {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        SlidingExpiration = TimeSpan.FromMinutes(5)
     };
 }

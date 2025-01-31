@@ -8,7 +8,7 @@
     "save": "Mettre à jour les infos"
   },
   "content": {
-    "create": "Vous pouvez créer une équipe et inviter d'autres à se joindre. Chaque joueur peut créer une seule équipe.",
+    "create": "Vous pouvez créer une équipe et inviter d'autres à se joindre.",
     "disband": {
       "confirm": {
         "message": "Êtes-vous sûr de vouloir dissoudre l'équipe \"{{team}}\" ?",
@@ -29,7 +29,7 @@
       }
     },
     "disallow_create": {
-      "content": "Vous avez dépassé la limite du nombre d'équipes que vous êtes autorisé à avoir.<br/>Vous pouvez dissoudre l'équipe existante et en créer une nouvelle.",
+      "content": "Vous avez atteint le nombre maximum d'équipes que vous pouvez avoir.<br/>Veuillez dissoudre une équipe existante pour en créer une nouvelle.",
       "title": "Vous avez dépassé la limite"
     },
     "role": {

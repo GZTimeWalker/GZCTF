@@ -87,7 +87,7 @@ public static class CacheExtension
 
     static Task SetLockAsync(IDistributedCache cache, string lockKey, CancellationToken token = default)
         => cache.SetAsync(lockKey, [],
-            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1) }, token);
+            new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(1) }, token);
 
     static Task ReleaseLockAsync(IDistributedCache cache, string lockKey, CancellationToken token = default) =>
         cache.RemoveAsync(lockKey, token);

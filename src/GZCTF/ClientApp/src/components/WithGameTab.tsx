@@ -128,24 +128,41 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
           message: t('game.notification.not_started'),
           icon: <Icon path={mdiExclamationThick} size={1} />,
         })
-      } else if (
-        !location.pathname.includes('scoreboard') &&
-        status === ParticipationStatus.Suspended &&
-        now < dayjs(game.end)
-      ) {
-        navigate(`/games/${numId}`)
-        showNotification({
-          id: 'no-access',
-          color: 'yellow',
-          message: t('game.notification.suspended'),
-          icon: <Icon path={mdiExclamationThick} size={1} />,
-        })
-      } else if (
-        !location.pathname.includes('scoreboard') &&
-        !game.practiceMode &&
-        now > dayjs(game.end) &&
-        !RequireRole(Role.Monitor, role)
-      ) {
+        return
+      }
+
+      if (location.pathname.includes('scoreboard')) {
+        // allow access to scoreboard
+        return
+      }
+
+      if (location.pathname.includes('monitor') && RequireRole(Role.Monitor, role)) {
+        // allow access to monitor
+        return
+      }
+
+      if (now < dayjs(game.end)) {
+        if (status === ParticipationStatus.Suspended) {
+          navigate(`/games/${numId}`)
+          showNotification({
+            id: 'no-access',
+            color: 'yellow',
+            message: t('game.notification.suspended'),
+            icon: <Icon path={mdiExclamationThick} size={1} />,
+          })
+        } else if (status !== ParticipationStatus.Accepted) {
+          navigate(`/games/${numId}`)
+          showNotification({
+            id: 'no-access',
+            color: 'yellow',
+            message: t('game.notification.not_joined'),
+            icon: <Icon path={mdiExclamationThick} size={1} />,
+          })
+        }
+      } else if (!game.practiceMode && !RequireRole(Role.Monitor, role)) {
+        // not allow access to game after it ends if:
+        // 1. not monitor
+        // 2. not practice mode
         navigate(`/games/${numId}`)
         showNotification({
           id: 'no-access',

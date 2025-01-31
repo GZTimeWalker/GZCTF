@@ -63,9 +63,18 @@ public class GameChallengeRepository(
 
     public async Task RemoveChallenge(GameChallenge challenge, bool save = true, CancellationToken token = default)
     {
-        await DeleteAllAttachment(challenge, true, token);
+        await blobRepository.DeleteAttachment(challenge.Attachment, token);
 
+        await LoadFlags(challenge, token);
+
+        // only dynamic attachment challenge's flag contexts have attachment
+        if (challenge.Type == ChallengeType.DynamicAttachment)
+            foreach (FlagContext flag in challenge.Flags)
+                await blobRepository.DeleteAttachment(flag.Attachment, token);
+
+        Context.RemoveRange(challenge.Flags);
         Context.Remove(challenge);
+
         if (save)
             await SaveAsync(token);
     }
@@ -134,7 +143,7 @@ public class GameChallengeRepository(
     {
         var attachment = model.ToAttachment(await blobRepository.GetBlobByHash(model.FileHash, token));
 
-        await DeleteAllAttachment(challenge, false, token);
+        await blobRepository.DeleteAttachment(challenge.Attachment, token);
 
         if (attachment is not null)
             await Context.AddAsync(attachment, token);
@@ -142,20 +151,5 @@ public class GameChallengeRepository(
         challenge.Attachment = attachment;
 
         await SaveAsync(token);
-    }
-
-    internal async Task DeleteAllAttachment(GameChallenge challenge, bool purge = false,
-        CancellationToken token = default)
-    {
-        await blobRepository.DeleteAttachment(challenge.Attachment, token);
-        await LoadFlags(challenge, token);
-
-        if (purge && challenge.Type == ChallengeType.DynamicAttachment)
-        {
-            foreach (FlagContext flag in challenge.Flags)
-                await blobRepository.DeleteAttachment(flag.Attachment, token);
-        }
-
-        Context.RemoveRange(challenge.Flags);
     }
 }

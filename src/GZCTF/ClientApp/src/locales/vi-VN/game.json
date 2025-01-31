@@ -42,13 +42,13 @@
         "Sau khi đăng ký thành công và qua xét duyệt, đội sẽ bị khóa và <strong>bạn sẽ không thể xóa bất kỳ thành viên nào khỏi đội.</strong> Đội sẽ được mở khóa sau khi trận đấu kết thúc hoặc khi yêu cầu tham gia bị từ chối.",
         "Giới hạn về số lượng người chơi ám chỉ số thành viên đã quyết định tham gia như một phần của đội cụ thể, <strong>dù bạn chọn đội nào để chơi.</strong>"
       ],
-      "invite_code": {
-        "description": "Trò chơi này chỉ dành cho người được mời. Để tham gia, vui lòng nhập mã mời.",
-        "label": "Vui lòng nhập mã mời"
-      },
       "division": {
         "description": "Trò chơi này có nhiều bảng. Vui lòng chọn bảng của bạn.",
         "label": "Chọn bảng"
+      },
+      "invite_code": {
+        "description": "Trò chơi này chỉ dành cho người được mời. Để tham gia, vui lòng nhập mã mời.",
+        "label": "Vui lòng nhập mã mời"
       },
       "team": {
         "description": "Vui lòng chọn đội bạn muốn tham gia trong trò chơi này. Điều này không thể thay đổi sau khi yêu cầu tham gia được phê duyệt.",
@@ -80,7 +80,7 @@
       "comment": "Chờ chút nha…",
       "title": "Đang tải challenges"
     },
-    "scoreboard_note": "Lưu ý: các đội với số điểm bằng nhau sẽ được xếp hạng dựa theo thời gian submit.",
+    "scoreboard_note": "Lưu ý: Các đội cùng điểm sẽ sắp xếp theo thời gian nộp.",
     "scoreboard_tip": "Mẹo: Xem danh sách challenges bằng phím mũi tên trái và phải!",
     "start_at": "Bắt đầu lúc",
     "start_time": "Thời gian bắt đầu",
@@ -168,9 +168,10 @@
     },
     "joined": "Đăng ký thành công",
     "left": "Hủy thành công",
-    "no_invite_code": "Mã mời không được để trống",
     "no_division": "Hãy chọn bảng",
+    "no_invite_code": "Mã mời không được để trống",
     "no_team": "Vui lòng chọn đội để tham gia",
+    "not_joined": "Bạn chưa tham gia trò chơi",
     "not_started": "Trò chơi chưa bắt đầu",
     "select_chal_and_part": "Hãy lựa chọn challenge và đội trước",
     "suspended": "Bạn đã bị cấm",

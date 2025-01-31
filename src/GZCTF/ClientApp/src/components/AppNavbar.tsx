@@ -26,7 +26,7 @@ import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Hooks/useConfig'
 import { useLogOut, useUser } from '@Hooks/useUser'
 import { Role } from '@Api'
-import classes from '@Styles/AppNavBar.module.css'
+import classes from '@Styles/AppNavbar.module.css'
 import misc from '@Styles/Misc.module.css'
 
 interface NavbarItem {

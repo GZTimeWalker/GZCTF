@@ -9,7 +9,7 @@ The following files may not be modified, redistributed, or used in derivative
 works without the express written permission of the original author or maintainers:
 
 - src/GZCTF/Services/Container/Manager/*.cs
-- src/GZCTF/ClientApp/src/utils/useConfig.ts
+- src/GZCTF/ClientApp/src/hooks/useConfig.ts
 
 ### Restricted String
 

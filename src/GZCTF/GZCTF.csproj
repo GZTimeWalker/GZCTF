@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-        <AssemblyVersion>1.1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.2.1.0</AssemblyVersion>
         <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -18,7 +18,7 @@
         <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
         <Configurations>Debug;Release</Configurations>
-        <ReleaseVersion>1.1.0</ReleaseVersion>
+        <ReleaseVersion>1.2.1</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <EFOptimizeContext>true</EFOptimizeContext>
@@ -28,8 +28,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aigamo.ResXGenerator"/>
+        <PackageReference Include="Aigamo.ResXGenerator" />
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+        <PackageReference Include="Cronos" />
         <PackageReference Include="Docker.DotNet" />
         <PackageReference Include="Docker.DotNet.BasicAuth" />
         <PackageReference Include="FluentStorage" />
@@ -40,19 +41,22 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" />
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="Npgsql.OpenTelemetry" />
         <PackageReference Include="NPOI" />
         <PackageReference Include="NSwag.AspNetCore" />
-        <PackageReference Include="NSwag.MSBuild"/>
+        <PackageReference Include="NSwag.MSBuild" />
         <PackageReference Include="OpenTelemetry.Exporter.Console" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
         <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AWS" />
         <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Process" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />

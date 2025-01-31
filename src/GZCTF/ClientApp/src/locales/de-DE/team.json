@@ -8,7 +8,7 @@
     "save": "Informationen aktualisieren"
   },
   "content": {
-    "create": "Sie können ein Team erstellen und andere einladen, beizutreten. Jeder Spieler kann nur ein Team erstellen.",
+    "create": "Sie können ein Team erstellen und andere einladen, beizutreten.",
     "disband": {
       "confirm": {
         "message": "Sind Sie sicher, dass Sie das Team \"{{team}}\" auflösen möchten?",
@@ -29,7 +29,7 @@
       }
     },
     "disallow_create": {
-      "content": "Sie haben die Anzahl der Teams, die Sie haben dürfen, überschritten.<br/>Sie können das bestehende Team auflösen und ein neues erstellen.",
+      "content": "Sie haben die maximale Anzahl an Teams erreicht, die Sie haben können.<br/>Bitte lösen Sie ein bestehendes Team auf, um ein neues zu erstellen.",
       "title": "Sie haben das Limit überschritten"
     },
     "role": {

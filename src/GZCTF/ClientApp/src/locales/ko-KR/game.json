@@ -42,13 +42,13 @@
         "대회 가입 검토를 거친 이후 팀은 잠금 상태가 되며 <strong>더 이상 팀원을 내보낼 수 없습니다.</strong> 대회가 끝난 이후나 참가 신청이 거절 되었을 때 잠금 해제 처리됩니다.",
         "플레이어 수 제한은 <strong>어떤 팀과 플레이할지 여부와 관계 없이</strong> 특정 팀의 일원으로 참여하기로 결정한 멤버의 수를 의미합니다."
       ],
-      "invite_code": {
-        "description": "이 게임은 초대 전용입니다. 참가하기 위해서 초대 코드를 입력해주세요.",
-        "label": "초대 코드를 입력해주세요."
-      },
       "division": {
         "description": "여러 부문이 있으니 부문을 선택해주세요.",
         "label": "부문 선택"
+      },
+      "invite_code": {
+        "description": "이 게임은 초대 전용입니다. 참가하기 위해서 초대 코드를 입력해주세요.",
+        "label": "초대 코드를 입력해주세요."
       },
       "team": {
         "description": "참여하고 싶은 팀을 선택하십시오. 참여 요청 승인이 된 후에는 변경할 수 없습니다",
@@ -168,9 +168,10 @@
     },
     "joined": "가입 성공",
     "left": "취소 성공",
-    "no_invite_code": "초대 코드를 작성해주세요",
     "no_division": "부문을 선택해주세요",
+    "no_invite_code": "초대 코드를 작성해주세요",
     "no_team": "참가할 팀을 선택해주세요",
+    "not_joined": "You haven't joined the game yet",
     "not_started": "게임이 시작되지 않았습니다.",
     "select_chal_and_part": "문제와 팀을 먼저 선택하세요.",
     "suspended": "계정이 정지되었습니다.",

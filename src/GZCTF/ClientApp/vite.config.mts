@@ -3,12 +3,12 @@ import react from '@vitejs/plugin-react'
 import process from 'process'
 import { defineConfig, loadEnv } from 'vite'
 import banner from 'vite-plugin-banner'
-import i18nextLoader from 'vite-plugin-i18next-loader'
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import Pages from 'vite-plugin-pages'
 import { prismjsPlugin } from 'vite-plugin-prismjs'
 import webfontDownload from 'vite-plugin-webfont-dl'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import i18nVirtualManifest from './plugins/vite-i18n-virtual-manifest'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
@@ -21,6 +21,8 @@ export default defineConfig(({ mode }) => {
     ` * Build   : ${env.VITE_APP_BUILD_TIMESTAMP ?? new Date().toISOString()}\n` +
     ' * License : GNU Affero General Public License v3.0\n * \n' +
     ' * Copyright © 2022-now @GZTimeWalker, All Rights Reserved.\n */'
+
+  console.log(`Using backend URL: ${TARGET}`)
 
   return {
     server: {
@@ -38,10 +40,9 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       outDir: 'build',
-      target: ['es2020'],
       assetsDir: 'static',
       cssCodeSplit: false,
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 1600,
       reportCompressedSize: false,
       rollupOptions: {
         output: {
@@ -81,11 +82,7 @@ export default defineConfig(({ mode }) => {
         languages: 'all',
         css: true,
       }),
-      i18nextLoader({
-        paths: ['./src/locales'],
-        include: ['**/*.json'],
-        namespaceResolution: 'basename',
-      }),
+      i18nVirtualManifest(),
       optimizeCssModules(),
     ],
   }

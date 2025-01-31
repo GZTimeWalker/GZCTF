@@ -4,14 +4,8 @@ on:
   push:
     branches: ["develop", "ci/*", "v*"]
     tags: ["v*"]
-    paths: ["src/GZCTF/**"]
+    paths: ["src/**"]
   workflow_dispatch:
-    inputs:
-      skip-build:
-        type: boolean
-        description: "Skip build step"
-        default: false
-        required: false
 
 env:
   # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
@@ -19,8 +13,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    if: ${{ !github.event.inputs.skip-build }}
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write

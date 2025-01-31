@@ -1,5 +1,5 @@
 ﻿using System.Threading.Channels;
-using GZCTF.Repositories;
+using GZCTF.Services.Cache.Handlers;
 
 namespace GZCTF.Services.Cache;
 
@@ -7,6 +7,12 @@ public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
 {
     public async Task FlushScoreboardCache(int gameId, CancellationToken token) =>
         await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
+
+    public async Task FlushRecentGamesCache(CancellationToken token) =>
+        await channelWriter.WriteAsync(RecentGamesCacheHandler.MakeCacheRequest(), token);
+
+    public async Task FlushGameListCache(CancellationToken token) =>
+        await channelWriter.WriteAsync(GameListCacheHandler.MakeCacheRequest(), token);
 }
 
 /// <summary>
@@ -15,7 +21,7 @@ public class CacheHelper(ChannelWriter<CacheRequest> channelWriter)
 public static class CacheKey
 {
     /// <summary>
-    /// Favicon 
+    /// Favicon
     /// </summary>
     public const string Favicon = "_Favicon";
 
@@ -30,14 +36,24 @@ public static class CacheKey
     public const string ScoreBoardBase = "_ScoreBoard";
 
     /// <summary>
-    /// Basic game info
+    /// Recent games
     /// </summary>
-    public const string BasicGameInfo = "_BasicGameInfo";
+    public const string RecentGames = "_RecentGames";
+
+    /// <summary>
+    /// The game list cache, latest 100 games
+    /// </summary>
+    public const string GameList = "_GameList";
 
     /// <summary>
     /// Posts
     /// </summary>
     public const string Posts = "_Posts";
+
+    /// <summary>
+    /// The cron job lock
+    /// </summary>
+    public const string CronJobLock = "_CronJobLock";
 
     /// <summary>
     /// Is exercise available

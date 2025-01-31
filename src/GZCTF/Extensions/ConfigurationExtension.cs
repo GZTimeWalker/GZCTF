@@ -8,6 +8,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -17,10 +18,7 @@ namespace GZCTF.Extensions;
 
 public static class ConfigurationExtension
 {
-    static readonly DistributedCacheEntryOptions FaviconOptions = new()
-    {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
-    };
+    static readonly DistributedCacheEntryOptions FaviconOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
     const string CspTemplate = "default-src 'strict-dynamic' 'nonce-{0}' 'unsafe-inline' http: https:; " +
                                "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +

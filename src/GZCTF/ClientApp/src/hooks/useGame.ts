@@ -1,9 +1,21 @@
 import dayjs from 'dayjs'
+import { TFunction } from 'i18next'
 import { GameStatus } from '@Components/GameCard'
 import { OnceSWRConfig } from '@Hooks/useConfig'
-import api, { DetailedGameInfoModel, ParticipationStatus } from '@Api'
+import api, { ParticipationStatus } from '@Api'
 
-export const getGameStatus = (game?: DetailedGameInfoModel) => {
+export const useRecentGames = () => {
+  const { data, mutate, error } = api.game.useGameRecentGames(
+    { limit: 7 },
+    {
+      refreshInterval: 30 * 60 * 1000,
+    }
+  )
+
+  return { recentGames: data, error, mutate }
+}
+
+export const getGameStatus = (game?: { start?: number; end?: number }) => {
   const startTime = dayjs(game?.start)
   const endTime = dayjs(game?.end)
 
@@ -26,6 +38,12 @@ export const getGameStatus = (game?: DetailedGameInfoModel) => {
   }
 }
 
+export const toLimitTag = (t: TFunction, limit?: number) => {
+  if (!limit || limit === 0) return t('game.tag.multiplayer')
+  if (limit === 1) return t('game.tag.individual')
+  return t('game.tag.limited', { count: limit })
+}
+
 export const useAdminGame = (numId: number) => {
   const { data: game, mutate, error } = api.edit.useEditGetGame(numId, OnceSWRConfig)
 
@@ -33,7 +51,7 @@ export const useAdminGame = (numId: number) => {
 }
 
 export const useGame = (numId: number) => {
-  const { data: game, error, mutate } = api.game.useGameGames(numId, OnceSWRConfig)
+  const { data: game, error, mutate } = api.game.useGameGame(numId, OnceSWRConfig)
 
   return { game, error, mutate, status: game?.status ?? ParticipationStatus.Unsubmitted }
 }

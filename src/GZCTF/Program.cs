@@ -33,12 +33,15 @@ using GZCTF.Services;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Container;
+using GZCTF.Services.CronJob;
+using GZCTF.Services.HealthCheck;
 using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -79,6 +82,12 @@ builder.WebHost.ConfigureKestrel(options =>
     IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
     options.Configure(kestrelSection);
     kestrelSection.Bind(options);
+
+    // "bool? is true" is necessary for if statement
+    // ReSharper disable once RedundantBoolCompare
+    if (builder.Configuration.GetValue<bool>("EnableTLS") is true)
+        options.ConfigureEndpointDefaults(defaultsOptions =>
+            defaultsOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
 });
 
 builder.Logging.ClearProviders();
@@ -276,7 +285,6 @@ builder.Services.AddHostedService<CacheMaker>();
 builder.Services.AddHostedService<FlagChecker>();
 builder.Services.AddHostedService<CronJobService>();
 
-builder.Services.AddHealthChecks();
 builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
 builder.Services.AddResponseCompression(options =>
 {
@@ -304,8 +312,19 @@ builder.Services.AddControllersWithViews().ConfigureApiBehaviorOptions(options =
     options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
     options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
 });
+builder.Services.AddResponseCaching();
 
 #endregion Services and Repositories
+
+#region Health Checks
+
+builder.Services.AddHealthChecks()
+    .AddApplicationLifecycleHealthCheck()
+    .AddCheck<StorageHealthCheck>("Storage")
+    .AddCheck<CacheHealthCheck>("Cache")
+    .AddCheck<DatabaseHealthCheck>("Database");
+
+#endregion
 
 #region Middlewares
 
@@ -317,6 +336,7 @@ await app.RunPrelaunchWork();
 
 app.UseRequestLocalization();
 
+app.UseResponseCaching();
 app.UseResponseCompression();
 
 app.UseCustomFavicon();

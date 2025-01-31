@@ -170,7 +170,7 @@ const Configs: FC = () => {
                 rightSection={
                   <Tooltip label={t('common.button.reset')}>
                     <ActionIcon onClick={onResetLogo}>
-                      <Icon path={mdiRestore} />
+                      <Icon path={mdiRestore} size={0.85} />
                     </ActionIcon>
                   </Tooltip>
                 }

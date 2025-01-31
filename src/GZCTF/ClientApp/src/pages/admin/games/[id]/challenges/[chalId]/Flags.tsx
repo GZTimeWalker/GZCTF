@@ -119,7 +119,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
       )
       const remoteFile = res.data[0]
       setProgress(95)
-      if (file) {
+      if (remoteFile) {
         await api.edit.editUpdateAttachment(numId, numCId, {
           attachmentType: FileType.Local,
           fileHash: remoteFile.hash,

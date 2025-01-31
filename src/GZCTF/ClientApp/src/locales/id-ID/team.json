@@ -8,7 +8,7 @@
     "save": "Perbarui Info"
   },
   "content": {
-    "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung. Setiap pemain hanya bisa membuat satu tim.",
+    "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung.",
     "disband": {
       "confirm": {
         "message": "Apakah kamu yakin ingin membubarkan tim \"{{team}}\"?",
@@ -29,8 +29,8 @@
       }
     },
     "disallow_create": {
-      "content": "You've exceeded the limit on the number of teams you're allowed to have.<br/>You can disband the existed team and create a new one.",
-      "title": "You've exceeded the limit"
+      "content": "Anda telah mencapai jumlah maksimum tim yang dapat Anda miliki.<br/>Mohon untuk membubarkan tim yang ada untuk membuat tim baru.",
+      "title": "Anda telah melebihi batas"
     },
     "role": {
       "captain": "Kapten",

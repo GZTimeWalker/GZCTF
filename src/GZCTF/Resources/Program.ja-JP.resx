@@ -395,6 +395,12 @@
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>スケジュールされたタスクが停止されました</value>
   </data>
+  <data name="CronJob_ExecuteFailed" xml:space="preserve">
+    <value>Failed to execute cronjob {0}: {1}</value>
+  </data>
+  <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
+    <value>Another instance is holding the cronjobs, let's run the watchdog.</value>
+  </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>データベースに接続できませんでした({0})、データベースの接続文字列を確認してください</value>
   </data>
@@ -561,7 +567,7 @@
     <value>提出は見つかりませんでした</value>
   </data>
   <data name="Game_TeamMemberLimitExceeded" xml:space="preserve">
-    <value>チームの参加者数が制限を超えています</value>
+    <value>チームの参加者数の上限を達しました</value>
   </data>
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} は {1} の記事を正常に提出しました</value>
@@ -990,7 +996,7 @@
     <value>チーム {0} から {1} を追放しました</value>
   </data>
   <data name="Team_ExceededCreationLimit" xml:space="preserve">
-    <value>Exceeded the limit of owned teams</value>
+    <value>所有チーム数の上限を達しました</value>
   </data>
   <data name="Team_NameEmpty" xml:space="preserve">
     <value>チーム名は空にできません</value>

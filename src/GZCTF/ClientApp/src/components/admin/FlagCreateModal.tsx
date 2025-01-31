@@ -50,6 +50,7 @@ export const FlagCreateModal: FC<ModalProps> = (props) => {
       props.onClose()
     } catch (e) {
       showErrorNotification(e, t)
+    } finally {
       setDisabled(false)
     }
   }

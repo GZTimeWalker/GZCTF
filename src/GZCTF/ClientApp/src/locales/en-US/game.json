@@ -42,13 +42,13 @@
         "After successfully registering for the game and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
         "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
-      "invite_code": {
-        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
-        "label": "Please enter the invitation code"
-      },
       "division": {
         "description": "This game has multiple division available. Please select your division.",
         "label": "Select Division"
+      },
+      "invite_code": {
+        "description": "This game is invitation-only. To participate in, please enter an invitation code.",
+        "label": "Please enter the invitation code"
       },
       "team": {
         "description": "Please select a team you want to participate with in this game. This cannot be changed after participation request approval.",
@@ -168,9 +168,10 @@
     },
     "joined": "Registration successful",
     "left": "Successfully cancel",
-    "no_invite_code": "Invitation code cannot be empty",
     "no_division": "Please select the division",
+    "no_invite_code": "Invitation code cannot be empty",
     "no_team": "Please select the team to participate with",
+    "not_joined": "You haven't joined the game yet",
     "not_started": "Game not yet started",
     "select_chal_and_part": "Please select challenges and teams first",
     "suspended": "You have been banned",

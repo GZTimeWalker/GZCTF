@@ -395,6 +395,12 @@
   <data name="CronJob_Stopped" xml:space="preserve">
     <value>Cron-задание остановлено</value>
   </data>
+  <data name="CronJob_ExecuteFailed" xml:space="preserve">
+    <value>Не удалось выполнить задачу cron {0}: {1}</value>
+  </data>
+  <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
+    <value>Другой инстанс содержит задачи cron, запущен WatchDog.</value>
+  </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>Не удалось подключиться к базе данных ({0}), пожалуйста, проверьте строку подключения к базе данных</value>
   </data>

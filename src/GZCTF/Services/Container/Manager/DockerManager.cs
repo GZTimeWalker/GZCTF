@@ -182,6 +182,8 @@ public class DockerManager : IContainerManager
                         container.ContainerId[..12],
                         config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
+
+                await DestroyContainerAsync(container, token);
                 return null;
             }
 

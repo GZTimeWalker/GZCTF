@@ -42,13 +42,13 @@
         "报名参赛并审核通过后，参赛队伍将被锁定，<strong>不能再踢出队员</strong>，队伍将在比赛结束后或驳回请求时解锁。",
         "比赛队伍人数要求以选择队伍的成员数为准，<strong>不论队员是否以此队伍身份参加比赛。</strong>"
       ],
-      "invite_code": {
-        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码",
-        "label": "请输入邀请码"
-      },
       "division": {
         "description": "本场比赛具有多个参赛分组，请选择你的参赛分组",
         "label": "选择参赛分组"
+      },
+      "invite_code": {
+        "description": "本场比赛开启了邀请参赛，报名参赛需提供邀请码",
+        "label": "请输入邀请码"
       },
       "team": {
         "description": "请选择一个队伍参与比赛，选定后不可更改",
@@ -168,9 +168,10 @@
     },
     "joined": "报名成功",
     "left": "取消报名成功",
-    "no_invite_code": "邀请码不能为空",
     "no_division": "请选择参赛分组",
+    "no_invite_code": "邀请码不能为空",
     "no_team": "请选择参赛队伍",
+    "not_joined": "你还没有加入这个比赛",
     "not_started": "比赛尚未开始",
     "select_chal_and_part": "请先选择题目和队伍",
     "suspended": "您已被禁赛",
