@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using GZCTF.Services.Cache;
 using MemoryPack;
-using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Exporter;
 using Serilog.Sinks.Grafana.Loki;
 using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
@@ -310,7 +309,6 @@ public enum CaptchaProvider
 {
     None,
     HashPow,
-    GoogleRecaptcha,
     CloudflareTurnstile
 }
 
@@ -331,16 +329,7 @@ public class CaptchaConfig
     public CaptchaProvider Provider { get; set; }
     public string? SecretKey { get; set; }
     public string? SiteKey { get; set; }
-
-    public GoogleRecaptchaConfig GoogleRecaptcha { get; set; } = new();
-
     public HashPowConfig HashPow { get; set; } = new();
-}
-
-public class GoogleRecaptchaConfig
-{
-    public string VerifyApiAddress { get; set; } = "https://www.recaptcha.net/recaptcha/api/siteverify";
-    public float RecaptchaThreshold { get; set; } = 0.5f;
 }
 
 #endregion
