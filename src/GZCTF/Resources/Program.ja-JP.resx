@@ -396,10 +396,10 @@
     <value>スケジュールされたタスクが停止されました</value>
   </data>
   <data name="CronJob_ExecuteFailed" xml:space="preserve">
-    <value>Failed to execute cronjob {0}: {1}</value>
+    <value>CronJob {0} の実行に失敗しました：{1}</value>
   </data>
   <data name="CronJob_LaunchedWatchDog" xml:space="preserve">
-    <value>Another instance is holding the cronjobs, let's run the watchdog.</value>
+    <value>別のインスタンスが CronJob を保持しているので、ウォッチドッグを実行しましょう。</value>
   </data>
   <data name="Database_ConnectionFailed" xml:space="preserve">
     <value>データベースに接続できませんでした({0})、データベースの接続文字列を確認してください</value>
