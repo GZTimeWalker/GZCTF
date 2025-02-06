@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.1..v1.2.2) - 2025-02-06
+
+### 💥 BREAK CHANGES
+
+- **(captcha)** **[BREAK]** Removed google recpatcha support - ([44a468](https://github.com/GZTimeWalker/GZCTF/commit/44a468)) by **GZTime**
+
+---
 ## [1.2.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.0..v1.2.1) - 2025-01-21
 
 ### ⛰️ Features
