@@ -277,7 +277,7 @@ public class AdminController(
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), users.Count],
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), users.Count],
                 currentUser, TaskStatus.Success);
 
             return Ok();

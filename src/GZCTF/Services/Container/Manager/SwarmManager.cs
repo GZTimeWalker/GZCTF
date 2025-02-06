@@ -24,7 +24,7 @@ public class SwarmManager : IContainerManager
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_SwarmMode)],
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.ContainerManager_SwarmMode)],
             TaskStatus.Success,
             LogLevel.Debug);
     }
@@ -38,7 +38,7 @@ public class SwarmManager : IContainerManager
         catch (DockerContainerNotFoundException)
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
                     container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
@@ -47,7 +47,7 @@ public class SwarmManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
                         container.ContainerId],
                     TaskStatus.Success, LogLevel.Debug);
             }
@@ -59,8 +59,8 @@ public class SwarmManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+            _logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                     container.ContainerId]);
             return;
         }
@@ -76,7 +76,7 @@ public class SwarmManager : IContainerManager
         if (string.IsNullOrWhiteSpace(imageName))
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
@@ -91,7 +91,7 @@ public class SwarmManager : IContainerManager
             if (retry++ >= 3)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
                         parameters.Service.Name],
                     TaskStatus.Failed,
                     LogLevel.Warning);
@@ -105,7 +105,7 @@ public class SwarmManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.Conflict)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted),
                         parameters.Service.Name],
                     TaskStatus.Duplicate,
                     LogLevel.Warning);
@@ -120,8 +120,8 @@ public class SwarmManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+            _logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                     parameters.Service.Name]);
             return null;
         }
@@ -135,7 +135,7 @@ public class SwarmManager : IContainerManager
             if (retry++ >= 3)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed),
                         container.ContainerId],
                     TaskStatus.Failed,
                     LogLevel.Warning);

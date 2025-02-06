@@ -28,7 +28,7 @@ public class GameRepository(
         game.GenerateKeyPair(_xorKey);
 
         if (_xorKey is null)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)],
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)],
                 TaskStatus.Pending,
                 LogLevel.Warning);
 
@@ -180,7 +180,7 @@ public class GameRepository(
         {
             var count = await Context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title,
+                StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title,
                     count], TaskStatus.Pending,
                 LogLevel.Debug
             );
@@ -192,7 +192,7 @@ public class GameRepository(
             count = await Context.Participations.Where(i => i.Game == game).CountAsync(token);
 
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, count],
+                StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, count],
                 TaskStatus.Pending, LogLevel.Debug
             );
 
@@ -213,7 +213,7 @@ public class GameRepository(
         }
         catch (Exception e)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending,
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending,
                 LogLevel.Debug);
             logger.SystemLog(e.Message, TaskStatus.Failed, LogLevel.Warning);
             await trans.RollbackAsync(token);
@@ -227,7 +227,7 @@ public class GameRepository(
         await Context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
         logger.SystemLog(
-            Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title,
+            StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title,
                 game.Participations.Count],
             TaskStatus.Pending,
             LogLevel.Debug);

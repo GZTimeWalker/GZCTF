@@ -30,7 +30,7 @@ public class GameInstanceRepository(
         if (instance is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId],
+                StaticLocalizer[nameof(Resources.Program.InstanceRepository_NoInstance), part.Id, challengeId],
                 TaskStatus.NotFound,
                 LogLevel.Warning);
             await transaction.RollbackAsync(token);
@@ -72,7 +72,7 @@ public class GameInstanceRepository(
                     if (flags.Count == 0)
                     {
                         logger.SystemLog(
-                            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough),
+                            StaticLocalizer[nameof(Resources.Program.InstanceRepository_DynamicFlagsNotEnough),
                                 challenge.Title,
                                 challenge.Id], TaskStatus.Failed,
                             LogLevel.Warning);
@@ -96,7 +96,7 @@ public class GameInstanceRepository(
         catch
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name,
+                StaticLocalizer[nameof(Resources.Program.InstanceRepository_GetInstanceFailed), part.Team.Name,
                     challenge.Title,
                     challenge.Id],
                 TaskStatus.Failed, LogLevel.Warning);
@@ -114,7 +114,7 @@ public class GameInstanceRepository(
             gameInstance.Challenge.ContainerExposePort is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
                     gameInstance.Challenge.Title],
                 TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
@@ -133,7 +133,7 @@ public class GameInstanceRepository(
                 if (running.Count >= game.ContainerCountLimit && first is not null)
                 {
                     logger.Log(
-                        Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
+                        StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
                             team.Name, first.Challenge.Title,
                             first.Container!.ContainerId],
                         user, TaskStatus.Success);
@@ -174,7 +174,7 @@ public class GameInstanceRepository(
         if (container is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
                     gameInstance.Challenge.Title],
                 TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
@@ -187,7 +187,7 @@ public class GameInstanceRepository(
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
         logger.Log(
-            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,
+            StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,
                 gameInstance.Challenge.Title,
                 container.ContainerId], user,
             TaskStatus.Success);

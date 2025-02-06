@@ -7,8 +7,6 @@ using FluentStorage.Blobs;
 using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -16,7 +14,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Extensions;
 
-public static class ConfigurationExtension
+public static class HandlerExtension
 {
     static readonly DistributedCacheEntryOptions FaviconOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
@@ -25,11 +23,13 @@ public static class ConfigurationExtension
                                "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
                                "connect-src 'self'; base-uri 'none';";
 
-    static readonly HashSet<string> SupportedCultures = Program.SupportedCultures
+    static readonly HashSet<string> SupportedCultures = Server.SupportedCultures
         .Select(c => c.ToLower()).ToHashSet();
 
     static readonly HashSet<string> ShortSupportedCultures = SupportedCultures
         .Select(c => c.Split('-')[0]).ToHashSet();
+
+    static string IndexTemplate = string.Empty;
 
     const StringSplitOptions DefaultSplitOptions =
         StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
@@ -41,9 +41,11 @@ public static class ConfigurationExtension
     public static void UseCustomFavicon(this WebApplication app) =>
         app.MapGet("/favicon.webp", FaviconHandler);
 
-    public static async Task UseIndexAsync(this WebApplication app)
+    public static void UseIndexAsync(this WebApplication app)
     {
-        if (!File.Exists(Path.Join(app.Environment.WebRootPath, "index.html")))
+        var index = app.Environment.WebRootFileProvider.GetFileInfo("index.html");
+
+        if (!index.Exists || index.PhysicalPath is null)
         {
             app.MapFallback(context =>
             {
@@ -54,16 +56,8 @@ public static class ConfigurationExtension
             return;
         }
 
-        await using Stream stream = app.Environment.WebRootFileProvider
-            .GetFileInfo("index.html").CreateReadStream();
-
-        using var streamReader = new StreamReader(stream);
-        var template = await streamReader.ReadToEndAsync();
-
-#pragma warning disable RDG002
-        // Unable to resolve endpoint handler: https://github.com/dotnet/core/issues/8288
-        app.MapFallback(IndexHandler(template));
-#pragma warning restore RDG002
+        IndexTemplate = File.ReadAllText(index.PhysicalPath);
+        app.MapFallback(IndexHandler);
     }
 
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
@@ -139,11 +133,11 @@ public static class ConfigurationExtension
         return "en-us";
     }
 
-    static IndexHandlerDelegate IndexHandler(string template) => async (
+    static async Task<IResult> IndexHandler(
         HttpContext context,
         IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
-        CancellationToken token = default) =>
+        CancellationToken token = default)
     {
         var content = await cache.GetStringAsync(CacheKey.Index, token);
 
@@ -152,7 +146,7 @@ public static class ConfigurationExtension
             GlobalConfig config = globalConfig.Value;
             var title = HtmlEncoder.Default.Encode(config.Platform);
             var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
-            content = template.Replace("%title%", title).Replace("%description%", description);
+            content = IndexTemplate.Replace("%title%", title).Replace("%description%", description);
 
             await cache.SetStringAsync(CacheKey.Index, content, token);
         }
@@ -167,11 +161,5 @@ public static class ConfigurationExtension
         builder.Replace("%nonce%", nonce);
 
         return Results.Text(builder.ToString(), MediaTypeNames.Text.Html);
-    };
-
-    delegate Task<IResult> IndexHandlerDelegate(
-        HttpContext context,
-        IDistributedCache cache,
-        IOptionsSnapshot<GlobalConfig> globalConfig,
-        CancellationToken token = default);
+    }
 }

@@ -54,7 +54,7 @@ public class CacheMaker(
     {
         TokenSource.Cancel();
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_Stopped)], TaskStatus.Success,
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_Stopped)], TaskStatus.Success,
             LogLevel.Debug);
 
         return Task.CompletedTask;
@@ -65,7 +65,7 @@ public class CacheMaker(
 
     async Task Maker(CancellationToken token = default)
     {
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_WorkerStarted)], TaskStatus.Pending,
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_WorkerStarted)], TaskStatus.Pending,
             LogLevel.Debug);
 
         try
@@ -75,7 +75,7 @@ public class CacheMaker(
                 if (!_cacheHandlers.TryGetValue(item.Key, out ICacheRequestHandler? handler))
                 {
                     logger.SystemLog(
-                        Program.StaticLocalizer[nameof(Resources.Program.Cache_NoMatchingRequest), item.Key],
+                        StaticLocalizer[nameof(Resources.Program.Cache_NoMatchingRequest), item.Key],
                         TaskStatus.NotFound,
                         LogLevel.Warning);
                     continue;
@@ -86,7 +86,7 @@ public class CacheMaker(
                 if (key is null)
                 {
                     logger.SystemLog(
-                        Program.StaticLocalizer[nameof(Resources.Program.Cache_InvalidUpdateRequest), item.Key],
+                        StaticLocalizer[nameof(Resources.Program.Cache_InvalidUpdateRequest), item.Key],
                         TaskStatus.NotFound,
                         LogLevel.Warning);
                     continue;
@@ -97,7 +97,7 @@ public class CacheMaker(
                 if (await cache.GetAsync(updateLock, token) is not null)
                 {
                     // only one GZCTF instance will never encounter this
-                    logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_InvalidUpdateRequest), key],
+                    logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_InvalidUpdateRequest), key],
                         TaskStatus.Pending,
                         LogLevel.Debug);
                     continue;
@@ -131,14 +131,14 @@ public class CacheMaker(
                     {
                         await cache.SetAsync(key, bytes, item.Options ?? new DistributedCacheEntryOptions(), token);
                         logger.SystemLog(
-                            Program.StaticLocalizer[
+                            StaticLocalizer[
                                 nameof(Resources.Program.Cache_Updated),
                                 key, item.Time.ToString("HH:mm:ss.fff"), bytes.Length
                             ], TaskStatus.Success, LogLevel.Debug);
                     }
                     else
                     {
-                        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), key],
+                        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), key],
                             TaskStatus.Failed,
                             LogLevel.Warning);
                     }
@@ -146,7 +146,7 @@ public class CacheMaker(
                 catch (Exception e)
                 {
                     logger.SystemLog(
-                        Program.StaticLocalizer[nameof(Resources.Program.Cache_UpdateWorkerFailed), key, e.Message],
+                        StaticLocalizer[nameof(Resources.Program.Cache_UpdateWorkerFailed), key, e.Message],
                         TaskStatus.Failed,
                         LogLevel.Error);
                 }
@@ -160,12 +160,12 @@ public class CacheMaker(
         }
         catch (OperationCanceledException)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_WorkerCancelled)], TaskStatus.Exit,
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_WorkerCancelled)], TaskStatus.Exit,
                 LogLevel.Debug);
         }
         finally
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Cache_WorkerStopped)], TaskStatus.Exit,
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_WorkerStopped)], TaskStatus.Exit,
                 LogLevel.Debug);
         }
     }

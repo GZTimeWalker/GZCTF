@@ -83,7 +83,7 @@ public class AccountController(
             await userManager.UpdateAsync(user);
             await signInManager.SignInAsync(user, true);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user,
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user,
                 TaskStatus.Success);
             return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)],
                 RegisterStatus.LoggedIn,
@@ -92,14 +92,14 @@ public class AccountController(
 
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)],
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)],
                 user, TaskStatus.Success);
             return Ok(new RequestResponse<RegisterStatus>(
                 localizer[nameof(Resources.Program.Account_UserRegisteredWaitingApproval)],
                 RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
         }
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], user,
             TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
@@ -163,7 +163,7 @@ public class AccountController(
         if (!accountPolicy.Value.EmailConfirmationRequired)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_ResetPasswordFromAdmin)]));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], HttpContext,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], HttpContext,
             TaskStatus.Pending);
 
         var rToken = Codec.Base64.Encode(await userManager.GeneratePasswordResetTokenAsync(user));
@@ -209,7 +209,7 @@ public class AccountController(
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordReset)], user, TaskStatus.Success);
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_PasswordReset)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -242,7 +242,7 @@ public class AccountController(
                 localizer[nameof(Resources.Program.Account_EmailVerificationFailed)],
                 StatusCodes.Status401Unauthorized));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailVerified)], user, TaskStatus.Success);
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_EmailVerified)], user, TaskStatus.Success);
         await signInManager.SignInAsync(user, true);
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
@@ -301,7 +301,7 @@ public class AccountController(
                 localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
                 StatusCodes.Status401Unauthorized));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -351,7 +351,7 @@ public class AccountController(
             if (!unameRes.Succeeded)
                 return HandleIdentityError(unameRes.Errors);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
                 user, TaskStatus.Success);
         }
 
@@ -386,7 +386,7 @@ public class AccountController(
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_PasswordChanged)], user,
             TaskStatus.Success);
 
         return Ok();
@@ -423,7 +423,7 @@ public class AccountController(
             return BadRequest(
                 new RequestResponse<bool>(localizer[nameof(Resources.Program.Account_ChangeEmailFromAdmin)], false));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_SendEmailChange)], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailChange)], user,
             TaskStatus.Pending);
 
         var token = Codec.Base64.Encode(await userManager.GenerateChangeEmailTokenAsync(user!, model.NewMail));
@@ -468,7 +468,7 @@ public class AccountController(
         if (!result.Succeeded)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_InvalidEmail)]));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_EmailChanged)], user, TaskStatus.Success);
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_EmailChanged)], user, TaskStatus.Success);
 
         return Ok();
     }
@@ -533,7 +533,7 @@ public class AccountController(
         if (result != IdentityResult.Success)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserUpdateFailed)]));
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Account_AvatarUpdated), avatar.Hash[..8]], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_AvatarUpdated), avatar.Hash[..8]], user,
             TaskStatus.Success);
 
         return Ok(avatar.Url());

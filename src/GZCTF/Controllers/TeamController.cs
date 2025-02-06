@@ -110,7 +110,7 @@ public partial class TeamController(
 
         await userManager.UpdateAsync(user!);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Created), team.Name], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Team_Created), team.Name], user,
             TaskStatus.Success);
 
         return Ok(TeamInfoModel.FromTeam(team));
@@ -339,7 +339,7 @@ public partial class TeamController(
             await trans.CommitAsync(token);
 
             logger.Log(
-                Program.StaticLocalizer[nameof(Resources.Program.Team_MemberRemoved), team.Name,
+                StaticLocalizer[nameof(Resources.Program.Team_MemberRemoved), team.Name,
                     kickUser.UserName ?? "null"], user,
                 TaskStatus.Success);
             return Ok(TeamInfoModel.FromTeam(team));
@@ -411,7 +411,7 @@ public partial class TeamController(
             await teamRepository.SaveAsync(cancelToken);
             await trans.CommitAsync(cancelToken);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_UserJoined), team.Name], user,
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Team_UserJoined), team.Name], user,
                 TaskStatus.Success);
             return Ok();
         }
@@ -466,7 +466,7 @@ public partial class TeamController(
             await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_UserLeft), team.Name], user,
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Team_UserLeft), team.Name], user,
                 TaskStatus.Success);
             return Ok();
         }
@@ -525,7 +525,7 @@ public partial class TeamController(
         team.AvatarHash = avatar.Hash;
         await teamRepository.SaveAsync(token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_AvatarUpdated), team.Name, avatar.Hash[..8]],
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Team_AvatarUpdated), team.Name, avatar.Hash[..8]],
             user, TaskStatus.Success);
 
         return Ok(avatar.Url());
@@ -566,7 +566,7 @@ public partial class TeamController(
 
         await teamRepository.DeleteTeam(team, token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Team_Deleted), team.Name], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Team_Deleted), team.Name], user,
             TaskStatus.Success);
 
         return Ok();

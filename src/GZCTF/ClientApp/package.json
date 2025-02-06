@@ -9,7 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write src --write plugins --write *.mjs --write *.mts",
-    "genapi": "swagger-typescript-api -p http://localhost:55000/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
+    "genapi": "swagger-typescript-api -p http://localhost:8080/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
     "@babel/core": "^7.26.7",

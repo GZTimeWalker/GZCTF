@@ -32,8 +32,8 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
         catch (Exception e)
         {
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardCacheHandler>>();
-            logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+            logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
             return [];
         }
     }

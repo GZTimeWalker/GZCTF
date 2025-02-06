@@ -122,7 +122,7 @@ public class ExerciseInstanceRepository(
         if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ContainerExposePort is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
                     instance.Exercise.Title],
                 TaskStatus.Denied, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
@@ -141,7 +141,7 @@ public class ExerciseInstanceRepository(
             if (running.Count >= containerLimit && first is not null)
             {
                 logger.Log(
-                    Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
+                    StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
                         user.UserName!, first.Exercise.Title,
                         first.Container!.ContainerId],
                     user, TaskStatus.Success);
@@ -173,7 +173,7 @@ public class ExerciseInstanceRepository(
         if (container is null)
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
+                StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
                     instance.Exercise.Title],
                 TaskStatus.Failed, LogLevel.Warning);
             return new TaskResult<Container>(TaskStatus.Failed);
@@ -183,7 +183,7 @@ public class ExerciseInstanceRepository(
         instance.LastContainerOperation = DateTimeOffset.UtcNow;
 
         logger.Log(
-            Program.StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!,
+            StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!,
                 instance.Exercise.Title,
                 container.ContainerId], user,
             TaskStatus.Success);

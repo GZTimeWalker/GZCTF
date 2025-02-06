@@ -61,7 +61,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
     void LaunchCronJob()
     {
-        var methods = typeof(DefaultCronJobs).GetMethods(BindingFlags.Static | BindingFlags.Public);
+        var methods = typeof(RuntimeCronJobs).GetMethods(BindingFlags.Static | BindingFlags.Public);
         foreach (var method in methods)
         {
             var attr = method.GetCustomAttribute<CronJobAttribute>();
@@ -74,7 +74,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         _timer = new Timer(_ => Task.Run(Execute),
             null, TimeSpan.FromSeconds(60 - DateTime.UtcNow.Second), TimeSpan.FromMinutes(1));
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
             TaskStatus.Success, LogLevel.Debug);
     }
 
@@ -86,7 +86,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
             _jobs.Clear();
         }
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit,
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit,
             LogLevel.Debug);
     }
 
@@ -127,19 +127,18 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
                 _timer?.Change(Timeout.Infinite, 0);
                 LaunchCronJob();
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
+                logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
                     TaskStatus.Success, LogLevel.Debug);
             }
             catch (Exception e)
             {
-                logger.SystemLog(Program.StaticLocalizer[
-                        nameof(Resources.Program.CronJob_ExecuteFailed),
+                logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_ExecuteFailed),
                         "WatchDog", e.Message],
                     TaskStatus.Failed, LogLevel.Warning);
             }
         }, null, TimeSpan.FromSeconds(delay), TimeSpan.FromMinutes(5));
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_LaunchedWatchDog)],
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_LaunchedWatchDog)],
             TaskStatus.Pending, LogLevel.Debug);
     }
 
@@ -184,7 +183,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
                     catch (Exception e)
                     {
                         logger.SystemLog(
-                            Program.StaticLocalizer[nameof(Resources.Program.CronJob_ExecuteFailed), job, e.Message],
+                            StaticLocalizer[nameof(Resources.Program.CronJob_ExecuteFailed), job, e.Message],
                             TaskStatus.Failed, LogLevel.Warning);
                     }
                 }));

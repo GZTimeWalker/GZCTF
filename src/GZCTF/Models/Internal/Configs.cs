@@ -342,13 +342,16 @@ public class TelemetryConfig
     public OpenTelemetryConfig OpenTelemetry { get; set; } = new();
     public AzureMonitorConfig AzureMonitor { get; set; } = new();
     public ConsoleConfig Console { get; set; } = new();
+
+    [JsonIgnore]
+    public bool Enable =>
+        Prometheus.Enable || OpenTelemetry.Enable || AzureMonitor.Enable || Console.Enable;
 }
 
 public class PrometheusConfig
 {
     public bool Enable { get; set; }
     public bool TotalNameSuffixForCounters { get; set; }
-    public ushort? Port { get; set; }
 }
 
 public class OpenTelemetryConfig

@@ -13,7 +13,7 @@ import i18nVirtualManifest from './plugins/vite-i18n-virtual-manifest'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
-  const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:55000'
+  const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:8080'
 
   const BANNER =
     `/* The GZCTF Project @${env.VITE_APP_GIT_NAME ?? 'unknown'}\n * \n` +

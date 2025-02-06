@@ -43,7 +43,7 @@ public static class CacheExtension
 
         await ReleaseLockAsync(cache, lockKey, token);
 
-        logger.SystemLog(Program.StaticLocalizer[
+        logger.SystemLog(StaticLocalizer[
             nameof(Resources.Program.Cache_Updated),
             key, cacheTime.ToString("HH:mm:ss.fff"), bytes.Length
         ], TaskStatus.Success, LogLevel.Debug);

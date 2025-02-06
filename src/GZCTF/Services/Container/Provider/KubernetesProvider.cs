@@ -82,7 +82,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         }
         catch (Exception e)
         {
-            logger.LogError(e, "{msg}",
+            logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerProvider_KubernetesInitFailed), config.Host]);
             ExitWithFatalMessage(
                 StaticLocalizer[nameof(Resources.Program.ContainerProvider_KubernetesInitFailed), config.Host]);

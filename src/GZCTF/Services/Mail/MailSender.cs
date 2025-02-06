@@ -7,7 +7,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using static GZCTF.Program;
 
 namespace GZCTF.Services.Mail;
 
@@ -102,8 +101,7 @@ public sealed class MailSender : IMailSender, IDisposable
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{msg}",
-                StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             return false;
         }
     }
@@ -176,8 +174,7 @@ public sealed class MailSender : IMailSender, IDisposable
                 // Failed to establish SMTP connection, clear the queue
                 _mailQueue.Clear();
 
-                _logger.LogError(e, "{msg}",
-                    StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+                _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             }
             finally
             {

@@ -1,13 +1,15 @@
 using FluentStorage;
 
-namespace GZCTF.Extensions;
+namespace GZCTF.Extensions.Startup;
 
-public static class StorageExtension
+static class StorageExtension
 {
     const string DefaultConnectionString = "disk://path=./files";
 
-    public static void AddStorage(this WebApplicationBuilder builder, string? connectionString)
+    public static void ConfigureStorage(this WebApplicationBuilder builder)
     {
+        var connectionString = builder.Configuration.GetConnectionString("Storage");
+
         var isEmpty = string.IsNullOrWhiteSpace(connectionString);
         var useDisk = !isEmpty && connectionString!.StartsWith("disk://");
 
@@ -35,7 +37,7 @@ public static class StorageExtension
         }
         catch (Exception e)
         {
-            Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.Init_StorageInitFailed),
+            ExitWithFatalMessage(StaticLocalizer[nameof(Resources.Program.Init_StorageInitFailed),
                 e.Message]);
         }
     }

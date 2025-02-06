@@ -60,7 +60,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
                 new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
 
         logger.SystemLog(
-            Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited),
+            StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited),
                 string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri],
             TaskStatus.Success, LogLevel.Debug);
     }

@@ -9,7 +9,7 @@ namespace GZCTF.Utils;
 
 public static class PrelaunchHelper
 {
-    public static async Task RunPrelaunchWork(this WebApplication app)
+    public static async Task RunPrelaunchWorkAsync(this WebApplication app)
     {
         using IServiceScope serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
@@ -27,9 +27,9 @@ public static class PrelaunchHelper
             await context.Posts.AddAsync(new()
             {
                 UpdateTimeUtc = DateTimeOffset.UtcNow,
-                Title = Program.StaticLocalizer[nameof(Resources.Program.Init_PostTitle)],
-                Summary = Program.StaticLocalizer[nameof(Resources.Program.Init_PostSummary)],
-                Content = Program.StaticLocalizer[nameof(Resources.Program.Init_PostContent)]
+                Title = StaticLocalizer[nameof(Resources.Program.Init_PostTitle)],
+                Summary = StaticLocalizer[nameof(Resources.Program.Init_PostSummary)],
+                Content = StaticLocalizer[nameof(Resources.Program.Init_PostContent)]
             });
 
             await context.SaveChangesAsync();
@@ -57,7 +57,7 @@ public static class PrelaunchHelper
                 IdentityResult result = await userManager.CreateAsync(admin, password);
                 if (!result.Succeeded)
                     logger.SystemLog(
-                        Program.StaticLocalizer[nameof(Resources.Program.Init_AdminCreationFailed),
+                        StaticLocalizer[nameof(Resources.Program.Init_AdminCreationFailed),
                             result.Errors.FirstOrDefault()?.Description ?? "null"], TaskStatus.Failed,
                         LogLevel.Debug);
             }
@@ -66,11 +66,11 @@ public static class PrelaunchHelper
         var containerConfig = serviceScope.ServiceProvider.GetRequiredService<IOptions<ContainerProvider>>();
         if (containerConfig.Value.EnableTrafficCapture &&
             containerConfig.Value.PortMappingType != ContainerPortMappingType.PlatformProxy)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Init_CaptureNotAvailable)],
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Init_CaptureNotAvailable)],
                 TaskStatus.Failed, LogLevel.Warning);
 
         if (!cache.CacheCheck(logger))
-            Program.ExitWithFatalMessage(Program.StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
+            ExitWithFatalMessage(StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
 
         await cache.RemoveAsync(CacheKey.Index);
         await cache.RemoveAsync(CacheKey.ClientConfig);
@@ -89,7 +89,7 @@ public static class PrelaunchHelper
         }
         catch (Exception e)
         {
-            logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
+            logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.Init_InvalidCacheConfig)]);
             return false;
         }
     }

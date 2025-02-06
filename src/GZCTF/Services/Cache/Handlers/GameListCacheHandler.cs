@@ -20,8 +20,8 @@ public class GameListCacheHandler : ICacheRequestHandler
         catch (Exception e)
         {
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<GameListCacheHandler>>();
-            logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+            logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
             return [];
         }
     }

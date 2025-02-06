@@ -203,7 +203,7 @@ public class GameController(
             await participationRepository.UpdateParticipation(part,
                 new ParticipationEditModel(status: ParticipationStatus.Accepted), token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user,
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user,
             TaskStatus.Success);
 
         return Ok();
@@ -737,9 +737,9 @@ public class GameController(
         }
         catch (Exception ex)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_ScoreboardDownloadFailed)],
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Game_ScoreboardDownloadFailed)],
                 TaskStatus.Failed, LogLevel.Error);
-            logger.LogError(ex, ex.Message);
+            logger.LogErrorMessage(ex, ex.Message);
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ScoreboardDownloadFailed)]));
         }
     }
@@ -989,7 +989,7 @@ public class GameController(
 
         await participationRepository.SaveAsync(token);
 
-        logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Game_WriteupSubmitted), team.Name, game.Title],
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Game_WriteupSubmitted), team.Name, game.Title],
             context.User!,
             TaskStatus.Success);
 
@@ -1173,7 +1173,7 @@ public class GameController(
             }, token);
 
         logger.Log(
-            Program.StaticLocalizer[nameof(Resources.Program.Game_ContainerDeleted), context.Participation!.Team.Name,
+            StaticLocalizer[nameof(Resources.Program.Game_ContainerDeleted), context.Participation!.Team.Name,
                 instance.Challenge.Title,
                 destroyId],
             context.User, TaskStatus.Success);

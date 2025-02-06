@@ -52,7 +52,7 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
         {
             if (privilege > Role.User)
                 logger.Log(
-                    Program.StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden),
+                    StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden),
                         context.HttpContext.Request.Path], user,
                     TaskStatus.Denied);
 

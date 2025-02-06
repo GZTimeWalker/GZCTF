@@ -179,7 +179,7 @@ public class ProxyController(
             catch (SocketException e)
             {
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog),
+                    StaticLocalizer[nameof(Resources.Program.Proxy_ContainerConnectionFailedLog),
                         e.SocketErrorCode,
                         $"{target.Address}:{target.Port}"],
                     TaskStatus.Failed, LogLevel.Debug);
@@ -198,7 +198,7 @@ public class ProxyController(
             }
             catch (Exception e)
             {
-                logger.LogError(e, Program.StaticLocalizer[nameof(Resources.Program.Proxy_Error)]);
+                logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.Proxy_Error)]);
             }
             finally
             {

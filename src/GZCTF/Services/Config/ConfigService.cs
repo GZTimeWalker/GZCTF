@@ -45,7 +45,7 @@ public class ConfigService(
                     cacheKeys.UnionWith(conf.CacheKeys);
 
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey,
+                    StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigUpdated), conf.ConfigKey,
                         conf.Value ?? "null"],
                     TaskStatus.Success, LogLevel.Debug);
             }
@@ -57,7 +57,7 @@ public class ConfigService(
                 await context.Configs.AddAsync(conf, token);
 
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
+                    StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
                         conf.Value ?? "null"],
                     TaskStatus.Success, LogLevel.Debug);
             }
@@ -79,7 +79,7 @@ public class ConfigService(
 
         Type type = info.PropertyType;
         if (type.IsArray || IsArrayLikeInterface(type))
-            throw new NotSupportedException(Program.StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
+            throw new NotSupportedException(StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
         TypeConverter converter = TypeDescriptor.GetConverter(type);
 

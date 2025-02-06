@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services.CronJob;
 
-public static class DefaultCronJobs
+public static class RuntimeCronJobs
 {
     [CronJob("*/3 * * * *")]
     public static async Task ContainerChecker(AsyncServiceScope scope, ILogger<CronJobService> logger)
@@ -19,7 +19,7 @@ public static class DefaultCronJobs
         {
             await containerRepo.DestroyContainer(container);
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
+                StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
                     container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
@@ -45,7 +45,7 @@ public static class DefaultCronJobs
                 continue;
 
             await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
                 TaskStatus.Success,
                 LogLevel.Debug);
         }
