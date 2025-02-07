@@ -16,12 +16,15 @@ namespace GZCTF.Extensions;
 
 public static class HandlerExtension
 {
-    static readonly DistributedCacheEntryOptions FaviconOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
-
     const string CspTemplate = "default-src 'strict-dynamic' 'nonce-{0}' 'unsafe-inline' http: https:; " +
                                "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
                                "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
                                "connect-src 'self'; base-uri 'none';";
+
+    const StringSplitOptions DefaultSplitOptions =
+        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+
+    static readonly DistributedCacheEntryOptions FaviconOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
     static readonly HashSet<string> SupportedCultures = Server.SupportedCultures
         .Select(c => c.ToLower()).ToHashSet();
@@ -30,9 +33,6 @@ public static class HandlerExtension
         .Select(c => c.Split('-')[0]).ToHashSet();
 
     static string IndexTemplate = string.Empty;
-
-    const StringSplitOptions DefaultSplitOptions =
-        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
 
     public static void AddEntityConfiguration(this IConfigurationBuilder builder,
         Action<DbContextOptionsBuilder> optionsAction) =>
@@ -89,7 +89,7 @@ public static class HandlerExtension
             goto FallbackToDefaultIcon;
 
         await cache.SetStringAsync(CacheKey.Favicon, hash, FaviconOptions, token);
-        Stream stream = await storage.OpenReadAsync(path, token);
+        var stream = await storage.OpenReadAsync(path, token);
 
         return Results.File(
             stream,
@@ -143,7 +143,7 @@ public static class HandlerExtension
 
         if (content is null)
         {
-            GlobalConfig config = globalConfig.Value;
+            var config = globalConfig.Value;
             var title = HtmlEncoder.Default.Encode(config.Platform);
             var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
             content = IndexTemplate.Replace("%title%", title).Replace("%description%", description);

@@ -45,7 +45,7 @@ public class ChallengeDetailModel
     /// <summary>
     /// Flag context
     /// </summary>
-    public ClientFlagContext Context { get; set; } = default!;
+    public ClientFlagContext Context { get; set; } = null!;
 
     internal static ChallengeDetailModel FromInstance(GameInstance gameInstance) =>
         new()

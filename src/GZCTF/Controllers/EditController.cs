@@ -51,8 +51,8 @@ public class EditController(
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddPost([FromBody] PostEditModel model, CancellationToken token)
     {
-        UserInfo? user = await userManager.GetUserAsync(User);
-        Post res = await postRepository.CreatePost(new Post().Update(model, user!), token);
+        var user = await userManager.GetUserAsync(User);
+        var res = await postRepository.CreatePost(new Post().Update(model, user!), token);
         return Ok(res.Id);
     }
 
@@ -72,13 +72,13 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdatePost(string id, [FromBody] PostEditModel model, CancellationToken token)
     {
-        Post? post = await postRepository.GetPostById(id, token);
+        var post = await postRepository.GetPostById(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        UserInfo? user = await userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
         await postRepository.UpdatePost(post.Update(model, user!), token);
 
@@ -100,7 +100,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletePost(string id, CancellationToken token)
     {
-        Post? post = await postRepository.GetPostById(id, token);
+        var post = await postRepository.GetPostById(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)],
@@ -125,7 +125,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddGame([FromBody] GameInfoModel model, CancellationToken token)
     {
-        Game? game = await gameRepository.CreateGame(new Game().Update(model), token);
+        var game = await gameRepository.CreateGame(new Game().Update(model), token);
 
         if (game is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CreationFailed)]));
@@ -167,7 +167,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGame([FromRoute] int id, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -191,7 +191,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetHashSalt([FromRoute] int id, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -216,7 +216,7 @@ public class EditController(
     public async Task<IActionResult> UpdateGame([FromRoute] int id, [FromBody] GameInfoModel model,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -243,7 +243,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGame([FromRoute] int id, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -271,7 +271,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteGameWriteUps([FromRoute] int id, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -305,13 +305,13 @@ public class EditController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
         }
 
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        LocalFile? poster = await blobService.CreateOrUpdateImage(file, "poster", 0, token);
+        var poster = await blobService.CreateOrUpdateImage(file, "poster", 0, token);
 
         if (poster is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_CreationFailed)]));
@@ -338,13 +338,13 @@ public class EditController(
     public async Task<IActionResult> AddGameNotice([FromRoute] int id, [FromBody] GameNoticeModel model,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameNotice res = await gameNoticeRepository.AddNotice(
+        var res = await gameNoticeRepository.AddNotice(
             new()
             {
                 Values = [model.Content],
@@ -370,7 +370,7 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameNotices([FromRoute] int id, CancellationToken token = default)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -396,7 +396,7 @@ public class EditController(
     public async Task<IActionResult> UpdateGameNotice([FromRoute] int id, [FromRoute] int noticeId,
         [FromBody] GameNoticeModel model, CancellationToken token = default)
     {
-        GameNotice? notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
+        var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Notification_NotFound)],
@@ -426,7 +426,7 @@ public class EditController(
     public async Task<IActionResult> DeleteGameNotice([FromRoute] int id, [FromRoute] int noticeId,
         CancellationToken token)
     {
-        GameNotice? notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
+        var notice = await gameNoticeRepository.GetNoticeById(id, noticeId, token);
 
         if (notice is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotEditable)],
@@ -457,13 +457,13 @@ public class EditController(
     public async Task<IActionResult> AddGameChallenge([FromRoute] int id, [FromBody] ChallengeInfoModel model,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge res = await challengeRepository.CreateChallenge(game,
+        var res = await challengeRepository.CreateChallenge(game,
             new GameChallenge { Title = model.Title, Type = model.Type, Category = model.Category }, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
@@ -496,7 +496,7 @@ public class EditController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateGameChallengesAcceptedCount([FromRoute] int id, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -523,13 +523,13 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -559,13 +559,13 @@ public class EditController(
     public async Task<IActionResult> UpdateGameChallenge([FromRoute] int id, [FromRoute] int cId,
         [FromBody] ChallengeUpdateModel model, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, token);
+        var res = await challengeRepository.GetChallenge(id, cId, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -639,13 +639,13 @@ public class EditController(
     public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -658,9 +658,9 @@ public class EditController(
         if (challenge.ContainerImage is null || challenge.ContainerExposePort is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_ConfigError)]));
 
-        UserInfo? user = await userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
-        Container? container = await containerService.CreateContainerAsync(
+        var container = await containerService.CreateContainerAsync(
             new()
             {
                 TeamId = "admin",
@@ -705,13 +705,13 @@ public class EditController(
     public async Task<IActionResult> DestroyTestContainer([FromRoute] int id, [FromRoute] int cId,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -741,13 +741,13 @@ public class EditController(
     public async Task<IActionResult> RemoveGameChallenge([FromRoute] int id, [FromRoute] int cId,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? res = await challengeRepository.GetChallenge(id, cId, token);
+        var res = await challengeRepository.GetChallenge(id, cId, token);
 
         if (res is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -778,13 +778,13 @@ public class EditController(
     public async Task<IActionResult> UpdateAttachment([FromRoute] int id, [FromRoute] int cId,
         [FromBody] AttachmentCreateModel model, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -816,13 +816,13 @@ public class EditController(
     public async Task<IActionResult> AddFlags([FromRoute] int id, [FromRoute] int cId,
         [FromBody] FlagCreateModel[] models, CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
@@ -850,13 +850,13 @@ public class EditController(
     public async Task<IActionResult> RemoveFlag([FromRoute] int id, [FromRoute] int cId, [FromRoute] int fId,
         CancellationToken token)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        GameChallenge? challenge = await challengeRepository.GetChallenge(id, cId, token);
+        var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],

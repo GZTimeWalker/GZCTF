@@ -1,5 +1,4 @@
 ﻿using System.Threading.Channels;
-using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -12,24 +11,8 @@ public class FlagChecker(
     ILogger<FlagChecker> logger,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
-    CancellationTokenSource TokenSource { get; set; } = new();
     const int MaxWorkerCount = 4;
-
-    internal static int GetWorkerCount()
-    {
-        // if RAM < 2GiB or CPU <= 3, return 1
-        // if RAM < 4GiB or CPU <= 6, return 2
-        // otherwise, return 4
-        var memoryInfo = GC.GetGCMemoryInfo();
-        double freeMemory = memoryInfo.TotalAvailableMemoryBytes / 1024.0 / 1024.0 / 1024.0;
-        var cpuCount = Environment.ProcessorCount;
-
-        if (freeMemory < 2 || cpuCount <= 3)
-            return 1;
-        if (freeMemory < 4 || cpuCount <= 6)
-            return 2;
-        return MaxWorkerCount;
-    }
+    CancellationTokenSource TokenSource { get; set; } = new();
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -41,12 +24,12 @@ public class FlagChecker(
                 TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
-        await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
 
         var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
-        Submission[] flags = await submissionRepository.GetUncheckedFlags(TokenSource.Token);
+        var flags = await submissionRepository.GetUncheckedFlags(TokenSource.Token);
 
-        foreach (Submission item in flags)
+        foreach (var item in flags)
             await channelWriter.WriteAsync(item, TokenSource.Token);
 
         if (flags.Length > 0)
@@ -68,6 +51,22 @@ public class FlagChecker(
         return Task.CompletedTask;
     }
 
+    internal static int GetWorkerCount()
+    {
+        // if RAM < 2GiB or CPU <= 3, return 1
+        // if RAM < 4GiB or CPU <= 6, return 2
+        // otherwise, return 4
+        var memoryInfo = GC.GetGCMemoryInfo();
+        var freeMemory = memoryInfo.TotalAvailableMemoryBytes / 1024.0 / 1024.0 / 1024.0;
+        var cpuCount = Environment.ProcessorCount;
+
+        if (freeMemory < 2 || cpuCount <= 3)
+            return 1;
+        if (freeMemory < 4 || cpuCount <= 6)
+            return 2;
+        return MaxWorkerCount;
+    }
+
     async Task Checker(int id, CancellationToken token = default)
     {
         logger.SystemLog(StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerStarted), id],
@@ -76,24 +75,28 @@ public class FlagChecker(
 
         try
         {
-            await foreach (Submission item in channelReader.ReadAllAsync(token))
+            await foreach (var item in channelReader.ReadAllAsync(token))
             {
                 logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerStartProcessing), id,
                         item.Answer],
                     TaskStatus.Pending, LogLevel.Debug);
 
-                await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+                await using var scope = serviceScopeFactory.CreateAsyncScope();
 
                 var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
-                var eventRepository = scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
-                var instanceRepository = scope.ServiceProvider.GetRequiredService<IGameInstanceRepository>();
-                var gameNoticeRepository = scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
-                var submissionRepository = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
+                var eventRepository =
+                    scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
+                var instanceRepository =
+                    scope.ServiceProvider.GetRequiredService<IGameInstanceRepository>();
+                var gameNoticeRepository =
+                    scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
+                var submissionRepository =
+                    scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
 
                 try
                 {
-                    (SubmissionType type, AnswerResult ans) = await instanceRepository.VerifyAnswer(item, token);
+                    (var type, var ans) = await instanceRepository.VerifyAnswer(item, token);
 
                     switch (ans)
                     {
@@ -134,7 +137,7 @@ public class FlagChecker(
                                 await eventRepository.AddEvent(
                                     GameEvent.FromSubmission(item, type, ans, StaticLocalizer), token);
 
-                                CheatCheckInfo result = await instanceRepository.CheckCheat(item, token);
+                                var result = await instanceRepository.CheckCheat(item, token);
                                 ans = result.AnswerResult;
 
                                 if (ans == AnswerResult.CheatDetected)

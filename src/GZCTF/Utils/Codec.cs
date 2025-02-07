@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -228,7 +227,7 @@ public static partial class Codec
         {
             double entropy = 0;
             var doLeet = false;
-            bool isComplex = flag.StartsWith("[CLEET]");
+            var isComplex = flag.StartsWith("[CLEET]");
             var map = isComplex ? ComplexCharMap : CharMap;
 
             foreach (var c in flag)
@@ -360,7 +359,9 @@ public static partial class CodecExtensions
         foreach (var t in hash)
         {
             if (t == 0)
+            {
                 leadingZeros += 8;
+            }
             else
             {
                 var b = t;

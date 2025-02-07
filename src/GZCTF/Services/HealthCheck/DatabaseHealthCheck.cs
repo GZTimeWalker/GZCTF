@@ -11,7 +11,8 @@ public class DatabaseHealthCheck(AppDbContext dbContext) : IHealthCheck
         try
         {
             var time = DateTime.UtcNow;
-            var appliedMigrations = await dbContext.Database.GetAppliedMigrationsAsync(cancellationToken);
+            var appliedMigrations =
+                await dbContext.Database.GetAppliedMigrationsAsync(cancellationToken);
             return DateTime.UtcNow - time > TimeSpan.FromSeconds(1)
                 ? HealthCheckResult.Degraded()
                 : !appliedMigrations.SequenceEqual(dbContext.Database.GetMigrations())

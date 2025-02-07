@@ -18,7 +18,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     public async Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
-        await using Stream tmp = GetTempStream(file.Length);
+        await using var tmp = GetTempStream(file.Length);
 
         logger.SystemLog(
             StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation),
@@ -41,11 +41,11 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         {
             await using Stream webpStream = new MemoryStream();
 
-            await using (Stream tmp = GetTempStream(file.Length))
+            await using (var tmp = GetTempStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
-                using Image image = await Image.LoadAsync(tmp, token);
+                using var image = await Image.LoadAsync(tmp, token);
 
                 if (image.Metadata.DecodedImageFormat is GifFormat)
                     return await StoreBlob($"{fileName}.gif", tmp, token);
@@ -126,7 +126,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     public async Task<TaskStatus> DeleteBlobByHash(string fileHash,
         CancellationToken token = default)
     {
-        LocalFile? file = await GetBlobByHash(fileHash, token);
+        var file = await GetBlobByHash(fileHash, token);
 
         if (file is null)
             return TaskStatus.NotFound;
@@ -174,7 +174,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         var hash = await SHA256.HashDataAsync(contentStream, token);
         var fileHash = Convert.ToHexStringLower(hash);
 
-        LocalFile? localFile = await GetBlobByHash(fileHash, token);
+        var localFile = await GetBlobByHash(fileHash, token);
 
         if (localFile is not null)
         {

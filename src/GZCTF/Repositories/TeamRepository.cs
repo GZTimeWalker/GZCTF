@@ -8,7 +8,7 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
 {
     public async Task<bool> AnyActiveGame(Team team, CancellationToken token = default)
     {
-        DateTimeOffset current = DateTimeOffset.UtcNow;
+        var current = DateTimeOffset.UtcNow;
         var result = await Context.Participations
             .Where(p => p.Team == team && p.Game.EndTimeUtc > current)
             .AnyAsync(token);
@@ -62,7 +62,7 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
     public Task<Team[]> SearchTeams(string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
-        IQueryable<Team> query = int.TryParse(hint, out var id)
+        var query = int.TryParse(hint, out var id)
             ? Context.Teams.Include(t => t.Members)
                 .Where(item => item.Name.ToLower().Contains(loweredHint) || item.Id == id)
             : Context.Teams.Include(t => t.Members).Where(item => item.Name.ToLower().Contains(loweredHint));
@@ -78,7 +78,7 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
 
     public async Task<bool> VerifyToken(int id, string inviteCode, CancellationToken token = default)
     {
-        Team? team = await Context.Teams.FirstOrDefaultAsync(t => t.Id == id, token);
+        var team = await Context.Teams.FirstOrDefaultAsync(t => t.Id == id, token);
         return team is not null && team.InviteCode == inviteCode;
     }
 }

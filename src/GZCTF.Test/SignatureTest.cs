@@ -15,7 +15,7 @@ public class SignatureTest(ITestOutputHelper output)
     [Fact]
     public void Ed25519Test()
     {
-        var sAlgorithm = SignAlgorithm.Ed25519;
+        SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
         SecureRandom sr = new();
@@ -44,7 +44,7 @@ public class SignatureTest(ITestOutputHelper output)
     [Fact]
     public void Ed25519WithXorTest()
     {
-        var sAlgorithm = SignAlgorithm.Ed25519;
+        SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
 
@@ -112,7 +112,7 @@ public class SignatureTest(ITestOutputHelper output)
     [Fact]
     public void Ed448Test()
     {
-        var sAlgorithm = SignAlgorithm.Ed448;
+        SignAlgorithm sAlgorithm = SignAlgorithm.Ed448;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
         SecureRandom sr = new();

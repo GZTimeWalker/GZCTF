@@ -11,7 +11,7 @@ public static class PrelaunchHelper
 {
     public static async Task RunPrelaunchWorkAsync(this WebApplication app)
     {
-        using IServiceScope serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
         var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -37,8 +37,9 @@ public static class PrelaunchHelper
 
         if (app.Environment.IsDevelopment() || app.Configuration.GetSection("ADMIN_PASSWORD").Exists())
         {
-            var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
-            UserInfo? admin = await userManager.FindByNameAsync("Admin");
+            var userManager =
+                serviceScope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
+            var admin = await userManager.FindByNameAsync("Admin");
             var password = app.Environment.IsDevelopment()
                 ? "Admin@2022"
                 : app.Configuration.GetValue<string>("ADMIN_PASSWORD");
@@ -54,7 +55,7 @@ public static class PrelaunchHelper
                     RegisterTimeUtc = DateTimeOffset.UtcNow
                 };
 
-                IdentityResult result = await userManager.CreateAsync(admin, password);
+                var result = await userManager.CreateAsync(admin, password);
                 if (!result.Succeeded)
                     logger.SystemLog(
                         StaticLocalizer[nameof(Resources.Program.Init_AdminCreationFailed),
@@ -63,7 +64,8 @@ public static class PrelaunchHelper
             }
         }
 
-        var containerConfig = serviceScope.ServiceProvider.GetRequiredService<IOptions<ContainerProvider>>();
+        var containerConfig =
+            serviceScope.ServiceProvider.GetRequiredService<IOptions<ContainerProvider>>();
         if (containerConfig.Value.EnableTrafficCapture &&
             containerConfig.Value.PortMappingType != ContainerPortMappingType.PlatformProxy)
             logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Init_CaptureNotAvailable)],

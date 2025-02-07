@@ -10,7 +10,7 @@ public class UserParticipation
     /// <summary>
     /// Participation object
     /// </summary>
-    public Participation Participation = default!;
+    public Participation Participation = null!;
 
     public UserParticipation() { }
 
@@ -32,7 +32,7 @@ public class UserParticipation
     /// <summary>
     /// User
     /// </summary>
-    public UserInfo User { get; set; } = default!;
+    public UserInfo User { get; set; } = null!;
 
     /// <summary>
     /// Team ID
@@ -43,7 +43,7 @@ public class UserParticipation
     /// <summary>
     /// Team
     /// </summary>
-    public Team Team { get; set; } = default!;
+    public Team Team { get; set; } = null!;
 
     /// <summary>
     /// Game ID
@@ -54,7 +54,7 @@ public class UserParticipation
     /// <summary>
     /// Game
     /// </summary>
-    public Game Game { get; set; } = default!;
+    public Game Game { get; set; } = null!;
 
     /// <summary>
     /// Participation ID

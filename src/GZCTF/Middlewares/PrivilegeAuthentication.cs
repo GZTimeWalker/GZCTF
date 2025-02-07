@@ -18,17 +18,20 @@ public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthor
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
+        var logger =
+            context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
         var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
-        var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
-        var diagnosticContext = context.HttpContext.RequestServices.GetRequiredService<IDiagnosticContext>();
+        var localizer =
+            context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
+        var diagnosticContext =
+            context.HttpContext.RequestServices.GetRequiredService<IDiagnosticContext>();
 
         var id = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         UserInfo? user = null;
 
         if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true &&
-            Guid.TryParse(id, out Guid guid))
+            Guid.TryParse(id, out var guid))
             user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == guid);
 
         if (user is null)

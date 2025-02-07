@@ -78,6 +78,22 @@ public interface IGameRepository : IRepository
     /// <returns></returns>
     public string GetToken(Game game, Team team);
 
+    /// <summary>
+    /// 删除比赛
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// 删除比赛的全部 WriteUp
+    /// </summary>
+    /// <param name="game">比赛对象</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task DeleteAllWriteUps(Game game, CancellationToken token = default);
+
     #region RecentGames
 
     /// <summary>
@@ -122,20 +138,4 @@ public interface IGameRepository : IRepository
     public Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default);
 
     #endregion
-
-    /// <summary>
-    /// 删除比赛
-    /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default);
-
-    /// <summary>
-    /// 删除比赛的全部 WriteUp
-    /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task DeleteAllWriteUps(Game game, CancellationToken token = default);
 }

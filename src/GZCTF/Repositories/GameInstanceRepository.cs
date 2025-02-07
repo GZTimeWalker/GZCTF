@@ -2,7 +2,6 @@
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Container.Manager;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -20,9 +19,9 @@ public class GameInstanceRepository(
 {
     public async Task<GameInstance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
-        await using IDbContextTransaction transaction = await Context.Database.BeginTransactionAsync(token);
+        await using var transaction = await Context.Database.BeginTransactionAsync(token);
 
-        GameInstance? instance = await Context.GameInstances
+        var instance = await Context.GameInstances
             .Include(i => i.FlagContext)
             .Where(e => e.ChallengeId == challengeId && e.Participation == part)
             .SingleOrDefaultAsync(token);
@@ -37,7 +36,7 @@ public class GameInstanceRepository(
             return null;
         }
 
-        GameChallenge challenge = instance.Challenge;
+        var challenge = instance.Challenge;
 
         if (!challenge.IsEnabled)
         {
@@ -125,11 +124,11 @@ public class GameInstanceRepository(
         {
             if (containerPolicy.Value.AutoDestroyOnLimitReached)
             {
-                List<GameInstance> running = await Context.GameInstances
+                var running = await Context.GameInstances
                     .Where(i => i.Participation == gameInstance.Participation && i.Container != null)
                     .OrderBy(i => i.Container!.StartedAt).ToListAsync(token);
 
-                GameInstance? first = running.FirstOrDefault();
+                var first = running.FirstOrDefault();
                 if (running.Count >= game.ContainerCountLimit && first is not null)
                 {
                     logger.Log(
@@ -155,7 +154,7 @@ public class GameInstanceRepository(
             return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
 
         await Context.Entry(gameInstance).Reference(e => e.FlagContext).LoadAsync(token);
-        Container? container = await service.CreateContainerAsync(new ContainerConfig
+        var container = await service.CreateContainerAsync(new ContainerConfig
         {
             TeamId = team.Id.ToString(),
             UserId = user.Id,
@@ -208,7 +207,7 @@ public class GameInstanceRepository(
 
     public async Task DestroyAllInstances(GameChallenge challenge, CancellationToken token = default)
     {
-        foreach (Container? container in await Context.GameInstances
+        foreach (var container in await Context.GameInstances
                      .Include(i => i.Container)
                      .Where(i => i.Challenge == challenge && i.ContainerId != null)
                      .Select(i => i.Container)
@@ -225,7 +224,7 @@ public class GameInstanceRepository(
     {
         CheatCheckInfo checkInfo = new();
 
-        GameInstance? instance = await Context.GameInstances
+        var instance = await Context.GameInstances
             .Include(i => i.Participation)
             .ThenInclude(i => i.Team)
             .Include(i => i.FlagContext)
@@ -237,9 +236,9 @@ public class GameInstanceRepository(
         if (instance is null)
             return checkInfo;
 
-        Submission updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+        var updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
 
-        CheatInfo cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
+        var cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
 
         checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
@@ -252,11 +251,11 @@ public class GameInstanceRepository(
 
     public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        IDbContextTransaction trans = await Context.Database.BeginTransactionAsync(token);
+        var trans = await Context.Database.BeginTransactionAsync(token);
 
         try
         {
-            GameInstance? instance = await Context.GameInstances.IgnoreAutoIncludes()
+            var instance = await Context.GameInstances.IgnoreAutoIncludes()
                 .Include(i => i.FlagContext)
                 .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
                                            i.ParticipationId == submission.ParticipationId, token);
@@ -271,7 +270,7 @@ public class GameInstanceRepository(
 
             // submission is from the queue, do not modify it directly
             // we need to fetch the entity again to ensure it is being tracked correctly
-            Submission updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+            var updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
 
             if (instance.FlagContext is null && submission.GameChallenge?.Type.IsStatic() is true)
                 updateSub.Status = await Context.FlagContexts.AsNoTracking()

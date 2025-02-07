@@ -35,7 +35,7 @@ public class ContainerRepository(
 
     public Task<List<Container>> GetDyingContainers(CancellationToken token = default)
     {
-        DateTimeOffset now = DateTimeOffset.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         return Context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
     }
 

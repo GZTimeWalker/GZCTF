@@ -28,13 +28,13 @@ public class ConfigService(
 
     public async Task SaveConfigSet(HashSet<ConfigModel> configs, CancellationToken token = default)
     {
-        Dictionary<string, ConfigModel> dbConfigs = await context.Configs
+        var dbConfigs = await context.Configs
             .ToDictionaryAsync(c => c.ConfigKey, c => c, token);
         HashSet<string> cacheKeys = [];
 
-        foreach (ConfigModel conf in configs)
+        foreach (var conf in configs)
         {
-            if (dbConfigs.TryGetValue(conf.ConfigKey, out ConfigModel? dbConf))
+            if (dbConfigs.TryGetValue(conf.ConfigKey, out var dbConf))
             {
                 if (dbConf.Value == conf.Value)
                     continue;
@@ -77,11 +77,11 @@ public class ConfigService(
         if (value is null || info.GetCustomAttribute<AutoSaveIgnoreAttribute>() != null)
             return;
 
-        Type type = info.PropertyType;
+        var type = info.PropertyType;
         if (type.IsArray || IsArrayLikeInterface(type))
             throw new NotSupportedException(StaticLocalizer[nameof(Resources.Program.Config_TypeNotSupported)]);
 
-        TypeConverter converter = TypeDescriptor.GetConverter(type);
+        var converter = TypeDescriptor.GetConverter(type);
 
         if (type == typeof(string) || type.IsValueType)
         {
@@ -92,7 +92,7 @@ public class ConfigService(
         }
         else if (type.IsClass)
         {
-            foreach (PropertyInfo item in type.GetProperties())
+            foreach (var item in type.GetProperties())
                 MapConfigsInternal($"{key}:{item.Name}", configs, item, item.GetValue(value));
         }
     }
@@ -103,7 +103,7 @@ public class ConfigService(
     {
         HashSet<ConfigModel> configs = [];
 
-        foreach (PropertyInfo item in type.GetProperties())
+        foreach (var item in type.GetProperties())
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item, item.GetValue(value));
 
         return configs;
@@ -114,9 +114,9 @@ public class ConfigService(
     T>(T config) where T : class
     {
         HashSet<ConfigModel> configs = [];
-        Type type = typeof(T);
+        var type = typeof(T);
 
-        foreach (PropertyInfo item in type.GetProperties())
+        foreach (var item in type.GetProperties())
             MapConfigsInternal($"{type.Name}:{item.Name}", configs, item, item.GetValue(config));
 
         return configs;
@@ -127,7 +127,7 @@ public class ConfigService(
         if (!type.IsInterface || !type.IsConstructedGenericType)
             return false;
 
-        Type genericTypeDefinition = type.GetGenericTypeDefinition();
+        var genericTypeDefinition = type.GetGenericTypeDefinition();
         return genericTypeDefinition == typeof(IEnumerable<>)
                || genericTypeDefinition == typeof(ICollection<>)
                || genericTypeDefinition == typeof(IList<>)

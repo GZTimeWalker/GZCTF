@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
 using Serilog;
 using StackExchange.Redis;
 
@@ -26,7 +25,7 @@ static class AppBuilderExtensions
 
         builder.WebHost.ConfigureKestrel(options =>
         {
-            IConfigurationSection kestrelSection = builder.Configuration.GetSection("Kestrel");
+            var kestrelSection = builder.Configuration.GetSection("Kestrel");
             options.Configure(kestrelSection);
             kestrelSection.Bind(options);
         }).UseKestrel(options =>
@@ -43,7 +42,7 @@ static class AppBuilderExtensions
 
     internal static void ConfigureCacheAndSignalR(this WebApplicationBuilder builder)
     {
-        ISignalRServerBuilder signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
+        var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
 
         var connectionString = builder.Configuration.GetConnectionString("RedisCache");
 

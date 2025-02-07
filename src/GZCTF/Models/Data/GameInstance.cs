@@ -10,16 +10,22 @@ public class GameInstance : Instance
     /// <summary>
     /// Get instance attachment
     /// </summary>
-    internal Attachment? Attachment => Challenge.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment
-        : Challenge.Attachment;
+    internal Attachment? Attachment
+    {
+        get => Challenge.Type == ChallengeType.DynamicAttachment
+            ? FlagContext?.Attachment
+            : Challenge.Attachment;
+    }
 
     /// <summary>
     /// Get instance attachment URL
     /// </summary>
-    internal string? AttachmentUrl => Challenge.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
-        : Challenge.Attachment?.UrlWithName();
+    internal string? AttachmentUrl
+    {
+        get => Challenge.Type == ChallengeType.DynamicAttachment
+            ? FlagContext?.Attachment?.UrlWithName(Challenge.FileName)
+            : Challenge.Attachment?.UrlWithName();
+    }
 
     #region Db Relationship
 
@@ -29,7 +35,7 @@ public class GameInstance : Instance
     /// <summary>
     /// Challenge object
     /// </summary>
-    public GameChallenge Challenge { get; set; } = default!;
+    public GameChallenge Challenge { get; set; } = null!;
 
     [Required]
     public int ParticipationId { get; set; }
@@ -37,7 +43,7 @@ public class GameInstance : Instance
     /// <summary>
     /// Participation team object
     /// </summary>
-    public Participation Participation { get; set; } = default!;
+    public Participation Participation { get; set; } = null!;
 
     #endregion Db Relationship
 }

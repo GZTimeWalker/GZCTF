@@ -11,7 +11,7 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <summary>
     /// Docker 配置
     /// </summary>
-    public Models.Internal.DockerConfig Config { get; set; } = new();
+    public DockerConfig Config { get; set; } = new();
 
     /// <summary>
     /// Docker 鉴权用配置

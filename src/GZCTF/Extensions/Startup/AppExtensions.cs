@@ -19,7 +19,7 @@ static class AppExtensions
 
     internal static async Task RunServerAsync(this WebApplication app)
     {
-        await using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+        await using var scope = app.Services.CreateAsyncScope();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Server>>();
 
         try

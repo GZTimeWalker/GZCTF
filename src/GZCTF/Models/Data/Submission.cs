@@ -83,7 +83,7 @@ public class Submission
     /// Team participation object
     /// </summary>
     [JsonIgnore]
-    public Participation Participation { get; set; } = default!;
+    public Participation Participation { get; set; } = null!;
 
     /// <summary>
     /// Game ID
@@ -95,7 +95,7 @@ public class Submission
     /// Game
     /// </summary>
     [JsonIgnore]
-    public Game? Game { get; set; } = default!;
+    public Game? Game { get; set; } = null!;
 
     /// <summary>
     /// Challenge database ID

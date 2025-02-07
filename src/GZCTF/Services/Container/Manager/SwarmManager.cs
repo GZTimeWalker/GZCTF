@@ -81,7 +81,7 @@ public class SwarmManager : IContainerManager
             return null;
         }
 
-        ServiceCreateParameters parameters = GetServiceCreateParameters(config);
+        var parameters = GetServiceCreateParameters(config);
         ServiceCreateResponse? serviceRes;
         var retry = 0;
 
@@ -196,7 +196,7 @@ public class SwarmManager : IContainerManager
                             Env =
                                 config.Flag is null
                                     ? [$"GZCTF_TEAM_ID={config.TeamId}"]
-                                    : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"],
+                                    : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"]
                         },
                     Resources = new()
                     {

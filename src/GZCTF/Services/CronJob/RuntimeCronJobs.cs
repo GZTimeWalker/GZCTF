@@ -15,7 +15,7 @@ public static class RuntimeCronJobs
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
 
-        foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
+        foreach (var container in await containerRepo.GetDyingContainers())
         {
             await containerRepo.DestroyContainer(container);
             logger.SystemLog(
@@ -34,7 +34,8 @@ public static class RuntimeCronJobs
         if (upcoming.Length <= 0)
             return;
 
-        var channelWriter = scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
+        var channelWriter =
+            scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
         var cache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
         foreach (var game in upcoming)

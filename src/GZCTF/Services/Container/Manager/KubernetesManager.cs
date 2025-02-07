@@ -44,7 +44,7 @@ public class KubernetesManager : IContainerManager
         }
 
         var authSecretName = _meta.AuthSecretName;
-        KubernetesConfig options = _meta.Config;
+        var options = _meta.Config;
 
         var chalImage = imageName.ToValidRFC1123String("chal");
 

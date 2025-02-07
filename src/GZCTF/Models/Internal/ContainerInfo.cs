@@ -5,20 +5,20 @@ public class ContainerInfo
     /// <summary>
     /// Container ID
     /// </summary>
-    public string Id { get; set; } = default!;
+    public string Id { get; set; } = null!;
 
     /// <summary>
     /// Container name
     /// </summary>
-    public string Name { get; set; } = default!;
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Container image
     /// </summary>
-    public string Image { get; set; } = default!;
+    public string Image { get; set; } = null!;
 
     /// <summary>
     /// Container state
     /// </summary>
-    public string State { get; set; } = default!;
+    public string State { get; set; } = null!;
 }

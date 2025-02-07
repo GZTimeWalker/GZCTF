@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Net;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using MemoryPack;
@@ -82,7 +81,7 @@ public partial class UserInfo : IdentityUser<Guid>
     {
         LastVisitedUtc = DateTimeOffset.UtcNow;
 
-        IPAddress? remoteAddress = context.Connection.RemoteIpAddress;
+        var remoteAddress = context.Connection.RemoteIpAddress;
 
         if (remoteAddress is null)
             return;

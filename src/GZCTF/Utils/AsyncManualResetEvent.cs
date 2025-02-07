@@ -14,7 +14,7 @@ public sealed class AsyncManualResetEvent
     /// <param name="cancellationToken">Cancellation token</param>
     public async Task WaitAsync(CancellationToken cancellationToken = default)
     {
-        TaskCompletionSource<bool> tcs = _tcs;
+        var tcs = _tcs;
         var cancelTcs = new TaskCompletionSource<bool>();
 
         cancellationToken.Register(
@@ -37,7 +37,7 @@ public sealed class AsyncManualResetEvent
     /// <returns>Returns false if timeout</returns>
     public async Task<bool> WaitAsync(int milliseconds, CancellationToken cancellationToken = default)
     {
-        TaskCompletionSource<bool> tcs = _tcs;
+        var tcs = _tcs;
         var cancelTcs = new TaskCompletionSource<bool>();
 
         cancellationToken.Register(
@@ -51,7 +51,7 @@ public sealed class AsyncManualResetEvent
     /// </summary>
     public void Set()
     {
-        TaskCompletionSource<bool> tcs = _tcs;
+        var tcs = _tcs;
         Task.Factory.StartNew(s => ((TaskCompletionSource<bool>)s!).TrySetResult(true),
             tcs, CancellationToken.None, TaskCreationOptions.PreferFairness, TaskScheduler.Default);
         tcs.Task.Wait();
@@ -65,7 +65,7 @@ public sealed class AsyncManualResetEvent
         var newTcs = new TaskCompletionSource<bool>();
         while (true)
         {
-            TaskCompletionSource<bool> tcs = _tcs;
+            var tcs = _tcs;
             if (!tcs.Task.IsCompleted ||
                 Interlocked.CompareExchange(ref _tcs, newTcs, tcs) == tcs)
                 return;

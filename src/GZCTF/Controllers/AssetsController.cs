@@ -92,9 +92,9 @@ public class AssetsController(
         try
         {
             List<LocalFile> results = [];
-            foreach (IFormFile? file in files.Where(file => file.Length > 0))
+            foreach (var file in files.Where(file => file.Length > 0))
             {
-                LocalFile res = await blobService.CreateOrUpdateBlob(file, filename, token);
+                var res = await blobService.CreateOrUpdateBlob(file, filename, token);
                 logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8],
                         filename ?? file.FileName, file.Length],
@@ -130,7 +130,7 @@ public class AssetsController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
-        TaskStatus result = await blobService.DeleteBlobByHash(hash, token);
+        var result = await blobService.DeleteBlobByHash(hash, token);
 
         logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result,
             LogLevel.Information);

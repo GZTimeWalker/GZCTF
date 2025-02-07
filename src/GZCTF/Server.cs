@@ -7,6 +7,9 @@ namespace GZCTF;
 
 public class Server
 {
+    internal const int MetricPort = 3000;
+    internal const int ServerPort = 8080;
+
     internal static readonly string[] SupportedCultures =
     [
         "en-US",
@@ -22,11 +25,11 @@ public class Server
         "vi-VN"
     ];
 
-    internal static IStringLocalizer<Program> StaticLocalizer { get; } =
-        new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
-
     static readonly string LanguageWarning =
         $"Warning: Current language {CultureInfo.CurrentCulture.DisplayName} is machine translated and may not be accurate.\n";
+
+    internal static IStringLocalizer<Program> StaticLocalizer { get; } =
+        new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
 
     internal static void Banner()
     {
@@ -50,7 +53,7 @@ public class Server
         Console.WriteLine(banner);
 
         var versionStr = "";
-        Version? version = typeof(Program).Assembly.GetName().Version;
+        var version = typeof(Program).Assembly.GetName().Version;
         if (version is not null)
             versionStr = $"Version: {version.Major}.{version.Minor}.{version.Build}";
 
@@ -63,9 +66,6 @@ public class Server
             Console.WriteLine(LanguageWarning);
     }
 
-    internal const int MetricPort = 3000;
-    internal const int ServerPort = 8080;
-
     internal static void ExitWithFatalMessage(string msg)
     {
         Log.Logger.Fatal(msg);
@@ -75,7 +75,8 @@ public class Server
 
     internal static IActionResult InvalidModelStateHandler(ActionContext context)
     {
-        var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
+        var localizer =
+            context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
         if (context.ModelState.ErrorCount <= 0)
             return new JsonResult(new RequestResponse(
                 localizer[nameof(Resources.Program.Model_ValidationFailed)]))

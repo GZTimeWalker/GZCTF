@@ -82,7 +82,7 @@ public class DockerManager : IContainerManager
             return null;
         }
 
-        CreateContainerParameters parameters = GetCreateContainerParameters(config);
+        var parameters = GetCreateContainerParameters(config);
 
         if (_meta.ExposePort)
         {
@@ -196,7 +196,7 @@ public class DockerManager : IContainerManager
             await Task.Delay(500, token);
         }
 
-        ContainerInspectResponse? info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
+        var info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
 
         container.Status = info.State.Dead || info.State.OOMKilled || info.State.Restarting
             ? ContainerStatus.Destroyed

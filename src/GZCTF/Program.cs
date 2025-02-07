@@ -29,7 +29,7 @@ Log.Logger = LogHelper.GetInitLogger();
 
 Banner();
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 await PathHelper.EnsureDirsAsync(builder.Environment);
 
@@ -45,7 +45,7 @@ builder.AddCustomServices();
 builder.AddWebServices();
 builder.AddDevelopmentServices();
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
 
@@ -62,7 +62,7 @@ namespace GZCTF
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(DesignTimeAppDbContextFactory))]
         static Program()
         {
-            using Stream stream = typeof(Program).Assembly
+            using var stream = typeof(Program).Assembly
                 .GetManifestResourceStream("GZCTF.Resources.favicon.webp")!;
             DefaultFavicon = new byte[stream.Length];
 

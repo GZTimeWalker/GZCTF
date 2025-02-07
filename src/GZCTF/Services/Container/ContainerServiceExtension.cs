@@ -29,8 +29,8 @@ public static class ContainerServiceExtension
     internal static IServiceCollection AddContainerService(this IServiceCollection services,
         IConfiguration configuration)
     {
-        ContainerProvider config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ??
-                                   new();
+        var config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ??
+                     new();
 
         // FIXME: custom IPortMapper
         return services.AddProvider(config).AddManager(config);

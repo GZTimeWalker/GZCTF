@@ -145,7 +145,7 @@ public static class LogHelper
 
     public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
     {
-        LoggerConfiguration loggerConfig = new LoggerConfiguration()
+        var loggerConfig = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>

@@ -77,18 +77,18 @@ public class ProxyController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Container_ConnectionLimitExceeded)]));
 
-        Container? container = await containerRepository.GetContainerWithInstanceById(id, token);
+        var container = await containerRepository.GetContainerWithInstanceById(id, token);
 
         if (container is null || !container.IsProxy)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
+        var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
         if (ipAddress is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
-        IPAddress? clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientIp = HttpContext.Connection.RemoteIpAddress;
         var clientPort = HttpContext.Connection.RemotePort;
 
         if (clientIp is null)
@@ -135,18 +135,18 @@ public class ProxyController(
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
 
-        Container? container = await containerRepository.GetContainerById(id, token);
+        var container = await containerRepository.GetContainerById(id, token);
 
         if (container is null || container.GameInstanceId is not null || !container.IsProxy)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        IPAddress? ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
+        var ipAddress = (await Dns.GetHostAddressesAsync(container.IP, token)).FirstOrDefault();
 
         if (ipAddress is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
-        IPAddress? clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientIp = HttpContext.Connection.RemoteIpAddress;
         var clientPort = HttpContext.Connection.RemotePort;
 
         if (clientIp is null)
@@ -189,7 +189,7 @@ public class ProxyController(
                 { StatusCode = StatusCodes.Status418ImATeapot };
             }
 
-            using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
             try
             {
@@ -217,8 +217,8 @@ public class ProxyController(
     void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
     {
         var shortId = id.ToString("N")[..8];
-        IPAddress clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
-        IPAddress targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
+        var clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
+        var targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
 
         logger.SystemLog($"[{shortId}] {clientAddress} -> {targetAddress}:{target.Port}, tx {tx}, rx {rx}",
             TaskStatus.Success, LogLevel.Debug);
@@ -237,17 +237,17 @@ public class ProxyController(
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
-        CancellationToken ct = cts.Token;
+        var ct = cts.Token;
         ulong tx = 0, rx = 0;
 
-        Task sender = Task.Run(async () =>
+        var sender = Task.Run(async () =>
         {
             var buffer = new byte[BufferSize];
             try
             {
                 while (true)
                 {
-                    WebSocketReceiveResult status = await ws.ReceiveAsync(buffer, ct);
+                    var status = await ws.ReceiveAsync(buffer, ct);
                     if (status.CloseStatus.HasValue)
                         break;
                     if (status.Count <= 0)
@@ -261,7 +261,7 @@ public class ProxyController(
             finally { await cts.CancelAsync(); }
         }, ct);
 
-        Task receiver = Task.Run(async () =>
+        var receiver = Task.Run(async () =>
         {
             var buffer = new byte[BufferSize];
             try

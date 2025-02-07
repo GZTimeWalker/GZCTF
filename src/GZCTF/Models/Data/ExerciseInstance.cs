@@ -10,16 +10,18 @@ public class ExerciseInstance : Instance
     /// <summary>
     /// Get instance attachment
     /// </summary>
-    internal Attachment? Attachment => Exercise.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment
-        : Exercise.Attachment;
+    internal Attachment? Attachment =>
+        Exercise.Type == ChallengeType.DynamicAttachment
+            ? FlagContext?.Attachment
+            : Exercise.Attachment;
 
     /// <summary>
     /// Get instance attachment URL
     /// </summary>
-    internal string? AttachmentUrl => Exercise.Type == ChallengeType.DynamicAttachment
-        ? FlagContext?.Attachment?.UrlWithName(Exercise.FileName)
-        : Exercise.Attachment?.UrlWithName();
+    internal string? AttachmentUrl =>
+        Exercise.Type == ChallengeType.DynamicAttachment
+            ? FlagContext?.Attachment?.UrlWithName(Exercise.FileName)
+            : Exercise.Attachment?.UrlWithName();
 
     /// <summary>
     /// Time when the answer was solved
@@ -37,7 +39,7 @@ public class ExerciseInstance : Instance
     /// <summary>
     /// Participating user
     /// </summary>
-    public UserInfo User { get; set; } = default!;
+    public UserInfo User { get; set; } = null!;
 
     /// <summary>
     /// Exercise ID
@@ -48,7 +50,7 @@ public class ExerciseInstance : Instance
     /// <summary>
     /// Exercise object
     /// </summary>
-    public ExerciseChallenge Exercise { get; set; } = default!;
+    public ExerciseChallenge Exercise { get; set; } = null!;
 
     #endregion
 }

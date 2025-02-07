@@ -70,9 +70,9 @@ public class CacheMaker(
 
         try
         {
-            await foreach (CacheRequest item in channelReader.ReadAllAsync(token))
+            await foreach (var item in channelReader.ReadAllAsync(token))
             {
-                if (!_cacheHandlers.TryGetValue(item.Key, out ICacheRequestHandler? handler))
+                if (!_cacheHandlers.TryGetValue(item.Key, out var handler))
                 {
                     logger.SystemLog(
                         StaticLocalizer[nameof(Resources.Program.Cache_NoMatchingRequest), item.Key],
@@ -117,7 +117,7 @@ public class CacheMaker(
                 lastUpdateBytes = MemoryPackSerializer.Serialize(DateTimeOffset.UtcNow);
                 await cache.SetAsync(lastUpdateKey, lastUpdateBytes, new(), token);
 
-                await using AsyncServiceScope scope = serviceScopeFactory.CreateAsyncScope();
+                await using var scope = serviceScopeFactory.CreateAsyncScope();
 
                 try
                 {

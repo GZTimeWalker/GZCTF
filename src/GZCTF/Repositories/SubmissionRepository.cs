@@ -48,7 +48,7 @@ public class SubmissionRepository(
 
     IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {
-        IQueryable<Submission> subs = type is not null
+        var subs = type is not null
             ? Context.Submissions.Where(s => s.Status == type.Value)
             : Context.Submissions;
 

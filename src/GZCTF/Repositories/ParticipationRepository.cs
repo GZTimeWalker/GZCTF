@@ -12,7 +12,7 @@ public class ParticipationRepository(
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
-        GameChallenge[] challenges =
+        var challenges =
             await Context.GameChallenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
 
         // re-query instead of Entry
@@ -60,11 +60,11 @@ public class ParticipationRepository(
         CancellationToken token = default)
     {
         var trans = await Context.Database.BeginTransactionAsync(token);
-        bool needFlush = false;
+        var needFlush = false;
 
         if (model.Status != part.Status && model.Status is not null)
         {
-            ParticipationStatus oldStatus = part.Status;
+            var oldStatus = part.Status;
             part.Status = model.Status.Value;
 
             if (model.Status == ParticipationStatus.Accepted)

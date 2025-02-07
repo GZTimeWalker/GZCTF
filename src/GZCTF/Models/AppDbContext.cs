@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -57,10 +56,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     {
         base.OnModelCreating(builder);
 
-        ValueConverter<List<string>?, string> listConverter = GetJsonConverter<List<string>>();
-        ValueConverter<HashSet<string>?, string> setConverter = GetJsonConverter<HashSet<string>>();
-        ValueComparer<List<string>> listComparer = GetEnumerableComparer<List<string>, string>();
-        ValueComparer<HashSet<string>> setComparer = GetEnumerableComparer<HashSet<string>, string>();
+        var listConverter = GetJsonConverter<List<string>>();
+        var setConverter = GetJsonConverter<HashSet<string>>();
+        var listComparer = GetEnumerableComparer<List<string>, string>();
+        var setComparer = GetEnumerableComparer<HashSet<string>, string>();
 
         builder.Entity<UserInfo>(entity =>
         {

@@ -52,7 +52,7 @@ public class ExerciseDetailModel
     /// <summary>
     /// Flag context
     /// </summary>
-    public ClientFlagContext Context { get; set; } = default!;
+    public ClientFlagContext Context { get; set; } = null!;
 
     internal static ExerciseDetailModel FromInstance(ExerciseInstance instance) =>
         new()

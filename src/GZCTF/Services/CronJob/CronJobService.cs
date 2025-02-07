@@ -12,10 +12,10 @@ public record CronJobEntry(CronJob Job, CronExpression Expression);
 public class CronJobService(IDistributedCache cache, IServiceScopeFactory provider, ILogger<CronJobService> logger)
     : IHostedService, IDisposable
 {
-    Timer? _timer;
-    bool _holdLock;
-    bool _disposed;
     readonly Dictionary<string, CronJobEntry> _jobs = [];
+    bool _disposed;
+    bool _holdLock;
+    Timer? _timer;
 
     public void Dispose()
     {
@@ -27,7 +27,24 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         GC.SuppressFinalize(this);
     }
 
-    ~CronJobService() => Dispose();
+    public async Task StartAsync(CancellationToken token)
+    {
+        if (await TryHoldLock())
+            LaunchCronJob();
+        else
+            LaunchWatchDog();
+    }
+
+    public Task StopAsync(CancellationToken token)
+    {
+        StopCronJob();
+        return DropLock();
+    }
+
+    ~CronJobService()
+    {
+        Dispose();
+    }
 
     /// <summary>
     /// Add a job to the cron job service
@@ -36,7 +53,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
     {
         lock (_jobs)
         {
-            (string name, CronJobEntry entry) = job.ToEntry();
+            (var name, var entry) = job.ToEntry();
             if (!_jobs.TryAdd(name, entry))
                 return false;
         }
@@ -142,20 +159,6 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
             TaskStatus.Pending, LogLevel.Debug);
     }
 
-    public async Task StartAsync(CancellationToken token)
-    {
-        if (await TryHoldLock())
-            LaunchCronJob();
-        else
-            LaunchWatchDog();
-    }
-
-    public Task StopAsync(CancellationToken token)
-    {
-        StopCronJob();
-        return DropLock();
-    }
-
     async Task Execute()
     {
         var now = DateTime.UtcNow;
@@ -166,7 +169,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
         lock (_jobs)
         {
-            foreach ((var job, CronJobEntry entry) in _jobs)
+            foreach ((var job, var entry) in _jobs)
             {
                 if (entry.Expression.GetNextOccurrence(last) is not { } next ||
                     Math.Abs((next - now).TotalSeconds) > 30D)

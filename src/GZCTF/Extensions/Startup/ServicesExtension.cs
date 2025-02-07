@@ -29,7 +29,8 @@ static class ServicesExtension
         builder.AddConfig<ContainerPolicy>();
         builder.AddConfig<ContainerProvider>();
 
-        var forwardedOptions = builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
+        var forwardedOptions =
+            builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
         if (forwardedOptions is null)
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
             {

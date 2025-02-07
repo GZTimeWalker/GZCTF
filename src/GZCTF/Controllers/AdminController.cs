@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
-using System.Reflection;
 using FluentStorage.Blobs;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
@@ -15,7 +14,6 @@ using GZCTF.Services.Config;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -83,7 +81,7 @@ public class AdminController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateConfigs([FromBody] ConfigEditModel model, CancellationToken token)
     {
-        foreach (PropertyInfo prop in typeof(ConfigEditModel).GetProperties())
+        foreach (var prop in typeof(ConfigEditModel).GetProperties())
         {
             var value = prop.GetValue(model);
 
@@ -120,11 +118,11 @@ public class AdminController(
         if (!await DeleteCurrentLogo(token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
-        LocalFile? logo = await blobService.CreateOrUpdateImage(file, "logo", 640, token);
+        var logo = await blobService.CreateOrUpdateImage(file, "logo", 640, token);
         if (logo is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
-        LocalFile? favicon = await blobService.CreateOrUpdateImage(file, "favicon", 256, token);
+        var favicon = await blobService.CreateOrUpdateImage(file, "favicon", 256, token);
         if (favicon is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_LogoUpdateFailed)]));
 
@@ -168,7 +166,7 @@ public class AdminController(
 
     async Task<bool> DeleteCurrentLogo(CancellationToken token)
     {
-        GlobalConfig globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
+        var globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
 
         return await DeleteByHash(globalConfig.LogoHash, token) &&
                await DeleteByHash(globalConfig.FaviconHash, token);
@@ -219,16 +217,16 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddUsers([FromBody] UserCreateModel[] model, CancellationToken token = default)
     {
-        UserInfo? currentUser = await userManager.GetUserAsync(User);
-        IDbContextTransaction trans = await teamRepository.BeginTransactionAsync(token);
+        var currentUser = await userManager.GetUserAsync(User);
+        var trans = await teamRepository.BeginTransactionAsync(token);
 
         try
         {
             var users = new List<(UserInfo, string?)>(model.Length);
-            foreach (UserCreateModel user in model)
+            foreach (var user in model)
             {
                 var userInfo = user.ToUserInfo();
-                IdentityResult result = await userManager.CreateAsync(userInfo, user.Password);
+                var result = await userManager.CreateAsync(userInfo, user.Password);
 
                 if (result.Succeeded)
                 {
@@ -257,12 +255,12 @@ public class AdminController(
             }
 
             var teams = new List<Team>();
-            foreach ((UserInfo user, var teamName) in users)
+            foreach ((var user, var teamName) in users)
             {
                 if (teamName is null)
                     continue;
 
-                Team? team = teams.Find(team => team.Name == teamName);
+                var team = teams.Find(team => team.Name == teamName);
                 if (team is null)
                 {
                     team = await teamRepository.CreateTeam(new() { Name = teamName }, user, token);
@@ -303,7 +301,7 @@ public class AdminController(
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
-        UserInfo[] data = await userManager.Users.Where(item =>
+        var data = await userManager.Users.Where(item =>
             item.UserName!.ToLower().Contains(loweredHint) ||
             item.StdNumber.ToLower().Contains(loweredHint) ||
             item.Email!.ToLower().Contains(loweredHint) ||
@@ -363,7 +361,7 @@ public class AdminController(
     public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model,
         CancellationToken token = default)
     {
-        Team? team = await teamRepository.GetTeamById(id, token);
+        var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
@@ -389,7 +387,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUserInfo(string userid, [FromBody] AdminUserInfoModel model)
     {
-        UserInfo? user = await userManager.FindByIdAsync(userid);
+        var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
@@ -397,7 +395,7 @@ public class AdminController(
 
         if (model.UserName is not null && model.UserName != user.UserName)
         {
-            IdentityResult result = await userManager.SetUserNameAsync(user, model.UserName);
+            var result = await userManager.SetUserNameAsync(user, model.UserName);
 
             if (!result.Succeeded)
                 return HandleIdentityError(result.Errors);
@@ -405,7 +403,7 @@ public class AdminController(
 
         if (model.Email is not null && model.Email != user.Email)
         {
-            IdentityResult result = await userManager.SetEmailAsync(user, model.Email);
+            var result = await userManager.SetEmailAsync(user, model.Email);
 
             if (!result.Succeeded)
                 return HandleIdentityError(result.Errors);
@@ -432,7 +430,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ResetPassword(string userid)
     {
-        UserInfo? user = await userManager.FindByIdAsync(userid);
+        var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
@@ -460,7 +458,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(Guid userid, CancellationToken token = default)
     {
-        UserInfo? user = await userManager.GetUserAsync(User);
+        var user = await userManager.GetUserAsync(User);
 
         if (user!.Id == userid)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Admin_SelfDeletionNotAllowed)]));
@@ -495,7 +493,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
     {
-        Team? team = await teamRepository.GetTeamById(id, token);
+        var team = await teamRepository.GetTeamById(id, token);
 
         if (team is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)],
@@ -520,7 +518,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UserInfo(string userid)
     {
-        UserInfo? user = await userManager.FindByIdAsync(userid);
+        var user = await userManager.FindByIdAsync(userid);
 
         if (user is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
@@ -561,7 +559,7 @@ public class AdminController(
     public async Task<IActionResult> Participation(int id, [FromBody] ParticipationEditModel model,
         CancellationToken token = default)
     {
-        Participation? participation = await participationRepository.GetParticipationById(id, token);
+        var participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
@@ -587,7 +585,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
@@ -611,13 +609,13 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DownloadAllWriteups(int id, CancellationToken token = default)
     {
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        WriteupInfoModel[] wps = await participationRepository.GetWriteups(game, token);
+        var wps = await participationRepository.GetWriteups(game, token);
         var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
 
         return new TarFilesResult(storage, wps.Select(p => p.File), PathHelper.Uploads, filename, token);
@@ -655,7 +653,7 @@ public class AdminController(
     [SuppressMessage("ReSharper", "RouteTemplates.ParameterTypeCanBeMadeStricter")]
     public async Task<IActionResult> DestroyInstance(Guid id, CancellationToken token = default)
     {
-        Container? container = await containerRepository.GetContainerById(id, token);
+        var container = await containerRepository.GetContainerById(id, token);
 
         if (container is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceNotFound)],

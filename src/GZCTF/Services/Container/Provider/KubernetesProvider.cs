@@ -3,7 +3,6 @@ using GZCTF.Models.Internal;
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Options;
-using static GZCTF.Program;
 
 namespace GZCTF.Services.Container.Provider;
 
@@ -64,7 +63,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
         _kubernetesClient = new Kubernetes(config);
 
-        RegistryConfig registryValue = registry.Value;
+        var registryValue = registry.Value;
         var withAuth = !string.IsNullOrWhiteSpace(registryValue.ServerAddress)
                        && !string.IsNullOrWhiteSpace(registryValue.UserName)
                        && !string.IsNullOrWhiteSpace(registryValue.Password);
@@ -141,7 +140,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         var dockerJsonObj = new DockerRegistryOptions(
             new Dictionary<string, DockerRegistryEntry>
             {
-                [registry.ServerAddress] = new DockerRegistryEntry(auth, registry.UserName, registry.Password)
+                [registry.ServerAddress] = new(auth, registry.UserName, registry.Password)
             }
         );
 
