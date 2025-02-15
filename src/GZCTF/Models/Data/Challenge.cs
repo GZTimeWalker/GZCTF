@@ -167,6 +167,9 @@ public class Challenge
         return flag.Replace("[TEAM_HASH]", guid.ToString("N")[..12]);
     }
 
+    /// <summary>
+    /// Generate test flag for admin to check the challenge
+    /// </summary>
     internal string GenerateTestFlag()
     {
         if (string.IsNullOrEmpty(FlagTemplate))
@@ -174,6 +177,9 @@ public class Challenge
 
         if (FlagTemplate.Contains("[GUID]"))
             return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
+
+        if (!FlagTemplate.Contains("[TEAM_HASH]"))
+            return Codec.Leet.LeetFlag(FlagTemplate);
 
         var flag = FlagTemplate;
         if (FlagTemplate.StartsWith("[LEET]"))
