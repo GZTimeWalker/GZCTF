@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.2..v1.2.3) - 2025-02-15
+
+### ⛰️ Features
+
+- leet flags when test - ([9e6643](https://github.com/GZTimeWalker/GZCTF/commit/9e6643)) by **GZTime**
+
+### 🔨 Refactor
+
+- backend startup & tidy up - ([08c49d](https://github.com/GZTimeWalker/GZCTF/commit/08c49d)) by **GZTime**
+
+---
 ## [1.2.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.1..v1.2.2) - 2025-02-06
 
 ### 💥 BREAK CHANGES
