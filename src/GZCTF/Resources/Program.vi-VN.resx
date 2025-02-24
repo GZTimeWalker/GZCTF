@@ -306,7 +306,7 @@
     <value>Không thể tải lại Global Config</value>
   </data>
   <data name="Config_TypeNotSupported" xml:space="preserve">
-    <value>Loại config không được hỗ trợ</value>
+    <value>Không hỗ trợ loại cấu hình này</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
     <value>Không tạo được container {0}</value>
@@ -651,22 +651,22 @@
     <value>Tài khoản này đã được liên kết với một người dùng khác</value>
   </data>
   <data name="Identity_PasswordMismatch" xml:space="preserve">
-    <value>Mật khẩu bạn nhập không chính xác.</value>
+    <value>Mật khẩu bạn nhập không chính xác</value>
   </data>
   <data name="Identity_PasswordRequiresDigit" xml:space="preserve">
-    <value>Mật khẩu cần ít nhất một ký tự số (0-9).</value>
+    <value>Mật khẩu cần ít nhất một ký tự số (0-9)</value>
   </data>
   <data name="Identity_PasswordRequiresLower" xml:space="preserve">
-    <value>Mật khẩu cần ít nhất một ký tự chữ thường (a-z).</value>
+    <value>Mật khẩu cần ít nhất một ký tự chữ thường (a-z)</value>
   </data>
   <data name="Identity_PasswordRequiresNonAlphanumeric" xml:space="preserve">
-    <value>Mật khẩu cần ít nhất một ký tự đặc biệt (!, @, #,...).</value>
+    <value>Mật khẩu cần ít nhất một ký tự đặc biệt (!, @, #,...)</value>
   </data>
   <data name="Identity_PasswordRequiresUniqueChars" xml:space="preserve">
     <value>Mật khẩu cần có ít nhất {0} ký tự khác nhau</value>
   </data>
   <data name="Identity_PasswordRequiresUpper" xml:space="preserve">
-    <value>Mật khẩu cần ít nhất một ký tự chữ in hoa (A-Z).</value>
+    <value>Mật khẩu cần ít nhất một ký tự chữ in hoa (A-Z)</value>
   </data>
   <data name="Identity_PasswordTooShort" xml:space="preserve">
     <value>Độ dài mật khẩu {0} quá ngắn</value>
