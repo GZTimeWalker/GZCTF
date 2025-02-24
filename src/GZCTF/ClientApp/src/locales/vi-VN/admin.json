@@ -100,7 +100,7 @@
         "container_image": "Container Image",
         "cpu_limit": {
           "description": "Bội của 0.1 CPU",
-          "label": "Giới hạn CPU (đơn vị 0,1 CPU)"
+          "label": "CPU Limit (0.1 CPUs)"
         },
         "delete": "Bạn có chắc chắn muốn xóa thử thách {{name}} không?",
         "description": "Mô tả",
@@ -167,11 +167,11 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Cho phép trực tiếp ngay sau khi đăng ký đội",
-          "label": "Tự động duyệt các đội"
+          "description": "Chấp nhận ngay sau khi đăng ký đội.",
+          "label": "Tự động duyệt đội"
         },
         "container_limit": {
-          "description": "Số lượng container được chia sẻ bởi một đội (0 = không giới hạn).",
+          "description": "Đặt 0 để không giới hạn số container của đội",
           "label": "Giới hạn container của đội."
         },
         "content": "Chi tiết trò chơi.",
@@ -357,7 +357,7 @@
     },
     "logs": {
       "message": "Tin nhắn.",
-      "status": "Trạng thái."
+      "status": "Status"
     },
     "teams": {
       "bio": "Tiểu sử.",
