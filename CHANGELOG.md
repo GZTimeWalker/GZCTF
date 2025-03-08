@@ -3,7 +3,14 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [1.2.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.2..v1.2.3) - 2025-02-15
+## [1.2.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.3..v1.2.4) - 2025-03-08
+
+### 🐛 Bug Fixes
+
+- **(game)** flush scoreboard after transaction commit - ([20b274](https://github.com/GZTimeWalker/GZCTF/commit/20b274)) by **GZTime**
+
+---
+## [1.2.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.2..v1.2.3) - 2025-02-17
 
 ### ⛰️ Features
 
