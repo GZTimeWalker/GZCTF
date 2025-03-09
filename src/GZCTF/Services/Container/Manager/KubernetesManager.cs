@@ -67,6 +67,10 @@ public class KubernetesManager : IContainerManager
             },
             Spec = new V1PodSpec
             {
+                ImagePullSecrets =
+                    authSecretName is null
+                        ? Array.Empty<V1LocalObjectReference>()
+                        : new List<V1LocalObjectReference> { new() { Name = authSecretName } },
                 DnsPolicy = "None",
                 DnsConfig = new() { Nameservers = options.Dns ?? ["223.5.5.5", "114.114.114.114"] },
                 EnableServiceLinks = false,
@@ -108,9 +112,6 @@ public class KubernetesManager : IContainerManager
                 AutomountServiceAccountToken = false
             }
         };
-
-        if (authSecretName is not null)
-            pod.Spec.ImagePullSecrets.Add(new() { Name = authSecretName });
 
         try
         {

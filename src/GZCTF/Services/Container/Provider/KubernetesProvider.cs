@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using GZCTF.Models.Internal;
 using k8s;
 using k8s.Models;
@@ -161,6 +162,8 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
     }
 }
 
-internal record DockerRegistryOptions(Dictionary<string, DockerRegistryEntry> Auths);
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+internal record DockerRegistryOptions(Dictionary<string, DockerRegistryEntry> auths);
 
-internal record DockerRegistryEntry(string Auth, string? Username, string? Password);
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+internal record DockerRegistryEntry(string auth, string? username, string? password);
