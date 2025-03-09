@@ -1,4 +1,3 @@
-import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react'
 import process from 'process'
 import { defineConfig, loadEnv } from 'vite'
@@ -61,7 +60,6 @@ export default defineConfig(({ mode }) => {
       react(),
       banner(BANNER),
       tsconfigPaths(),
-      eslintPlugin(), // only for development
       webfontDownload(
         [
           'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap',
