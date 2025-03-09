@@ -298,14 +298,16 @@ where T : class
 {
     public T? GetForImage(string image)
     {
-        if (!Uri.TryCreate(image, UriKind.Absolute, out var uri))
+        if (string.IsNullOrWhiteSpace(image))
             return null;
 
-        var host = uri.Host;
-        if (!uri.IsDefaultPort)
-            host = $"{host}:{uri.Port}";
+        image = image.Contains("://") ? image : $"https://{image}";
 
-        return TryGetValue(host, out var config) ? config : null;
+        if (!Uri.TryCreate(image, UriKind.Absolute, out var uri) || uri.HostNameType == UriHostNameType.Unknown)
+            return null;
+
+        return TryGetValue(uri.Authority, out var cfg) ? cfg :
+            TryGetValue(uri.Host, out var cfgHost) ? cfgHost : null;
     }
 }
 
