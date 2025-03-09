@@ -23,13 +23,23 @@ static class ServicesExtension
     internal static void AddServiceConfigurations(this WebApplicationBuilder builder)
     {
         builder.AddConfig<EmailConfig>();
-        builder.AddConfig<RegistryConfig>();
         builder.AddConfig<AccountPolicy>();
         builder.AddConfig<GlobalConfig>();
         builder.AddConfig<ContainerPolicy>();
         builder.AddConfig<ContainerProvider>();
 
-        var forwardedOptions =
+        builder.Services.Configure<RegistrySet<RegistryConfig>>(builder.Configuration.GetSection("Registries"));
+
+        RegistryConfig? oldConfig = builder.Configuration.GetSection(nameof(RegistryConfig)).Get<RegistryConfig>();
+        if (!string.IsNullOrWhiteSpace(oldConfig?.ServerAddress))
+            // Add old config to new config set
+            builder.Services.Configure<RegistrySet<RegistryConfig>>(set =>
+            {
+                if (!set.TryAdd(oldConfig.ServerAddress, oldConfig))
+                    set[oldConfig.ServerAddress] = oldConfig;
+            });
+
+        ForwardedOptions? forwardedOptions =
             builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
         if (forwardedOptions is null)
             builder.Services.Configure<ForwardedHeadersOptions>(options =>

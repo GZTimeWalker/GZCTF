@@ -81,7 +81,7 @@ public class SwarmManager : IContainerManager
             return null;
         }
 
-        var parameters = GetServiceCreateParameters(config);
+        ServiceCreateParameters parameters = GetServiceCreateParameters(config);
         ServiceCreateResponse? serviceRes;
         var retry = 0;
 
@@ -171,7 +171,7 @@ public class SwarmManager : IContainerManager
     ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config) =>
         new()
         {
-            RegistryAuth = _meta.Auth,
+            RegistryAuth = _meta.AuthConfigs.GetForImage(config.Image),
             Service = new()
             {
                 Name = DockerMetadata.GetName(config),

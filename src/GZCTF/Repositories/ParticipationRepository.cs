@@ -101,7 +101,7 @@ public class ParticipationRepository(
         }
 
         await trans.CommitAsync(token);
-        
+
         if (needFlush)
             await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
