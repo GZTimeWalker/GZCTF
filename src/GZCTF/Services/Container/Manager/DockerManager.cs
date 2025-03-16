@@ -121,7 +121,7 @@ public class DockerManager : IContainerManager
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
                 TaskStatus.Pending, LogLevel.Information);
 
-            var auth = _meta.AuthConfigs.GetForImage(config.Image);
+            AuthConfig? auth = _meta.AuthConfigs.GetForImage(config.Image);
 
             // pull the image and retry
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, auth,

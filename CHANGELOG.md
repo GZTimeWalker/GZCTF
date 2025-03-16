@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.4..v1.2.5) - 2025-03-16
+
+### ⛰️ Features
+
+- **(container)** support multiple registry credentials - ([a51c3d](https://github.com/GZTimeWalker/GZCTF/commit/a51c3d)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(k8s)** incorrent json format - ([921417](https://github.com/GZTimeWalker/GZCTF/commit/921417)) by **GZTime**
+
+---
 ## [1.2.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.3..v1.2.4) - 2025-03-08
 
 ### 🐛 Bug Fixes
