@@ -18,10 +18,10 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     public async Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
-        await using Stream tmp = GetTempStream(file.Length);
+        await using var tmp = GetTempStream(file.Length);
 
         logger.SystemLog(
-            Program.StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation),
+            StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation),
                 tmp.GetType()], TaskStatus.Pending,
             LogLevel.Trace);
 
@@ -41,11 +41,11 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         {
             await using Stream webpStream = new MemoryStream();
 
-            await using (Stream tmp = GetTempStream(file.Length))
+            await using (var tmp = GetTempStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
-                using Image image = await Image.LoadAsync(tmp, token);
+                using var image = await Image.LoadAsync(tmp, token);
 
                 if (image.Metadata.DecodedImageFormat is GifFormat)
                     return await StoreBlob($"{fileName}.gif", tmp, token);
@@ -61,7 +61,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         catch
         {
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ImageSaveFailed),
+                StaticLocalizer[nameof(Resources.Program.FileRepository_ImageSaveFailed),
                     file.Name],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
@@ -85,7 +85,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         {
             file.ReferenceCount--; // other ref exists, decrease ref count
 
-            logger.SystemLog(Program.StaticLocalizer[
+            logger.SystemLog(StaticLocalizer[
                     nameof(Resources.Program.FileRepository_ReferenceCounting),
                     file.Hash[..8], file.Name, file.ReferenceCount],
                 TaskStatus.Success, LogLevel.Debug);
@@ -103,7 +103,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         catch (Exception e)
         {
             // log the exception and return failed
-            logger.LogError(e, Program.StaticLocalizer[
+            logger.LogErrorMessage(e, StaticLocalizer[
                 nameof(Resources.Program.FileRepository_DeleteFile),
                 file.Hash[..8], file.Name]);
 
@@ -115,7 +115,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         await SaveAsync(token);
 
         // log success
-        logger.SystemLog(Program.StaticLocalizer[
+        logger.SystemLog(StaticLocalizer[
                 nameof(Resources.Program.FileRepository_DeleteFile),
                 file.Hash[..8], file.Name],
             TaskStatus.Success, LogLevel.Information);
@@ -126,7 +126,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     public async Task<TaskStatus> DeleteBlobByHash(string fileHash,
         CancellationToken token = default)
     {
-        LocalFile? file = await GetBlobByHash(fileHash, token);
+        var file = await GetBlobByHash(fileHash, token);
 
         if (file is null)
             return TaskStatus.NotFound;
@@ -174,7 +174,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         var hash = await SHA256.HashDataAsync(contentStream, token);
         var fileHash = Convert.ToHexStringLower(hash);
 
-        LocalFile? localFile = await GetBlobByHash(fileHash, token);
+        var localFile = await GetBlobByHash(fileHash, token);
 
         if (localFile is not null)
         {
@@ -184,7 +184,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
             localFile.ReferenceCount++; // same hash, add ref count
 
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting),
+                StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting),
                     localFile.Hash[..8], localFile.Name,
                     localFile.ReferenceCount],
                 TaskStatus.Success, LogLevel.Debug);

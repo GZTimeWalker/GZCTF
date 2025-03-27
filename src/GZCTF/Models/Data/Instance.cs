@@ -20,8 +20,7 @@ public class Instance
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;
 
     [NotMapped]
-    public bool IsContainerOperationTooFrequent =>
-        DateTimeOffset.UtcNow - LastContainerOperation < TimeSpan.FromSeconds(10);
+    public bool IsContainerOperationTooFrequent => DateTimeOffset.UtcNow - LastContainerOperation < TimeSpan.FromSeconds(10);
 
     #region Db Relationship
 

@@ -16,10 +16,10 @@ public static class HubHelper
         var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (userId is null || !Guid.TryParse(userId, out Guid id))
+        if (userId is null || !Guid.TryParse(userId, out var id))
             return false;
 
-        UserInfo? currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == id);
+        var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == id);
 
         return currentUser is not null && currentUser.Role >= privilege;
     }

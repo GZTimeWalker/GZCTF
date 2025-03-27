@@ -50,7 +50,7 @@ public class AssetsController(
         if (!await storage.ExistsAsync(path, token))
         {
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
-            logger.Log(Program.StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip,
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip,
                 TaskStatus.NotFound,
                 LogLevel.Warning);
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)],
@@ -92,11 +92,11 @@ public class AssetsController(
         try
         {
             List<LocalFile> results = [];
-            foreach (IFormFile? file in files.Where(file => file.Length > 0))
+            foreach (var file in files.Where(file => file.Length > 0))
             {
-                LocalFile res = await blobService.CreateOrUpdateBlob(file, filename, token);
+                var res = await blobService.CreateOrUpdateBlob(file, filename, token);
                 logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8],
+                    StaticLocalizer[nameof(Resources.Program.Assets_UpdateFile), res.Hash[..8],
                         filename ?? file.FileName, file.Length],
                     TaskStatus.Success, LogLevel.Debug);
                 results.Add(res);
@@ -106,7 +106,7 @@ public class AssetsController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message);
+            logger.LogErrorMessage(ex, ex.Message);
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Assets_IOError)]));
         }
     }
@@ -130,9 +130,9 @@ public class AssetsController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Delete(string hash, CancellationToken token)
     {
-        TaskStatus result = await blobService.DeleteBlobByHash(hash, token);
+        var result = await blobService.DeleteBlobByHash(hash, token);
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result,
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Assets_DeleteFile), hash[..8]], result,
             LogLevel.Information);
 
         return result switch

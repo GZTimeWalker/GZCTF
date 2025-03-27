@@ -3,6 +3,42 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.4..v1.2.5) - 2025-03-16
+
+### ⛰️ Features
+
+- **(container)** support multiple registry credentials - ([a51c3d](https://github.com/GZTimeWalker/GZCTF/commit/a51c3d)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(k8s)** incorrent json format - ([921417](https://github.com/GZTimeWalker/GZCTF/commit/921417)) by **GZTime**
+
+---
+## [1.2.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.3..v1.2.4) - 2025-03-08
+
+### 🐛 Bug Fixes
+
+- **(game)** flush scoreboard after transaction commit - ([20b274](https://github.com/GZTimeWalker/GZCTF/commit/20b274)) by **GZTime**
+
+---
+## [1.2.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.2..v1.2.3) - 2025-02-17
+
+### ⛰️ Features
+
+- leet flags when test - ([9e6643](https://github.com/GZTimeWalker/GZCTF/commit/9e6643)) by **GZTime**
+
+### 🔨 Refactor
+
+- backend startup & tidy up - ([08c49d](https://github.com/GZTimeWalker/GZCTF/commit/08c49d)) by **GZTime**
+
+---
+## [1.2.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.1..v1.2.2) - 2025-02-06
+
+### 💥 BREAK CHANGES
+
+- **(captcha)** **[BREAK]** Removed google recpatcha support - ([44a468](https://github.com/GZTimeWalker/GZCTF/commit/44a468)) by **GZTime**
+
+---
 ## [1.2.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.0..v1.2.1) - 2025-01-21
 
 ### ⛰️ Features

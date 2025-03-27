@@ -11,12 +11,12 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <summary>
     /// Docker 配置
     /// </summary>
-    public Models.Internal.DockerConfig Config { get; set; } = new();
+    public DockerConfig Config { get; set; } = new();
 
     /// <summary>
     /// Docker 鉴权用配置
     /// </summary>
-    public AuthConfig? Auth { get; set; }
+    public RegistrySet<AuthConfig> AuthConfigs { get; set; } = new();
 
     /// <summary>
     /// 根据配置获取容器名称
@@ -33,7 +33,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
     readonly DockerClient _dockerClient;
     readonly DockerMetadata _dockerMeta;
 
-    public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistryConfig> registry,
+    public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistrySet<RegistryConfig>> registriesOptions,
         ILogger<DockerProvider> logger)
     {
         _dockerMeta = new()
@@ -54,13 +54,19 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 
         _dockerClient = cfg.CreateClient();
 
-        // Auth for registry
-        if (!string.IsNullOrWhiteSpace(registry.Value.UserName) && !string.IsNullOrWhiteSpace(registry.Value.Password))
-            _dockerMeta.Auth =
-                new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
+        var registries = registriesOptions.Value;
+
+        foreach (var registry in registries.Where(registry =>
+                     registry.Value.Valid))
+        {
+            var authConfig = new AuthConfig { Username = registry.Value.UserName, Password = registry.Value.Password };
+
+            if (!_dockerMeta.AuthConfigs.TryAdd(registry.Key, authConfig))
+                _dockerMeta.AuthConfigs[registry.Key] = authConfig;
+        }
 
         logger.SystemLog(
-            Program.StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited),
+            StaticLocalizer[nameof(Resources.Program.ContainerProvider_DockerInited),
                 string.IsNullOrEmpty(_dockerMeta.Config.Uri) ? "localhost" : _dockerMeta.Config.Uri],
             TaskStatus.Success, LogLevel.Debug);
     }

@@ -43,7 +43,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             try
             {
                 await Task.Delay(source.PollingInterval, token);
-                Dictionary<string, string?> actualData = await GetDataAsync(token);
+                var actualData = await GetDataAsync(token);
 
                 var computedHash = ConfigHash(actualData);
                 if (!computedHash.SequenceEqual(_lastHash))
@@ -56,7 +56,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             }
             catch (Exception ex)
             {
-                Log.Logger?.Error(ex, Program.StaticLocalizer[nameof(Resources.Program.Config_ReloadFailed)]);
+                Log.Logger?.Error(ex, StaticLocalizer[nameof(Resources.Program.Config_ReloadFailed)]);
             }
         }
     }
@@ -71,7 +71,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
     async Task<Dictionary<string, string?>> GetDataAsync(CancellationToken token = default)
     {
-        AppDbContext context = CreateAppDbContext();
+        var context = CreateAppDbContext();
         return await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
             StringComparer.OrdinalIgnoreCase, token);
     }
@@ -92,7 +92,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
             return;
         }
 
-        AppDbContext context = CreateAppDbContext();
+        var context = CreateAppDbContext();
 
         if (context.Database.GetMigrations().Any())
             await context.Database.MigrateAsync();
@@ -101,9 +101,9 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         if (!context.Configs.Any())
         {
-            Log.Logger.Debug(Program.StaticLocalizer[nameof(Resources.Program.Config_InitializingDatabase)]);
+            Log.Logger.Debug(StaticLocalizer[nameof(Resources.Program.Config_InitializingDatabase)]);
 
-            HashSet<Config> configs = DefaultConfigs();
+            var configs = DefaultConfigs();
 
             context.Configs.AddRange(configs);
             await context.SaveChangesAsync();
@@ -117,7 +117,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
         _lastHash = ConfigHash(Data);
 
-        CancellationToken cancellationToken = _cancellationTokenSource.Token;
+        var cancellationToken = _cancellationTokenSource.Token;
         _databaseWatcher = Task.Factory.StartNew(() => WatchDatabase(cancellationToken),
             cancellationToken, TaskCreationOptions.LongRunning, TaskScheduler.Default);
     }

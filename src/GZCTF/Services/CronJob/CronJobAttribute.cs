@@ -16,7 +16,8 @@ public static class CronJobExtensions
     public static (string, CronJobEntry) ToEntry(this CronJob job)
     {
         var method = job.Method;
-        var attr = method.GetCustomAttribute<CronJobAttribute>() ?? throw new CronJobNotFoundException(method.Name);
+        var attr = method.GetCustomAttribute<CronJobAttribute>() ??
+                   throw new CronJobNotFoundException(method.Name);
         return (method.Name, new CronJobEntry(job, attr.Expression));
     }
 }

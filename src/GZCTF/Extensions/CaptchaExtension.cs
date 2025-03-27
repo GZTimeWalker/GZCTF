@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Info;
 using GZCTF.Services.Cache;
@@ -58,7 +57,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
         if (string.IsNullOrEmpty(model.Challenge) || context.Connection.RemoteIpAddress is null)
             return false;
 
-        IPAddress? ip = context.Connection.RemoteIpAddress;
+        var ip = context.Connection.RemoteIpAddress;
 
         TurnstileRequestModel req = new()
         {
@@ -69,7 +68,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 
         const string api = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
-        HttpResponseMessage result = await _httpClient.PostAsJsonAsync(api, req, token);
+        var result = await _httpClient.PostAsJsonAsync(api, req, token);
         var res = await result.Content.ReadFromJsonAsync<TurnstileResponseModel>(token);
 
         return res is not null && res.Success;
@@ -90,17 +89,17 @@ public sealed class HashPow(IOptions<CaptchaConfig>? options, IDistributedCache 
         if (string.IsNullOrWhiteSpace(model.Challenge))
             return false;
 
-        string[] parts = model.Challenge.Split(':');
+        var parts = model.Challenge.Split(':');
         if (parts.Length != 2)
             return false;
 
-        string id = parts[0];
-        string ans = parts[1];
+        var id = parts[0];
+        var ans = parts[1];
         if (ans.Length != AnswerLength * 2)
             return false;
 
         var key = CacheKey.HashPow(id);
-        byte[]? challenge = await cache.GetAsync(key, token);
+        var challenge = await cache.GetAsync(key, token);
         if (challenge is null)
             return false;
 
@@ -123,7 +122,7 @@ public static class CaptchaServiceExtension
     internal static IServiceCollection AddCaptchaService(this IServiceCollection services,
         IConfiguration configuration)
     {
-        CaptchaConfig config = configuration.GetSection(nameof(CaptchaConfig)).Get<CaptchaConfig>() ?? new();
+        var config = configuration.GetSection(nameof(CaptchaConfig)).Get<CaptchaConfig>() ?? new();
 
         services.Configure<CaptchaConfig>(configuration.GetSection(nameof(CaptchaConfig)));
 

@@ -11,6 +11,8 @@ namespace GZCTF.Models.Request.Game;
 [MemoryPackable]
 public partial class ScoreboardModel
 {
+    private Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> _challenges = null!;
+
     /// <summary>
     /// Update time
     /// </summary>
@@ -27,13 +29,13 @@ public partial class ScoreboardModel
     /// <summary>
     /// Timeline of the top ten
     /// </summary>
-    public Dictionary<string, IEnumerable<TopTimeLine>> TimeLines { get; set; } = default!;
+    public Dictionary<string, IEnumerable<TopTimeLine>> TimeLines { get; set; } = null!;
 
     /// <summary>
     /// Team information
     /// </summary>
     [JsonIgnore]
-    public Dictionary<int, ScoreboardItem> Items { get; set; } = default!;
+    public Dictionary<int, ScoreboardItem> Items { get; set; } = null!;
 
     /// <summary>
     /// List of team information
@@ -54,8 +56,6 @@ public partial class ScoreboardModel
             ChallengeCount = value.Values.Select(x => x.Count()).Sum();
         }
     }
-
-    private Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> _challenges = default!;
 
     /// <summary>
     /// Number of challenges
@@ -80,7 +80,7 @@ public partial class TopTimeLine
     /// <summary>
     /// Timeline
     /// </summary>
-    public List<TimeLine> Items { get; set; } = default!;
+    public List<TimeLine> Items { get; set; } = null!;
 }
 
 [MemoryPackable]

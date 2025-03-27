@@ -14,7 +14,7 @@ public class CheatInfo
     /// <summary>
     /// Game object
     /// </summary>
-    public Game Game { get; set; } = default!;
+    public Game Game { get; set; } = null!;
 
     /// <summary>
     /// Game object ID
@@ -24,7 +24,7 @@ public class CheatInfo
     /// <summary>
     /// Team that submitted the corresponding flag
     /// </summary>
-    public Participation SubmitTeam { get; set; } = default!;
+    public Participation SubmitTeam { get; set; } = null!;
 
     /// <summary>
     /// Team ID that submitted the corresponding flag
@@ -34,7 +34,7 @@ public class CheatInfo
     /// <summary>
     /// Team that owns the corresponding flag
     /// </summary>
-    public Participation SourceTeam { get; set; } = default!;
+    public Participation SourceTeam { get; set; } = null!;
 
     /// <summary>
     /// Team ID that owns the corresponding flag
@@ -44,7 +44,7 @@ public class CheatInfo
     /// <summary>
     /// Submission corresponding to this cheating behavior
     /// </summary>
-    public Submission Submission { get; set; } = default!;
+    public Submission Submission { get; set; } = null!;
 
     /// <summary>
     /// Submission ID corresponding to this cheating behavior

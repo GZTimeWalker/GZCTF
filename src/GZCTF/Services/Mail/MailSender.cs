@@ -7,7 +7,6 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using static GZCTF.Program;
 
 namespace GZCTF.Services.Mail;
 
@@ -81,33 +80,6 @@ public sealed class MailSender : IMailSender, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    async Task<bool> SendEmailAsync(string subject, string content, MailboxAddress from, MailboxAddress to)
-    {
-        if (_smtpClient is null)
-            return false;
-
-        using var msg = new MimeMessage();
-        msg.From.Add(from);
-        msg.To.Add(to);
-        msg.Subject = subject;
-        msg.Body = new TextPart(TextFormat.Html) { Text = content };
-
-        try
-        {
-            await _smtpClient.SendAsync(msg, _cancellationToken);
-
-            _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
-                TaskStatus.Success, LogLevel.Information);
-            return true;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "{msg}",
-                StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
-            return false;
-        }
-    }
-
     public async Task SendMailContent(MailContent content)
     {
         // TODO: use GlobalConfig.DefaultEmailTemplate
@@ -148,6 +120,32 @@ public sealed class MailSender : IMailSender, IDisposable
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
         EnqueueMailTask(userName, email, resetLink, MailType.ResetPassword, localizer, options);
 
+    async Task<bool> SendEmailAsync(string subject, string content, MailboxAddress from, MailboxAddress to)
+    {
+        if (_smtpClient is null)
+            return false;
+
+        using var msg = new MimeMessage();
+        msg.From.Add(from);
+        msg.To.Add(to);
+        msg.Subject = subject;
+        msg.Body = new TextPart(TextFormat.Html) { Text = content };
+
+        try
+        {
+            await _smtpClient.SendAsync(msg, _cancellationToken);
+
+            _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
+                TaskStatus.Success, LogLevel.Information);
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            return false;
+        }
+    }
+
     async Task MailSenderWorker()
     {
         if (_smtpClient is null)
@@ -168,7 +166,7 @@ public sealed class MailSender : IMailSender, IDisposable
                     await _smtpClient.AuthenticateAsync(_options!.UserName, _options.Password,
                         _cancellationToken);
 
-                while (_mailQueue.TryDequeue(out MailContent? content))
+                while (_mailQueue.TryDequeue(out var content))
                     await SendMailContent(content);
             }
             catch (Exception e)
@@ -176,8 +174,7 @@ public sealed class MailSender : IMailSender, IDisposable
                 // Failed to establish SMTP connection, clear the queue
                 _mailQueue.Clear();
 
-                _logger.LogError(e, "{msg}",
-                    StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+                _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
             }
             finally
             {

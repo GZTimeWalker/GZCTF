@@ -1,9 +1,9 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using GZCTF.Models.Internal;
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Options;
-using static GZCTF.Program;
 
 namespace GZCTF.Services.Container.Provider;
 
@@ -12,7 +12,7 @@ public class KubernetesMetadata : ContainerProviderMetadata
     /// <summary>
     /// 容器注册表鉴权 Secret 名称
     /// </summary>
-    public string? AuthSecretName { get; set; }
+    public RegistrySet<string> AuthSecretNames { get; set; } = new();
 
     /// <summary>
     /// K8s 集群 Host IP
@@ -32,7 +32,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
     readonly Kubernetes _kubernetesClient;
     readonly KubernetesMetadata _kubernetesMetadata;
 
-    public KubernetesProvider(IOptions<RegistryConfig> registry, IOptions<ContainerProvider> options,
+    public KubernetesProvider(IOptions<RegistrySet<RegistryConfig>> registries, IOptions<ContainerProvider> options,
         ILogger<KubernetesProvider> logger)
     {
         _kubernetesMetadata = new()
@@ -64,25 +64,13 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
         _kubernetesClient = new Kubernetes(config);
 
-        RegistryConfig registryValue = registry.Value;
-        var withAuth = !string.IsNullOrWhiteSpace(registryValue.ServerAddress)
-                       && !string.IsNullOrWhiteSpace(registryValue.UserName)
-                       && !string.IsNullOrWhiteSpace(registryValue.Password);
-
-        if (withAuth)
-        {
-            var padding =
-                $"{registryValue.UserName}@{registryValue.Password}@{registryValue.ServerAddress}".ToMD5String();
-            _kubernetesMetadata.AuthSecretName = $"{registryValue.UserName}-{padding}".ToValidRFC1123String("secret");
-        }
-
         try
         {
-            InitKubernetes(withAuth, registryValue);
+            InitKubernetes(registries.Value);
         }
         catch (Exception e)
         {
-            logger.LogError(e, "{msg}",
+            logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerProvider_KubernetesInitFailed), config.Host]);
             ExitWithFatalMessage(
                 StaticLocalizer[nameof(Resources.Program.ContainerProvider_KubernetesInitFailed), config.Host]);
@@ -97,7 +85,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
     public KubernetesMetadata GetMetadata() => _kubernetesMetadata;
 
-    void InitKubernetes(bool withAuth, RegistryConfig? registry)
+    void InitKubernetes(RegistrySet<RegistryConfig> registries)
     {
         if (_kubernetesClient.CoreV1.ListNamespace().Items
             .All(ns => ns.Metadata.Name != _kubernetesMetadata.Config.Namespace))
@@ -134,15 +122,19 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
                 }
             }, _kubernetesMetadata.Config.Namespace);
 
-        if (!withAuth || registry?.ServerAddress is null)
-            return;
+        // create auth secrets for registries
+        foreach (KeyValuePair<string, RegistryConfig> registry in registries.Where(registry => registry.Value.Valid))
+            InsertRegistrySecret(registry.Key, registry.Value);
+    }
+
+    void InsertRegistrySecret(string address, RegistryConfig registry)
+    {
+        var padding = $"GZCTF@{registry.UserName}@{address}".ToMD5String();
+        var secretName = $"{registry.UserName}-{padding}".ToValidRFC1123String("secret");
 
         var auth = Codec.Base64.Encode($"{registry.UserName}:{registry.Password}");
         var dockerJsonObj = new DockerRegistryOptions(
-            new Dictionary<string, DockerRegistryEntry>
-            {
-                [registry.ServerAddress] = new DockerRegistryEntry(auth, registry.UserName, registry.Password)
-            }
+            new Dictionary<string, DockerRegistryEntry> { [address] = new(auth, registry.UserName, registry.Password) }
         );
 
         var dockerJsonBytes =
@@ -150,27 +142,28 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         var secret = new V1Secret
         {
             Metadata =
-                new V1ObjectMeta
-                {
-                    Name = _kubernetesMetadata.AuthSecretName,
-                    NamespaceProperty = _kubernetesMetadata.Config.Namespace
-                },
+                new V1ObjectMeta { Name = secretName, NamespaceProperty = _kubernetesMetadata.Config.Namespace },
             Data = new Dictionary<string, byte[]> { [".dockerconfigjson"] = dockerJsonBytes },
             Type = "kubernetes.io/dockerconfigjson"
         };
 
         try
         {
-            _kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, _kubernetesMetadata.AuthSecretName,
+            _kubernetesClient.CoreV1.ReplaceNamespacedSecret(secret, secretName,
                 _kubernetesMetadata.Config.Namespace);
         }
         catch
         {
             _kubernetesClient.CoreV1.CreateNamespacedSecret(secret, _kubernetesMetadata.Config.Namespace);
         }
+
+        if (!_kubernetesMetadata.AuthSecretNames.TryAdd(address, secretName))
+            _kubernetesMetadata.AuthSecretNames[address] = secretName;
     }
 }
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 internal record DockerRegistryOptions(Dictionary<string, DockerRegistryEntry> auths);
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 internal record DockerRegistryEntry(string auth, string? username, string? password);

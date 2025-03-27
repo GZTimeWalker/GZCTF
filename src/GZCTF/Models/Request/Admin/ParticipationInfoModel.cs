@@ -13,7 +13,7 @@ public class ParticipationInfoModel
     /// <summary>
     /// Participating team
     /// </summary>
-    public TeamWithDetailedUserInfo Team { get; set; } = default!;
+    public TeamWithDetailedUserInfo Team { get; set; } = null!;
 
     /// <summary>
     /// Registered members

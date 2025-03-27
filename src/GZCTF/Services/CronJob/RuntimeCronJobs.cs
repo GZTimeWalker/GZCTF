@@ -8,18 +8,18 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Services.CronJob;
 
-public static class DefaultCronJobs
+public static class RuntimeCronJobs
 {
     [CronJob("*/3 * * * *")]
     public static async Task ContainerChecker(AsyncServiceScope scope, ILogger<CronJobService> logger)
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
 
-        foreach (Models.Data.Container container in await containerRepo.GetDyingContainers())
+        foreach (var container in await containerRepo.GetDyingContainers())
         {
             await containerRepo.DestroyContainer(container);
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
+                StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
                     container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
@@ -34,7 +34,8 @@ public static class DefaultCronJobs
         if (upcoming.Length <= 0)
             return;
 
-        var channelWriter = scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
+        var channelWriter =
+            scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
         var cache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
         foreach (var game in upcoming)
@@ -45,7 +46,7 @@ public static class DefaultCronJobs
                 continue;
 
             await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
                 TaskStatus.Success,
                 LogLevel.Debug);
         }

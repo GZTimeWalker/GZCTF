@@ -10,7 +10,7 @@ public class CheatInfoRepository(
     public async Task<CheatInfo> CreateCheatInfo(Submission submission, GameInstance source,
         CancellationToken token = default)
     {
-        Participation? submit =
+        var submit =
             await participationRepository.GetParticipation(submission.Team!, submission.Game!, token);
 
         if (submit is null)

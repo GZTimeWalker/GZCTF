@@ -24,7 +24,7 @@ public class DockerManager : IContainerManager
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_DockerMode)],
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.ContainerManager_DockerMode)],
             TaskStatus.Success, LogLevel.Debug);
     }
 
@@ -39,7 +39,7 @@ public class DockerManager : IContainerManager
         catch (DockerContainerNotFoundException)
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
                     container.ContainerId],
                 TaskStatus.Success, LogLevel.Debug);
         }
@@ -48,7 +48,7 @@ public class DockerManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.NotFound)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
                         container.ContainerId],
                     TaskStatus.Success, LogLevel.Debug);
             }
@@ -60,8 +60,8 @@ public class DockerManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+            _logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                     container.ContainerId]);
             return;
         }
@@ -77,12 +77,12 @@ public class DockerManager : IContainerManager
         if (string.IsNullOrWhiteSpace(imageName))
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_UnresolvedImageName), config.Image],
                 TaskStatus.Failed, LogLevel.Warning);
             return null;
         }
 
-        CreateContainerParameters parameters = GetCreateContainerParameters(config);
+        var parameters = GetCreateContainerParameters(config);
 
         if (_meta.ExposePort)
         {
@@ -108,7 +108,7 @@ public class DockerManager : IContainerManager
             if (retry++ >= 3)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
                         parameters.Name], TaskStatus.Failed, LogLevel.Information);
                 return null;
             }
@@ -118,11 +118,13 @@ public class DockerManager : IContainerManager
         catch (DockerImageNotFoundException)
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
                 TaskStatus.Pending, LogLevel.Information);
 
+            AuthConfig? auth = _meta.AuthConfigs.GetForImage(config.Image);
+
             // pull the image and retry
-            await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, _meta.Auth,
+            await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, auth,
                 new Progress<JSONMessage>(msg =>
                 {
                     Console.WriteLine($@"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
@@ -135,7 +137,7 @@ public class DockerManager : IContainerManager
             if (e.StatusCode == HttpStatusCode.Conflict)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted),
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted),
                         parameters.Name],
                     TaskStatus.Duplicate,
                     LogLevel.Warning);
@@ -148,8 +150,8 @@ public class DockerManager : IContainerManager
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "{msg}",
-                        Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
+                    _logger.LogErrorMessage(ex,
+                        StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
                             parameters.Name]);
                     return null;
                 }
@@ -162,8 +164,8 @@ public class DockerManager : IContainerManager
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+            _logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
                     parameters.Name]);
             return null;
         }
@@ -177,7 +179,7 @@ public class DockerManager : IContainerManager
             if (retry++ >= 3)
             {
                 _logger.SystemLog(
-                    Program.StaticLocalizer[
+                    StaticLocalizer[
                         nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
                         container.ContainerId[..12],
                         config.Image.Split("/").LastOrDefault() ?? ""],
@@ -196,7 +198,7 @@ public class DockerManager : IContainerManager
             await Task.Delay(500, token);
         }
 
-        ContainerInspectResponse? info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
+        var info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
 
         container.Status = info.State.Dead || info.State.OOMKilled || info.State.Restarting
             ? ContainerStatus.Destroyed
@@ -207,7 +209,7 @@ public class DockerManager : IContainerManager
         if (container.Status != ContainerStatus.Running)
         {
             _logger.SystemLog(
-                Program.StaticLocalizer[
+                StaticLocalizer[
                     nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
                     config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
                 TaskStatus.Failed, LogLevel.Warning);
@@ -234,7 +236,7 @@ public class DockerManager : IContainerManager
             container.PublicPort = numPort;
         else
             _logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_PortParsingFailed), port],
                 TaskStatus.Failed,
                 LogLevel.Warning);
 

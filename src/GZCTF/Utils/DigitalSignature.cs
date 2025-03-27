@@ -24,7 +24,7 @@ public static class DigitalSignature
         ArgumentNullException.ThrowIfNull(privateKey);
 
         var byteData = Encoding.UTF8.GetBytes(data);
-        ISigner? normalSig = SignerUtilities.GetSigner(signAlgorithm.ToString());
+        var normalSig = SignerUtilities.GetSigner(signAlgorithm.ToString());
         normalSig.Init(true, privateKey);
         normalSig.BlockUpdate(byteData, 0, data.Length);
         var normalResult = normalSig.GenerateSignature();
@@ -40,7 +40,7 @@ public static class DigitalSignature
 
         var signBytes = Base64.Decode(sign);
         var plainBytes = Encoding.UTF8.GetBytes(data);
-        ISigner? verifier = SignerUtilities.GetSigner(signAlgorithm.ToString());
+        var verifier = SignerUtilities.GetSigner(signAlgorithm.ToString());
         verifier.Init(false, publicKey);
         verifier.BlockUpdate(plainBytes, 0, plainBytes.Length);
 

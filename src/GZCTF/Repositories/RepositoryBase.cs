@@ -1,6 +1,5 @@
 ﻿using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Repositories;
@@ -32,7 +31,7 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
             catch (DbUpdateConcurrencyException ex)
             {
                 // FIXME: detect change
-                foreach (EntityEntry entry in ex.Entries)
+                foreach (var entry in ex.Entries)
                     await entry.ReloadAsync(token);
             }
         }

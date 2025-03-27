@@ -104,35 +104,6 @@ public class Challenge
     [MaxLength(Limits.MaxFlagTemplateLength)]
     public string? FlagTemplate { get; set; }
 
-    #region Db Relationship
-
-    /// <summary>
-    /// Challenge attachment ID
-    /// </summary>
-    public int? AttachmentId { get; set; }
-
-    /// <summary>
-    /// Challenge attachment (dynamic attachments are stored in FlagContext)
-    /// </summary>
-    public Attachment? Attachment { get; set; }
-
-    /// <summary>
-    /// Test container ID
-    /// </summary>
-    public Guid? TestContainerId { get; set; }
-
-    /// <summary>
-    /// Test container
-    /// </summary>
-    public Container? TestContainer { get; set; }
-
-    /// <summary>
-    /// List of flags for the challenge
-    /// </summary>
-    public List<FlagContext> Flags { get; set; } = [];
-
-    #endregion
-
     /// <summary>
     /// Generate dynamic flag for the participant
     /// </summary>
@@ -196,6 +167,9 @@ public class Challenge
         return flag.Replace("[TEAM_HASH]", guid.ToString("N")[..12]);
     }
 
+    /// <summary>
+    /// Generate test flag for admin to check the challenge
+    /// </summary>
     internal string GenerateTestFlag()
     {
         if (string.IsNullOrEmpty(FlagTemplate))
@@ -203,6 +177,9 @@ public class Challenge
 
         if (FlagTemplate.Contains("[GUID]"))
             return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
+
+        if (!FlagTemplate.Contains("[TEAM_HASH]"))
+            return Codec.Leet.LeetFlag(FlagTemplate);
 
         var flag = FlagTemplate;
         if (FlagTemplate.StartsWith("[LEET]"))
@@ -213,4 +190,33 @@ public class Challenge
 
         return flag.Replace("[TEAM_HASH]", "TestTeamHash");
     }
+
+    #region Db Relationship
+
+    /// <summary>
+    /// Challenge attachment ID
+    /// </summary>
+    public int? AttachmentId { get; set; }
+
+    /// <summary>
+    /// Challenge attachment (dynamic attachments are stored in FlagContext)
+    /// </summary>
+    public Attachment? Attachment { get; set; }
+
+    /// <summary>
+    /// Test container ID
+    /// </summary>
+    public Guid? TestContainerId { get; set; }
+
+    /// <summary>
+    /// Test container
+    /// </summary>
+    public Container? TestContainer { get; set; }
+
+    /// <summary>
+    /// List of flags for the challenge
+    /// </summary>
+    public List<FlagContext> Flags { get; set; } = [];
+
+    #endregion
 }

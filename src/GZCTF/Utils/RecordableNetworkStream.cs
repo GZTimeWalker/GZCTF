@@ -41,9 +41,9 @@ public sealed class RecordableNetworkStream : NetworkStream
     static readonly IPEndPoint Host = new(0, 65535);
 
     readonly CaptureFileWriterDevice? _device;
+    readonly RecordableNetworkStreamOptions _options;
     readonly IBlobStorage? _storage;
     readonly string _tempFile = string.Empty;
-    readonly RecordableNetworkStreamOptions _options;
 
     bool _disposed;
 

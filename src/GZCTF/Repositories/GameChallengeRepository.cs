@@ -2,7 +2,6 @@
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Repositories;
 
@@ -15,7 +14,7 @@ public class GameChallengeRepository(
 {
     public async Task AddFlags(GameChallenge challenge, FlagCreateModel[] models, CancellationToken token = default)
     {
-        foreach (FlagCreateModel model in models)
+        foreach (var model in models)
         {
             var attachment = model.ToAttachment(await blobRepository.GetBlobByHash(model.FileHash, token));
 
@@ -69,7 +68,7 @@ public class GameChallengeRepository(
 
         // only dynamic attachment challenge's flag contexts have attachment
         if (challenge.Type == ChallengeType.DynamicAttachment)
-            foreach (FlagContext flag in challenge.Flags)
+            foreach (var flag in challenge.Flags)
                 await blobRepository.DeleteAttachment(flag.Attachment, token);
 
         Context.RemoveRange(challenge.Flags);
@@ -81,7 +80,7 @@ public class GameChallengeRepository(
 
     public async Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default)
     {
-        FlagContext? flag = await Context.FlagContexts
+        var flag = await Context.FlagContexts
             .FirstOrDefaultAsync(f => f.Challenge == challenge && f.Id == flagId, token);
 
         if (flag is null)
@@ -104,7 +103,7 @@ public class GameChallengeRepository(
 
     public async Task<bool> RecalculateAcceptedCount(Game game, CancellationToken token = default)
     {
-        IDbContextTransaction trans = await Context.Database.BeginTransactionAsync(token);
+        var trans = await Context.Database.BeginTransactionAsync(token);
 
         try
         {

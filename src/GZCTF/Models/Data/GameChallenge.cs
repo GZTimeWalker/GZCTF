@@ -39,13 +39,15 @@ public class GameChallenge : Challenge
     /// Current score of the challenge
     /// </summary>
     [NotMapped]
-    public int CurrentScore =>
-        AcceptedCount <= 1
+    public int CurrentScore
+    {
+        get => AcceptedCount <= 1
             ? OriginalScore
             : (int)Math.Floor(
                 OriginalScore * (MinScoreRate +
                                  (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
                 ));
+    }
 
     internal void Update(ChallengeUpdateModel model)
     {
@@ -98,7 +100,7 @@ public class GameChallenge : Challenge
     /// <summary>
     /// Game object
     /// </summary>
-    public Game Game { get; set; } = default!;
+    public Game Game { get; set; } = null!;
 
     #endregion Db Relationship
 }

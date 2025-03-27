@@ -47,10 +47,10 @@ public class DatabaseSink : ILogEventSink, IDisposable
 
     static LogModel ToLogModel(LogEvent logEvent)
     {
-        logEvent.Properties.TryGetValue("UserName", out LogEventPropertyValue? userName);
-        logEvent.Properties.TryGetValue("SourceContext", out LogEventPropertyValue? sourceContext);
-        logEvent.Properties.TryGetValue("IP", out LogEventPropertyValue? ip);
-        logEvent.Properties.TryGetValue("Status", out LogEventPropertyValue? status);
+        logEvent.Properties.TryGetValue("UserName", out var userName);
+        logEvent.Properties.TryGetValue("SourceContext", out var sourceContext);
+        logEvent.Properties.TryGetValue("IP", out var ip);
+        logEvent.Properties.TryGetValue("Status", out var status);
 
         return new LogModel
         {
@@ -76,13 +76,13 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 await _resetEvent.WaitAsync(token);
                 _resetEvent.Reset();
 
-                while (_logBuffer.TryDequeue(out LogModel? logModel))
+                while (_logBuffer.TryDequeue(out var logModel))
                     lockedLogBuffer.Add(logModel);
 
                 if (lockedLogBuffer.Count <= 50 && DateTimeOffset.Now - _lastFlushTime <= TimeSpan.FromSeconds(10))
                     continue;
 
-                await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+                await using var scope = _serviceProvider.CreateAsyncScope();
 
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);

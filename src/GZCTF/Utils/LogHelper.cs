@@ -25,36 +25,55 @@ public static class LogHelper
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
     /// <summary>
-    /// 记录一条系统日志（无用户信息，默认Info）
+    /// Record a system log (no user information, default Info level)
     /// </summary>
-    /// <param name="logger">传入的 Nlog.Logger</param>
-    /// <param name="msg">Log 消息</param>
-    /// <param name="status">操作执行结果</param>
-    /// <param name="level">Log 级别</param>
+    /// <param name="logger">the logger</param>
+    /// <param name="msg">message</param>
+    /// <param name="status">task status</param>
+    /// <param name="level">log level</param>
     public static void SystemLog<T>(this ILogger<T> logger, string msg, TaskStatus status = TaskStatus.Success,
         LogLevel? level = null) =>
         Log(logger, msg, "System", string.Empty, status, level ?? LogLevel.Information);
 
     /// <summary>
-    /// 登记一条 Log 记录
+    /// Log an error, no formatting
     /// </summary>
-    /// <param name="logger">传入的 Nlog.Logger</param>
-    /// <param name="msg">Log 消息</param>
-    /// <param name="user">用户对象</param>
-    /// <param name="status">操作执行结果</param>
-    /// <param name="level">Log 级别</param>
+    /// <param name="logger"></param>
+    /// <param name="msg"></param>
+    /// <param name="exception"></param>
+    /// <typeparam name="T"></typeparam>
+    public static void LogErrorMessage<T>(this ILogger<T> logger, Exception exception, string msg) =>
+        logger.LogError(exception, "{msg:l}", msg);
+
+    /// <summary>
+    /// Log an error, no formatting
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="exception"></param>
+    /// <typeparam name="T"></typeparam>
+    public static void LogErrorMessage<T>(this ILogger<T> logger, Exception exception) =>
+        logger.LogError(exception, "{msg:l}", exception.Message);
+
+    /// <summary>
+    /// Record a log
+    /// </summary>
+    /// <param name="logger">the logger</param>
+    /// <param name="msg">message</param>
+    /// <param name="status">task status</param>
+    /// <param name="level">log level</param>
+    /// <param name="user">the user</param>
     public static void Log<T>(this ILogger<T> logger, string msg, UserInfo? user, TaskStatus status,
         LogLevel? level = null) =>
         Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
 
     /// <summary>
-    /// 登记一条 Log 记录
+    /// Record a log
     /// </summary>
-    /// <param name="logger">传入的 Nlog.Logger</param>
-    /// <param name="msg">Log 消息</param>
-    /// <param name="context">Http上下文</param>
-    /// <param name="status">操作执行结果</param>
-    /// <param name="level">Log 级别</param>
+    /// <param name="logger">the logger</param>
+    /// <param name="msg">message</param>
+    /// <param name="status">task status</param>
+    /// <param name="level">log level</param>
+    /// <param name="context">http context</param>
     public static void Log<T>(this ILogger<T> logger, string msg, HttpContext? context, TaskStatus status,
         LogLevel? level = null)
     {
@@ -65,25 +84,25 @@ public static class LogHelper
     }
 
     /// <summary>
-    /// 登记一条 Log 记录
+    /// Record a log
     /// </summary>
-    /// <param name="logger">传入的 Nlog.Logger</param>
-    /// <param name="msg">Log 消息</param>
-    /// <param name="ip">连接IP</param>
-    /// <param name="status">操作执行结果</param>
-    /// <param name="level">Log 级别</param>
+    /// <param name="logger">the logger</param>
+    /// <param name="msg">message</param>
+    /// <param name="status">task status</param>
+    /// <param name="level">log level</param>
+    /// <param name="ip">ip</param>
     public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null)
         => Log(logger, msg, "Anonymous", ip, status, level);
 
     /// <summary>
-    /// 登记一条 Log 记录
+    /// Record a log
     /// </summary>
-    /// <param name="logger">传入的 Nlog.Logger</param>
-    /// <param name="msg">Log 消息</param>
-    /// <param name="uname">用户名</param>
-    /// <param name="ip">当前IP</param>
-    /// <param name="status">操作执行结果</param>
-    /// <param name="level">Log 级别</param>
+    /// <param name="logger">the logger</param>
+    /// <param name="msg">message</param>
+    /// <param name="status">task status</param>
+    /// <param name="level">log level</param>
+    /// <param name="uname">user name</param>
+    /// <param name="ip">ip</param>
     public static void Log<T>(this ILogger<T> logger, string msg, string uname, string ip, TaskStatus status,
         LogLevel? level = null)
     {
@@ -126,7 +145,7 @@ public static class LogHelper
 
     public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
     {
-        LoggerConfiguration loggerConfig = new LoggerConfiguration()
+        var loggerConfig = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>

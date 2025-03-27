@@ -1,4 +1,3 @@
-using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using MemoryPack;
 
@@ -14,14 +13,15 @@ public class RecentGamesCacheHandler : ICacheRequestHandler
 
         try
         {
-            BasicGameInfoModel[] games = await gameRepository.GenRecentGames(token);
+            var games = await gameRepository.GenRecentGames(token);
             return MemoryPackSerializer.Serialize(games);
         }
         catch (Exception e)
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<RecentGamesCacheHandler>>();
-            logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+            var logger =
+                scope.ServiceProvider.GetRequiredService<ILogger<RecentGamesCacheHandler>>();
+            logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
             return [];
         }
     }

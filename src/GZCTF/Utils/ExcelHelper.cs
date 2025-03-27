@@ -7,6 +7,9 @@ namespace GZCTF.Utils;
 
 public class ExcelHelper(IStringLocalizer<Program> localizer)
 {
+    const string Empty = "<empty>";
+    const string Split = " / ";
+
     readonly string[] _commonScoreboardHeader =
     [
         localizer[nameof(Resources.Program.Header_Ranking)],
@@ -39,8 +42,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             throw new ArgumentException(localizer[nameof(Resources.Program.Scoreboard_TeamNotLoaded)]);
 
         var workbook = new XSSFWorkbook();
-        ISheet? boardSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_Title)]);
-        ICellStyle headerStyle = GetHeaderStyle(workbook);
+        var boardSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_Title)]);
+        var headerStyle = GetHeaderStyle(workbook);
         var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
         WriteBoardContent(boardSheet, scoreboard, challIds, game);
 
@@ -52,8 +55,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     public MemoryStream GetSubmissionExcel(IEnumerable<Submission> submissions)
     {
         var workbook = new XSSFWorkbook();
-        ISheet? subSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_AllSubmissions)]);
-        ICellStyle headerStyle = GetHeaderStyle(workbook);
+        var subSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_AllSubmissions)]);
+        var headerStyle = GetHeaderStyle(workbook);
         WriteSubmissionHeader(subSheet, headerStyle);
         WriteSubmissionContent(subSheet, submissions);
 
@@ -64,8 +67,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
     static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
     {
-        ICellStyle? style = workbook.CreateCellStyle();
-        IFont? boldFontStyle = workbook.CreateFont();
+        var style = workbook.CreateCellStyle();
+        var boldFontStyle = workbook.CreateFont();
 
         boldFontStyle.IsBold = true;
         style.SetFont(boldFontStyle);
@@ -78,12 +81,12 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
     void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
     {
-        IRow? row = sheet.CreateRow(0);
+        var row = sheet.CreateRow(0);
         var colIndex = 0;
 
         foreach (var col in _commonSubmissionHeader)
         {
-            ICell? cell = row.CreateCell(colIndex++);
+            var cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
             cell.CellStyle = style;
         }
@@ -93,10 +96,10 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     {
         var rowIndex = 1;
 
-        foreach (Submission item in submissions)
+        foreach (var item in submissions)
         {
             var colIndex = 0;
-            IRow? row = sheet.CreateRow(rowIndex);
+            var row = sheet.CreateRow(rowIndex);
             row.CreateCell(colIndex++).SetCellValue(item.Status.ToShortString(localizer));
             row.CreateCell(colIndex++).SetCellValue(item.SubmitTimeUtc.ToString("u"));
             row.CreateCell(colIndex++).SetCellValue(item.TeamName);
@@ -111,14 +114,14 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
     int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
     {
-        IRow? row = sheet.CreateRow(0);
+        var row = sheet.CreateRow(0);
         var colIndex = 0;
         var challIds = new List<int>();
         var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
 
         foreach (var col in _commonScoreboardHeader)
         {
-            ICell? cell = row.CreateCell(colIndex++);
+            var cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
             cell.CellStyle = style;
 
@@ -130,10 +133,10 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             cell.CellStyle = style;
         }
 
-        foreach (KeyValuePair<ChallengeCategory, IEnumerable<ChallengeInfo>> type in scoreboard.Challenges)
-            foreach (ChallengeInfo chall in type.Value)
+        foreach (var type in scoreboard.Challenges)
+            foreach (var chall in type.Value)
             {
-                ICell? cell = row.CreateCell(colIndex++);
+                var cell = row.CreateCell(colIndex++);
                 cell.SetCellValue(chall.Title);
                 cell.CellStyle = style;
                 challIds.Add(chall.Id);
@@ -147,10 +150,10 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var rowIndex = 1;
         var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
 
-        foreach (ScoreboardItem item in scoreboard.Items.Values)
+        foreach (var item in scoreboard.Items.Values)
         {
             var colIndex = 0;
-            IRow? row = sheet.CreateRow(rowIndex);
+            var row = sheet.CreateRow(rowIndex);
             row.CreateCell(colIndex++).SetCellValue(item.Rank);
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
@@ -178,16 +181,13 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
             foreach (var challId in challIds)
             {
-                ChallengeItem? chall = item.SolvedChallenges.SingleOrDefault(c => c.Id == challId);
+                var chall = item.SolvedChallenges.SingleOrDefault(c => c.Id == challId);
                 row.CreateCell(colIndex++).SetCellValue(chall?.Score ?? 0);
             }
 
             rowIndex++;
         }
     }
-
-    const string Empty = "<empty>";
-    const string Split = " / ";
 
     static string TakeIfNotEmpty(string? str) => string.IsNullOrWhiteSpace(str) ? Empty : str;
 }

@@ -13,18 +13,18 @@ public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
         try
         {
             var time = DateTime.UtcNow;
-            string random = Guid.NewGuid().ToString();
+            var random = Guid.NewGuid().ToString();
             await blobStorage.WriteTextAsync(Filename, random, cancellationToken: cancellationToken);
 
             try
             {
-                if (!await blobStorage.ExistsAsync(Filename, cancellationToken: cancellationToken) ||
+                if (!await blobStorage.ExistsAsync(Filename, cancellationToken) ||
                     await blobStorage.ReadTextAsync(Filename, cancellationToken: cancellationToken) != random)
                     return HealthCheckResult.Unhealthy();
             }
             finally
             {
-                await blobStorage.DeleteAsync(Filename, cancellationToken: cancellationToken);
+                await blobStorage.DeleteAsync(Filename, cancellationToken);
             }
 
             return DateTime.UtcNow - time > TimeSpan.FromSeconds(5)

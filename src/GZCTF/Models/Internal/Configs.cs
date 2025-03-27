@@ -293,11 +293,32 @@ public class KubernetesConfig
     public string[]? Dns { get; set; }
 }
 
+public class RegistrySet<T> : Dictionary<string, T>
+where T : class
+{
+    public T? GetForImage(string image)
+    {
+        if (string.IsNullOrWhiteSpace(image))
+            return null;
+
+        image = image.Contains("://") ? image : $"https://{image}";
+
+        if (!Uri.TryCreate(image, UriKind.Absolute, out var uri) || uri.HostNameType == UriHostNameType.Unknown)
+            return null;
+
+        return TryGetValue(uri.Authority, out var cfg) ? cfg :
+            TryGetValue(uri.Host, out var cfgHost) ? cfgHost : null;
+    }
+}
+
 public class RegistryConfig
 {
     public string? ServerAddress { get; set; }
     public string? UserName { get; set; }
     public string? Password { get; set; }
+
+    public bool Valid => !string.IsNullOrEmpty(UserName) &&
+                       !string.IsNullOrEmpty(Password);
 }
 
 #endregion
@@ -342,13 +363,15 @@ public class TelemetryConfig
     public OpenTelemetryConfig OpenTelemetry { get; set; } = new();
     public AzureMonitorConfig AzureMonitor { get; set; } = new();
     public ConsoleConfig Console { get; set; } = new();
+
+    [JsonIgnore]
+    public bool Enable => Prometheus.Enable || OpenTelemetry.Enable || AzureMonitor.Enable || Console.Enable;
 }
 
 public class PrometheusConfig
 {
     public bool Enable { get; set; }
     public bool TotalNameSuffixForCounters { get; set; }
-    public ushort? Port { get; set; }
 }
 
 public class OpenTelemetryConfig
@@ -390,9 +413,9 @@ public class ForwardedOptions : ForwardedHeadersOptions
     public void ToForwardedHeadersOptions(ForwardedHeadersOptions options)
     {
         // assign the same value to the base class via reflection
-        Type type = typeof(ForwardedHeadersOptions);
-        PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (PropertyInfo property in properties)
+        var type = typeof(ForwardedHeadersOptions);
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var property in properties)
         {
             // skip the properties that are not being set directly
             if (property.Name is nameof(KnownNetworks) or nameof(KnownProxies))
@@ -406,7 +429,7 @@ public class ForwardedOptions : ForwardedHeadersOptions
             // split the network into address and prefix length
             var parts = network.Split('/');
             if (parts.Length == 2 &&
-                IPAddress.TryParse(parts[0], out IPAddress? prefix) &&
+                IPAddress.TryParse(parts[0], out var prefix) &&
                 int.TryParse(parts[1], out var prefixLength))
                 options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
         });

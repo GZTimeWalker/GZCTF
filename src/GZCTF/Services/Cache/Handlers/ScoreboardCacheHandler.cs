@@ -1,4 +1,3 @@
-using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using MemoryPack;
 
@@ -19,21 +18,22 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
             return [];
 
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-        Game? game = await gameRepository.GetGameById(id, token);
+        var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
             return [];
 
         try
         {
-            ScoreboardModel scoreboard = await gameRepository.GenScoreboard(game, token);
+            var scoreboard = await gameRepository.GenScoreboard(game, token);
             return MemoryPackSerializer.Serialize(scoreboard);
         }
         catch (Exception e)
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardCacheHandler>>();
-            logger.LogError(e, "{msg}",
-                Program.StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+            var logger =
+                scope.ServiceProvider.GetRequiredService<ILogger<ScoreboardCacheHandler>>();
+            logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
             return [];
         }
     }

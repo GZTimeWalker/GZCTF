@@ -64,7 +64,7 @@ public static class RateLimiter
                         SegmentsPerWindow = 6
                     });
 
-            IPAddress? address = context.Connection.RemoteIpAddress;
+            var address = context.Connection.RemoteIpAddress;
 
             if (address is null || IPAddress.IsLoopback(address))
                 return RateLimitPartition.GetNoLimiter(IPAddress.Loopback.ToString());
@@ -84,10 +84,11 @@ public static class RateLimiter
             context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
             context.HttpContext.Response.ContentType = MediaTypeNames.Application.Json;
 
-            var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
+            var localizer =
+                context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
             var afterSec = (int)TimeSpan.FromMinutes(1).TotalSeconds;
 
-            if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out TimeSpan retryAfter))
+            if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
                 afterSec = (int)retryAfter.TotalSeconds;
 
             context.HttpContext.Response.Headers.RetryAfter = afterSec.ToString(NumberFormatInfo.InvariantInfo);

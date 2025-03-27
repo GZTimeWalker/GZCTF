@@ -83,6 +83,7 @@ public class OpenApiDateTimeOffsetToUIntMapper : ITypeMapper
     }
 
     public Type MappedType => typeof(DateTimeOffset);
+
     public bool UseReference => false;
 }
 
@@ -100,12 +101,10 @@ internal class GenericsSystemTextJsonReflectionService : SystemTextJsonReflectio
             return false;
 
         if (jsonConverterAttribute?.ConverterType is Type converterType)
-        {
             return converterType.IsAssignableToTypeName("StringEnumConverter", TypeNameStyle.Name) ||
                    converterType.IsAssignableToTypeName("JsonStringEnumConverter`1", TypeNameStyle.Name) ||
                    converterType.IsAssignableToTypeName("System.Text.Json.Serialization.JsonStringEnumConverter",
                        TypeNameStyle.FullName);
-        }
 
         return false;
     }

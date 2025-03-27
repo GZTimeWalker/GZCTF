@@ -16,7 +16,7 @@ public class WriteupInfoModel
     /// <summary>
     /// Team information
     /// </summary>
-    public TeamInfoModel Team { get; set; } = default!;
+    public TeamInfoModel Team { get; set; } = null!;
 
     /// <summary>
     /// File URL
@@ -32,7 +32,7 @@ public class WriteupInfoModel
     /// Writeup file object
     /// </summary>
     [JsonIgnore]
-    public LocalFile File { get; set; } = default!;
+    public LocalFile File { get; set; } = null!;
 
     internal static WriteupInfoModel? FromParticipation(Participation part) =>
         part.Writeup is null

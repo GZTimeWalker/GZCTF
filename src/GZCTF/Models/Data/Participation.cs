@@ -69,7 +69,7 @@ public class Participation
     /// <summary>
     /// Game
     /// </summary>
-    public Game Game { get; set; } = default!;
+    public Game Game { get; set; } = null!;
 
     /// <summary>
     /// Team ID
@@ -80,7 +80,7 @@ public class Participation
     /// <summary>
     /// Team
     /// </summary>
-    public Team Team { get; set; } = default!;
+    public Team Team { get; set; } = null!;
 
     #endregion Db Relationship
 }

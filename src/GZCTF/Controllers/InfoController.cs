@@ -31,6 +31,11 @@ public class InfoController(
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
+    static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
+    {
+        SlidingExpiration = TimeSpan.FromMinutes(5)
+    };
+
     /// <summary>
     /// Get the latest posts
     /// </summary>
@@ -76,7 +81,7 @@ public class InfoController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost(string id, CancellationToken token)
     {
-        Post? post = await postRepository.GetPostByIdFromCache(id, token);
+        var post = await postRepository.GetPostByIdFromCache(id, token);
 
         if (post is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)],
@@ -97,7 +102,7 @@ public class InfoController(
     [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
     {
-        ClientConfig data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
+        var data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
@@ -120,7 +125,7 @@ public class InfoController(
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
     {
-        ClientCaptchaInfoModel data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
+        var data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
@@ -149,8 +154,8 @@ public class InfoController(
         if (captchaConfig.Value.Provider != CaptchaProvider.HashPow)
             return NotFound();
 
-        byte[] challenge = RandomNumberGenerator.GetBytes(8);
-        string id = RandomNumberGenerator.GetHexString(12, true);
+        var challenge = RandomNumberGenerator.GetBytes(8);
+        var id = RandomNumberGenerator.GetHexString(12, true);
         await cache.SetAsync(CacheKey.HashPow(id), challenge, PowChallengeCacheOptions, token);
 
         return Ok(new HashPowChallenge
@@ -160,9 +165,4 @@ public class InfoController(
             Difficulty = captchaConfig.Value.HashPow.Difficulty
         });
     }
-
-    static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
-    {
-        SlidingExpiration = TimeSpan.FromMinutes(5)
-    };
 }

@@ -3,9 +3,7 @@ using GZCTF.Extensions;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
-using MemoryPack;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
@@ -28,7 +26,7 @@ public class GameRepository(
         game.GenerateKeyPair(_xorKey);
 
         if (_xorKey is null)
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)],
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)],
                 TaskStatus.Pending,
                 LogLevel.Warning);
 
@@ -141,7 +139,7 @@ public class GameRepository(
     public async Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default)
     {
         // In most cases, we can get the scoreboard from the cache
-        ScoreboardModel scoreboard = await GetScoreboard(game, token);
+        var scoreboard = await GetScoreboard(game, token);
 
         // load team info & participants
         var ids = scoreboard.Items.Values.Select(i => i.Id).ToArray();
@@ -151,7 +149,7 @@ public class GameRepository(
             .Include(t => t.Members).ToHashSetAsync(token);
 
         // load participants with team id and game id, select all UserInfos
-        Dictionary<int, HashSet<UserInfo>> participants = await Context.UserParticipations
+        var participants = await Context.UserParticipations
             .Where(p => ids.Contains(p.TeamId) && p.GameId == game.Id)
             .Include(p => p.User)
             .Select(p => new { p.TeamId, p.User })
@@ -174,29 +172,29 @@ public class GameRepository(
 
     public async Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default)
     {
-        IDbContextTransaction trans = await BeginTransactionAsync(token);
+        var trans = await BeginTransactionAsync(token);
 
         try
         {
             var count = await Context.GameChallenges.Where(i => i.Game == game).CountAsync(token);
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title,
+                StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionChallenges), game.Title,
                     count], TaskStatus.Pending,
                 LogLevel.Debug
             );
 
-            foreach (GameChallenge chal in await Context.GameChallenges.Where(c => c.Game == game)
+            foreach (var chal in await Context.GameChallenges.Where(c => c.Game == game)
                          .ToArrayAsync(token))
                 await challengeRepository.RemoveChallenge(chal, false, token);
 
             count = await Context.Participations.Where(i => i.Game == game).CountAsync(token);
 
             logger.SystemLog(
-                Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, count],
+                StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title, count],
                 TaskStatus.Pending, LogLevel.Debug
             );
 
-            foreach (Participation part in await Context.Participations.Where(p => p.Game == game).ToArrayAsync(token))
+            foreach (var part in await Context.Participations.Where(p => p.Game == game).ToArrayAsync(token))
                 await participationRepository.RemoveParticipation(part, false, token);
 
             Context.Remove(game);
@@ -213,7 +211,7 @@ public class GameRepository(
         }
         catch (Exception e)
         {
-            logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending,
+            logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Game_DeletionFailed)], TaskStatus.Pending,
                 LogLevel.Debug);
             logger.SystemLog(e.Message, TaskStatus.Failed, LogLevel.Warning);
             await trans.RollbackAsync(token);
@@ -227,12 +225,12 @@ public class GameRepository(
         await Context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
 
         logger.SystemLog(
-            Program.StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title,
+            StaticLocalizer[nameof(Resources.Program.GameRepository_GameDeletionTeams), game.Title,
                 game.Participations.Count],
             TaskStatus.Pending,
             LogLevel.Debug);
 
-        foreach (Participation part in game.Participations)
+        foreach (var part in game.Participations)
             await participationRepository.DeleteParticipationWriteUp(part, token);
     }
 
@@ -267,7 +265,7 @@ public class GameRepository(
                     TeamInfo = p.Team,
                     // pending fields: SolvedChallenges
                     Rank = 0,
-                    LastSubmissionTime = DateTimeOffset.MinValue,
+                    LastSubmissionTime = DateTimeOffset.MinValue
                     // update: only store accepted challenges
                 }).ToDictionaryAsync(i => i.ParticipantId, token);
 
@@ -327,7 +325,7 @@ public class GameRepository(
         }
 
         // 4. sort challenge items by submit time, and update the Score and Type fields
-        bool noBonus = game.BloodBonus.NoBonus;
+        var noBonus = game.BloodBonus.NoBonus;
 
         float[] bloodFactors =
         [

@@ -12,10 +12,10 @@ public record CronJobEntry(CronJob Job, CronExpression Expression);
 public class CronJobService(IDistributedCache cache, IServiceScopeFactory provider, ILogger<CronJobService> logger)
     : IHostedService, IDisposable
 {
-    Timer? _timer;
-    bool _holdLock;
-    bool _disposed;
     readonly Dictionary<string, CronJobEntry> _jobs = [];
+    bool _disposed;
+    bool _holdLock;
+    Timer? _timer;
 
     public void Dispose()
     {
@@ -27,7 +27,24 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         GC.SuppressFinalize(this);
     }
 
-    ~CronJobService() => Dispose();
+    public async Task StartAsync(CancellationToken token)
+    {
+        if (await TryHoldLock())
+            LaunchCronJob();
+        else
+            LaunchWatchDog();
+    }
+
+    public Task StopAsync(CancellationToken token)
+    {
+        StopCronJob();
+        return DropLock();
+    }
+
+    ~CronJobService()
+    {
+        Dispose();
+    }
 
     /// <summary>
     /// Add a job to the cron job service
@@ -36,7 +53,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
     {
         lock (_jobs)
         {
-            (string name, CronJobEntry entry) = job.ToEntry();
+            (var name, var entry) = job.ToEntry();
             if (!_jobs.TryAdd(name, entry))
                 return false;
         }
@@ -61,7 +78,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
     void LaunchCronJob()
     {
-        var methods = typeof(DefaultCronJobs).GetMethods(BindingFlags.Static | BindingFlags.Public);
+        var methods = typeof(RuntimeCronJobs).GetMethods(BindingFlags.Static | BindingFlags.Public);
         foreach (var method in methods)
         {
             var attr = method.GetCustomAttribute<CronJobAttribute>();
@@ -74,7 +91,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         _timer = new Timer(_ => Task.Run(Execute),
             null, TimeSpan.FromSeconds(60 - DateTime.UtcNow.Second), TimeSpan.FromMinutes(1));
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
             TaskStatus.Success, LogLevel.Debug);
     }
 
@@ -86,7 +103,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
             _jobs.Clear();
         }
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit,
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Stopped)], TaskStatus.Exit,
             LogLevel.Debug);
     }
 
@@ -127,34 +144,19 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
                 _timer?.Change(Timeout.Infinite, 0);
                 LaunchCronJob();
-                logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
+                logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
                     TaskStatus.Success, LogLevel.Debug);
             }
             catch (Exception e)
             {
-                logger.SystemLog(Program.StaticLocalizer[
-                        nameof(Resources.Program.CronJob_ExecuteFailed),
+                logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_ExecuteFailed),
                         "WatchDog", e.Message],
                     TaskStatus.Failed, LogLevel.Warning);
             }
         }, null, TimeSpan.FromSeconds(delay), TimeSpan.FromMinutes(5));
 
-        logger.SystemLog(Program.StaticLocalizer[nameof(Resources.Program.CronJob_LaunchedWatchDog)],
+        logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_LaunchedWatchDog)],
             TaskStatus.Pending, LogLevel.Debug);
-    }
-
-    public async Task StartAsync(CancellationToken token)
-    {
-        if (await TryHoldLock())
-            LaunchCronJob();
-        else
-            LaunchWatchDog();
-    }
-
-    public Task StopAsync(CancellationToken token)
-    {
-        StopCronJob();
-        return DropLock();
     }
 
     async Task Execute()
@@ -167,7 +169,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
         lock (_jobs)
         {
-            foreach ((var job, CronJobEntry entry) in _jobs)
+            foreach ((var job, var entry) in _jobs)
             {
                 if (entry.Expression.GetNextOccurrence(last) is not { } next ||
                     Math.Abs((next - now).TotalSeconds) > 30D)
@@ -184,7 +186,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
                     catch (Exception e)
                     {
                         logger.SystemLog(
-                            Program.StaticLocalizer[nameof(Resources.Program.CronJob_ExecuteFailed), job, e.Message],
+                            StaticLocalizer[nameof(Resources.Program.CronJob_ExecuteFailed), job, e.Message],
                             TaskStatus.Failed, LogLevel.Warning);
                     }
                 }));
