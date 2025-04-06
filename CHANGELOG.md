@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.2.6](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.5..v1.2.6) - 2025-04-06
+
+### 🐛 Bug Fixes
+
+- **(games)** text overflow in ScrollArea - ([61b7e2](https://github.com/GZTimeWalker/GZCTF/commit/61b7e2)) by **GZTime**
+
+---
 ## [1.2.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.4..v1.2.5) - 2025-03-16
 
 ### ⛰️ Features
