@@ -58,7 +58,6 @@ public class GameController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game information</response>
     [HttpGet("Recent")]
-    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> RecentGames(
         [FromQuery][Range(0, 50)] int limit,
@@ -82,7 +81,7 @@ public class GameController(
     /// <response code="400">Game not found</response>
     [HttpGet]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Query))]
-    [ResponseCache(VaryByQueryKeys = ["count", "skip"], Duration = 300)]
+    [ResponseCache(VaryByQueryKeys = ["count", "skip"], Duration = 60)]
     [ProducesResponseType(typeof(ArrayResponse<BasicGameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Games([FromQuery][Range(0, 50)] int count = 10,
         [FromQuery] int skip = 0, CancellationToken token = default)
