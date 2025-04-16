@@ -16,8 +16,8 @@
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="9.0.4"/>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4"/>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common" Version="9.4.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.3" />
@@ -46,7 +46,7 @@
     <PackageVersion Include="MailKit" Version="4.11.0" />
     <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.4" />
     <PackageVersion Include="MemoryPack" Version="1.21.4" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.4" />
