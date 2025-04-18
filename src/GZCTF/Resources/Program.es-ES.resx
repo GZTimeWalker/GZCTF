@@ -156,13 +156,13 @@
     <value>Nombre de usuario o contraseña incorrectos</value>
   </data>
   <data name="Account_InvalidEmail" xml:space="preserve">
-    <value>Dirección de correo electrónico no válida</value>
+    <value>Dirección de correo electrónico inválida</value>
   </data>
   <data name="Account_PasswordChanged" xml:space="preserve">
-    <value>Usuario actualizó su contraseña</value>
+    <value>Contraseña actualizada por el usuario</value>
   </data>
   <data name="Account_PasswordReset" xml:space="preserve">
-    <value>Restablecimiento de contraseña de usuario exitoso</value>
+    <value>Contraseña de usuario restablecida con éxito</value>
   </data>
   <data name="Account_RegisterNotEnabled" xml:space="preserve">
     <value>El registro ha sido deshabilitado</value>
