@@ -7,6 +7,10 @@
       "message": "请检查 WSRX 软件日志并汇报问题。",
       "title": "WSRX 守护进程出错"
     },
+    "daemon_offline": {
+      "message": "WSRX 守护进程离线，请检查 WSRX 守护进程是否运行。",
+      "title": "WSRX 守护进程离线"
+    },
     "daemon_unavailable": {
       "message": "WSRX 守护进程未运行，如若桌面客户端已经启动，请检查平台设置中的 WSRX 控制地址是否正确。",
       "title": "WSRX 守护进程不可用"

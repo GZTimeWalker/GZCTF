@@ -33,7 +33,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { LogoBox } from '@Components/LogoBox'
 import { AppControlProps } from '@Components/WithNavbar'
-import { WsrxBox } from '@Components/WsrxBox'
+import { WsrxManager } from '@Components/WsrxManager'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Hooks/useConfig'
 import { useLogOut, useUser } from '@Hooks/useUser'
@@ -137,7 +137,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
-              <WsrxBox />
+              <WsrxManager />
             </Popover.Dropdown>
           </Popover>
           {/* Language */}
