@@ -89,7 +89,8 @@
   --text-color: var(--mantine-color-default-color);
 
   padding: 0 4px;
-  width: 300px;
+  max-width: 300px;
+  width: var(--width);
   pointer-events: none;
   user-select: none;
   overflow: hidden;
