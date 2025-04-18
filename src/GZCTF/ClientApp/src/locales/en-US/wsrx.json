@@ -1,21 +1,25 @@
 {
+  "button": {
+    "config": "WSRX configuration"
+  },
+  "error": {
+    "daemon_error": {
+      "message": "Please check the WSRX software log and report the issue.",
+      "title": "WSRX daemon error"
+    },
+    "daemon_unavailable": {
+      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
+      "title": "WSRX daemon unavailable"
+    },
+    "unknown": "An unknown error occurred while calling the WSRX API.",
+    "version_mismatch": {
+      "message": "WSRX version is too low, please update to the latest version before using platform integration.",
+      "title": "Version mismatch"
+    }
+  },
   "state": {
     "invalid": "WSRX disconnected",
     "pending": "Waiting for local authorization",
     "usable": "WSRX connected"
-  },
-  "errors": {
-    "version_mismatch": "Version mismatch",
-    "version_mismatch_msg": "WSRX version is too low, please update to the latest version before using platform integration.",
-    "daemon_unavailable": "WSRX daemon unavailable",
-    "daemon_unavailable_msg": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
-    "daemon_error": "WSRX daemon error",
-    "daemon_error_msg": "Please check the WSRX software log and report the issue.",
-    "unknown_error": "Unknown error",
-    "unknown_error_msg": "An unknown error occurred while calling the WSRX API."
-  },
-  "action": {
-    "toggle_config": "WSRX configuration",
-    "retry": "Retry"
   }
 }

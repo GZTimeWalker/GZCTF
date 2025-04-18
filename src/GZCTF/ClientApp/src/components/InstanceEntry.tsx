@@ -2,13 +2,13 @@ import { ActionIcon, Anchor, Button, Divider, Group, Stack, Text, TextInput, Too
 import { useClipboard } from '@mantine/hooks'
 import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInApp, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
+import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { WsrxErrorKind } from '@xdsec/wsrx'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { HandleWsrxError } from '@Components/WsrxBox'
 import { getProxyUrl } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { useWsrx } from '@Hooks/useWsrx'
@@ -119,53 +119,29 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     })
   }
 
-  const [openUrl, setOpenUrl] = useState(isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`)
-
-  function getAppUrl() {
+  const fetchLocalTraffic = () => {
     const localTraffics = wsrx.list()
     const localTraffic = localTraffics.find((traffic) => traffic.remote === copyEntry)
-    if (localTraffic) {
-      return localTraffic.local
-    }
-    wsrx
-      .add({
-        remote: copyEntry,
-        local: '127.0.0.1:0',
-      })
-      .then((traffic) => {
-        setOpenUrl(traffic.local)
-      })
-      .catch((err) => {
-        switch (err.kind) {
-          case WsrxErrorKind.DaemonUnavailable:
-            showNotification({
-              color: 'red',
-              title: t('wsrx.errors.daemon_unavailable'),
-              message: t('wsrx.errors.daemon_unavailable_msg'),
-              autoClose: 5000,
-            })
-            break
-          case WsrxErrorKind.DaemonError:
-            showNotification({
-              color: 'red',
-              title: t('wsrx.errors.daemon_error'),
-              message: t('wsrx.errors.daemon_error_msg'),
-              autoClose: 5000,
-            })
-            break
-          default:
-            showNotification({
-              color: 'red',
-              title: t('wsrx.errors.unknown_error'),
-              message: t('wsrx.errors.unknown_error_msg'),
-              autoClose: 5000,
-            })
-        }
-      })
-    return copyEntry
+    return localTraffic?.local ?? copyEntry
   }
 
-  // const openUrl = isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`
+  const [openUrl, setOpenUrl] = useState(isPlatformProxy ? fetchLocalTraffic() : `http://${instanceEntry}`)
+
+  useEffect(() => {
+    const requestProxy = async () => {
+      try {
+        const traffic = await wsrx.add({
+          remote: copyEntry,
+          local: '127.0.0.1:0',
+        })
+        setOpenUrl(traffic.local)
+      } catch (err) {
+        HandleWsrxError(err, t)
+      }
+    }
+
+    requestProxy()
+  }, [copyEntry])
 
   if (!withContainer) {
     return isPreview ? (

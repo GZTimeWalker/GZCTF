@@ -33,13 +33,13 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { LogoBox } from '@Components/LogoBox'
 import { AppControlProps } from '@Components/WithNavbar'
+import { WsrxBox } from '@Components/WsrxBox'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
 import { clearLocalCache } from '@Hooks/useConfig'
 import { useLogOut, useUser } from '@Hooks/useUser'
 import { Role } from '@Api'
 import classes from '@Styles/AppNavbar.module.css'
 import misc from '@Styles/Misc.module.css'
-import { WsrxBox } from './wsrx/WsrxBox'
 
 interface NavbarItem {
   icon: string

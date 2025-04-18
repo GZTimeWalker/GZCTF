@@ -1,21 +1,25 @@
 {
+  "button": {
+    "config": "WSRX 配置"
+  },
+  "error": {
+    "daemon_error": {
+      "message": "请检查 WSRX 软件日志并汇报问题。",
+      "title": "WSRX 守护进程出错"
+    },
+    "daemon_unavailable": {
+      "message": "WSRX 守护进程未运行，如若桌面客户端已经启动，请检查平台设置中的 WSRX 控制地址是否正确。",
+      "title": "WSRX 守护进程不可用"
+    },
+    "unknown": "调用 WSRX 接口时发生未知错误。",
+    "version_mismatch": {
+      "message": "WSRX 版本过低，请更新到最新版本后使用平台集成。",
+      "title": "版本不匹配"
+    }
+  },
   "state": {
     "invalid": "WSRX 未连接",
     "pending": "正在等待本地授权",
     "usable": "WSRX 已连接"
-  },
-  "errors": {
-    "version_mismatch": "版本不匹配",
-    "version_mismatch_msg": "WSRX 版本过低，请更新到最新版本后使用平台集成。",
-    "daemon_unavailable": "WSRX 守护进程不可用",
-    "daemon_unavailable_msg": "WSRX 守护进程未运行，如若桌面客户端已经启动，请检查平台设置中的 WSRX 控制地址是否正确。",
-    "daemon_error": "WSRX 守护进程出错",
-    "daemon_error_msg": "请检查 WSRX 软件日志并汇报问题。",
-    "unknown_error": "未知错误",
-    "unknown_error_msg": "调用 WSRX 接口时发生未知错误。"
-  },
-  "action": {
-    "toggle_config": "WSRX 配置",
-    "retry": "重试"
   }
 }
