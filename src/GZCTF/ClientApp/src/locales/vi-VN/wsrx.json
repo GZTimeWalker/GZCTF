@@ -1,29 +1,29 @@
 {
   "button": {
-    "config": "WSRX configuration"
+    "config": "Cấu hình WSRX"
   },
   "error": {
     "daemon_error": {
-      "message": "Please check the WSRX software log and report the issue.",
-      "title": "WSRX daemon error"
+      "message": "Kiểm tra log của WSRX và báo cáo sự cố cho ban tổ chức.",
+      "title": "Lỗi WSRX daemon"
     },
     "daemon_offline": {
-      "message": "The WSRX daemon is offline. Please check if the WSRX daemon is running.",
-      "title": "WSRX daemon offline"
+      "message": "WSRX Daemon ngoại tuyến. Hãy kiểm tra trạng thái của WSRX daemon.",
+      "title": "WSRX daemon ngoại tuyến"
     },
     "daemon_unavailable": {
-      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
-      "title": "WSRX daemon unavailable"
+      "message": "WSRX Daemon không hoạt động. Nếu desktop client đã khởi động, hãy kiểm tra xem WSRX control address trong cài đặt platform có đúng không.",
+      "title": "WSRX daemon không có sẵn"
     },
-    "unknown": "An unknown error occurred while calling the WSRX API.",
+    "unknown": "Đã xảy ra lỗi không xác định khi gọi WSRX API.",
     "version_mismatch": {
-      "message": "WSRX version is too low, please update to the latest version before using platform integration.",
-      "title": "Version mismatch"
+      "message": "Phiên bản WSRX quá thấp, hãy cập nhật lên phiên bản mới nhất trước khi tích hợp vào nền tảng.",
+      "title": "Phiên bản không khớp"
     }
   },
   "state": {
-    "invalid": "WSRX disconnected",
-    "pending": "Waiting for local authorization",
-    "usable": "WSRX connected"
+    "invalid": "WSRX ngắt kết nối ",
+    "pending": "Đang chờ local authorization",
+    "usable": "WSRX đã kết nối"
   }
 }
