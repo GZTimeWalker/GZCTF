@@ -1,7 +1,7 @@
 {
   "avatar": {
     "save": "Guardar Avatar",
-    "upload_failed": "No se pudo actualizar el avatar",
+    "upload_failed": "Error al actualizar el avatar",
     "uploaded": "Avatar actualizado",
     "uploading": "Subiendo avatar"
   },
@@ -16,10 +16,10 @@
   "content": {
     "404": {
       "text": "Una desolación, ¿por qué está aquí?",
-      "title": "Página no existe"
+      "title": "La página no existe"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "slogan": "Hackea por diversión, sin ánimo de lucro"
     },
     "color": {
       "custom": {
@@ -36,7 +36,7 @@
         "default": "Predeterminado",
         "description": "Selecciona cómo se determina el color base",
         "label": "Proveedor de color del tema",
-        "managed": "Proporcionado por el Administrador"
+        "managed": "Facilitado por el Administrador"
       },
       "title": "Personalizar Color"
     },
@@ -79,7 +79,7 @@
       "title": "No se pudo cargar el archivo"
     },
     "invalid_username_or_password": "Nombre de usuario o contraseña incorrectos",
-    "no_change": "Parece que no hay cambio",
+    "no_change": "Parece que no hay cambios",
     "param_error": "Parámetro incorrecto, por favor verifique",
     "param_invalid": "Parámetro inválido",
     "param_missing": "Parámetro faltante",
@@ -124,7 +124,7 @@
     }
   },
   "title": {
-    "404": "The Nowhere",
+    "404": "La Nada",
     "about": "Acerca de"
   }
 }
