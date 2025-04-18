@@ -1,23 +1,23 @@
 {
   "button": {
-    "config": "Configuration WSRX"
+    "config": "Paramètres WSRX"
   },
   "error": {
     "daemon_error": {
-      "message": "Veuillez vérifier le log logiciel WSRX et signaler le problème.",
+      "message": "Veuillez vérifier le journal WSRX et signaler le problème.",
       "title": "Erreur du daemon WSRX"
     },
     "daemon_offline": {
-      "message": "Le daemon WSRX est hors ligne. Veuillez vérifier si le daemon WSRX fonctionne.",
+      "message": "Le daemon WSRX est hors ligne. Veuillez vous assurer qu'il fonctionne.",
       "title": "Daemon WSRX hors ligne"
     },
     "daemon_unavailable": {
-      "message": "Le daemon WSRX ne fonctionne pas. Si le client de bureau a démarré, veuillez vérifier si l'adresse de contrôle WSRX dans les paramètres de la plateforme est correcte.",
+      "message": "Le daemon WSRX ne fonctionne pas. Si le client de bureau est actif, vérifiez l'adresse de contrôle dans les paramètres de la plateforme.",
       "title": "Daemon WSRX indisponible"
     },
-    "unknown": "Une erreur inconnue s'est produite lors de l'appel de l'API WSRX.",
+    "unknown": "Une erreur inconnue s'est produite lors de l'accès à l'API WSRX.",
     "version_mismatch": {
-      "message": "La version WSRX est trop basse, veuillez mettre à jour vers la dernière version avant d'utiliser l'intégration de la plateforme.",
+      "message": "La version WSRX est obsolète. Veuillez mettre à jour avant d'utiliser l'intégration de la plateforme.",
       "title": "Incompatibilité de version"
     }
   },

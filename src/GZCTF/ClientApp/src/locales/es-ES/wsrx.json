@@ -17,8 +17,8 @@
     },
     "unknown": "Se ha producido un error desconocido al llamar a la API de WSRX.",
     "version_mismatch": {
-      "message": "La versión de WSRX es demasiado baja, por favor actualice a la última versión antes de usar la integración de la plataforma.",
-      "title": "Desajuste de versión"
+      "message": "La versión de WSRX detectada esta desactualizada, por favor actualice a la última versión antes de usar la integración de la plataforma.",
+      "title": "La versión no coincide"
     }
   },
   "state": {
