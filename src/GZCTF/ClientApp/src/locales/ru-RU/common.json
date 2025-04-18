@@ -8,6 +8,7 @@
   "button": {
     "copy": "Скопировать",
     "reset": "Сбросить",
+    "retry": "Retry",
     "select_file": "Выбрать файл",
     "try_again": "Повторить",
     "uploading": "Загрузка"
