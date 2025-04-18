@@ -5,7 +5,7 @@ import { WsrxState } from '@xdsec/wsrx'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useConfig } from '@Hooks/useConfig'
-import { HandleWsrxError, useWsrx } from '@Hooks/useWsrx'
+import { DefaultWsrxOptions, HandleWsrxError, useWsrx } from '@Hooks/useWsrx'
 
 /**
  * WsrxManager component
@@ -64,7 +64,7 @@ export const WsrxManager: FC<{}> = () => {
         <TextInput
           size="sm"
           flex={1}
-          placeholder="127.0.0.1:3307"
+          placeholder={DefaultWsrxOptions.api}
           value={wsrxOptions.api}
           onChange={(e) => setWsrxOptions({ ...wsrxOptions, api: e.currentTarget.value })}
         />

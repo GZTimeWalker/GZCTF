@@ -7,13 +7,13 @@
       "message": "Please check the WSRX software log and report the issue.",
       "title": "WSRX daemon error"
     },
-    "daemon_unavailable": {
-      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
-      "title": "WSRX daemon unavailable"
-    },
     "daemon_offline": {
       "message": "The WSRX daemon is offline. Please check if the WSRX daemon is running.",
       "title": "WSRX daemon offline"
+    },
+    "daemon_unavailable": {
+      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
+      "title": "WSRX daemon unavailable"
     },
     "unknown": "An unknown error occurred while calling the WSRX API.",
     "version_mismatch": {

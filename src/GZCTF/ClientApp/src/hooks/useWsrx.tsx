@@ -7,7 +7,7 @@ import { t } from 'i18next'
 import { useEffect } from 'react'
 import { showErrorNotification } from '@Utils/ApiHelper'
 
-const defaultWsrxOptions: WsrxOptions = {
+export const DefaultWsrxOptions: WsrxOptions = {
   api: 'http://127.0.0.1:3307',
   name: 'GZ::CTF',
   features: [WsrxFeature.Basic, WsrxFeature.Pingfall],
@@ -54,7 +54,7 @@ export const HandleWsrxError = (err: unknown, t: (key: string) => string) => {
   }
 }
 
-const wsrx = new Wsrx(defaultWsrxOptions)
+const wsrx = new Wsrx(DefaultWsrxOptions)
 let cachedState: WsrxState | null = null
 
 wsrx.onStateChange((state) => {
@@ -72,7 +72,7 @@ wsrx.onStateChange((state) => {
 export const useWsrx = () => {
   const [wsrxOptions, setWsrxOptions] = useLocalStorage<WsrxOptions>({
     key: 'wsrx-options',
-    defaultValue: defaultWsrxOptions,
+    defaultValue: DefaultWsrxOptions,
   })
 
   useEffect(() => {
