@@ -8,7 +8,7 @@
   "button": {
     "copy": "In die Zwischenablage kopieren",
     "reset": "Zurücksetzen",
-    "retry": "Retry",
+    "retry": "Erneut versuchen",
     "select_file": "Datei auswählen",
     "try_again": "Erneut versuchen",
     "uploading": "Wird hochgeladen"
