@@ -8,7 +8,7 @@
   "button": {
     "copy": "クリップボードにコピー",
     "reset": "リセット",
-    "retry": "Retry",
+    "retry": "再試行",
     "select_file": "ファイルを選択",
     "try_again": "再試行",
     "uploading": "アップロード中"
