@@ -43,14 +43,14 @@ public class KubernetesManager : IContainerManager
             return null;
         }
 
-        var authSecretName = _meta.AuthSecretName;
-        var options = _meta.Config;
+        var authSecretName = _meta.AuthSecretNames.GetForImage(config.Image);
+        KubernetesConfig options = _meta.Config;
 
         var chalImage = imageName.ToValidRFC1123String("chal");
 
         var name = $"{chalImage}-{Guid.NewGuid().ToString("N")[..16]}";
 
-        var pod = new V1Pod("v1", "Pod")
+        var pod = new V1Pod
         {
             Metadata = new V1ObjectMeta
             {

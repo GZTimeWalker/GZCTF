@@ -32,7 +32,7 @@ export default function i18nVirtualManifest(): Plugin {
           }, {})
 
           const contentString = JSON.stringify(merged)
-          const hash = crypto.createHash('md5').update(contentString).digest('hex').slice(0, 8)
+          const hash = crypto.createHash('sha256').update(contentString).digest('hex').slice(0, 8)
           const outputFileName = `${lang}.${hash}.json`
 
           newManifest[lang.toLowerCase()] = outputFileName

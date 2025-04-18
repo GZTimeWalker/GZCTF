@@ -100,10 +100,10 @@ public class ParticipationRepository(
                 needFlush = true;
         }
 
+        await trans.CommitAsync(token);
+
         if (needFlush)
             await cacheHelper.FlushScoreboardCache(part.GameId, token);
-
-        await trans.CommitAsync(token);
     }
 
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>

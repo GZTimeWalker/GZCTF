@@ -2,7 +2,7 @@ import { ActionIcon, Anchor, Button, Divider, Group, Stack, Text, TextInput, Too
 import { useClipboard } from '@mantine/hooks'
 import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInApp, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
+import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -10,6 +10,8 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
+import { HandleWsrxError } from '@Hooks/useWsrx'
+import { useWsrx } from '@Hooks/useWsrx'
 import { ClientFlagContext } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -63,8 +65,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const { config } = useConfig()
   const clipBoard = useClipboard()
-
   const [withContainer, setWithContainer] = useState(!!context.instanceEntry)
+  const { wsrx } = useWsrx()
 
   const instanceEntry = context.instanceEntry ?? ''
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
@@ -117,13 +119,29 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     })
   }
 
-  const getAppUrl = () => {
-    const url = new URL('wsrx://open')
-    url.searchParams.append('url', copyEntry)
-    return url.href
+  const fetchLocalTraffic = () => {
+    const localTraffics = wsrx.list()
+    const localTraffic = localTraffics.find((traffic) => traffic.remote === copyEntry)
+    return localTraffic?.local ?? copyEntry
   }
 
-  const openUrl = isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`
+  const [openUrl, setOpenUrl] = useState(isPlatformProxy ? fetchLocalTraffic() : `http://${instanceEntry}`)
+
+  useEffect(() => {
+    const requestProxy = async () => {
+      try {
+        const traffic = await wsrx.add({
+          remote: copyEntry,
+          local: '127.0.0.1:0',
+        })
+        setOpenUrl(traffic.local)
+      } catch (err) {
+        HandleWsrxError(err, t)
+      }
+    }
+
+    requestProxy()
+  }, [copyEntry])
 
   if (!withContainer) {
     return isPreview ? (
@@ -182,15 +200,9 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
                 <Icon path={mdiContentCopy} size={1} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip
-              label={
-                isPlatformProxy ? t('challenge.content.instance.open.client') : t('challenge.content.instance.open.web')
-              }
-              withArrow
-              classNames={tooltipClasses}
-            >
-              <ActionIcon component="a" href={openUrl} target={isPlatformProxy ? '_self' : '_blank'} rel="noreferrer">
-                <Icon path={isPlatformProxy ? mdiOpenInApp : mdiOpenInNew} size={1} />
+            <Tooltip label={t('challenge.content.instance.open.web')} withArrow classNames={tooltipClasses}>
+              <ActionIcon component="a" href={openUrl} target={'_blank'} rel="noreferrer">
+                <Icon path={mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>
           </Group>

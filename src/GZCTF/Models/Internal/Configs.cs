@@ -293,11 +293,32 @@ public class KubernetesConfig
     public string[]? Dns { get; set; }
 }
 
+public class RegistrySet<T> : Dictionary<string, T>
+where T : class
+{
+    public T? GetForImage(string image)
+    {
+        if (string.IsNullOrWhiteSpace(image))
+            return null;
+
+        image = image.Contains("://") ? image : $"https://{image}";
+
+        if (!Uri.TryCreate(image, UriKind.Absolute, out var uri) || uri.HostNameType == UriHostNameType.Unknown)
+            return null;
+
+        return TryGetValue(uri.Authority, out var cfg) ? cfg :
+            TryGetValue(uri.Host, out var cfgHost) ? cfgHost : null;
+    }
+}
+
 public class RegistryConfig
 {
     public string? ServerAddress { get; set; }
     public string? UserName { get; set; }
     public string? Password { get; set; }
+
+    public bool Valid => !string.IsNullOrEmpty(UserName) &&
+                       !string.IsNullOrEmpty(Password);
 }
 
 #endregion

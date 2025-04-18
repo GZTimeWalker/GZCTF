@@ -45,7 +45,6 @@ public class InfoController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts/Latest")]
-    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLatestPosts(CancellationToken token) =>
         Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
@@ -59,7 +58,6 @@ public class InfoController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts")]
-    [ResponseCache(Duration = 300)]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Query))]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPosts(CancellationToken token) =>
@@ -76,7 +74,6 @@ public class InfoController(
     /// <response code="200">Successfully retrieved post details</response>
     /// <response code="404">Post not found</response>
     [HttpGet("Posts/{id}")]
-    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPost(string id, CancellationToken token)
@@ -98,7 +95,6 @@ public class InfoController(
     /// </remarks>
     /// <response code="200">Successfully retrieved configuration</response>
     [HttpGet("Config")]
-    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
     {
@@ -121,7 +117,6 @@ public class InfoController(
     /// </remarks>
     /// <response code="200">Successfully retrieved Captcha configuration</response>
     [HttpGet("Captcha")]
-    [ResponseCache(Duration = 300)]
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
     {
