@@ -8,6 +8,7 @@
   "button": {
     "copy": "複製到剪貼板",
     "reset": "重置",
+    "retry": "Retry",
     "select_file": "選擇文件",
     "try_again": "再試一次",
     "uploading": "上傳中"
