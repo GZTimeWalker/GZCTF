@@ -8,7 +8,7 @@
   "button": {
     "copy": "Copiar al Portapapeles",
     "reset": "Restablecer",
-    "retry": "Retry",
+    "retry": "Reintentar",
     "select_file": "Seleccionar Archivo",
     "try_again": "Intentar Nuevamente",
     "uploading": "Subiendo"
