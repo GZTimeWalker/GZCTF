@@ -8,6 +8,7 @@
   "button": {
     "copy": "Sao chép vào bộ nhớ tạm",
     "reset": "Đặt lại",
+    "retry": "Thử lại",
     "select_file": "Chọn tệp",
     "try_again": "Thử lại",
     "uploading": "Đang tải lên"

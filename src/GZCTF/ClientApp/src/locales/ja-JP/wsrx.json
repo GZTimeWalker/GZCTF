@@ -1,1 +1,29 @@
-{}
+{
+  "button": {
+    "config": "WSRX構成"
+  },
+  "error": {
+    "daemon_error": {
+      "message": "WSRXのログを確認し、問題を報告してください。",
+      "title": "WSRXデーモンエラー"
+    },
+    "daemon_offline": {
+      "message": "WSRXデーモンがオフラインになっています。WSRXデーモンが動作しているかどうかを確認してください。",
+      "title": "WSRXデーモンがオフラインです"
+    },
+    "daemon_unavailable": {
+      "message": "WSRXデーモンが動作していません。デスクトップクライアントが起動している場合は、プラットフォーム設定のWSRX制御アドレスが正しいかどうかを確認してください。",
+      "title": "WSRXデーモンが利用できません"
+    },
+    "unknown": "WSRX APIの呼び出し中に不明なエラーが発生しました。",
+    "version_mismatch": {
+      "message": "WSRXが古すぎます。プラットフォームインテグレーションを使用する前に、最新バージョンにアップデートしてください。",
+      "title": "バージョンが一致しません"
+    }
+  },
+  "state": {
+    "invalid": "WSRXが切断されました",
+    "pending": "ローカル認証を待っています",
+    "usable": "WSRXが接続されました"
+  }
+}

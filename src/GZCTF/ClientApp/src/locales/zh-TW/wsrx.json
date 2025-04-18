@@ -1,0 +1,29 @@
+{
+  "button": {
+    "config": "WSRX 配置"
+  },
+  "error": {
+    "daemon_error": {
+      "message": "請檢查 WSRX 軟體日誌並匯報問題。",
+      "title": "WSRX 守護進程出錯"
+    },
+    "daemon_offline": {
+      "message": "WSRX 守護進程離線，請檢查 WSRX 守護進程是否運行。",
+      "title": "WSRX 守護進程離線"
+    },
+    "daemon_unavailable": {
+      "message": "WSRX 守護進程未運行，如若桌面客戶端已經啟動，請檢查平台設置中的 WSRX 控制地址是否正確。",
+      "title": "WSRX 守護進程不可用"
+    },
+    "unknown": "調用 WSRX 接口時發生未知錯誤。",
+    "version_mismatch": {
+      "message": "WSRX 版本過低，請更新到最新版本後使用平台集成。",
+      "title": "版本不匹配"
+    }
+  },
+  "state": {
+    "invalid": "WSRX 未連接",
+    "pending": "正在等待本地授權",
+    "usable": "WSRX 已連接"
+  }
+}
