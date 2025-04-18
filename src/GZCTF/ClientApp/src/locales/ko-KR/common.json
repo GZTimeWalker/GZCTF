@@ -8,7 +8,7 @@
   "button": {
     "copy": "클립보드에 저장",
     "reset": "설정 초기화",
-    "retry": "Retry",
+    "retry": "다시 시도",
     "select_file": "파일 선택",
     "try_again": "다시 시도해주세요",
     "uploading": "업로드 중"
