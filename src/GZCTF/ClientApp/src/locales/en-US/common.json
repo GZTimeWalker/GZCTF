@@ -8,6 +8,7 @@
   "button": {
     "copy": "Copy to Clipboard",
     "reset": "Reset",
+    "retry": "Retry",
     "select_file": "Select File",
     "try_again": "Try Again",
     "uploading": "Uploading"
