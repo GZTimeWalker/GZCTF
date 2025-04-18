@@ -28,6 +28,7 @@
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^8.0.7",
+    "@xdsec/wsrx": "^0.4.16",
     "chroma-js": "^3.1.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",

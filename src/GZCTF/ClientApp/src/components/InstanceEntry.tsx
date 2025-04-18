@@ -13,6 +13,8 @@ import { useConfig } from '@Hooks/useConfig'
 import { ClientFlagContext } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
+import { useWsrx } from '@Hooks/useWsrx'
+import { WsrxErrorKind } from '@xdsec/wsrx'
 
 dayjs.extend(duration)
 
@@ -63,8 +65,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const { config } = useConfig()
   const clipBoard = useClipboard()
-
   const [withContainer, setWithContainer] = useState(!!context.instanceEntry)
+  const { wsrx } = useWsrx()
 
   const instanceEntry = context.instanceEntry ?? ''
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
@@ -117,13 +119,50 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     })
   }
 
-  const getAppUrl = () => {
-    const url = new URL('wsrx://open')
-    url.searchParams.append('url', copyEntry)
-    return url.href
+  const [openUrl, setOpenUrl] = useState(isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`)
+
+  function getAppUrl () {
+    const localTraffics = wsrx.list()
+    const localTraffic = localTraffics.find((traffic) => traffic.remote === copyEntry)
+    if (localTraffic) {
+      return localTraffic.local
+    }
+    wsrx.add({
+      remote: copyEntry,
+      local: "127.0.0.1:0",
+    }).then((traffic) => {
+      setOpenUrl(traffic.local)
+    }).catch((err) => {
+      switch (err.kind) {
+					case WsrxErrorKind.DaemonUnavailable:
+						showNotification({
+							color: "red",
+							title: t("wsrx.errors.daemon_unavailable"),
+							message: t("wsrx.errors.daemon_unavailable_msg"),
+							autoClose: 5000,
+						})
+						break
+					case WsrxErrorKind.DaemonError:
+						showNotification({
+							color: "red",
+							title: t("wsrx.errors.daemon_error"),
+							message: t("wsrx.errors.daemon_error_msg"),
+							autoClose: 5000,
+						})
+						break
+					default:
+						showNotification({
+							color: "red",
+							title: t("wsrx.errors.unknown_error"),
+							message: t("wsrx.errors.unknown_error_msg"),
+							autoClose: 5000,
+						})
+      }
+    })
+    return copyEntry
   }
 
-  const openUrl = isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`
+  // const openUrl = isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`
 
   if (!withContainer) {
     return isPreview ? (
@@ -183,14 +222,12 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               </ActionIcon>
             </Tooltip>
             <Tooltip
-              label={
-                isPlatformProxy ? t('challenge.content.instance.open.client') : t('challenge.content.instance.open.web')
-              }
+              label={t('challenge.content.instance.open.web')}
               withArrow
               classNames={tooltipClasses}
             >
-              <ActionIcon component="a" href={openUrl} target={isPlatformProxy ? '_self' : '_blank'} rel="noreferrer">
-                <Icon path={isPlatformProxy ? mdiOpenInApp : mdiOpenInNew} size={1} />
+              <ActionIcon component="a" href={openUrl} target={'_blank'} rel="noreferrer">
+                <Icon path={mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>
           </Group>

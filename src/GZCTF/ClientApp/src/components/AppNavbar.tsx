@@ -39,6 +39,7 @@ import { useLogOut, useUser } from '@Hooks/useUser'
 import { Role } from '@Api'
 import classes from '@Styles/AppNavbar.module.css'
 import misc from '@Styles/Misc.module.css'
+import { WsrxBox } from './wsrx/WsrxBox'
 
 interface NavbarItem {
   icon: string
@@ -135,7 +136,9 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                 <Icon path={mdiTransitConnectionVariant} size={1} />
               </ActionIcon>
             </Popover.Target>
-            <Popover.Dropdown></Popover.Dropdown>
+            <Popover.Dropdown>
+              <WsrxBox />
+            </Popover.Dropdown>
           </Popover>
           {/* Language */}
           <Menu position="right" offset={24} width={160}>

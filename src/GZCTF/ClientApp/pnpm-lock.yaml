@@ -59,6 +59,9 @@ importers:
       '@microsoft/signalr':
         specifier: ^8.0.7
         version: 8.0.7
+      '@xdsec/wsrx':
+        specifier: ^0.4.16
+        version: 0.4.16
       chroma-js:
         specifier: ^3.1.2
         version: 3.1.2
@@ -891,6 +894,10 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0
 
+  '@xdsec/wsrx@0.4.16':
+    resolution: {integrity: sha512-1Tqyefcphtq7QMGo1Y3lM7PX4BgLHf7s/dDOkV7a6320XdhZnDSFW8u6IQy9yA9rr1iWM52mcBm6Rsn4P9Ax2w==}
+    engines: {node: '>=18'}
+
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
     engines: {node: '>=6.5'}
@@ -1440,6 +1447,10 @@ packages:
   klona@2.0.6:
     resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
+
+  ky@1.8.1:
+    resolution: {integrity: sha512-7Bp3TpsE+L+TARSnnDpk3xg8Idi8RwSLdj6CMbNWoOARIrGrbuLGusV0dYwbZOm4bB3jHNxSw8Wk/ByDqJEnDw==}
+    engines: {node: '>=18'}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -2947,6 +2958,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@xdsec/wsrx@0.4.16':
+    dependencies:
+      ky: 1.8.1
+
   abort-controller@3.0.0:
     dependencies:
       event-target-shim: 5.0.1
@@ -3468,6 +3483,8 @@ snapshots:
       '@keyv/serialize': 1.0.3
 
   klona@2.0.6: {}
+
+  ky@1.8.1: {}
 
   lines-and-columns@1.2.4: {}
 
