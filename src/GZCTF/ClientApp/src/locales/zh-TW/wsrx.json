@@ -1,29 +1,29 @@
 {
   "button": {
-    "config": "WSRX configuration"
+    "config": "WSRX 配置"
   },
   "error": {
     "daemon_error": {
-      "message": "Please check the WSRX software log and report the issue.",
-      "title": "WSRX daemon error"
+      "message": "請檢查 WSRX 軟體日誌並匯報問題。",
+      "title": "WSRX 守護進程出錯"
     },
     "daemon_offline": {
-      "message": "The WSRX daemon is offline. Please check if the WSRX daemon is running.",
-      "title": "WSRX daemon offline"
+      "message": "WSRX 守護進程離線，請檢查 WSRX 守護進程是否運行。",
+      "title": "WSRX 守護進程離線"
     },
     "daemon_unavailable": {
-      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
-      "title": "WSRX daemon unavailable"
+      "message": "WSRX 守護進程未運行，如若桌面客戶端已經啟動，請檢查平台設置中的 WSRX 控制地址是否正確。",
+      "title": "WSRX 守護進程不可用"
     },
-    "unknown": "An unknown error occurred while calling the WSRX API.",
+    "unknown": "調用 WSRX 接口時發生未知錯誤。",
     "version_mismatch": {
-      "message": "WSRX version is too low, please update to the latest version before using platform integration.",
-      "title": "Version mismatch"
+      "message": "WSRX 版本過低，請更新到最新版本後使用平台集成。",
+      "title": "版本不匹配"
     }
   },
   "state": {
-    "invalid": "WSRX disconnected",
-    "pending": "Waiting for local authorization",
-    "usable": "WSRX connected"
+    "invalid": "WSRX 未連接",
+    "pending": "正在等待本地授權",
+    "usable": "WSRX 已連接"
   }
 }
