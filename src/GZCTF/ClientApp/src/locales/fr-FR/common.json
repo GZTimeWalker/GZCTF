@@ -8,6 +8,7 @@
   "button": {
     "copy": "Copier dans le presse-papier",
     "reset": "Réinitialiser",
+    "retry": "Retry",
     "select_file": "Sélectionner un fichier",
     "try_again": "Réessayer",
     "uploading": "Téléchargement en cours"
