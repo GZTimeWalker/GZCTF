@@ -4,17 +4,17 @@ import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInApp, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { WsrxErrorKind } from '@xdsec/wsrx'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getProxyUrl } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
+import { useWsrx } from '@Hooks/useWsrx'
 import { ClientFlagContext } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
-import { useWsrx } from '@Hooks/useWsrx'
-import { WsrxErrorKind } from '@xdsec/wsrx'
 
 dayjs.extend(duration)
 
@@ -121,44 +121,47 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
 
   const [openUrl, setOpenUrl] = useState(isPlatformProxy ? getAppUrl() : `http://${instanceEntry}`)
 
-  function getAppUrl () {
+  function getAppUrl() {
     const localTraffics = wsrx.list()
     const localTraffic = localTraffics.find((traffic) => traffic.remote === copyEntry)
     if (localTraffic) {
       return localTraffic.local
     }
-    wsrx.add({
-      remote: copyEntry,
-      local: "127.0.0.1:0",
-    }).then((traffic) => {
-      setOpenUrl(traffic.local)
-    }).catch((err) => {
-      switch (err.kind) {
-					case WsrxErrorKind.DaemonUnavailable:
-						showNotification({
-							color: "red",
-							title: t("wsrx.errors.daemon_unavailable"),
-							message: t("wsrx.errors.daemon_unavailable_msg"),
-							autoClose: 5000,
-						})
-						break
-					case WsrxErrorKind.DaemonError:
-						showNotification({
-							color: "red",
-							title: t("wsrx.errors.daemon_error"),
-							message: t("wsrx.errors.daemon_error_msg"),
-							autoClose: 5000,
-						})
-						break
-					default:
-						showNotification({
-							color: "red",
-							title: t("wsrx.errors.unknown_error"),
-							message: t("wsrx.errors.unknown_error_msg"),
-							autoClose: 5000,
-						})
-      }
-    })
+    wsrx
+      .add({
+        remote: copyEntry,
+        local: '127.0.0.1:0',
+      })
+      .then((traffic) => {
+        setOpenUrl(traffic.local)
+      })
+      .catch((err) => {
+        switch (err.kind) {
+          case WsrxErrorKind.DaemonUnavailable:
+            showNotification({
+              color: 'red',
+              title: t('wsrx.errors.daemon_unavailable'),
+              message: t('wsrx.errors.daemon_unavailable_msg'),
+              autoClose: 5000,
+            })
+            break
+          case WsrxErrorKind.DaemonError:
+            showNotification({
+              color: 'red',
+              title: t('wsrx.errors.daemon_error'),
+              message: t('wsrx.errors.daemon_error_msg'),
+              autoClose: 5000,
+            })
+            break
+          default:
+            showNotification({
+              color: 'red',
+              title: t('wsrx.errors.unknown_error'),
+              message: t('wsrx.errors.unknown_error_msg'),
+              autoClose: 5000,
+            })
+        }
+      })
     return copyEntry
   }
 
@@ -221,11 +224,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
                 <Icon path={mdiContentCopy} size={1} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip
-              label={t('challenge.content.instance.open.web')}
-              withArrow
-              classNames={tooltipClasses}
-            >
+            <Tooltip label={t('challenge.content.instance.open.web')} withArrow classNames={tooltipClasses}>
               <ActionIcon component="a" href={openUrl} target={'_blank'} rel="noreferrer">
                 <Icon path={mdiOpenInNew} size={1} />
               </ActionIcon>
