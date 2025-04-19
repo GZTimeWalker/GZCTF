@@ -13,8 +13,8 @@
       "destroy": "インスタンスを破棄",
       "extend": "期限を延長",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "元のエントリに切り替える",
+        "proxied": "ローカルプロキシされたエントリに切り替える"
       }
     },
     "submit_flag": "フラッグを提出"
