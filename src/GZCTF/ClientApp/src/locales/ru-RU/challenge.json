@@ -11,7 +11,11 @@
     "instance": {
       "create": "Создать",
       "destroy": "Уничтожить",
-      "extend": "Продлить"
+      "extend": "Продлить",
+      "show": {
+        "original": "Switch to original entry",
+        "proxied": "Switch to local proxied entry"
+      }
     },
     "submit_flag": "Отправить"
   },
