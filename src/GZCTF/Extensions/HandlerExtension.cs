@@ -19,7 +19,7 @@ public static class HandlerExtension
     const string CspTemplate = "default-src 'strict-dynamic' 'nonce-{0}' 'unsafe-inline' http: https:; " +
                                "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
                                "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
-                               "connect-src 'self'; base-uri 'none';";
+                               "connect-src 'self' http://127.0.0.1:*; base-uri 'none';";
 
     const StringSplitOptions DefaultSplitOptions =
         StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
