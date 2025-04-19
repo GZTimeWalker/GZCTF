@@ -13,8 +13,8 @@
       "destroy": "Уничтожить",
       "extend": "Продлить",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "Показать оригинальный адрес",
+        "proxied": "Показать WebSocket-Proxy адрес"
       }
     },
     "submit_flag": "Отправить"
