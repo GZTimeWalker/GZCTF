@@ -11,7 +11,11 @@
     "instance": {
       "create": "Créer",
       "destroy": "Détruire",
-      "extend": "Étendre"
+      "extend": "Étendre",
+      "show": {
+        "original": "Passer à l'entrée originale",
+        "proxied": "Passer à l'entrée proxée locale"
+      }
     },
     "submit_flag": "Soumettre"
   },

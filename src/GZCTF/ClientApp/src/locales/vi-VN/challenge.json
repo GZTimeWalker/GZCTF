@@ -11,7 +11,11 @@
     "instance": {
       "create": "Tạo",
       "destroy": "Xóa",
-      "extend": "Gia hạn"
+      "extend": "Gia hạn",
+      "show": {
+        "original": "Switch to original entry",
+        "proxied": "Switch to local proxied entry"
+      }
     },
     "submit_flag": "Nộp cờ"
   },

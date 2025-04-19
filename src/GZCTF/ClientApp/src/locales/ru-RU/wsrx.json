@@ -1,29 +1,29 @@
 {
   "button": {
-    "config": "WSRX configuration"
+    "config": "Настройки WSRX"
   },
   "error": {
     "daemon_error": {
-      "message": "Please check the WSRX software log and report the issue.",
-      "title": "WSRX daemon error"
+      "message": "Проверьте журналы WSRX и сообщите о проблеме.",
+      "title": "Ошибка службы WSRX"
     },
     "daemon_offline": {
-      "message": "The WSRX daemon is offline. Please check if the WSRX daemon is running.",
-      "title": "WSRX daemon offline"
+      "message": "Служба WSRX недоступна. Проверьте, запущена ли она.",
+      "title": "Служба WSRX не запущена"
     },
     "daemon_unavailable": {
-      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
-      "title": "WSRX daemon unavailable"
+      "message": "Служба WSRX недоступна. Проверьте адрес управления в настройках платформы, если десктопный клиент WSRX запущен.",
+      "title": "Служба WSRX недоступна"
     },
-    "unknown": "An unknown error occurred while calling the WSRX API.",
+    "unknown": "Неизвестная ошибка при попытке обращения к WSRX API.",
     "version_mismatch": {
-      "message": "WSRX version is too low, please update to the latest version before using platform integration.",
-      "title": "Version mismatch"
+      "message": "Версия WSRX устарела. Пожалуйста, обновите WSRX перед интеграцией с платформой.",
+      "title": "Несовпадение версий"
     }
   },
   "state": {
-    "invalid": "WSRX disconnected",
-    "pending": "Waiting for local authorization",
-    "usable": "WSRX connected"
+    "invalid": "WSRX Отключен",
+    "pending": "Ожидание авторизации WSRX",
+    "usable": "WSRX Подключен"
   }
 }

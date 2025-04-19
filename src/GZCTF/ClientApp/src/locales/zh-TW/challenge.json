@@ -11,7 +11,11 @@
     "instance": {
       "create": "創建實例",
       "destroy": "銷毀實例",
-      "extend": "延長時間"
+      "extend": "延長時間",
+      "show": {
+        "original": "切換到原始條目",
+        "proxied": "切換到本地代理條目"
+      }
     },
     "submit_flag": "提交 flag"
   },

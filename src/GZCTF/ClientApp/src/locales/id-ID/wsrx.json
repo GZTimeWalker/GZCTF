@@ -1,6 +1,6 @@
 {
   "button": {
-    "config": "WSRX configuration"
+    "config": "Konfigurasi WSRX"
   },
   "error": {
     "daemon_error": {
@@ -9,10 +9,10 @@
     },
     "daemon_offline": {
       "message": "The WSRX daemon is offline. Please check if the WSRX daemon is running.",
-      "title": "WSRX daemon offline"
+      "title": "WSRX daemon sedang offline"
     },
     "daemon_unavailable": {
-      "message": "The WSRX daemon is not running. If the desktop client has started, please check whether the WSRX control address in the platform settings is correct.",
+      "message": "WSRX daemon sedang tidak berjalan. Jika klien sudah berjalan, coba cek apakah WSRX kontrol address di platform sudah di seting dengan benar.",
       "title": "WSRX daemon unavailable"
     },
     "unknown": "An unknown error occurred while calling the WSRX API.",
@@ -24,6 +24,6 @@
   "state": {
     "invalid": "WSRX disconnected",
     "pending": "Waiting for local authorization",
-    "usable": "WSRX connected"
+    "usable": "WSRX terkoneksi"
   }
 }

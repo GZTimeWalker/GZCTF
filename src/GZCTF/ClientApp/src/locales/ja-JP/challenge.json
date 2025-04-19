@@ -11,7 +11,11 @@
     "instance": {
       "create": "インスタンスを作成",
       "destroy": "インスタンスを破棄",
-      "extend": "期限を延長"
+      "extend": "期限を延長",
+      "show": {
+        "original": "Switch to original entry",
+        "proxied": "Switch to local proxied entry"
+      }
     },
     "submit_flag": "フラッグを提出"
   },

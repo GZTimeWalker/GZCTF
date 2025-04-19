@@ -11,7 +11,11 @@
     "instance": {
       "create": "Buat baru",
       "destroy": "Hapus",
-      "extend": "Perluas"
+      "extend": "Perluas",
+      "show": {
+        "original": "Switch to original entry",
+        "proxied": "Switch to local proxied entry"
+      }
     },
     "submit_flag": "Submit flag"
   },
