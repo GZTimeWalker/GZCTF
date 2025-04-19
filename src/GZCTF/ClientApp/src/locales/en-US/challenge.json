@@ -11,7 +11,11 @@
     "instance": {
       "create": "Create",
       "destroy": "Destroy",
-      "extend": "Extend"
+      "extend": "Extend",
+      "show": {
+        "original": "Switch to original entry",
+        "proxied": "Switch to local proxied entry"
+      }
     },
     "submit_flag": "Submit Flag"
   },
