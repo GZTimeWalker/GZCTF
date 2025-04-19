@@ -1,15 +1,15 @@
 {
   "button": {
-    "config": "WSRX Settings"
+    "config": "WSRX 설정"
   },
   "error": {
     "daemon_error": {
-      "message": "Please check the WSRX log and report the issue.",
-      "title": "WSRX Daemon Error"
+      "message": "WSRX 로그를 확인하시고 문의하십시오.",
+      "title": "WSRX 데몬 오류"
     },
     "daemon_offline": {
-      "message": "WSRX daemon is offline. Please ensure it's running.",
-      "title": "WSRX Daemon Offline"
+      "message": "WSRX 데몬이 오프라인입니다. 실행 중인지 확인하십시오.",
+      "title": "WSRX 데몬 오프라인"
     },
     "daemon_unavailable": {
       "message": "WSRX daemon is not running. If the desktop client is active, check the control address in platform settings.",
