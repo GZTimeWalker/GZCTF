@@ -2,13 +2,21 @@ import { ActionIcon, Anchor, Button, Divider, Group, Stack, Text, TextInput, Too
 import { useClipboard } from '@mantine/hooks'
 import { useDebouncedCallback, useDebouncedState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiContentCopy, mdiExclamation, mdiOpenInNew, mdiServerNetwork } from '@mdi/js'
+import {
+  mdiCheck,
+  mdiContentCopy,
+  mdiExclamation,
+  mdiOpenInNew,
+  mdiServerNetwork,
+  mdiTransitConnectionVariant,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
+import { WsrxState } from '@xdsec/wsrx'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getProxyUrl } from '@Utils/Shared'
+import { getProxyUrl as getProxyEntry } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { HandleWsrxError } from '@Hooks/useWsrx'
 import { useWsrx } from '@Hooks/useWsrx'
@@ -62,15 +70,16 @@ const Countdown: FC<CountdownProps> = (props) => {
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const { test: isPreview, context, disabled, onCreate, onDestroy } = props
-
+  const { wsrx } = useWsrx()
   const { config } = useConfig()
   const clipBoard = useClipboard()
+
+  const [forceShowOriginal, setForceShowOriginal] = useState(false)
   const [withContainer, setWithContainer] = useState(!!context.instanceEntry)
-  const { wsrx } = useWsrx()
 
   const instanceEntry = context.instanceEntry ?? ''
   const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
-  const copyEntry = isPlatformProxy ? getProxyUrl(instanceEntry, isPreview) : instanceEntry
+  const originalEntry = isPlatformProxy ? getProxyEntry(instanceEntry, isPreview) : instanceEntry
 
   const [canExtend, setCanExtend] = useDebouncedState(false, 500)
 
@@ -107,41 +116,47 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     setCanExtend(false)
   }
 
-  const onCopyEntry = () => {
-    clipBoard.copy(copyEntry)
-    showNotification({
-      color: 'teal',
-      title: isPlatformProxy ? t('challenge.notification.instance.copied.url.title') : undefined,
-      message: isPlatformProxy
-        ? t('challenge.notification.instance.copied.url.message')
-        : t('challenge.notification.instance.copied.entry'),
-      icon: <Icon path={mdiCheck} size={1} />,
-    })
-  }
+  const localTraffic = wsrx.list().find((traffic) => traffic.remote === originalEntry)
+  const [localEntry, setLocalEntry] = useState(localTraffic?.local ?? originalEntry)
 
-  const fetchLocalTraffic = () => {
-    const localTraffics = wsrx.list()
-    const localTraffic = localTraffics.find((traffic) => traffic.remote === copyEntry)
-    return localTraffic?.local ?? copyEntry
-  }
-
-  const [openUrl, setOpenUrl] = useState(isPlatformProxy ? fetchLocalTraffic() : `http://${instanceEntry}`)
+  // is wsrx is ready to use
+  const isWsrxUsable = isPlatformProxy && wsrx.getState() === WsrxState.Usable
+  // to show original entry
+  const useOriginal = !!localTraffic && forceShowOriginal
 
   useEffect(() => {
+    if (!originalEntry || !isWsrxUsable) return
+
     const requestProxy = async () => {
       try {
         const traffic = await wsrx.add({
-          remote: copyEntry,
+          remote: originalEntry,
           local: '127.0.0.1:0',
         })
-        setOpenUrl(traffic.local)
+        setLocalEntry(traffic.local)
       } catch (err) {
         HandleWsrxError(err, t)
       }
     }
 
     requestProxy()
-  }, [copyEntry])
+  }, [originalEntry])
+
+  const entry = useOriginal ? originalEntry : localEntry
+
+  const onCopyEntry = () => {
+    clipBoard.copy(entry)
+
+    const copyWss = isPlatformProxy && useOriginal
+    showNotification({
+      color: 'teal',
+      title: copyWss ? t('challenge.notification.instance.copied.url.title') : undefined,
+      message: copyWss
+        ? t('challenge.notification.instance.copied.url.message')
+        : t('challenge.notification.instance.copied.entry'),
+      icon: <Icon path={mdiCheck} size={1} />,
+    })
+  }
 
   if (!withContainer) {
     return isPreview ? (
@@ -188,26 +203,47 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
             </Text>
           )
         }
-        leftSection={<Icon path={mdiServerNetwork} size={1} />}
-        value={copyEntry}
+        leftSection={
+          <Icon
+            path={mdiServerNetwork}
+            size={1}
+            color={isWsrxUsable && !useOriginal ? 'var(--mantine-color-green-8)' : undefined}
+          />
+        }
+        value={entry}
         readOnly
         classNames={{ input: misc.ffmono }}
         rightSection={
           <Group gap={2}>
             <Divider orientation="vertical" pr={4} />
+            {isWsrxUsable && (
+              <Tooltip
+                label={
+                  forceShowOriginal
+                    ? t('challenge.button.instance.show.proxied')
+                    : t('challenge.button.instance.show.original')
+                }
+                withArrow
+                classNames={tooltipClasses}
+              >
+                <ActionIcon onClick={() => setForceShowOriginal((prev) => !prev)}>
+                  <Icon path={mdiTransitConnectionVariant} size={1} />
+                </ActionIcon>
+              </Tooltip>
+            )}
             <Tooltip label={t('common.button.copy')} withArrow classNames={tooltipClasses}>
               <ActionIcon onClick={onCopyEntry}>
                 <Icon path={mdiContentCopy} size={1} />
               </ActionIcon>
             </Tooltip>
             <Tooltip label={t('challenge.content.instance.open.web')} withArrow classNames={tooltipClasses}>
-              <ActionIcon component="a" href={openUrl} target={'_blank'} rel="noreferrer">
+              <ActionIcon component="a" href={`http://${localEntry}`} target="_blank" rel="noreferrer">
                 <Icon path={mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>
           </Group>
         }
-        rightSectionWidth="5rem"
+        rightSectionWidth={isWsrxUsable ? '6.5rem' : '5rem'}
       />
       {!isPreview && (
         <Group justify="space-between" wrap="nowrap">

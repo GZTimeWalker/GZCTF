@@ -24,7 +24,6 @@ export const HandleWsrxError = (err: unknown, t: (key: string) => string) => {
           message: t('wsrx.error.version_mismatch.message'),
         })
         break
-
       case WsrxErrorKind.DaemonUnavailable:
         showNotification({
           color: 'red',
