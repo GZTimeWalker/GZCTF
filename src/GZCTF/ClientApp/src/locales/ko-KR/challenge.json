@@ -13,8 +13,8 @@
       "destroy": "삭제",
       "extend": "시간 연장",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "기존 엔트리로 전환",
+        "proxied": "로컬 프록시 엔트리로 전환"
       }
     },
     "submit_flag": "제출"
