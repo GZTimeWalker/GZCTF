@@ -11,7 +11,11 @@
     "instance": {
       "create": "创建实例",
       "destroy": "销毁实例",
-      "extend": "延长时间"
+      "extend": "延长时间",
+      "show": {
+        "original": "显示原始链接",
+        "proxied": "显示本地映射"
+      }
     },
     "submit_flag": "提交 flag"
   },
