@@ -13,8 +13,8 @@
       "destroy": "Xóa",
       "extend": "Gia hạn",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "Chuyển về entry gốc",
+        "proxied": "Chuyển về local proxy entry"
       }
     },
     "submit_flag": "Nộp cờ"
