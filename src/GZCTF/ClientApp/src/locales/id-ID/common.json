@@ -8,7 +8,7 @@
   "button": {
     "copy": "Salin ke Clipboard",
     "reset": "Reset",
-    "retry": "Retry",
+    "retry": "Coba lagi",
     "select_file": "Pilih File",
     "try_again": "Coba Lagi",
     "uploading": "Mengunggah"
