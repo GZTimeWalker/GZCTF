@@ -14,7 +14,7 @@
       "extend": "Perluas",
       "show": {
         "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "proxied": "Beralih ke lokal proxy entri"
       }
     },
     "submit_flag": "Submit flag"
