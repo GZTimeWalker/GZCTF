@@ -13,8 +13,8 @@
       "destroy": "Détruire",
       "extend": "Étendre",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "Passer à l'entrée originale",
+        "proxied": "Passer à l'entrée proxée locale"
       }
     },
     "submit_flag": "Soumettre"
