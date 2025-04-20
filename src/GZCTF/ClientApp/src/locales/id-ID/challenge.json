@@ -13,8 +13,8 @@
       "destroy": "Hapus",
       "extend": "Perluas",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "Beralih ke entri asli",
+        "proxied": "Beralih ke lokal proxy entri"
       }
     },
     "submit_flag": "Submit flag"

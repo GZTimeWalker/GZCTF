@@ -17,7 +17,7 @@
     },
     "unknown": "Đã xảy ra lỗi không xác định khi gọi WSRX API.",
     "version_mismatch": {
-      "message": "Phiên bản WSRX quá thấp, hãy cập nhật lên phiên bản mới nhất trước khi tích hợp vào nền tảng.",
+      "message": "Phiên bản WSRX quá cũ, hãy cập nhật lên phiên bản mới nhất trước khi tích hợp vào nền tảng.",
       "title": "Phiên bản không khớp"
     }
   },

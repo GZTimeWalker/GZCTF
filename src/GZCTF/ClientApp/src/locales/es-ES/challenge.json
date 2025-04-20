@@ -13,8 +13,8 @@
       "destroy": "Destruir",
       "extend": "Extender",
       "show": {
-        "original": "Switch to original entry",
-        "proxied": "Switch to local proxied entry"
+        "original": "Cambiar a dirección original",
+        "proxied": "Cambiar a dirección de proxy local"
       }
     },
     "submit_flag": "Enviar bandera"
