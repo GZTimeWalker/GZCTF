@@ -63,7 +63,7 @@
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.3.4, <4.4.0",
+    "@vitejs/plugin-react": "^4.4.1",
     "axios": "^1.8.4",
     "babel-plugin-prismjs": "^2.1.0",
     "form-data": "~4.0.2",
