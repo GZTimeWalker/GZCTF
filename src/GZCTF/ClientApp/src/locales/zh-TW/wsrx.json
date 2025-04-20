@@ -8,7 +8,7 @@
       "title": "WSRX 守護進程出錯"
     },
     "daemon_offline": {
-      "message": "WSRX 守護進程離線，請檢查 WSRX 守護進程是否運行。",
+      "message": "WSRX 守護進程離線，請檢查 WSRX 運行狀態。",
       "title": "WSRX 守護進程離線"
     },
     "daemon_unavailable": {
