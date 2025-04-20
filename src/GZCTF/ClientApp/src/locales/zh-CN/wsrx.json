@@ -8,7 +8,7 @@
       "title": "WSRX 守护进程出错"
     },
     "daemon_offline": {
-      "message": "WSRX 守护进程离线，请检查 WSRX 守护进程是否运行。",
+      "message": "WSRX 守护进程离线，请检查 WSRX 运行状态。",
       "title": "WSRX 守护进程离线"
     },
     "daemon_unavailable": {

@@ -1,64 +1,56 @@
-import { ActionIcon, Group, Stack, Text, TextInput } from '@mantine/core'
+import { ActionIcon, Anchor, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core'
 import { mdiRefresh, mdiTuneVertical } from '@mdi/js'
 import Icon from '@mdi/react'
 import { WsrxState } from '@xdsec/wsrx'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useConfig } from '@Hooks/useConfig'
-import { DefaultWsrxOptions, HandleWsrxError, useWsrx } from '@Hooks/useWsrx'
+import { DefaultWsrxOptions, useWsrx } from '@Components/WsrxProvider'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 /**
  * WsrxManager component
  *
  * Wsrx's state will be managed by this component.
  */
-export const WsrxManager: FC<{}> = () => {
-  const { wsrx, wsrxOptions, setWsrxOptions } = useWsrx()
-  const platformConfig = useConfig()
-  const [wsrxState, setWsrxState] = useState(wsrx.getState())
+export const WsrxManager: FC = () => {
+  const { wsrxState, wsrxOptions, doWsrxConnect, setWsrxOptions } = useWsrx()
   const { t } = useTranslation()
-
-  wsrx.onStateChange((state) => {
-    setWsrxState(state)
-  })
-
   const [showConfig, setShowConfig] = useState(false)
-
-  const doConnect = () => {
-    wsrx.connect().catch((err) => HandleWsrxError(err, t))
-  }
-
-  useEffect(() => {
-    if (platformConfig) {
-      setWsrxOptions({
-        ...wsrxOptions,
-        name: (platformConfig.config.title || 'GZ') + '::CTF',
-      })
-      doConnect()
-    }
-  }, [platformConfig.config.title])
 
   return (
     <Stack gap="xs">
-      <Group h="1.5rem" wrap="nowrap" justify="space-between" gap={2}>
-        <Text size="sm" fw="bold" c={wsrxState === WsrxState.Usable ? 'green' : 'orange'} flex={1}>
-          {wsrxState === WsrxState.Usable
-            ? t('wsrx.state.usable')
-            : wsrxState === WsrxState.Pending
-              ? t('wsrx.state.pending')
-              : t('wsrx.state.invalid')}
-        </Text>
-        <ActionIcon
-          variant="subtle"
-          aria-label={t('common.button.retry')}
-          onClick={doConnect}
-          loading={wsrxState === WsrxState.Pending}
-        >
-          <Icon path={mdiRefresh} size={1} />
-        </ActionIcon>
-        <ActionIcon variant="subtle" aria-label={t('wsrx.button.config')} onClick={() => setShowConfig(!showConfig)}>
-          <Icon path={mdiTuneVertical} size={1} />
-        </ActionIcon>
+      <Group wrap="nowrap" justify="space-between" gap={2}>
+        <Stack flex={1} gap={0}>
+          <Text size="sm" fw="bold" c={wsrxState === WsrxState.Usable ? 'green' : 'orange'}>
+            {wsrxState === WsrxState.Usable
+              ? t('wsrx.state.usable')
+              : wsrxState === WsrxState.Pending
+                ? t('wsrx.state.pending')
+                : t('wsrx.state.invalid')}
+          </Text>
+          {wsrxState !== WsrxState.Usable && (
+            <Text size="xs" fw="normal">
+              <Anchor
+                c="dimmed"
+                href="https://github.com/XDSEC/WebSocketReflectorX/releases"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {t('challenge.content.instance.entry.description.anchor')}
+              </Anchor>
+            </Text>
+          )}
+        </Stack>
+        <Tooltip label={t('common.button.retry')} withArrow classNames={tooltipClasses}>
+          <ActionIcon variant="subtle" onClick={doWsrxConnect} loading={wsrxState === WsrxState.Pending}>
+            <Icon path={mdiRefresh} size={1} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={t('wsrx.button.config')} withArrow classNames={tooltipClasses}>
+          <ActionIcon variant="subtle" onClick={() => setShowConfig((prev) => !prev)}>
+            <Icon path={mdiTuneVertical} size={1} />
+          </ActionIcon>
+        </Tooltip>
       </Group>
       {showConfig && (
         <TextInput

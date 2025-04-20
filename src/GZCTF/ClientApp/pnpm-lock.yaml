@@ -60,8 +60,8 @@ importers:
         specifier: ^8.0.7
         version: 8.0.7
       '@xdsec/wsrx':
-        specifier: ^0.4.16
-        version: 0.4.16
+        specifier: ^0.4.17
+        version: 0.4.17
       chroma-js:
         specifier: ^3.1.2
         version: 3.1.2
@@ -891,8 +891,8 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0
 
-  '@xdsec/wsrx@0.4.16':
-    resolution: {integrity: sha512-1Tqyefcphtq7QMGo1Y3lM7PX4BgLHf7s/dDOkV7a6320XdhZnDSFW8u6IQy9yA9rr1iWM52mcBm6Rsn4P9Ax2w==}
+  '@xdsec/wsrx@0.4.17':
+    resolution: {integrity: sha512-eHuk4VNXfNx6FYqhxOMCcjBhWiu4NJetBeLeQa7d/1Tl352Cs0DOETiRxa4gKp8YSSQ3bKkfKctqTiCG2w8zPQ==}
     engines: {node: '>=18'}
 
   abort-controller@3.0.0:
@@ -2953,9 +2953,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@xdsec/wsrx@0.4.16':
+  '@xdsec/wsrx@0.4.17':
     dependencies:
       ky: 1.8.1
+      nanoid: 5.1.5
 
   abort-controller@3.0.0:
     dependencies:

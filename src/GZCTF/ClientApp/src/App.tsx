@@ -10,6 +10,7 @@ import { useRoutes } from 'react-router'
 import { SWRConfig } from 'swr'
 import routes from '~react-pages'
 import { ErrorFallback } from '@Components/ErrorFallback'
+import { WsrxProvider } from '@Components/WsrxProvider'
 import { useLanguage } from '@Utils/I18n'
 import { useCustomTheme } from '@Utils/ThemeOverride'
 import { useBanner, localCacheProvider } from '@Hooks/useConfig'
@@ -42,15 +43,17 @@ export const App: FC = () => {
                   fetcher,
                 }}
               >
-                <Suspense
-                  fallback={
-                    <Center h="100vh" w="100vw">
-                      <Loader />
-                    </Center>
-                  }
-                >
-                  {useRoutes(routes)}
-                </Suspense>
+                <WsrxProvider>
+                  <Suspense
+                    fallback={
+                      <Center h="100vh" w="100vw">
+                        <Loader />
+                      </Center>
+                    }
+                  >
+                    {useRoutes(routes)}
+                  </Suspense>
+                </WsrxProvider>
               </SWRConfig>
             </ModalsProvider>
           </DatesProvider>

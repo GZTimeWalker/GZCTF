@@ -16,10 +16,9 @@ import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { HandleWsrxError, useWsrx } from '@Components/WsrxProvider'
 import { getProxyUrl as getProxyEntry } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
-import { HandleWsrxError } from '@Hooks/useWsrx'
-import { useWsrx } from '@Hooks/useWsrx'
 import { ClientFlagContext } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -70,7 +69,8 @@ const Countdown: FC<CountdownProps> = (props) => {
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const { test: isPreview, context, disabled, onCreate, onDestroy } = props
-  const { wsrx } = useWsrx()
+  const { wsrx, wsrxState } = useWsrx()
+
   const { config } = useConfig()
   const clipBoard = useClipboard()
 
@@ -117,10 +117,10 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   }
 
   const localTraffic = wsrx.list().find((traffic) => traffic.remote === originalEntry)
-  const [localEntry, setLocalEntry] = useState(localTraffic?.local ?? originalEntry)
+  const [localEntry, setLocalEntry] = useState(localTraffic?.local ?? '')
 
   // is wsrx is ready to use
-  const isWsrxUsable = isPlatformProxy && wsrx.getState() === WsrxState.Usable
+  const isWsrxUsable = isPlatformProxy && wsrxState === WsrxState.Usable
   // to show original entry
   const useOriginal = !!localTraffic && forceShowOriginal
 
@@ -140,18 +140,18 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     }
 
     requestProxy()
-  }, [originalEntry])
+  }, [originalEntry, isWsrxUsable])
 
-  const entry = useOriginal ? originalEntry : localEntry
+  const entry = isWsrxUsable && !useOriginal ? localEntry : originalEntry
+  const entryIsWss = isPlatformProxy && (useOriginal || !isWsrxUsable)
 
   const onCopyEntry = () => {
     clipBoard.copy(entry)
 
-    const copyWss = isPlatformProxy && useOriginal
     showNotification({
       color: 'teal',
-      title: copyWss ? t('challenge.notification.instance.copied.url.title') : undefined,
-      message: copyWss
+      title: entryIsWss ? t('challenge.notification.instance.copied.url.title') : undefined,
+      message: entryIsWss
         ? t('challenge.notification.instance.copied.url.message')
         : t('challenge.notification.instance.copied.entry'),
       icon: <Icon path={mdiCheck} size={1} />,
@@ -194,7 +194,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
         description={
           isPlatformProxy &&
           !isPreview && (
-            <Text size="sm">
+            <Text span size="sm">
               {t('challenge.content.instance.entry.description.proxy')}
               &nbsp;
               <Anchor href="https://github.com/XDSEC/WebSocketReflectorX/releases" target="_blank" rel="noreferrer">
@@ -237,7 +237,13 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               </ActionIcon>
             </Tooltip>
             <Tooltip label={t('challenge.content.instance.open.web')} withArrow classNames={tooltipClasses}>
-              <ActionIcon component="a" href={`http://${localEntry}`} target="_blank" rel="noreferrer">
+              <ActionIcon
+                disabled={entryIsWss}
+                component="a"
+                href={entryIsWss ? '#' : `http://${localEntry}`}
+                target={entryIsWss ? undefined : '_blank'}
+                rel="noreferrer"
+              >
                 <Icon path={mdiOpenInNew} size={1} />
               </ActionIcon>
             </Tooltip>
