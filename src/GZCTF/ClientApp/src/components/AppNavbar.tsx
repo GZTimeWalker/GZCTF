@@ -130,7 +130,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       <AppShell.Section className={cx(classes.section, misc.justifyEnd)}>
         <Stack w="100%" align="center" justify="center" gap={5}>
           {/* WebSocket Reflector X Integration */}
-          <Popover position="right" offset={24} width={320}>
+          <Popover position="right" offset={24} width={280}>
             <Popover.Target>
               <ActionIcon className={classes.link}>
                 <Icon path={mdiTransitConnectionVariant} size={1} />

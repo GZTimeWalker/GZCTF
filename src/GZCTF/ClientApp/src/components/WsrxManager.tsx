@@ -1,10 +1,12 @@
-import { ActionIcon, Anchor, Group, Stack, Text, TextInput, Tooltip } from '@mantine/core'
+import { ActionIcon, Anchor, Divider, Group, Stack, Switch, Text, TextInput, Tooltip } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
 import { mdiRefresh, mdiTuneVertical } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { WsrxState } from '@xdsec/wsrx'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DefaultWsrxOptions, useWsrx } from '@Components/WsrxProvider'
+import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 /**
@@ -15,7 +17,16 @@ import tooltipClasses from '@Styles/Tooltip.module.css'
 export const WsrxManager: FC = () => {
   const { wsrxState, wsrxOptions, doWsrxConnect, setWsrxOptions } = useWsrx()
   const { t } = useTranslation()
+
   const [showConfig, setShowConfig] = useState(false)
+  const [option, setOption] = useState(wsrxOptions)
+  const [debounced] = useDebouncedValue(option, 300)
+
+  useEffect(() => {
+    if (debounced && debounced !== wsrxOptions) {
+      setWsrxOptions(debounced)
+    }
+  }, [debounced, setWsrxOptions])
 
   return (
     <Stack gap="xs">
@@ -53,13 +64,30 @@ export const WsrxManager: FC = () => {
         </Tooltip>
       </Group>
       {showConfig && (
-        <TextInput
-          size="sm"
-          flex={1}
-          placeholder={DefaultWsrxOptions.api}
-          value={wsrxOptions.api}
-          onChange={(e) => setWsrxOptions({ ...wsrxOptions, api: e.currentTarget.value })}
-        />
+        <>
+          <Divider />
+          <TextInput
+            size="sm"
+            flex={1}
+            label={t('wsrx.config.api')}
+            placeholder={DefaultWsrxOptions.api}
+            value={option.api}
+            onChange={(e) => setOption({ ...option, api: e.currentTarget.value })}
+          />
+          <Switch
+            size="sm"
+            flex={1}
+            classNames={{ body: misc.justifyBetween }}
+            labelPosition="left"
+            label={
+              <Text size="sm" fw={500}>
+                {t('wsrx.config.allow_lan')}
+              </Text>
+            }
+            checked={option.allowLan}
+            onChange={(e) => setOption({ ...option, allowLan: e.currentTarget.checked })}
+          />
+        </>
       )}
     </Stack>
   )
