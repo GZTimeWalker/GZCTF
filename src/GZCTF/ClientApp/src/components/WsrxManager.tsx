@@ -32,7 +32,7 @@ export const WsrxManager: FC = () => {
     <Stack gap="xs">
       <Group wrap="nowrap" justify="space-between" gap={2}>
         <Stack flex={1} gap={0}>
-          <Text size="sm" fw="bold" c={wsrxState === WsrxState.Usable ? 'green' : 'orange'}>
+          <Text size="sm" fw="bold" c={wsrxState === WsrxState.Usable ? 'green' : 'orange'} lineClamp={1} truncate>
             {wsrxState === WsrxState.Usable
               ? t('wsrx.state.usable')
               : wsrxState === WsrxState.Pending

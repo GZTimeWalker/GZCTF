@@ -12,6 +12,7 @@ import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
   gameId: number
+  gameTitle: string
   gameEnded: boolean
   cateData: ChallengeCategoryItemProps
   title: string
@@ -21,7 +22,7 @@ interface GameChallengeModalProps extends ModalProps {
 }
 
 export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
-  const { gameId, gameEnded, challengeId, cateData, status, title, score, ...modalProps } = props
+  const { gameId, gameTitle, gameEnded, challengeId, cateData, status, title, score, ...modalProps } = props
 
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
     refreshInterval: 120 * 1000,
@@ -216,6 +217,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   return (
     <ChallengeModal
       {...modalProps}
+      gameTitle={gameTitle}
       challenge={challenge ?? { title, score }}
       cateData={cateData}
       solved={status !== SubmissionType.Unaccepted && status !== undefined}

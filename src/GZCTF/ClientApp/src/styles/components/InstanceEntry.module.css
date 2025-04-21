@@ -1,0 +1,3 @@
+.icon[data-proxied] {
+  color: light-dark(var(--mantine-color-green-5), var(--mantine-color-green-7));
+}

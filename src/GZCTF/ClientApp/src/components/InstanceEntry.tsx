@@ -20,6 +20,7 @@ import { HandleWsrxError, useWsrx } from '@Components/WsrxProvider'
 import { getProxyUrl as getProxyEntry } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { ClientFlagContext } from '@Api'
+import classes from '@Styles/InstanceEntry.module.css'
 import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
@@ -27,6 +28,7 @@ dayjs.extend(duration)
 
 interface InstanceEntryProps {
   test?: boolean
+  label?: string
   context: ClientFlagContext
   disabled?: boolean
   onCreate?: () => void
@@ -68,7 +70,7 @@ const Countdown: FC<CountdownProps> = (props) => {
 }
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
-  const { test: isPreview, context, disabled, onCreate, onDestroy } = props
+  const { test: isPreview, label, context, disabled, onCreate, onDestroy } = props
   const { wsrx, wsrxState, wsrxOptions } = useWsrx()
 
   const { config } = useConfig()
@@ -132,6 +134,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     const requestProxy = async () => {
       try {
         const traffic = await wsrx.add({
+          label,
           remote: originalEntry,
           local: localAddr,
         })
@@ -142,7 +145,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     }
 
     requestProxy()
-  }, [originalEntry, isWsrxUsable, wsrxOptions.allowLan])
+  }, [originalEntry, isWsrxUsable, label, wsrxOptions.allowLan])
 
   const entry = isWsrxUsable && !useOriginal ? localEntry : originalEntry
   const entryIsWss = isPlatformProxy && (useOriginal || !isWsrxUsable)
@@ -209,7 +212,8 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
           <Icon
             path={mdiServerNetwork}
             size={1}
-            color={isWsrxUsable && !useOriginal ? 'var(--mantine-color-green-8)' : undefined}
+            data-proxied={(isWsrxUsable && !useOriginal) || undefined}
+            className={classes.icon}
           />
         }
         value={entry}
