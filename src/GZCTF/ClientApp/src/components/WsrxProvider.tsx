@@ -11,11 +11,13 @@ import { useConfig } from '@Hooks/useConfig'
 interface CustomWsrxOptions {
   name: string
   api: string
+  allowLan: boolean
 }
 
 export const DefaultWsrxOptions: CustomWsrxOptions = {
   api: 'http://127.0.0.1:3307',
   name: 'GZ::CTF',
+  allowLan: false,
 }
 
 export const HandleWsrxError = (err: unknown, t: (key: string) => string) => {
@@ -103,9 +105,11 @@ export const WsrxProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   }, 100)
 
   useEffect(() => {
-    wsrx.setOptions(getWsrxConfig(wsrxOptions))
-    doWsrxConnect()
-  }, [wsrxOptions, wsrx, doWsrxConnect])
+    if (wsrxOptions) {
+      wsrx.setOptions(getWsrxConfig(wsrxOptions))
+      doWsrxConnect()
+    }
+  }, [wsrx, doWsrxConnect])
 
   useEffect(() => {
     if (platformConfig?.config.title) {

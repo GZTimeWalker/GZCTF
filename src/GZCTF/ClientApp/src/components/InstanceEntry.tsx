@@ -69,7 +69,7 @@ const Countdown: FC<CountdownProps> = (props) => {
 
 export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const { test: isPreview, context, disabled, onCreate, onDestroy } = props
-  const { wsrx, wsrxState } = useWsrx()
+  const { wsrx, wsrxState, wsrxOptions } = useWsrx()
 
   const { config } = useConfig()
   const clipBoard = useClipboard()
@@ -127,11 +127,13 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   useEffect(() => {
     if (!originalEntry || !isWsrxUsable) return
 
+    const localAddr = wsrxOptions.allowLan ? '0.0.0.0:0' : '127.0.0.1:0'
+
     const requestProxy = async () => {
       try {
         const traffic = await wsrx.add({
           remote: originalEntry,
-          local: '127.0.0.1:0',
+          local: localAddr,
         })
         setLocalEntry(traffic.local)
       } catch (err) {
@@ -140,7 +142,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     }
 
     requestProxy()
-  }, [originalEntry, isWsrxUsable])
+  }, [originalEntry, isWsrxUsable, wsrxOptions.allowLan])
 
   const entry = isWsrxUsable && !useOriginal ? localEntry : originalEntry
   const entryIsWss = isPlatformProxy && (useOriginal || !isWsrxUsable)
