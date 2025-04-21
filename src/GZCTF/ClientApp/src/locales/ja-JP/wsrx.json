@@ -3,8 +3,8 @@
     "config": "WSRX構成"
   },
   "config": {
-    "allow_lan": "Allow LAN Access",
-    "api": "API Url"
+    "allow_lan": "LANアクセスを許可",
+    "api": "API URL"
   },
   "error": {
     "daemon_error": {
