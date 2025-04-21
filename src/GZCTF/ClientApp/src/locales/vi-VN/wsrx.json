@@ -2,6 +2,10 @@
   "button": {
     "config": "Cấu hình WSRX"
   },
+  "config": {
+    "allow_lan": "Allow LAN Access",
+    "api": "API Url"
+  },
   "error": {
     "daemon_error": {
       "message": "Kiểm tra log của WSRX và báo cáo sự cố cho ban tổ chức.",
