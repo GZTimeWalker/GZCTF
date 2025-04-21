@@ -3,6 +3,21 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.3.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.6..v1.3.0) - 2025-04-21
+
+### ⛰️ Features
+
+- **(wsrx)** support instance label - ([bc8ad4](https://github.com/GZTimeWalker/GZCTF/commit/bc8ad4)) by **GZTime**
+- **(wsrx)** allow proxy to 0.0.0.0 - ([7099e2](https://github.com/GZTimeWalker/GZCTF/commit/7099e2)) by **GZTime**
+- **(wsrx)** use context to manage wsrx state - ([0cefd1](https://github.com/GZTimeWalker/GZCTF/commit/0cefd1)) by **GZTime**
+- **(wsrx)** switch whether to display the local mapping entry - ([86191e](https://github.com/GZTimeWalker/GZCTF/commit/86191e)) by **GZTime**
+- add wsrx integration (#421) - ([872d1b](https://github.com/GZTimeWalker/GZCTF/commit/872d1b)) by **Reverier Xu**
+
+### 🐛 Bug Fixes
+
+- **(instance)** open the right url - ([d556e3](https://github.com/GZTimeWalker/GZCTF/commit/d556e3)) by **GZTime**
+
+---
 ## [1.2.6](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.5..v1.2.6) - 2025-04-08
 
 ### 🐛 Bug Fixes
