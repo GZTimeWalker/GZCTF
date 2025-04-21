@@ -3,8 +3,8 @@
     "config": "WSRX Einstellungen"
   },
   "config": {
-    "allow_lan": "Allow LAN Access",
-    "api": "API Url"
+    "allow_lan": "LAN-Zugriff erlauben",
+    "api": "API-URL"
   },
   "error": {
     "daemon_error": {
