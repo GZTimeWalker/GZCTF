@@ -2,6 +2,10 @@
   "button": {
     "config": "WSRX構成"
   },
+  "config": {
+    "allow_lan": "Allow LAN Access",
+    "api": "API Url"
+  },
   "error": {
     "daemon_error": {
       "message": "WSRXのログを確認し、問題を報告してください。",
