@@ -2,6 +2,10 @@
   "button": {
     "config": "WSRX 配置"
   },
+  "config": {
+    "allow_lan": "Allow LAN Access",
+    "api": "API Url"
+  },
   "error": {
     "daemon_error": {
       "message": "請檢查 WSRX 軟體日誌並匯報問題。",
