@@ -28,6 +28,7 @@ export interface ChallengeModalProps extends ModalProps {
   cateData: ChallengeCategoryItemProps
   solved?: boolean
   disabled?: boolean
+  gameTitle?: string
   flag: string
   setFlag: (value: string | React.ChangeEvent<any> | null | undefined) => void
   onCreate: () => void
@@ -43,6 +44,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     cateData,
     solved,
     disabled,
+    gameTitle,
     flag,
     setFlag,
     onCreate,
@@ -152,6 +154,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   const instance = withInstance && (
     <InstanceEntry
+      label={`${challenge.title} @ ${gameTitle}`}
       context={challenge.context!}
       onCreate={onCreate}
       onExtend={onExtend}

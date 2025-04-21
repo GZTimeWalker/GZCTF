@@ -36,6 +36,7 @@ import {
   ChallengeCategoryList,
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Hooks/useEdit'
+import { useGame } from '@Hooks/useGame'
 import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
@@ -44,6 +45,7 @@ const GameChallengeEdit: FC = () => {
   const { id, chalId } = useParams()
   const [numId, numCId] = [parseInt(id ?? '-1'), parseInt(chalId ?? '-1')]
 
+  const { game } = useGame(numId)
   const { challenge, mutate } = useEditChallenge(numId, numCId)
   const { challenges, mutate: mutateChals } = useEditChallenges(numId)
 
@@ -438,6 +440,7 @@ const GameChallengeEdit: FC = () => {
             <Grid.Col span={4}>
               <InstanceEntry
                 test
+                label={`${challenge?.title} @ ${game?.title} (test)`}
                 disabled={disabled}
                 context={{
                   closeTime: challenge?.testContainer?.expectStopAt,

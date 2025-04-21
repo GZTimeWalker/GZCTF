@@ -275,6 +275,7 @@ export const ChallengePanel: FC = () => {
       {challenge?.id && (
         <GameChallengeModal
           gameId={numId}
+          gameTitle={game?.title ?? ''}
           opened={detailOpened}
           withCloseButton={false}
           onClose={() => {
