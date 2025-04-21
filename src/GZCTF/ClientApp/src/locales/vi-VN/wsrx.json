@@ -3,8 +3,8 @@
     "config": "Cấu hình WSRX"
   },
   "config": {
-    "allow_lan": "Allow LAN Access",
-    "api": "API Url"
+    "allow_lan": "Cho phép truy cập LAN",
+    "api": "URL API"
   },
   "error": {
     "daemon_error": {
