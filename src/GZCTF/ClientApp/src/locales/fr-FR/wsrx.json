@@ -2,6 +2,10 @@
   "button": {
     "config": "Paramètres WSRX"
   },
+  "config": {
+    "allow_lan": "Autoriser l'accès LAN",
+    "api": "URL de l'API"
+  },
   "error": {
     "daemon_error": {
       "message": "Veuillez vérifier le journal WSRX et signaler le problème.",

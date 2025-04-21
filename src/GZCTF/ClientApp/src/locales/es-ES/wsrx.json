@@ -2,6 +2,10 @@
   "button": {
     "config": "Configuración de WSRX"
   },
+  "config": {
+    "allow_lan": "Permitir acceso a LAN",
+    "api": "URL de API"
+  },
   "error": {
     "daemon_error": {
       "message": "Compruebe el registro de software WSRX y reporte el problema.",

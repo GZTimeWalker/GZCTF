@@ -112,7 +112,7 @@
   "event": {
     "answer": {
       "accepted": "Flag đã đúng",
-      "cheat": "Đang Gian lận",
+      "cheat": "Đang gian lận",
       "not_found": "Không rõ",
       "submitted": "Submit thành công",
       "wrong": "Flag sai"
@@ -137,9 +137,9 @@
       "game": "Chú ý"
     },
     "score": "Điểm số",
-    "score_formatter": "{value} điểm",
+    "score_formatter": "{value}",
     "score_table": {
-      "all_teams": "Tất Cả Các Đội",
+      "all_teams": "Tất cả các đội",
       "rank_division": "Hạng",
       "rank_total": "Tổng",
       "score": "Điểm",

@@ -2,6 +2,10 @@
   "button": {
     "config": "Настройки WSRX"
   },
+  "config": {
+    "allow_lan": "Разрешить доступ к локальной сети",
+    "api": "API URL"
+  },
   "error": {
     "daemon_error": {
       "message": "Проверьте журналы WSRX и сообщите о проблеме.",

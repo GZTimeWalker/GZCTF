@@ -2,6 +2,10 @@
   "button": {
     "config": "Konfigurasi WSRX"
   },
+  "config": {
+    "allow_lan": "Izinkan akses LAN",
+    "api": "API URL"
+  },
   "error": {
     "daemon_error": {
       "message": "Please check the WSRX software log and report the issue.",

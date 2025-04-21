@@ -4,7 +4,7 @@
   },
   "config": {
     "allow_lan": "Allow LAN Access",
-    "api": "API Url"
+    "api": "API URL"
   },
   "error": {
     "daemon_error": {

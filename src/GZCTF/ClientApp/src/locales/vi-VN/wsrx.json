@@ -2,6 +2,10 @@
   "button": {
     "config": "Cấu hình WSRX"
   },
+  "config": {
+    "allow_lan": "Cho phép truy cập LAN",
+    "api": "URL API"
+  },
   "error": {
     "daemon_error": {
       "message": "Kiểm tra log của WSRX và báo cáo sự cố cho ban tổ chức.",
@@ -9,7 +13,7 @@
     },
     "daemon_offline": {
       "message": "WSRX Daemon ngoại tuyến. Hãy kiểm tra trạng thái của WSRX daemon.",
-      "title": "WSRX daemon ngoại tuyến"
+      "title": "WSRX Daemon ngoại tuyến"
     },
     "daemon_unavailable": {
       "message": "WSRX Daemon không hoạt động. Nếu desktop client đã khởi động, hãy kiểm tra xem WSRX control address trong cài đặt platform có đúng không.",
@@ -22,8 +26,8 @@
     }
   },
   "state": {
-    "invalid": "WSRX ngắt kết nối ",
+    "invalid": "Ngắt kết nối WSRX",
     "pending": "Đang chờ local authorization",
-    "usable": "WSRX đã kết nối"
+    "usable": "Đã kết nối WSRX"
   }
 }
