@@ -242,7 +242,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               <ActionIcon
                 disabled={entryIsWss}
                 component="a"
-                href={entryIsWss ? '#' : `http://${localEntry}`}
+                href={entryIsWss ? '#' : `http://${entry}`}
                 target={entryIsWss ? undefined : '_blank'}
                 rel="noreferrer"
               >
