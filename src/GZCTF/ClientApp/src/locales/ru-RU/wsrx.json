@@ -3,8 +3,8 @@
     "config": "Настройки WSRX"
   },
   "config": {
-    "allow_lan": "Allow LAN Access",
-    "api": "API Url"
+    "allow_lan": "Разрешить доступ к локальной сети",
+    "api": "API URL"
   },
   "error": {
     "daemon_error": {
