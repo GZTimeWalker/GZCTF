@@ -147,8 +147,9 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     requestProxy()
   }, [originalEntry, isWsrxUsable, label, wsrxOptions.allowLan])
 
-  const entry = isWsrxUsable && !useOriginal ? localEntry : originalEntry
-  const entryIsWss = isPlatformProxy && (useOriginal || !isWsrxUsable)
+  const useLocal = isWsrxUsable && !useOriginal
+  const entry = useLocal ? localEntry : originalEntry
+  const entryIsWss = isPlatformProxy && !useLocal
 
   const onCopyEntry = () => {
     clipBoard.copy(entry)
@@ -246,7 +247,11 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
               <ActionIcon
                 disabled={entryIsWss}
                 component="a"
-                href={entryIsWss ? '#' : `http://${entry}`}
+                href={
+                  entryIsWss
+                    ? '#'
+                    : `http://${useLocal && wsrxOptions.allowLan ? entry.replace('0.0.0.0', '127.0.0.1') : entry}`
+                }
                 target={entryIsWss ? undefined : '_blank'}
                 rel="noreferrer"
               >
