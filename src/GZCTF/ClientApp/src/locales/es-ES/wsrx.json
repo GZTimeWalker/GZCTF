@@ -3,7 +3,7 @@
     "config": "Configuración de WSRX"
   },
   "config": {
-    "allow_lan": "Permitir acceso a LAN",
+    "allow_lan": "Permitir Acceso a LAN",
     "api": "URL de API"
   },
   "error": {
