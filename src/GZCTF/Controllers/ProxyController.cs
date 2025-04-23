@@ -68,10 +68,10 @@ public class ProxyController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Container_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        var key = CacheKey.ConnectionCount(id);
-
         if (!HttpContext.WebSockets.IsWebSocketRequest)
             return NoContent();
+
+        var key = CacheKey.ConnectionCount(id);
 
         if (!await IncrementConnectionCount(key))
             return BadRequest(
@@ -235,6 +235,7 @@ public class ProxyController(
         CancellationToken token = default)
     {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
         var ct = cts.Token;
@@ -254,11 +255,14 @@ public class ProxyController(
                         continue;
 
                     tx += (ulong)status.Count;
-                    await stream.WriteAsync(buffer.AsMemory(0, status.Count), ct);
+                    var memory = buffer.AsMemory(0, status.Count);
+                    await stream.WriteAsync(memory, ct);
                 }
             }
-            catch (TaskCanceledException) { }
-            finally { await cts.CancelAsync(); }
+            catch
+            {
+                // ignore
+            }
         }, ct);
 
         var receiver = Task.Run(async () =>
@@ -271,20 +275,24 @@ public class ProxyController(
                     var count = await stream.ReadAsync(buffer, ct);
                     if (count == 0)
                     {
-                        await ws.CloseAsync(WebSocketCloseStatus.Empty, null, token);
+                        await ws.CloseAsync(WebSocketCloseStatus.Empty, null, ct);
                         break;
                     }
 
                     rx += (ulong)count;
-                    await ws.SendAsync(
-                        buffer.AsMemory(0, count), WebSocketMessageType.Binary, true, ct);
+                    var memory = buffer.AsMemory(0, count);
+                    await ws.SendAsync(memory, WebSocketMessageType.Binary, true, ct);
                 }
             }
-            catch (TaskCanceledException) { }
-            finally { await cts.CancelAsync(); }
+            catch
+            {
+                // ignore
+            }
         }, ct);
 
         await Task.WhenAny(sender, receiver);
+        await cts.CancelAsync();
+        await Task.WhenAll(sender, receiver);
 
         return (tx, rx);
     }
