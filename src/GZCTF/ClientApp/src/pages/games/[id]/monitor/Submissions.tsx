@@ -167,7 +167,7 @@ const Submissions: FC = () => {
         <Icon {...iconMap.get(item.status ?? AnswerResult.FlagSubmitted)!} />
       </Table.Td>
       <Table.Td ff="monospace">
-        <Badge size="sm" color="indigo">
+        <Badge size="sm" color="indigo" fullWidth>
           {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
         </Badge>
       </Table.Td>
@@ -251,7 +251,7 @@ const Submissions: FC = () => {
                     <Icon path={mdiFlag} size={0.8} />
                   </Group>
                 </Table.Th>
-                <Table.Th w="9rem">{t('common.label.time')}</Table.Th>
+                <Table.Th w="7rem">{t('common.label.time')}</Table.Th>
                 <Table.Th miw="4.5rem">{t('common.label.team')}</Table.Th>
                 <Table.Th miw="4.5rem">{t('common.label.user')}</Table.Th>
                 <Table.Th miw="3rem">{t('common.label.challenge')}</Table.Th>

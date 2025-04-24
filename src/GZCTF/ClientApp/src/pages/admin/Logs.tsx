@@ -133,7 +133,7 @@ const Logs: FC = () => {
         }
       >
         <Table.Td>
-          <Badge size="sm" color="indigo">
+          <Badge size="sm" color="indigo" fullWidth>
             {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
         </Table.Td>
