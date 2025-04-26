@@ -57,16 +57,16 @@ export class HttpClient<SecurityDataType = unknown> {
     }
 
     protected mergeRequestParams(params1: AxiosRequestConfig, params2?: AxiosRequestConfig): AxiosRequestConfig {
-      const method = params1.method || (params2 && params2.method)
+      const method = params1.method || (params2 && params2.method);
 
       return {
         ...this.instance.defaults,
         ...params1,
-        ...(params2 || {}),
+        ...params2,
         headers: {
-          ...((method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) || {}),
-          ...(params1.headers || {}),
-          ...((params2 && params2.headers) || {}),
+          ...(method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]),
+          ...params1.headers,
+          ...(params2 && params2.headers),
         },
       };
     }
@@ -124,9 +124,9 @@ export class HttpClient<SecurityDataType = unknown> {
         return this.instance.request({
             ...requestParams,
             headers: {
-                ...(requestParams.headers || {}),
-                ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
-                ...{ "Accept-Language": apiLanguage }
+              ...requestParams.headers,
+              ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
+              "Accept-Language": apiLanguage,
             },
             params: query,
             responseType: responseFormat,

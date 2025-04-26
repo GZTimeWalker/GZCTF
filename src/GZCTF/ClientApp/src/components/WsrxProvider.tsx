@@ -109,7 +109,7 @@ export const WsrxProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       wsrx.setOptions(getWsrxConfig(wsrxOptions))
       doWsrxConnect()
     }
-  }, [wsrx, doWsrxConnect])
+  }, [wsrx, wsrxOptions, doWsrxConnect])
 
   useEffect(() => {
     if (platformConfig?.config.title) {
