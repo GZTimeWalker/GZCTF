@@ -3,7 +3,20 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [1.3.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.6..v1.3.0) - 2025-04-21
+## [1.3.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.3.0..v1.3.1) - 2025-04-28
+
+### ⛰️ Features
+
+- **(proxy)** fix potential problem - ([f608df](https://github.com/GZTimeWalker/GZCTF/commit/f608df)) by **GZTime**
+- **(wsrx)** only show the wsrx icon when platform proxy enabled - ([d9d2a5](https://github.com/GZTimeWalker/GZCTF/commit/d9d2a5)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(badge)** text overflow in table - ([b23d78](https://github.com/GZTimeWalker/GZCTF/commit/b23d78)) by **GZTime**
+- **(wsrx)** ensure proper updates on options change - ([13d4ce](https://github.com/GZTimeWalker/GZCTF/commit/13d4ce)) by **GZTime**
+
+---
+## [1.3.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.6..v1.3.0) - 2025-04-22
 
 ### ⛰️ Features
 
@@ -16,6 +29,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### 🐛 Bug Fixes
 
 - **(instance)** open the right url - ([d556e3](https://github.com/GZTimeWalker/GZCTF/commit/d556e3)) by **GZTime**
+- **(wsrx)** cannot open page on windows - ([54e809](https://github.com/GZTimeWalker/GZCTF/commit/54e809)) by **GZTime**
 
 ---
 ## [1.2.6](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.5..v1.2.6) - 2025-04-08

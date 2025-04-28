@@ -60,7 +60,7 @@ importers:
         specifier: ^8.0.7
         version: 8.0.7
       '@xdsec/wsrx':
-        specifier: 0.5.0
+        specifier: ^0.5.0
         version: 0.5.0
       chroma-js:
         specifier: ^3.1.2
