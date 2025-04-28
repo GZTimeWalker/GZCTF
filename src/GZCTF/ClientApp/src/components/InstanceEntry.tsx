@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next'
 import { HandleWsrxError, useWsrx } from '@Components/WsrxProvider'
 import { getProxyUrl as getProxyEntry } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
-import { ClientFlagContext } from '@Api'
+import { ClientFlagContext, ContainerPortMappingType } from '@Api'
 import classes from '@Styles/InstanceEntry.module.css'
 import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -60,7 +60,7 @@ const Countdown: FC<CountdownProps> = (props) => {
   useEffect(() => {
     if (!extendEnabled && config.renewalWindow && countdown.asMinutes() < config.renewalWindow) enableExtend()
     if (onTimeout && countdown.asSeconds() <= 0) onTimeout()
-  }, [countdown])
+  }, [countdown, config.renewalWindow])
 
   return (
     <Text span fw="bold">
@@ -80,7 +80,10 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
   const [withContainer, setWithContainer] = useState(!!context.instanceEntry)
 
   const instanceEntry = context.instanceEntry ?? ''
-  const isPlatformProxy = instanceEntry.length === 36 && !instanceEntry.includes(':')
+  const isPlatformProxy =
+    config.portMapping === ContainerPortMappingType.PlatformProxy &&
+    instanceEntry.length === 36 &&
+    !instanceEntry.includes(':')
   const originalEntry = isPlatformProxy ? getProxyEntry(instanceEntry, isPreview) : instanceEntry
 
   const [canExtend, setCanExtend] = useDebouncedState(false, 500)
@@ -101,7 +104,7 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
     setWithContainer(!!context.instanceEntry)
     const countdown = dayjs.duration(dayjs(context.closeTime ?? 0).diff(dayjs()))
     setCanExtend(countdown.asMinutes() < (config.renewalWindow ?? 10))
-  }, [context])
+  }, [context, config.renewalWindow])
 
   const onExtend = () => {
     if (!canExtend || !props.onExtend) return

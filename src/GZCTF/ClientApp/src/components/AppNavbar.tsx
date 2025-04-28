@@ -35,9 +35,9 @@ import { LogoBox } from '@Components/LogoBox'
 import { AppControlProps } from '@Components/WithNavbar'
 import { WsrxManager } from '@Components/WsrxManager'
 import { LanguageMap, SupportedLanguages, useLanguage } from '@Utils/I18n'
-import { clearLocalCache } from '@Hooks/useConfig'
+import { clearLocalCache, useConfig } from '@Hooks/useConfig'
 import { useLogOut, useUser } from '@Hooks/useUser'
-import { Role } from '@Api'
+import { ContainerPortMappingType, Role } from '@Api'
 import classes from '@Styles/AppNavbar.module.css'
 import misc from '@Styles/Misc.module.css'
 
@@ -80,6 +80,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
 
   const logout = useLogOut()
   const { user, error } = useUser()
+  const { config } = useConfig()
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()
 
@@ -130,16 +131,18 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
       <AppShell.Section className={cx(classes.section, misc.justifyEnd)}>
         <Stack w="100%" align="center" justify="center" gap={5}>
           {/* WebSocket Reflector X Integration */}
-          <Popover position="right" offset={24} width={320}>
-            <Popover.Target>
-              <ActionIcon className={classes.link}>
-                <Icon path={mdiTransitConnectionVariant} size={1} />
-              </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <WsrxManager />
-            </Popover.Dropdown>
-          </Popover>
+          {config.portMapping === ContainerPortMappingType.PlatformProxy && (
+            <Popover position="right" offset={24} width={320}>
+              <Popover.Target>
+                <ActionIcon className={classes.link}>
+                  <Icon path={mdiTransitConnectionVariant} size={1} />
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <WsrxManager />
+              </Popover.Dropdown>
+            </Popover>
+          )}
 
           {/* Language */}
           <Menu position="right" offset={24} width={160}>
