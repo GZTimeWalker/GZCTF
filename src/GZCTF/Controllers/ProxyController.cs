@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
@@ -28,8 +29,8 @@ public class ProxyController(
     IContainerRepository containerRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
-    const int BufferSize = 1024 * 4;
-    const uint ConnectionLimit = 64;
+    const int BufferSize = 4096;
+    const uint ConnectionLimit = 32;
 
     static readonly JsonSerializerOptions JsonOptions =
         new()
@@ -189,7 +190,7 @@ public class ProxyController(
                 { StatusCode = StatusCodes.Status418ImATeapot };
             }
 
-            using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
             try
             {
@@ -217,8 +218,8 @@ public class ProxyController(
     void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
     {
         var shortId = id.ToString("N")[..8];
-        var clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
-        var targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
+        IPAddress clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
+        IPAddress targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
 
         logger.SystemLog($"[{shortId}] {clientAddress} -> {targetAddress}:{target.Port}, tx {tx}, rx {rx}",
             TaskStatus.Success, LogLevel.Debug);
@@ -238,24 +239,24 @@ public class ProxyController(
 
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
-        var ct = cts.Token;
+        CancellationToken ct = cts.Token;
         ulong tx = 0, rx = 0;
 
         var sender = Task.Run(async () =>
         {
-            var buffer = new byte[BufferSize];
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
             try
             {
                 while (true)
                 {
-                    var status = await ws.ReceiveAsync(buffer, ct);
+                    WebSocketReceiveResult status = await ws.ReceiveAsync(buffer, ct);
                     if (status.CloseStatus.HasValue)
                         break;
                     if (status.Count <= 0)
                         continue;
 
                     tx += (ulong)status.Count;
-                    var memory = buffer.AsMemory(0, status.Count);
+                    Memory<byte> memory = buffer.AsMemory(0, status.Count);
                     await stream.WriteAsync(memory, ct);
                 }
             }
@@ -263,11 +264,15 @@ public class ProxyController(
             {
                 // ignore
             }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
         }, ct);
 
         var receiver = Task.Run(async () =>
         {
-            var buffer = new byte[BufferSize];
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
             try
             {
                 while (true)
@@ -280,13 +285,17 @@ public class ProxyController(
                     }
 
                     rx += (ulong)count;
-                    var memory = buffer.AsMemory(0, count);
+                    Memory<byte> memory = buffer.AsMemory(0, count);
                     await ws.SendAsync(memory, WebSocketMessageType.Binary, true, ct);
                 }
             }
             catch
             {
                 // ignore
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }, ct);
 
