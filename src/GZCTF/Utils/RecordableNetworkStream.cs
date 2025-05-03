@@ -46,6 +46,7 @@ public sealed class RecordableNetworkStream : NetworkStream
     readonly string _tempFile = string.Empty;
 
     bool _disposed;
+    bool _hasRecord;
 
     public RecordableNetworkStream(Socket socket, byte[]? metadata, IBlobStorage storage,
         RecordableNetworkStreamOptions options) :
@@ -74,17 +75,15 @@ public sealed class RecordableNetworkStream : NetworkStream
     {
         var count = await base.ReadAsync(buffer, cancellationToken);
 
-        if (!_options.EnableCapture)
-            return count;
-
-        WriteCapturedData(_options.Dest, _options.Source, buffer[..count]);
+        if (_options.EnableCapture && count > 0)
+            WriteCapturedData(_options.Dest, _options.Source, buffer[..count]);
 
         return count;
     }
 
     public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        if (_options.EnableCapture)
+        if (_options.EnableCapture && buffer.Length > 0)
             WriteCapturedData(_options.Source, _options.Dest, buffer);
 
         return base.WriteAsync(buffer, cancellationToken);
@@ -111,6 +110,8 @@ public sealed class RecordableNetworkStream : NetworkStream
         udp.UpdateUdpChecksum();
 
         _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
+
+        _hasRecord = true;
     }
 
     public override async ValueTask DisposeAsync()
@@ -124,7 +125,10 @@ public sealed class RecordableNetworkStream : NetworkStream
         // move temp file to storage with specified path
         if (_options.EnableCapture && !string.IsNullOrEmpty(_options.BlobPath) && _storage is not null)
         {
-            await _storage.WriteFileAsync(_options.BlobPath, _tempFile);
+            // only save traffic with records
+            if (_hasRecord)
+                await _storage.WriteFileAsync(_options.BlobPath, _tempFile);
+
             File.Delete(_tempFile);
         }
 
