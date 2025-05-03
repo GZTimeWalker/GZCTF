@@ -74,7 +74,7 @@ public class ProxyController(
 
         var key = CacheKey.ConnectionCount(id);
 
-        if (!await IncrementConnectionCount(key))
+        if (!await IncreaseConnectionCount(key))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Container_ConnectionLimitExceeded)]));
 
@@ -201,18 +201,16 @@ public class ProxyController(
             {
                 logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.Proxy_Error)]);
             }
-            finally
-            {
-                await DecrementConnectionCount(CacheKey.ConnectionCount(id));
-            }
-
-            return new EmptyResult();
         }
         finally
         {
             if (stream is not null)
                 await stream.DisposeAsync();
+
+            await DecreaseConnectionCount(CacheKey.ConnectionCount(id));
         }
+
+        return new EmptyResult();
     }
 
     void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
@@ -329,11 +327,11 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// Implement Fetch-Add operation for container TCP connection count
+    /// Increase Fetch-Add operation for container TCP connection count
     /// </summary>
     /// <param name="key">Cache key</param>
     /// <returns></returns>
-    async Task<bool> IncrementConnectionCount(string key)
+    async Task<bool> IncreaseConnectionCount(string key)
     {
         var bytes = await cache.GetAsync(key);
 
@@ -351,11 +349,11 @@ public class ProxyController(
     }
 
     /// <summary>
-    /// Implement decrement operation for container TCP connection count
+    /// Implement decrease operation for container TCP connection count
     /// </summary>
     /// <param name="key">Cache key</param>
     /// <returns></returns>
-    async Task DecrementConnectionCount(string key)
+    async Task DecreaseConnectionCount(string key)
     {
         var bytes = await cache.GetAsync(key);
 
