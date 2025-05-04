@@ -95,17 +95,17 @@ public class DatabaseSink : ILogEventSink, IDisposable
                 }
                 catch (Exception ex)
                 {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DatabaseSink>>();
+                    logger.LogErrorMessage(ex);
+                }
+                finally
+                {
                     if (affectedRows > 0)
                     {
                         // If some logs were saved, we need to remove them from the buffer
                         lockedLogBuffer.RemoveAll(logModel => logModel.Id != 0);
                     }
 
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DatabaseSink>>();
-                    logger.LogErrorMessage(ex);
-                }
-                finally
-                {
                     _lastFlushTime = DateTimeOffset.Now;
                 }
             }
