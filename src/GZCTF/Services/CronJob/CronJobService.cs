@@ -144,8 +144,6 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
                 _timer?.Change(Timeout.Infinite, 0);
                 LaunchCronJob();
-                logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_Started)],
-                    TaskStatus.Success, LogLevel.Debug);
             }
             catch (Exception e)
             {
