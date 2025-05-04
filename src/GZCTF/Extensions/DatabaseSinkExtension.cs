@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -86,14 +87,25 @@ public class DatabaseSink : ILogEventSink, IDisposable
 
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 await dbContext.Logs.AddRangeAsync(lockedLogBuffer, token);
+                var affectedRows = 0;
 
                 try
                 {
-                    await dbContext.SaveChangesAsync(token);
+                    affectedRows = await dbContext.SaveChangesAsync(token);
+                }
+                catch (Exception ex)
+                {
+                    if (affectedRows > 0)
+                    {
+                        // If some logs were saved, we need to remove them from the buffer
+                        lockedLogBuffer.RemoveAll(logModel => logModel.Id != 0);
+                    }
+
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DatabaseSink>>();
+                    logger.LogErrorMessage(ex);
                 }
                 finally
                 {
-                    lockedLogBuffer.Clear();
                     _lastFlushTime = DateTimeOffset.Now;
                 }
             }
