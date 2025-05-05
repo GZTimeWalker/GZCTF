@@ -73,7 +73,9 @@ const MemberItem: FC<MemberItemProps> = (props) => {
         <Grid className={reviewClasses.root}>
           <Grid.Col span={3} className={reviewClasses.col}>
             <Icon path={mdiIdentifier} {...iconProps} />
-            <Text fw="bold">{user.userName}</Text>
+            <Text fw="bold" lineClamp={1}>
+              {user.userName}
+            </Text>
           </Grid.Col>
           <Grid.Col span={3} className={reviewClasses.col}>
             <Icon path={mdiBadgeAccountHorizontalOutline} {...iconProps} />
