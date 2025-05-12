@@ -15,11 +15,13 @@ export const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...prop
   return (
     <Box w="100%" mx="auto">
       <Carousel
-        loop
         type="container"
         withIndicators
         withControls={false}
         plugins={[autoplay.current]}
+        emblaOptions={{
+          loop: true,
+        }}
         onMouseEnter={autoplay.current.stop}
         onMouseLeave={autoplay.current.reset}
         {...props}
