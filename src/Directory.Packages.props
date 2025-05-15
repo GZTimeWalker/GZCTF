@@ -58,7 +58,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.5" />
     <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.8" />
-    <PackageVersion Include="BouncyCastle.Cryptography" Version="2.5.1" />
+    <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.0" />
     <PackageVersion Include="PacketDotNet" Version="1.4.8" />
     <PackageVersion Include="SharpPcap" Version="6.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />

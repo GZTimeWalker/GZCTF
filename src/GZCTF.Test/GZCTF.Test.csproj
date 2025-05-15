@@ -5,7 +5,7 @@
         <IsPackable>false</IsPackable>
         <CollectCoverage>true</CollectCoverage>
         <Configurations>Debug;Release</Configurations>
-        <ReleaseVersion>1.3.2</ReleaseVersion>
+        <ReleaseVersion>1.3.3</ReleaseVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
