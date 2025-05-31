@@ -90,6 +90,10 @@
           "description": "Semua lampiran dinamis akan diunduh dengan nama file ini",
           "label": "Nama lampiran global"
         },
+        "blood_bonus": {
+          "description": "Aktifkan bonus blood untuk challenge ini",
+          "label": "Bonus Blood"
+        },
         "bonus": {
           "description": "The Triple Blood Bonus merujuk pada poin tambahan yang diberikan ketika tantangan diselesaikan oleh tiga tim pertama. Setiap tim bisa mendapatkan bonus skor berdasarkan poin yang saat ini dimiliki tantangan tersebut. Bonus ini akan ditambahkan ke skor tim dalam bentuk persentase tetap.",
           "first_blood": "First Blood Reward (%)",
@@ -106,10 +110,6 @@
         "description": "Deskripsi",
         "difficulty": "Tingkat kesulitan",
         "disable": "Apakah kamu yakin ingin menonaktifkan challenge {{name}}?",
-        "blood_bonus": {
-          "description": "Aktifkan bonus blood untuk challenge ini",
-          "label": "Bonus Blood"
-        },
         "empty": {
           "description": "Klik pojok kanan atas untuk membuat challenge pertama",
           "title": "Waduh! Permainan ini belum memiliki challenge."
@@ -296,6 +296,10 @@
         "title": "Kebijakan container"
       },
       "platform": {
+        "api_encryption": {
+          "description": "Encrypt sensitive data in some APIs",
+          "label": "Enable API Encryption"
+        },
         "color": {
           "description": "Warna kustom untuk platform",
           "label": "Warna platform"
