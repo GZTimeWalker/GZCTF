@@ -90,6 +90,10 @@
           "description": "所有動態附件均會以此文件名下載",
           "label": "全局附件名"
         },
+        "blood_bonus": {
+          "description": "啟用此挑戰的三血加分",
+          "label": "三血獎勵"
+        },
         "bonus": {
           "description": "三血獎勵加成是指當一個題目被前三個隊伍解出時，每個隊伍可以得到的分值獎勵。三血的獎勵基於題目的當前分值，並以一個固定百分比的形式累加至該隊伍的得分中。",
           "first_blood": "一血獎勵 (%)",
@@ -106,10 +110,6 @@
         "description": "題目描述",
         "difficulty": "難度係數",
         "disable": "你確定要禁用題目 {{name}} 嗎？",
-        "blood_bonus": {
-          "description": "啟用此挑戰的三血加分",
-          "label": "三血獎勵"
-        },
         "empty": {
           "description": "點擊右上角創建第一個題目",
           "title": "Ouch! 這個比賽還沒有題目"
@@ -296,6 +296,10 @@
         "title": "容器策略"
       },
       "platform": {
+        "api_encryption": {
+          "description": "Encrypt sensitive data in some APIs",
+          "label": "Enable API Encryption"
+        },
         "color": {
           "description": "自定義平臺顏色，用於生成主題色盤",
           "label": "平臺顏色"
