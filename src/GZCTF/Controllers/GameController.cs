@@ -11,6 +11,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Config;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -33,6 +34,7 @@ public class GameController(
     UserManager<UserInfo> userManager,
     ChannelWriter<Submission> channelWriter,
     IBlobStorage storage,
+    IConfigService configService,
     IBlobRepository blobService,
     IGameRepository gameRepository,
     ITeamRepository teamRepository,
@@ -849,14 +851,14 @@ public class GameController(
 
         Submission submission = new()
         {
-            Answer = model.Flag.Trim(),
             Game = context.Game!,
             User = context.User!,
             GameChallenge = context.Challenge!,
             Team = context.Participation!.Team,
             Participation = context.Participation!,
             Status = AnswerResult.FlagSubmitted,
-            SubmitTimeUtc = DateTimeOffset.UtcNow
+            SubmitTimeUtc = DateTimeOffset.UtcNow,
+            Answer = configService.DecryptApiData(model.Flag).Trim()
         };
 
         submission = await submissionRepository.AddSubmission(submission, token);

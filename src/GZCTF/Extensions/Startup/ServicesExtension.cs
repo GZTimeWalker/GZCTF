@@ -25,6 +25,7 @@ static class ServicesExtension
         builder.AddConfig<EmailConfig>();
         builder.AddConfig<AccountPolicy>();
         builder.AddConfig<GlobalConfig>();
+        builder.AddConfig<ManagedConfig>();
         builder.AddConfig<ContainerPolicy>();
         builder.AddConfig<ContainerProvider>();
 

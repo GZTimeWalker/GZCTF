@@ -129,7 +129,7 @@ const Configs: FC = () => {
         <Stack gap="sm">
           <Title order={2}>{t('admin.content.settings.platform.title')}</Title>
           <Divider />
-          <Grid columns={4}>
+          <Grid columns={4} align="center">
             <Grid.Col span={1}>
               <TextInput
                 label={t('admin.content.settings.platform.name.label')}
@@ -200,7 +200,6 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
-
             <Grid.Col span={1}>
               <ColorInput
                 label={t('admin.content.settings.platform.color.label')}
@@ -225,7 +224,7 @@ const Configs: FC = () => {
                 }}
               />
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={3}>
               <TextInput
                 label={t('admin.content.settings.platform.footer.label')}
                 description={t('admin.content.settings.platform.footer.description')}
@@ -235,6 +234,22 @@ const Configs: FC = () => {
                 onChange={(e) => {
                   setGlobalConfig({ ...globalConfig, footerInfo: e.currentTarget.value })
                 }}
+              />
+            </Grid.Col>
+            <Grid.Col span={1} className={misc.alignCenter}>
+              <Switch
+                checked={globalConfig?.apiEncryption ?? false}
+                disabled={disabled}
+                label={SwitchLabel(
+                  t('admin.content.settings.platform.api_encryption.label'),
+                  t('admin.content.settings.platform.api_encryption.description')
+                )}
+                onChange={(e) =>
+                  setGlobalConfig({
+                    ...globalConfig,
+                    apiEncryption: e.currentTarget.checked,
+                  })
+                }
               />
             </Grid.Col>
           </Grid>

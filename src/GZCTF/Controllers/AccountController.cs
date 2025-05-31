@@ -4,6 +4,7 @@ using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ public class AccountController(
     IBlobRepository blobService,
     IHostEnvironment environment,
     ICaptchaExtension captcha,
+    IConfigService configService,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
@@ -61,7 +63,8 @@ public class AccountController(
 
         user.UpdateByHttpContext(HttpContext);
 
-        var result = await userManager.CreateAsync(user, model.Password);
+        var password = configService.DecryptApiData(model.Password);
+        var result = await userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
         {
@@ -202,8 +205,9 @@ public class AccountController(
 
         user.UpdateByHttpContext(HttpContext);
 
-        var result =
-            await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
+        var password = configService.DecryptApiData(model.Password);
+        var token = Codec.Base64.Encode(model.RToken);
+        var result = await userManager.ResetPasswordAsync(user, token, password);
 
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
@@ -293,7 +297,8 @@ public class AccountController(
 
         await signInManager.SignOutAsync();
 
-        var result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
+        var password = configService.DecryptApiData(model.Password);
+        var result = await signInManager.PasswordSignInAsync(user, password, true, false);
 
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse(
@@ -380,7 +385,10 @@ public class AccountController(
     public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
     {
         var user = await userManager.GetUserAsync(User);
-        var result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
+
+        var oldPassword = configService.DecryptApiData(model.Old);
+        var newPassword = configService.DecryptApiData(model.New);
+        var result = await userManager.ChangePasswordAsync(user!, oldPassword, newPassword);
 
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);

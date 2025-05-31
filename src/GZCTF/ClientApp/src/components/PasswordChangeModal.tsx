@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { encryptApiData } from '@Utils/Crypto'
+import { useConfig } from '@Hooks/useConfig'
 import api from '@Api'
 
 export const PasswordChangeModal: FC<ModalProps> = (props) => {
@@ -18,6 +20,7 @@ export const PasswordChangeModal: FC<ModalProps> = (props) => {
   const navigate = useNavigate()
 
   const { t } = useTranslation()
+  const { config } = useConfig()
 
   const onChangePwd = async () => {
     if (!pwd || !retypedPwd) {
@@ -30,8 +33,8 @@ export const PasswordChangeModal: FC<ModalProps> = (props) => {
     } else if (pwd === retypedPwd) {
       try {
         await api.account.accountChangePassword({
-          old: oldPwd,
-          new: pwd,
+          old: await encryptApiData(oldPwd, config.apiPublicKey),
+          new: await encryptApiData(pwd, config.apiPublicKey),
         })
         showNotification({
           color: 'teal',

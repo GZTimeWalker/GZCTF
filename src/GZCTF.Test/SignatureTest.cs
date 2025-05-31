@@ -166,4 +166,28 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
         Assert.True(verified);
     }
+
+    [Fact]
+    public void TestEncryptData()
+    {
+        SecureRandom sr = new();
+        X25519KeyPairGenerator kpg = new();
+        kpg.Init(new X25519KeyGenerationParameters(sr));
+
+        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var privateKey = (X25519PrivateKeyParameters)kp.Private;
+        var publicKey = (X25519PublicKeyParameters)kp.Public;
+
+        output.WriteLine("私钥：");
+        output.WriteLine(Base64.ToBase64String(privateKey.GetEncoded()));
+        output.WriteLine("公钥：");
+        output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
+
+        const string data = "Hello, GZCTF!";
+        var encryptedData = CryptoUtils.EncryptData(Encoding.UTF8.GetBytes(data), publicKey);
+        output.WriteLine($"加密数据：\n{Base64.ToBase64String(encryptedData)}");
+        var decryptedData = CryptoUtils.DecryptData(encryptedData, privateKey);
+        output.WriteLine($"解密数据：\n{Encoding.UTF8.GetString(decryptedData)}");
+        Assert.Equal(data, Encoding.UTF8.GetString(decryptedData));
+    }
 }

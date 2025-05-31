@@ -9,6 +9,8 @@ import { useLocation, useNavigate } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { encryptApiData } from '@Utils/Crypto'
+import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 
@@ -23,6 +25,7 @@ const Reset: FC = () => {
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
+  const { config } = useConfig()
 
   usePageTitle(t('account.title.reset'))
 
@@ -52,7 +55,7 @@ const Reset: FC = () => {
       await api.account.accountPasswordReset({
         rToken: token,
         email: email,
-        password: pwd,
+        password: await encryptApiData(pwd, config.apiPublicKey),
       })
       showNotification({
         color: 'teal',

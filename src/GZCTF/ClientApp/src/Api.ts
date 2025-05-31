@@ -364,6 +364,8 @@ export interface GlobalConfig {
   footerInfo?: string | null;
   /** Custom theme color */
   customTheme?: string | null;
+  /** Use asymmetric encryption for API requests */
+  apiEncryption?: boolean;
   /** Platform logo hash */
   logoHash?: string | null;
   /** Platform favicon hash */
@@ -1785,6 +1787,8 @@ export interface ClientConfig {
   footerInfo?: string | null;
   /** Custom theme color */
   customTheme?: string | null;
+  /** The public key used for API requests */
+  apiPublicKey?: string | null;
   /** Platform logo URL */
   logoUrl?: string | null;
   /** Container port mapping type */

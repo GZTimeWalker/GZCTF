@@ -1,19 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 using GZCTF.Services.Cache;
 using MemoryPack;
+using Microsoft.Extensions.Options;
 using OpenTelemetry.Exporter;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Utilities.Encoders;
 using Serilog.Sinks.Grafana.Loki;
-using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 namespace GZCTF.Models.Internal;
 
 /// <summary>
 /// Ignore when saving automatically
 /// </summary>
+[AttributeUsage(AttributeTargets.Property)]
 public sealed class AutoSaveIgnoreAttribute : Attribute;
 
 /// <summary>
@@ -97,6 +101,52 @@ public class ContainerPolicy
     public int RenewalWindow { get; set; } = 10;
 }
 
+public class ApiEncryptionConfig
+{
+    /// <summary>
+    /// The API public key
+    /// </summary>
+    public string PublicKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The API private key
+    /// </summary>
+    public string PrivateKey { get; set; } = string.Empty;
+
+    public void RegenerateKeys(byte[] xorKey)
+    {
+        var kp = CryptoUtils.GenerateX25519KeyPair();
+        var privateKey = (X25519PrivateKeyParameters)kp.Private;
+        var publicKey = (X25519PublicKeyParameters)kp.Public;
+        var privateKeyBytes = Codec.Xor(privateKey.GetEncoded(), xorKey);
+        PublicKey = Base64.ToBase64String(publicKey.GetEncoded());
+        PrivateKey = Base64.ToBase64String(privateKeyBytes);
+    }
+
+    public string DecryptData(string data, byte[] xorKey)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentNullException.ThrowIfNull(xorKey);
+
+        var encryptedData = Base64.Decode(data);
+        var privateKeyBytes = Codec.Xor(Base64.Decode(PrivateKey), xorKey);
+        var privateKey = new X25519PrivateKeyParameters(privateKeyBytes);
+
+        return Encoding.UTF8.GetString(CryptoUtils.DecryptData(encryptedData, privateKey));
+    }
+}
+
+/// <summary>
+/// Configs controlled by the backend
+/// </summary>
+public class ManagedConfig
+{
+    /// <summary>
+    /// Api encryption configuration
+    /// </summary>
+    public ApiEncryptionConfig ApiEncryption { get; set; } = new();
+}
+
 /// <summary>
 /// Global settings
 /// </summary>
@@ -137,6 +187,12 @@ public class GlobalConfig
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     public string? CustomTheme { get; set; }
+
+    /// <summary>
+    /// Use asymmetric encryption for API requests
+    /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
+    public bool ApiEncryption { get; set; }
 
     /// <summary>
     /// Platform logo hash
@@ -187,6 +243,11 @@ public partial class ClientConfig
     public string? CustomTheme { get; set; }
 
     /// <summary>
+    /// The public key used for API requests
+    /// </summary>
+    public string? ApiPublicKey { get; set; }
+
+    /// <summary>
     /// Platform logo URL
     /// </summary>
     public string? LogoUrl { get; set; }
@@ -211,8 +272,15 @@ public partial class ClientConfig
     /// </summary>
     public int RenewalWindow { get; set; } = 10;
 
-    public static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy,
-        ContainerProvider containerProvider) =>
+    public static ClientConfig FromServiceProvider(IServiceProvider serviceProvider) =>
+        FromConfigs(
+            serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
+            serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerPolicy>>().Value,
+            serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerProvider>>().Value,
+            serviceProvider.GetRequiredService<IOptionsSnapshot<ManagedConfig>>().Value);
+
+    static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy,
+        ContainerProvider containerProvider, ManagedConfig managedConfig) =>
         new()
         {
             Title = globalConfig.Title,
@@ -220,6 +288,7 @@ public partial class ClientConfig
             FooterInfo = globalConfig.FooterInfo,
             CustomTheme = globalConfig.CustomTheme,
             LogoUrl = globalConfig.LogoUrl,
+            ApiPublicKey = globalConfig.ApiEncryption ? managedConfig.ApiEncryption.PublicKey : null,
             PortMapping = containerProvider.PortMappingType,
             DefaultLifetime = containerPolicy.DefaultLifetime,
             ExtensionDuration = containerPolicy.ExtensionDuration,
@@ -431,7 +500,7 @@ public class ForwardedOptions : ForwardedHeadersOptions
             if (parts.Length == 2 &&
                 IPAddress.TryParse(parts[0], out var prefix) &&
                 int.TryParse(parts[1], out var prefixLength))
-                options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
+                options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(prefix, prefixLength));
         });
 
         TrustedProxies?.ForEach(proxy => proxy.ResolveIP().ToList().ForEach(ip => options.KnownProxies.Add(ip)));

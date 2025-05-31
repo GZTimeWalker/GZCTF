@@ -6,34 +6,50 @@ namespace GZCTF.Services.Config;
 public interface IConfigService
 {
     /// <summary>
-    /// 保存配置对象
+    /// Saves a configuration object of the specified type.
     /// </summary>
-    /// <typeparam name="T">选项类型</typeparam>
-    /// <param name="config">选项对象</param>
+    /// <typeparam name="T">Object type</typeparam>
+    /// <param name="config">Object value</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task SaveConfig<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config,
         CancellationToken token = default) where T : class;
 
     /// <summary>
-    /// 保存配置对象
+    /// Saves a configuration object of the specified type.
     /// </summary>
-    /// <param name="type">对象类型</param>
-    /// <param name="value">对象值</param>
+    /// <param name="type">Object type</param>
+    /// <param name="value">Object value</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task SaveConfig([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
         object? value, CancellationToken token = default);
 
     /// <summary>
-    /// 保存配置键值对
+    /// Saves a set of configuration items.
     /// </summary>
-    /// <param name="configs">键值对</param>
+    /// <param name="configs">Configuration items</param>
     /// <param name="token"></param>
     public Task SaveConfigSet(HashSet<ConfigModel> configs, CancellationToken token = default);
 
     /// <summary>
-    /// 重载配置
+    /// Updates the API encryption key.
+    /// </summary>
+    public Task UpdateApiEncryptionKey(CancellationToken token = default);
+
+    /// <summary>
+    /// Decrypts the given API data.
+    /// </summary>
+    /// <param name="cipherText">Encrypted data</param>
+    public string DecryptApiData(string cipherText);
+
+    /// <summary>
+    /// Get the XOR key from configuration.
+    /// </summary>
+    public byte[] GetXorKey();
+
+    /// <summary>
+    /// Reloads the configuration from the source.
     /// </summary>
     public void ReloadConfig();
 }

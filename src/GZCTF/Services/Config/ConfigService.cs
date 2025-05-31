@@ -4,6 +4,8 @@ using System.Reflection;
 using GZCTF.Models.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Utilities.Encoders;
 using ConfigModel = GZCTF.Models.Data.Config;
 
 namespace GZCTF.Services.Config;
@@ -12,9 +14,12 @@ public class ConfigService(
     AppDbContext context,
     IDistributedCache cache,
     ILogger<ConfigService> logger,
+    IOptionsSnapshot<GlobalConfig> globalConfig,
+    IOptionsSnapshot<ManagedConfig> managedConfig,
     IConfiguration configuration) : IConfigService
 {
     readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
+    readonly byte[] _xorKey = configuration["XorKey"]?.ToUTF8Bytes() ?? [];
 
     public Task SaveConfig([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
         object? value, CancellationToken token = default) =>
@@ -23,6 +28,8 @@ public class ConfigService(
     public Task SaveConfig<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(T config,
         CancellationToken token = default) where T : class =>
         SaveConfigSet(GetConfigs(config), token);
+
+    public byte[] GetXorKey() => _xorKey;
 
     public void ReloadConfig() => _configuration?.Reload();
 
@@ -70,6 +77,18 @@ public class ConfigService(
         foreach (var key in cacheKeys)
             await cache.RemoveAsync(key, token);
     }
+
+    public async Task UpdateApiEncryptionKey(CancellationToken token = default)
+    {
+        var managed = managedConfig.Value;
+        managed.ApiEncryption.RegenerateKeys(_xorKey);
+        await SaveConfig(managed, token);
+    }
+
+    public string DecryptApiData(string cipherText) =>
+        globalConfig.Value.ApiEncryption
+            ? managedConfig.Value.ApiEncryption.DecryptData(cipherText, _xorKey)
+            : cipherText;
 
     static void MapConfigsInternal(string key, HashSet<ConfigModel> configs, PropertyInfo info, object? value)
     {

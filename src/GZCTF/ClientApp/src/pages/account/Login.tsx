@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
+import { encryptApiData } from '@Utils/Crypto'
+import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUser } from '@Hooks/useUser'
 import api from '@Api'
@@ -24,6 +26,7 @@ const Login: FC = () => {
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
+  const { config } = useConfig()
 
   const { t } = useTranslation()
 
@@ -78,7 +81,7 @@ const Login: FC = () => {
     try {
       await api.account.accountLogIn({
         userName: uname,
-        password: pwd,
+        password: await encryptApiData(pwd, config.apiPublicKey),
         challenge: token,
       })
 

@@ -7,7 +7,9 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChallengeModal } from '@Components/ChallengeModal'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { encryptApiData } from '@Utils/Crypto'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
+import { useConfig } from '@Hooks/useConfig'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
@@ -28,6 +30,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     refreshInterval: 120 * 1000,
   })
 
+  const { config } = useConfig()
   const { t } = useTranslation()
 
   const wrongFlagHints = t('challenge.content.wrong_flag_hints', {
@@ -137,7 +140,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
 
     try {
       const res = await api.game.gameSubmit(gameId, challengeId, {
-        flag,
+        flag: await encryptApiData(flag.trim(), config.apiPublicKey),
       })
       setSubmitId(res.data)
       notifications.clean()

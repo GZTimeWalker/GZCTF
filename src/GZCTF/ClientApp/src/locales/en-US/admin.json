@@ -90,6 +90,10 @@
           "description": "All dynamic attachments will be downloaded under this filename",
           "label": "Global Attachment Name"
         },
+        "blood_bonus": {
+          "description": "Enable blood bonus for this challenge",
+          "label": "Blood Bonus"
+        },
         "bonus": {
           "description": "The Triple Blood Bonus refers to the additional points awarded when a challenge is solved by the first three teams. Each team can receive a scoring bonus based on the current points of the challenge. The bonus will be added to the team's score in the form of a fixed percentage.",
           "first_blood": "First Blood Reward (%)",
@@ -106,10 +110,6 @@
         "description": "Description",
         "difficulty": "Difficulty Factor",
         "disable": "Are you sure you want to disable challenge {{name}}?",
-        "blood_bonus": {
-          "description": "Enable blood bonus for this challenge",
-          "label": "Blood Bonus"
-        },
         "empty": {
           "description": "Click the top right to create the first challenge",
           "title": "Ouch! This game has no challenge yet."
@@ -296,6 +296,10 @@
         "title": "Container Policy"
       },
       "platform": {
+        "api_encryption": {
+          "description": "Encrypt sensitive data in some APIs",
+          "label": "Enable API Encryption"
+        },
         "color": {
           "description": "Custom color for the platform",
           "label": "Platform Color"

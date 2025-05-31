@@ -30,7 +30,7 @@ public record Config
     public string? Value { get; set; }
 
     /// <summary>
-    /// Used when updating the configuration, if not empty, the corresponding cache will be deleted
+    /// Used when updating the configuration, if not empty, the corresponding cache will be removed
     /// </summary>
     /// <remarks>
     /// Only used in <see cref="GZCTF.Services.Config.ConfigService.SaveConfigSet" />

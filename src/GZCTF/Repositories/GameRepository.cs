@@ -3,6 +3,7 @@ using GZCTF.Extensions;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -13,11 +14,11 @@ public class GameRepository(
     CacheHelper cacheHelper,
     IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
-    IConfiguration configuration,
+    IConfigService configService,
     ILogger<GameRepository> logger,
     AppDbContext context) : RepositoryBase(context), IGameRepository
 {
-    readonly byte[]? _xorKey = configuration["XorKey"]?.ToUTF8Bytes();
+    readonly byte[] _xorKey = configService.GetXorKey();
 
     public override Task<int> CountAsync(CancellationToken token = default) => Context.Games.CountAsync(token);
 
@@ -25,7 +26,7 @@ public class GameRepository(
     {
         game.GenerateKeyPair(_xorKey);
 
-        if (_xorKey is null)
+        if (_xorKey.Length == 0)
             logger.SystemLog(StaticLocalizer[nameof(Resources.Program.GameRepository_XorKeyNotConfigured)],
                 TaskStatus.Pending,
                 LogLevel.Warning);
