@@ -31,10 +31,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -70,10 +70,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -99,10 +99,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -128,10 +128,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -157,10 +157,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(publicKey.Exponent.ToString());
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
