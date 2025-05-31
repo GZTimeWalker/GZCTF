@@ -297,8 +297,8 @@
       },
       "platform": {
         "api_encryption": {
-          "description": "Encrypt sensitive data in some APIs",
-          "label": "Enable API Encryption"
+          "description": "Cryptage des données sensibles dans certaines API",
+          "label": "Activer le cryptage des API"
         },
         "color": {
           "description": "Couleur personnalisée pour la plateforme",
