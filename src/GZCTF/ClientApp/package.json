@@ -12,7 +12,7 @@
     "genapi": "swagger-typescript-api generate -p http://localhost:8080/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
-    "@babel/core": "^7.27.3",
+    "@babel/core": "^7.27.4",
     "@emotion/react": "^11.14.0",
     "@mantine/carousel": "^8.0.2",
     "@mantine/colors-generator": "^8.0.2",
@@ -59,7 +59,7 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/chroma-js": "^3.1.1",
     "@types/katex": "^0.16.7",
-    "@types/node": "^22.15.22",
+    "@types/node": "^22.15.29",
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
@@ -70,7 +70,7 @@
     "globals": "^16.2.0",
     "lodash": "^4.17.21",
     "oxlint": "^0.16.12",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.4",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "~3.5.3",

@@ -68,12 +68,10 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     }
   }
 
-  const onDestroy = async () => {
-    if (!challengeId || disabled) return
-    setDisabled(true)
-
+  const requestDestroy = async () => {
     try {
       await mutate()
+
       if (!challenge?.context?.instanceEntry) return
 
       await api.game.gameDeleteContainer(gameId, challengeId)
@@ -93,9 +91,16 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       })
     } catch (e) {
       showErrorNotification(e, t)
-    } finally {
-      setDisabled(false)
     }
+  }
+
+  const onDestroy = async () => {
+    if (!challengeId || disabled) return
+    setDisabled(true)
+
+    await requestDestroy()
+
+    setDisabled(false)
   }
 
   const onExtend = async () => {
@@ -186,8 +191,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         autoClose: 8000,
         loading: false,
       })
-      if (isDynamic && challenge.context?.instanceEntry) await onDestroy()
-      await mutate()
+      if (isDynamic && challenge.context?.instanceEntry) await requestDestroy()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
       updateNotification({
