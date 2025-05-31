@@ -63,9 +63,13 @@ public class ConfigService(
 
                 await context.Configs.AddAsync(conf, token);
 
+                string configValue = IsSensitiveConfig(conf.ConfigKey)
+                    ? MaskSensitiveData(conf.Value)
+                    : conf.Value ?? "Null";
+
                 logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.Config_GlobalConfigAdded), conf.ConfigKey,
-                        conf.Value ?? "null"],
+                        configValue],
                     TaskStatus.Success, LogLevel.Debug);
             }
         }
@@ -76,6 +80,18 @@ public class ConfigService(
         // flush cache
         foreach (var key in cacheKeys)
             await cache.RemoveAsync(key, token);
+    }
+
+    static bool IsSensitiveConfig(string key) =>
+        key.EndsWith("PrivateKey", StringComparison.Ordinal);
+
+    static string MaskSensitiveData(string? value)
+    {
+        var length = value?.Length ?? 6;
+        if (string.IsNullOrEmpty(value) || length <= 8)
+            return new string('*', length);
+
+        return $"{value[..4]}{new string('*', length - 8)}{value[^4..]}";
     }
 
     public async Task UpdateApiEncryptionKey(CancellationToken token = default)
