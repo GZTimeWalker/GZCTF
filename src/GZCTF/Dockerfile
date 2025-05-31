@@ -9,7 +9,8 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
     LC_ALL=en_US.UTF-8
 
 WORKDIR /app
-RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs ca-certificates libgdiplus tzdata && \
+RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs \
+    ca-certificates libgdiplus tzdata krb5-libs && \
     update-ca-certificates
 
 COPY --from=build --chown=$APP_UID:$APP_UID /publish .
