@@ -90,6 +90,10 @@
           "description": "Toutes les pièces jointes dynamiques seront téléchargées sous ce nom de fichier",
           "label": "Nom global de la pièce jointe"
         },
+        "blood_bonus": {
+          "description": "Activer le bonus de sang pour ce défi",
+          "label": "Bonus de sang"
+        },
         "bonus": {
           "description": "Le Triple Bonus de Sang fait référence aux points supplémentaires attribués lorsqu'un défi est résolu par les trois premières équipes. Chaque équipe peut recevoir un bonus de score basé sur les points actuels du défi. Le bonus sera ajouté au score de l'équipe sous la forme d'un pourcentage fixe.",
           "first_blood": "Récompense Premier Sang (%)",
@@ -106,10 +110,6 @@
         "description": "Description",
         "difficulty": "Facteur de difficulté",
         "disable": "Êtes-vous sûr de vouloir désactiver le défi {{name}} ?",
-        "blood_bonus": {
-          "description": "Activer le bonus de sang pour ce défi",
-          "label": "Bonus de sang"
-        },
         "empty": {
           "description": "Cliquez en haut à droite pour créer le premier défi",
           "title": "Oups ! Ce jeu n'a pas encore de défi."
@@ -296,6 +296,10 @@
         "title": "Politique de conteneur"
       },
       "platform": {
+        "api_encryption": {
+          "description": "Encrypt sensitive data in some APIs",
+          "label": "Enable API Encryption"
+        },
         "color": {
           "description": "Couleur personnalisée pour la plateforme",
           "label": "Couleur de la plateforme"
