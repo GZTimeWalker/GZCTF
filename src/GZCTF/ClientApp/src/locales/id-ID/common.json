@@ -74,6 +74,11 @@
     "check_input": "Tolong cek inputanmu",
     "empty": "Konten tidak boleh kosong",
     "encountered": "Terjadi suatu kesalahan",
+    "encryption_failed": {
+      "need_upgrade": "Harap tingkatkan ke Chrome 133+ / Firefox 130+ / Safari 17+ dan coba lagi",
+      "not_secure_contexts": "Harap gunakan HTTPS untuk mengaktifkan Web Crypto API",
+      "title": "Enkripsi data gagal"
+    },
     "file_invalid": {
       "message": "Harap periksa format dan ukuran berkas",
       "title": "Gagal memuat berkas"

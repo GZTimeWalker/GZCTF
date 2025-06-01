@@ -74,6 +74,11 @@
     "check_input": "請檢查輸入",
     "empty": "內容不能為空",
     "encountered": "遇到了問題",
+    "encryption_failed": {
+      "need_upgrade": "請升級瀏覽器到 Chrome 133+ / Firefox 130+ / Safari 17+ 後重試",
+      "not_secure_contexts": "請使用 HTTPS 協議訪問以啓用 Web Crypto API",
+      "title": "數據加密失敗"
+    },
     "file_invalid": {
       "message": "請檢查文件格式和大小",
       "title": "文件加載失敗"

@@ -74,6 +74,11 @@
     "check_input": "Проверьте введенные данные",
     "empty": "Содержимое не может быть пустым",
     "encountered": "Произошла ошибка",
+    "encryption_failed": {
+      "need_upgrade": "Пожалуйста, обновитесь до Chrome 133+ / Firefox 130+ / Safari 17+ и попробуйте снова",
+      "not_secure_contexts": "Пожалуйста, используйте HTTPS для включения Web Crypto API",
+      "title": "Не удалось зашифровать данные"
+    },
     "file_invalid": {
       "message": "Проверьте формат и размер файла",
       "title": "Не удалось загрузить файл"

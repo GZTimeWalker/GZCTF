@@ -90,6 +90,10 @@
           "description": "Toàn bộ tệp đính kèm động sẽ được tải xuống bằng tên này",
           "label": "Tên Tệp đính kèm Toàn cục"
         },
+        "blood_bonus": {
+          "description": "Kích hoạt thưởng blood cho thử thách này",
+          "label": "Thưởng Blood"
+        },
         "bonus": {
           "description": "Thưởng Triple Blood là điểm thưởng cộng thêm cho ba đội đầu tiên giải được một thử thách. Lượng điểm cộng thêm cho mỗi đội sẽ được tính dựa trên điểm hiện tại của thử thách đó theo một tỉ lệ phần trăm định trước.",
           "first_blood": "Thưởng First Blood (%)",
@@ -106,10 +110,6 @@
         "description": "Mô tả",
         "difficulty": "Độ khó",
         "disable": "Bạn có chắc chắn muốn vô hiệu hóa thử thách {{name}} không?",
-        "blood_bonus": {
-          "description": "Kích hoạt thưởng blood cho thử thách này",
-          "label": "Thưởng Blood"
-        },
         "empty": {
           "description": "Nhấp vào phía trên bên phải để tạo thử thách đầu tiên",
           "title": "Ouch! Game này chưa có thử thách nào cả."
@@ -296,6 +296,11 @@
         "title": "Chính sách container."
       },
       "platform": {
+        "api_encryption": {
+          "description": "Mã hóa dữ liệu nhạy cảm một số API",
+          "label": "Bật Mã hóa API",
+          "not_available": "API Web Crypto không khả dụng"
+        },
         "color": {
           "description": "Màu sắc tùy chỉnh cho nền tảng.",
           "label": "Màu nền tảng."

@@ -74,6 +74,11 @@
     "check_input": "Vui lòng kiểm tra đầu vào của bạn",
     "empty": "Nội dung không thể để trống",
     "encountered": "Đã xảy ra lỗi",
+    "encryption_failed": {
+      "need_upgrade": "Vui lòng nâng cấp lên Chrome 133+ / Firefox 130+ / Safari 17+ và thử lại",
+      "not_secure_contexts": "Vui lòng sử dụng HTTPS để kích hoạt Web Crypto API",
+      "title": "Mã hóa dữ liệu thất bại"
+    },
     "file_invalid": {
       "message": "Vui lòng kiểm tra định dạng và kích thước tệp",
       "title": "Không thể tải tệp"

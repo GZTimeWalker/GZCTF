@@ -74,6 +74,11 @@
     "check_input": "入力内容を確認してください",
     "empty": "内容は空にできません",
     "encountered": "エラーが発生しました",
+    "encryption_failed": {
+      "need_upgrade": "Chrome 133+ / Firefox 130+ / Safari 17+ にアップグレードしてもう一度お試しください",
+      "not_secure_contexts": "Web Crypto APIを有効にするにはHTTPSを使用してください",
+      "title": "データの暗号化に失敗しました"
+    },
     "file_invalid": {
       "message": "ファイル形式とサイズを確認してください",
       "title": "ファイルの読み込みに失敗しました"

@@ -90,6 +90,10 @@
           "description": "Todos los adjuntos dinámicos se descargarán con este nombre de archivo",
           "label": "Nombre Global del Adjunto"
         },
+        "blood_bonus": {
+          "description": "Habilitar bonificación de sangre para este desafío",
+          "label": "Bonificación de sangre"
+        },
         "bonus": {
           "description": "El Triple Bono de Sangre se refiere a los puntos adicionales otorgados cuando un desafío es resuelto por los primeros tres equipos. Cada equipo puede recibir un bono de puntuación basado en los puntos actuales del desafío. El bono se añadirá a la puntuación del equipo en forma de un porcentaje fijo.",
           "first_blood": "Recompensa de Primera Sangre (%)",
@@ -106,10 +110,6 @@
         "description": "Descripción",
         "difficulty": "Factor de Dificultad",
         "disable": "¿Está seguro de que desea deshabilitar el desafío {{name}}?",
-        "blood_bonus": {
-          "description": "Habilitar bonificación de sangre para este desafío",
-          "label": "Bonificación de sangre"
-        },
         "empty": {
           "description": "Haga clic en la parte superior derecha para crear el primer desafío",
           "title": "¡Vaya! Este juego aún no tiene desafíos."
@@ -296,6 +296,11 @@
         "title": "Política de Contenedor"
       },
       "platform": {
+        "api_encryption": {
+          "description": "Cifrar datos sensibles en algunas API",
+          "label": "Habilitar cifrado de API",
+          "not_available": "La API de Web Crypto no está disponible"
+        },
         "color": {
           "description": "Color personalizado para la plataforma",
           "label": "Color de la Plataforma"
