@@ -101,7 +101,7 @@ public class ConfigService(
         await SaveConfig(managed, token);
     }
 
-    public string DecryptApiData(string cipherText) =>
+    public string? DecryptApiData(string cipherText) =>
         globalConfig.Value.ApiEncryption
             ? managedConfig.Value.ApiEncryption.DecryptData(cipherText, _xorKey)
             : cipherText;

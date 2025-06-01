@@ -845,7 +845,11 @@ public class GameController(
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId,
         [FromBody] FlagSubmitModel model, CancellationToken token)
     {
-        var answer = configService.DecryptApiData(model.Flag).Trim();
+        var answer = configService.DecryptApiData(model.Flag);
+        if (string.IsNullOrWhiteSpace(answer))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagRequired)]));
+
+        answer = answer.Trim();
         if (answer.Length > Limits.MaxFlagLength)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagTooLong)]));
 

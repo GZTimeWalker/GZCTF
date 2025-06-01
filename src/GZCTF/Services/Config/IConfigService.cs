@@ -41,7 +41,8 @@ public interface IConfigService
     /// Decrypts the given API data.
     /// </summary>
     /// <param name="cipherText">Encrypted data</param>
-    public string DecryptApiData(string cipherText);
+    /// <returns>Decrypted data, or null if decryption fails</returns>
+    public string? DecryptApiData(string cipherText);
 
     /// <summary>
     /// Get the XOR key from configuration.

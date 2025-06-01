@@ -123,16 +123,24 @@ public class ApiEncryptionConfig
         PrivateKey = Base64.ToBase64String(privateKeyBytes);
     }
 
-    public string DecryptData(string data, byte[] xorKey)
+    public string? DecryptData(string data, byte[] xorKey)
     {
         ArgumentNullException.ThrowIfNull(data);
         ArgumentNullException.ThrowIfNull(xorKey);
 
-        var encryptedData = Base64.Decode(data);
-        var privateKeyBytes = Codec.Xor(Base64.Decode(PrivateKey), xorKey);
-        var privateKey = new X25519PrivateKeyParameters(privateKeyBytes);
+        try
+        {
+            var encryptedData = Base64.Decode(data);
+            var privateKeyBytes = Codec.Xor(Base64.Decode(PrivateKey), xorKey);
+            var privateKey = new X25519PrivateKeyParameters(privateKeyBytes);
 
-        return Encoding.UTF8.GetString(CryptoUtils.DecryptData(encryptedData, privateKey));
+            return Encoding.UTF8.GetString(CryptoUtils.DecryptData(encryptedData, privateKey));
+        }
+        catch
+        {
+            // If decryption fails, return null
+            return null;
+        }
     }
 }
 
