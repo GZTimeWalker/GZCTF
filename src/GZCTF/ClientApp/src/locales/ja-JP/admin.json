@@ -297,9 +297,9 @@
       },
       "platform": {
         "api_encryption": {
-          "description": "Encrypt sensitive data in some APIs",
-          "label": "Enable API Encryption",
-          "not_available": "Web Crypto API is not available"
+          "description": "一部のAPIで機密データを暗号化する",
+          "label": "API暗号化を有効にする",
+          "not_available": "Web Crypto APIは利用できません"
         },
         "color": {
           "description": "プラットフォームのカラーをカスタマイズします。",
