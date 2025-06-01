@@ -297,9 +297,9 @@
       },
       "platform": {
         "api_encryption": {
-          "description": "Encrypt sensitive data in some APIs",
-          "label": "Enable API Encryption",
-          "not_available": "Web Crypto API is not available"
+          "description": "Cifrar datos sensibles en algunas API",
+          "label": "Habilitar cifrado de API",
+          "not_available": "La API de Web Crypto no está disponible"
         },
         "color": {
           "description": "Color personalizado para la plataforma",
