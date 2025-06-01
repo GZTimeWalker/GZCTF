@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
-import { showApiError } from '@Utils/ApiHelper'
 import { encryptApiData } from '@Utils/Crypto'
+import { showErrorMsg } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
@@ -65,7 +65,7 @@ const Reset: FC = () => {
       })
       navigate('/account/login')
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
-import { tryGetErrorMsg } from '@Utils/ApiHelper'
 import { encryptApiData } from '@Utils/Crypto'
+import { tryGetClientError } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUser } from '@Hooks/useUser'
@@ -99,11 +99,12 @@ const Login: FC = () => {
       setNeedRedirect(true)
       mutate()
     } catch (err: any) {
+      const { title, message } = tryGetClientError(err, t)
       updateNotification({
         id: 'login-status',
         color: 'red',
-        title: t('common.error.encountered'),
-        message: tryGetErrorMsg(err, t),
+        title,
+        message,
         icon: <Icon path={mdiClose} size={1} />,
         autoClose: true,
         loading: false,

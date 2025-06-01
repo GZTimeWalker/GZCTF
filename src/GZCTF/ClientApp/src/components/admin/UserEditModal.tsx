@@ -19,7 +19,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useUser } from '@Hooks/useUser'
 import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
 
@@ -64,7 +64,7 @@ export const UserEditModal: FC<UserEditModalProps> = (props) => {
       mutateUser({ ...user, ...profile })
       modalProps.onClose()
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

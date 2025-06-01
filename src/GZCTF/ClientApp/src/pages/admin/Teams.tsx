@@ -32,7 +32,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { TeamEditModal } from '@Components/admin/TeamEditModal'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -70,7 +70,7 @@ const Teams: FC = () => {
         setTeams(res.data)
         setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       } catch (e) {
-        showApiError(e, t)
+        showErrorMsg(e, t)
       }
     }
 
@@ -95,7 +95,7 @@ const Teams: FC = () => {
         setCurrent(res.data.length)
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setSearching(false)
     }
@@ -119,7 +119,7 @@ const Teams: FC = () => {
       setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -147,7 +147,7 @@ const Teams: FC = () => {
       )
       setUpdate(new Date())
     } catch (e: any) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

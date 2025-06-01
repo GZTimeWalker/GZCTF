@@ -24,7 +24,7 @@ import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { PasswordChangeModal } from '@Components/PasswordChangeModal'
 import { WithNavBar } from '@Components/WithNavbar'
-import { showApiError, tryGetErrorMsg } from '@Utils/ApiHelper'
+import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -121,7 +121,7 @@ const Profile: FC = () => {
       })
       mutate({ ...user })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     }
   }
 
@@ -141,7 +141,7 @@ const Profile: FC = () => {
         mutate({ ...user, email: email })
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

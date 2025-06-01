@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react'
 import { Wsrx, WsrxError, WsrxErrorKind, WsrxFeature, WsrxOptions, WsrxState } from '@xdsec/wsrx'
 import { t } from 'i18next'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 
 interface CustomWsrxOptions {
@@ -60,7 +60,7 @@ export const HandleWsrxError = (err: unknown, t: (key: string) => string) => {
         })
     }
   } else {
-    showApiError(err, t)
+    showErrorMsg(err, t)
   }
 }
 

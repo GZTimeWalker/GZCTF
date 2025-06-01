@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router'
 import { GameColorMap } from '@Components/GameCard'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { GameCreateModal } from '@Components/admin/GameCreateModal'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import { getGameStatus } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
@@ -47,7 +47,7 @@ const Games: FC = () => {
         )
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -63,7 +63,7 @@ const Games: FC = () => {
         setGames(res.data)
         setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       } catch (e) {
-        showApiError(e, t)
+        showErrorMsg(e, t)
       }
     }
 

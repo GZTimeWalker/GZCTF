@@ -6,8 +6,8 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChallengeModal } from '@Components/ChallengeModal'
-import { showApiError } from '@Utils/ApiHelper'
 import { encryptApiData } from '@Utils/Crypto'
+import { showErrorMsg } from '@Utils/Shared'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
@@ -65,7 +65,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -93,7 +93,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     }
   }
 
@@ -120,7 +120,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         },
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -153,7 +153,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         autoClose: false,
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
       setDisabled(false)
     }
   }
@@ -174,7 +174,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       } catch (err) {
         setDisabled(false)
         setFlag('')
-        showApiError(err, t)
+        showErrorMsg(err, t)
         clearInterval(polling)
       }
     }, 500)

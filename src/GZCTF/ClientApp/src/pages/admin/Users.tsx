@@ -32,7 +32,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { UserEditModal, RoleColorMap } from '@Components/admin/UserEditModal'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import { useUser } from '@Hooks/useUser'
 import api, { Role, UserInfoModel } from '@Api'
@@ -71,7 +71,7 @@ const Users: FC = () => {
         setUsers(res.data)
         setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + res.data.length)
       } catch (err) {
-        showApiError(err, t)
+        showErrorMsg(err, t)
       }
     }
 
@@ -93,7 +93,7 @@ const Users: FC = () => {
         setCurrent(res.data.length)
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setSearching(false)
     }
@@ -119,7 +119,7 @@ const Users: FC = () => {
         )
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -159,7 +159,7 @@ const Users: FC = () => {
         ),
       })
     } catch (err: any) {
-      showApiError(err, t)
+      showErrorMsg(err, t)
     } finally {
       setDisabled(false)
     }
@@ -184,7 +184,7 @@ const Users: FC = () => {
       setCurrent(current - 1)
       setUpdate(new Date())
     } catch (e: any) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

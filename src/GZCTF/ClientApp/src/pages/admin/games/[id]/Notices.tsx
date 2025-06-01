@@ -10,7 +10,7 @@ import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { GameNoticeEditCard } from '@Components/admin/GameNoticeEditCard'
 import { GameNoticeEditModal } from '@Components/admin/GameNoticeEditModal'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { GameNotice } from '@Api'
 
@@ -50,7 +50,7 @@ const GameNoticeEdit: FC = () => {
       })
       mutate(gameNotices?.filter((t) => t.id !== gameNotice.id) ?? [])
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     }
   }
 

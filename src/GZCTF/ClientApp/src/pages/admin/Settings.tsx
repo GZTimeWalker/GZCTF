@@ -26,8 +26,8 @@ import { ColorPreview } from '@Components/ColorPreview'
 import { LogoBox } from '@Components/LogoBox'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import { showApiError } from '@Utils/ApiHelper'
-import { isWebCryptoAvailable } from '@Utils/Crypto'
+import { webCryptoAvailable } from '@Utils/Crypto'
+import { showErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
@@ -74,7 +74,7 @@ const Configs: FC = () => {
       mutateConfig({ ...conf.globalConfig, ...conf.containerPolicy })
       mutateCaptchaConfig()
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -89,14 +89,13 @@ const Configs: FC = () => {
       mutate({ ...configs, globalConfig: { ...globalConfig, faviconHash: '' } })
       mutateConfig({ ...configs, logoUrl: '' })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
   }
 
   const colors = color && /^#[0-9A-F]{6}$/i.test(color) ? generateColors(color) : theme.colors.brand
-  const webCryptoAvailable = isWebCryptoAvailable()
 
   return (
     <AdminPage isLoading={!configs}>

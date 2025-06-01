@@ -4,8 +4,8 @@ import { forwardRef, useState, useEffect, useImperativeHandle } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CaptchaInstance } from '@Components/Captcha'
 import { PowWorker } from '@Components/icon/PowWorker'
-import { showApiError } from '@Utils/ApiHelper'
 import workerScript from '@Utils/PowWorker'
+import { showErrorMsg } from '@Utils/Shared'
 import api, { HashPowChallenge } from '@Api'
 import classes from '@Styles/HashPow.module.css'
 
@@ -43,7 +43,7 @@ export const usePowChallenge = () => {
         })
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
       return null
     }
   }

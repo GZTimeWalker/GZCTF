@@ -27,8 +27,8 @@ import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { RequireRole } from '@Components/WithRole'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import { showApiError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
+import { showErrorMsg } from '@Utils/Shared'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Hooks/useConfig'
@@ -396,7 +396,7 @@ const CheatInfo: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
-      showApiError(err, t)
+      showErrorMsg(err, t)
     } finally {
       setDisabled(false)
     }

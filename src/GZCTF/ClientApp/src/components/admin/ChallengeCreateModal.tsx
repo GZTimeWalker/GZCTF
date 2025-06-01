@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import {
   ChallengeCategoryItem,
   ChallengeCategoryList,
@@ -54,7 +54,7 @@ export const ChallengeCreateModal: FC<ChallengeCreateModalProps> = (props) => {
       onAddChallenge(res.data)
       navigate(`/admin/games/${id}/challenges/${res.data.id}`)
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
