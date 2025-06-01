@@ -297,9 +297,9 @@
       },
       "platform": {
         "api_encryption": {
-          "description": "Encrypt sensitive data in some APIs",
-          "label": "Enable API Encryption",
-          "not_available": "Web Crypto API is not available"
+          "description": "일부 API에서 민감한 데이터 암호화",
+          "label": "API 암호화 활성화",
+          "not_available": "Web Crypto API를 사용할 수 없음"
         },
         "color": {
           "description": "플랫폼 색상 지정",
