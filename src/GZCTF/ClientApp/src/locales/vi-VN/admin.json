@@ -297,9 +297,9 @@
       },
       "platform": {
         "api_encryption": {
-          "description": "Encrypt sensitive data in some APIs",
-          "label": "Enable API Encryption",
-          "not_available": "Web Crypto API is not available"
+          "description": "Mã hóa dữ liệu nhạy cảm một số API",
+          "label": "Bật Mã hóa API",
+          "not_available": "API Web Crypto không khả dụng"
         },
         "color": {
           "description": "Màu sắc tùy chỉnh cho nền tảng.",
