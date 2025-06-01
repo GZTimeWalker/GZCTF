@@ -27,6 +27,7 @@ import { LogoBox } from '@Components/LogoBox'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { showErrorNotification } from '@Utils/ApiHelper'
+import { isWebCryptoAvailable } from '@Utils/Crypto'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
@@ -95,6 +96,7 @@ const Configs: FC = () => {
   }
 
   const colors = color && /^#[0-9A-F]{6}$/i.test(color) ? generateColors(color) : theme.colors.brand
+  const webCryptoAvailable = isWebCryptoAvailable()
 
   return (
     <AdminPage isLoading={!configs}>
@@ -239,10 +241,12 @@ const Configs: FC = () => {
             <Grid.Col span={1} className={misc.alignCenter}>
               <Switch
                 checked={globalConfig?.apiEncryption ?? false}
-                disabled={disabled}
+                disabled={disabled || !webCryptoAvailable}
+                readOnly
                 label={SwitchLabel(
                   t('admin.content.settings.platform.api_encryption.label'),
-                  t('admin.content.settings.platform.api_encryption.description')
+                  t('admin.content.settings.platform.api_encryption.description'),
+                  webCryptoAvailable ? null : t('admin.content.settings.platform.api_encryption.not_available')
                 )}
                 onChange={(e) =>
                   setGlobalConfig({

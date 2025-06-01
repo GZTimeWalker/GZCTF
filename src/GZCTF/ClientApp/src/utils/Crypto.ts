@@ -67,7 +67,7 @@ async function encryptData(plainTextBytes: Uint8Array, recipientPublicKeyBase64:
   return result
 }
 
-function isWebCryptoAvailable(): boolean {
+export function isWebCryptoAvailable(): boolean {
   return typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined'
 }
 
