@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useEditChallenge } from '@Hooks/useEdit'
 import api, { FileType, FlagCreateModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -54,7 +54,7 @@ export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
       mutate()
       props.onClose()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

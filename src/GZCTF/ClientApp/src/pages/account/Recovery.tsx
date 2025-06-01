@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
+import { tryGetErrorMsg } from '@Utils/ApiHelper'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -68,7 +69,7 @@ const Recovery: FC = () => {
         id: 'recovery-status',
         color: 'red',
         title: t('common.error.encountered'),
-        message: err.response.data.title,
+        message: tryGetErrorMsg(err, t),
         icon: <Icon path={mdiClose} size={1} />,
         loading: false,
         autoClose: true,

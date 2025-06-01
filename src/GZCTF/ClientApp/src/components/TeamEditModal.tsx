@@ -26,7 +26,7 @@ import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
+import { showApiError, tryGetErrorMsg } from '@Utils/ApiHelper'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -131,7 +131,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       setTeamInfo(null)
       props.onClose()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 
@@ -154,7 +154,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       )
       props.onClose()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 
@@ -178,7 +178,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         }
       )
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 
@@ -200,7 +200,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         }
       )
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 
@@ -216,7 +216,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 
@@ -286,7 +286,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         }
       )
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 

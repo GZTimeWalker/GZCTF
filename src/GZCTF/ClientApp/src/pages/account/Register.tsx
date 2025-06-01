@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
+import { tryGetErrorMsg } from '@Utils/ApiHelper'
 import { encryptApiData } from '@Utils/Crypto'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -93,7 +94,7 @@ const Register: FC = () => {
     try {
       const res = await api.account.accountRegister({
         userName: uname,
-        password: await encryptApiData(pwd, config.apiPublicKey),
+        password: await encryptApiData(t, pwd, config.apiPublicKey),
         email: email,
         challenge: token,
       })
@@ -118,7 +119,7 @@ const Register: FC = () => {
         id: 'register-status',
         color: 'red',
         title: t('common.error.encountered'),
-        message: `${err.response.data.title}`,
+        message: tryGetErrorMsg(err, t),
         icon: <Icon path={mdiClose} size={1} />,
         loading: false,
         autoClose: true,

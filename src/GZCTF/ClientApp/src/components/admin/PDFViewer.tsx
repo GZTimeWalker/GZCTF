@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import classes from '@Styles/PDFViewer.module.css'
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()
@@ -33,7 +33,7 @@ export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
           <Text>{t('admin.content.games.writeups.pdf_fallback')}</Text>
         </Center>
       }
-      onError={(e) => showErrorNotification(e, t)}
+      onError={(e) => showApiError(e, t)}
     >
       <Box
         className={classes.box}
@@ -48,7 +48,7 @@ export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
             onLoadSuccess={({ numPages }) => {
               setNumPages(numPages)
             }}
-            onLoadError={(e) => showErrorNotification(e, t)}
+            onLoadError={(e) => showApiError(e, t)}
           >
             <Stack ref={ref}>
               {Array.from(Array.from({ length: numPages }), (_, index) => (

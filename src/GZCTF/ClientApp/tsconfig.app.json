@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "baseUrl": ".",
+    "incremental": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "paths": {
+      "@Api": ["src/Api.ts"],
+      "@App": ["src/App"],
+      "@Components/*": ["src/components/*"],
+      "@Hooks/*": ["src/hooks/*"],
+      "@Pages/*": ["src/pages/*"],
+      "@Resources/*": ["src/resources/*"],
+      "@Styles/*": ["src/styles/components/*", "src/styles/shared/*", "src/styles/pages/*"],
+      "@Utils/*": ["src/utils/*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "types": []
+  },
+  "include": ["src"]
+}

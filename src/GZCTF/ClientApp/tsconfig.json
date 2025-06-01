@@ -1,33 +1,7 @@
 {
-  "compilerOptions": {
-    "allowJs": false,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "incremental": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noEmit": true,
-    "paths": {
-      "@Api": ["src/Api.ts"],
-      "@App": ["src/App"],
-      "@Components/*": ["src/components/*"],
-      "@Hooks/*": ["src/hooks/*"],
-      "@Pages/*": ["src/pages/*"],
-      "@Resources/*": ["src/resources/*"],
-      "@Styles/*": ["src/styles/components/*", "src/styles/shared/*", "src/styles/pages/*"],
-      "@Utils/*": ["src/utils/*"]
-    },
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext",
-    "types": ["vite/client"]
-  },
-  "exclude": ["node_modules"],
-  "include": ["vite.config.mts", "**/*.ts", "**/*.tsx"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

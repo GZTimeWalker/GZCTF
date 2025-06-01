@@ -7,7 +7,7 @@ import { Link } from 'react-router'
 import { PostCard } from '@Components/PostCard'
 import { WithNavBar } from '@Components/WithNavbar'
 import { RequireRole } from '@Components/WithRole'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUserRole } from '@Hooks/useUser'
@@ -49,7 +49,7 @@ const Posts: FC = () => {
       }
       api.info.mutateInfoGetLatestPosts()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

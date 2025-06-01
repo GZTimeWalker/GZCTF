@@ -74,6 +74,11 @@
     "check_input": "Please check your input",
     "empty": "Content can't be empty",
     "encountered": "An error has occurred",
+    "encryption_failed": {
+      "need_upgrade": "Please upgrade to Chrome 133+ / Firefox 130+ / Safari 17+ and try again",
+      "not_secure_contexts": "Please use HTTPS to enable Web Crypto API",
+      "title": "Data encryption failed"
+    },
     "file_invalid": {
       "message": "Please check file format and size",
       "title": "Failed to load file"

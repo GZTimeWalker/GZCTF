@@ -11,6 +11,7 @@ import {
   MantineColorsTuple,
   OverlayProps,
 } from '@mantine/core'
+import { showNotification } from '@mantine/notifications'
 import {
   mdiBomb,
   mdiBullhornOutline,
@@ -485,4 +486,13 @@ export const enum ErrorCodes {
    * 比赛已结束
    */
   GameEnded = 10002,
+}
+
+export const showErrorNotification = (title: string, message: string) => {
+  showNotification({
+    color: 'red',
+    title,
+    message,
+    icon: <Icon path={mdiClose} size={1} />,
+  })
 }

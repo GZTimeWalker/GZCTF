@@ -23,7 +23,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useEditChallenge } from '@Hooks/useEdit'
 import api, { FileType } from '@Api'
 import uploadClasses from '@Styles/Upload.module.css'
@@ -93,7 +93,7 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
         props.onClose()
       }
     } catch (err) {
-      showErrorNotification(err, t)
+      showApiError(err, t)
     } finally {
       setDisabled(false)
     }
