@@ -1722,9 +1722,7 @@ export interface ClientFlagContext {
 export interface FlagSubmitModel {
   /**
    * Flag content
-   * Fix: Prevent accidental submissions from the frontend (number/float/null) that may be incorrectly converted
    * @minLength 1
-   * @maxLength 127
    */
   flag: string;
 }

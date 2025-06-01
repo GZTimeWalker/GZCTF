@@ -7,6 +7,7 @@ using System.Threading.Channels;
 using FluentStorage;
 using FluentStorage.Blobs;
 using GZCTF.Middlewares;
+using GZCTF.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
@@ -844,6 +845,10 @@ public class GameController(
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId,
         [FromBody] FlagSubmitModel model, CancellationToken token)
     {
+        var answer = configService.DecryptApiData(model.Flag).Trim();
+        if (answer.Length > Limits.MaxFlagLength)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagTooLong)]));
+
         var context = await GetContextInfo(id, challengeId, token: token);
 
         if (context.Result is not null)
@@ -858,7 +863,7 @@ public class GameController(
             Participation = context.Participation!,
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUtc = DateTimeOffset.UtcNow,
-            Answer = configService.DecryptApiData(model.Flag).Trim()
+            Answer = answer
         };
 
         submission = await submissionRepository.AddSubmission(submission, token);

@@ -183,11 +183,14 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        const string data = "Hello, GZCTF!";
+        var data = new string('0', 127);
+        output.WriteLine($"原始数据：({data.Length})\n{data}");
         var encryptedData = CryptoUtils.EncryptData(Encoding.UTF8.GetBytes(data), publicKey);
-        output.WriteLine($"加密数据：\n{Base64.ToBase64String(encryptedData)}");
+        var base64EncryptedData = Base64.ToBase64String(encryptedData);
+        output.WriteLine($"加密数据：({base64EncryptedData.Length})\n{base64EncryptedData}");
         var decryptedData = CryptoUtils.DecryptData(encryptedData, privateKey);
-        output.WriteLine($"解密数据：\n{Encoding.UTF8.GetString(decryptedData)}");
+        var decryptedString = Encoding.UTF8.GetString(decryptedData);
+        output.WriteLine($"解密数据：({decryptedString.Length})\n{decryptedString}");
         Assert.Equal(data, Encoding.UTF8.GetString(decryptedData));
     }
 }

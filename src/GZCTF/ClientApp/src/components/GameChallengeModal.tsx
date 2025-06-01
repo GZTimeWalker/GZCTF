@@ -154,6 +154,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       })
     } catch (e) {
       showErrorNotification(e, t)
+      setDisabled(false)
     }
   }
 
