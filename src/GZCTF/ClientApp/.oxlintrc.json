@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "browser": true
+  },
+  "globals": {},
+  "overrides": [],
+  "plugins": [
+    "import",
+    "typescript",
+    "react"
+  ],
+  "rules": {
+    "react/exhaustive-deps": "allow"
+  },
+  "settings": {}
+}
