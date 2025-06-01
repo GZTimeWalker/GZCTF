@@ -27,7 +27,7 @@ import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { ScoreFunc } from '@Components/charts/ScoreFunc'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import {
   ChallengeCategoryItem,
   useChallengeCategoryLabelMap,
@@ -93,7 +93,7 @@ const GameChallengeEdit: FC = () => {
       mutate(res.data)
       mutateChals()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       if (!noFeedback) {
         setDisabled(false)
@@ -117,7 +117,7 @@ const GameChallengeEdit: FC = () => {
       )
       navigate(`/admin/games/${id}/challenges`)
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }
@@ -137,7 +137,7 @@ const GameChallengeEdit: FC = () => {
         mutate({ ...challenge, testContainer: res.data })
       }
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }
@@ -157,7 +157,7 @@ const GameChallengeEdit: FC = () => {
         mutate({ ...challenge, testContainer: undefined })
       }
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

@@ -4,6 +4,7 @@ using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ public class AccountController(
     IBlobRepository blobService,
     IHostEnvironment environment,
     ICaptchaExtension captcha,
+    IConfigService configService,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
@@ -57,11 +59,15 @@ public class AccountController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_AvailableEmailDomain),
                 accountPolicy.Value.EmailDomainList]));
 
+        var password = configService.DecryptApiData(model.Password);
+        if (string.IsNullOrWhiteSpace(password))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_PasswordRequired)]));
+
         var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
 
         user.UpdateByHttpContext(HttpContext);
 
-        var result = await userManager.CreateAsync(user, model.Password);
+        var result = await userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
         {
@@ -196,14 +202,18 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PasswordReset([FromBody] PasswordResetModel model)
     {
+        var password = configService.DecryptApiData(model.Password);
+        if (string.IsNullOrWhiteSpace(password))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_PasswordRequired)]));
+
         var user = await userManager.FindByEmailAsync(Codec.Base64.Decode(model.Email));
         if (user is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_InvalidEmail)]));
 
         user.UpdateByHttpContext(HttpContext);
 
-        var result =
-            await userManager.ResetPasswordAsync(user, Codec.Base64.Decode(model.RToken), model.Password);
+        var token = Codec.Base64.Encode(model.RToken);
+        var result = await userManager.ResetPasswordAsync(user, token, password);
 
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
@@ -276,6 +286,10 @@ public class AccountController(
         if (accountPolicy.Value.UseCaptcha && !await captcha.VerifyAsync(model, HttpContext, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_TokenValidationFailed)]));
 
+        var password = configService.DecryptApiData(model.Password);
+        if (string.IsNullOrWhiteSpace(password))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_PasswordRequired)]));
+
         var user = await userManager.FindByNameAsync(model.UserName);
         user ??= await userManager.FindByEmailAsync(model.UserName);
 
@@ -292,8 +306,7 @@ public class AccountController(
         user.UpdateByHttpContext(HttpContext);
 
         await signInManager.SignOutAsync();
-
-        var result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
+        var result = await signInManager.PasswordSignInAsync(user, password, true, false);
 
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse(
@@ -380,7 +393,16 @@ public class AccountController(
     public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
     {
         var user = await userManager.GetUserAsync(User);
-        var result = await userManager.ChangePasswordAsync(user!, model.Old, model.New);
+
+        var oldPassword = configService.DecryptApiData(model.Old);
+        if (string.IsNullOrWhiteSpace(oldPassword))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_OldPasswordRequired)]));
+
+        var newPassword = configService.DecryptApiData(model.New);
+        if (string.IsNullOrWhiteSpace(newPassword))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_NewPasswordRequired)]));
+
+        var result = await userManager.ChangePasswordAsync(user!, oldPassword, newPassword);
 
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);

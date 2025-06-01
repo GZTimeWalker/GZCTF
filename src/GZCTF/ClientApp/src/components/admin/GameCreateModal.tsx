@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import api, { GameInfoModel } from '@Api'
 
 interface GameCreateModalProps extends ModalProps {
@@ -52,7 +52,7 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
       onAddGame(res.data)
       navigate(`/admin/games/${res.data.id}/info`)
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
       setDisabled(false)
     }
   }

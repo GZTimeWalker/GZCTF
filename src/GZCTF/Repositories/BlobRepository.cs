@@ -18,7 +18,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     public async Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
-        await using var tmp = GetTempStream(file.Length);
+        await using Stream tmp = BufferHelper.GetTempStream(file.Length);
 
         logger.SystemLog(
             StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation),
@@ -39,9 +39,8 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
 
         try
         {
-            await using Stream webpStream = new MemoryStream();
-
-            await using (var tmp = GetTempStream(file.Length))
+            await using Stream webpStream = BufferHelper.GetTempStream(8192, "image");
+            await using (Stream tmp = BufferHelper.GetTempStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
@@ -157,14 +156,6 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         }
 
         Context.Remove(attachment);
-    }
-
-    static Stream GetTempStream(long bufferSize)
-    {
-        if (bufferSize <= 16 * 1024 * 1024)
-            return new MemoryStream();
-
-        return File.Create(Path.GetTempFileName(), 4096, FileOptions.DeleteOnClose);
     }
 
     async Task<LocalFile> StoreBlob(string fileName, Stream contentStream,

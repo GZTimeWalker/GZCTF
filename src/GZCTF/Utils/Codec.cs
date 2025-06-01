@@ -119,9 +119,9 @@ public static partial class Codec
                 return [];
             }
 
-            Span<char> buffer = new char[encoded.Length * 4 / 3 + 8];
+            char[] buffer = new char[encoded.Length * 4 / 3 + 8];
             return Convert.TryToBase64Chars(encoded, buffer, out var charsWritten)
-                ? Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten].ToArray())
+                ? Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten])
                 : [];
         }
 
@@ -130,7 +130,7 @@ public static partial class Codec
             if (str is null)
                 return [];
 
-            Span<byte> buffer = new byte[str.Length * 3 / 4 + 8];
+            Span<byte> buffer = stackalloc byte[str.Length * 3 / 4 + 8];
 
             return Convert.TryFromBase64String(str, buffer, out var bytesWritten)
                 ? buffer[..bytesWritten].ToArray()

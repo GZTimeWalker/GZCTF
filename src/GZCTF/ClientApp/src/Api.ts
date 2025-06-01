@@ -364,6 +364,8 @@ export interface GlobalConfig {
   footerInfo?: string | null;
   /** Custom theme color */
   customTheme?: string | null;
+  /** Use asymmetric encryption for API requests */
+  apiEncryption?: boolean;
   /** Platform logo hash */
   logoHash?: string | null;
   /** Platform favicon hash */
@@ -1720,9 +1722,7 @@ export interface ClientFlagContext {
 export interface FlagSubmitModel {
   /**
    * Flag content
-   * Fix: Prevent accidental submissions from the frontend (number/float/null) that may be incorrectly converted
    * @minLength 1
-   * @maxLength 127
    */
   flag: string;
 }
@@ -1785,6 +1785,8 @@ export interface ClientConfig {
   footerInfo?: string | null;
   /** Custom theme color */
   customTheme?: string | null;
+  /** The public key used for API requests */
+  apiPublicKey?: string | null;
   /** Platform logo URL */
   logoUrl?: string | null;
   /** Container port mapping type */

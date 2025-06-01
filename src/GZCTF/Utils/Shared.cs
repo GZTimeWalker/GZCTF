@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Channels;
+using Microsoft.IO;
 
 namespace GZCTF.Utils;
 
@@ -12,6 +13,21 @@ public static class ChannelService
         services.AddSingleton(channel.Reader);
         services.AddSingleton(channel.Writer);
     }
+}
+
+internal static class BufferHelper
+{
+    const int DefaultBufferSize = 4096;
+    private static readonly RecyclableMemoryStreamManager MemoryStreamManager = new();
+
+    internal static Stream GetTempStream(long? bufferSize, string? tag = null) =>
+        bufferSize switch
+        {
+            0 => MemoryStreamManager.GetStream(),
+            null => MemoryStreamManager.GetStream(tag, DefaultBufferSize),
+            <= 16 * 1024 * 1024 => MemoryStreamManager.GetStream(tag, (int)bufferSize),
+            _ => File.Create(Path.GetTempFileName(), DefaultBufferSize, FileOptions.DeleteOnClose)
+        };
 }
 
 /// <summary>
@@ -96,7 +112,10 @@ public class ArrayResponse<T>(T[] array, int? tot = null)
     /// Data length
     /// </summary>
     [Required]
-    public int Length => Data.Length;
+    public int Length
+    {
+        get => Data.Length;
+    }
 
     /// <summary>
     /// Total length
@@ -150,17 +169,38 @@ public readonly struct BloodBonus(long init = BloodBonus.DefaultValue)
         return new(value);
     }
 
-    public long FirstBlood => (Val >> 20) & 0x3ff;
+    public long FirstBlood
+    {
+        get => (Val >> 20) & 0x3ff;
+    }
 
-    public float FirstBloodFactor => FirstBlood / 1000f + 1.0f;
+    public float FirstBloodFactor
+    {
+        get => FirstBlood / 1000f + 1.0f;
+    }
 
-    public long SecondBlood => (Val >> 10) & 0x3ff;
+    public long SecondBlood
+    {
+        get => (Val >> 10) & 0x3ff;
+    }
 
-    public float SecondBloodFactor => SecondBlood / 1000f + 1.0f;
+    public float SecondBloodFactor
+    {
+        get => SecondBlood / 1000f + 1.0f;
+    }
 
-    public long ThirdBlood => Val & 0x3ff;
+    public long ThirdBlood
+    {
+        get => Val & 0x3ff;
+    }
 
-    public float ThirdBloodFactor => ThirdBlood / 1000f + 1.0f;
+    public float ThirdBloodFactor
+    {
+        get => ThirdBlood / 1000f + 1.0f;
+    }
 
-    public bool NoBonus => Val == 0;
+    public bool NoBonus
+    {
+        get => Val == 0;
+    }
 }

@@ -13,6 +13,7 @@ import { mdiDownload } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
+import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
 import { WriteupInfoModel } from '@Api'
 import classes from '@Styles/HoverCard.module.css'
@@ -40,11 +41,11 @@ export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, .
       }}
     >
       <Group wrap="nowrap" gap={3} justify="space-between">
-        <Group gap="sm" wrap="nowrap" justify="space-between">
+        <Group gap="sm" wrap="nowrap" justify="space-between" maw="calc(100% - 2rem)">
           <Avatar alt="avatar" src={writeup.team?.avatar} size="md">
             {writeup.team?.name?.slice(0, 1)}
           </Avatar>
-          <Stack gap={0}>
+          <Stack gap={0} justify="space-between" maw="calc(100% - 3rem)">
             <Text size="0.8rem" lineClamp={1} c="dimmed">
               #{writeup.team?.id}
             </Text>
@@ -56,7 +57,7 @@ export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, .
             </Text>
           </Stack>
         </Group>
-        <ActionIcon onClick={() => window.open(writeup.url, '_blank')}>
+        <ActionIcon component={Link} target="_blank" to={writeup.url ?? '#'}>
           <Icon path={mdiDownload} size={1} />
         </ActionIcon>
       </Group>

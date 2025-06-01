@@ -607,7 +607,7 @@ public partial class TeamController(
 
         Ed25519PublicKeyParameters publicKey = new(pk, 0);
 
-        if (DigitalSignature.VerifySignature($"GZCTF_TEAM_{id}", sign, publicKey, SignAlgorithm.Ed25519))
+        if (CryptoUtils.VerifySignature($"GZCTF_TEAM_{id}", sign, publicKey, SignAlgorithm.Ed25519))
             return Ok();
 
         return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));

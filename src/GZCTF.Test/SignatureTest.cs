@@ -31,10 +31,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -70,10 +70,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -99,10 +99,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -128,10 +128,10 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
@@ -157,13 +157,40 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine("公钥：");
         output.WriteLine(publicKey.Exponent.ToString());
 
-        var sign = DigitalSignature.GenerateSignature(s, privateKey, sAlgorithm);
+        var sign = CryptoUtils.GenerateSignature(s, privateKey, sAlgorithm);
         output.WriteLine($"签名：\n{sign}");
 
-        var verified = DigitalSignature.VerifySignature(s, sign, publicKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(s, sign, publicKey, sAlgorithm);
 
         output.WriteLine("验证结果：");
         output.WriteLine(verified ? "Signature verified" : "Signature not verified");
         Assert.True(verified);
+    }
+
+    [Fact]
+    public void TestEncryptData()
+    {
+        SecureRandom sr = new();
+        X25519KeyPairGenerator kpg = new();
+        kpg.Init(new X25519KeyGenerationParameters(sr));
+
+        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var privateKey = (X25519PrivateKeyParameters)kp.Private;
+        var publicKey = (X25519PublicKeyParameters)kp.Public;
+
+        output.WriteLine("私钥：");
+        output.WriteLine(Base64.ToBase64String(privateKey.GetEncoded()));
+        output.WriteLine("公钥：");
+        output.WriteLine(Base64.ToBase64String(publicKey.GetEncoded()));
+
+        var data = new string('0', 127);
+        output.WriteLine($"原始数据：({data.Length})\n{data}");
+        var encryptedData = CryptoUtils.EncryptData(Encoding.UTF8.GetBytes(data), publicKey);
+        var base64EncryptedData = Base64.ToBase64String(encryptedData);
+        output.WriteLine($"加密数据：({base64EncryptedData.Length})\n{base64EncryptedData}");
+        var decryptedData = CryptoUtils.DecryptData(encryptedData, privateKey);
+        var decryptedString = Encoding.UTF8.GetString(decryptedData);
+        output.WriteLine($"解密数据：({decryptedString.Length})\n{decryptedString}");
+        Assert.Equal(data, Encoding.UTF8.GetString(decryptedData));
     }
 }

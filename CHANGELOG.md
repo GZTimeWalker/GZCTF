@@ -3,7 +3,37 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [1.3.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.6..v1.3.0) - 2025-04-21
+## [1.3.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.3.1..v1.3.2) - 2025-05-05
+
+### ⛰️ Features
+
+- retry on failure for database sink - ([e13025](https://github.com/GZTimeWalker/GZCTF/commit/e13025)) by **Steven He**
+- only save traffic with data - ([d6c7cc](https://github.com/GZTimeWalker/GZCTF/commit/d6c7cc)) by **GZTime**
+- copy to temp buffer when stream not seekable - ([9dfdee](https://github.com/GZTimeWalker/GZCTF/commit/9dfdee)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(cronjob)** remove duplicated log - ([3d50c0](https://github.com/GZTimeWalker/GZCTF/commit/3d50c0)) by **Aether Chen**
+- **(proxy)** decrease connection count - ([6e5fce](https://github.com/GZTimeWalker/GZCTF/commit/6e5fce)) by **GZTime**
+- **(review)** add line clamp to userName text to prevent overflow - ([21dbca](https://github.com/GZTimeWalker/GZCTF/commit/21dbca)) by **GZTime**
+- **(writeup)** limit text width to avoid overflow - ([3aa9e7](https://github.com/GZTimeWalker/GZCTF/commit/3aa9e7)) by **GZTime**
+- clear inserted logs correctly - ([6be8a5](https://github.com/GZTimeWalker/GZCTF/commit/6be8a5)) by **Steven He**
+
+---
+## [1.3.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.3.0..v1.3.1) - 2025-04-28
+
+### ⛰️ Features
+
+- **(proxy)** fix potential problem - ([f608df](https://github.com/GZTimeWalker/GZCTF/commit/f608df)) by **GZTime**
+- **(wsrx)** only show the wsrx icon when platform proxy enabled - ([d9d2a5](https://github.com/GZTimeWalker/GZCTF/commit/d9d2a5)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(badge)** text overflow in table - ([b23d78](https://github.com/GZTimeWalker/GZCTF/commit/b23d78)) by **GZTime**
+- **(wsrx)** ensure proper updates on options change - ([13d4ce](https://github.com/GZTimeWalker/GZCTF/commit/13d4ce)) by **GZTime**
+
+---
+## [1.3.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.6..v1.3.0) - 2025-04-22
 
 ### ⛰️ Features
 
@@ -16,6 +46,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### 🐛 Bug Fixes
 
 - **(instance)** open the right url - ([d556e3](https://github.com/GZTimeWalker/GZCTF/commit/d556e3)) by **GZTime**
+- **(wsrx)** cannot open page on windows - ([54e809](https://github.com/GZTimeWalker/GZCTF/commit/54e809)) by **GZTime**
 
 ---
 ## [1.2.6](https://github.com/GZTimeWalker/GZCTF/compare/v1.2.5..v1.2.6) - 2025-04-08

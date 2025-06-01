@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
+import { tryGetErrorMsg } from '@Utils/ApiHelper'
+import { encryptApiData } from '@Utils/Crypto'
+import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUser } from '@Hooks/useUser'
 import api from '@Api'
@@ -24,6 +27,7 @@ const Login: FC = () => {
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
+  const { config } = useConfig()
 
   const { t } = useTranslation()
 
@@ -78,7 +82,7 @@ const Login: FC = () => {
     try {
       await api.account.accountLogIn({
         userName: uname,
-        password: pwd,
+        password: await encryptApiData(t, pwd, config.apiPublicKey),
         challenge: token,
       })
 
@@ -99,7 +103,7 @@ const Login: FC = () => {
         id: 'login-status',
         color: 'red',
         title: t('common.error.encountered'),
-        message: err.response.data.title,
+        message: tryGetErrorMsg(err, t),
         icon: <Icon path={mdiClose} size={1} />,
         autoClose: true,
         loading: false,

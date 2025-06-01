@@ -6,8 +6,10 @@ import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChallengeModal } from '@Components/ChallengeModal'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
+import { encryptApiData } from '@Utils/Crypto'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
+import { useConfig } from '@Hooks/useConfig'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
@@ -28,6 +30,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     refreshInterval: 120 * 1000,
   })
 
+  const { config } = useConfig()
   const { t } = useTranslation()
 
   const wrongFlagHints = t('challenge.content.wrong_flag_hints', {
@@ -62,18 +65,16 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }
   }
 
-  const onDestroy = async () => {
-    if (!challengeId || disabled) return
-    setDisabled(true)
-
+  const requestDestroy = async () => {
     try {
       await mutate()
+
       if (!challenge?.context?.instanceEntry) return
 
       await api.game.gameDeleteContainer(gameId, challengeId)
@@ -92,10 +93,17 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showErrorNotification(e, t)
-    } finally {
-      setDisabled(false)
+      showApiError(e, t)
     }
+  }
+
+  const onDestroy = async () => {
+    if (!challengeId || disabled) return
+    setDisabled(true)
+
+    await requestDestroy()
+
+    setDisabled(false)
   }
 
   const onExtend = async () => {
@@ -112,7 +120,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         },
       })
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }
@@ -132,7 +140,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
 
     try {
       const res = await api.game.gameSubmit(gameId, challengeId, {
-        flag,
+        flag: await encryptApiData(t, flag.trim(), config.apiPublicKey),
       })
       setSubmitId(res.data)
       notifications.clean()
@@ -145,7 +153,8 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         autoClose: false,
       })
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
+      setDisabled(false)
     }
   }
 
@@ -165,7 +174,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       } catch (err) {
         setDisabled(false)
         setFlag('')
-        showErrorNotification(err, t)
+        showApiError(err, t)
         clearInterval(polling)
       }
     }, 500)
@@ -186,8 +195,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         autoClose: 8000,
         loading: false,
       })
-      if (isDynamic && challenge.context?.instanceEntry) await onDestroy()
-      await mutate()
+      if (isDynamic && challenge.context?.instanceEntry) await requestDestroy()
       props.onClose()
     } else if (data === AnswerResult.WrongAnswer) {
       updateNotification({

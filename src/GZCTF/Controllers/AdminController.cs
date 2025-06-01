@@ -81,6 +81,12 @@ public class AdminController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateConfigs([FromBody] ConfigEditModel model, CancellationToken token)
     {
+        // handle api encryption config
+        var global = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
+        if (!global.ApiEncryption && model.GlobalConfig?.ApiEncryption is true)
+            await configService.UpdateApiEncryptionKey(token);
+
+        // save all config properties
         foreach (var prop in typeof(ConfigEditModel).GetProperties())
         {
             var value = prop.GetValue(model);

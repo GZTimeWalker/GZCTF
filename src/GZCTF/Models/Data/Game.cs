@@ -175,7 +175,7 @@ public class Game
         else
             privateKey = new(Codec.Xor(Codec.Base64.DecodeToBytes(PrivateKey), xorKey), 0);
 
-        return DigitalSignature.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
+        return CryptoUtils.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
     }
 
     internal bool IsValidDivision(string? division)

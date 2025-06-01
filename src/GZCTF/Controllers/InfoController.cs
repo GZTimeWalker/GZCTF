@@ -23,11 +23,9 @@ public class InfoController(
     IDistributedCache cache,
     ICaptchaExtension captcha,
     IPostRepository postRepository,
+    IServiceProvider serviceProvider,
     ILogger<InfoController> logger,
     IOptionsSnapshot<CaptchaConfig> captchaConfig,
-    IOptionsSnapshot<GlobalConfig> globalConfig,
-    IOptionsSnapshot<ContainerPolicy> containerPolicy,
-    IOptionsSnapshot<ContainerProvider> containerProvider,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
@@ -102,8 +100,7 @@ public class InfoController(
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
-                return Task.FromResult(ClientConfig.FromConfigs(globalConfig.Value, containerPolicy.Value,
-                    containerProvider.Value));
+                return Task.FromResult(ClientConfig.FromServiceProvider(serviceProvider));
             }, token);
 
         return Ok(data);

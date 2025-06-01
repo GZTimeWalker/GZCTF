@@ -68,7 +68,7 @@ public class Server
 
     internal static void ExitWithFatalMessage(string msg)
     {
-        Log.Logger.Fatal(msg);
+        Log.Logger.Fatal("{msg}", msg);
         Thread.Sleep(30000);
         Environment.Exit(1);
     }

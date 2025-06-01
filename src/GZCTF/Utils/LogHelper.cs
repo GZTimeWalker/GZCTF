@@ -172,8 +172,8 @@ public static class LogHelper
                 hooks: new ArchiveHooks(CompressionLevel.Optimal,
                     Path.Combine(PathHelper.Base, PathHelper.Logs, "archive", "{UtcDate:yyyy-MM}"))
             ))
-            .WriteTo.Database(serviceProvider)
-            .WriteTo.SignalR(serviceProvider);
+            .WriteTo.SignalR(serviceProvider)
+            .WriteTo.Database(serviceProvider);
 
         if (configuration.GetSection("Logging").GetSection("Loki") is not { } lokiSection || !lokiSection.Exists())
             return loggerConfig.CreateLogger();
