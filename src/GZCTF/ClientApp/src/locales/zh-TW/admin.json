@@ -297,8 +297,9 @@
       },
       "platform": {
         "api_encryption": {
-          "description": "Encrypt sensitive data in some APIs",
-          "label": "Enable API Encryption"
+          "description": "在一些 API 中加密敏感數據",
+          "label": "啟用 API 加密",
+          "not_available": "Web Crypto API 不可用"
         },
         "color": {
           "description": "自定義平臺顏色，用於生成主題色盤",
