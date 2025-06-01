@@ -6,7 +6,7 @@ import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useEditChallenge } from '@Hooks/useEdit'
 import api from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -50,7 +50,7 @@ export const FlagCreateModal: FC<ModalProps> = (props) => {
       setFlags('')
       props.onClose()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

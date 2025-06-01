@@ -26,7 +26,7 @@ import { ColorPreview } from '@Components/ColorPreview'
 import { LogoBox } from '@Components/LogoBox'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { isWebCryptoAvailable } from '@Utils/Crypto'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
@@ -74,7 +74,7 @@ const Configs: FC = () => {
       mutateConfig({ ...conf.globalConfig, ...conf.containerPolicy })
       mutateCaptchaConfig()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }
@@ -89,7 +89,7 @@ const Configs: FC = () => {
       mutate({ ...configs, globalConfig: { ...globalConfig, faviconHash: '' } })
       mutateConfig({ ...configs, logoUrl: '' })
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

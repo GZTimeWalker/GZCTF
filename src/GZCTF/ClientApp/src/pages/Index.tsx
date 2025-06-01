@@ -9,7 +9,7 @@ import { RecentGame } from '@Components/RecentGame'
 import { WithNavBar } from '@Components/WithNavbar'
 import { MobilePostCard } from '@Components/mobile/PostCard'
 import { RecentGameCarousel } from '@Components/mobile/RecentGameCarousel'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useRecentGames } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -48,7 +48,7 @@ const Home: FC = () => {
       }
       api.info.mutateInfoGetPosts()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { encryptApiData } from '@Utils/Crypto'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -55,7 +55,7 @@ const Reset: FC = () => {
       await api.account.accountPasswordReset({
         rToken: token,
         email: email,
-        password: await encryptApiData(pwd, config.apiPublicKey),
+        password: await encryptApiData(t, pwd, config.apiPublicKey),
       })
       showNotification({
         color: 'teal',
@@ -65,7 +65,7 @@ const Reset: FC = () => {
       })
       navigate('/account/login')
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

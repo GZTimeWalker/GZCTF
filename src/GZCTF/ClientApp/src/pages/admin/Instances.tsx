@@ -29,7 +29,7 @@ import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { AdminPage } from '@Components/admin/AdminPage'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { useChallengeCategoryLabelMap, getProxyUrl } from '@Utils/Shared'
 import api, { ChallengeModel, ChallengeCategory, TeamModel } from '@Api'
@@ -144,7 +144,7 @@ const Instances: FC = () => {
         })
       }
     } catch (e: any) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }

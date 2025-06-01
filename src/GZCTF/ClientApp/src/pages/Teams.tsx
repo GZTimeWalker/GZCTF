@@ -23,7 +23,7 @@ import { TeamCreateModal } from '@Components/TeamCreateModal'
 import { TeamEditModal } from '@Components/TeamEditModal'
 import { WithNavBar } from '@Components/WithNavbar'
 import { WithRole } from '@Components/WithRole'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useTeams, useUser } from '@Hooks/useUser'
@@ -80,7 +80,7 @@ const Teams: FC = () => {
       })
       mutateTeams()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setJoinTeamCode('')
       setJoinOpened(false)

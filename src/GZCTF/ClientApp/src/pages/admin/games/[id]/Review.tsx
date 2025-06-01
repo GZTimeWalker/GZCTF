@@ -39,7 +39,7 @@ import { useNavigate, useParams } from 'react-router'
 import { DivisionEditModal } from '@Components/admin/DivisionEditModal'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
 import api, { ParticipationEditModel, ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
@@ -247,7 +247,7 @@ const GameTeamReview: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (err: any) {
-      showErrorNotification(err, t)
+      showApiError(err, t)
     } finally {
       setDisabled(false)
     }
@@ -273,7 +273,7 @@ const GameTeamReview: FC = () => {
         const res = await api.game.gameParticipations(numId)
         setParticipations(res.data)
       } catch (err: any) {
-        showErrorNotification(err, t)
+        showApiError(err, t)
       }
     }
 

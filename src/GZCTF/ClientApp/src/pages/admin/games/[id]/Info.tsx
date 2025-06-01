@@ -28,7 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
-import { showErrorNotification, tryGetErrorMsg } from '@Utils/ApiHelper'
+import { showApiError, tryGetErrorMsg } from '@Utils/ApiHelper'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
@@ -140,7 +140,7 @@ const GameInfoEdit: FC = () => {
       mutate()
       api.game.mutateGameGames()
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     } finally {
       setDisabled(false)
     }
@@ -158,7 +158,7 @@ const GameInfoEdit: FC = () => {
       })
       navigate('/admin/games')
     } catch (e) {
-      showErrorNotification(e, t)
+      showApiError(e, t)
     }
   }
 

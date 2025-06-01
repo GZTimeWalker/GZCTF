@@ -22,7 +22,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Markdown } from '@Components/MarkdownRenderer'
-import { showErrorNotification } from '@Utils/ApiHelper'
+import { showApiError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { HunamizeSize } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
@@ -79,7 +79,7 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, writeu
       mutate()
       setDisabled(false)
     } catch (err) {
-      showErrorNotification(err, t)
+      showApiError(err, t)
     } finally {
       setProgress(0)
       setDisabled(false)
