@@ -74,6 +74,11 @@
     "check_input": "Veuillez vérifier votre saisie",
     "empty": "Le contenu ne peut pas être vide",
     "encountered": "Une erreur s'est produite",
+    "encryption_failed": {
+      "need_upgrade": "Veuillez mettre à jour vers Chrome 133+ / Firefox 130+ / Safari 17+ et réessayer",
+      "not_secure_contexts": "Veuillez utiliser HTTPS pour activer l'API Web Crypto",
+      "title": "Échec du chiffrement des données"
+    },
     "file_invalid": {
       "message": "Veuillez vérifier le format et la taille du fichier",
       "title": "Échec du chargement du fichier"

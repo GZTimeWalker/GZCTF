@@ -90,6 +90,10 @@
           "description": "Alle dynamischen Anhänge werden unter diesem Dateinamen heruntergeladen",
           "label": "Globaler Anhangsname"
         },
+        "blood_bonus": {
+          "description": "Blutbonus für diese Herausforderung aktivieren",
+          "label": "Blutbonus"
+        },
         "bonus": {
           "description": "Der Triple-Blut-Bonus bezieht sich auf die zusätzlichen Punkte, die vergeben werden, wenn eine Herausforderung von den ersten drei Teams gelöst wird. Jedes Team kann einen Punktebonus basierend auf den aktuellen Punkten der Herausforderung erhalten. Der Bonus wird in Form eines festen Prozentsatzes zur Punktzahl des Teams hinzugefügt.",
           "first_blood": "First Blood Reward (%)",
@@ -106,10 +110,6 @@
         "description": "Beschreibung",
         "difficulty": "Schwierigkeitsgrad",
         "disable": "Sind Sie sicher, dass Sie die Herausforderung {{name}} deaktivieren möchten?",
-        "blood_bonus": {
-          "description": "Blutbonus für diese Herausforderung aktivieren",
-          "label": "Blutbonus"
-        },
         "empty": {
           "description": "Klicken Sie oben rechts, um die erste Herausforderung zu erstellen",
           "title": "Autsch! Dieses Spiel hat noch keine Herausforderung."
@@ -296,6 +296,11 @@
         "title": "Container-Richtlinie"
       },
       "platform": {
+        "api_encryption": {
+          "description": "Die Verschlüsselung sensibler Daten in einigen APIs",
+          "label": "API-Verschlüsselung aktivieren",
+          "not_available": "Web-Crypto-API ist nicht verfügbar"
+        },
         "color": {
           "description": "Benutzerdefinierte Farbe für die Plattform",
           "label": "Plattformfarbe"

@@ -74,6 +74,11 @@
     "check_input": "잘못된 입력입니다",
     "empty": "내용이 반드시 입력되어야 합니다",
     "encountered": "에러가 발생했습니다",
+    "encryption_failed": {
+      "need_upgrade": "Chrome 133+ / Firefox 130+ / Safari 17+로 업그레이드한 후 다시 시도해 주세요.",
+      "not_secure_contexts": "Web Crypto API를 사용하려면 HTTPS를 사용해 주세요.",
+      "title": "데이터 암호화에 실패했습니다."
+    },
     "file_invalid": {
       "message": "파일의 포맷 또는 크기가 잘못되었습니다",
       "title": "파일 불러오기 실패"
