@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import api, { GameNotice } from '@Api'
 
 interface GameNoticeEditModalProps extends ModalProps {
@@ -58,7 +58,7 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
       mutateGameNotice(res.data)
       modalProps.onClose()
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
       setContent('')

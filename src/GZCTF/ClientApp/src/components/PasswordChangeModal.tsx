@@ -7,8 +7,8 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { StrengthPasswordInput } from '@Components/StrengthPasswordInput'
-import { showApiError } from '@Utils/ApiHelper'
 import { encryptApiData } from '@Utils/Crypto'
+import { showErrorMsg } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import api from '@Api'
 
@@ -45,7 +45,7 @@ export const PasswordChangeModal: FC<ModalProps> = (props) => {
         api.account.accountLogOut()
         navigate('/account/login')
       } catch (e) {
-        showApiError(e, t)
+        showErrorMsg(e, t)
       }
     } else {
       showNotification({

@@ -24,8 +24,8 @@ import { GameJoinModal } from '@Components/GameJoinModal'
 import { GameProgress } from '@Components/GameProgress'
 import { Markdown } from '@Components/MarkdownRenderer'
 import { WithNavBar } from '@Components/WithNavbar'
-import { showApiError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
+import { showErrorMsg } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { getGameStatus, useGame } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -104,7 +104,7 @@ const GameDetail: FC = () => {
 
   useEffect(() => {
     if (error) {
-      showApiError(error, t)
+      showErrorMsg(error, t)
       navigate('/games')
     }
   }, [error, navigate])
@@ -135,7 +135,7 @@ const GameDetail: FC = () => {
       })
       mutate()
     } catch (err) {
-      return showApiError(err, t)
+      return showErrorMsg(err, t)
     }
   }
 
@@ -151,7 +151,7 @@ const GameDetail: FC = () => {
       })
       mutate()
     } catch (err) {
-      return showApiError(err, t)
+      return showErrorMsg(err, t)
     }
   }
 

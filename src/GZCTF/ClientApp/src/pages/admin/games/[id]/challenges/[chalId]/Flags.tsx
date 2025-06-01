@@ -31,7 +31,7 @@ import { AttachmentUploadModal } from '@Components/admin/AttachmentUploadModal'
 import { FlagCreateModal } from '@Components/admin/FlagCreateModal'
 import { FlagEditPanel } from '@Components/admin/FlagEditPanel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Hooks/useEdit'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
@@ -84,7 +84,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         })
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -134,7 +134,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         })
       }
     } catch (err) {
-      showApiError(err, t)
+      showErrorMsg(err, t)
     } finally {
       setDisabled(false)
     }
@@ -155,7 +155,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -180,7 +180,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
         })
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }
@@ -477,7 +477,7 @@ const GameChallengeEdit: FC = () => {
         })
       }
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     }
   }
 

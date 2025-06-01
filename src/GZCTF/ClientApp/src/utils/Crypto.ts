@@ -1,4 +1,4 @@
-import { showErrorNotification } from '@Utils/Shared'
+import { ClientError } from '@Utils/Shared'
 
 const INVALID_DATA = 'Data to encrypt cannot be empty'
 const INVALID_KEY = 'Invalid public key'
@@ -71,7 +71,7 @@ async function encryptData(plainTextBytes: Uint8Array, recipientPublicKeyBase64:
   return result
 }
 
-export const isWebCryptoAvailable = (): boolean => !!window.crypto?.subtle
+export const webCryptoAvailable = !!window.crypto?.subtle
 
 export async function encryptApiData(
   t: (key: string) => string,
@@ -82,10 +82,11 @@ export async function encryptApiData(
     return plainText
   }
 
-  if (!isWebCryptoAvailable()) {
+  if (!webCryptoAvailable) {
+    const title = t('common.error.encryption_failed.title')
     const message = t('common.error.encryption_failed.not_secure_contexts')
-    showErrorNotification(t('common.error.encryption_failed.title'), message)
-    throw new Error(message)
+    console.error(title, message)
+    throw new ClientError(title, message)
   }
 
   try {
@@ -95,8 +96,7 @@ export async function encryptApiData(
   } catch (error) {
     const title = t('common.error.encryption_failed.title')
     const message = t('common.error.encryption_failed.need_upgrade')
-    console.error(message, error)
-    showErrorNotification(title, message)
-    throw error
+    console.error(title, message, error)
+    throw new ClientError(title, message)
   }
 }

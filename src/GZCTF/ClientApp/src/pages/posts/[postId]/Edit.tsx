@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { WithNavBar } from '@Components/WithNavbar'
 import { WithRole } from '@Components/WithRole'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import api, { PostEditModel, Role } from '@Api'
 
@@ -82,7 +82,7 @@ const PostEdit: FC = () => {
         setHasChanged(false)
         navigate(`/posts/${res.data}/edit`)
       } catch (e) {
-        showApiError(e, t)
+        showErrorMsg(e, t)
       } finally {
         setDisabled(false)
       }
@@ -101,7 +101,7 @@ const PostEdit: FC = () => {
         })
         setHasChanged(false)
       } catch (e) {
-        showApiError(e, t)
+        showErrorMsg(e, t)
       } finally {
         setDisabled(false)
       }
@@ -118,7 +118,7 @@ const PostEdit: FC = () => {
       api.info.mutateInfoGetLatestPosts()
       navigate('/posts')
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

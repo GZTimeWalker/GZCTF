@@ -18,7 +18,7 @@ import { mdiCheck, mdiLockOutline, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showApiError } from '@Utils/ApiHelper'
+import { showErrorMsg } from '@Utils/Shared'
 import api, { AdminTeamModel, TeamInfoModel } from '@Api'
 
 interface TeamEditModalProps extends ModalProps {
@@ -59,7 +59,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
       })
       modalProps.onClose()
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

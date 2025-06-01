@@ -24,8 +24,8 @@ import { useParams } from 'react-router'
 import { ScrollSelect } from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
-import { showApiError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
+import { showErrorMsg } from '@Utils/Shared'
 import { HunamizeSize } from '@Utils/Shared'
 import api, { FileRecord } from '@Api'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -99,7 +99,7 @@ const Traffic: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       mutateTeams()
       mutateTraffic()
@@ -120,7 +120,7 @@ const Traffic: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
     } catch (e) {
-      showApiError(e, t)
+      showErrorMsg(e, t)
     } finally {
       mutateTraffic()
       mutateTeams()

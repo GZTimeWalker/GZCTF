@@ -2,7 +2,6 @@ import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { AxiosError, AxiosResponse } from 'axios'
-import { showErrorNotification } from '@Utils/Shared'
 import { ContentType } from '@Api'
 
 export const handleAxiosError = async (err: unknown) => {
@@ -87,18 +86,4 @@ export const downloadBlob = async (
   } finally {
     setDisabled(false)
   }
-}
-
-export const tryGetErrorMsg = (err: any, t: (key: string) => string) => {
-  return err?.response?.data?.title ?? err?.title ?? err ?? t('common.error.unknown')
-}
-
-export const showApiError = (err: any, t: (key: string) => string) => {
-  if (err?.response?.status === 429) {
-    showErrorNotification(t('common.error.try_later'), tryGetErrorMsg(err, t))
-    return
-  }
-
-  console.warn(err)
-  showErrorNotification(t('common.error.encountered'), tryGetErrorMsg(err, t))
 }
