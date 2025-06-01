@@ -51,11 +51,11 @@ jobs:
 
       - name: Publish project
         run: |
-          dotnet publish "GZCTF.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
+          dotnet publish "GZCTF.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained
 
           # ignore arm64 for non-release tags
           if [ "${{ env.RELEASE }}" = "true" ]; then
-            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true /p:EFOptimizeContext=false
+            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:EFOptimizeContext=false
           fi
         env:
           VITE_APP_BUILD_TIMESTAMP: ${{ steps.datetime.outputs.time }}
