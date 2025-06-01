@@ -298,7 +298,8 @@
       "platform": {
         "api_encryption": {
           "description": "Cryptage des données sensibles dans certaines API",
-          "label": "Activer le cryptage des API"
+          "label": "Activer le cryptage des API",
+          "not_available": "L'API Web Crypto n'est pas disponible"
         },
         "color": {
           "description": "Couleur personnalisée pour la plateforme",
