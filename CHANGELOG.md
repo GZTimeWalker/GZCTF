@@ -3,6 +3,19 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.4.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.3.3..v1.4.0) - 2025-06-02
+
+### ⛰️ Features
+
+- **(api)** api sensitive data encryption - ([3b3d0d](https://github.com/GZTimeWalker/GZCTF/commit/3b3d0d)) by **GZTime**
+- **(settings)** show error when web crypto api is not available - ([4187c0](https://github.com/GZTimeWalker/GZCTF/commit/4187c0)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(client)** destory instance after flag submission - ([b90d7e](https://github.com/GZTimeWalker/GZCTF/commit/b90d7e)) by **GZTime**
+- **(submit)** check flag length after decryption - ([b9c6c3](https://github.com/GZTimeWalker/GZCTF/commit/b9c6c3)) by **GZTime**
+
+---
 ## [1.3.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.3.1..v1.3.2) - 2025-05-05
 
 ### ⛰️ Features
