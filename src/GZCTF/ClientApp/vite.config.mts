@@ -40,12 +40,12 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'build',
       assetsDir: 'static',
+      cssMinify: 'esbuild',
       cssCodeSplit: false,
       chunkSizeWarningLimit: 1600,
       reportCompressedSize: false,
       rollupOptions: {
         output: {
-          compact: true,
           hashCharacters: 'base36',
           chunkFileNames: 'static/[hash].js',
           assetFileNames: 'static/[hash].[ext]',
@@ -83,5 +83,8 @@ export default defineConfig(({ mode }) => {
       i18nVirtualManifest(),
       optimizeCssModules(),
     ],
+    experimental: {
+      enableNativePlugin: true,
+    },
   }
 })
