@@ -13,6 +13,7 @@ RUN ARCH=$(echo ${TARGETPLATFORM} | cut -d'/' -f2) && \
     rm linux_musl_${ARCH}.zip && rm -rf satori
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    DOTNET_ReadyToRun=0 \
     LC_ALL=en_US.UTF-8
 
 WORKDIR /app
