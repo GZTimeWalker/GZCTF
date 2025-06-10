@@ -4,7 +4,6 @@ import { defineConfig, loadEnv } from 'vite'
 import banner from 'vite-plugin-banner'
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import Pages from 'vite-plugin-pages'
-import { prismjsPlugin } from 'vite-plugin-prismjs'
 import webfontDownload from 'vite-plugin-webfont-dl'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import i18nVirtualManifest from './plugins/vite-i18n-virtual-manifest'
@@ -76,15 +75,8 @@ export default defineConfig(({ mode }) => {
           },
         ],
       }),
-      prismjsPlugin({
-        languages: 'all',
-        css: true,
-      }),
       i18nVirtualManifest(),
       optimizeCssModules(),
     ],
-    experimental: {
-      enableNativePlugin: true,
-    },
   }
 })
