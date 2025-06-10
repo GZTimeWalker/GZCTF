@@ -10,14 +10,13 @@ import {
   Title,
   useMantineTheme,
   ScrollAreaAutosize,
-  Skeleton,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
-import { InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
+import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
@@ -90,15 +89,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const content = (
     <ScrollAreaAutosize mah="50vh" maw="100%" scrollbars="y" scrollbarSize={6} type="scroll">
       {challenge?.content === undefined ? (
-        <>
-          <Skeleton height={14} mt={8} radius="xl" />
-          <Skeleton height={14} mt={8} radius="xl" />
-          <Skeleton height={14} mt={8} width="60%" radius="xl" />
-
-          <Skeleton height={14} mt={8 + 14} radius="xl" />
-          <Skeleton height={14} mt={8} radius="xl" />
-          <Skeleton height={14} mt={8} width="30%" radius="xl" />
-        </>
+        <ContentPlaceholder />
       ) : (
         <>
           <Markdown source={challenge.content ?? ''} />

@@ -4,7 +4,7 @@ import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Wsrx, WsrxError, WsrxErrorKind, WsrxFeature, WsrxOptions, WsrxState } from '@xdsec/wsrx'
 import { t } from 'i18next'
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, use, useEffect, useMemo, useState } from 'react'
 import { showErrorMsg } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 
@@ -159,7 +159,7 @@ export const WsrxProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 }
 
 export const useWsrx = () => {
-  const context = useContext(WsrxContext)
+  const context = use(WsrxContext)
   if (!context) {
     throw new Error('useWsrx must be used within a WsrxProvider')
   }
