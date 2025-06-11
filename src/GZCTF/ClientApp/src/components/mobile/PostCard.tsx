@@ -61,7 +61,7 @@ export const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           <Text fw={500} size="sm">
             {t('post.content.metadata', {
               author: post.authorName ?? 'Anonym',
-              date: dayjs(post.time).format('HH:mm, YY/MM/DD'),
+              date: dayjs(post.time).format('lll'),
             })}
           </Text>
         </Group>
