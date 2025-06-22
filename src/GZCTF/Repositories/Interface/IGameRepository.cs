@@ -33,13 +33,6 @@ public interface IGameRepository : IRepository
     public Task<Game[]> GetGames(int count = 10, int skip = 0, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛数量
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<int> CountGames(CancellationToken token = default);
-
-    /// <summary>
     /// 获取最近将要开始的比赛 id
     /// </summary>
     /// <param name="token"></param>

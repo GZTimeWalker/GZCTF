@@ -54,8 +54,6 @@ public class GameRepository(
     public Task<Game?> GetGameById(int id, CancellationToken token = default) =>
         Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
-    public Task<int> CountGames(CancellationToken token = default) => Context.Games.CountAsync(token);
-
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
         Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
                                  && g.StartTimeUtc - DateTime.UtcNow < TimeSpan.FromMinutes(15))
@@ -78,7 +76,7 @@ public class GameRepository(
     public async Task<ArrayResponse<BasicGameInfoModel>> GetGameInfo(int count = 20, int skip = 0,
         CancellationToken token = default)
     {
-        var total = await CountGames(token);
+        var total = await Context.Games.CountAsync(game => !game.Hidden, token);
         if (skip >= total)
             return new([], total);
 
@@ -305,18 +303,17 @@ public class GameRepository(
                 .Select(g =>
                     g.OrderBy(s => s.SubmitTimeUtc)
                         .Take(1)
-                        .Select(
-                            s =>
-                                new ChallengeItem
-                                {
-                                    Id = s.ChallengeId,
-                                    UserName = s.UserName,
-                                    SubmitTimeUtc = s.SubmitTimeUtc,
-                                    ParticipantId = s.ParticipationId,
-                                    // pending fields
-                                    Score = 0,
-                                    Type = SubmissionType.Normal
-                                }
+                        .Select(s =>
+                            new ChallengeItem
+                            {
+                                Id = s.ChallengeId,
+                                UserName = s.UserName,
+                                SubmitTimeUtc = s.SubmitTimeUtc,
+                                ParticipantId = s.ParticipationId,
+                                // pending fields
+                                Score = 0,
+                                Type = SubmissionType.Normal
+                            }
                         )
                         .First()
                 )
