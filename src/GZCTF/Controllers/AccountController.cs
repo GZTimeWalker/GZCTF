@@ -212,7 +212,7 @@ public class AccountController(
 
         user.UpdateByHttpContext(HttpContext);
 
-        var token = Codec.Base64.Encode(model.RToken);
+        var token = Codec.Base64.Decode(model.RToken);
         var result = await userManager.ResetPasswordAsync(user, token, password);
 
         if (!result.Succeeded)

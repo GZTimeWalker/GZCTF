@@ -3,6 +3,21 @@
   max-width: max-content;
   min-width: 100%;
 
+  & :global(.shiki),
+  & :global(.shiki) span {
+    @mixin dark {
+      font-style: var(--code-dark-font-style);
+      font-weight: var(--code-dark-font-weight);
+      text-decoration: var(--code-dark-text-decoration);
+    }
+
+    @mixin light {
+      font-style: var(--code-light-font-style);
+      font-weight: var(--code-light-font-weight);
+      text-decoration: var(--code-light-text-decoration);
+    }
+  }
+
   & :where(p) {
     word-break: break-word;
     word-wrap: break-word;

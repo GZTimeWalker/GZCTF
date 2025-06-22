@@ -58,6 +58,7 @@ const highlight = async (code: string, lang: string) => {
       dark: 'material-theme-darker',
       light: 'material-theme-lighter',
     },
+    cssVariablePrefix: '--code-',
     defaultColor: 'light-dark()',
     transformers: [
       transformerNotationDiff(),

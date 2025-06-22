@@ -3,6 +3,17 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.4.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.0..v1.4.1) - 2025-06-11
+
+### ⛰️ Features
+
+- **(frontend)** use shiki instead of prismjs - ([5376ab](https://github.com/GZTimeWalker/GZCTF/commit/5376ab)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(post_card)** format time as `lll` on mobile - ([e6b735](https://github.com/GZTimeWalker/GZCTF/commit/e6b735)) by **GZTime**
+
+---
 ## [1.4.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.3.3..v1.4.0) - 2025-06-02
 
 ### ⛰️ Features
