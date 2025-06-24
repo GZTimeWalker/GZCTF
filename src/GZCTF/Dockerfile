@@ -4,6 +4,13 @@ COPY publish /build
 RUN cp -r /build/${TARGETPLATFORM} /publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
+ARG TARGETPLATFORM
+RUN ARCH=$(echo ${TARGETPLATFORM} | cut -d'/' -f2) && \
+    wget https://github.com/hez2010/Satori/releases/latest/download/linux_musl_${ARCH}.zip && \
+    unzip linux_musl_${ARCH}.zip -d satori && \
+    chmod +x satori/* && \
+    mv satori/* /usr/share/dotnet/shared/Microsoft.NETCore.App/$(ls /usr/share/dotnet/shared/Microsoft.NETCore.App)/ && \
+    rm linux_musl_${ARCH}.zip && rm -rf satori
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
     LC_ALL=en_US.UTF-8
