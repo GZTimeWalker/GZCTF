@@ -59,9 +59,9 @@ const Posts: FC = () => {
     <WithNavBar isLoading={!posts} minWidth={0} withHeader stickyHeader>
       <Stack justify="space-between" mih="calc(100vh - 78px)">
         <Stack>
-          {posts
-            ?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE)
-            .map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
+          {posts?.slice((activePage - 1) * ITEMS_PER_PAGE, activePage * ITEMS_PER_PAGE).map((post) => (
+            <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
+          ))}
         </Stack>
 
         <Pagination.Root

@@ -81,7 +81,9 @@ const Home: FC = () => {
                       <Icon path={mdiFlagCheckered} size={1.5} color={theme.colors[theme.primaryColor][4]} />
                       <Title order={3}>{t('common.content.home.recent_games')}</Title>
                     </Group>
-                    {showGames?.map((game) => <RecentGame key={game.id} game={game} />)}
+                    {showGames?.map((game) => (
+                      <RecentGame key={game.id} game={game} />
+                    ))}
                   </Stack>
                 </div>
               </nav>
