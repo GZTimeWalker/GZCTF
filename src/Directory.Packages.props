@@ -21,7 +21,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common" Version="9.6.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.3" />
-    <PackageVersion Include="NPOI" Version="2.7.3" />
+    <PackageVersion Include="NPOI" Version="2.7.4" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.4.0" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.4.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
@@ -36,14 +36,14 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.11.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.12.0-beta.1" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.5.0" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.5.3" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Serilog.Sinks.File.Archive" Version="1.0.6" />
-    <PackageVersion Include="MailKit" Version="4.12.1" />
+    <PackageVersion Include="MailKit" Version="4.13.0" />
     <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.6" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.6" />
