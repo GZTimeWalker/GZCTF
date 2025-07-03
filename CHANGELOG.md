@@ -3,6 +3,19 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.4.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.1..v1.4.2) - 2025-07-03
+
+### ⛰️ Features
+
+- **(perf)** use Satori GC (#438) - ([a03a86](https://github.com/GZTimeWalker/GZCTF/commit/a03a86)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(api)** cannot reset password - ([bc512c](https://github.com/GZTimeWalker/GZCTF/commit/bc512c)) by **GZTime**
+- **(repository)** game count retrieval - ([173062](https://github.com/GZTimeWalker/GZCTF/commit/173062)) by **GZTime**
+- **(styles)** add dark and light mixins for .shiki class - ([95839d](https://github.com/GZTimeWalker/GZCTF/commit/95839d)) by **GZTime**
+
+---
 ## [1.4.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.0..v1.4.1) - 2025-06-11
 
 ### ⛰️ Features
