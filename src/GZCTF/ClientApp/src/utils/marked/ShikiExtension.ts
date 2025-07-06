@@ -51,7 +51,7 @@ const highlighter = await createHighlighter({
   engine: createJavaScriptRegexEngine(),
 })
 
-const highlight = async (code: string, lang: string) => {
+const highlight = (code: string, lang: string) => {
   return highlighter.codeToHtml(code, {
     lang,
     themes: {
@@ -72,8 +72,7 @@ const highlight = async (code: string, lang: string) => {
 
 export function ShikiExtension(): MarkedExtension {
   return {
-    async: true,
-    walkTokens: async (token: Token) => {
+    walkTokens: (token: Token) => {
       if (token.type !== 'code') return
 
       const { lang = 'text', text } = token
@@ -81,7 +80,7 @@ export function ShikiExtension(): MarkedExtension {
       Object.assign(token, {
         type: 'html',
         block: true,
-        text: await highlight(text, lang),
+        text: highlight(text, lang),
       })
     },
   }

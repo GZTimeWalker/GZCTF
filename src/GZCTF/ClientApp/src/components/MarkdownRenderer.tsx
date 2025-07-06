@@ -1,7 +1,7 @@
 import { Skeleton, Text, TextProps, TypographyStylesProvider } from '@mantine/core'
 import 'katex/dist/katex.min.css'
 import { Marked } from 'marked'
-import { forwardRef, useMemo, use, Suspense, FC } from 'react'
+import { forwardRef, useMemo, Suspense, FC } from 'react'
 import { KatexExtension } from '@Utils/marked/KatexExtension'
 import { ShikiExtension } from '@Utils/marked/ShikiExtension'
 import classes from '@Styles/Typography.module.css'
@@ -57,11 +57,9 @@ const MarkdownRenderer: FC<Pick<MarkdownProps, 'source'>> = (props) => {
     return instance
   }, [])
 
-  const htmlPromise = useMemo(() => {
-    return marked.parse(source) as Promise<string>
-  }, [marked, source])
+  const html = useMemo(() => marked.parse(source), [marked, source])
 
-  return <div className={classes.root} dangerouslySetInnerHTML={{ __html: use(htmlPromise) }} />
+  return <div className={classes.root} dangerouslySetInnerHTML={{ __html: html ?? '' }} />
 }
 
 export const Markdown = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) => {

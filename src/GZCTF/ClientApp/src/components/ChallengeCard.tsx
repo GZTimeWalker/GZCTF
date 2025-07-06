@@ -61,7 +61,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
             {challenge.score}&nbsp;pts
           </Text>
           <Stack gap="xs">
-            <Title order={6} c="dimmed" ta="center" mt={`calc(${theme.spacing.xs} / 2)`}>
+            <Title order={6} ta="center" mt={`calc(${theme.spacing.xs} / 2)`}>
               <Trans
                 i18nKey={'challenge.content.solved'}
                 values={{
@@ -69,7 +69,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
                 }}
               >
                 _
-                <Code fz="sm" fw="bold" bg="transparent">
+                <Code fz="sm" fw="bolder" bg="transparent">
                   _
                 </Code>
                 _
