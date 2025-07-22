@@ -133,7 +133,7 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
       trigger: 'axis',
       borderWidth: 0,
       textStyle: {
-        fontSize: 10,
+        fontSize: 12,
         color: labelColor,
       },
       backgroundColor: backgroundColor,
