@@ -121,8 +121,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0(react@19.1.0)
       react-i18next:
-        specifier: ^15.6.0
-        version: 15.6.0(i18next@25.3.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        specifier: ^15.6.1
+        version: 15.6.1(i18next@25.3.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       react-pdf:
         specifier: ^10.0.1
         version: 10.0.1(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -164,8 +164,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0(rolldown-vite@7.0.10(@types/node@24.1.0)(esbuild@0.25.5)(jiti@2.4.2)(sass-embedded@1.81.0)(sugarss@5.0.0(postcss@8.5.6))(yaml@2.8.0))
       axios:
-        specifier: ^1.10.0
-        version: 1.10.0
+        specifier: ^1.11.0
+        version: 1.11.0
       babel-plugin-prismjs:
         specifier: ^2.1.0
         version: 2.1.0(prismjs@1.30.0)
@@ -309,8 +309,8 @@ packages:
   '@biomejs/wasm-nodejs@2.0.5':
     resolution: {integrity: sha512-pihpBMylewgDdGFZHRkgmc3OajuGIJPXhvfYuKCNK/CWyJMrYEFmPKs8Iq1kY0sYMmGlTbD4K2udV03KYa+r0Q==}
 
-  '@bufbuild/protobuf@2.6.1':
-    resolution: {integrity: sha512-DaG6XlyKpz08bmHY5SGX2gfIllaqtDJ/KwVoxsmP22COOLYwDBe7yD3DZGwXem/Xq7QOc9cuR7R3MpAv5CFfDw==}
+  '@bufbuild/protobuf@2.6.2':
+    resolution: {integrity: sha512-vLu7SRY84CV/Dd+NUdgtidn2hS5hSMUC1vDBY0VcviTdgRYkU43vIz3vIFbmx14cX1r+mM7WjzE5Fl1fGEM0RQ==}
 
   '@emnapi/core@1.4.5':
     resolution: {integrity: sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q==}
@@ -967,8 +967,8 @@ packages:
     resolution: {integrity: sha512-0bDNnY/u6pPwHDMoF0FieU354oBi0a8rD9FcsLwzcGWbc8KS8KPIi7y+s13OlVY+gMWc/9xEMUgNE6Qm8ZllYQ==}
     engines: {node: '>=4'}
 
-  axios@1.10.0:
-    resolution: {integrity: sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==}
+  axios@1.11.0:
+    resolution: {integrity: sha512-1Lx3WLFQWm3ooKDYZD1eXmoGO9fxYQjrycfHFC8P0sCfQVXyROp0p9PFWBehewBOdCwHc+f/b8I0fMto5eSfwA==}
 
   babel-plugin-macros@3.1.0:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
@@ -1173,8 +1173,8 @@ packages:
   echarts@5.6.0:
     resolution: {integrity: sha512-oTbVTsXfKuEhxftHqL5xprgLoc0k7uScAwtryCgWF6hPYFLRwOUHiFmHGCBKP5NPFNkDVopOieyUqYGH8Fa3kA==}
 
-  electron-to-chromium@1.5.189:
-    resolution: {integrity: sha512-y9D1ntS1ruO/pZ/V2FtLE+JXLQe28XoRpZ7QCCo0T8LdQladzdcOVQZH/IWLVJvCw12OGMb6hYOeOAjntCmJRQ==}
+  electron-to-chromium@1.5.190:
+    resolution: {integrity: sha512-k4McmnB2091YIsdCgkS0fMVMPOJgxl93ltFzaryXqwip1AaxeDqKCGLxkXODDA5Ab/D+tV5EL5+aTx76RvLRxw==}
 
   embla-carousel-autoplay@8.6.0:
     resolution: {integrity: sha512-OBu5G3nwaSXkZCo1A6LTaFMZ8EpkYbwIaH+bPqdBnDGQ2fh4+NbzjXjs2SktoPNKCtflfVMc75njaDHOYXcrsA==}
@@ -1845,8 +1845,8 @@ packages:
     peerDependencies:
       react: '>=16.13.1'
 
-  react-i18next@15.6.0:
-    resolution: {integrity: sha512-W135dB0rDfiFmbMipC17nOhGdttO5mzH8BivY+2ybsQBbXvxWIwl3cmeH3T9d+YPBSJu/ouyJKFJTtkK7rJofw==}
+  react-i18next@15.6.1:
+    resolution: {integrity: sha512-uGrzSsOUUe2sDBG/+FJq2J1MM+Y4368/QW8OLEKSFvnDflHBbZhSd1u3UkW0Z06rMhZmnB/AQrhCpYfE5/5XNg==}
     peerDependencies:
       i18next: '>= 23.2.3'
       react: '>= 16.8.0'
@@ -2614,7 +2614,7 @@ snapshots:
 
   '@biomejs/wasm-nodejs@2.0.5': {}
 
-  '@bufbuild/protobuf@2.6.1':
+  '@bufbuild/protobuf@2.6.2':
     optional: true
 
   '@emnapi/core@1.4.5':
@@ -3178,7 +3178,7 @@ snapshots:
 
   attr-accept@2.2.5: {}
 
-  axios@1.10.0:
+  axios@1.11.0:
     dependencies:
       follow-redirects: 1.15.9
       form-data: 4.0.4
@@ -3203,7 +3203,7 @@ snapshots:
   browserslist@4.25.1:
     dependencies:
       caniuse-lite: 1.0.30001727
-      electron-to-chromium: 1.5.189
+      electron-to-chromium: 1.5.190
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.1)
 
@@ -3377,7 +3377,7 @@ snapshots:
       tslib: 2.3.0
       zrender: 5.6.1
 
-  electron-to-chromium@1.5.189: {}
+  electron-to-chromium@1.5.190: {}
 
   embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0):
     dependencies:
@@ -4028,7 +4028,7 @@ snapshots:
       '@babel/runtime': 7.27.6
       react: 19.1.0
 
-  react-i18next@15.6.0(i18next@25.3.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3):
+  react-i18next@15.6.1(i18next@25.3.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3):
     dependencies:
       '@babel/runtime': 7.27.6
       html-parse-stringify: 3.0.1
@@ -4249,7 +4249,7 @@ snapshots:
 
   sass-embedded@1.81.0:
     dependencies:
-      '@bufbuild/protobuf': 2.6.1
+      '@bufbuild/protobuf': 2.6.2
       buffer-builder: 0.2.0
       colorjs.io: 0.5.2
       immutable: 5.1.3
@@ -4579,7 +4579,7 @@ snapshots:
 
   vite-plugin-webfont-dl@3.11.1(rolldown-vite@7.0.10(@types/node@24.1.0)(esbuild@0.25.5)(jiti@2.4.2)(sass-embedded@1.81.0)(sugarss@5.0.0(postcss@8.5.6))(yaml@2.8.0)):
     dependencies:
-      axios: 1.10.0
+      axios: 1.11.0
       clean-css: 5.3.3
       flat-cache: 6.1.11
       picocolors: 1.1.1

@@ -3,6 +3,14 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.4.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.2..v1.4.3) - 2025-07-22
+
+### ⛰️ Features
+
+- **(charts)** add MemberContributionPie component - ([a462cc](https://github.com/GZTimeWalker/GZCTF/commit/a462cc)) by **GZTime**
+- **(shiki)** synchronized rendering of markdown as wasm engine is not used - ([a8f326](https://github.com/GZTimeWalker/GZCTF/commit/a8f326)) by **GZTime**
+
+---
 ## [1.4.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.1..v1.4.2) - 2025-07-03
 
 ### ⛰️ Features

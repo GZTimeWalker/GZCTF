@@ -1,6 +1,6 @@
 {
   "name": "gzctf-client",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -48,7 +48,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^6.0.0",
-    "react-i18next": "^15.6.0",
+    "react-i18next": "^15.6.1",
     "react-pdf": "^10.0.1",
     "react-router": "^7.7.0",
     "shiki": "^3.8.1",
@@ -64,7 +64,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react-oxc": "^0.3.0",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "babel-plugin-prismjs": "^2.1.0",
     "oxlint": "^1.8.0",
     "postcss": "^8.5.6",
