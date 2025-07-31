@@ -14,7 +14,7 @@ import {
   Input,
 } from '@mantine/core'
 import dayjs from 'dayjs'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MemberContributionPie } from '@Components/charts/MemberContributionPie'
 import { MemberContributionPieProps } from '@Components/charts/MemberContributionPie'
@@ -90,6 +90,16 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const valid = item && challenges && challengeIdMap
   const solved = (item?.solvedCount ?? 0) / (scoreboard?.challengeCount ?? 1)
 
+  const radarData = useMemo(() => {
+    if (!valid) return null
+    return calculateScoreRadar(challenges, challengeIdMap, item)
+  }, [valid, challenges, challengeIdMap, item])
+
+  const memberContributionData = useMemo(() => {
+    if (!valid) return null
+    return calculateMemberContribution(item)
+  }, [valid, item])
+
   return (
     <Modal
       {...modalProps}
@@ -119,10 +129,10 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       <Stack align="center" gap="xs">
         <Stack w="85%" miw="20rem">
           <Center h="14rem">
-            {valid && (
+            {valid && radarData && memberContributionData && (
               <Group wrap="nowrap" gap={0} justify="center" w="100%" h="100%">
-                <TeamRadarMap {...calculateScoreRadar(challenges, challengeIdMap, item)} />
-                <MemberContributionPie {...calculateMemberContribution(item)} />
+                <TeamRadarMap {...radarData} />
+                <MemberContributionPie {...memberContributionData} />
               </Group>
             )}
           </Center>

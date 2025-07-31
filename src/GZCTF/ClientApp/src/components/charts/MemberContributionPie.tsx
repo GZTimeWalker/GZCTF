@@ -1,5 +1,6 @@
 import { useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import chroma from 'chroma-js'
+import type { EChartsOption } from 'echarts'
 import ReactEcharts from 'echarts-for-react'
 import { FC, useMemo } from 'react'
 
@@ -22,61 +23,63 @@ export const MemberContributionPie: FC<MemberContributionPieProps> = ({ data }) 
       .colors(data.length)
   }, [data.length, theme.primaryColor, theme.colors, colorScheme])
 
-  return (
-    <ReactEcharts
-      theme={colorScheme}
-      option={{
-        animation: true,
-        backgroundColor: 'transparent',
-        color: colorPalette,
-        tooltip: {
-          trigger: 'item',
-          formatter: '{b}: {c} ({d}%)',
+  const option: EChartsOption = {
+    animation: true,
+    backgroundColor: 'transparent',
+    color: colorPalette,
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
+      borderWidth: 0,
+      textStyle: {
+        fontSize: 12,
+        color: labelColor,
+      },
+      backgroundColor: backgroundColor,
+    },
+    legend: {
+      orient: 'horizontal',
+      left: 'center',
+      top: 'bottom',
+      data: data.map((item) => item.name),
+      textStyle: {
+        color: labelColor,
+        fontWeight: 'bold',
+      },
+    },
+    series: [
+      {
+        type: 'pie',
+        radius: ['45%', '65%'],
+        center: ['50%', '45%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 8,
           borderWidth: 0,
-          textStyle: {
-            fontSize: 12,
-            color: labelColor,
-          },
-          backgroundColor: backgroundColor,
         },
-        legend: {
-          orient: 'horizontal',
-          left: 'center',
-          top: 'bottom',
-          data: data.map((item) => item.name),
-          textStyle: {
-            color: labelColor,
+        label: {
+          show: false,
+          position: 'center',
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 14,
             fontWeight: 'bold',
           },
         },
-        series: [
-          {
-            type: 'pie',
-            radius: ['45%', '65%'],
-            center: ['50%', '45%'],
-            avoidLabelOverlap: false,
-            itemStyle: {
-              borderRadius: 8,
-              borderWidth: 0,
-            },
-            label: {
-              show: false,
-              position: 'center',
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: 14,
-                fontWeight: 'bold',
-              },
-            },
-            labelLine: {
-              show: false,
-            },
-            data,
-          },
-        ],
-      }}
+        labelLine: {
+          show: false,
+        },
+        data,
+      },
+    ],
+  }
+
+  return (
+    <ReactEcharts
+      theme={colorScheme}
+      option={option}
       opts={{
         renderer: 'svg',
       }}

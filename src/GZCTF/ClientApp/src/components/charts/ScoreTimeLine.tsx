@@ -2,7 +2,7 @@ import { useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import dayjs from 'dayjs'
 import type { EChartsOption } from 'echarts'
 import ReactEcharts from 'echarts-for-react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { normalizeLanguage, useLanguage } from '@Utils/I18n'
@@ -93,102 +93,113 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
   const lineColor = colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6]
   const backgroundColor = colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.light[1]
 
-  const option: EChartsOption = {
-    backgroundColor: 'transparent',
-    toolbox: {
-      show: true,
-      feature: {
-        dataZoom: {},
-        restore: {},
-        saveAsImage: {},
-      },
-    },
-    xAxis: {
-      type: 'time',
-      name: t('common.label.time'),
-      min: dayjs(game?.start).toDate(),
-      max: dayjs(game?.end).toDate(),
-      splitLine: {
-        show: false,
-      },
-    },
-    yAxis: {
-      type: 'value',
-      name: t('game.label.score'),
-      boundaryGap: [0, '100%'],
-      axisLabel: {
-        formatter: t('game.label.score_formatter'),
-        color: labelColor,
-      },
-      max: (value: any) => (Math.floor(value.max / 1000) + 1) * 1000,
-      splitLine: {
+  const staticOption: EChartsOption = useMemo(
+    () => ({
+      animation: true,
+      backgroundColor: 'transparent',
+      toolbox: {
         show: true,
-        lineStyle: {
-          color: [lineColor],
-          type: 'dashed',
+        feature: {
+          dataZoom: {},
+          restore: {},
+          saveAsImage: {},
         },
       },
-    },
-    tooltip: {
-      trigger: 'axis',
-      borderWidth: 0,
-      textStyle: {
-        fontSize: 12,
-        color: labelColor,
+      xAxis: {
+        type: 'time',
+        name: t('common.label.time'),
+        min: dayjs(game?.start).toDate(),
+        max: dayjs(game?.end).toDate(),
+        splitLine: {
+          show: false,
+        },
       },
-      backgroundColor: backgroundColor,
-    },
-    legend: {
-      orient: 'horizontal',
-      bottom: 50,
-      textStyle: {
-        fontSize: 12,
-        color: labelColor,
+      yAxis: {
+        type: 'value',
+        name: t('game.label.score'),
+        boundaryGap: [0, '100%'],
+        axisLabel: {
+          formatter: t('game.label.score_formatter'),
+          color: labelColor,
+        },
+        max: (value: any) => (Math.floor(value.max / 1000) + 1) * 1000,
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: [lineColor],
+            type: 'dashed',
+          },
+        },
       },
-    },
-    grid: {
-      top: 50,
-      left: 70,
-      right: 90,
-      bottom: 100,
-    },
-    dataZoom: [
-      {
-        type: 'inside',
-        start: drawStart,
-        end: drawEnd,
-        xAxisIndex: 0,
-        filterMode: 'none',
+      tooltip: {
+        trigger: 'axis',
+        borderWidth: 0,
+        textStyle: {
+          fontSize: 12,
+          color: labelColor,
+        },
+        backgroundColor: backgroundColor,
       },
-      {
-        start: drawStart,
-        end: drawEnd,
-        xAxisIndex: 0,
-        showDetail: false,
+      legend: {
+        orient: 'horizontal',
+        bottom: 20,
+        textStyle: {
+          fontSize: 12,
+          color: labelColor,
+        },
       },
-      {
-        type: 'inside',
-        start: 0,
-        end: 100,
-        yAxisIndex: 0,
-        filterMode: 'none',
+      grid: {
+        top: 50,
+        left: 70,
+        right: 90,
+        bottom: 110,
       },
-      {
-        start: 0,
-        end: 100,
-        yAxisIndex: 0,
-        showDetail: false,
-      },
-    ],
-
-    series: chartData,
-  }
+      dataZoom: [
+        {
+          type: 'inside',
+          start: drawStart,
+          end: drawEnd,
+          xAxisIndex: 0,
+          filterMode: 'none',
+        },
+        {
+          type: 'slider',
+          start: drawStart,
+          end: drawEnd,
+          xAxisIndex: 0,
+          showDetail: false,
+          bottom: 60,
+          height: 20,
+        },
+        {
+          type: 'inside',
+          start: 0,
+          end: 100,
+          yAxisIndex: 0,
+          filterMode: 'none',
+        },
+        {
+          type: 'slider',
+          start: 0,
+          end: 100,
+          yAxisIndex: 0,
+          showDetail: false,
+          right: 10,
+          width: 20,
+        },
+      ],
+    }),
+    [t, game?.start, game?.end, labelColor, lineColor, backgroundColor, drawStart, drawEnd]
+  )
 
   return (
     <ReactEcharts
       key={now.toUTCString()}
       theme={colorScheme}
-      option={option}
+      option={{
+        ...staticOption,
+        series: chartData,
+      }}
       opts={{
         renderer: 'svg',
         locale,
