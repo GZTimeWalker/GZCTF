@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using GZCTF.Models.Internal;
 using ConfigModel = GZCTF.Models.Data.Config;
 
 namespace GZCTF.Services.Config;
@@ -43,6 +44,11 @@ public interface IConfigService
     /// <param name="cipherText">Encrypted data</param>
     /// <returns>Decrypted data, or null if decryption fails</returns>
     public string? DecryptApiData(string cipherText);
+
+    /// <summary>
+    /// Get the ApiToken signature context.
+    /// </summary>
+    public Task<SignatureContext> GetApiTokenContext(CancellationToken token = default);
 
     /// <summary>
     /// Get the XOR key from configuration.

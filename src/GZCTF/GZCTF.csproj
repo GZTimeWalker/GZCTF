@@ -80,6 +80,7 @@
         <PackageReference Include="BouncyCastle.Cryptography" />
         <PackageReference Include="PacketDotNet" />
         <PackageReference Include="SharpPcap" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="ZstdSharp.Port" />
     </ItemGroup>
 

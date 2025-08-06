@@ -246,7 +246,6 @@ public class GameController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CannotLeaveAfterApproval)]));
 
         // FIXME: After approval, new users can be added, but cannot exit?
-
         part.Members.RemoveWhere(u => u.UserId == user!.Id);
 
         if (part.Members.Count == 0)

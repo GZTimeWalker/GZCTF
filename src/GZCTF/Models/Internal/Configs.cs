@@ -101,15 +101,15 @@ public class ContainerPolicy
     public int RenewalWindow { get; set; } = 10;
 }
 
-public class ApiEncryptionConfig
+public class X25519KeyPair
 {
     /// <summary>
-    /// The API public key
+    /// Public key
     /// </summary>
     public string PublicKey { get; set; } = string.Empty;
 
     /// <summary>
-    /// The API private key
+    /// Private key
     /// </summary>
     public string PrivateKey { get; set; } = string.Empty;
 
@@ -123,7 +123,7 @@ public class ApiEncryptionConfig
         PrivateKey = Base64.ToBase64String(privateKeyBytes);
     }
 
-    public string? DecryptData(string data, byte[] xorKey)
+    public string? Decrypt(string data, byte[] xorKey)
     {
         ArgumentNullException.ThrowIfNull(data);
         ArgumentNullException.ThrowIfNull(xorKey);
@@ -144,6 +144,69 @@ public class ApiEncryptionConfig
     }
 }
 
+
+public class Ed25519KeyPair
+{
+    /// <summary>
+    /// Public key
+    /// </summary>
+    public string PublicKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Private key
+    /// </summary>
+    public string PrivateKey { get; set; } = string.Empty;
+
+    public void RegenerateKeys(byte[] xorKey)
+    {
+        var kp = CryptoUtils.GenerateEd25519KeyPair();
+        var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
+        var publicKey = (Ed25519PublicKeyParameters)kp.Public;
+        var privateKeyBytes = Codec.Xor(privateKey.GetEncoded(), xorKey);
+        PublicKey = Base64.ToBase64String(publicKey.GetEncoded());
+        PrivateKey = Base64.ToBase64String(privateKeyBytes);
+    }
+
+    public string Sign(string data, byte[] xorKey, bool useUrlSafeBase64 = false)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentNullException.ThrowIfNull(xorKey);
+
+        var privateKeyBytes = Codec.Xor(Base64.Decode(PrivateKey), xorKey);
+        var privateKey = new Ed25519PrivateKeyParameters(privateKeyBytes);
+        return CryptoUtils.GenerateSignature(data, privateKey, SignAlgorithm.Ed25519, useUrlSafeBase64);
+    }
+
+    public bool Verify(string data, string signature, bool useUrlSafeBase64 = false)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentNullException.ThrowIfNull(signature);
+
+        try
+        {
+            var publicKey = new Ed25519PublicKeyParameters(Base64.Decode(PublicKey));
+            return CryptoUtils.VerifySignature(data, signature, publicKey, SignAlgorithm.Ed25519, useUrlSafeBase64);
+        }
+        catch
+        {
+            // If verification fails, return false
+            return false;
+        }
+    }
+}
+
+/// <summary>
+/// A context for signature operations, including signing and verifying
+/// </summary>
+public record SignatureContext(Ed25519KeyPair EncryptedKeyPair, byte[] XorKey)
+{
+    public string Sign(string data, bool urlSafe = true) =>
+        EncryptedKeyPair.Sign(data, XorKey, urlSafe);
+
+    public bool Verify(string data, string signature, bool urlSafe = true) =>
+        EncryptedKeyPair.Verify(data, signature, urlSafe);
+}
+
 /// <summary>
 /// Configs controlled by the backend
 /// </summary>
@@ -152,7 +215,12 @@ public class ManagedConfig
     /// <summary>
     /// Api encryption configuration
     /// </summary>
-    public ApiEncryptionConfig ApiEncryption { get; set; } = new();
+    public X25519KeyPair ApiEncryption { get; set; } = new();
+
+    /// <summary>
+    /// Api token configuration
+    /// </summary>
+    public Ed25519KeyPair ApiToken { get; set; } = new();
 }
 
 /// <summary>
@@ -371,7 +439,7 @@ public class KubernetesConfig
 }
 
 public class RegistrySet<T> : Dictionary<string, T>
-where T : class
+    where T : class
 {
     public T? GetForImage(string image)
     {
@@ -395,7 +463,7 @@ public class RegistryConfig
     public string? Password { get; set; }
 
     public bool Valid => !string.IsNullOrEmpty(UserName) &&
-                       !string.IsNullOrEmpty(Password);
+                         !string.IsNullOrEmpty(Password);
 }
 
 #endregion

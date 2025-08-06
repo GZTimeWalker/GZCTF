@@ -38,6 +38,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+    public DbSet<ApiToken> ApiTokens { get; set; } = null!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -385,6 +386,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasForeignKey(e => e.GameId);
 
             entity.HasKey(e => new { e.GameId, e.TeamId, e.UserId });
+        });
+
+        builder.Entity<ApiToken>(entity =>
+        {
+            entity.HasOne(e => e.Creator)
+                .WithMany()
+                .HasForeignKey(e => e.CreatorId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

@@ -10,16 +10,19 @@ namespace GZCTF.Middlewares;
 /// <summary>
 /// Authorization filter for privilege
 /// </summary>
-/// <param name="privilege">
-/// The privilege required
-/// </param>
+/// <param name="privilege"> The privilege required </param>
+/// <param name="allowToken"> Whether to allow token authentication </param>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class RequirePrivilegeAttribute(Role privilege) : Attribute, IAsyncAuthorizationFilter
+public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) : Attribute, IAsyncAuthorizationFilter
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var logger =
             context.HttpContext.RequestServices.GetRequiredService<ILogger<RequirePrivilegeAttribute>>();
+
+        if (allowToken && await ContextHelper.HasValidToken(context.HttpContext))
+            return;
+
         var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
         var localizer =
             context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
@@ -82,3 +85,8 @@ public class RequireMonitorAttribute() : RequirePrivilegeAttribute(Role.Monitor)
 /// Admin privilege required
 /// </summary>
 public class RequireAdminAttribute() : RequirePrivilegeAttribute(Role.Admin);
+
+/// <summary>
+/// Admin privilege required, but allow token authentication
+/// </summary>
+public class RequireAdminOrTokenAttribute() : RequirePrivilegeAttribute(Role.Admin, true);

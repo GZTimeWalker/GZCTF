@@ -7,7 +7,9 @@ public class AdminHub : Hub<IAdminClient>
 {
     public override async Task OnConnectedAsync()
     {
-        if (!await HubHelper.HasAdmin(Context.GetHttpContext()!))
+        var context = Context.GetHttpContext();
+
+        if (context is null || (!await ContextHelper.HasAdmin(context) && !await ContextHelper.HasValidToken(context)))
         {
             Context.Abort();
             return;

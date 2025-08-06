@@ -756,6 +756,66 @@ export interface LocalFile {
   name: string;
 }
 
+/** This record represents the response for an API token request. */
+export interface ApiTokenResponse {
+  token?: string;
+  /** Represents an API token for programmatic access. */
+  info?: ApiToken;
+}
+
+/** Represents an API token for programmatic access. */
+export interface ApiToken {
+  /**
+   * The unique identifier for the token, also used as the JWT ID (jti).
+   * @format guid
+   */
+  id?: string;
+  /**
+   * A user-friendly name for the token to identify its purpose.
+   * @minLength 1
+   * @maxLength 128
+   */
+  name: string;
+  /**
+   * The ID of the user who created the token.
+   * @format guid
+   * @minLength 1
+   */
+  creatorId: string;
+  /**
+   * The timestamp when the token was created.
+   * @format uint64
+   * @minLength 1
+   */
+  createdAt: number;
+  /**
+   * The timestamp when the token expires. A null value means it never expires.
+   * @format uint64
+   */
+  expiresAt?: number | null;
+  /**
+   * The timestamp when the token was last used.
+   * @format uint64
+   */
+  lastUsedAt?: number | null;
+  /** Indicates whether the token has been revoked. */
+  isRevoked: boolean;
+  /** The name of the user who created the token. */
+  creator?: string | null;
+}
+
+/** API token creation model. */
+export interface ApiTokenCreateModel {
+  /**
+   * The user-friendly name for the token to identify its purpose.
+   * @minLength 1
+   * @maxLength 128
+   */
+  name: string;
+  /** The duration for which the token will be valid, in days. */
+  expiresIn?: number | null;
+}
+
 export interface ProblemDetails {
   type?: string | null;
   title?: string | null;
@@ -3126,6 +3186,114 @@ export class Api<
       data?: WriteupInfoModel[] | Promise<WriteupInfoModel[]>,
       options?: MutatorOptions,
     ) => mutate<WriteupInfoModel[]>(`/api/admin/writeups/${id}`, data, options),
+  };
+  apiToken = {
+    /**
+     * No description
+     *
+     * @tags ApiToken
+     * @name ApiTokenGenerateToken
+     * @summary Generates a new API token.
+     * @request POST:/api/tokens
+     */
+    apiTokenGenerateToken: (
+      data: ApiTokenCreateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<ApiTokenResponse, RequestResponse>({
+        path: `/api/tokens`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ApiToken
+     * @name ApiTokenListTokens
+     * @summary Lists all API tokens.
+     * @request GET:/api/tokens
+     */
+    apiTokenListTokens: (params: RequestParams = {}) =>
+      this.request<ApiToken[], RequestResponse>({
+        path: `/api/tokens`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags ApiToken
+     * @name ApiTokenListTokens
+     * @summary Lists all API tokens.
+     * @request GET:/api/tokens
+     */
+    useApiTokenListTokens: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ApiToken[], RequestResponse>(
+        doFetch ? `/api/tokens` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags ApiToken
+     * @name ApiTokenListTokens
+     * @summary Lists all API tokens.
+     * @request GET:/api/tokens
+     */
+    mutateApiTokenListTokens: (
+      data?: ApiToken[] | Promise<ApiToken[]>,
+      options?: MutatorOptions,
+    ) => mutate<ApiToken[]>(`/api/tokens`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags ApiToken
+     * @name ApiTokenRestoreToken
+     * @summary Restores an API token.
+     * @request POST:/api/tokens/{id}/restore
+     */
+    apiTokenRestoreToken: (id: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse | ProblemDetails>({
+        path: `/api/tokens/${id}/restore`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ApiToken
+     * @name ApiTokenRevokeToken
+     * @summary Revokes an API token.
+     * @request DELETE:/api/tokens/{id}
+     */
+    apiTokenRevokeToken: (
+      id: string,
+      query?: {
+        /**
+         * If true, the token will be deleted instead of just revoked.
+         * @default false
+         */
+        delete?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse | ProblemDetails>({
+        path: `/api/tokens/${id}`,
+        method: "DELETE",
+        query: query,
+        ...params,
+      }),
   };
   assets = {
     /**

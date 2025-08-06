@@ -10,18 +10,19 @@ static class IdentityExtension
         builder.Services.AddDataProtection().PersistKeysToDbContext<AppDbContext>();
 
         builder.Services.AddAuthentication(o =>
-        {
-            o.DefaultScheme = IdentityConstants.ApplicationScheme;
-            o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-        }).AddIdentityCookies(options =>
-        {
-            options.ApplicationCookie?.Configure(auth =>
             {
-                auth.Cookie.Name = "GZCTF_Token";
-                auth.SlidingExpiration = true;
-                auth.ExpireTimeSpan = TimeSpan.FromDays(7);
+                o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies(options =>
+            {
+                options.ApplicationCookie?.Configure(auth =>
+                {
+                    auth.Cookie.Name = "GZCTF_Token";
+                    auth.SlidingExpiration = true;
+                    auth.ExpireTimeSpan = TimeSpan.FromDays(7);
+                });
             });
-        });
 
         builder.Services.AddIdentityCore<UserInfo>(options =>
             {

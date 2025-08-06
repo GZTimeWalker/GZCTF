@@ -11,9 +11,9 @@ public class MonitorHub : Hub<IMonitorClient>
         var context = Context.GetHttpContext();
 
         if (context is null
-            || !await HubHelper.HasMonitor(context)
             || !context.Request.Query.TryGetValue("game", out var gameId)
-            || !int.TryParse(gameId, out var gId))
+            || !int.TryParse(gameId, out var gId)
+            || (!await ContextHelper.HasMonitor(context) && !await ContextHelper.HasValidToken(context)))
         {
             Context.Abort();
             return;

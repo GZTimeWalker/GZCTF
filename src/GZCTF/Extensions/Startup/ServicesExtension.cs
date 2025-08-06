@@ -9,6 +9,7 @@ using GZCTF.Services.Config;
 using GZCTF.Services.Container;
 using GZCTF.Services.CronJob;
 using GZCTF.Services.Mail;
+using GZCTF.Services.Token;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -58,11 +59,13 @@ static class ServicesExtension
         builder.Services.AddContainerService(builder.Configuration);
 
         builder.Services.AddScoped<IConfigService, ConfigService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<ILogRepository, LogRepository>();
         builder.Services.AddScoped<IBlobRepository, BlobRepository>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<IGameRepository, GameRepository>();
         builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+        builder.Services.AddScoped<IApiTokenRepository, ApiTokenRepository>();
         builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
         builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
         builder.Services.AddScoped<ICheatInfoRepository, CheatInfoRepository>();
