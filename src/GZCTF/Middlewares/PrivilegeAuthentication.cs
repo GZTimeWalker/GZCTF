@@ -54,17 +54,17 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
             await dbContext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
         }
 
-        if (user.Role < privilege)
-        {
-            if (privilege > Role.User)
-                logger.Log(
-                    StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden),
-                        context.HttpContext.Request.Path], user,
-                    TaskStatus.Denied);
+        if (user.Role >= privilege)
+            return;
 
-            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden);
-        }
+        if (privilege > Role.User)
+            logger.Log(
+                StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden),
+                    context.HttpContext.Request.Path], user,
+                TaskStatus.Denied);
+
+        context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+            StatusCodes.Status403Forbidden);
     }
 
     public static IActionResult GetResult(string msg, int code) =>

@@ -17,37 +17,31 @@ public class TokenService(IConfigService configService, IApiTokenRepository apiT
     {
         var ctx = await configService.GetApiTokenContext(cancellationToken);
 
-        var payload = new Dictionary<string, object>
+        Dictionary<string, object> payloads = new(4)
         {
             { JwtRegisteredClaimNames.Jti, apiToken.Id.ToString() },
             { JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
         };
 
         if (apiToken.ExpiresAt.HasValue)
-            payload.Add(JwtRegisteredClaimNames.Exp, apiToken.ExpiresAt.Value.ToUnixTimeSeconds());
+            payloads.Add(JwtRegisteredClaimNames.Exp, apiToken.ExpiresAt.Value.ToUnixTimeSeconds());
 
-        var json = JsonSerializer.Serialize(payload, Options);
-        var base64Payload = Base64UrlEncoder.Encode(json);
+        var result = Base64UrlEncoder.Encode(JsonSerializer.Serialize(payloads, Options));
+        var signature = ctx.Sign(result);
 
-        var signature = ctx.Sign(base64Payload);
-
-        return $"{base64Payload}.{signature}";
+        return $"{result}.{signature}";
     }
 
     public async Task<bool> ValidateToken(string token, CancellationToken cancellationToken = default)
     {
-        var parts = token.Split('.');
-        if (parts.Length != 2)
+        if (token.Split('.') is not [var base64Payload, var signature])
             return false;
 
-        var base64Payload = parts[0];
-        var signature = parts[1];
+        if (string.IsNullOrWhiteSpace(base64Payload) || string.IsNullOrWhiteSpace(signature))
+            return false;
 
         try
         {
-            if (string.IsNullOrEmpty(base64Payload) || string.IsNullOrEmpty(signature))
-                return false;
-
             var jsonPayload = Base64UrlEncoder.Decode(base64Payload);
             var payload = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonPayload);
 

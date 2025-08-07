@@ -14,15 +14,13 @@ public static class ContextHelper
     /// <returns></returns>
     static async Task<bool> HasPrivilege(HttpContext context, Role privilege)
     {
-        var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId is null || !Guid.TryParse(userId, out var id))
             return false;
 
-        var currentUser = await dbContext.Users.FirstOrDefaultAsync(i => i.Id == id);
-
-        return currentUser is not null && currentUser.Role >= privilege;
+        var dbContext = context.RequestServices.GetRequiredService<AppDbContext>();
+        return await dbContext.Users.AnyAsync(i => i.Id == id && i.Role >= privilege);
     }
 
     /// <summary>
@@ -32,15 +30,12 @@ public static class ContextHelper
     /// <returns></returns>
     public static async Task<bool> HasValidToken(HttpContext context)
     {
-        var tokenService = context.RequestServices.GetRequiredService<ITokenService>();
         var value = context.Request.Headers.Authorization.FirstOrDefault()?.Split(' ');
 
-        if (value is not ["Bearer", var token])
+        if (value is not ["Bearer", { Length: > 0 } token])
             return false;
 
-        if (string.IsNullOrEmpty(token))
-            return false;
-
+        var tokenService = context.RequestServices.GetRequiredService<ITokenService>();
         return await tokenService.ValidateToken(token);
     }
 
