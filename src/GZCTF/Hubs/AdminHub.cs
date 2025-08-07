@@ -9,7 +9,7 @@ public class AdminHub : Hub<IAdminClient>
     {
         var context = Context.GetHttpContext();
 
-        if (context is null || (!await ContextHelper.HasAdmin(context) && !await ContextHelper.HasValidToken(context)))
+        if (context is null || !await ContextHelper.HasAdmin(context))
         {
             Context.Abort();
             return;

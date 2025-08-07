@@ -17,8 +17,7 @@ public class GameEventRepository(
 
         gameEvent = await Context.GameEvents.SingleAsync(s => s.Id == gameEvent.Id, token);
 
-        await hub.Clients.Group($"Game_{gameEvent.GameId}")
-            .ReceivedGameEvent(gameEvent);
+        await hub.Clients.Group($"Game_{gameEvent.GameId}").ReceivedGameEvent(gameEvent);
 
         return gameEvent;
     }

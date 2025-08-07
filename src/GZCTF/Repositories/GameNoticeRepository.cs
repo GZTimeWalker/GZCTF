@@ -22,8 +22,7 @@ public class GameNoticeRepository(
 
         await cache.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
 
-        await hub.Clients.Group($"Game_{notice.GameId}")
-            .ReceivedGameNotice(notice);
+        await hub.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
 
         return notice;
     }

@@ -19,9 +19,7 @@ public class UserHub : Hub<IUserClient>
         }
 
         var gameRepository = context.RequestServices.GetRequiredService<IGameRepository>();
-        var game = await gameRepository.GetGameById(gId);
-
-        if (game is null)
+        if (!await gameRepository.HasGameAsync(gId))
         {
             Context.Abort();
             return;

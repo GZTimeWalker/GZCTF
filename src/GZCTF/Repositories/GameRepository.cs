@@ -22,6 +22,9 @@ public class GameRepository(
 
     public override Task<int> CountAsync(CancellationToken token = default) => Context.Games.CountAsync(token);
 
+    public Task<bool> HasGameAsync(int id, CancellationToken token = default)
+         => Context.Games.AnyAsync(g => g.Id == id, token);
+
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
         game.GenerateKeyPair(_xorKey);

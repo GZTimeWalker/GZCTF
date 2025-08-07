@@ -48,6 +48,14 @@ public interface IGameRepository : IRepository
     public Task<Game?> GetGameById(int id, CancellationToken token = default);
 
     /// <summary>
+    /// Check if the game is exists by Id
+    /// </summary>
+    /// <param name="id">Game Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> HasGameAsync(int id, CancellationToken token = default);
+
+    /// <summary>
     /// 创建比赛对象
     /// </summary>
     /// <param name="game">比赛对象</param>

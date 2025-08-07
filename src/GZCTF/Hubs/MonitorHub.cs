@@ -20,9 +20,7 @@ public class MonitorHub : Hub<IMonitorClient>
         }
 
         var gameRepository = context.RequestServices.GetRequiredService<IGameRepository>();
-        var game = await gameRepository.GetGameById(gId);
-
-        if (game is null)
+        if (!await gameRepository.HasGameAsync(gId))
         {
             Context.Abort();
             return;
