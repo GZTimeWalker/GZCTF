@@ -3,7 +3,14 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [1.4.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.2..v1.4.3) - 2025-07-22
+## [1.5.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.3..v1.5.0) - 2025-08-19
+
+### ⛰️ Features
+
+- Add API token management - ([613530](https://github.com/GZTimeWalker/GZCTF/commit/613530)) by **GZTime**
+
+---
+## [1.4.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.2..v1.4.3) - 2025-07-23
 
 ### ⛰️ Features
 
