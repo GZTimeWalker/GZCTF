@@ -58,7 +58,7 @@ public class UserCreateModel
     /// <summary>
     /// Team the user joins
     /// </summary>
-    [MaxLength(Limits.MaxUserNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong),
+    [MaxLength(Limits.MaxTeamNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? TeamName { get; set; }
 
