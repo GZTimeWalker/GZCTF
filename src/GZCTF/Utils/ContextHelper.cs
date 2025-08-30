@@ -1,11 +1,38 @@
 ﻿using System.Security.Claims;
 using GZCTF.Services.Token;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Utils;
 
 public static class ContextHelper
 {
+    public static bool IsModified(HttpRequest request, HttpResponse response, string eTag, DateTimeOffset lastModified)
+    {
+        response.Headers.ETag = eTag;
+        response.Headers.LastModified = lastModified.ToString("R");
+
+        if (request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out var inm))
+        {
+            var header = inm.ToString();
+            if (!string.IsNullOrEmpty(header))
+            {
+                var tags = header.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                if (tags.Any(t => string.Equals(t, eTag, StringComparison.Ordinal) || t == "*"))
+                    return false;
+            }
+        }
+
+        if (request.Headers.TryGetValue(HeaderNames.IfModifiedSince, out var ims) &&
+            DateTimeOffset.TryParse(ims.ToString(), out var since))
+        {
+            if (lastModified <= since.ToUniversalTime())
+                return false;
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Checks if the current request has the specified privilege.
     /// </summary>

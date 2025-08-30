@@ -94,19 +94,27 @@ public class CacheHelper(
         var lockKey = CacheKey.UpdateLock(key);
         await SetLockAsync(lockKey, token);
 
-        // begin the update
-        var cacheOptions = new DistributedCacheEntryOptions();
-        result = await func(cacheOptions);
-        var bytes = MemoryPackSerializer.Serialize(result);
+        int byteCount;
+        try
+        {
+            // begin the update
+            var cacheOptions = new DistributedCacheEntryOptions();
+            result = await func(cacheOptions);
+            var bytes = MemoryPackSerializer.Serialize(result);
+            byteCount = bytes.Length;
 
-        await distributedCache.SetAsync(key, bytes, cacheOptions, token);
-        // finish the update
-
-        await ReleaseLockAsync(lockKey, token);
+            // finish the update
+            await distributedCache.SetAsync(key, bytes, cacheOptions, token);
+        }
+        finally
+        {
+            // always release the lock
+            await ReleaseLockAsync(lockKey, token);
+        }
 
         logger.SystemLog(StaticLocalizer[
             nameof(Resources.Program.Cache_Updated),
-            key, cacheTime.ToString("HH:mm:ss.fff"), bytes.Length
+            key, cacheTime.ToString("HH:mm:ss.fff"), byteCount
         ], TaskStatus.Success, LogLevel.Debug);
 
         return result;
@@ -138,7 +146,7 @@ public class CacheHelper(
 
         while (lockValue is not null)
         {
-            await Task.Delay(100, token);
+            await Task.Delay(10, token);
             lockValue = await distributedCache.GetAsync(lockKey, token);
         }
 

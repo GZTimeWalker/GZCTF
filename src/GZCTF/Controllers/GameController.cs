@@ -280,7 +280,14 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        return Ok(await gameRepository.GetScoreboard(game, token));
+        var scoreboard = await gameRepository.GetScoreboard(game, token);
+
+        var lastModified = scoreboard.UpdateTimeUtc;
+        var eTag = GameETag(game.Id, lastModified);
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
+
+        return Ok(scoreboard);
     }
 
     /// <summary>
@@ -648,6 +655,11 @@ public class GameController(
             return context.Result;
 
         var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
+
+        var lastModified = scoreboard.UpdateTimeUtc;
+        var eTag = GameETag(context.Game!.Id, lastModified);
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
 
         var boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item)
             ? item
@@ -1241,6 +1253,9 @@ public class GameController(
 
         return res;
     }
+
+    static string GameETag(int gameId, DateTimeOffset lastModified) =>
+        $"W/\"{gameId}-{lastModified.ToUnixTimeSeconds()}\"";
 
     class ContextInfo
     {
