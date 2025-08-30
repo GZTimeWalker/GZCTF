@@ -92,11 +92,11 @@ public class GameChallengeRepository(
 
         await SaveAsync(token);
 
-        if (await Context.FlagContexts.CountAsync(f => f.Challenge == challenge, token) == 0)
-        {
-            challenge.IsEnabled = false;
-            await SaveAsync(token);
-        }
+        if (await Context.FlagContexts.CountAsync(f => f.Challenge == challenge, token) != 0)
+            return TaskStatus.Success;
+
+        challenge.IsEnabled = false;
+        await SaveAsync(token);
 
         return TaskStatus.Success;
     }

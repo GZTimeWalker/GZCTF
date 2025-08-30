@@ -1,11 +1,9 @@
 using System.Runtime.CompilerServices;
-using GZCTF.Extensions;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container.Manager;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -13,7 +11,7 @@ namespace GZCTF.Repositories;
 
 public class ExerciseInstanceRepository(
     AppDbContext context,
-    IDistributedCache cache,
+    CacheHelper cacheHelper,
     IContainerManager service,
     IContainerRepository containerRepository,
     IOptionsSnapshot<ContainerPolicy> containerPolicy,
@@ -220,11 +218,11 @@ public class ExerciseInstanceRepository(
     }
 
     Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
-        cache.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
+        cacheHelper.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(24);
             return Context.ExerciseChallenges.AnyAsync(e => e.IsEnabled, token);
-        }, token);
+        }, token: token);
 
     internal async Task MarkSolved(ExerciseInstance instance, CancellationToken token = default)
     {

@@ -20,6 +20,7 @@ namespace GZCTF.Controllers;
 [Route("api")]
 [ApiController]
 public class InfoController(
+    CacheHelper cacheHelper,
     IDistributedCache cache,
     ICaptchaExtension captcha,
     IPostRepository postRepository,
@@ -96,12 +97,12 @@ public class InfoController(
     [ProducesResponseType(typeof(ClientConfig), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientConfig(CancellationToken token = default)
     {
-        var data = await cache.GetOrCreateAsync(logger, CacheKey.ClientConfig,
+        var data = await cacheHelper.GetOrCreateAsync(logger, CacheKey.ClientConfig,
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return Task.FromResult(ClientConfig.FromServiceProvider(serviceProvider));
-            }, token);
+            }, token: token);
 
         return Ok(data);
     }
@@ -117,14 +118,14 @@ public class InfoController(
     [ProducesResponseType(typeof(ClientCaptchaInfoModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClientCaptchaInfo(CancellationToken token = default)
     {
-        var data = await cache.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
+        var data = await cacheHelper.GetOrCreateAsync(logger, CacheKey.CaptchaConfig,
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return Task.FromResult(accountPolicy.Value.UseCaptcha
                     ? captcha.ClientInfo()
                     : new ClientCaptchaInfoModel());
-            }, token);
+            }, token: token);
 
         return Ok(data);
     }

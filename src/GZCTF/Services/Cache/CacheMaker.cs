@@ -2,6 +2,7 @@
 using GZCTF.Services.Cache.Handlers;
 using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace GZCTF.Services.Cache;
 
@@ -22,7 +23,7 @@ public class CacheRequest(string key, DistributedCacheEntryOptions? options = nu
 public interface ICacheRequestHandler
 {
     public string? CacheKey(CacheRequest request);
-    public Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default);
+    public Task<byte[]> Handle(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default);
 }
 
 public class CacheMaker(
@@ -125,7 +126,7 @@ public class CacheMaker(
                         new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(1) },
                         token);
 
-                    var bytes = await handler.Handler(scope, item, token);
+                    var bytes = await handler.Handle(scope, item, token);
 
                     if (bytes.Length > 0)
                     {

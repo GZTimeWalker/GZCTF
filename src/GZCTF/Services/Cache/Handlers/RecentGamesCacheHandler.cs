@@ -7,7 +7,7 @@ public class RecentGamesCacheHandler : ICacheRequestHandler
 {
     public string CacheKey(CacheRequest request) => Cache.CacheKey.RecentGames;
 
-    public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
+    public async Task<byte[]> Handle(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
     {
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
 

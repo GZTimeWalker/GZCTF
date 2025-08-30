@@ -62,5 +62,7 @@ static class AppBuilderExtensions
                 options.Configuration.ChannelPrefix = new RedisChannel("GZCTF", RedisChannel.PatternMode.Literal);
             });
         }
+
+        builder.Services.AddMemoryCache();
     }
 }

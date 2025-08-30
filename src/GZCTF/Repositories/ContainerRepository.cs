@@ -74,7 +74,4 @@ public class ContainerRepository(
             return false;
         }
     }
-
-    public Task<List<Container>> GetContainers(CancellationToken token = default) =>
-        Context.Containers.ToListAsync(token);
 }

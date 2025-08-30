@@ -24,7 +24,7 @@ public static class HandlerExtension
     const StringSplitOptions DefaultSplitOptions =
         StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
 
-    static readonly DistributedCacheEntryOptions FaviconOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
+    static readonly DistributedCacheEntryOptions StaticCacheOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
     static readonly HashSet<string> SupportedCultures = Server.SupportedCultures
         .Select(c => c.ToLower()).ToHashSet();
@@ -63,9 +63,9 @@ public static class HandlerExtension
     static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
 
     static async Task<IResult> FaviconHandler(
+        CacheHelper cache,
         HttpContext context,
         IBlobStorage storage,
-        IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default)
     {
@@ -88,7 +88,7 @@ public static class HandlerExtension
         if (!await storage.ExistsAsync(path, token))
             goto FallbackToDefaultIcon;
 
-        await cache.SetStringAsync(CacheKey.Favicon, hash, FaviconOptions, token);
+        await cache.SetStringAsync(CacheKey.Favicon, hash, StaticCacheOptions, token);
         var stream = await storage.OpenReadAsync(path, token);
 
         return Results.File(
@@ -100,7 +100,7 @@ public static class HandlerExtension
     FallbackToDefaultIcon:
 
         eTag = GetETag(Program.DefaultFaviconHash[..8]);
-        await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash, FaviconOptions, token);
+        await cache.SetStringAsync(CacheKey.Favicon, Program.DefaultFaviconHash, StaticCacheOptions, token);
 
     SendDefaultIcon:
 
@@ -134,8 +134,8 @@ public static class HandlerExtension
     }
 
     static async Task<IResult> IndexHandler(
+        CacheHelper cache,
         HttpContext context,
-        IDistributedCache cache,
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default)
     {
@@ -148,7 +148,7 @@ public static class HandlerExtension
             var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
             content = IndexTemplate.Replace("%title%", title).Replace("%description%", description);
 
-            await cache.SetStringAsync(CacheKey.Index, content, token);
+            await cache.SetStringAsync(CacheKey.Index, content, StaticCacheOptions, token);
         }
 
         var builder = new StringBuilder(content);

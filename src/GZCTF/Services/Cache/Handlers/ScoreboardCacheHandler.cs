@@ -12,7 +12,7 @@ public class ScoreboardCacheHandler : ICacheRequestHandler
             _ => null
         };
 
-    public async Task<byte[]> Handler(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
+    public async Task<byte[]> Handle(AsyncServiceScope scope, CacheRequest request, CancellationToken token = default)
     {
         if (!int.TryParse(request.Params[0], out var id))
             return [];

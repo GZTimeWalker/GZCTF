@@ -1,21 +1,18 @@
 ﻿using System.Diagnostics;
-using GZCTF.Extensions;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace GZCTF.Repositories;
 
 public class GameRepository(
-    IDistributedCache cache,
+    ILogger<GameRepository> logger,
     CacheHelper cacheHelper,
     IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
     IConfigService configService,
-    ILogger<GameRepository> logger,
     AppDbContext context) : RepositoryBase(context), IGameRepository
 {
     readonly byte[] _xorKey = configService.GetXorKey();
@@ -23,7 +20,7 @@ public class GameRepository(
     public override Task<int> CountAsync(CancellationToken token = default) => Context.Games.CountAsync(token);
 
     public Task<bool> HasGameAsync(int id, CancellationToken token = default)
-         => Context.Games.AnyAsync(g => g.Id == id, token);
+        => Context.Games.AnyAsync(g => g.Id == id, token);
 
     public async Task<Game?> CreateGame(Game game, CancellationToken token = default)
     {
@@ -76,6 +73,7 @@ public class GameRepository(
                 TeamMemberCountLimit = game.TeamMemberCountLimit
             }).ToArrayAsync(token);
 
+
     public async Task<ArrayResponse<BasicGameInfoModel>> GetGameInfo(int count = 20, int skip = 0,
         CancellationToken token = default)
     {
@@ -86,21 +84,23 @@ public class GameRepository(
         if (skip + count > 100)
             return new(await FetchGameList(count, skip, token), total);
 
-        var games = await cache.GetOrCreateAsync(logger, CacheKey.GameList, entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromDays(2);
-            return FetchGameList(100, 0, token);
-        }, token);
+        var games = await cacheHelper.GetOrCreateAsync(logger, CacheKey.GameList,
+            entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(2);
+                return FetchGameList(100, 0, token);
+            }, token: token);
 
         return new(games.Skip(skip).Take(count).ToArray(), total);
     }
 
-    public async Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default)
-        => await cache.GetOrCreateAsync(logger, CacheKey.RecentGames, entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-            return GenRecentGames(token);
-        }, token);
+    public Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default)
+        => cacheHelper.GetOrCreateAsync(logger, CacheKey.RecentGames,
+            entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                return GenRecentGames(token);
+            }, token: token);
 
     public Task<BasicGameInfoModel[]> GenRecentGames(CancellationToken token = default) =>
         // sort by following rules:
@@ -131,12 +131,15 @@ public class GameRepository(
             })
             .ToArrayAsync(token);
 
-    public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default) =>
-        cache.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id), entry =>
-        {
-            entry.SlidingExpiration = TimeSpan.FromDays(7);
-            return GenScoreboard(game, token);
-        }, token);
+
+
+    public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
+        => cacheHelper.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id),
+            entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(7);
+                return GenScoreboard(game, token);
+            }, token: token);
 
     public async Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default)
     {
@@ -207,7 +210,7 @@ public class GameRepository(
             await cacheHelper.FlushGameListCache(token);
             await cacheHelper.FlushRecentGamesCache(token);
 
-            await cache.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
+            await cacheHelper.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
 
             return TaskStatus.Success;
         }
