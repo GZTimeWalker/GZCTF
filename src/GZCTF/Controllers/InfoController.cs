@@ -45,8 +45,15 @@ public class InfoController(
     /// <response code="200">Successfully retrieved posts</response>
     [HttpGet("Posts/Latest")]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetLatestPosts(CancellationToken token) =>
-        Ok((await postRepository.GetPosts(token)).Take(20).Select(PostInfoModel.FromPost));
+    public async Task<IActionResult> GetLatestPosts(CancellationToken token)
+    {
+        var posts = await postRepository.GetPosts(token);
+        (Post[] data, DateTimeOffset lastModified) = posts;
+        var eTag = $"W/\"latest-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
+        return Ok(data.Take(20).Select(PostInfoModel.FromPost));
+    }
 
     /// <summary>
     /// Get all posts
@@ -59,8 +66,15 @@ public class InfoController(
     [HttpGet("Posts")]
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Query))]
     [ProducesResponseType(typeof(PostInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPosts(CancellationToken token) =>
-        Ok((await postRepository.GetPosts(token)).Select(PostInfoModel.FromPost));
+    public async Task<IActionResult> GetPosts(CancellationToken token)
+    {
+        var posts = await postRepository.GetPosts(token);
+        (Post[] data, DateTimeOffset lastModified) = posts;
+        var eTag = $"W/\"all-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
+        return Ok(data.Select(PostInfoModel.FromPost));
+    }
 
     /// <summary>
     /// Get post details
@@ -83,6 +97,10 @@ public class InfoController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Post_NotFound)],
                 StatusCodes.Status404NotFound));
 
+        var lastModified = post.UpdateTimeUtc;
+        var eTag = $"W/\"{post.Id}-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
         return Ok(PostDetailModel.FromPost(post));
     }
 
@@ -104,6 +122,10 @@ public class InfoController(
                 return Task.FromResult(ClientConfig.FromServiceProvider(serviceProvider));
             }, token: token);
 
+        var lastModified = data.UpdateTimeUtc;
+        var eTag = $"W/\"cfg-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
         return Ok(data);
     }
 
@@ -127,6 +149,10 @@ public class InfoController(
                     : new ClientCaptchaInfoModel());
             }, token: token);
 
+        var lastModified = data.UpdateTimeUtc;
+        var eTag = $"W/cap-\"{lastModified.ToUnixTimeSeconds():X}\"";
+        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
         return Ok(data);
     }
 

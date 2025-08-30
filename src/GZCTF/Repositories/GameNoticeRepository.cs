@@ -1,5 +1,6 @@
 ﻿using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
+using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.SignalR;
@@ -34,13 +35,14 @@ public class GameNoticeRepository(
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default) =>
         Context.GameNotices.FirstOrDefaultAsync(e => e.Id == noticeId && e.GameId == gameId, token);
 
-    public Task<GameNotice[]> GetNotices(int gameId, int count = 100, int skip = 0, CancellationToken token = default)
-        => cacheHelper.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), entry =>
+    public Task<DataWithModifiedTime<GameNotice[]>> GetLatestNotices(int gameId, CancellationToken token = default)
+        => cacheHelper.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-            return Context.GameNotices.Where(e => e.GameId == gameId)
+            var notices = await Context.GameNotices.Where(e => e.GameId == gameId)
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUtc)
-                .Skip(skip).Take(count).ToArrayAsync(token);
+                .Take(300).ToArrayAsync(token);
+            return new DataWithModifiedTime<GameNotice[]>(notices, DateTimeOffset.UtcNow);
         }, token: token);
 
     public async Task RemoveNotice(GameNotice notice, CancellationToken token = default)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Channels;
+using MemoryPack;
 using Microsoft.IO;
 
 namespace GZCTF.Utils;
@@ -52,6 +53,15 @@ public record RequestResponse(string Title, int Status = StatusCodes.Status400Ba
 /// <param name="Data">Data</param>
 /// <param name="Status">Status code</param>
 public record RequestResponse<T>(string Title, T Data, int Status = StatusCodes.Status400BadRequest);
+
+/// <summary>
+/// Data with modification time
+/// </summary>
+/// <param name="Data">Date</param>
+/// <param name="LastModifiedTimeUtc">The last modified time</param>
+/// <typeparam name="T"></typeparam>
+[MemoryPackable]
+public partial record DataWithModifiedTime<T>(T Data, DateTimeOffset LastModifiedTimeUtc);
 
 /// <summary>
 /// Answer verification result

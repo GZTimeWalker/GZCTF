@@ -94,12 +94,13 @@ public class GameRepository(
         return new(games.Skip(skip).Take(count).ToArray(), total);
     }
 
-    public Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default)
+    public Task<DataWithModifiedTime<BasicGameInfoModel[]>> GetRecentGames(CancellationToken token = default)
         => cacheHelper.GetOrCreateAsync(logger, CacheKey.RecentGames,
-            entry =>
+            async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                return GenRecentGames(token);
+                var games = await GenRecentGames(token);
+                return new DataWithModifiedTime<BasicGameInfoModel[]>(games, DateTimeOffset.UtcNow);
             }, token: token);
 
     public Task<BasicGameInfoModel[]> GenRecentGames(CancellationToken token = default) =>

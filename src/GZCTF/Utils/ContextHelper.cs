@@ -7,10 +7,17 @@ namespace GZCTF.Utils;
 
 public static class ContextHelper
 {
-    public static bool IsModified(HttpRequest request, HttpResponse response, string eTag, DateTimeOffset lastModified)
+    static readonly CacheControlHeaderValue NoCacheHeader = new() { NoCache = true, MustRevalidate = true };
+
+    static readonly CacheControlHeaderValue PrivateNoCacheHeader =
+        new() { NoCache = true, Private = true, MustRevalidate = true };
+
+    public static bool IsModified(HttpRequest request, HttpResponse response, string eTag, DateTimeOffset lastModified,
+        bool isPrivate = false)
     {
         response.Headers.ETag = eTag;
         response.Headers.LastModified = lastModified.ToString("R");
+        response.GetTypedHeaders().CacheControl = isPrivate ? PrivateNoCacheHeader : NoCacheHeader;
 
         if (request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out var inm))
         {

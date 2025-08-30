@@ -109,7 +109,7 @@ public interface IGameRepository : IRepository
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default);
+    public Task<DataWithModifiedTime<BasicGameInfoModel[]>> GetRecentGames(CancellationToken token = default);
 
     #endregion
 

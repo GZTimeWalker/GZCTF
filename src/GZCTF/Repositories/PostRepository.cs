@@ -26,14 +26,15 @@ public class PostRepository(
         Context.Posts.FirstOrDefaultAsync(p => p.Id == id, token);
 
     public async Task<Post?> GetPostByIdFromCache(string id, CancellationToken token = default) =>
-        (await GetPosts(token)).FirstOrDefault(p => p.Id == id);
+        (await GetPosts(token)).Data.FirstOrDefault(p => p.Id == id);
 
-    public Task<Post[]> GetPosts(CancellationToken token = default) =>
-        cacheHelper.GetOrCreateAsync(logger, CacheKey.Posts, entry =>
+    public Task<DataWithModifiedTime<Post[]>> GetPosts(CancellationToken token = default) =>
+        cacheHelper.GetOrCreateAsync(logger, CacheKey.Posts, async entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(12);
-            return Context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
+            var data = await Context.Posts.AsNoTracking().OrderByDescending(n => n.IsPinned)
                 .ThenByDescending(n => n.UpdateTimeUtc).ToArrayAsync(token);
+            return new DataWithModifiedTime<Post[]>(data, DateTimeOffset.UtcNow);
         }, token: token);
 
     public async Task RemovePost(Post post, CancellationToken token = default)
