@@ -94,12 +94,13 @@ public class GameRepository(
         return new(games.Skip(skip).Take(count).ToArray(), total);
     }
 
-    public Task<BasicGameInfoModel[]> GetRecentGames(CancellationToken token = default)
+    public Task<DataWithModifiedTime<BasicGameInfoModel[]>> GetRecentGames(CancellationToken token = default)
         => cacheHelper.GetOrCreateAsync(logger, CacheKey.RecentGames,
-            entry =>
+            async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                return GenRecentGames(token);
+                var games = await GenRecentGames(token);
+                return new DataWithModifiedTime<BasicGameInfoModel[]>(games, DateTimeOffset.UtcNow);
             }, token: token);
 
     public Task<BasicGameInfoModel[]> GenRecentGames(CancellationToken token = default) =>
@@ -131,8 +132,6 @@ public class GameRepository(
             })
             .ToArrayAsync(token);
 
-
-
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cacheHelper.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id),
             entry =>
@@ -140,6 +139,13 @@ public class GameRepository(
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return GenScoreboard(game, token);
             }, token: token);
+
+    public Task<ScoreboardModel?> TryGetScoreboard(int gameId, CancellationToken token = default)
+        => cacheHelper.GetAsync<ScoreboardModel>(CacheKey.ScoreBoard(gameId), token);
+
+    public Task<bool> IsGameClosed(int gameId, CancellationToken token = default)
+        => Context.Games.AnyAsync(game =>
+            game.Id == gameId && game.EndTimeUtc < DateTimeOffset.UtcNow && !game.PracticeMode, token);
 
     public async Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default)
     {

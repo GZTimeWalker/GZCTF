@@ -1,11 +1,51 @@
 ﻿using System.Security.Claims;
 using GZCTF.Services.Token;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Utils;
 
 public static class ContextHelper
 {
+    static readonly CacheControlHeaderValue NoCacheHeader = new() { NoCache = true, MustRevalidate = true };
+
+    static readonly CacheControlHeaderValue PrivateNoCacheHeader =
+        new() { NoCache = true, Private = true, MustRevalidate = true };
+
+    public static EntityTagHeaderValue SetCacheHeaders(HttpResponse response, StringSegment eTag,
+        DateTimeOffset lastModified, bool isPrivate = false, bool isWeak = true)
+    {
+        var headers = response.GetTypedHeaders();
+        headers.ETag = new EntityTagHeaderValue(eTag, isWeak);
+        headers.LastModified = lastModified;
+        headers.CacheControl = isPrivate ? PrivateNoCacheHeader : NoCacheHeader;
+        return headers.ETag;
+    }
+
+    public static bool IsNotModified(HttpRequest request, HttpResponse response, StringSegment eTag,
+        DateTimeOffset lastModified, bool isPrivate = false, bool isWeak = true)
+    {
+        var eTagValue = SetCacheHeaders(response, eTag, lastModified, isPrivate, isWeak);
+        var headers = request.GetTypedHeaders();
+
+        var ifNoneMatch = headers.IfNoneMatch;
+        if (ifNoneMatch.Count > 0)
+        {
+            return ifNoneMatch.Any(tag =>
+                StringSegment.Equals(tag.Tag, "*", StringComparison.Ordinal) ||
+                tag.Compare(eTagValue, !isWeak));
+        }
+
+        if (headers.IfModifiedSince is { } ifModifiedSince)
+        {
+            return lastModified <= ifModifiedSince;
+        }
+
+        // No conditional headers, so the resource is considered modified.
+        return false;
+    }
+
     /// <summary>
     /// Checks if the current request has the specified privilege.
     /// </summary>
