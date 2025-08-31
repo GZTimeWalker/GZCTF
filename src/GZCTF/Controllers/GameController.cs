@@ -279,7 +279,7 @@ public class GameController(
         if (scoreboard is not null)
         {
             eTag = GameETag(id, scoreboard.UpdateTimeUtc);
-            if (ContextHelper.IsNotModified(Request, Response, eTag, scoreboard.UpdateTimeUtc, true))
+            if (ContextHelper.IsNotModified(Request, Response, eTag, scoreboard.UpdateTimeUtc))
                 return StatusCode(StatusCodes.Status304NotModified);
 
             return Ok(scoreboard);
@@ -687,7 +687,7 @@ public class GameController(
         scoreboard ??= await gameRepository.GetScoreboard(context.Game!, token);
         var lastModified = scoreboard.UpdateTimeUtc;
         eTag = GameETag(context.Game!.Id, lastModified);
-        ContextHelper.SetCacheHeaders(Response, eTag, lastModified);
+        ContextHelper.SetCacheHeaders(Response, eTag, lastModified, true);
 
         var boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item)
             ? item
