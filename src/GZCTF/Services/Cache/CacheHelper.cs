@@ -30,16 +30,27 @@ public class CacheHelper(
         return value ?? await GetOrCreateFromDistributedCacheAsync(logger, key, func, token);
     }
 
-    public async Task<string?> GetStringAsync(string key, CancellationToken token = default)
+    /// <summary>
+    /// Get cache value, return null if not exists.
+    /// </summary>
+    public async Task<TResult?> GetAsync<TResult>(string key, CancellationToken token = default)
     {
-        if (memoryCache.TryGetValue<string>(key, out var value) && value is not null)
+        if (memoryCache.TryGetValue(key, out TResult? value) && value is not null)
             return value;
 
-        value = await distributedCache.GetStringAsync(key, token);
-        if (value is not null)
+        var bytes = await distributedCache.GetAsync(key, token);
+        if (TryDeserialize(bytes, ref value) && value is not null)
             memoryCache.Set(key, value, CommonMemoryCacheOptions);
 
         return value;
+    }
+
+    public Task<string?> GetStringAsync(string key, CancellationToken token = default)
+    {
+        if (memoryCache.TryGetValue(key, out string? value) && value is not null)
+            return Task.FromResult<string?>(value);
+
+        return distributedCache.GetStringAsync(key, token);
     }
 
     public async Task SetStringAsync(string key, string value, DistributedCacheEntryOptions options,

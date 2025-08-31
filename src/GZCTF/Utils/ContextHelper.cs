@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using GZCTF.Services.Token;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Utils;
@@ -12,32 +13,37 @@ public static class ContextHelper
     static readonly CacheControlHeaderValue PrivateNoCacheHeader =
         new() { NoCache = true, Private = true, MustRevalidate = true };
 
-    public static bool IsModified(HttpRequest request, HttpResponse response, string eTag, DateTimeOffset lastModified,
-        bool isPrivate = false)
+    public static EntityTagHeaderValue SetCacheHeaders(HttpResponse response, StringSegment eTag,
+        DateTimeOffset lastModified, bool isPrivate = false, bool isWeak = true)
     {
-        response.Headers.ETag = eTag;
-        response.Headers.LastModified = lastModified.ToString("R");
-        response.GetTypedHeaders().CacheControl = isPrivate ? PrivateNoCacheHeader : NoCacheHeader;
+        var headers = response.GetTypedHeaders();
+        headers.ETag = new EntityTagHeaderValue(eTag, isWeak);
+        headers.LastModified = lastModified;
+        headers.CacheControl = isPrivate ? PrivateNoCacheHeader : NoCacheHeader;
+        return headers.ETag;
+    }
 
-        if (request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out var inm))
+    public static bool IsNotModified(HttpRequest request, HttpResponse response, StringSegment eTag,
+        DateTimeOffset lastModified, bool isPrivate = false, bool isWeak = true)
+    {
+        var eTagValue = SetCacheHeaders(response, eTag, lastModified, isPrivate, isWeak);
+        var headers = request.GetTypedHeaders();
+
+        var ifNoneMatch = headers.IfNoneMatch;
+        if (ifNoneMatch.Count > 0)
         {
-            var header = inm.ToString();
-            if (!string.IsNullOrEmpty(header))
-            {
-                var tags = header.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                if (tags.Any(t => string.Equals(t, eTag, StringComparison.Ordinal) || t == "*"))
-                    return false;
-            }
+            return ifNoneMatch.Any(tag =>
+                StringSegment.Equals(tag.Tag, "*", StringComparison.Ordinal) ||
+                tag.Compare(eTagValue, !isWeak));
         }
 
-        if (request.Headers.TryGetValue(HeaderNames.IfModifiedSince, out var ims) &&
-            DateTimeOffset.TryParse(ims.ToString(), out var since))
+        if (headers.IfModifiedSince is { } ifModifiedSince)
         {
-            if (lastModified <= since.ToUniversalTime())
-                return false;
+            return lastModified <= ifModifiedSince;
         }
 
-        return true;
+        // No conditional headers, so the resource is considered modified.
+        return false;
     }
 
     /// <summary>

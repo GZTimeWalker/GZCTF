@@ -49,8 +49,8 @@ public class InfoController(
     {
         var posts = await postRepository.GetPosts(token);
         (Post[] data, DateTimeOffset lastModified) = posts;
-        var eTag = $"W/\"latest-{lastModified.ToUnixTimeSeconds():X}\"";
-        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+        var eTag = $"\"latest-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
         return Ok(data.Take(20).Select(PostInfoModel.FromPost));
     }
@@ -70,8 +70,8 @@ public class InfoController(
     {
         var posts = await postRepository.GetPosts(token);
         (Post[] data, DateTimeOffset lastModified) = posts;
-        var eTag = $"W/\"all-{lastModified.ToUnixTimeSeconds():X}\"";
-        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+        var eTag = $"\"all-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
         return Ok(data.Select(PostInfoModel.FromPost));
     }
@@ -98,8 +98,8 @@ public class InfoController(
                 StatusCodes.Status404NotFound));
 
         var lastModified = post.UpdateTimeUtc;
-        var eTag = $"W/\"{post.Id}-{lastModified.ToUnixTimeSeconds():X}\"";
-        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+        var eTag = $"\"{post.Id}-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
         return Ok(PostDetailModel.FromPost(post));
     }
@@ -123,8 +123,8 @@ public class InfoController(
             }, token: token);
 
         var lastModified = data.UpdateTimeUtc;
-        var eTag = $"W/\"cfg-{lastModified.ToUnixTimeSeconds():X}\"";
-        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+        var eTag = $"\"cfg-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
         return Ok(data);
     }
@@ -150,8 +150,8 @@ public class InfoController(
             }, token: token);
 
         var lastModified = data.UpdateTimeUtc;
-        var eTag = $"W/cap-\"{lastModified.ToUnixTimeSeconds():X}\"";
-        if (!ContextHelper.IsModified(Request, Response, eTag, lastModified))
+        var eTag = $"\"cap-{lastModified.ToUnixTimeSeconds():X}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
         return Ok(data);
     }

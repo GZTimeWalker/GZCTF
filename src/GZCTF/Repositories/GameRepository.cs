@@ -132,8 +132,6 @@ public class GameRepository(
             })
             .ToArrayAsync(token);
 
-
-
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default)
         => cacheHelper.GetOrCreateAsync(logger, CacheKey.ScoreBoard(game.Id),
             entry =>
@@ -141,6 +139,13 @@ public class GameRepository(
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
                 return GenScoreboard(game, token);
             }, token: token);
+
+    public Task<ScoreboardModel?> TryGetScoreboard(int gameId, CancellationToken token = default)
+        => cacheHelper.GetAsync<ScoreboardModel>(CacheKey.ScoreBoard(gameId), token);
+
+    public Task<bool> IsGameClosed(int gameId, CancellationToken token = default)
+        => Context.Games.AnyAsync(game =>
+            game.Id == gameId && game.EndTimeUtc < DateTimeOffset.UtcNow && !game.PracticeMode, token);
 
     public async Task<ScoreboardModel> GetScoreboardWithMembers(Game game, CancellationToken token = default)
     {
