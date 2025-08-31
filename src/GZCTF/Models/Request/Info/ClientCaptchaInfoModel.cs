@@ -1,4 +1,5 @@
-﻿using GZCTF.Models.Internal;
+﻿using System.Text.Json.Serialization;
+using GZCTF.Models.Internal;
 using MemoryPack;
 
 namespace GZCTF.Models.Request.Info;
@@ -30,4 +31,7 @@ public partial class ClientCaptchaInfoModel
     /// Site Key
     /// </summary>
     public string SiteKey { get; set; } = string.Empty;
+
+    [JsonIgnore]
+    public DateTimeOffset UpdateTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 }

@@ -348,6 +348,9 @@ public partial class ClientConfig
     /// </summary>
     public int RenewalWindow { get; set; } = 10;
 
+    [JsonIgnore]
+    public DateTimeOffset UpdateTimeUtc { get; set; } = DateTimeOffset.UtcNow;
+
     public static ClientConfig FromServiceProvider(IServiceProvider serviceProvider) =>
         FromConfigs(
             serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,

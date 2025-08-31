@@ -66,9 +66,12 @@ public class GameController(
         [FromQuery][Range(0, 50)] int limit,
         CancellationToken token)
     {
-        var games = await gameRepository.GetRecentGames(token);
+        (BasicGameInfoModel[] games, DateTimeOffset lastModified) = await gameRepository.GetRecentGames(token);
+        var eTag = $"\"{lastModified.ToUnixTimeSeconds():X}-{limit}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
 
-        return Ok(limit > 0 ? games.Take(limit).ToArray() : games);
+        return Ok(limit > 0 ? games.Take(limit) : games);
     }
 
     /// <summary>
@@ -271,6 +274,17 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
     {
+        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
+        string eTag;
+        if (scoreboard is not null)
+        {
+            eTag = GameETag(id, scoreboard.UpdateTimeUtc);
+            if (ContextHelper.IsNotModified(Request, Response, eTag, scoreboard.UpdateTimeUtc))
+                return StatusCode(StatusCodes.Status304NotModified);
+
+            return Ok(scoreboard);
+        }
+
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
@@ -280,7 +294,12 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        return Ok(await gameRepository.GetScoreboard(game, token));
+        scoreboard = await gameRepository.GetScoreboard(game, token);
+        var lastModified = scoreboard.UpdateTimeUtc;
+        eTag = GameETag(game.Id, lastModified);
+        ContextHelper.SetCacheHeaders(Response, eTag, lastModified);
+
+        return Ok(scoreboard);
     }
 
     /// <summary>
@@ -299,7 +318,7 @@ public class GameController(
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery][Range(0, 100)] int count = 100,
-        [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery][Range(0, 300)] int skip = 0, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -310,7 +329,11 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        return Ok(await noticeRepository.GetNotices(game.Id, count, skip, token));
+        (GameNotice[] data, DateTimeOffset lastModified) = await noticeRepository.GetLatestNotices(game.Id, token);
+        var eTag = $"\"{game.Id}-{lastModified.ToUnixTimeSeconds():X}-{skip}-{count}\"";
+        if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
+            return StatusCode(StatusCodes.Status304NotModified);
+        return Ok(data.Skip(skip).Take(count));
     }
 
     /// <summary>
@@ -642,12 +665,29 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ChallengesWithTeamInfo([FromRoute] int id, CancellationToken token)
     {
+        var gameClosed = await gameRepository.IsGameClosed(id, token);
+        if (gameClosed)
+            return BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
+
+        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
+        string eTag;
+        if (scoreboard is not null)
+        {
+            eTag = GameETag(id, scoreboard.UpdateTimeUtc);
+            if (ContextHelper.IsNotModified(Request, Response, eTag, scoreboard.UpdateTimeUtc, true))
+                return StatusCode(StatusCodes.Status304NotModified);
+        }
+
         var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
 
-        var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
+        scoreboard ??= await gameRepository.GetScoreboard(context.Game!, token);
+        var lastModified = scoreboard.UpdateTimeUtc;
+        eTag = GameETag(context.Game!.Id, lastModified);
+        ContextHelper.SetCacheHeaders(Response, eTag, lastModified, true);
 
         var boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item)
             ? item
@@ -1241,6 +1281,9 @@ public class GameController(
 
         return res;
     }
+
+    static string GameETag(int gameId, DateTimeOffset lastModified) =>
+        $"\"{gameId}-{lastModified.ToUnixTimeSeconds():X}\"";
 
     class ContextInfo
     {

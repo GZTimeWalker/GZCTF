@@ -10,6 +10,7 @@ using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
 namespace GZCTF.Extensions;
@@ -60,7 +61,7 @@ public static class HandlerExtension
         app.MapFallback(IndexHandler);
     }
 
-    static string GetETag(string hash) => $"\"favicon-{hash[..8]}\"";
+    static string GetETag(StringSegment hash) => $"\"favicon-{hash}\"";
 
     static async Task<IResult> FaviconHandler(
         CacheHelper cache,
@@ -134,12 +135,12 @@ public static class HandlerExtension
     }
 
     static async Task<IResult> IndexHandler(
-        CacheHelper cache,
+        CacheHelper cacheHelper,
         HttpContext context,
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default)
     {
-        var content = await cache.GetStringAsync(CacheKey.Index, token);
+        var content = await cacheHelper.GetStringAsync(CacheKey.Index, token);
 
         if (content is null)
         {
@@ -148,7 +149,7 @@ public static class HandlerExtension
             var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
             content = IndexTemplate.Replace("%title%", title).Replace("%description%", description);
 
-            await cache.SetStringAsync(CacheKey.Index, content, StaticCacheOptions, token);
+            await cacheHelper.SetStringAsync(CacheKey.Index, content, StaticCacheOptions, token);
         }
 
         var builder = new StringBuilder(content);

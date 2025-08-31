@@ -495,7 +495,7 @@ export interface UserCreateModel {
   phone?: string | null;
   /**
    * Team the user joins
-   * @maxLength 15
+   * @maxLength 20
    */
   teamName?: string | null;
 }
@@ -4865,6 +4865,8 @@ export class Api<
         count?: number;
         /**
          * @format int32
+         * @min 0
+         * @max 300
          * @default 0
          */
         skip?: number;
@@ -4898,6 +4900,8 @@ export class Api<
         count?: number;
         /**
          * @format int32
+         * @min 0
+         * @max 300
          * @default 0
          */
         skip?: number;
@@ -4930,6 +4934,8 @@ export class Api<
         count?: number;
         /**
          * @format int32
+         * @min 0
+         * @max 300
          * @default 0
          */
         skip?: number;
