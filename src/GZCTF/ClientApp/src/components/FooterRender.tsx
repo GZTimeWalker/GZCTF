@@ -1,4 +1,4 @@
-import { TypographyStylesProvider } from '@mantine/core'
+import { Typography } from '@mantine/core'
 import { marked } from 'marked'
 import { forwardRef } from 'react'
 import { MarkdownProps } from '@Components/MarkdownRenderer'
@@ -14,7 +14,7 @@ export const FooterRender = forwardRef<HTMLDivElement, MarkdownProps>((props, re
   const mdSource = source.replace(/<mbr\/>/g, isMobile ? '<br />' : '')
 
   return (
-    <TypographyStylesProvider ref={ref} c="dimmed" {...others} className={classes.root}>
+    <Typography ref={ref} c="dimmed" {...others} className={classes.root}>
       <div
         dangerouslySetInnerHTML={{
           __html: marked(mdSource, {
@@ -22,6 +22,6 @@ export const FooterRender = forwardRef<HTMLDivElement, MarkdownProps>((props, re
           }),
         }}
       />
-    </TypographyStylesProvider>
+    </Typography>
   )
 })

@@ -1,10 +1,10 @@
 import { useMantineColorScheme, useMantineTheme } from '@mantine/core'
 import dayjs from 'dayjs'
-import type { EChartsOption } from 'echarts'
-import ReactEcharts from 'echarts-for-react'
-import { FC, useEffect, useMemo, useState } from 'react'
+import type { EChartsOption, SeriesOption } from 'echarts'
+import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
+import { EchartsContainer } from '@Components/charts/EchartsContainer'
 import { normalizeLanguage, useLanguage } from '@Utils/I18n'
 import { getGameStatus, useGame, useGameScoreboard } from '@Hooks/useGame'
 
@@ -33,22 +33,19 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
   const drawStart = longGame && !finished ? weekStart : 0
   const drawEnd = longGame && !finished ? weekEnd : 100
 
-  const [now, setNow] = useState<Date>(new Date())
-  const [chartData, setChartData] = useState<any>()
-
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
   const { language } = useLanguage()
   const locale = normalizeLanguage(language)
 
-  useEffect(() => {
-    if (!scoreboard?.timeLines || !game) return
+  const chartData: SeriesOption[] = useMemo(() => {
+    if (!scoreboard?.timeLines || !game) return []
 
     const timeLine = scoreboard?.timeLines[division ?? 'all'] ?? []
     const current = dayjs()
     const last = endTime.diff(current, 's') < 0 ? endTime : current
 
-    setChartData([
+    return [
       {
         type: 'line',
         step: 'end',
@@ -58,8 +55,10 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
             ? undefined
             : {
                 symbol: 'none',
+                // https://echarts.apache.org/en/option.html#series-line.markLine.data
                 data: [
                   {
+                    // xAxis?: string | number, but we need to use a Date object
                     xAxis: last.toDate(),
                     lineStyle: {
                       color: colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6],
@@ -73,28 +72,30 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
                   },
                 ],
               },
-      },
-      ...(timeLine?.map((team) => ({
-        type: 'line',
-        step: 'end',
-        name: team.name,
-        data: [
-          [dayjs(game.start).toDate(), 0],
-          ...(team.items?.map((item) => [item.time, item.score]) ?? []),
-          [last.toDate(), (team.items && team.items[team.items.length - 1]?.score) ?? 0],
-        ],
-      })) ?? []),
-    ])
-
-    setNow(new Date())
+      } as SeriesOption,
+      ...(timeLine?.map(
+        (team) =>
+          ({
+            type: 'line',
+            step: 'end',
+            name: team.name,
+            data: [
+              [dayjs(game.start).toDate(), 0],
+              ...(team.items?.map((item) => [item.time, item.score]) ?? []),
+              [last.toDate(), (team.items && team.items[team.items.length - 1]?.score) ?? 0],
+            ],
+          }) satisfies SeriesOption
+      ) ?? []),
+    ]
   }, [scoreboard, division, game])
 
-  const labelColor = colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5]
-  const lineColor = colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6]
-  const backgroundColor = colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.light[1]
+  const staticOption: EChartsOption = useMemo(() => {
+    const isDark = colorScheme === 'dark'
+    const labelColor = isDark ? theme.colors.light[1] : theme.colors.dark[5]
+    const lineColor = isDark ? theme.colors.gray[3] : theme.colors.gray[6]
+    const backgroundColor = isDark ? theme.colors.gray[6] : theme.colors.light[1]
 
-  const staticOption: EChartsOption = useMemo(
-    () => ({
+    return {
       animation: true,
       backgroundColor: 'transparent',
       toolbox: {
@@ -107,7 +108,6 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
       },
       xAxis: {
         type: 'time',
-        name: t('common.label.time'),
         min: dayjs(game?.start).toDate(),
         max: dayjs(game?.end).toDate(),
         splitLine: {
@@ -117,6 +117,10 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
       yAxis: {
         type: 'value',
         name: t('game.label.score'),
+        nameTextStyle: {
+          color: labelColor,
+          fontWeight: 'normal',
+        },
         boundaryGap: [0, '100%'],
         axisLabel: {
           formatter: t('game.label.score_formatter'),
@@ -142,7 +146,7 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
       },
       legend: {
         orient: 'horizontal',
-        bottom: 20,
+        top: 420,
         textStyle: {
           fontSize: 12,
           color: labelColor,
@@ -151,7 +155,7 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
       grid: {
         top: 50,
         left: 70,
-        right: 90,
+        right: 40,
         bottom: 110,
       },
       dataZoom: [
@@ -188,14 +192,11 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
           width: 20,
         },
       ],
-    }),
-    [t, game?.start, game?.end, labelColor, lineColor, backgroundColor, drawStart, drawEnd]
-  )
+    } satisfies EChartsOption
+  }, [t, game?.start, game?.end, colorScheme, theme, drawStart, drawEnd])
 
   return (
-    <ReactEcharts
-      key={now.toUTCString()}
-      theme={colorScheme}
+    <EchartsContainer
       option={{
         ...staticOption,
         series: chartData,
@@ -206,7 +207,7 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
       }}
       style={{
         width: '100%',
-        height: '450px',
+        height: '460px',
         display: 'flex',
       }}
     />

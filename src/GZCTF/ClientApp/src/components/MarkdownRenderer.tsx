@@ -1,4 +1,4 @@
-import { Skeleton, Text, TextProps, TypographyStylesProvider } from '@mantine/core'
+import { Skeleton, Text, TextProps, Typography } from '@mantine/core'
 import 'katex/dist/katex.min.css'
 import { Marked } from 'marked'
 import { forwardRef, useMemo, Suspense, FC } from 'react'
@@ -66,10 +66,10 @@ export const Markdown = forwardRef<HTMLDivElement, MarkdownProps>((props, ref) =
   const { source, ...others } = props
 
   return (
-    <TypographyStylesProvider ref={ref} {...others}>
+    <Typography ref={ref} {...others}>
       <Suspense fallback={<ContentPlaceholder />}>
         <MarkdownRenderer source={source} />
       </Suspense>
-    </TypographyStylesProvider>
+    </Typography>
   )
 })
