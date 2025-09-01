@@ -44,6 +44,11 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
 
+  // Check if submission limit is reached
+  const isSubmissionLimitReached = 
+    challenge?.submissionLimit && 
+    (challenge.submissionCount ?? 0) >= challenge.submissionLimit
+
   const onCreate = async () => {
     if (!challengeId || disabled) return
     setDisabled(true)
@@ -234,7 +239,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       onCreate={onCreate}
       onDestroy={onDestroy}
       onSubmitFlag={onSubmit}
-      disabled={disabled}
+      disabled={disabled || isSubmissionLimitReached}
       onExtend={onExtend}
     />
   )

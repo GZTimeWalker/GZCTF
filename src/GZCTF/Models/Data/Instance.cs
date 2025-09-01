@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GZCTF.Models.Data;
@@ -18,6 +19,12 @@ public class Instance
     /// Number of submissions for this instance
     /// </summary>
     public int SubmissionCount { get; set; }
+
+    /// <summary>
+    /// Concurrency stamp for optimistic concurrency control
+    /// </summary>
+    [Timestamp]
+    public byte[]? ConcurrencyStamp { get; set; }
 
     /// <summary>
     /// Last container operation time to ensure operations are not too frequent

@@ -47,6 +47,16 @@ public class ChallengeDetailModel
     /// </summary>
     public ClientFlagContext Context { get; set; } = null!;
 
+    /// <summary>
+    /// Submission limit for this challenge (null means unlimited)
+    /// </summary>
+    public int? SubmissionLimit { get; set; }
+
+    /// <summary>
+    /// Current submission count for this instance
+    /// </summary>
+    public int SubmissionCount { get; set; }
+
     internal static ChallengeDetailModel FromInstance(GameInstance gameInstance) =>
         new()
         {
@@ -57,6 +67,8 @@ public class ChallengeDetailModel
             Category = gameInstance.Challenge.Category,
             Title = gameInstance.Challenge.Title,
             Type = gameInstance.Challenge.Type,
+            SubmissionLimit = gameInstance.Challenge.SubmissionLimit,
+            SubmissionCount = gameInstance.SubmissionCount,
             Context = new()
             {
                 InstanceEntry = gameInstance.Container?.Entry,

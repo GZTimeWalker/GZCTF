@@ -37,6 +37,21 @@ namespace GZCTF.Migrations
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+
+            // Add ConcurrencyStamp for optimistic concurrency control
+            migrationBuilder.AddColumn<byte[]>(
+                name: "ConcurrencyStamp",
+                table: "GameInstances",
+                type: "bytea",
+                rowVersion: true,
+                nullable: true);
+
+            migrationBuilder.AddColumn<byte[]>(
+                name: "ConcurrencyStamp",
+                table: "ExerciseInstances",
+                type: "bytea",
+                rowVersion: true,
+                nullable: true);
         }
 
         /// <inheritdoc />
@@ -58,6 +73,15 @@ namespace GZCTF.Migrations
 
             migrationBuilder.DropColumn(
                 name: "SubmissionCount",
+                table: "ExerciseInstances");
+
+            // Remove ConcurrencyStamp fields
+            migrationBuilder.DropColumn(
+                name: "ConcurrencyStamp",
+                table: "GameInstances");
+
+            migrationBuilder.DropColumn(
+                name: "ConcurrencyStamp",
                 table: "ExerciseInstances");
         }
     }

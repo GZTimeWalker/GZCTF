@@ -36,6 +36,9 @@
   },
   "content": {
     "already_solved": "This challenge has been solved",
+    "submission_count": "Submissions: {{count}} / {{limit}}",
+    "submission_count_unlimited": "Submissions: {{count}}",
+    "submission_limit_reached": "Submission limit reached ({{limit}})",
     "flag_placeholders": [
       "To be, or not to be, flag is the question",
       "All that glisters is not flag",

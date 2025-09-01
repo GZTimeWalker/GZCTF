@@ -16,6 +16,7 @@ using GZCTF.Services.Config;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -907,32 +908,49 @@ public class GameController(
         if (context.Challenge!.SubmissionLimit is {} limit)
         {
             if (instance.SubmissionCount >= limit)
-                return BadRequest(new RequestResponse(
-                    localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
         }
 
-        // Increment submission count before creating submission to handle concurrency
-        instance.SubmissionCount++;
-        await gameInstanceRepository.SaveAsync(token);
-
-        Submission submission = new()
+        // Use transaction for instance update and submission creation to handle concurrency
+        using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
+        
+        try
         {
-            Game = context.Game!,
-            User = context.User!,
-            GameChallenge = context.Challenge!,
-            Team = context.Participation!.Team,
-            Participation = context.Participation!,
-            Status = AnswerResult.FlagSubmitted,
-            SubmitTimeUtc = DateTimeOffset.UtcNow,
-            Answer = answer
-        };
+            // Increment submission count
+            instance.SubmissionCount++;
+            await gameInstanceRepository.SaveAsync(token);
 
-        submission = await submissionRepository.AddSubmission(submission, token);
+            Submission submission = new()
+            {
+                Game = context.Game!,
+                User = context.User!,
+                GameChallenge = context.Challenge!,
+                Team = context.Participation!.Team,
+                Participation = context.Participation!,
+                Status = AnswerResult.FlagSubmitted,
+                SubmitTimeUtc = DateTimeOffset.UtcNow,
+                Answer = answer
+            };
 
-        // send to flag checker service
-        await channelWriter.WriteAsync(submission, token);
+            submission = await submissionRepository.AddSubmission(submission, token);
+            
+            await transaction.CommitAsync(token);
+            
+            // send to flag checker service
+            await channelWriter.WriteAsync(submission, token);
 
-        return Ok(submission.Id);
+            return Ok(submission.Id);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            await transaction.RollbackAsync(token);
+            return Conflict(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionTooFrequent)]));
+        }
+        catch
+        {
+            await transaction.RollbackAsync(token);
+            throw;
+        }
     }
 
     /// <summary>

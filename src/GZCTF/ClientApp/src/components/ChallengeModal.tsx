@@ -66,21 +66,47 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
+  const isSubmissionLimitReached = 
+    challenge?.submissionLimit && 
+    (challenge.submissionCount ?? 0) >= challenge.submissionLimit
+
+  const getInputValue = () => {
+    if (solved) return t('challenge.content.already_solved')
+    if (isSubmissionLimitReached) return t('challenge.content.submission_limit_reached', { 
+      limit: challenge?.submissionLimit 
+    })
+    return flag
+  }
+
   const isContainer =
     challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer
 
   const title = (
     <Stack gap="xs">
       <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
-        <Group wrap="nowrap" gap="sm" w="calc(100% - 6.75rem)">
+        <Group wrap="nowrap" gap="sm" w="calc(100% - 14rem)">
           {cateData && <Icon path={cateData.icon} size={1.2} color={theme.colors[cateData?.color][5]} />}
           <Title order={4} lineClamp={1}>
             {challenge?.title ?? ''}
           </Title>
         </Group>
-        <Text miw="6rem" fw="bold" ff="monospace" ta="right">
-          {challenge?.score ?? 0} pts
-        </Text>
+        <Group gap="xs" align="center">
+          {challenge?.submissionLimit !== undefined && (
+            <Text size="sm" c="dimmed" ff="monospace">
+              {challenge.submissionLimit
+                ? t('challenge.content.submission_count', {
+                    count: challenge.submissionCount ?? 0,
+                    limit: challenge.submissionLimit,
+                  })
+                : t('challenge.content.submission_count_unlimited', {
+                    count: challenge.submissionCount ?? 0,
+                  })}
+            </Text>
+          )}
+          <Text miw="6rem" fw="bold" ff="monospace" ta="right">
+            {challenge?.score ?? 0} pts
+          </Text>
+        </Group>
       </Group>
       <Divider size="md" color={cateData?.color} />
     </Stack>
@@ -169,12 +195,12 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         <Group justify="space-between" gap="sm" align="flex-end">
           <TextInput
             placeholder={placeholder}
-            value={solved ? t('challenge.content.already_solved') : flag}
-            disabled={disabled || solved}
+            value={getInputValue()}
+            disabled={disabled || solved || isSubmissionLimitReached}
             onChange={setFlag}
             classNames={{ root: misc.flexGrow, input: misc.ffmono }}
           />
-          <Button miw="6rem" type="submit" disabled={disabled || solved}>
+          <Button miw="6rem" type="submit" disabled={disabled || solved || isSubmissionLimitReached}>
             {t('challenge.button.submit_flag')}
           </Button>
         </Group>
