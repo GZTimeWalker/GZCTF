@@ -8,12 +8,15 @@ import {
   TextInput,
   Text,
   Title,
+  Tooltip,
   useMantineTheme,
   ScrollAreaAutosize,
+  InputWrapper,
+  Input,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
@@ -61,21 +64,25 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   }) as string[]
 
   const [placeholder, setPlaceholder] = useState('')
-
   useEffect(() => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
-  const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
+  const isLimitReached = useMemo(
+    () => (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false,
+    [challenge?.limit, challenge?.attempts]
+  )
 
-  const getInputValue = () => {
+  const inputValue = useMemo(() => {
     if (solved) return t('challenge.content.already_solved')
-    if (isLimitReached) return t('challenge.content.submission_limit_reached')
+    if (isLimitReached) return t('challenge.content.attempts.placeholder')
     return flag
-  }
+  }, [solved, isLimitReached, flag, t])
 
-  const isContainer =
-    challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer
+  const isContainer = useMemo(
+    () => challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer,
+    [challenge?.type]
+  )
 
   const title = (
     <Stack gap="xs">
@@ -164,22 +171,42 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     />
   )
 
+  const attemptsInfo = useMemo(() => {
+    if (typeof challenge?.attempts !== 'number' || solved) return null
+
+    let content = null
+    if (challenge?.limit) {
+      const remaining = challenge.limit - challenge.attempts
+      if (remaining > 0) {
+        content = t('challenge.content.attempts.remaining', { remaining })
+      } else {
+        content = t('challenge.content.attempts.exhausted')
+      }
+    } else {
+      content = t('challenge.content.attempts.count', { count: challenge.attempts })
+    }
+
+    return <Input.Label>{content}</Input.Label>
+  }, [challenge?.attempts, challenge?.limit, solved, t])
+
   const footer = (
     <Stack gap="xs" className={classes.footer}>
       {(withAttachment || withInstance) && <Divider />}
       {attachment}
       {instance}
-      <Divider />
+      <Divider label={attemptsInfo} />
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          if (!solved) onSubmitFlag()
+          if (!solved) {
+            onSubmitFlag()
+          }
         }}
       >
         <Group justify="space-between" gap="sm" align="flex-end">
           <TextInput
             placeholder={placeholder}
-            value={getInputValue()}
+            value={inputValue}
             disabled={disabled || solved || isLimitReached}
             onChange={setFlag}
             classNames={{ root: misc.flexGrow, input: misc.ffmono }}

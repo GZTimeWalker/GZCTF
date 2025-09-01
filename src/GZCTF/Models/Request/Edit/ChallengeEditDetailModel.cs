@@ -123,6 +123,12 @@ public class ChallengeEditDetailModel
     /// Whether to disable blood bonus
     /// </summary>
     public bool? DisableBloodBonus { get; set; } = false;
+    
+    /// <summary>
+    /// Maximum number of submissions allowed per team (0 = no limit)
+    /// </summary>
+    [Required]
+    public int SubmissionLimit { get; set; }
 
     /// <summary>
     /// Initial score
@@ -167,6 +173,7 @@ public class ChallengeEditDetailModel
             FileName = chal.FileName,
             AcceptedCount = chal.AcceptedCount,
             Attachment = chal.Attachment,
+            SubmissionLimit = chal.SubmissionLimit,
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
         };

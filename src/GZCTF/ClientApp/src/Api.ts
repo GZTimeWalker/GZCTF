@@ -1071,6 +1071,11 @@ export interface ChallengeEditDetailModel {
   /** Whether to disable blood bonus */
   disableBloodBonus?: boolean | null;
   /**
+   * Maximum number of submissions allowed per team (0 = no limit)
+   * @format int32
+   */
+  submissionLimit: number;
+  /**
    * Initial score
    * @format int32
    */

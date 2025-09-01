@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "该题目已被解出",
+    "attempts": {
+      "count": "你已经尝试了 {{count}} 次啦！",
+      "exhausted": "哎呀，所有机会都用完了！",
+      "placeholder": "已达到提交上限",
+      "remaining": "还有 {{remaining}} 次机会，加油！"
+    },
     "flag_placeholders": [
       "横看成岭侧成峰，flag 高低各不同",
       "flag 当关，万夫莫开",
@@ -84,7 +90,6 @@
       }
     },
     "solved": "<1>{{solved}}</1> 次解出",
-    "submission_limit_reached": "已达到最大尝试次数",
     "wrong_flag_hints": [
       "饮水思源，重新审题吧。",
       "诗云：路漫漫其修远兮，再接再厉吧。",

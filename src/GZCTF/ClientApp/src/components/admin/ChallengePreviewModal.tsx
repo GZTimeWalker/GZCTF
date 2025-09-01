@@ -32,6 +32,7 @@ export const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => 
 
   const { t } = useTranslation()
   const [flag, setFlag] = useInputState('')
+  const [attempts, setAttempts] = useState(0)
 
   const onCreate = () => {
     setContext({
@@ -65,6 +66,13 @@ export const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => 
       icon: <Icon path={mdiCheck} size={1} />,
     })
     setFlag('')
+    setAttempts(attempts + 1)
+
+    if (challenge.limit && attempts + 1 >= challenge.limit) {
+      setTimeout(() => {
+        setAttempts(0)
+      }, 1000)
+    }
   }
 
   const onDownload = () => {
@@ -78,7 +86,7 @@ export const ChallengePreviewModal: FC<ChallengePreviewModalProps> = (props) => 
   return (
     <ChallengeModal
       {...modalProps}
-      challenge={{ ...challenge, context: context }}
+      challenge={{ ...challenge, attempts, context: context }}
       cateData={cateData}
       flag={flag}
       setFlag={setFlag}

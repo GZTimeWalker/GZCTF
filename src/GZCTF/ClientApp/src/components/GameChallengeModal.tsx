@@ -154,9 +154,19 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         loading: true,
         autoClose: false,
       })
+
+      const nxt = (challenge?.attempts ?? 0) + 1
+      const attempts = challenge?.limit && challenge.limit > 0 ? Math.min(nxt, challenge.limit) : nxt
+
+      mutate({
+        attempts,
+        ...challenge,
+      })
+      return
     } catch (e) {
       showErrorMsg(e, t)
       setDisabled(false)
+      return
     }
   }
 

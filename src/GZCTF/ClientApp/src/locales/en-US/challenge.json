@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "This challenge has been solved",
+    "attempts": {
+      "count": "You've tried {{count}} times already!",
+      "exhausted": "Oops, all attempts used up!",
+      "placeholder": "You've reached the limit!",
+      "remaining": "{{remaining}} attempts left, keep going!"
+    },
     "flag_placeholders": [
       "To be, or not to be, flag is the question",
       "All that glisters is not flag",
@@ -84,7 +90,6 @@
       }
     },
     "solved": "<1>{{solved}}</1> SOLVES",
-    "submission_limit_reached": "You've reached the maximum attempt limit",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",
       "To be, or not to be, that is not the flag.",

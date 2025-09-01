@@ -554,6 +554,7 @@ const GameChallengeEdit: FC = () => {
           content: tryDefault([challengeInfo?.content, challenge?.content]),
           hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
           score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
+          limit: tryDefault([challengeInfo?.submissionLimit, challenge?.submissionLimit], 0),
           category: category as ChallengeCategory,
           type: challenge?.type ?? ChallengeType.StaticAttachment,
         }}
