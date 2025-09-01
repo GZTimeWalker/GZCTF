@@ -366,6 +366,24 @@ const GameChallengeEdit: FC = () => {
                   onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
                 />
               </Group>
+              <NumberInput
+                label={
+                  <Group gap="sm">
+                    <Text size="sm">{t('admin.content.games.challenges.submission_limit.label')}</Text>
+                    <Text size="xs" c="dimmed">
+                      {t('admin.content.games.challenges.submission_limit.description')}
+                    </Text>
+                  </Group>
+                }
+                placeholder={t('admin.content.games.challenges.submission_limit.placeholder')}
+                min={1}
+                max={1000}
+                disabled={disabled}
+                stepHoldDelay={500}
+                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                value={challengeInfo?.submissionLimit ?? undefined}
+                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, submissionLimit: e })}
+              />
               <Input.Wrapper label={t('admin.content.games.challenges.min_score_radio.label')} h="3.8rem" required>
                 <Slider
                   label={(value) =>

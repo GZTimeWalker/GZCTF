@@ -1239,6 +1239,13 @@ export interface ChallengeUpdateModel {
    * @format double
    */
   difficulty?: number | null;
+  /**
+   * Maximum number of flag submissions allowed per team for this challenge (null = no limit)
+   * @format int32
+   * @min 1
+   * @max 1000
+   */
+  submissionLimit?: number | null;
 }
 
 /** New attachment information (Edit) */

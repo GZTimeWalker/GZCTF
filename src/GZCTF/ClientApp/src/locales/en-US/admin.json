@@ -155,6 +155,11 @@
           "description": "Storage (including image)",
           "label": "Storage Limit (MB)"
         },
+        "submission_limit": {
+          "description": "Maximum number of flag submissions per team (empty = unlimited)",
+          "label": "Submission Limit",
+          "placeholder": "Unlimited submissions"
+        },
         "title": "Title",
         "traffic_capture": {
           "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",
