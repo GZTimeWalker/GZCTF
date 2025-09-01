@@ -910,6 +910,9 @@ public class GameController(
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
+            if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount >= instance.Challenge.SubmissionLimit)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+
             instance.SubmissionCount++;
 
             Submission submission = new()

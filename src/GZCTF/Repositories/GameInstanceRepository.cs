@@ -110,9 +110,7 @@ public class GameInstanceRepository(
         CancellationToken token = default)
         => Context.GameInstances.IgnoreAutoIncludes()
             .Include(i => i.Challenge)
-            .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challengeId && i.IsLoaded
-                        && i.Challenge != null && i.Challenge.SubmissionLimit > 0
-                        && i.SubmissionCount < i.Challenge.SubmissionLimit)
+            .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
 
     public async Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
