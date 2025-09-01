@@ -92,6 +92,11 @@ public class Challenge
     public string? FileName { get; set; } = "attachment";
 
     /// <summary>
+    /// Maximum number of flag submissions allowed per team for this challenge (null = no limit)
+    /// </summary>
+    public int? SubmissionLimit { get; set; }
+
+    /// <summary>
     /// Concurrency check
     /// </summary>
     [JsonIgnore]

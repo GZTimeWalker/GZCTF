@@ -48,6 +48,13 @@ public class ChallengeUpdateModel
     public string? FileName { get; set; }
 
     /// <summary>
+    /// Maximum number of flag submissions allowed per team for this challenge (null = no limit)
+    /// </summary>
+    [Range(1, 1000, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public int? SubmissionLimit { get; set; }
+
+    /// <summary>
     /// Container image name and tag
     /// </summary>
     public string? ContainerImage { get; set; }

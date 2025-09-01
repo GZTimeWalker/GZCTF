@@ -70,4 +70,13 @@ public interface ISubmissionRepository : IRepository
     /// <returns></returns>
     public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default);
+
+    /// <summary>
+    /// 获取团队对特定题目的提交次数
+    /// </summary>
+    /// <param name="teamId">团队Id</param>
+    /// <param name="challengeId">题目Id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<int> GetSubmissionCount(int teamId, int challengeId, CancellationToken token = default);
 }

@@ -897,6 +897,17 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
+        // Check submission limit if configured for this challenge
+        if (context.Challenge!.SubmissionLimit.HasValue)
+        {
+            var submissionCount = await submissionRepository.GetSubmissionCount(
+                context.Participation!.TeamId, challengeId, token);
+            
+            if (submissionCount >= context.Challenge.SubmissionLimit.Value)
+                return BadRequest(new RequestResponse(
+                    localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+        }
+
         Submission submission = new()
         {
             Game = context.Game!,

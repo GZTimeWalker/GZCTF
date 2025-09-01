@@ -920,6 +920,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>动态附件题目请使用 assets API 上传附件</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>此题目的flag提交次数已达到上限</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>容器地址解析失败</value>
   </data>
