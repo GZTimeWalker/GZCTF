@@ -904,12 +904,16 @@ public class GameController(
                 StatusCodes.Status404NotFound));
 
         // Check submission limit if configured for this challenge
-        if (context.Challenge!.SubmissionLimit.HasValue)
+        if (context.Challenge!.SubmissionLimit is {} limit)
         {
-            if (instance.SubmissionCount >= context.Challenge.SubmissionLimit.Value)
+            if (instance.SubmissionCount >= limit)
                 return BadRequest(new RequestResponse(
                     localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
         }
+
+        // Increment submission count before creating submission to handle concurrency
+        instance.SubmissionCount++;
+        await gameInstanceRepository.SaveAsync(token);
 
         Submission submission = new()
         {

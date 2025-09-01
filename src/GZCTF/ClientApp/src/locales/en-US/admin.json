@@ -158,7 +158,7 @@
         "submission_limit": {
           "description": "Maximum number of flag submissions per team (empty = unlimited)",
           "label": "Submission Limit",
-          "placeholder": "Unlimited submissions"
+          "placeholder": "Unlimited"
         },
         "title": "Title",
         "traffic_capture": {
