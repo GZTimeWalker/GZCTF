@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'build',
       assetsDir: 'static',
-      minify: false,
+      cssMinify: 'esbuild',
       cssCodeSplit: false,
       chunkSizeWarningLimit: 1600,
       reportCompressedSize: false,

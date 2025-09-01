@@ -921,7 +921,7 @@
     <value>Use assets API to upload attachments</value>
   </data>
   <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
-    <value>The maximum number of flag submissions for this challenge has been reached</value>
+    <value>Submission limit reached</value>
   </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Container address parse failed</value>
