@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Data;
 
@@ -23,8 +24,9 @@ public class Instance
     /// <summary>
     /// Concurrency stamp for optimistic concurrency control
     /// </summary>
-    [Timestamp]
-    public byte[]? ConcurrencyStamp { get; set; }
+    [JsonIgnore]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyStamp { get; set; }
 
     /// <summary>
     /// Last container operation time to ensure operations are not too frequent

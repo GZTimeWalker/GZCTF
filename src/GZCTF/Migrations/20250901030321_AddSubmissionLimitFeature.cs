@@ -39,19 +39,19 @@ namespace GZCTF.Migrations
                 defaultValue: 0);
 
             // Add ConcurrencyStamp for optimistic concurrency control
-            migrationBuilder.AddColumn<byte[]>(
+            migrationBuilder.AddColumn<Guid>(
                 name: "ConcurrencyStamp",
                 table: "GameInstances",
-                type: "bytea",
-                rowVersion: true,
-                nullable: true);
+                type: "uuid",
+                nullable: false,
+                defaultValue: Guid.NewGuid());
 
-            migrationBuilder.AddColumn<byte[]>(
+            migrationBuilder.AddColumn<Guid>(
                 name: "ConcurrencyStamp",
                 table: "ExerciseInstances",
-                type: "bytea",
-                rowVersion: true,
-                nullable: true);
+                type: "uuid",
+                nullable: false,
+                defaultValue: Guid.NewGuid());
         }
 
         /// <inheritdoc />
