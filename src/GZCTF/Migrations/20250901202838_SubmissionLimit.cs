@@ -6,26 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GZCTF.Migrations
 {
     /// <inheritdoc />
-    public partial class NewConcurrencyToken : Migration
+    public partial class SubmissionLimit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
                 name: "ConcurrencyStamp",
-                table: "GameInstances");
-
-            migrationBuilder.DropColumn(
-                name: "ConcurrencyStamp",
                 table: "GameChallenges");
 
             migrationBuilder.DropColumn(
                 name: "ConcurrencyStamp",
-                table: "ExerciseInstances");
-
-            migrationBuilder.DropColumn(
-                name: "ConcurrencyStamp",
                 table: "ExerciseChallenges");
+
+            migrationBuilder.AddColumn<int>(
+                name: "SubmissionCount",
+                table: "GameInstances",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
@@ -35,6 +34,13 @@ namespace GZCTF.Migrations
                 nullable: false,
                 defaultValue: 0u);
 
+            migrationBuilder.AddColumn<int>(
+                name: "SubmissionLimit",
+                table: "GameChallenges",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
                 table: "GameChallenges",
@@ -43,6 +49,13 @@ namespace GZCTF.Migrations
                 nullable: false,
                 defaultValue: 0u);
 
+            migrationBuilder.AddColumn<int>(
+                name: "SubmissionCount",
+                table: "ExerciseInstances",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
                 table: "ExerciseInstances",
@@ -50,6 +63,13 @@ namespace GZCTF.Migrations
                 rowVersion: true,
                 nullable: false,
                 defaultValue: 0u);
+
+            migrationBuilder.AddColumn<int>(
+                name: "SubmissionLimit",
+                table: "ExerciseChallenges",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<uint>(
                 name: "xmin",
@@ -64,16 +84,32 @@ namespace GZCTF.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
+                name: "SubmissionCount",
+                table: "GameInstances");
+
+            migrationBuilder.DropColumn(
                 name: "xmin",
                 table: "GameInstances");
+
+            migrationBuilder.DropColumn(
+                name: "SubmissionLimit",
+                table: "GameChallenges");
 
             migrationBuilder.DropColumn(
                 name: "xmin",
                 table: "GameChallenges");
 
             migrationBuilder.DropColumn(
+                name: "SubmissionCount",
+                table: "ExerciseInstances");
+
+            migrationBuilder.DropColumn(
                 name: "xmin",
                 table: "ExerciseInstances");
+
+            migrationBuilder.DropColumn(
+                name: "SubmissionLimit",
+                table: "ExerciseChallenges");
 
             migrationBuilder.DropColumn(
                 name: "xmin",
@@ -81,21 +117,7 @@ namespace GZCTF.Migrations
 
             migrationBuilder.AddColumn<Guid>(
                 name: "ConcurrencyStamp",
-                table: "GameInstances",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "ConcurrencyStamp",
                 table: "GameChallenges",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "ConcurrencyStamp",
-                table: "ExerciseInstances",
                 type: "uuid",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));

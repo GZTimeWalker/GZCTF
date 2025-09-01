@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250901195457_NewConcurrencyToken")]
-    partial class NewConcurrencyToken
+    [Migration("20250901202838_SubmissionLimit")]
+    partial class SubmissionLimit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
