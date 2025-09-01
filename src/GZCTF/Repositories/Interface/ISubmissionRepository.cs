@@ -72,10 +72,10 @@ public interface ISubmissionRepository : IRepository
         CancellationToken token = default);
 
     /// <summary>
-    /// 获取团队对特定题目的提交次数
+    /// Get the number of submissions for a specific team and challenge
     /// </summary>
-    /// <param name="teamId">团队Id</param>
-    /// <param name="challengeId">题目Id</param>
+    /// <param name="teamId">Team ID</param>
+    /// <param name="challengeId">Challenge ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<int> GetSubmissionCount(int teamId, int challengeId, CancellationToken token = default);

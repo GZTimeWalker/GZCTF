@@ -15,6 +15,11 @@ public class Instance
     public bool IsLoaded { get; set; }
 
     /// <summary>
+    /// Number of submissions for this instance
+    /// </summary>
+    public int SubmissionCount { get; set; }
+
+    /// <summary>
     /// Last container operation time to ensure operations are not too frequent
     /// </summary>
     public DateTimeOffset LastContainerOperation { get; set; } = DateTimeOffset.MinValue;

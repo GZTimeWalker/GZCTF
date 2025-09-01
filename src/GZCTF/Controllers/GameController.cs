@@ -897,13 +897,16 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
+        var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
+
+        if (instance is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+                StatusCodes.Status404NotFound));
+
         // Check submission limit if configured for this challenge
         if (context.Challenge!.SubmissionLimit.HasValue)
         {
-            var submissionCount = await submissionRepository.GetSubmissionCount(
-                context.Participation!.TeamId, challengeId, token);
-            
-            if (submissionCount >= context.Challenge.SubmissionLimit.Value)
+            if (instance.SubmissionCount >= context.Challenge.SubmissionLimit.Value)
                 return BadRequest(new RequestResponse(
                     localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
         }

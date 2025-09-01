@@ -193,6 +193,10 @@ public class ExerciseInstanceRepository(
     public async Task<AnswerResult> VerifyAnswer(UserInfo user, ExerciseInstance instance, string answer,
         CancellationToken token = default)
     {
+        // Increment submission count for this instance
+        instance.SubmissionCount++;
+        await Context.SaveChangesAsync(token);
+        
         if (instance.Exercise.Type == ChallengeType.DynamicContainer)
         {
             if (instance.FlagContext is null)

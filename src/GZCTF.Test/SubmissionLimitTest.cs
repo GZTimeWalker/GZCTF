@@ -109,4 +109,27 @@ public class SubmissionLimitTest
         updateModel.SubmissionLimit = null;
         Assert.Null(updateModel.SubmissionLimit);
     }
+
+    [Fact]
+    public void Instance_SubmissionCount_ShouldDefaultToZero()
+    {
+        // Arrange & Act
+        var instance = new GameInstance();
+
+        // Assert
+        Assert.Equal(0, instance.SubmissionCount);
+    }
+
+    [Fact]
+    public void Instance_SubmissionCount_ShouldBeIncremented()
+    {
+        // Arrange
+        var instance = new GameInstance();
+
+        // Act
+        instance.SubmissionCount++;
+
+        // Assert
+        Assert.Equal(1, instance.SubmissionCount);
+    }
 }

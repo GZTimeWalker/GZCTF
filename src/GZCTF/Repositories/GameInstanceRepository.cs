@@ -288,6 +288,7 @@ public class GameInstanceRepository(
             var beforeEnd = submission.Game!.EndTimeUtc > submission.SubmitTimeUtc;
 
             updateSub.GameChallenge!.SubmissionCount++;
+            instance.SubmissionCount++;
 
             if (firstTime && beforeEnd)
             {
