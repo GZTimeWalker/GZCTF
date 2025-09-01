@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GZCTF.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSubmissionLimitFeature : Migration
+    public partial class SubmissionLimitAndConcurrencyControl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

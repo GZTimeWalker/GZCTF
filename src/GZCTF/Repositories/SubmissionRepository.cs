@@ -46,9 +46,7 @@ public class SubmissionRepository(
     public Task SendSubmission(Submission submission)
         => hub.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
 
-    public Task<int> GetSubmissionCount(int teamId, int challengeId, CancellationToken token = default) =>
-        Context.Submissions.Where(s => s.TeamId == teamId && s.ChallengeId == challengeId)
-            .CountAsync(token);
+
 
     IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {

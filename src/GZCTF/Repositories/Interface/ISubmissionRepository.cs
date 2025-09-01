@@ -71,12 +71,5 @@ public interface ISubmissionRepository : IRepository
     public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default);
 
-    /// <summary>
-    /// Get the number of submissions for a specific team and challenge
-    /// </summary>
-    /// <param name="teamId">Team ID</param>
-    /// <param name="challengeId">Challenge ID</param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<int> GetSubmissionCount(int teamId, int challengeId, CancellationToken token = default);
+
 }

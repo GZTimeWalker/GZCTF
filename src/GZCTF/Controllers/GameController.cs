@@ -898,59 +898,80 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
-        var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
-
-        if (instance is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
-                StatusCodes.Status404NotFound));
+        var team = context.Participation!.Team;
 
         // Check submission limit if configured for this challenge
         if (context.Challenge!.SubmissionLimit is {} limit)
         {
+            var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
+            if (instance is null)
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+                    StatusCodes.Status404NotFound));
+
             if (instance.SubmissionCount >= limit)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
         }
 
-        // Use transaction for instance update and submission creation to handle concurrency
-        using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
+        // Retry submission with concurrency control
+        const int maxRetries = 3;
+        for (int attempt = 0; attempt < maxRetries; attempt++)
+        {
+            var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
+            if (instance is null)
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+                    StatusCodes.Status404NotFound));
+
+            // Use transaction for instance update and submission creation to handle concurrency
+            using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
         
-        try
-        {
-            // Increment submission count
-            instance.SubmissionCount++;
-            await gameInstanceRepository.SaveAsync(token);
-
-            Submission submission = new()
+            try
             {
-                Game = context.Game!,
-                User = context.User!,
-                GameChallenge = context.Challenge!,
-                Team = context.Participation!.Team,
-                Participation = context.Participation!,
-                Status = AnswerResult.FlagSubmitted,
-                SubmitTimeUtc = DateTimeOffset.UtcNow,
-                Answer = answer
-            };
+                // Increment submission count
+                instance.SubmissionCount++;
+                await gameInstanceRepository.SaveAsync(token);
 
-            submission = await submissionRepository.AddSubmission(submission, token);
-            
-            await transaction.CommitAsync(token);
-            
-            // send to flag checker service
-            await channelWriter.WriteAsync(submission, token);
+                Submission submission = new()
+                {
+                    Game = context.Game!,
+                    User = context.User!,
+                    GameChallenge = context.Challenge!,
+                    Team = team,
+                    Participation = context.Participation!,
+                    Status = AnswerResult.FlagSubmitted,
+                    SubmitTimeUtc = DateTimeOffset.UtcNow,
+                    Answer = answer
+                };
 
-            return Ok(submission.Id);
+                submission = await submissionRepository.AddSubmission(submission, token);
+            
+                await transaction.CommitAsync(token);
+            
+                // send to flag checker service
+                await channelWriter.WriteAsync(submission, token);
+
+                return Ok(submission.Id);
+            }
+            catch (DbUpdateConcurrencyException) when (attempt < maxRetries - 1)
+            {
+                await transaction.RollbackAsync(token);
+                // Wait briefly before retry
+                await Task.Delay(100 * (attempt + 1), token);
+                continue;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                await transaction.RollbackAsync(token);
+                return Conflict(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(token);
+                logger.LogError(ex, "Unexpected error during flag submission for team {TeamId}", team.Id);
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_UnknownError)]));
+            }
         }
-        catch (DbUpdateConcurrencyException)
-        {
-            await transaction.RollbackAsync(token);
-            return Conflict(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionTooFrequent)]));
-        }
-        catch
-        {
-            await transaction.RollbackAsync(token);
-            throw;
-        }
+
+        return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_UnknownError)]));
     }
 
     /// <summary>
