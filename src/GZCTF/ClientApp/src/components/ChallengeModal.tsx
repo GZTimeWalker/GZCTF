@@ -66,15 +66,14 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
-  const isSubmissionLimitReached = 
-    challenge?.submissionLimit && 
-    (challenge.submissionCount ?? 0) >= challenge.submissionLimit
+  const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
 
   const getInputValue = () => {
     if (solved) return t('challenge.content.already_solved')
-    if (isSubmissionLimitReached) return t('challenge.content.submission_limit_reached', { 
-      limit: challenge?.submissionLimit 
-    })
+    if (isLimitReached)
+      return t('challenge.content.submission_limit_reached', {
+        limit: challenge?.limit,
+      })
     return flag
   }
 
@@ -91,15 +90,15 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           </Title>
         </Group>
         <Group gap="xs" align="center">
-          {challenge?.submissionLimit !== undefined && (
+          {challenge?.limit !== undefined && (
             <Text size="sm" c="dimmed" ff="monospace">
-              {challenge.submissionLimit
+              {challenge.limit
                 ? t('challenge.content.submission_count', {
-                    count: challenge.submissionCount ?? 0,
-                    limit: challenge.submissionLimit,
+                    count: challenge.attempts ?? 0,
+                    limit: challenge.limit,
                   })
                 : t('challenge.content.submission_count_unlimited', {
-                    count: challenge.submissionCount ?? 0,
+                    count: challenge.attempts ?? 0,
                   })}
             </Text>
           )}
@@ -196,11 +195,11 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           <TextInput
             placeholder={placeholder}
             value={getInputValue()}
-            disabled={disabled || solved || isSubmissionLimitReached}
+            disabled={disabled || solved || isLimitReached}
             onChange={setFlag}
             classNames={{ root: misc.flexGrow, input: misc.ffmono }}
           />
-          <Button miw="6rem" type="submit" disabled={disabled || solved || isSubmissionLimitReached}>
+          <Button miw="6rem" type="submit" disabled={disabled || solved || isLimitReached}>
             {t('challenge.button.submit_flag')}
           </Button>
         </Group>

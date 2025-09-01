@@ -220,6 +220,25 @@ public class GameInstanceRepository(
         }
     }
 
+    public async Task<bool> FetchAddSubmissionCount(Participation team, GameChallenge challenge,
+        CancellationToken token = default)
+    {
+        if (challenge.SubmissionLimit == 0)
+        {
+            return await Context.GameInstances.Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id)
+                .ExecuteUpdateAsync(setters =>
+                        setters.SetProperty(i => i.SubmissionCount, i => i.SubmissionCount + 1),
+                    token) > 0;
+        }
+
+        return await Context.GameInstances
+            .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id &&
+                        i.SubmissionCount < i.Challenge.SubmissionLimit)
+            .ExecuteUpdateAsync(setters =>
+                    setters.SetProperty(i => i.SubmissionCount, i => i.SubmissionCount + 1),
+                token) > 0;
+    }
+
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {
         CheatCheckInfo checkInfo = new();
@@ -292,7 +311,7 @@ public class GameInstanceRepository(
             if (firstTime && beforeEnd)
             {
                 instance.IsSolved = true;
-                updateSub.GameChallenge.AcceptedCount++;
+                updateSub.GameChallenge!.AcceptedCount++;
                 ret = updateSub.GameChallenge.AcceptedCount switch
                 {
                     1 => SubmissionType.FirstBlood,

@@ -48,9 +48,9 @@ public class ChallengeUpdateModel
     public string? FileName { get; set; }
 
     /// <summary>
-    /// Maximum number of flag submissions allowed per team for this challenge (null = no limit)
+    /// Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
     /// </summary>
-    [Range(1, 1000, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+    [Range(0, 10000, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int? SubmissionLimit { get; set; }
 

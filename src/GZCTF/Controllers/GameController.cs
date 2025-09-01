@@ -885,6 +885,7 @@ public class GameController(
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId,
         [FromBody] FlagSubmitModel model, CancellationToken token)
     {
+        var submitTime = DateTimeOffset.UtcNow;
         var answer = configService.DecryptApiData(model.Flag);
         if (string.IsNullOrWhiteSpace(answer))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagRequired)]));
@@ -898,80 +899,36 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
-        var team = context.Participation!.Team;
+        if (!await gameInstanceRepository.FetchAddSubmissionCount(context.Participation!, context.Challenge!, token))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
 
-        // Check submission limit if configured for this challenge
-        if (context.Challenge!.SubmissionLimit is {} limit)
-        {
-            var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
-            if (instance is null)
-                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+        var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
+        if (instance is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-            if (instance.SubmissionCount >= limit)
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
-        }
+        // just a double check, though it should be already checked in FetchAddSubmissionCount
+        if (instance.Challenge.SubmissionLimit != 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
 
-        // Retry submission with concurrency control
-        const int maxRetries = 3;
-        for (int attempt = 0; attempt < maxRetries; attempt++)
+        Submission submission = new()
         {
-            var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
-            if (instance is null)
-                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
-                    StatusCodes.Status404NotFound));
+            Game = context.Game!,
+            User = context.User!,
+            GameChallenge = context.Challenge!,
+            Team = context.Participation!.Team,
+            Participation = context.Participation!,
+            Status = AnswerResult.FlagSubmitted,
+            SubmitTimeUtc = submitTime,
+            Answer = answer
+        };
 
-            // Use transaction for instance update and submission creation to handle concurrency
-            using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
-        
-            try
-            {
-                // Increment submission count
-                instance.SubmissionCount++;
-                await gameInstanceRepository.SaveAsync(token);
+        await submissionRepository.AddSubmission(submission, token);
 
-                Submission submission = new()
-                {
-                    Game = context.Game!,
-                    User = context.User!,
-                    GameChallenge = context.Challenge!,
-                    Team = team,
-                    Participation = context.Participation!,
-                    Status = AnswerResult.FlagSubmitted,
-                    SubmitTimeUtc = DateTimeOffset.UtcNow,
-                    Answer = answer
-                };
+        // send to flag checker service
+        await channelWriter.WriteAsync(submission, token);
 
-                submission = await submissionRepository.AddSubmission(submission, token);
-            
-                await transaction.CommitAsync(token);
-            
-                // send to flag checker service
-                await channelWriter.WriteAsync(submission, token);
-
-                return Ok(submission.Id);
-            }
-            catch (DbUpdateConcurrencyException) when (attempt < maxRetries - 1)
-            {
-                await transaction.RollbackAsync(token);
-                // Wait briefly before retry
-                await Task.Delay(100 * (attempt + 1), token);
-                continue;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                await transaction.RollbackAsync(token);
-                return Conflict(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync(token);
-                logger.LogError(ex, "Unexpected error during flag submission for team {TeamId}", team.Id);
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_UnknownError)]));
-            }
-        }
-
-        return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_UnknownError)]));
+        return Ok(submission.Id);
     }
 
     /// <summary>

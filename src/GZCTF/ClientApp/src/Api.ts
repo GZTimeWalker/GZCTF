@@ -1190,6 +1190,13 @@ export interface ChallengeUpdateModel {
   isEnabled?: boolean | null;
   /** Unified file name */
   fileName?: string | null;
+  /**
+   * Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
+   * @format int32
+   * @min 0
+   * @max 10000
+   */
+  submissionLimit?: number | null;
   /** Container image name and tag */
   containerImage?: string | null;
   /**
@@ -1239,13 +1246,6 @@ export interface ChallengeUpdateModel {
    * @format double
    */
   difficulty?: number | null;
-  /**
-   * Maximum number of flag submissions allowed per team for this challenge (null = no limit)
-   * @format int32
-   * @min 1
-   * @max 1000
-   */
-  submissionLimit?: number | null;
 }
 
 /** New attachment information (Edit) */
@@ -1766,6 +1766,16 @@ export interface ChallengeDetailModel {
   type?: ChallengeType;
   /** Flag context */
   context?: ClientFlagContext;
+  /**
+   * Maximum number of attempts allowed (0 = no limit)
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * Current attempt count
+   * @format int32
+   */
+  attempts?: number;
 }
 
 export interface ClientFlagContext {

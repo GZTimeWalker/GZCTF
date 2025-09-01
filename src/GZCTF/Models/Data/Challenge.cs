@@ -60,6 +60,12 @@ public class Challenge
     /// </summary>
     [Required]
     public int SubmissionCount { get; set; }
+    
+    /// <summary>
+    /// Maximum number of submissions allowed per team (0 = no limit)
+    /// </summary>
+    [Required]
+    public int SubmissionLimit { get; set; }
 
     /// <summary>
     /// Image name and tag
@@ -90,11 +96,6 @@ public class Challenge
     /// Download file name, used only for dynamic attachment unified file name
     /// </summary>
     public string? FileName { get; set; } = "attachment";
-
-    /// <summary>
-    /// Maximum number of flag submissions allowed per team for this challenge (null = no limit)
-    /// </summary>
-    public int? SubmissionLimit { get; set; }
 
     /// <summary>
     /// Concurrency check
