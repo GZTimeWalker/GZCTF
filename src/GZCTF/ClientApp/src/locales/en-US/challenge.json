@@ -84,7 +84,7 @@
       }
     },
     "solved": "<1>{{solved}}</1> SOLVES",
-    "submission_limit_reached": "You've reached the submission limit",
+    "submission_limit_reached": "You've reached the maximum attempt limit",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",
       "To be, or not to be, that is not the flag.",

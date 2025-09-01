@@ -61,7 +61,7 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
             <Stack>
               <Button
                 disabled={disabled}
-                w="9rem"
+                w="10rem"
                 classNames={{ inner: misc.justifyBetween }}
                 leftSection={<Icon path={mdiTableArrowDown} size={1} />}
                 onClick={onDownloadScoreboardSheet}
@@ -73,8 +73,8 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
                 value={activeTab}
                 onChange={(value) => value && navigate(`/games/${id}/monitor/${value}`)}
                 classNames={{
-                  root: misc.w9rem,
-                  list: misc.w9rem,
+                  root: misc.w10rem,
+                  list: misc.w10rem,
                 }}
               >
                 <Tabs.List>
@@ -86,7 +86,7 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
                 </Tabs.List>
               </Tabs>
             </Stack>
-            <Stack w="calc(100% - 10rem)" pos="relative">
+            <Stack w="calc(100% - 11rem)" pos="relative">
               <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
               {children}
             </Stack>

@@ -35,6 +35,7 @@
   top: 0;
   left: 0;
   padding: 12px;
+  padding-left: 0;
   float: left;
   z-index: 20;
 }

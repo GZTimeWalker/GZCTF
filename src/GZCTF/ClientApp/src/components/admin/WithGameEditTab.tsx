@@ -63,7 +63,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
       head={
         <>
           <Button
-            w="9rem"
+            w="10rem"
             component={Link}
             classNames={{ inner: misc.justifyBetween }}
             leftSection={<Icon path={mdiKeyboardBackspace} size={1} />}
@@ -71,7 +71,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
           >
             {t('admin.button.back')}
           </Button>
-          <Group wrap="nowrap" justify={contentPos ?? 'space-between'} w="calc(100% - 10rem)">
+          <Group wrap="nowrap" justify={contentPos ?? 'space-between'} w="calc(100% - 11rem)">
             {head}
           </Group>
         </>
@@ -83,8 +83,8 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
           value={activeTab}
           onChange={(value) => value && navigate(`/admin/games/${id}/${value}`)}
           classNames={{
-            root: misc.w9rem,
-            list: misc.w9rem,
+            root: misc.w10rem,
+            list: misc.w10rem,
           }}
         >
           <Tabs.List>
@@ -95,9 +95,8 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
             ))}
           </Tabs.List>
         </Tabs>
-        <Stack w="calc(100% - 10rem)" pos="relative">
+        <Stack w="calc(100% - 11rem)" pos="relative">
           <LoadingOverlay visible={isLoading ?? false} overlayProps={DEFAULT_LOADING_OVERLAY} />
-
           {children}
         </Stack>
       </Group>
