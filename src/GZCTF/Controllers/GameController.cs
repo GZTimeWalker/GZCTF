@@ -907,7 +907,7 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-        // just a double check, though it should be already checked in FetchAddSubmissionCount
+        // just a double check
         if (instance.Challenge.SubmissionLimit != 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
 

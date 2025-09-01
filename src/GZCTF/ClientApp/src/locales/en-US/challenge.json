@@ -36,9 +36,6 @@
   },
   "content": {
     "already_solved": "This challenge has been solved",
-    "submission_count": "Submissions: {{count}} / {{limit}}",
-    "submission_count_unlimited": "Submissions: {{count}}",
-    "submission_limit_reached": "Submission limit reached ({{limit}})",
     "flag_placeholders": [
       "To be, or not to be, flag is the question",
       "All that glisters is not flag",
@@ -87,6 +84,7 @@
       }
     },
     "solved": "<1>{{solved}}</1> SOLVES",
+    "submission_limit_reached": "You've reached the submission limit",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",
       "To be, or not to be, that is not the flag.",

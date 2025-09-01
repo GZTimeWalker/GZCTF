@@ -156,8 +156,8 @@
           "label": "Storage Limit (MB)"
         },
         "submission_limit": {
-          "description": "Maximum number of flag submissions per team (empty = unlimited)",
-          "label": "Submission Limit",
+          "description": "0 = unlimited",
+          "label": "Max Attempts Allowed",
           "placeholder": "Unlimited"
         },
         "title": "Title",

@@ -13,7 +13,7 @@ public static class SignalRSinkExtension
 {
     public static LoggerConfiguration SignalR(this LoggerSinkConfiguration loggerConfiguration,
         IServiceProvider serviceProvider) =>
-        loggerConfiguration.Sink(new SignalRSink(serviceProvider));
+        loggerConfiguration.Sink(new SignalRSink(serviceProvider), LogEventLevel.Information);
 }
 
 public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
@@ -22,9 +22,6 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
 
     public void Emit(LogEvent logEvent)
     {
-        if (logEvent.Level < LogEventLevel.Information)
-            return;
-
         _hubContext ??= serviceProvider.GetRequiredService<IHubContext<AdminHub, IAdminClient>>();
 
         logEvent.Properties.TryGetValue("UserName", out var userName);

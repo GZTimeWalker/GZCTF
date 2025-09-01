@@ -70,10 +70,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   const getInputValue = () => {
     if (solved) return t('challenge.content.already_solved')
-    if (isLimitReached)
-      return t('challenge.content.submission_limit_reached', {
-        limit: challenge?.limit,
-      })
+    if (isLimitReached) return t('challenge.content.submission_limit_reached')
     return flag
   }
 
@@ -90,18 +87,6 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           </Title>
         </Group>
         <Group gap="xs" align="center">
-          {challenge?.limit !== undefined && (
-            <Text size="sm" c="dimmed" ff="monospace">
-              {challenge.limit
-                ? t('challenge.content.submission_count', {
-                    count: challenge.attempts ?? 0,
-                    limit: challenge.limit,
-                  })
-                : t('challenge.content.submission_count_unlimited', {
-                    count: challenge.attempts ?? 0,
-                  })}
-            </Text>
-          )}
           <Text miw="6rem" fw="bold" ff="monospace" ta="right">
             {challenge?.score ?? 0} pts
           </Text>

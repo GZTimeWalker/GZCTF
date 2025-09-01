@@ -60,7 +60,7 @@ public class Challenge
     /// </summary>
     [Required]
     public int SubmissionCount { get; set; }
-    
+
     /// <summary>
     /// Maximum number of submissions allowed per team (0 = no limit)
     /// </summary>

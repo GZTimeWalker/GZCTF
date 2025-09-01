@@ -225,13 +225,14 @@ public class GameInstanceRepository(
     {
         if (challenge.SubmissionLimit == 0)
         {
-            return await Context.GameInstances.Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id)
+            return await Context.GameInstances.IgnoreAutoIncludes()
+                .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id)
                 .ExecuteUpdateAsync(setters =>
                         setters.SetProperty(i => i.SubmissionCount, i => i.SubmissionCount + 1),
                     token) > 0;
         }
 
-        return await Context.GameInstances
+        return await Context.GameInstances.IgnoreAutoIncludes()
             .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id &&
                         i.SubmissionCount < i.Challenge.SubmissionLimit)
             .ExecuteUpdateAsync(setters =>
