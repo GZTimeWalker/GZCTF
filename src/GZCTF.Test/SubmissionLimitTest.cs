@@ -88,4 +88,25 @@ public class SubmissionLimitTest
         // Assert
         Assert.Equal(5, gameChallenge.SubmissionLimit);
     }
+
+    [Fact]
+    public void ChallengeUpdateModel_SubmissionLimit_ShouldValidateRange()
+    {
+        // Arrange
+        var updateModel = new Models.Request.Edit.ChallengeUpdateModel();
+
+        // Test valid range
+        updateModel.SubmissionLimit = 1;
+        Assert.Equal(1, updateModel.SubmissionLimit);
+
+        updateModel.SubmissionLimit = 500;
+        Assert.Equal(500, updateModel.SubmissionLimit);
+
+        updateModel.SubmissionLimit = 1000;
+        Assert.Equal(1000, updateModel.SubmissionLimit);
+
+        // Test null value (should be allowed)
+        updateModel.SubmissionLimit = null;
+        Assert.Null(updateModel.SubmissionLimit);
+    }
 }
