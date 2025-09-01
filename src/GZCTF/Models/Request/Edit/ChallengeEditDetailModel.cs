@@ -123,7 +123,7 @@ public class ChallengeEditDetailModel
     /// Whether to disable blood bonus
     /// </summary>
     public bool? DisableBloodBonus { get; set; } = false;
-    
+
     /// <summary>
     /// Maximum number of submissions allowed per team (0 = no limit)
     /// </summary>

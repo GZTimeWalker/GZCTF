@@ -899,36 +899,56 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
-        if (!await gameInstanceRepository.FetchAddSubmissionCount(context.Participation!, context.Challenge!, token))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+        const int maxRetries = 3;
+        for (int retry = 0; retry < maxRetries; retry++)
+        {
+            await using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
 
-        var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
-        if (instance is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+            var instance = await gameInstanceRepository.GetInstanceForSubmission(context.Participation!, challengeId, token);
+
+            if (instance is null)
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-        // just a double check
-        if (instance.Challenge.SubmissionLimit != 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+            instance.SubmissionCount++;
 
-        Submission submission = new()
-        {
-            Game = context.Game!,
-            User = context.User!,
-            GameChallenge = context.Challenge!,
-            Team = context.Participation!.Team,
-            Participation = context.Participation!,
-            Status = AnswerResult.FlagSubmitted,
-            SubmitTimeUtc = submitTime,
-            Answer = answer
-        };
+            Submission submission = new()
+            {
+                Game = context.Game!,
+                User = context.User!,
+                GameChallenge = instance.Challenge,
+                Team = context.Participation!.Team,
+                Participation = context.Participation!,
+                Status = AnswerResult.FlagSubmitted,
+                SubmitTimeUtc = submitTime,
+                Answer = answer
+            };
 
-        await submissionRepository.AddSubmission(submission, token);
+            try
+            {
+                submission = await submissionRepository.AddSubmission(submission, token);
+                await transaction.CommitAsync(token);
 
-        // send to flag checker service
-        await channelWriter.WriteAsync(submission, token);
+                // send to flag checker service
+                await channelWriter.WriteAsync(submission, token);
 
-        return Ok(submission.Id);
+                return Ok(submission.Id);
+            }
+            catch (DbUpdateConcurrencyException) when (retry < maxRetries - 1)
+            {
+                await transaction.RollbackAsync(token);
+                // Retry
+            }
+            catch
+            {
+                await transaction.RollbackAsync(token);
+                throw;
+            }
+        }
+
+        return StatusCode(StatusCodes.Status500InternalServerError,
+            new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)],
+                StatusCodes.Status500InternalServerError));
     }
 
     /// <summary>

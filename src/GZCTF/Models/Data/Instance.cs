@@ -22,11 +22,11 @@ public class Instance
     public int SubmissionCount { get; set; }
 
     /// <summary>
-    /// Concurrency stamp for optimistic concurrency control
+    /// Concurrency token
     /// </summary>
     [JsonIgnore]
-    [ConcurrencyCheck]
-    public Guid ConcurrencyStamp { get; set; }
+    [Timestamp]
+    public uint ConcurrencyToken { get; set; }
 
     /// <summary>
     /// Last container operation time to ensure operations are not too frequent

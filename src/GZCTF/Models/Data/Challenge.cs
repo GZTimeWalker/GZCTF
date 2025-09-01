@@ -98,11 +98,11 @@ public class Challenge
     public string? FileName { get; set; } = "attachment";
 
     /// <summary>
-    /// Concurrency check
+    /// Concurrency token
     /// </summary>
     [JsonIgnore]
-    [ConcurrencyCheck]
-    public Guid ConcurrencyStamp { get; set; }
+    [Timestamp]
+    public uint ConcurrencyToken { get; set; }
 
     /// <summary>
     /// Flag template, used to generate flags based on token and challenge, game information

@@ -172,7 +172,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Accept directly after team registration",
+          "description": "Accept team after registration",
           "label": "Accept Without Review"
         },
         "container_limit": {

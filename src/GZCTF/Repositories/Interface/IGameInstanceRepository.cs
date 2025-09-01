@@ -14,22 +14,21 @@ public interface IGameInstanceRepository : IRepository
     public Task<GameInstance?> GetInstance(Participation team, int challengeId, CancellationToken token = default);
 
     /// <summary>
+    /// Get a game instance for submission, with minimal includes
+    /// </summary>
+    /// <param name="team">Team</param>
+    /// <param name="challengeId">Challenge id</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<GameInstance?> GetInstanceForSubmission(Participation team, int challengeId, CancellationToken token = default);
+
+    /// <summary>
     /// Verify the answer of a submission
     /// </summary>
     /// <param name="submission">Submission</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default);
-
-    /// <summary>
-    /// Fetch and add submission count for a team and challenge
-    /// </summary>
-    /// <param name="team"></param>
-    /// <param name="challenge"></param>
-    /// <param name="token"></param>
-    /// <returns>True if the team can submit, false if the limit is reached</returns>
-    public Task<bool> FetchAddSubmissionCount(Participation team, GameChallenge challenge,
-        CancellationToken token = default);
 
     /// <summary>
     /// Check if the submission is a cheat

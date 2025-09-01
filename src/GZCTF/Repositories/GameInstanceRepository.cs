@@ -106,6 +106,15 @@ public class GameInstanceRepository(
         return instance;
     }
 
+    public Task<GameInstance?> GetInstanceForSubmission(Participation team, int challengeId,
+        CancellationToken token = default)
+        => Context.GameInstances.IgnoreAutoIncludes()
+            .Include(i => i.Challenge)
+            .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challengeId && i.IsLoaded
+                        && i.Challenge != null && i.Challenge.SubmissionLimit > 0
+                        && i.SubmissionCount < i.Challenge.SubmissionLimit)
+            .SingleOrDefaultAsync(token);
+
     public async Task<TaskResult<Container>> CreateContainer(GameInstance gameInstance, Team team, UserInfo user,
         Game game, CancellationToken token = default)
     {
@@ -220,26 +229,6 @@ public class GameInstanceRepository(
         }
     }
 
-    public async Task<bool> FetchAddSubmissionCount(Participation team, GameChallenge challenge,
-        CancellationToken token = default)
-    {
-        if (challenge.SubmissionLimit == 0)
-        {
-            return await Context.GameInstances.IgnoreAutoIncludes()
-                .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id)
-                .ExecuteUpdateAsync(setters =>
-                        setters.SetProperty(i => i.SubmissionCount, i => i.SubmissionCount + 1),
-                    token) > 0;
-        }
-
-        return await Context.GameInstances.IgnoreAutoIncludes()
-            .Where(i => i.ParticipationId == team.Id && i.ChallengeId == challenge.Id &&
-                        i.SubmissionCount < i.Challenge.SubmissionLimit)
-            .ExecuteUpdateAsync(setters =>
-                    setters.SetProperty(i => i.SubmissionCount, i => i.SubmissionCount + 1),
-                token) > 0;
-    }
-
     public async Task<CheatCheckInfo> CheckCheat(Submission submission, CancellationToken token = default)
     {
         CheatCheckInfo checkInfo = new();
@@ -271,71 +260,82 @@ public class GameInstanceRepository(
 
     public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        var trans = await Context.Database.BeginTransactionAsync(token);
-
-        try
+        const int maxRetries = 3;
+        for (int retry = 0; retry < maxRetries; retry++)
         {
-            var instance = await Context.GameInstances.IgnoreAutoIncludes()
-                .Include(i => i.FlagContext)
-                .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
-                                           i.ParticipationId == submission.ParticipationId, token);
+            var trans = await Context.Database.BeginTransactionAsync(token);
 
-            SubmissionType ret;
-
-            if (instance is null)
+            try
             {
-                submission.Status = AnswerResult.NotFound;
-                return new(SubmissionType.Unaccepted, AnswerResult.NotFound);
-            }
+                var instance = await Context.GameInstances.IgnoreAutoIncludes()
+                    .Include(i => i.FlagContext)
+                    .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
+                                               i.ParticipationId == submission.ParticipationId, token);
 
-            // submission is from the queue, do not modify it directly
-            // we need to fetch the entity again to ensure it is being tracked correctly
-            var updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+                SubmissionType ret;
 
-            if (instance.FlagContext is null && submission.GameChallenge?.Type.IsStatic() is true)
-                updateSub.Status = await Context.FlagContexts.AsNoTracking()
-                    .AnyAsync(
-                        f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
-                        token)
-                    ? AnswerResult.Accepted
-                    : AnswerResult.WrongAnswer;
-            else
-                updateSub.Status = instance.FlagContext?.Flag == submission.Answer
-                    ? AnswerResult.Accepted
-                    : AnswerResult.WrongAnswer;
-
-            var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
-            var beforeEnd = submission.Game!.EndTimeUtc > submission.SubmitTimeUtc;
-
-            updateSub.GameChallenge!.SubmissionCount++;
-
-            if (firstTime && beforeEnd)
-            {
-                instance.IsSolved = true;
-                updateSub.GameChallenge!.AcceptedCount++;
-                ret = updateSub.GameChallenge.AcceptedCount switch
+                if (instance is null)
                 {
-                    1 => SubmissionType.FirstBlood,
-                    2 => SubmissionType.SecondBlood,
-                    3 => SubmissionType.ThirdBlood,
-                    _ => SubmissionType.Normal
-                };
+                    submission.Status = AnswerResult.NotFound;
+                    return new(SubmissionType.Unaccepted, AnswerResult.NotFound);
+                }
+
+                // submission is from the queue, do not modify it directly
+                // we need to fetch the entity again to ensure it is being tracked correctly
+                var updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+
+                if (instance.FlagContext is null && submission.GameChallenge?.Type.IsStatic() is true)
+                    updateSub.Status = await Context.FlagContexts.AsNoTracking()
+                        .AnyAsync(
+                            f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
+                            token)
+                        ? AnswerResult.Accepted
+                        : AnswerResult.WrongAnswer;
+                else
+                    updateSub.Status = instance.FlagContext?.Flag == submission.Answer
+                        ? AnswerResult.Accepted
+                        : AnswerResult.WrongAnswer;
+
+                var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
+                var beforeEnd = submission.Game!.EndTimeUtc > submission.SubmitTimeUtc;
+
+                updateSub.GameChallenge!.SubmissionCount++;
+
+                if (firstTime && beforeEnd)
+                {
+                    instance.IsSolved = true;
+                    updateSub.GameChallenge!.AcceptedCount++;
+                    ret = updateSub.GameChallenge.AcceptedCount switch
+                    {
+                        1 => SubmissionType.FirstBlood,
+                        2 => SubmissionType.SecondBlood,
+                        3 => SubmissionType.ThirdBlood,
+                        _ => SubmissionType.Normal
+                    };
+                }
+                else
+                {
+                    ret = updateSub.Status == AnswerResult.Accepted ? SubmissionType.Normal : SubmissionType.Unaccepted;
+                }
+
+                await SaveAsync(token);
+                await trans.CommitAsync(token);
+
+                return new(ret, updateSub.Status);
             }
-            else
+            catch (DbUpdateConcurrencyException) when (retry < maxRetries - 1)
             {
-                ret = updateSub.Status == AnswerResult.Accepted ? SubmissionType.Normal : SubmissionType.Unaccepted;
+                await trans.RollbackAsync(token);
+                // Retry
             }
-
-            await SaveAsync(token);
-            await trans.CommitAsync(token);
-
-            return new(ret, updateSub.Status);
+            catch
+            {
+                await trans.RollbackAsync(token);
+                throw;
+            }
         }
-        catch
-        {
-            await trans.RollbackAsync(token);
-            throw;
-        }
+
+        throw new InvalidOperationException("Failed to verify answer after retries due to concurrency conflicts.");
     }
 
     public Task<GameInstance[]> GetInstances(GameChallenge challenge, CancellationToken token = default) =>
