@@ -157,7 +157,7 @@
         },
         "submission_limit": {
           "description": "0 = không giới hạn",
-          "label": "Số lần thử tối đa được phép",
+          "label": "Lần thử tối đa",
           "placeholder": "Không giới hạn"
         },
         "title": "Tiêu đề",

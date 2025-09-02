@@ -81,7 +81,7 @@
 
   & :not(pre) > code {
     white-space: normal;
-    font-size: 0.95rem;
+    font-size: calc(var(--mantine-font-size-md) * 0.9375);
     padding: 1px calc(var(--mantine-spacing-xs) / 2);
     border: none;
     background-color: light-dark(alpha(var(--mantine-white), 0.05), alpha(var(--mantine-black), 0.1));

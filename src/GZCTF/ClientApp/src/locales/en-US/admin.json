@@ -295,7 +295,7 @@
           "label": "Renewal Duration (min)"
         },
         "renewal_window": {
-          "description": "The time window before the container expires to renew",
+          "description": "Time window before the container expires to renew",
           "label": "Renewal Window (min)"
         },
         "title": "Container Policy"

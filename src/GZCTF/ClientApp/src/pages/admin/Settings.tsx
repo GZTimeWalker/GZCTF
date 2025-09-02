@@ -157,6 +157,7 @@ const Configs: FC = () => {
             </Grid.Col>
             <Grid.Col span={1}>
               <FileInput
+                size="sm"
                 label={t('admin.content.settings.platform.logo.label')}
                 description={t('admin.content.settings.platform.logo.description')}
                 placeholder={
@@ -203,6 +204,7 @@ const Configs: FC = () => {
             </Grid.Col>
             <Grid.Col span={1}>
               <ColorInput
+                size="sm"
                 label={t('admin.content.settings.platform.color.label')}
                 description={t('admin.content.settings.platform.color.description')}
                 placeholder={t('common.content.color.custom.placeholder')}

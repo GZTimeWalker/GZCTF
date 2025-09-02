@@ -39,7 +39,7 @@
       "confirm": "Confirm Registration",
       "content": [
         "Are you sure you want to register for this game?",
-        "After successfully registering for the game and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the match ends or when the participation request is rejected.",
+        "After successfully registering for the game and passing the review, the team will be locked and <strong>you will no longer be able to remove any member from the team.</strong> The team will be unlocked after the game ends or when the participation request is rejected.",
         "The limit on the number of players refers to the number of members that have decided to participate as part of the specific team, <strong>regardless of which team you choose to play with.</strong>"
       ],
       "division": {

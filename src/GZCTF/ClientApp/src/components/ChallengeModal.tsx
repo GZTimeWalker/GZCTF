@@ -8,10 +8,8 @@ import {
   TextInput,
   Text,
   Title,
-  Tooltip,
   useMantineTheme,
   ScrollAreaAutosize,
-  InputWrapper,
   Input,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
@@ -87,17 +85,15 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const title = (
     <Stack gap="xs">
       <Group wrap="nowrap" w="100%" justify="space-between" gap="sm">
-        <Group wrap="nowrap" gap="sm" w="calc(100% - 14rem)">
+        <Group wrap="nowrap" gap="sm" w="calc(100% - 6.75rem)">
           {cateData && <Icon path={cateData.icon} size={1.2} color={theme.colors[cateData?.color][5]} />}
           <Title order={4} lineClamp={1}>
             {challenge?.title ?? ''}
           </Title>
         </Group>
-        <Group gap="xs" align="center">
-          <Text miw="6rem" fw="bold" ff="monospace" ta="right">
-            {challenge?.score ?? 0} pts
-          </Text>
-        </Group>
+        <Text miw="6rem" fw="bold" ff="monospace" ta="right">
+          {challenge?.score ?? 0} pts
+        </Text>
       </Group>
       <Divider size="md" color={cateData?.color} />
     </Stack>
@@ -135,7 +131,6 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       <Text fw="bold" size="sm">
         {t('challenge.button.download.attachment')}
       </Text>
-      <Text>👉</Text>
       <Button
         component="a"
         href={link ?? '#'}

@@ -102,7 +102,7 @@ export const AttachmentUploadModal: FC<ModalProps> = (props) => {
   return (
     <Modal {...props}>
       <Stack>
-        <Text>
+        <Text size="sm">
           {t('admin.content.games.challenges.attachment.instruction.dynamic.content')}
           <br />
           <Text fw="bold" span>

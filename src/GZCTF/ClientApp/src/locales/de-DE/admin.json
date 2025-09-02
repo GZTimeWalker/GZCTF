@@ -157,7 +157,7 @@
         },
         "submission_limit": {
           "description": "0 = unbegrenzt",
-          "label": "Maximale Versuche erlaubt",
+          "label": "Max. Versuche",
           "placeholder": "Unbegrenzt"
         },
         "title": "Titel",
@@ -166,7 +166,7 @@
           "label": "Traffic-Erfassung aktivieren"
         },
         "type": {
-          "description": "Kann nach der Erstellung nicht geändert werden",
+          "description": "Nicht änderbar nach Erstellung",
           "label": "Typ"
         }
       },

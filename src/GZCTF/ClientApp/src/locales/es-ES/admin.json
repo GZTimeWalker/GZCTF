@@ -157,7 +157,7 @@
         },
         "submission_limit": {
           "description": "0 = ilimitado",
-          "label": "Máximo de intentos permitidos",
+          "label": "Intentos máx.",
           "placeholder": "Ilimitado"
         },
         "title": "Título",
@@ -166,7 +166,7 @@
           "label": "Habilitar Captura de Tráfico"
         },
         "type": {
-          "description": "No se puede cambiar después de la creación",
+          "description": "No modificable tras creación",
           "label": "Tipo"
         }
       },

@@ -64,7 +64,7 @@ public class GameController(
     [HttpGet("Recent")]
     [ProducesResponseType(typeof(BasicGameInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> RecentGames(
-        [FromQuery][Range(0, 50)] int limit,
+        [FromQuery] [Range(0, 50)] int limit,
         CancellationToken token)
     {
         (BasicGameInfoModel[] games, DateTimeOffset lastModified) = await gameRepository.GetRecentGames(token);
@@ -90,7 +90,7 @@ public class GameController(
     [EnableRateLimiting(nameof(RateLimiter.LimitPolicy.Query))]
     [ResponseCache(VaryByQueryKeys = ["count", "skip"], Duration = 60)]
     [ProducesResponseType(typeof(ArrayResponse<BasicGameInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Games([FromQuery][Range(0, 50)] int count = 10,
+    public async Task<IActionResult> Games([FromQuery] [Range(0, 50)] int count = 10,
         [FromQuery] int skip = 0, CancellationToken token = default)
         => Ok(await gameRepository.GetGameInfo(count, skip, token));
 
@@ -182,10 +182,7 @@ public class GameController(
             // Create new participation object, do not update team-game-user triple tuple
             part = new()
             {
-                Game = game,
-                Team = team,
-                Division = model.Division,
-                Token = gameRepository.GetToken(game, team)
+                Game = game, Team = team, Division = model.Division, Token = gameRepository.GetToken(game, team)
             };
 
             participationRepository.Add(part);
@@ -318,8 +315,8 @@ public class GameController(
     [HttpGet("{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery][Range(0, 100)] int count = 100,
-        [FromQuery][Range(0, 300)] int skip = 0, CancellationToken token = default)
+    public async Task<IActionResult> Notices([FromRoute] int id, [FromQuery] [Range(0, 100)] int count = 100,
+        [FromQuery] [Range(0, 300)] int skip = 0, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -355,7 +352,7 @@ public class GameController(
     [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Events([FromRoute] int id, [FromQuery] bool hideContainer = false,
-        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery] [Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -387,7 +384,7 @@ public class GameController(
     [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] AnswerResult? type = null,
-        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery] [Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -473,8 +470,7 @@ public class GameController(
         var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}");
 
         var entries = await storage.ListAsync(path, cancellationToken: token);
-        var participationIds = entries.Select(
-                e => int.TryParse(e.Name, out var id) ? id : -1)
+        var participationIds = entries.Select(e => int.TryParse(e.Name, out var id) ? id : -1)
             .Where(id => id > 0).ToArray();
 
         if (participationIds.Length == 0)
@@ -894,7 +890,7 @@ public class GameController(
         if (answer.Length > Limits.MaxFlagLength)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagTooLong)]));
 
-        var context = await GetContextInfo(id, challengeId, token: token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
@@ -904,19 +900,20 @@ public class GameController(
         {
             await using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
 
-            var instance = await gameInstanceRepository.GetInstanceForSubmission(context.Participation!, challengeId, token);
+            var instance =
+                await gameInstanceRepository.GetInstanceForSubmission(context.Participation!, challengeId, token);
 
             if (instance is null)
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-            // Increment count first, then check if limit would be exceeded
             instance.SubmissionCount++;
-            
+
             if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
             {
                 await transaction.RollbackAsync(token);
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+                return BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
             }
 
             Submission submission = new()
@@ -936,28 +933,24 @@ public class GameController(
                 submission = await submissionRepository.AddSubmission(submission, token);
                 await transaction.CommitAsync(token);
 
-                // send to flag checker service
                 await channelWriter.WriteAsync(submission, token);
-
                 return Ok(submission.Id);
             }
             catch (DbUpdateConcurrencyException) when (retry < maxRetries - 1)
             {
                 await transaction.RollbackAsync(token);
-                // Exponential backoff: 100ms, 200ms, 300ms
                 await Task.Delay((retry + 1) * 100, token);
-                continue;
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync(token);
-                logger.LogError(ex, "Failed to process submission for challenge {ChallengeId}", challengeId);
+                logger.LogErrorMessage(ex, ex.Message);
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)]));
+            }
         }
 
-        // If we reach here, all retries failed due to concurrency conflicts
         return StatusCode(StatusCodes.Status409Conflict,
-            new RequestResponse("Submission failed due to concurrent access. Please try again.",
+            new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)],
                 StatusCodes.Status409Conflict));
     }
 
@@ -1128,8 +1121,7 @@ public class GameController(
 
         if (instance.IsContainerOperationTooFrequent)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests))
-            { StatusCode = StatusCodes.Status429TooManyRequests };
+                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
 
         if (instance.Container is not null)
         {
@@ -1142,15 +1134,15 @@ public class GameController(
 
         return await gameInstanceRepository.CreateContainer(instance, context.Participation!.Team, context.User!,
                 context.Game!, token) switch
-        {
-            null or (TaskStatus.Failed, null) => BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
-            (TaskStatus.Denied, null) => BadRequest(
-                new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
-                    context.Game!.ContainerCountLimit])),
-            (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
-            _ => throw new UnreachableException()
-        };
+            {
+                null or (TaskStatus.Failed, null) => BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationFailed)])),
+                (TaskStatus.Denied, null) => BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNumberLimitExceeded),
+                        context.Game!.ContainerCountLimit])),
+                (TaskStatus.Success, var x) => Ok(ContainerInfoModel.FromContainer(x!)),
+                _ => throw new UnreachableException()
+            };
     }
 
     /// <summary>
@@ -1245,8 +1237,7 @@ public class GameController(
 
         if (instance.IsContainerOperationTooFrequent)
             return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests))
-            { StatusCode = StatusCodes.Status429TooManyRequests };
+                StatusCodes.Status429TooManyRequests)) { StatusCode = StatusCodes.Status429TooManyRequests };
 
         var destroyId = instance.Container.ContainerId;
 
@@ -1274,13 +1265,11 @@ public class GameController(
         return Ok();
     }
 
-    async Task<ContextInfo> GetContextInfo(int id, int challengeId = 0, bool withFlag = false,
-        bool denyAfterEnded = true, CancellationToken token = default)
+    async Task<ContextInfo> GetContextInfo(int id, bool denyAfterEnded = true, CancellationToken token = default)
     {
         ContextInfo res = new()
         {
-            User = await userManager.GetUserAsync(User),
-            Game = await gameRepository.GetGameById(id, token)
+            User = await userManager.GetUserAsync(User), Game = await gameRepository.GetGameById(id, token)
         };
 
         if (res.Game is null)
@@ -1308,21 +1297,6 @@ public class GameController(
             return res.WithResult(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded)));
 
-        if (challengeId <= 0)
-            return res;
-
-        var challenge = await challengeRepository.GetChallenge(id, challengeId, token);
-
-        if (challenge is null)
-            return res.WithResult(NotFound(new RequestResponse(
-                localizer[nameof(Resources.Program.Challenge_NotFound)],
-                StatusCodes.Status404NotFound)));
-
-        if (withFlag)
-            await challengeRepository.LoadFlags(challenge, token);
-
-        res.Challenge = challenge;
-
         return res;
     }
 
@@ -1331,11 +1305,15 @@ public class GameController(
 
     class ContextInfo
     {
-        public GameChallenge? Challenge;
         public Game? Game;
         public Participation? Participation;
-        public IActionResult? Result;
         public UserInfo? User;
+        
+        /// <summary>
+        /// The result to be returned.
+        /// If this is not null, the action should return this result directly.
+        /// </summary>
+        public IActionResult? Result;
 
         public ContextInfo WithResult(IActionResult res)
         {

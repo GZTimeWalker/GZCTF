@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Avatar,
   Badge,
+  Code,
   Loader,
   MantineThemeOverride,
   Menu,
@@ -159,6 +160,13 @@ const CustomTheme: MantineThemeOverride = {
     Menu: Menu.extend({
       styles: {
         item: {
+          fontWeight: 500,
+        },
+      },
+    }),
+    Code: Code.extend({
+      styles: {
+        root: {
           fontWeight: 500,
         },
       },

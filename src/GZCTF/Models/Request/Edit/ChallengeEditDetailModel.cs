@@ -9,7 +9,7 @@ namespace GZCTF.Models.Request.Edit;
 public class ChallengeEditDetailModel
 {
     /// <summary>
-    /// Challenge Id
+    /// Challenge ID
     /// </summary>
     public int Id { get; set; }
 
