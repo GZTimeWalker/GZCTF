@@ -151,7 +151,8 @@ public static class LogHelper
                 Matching.WithProperty<string>("RequestPath", v =>
                     v.TrimEnd('/').Equals("/healthz", StringComparison.OrdinalIgnoreCase) ||
                     v.TrimEnd('/').Equals("/metrics", StringComparison.OrdinalIgnoreCase) ||
-                    v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase)))
+                    v.StartsWith("/assets", StringComparison.OrdinalIgnoreCase) ||
+                    v.StartsWith("/hub", StringComparison.OrdinalIgnoreCase)))
             .Filter.ByExcluding(logEvent =>
                 logEvent.Exception is OperationCanceledException)
             .MinimumLevel.Debug()

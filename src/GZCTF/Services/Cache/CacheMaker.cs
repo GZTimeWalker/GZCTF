@@ -9,7 +9,10 @@ namespace GZCTF.Services.Cache;
 /// <summary>
 /// Cache update request
 /// </summary>
-public class CacheRequest(string key, DistributedCacheEntryOptions? options = null, params string[] @params)
+public class CacheRequest(
+    string key,
+    DistributedCacheEntryOptions? options = null,
+    params string[] @params)
 {
     public DateTimeOffset Time { get; } = DateTimeOffset.Now;
     public string Key { get; } = key;
@@ -29,6 +32,7 @@ public interface ICacheRequestHandler
 public class CacheMaker(
     ILogger<CacheMaker> logger,
     IDistributedCache cache,
+    IMemoryCache memoryCache,
     ChannelReader<CacheRequest> channelReader,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
@@ -136,6 +140,9 @@ public class CacheMaker(
                                 nameof(Resources.Program.Cache_Updated),
                                 key, item.Time.ToString("HH:mm:ss.fff"), bytes.Length
                             ], TaskStatus.Success, LogLevel.Debug);
+
+                        // notify local memory cache
+                        memoryCache.Remove(key);
                     }
                     else
                     {

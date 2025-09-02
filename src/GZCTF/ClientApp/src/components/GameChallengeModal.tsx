@@ -43,6 +43,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
+  const [solvedChallengeId, setSolvedChallengeId] = useState<number | null>(null)
 
   const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
 
@@ -171,7 +172,6 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   }
 
   useEffect(() => {
-    // submitId initialization will trigger useEffect
     if (!submitId) return
 
     const polling = setInterval(async () => {
@@ -194,8 +194,18 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     return () => clearInterval(polling)
   }, [submitId])
 
+  useEffect(() => {
+    if (challengeId !== solvedChallengeId) return
+
+    if (status !== SubmissionType.Unaccepted && status !== undefined) {
+      // status has been updated, reset solved challenge id
+      setSolvedChallengeId(null)
+    }
+  }, [status, challengeId, challenge])
+
   const checkDataFlag = async (id: number, data: string) => {
     if (data === AnswerResult.Accepted) {
+      setSolvedChallengeId(challengeId)
       updateNotification({
         id: 'flag-submitted',
         color: 'teal',
@@ -240,7 +250,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       gameTitle={gameTitle}
       challenge={challenge ?? { title, score }}
       cateData={cateData}
-      solved={status !== SubmissionType.Unaccepted && status !== undefined}
+      solved={(status !== SubmissionType.Unaccepted && status !== undefined) || solvedChallengeId === challengeId}
       flag={flag}
       setFlag={setFlag}
       onCreate={onCreate}
