@@ -155,6 +155,11 @@
           "description": "Stockage (y compris l'image)",
           "label": "Limite de stockage (MB)"
         },
+        "submission_limit": {
+          "description": "0 = illimité",
+          "label": "Nombre maximum de tentatives autorisées",
+          "placeholder": "Illimité"
+        },
         "title": "Titre",
         "traffic_capture": {
           "description": "Capture du trafic lorsque l'équipe résout des défis. Le proxy de la plateforme doit être activé",

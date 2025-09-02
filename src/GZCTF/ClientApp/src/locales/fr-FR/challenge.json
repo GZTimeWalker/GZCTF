@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "Ce défi a été résolu",
+    "attempts": {
+      "count": "Vous avez déjà essayé {{count}} fois !",
+      "exhausted": "Oups, toutes les tentatives épuisées !",
+      "placeholder": "Vous avez atteint la limite !",
+      "remaining": "{{remaining}} tentatives restantes, continuez !"
+    },
     "flag_placeholders": [
       "Être ou ne pas être, telle est la question pour le flag",
       "Tout ce qui brille n'est pas un flag",

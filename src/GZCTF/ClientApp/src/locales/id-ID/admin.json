@@ -155,6 +155,11 @@
           "description": "Penyimpanan (includ gambar)",
           "label": "Limit penyimpanan (MB)"
         },
+        "submission_limit": {
+          "description": "0 = tidak terbatas",
+          "label": "Maksimum Percobaan yang Diizinkan",
+          "placeholder": "Tidak terbatas"
+        },
         "title": "Judul",
         "traffic_capture": {
           "description": "Menangkap traffic saat tim menyelesaikan challenge. Proxy platform perlu diaktifkan",

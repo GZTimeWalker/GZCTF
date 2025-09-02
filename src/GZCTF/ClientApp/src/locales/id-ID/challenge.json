@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "Challenge ini sudah diselesaikan",
+    "attempts": {
+      "count": "Kamu sudah mencoba {{count}} kali!",
+      "exhausted": "Ups, semua percobaan sudah habis!",
+      "placeholder": "Kamu sudah mencapai batas!",
+      "remaining": "{{remaining}} percobaan tersisa, terus berusaha!"
+    },
     "flag_placeholders": [
       "Untuk ada, atau tidak ada, flag adalah pertanyaannya",
       "Semua yang berkilau bukanlah flag",

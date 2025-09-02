@@ -155,6 +155,11 @@
           "description": "限制存儲空間，含鏡像大小",
           "label": "存儲限制 (MB)"
         },
+        "submission_limit": {
+          "description": "0 表示不限制",
+          "label": "最大提交次數",
+          "placeholder": "不限制"
+        },
         "title": "題目標題",
         "traffic_capture": {
           "description": "捕獲隊伍解題流量，需要開啟平臺代理",

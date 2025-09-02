@@ -155,6 +155,11 @@
           "description": "Lưu trữ (bao gồm các image)",
           "label": "Giới hạn Lưu trữ (MB)"
         },
+        "submission_limit": {
+          "description": "0 = không giới hạn",
+          "label": "Số lần thử tối đa được phép",
+          "placeholder": "Không giới hạn"
+        },
         "title": "Tiêu đề",
         "traffic_capture": {
           "description": "Ghi lại lưu lượng khi đội giải các thử thách. Cần bật proxy nền tảng.",

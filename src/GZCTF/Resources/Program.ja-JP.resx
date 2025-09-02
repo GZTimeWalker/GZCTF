@@ -920,6 +920,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>動的添付チャレンジについては、Assets API を使用して添付ファイルをアップロードしてください。</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>提出制限に達しました</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>コンテナのアドレスを解析できませんでした</value>
   </data>

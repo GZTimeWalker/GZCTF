@@ -933,6 +933,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>Utilisez l'API des actifs pour télécharger les pièces jointes</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>Limite de soumissions atteinte</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Échec de l'analyse de l'adresse du conteneur</value>
   </data>

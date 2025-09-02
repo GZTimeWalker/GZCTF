@@ -933,6 +933,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>Use la API de activos para subir adjuntos</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>Límite de envíos alcanzado</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Fallo en el análisis de la dirección del contenedor</value>
   </data>

@@ -155,6 +155,11 @@
           "description": "ストレージ容量の制限、イメージサイズも含みます",
           "label": "ストレージ上限 (MB)"
         },
+        "submission_limit": {
+          "description": "0 = 無制限",
+          "label": "最大試行回数",
+          "placeholder": "無制限"
+        },
         "title": "タイトル",
         "traffic_capture": {
           "description": "チームの解答トラフィックをキャプチャするには、プラットフォームプロキシを有効にする必要があります",

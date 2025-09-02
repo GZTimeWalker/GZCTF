@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "Este desafío ha sido resuelto",
+    "attempts": {
+      "count": "¡Ya has intentado {{count}} veces!",
+      "exhausted": "¡Ups, se agotaron todos los intentos!",
+      "placeholder": "¡Has alcanzado el límite!",
+      "remaining": "{{remaining}} intentos restantes, ¡sigue adelante!"
+    },
     "flag_placeholders": [
       "Ser o no ser, esa es la cuestión del flag",
       "No todo lo que reluce es flag",

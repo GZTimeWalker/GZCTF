@@ -910,10 +910,14 @@ public class GameController(
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-            if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount >= instance.Challenge.SubmissionLimit)
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
-
+            // Increment count first, then check if limit would be exceeded
             instance.SubmissionCount++;
+            
+            if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
+            {
+                await transaction.RollbackAsync(token);
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+            }
 
             Submission submission = new()
             {
@@ -940,18 +944,21 @@ public class GameController(
             catch (DbUpdateConcurrencyException) when (retry < maxRetries - 1)
             {
                 await transaction.RollbackAsync(token);
-                // Retry
+                // Exponential backoff: 100ms, 200ms, 300ms
+                await Task.Delay((retry + 1) * 100, token);
+                continue;
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync(token);
-                throw;
-            }
+                logger.LogError(ex, "Failed to process submission for challenge {ChallengeId}", challengeId);
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)]));
         }
 
-        return StatusCode(StatusCodes.Status500InternalServerError,
-            new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)],
-                StatusCodes.Status500InternalServerError));
+        // If we reach here, all retries failed due to concurrency conflicts
+        return StatusCode(StatusCodes.Status409Conflict,
+            new RequestResponse("Submission failed due to concurrent access. Please try again.",
+                StatusCodes.Status409Conflict));
     }
 
     /// <summary>
