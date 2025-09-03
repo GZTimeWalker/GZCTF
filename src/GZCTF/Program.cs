@@ -47,7 +47,7 @@ builder.AddDevelopmentServices();
 
 var app = builder.Build();
 
-Log.Logger = LogHelper.GetLogger(app.Configuration, app.Services);
+Log.Logger = LogHelper.GetLogger(app);
 
 await app.RunPrelaunchWorkAsync();
 

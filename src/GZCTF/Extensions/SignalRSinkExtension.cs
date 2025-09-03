@@ -40,7 +40,7 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
                     IP = LogHelper.GetStringValue(ip),
                     Status = logEvent.Exception is null
                         ? LogHelper.GetStringValue(status)
-                        : TaskStatus.Failed.ToString()
+                        : nameof(TaskStatus.Failed)
                 }).Wait();
         }
         catch

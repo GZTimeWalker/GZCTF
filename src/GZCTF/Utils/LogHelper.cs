@@ -143,8 +143,11 @@ public static class LogHelper
             ))
             .CreateBootstrapLogger();
 
-    public static ILogger GetLogger(IConfiguration configuration, IServiceProvider serviceProvider)
+    const string EFCoreQuerySource = "Microsoft.EntityFrameworkCore.Database.Command";
+
+    public static ILogger GetLogger(WebApplication app)
     {
+        var enableQueryLogging = app.Environment.IsDevelopment() && app.Configuration.GetValue("QUERY_LOGGING", false);
         var loggerConfig = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
@@ -158,25 +161,37 @@ public static class LogHelper
             .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("AspNetCoreRateLimit", LogEventLevel.Warning)
-            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning)
-            .WriteTo.Async(t => t.Console(
-                new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
-                LogEventLevel.Debug))
-            .WriteTo.Async(t => t.File(
-                path: Path.Combine(PathHelper.Base, PathHelper.Logs, "log_.log"),
-                formatter: new ExpressionTemplate(LogTemplate),
-                rollingInterval: RollingInterval.Day,
-                fileSizeLimitBytes: 10 * 1024 * 1024,
-                restrictedToMinimumLevel: LogEventLevel.Debug,
-                rollOnFileSizeLimit: true,
-                retainedFileCountLimit: 5,
-                hooks: new ArchiveHooks(CompressionLevel.Optimal,
-                    Path.Combine(PathHelper.Base, PathHelper.Logs, "archive", "{UtcDate:yyyy-MM}"))
-            ))
-            .WriteTo.SignalR(serviceProvider)
-            .WriteTo.Database(serviceProvider);
+            .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Warning);
 
-        if (configuration.GetSection("Logging").GetSection("Loki") is not { } lokiSection || !lokiSection.Exists())
+        if (enableQueryLogging)
+            loggerConfig = loggerConfig.MinimumLevel.Override(EFCoreQuerySource, LogEventLevel.Information);
+
+        loggerConfig.WriteTo.Async(t => t.Console(
+            new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
+            LogEventLevel.Debug)
+        ).WriteTo.Logger(config =>
+            {
+                if (enableQueryLogging)
+                    config = config.Filter
+                        .ByExcluding(Matching.FromSource(EFCoreQuerySource));
+
+                config.WriteTo.Async(t => t.File(
+                        path: Path.Combine(PathHelper.Base, PathHelper.Logs, "log_.log"),
+                        formatter: new ExpressionTemplate(LogTemplate),
+                        rollingInterval: RollingInterval.Day,
+                        fileSizeLimitBytes: 10 * 1024 * 1024,
+                        restrictedToMinimumLevel: LogEventLevel.Debug,
+                        rollOnFileSizeLimit: true,
+                        retainedFileCountLimit: 5,
+                        hooks: new ArchiveHooks(CompressionLevel.Optimal,
+                            Path.Combine(PathHelper.Base, PathHelper.Logs, "archive", "{UtcDate:yyyy-MM}"))
+                    ))
+                    .WriteTo.SignalR(app.Services)
+                    .WriteTo.Database(app.Services);
+            }
+        );
+
+        if (app.Configuration.GetSection("Logging").GetSection("Loki") is not { } lokiSection || !lokiSection.Exists())
             return loggerConfig.CreateLogger();
 
         if (lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
