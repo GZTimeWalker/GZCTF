@@ -152,8 +152,13 @@
         },
         "solve_count": "Solves",
         "storage_limit": {
-          "description": "Penyimpanan (includ gambar)",
-          "label": "Limit penyimpanan (MB)"
+          "description": "Termasuk gambar",
+          "label": "Penyimpanan (MB)"
+        },
+        "submission_limit": {
+          "description": "0 = tidak terbatas",
+          "label": "Percobaan Maks",
+          "placeholder": "Tidak terbatas"
         },
         "title": "Judul",
         "traffic_capture": {

@@ -155,6 +155,11 @@
           "description": "限制存储空间，含镜像大小",
           "label": "存储限制 (MB)"
         },
+        "submission_limit": {
+          "description": "0 表示不限制",
+          "label": "最大提交次数",
+          "placeholder": "不限制"
+        },
         "title": "题目标题",
         "traffic_capture": {
           "description": "捕获队伍解题流量，需要开启平台代理",

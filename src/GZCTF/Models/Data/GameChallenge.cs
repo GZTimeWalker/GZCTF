@@ -66,6 +66,7 @@ public class GameChallenge : Challenge
         Difficulty = model.Difficulty ?? Difficulty;
         FileName = model.FileName ?? FileName;
         DisableBloodBonus = model.DisableBloodBonus ?? DisableBloodBonus;
+        SubmissionLimit = model.SubmissionLimit ?? SubmissionLimit;
 
         // only set FlagTemplate to null when pass an empty string (but not null)
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :

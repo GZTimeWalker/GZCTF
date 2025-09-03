@@ -9,7 +9,7 @@ namespace GZCTF.Models.Request.Edit;
 public class ChallengeEditDetailModel
 {
     /// <summary>
-    /// Challenge Id
+    /// Challenge ID
     /// </summary>
     public int Id { get; set; }
 
@@ -125,6 +125,12 @@ public class ChallengeEditDetailModel
     public bool? DisableBloodBonus { get; set; } = false;
 
     /// <summary>
+    /// Maximum number of submissions allowed per team (0 = no limit)
+    /// </summary>
+    [Required]
+    public int SubmissionLimit { get; set; }
+
+    /// <summary>
     /// Initial score
     /// </summary>
     [Required]
@@ -167,6 +173,7 @@ public class ChallengeEditDetailModel
             FileName = chal.FileName,
             AcceptedCount = chal.AcceptedCount,
             Attachment = chal.Attachment,
+            SubmissionLimit = chal.SubmissionLimit,
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
         };

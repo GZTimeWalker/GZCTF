@@ -27,7 +27,7 @@ const workerFunction = function () {
     return { nonce: getNonce(prefix, nonce), time, rate: trials / time }
   }
 
-  const concatNonce = (prefix: Uint8Array, nonce: number): Uint8Array => {
+  const concatNonce = (prefix: Uint8Array, nonce: number): Uint8Array<ArrayBuffer> => {
     const buffer = new Uint8Array(prefix.length + 4)
     buffer.set(prefix, 0)
     for (let i = 0; i < 4; i++) {

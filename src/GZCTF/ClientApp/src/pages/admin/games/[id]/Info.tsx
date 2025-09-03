@@ -234,7 +234,6 @@ const GameInfoEdit: FC = () => {
           value={game?.containerCountLimit}
           onChange={(e) => game && setGame({ ...game, containerCountLimit: Number(e) })}
         />
-
         <TextInput
           label={t('admin.content.games.info.invite_code.label')}
           description={t('admin.content.games.info.invite_code.description')}
@@ -249,6 +248,7 @@ const GameInfoEdit: FC = () => {
         />
         <DatePickerInput
           label={t('admin.content.games.info.start_date')}
+          size="sm"
           value={start.toDate()}
           disabled={disabled}
           clearable={false}
@@ -282,6 +282,7 @@ const GameInfoEdit: FC = () => {
         />
         <DatePickerInput
           label={t('admin.content.games.info.end_date')}
+          size="sm"
           disabled={disabled}
           minDate={start.toDate()}
           value={end.toDate()}

@@ -1071,6 +1071,11 @@ export interface ChallengeEditDetailModel {
   /** Whether to disable blood bonus */
   disableBloodBonus?: boolean | null;
   /**
+   * Maximum number of submissions allowed per team (0 = no limit)
+   * @format int32
+   */
+  submissionLimit: number;
+  /**
    * Initial score
    * @format int32
    */
@@ -1190,6 +1195,13 @@ export interface ChallengeUpdateModel {
   isEnabled?: boolean | null;
   /** Unified file name */
   fileName?: string | null;
+  /**
+   * Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
+   * @format int32
+   * @min 0
+   * @max 10000
+   */
+  submissionLimit?: number | null;
   /** Container image name and tag */
   containerImage?: string | null;
   /**
@@ -1759,6 +1771,16 @@ export interface ChallengeDetailModel {
   type?: ChallengeType;
   /** Flag context */
   context?: ClientFlagContext;
+  /**
+   * Maximum number of attempts allowed (0 = no limit)
+   * @format int32
+   */
+  limit?: number;
+  /**
+   * Current attempt count
+   * @format int32
+   */
+  attempts?: number;
 }
 
 export interface ClientFlagContext {

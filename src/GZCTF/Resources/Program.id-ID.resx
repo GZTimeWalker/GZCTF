@@ -920,6 +920,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>Gunakan aset API untuk mengunggah lampiran</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>Batas pengiriman tercapai</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Gagal mem-parsing alamat container</value>
   </data>

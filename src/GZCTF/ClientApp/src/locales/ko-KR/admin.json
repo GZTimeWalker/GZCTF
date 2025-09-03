@@ -155,6 +155,11 @@
           "description": "저장소 (이미지 포함)",
           "label": "저장소 제한 (MB)"
         },
+        "submission_limit": {
+          "description": "0 = 무제한",
+          "label": "최대 시도 횟수",
+          "placeholder": "무제한"
+        },
         "title": "제목",
         "traffic_capture": {
           "description": "팀이 문제를 해결했을 때 트래픽을 캡처합니다. 플랫폼 프록시가 설정되어 있어야 합니다.",

@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "이미 해결한 문제입니다.",
+    "attempts": {
+      "count": "이미 {{count}}번 시도했습니다!",
+      "exhausted": "앗, 모든 시도 횟수를 다 써버렸네요!",
+      "placeholder": "제한에 도달했습니다!",
+      "remaining": "{{remaining}}번의 시도가 남았습니다, 계속 해보세요!"
+    },
     "flag_placeholders": [
       "죽느냐, 사느냐, Flag 가 문제로다.",
       "Flag, 누구냐 넌?",

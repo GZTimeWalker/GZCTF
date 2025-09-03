@@ -46,6 +46,10 @@
   border-spacing: 0;
   width: 100%;
 
+  & th {
+    padding-left: 0;
+  }
+
   & tbody tr td {
     white-space: nowrap;
     padding: 0 1rem 0 0;

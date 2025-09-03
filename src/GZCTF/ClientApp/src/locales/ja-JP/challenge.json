@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "このチャレンジはすでに解かれています",
+    "attempts": {
+      "count": "すでに {{count}} 回試しました！",
+      "exhausted": "おっと、すべての試行が使い切られました！",
+      "placeholder": "制限に達しました！",
+      "remaining": "残り {{remaining}} 回の試行があります、頑張って！"
+    },
     "flag_placeholders": [
       "フラッグを入力してください",
       "フラッグを入力してください",

@@ -155,6 +155,11 @@
           "description": "Storage (including image)",
           "label": "Storage Limit (MB)"
         },
+        "submission_limit": {
+          "description": "0 = unlimited",
+          "label": "Max Attempts Allowed",
+          "placeholder": "Unlimited"
+        },
         "title": "Title",
         "traffic_capture": {
           "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",
@@ -167,7 +172,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Accept directly after team registration",
+          "description": "Accept team after registration",
           "label": "Accept Without Review"
         },
         "container_limit": {
@@ -290,7 +295,7 @@
           "label": "Renewal Duration (min)"
         },
         "renewal_window": {
-          "description": "The time window before the container expires to renew",
+          "description": "Time window before the container expires to renew",
           "label": "Renewal Window (min)"
         },
         "title": "Container Policy"

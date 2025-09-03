@@ -10,7 +10,7 @@ public static class DatabaseSinkExtension
 {
     public static LoggerConfiguration Database(this LoggerSinkConfiguration loggerConfiguration,
         IServiceProvider serviceProvider) =>
-        loggerConfiguration.Sink(new DatabaseSink(serviceProvider));
+        loggerConfiguration.Sink(new DatabaseSink(serviceProvider), LogEventLevel.Information);
 }
 
 public class DatabaseSink : ILogEventSink, IDisposable
@@ -38,9 +38,6 @@ public class DatabaseSink : ILogEventSink, IDisposable
 
     public void Emit(LogEvent logEvent)
     {
-        if (logEvent.Level < LogEventLevel.Information)
-            return;
-
         _logBuffer.Enqueue(ToLogModel(logEvent));
         _resetEvent.Set();
     }

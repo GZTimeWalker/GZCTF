@@ -940,6 +940,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>Verwenden Sie die Assets-API, um Anhänge hochzuladen</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>Einreichungslimit erreicht</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Containeradresse konnte nicht geparst werden</value>
   </data>

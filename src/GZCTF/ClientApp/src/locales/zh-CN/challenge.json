@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "该题目已被解出",
+    "attempts": {
+      "count": "已经尝试提交 {{count}} 次",
+      "exhausted": "哎呀，所有机会都用完了",
+      "placeholder": "已达到提交上限",
+      "remaining": "还有 {{remaining}} 次提交机会"
+    },
     "flag_placeholders": [
       "横看成岭侧成峰，flag 高低各不同",
       "flag 当关，万夫莫开",

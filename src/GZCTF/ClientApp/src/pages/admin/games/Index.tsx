@@ -138,7 +138,7 @@ const Games: FC = () => {
                             <Avatar alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
-                            <Text fw="bold" lineClamp={1} maw="calc(10vw)">
+                            <Text fw="bold" lineClamp={1} maw="calc(20vw)">
                               {game.title}
                             </Text>
                           </Group>
@@ -147,11 +147,11 @@ const Games: FC = () => {
                       </Table.Td>
                       <Table.Td>
                         <Group wrap="nowrap" gap="xs">
-                          <Badge size="xs" color={color} variant="dot">
+                          <Badge size="sm" color={color} variant="dot">
                             {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>
                           <Icon path={mdiChevronTripleRight} size={1} />
-                          <Badge size="xs" color={color} variant="dot">
+                          <Badge size="sm" color={color} variant="dot">
                             {dayjs(endTime).format('YYYY-MM-DD HH:mm')}
                           </Badge>
                         </Group>

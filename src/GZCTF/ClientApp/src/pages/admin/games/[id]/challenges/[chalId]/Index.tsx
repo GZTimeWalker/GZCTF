@@ -253,7 +253,7 @@ const GameChallengeEdit: FC = () => {
       }
     >
       <Stack>
-        <Grid columns={3}>
+        <Grid columns={4}>
           <Grid.Col span={1}>
             <TextInput
               label={t('admin.content.games.challenges.title')}
@@ -266,7 +266,7 @@ const GameChallengeEdit: FC = () => {
           <Grid.Col span={1}>
             <Select
               label={
-                <Group gap="sm">
+                <Group gap="sm" wrap="nowrap">
                   <Text size="sm">{t('admin.content.games.challenges.type.label')}</Text>
                   <Text size="xs" c="dimmed">
                     {t('admin.content.games.challenges.type.description')}
@@ -302,6 +302,34 @@ const GameChallengeEdit: FC = () => {
               })}
             />
           </Grid.Col>
+          <Grid.Col span={1}>
+            <NumberInput
+              label={
+                <Group gap="sm" wrap="nowrap">
+                  <Text size="sm">{t('admin.content.games.challenges.submission_limit.label')}</Text>
+                  <Text size="xs" c="dimmed">
+                    {t('admin.content.games.challenges.submission_limit.description')}
+                  </Text>
+                </Group>
+              }
+              placeholder={t('admin.content.games.challenges.submission_limit.placeholder')}
+              min={0}
+              max={10000}
+              disabled={disabled}
+              stepHoldDelay={500}
+              stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+              value={challengeInfo?.submissionLimit || undefined}
+              onChange={(e) => {
+                if (typeof e === 'number') {
+                  setChallengeInfo({ ...challengeInfo, submissionLimit: e })
+                } else if (e === '') {
+                  setChallengeInfo({ ...challengeInfo, submissionLimit: 0 })
+                }
+              }}
+            />
+          </Grid.Col>
+        </Grid>
+        <Grid columns={3}>
           <Grid.Col span={3}>
             <Textarea
               w="100%"
@@ -526,6 +554,7 @@ const GameChallengeEdit: FC = () => {
           content: tryDefault([challengeInfo?.content, challenge?.content]),
           hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
           score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
+          limit: tryDefault([challengeInfo?.submissionLimit, challenge?.submissionLimit], 0),
           category: category as ChallengeCategory,
           type: challenge?.type ?? ChallengeType.StaticAttachment,
         }}

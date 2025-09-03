@@ -59,12 +59,12 @@ export const FlagCreateModal: FC<ModalProps> = (props) => {
   return (
     <Modal {...props}>
       <Stack>
-        <Text>
+        <Text size="sm">
           <Trans i18nKey="admin.content.games.challenges.flag.create" />
         </Text>
         <Textarea
-          value={flags}
           w="100%"
+          value={flags}
           disabled={disabled}
           autosize
           minRows={8}

@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "This challenge has been solved",
+    "attempts": {
+      "count": "You've tried {{count}} times already!",
+      "exhausted": "Oops, all attempts used up!",
+      "placeholder": "You've reached the limit!",
+      "remaining": "{{remaining}} attempts left, keep going!"
+    },
     "flag_placeholders": [
       "To be, or not to be, flag is the question",
       "All that glisters is not flag",

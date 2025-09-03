@@ -920,6 +920,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>Use assets API to upload attachments</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>Submission limit reached</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Container address parse failed</value>
   </data>

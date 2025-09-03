@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "該題目已被解出",
+    "attempts": {
+      "count": "你已經嘗試了 {{count}} 次啦！",
+      "exhausted": "哎呀，所有機會都用完了！",
+      "placeholder": "已達到提交上限",
+      "remaining": "還有 {{remaining}} 次機會，加油！"
+    },
     "flag_placeholders": [
       "橫看成嶺側成峰，flag 高低各不同",
       "flag 當關，萬夫莫開",

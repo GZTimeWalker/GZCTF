@@ -920,6 +920,9 @@
   <data name="Challenge_UseAssetsApiForDynamic" xml:space="preserve">
     <value>assets API 를 이용하여 첨부 파일을 업로드하세요.</value>
   </data>
+  <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
+    <value>제출 횟수 제한에 도달했습니다</value>
+  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>컨테이너 주소가 잘못되었습니다.</value>
   </data>

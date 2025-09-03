@@ -11,7 +11,7 @@ export default function i18nVirtualManifest(): Plugin {
   let localesDir: string
   let outputDir: string
 
-  const reloadResources = () => {
+  const reloadResources = function () {
     const newManifest: Record<string, string> = {}
     const newContents: Record<string, object> = {}
 
@@ -55,7 +55,7 @@ export default function i18nVirtualManifest(): Plugin {
     },
 
     buildStart() {
-      reloadResources()
+      reloadResources.call(this)
 
       // emit files only in production mode
       if (process.env.NODE_ENV === 'production') {
@@ -90,8 +90,25 @@ export default function i18nVirtualManifest(): Plugin {
       })
 
       // watch for changes in locales directory
-      server.watcher.add(localesDir).on('change', (file) => {
-        if (file.endsWith('.json') && file.includes('locales')) reloadResources()
+      server.watcher.add(localesDir).on('all', (event, file) => {
+        if (file.startsWith(localesDir)) {
+          if (event === 'addDir') {
+            server.watcher.add(file)
+            reloadResources.call(this)
+            const mod = server.moduleGraph.getModuleById('virtual:i18n-manifest')
+            if (mod) server.moduleGraph.invalidateModule(mod)
+          } else if (
+            file.endsWith('.json') ||
+            event === 'unlinkDir' ||
+            event === 'change' ||
+            event === 'add' ||
+            event === 'unlink'
+          ) {
+            reloadResources.call(this)
+            const mod = server.moduleGraph.getModuleById('virtual:i18n-manifest')
+            if (mod) server.moduleGraph.invalidateModule(mod)
+          }
+        }
       })
     },
 

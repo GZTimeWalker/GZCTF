@@ -16,6 +16,7 @@ using GZCTF.Services.Config;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -472,8 +473,7 @@ public class GameController(
         var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}");
 
         var entries = await storage.ListAsync(path, cancellationToken: token);
-        var participationIds = entries.Select(
-                e => int.TryParse(e.Name, out var id) ? id : -1)
+        var participationIds = entries.Select(e => int.TryParse(e.Name, out var id) ? id : -1)
             .Where(id => id > 0).ToArray();
 
         if (participationIds.Length == 0)
@@ -884,6 +884,7 @@ public class GameController(
     public async Task<IActionResult> Submit([FromRoute] int id, [FromRoute] int challengeId,
         [FromBody] FlagSubmitModel model, CancellationToken token)
     {
+        var submitTime = DateTimeOffset.UtcNow;
         var answer = configService.DecryptApiData(model.Flag);
         if (string.IsNullOrWhiteSpace(answer))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagRequired)]));
@@ -892,29 +893,69 @@ public class GameController(
         if (answer.Length > Limits.MaxFlagLength)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagTooLong)]));
 
-        var context = await GetContextInfo(id, challengeId, token: token);
+        var context = await GetContextInfo(id, token: token);
 
         if (context.Result is not null)
             return context.Result;
 
-        Submission submission = new()
+        const int maxRetries = 3;
+        for (int retry = 0; retry < maxRetries; retry++)
         {
-            Game = context.Game!,
-            User = context.User!,
-            GameChallenge = context.Challenge!,
-            Team = context.Participation!.Team,
-            Participation = context.Participation!,
-            Status = AnswerResult.FlagSubmitted,
-            SubmitTimeUtc = DateTimeOffset.UtcNow,
-            Answer = answer
-        };
+            await using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
 
-        submission = await submissionRepository.AddSubmission(submission, token);
+            var instance =
+                await gameInstanceRepository.GetInstanceForSubmission(context.Participation!, challengeId, token);
 
-        // send to flag checker service
-        await channelWriter.WriteAsync(submission, token);
+            if (instance is null)
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+                    StatusCodes.Status404NotFound));
 
-        return Ok(submission.Id);
+            instance.SubmissionCount++;
+
+            if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
+            {
+                return BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
+            }
+
+            Submission submission = new()
+            {
+                Game = context.Game!,
+                User = context.User!,
+                GameChallenge = instance.Challenge,
+                Team = context.Participation!.Team,
+                Participation = context.Participation!,
+                Status = AnswerResult.FlagSubmitted,
+                SubmitTimeUtc = submitTime,
+                Answer = answer
+            };
+
+            try
+            {
+                submission = await submissionRepository.AddSubmission(submission, token);
+                await transaction.CommitAsync(token);
+
+                await channelWriter.WriteAsync(submission, token);
+                return Ok(submission.Id);
+            }
+            catch (DbUpdateConcurrencyException) when (retry < maxRetries - 1)
+            {
+                await transaction.RollbackAsync(token);
+                await Task.Delay((retry + 1) * 100, token);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync(token);
+                logger.LogErrorMessage(ex, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)],
+                        StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        return StatusCode(StatusCodes.Status409Conflict,
+            new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)],
+                StatusCodes.Status409Conflict));
     }
 
     /// <summary>
@@ -1230,8 +1271,7 @@ public class GameController(
         return Ok();
     }
 
-    async Task<ContextInfo> GetContextInfo(int id, int challengeId = 0, bool withFlag = false,
-        bool denyAfterEnded = true, CancellationToken token = default)
+    async Task<ContextInfo> GetContextInfo(int id, bool denyAfterEnded = true, CancellationToken token = default)
     {
         ContextInfo res = new()
         {
@@ -1264,21 +1304,6 @@ public class GameController(
             return res.WithResult(
                 BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded)));
 
-        if (challengeId <= 0)
-            return res;
-
-        var challenge = await challengeRepository.GetChallenge(id, challengeId, token);
-
-        if (challenge is null)
-            return res.WithResult(NotFound(new RequestResponse(
-                localizer[nameof(Resources.Program.Challenge_NotFound)],
-                StatusCodes.Status404NotFound)));
-
-        if (withFlag)
-            await challengeRepository.LoadFlags(challenge, token);
-
-        res.Challenge = challenge;
-
         return res;
     }
 
@@ -1287,11 +1312,15 @@ public class GameController(
 
     class ContextInfo
     {
-        public GameChallenge? Challenge;
         public Game? Game;
         public Participation? Participation;
-        public IActionResult? Result;
         public UserInfo? User;
+
+        /// <summary>
+        /// The result to be returned.
+        /// If this is not null, the action should return this result directly.
+        /// </summary>
+        public IActionResult? Result;
 
         public ContextInfo WithResult(IActionResult res)
         {

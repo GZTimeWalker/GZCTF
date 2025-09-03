@@ -155,13 +155,18 @@
           "description": "Speicher (inklusive Image)",
           "label": "Speicherlimit (MB)"
         },
+        "submission_limit": {
+          "description": "0 = unbegrenzt",
+          "label": "Max. Versuche",
+          "placeholder": "Unbegrenzt"
+        },
         "title": "Titel",
         "traffic_capture": {
           "description": "Erfassen des Traffics, wenn das Team Herausforderungen löst. Plattform-Proxy muss aktiviert sein",
           "label": "Traffic-Erfassung aktivieren"
         },
         "type": {
-          "description": "Kann nach der Erstellung nicht geändert werden",
+          "description": "Nicht änderbar nach Erstellung",
           "label": "Typ"
         }
       },

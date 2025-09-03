@@ -43,6 +43,9 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const [submitId, setSubmitId] = useState(0)
   const [flag, setFlag] = useInputState('')
+  const [solvedChallengeId, setSolvedChallengeId] = useState<number | null>(null)
+
+  const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
 
   const onCreate = async () => {
     if (!challengeId || disabled) return
@@ -152,14 +155,23 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         loading: true,
         autoClose: false,
       })
+
+      const nxt = (challenge?.attempts ?? 0) + 1
+      const attempts = challenge?.limit && challenge.limit > 0 ? Math.min(nxt, challenge.limit) : nxt
+
+      mutate({
+        attempts,
+        ...challenge,
+      })
+      return
     } catch (e) {
       showErrorMsg(e, t)
       setDisabled(false)
+      return
     }
   }
 
   useEffect(() => {
-    // submitId initialization will trigger useEffect
     if (!submitId) return
 
     const polling = setInterval(async () => {
@@ -182,8 +194,18 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     return () => clearInterval(polling)
   }, [submitId])
 
+  useEffect(() => {
+    if (challengeId !== solvedChallengeId) return
+
+    if (status !== SubmissionType.Unaccepted && status !== undefined) {
+      // status has been updated, reset solved challenge id
+      setSolvedChallengeId(null)
+    }
+  }, [status, challengeId, challenge])
+
   const checkDataFlag = async (id: number, data: string) => {
     if (data === AnswerResult.Accepted) {
+      setSolvedChallengeId(challengeId)
       updateNotification({
         id: 'flag-submitted',
         color: 'teal',
@@ -228,13 +250,13 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       gameTitle={gameTitle}
       challenge={challenge ?? { title, score }}
       cateData={cateData}
-      solved={status !== SubmissionType.Unaccepted && status !== undefined}
+      solved={(status !== SubmissionType.Unaccepted && status !== undefined) || solvedChallengeId === challengeId}
       flag={flag}
       setFlag={setFlag}
       onCreate={onCreate}
       onDestroy={onDestroy}
       onSubmitFlag={onSubmit}
-      disabled={disabled}
+      disabled={disabled || isLimitReached}
       onExtend={onExtend}
     />
   )

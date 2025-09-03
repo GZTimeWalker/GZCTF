@@ -155,13 +155,18 @@
           "description": "Almacenamiento (incluida imagen)",
           "label": "Límite de almacenamiento (MB)"
         },
+        "submission_limit": {
+          "description": "0 = ilimitado",
+          "label": "Intentos máx.",
+          "placeholder": "Ilimitado"
+        },
         "title": "Título",
         "traffic_capture": {
           "description": "Capturando el tráfico cuando el equipo resuelve desafíos. Es necesario habilitar el proxy de la plataforma",
           "label": "Habilitar Captura de Tráfico"
         },
         "type": {
-          "description": "No se puede cambiar después de la creación",
+          "description": "No modificable tras creación",
           "label": "Tipo"
         }
       },

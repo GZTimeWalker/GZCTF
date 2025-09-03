@@ -62,6 +62,12 @@ public class Challenge
     public int SubmissionCount { get; set; }
 
     /// <summary>
+    /// Maximum number of submissions allowed per team (0 = no limit)
+    /// </summary>
+    [Required]
+    public int SubmissionLimit { get; set; }
+
+    /// <summary>
     /// Image name and tag
     /// </summary>
     public string? ContainerImage { get; set; } = string.Empty;
@@ -92,11 +98,11 @@ public class Challenge
     public string? FileName { get; set; } = "attachment";
 
     /// <summary>
-    /// Concurrency check
+    /// Concurrency token
     /// </summary>
     [JsonIgnore]
-    [ConcurrencyCheck]
-    public Guid ConcurrencyStamp { get; set; }
+    [Timestamp]
+    public uint ConcurrencyToken { get; set; }
 
     /// <summary>
     /// Flag template, used to generate flags based on token and challenge, game information

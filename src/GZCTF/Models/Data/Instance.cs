@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Data;
 
@@ -13,6 +15,18 @@ public class Instance
     /// Whether the challenge is loaded
     /// </summary>
     public bool IsLoaded { get; set; }
+
+    /// <summary>
+    /// Number of submissions for this instance
+    /// </summary>
+    public int SubmissionCount { get; set; }
+
+    /// <summary>
+    /// Concurrency token
+    /// </summary>
+    [JsonIgnore]
+    [Timestamp]
+    public uint ConcurrencyToken { get; set; }
 
     /// <summary>
     /// Last container operation time to ensure operations are not too frequent

@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "Diese Herausforderung wurde gelöst",
+    "attempts": {
+      "count": "Du hast bereits {{count}} Mal versucht!",
+      "exhausted": "Ups, alle Versuche aufgebraucht!",
+      "placeholder": "Du hast das Limit erreicht!",
+      "remaining": "{{remaining}} Versuche übrig, weitermachen!"
+    },
     "flag_placeholders": [
       "Sein oder nicht sein, Flagge ist die Frage",
       "Nicht alles, was glänzt, ist eine Flagge",

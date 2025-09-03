@@ -36,6 +36,12 @@
   },
   "content": {
     "already_solved": "Thử thách này đã được giải",
+    "attempts": {
+      "count": "Bạn đã thử {{count}} lần rồi!",
+      "exhausted": "Ôi không, tất cả lượt thử đã hết!",
+      "placeholder": "Bạn đã đạt giới hạn!",
+      "remaining": "Còn {{remaining}} lượt thử, cố lên!"
+    },
     "flag_placeholders": [
       "Có hay không, flag là câu hỏi",
       "Không phải tất cả những gì lấp lánh đều là flag",

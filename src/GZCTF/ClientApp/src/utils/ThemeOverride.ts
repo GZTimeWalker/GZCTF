@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Avatar,
   Badge,
+  Code,
   Loader,
   MantineThemeOverride,
   Menu,
@@ -83,11 +84,11 @@ const CustomTheme: MantineThemeOverride = {
   },
   primaryColor: 'brand',
   fontFamily:
-    'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif',
+    'Lexend, -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, sans-serif',
   fontFamilyMonospace:
     'JetBrains Mono, ui-monospace, SFMono-Regular, Monaco, Consolas, Courier New, monospace, sans-serif',
   headings: {
-    fontFamily: 'IBM Plex Sans, sans-serif',
+    fontFamily: 'Lexend, sans-serif',
   },
   breakpoints: {
     xs: '30em',
@@ -159,6 +160,13 @@ const CustomTheme: MantineThemeOverride = {
     Menu: Menu.extend({
       styles: {
         item: {
+          fontWeight: 500,
+        },
+      },
+    }),
+    Code: Code.extend({
+      styles: {
+        root: {
           fontWeight: 500,
         },
       },

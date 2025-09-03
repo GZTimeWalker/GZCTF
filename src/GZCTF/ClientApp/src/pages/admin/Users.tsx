@@ -272,7 +272,7 @@ const Users: FC = () => {
                       </Group>
                     </Table.Td>
                     <Table.Td>
-                      <Text size="sm" ff="monospace" lineClamp={1}>
+                      <Text size="sm" lineClamp={1}>
                         {user.email}
                       </Text>
                     </Table.Td>
