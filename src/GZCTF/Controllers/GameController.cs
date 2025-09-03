@@ -947,7 +947,9 @@ public class GameController(
             {
                 await transaction.RollbackAsync(token);
                 logger.LogErrorMessage(ex, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)]));
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)],
+                        StatusCodes.Status500InternalServerError));
             }
         }
 

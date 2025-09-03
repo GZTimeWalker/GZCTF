@@ -66,21 +66,10 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
-  const isLimitReached = useMemo(
-    () => (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false,
-    [challenge?.limit, challenge?.attempts]
-  )
+  const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
 
-  const inputValue = useMemo(() => {
-    if (solved) return t('challenge.content.already_solved')
-    if (isLimitReached) return t('challenge.content.attempts.placeholder')
-    return flag
-  }, [solved, isLimitReached, flag, t])
-
-  const isContainer = useMemo(
-    () => challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer,
-    [challenge?.type]
-  )
+  const isContainer =
+    challenge?.type === ChallengeType.StaticContainer || challenge?.type === ChallengeType.DynamicContainer
 
   const title = (
     <Stack gap="xs">
@@ -183,6 +172,12 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
     return <Input.Label>{content}</Input.Label>
   }, [challenge?.attempts, challenge?.limit, solved, t])
+
+  const inputValue = solved
+    ? t('challenge.content.already_solved')
+    : isLimitReached
+      ? t('challenge.content.attempts.placeholder')
+      : flag
 
   const footer = (
     <Stack gap="xs" className={classes.footer}>
