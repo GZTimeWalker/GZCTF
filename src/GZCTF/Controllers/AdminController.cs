@@ -261,7 +261,7 @@ public class AdminController(
             }
 
             var teams = new List<Team>();
-            foreach ((var user, var teamName) in users)
+            foreach (var (user, teamName) in users)
             {
                 if (teamName is null)
                     continue;

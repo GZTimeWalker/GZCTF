@@ -11,7 +11,11 @@ static class AppExtensions
     {
         OnPrepareResponse = ctx =>
         {
-            ctx.Context.Response.Headers.CacheControl = $"public, max-age={60 * 60 * 24 * 7}";
+            ctx.Context.Response.GetTypedHeaders().CacheControl = new()
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromDays(7)
+            };
         }
     };
 
