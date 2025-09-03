@@ -914,7 +914,6 @@ public class GameController(
 
             if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
             {
-                await transaction.RollbackAsync(token);
                 return BadRequest(
                     new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
             }
@@ -948,7 +947,7 @@ public class GameController(
             {
                 await transaction.RollbackAsync(token);
                 logger.LogErrorMessage(ex, ex.Message);
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)]));
+                return StatusCode(StatusCodes.Status500InternalServerError, new RequestResponse(localizer[nameof(Resources.Program.Error_InternalServerError)]));
             }
         }
 
