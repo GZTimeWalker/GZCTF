@@ -94,7 +94,7 @@
     "unknown": "Unbekannter Fehler"
   },
   "label": {
-    "challenge": "Challenge",
+    "challenge": "Herausf.",
     "flag": "Flagge",
     "game": "Spiel",
     "ip": "IP",
@@ -130,6 +130,6 @@
   },
   "title": {
     "404": "The Nowhere",
-    "about": "About"
+    "about": "Über"
   }
 }
