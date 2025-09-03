@@ -117,7 +117,7 @@ public class GameChallengeRepository(
                 .GroupBy(i => i.ChallengeId)
                 .Select(g => new { ChallengeId = g.Key, Count = g.Count() });
 
-            await Context.GameChallenges.IgnoreAutoIncludes()
+            await Context.GameChallenges.AsNoTracking().IgnoreAutoIncludes()
                 .Where(c => query.Any(r => r.ChallengeId == c.Id))
                 .ExecuteUpdateAsync(
                     setter =>
@@ -126,8 +126,24 @@ public class GameChallengeRepository(
                             c => query.First(r => r.ChallengeId == c.Id).Count),
                     token);
 
-            await cacheHelper.FlushScoreboardCache(game.Id, token);
+            var attempts = Context.Submissions.AsNoTracking()
+                .IgnoreAutoIncludes()
+                .Where(s => s.GameId == game.Id)
+                .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
+                .Select(g => new { g.Key.ChallengeId, g.Key.ParticipationId, Count = g.Count() });
+
+            await Context.GameInstances.AsNoTracking().IgnoreAutoIncludes()
+                .Where(i => attempts.Any(a => 
+                    a.ChallengeId == i.ChallengeId && a.ParticipationId == i.ParticipationId))
+                .ExecuteUpdateAsync(
+                    setter => setter.SetProperty(
+                        i => i.SubmissionCount,
+                        i => attempts.First(a =>
+                            a.ChallengeId == i.ChallengeId && a.ParticipationId == i.ParticipationId).Count),
+                    token);
+
             await trans.CommitAsync(token);
+            await cacheHelper.FlushScoreboardCache(game.Id, token);
         }
         catch
         {
