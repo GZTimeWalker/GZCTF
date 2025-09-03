@@ -210,10 +210,10 @@ const TableRow: FC<{
                       <Text lineClamp={3} fz="xs" className={classes.text}>
                         {item.title}
                       </Text>
-                      <Text c={cate.color} fz="xs" className={classes.text}>
+                      <Text c={cate.color} fz="xs" className={cx(classes.text, classes.mono)}>
                         + {chal?.score} pts
                       </Text>
-                      <Text c="dimmed" fz="xs" className={classes.text}>
+                      <Text c="dimmed" fz="xs" className={cx(classes.text, classes.mono)}>
                         # {dayjs(chal?.time).locale(locale).format('L LTS')}
                       </Text>
                     </Stack>

@@ -213,7 +213,7 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                               }}
                             />
                           </Table.Td>
-                          <Table.Td ff="monospace" fz="sm">
+                          <Table.Td fz="sm">
                             {info.category}
                           </Table.Td>
                           <Table.Td ff="monospace" fz="sm">

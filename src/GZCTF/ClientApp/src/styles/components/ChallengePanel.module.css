@@ -1,5 +1,10 @@
+.tabRoot {
+  min-width: 10.5rem;
+  width: 100%;
+}
+
 .tabList {
-  min-width: 10rem;
+  width: 100%;
 }
 
 .tabLabel {
