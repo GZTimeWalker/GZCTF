@@ -213,9 +213,7 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                               }}
                             />
                           </Table.Td>
-                          <Table.Td fz="sm">
-                            {info.category}
-                          </Table.Td>
+                          <Table.Td fz="sm">{info.category}</Table.Td>
                           <Table.Td ff="monospace" fz="sm">
                             {chal.score}
                             {info.score && chal.score! > info.score && chal.type && BloodsTypes.includes(chal.type) && (

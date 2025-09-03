@@ -133,7 +133,7 @@ public class GameChallengeRepository(
                 .Select(g => new { g.Key.ChallengeId, g.Key.ParticipationId, Count = g.Count() });
 
             await Context.GameInstances.AsNoTracking().IgnoreAutoIncludes()
-                .Where(i => attempts.Any(a => 
+                .Where(i => attempts.Any(a =>
                     a.ChallengeId == i.ChallengeId && a.ParticipationId == i.ParticipationId))
                 .ExecuteUpdateAsync(
                     setter => setter.SetProperty(
