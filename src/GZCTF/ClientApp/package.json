@@ -12,7 +12,7 @@
     "genapi": "swagger-typescript-api generate -p http://localhost:8080/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
-    "@babel/core": "^7.28.3",
+    "@babel/core": "^7.28.4",
     "@emotion/react": "^11.14.0",
     "@mantine/carousel": "^8.2.8",
     "@mantine/colors-generator": "^8.2.8",
@@ -37,7 +37,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "fast-average-color": "^9.5.0",
-    "i18next": "^25.4.2",
+    "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-resources-to-backend": "^1.2.1",
     "katex": "^0.16.22",
@@ -58,7 +58,7 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/chroma-js": "^3.1.1",
     "@types/katex": "^0.16.7",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.3.1",
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",

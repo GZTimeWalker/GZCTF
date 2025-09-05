@@ -5,7 +5,7 @@ namespace GZCTF.Services.HealthCheck;
 
 public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
 {
-    static readonly string Filename = $"{nameof(StorageHealthCheck)}_{Guid.CreateVersion7():N}";
+    static readonly string FileName = $"{nameof(StorageHealthCheck)}_{Guid.CreateVersion7():N}";
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
         CancellationToken cancellationToken = default)
@@ -14,17 +14,17 @@ public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
         {
             var time = DateTime.UtcNow;
             var random = Guid.NewGuid().ToString();
-            await blobStorage.WriteTextAsync(Filename, random, cancellationToken: cancellationToken);
+            await blobStorage.WriteTextAsync(FileName, random, cancellationToken: cancellationToken);
 
             try
             {
-                if (!await blobStorage.ExistsAsync(Filename, cancellationToken) ||
-                    await blobStorage.ReadTextAsync(Filename, cancellationToken: cancellationToken) != random)
+                if (!await blobStorage.ExistsAsync(FileName, cancellationToken) ||
+                    await blobStorage.ReadTextAsync(FileName, cancellationToken: cancellationToken) != random)
                     return HealthCheckResult.Unhealthy();
             }
             finally
             {
-                await blobStorage.DeleteAsync(Filename, cancellationToken);
+                await blobStorage.DeleteAsync(FileName, cancellationToken);
             }
 
             return DateTime.UtcNow - time > TimeSpan.FromSeconds(5)
@@ -37,3 +37,4 @@ public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
         }
     }
 }
+
