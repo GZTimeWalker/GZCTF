@@ -1,36 +1,73 @@
-.title {
-  color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-light-0));
+.container {
+  height: calc(100vh - 16px);
+  gap: var(--mantine-spacing-xl);
+  padding: var(--mantine-spacing-xl);
 }
 
-.bio {
-  font-family: var(--mantine-font-family-monospace);
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-2));
-}
+.container[data-mobile='true'] {
+  height: auto;
+  gap: var(--mantine-spacing-lg);
+  padding: var(--mantine-spacing-md);
 
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 0;
+  .mainIcon {
+    width: 3rem;
+    height: 3rem;
   }
-  50% {
-    opacity: 1;
+
+  .mainTitle {
+    font-size: 2.5rem;
+  }
+
+  .slogan {
+    display: none;
+  }
+
+  .contentFlex {
+    gap: var(--mantine-spacing-lg);
+    flex-direction: column;
+  }
+
+  .contentStack {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .contributorsGroup {
+    gap: var(--mantine-spacing-xs);
+  }
+
+  .contributorLink {
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  .resourceLink {
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  .licenseText {
+    font-size: var(--mantine-font-size-xs);
+  }
+
+  .licenseLink {
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  .versionBadge {
+    font-size: var(--mantine-font-size-md);
+  }
+
+  .copyright {
+    max-width: 90%;
   }
 }
 
-.blink {
-  font-family: var(--mantine-font-family-monospace);
-  font-weight: bold;
-  font-size: 1.5rem;
-  animation: blink 1s infinite steps(1, start);
-}
+.copyright {
+  max-width: 100%;
+  font-size: var(--mantine-font-size-sm);
 
-.watermark {
-  position: absolute;
-  font-size: 12rem;
-  font-weight: bold;
-  opacity: 0.05;
-  transform: scale(1.5);
-  user-select: none;
+  &::after {
+    content: 'All Rights Reserved.';
+    display: block;
+    margin-top: var(--mantine-spacing-xs);
+  }
 }
