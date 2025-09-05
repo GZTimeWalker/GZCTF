@@ -5,7 +5,7 @@ namespace GZCTF.Repositories.Interface;
 public interface IGameRepository : IRepository
 {
     /// <summary>
-    /// 获取指定数量的比赛对象基本信息
+    /// Get basic info of games with pagination (with caching)
     /// </summary>
     /// <param name="count"></param>
     /// <param name="skip"></param>
@@ -15,7 +15,7 @@ public interface IGameRepository : IRepository
         CancellationToken token = default);
 
     /// <summary>
-    /// 从数据库中获取比赛基本信息
+    /// Fetch basic info of games with pagination
     /// </summary>
     /// <param name="count"></param>
     /// <param name="skip"></param>
@@ -24,7 +24,7 @@ public interface IGameRepository : IRepository
     public Task<BasicGameInfoModel[]> FetchGameList(int count, int skip, CancellationToken token);
 
     /// <summary>
-    /// 获取指定数量的比赛对象
+    /// Get games with pagination for admins
     /// </summary>
     /// <param name="count"></param>
     /// <param name="skip"></param>
@@ -33,24 +33,24 @@ public interface IGameRepository : IRepository
     public Task<Game[]> GetGames(int count = 10, int skip = 0, CancellationToken token = default);
 
     /// <summary>
-    /// 获取最近将要开始的比赛 id
+    /// Get upcoming games' Ids
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<int[]> GetUpcomingGames(CancellationToken token = default);
 
     /// <summary>
-    /// Get game by Id
+    /// Get game by ID
     /// </summary>
-    /// <param name="id">比赛Id</param>
+    /// <param name="id"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Game?> GetGameById(int id, CancellationToken token = default);
 
     /// <summary>
-    /// Check if the game is exists by Id
+    /// Check if the game exists by ID
     /// </summary>
-    /// <param name="id">Game Id</param>
+    /// <param name="id"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> HasGameAsync(int id, CancellationToken token = default);
@@ -58,7 +58,7 @@ public interface IGameRepository : IRepository
     /// <summary>
     /// Create a new game
     /// </summary>
-    /// <param name="game">比赛对象</param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Game?> CreateGame(Game game, CancellationToken token = default);
@@ -72,25 +72,25 @@ public interface IGameRepository : IRepository
     public Task UpdateGame(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 获取队伍Token
+    /// Get token for a team in a game
     /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="team">参赛队伍对象</param>
+    /// <param name="game">The game</param>
+    /// <param name="team">The team</param>
     /// <returns></returns>
     public string GetToken(Game game, Team team);
 
     /// <summary>
-    /// 删除比赛
+    /// Delete a game and all its related data
     /// </summary>
-    /// <param name="game">比赛对象</param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<TaskStatus> DeleteGame(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 删除比赛的全部 WriteUp
+    /// Delete all write-ups of a game
     /// </summary>
-    /// <param name="game">比赛对象</param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task DeleteAllWriteUps(Game game, CancellationToken token = default);
@@ -98,14 +98,14 @@ public interface IGameRepository : IRepository
     #region RecentGames
 
     /// <summary>
-    /// 生成近期的比赛基本信息
+    /// Generate recent games' basic information
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<BasicGameInfoModel[]> GenRecentGames(CancellationToken token = default);
 
     /// <summary>
-    /// 获取近期的比赛基本信息
+    /// Get recent games' basic information (with caching)
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>

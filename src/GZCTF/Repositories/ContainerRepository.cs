@@ -33,11 +33,8 @@ public class ContainerRepository(
         .Select(ContainerInstanceModel.FromContainer)
         .ToArray();
 
-    public Task<List<Container>> GetDyingContainers(CancellationToken token = default)
-    {
-        var now = DateTimeOffset.UtcNow;
-        return Context.Containers.Where(c => c.ExpectStopAt < now).ToListAsync(token);
-    }
+    public Task<Container[]> GetDyingContainers(CancellationToken token = default) =>
+        Context.Containers.Where(c => c.ExpectStopAt < DateTimeOffset.UtcNow).ToArrayAsync(token);
 
     public Task ExtendLifetime(Container container, TimeSpan time, CancellationToken token = default)
     {

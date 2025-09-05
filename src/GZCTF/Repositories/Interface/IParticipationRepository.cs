@@ -5,15 +5,15 @@ namespace GZCTF.Repositories.Interface;
 public interface IParticipationRepository : IRepository
 {
     /// <summary>
-    /// 获取比赛的报名队伍数量
+    /// Get the count of participants in a game
     /// </summary>
-    /// <param name="game">比赛对象</param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<int> GetParticipationCount(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛参与列表
+    /// List all participations in a game
     /// </summary>
     /// <param name="game"></param>
     /// <param name="token"></param>
@@ -21,7 +21,7 @@ public interface IParticipationRepository : IRepository
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 从 Id 数组获取比赛参与列表
+    /// Get participations by their IDs
     /// </summary>
     /// <param name="ids"></param>
     /// <param name="token"></param>
@@ -29,7 +29,7 @@ public interface IParticipationRepository : IRepository
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛 Writeup 列表
+    /// Get write-up information for all participations in a game
     /// </summary>
     /// <param name="game"></param>
     /// <param name="token"></param>
@@ -37,88 +37,88 @@ public interface IParticipationRepository : IRepository
     public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 确保此队伍 Instance 对象已创建
+    /// Make sure that the instances for a participation are created
     /// </summary>
     /// <param name="part"></param>
     /// <param name="game"></param>
     /// <param name="token"></param>
-    /// <returns>是否有实例更新</returns>
+    /// <returns>If any instance was updated</returns>
     public Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 检查重复加入
+    /// Check if the user has already participated in the game
     /// </summary>
-    /// <param name="user">参赛用户</param>
-    /// <param name="game">比赛</param>
+    /// <param name="user"></param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 移除用户的全部参与对象
+    /// Remove user's participation in a specific game
     /// </summary>
-    /// <param name="user">参赛用户</param>
-    /// <param name="game">比赛</param>
+    /// <param name="user"></param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 移除用户的全部参与对象
+    /// Remove user's participation(s) in a specific team
     /// </summary>
-    /// <param name="user">参赛用户</param>
-    /// <param name="team">队伍对象</param>
+    /// <param name="user"></param>
+    /// <param name="team"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task RemoveUserParticipations(UserInfo user, Team team, CancellationToken token = default);
 
     /// <summary>
-    /// 通过 Id 更改参与状态
+    /// Update the participation status and division
     /// </summary>
-    /// <param name="id">参与对象Id</param>
+    /// <param name="id"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation?> GetParticipationById(int id, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛参与对象以及其对应题目列表
+    /// Get the participation object and its corresponding challenge list
     /// </summary>
-    /// <param name="user">用户对象</param>
-    /// <param name="game">比赛对象</param>
+    /// <param name="user"></param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛参与对象以及其对应题目列表
+    /// Get the participation object for a specific team in a specific game
     /// </summary>
-    /// <param name="team">比赛对象</param>
-    /// <param name="game">比赛对象</param>
+    /// <param name="team"></param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 删除参与对象的 WriteUps
+    /// Delete write-up information for a participation
     /// </summary>
-    /// <param name="part">参与对象</param>
+    /// <param name="part"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default);
 
     /// <summary>
-    /// 删除参与对象
+    /// Remove a participation
     /// </summary>
-    /// <param name="part">参与对象</param>
+    /// <param name="part"></param>
     /// <param name="save"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task RemoveParticipation(Participation part, bool save = true, CancellationToken token = default);
 
     /// <summary>
-    /// 更新比赛参与状态
+    /// Update participation information
     /// </summary>
-    /// <param name="part">参与对象</param>
+    /// <param name="part"></param>
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <returns></returns>

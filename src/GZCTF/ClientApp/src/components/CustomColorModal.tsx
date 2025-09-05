@@ -66,6 +66,7 @@ export const CustomColorModal: FC<ModalProps> = (props) => {
           classNames={{ input: misc.flex }}
         />
         <ColorInput
+          size="sm"
           label={t('common.content.color.custom.label')}
           description={t('common.content.color.custom.description')}
           placeholder={t('common.content.color.custom.placeholder')}

@@ -5,33 +5,33 @@ namespace GZCTF.Repositories.Interface;
 public interface IGameChallengeRepository : IRepository
 {
     /// <summary>
-    /// 创建题目对象
+    /// Create a new challenge for a game
     /// </summary>
-    /// <param name="game">比赛对象</param>
-    /// <param name="challenge">题目对象</param>
+    /// <param name="game"></param>
+    /// <param name="challenge"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameChallenge> CreateChallenge(Game game, GameChallenge challenge, CancellationToken token = default);
 
     /// <summary>
-    /// 移除题目对象
+    /// Remove a challenge
     /// </summary>
-    /// <param name="challenge">题目对象</param>
+    /// <param name="challenge"></param>
     /// <param name="save"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task RemoveChallenge(GameChallenge challenge, bool save = true, CancellationToken token = default);
 
     /// <summary>
-    /// 获取全部题目
+    /// Get all challenges for a game
     /// </summary>
-    /// <param name="gameId">比赛Id</param>
+    /// <param name="gameId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default);
 
     /// <summary>
-    /// 获取题目信息，不包含 Flag
+    /// Get a specific challenge by game ID and challenge ID, without loading Flags
     /// </summary>
     /// <param name="gameId">比赛Id</param>
     /// <param name="id">题目Id</param>
@@ -40,15 +40,15 @@ public interface IGameChallengeRepository : IRepository
     public Task<GameChallenge?> GetChallenge(int gameId, int id, CancellationToken token = default);
 
     /// <summary>
-    /// 加载 Flags
+    /// Load Flags for a challenge, the challenge should be tracked by the DbContext
     /// </summary>
-    /// <param name="challenge">题目</param>
+    /// <param name="challenge"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task LoadFlags(GameChallenge challenge, CancellationToken token = default);
 
     /// <summary>
-    /// 获取全部需要捕获流量的题目
+    /// Get challenges that require traffic capturing for a game
     /// </summary>
     /// <param name="gameId">比赛Id</param>
     /// <param name="token"></param>
@@ -56,46 +56,46 @@ public interface IGameChallengeRepository : IRepository
     public Task<GameChallenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default);
 
     /// <summary>
-    /// 添加 Flag
+    /// Add Flags to a challenge
     /// </summary>
-    /// <param name="challenge">比赛题目对象</param>
-    /// <param name="model">Flag 信息</param>
+    /// <param name="challenge"></param>
+    /// <param name="model">Flag information</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task AddFlags(GameChallenge challenge, FlagCreateModel[] model, CancellationToken token = default);
 
     /// <summary>
-    /// 确保此题目 Instance 对象已创建
+    /// Make sure all teams in the game have instances for the challenge
     /// </summary>
     /// <param name="challenge"></param>
     /// <param name="game"></param>
     /// <param name="token"></param>
-    /// <returns>是否有实例更新</returns>
+    /// <returns>If any instance was updated</returns>
     public Task<bool> EnsureInstances(GameChallenge challenge, Game game, CancellationToken token = default);
 
     /// <summary>
-    /// 更新附件
+    /// Update the attachment of a challenge
     /// </summary>
-    /// <param name="challenge">比赛题目对象</param>
-    /// <param name="model">附件信息</param>
+    /// <param name="challenge"></param>
+    /// <param name="model"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,
         CancellationToken token = default);
 
     /// <summary>
-    /// 删除 Flag，确保 Flags 字段已加载
+    /// Remove a flag from a challenge, ensuring that submissions are loaded
     /// </summary>
-    /// <param name="challenge">比赛题目对象</param>
+    /// <param name="challenge"></param>
     /// <param name="flagId">flag ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default);
 
     /// <summary>
-    /// 重新计算解题数量
+    /// Recalculate the accepted count for all challenges in a game
     /// </summary>
-    /// <param name="game">比赛 id</param>
+    /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> RecalculateAcceptedCount(Game game, CancellationToken token = default);

@@ -53,7 +53,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
     {
         lock (_jobs)
         {
-            (var name, var entry) = job.ToEntry();
+            var (name, entry) = job.ToEntry();
             if (!_jobs.TryAdd(name, entry))
                 return false;
         }
@@ -167,7 +167,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
 
         lock (_jobs)
         {
-            foreach ((var job, var entry) in _jobs)
+            foreach (var (job, entry) in _jobs)
             {
                 if (entry.Expression.GetNextOccurrence(last) is not { } next ||
                     Math.Abs((next - now).TotalSeconds) > 30D)

@@ -3,61 +3,61 @@
 public interface IBlobRepository : IRepository
 {
     /// <summary>
-    /// 创建或更新一个文件
+    /// Create or update a blob file
     /// </summary>
-    /// <param name="file">文件对象</param>
-    /// <param name="fileName">保存文件名</param>
-    /// <param name="token">取消Token</param>
-    /// <returns>文件Id</returns>
+    /// <param name="file">The form file</param>
+    /// <param name="fileName">The name to save the file as</param>
+    /// <param name="token"></param>
+    /// <returns>The file object</returns>
     public Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default);
 
     /// <summary>
-    /// 创建或更新一个图像文件
+    /// Create or update an image file, optionally resizing it
     /// </summary>
-    /// <param name="file">文件对象</param>
-    /// <param name="fileName">保存文件名</param>
-    /// <param name="resize">缩放后的宽，设置为 0 则不缩放</param>
-    /// <param name="token">取消Token</param>
-    /// <returns>文件Id</returns>
+    /// <param name="file">The form file</param>
+    /// <param name="fileName">The name to save the file as</param>
+    /// <param name="resize">Resize dimension, set to 0 to skip resizing</param>
+    /// <param name="token"></param>
+    /// <returns>The file object</returns>
     public Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName, int resize = 300,
         CancellationToken token = default);
 
     /// <summary>
-    /// 删除一个文件
+    /// Delete a blob file
     /// </summary>
-    /// <param name="file">文件对象</param>
-    /// <param name="token">取消Token</param>
-    /// <returns>任务状态</returns>
+    /// <param name="file">The file object</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public Task<TaskStatus> DeleteBlob(LocalFile file, CancellationToken token = default);
 
     /// <summary>
-    /// 根据哈希删除一个文件
+    /// Delete a blob file by its hash
     /// </summary>
-    /// <param name="fileHash">文件哈希</param>
-    /// <param name="token">取消Token</param>
-    /// <returns>任务状态</returns>
+    /// <param name="fileHash">File hash</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public Task<TaskStatus> DeleteBlobByHash(string fileHash, CancellationToken token = default);
 
     /// <summary>
-    /// 根据文件哈希获取文件
+    /// Get a blob file by its hash
     /// </summary>
-    /// <param name="fileHash">文件哈希</param>
-    /// <param name="token">取消Token</param>
-    /// <returns>文件对象</returns>
+    /// <param name="fileHash">The file hash</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public Task<LocalFile?> GetBlobByHash(string? fileHash, CancellationToken token = default);
 
     /// <summary>
-    /// 获取全部文件
+    /// Get all blob files with pagination
     /// </summary>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过</param>
-    /// <param name="token">取消Token</param>
-    /// <returns>文件对象列表</returns>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public Task<LocalFile[]> GetBlobs(int count, int skip, CancellationToken token = default);
 
     /// <summary>
-    /// 删除一个附件
+    /// Delete an attachment and its associated blob file
     /// </summary>
     /// <param name="attachment"></param>
     /// <param name="token"></param>

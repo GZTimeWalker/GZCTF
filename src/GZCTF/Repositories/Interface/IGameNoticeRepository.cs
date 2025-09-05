@@ -5,31 +5,31 @@ namespace GZCTF.Repositories.Interface;
 public interface IGameNoticeRepository : IRepository
 {
     /// <summary>
-    /// 添加一个通知
+    /// Add a new game notice
     /// </summary>
-    /// <param name="notice">通知</param>
+    /// <param name="notice"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛通知
+    /// Get latest notices for a specific game
     /// </summary>
-    /// <param name="gameId">比赛Id</param>
+    /// <param name="gameId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<DataWithModifiedTime<GameNotice[]>> GetLatestNotices(int gameId, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛常规通知（可编辑的）
+    /// Get all user-editable notices for a specific game
     /// </summary>
-    /// <param name="gameId">比赛Id</param>
+    /// <param name="gameId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameNotice[]> GetNormalNotices(int gameId, CancellationToken token = default);
 
     /// <summary>
-    /// 更新比赛通知
+    /// Update a game notice
     /// </summary>
     /// <param name="notice"></param>
     /// <param name="token"></param>
@@ -37,18 +37,18 @@ public interface IGameNoticeRepository : IRepository
     public Task<GameNotice> UpdateNotice(GameNotice notice, CancellationToken token = default);
 
     /// <summary>
-    /// 获取比赛通知
+    /// Get a specific notice by its ID within a specific game
     /// </summary>
-    /// <param name="gameId">比赛Id</param>
-    /// <param name="noticeId">通知ID</param>
+    /// <param name="gameId"></param>
+    /// <param name="noticeId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameNotice?> GetNoticeById(int gameId, int noticeId, CancellationToken token = default);
 
     /// <summary>
-    /// 删除比赛通知
+    /// Remove a game notice
     /// </summary>
-    /// <param name="notice">比赛通知对象</param>
+    /// <param name="notice"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task RemoveNotice(GameNotice notice, CancellationToken token = default);

@@ -41,8 +41,7 @@ public static class RuntimeCronJobs
         foreach (var game in upcoming)
         {
             var key = CacheKey.ScoreBoard(game);
-            var value = await cache.GetAsync(key);
-            if (value is not null)
+            if (await cache.GetAsync(key) is not null)
                 continue;
 
             await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));

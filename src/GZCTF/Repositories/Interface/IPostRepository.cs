@@ -5,7 +5,7 @@ public interface IPostRepository : IRepository
     /// <summary>
     /// Add a new post
     /// </summary>
-    /// <param name="post">文章对象</param>
+    /// <param name="post"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Post> CreatePost(Post post, CancellationToken token = default);
@@ -13,7 +13,7 @@ public interface IPostRepository : IRepository
     /// <summary>
     /// Update an existing post
     /// </summary>
-    /// <param name="post">文章对象</param>
+    /// <param name="post"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task UpdatePost(Post post, CancellationToken token = default);
@@ -21,7 +21,7 @@ public interface IPostRepository : IRepository
     /// <summary>
     /// Remove post
     /// </summary>
-    /// <param name="post">文章对象</param>
+    /// <param name="post"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task RemovePost(Post post, CancellationToken token = default);
@@ -34,7 +34,7 @@ public interface IPostRepository : IRepository
     public Task<DataWithModifiedTime<Post[]>> GetPosts(CancellationToken token = default);
 
     /// <summary>
-    /// Get post by Id
+    /// Get post by ID
     /// </summary>
     /// <param name="id"></param>
     /// <param name="token"></param>
@@ -42,7 +42,7 @@ public interface IPostRepository : IRepository
     public Task<Post?> GetPostById(string id, CancellationToken token = default);
 
     /// <summary>
-    /// Get post by Id from cache
+    /// Get post by ID from cache
     /// </summary>
     /// <param name="id"></param>
     /// <param name="token"></param>

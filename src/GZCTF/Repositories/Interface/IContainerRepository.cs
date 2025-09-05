@@ -5,7 +5,7 @@ namespace GZCTF.Repositories.Interface;
 public interface IContainerRepository : IRepository
 {
     /// <summary>
-    /// 根据容器数据库 ID 获取容器
+    /// Get container by database ID
     /// </summary>
     /// <param name="guid">容器数据库 ID</param>
     /// <param name="token"></param>
@@ -13,7 +13,7 @@ public interface IContainerRepository : IRepository
     public Task<Container?> GetContainerById(Guid guid, CancellationToken token = default);
 
     /// <summary>
-    /// 根据容器数据库 ID 获取容器及实例信息
+    /// Get container with instance info by database ID
     /// </summary>
     /// <param name="guid">容器数据库 ID</param>
     /// <param name="token"></param>
@@ -21,7 +21,7 @@ public interface IContainerRepository : IRepository
     public Task<Container?> GetContainerWithInstanceById(Guid guid, CancellationToken token = default);
 
     /// <summary>
-    /// 容器数据库 ID 对应容器是否存在
+    /// Check if the container exists by database ID
     /// </summary>
     /// <param name="guid">容器数据库 ID</param>
     /// <param name="token"></param>
@@ -29,21 +29,21 @@ public interface IContainerRepository : IRepository
     public Task<bool> ValidateContainer(Guid guid, CancellationToken token = default);
 
     /// <summary>
-    /// 获取容器实例信息
+    /// Get all container instances
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<ContainerInstanceModel[]> GetContainerInstances(CancellationToken token = default);
 
     /// <summary>
-    /// 获取全部待销毁容器
+    /// Get all containers that are about to be stopped
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<List<Container>> GetDyingContainers(CancellationToken token = default);
+    public Task<Container[]> GetDyingContainers(CancellationToken token = default);
 
     /// <summary>
-    /// 容器延期
+    /// Extend container lifetime
     /// </summary>
     /// <param name="container">容器实例对象</param>
     /// <param name="time">延长时间</param>
@@ -52,7 +52,7 @@ public interface IContainerRepository : IRepository
     public Task ExtendLifetime(Container container, TimeSpan time, CancellationToken token = default);
 
     /// <summary>
-    /// 销毁容器
+    /// Destroy container and remove it from database
     /// </summary>
     /// <param name="container"></param>
     /// <param name="token"></param>

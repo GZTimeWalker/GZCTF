@@ -3,20 +3,20 @@
 public interface IGameEventRepository : IRepository
 {
     /// <summary>
-    /// 添加一个事件
+    /// Add a new event
     /// </summary>
-    /// <param name="event">事件</param>
+    /// <param name="event"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameEvent> AddEvent(GameEvent @event, CancellationToken token = default);
 
     /// <summary>
-    /// 获取全部事件
+    /// Get events for a specific game with pagination
     /// </summary>
-    /// <param name="gameId">比赛Id</param>
-    /// <param name="hideContainer">隐藏容器事件</param>
-    /// <param name="count">数量</param>
-    /// <param name="skip">跳过数量</param>
+    /// <param name="gameId"></param>
+    /// <param name="hideContainer">Set to true to hide container events</param>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,

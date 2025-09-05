@@ -1,7 +1,7 @@
 import { Box, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import cx from 'clsx'
 import dayjs, { Dayjs } from 'dayjs'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
@@ -20,7 +20,17 @@ export interface GanttItem {
   end: Dayjs
 }
 
-const LabelBox = (i: number, content: string, ex: string) => (
+const MonthBox = (i: number, content: string, ex: string) => (
+  <Box key={i} left={i * 40} className={cx(classes.date, ex)}>
+    <div className={classes.left}>
+      <Text className={classes.label} span>
+        {content}
+      </Text>
+    </div>
+  </Box>
+)
+
+const DayBox = (i: number, content: string, ex: string) => (
   <Box key={i} left={i * 40} className={cx(classes.date, ex)}>
     <div className={classes.center}>
       <Text className={classes.label} span>
@@ -77,21 +87,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
   const { t } = useTranslation()
   const { locale } = useLanguage()
 
-  const [dateData, setDateData] = useState<DateData>({
-    start: dayjs(),
-    now: dayjs().startOf('h'),
-    end: dayjs(),
-    total: 0,
-    duration: 0,
-    weekends: [],
-    days: [],
-    months: [],
-    monthMap: [],
-  })
-
-  const [currentMonth, setCurrentMonth] = useState(dayjs().locale(locale).format('SMY'))
-
-  useEffect(() => {
+  const dateData = useMemo<DateData>(() => {
     const now = dayjs().startOf('h')
     const start = now.startOf('w').subtract(3, 'w')
     const end = start.add(7, 'w').subtract(1, 's')
@@ -110,10 +106,10 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
       if (current.isSame(now, 'd')) {
         days.push(TodayBox(i, current.format('DD')))
       } else {
-        days.push(LabelBox(i, current.format('DD'), classes.day))
+        days.push(DayBox(i, current.format('DD'), classes.day))
       }
       if (current.date() === 1) {
-        months.push(LabelBox(i, current.format('MMMM'), classes.month))
+        months.push(MonthBox(i, current.format('MMMM'), classes.month))
         monthMap.push({ position: i * 40, time: current })
       }
       if (current.day() === 6) {
@@ -123,7 +119,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
 
     monthMap.reverse()
 
-    setDateData({
+    return {
       start,
       now,
       end,
@@ -133,12 +129,12 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
       days,
       months,
       monthMap,
-    })
+    }
   }, [locale])
 
-  useEffect(() => {
-    if (!dateData) return
+  const [currentMonth, setCurrentMonth] = useState(dayjs().locale(locale).format('SMY'))
 
+  useEffect(() => {
     const map = dateData.monthMap
 
     for (let i = 0; i < map.length; i++) {
@@ -149,7 +145,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
         break
       }
     }
-  }, [scrollPosition, locale, dateData?.monthMap])
+  }, [scrollPosition, locale, dateData.monthMap])
 
   const nowOffset = (dateData.now.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH + STICKY_WIDTH
   const scrollPos = scrollPosition.x + EDGE_PADDING

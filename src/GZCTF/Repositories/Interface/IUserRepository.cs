@@ -3,10 +3,10 @@ namespace GZCTF.Repositories.Interface;
 public interface IUserRepository
 {
     /// <summary>
-    /// 从 ID 查找用户
+    /// Find user by ID
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
-    public Task<UserInfo?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task<UserInfo?> FindByIdAsync(Guid id, CancellationToken token = default);
 }
