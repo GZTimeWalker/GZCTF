@@ -140,7 +140,7 @@
     "score_formatter": "{value} 点",
     "score_table": {
       "all_teams": "すべてのチーム",
-      "rank_division": "グループ順位",
+      "rank_division": "組順位",
       "rank_total": "総合順位",
       "score": "得点",
       "score_total": "合計得点",

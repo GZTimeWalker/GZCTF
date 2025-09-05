@@ -1,0 +1,49 @@
+@keyframes scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  width: 100%;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.textWrapper {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.text {
+  white-space: nowrap;
+  display: inline-block;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: inherit;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.separator {
+  display: inline-block;
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+.scroll {
+  animation: scroll var(--scroll-time, 4s) linear infinite;
+}
+
+.container:hover .textWrapper {
+  animation-play-state: paused;
+}

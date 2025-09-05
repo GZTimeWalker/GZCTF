@@ -5,7 +5,6 @@ import {
   Center,
   Grid,
   Group,
-  Input,
   Pagination,
   Paper,
   Select,
@@ -26,6 +25,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { ScoreboardItemModal } from '@Components/ScoreboardItemModal'
+import { ScrollingText } from '@Components/ScrollingText'
 import { useLanguage } from '@Utils/I18n'
 import {
   BloodBonus,
@@ -41,7 +41,7 @@ import misc from '@Styles/Misc.module.css'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
-const Widths = [60, 55, 170, 55, 70, 60]
+const Widths = [60, 60, 170, 60, 70, 60]
 const Lefts = Widths.reduce(
   (acc, cur) => {
     acc.push(acc[acc.length - 1] + cur)
@@ -163,19 +163,7 @@ const TableRow: FC<{
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0} h="2.5rem" justify="center" w={Widths[2] - 45}>
-            <Input
-              variant="unstyled"
-              value={item.name}
-              readOnly
-              size="sm"
-              __vars={{
-                '--input-height': 'var(--mantine-line-height-sm)',
-              }}
-              classNames={{
-                wrapper: cx(classes.pointer, classes.wapper),
-                input: cx(classes.pointer, classes.input),
-              }}
-            />
+            <ScrollingText size="sm" text={item.name || ''} onClick={onOpenDetail} />
             {!!item.division && (
               <Text size="xs" c="dimmed" ta="start" truncate className={classes.text}>
                 {item.division}
