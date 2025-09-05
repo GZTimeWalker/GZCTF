@@ -3,6 +3,35 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.6.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.5.0..v1.6.0) - 2025-09-05
+
+### ⛰️ Features
+
+- **(ScrollingText)** add scrolling text component and integrate into ChallengeCard and ScoreboardTable - ([a55c38](https://github.com/GZTimeWalker/GZCTF/commit/a55c38)) by **GZTime**
+- **(TeamCard)** enhance TeamCard layout - ([d1781d](https://github.com/GZTimeWalker/GZCTF/commit/d1781d)) by **GZTime**
+- **(challenge)** allow recalculate submission count for teams - ([c63ef1](https://github.com/GZTimeWalker/GZCTF/commit/c63ef1)) by **GZTime**
+- **(logging)** enhance logging configuration for EF Core queries - ([5f2213](https://github.com/GZTimeWalker/GZCTF/commit/5f2213)) by **GZTime**
+- **(submission)** add submission limit for challenges (#450) - ([f65090](https://github.com/GZTimeWalker/GZCTF/commit/f65090)) by **Copilot**
+
+### 🐛 Bug Fixes
+
+- **(batch-user-create)** correct validation to use MaxTeamNameLength (#445) - ([3821e4](https://github.com/GZTimeWalker/GZCTF/commit/3821e4)) by **Dang Minh Tri**
+
+### 🎨 Styling
+
+- **(components)** update styles in ChallengePanel and Scoreboard components - ([10c3eb](https://github.com/GZTimeWalker/GZCTF/commit/10c3eb)) by **GZTime**
+
+### 🚀 Performances
+
+- **(cache)** implement ETag and caching headers - ([649867](https://github.com/GZTimeWalker/GZCTF/commit/649867)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(about)** add contributors and resources - ([94e1c4](https://github.com/GZTimeWalker/GZCTF/commit/94e1c4)) by **GZTime**
+- **(caching)** add memory cache layer to CacheHelper - ([ea9078](https://github.com/GZTimeWalker/GZCTF/commit/ea9078)) by **GZTime**
+- **(charts)** replace ReactEcharts with EchartsContainer - ([0feaae](https://github.com/GZTimeWalker/GZCTF/commit/0feaae)) by **GZTime**
+
+---
 ## [1.5.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.4.3..v1.5.0) - 2025-08-19
 
 ### ⛰️ Features
