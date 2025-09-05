@@ -1,0 +1,42 @@
+.lockBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: orange;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  min-width: 500px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+}
+
+.cardMobile {
+  width: 100%;
+  position: relative;
+}
+
+.contentGroup {
+  align-items: center;
+}
+
+.contentGroupMobile {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.avatarGroup {
+  --ag-spacing: 12px;
+}
+
+.captainIcon {
+  color: var(--mantine-color-yellow-6);
+}

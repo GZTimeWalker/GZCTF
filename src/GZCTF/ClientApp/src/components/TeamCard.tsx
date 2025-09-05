@@ -1,11 +1,13 @@
-import { Avatar, Badge, Box, Card, Divider, Group, Stack, Text, Title, Tooltip, useMantineTheme } from '@mantine/core'
-import { mdiLockOutline } from '@mdi/js'
+import { Avatar, Card, Center, Group, Stack, Text, Title, Tooltip } from '@mantine/core'
+import { mdiLockOutline, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useIsMobile } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
 import cardClasses from '@Styles/HoverCard.module.css'
 import misc from '@Styles/Misc.module.css'
+import teamCardClasses from '@Styles/TeamCard.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface TeamCardProps {
@@ -14,91 +16,60 @@ interface TeamCardProps {
   onEdit: () => void
 }
 
-const AVATAR_LIMIT = 5
-
 export const TeamCard: FC<TeamCardProps> = (props) => {
   const { team, isCaptain, onEdit } = props
 
-  const captain = team.members?.filter((m) => m?.captain)[0]
-  const members = team.members?.filter((m) => !m?.captain)
-
-  const theme = useMantineTheme()
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
 
   return (
-    <Card shadow="sm" onClick={onEdit} classNames={cardClasses}>
-      <Group align="center" wrap="nowrap">
-        <Stack className={misc.flexGrow}>
-          <Group align="stretch" justify="space-between">
-            <Avatar alt="avatar" size="lg" radius="md" src={team.avatar}>
-              {team.name?.slice(0, 1) ?? 'T'}
-            </Avatar>
-
-            <Stack gap={0} w="calc(100% - 72px)">
-              <Group w="100%" justify="left">
-                <Title order={2} ta="left">
-                  {team.name}
-                </Title>
-              </Group>
-              <Text truncate size="sm" lineClamp={2}>
-                {team.bio}
-              </Text>
-            </Stack>
+    <Card
+      shadow="md"
+      radius="lg"
+      onClick={onEdit}
+      className={isMobile ? teamCardClasses.cardMobile : teamCardClasses.card}
+      classNames={cardClasses}
+    >
+      <Group className={isMobile ? teamCardClasses.contentGroupMobile : teamCardClasses.contentGroup}>
+        <Avatar alt="avatar" size="xl" radius="xl" src={team.avatar}>
+          {team.name?.slice(0, 1) ?? 'T'}
+        </Avatar>
+        <Stack gap={4} className={misc.flexGrow}>
+          <Group justify="space-between" align="center">
+            <Title order={2} lineClamp={1}>
+              {team.name}
+            </Title>
+            {isCaptain && <Icon path={mdiCrown} size={1} className={teamCardClasses.captainIcon} />}
           </Group>
-          <Divider my="xs" />
-          <Stack gap="xs">
-            <Group gap="xs" justify="space-between">
-              <Text tt="uppercase" c="dimmed">
-                {t('team.label.role')}
-              </Text>
-              {isCaptain ? (
-                <Badge color="yellow" size="lg">
-                  {t('team.content.role.captain')}
-                </Badge>
-              ) : (
-                <Badge color="gray" size="lg">
-                  {t('team.content.role.member')}
-                </Badge>
+          <Text size="sm" c="dimmed" lineClamp={1}>
+            {team.bio || t('team.placeholder.bio')}
+          </Text>
+          <Group justify="space-between" align="center">
+            <Text size="sm" c="dimmed" tt="uppercase" fw="bold">
+              {t('team.label.members')} ({team.members?.length || 0})
+            </Text>
+            <Avatar.Group className={teamCardClasses.avatarGroup}>
+              {team.members?.slice(0, 6).map((m) => (
+                <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
+                  <Avatar alt="avatar" radius="xl" size="md" src={m.avatar}>
+                    {m.userName?.slice(0, 1) ?? 'U'}
+                  </Avatar>
+                </Tooltip>
+              ))}
+              {team.members && team.members.length > 6 && (
+                <Avatar radius="xl" size="lg">
+                  +{team.members.length - 6}
+                </Avatar>
               )}
-            </Group>
-            <Group gap="xs">
-              <Text tt="uppercase" c="dimmed">
-                {t('team.label.members')}
-              </Text>
-              <Box className={misc.flexGrow} />
-              {team.locked && <Icon path={mdiLockOutline} size={1} color={theme.colors.yellow[6]} />}
-              <Tooltip.Group openDelay={300} closeDelay={100}>
-                <Avatar.Group spacing="md">
-                  <Tooltip label={captain?.userName} withArrow classNames={tooltipClasses}>
-                    <Avatar alt="avatar" radius="xl" src={captain?.avatar} className={misc.noBorder}>
-                      {captain?.userName?.slice(0, 1) ?? 'C'}
-                    </Avatar>
-                  </Tooltip>
-                  {members &&
-                    members.slice(0, AVATAR_LIMIT).map((m) => (
-                      <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
-                        <Avatar alt="avatar" radius="xl" src={m.avatar} className={misc.noBorder}>
-                          {m.userName?.slice(0, 1) ?? 'U'}
-                        </Avatar>
-                      </Tooltip>
-                    ))}
-                  {members && members.length > AVATAR_LIMIT && (
-                    <Tooltip
-                      label={<Text>{members.slice(AVATAR_LIMIT).join(',')}</Text>}
-                      withArrow
-                      classNames={tooltipClasses}
-                    >
-                      <Avatar alt="avatar" radius="xl">
-                        +{members.length - AVATAR_LIMIT}
-                      </Avatar>
-                    </Tooltip>
-                  )}
-                </Avatar.Group>
-              </Tooltip.Group>
-            </Group>
-          </Stack>
+            </Avatar.Group>
+          </Group>
         </Stack>
       </Group>
+      {team.locked && (
+        <Center className={teamCardClasses.lockBadge}>
+          <Icon path={mdiLockOutline} size={0.8} color="white" />
+        </Center>
+      )}
     </Card>
   )
 }

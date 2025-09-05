@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Box,
   Button,
   Center,
@@ -16,6 +17,7 @@ import {
   Textarea,
   TextInput,
   Tooltip,
+  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
@@ -46,28 +48,58 @@ interface TeamMemberInfoProps {
 const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   const { user, isCaptain, onKick, onTransferCaptain } = props
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
   const [showBtns, setShowBtns] = useState(false)
 
   const { t } = useTranslation()
 
   return (
-    <Group justify="space-between" onMouseEnter={() => setShowBtns(true)} onMouseLeave={() => setShowBtns(false)}>
+    <Group
+      justify="space-between"
+      gap={2}
+      p="xs"
+      style={{
+        transition: 'background-color 0.2s',
+        cursor: 'pointer',
+      }}
+      bdrs="md"
+      bg={showBtns ? (colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0]) : 'transparent'}
+      onMouseEnter={() => setShowBtns(true)}
+      onMouseLeave={() => setShowBtns(false)}
+      onClick={() => setShowBtns(!showBtns)}
+    >
       <Group justify="left">
-        <Avatar alt="avatar" src={user.avatar} radius="xl">
+        <Avatar alt="avatar" src={user.avatar} radius="xl" size="md">
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
-        <Text fw={500}>{user.userName}</Text>
+        <Text fw={500} size="sm">
+          {user.userName}
+        </Text>
       </Group>
       {isCaptain && showBtns && (
         <Group gap="xs" justify="right">
           <Tooltip label={t('team.label.transfer')}>
-            <ActionIcon variant="transparent" onClick={() => onTransferCaptain(user)}>
-              <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />
+            <ActionIcon
+              variant="light"
+              color="yellow"
+              onClick={(e) => {
+                e.stopPropagation()
+                onTransferCaptain(user)
+              }}
+            >
+              <Icon path={mdiStar} size={0.8} />
             </ActionIcon>
           </Tooltip>
           <Tooltip label={t('team.label.kick')}>
-            <ActionIcon variant="transparent" onClick={() => onKick(user)}>
-              <Icon path={mdiClose} size={1} color={theme.colors.alert[4]} />
+            <ActionIcon
+              variant="light"
+              color="red"
+              onClick={(e) => {
+                e.stopPropagation()
+                onKick(user)
+              }}
+            >
+              <Icon path={mdiClose} size={0.8} />
             </ActionIcon>
           </Tooltip>
         </Group>
@@ -90,6 +122,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   const theme = useMantineTheme()
   const clipboard = useClipboard()
+  const { colorScheme } = useMantineColorScheme()
   const captain = teamInfo?.members?.filter((x) => x.captain)[0]
   const crew = teamInfo?.members?.filter((x) => !x.captain)
 
@@ -298,7 +331,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         props.onClose()
       }}
     >
-      <Stack gap="lg">
+      <Stack gap="sm">
         {/* Team Info */}
         <Grid grow>
           <Grid.Col span={8}>
@@ -361,17 +394,29 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
         <Text size="sm">{t('team.label.members')}</Text>
-        <ScrollArea h={140} offsetScrollbars>
+        <ScrollArea h={210} offsetScrollbars>
           <Stack gap="xs">
             {captain && (
-              <Group justify="space-between">
+              <Group
+                justify="space-between"
+                p="xs"
+                style={{
+                  borderRadius: theme.radius.md,
+                  backgroundColor: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.yellow[0],
+                  border: `1px solid ${colorScheme === 'dark' ? theme.colors.yellow[7] : theme.colors.yellow[3]}`,
+                }}
+              >
                 <Group justify="left">
-                  <Avatar alt="avatar" src={captain.avatar} radius="xl">
+                  <Avatar alt="avatar" src={captain.avatar} radius="xl" size="md">
                     {captain.userName?.slice(0, 1) ?? 'C'}
                   </Avatar>
-                  <Text fw={500}>{captain.userName}</Text>
+                  <Text fw={500} size="sm">
+                    {captain.userName}
+                  </Text>
                 </Group>
-                <Icon path={mdiStar} size={1} color={theme.colors.yellow[4]} />
+                <Badge color="yellow" leftSection={<Icon path={mdiStar} size={0.6} />}>
+                  {t('team.content.role.captain')}
+                </Badge>
               </Group>
             )}
             {crew &&

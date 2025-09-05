@@ -1,6 +1,7 @@
 import {
   Button,
   Center,
+  Container,
   Group,
   Loader,
   Modal,
@@ -123,38 +124,18 @@ const Teams: FC = () => {
             )}
           </Group>
           {teams && !teamsError && user && !userError ? (
-            <>
-              <Title
-                order={2}
-                style={{
-                  color: theme.colors[theme.primaryColor][colorScheme === 'dark' ? 2 : 6],
-                  fontSize: '6rem',
-                  fontWeight: 'bold',
-                  opacity: 0.15,
-                  height: '4.5rem',
-                  paddingLeft: '1rem',
-                  userSelect: 'none',
-                  marginTop: '-1.5rem',
-                }}
-              >
-                TEAMS
-              </Title>
-              <SimpleGrid
-                cols={{ base: 1, lg: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }}
-                spacing={{ base: 'sm', lg: 'md' }}
-              >
-                {teams.map((t, i) => (
-                  <TeamCard
-                    key={i}
-                    team={t}
-                    isCaptain={t.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}
-                    onEdit={() => onEditTeam(t)}
-                  />
-                ))}
-              </SimpleGrid>
-            </>
+            <SimpleGrid cols={isMobile ? 1 : 2} spacing="xl" p={isMobile ? 'sm' : '2rem'} w="100%">
+              {teams.map((t, i) => (
+                <TeamCard
+                  key={i}
+                  team={t}
+                  isCaptain={t.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}
+                  onEdit={() => onEditTeam(t)}
+                />
+              ))}
+            </SimpleGrid>
           ) : (
-            <Center w="100%" h="80wh">
+            <Center w="100%" h="80vh">
               <Loader />
             </Center>
           )}
