@@ -19,7 +19,12 @@
       "title": "Trang không tồn tại"
     },
     "about": {
-      "slogan": "Hack cho vui, không vì lợi nhuận"
+      "contributors": "Người đóng góp",
+      "documentation": "Tài liệu chính thức",
+      "repository": "Kho GitHub",
+      "resources": "Tài nguyên",
+      "slogan": "Hack cho vui, không vì lợi nhuận",
+      "version": "Phiên bản"
     },
     "color": {
       "custom": {

@@ -16,3 +16,16 @@ declare module 'virtual:i18n-manifest' {
 
   export default manifest
 }
+
+declare module 'virtual:contributors' {
+  interface Contributor {
+    login: string
+    html_url: string
+    avatar_url: string
+    contributions: number
+  }
+
+  const contributors: Contributor[]
+
+  export default contributors
+}

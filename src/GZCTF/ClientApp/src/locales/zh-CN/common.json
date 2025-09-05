@@ -19,7 +19,12 @@
       "title": "页面不存在"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "contributors": "贡献者",
+      "documentation": "官方文档",
+      "repository": "GitHub 仓库",
+      "resources": "相关资源",
+      "slogan": "Hack for fun not for profit",
+      "version": "版本信息"
     },
     "color": {
       "custom": {

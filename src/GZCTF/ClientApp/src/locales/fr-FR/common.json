@@ -19,7 +19,12 @@
       "title": "Page inexistante"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "contributors": "Contributeurs",
+      "documentation": "Documentation Officielle",
+      "repository": "Dépôt GitHub",
+      "resources": "Ressources",
+      "slogan": "Hack for fun not for profit",
+      "version": "Version"
     },
     "color": {
       "custom": {

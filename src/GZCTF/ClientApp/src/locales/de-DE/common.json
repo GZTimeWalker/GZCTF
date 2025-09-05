@@ -19,7 +19,12 @@
       "title": "Seite existiert nicht"
     },
     "about": {
-      "slogan": "Hacke aus Spaß, nicht für Profit"
+      "contributors": "Mitwirkende",
+      "documentation": "Offizielle Dokumentation",
+      "repository": "GitHub-Repository",
+      "resources": "Ressourcen",
+      "slogan": "Hacke aus Spaß, nicht für Profit",
+      "version": "Version"
     },
     "color": {
       "custom": {

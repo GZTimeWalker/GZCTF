@@ -26,7 +26,7 @@ export const IconHeader: FC<StickyHeaderProps> = ({ sticky, px }) => {
     >
       <LogoHeader />
       <Title className={classes.subtitle} order={3}>
-        &gt; {config?.slogan ?? 'Hack for fun not for profit'}
+        &gt;&nbsp;{config?.slogan ?? 'Hack for fun not for profit'}
         <Text span className={classes.blink}>
           _
         </Text>

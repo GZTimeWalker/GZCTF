@@ -19,7 +19,12 @@
       "title": "ページが存在しません"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "contributors": "貢献者",
+      "documentation": "公式ドキュメント",
+      "repository": "GitHub リポジトリ",
+      "resources": "リソース",
+      "slogan": "Hack for fun not for profit",
+      "version": "バージョン"
     },
     "color": {
       "custom": {

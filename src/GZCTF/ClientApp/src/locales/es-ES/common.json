@@ -19,7 +19,12 @@
       "title": "La página no existe"
     },
     "about": {
-      "slogan": "Hackea por diversión, sin ánimo de lucro"
+      "contributors": "Contribuyentes",
+      "documentation": "Documentación Oficial",
+      "repository": "Repositorio GitHub",
+      "resources": "Recursos",
+      "slogan": "Hackea por diversión, sin ánimo de lucro",
+      "version": "Versión"
     },
     "color": {
       "custom": {

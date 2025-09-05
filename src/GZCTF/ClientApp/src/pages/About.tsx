@@ -1,13 +1,15 @@
-import { Anchor, Badge, Center, Group, HoverCard, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import { Anchor, Center, Group, Stack, Text, Title, useMantineTheme, Flex, Paper, Badge, Card } from '@mantine/core'
+import { mdiScaleBalance, mdiFileDocumentOutline, mdiGithub, mdiTag, mdiAccountGroup, mdiLink } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
+import contributorsData from 'virtual:contributors'
 import { WithNavBar } from '@Components/WithNavbar'
 import { MainIcon } from '@Components/icon/MainIcon'
 import { useConfig, ValidatedRepoMeta } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import classes from '@Styles/About.module.css'
 import logoClasses from '@Styles/LogoHeader.module.css'
-import misc from '@Styles/Misc.module.css'
 
 const About: FC = () => {
   const { config } = useConfig()
@@ -20,58 +22,111 @@ const About: FC = () => {
 
   return (
     <WithNavBar>
-      <Stack justify="space-between" h="calc(100vh - 16px)">
-        <Center h="calc(100vh - 16px)">
-          <Title order={2} className={classes.watermark}>
-            GZ::CTF
-          </Title>
-          <Text className={classes.bio}>
-            &gt; {config?.slogan ?? t('common.content.about.slogan')}
-            <Text span className={classes.blink}>
-              _
+      <Stack justify="center" align="center" h="calc(100vh - 16px)" gap="xl" p="xl">
+        <Center>
+          <Stack align="center" gap="sm">
+            <MainIcon size="5rem" />
+            <Title order={1} size="3.5rem" fw={800} ta="center">
+              GZ<span className={logoClasses.brand}>::</span>CTF
+            </Title>
+            <Text size="xl" fw={500} ta="center" c="dimmed" ff="monospace" mt="xs">
+              &gt;&nbsp;{t('common.content.about.slogan')}
+              <Text span className={classes.blink}>
+                _
+              </Text>
             </Text>
+          </Stack>
+        </Center>
+
+        <Flex gap="xl" wrap="wrap" justify="center" align="center">
+          <Stack align="center" gap="md" miw="300px">
+            <Group gap="xs" justify="center">
+              <Icon path={mdiAccountGroup} size={1} />
+              <Title order={3} fw={600} ta="center">
+                {t('common.content.about.contributors')}
+              </Title>
+            </Group>
+            <Group gap="sm" wrap="wrap" justify="center">
+              {contributorsData.map((contributor) => (
+                <Anchor
+                  key={contributor.login}
+                  href={contributor.html_url}
+                  c={theme.primaryColor}
+                  size="md"
+                  fw={500}
+                  underline="hover"
+                >
+                  @{contributor.login}
+                </Anchor>
+              ))}
+            </Group>
+          </Stack>
+
+          <Stack align="center" gap="md" miw="300px">
+            <Group gap="xs" justify="center">
+              <Icon path={mdiLink} size={1} />
+              <Title order={3} fw={600} ta="center">
+                {t('common.content.about.resources')}
+              </Title>
+            </Group>
+            <Stack gap="md" align="center">
+              <Group gap="sm" justify="center" align="center">
+                <Icon path={mdiFileDocumentOutline} size={0.8} />
+                <Anchor href="https://gzctf.gzti.me" c={theme.primaryColor} size="md" fw={500} underline="hover">
+                  {t('common.content.about.documentation')}
+                </Anchor>
+              </Group>
+              <Group gap="sm" justify="center" align="center">
+                <Icon path={mdiGithub} size={0.8} />
+                <Anchor href={repo} c={theme.primaryColor} size="md" fw={500} underline="hover">
+                  {t('common.content.about.repository')}
+                </Anchor>
+              </Group>
+              <Group gap="sm" justify="center" align="center">
+                <Icon path={mdiScaleBalance} size={0.8} />
+                <Text size="sm" fw={400} c="dimmed">
+                  Licensed&nbsp;under&nbsp;
+                  <Anchor
+                    href="https://www.gnu.org/licenses/agpl-3.0.html"
+                    c={theme.primaryColor}
+                    size="md"
+                    fw={500}
+                    underline="hover"
+                  >
+                    AGPLv3.0
+                  </Anchor>
+                </Text>
+              </Group>
+            </Stack>
+          </Stack>
+        </Flex>
+
+        <Stack align="center" gap="md">
+          <Group gap="xs" justify="center">
+            <Icon path={mdiTag} size={1} />
+            <Title order={3} fw={600} ta="center">
+              {t('common.content.about.version')}
+            </Title>
+          </Group>
+          <Flex direction="column" align="center" gap="sm">
+            <Badge size="lg" variant="dot" color={valid ? 'green' : 'red'}>
+              {valid ? `${tag}${shortSha}` : 'UNOFFICIAL'}
+            </Badge>
+            <Text size="xs" fw={400} c="gray" ta="center" ff="monospace">
+              {valid ? `Built at ${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}` : 'This release is not officially built'}
+            </Text>
+          </Flex>
+        </Stack>
+
+        <Center>
+          <Text size="sm" fw={400} c="dimmed" ta="center">
+            Copyright&nbsp;©&nbsp;2022-now&nbsp;
+            <Anchor href="https://github.com/GZTimeWalker" c="dimmed" size="sm" fw={500} underline="hover">
+              @GZTimeWalker
+            </Anchor>
+            ,&nbsp;All&nbsp;Rights&nbsp;Reserved.
           </Text>
         </Center>
-        <Group justify="right">
-          <HoverCard shadow="md" position="top-end" withArrow openDelay={200} closeDelay={400}>
-            <HoverCard.Target>
-              <Badge onClick={() => window.open(repo, '_blank')} className={misc.cPointer} size="lg" variant="outline">
-                © 2022-Now GZTime {valid ? shortSha : ''}
-              </Badge>
-            </HoverCard.Target>
-            <HoverCard.Dropdown>
-              <Stack>
-                <Group>
-                  <MainIcon size="60px" />
-                  <Stack gap="xs">
-                    <Title ml="-20px" mb="-5px" className={classes.title}>
-                      GZ<span className={logoClasses.brand}>::</span>CTF
-                    </Title>
-                    <Group ml="-18px" mt="-5px">
-                      <Anchor href="https://github.com/GZTimeWalker" c="dimmed" size="sm" fw={500} lh={1}>
-                        @GZTimeWalker
-                      </Anchor>
-                      <Badge
-                        variant={valid ? 'light' : 'filled'}
-                        color={valid ? theme.primaryColor : 'alert'}
-                        size="xs"
-                      >
-                        {valid ? `${tag}${shortSha}` : 'UNOFFICIAL'}
-                      </Badge>
-                    </Group>
-                  </Stack>
-                </Group>
-                <Group gap="xs">
-                  <Text size="xs" fw={500} c="dimmed" ff="monospace">
-                    {valid
-                      ? `Built at ${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}`
-                      : 'This release is not officially built'}
-                  </Text>
-                </Group>
-              </Stack>
-            </HoverCard.Dropdown>
-          </HoverCard>
-        </Group>
       </Stack>
     </WithNavBar>
   )

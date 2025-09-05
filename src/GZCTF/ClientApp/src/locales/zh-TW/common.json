@@ -19,7 +19,12 @@
       "title": "頁面不存在"
     },
     "about": {
-      "slogan": "Hack for fun not for profit"
+      "contributors": "貢獻者",
+      "documentation": "官方文檔",
+      "repository": "GitHub 倉庫",
+      "resources": "相關資源",
+      "slogan": "Hack for fun not for profit",
+      "version": "版本資訊"
     },
     "color": {
       "custom": {

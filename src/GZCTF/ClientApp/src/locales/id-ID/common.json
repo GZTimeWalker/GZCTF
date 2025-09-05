@@ -19,7 +19,12 @@
       "title": "Halaman tidak ada"
     },
     "about": {
-      "slogan": "Ngehack untuk senang senang bukan buat nyari profit"
+      "contributors": "Kontributor",
+      "documentation": "Dokumentasi Resmi",
+      "repository": "Repositori GitHub",
+      "resources": "Sumber Daya",
+      "slogan": "Ngehack untuk senang senang bukan buat nyari profit",
+      "version": "Versi"
     },
     "color": {
       "custom": {
