@@ -2,6 +2,7 @@ import {
   Badge,
   Group,
   Pagination,
+  SimpleGrid,
   Stack,
   Text,
   UnstyledButton,
@@ -19,7 +20,7 @@ import { usePageTitle } from '@Hooks/usePageTitle'
 import api from '@Api'
 import ganttClasses from '@Styles/GanttTimeline.module.css'
 
-const ITEM_PER_PAGE = 10
+const ITEM_PER_PAGE = 12
 
 const Games: FC = () => {
   const { t } = useTranslation()
@@ -72,7 +73,9 @@ const Games: FC = () => {
     <WithNavBar withFooter withHeader stickyHeader>
       <GanttTimeLine items={recents} />
       <Stack pt="md" mih="calc(100vh - 78px)" justify="space-between">
-        <Stack>{games && games.data.map((g) => <GameCard key={g.id} game={g} />)}</Stack>
+        <SimpleGrid cols={{ base: 1, sm: 1, md: 2, lg: 3, xl: 3, w18: 4, w24: 5 }} spacing="lg" verticalSpacing="lg">
+          {games && games.data.map((g) => <GameCard key={g.id} game={g} />)}
+        </SimpleGrid>
         <Pagination.Root total={pageCount} siblings={3} value={activePage} onChange={setPage} mb="xl">
           <Group gap={5} justify="flex-end">
             <Pagination.First />

@@ -2,17 +2,20 @@
   cursor: pointer;
   transition:
     box-shadow 0.2s,
-    filter 0.2s;
+    filter 0.2s,
+    transform 0.2s;
 
   @mixin hover {
     @mixin light {
       filter: brightness(1.04) !important;
       box-shadow: 0 0 12px var(--mantine-color-gray-2);
+      transform: translateY(-4px);
     }
 
     @mixin dark {
       filter: brightness(1.2) !important;
       box-shadow: 0 0 12px var(--mantine-color-gray-7);
+      transform: translateY(-4px);
     }
   }
 }

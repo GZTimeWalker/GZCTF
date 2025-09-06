@@ -17,11 +17,13 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 ### 🐛 Bug Fixes
 
 - **(batch-user-create)** correct validation to use MaxTeamNameLength (#445) - ([3821e4](https://github.com/GZTimeWalker/GZCTF/commit/3821e4)) by **Dang Minh Tri**
+- **(gantt)** wrong alignment when overflow - ([cb2a20](https://github.com/GZTimeWalker/GZCTF/commit/cb2a20)) by **GZTime**
 
 ### 🎨 Styling
 
 - **(TeamEditModal)** add CSS styles for team member and captain group - ([c8b1de](https://github.com/GZTimeWalker/GZCTF/commit/c8b1de)) by **GZTime**
 - **(components)** update styles in ChallengePanel and Scoreboard components - ([10c3eb](https://github.com/GZTimeWalker/GZCTF/commit/10c3eb)) by **GZTime**
+- **(game)** improve card layout - ([fdbacd](https://github.com/GZTimeWalker/GZCTF/commit/fdbacd)) by **GZTime**
 - **(scoreboard)** imporve render for item modal - ([31bb5c](https://github.com/GZTimeWalker/GZCTF/commit/31bb5c)) by **GZTime**
 
 ### 🚀 Performances
