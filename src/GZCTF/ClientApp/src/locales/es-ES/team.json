@@ -28,6 +28,10 @@
         "title": "Confirmar salida"
       }
     },
+    "no_team": {
+      "hint": "Crea un nuevo equipo o únete a uno existente para comenzar",
+      "title": "Aún no tienes equipo"
+    },
     "disallow_create": {
       "content": "Has alcanzado el número máximo de equipos que puedes tener.<br/>Por favor, disuelve un equipo existente para crear uno nuevo.",
       "title": "Has superado el límite"

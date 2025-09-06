@@ -28,7 +28,7 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import { TFunction } from 'i18next'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
@@ -45,15 +45,17 @@ const ITEM_COUNT_PER_PAGE = 30
 const EventTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
   const { colorScheme } = useMantineColorScheme()
-  const colorIdx = colorScheme === 'dark' ? 5 : 7
 
-  return new Map([
-    [EventType.FlagSubmit, { path: mdiFlag, size, color: theme.colors.cyan[colorIdx] }],
-    [EventType.ContainerStart, { path: mdiToggleSwitchOutline, size, color: theme.colors.green[colorIdx] }],
-    [EventType.ContainerDestroy, { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] }],
-    [EventType.CheatDetected, { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] }],
-    [EventType.Normal, { path: mdiLightningBolt, size, color: theme.colors.light[colorIdx] }],
-  ])
+  return useMemo(() => {
+    const colorIdx = colorScheme === 'dark' ? 5 : 6
+    return new Map([
+      [EventType.FlagSubmit, { path: mdiFlag, size, color: theme.colors.cyan[colorIdx] }],
+      [EventType.ContainerStart, { path: mdiToggleSwitchOutline, size, color: theme.colors.green[colorIdx] }],
+      [EventType.ContainerDestroy, { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] }],
+      [EventType.CheatDetected, { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] }],
+      [EventType.Normal, { path: mdiLightningBolt, size, color: theme.colors.light[colorIdx] }],
+    ])
+  }, [size, colorScheme, theme.colors])
 }
 
 const formatAnswer = (t: TFunction, res: AnswerResult) => {

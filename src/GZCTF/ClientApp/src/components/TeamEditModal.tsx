@@ -353,7 +353,9 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           <PasswordInput
             label={
               <Group gap={3}>
-                <Text size="sm">{t('team.label.invite_code')}</Text>
+                <Text fw={500} size="sm">
+                  {t('team.label.invite_code')}
+                </Text>
                 <ActionIcon size="sm" onClick={onRefreshInviteCode}>
                   <Icon path={mdiRefresh} size={1} />
                 </ActionIcon>
@@ -383,7 +385,9 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           maxRows={4}
           onChange={(event) => setTeamInfo({ ...teamInfo, bio: event.target.value })}
         />
-        <Text size="sm">{t('team.label.members')}</Text>
+        <Text fw={500} size="sm">
+          {t('team.label.members')}
+        </Text>
         <ScrollArea h={210} offsetScrollbars>
           <Stack gap="xs">
             {captain && (

@@ -18,7 +18,7 @@
   z-index: 91;
   animation: spike 2s linear 0s infinite alternate;
 
-  filter: light-dark(brightness(0.97) saturate(0.7), brightness(1.2) saturate(0.8));
+  filter: light-dark(brightness(1.1) saturate(0.9), brightness(1.2) saturate(0.8));
 
   &[data-blood] {
     display: block;
@@ -35,7 +35,7 @@
     }
 
     @mixin light {
-      filter: brightness(0.9);
+      filter: brightness(0.95);
     }
   }
 }

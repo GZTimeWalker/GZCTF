@@ -28,6 +28,10 @@
         "title": "Xác nhận Rời đội"
       }
     },
+    "no_team": {
+      "hint": "Tạo đội mới hoặc gia nhập đội hiện có để bắt đầu",
+      "title": "Chưa có đội"
+    },
     "disallow_create": {
       "content": "Bạn đã đạt giới hạn tối đa số đội có thể tạo.<br/>Vui lòng giải tán một đội hiện có để tạo đội mới.",
       "title": "Bạn đã vượt quá giới hạn"

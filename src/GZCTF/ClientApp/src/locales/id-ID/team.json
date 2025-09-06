@@ -28,6 +28,10 @@
         "title": "Konfirmasi Keluar"
       }
     },
+    "no_team": {
+      "hint": "Buat tim baru atau bergabung dengan tim yang sudah ada untuk memulai",
+      "title": "Belum ada tim"
+    },
     "disallow_create": {
       "content": "Anda telah mencapai jumlah maksimum tim yang dapat Anda miliki.<br/>Mohon untuk membubarkan tim yang ada untuk membuat tim baru.",
       "title": "Anda telah melebihi batas"

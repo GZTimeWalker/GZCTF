@@ -28,6 +28,10 @@
         "title": "Confirmer le départ"
       }
     },
+    "no_team": {
+      "hint": "Créez une nouvelle équipe ou rejoignez-en une pour commencer",
+      "title": "Pas encore d'équipe"
+    },
     "disallow_create": {
       "content": "Vous avez atteint le nombre maximum d'équipes que vous pouvez avoir.<br/>Veuillez dissoudre une équipe existante pour en créer une nouvelle.",
       "title": "Vous avez dépassé la limite"

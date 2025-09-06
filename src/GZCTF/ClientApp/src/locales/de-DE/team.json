@@ -28,6 +28,10 @@
         "title": "Verlassen bestätigen"
       }
     },
+    "no_team": {
+      "hint": "Erstellen Sie ein neues Team oder treten Sie einem bestehenden bei, um zu starten",
+      "title": "Noch kein Team"
+    },
     "disallow_create": {
       "content": "Sie haben die maximale Anzahl an Teams erreicht, die Sie haben können.<br/>Bitte lösen Sie ein bestehendes Team auf, um ein neues zu erstellen.",
       "title": "Sie haben das Limit überschritten"

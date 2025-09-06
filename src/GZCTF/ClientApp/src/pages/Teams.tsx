@@ -94,14 +94,14 @@ const Teams: FC = () => {
     <>
       <Button
         leftSection={<Icon path={mdiHumanGreetingVariant} size={1} />}
-        variant={colorScheme === 'dark' ? 'outline' : 'filled'}
+        variant="outline"
         onClick={() => setJoinOpened(true)}
       >
         {t('team.button.join')}
       </Button>
       <Button
         leftSection={<Icon path={mdiAccountMultiplePlus} size={1} />}
-        variant={colorScheme === 'dark' ? 'outline' : 'filled'}
+        variant="filled"
         onClick={() => setCreateOpened(true)}
       >
         {t('team.button.create')}
@@ -124,16 +124,30 @@ const Teams: FC = () => {
             )}
           </Group>
           {teams && !teamsError && user && !userError ? (
-            <SimpleGrid cols={isMobile ? 1 : 2} spacing="xl" p={isMobile ? 'sm' : '2rem'} w="100%">
-              {teams.map((t, i) => (
-                <TeamCard
-                  key={i}
-                  team={t}
-                  isCaptain={t.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}
-                  onEdit={() => onEditTeam(t)}
-                />
-              ))}
-            </SimpleGrid>
+            teams.length > 0 ? (
+              <SimpleGrid cols={isMobile ? 1 : 2} spacing="xl" p={isMobile ? 'sm' : '2rem'} w="100%">
+                {(teams || []).map((t, i) => (
+                  <TeamCard
+                    key={i}
+                    team={t}
+                    isCaptain={t.members?.some((m) => m?.captain && m.id === user?.userId) ?? false}
+                    onEdit={() => onEditTeam(t)}
+                  />
+                ))}
+              </SimpleGrid>
+            ) : (
+              <Center w="100%" h="80vh">
+                <Stack align="center" gap="md" maw={isMobile ? '90%' : '100%'}>
+                  <Icon path={mdiAccountMultiplePlus} size={4} color={theme.colors.gray[5]} />
+                  <Title order={2} ta="center" style={{ wordBreak: 'break-word', hyphens: 'auto' }}>
+                    {t('team.content.no_team.title')}
+                  </Title>
+                  <Text size="sm" c="dimmed" ta="center" style={{ wordBreak: 'break-word', hyphens: 'auto' }}>
+                    {t('team.content.no_team.hint')}
+                  </Text>
+                </Stack>
+              </Center>
+            )
           ) : (
             <Center w="100%" h="80vh">
               <Loader />

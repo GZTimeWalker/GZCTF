@@ -91,7 +91,7 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
             </Group>
           </Stack>
         </Group>
-        <Text fw={500} size="sm" lineClamp={4} h="5rem">
+        <Text fw={500} size="sm" lineClamp={3}>
           {summary}
         </Text>
       </Stack>
