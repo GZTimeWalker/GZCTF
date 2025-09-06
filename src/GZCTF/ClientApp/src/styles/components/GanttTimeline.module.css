@@ -92,7 +92,6 @@
 
   padding: 0 4px;
   max-width: 300px;
-  min-width: var(--width);
   pointer-events: none;
   user-select: none;
   overflow: hidden;
