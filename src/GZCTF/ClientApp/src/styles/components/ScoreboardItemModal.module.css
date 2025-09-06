@@ -1,0 +1,58 @@
+.header {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.titleBar {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+}
+
+.titleGroup {
+  min-width: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.avatar {
+  flex: 0 0 auto;
+}
+
+.infoWrap {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.nameRow {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.teamName {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  font-weight: bold;
+}
+
+.divisionBadge {
+  flex: 0 0 auto;
+}
+
+.bioText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  word-break: break-all;
+  font-size: var(--mantine-font-size-sm);
+}

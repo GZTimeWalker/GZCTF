@@ -30,6 +30,12 @@
   font-family: var(--mantine-font-family-monospace);
 }
 
+.teamCell {
+  max-width: 0;
+  width: auto;
+  overflow: hidden;
+}
+
 .legend {
   position: absolute;
   top: 0;

@@ -23,6 +23,7 @@ import { useLanguage } from '@Utils/I18n'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { ChallengeInfo, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
 import inputClasses from '@Styles/Input.module.css'
+import modalClasses from '@Styles/ScoreboardItemModal.module.css'
 import tableClasses from '@Styles/Table.module.css'
 
 export interface ScoreboardItemModalProps extends ModalProps {
@@ -103,23 +104,29 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   return (
     <Modal
       {...modalProps}
+      classNames={{ header: modalClasses.header, title: modalClasses.titleBar }}
       title={
-        <Group justify="left" gap="md" wrap="nowrap">
-          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md">
+        <Group justify="left" gap="md" wrap="nowrap" className={modalClasses.titleGroup}>
+          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" className={modalClasses.avatar}>
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Stack gap={0}>
-            <Group gap={4}>
-              <Title order={4} lineClamp={1} fw="bold">
+          <Stack gap={0} className={modalClasses.infoWrap}>
+            <Group gap={4} wrap="nowrap" className={modalClasses.nameRow}>
+              <Title order={4} lineClamp={1} className={modalClasses.teamName} title={item?.name ?? 'Team'}>
                 {item?.name ?? 'Team'}
               </Title>
               {item?.division && (
-                <Badge size="sm" variant="outline">
+                <Badge size="sm" variant="outline" className={modalClasses.divisionBadge}>
                   {item.division}
                 </Badge>
               )}
             </Group>
-            <Text truncate size="sm" lineClamp={1}>
+            <Text
+              size="sm"
+              lineClamp={1}
+              className={modalClasses.bioText}
+              title={item?.bio || t('team.placeholder.bio')}
+            >
               {item?.bio || t('team.placeholder.bio')}
             </Text>
           </Stack>

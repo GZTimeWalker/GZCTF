@@ -40,7 +40,7 @@ export const EchartsContainer: FC<EchartsContainerProps> = (props) => {
 
   useEffect(() => {
     if (chartInstance.current) {
-      chartInstance.current.setOption(option)
+      chartInstance.current.setOption(option, true)
     }
   }, [option])
 

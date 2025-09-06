@@ -14,68 +14,86 @@ import {
   Title,
 } from '@mantine/core'
 import dayjs from 'dayjs'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScoreboardItemModalProps } from '@Components/ScoreboardItemModal'
 import { TeamRadarMap } from '@Components/charts/TeamRadarMap'
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeInfo } from '@Api'
 import inputClasses from '@Styles/Input.module.css'
+import modalClasses from '@Styles/ScoreboardItemModal.module.css'
 import tableClasses from '@Styles/Table.module.css'
 
-export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
+export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.memo((props) => {
   const { item, scoreboard, ...modalProps } = props
   const { t } = useTranslation()
   const { locale } = useLanguage()
 
   const challenges = scoreboard?.challenges
-  const challengeIdMap =
-    challenges &&
-    Object.keys(challenges).reduce((map, key) => {
+  const challengeIdMap = useMemo(() => {
+    if (!challenges) return new Map<number, ChallengeInfo>()
+    return Object.keys(challenges).reduce((map, key) => {
       challenges[key].forEach((challenge) => {
         map.set(challenge.id!, challenge)
       })
       return map
     }, new Map<number, ChallengeInfo>())
+  }, [challenges])
 
   const solved = (item?.solvedCount ?? 0) / (scoreboard?.challengeCount ?? 1)
 
-  const indicator =
-    challenges &&
-    Object.keys(challenges).map((cate) => ({
+  const indicator = useMemo(() => {
+    if (!challenges) return []
+    return Object.keys(challenges).map((cate) => ({
       name: cate,
       scoreSum: challenges[cate].reduce((sum, chal) => sum + (!chal.solved ? 0 : chal.score!), 0),
       max: 1,
     }))
+  }, [challenges])
 
-  const values = indicator?.map((ind) => {
-    const solvedChallenges = item?.solvedChallenges?.filter(
-      (chal) => challengeIdMap?.get(chal.id!)?.category === ind.name
-    )
-    const cateScore = solvedChallenges?.reduce((sum, chal) => sum + chal.score!, 0) ?? 0
-    return Math.min(cateScore / ind.scoreSum, 1)
-  })
+  const values = useMemo(() => {
+    if (!indicator || !item?.solvedChallenges) return []
+    return indicator.map((ind) => {
+      const solvedChallenges = item.solvedChallenges!.filter(
+        (chal) => challengeIdMap.get(chal.id!)?.category === ind.name
+      )
+      const cateScore = solvedChallenges.reduce((sum, chal) => sum + chal.score!, 0)
+      return Math.min(cateScore / ind.scoreSum, 1)
+    })
+  }, [indicator, item?.solvedChallenges, challengeIdMap])
+
+  const sortedSolvedChallenges = useMemo(() => {
+    if (!item?.solvedChallenges) return []
+    return item.solvedChallenges.sort((a, b) => dayjs(b.time).diff(dayjs(a.time)))
+  }, [item?.solvedChallenges])
 
   return (
     <Modal
       {...modalProps}
+      classNames={{ header: modalClasses.header, title: modalClasses.titleBar }}
       title={
-        <Group justify="left" gap="md" wrap="nowrap">
-          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md">
+        <Group justify="left" gap="md" wrap="nowrap" w="100%" className={modalClasses.titleGroup}>
+          <Avatar alt="avatar" src={item?.avatar} size={50} radius="md" className={modalClasses.avatar}>
             {item?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
-          <Stack gap={0}>
-            <Group gap={4}>
-              <Title order={4} lineClamp={1}>
+          <Stack gap={0} className={modalClasses.infoWrap}>
+            <Group gap={4} wrap="nowrap" className={modalClasses.nameRow}>
+              <Title order={4} lineClamp={1} className={modalClasses.teamName} title={item?.name ?? 'Team'}>
                 {item?.name ?? 'Team'}
               </Title>
               {item?.division && (
-                <Badge size="sm" variant="outline">
+                <Badge size="sm" variant="outline" className={modalClasses.divisionBadge}>
                   {item.division}
                 </Badge>
               )}
             </Group>
-            <Text truncate size="sm" lineClamp={1}>
+            <Text
+              size="sm"
+              lineClamp={1}
+              className={modalClasses.bioText}
+              title={item?.bio || t('team.placeholder.bio')}
+            >
               {item?.bio || t('team.placeholder.bio')}
             </Text>
           </Stack>
@@ -131,34 +149,32 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) =
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {item?.solvedChallenges &&
+                {sortedSolvedChallenges &&
                   challengeIdMap &&
-                  item.solvedChallenges
-                    .sort((a, b) => dayjs(b.time).diff(dayjs(a.time)))
-                    .map((chal) => {
-                      const info = challengeIdMap.get(chal.id!)
-                      return (
-                        <Table.Tr key={chal.id} ff="monospace">
-                          <Table.Td>
-                            <Input
-                              variant="unstyled"
-                              value={info?.title}
-                              readOnly
-                              size="sm"
-                              __vars={{
-                                '--input-height': 'var(--mantine-line-height-sm)',
-                              }}
-                              classNames={{
-                                input: inputClasses.input,
-                                wrapper: inputClasses.wrapper,
-                              }}
-                            />
-                          </Table.Td>
-                          <Table.Td>{chal.score}</Table.Td>
-                          <Table.Td>{dayjs(chal.time).locale(locale).format('SL HH:mm')}</Table.Td>
-                        </Table.Tr>
-                      )
-                    })}
+                  sortedSolvedChallenges.map((chal) => {
+                    const info = challengeIdMap.get(chal.id!)
+                    return (
+                      <Table.Tr key={chal.id} ff="monospace">
+                        <Table.Td>
+                          <Input
+                            variant="unstyled"
+                            value={info?.title}
+                            readOnly
+                            size="sm"
+                            __vars={{
+                              '--input-height': 'var(--mantine-line-height-sm)',
+                            }}
+                            classNames={{
+                              input: inputClasses.input,
+                              wrapper: inputClasses.wrapper,
+                            }}
+                          />
+                        </Table.Td>
+                        <Table.Td>{chal.score}</Table.Td>
+                        <Table.Td>{dayjs(chal.time).locale(locale).format('SL HH:mm')}</Table.Td>
+                      </Table.Tr>
+                    )
+                  })}
               </Table.Tbody>
             </Table>
           </ScrollArea>
@@ -170,4 +186,4 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) =
       </Stack>
     </Modal>
   )
-}
+})

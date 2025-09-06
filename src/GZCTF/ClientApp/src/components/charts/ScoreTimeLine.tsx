@@ -87,7 +87,7 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
           }) satisfies SeriesOption
       ) ?? []),
     ]
-  }, [scoreboard, division, game])
+  }, [scoreboard, division, game, endTime, colorScheme, theme])
 
   const staticOption: EChartsOption = useMemo(() => {
     const isDark = colorScheme === 'dark'

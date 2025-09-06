@@ -1,14 +1,14 @@
-import { Box, Text, type MantineSize } from '@mantine/core'
-import { FC, useEffect, useRef, useState } from 'react'
+import { Box, BoxProps, Text, type MantineSize } from '@mantine/core'
+import { FC, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import classes from '@Styles/ScrollingText.module.css'
 
-interface ScrollingTextProps {
+interface ScrollingTextProps extends BoxProps {
   text: string
   onClick?: () => void
   size?: MantineSize
 }
 
-export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size }) => {
+export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size, ...boxProps }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
   const [shouldScroll, setShouldScroll] = useState(false)
@@ -22,7 +22,7 @@ export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size }) =
     }
   }, [text])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (containerRef.current) {
       const resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
@@ -55,6 +55,7 @@ export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size }) =
       __vars={{
         '--scroll-time': `${dynamicDuration}s`,
       }}
+      {...boxProps}
     >
       <div className={`${classes.textWrapper} ${shouldScroll ? classes.scroll : ''}`}>
         <Text ref={textRef} className={classes.text} title={text} fz={size}>
