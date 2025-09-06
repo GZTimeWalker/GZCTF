@@ -23,7 +23,7 @@ import { useLanguage } from '@Utils/I18n'
 import { BloodsTypes, PartialIconProps, useChallengeCategoryLabelMap } from '@Utils/Shared'
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
-import hoverClasses from '@Styles/HoverCard.module.css'
+import misc from '@Styles/Misc.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface ChallengeCardProps {
@@ -47,7 +47,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
       onClick={onClick}
       radius="md"
       shadow="sm"
-      className={cx(hoverClasses.root, classes.root)}
+      className={cx(misc.hoverCard, classes.root)}
       data-solved={solved || undefined}
       data-no-move
     >

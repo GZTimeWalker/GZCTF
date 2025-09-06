@@ -25,7 +25,7 @@ import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUserRole } from '@Hooks/useUser'
 import api, { Role } from '@Api'
 import classes from '@Styles/Banner.module.css'
-import btnClasses from '@Styles/FixedButton.module.css'
+import misc from '@Styles/Misc.module.css'
 
 const Post: FC = () => {
   const { postId } = useParams()
@@ -102,7 +102,7 @@ const Post: FC = () => {
       {RequireRole(Role.Admin, role) && (
         <Button
           component={Link}
-          className={btnClasses.root}
+          className={misc.fixedButton}
           variant="filled"
           radius="xl"
           size="md"

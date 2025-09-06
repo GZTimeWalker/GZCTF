@@ -10,7 +10,6 @@ import { useLanguage } from '@Utils/I18n'
 import { useForeground } from '@Hooks/useForeground'
 import { getGameStatus } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
-import classes from '@Styles/HoverCard.module.css'
 import misc from '@Styles/Misc.module.css'
 
 export interface RecentGameProps {
@@ -34,7 +33,7 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const titleColor = useForeground(poster)
 
   return (
-    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={classes}>
+    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={{ root: misc.hoverCard }}>
       <Card.Section pos="relative">
         {poster ? (
           <Image src={poster} h={POSTER_HEIGHT} alt="poster" />

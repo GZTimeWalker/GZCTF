@@ -155,3 +155,43 @@
 .dropdown[data-mobile] {
   width: 50vw;
 }
+
+.fixedButton {
+  position: fixed;
+  bottom: var(--fixed-bottom, 2rem);
+  right: var(--fixed-right, 2rem);
+  box-shadow: var(--mantine-shadow-lg);
+  z-index: 1000;
+
+  @media print {
+    display: none;
+  }
+}
+
+.hoverCard {
+  cursor: pointer;
+  transition:
+    box-shadow 0.2s,
+    filter 0.2s,
+    transform 0.2s;
+
+  @mixin hover {
+    transform: translateY(-4px);
+
+    @mixin light {
+      filter: brightness(1.04) !important;
+      box-shadow: 0 0 12px var(--mantine-color-gray-2);
+    }
+
+    @mixin dark {
+      filter: brightness(1.2) !important;
+      box-shadow: 0 0 12px var(--mantine-color-gray-7);
+    }
+  }
+
+  &[data-no-move] {
+    @mixin hover {
+      transform: translateY(0);
+    }
+  }
+}

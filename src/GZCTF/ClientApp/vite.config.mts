@@ -34,16 +34,14 @@ export default defineConfig(({ mode }) => {
         '/favicon.webp': TARGET,
       },
     },
-    preview: {
-      port: 64000,
-    },
+    preview: { port: 64000 },
     build: {
       outDir: 'build',
       assetsDir: 'static',
       cssMinify: 'esbuild',
       cssCodeSplit: false,
       chunkSizeWarningLimit: 1600,
-      reportCompressedSize: false,
+      reportCompressedSize: true,
       rollupOptions: {
         output: {
           hashCharacters: 'base36',
@@ -53,9 +51,7 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    html: {
-      cspNonce: '%nonce%',
-    },
+    html: { cspNonce: '%nonce%' },
     plugins: [
       react(),
       banner(BANNER),
@@ -64,17 +60,12 @@ export default defineConfig(({ mode }) => {
         [
           'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&display=swap',
         ],
-        { injectAsStyleTag: false, async: false }
+        {
+          injectAsStyleTag: false,
+          async: false,
+        }
       ),
-      Pages({
-        dirs: [
-          {
-            dir: './src/pages',
-            baseRoute: '',
-            filePattern: '**/*.tsx',
-          },
-        ],
-      }),
+      Pages({ dirs: [{ dir: './src/pages', baseRoute: '', filePattern: '**/*.tsx' }] }),
       i18nVirtualManifest(),
       fetchContributors(),
       optimizeCssModules(),

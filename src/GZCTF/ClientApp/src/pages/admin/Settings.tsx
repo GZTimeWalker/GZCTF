@@ -31,7 +31,6 @@ import { showErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
-import btnClasses from '@Styles/FixedButton.module.css'
 import misc from '@Styles/Misc.module.css'
 
 const Configs: FC = () => {
@@ -100,7 +99,7 @@ const Configs: FC = () => {
   return (
     <AdminPage isLoading={!configs}>
       <Button
-        className={btnClasses.root}
+        className={misc.fixedButton}
         __vars={{
           '--fixed-right': 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
         }}

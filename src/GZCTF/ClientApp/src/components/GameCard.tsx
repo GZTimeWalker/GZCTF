@@ -18,7 +18,7 @@ import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
 import { getGameStatus, toLimitTag } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
-import classes from '@Styles/HoverCard.module.css'
+import misc from '@Styles/Misc.module.css'
 
 export enum GameStatus {
   Coming = 'coming',
@@ -49,7 +49,7 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const color = GameColorMap.get(status)
 
   return (
-    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={classes}>
+    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={{ root: misc.hoverCard }}>
       <Card.Section>
         <BackgroundImage src={poster ?? ''} h="12rem" w="100%" pos="relative">
           {!poster && (

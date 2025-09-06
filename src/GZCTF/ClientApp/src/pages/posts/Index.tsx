@@ -12,7 +12,7 @@ import { OnceSWRConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUserRole } from '@Hooks/useUser'
 import api, { PostInfoModel, Role } from '@Api'
-import btnClasses from '@Styles/FixedButton.module.css'
+import misc from '@Styles/Misc.module.css'
 
 const ITEMS_PER_PAGE = 10
 
@@ -83,7 +83,7 @@ const Posts: FC = () => {
       {RequireRole(Role.Admin, role) && (
         <Button
           component={Link}
-          className={btnClasses.root}
+          className={misc.fixedButton}
           __vars={{
             '--fixed-right': 'calc(0.1 * (100vw - 70px - 2rem) + 1rem)',
             '--fixed-bottom': '6rem',

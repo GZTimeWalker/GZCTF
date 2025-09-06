@@ -16,7 +16,7 @@ import { FC } from 'react'
 import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
 import { WriteupInfoModel } from '@Api'
-import classes from '@Styles/HoverCard.module.css'
+import misc from '@Styles/Misc.module.css'
 
 interface TeamWriteupCardProps extends CardProps {
   writeup: WriteupInfoModel
@@ -28,18 +28,10 @@ export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, .
   const { colorScheme } = useMantineColorScheme()
   const { locale } = useLanguage()
   const theme = useMantineTheme()
+  const borderColor = selected ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6] : 'transparent'
+
   return (
-    <Card
-      {...props}
-      p="sm"
-      shadow="sm"
-      classNames={classes}
-      style={{
-        border: `2px solid ${
-          selected ? theme.colors[theme.primaryColor][colorScheme === 'dark' ? 8 : 6] : 'transparent'
-        }`,
-      }}
-    >
+    <Card {...props} p="sm" shadow="sm" classNames={{ root: misc.hoverCard }} bd={`2px solid ${borderColor}`}>
       <Group wrap="nowrap" gap={3} justify="space-between">
         <Group gap="sm" wrap="nowrap" justify="space-between" maw="calc(100% - 2rem)">
           <Avatar alt="avatar" src={writeup.team?.avatar} size="md">

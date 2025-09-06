@@ -5,7 +5,6 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
-import cardClasses from '@Styles/HoverCard.module.css'
 import misc from '@Styles/Misc.module.css'
 import teamCardClasses from '@Styles/TeamCard.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -28,7 +27,7 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
       radius="lg"
       onClick={onEdit}
       className={isMobile ? teamCardClasses.cardMobile : teamCardClasses.card}
-      classNames={cardClasses}
+      classNames={{ root: misc.hoverCard }}
     >
       <Group className={isMobile ? teamCardClasses.contentGroupMobile : teamCardClasses.contentGroup}>
         <Avatar alt="avatar" size="xl" radius="xl" src={team.avatar}>
