@@ -17,8 +17,6 @@ import {
   Textarea,
   TextInput,
   Tooltip,
-  useMantineColorScheme,
-  useMantineTheme,
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
@@ -32,6 +30,7 @@ import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
+import styles from '@Styles/TeamEditModal.module.css'
 
 interface TeamEditModalProps extends ModalProps {
   team: TeamInfoModel | null
@@ -47,8 +46,6 @@ interface TeamMemberInfoProps {
 
 const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
   const { user, isCaptain, onKick, onTransferCaptain } = props
-  const theme = useMantineTheme()
-  const { colorScheme } = useMantineColorScheme()
   const [showBtns, setShowBtns] = useState(false)
 
   const { t } = useTranslation()
@@ -58,12 +55,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
       justify="space-between"
       gap={2}
       p="xs"
-      style={{
-        transition: 'background-color 0.2s',
-        cursor: 'pointer',
-      }}
-      bdrs="md"
-      bg={showBtns ? (colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0]) : 'transparent'}
+      className={styles.teamMember}
       onMouseEnter={() => setShowBtns(true)}
       onMouseLeave={() => setShowBtns(false)}
       onClick={() => setShowBtns(!showBtns)}
@@ -120,9 +112,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const { data: teams, mutate: mutateTeams } = api.team.useTeamGetTeamsInfo()
 
-  const theme = useMantineTheme()
   const clipboard = useClipboard()
-  const { colorScheme } = useMantineColorScheme()
   const captain = teamInfo?.members?.filter((x) => x.captain)[0]
   const crew = teamInfo?.members?.filter((x) => !x.captain)
 
@@ -397,15 +387,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         <ScrollArea h={210} offsetScrollbars>
           <Stack gap="xs">
             {captain && (
-              <Group
-                justify="space-between"
-                p="xs"
-                style={{
-                  borderRadius: theme.radius.md,
-                  backgroundColor: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.yellow[0],
-                  border: `1px solid ${colorScheme === 'dark' ? theme.colors.yellow[7] : theme.colors.yellow[3]}`,
-                }}
-              >
+              <Group justify="space-between" p="xs" className={styles.captainGroup}>
                 <Group justify="left">
                   <Avatar alt="avatar" src={captain.avatar} radius="xl" size="md">
                     {captain.userName?.slice(0, 1) ?? 'C'}
@@ -414,7 +396,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                     {captain.userName}
                   </Text>
                 </Group>
-                <Badge color="yellow" leftSection={<Icon path={mdiStar} size={0.6} />}>
+                <Badge color="orange" leftSection={<Icon path={mdiStar} size={0.6} />}>
                   {t('team.content.role.captain')}
                 </Badge>
               </Group>

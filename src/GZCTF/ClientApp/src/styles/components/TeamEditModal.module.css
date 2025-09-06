@@ -1,0 +1,15 @@
+.teamMember {
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border-radius: var(--mantine-radius-md);
+
+  &:hover {
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+  }
+}
+
+.captainGroup {
+  border-radius: var(--mantine-radius-md);
+  background-color: light-dark(var(--mantine-color-yellow-0), var(--mantine-color-dark-6));
+  border: 1px solid light-dark(var(--mantine-color-yellow-2), var(--mantine-color-yellow-8));
+}
