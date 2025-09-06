@@ -55,9 +55,10 @@ export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size, ...
       __vars={{
         '--scroll-time': `${dynamicDuration}s`,
       }}
+      data-scroll={shouldScroll || undefined}
       {...boxProps}
     >
-      <div className={`${classes.textWrapper} ${shouldScroll ? classes.scroll : ''}`}>
+      <div className={classes.textWrapper}>
         <Text ref={textRef} className={classes.text} title={text} fz={size}>
           {text}
           <span className={classes.separator}>&nbsp;&nbsp;&nbsp;</span>

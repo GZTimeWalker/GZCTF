@@ -61,3 +61,13 @@
   transform: translateY(35%);
   z-index: 80;
 }
+
+.blood {
+  position: relative;
+  z-index: 92;
+  transition: transform 0.1s;
+
+  @mixin hover {
+    transform: translateY(-2px);
+  }
+}

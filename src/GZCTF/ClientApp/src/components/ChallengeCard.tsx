@@ -49,6 +49,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
       shadow="sm"
       className={cx(hoverClasses.root, classes.root)}
       data-solved={solved || undefined}
+      data-no-move
     >
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
@@ -96,7 +97,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
                       }
                     >
                       <div style={{ position: 'relative', height: 20 }}>
-                        <div style={{ position: 'relative', zIndex: 92 }}>
+                        <div className={classes.blood}>
                           <Icon {...iconProps} />
                         </div>
                         <Box

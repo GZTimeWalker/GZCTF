@@ -6,16 +6,22 @@
     transform 0.2s;
 
   @mixin hover {
+    transform: translateY(-4px);
+
     @mixin light {
       filter: brightness(1.04) !important;
       box-shadow: 0 0 12px var(--mantine-color-gray-2);
-      transform: translateY(-4px);
     }
 
     @mixin dark {
       filter: brightness(1.2) !important;
       box-shadow: 0 0 12px var(--mantine-color-gray-7);
-      transform: translateY(-4px);
     }
+  }
+}
+
+.root[data-no-move] {
+  @mixin hover {
+    transform: translateY(0);
   }
 }

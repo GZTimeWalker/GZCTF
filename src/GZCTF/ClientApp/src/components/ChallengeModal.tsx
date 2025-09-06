@@ -89,7 +89,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   )
 
   const content = (
-    <ScrollAreaAutosize mah="50vh" maw="100%" scrollbars="y" scrollbarSize={6} type="scroll">
+    <ScrollAreaAutosize mah="52vh" maw="100%" scrollbars="y" scrollbarSize={6} type="scroll">
       {challenge?.content === undefined ? (
         <ContentPlaceholder />
       ) : (
@@ -211,7 +211,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
 
   return (
     <Modal.Root
-      size="40vw"
+      size="42vw"
       {...modalProps}
       onClose={() => {
         setFlag('')

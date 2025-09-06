@@ -17,6 +17,14 @@
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
+
+  &[data-scroll] {
+    mask: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+
+    .textWrapper {
+      animation: scroll var(--scroll-time, 4s) linear infinite;
+    }
+  }
 }
 
 .textWrapper {
@@ -38,10 +46,6 @@
   display: inline-block;
   white-space: pre;
   flex-shrink: 0;
-}
-
-.scroll {
-  animation: scroll var(--scroll-time, 4s) linear infinite;
 }
 
 .container:hover .textWrapper {
