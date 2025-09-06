@@ -17,19 +17,24 @@
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
+  min-width: 0;
 
-  &[data-scroll] {
-    mask: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-
-    .textWrapper {
-      animation: scroll var(--scroll-time, 4s) linear infinite;
-    }
+  .text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    width: max-content;
   }
 }
 
 .textWrapper {
   display: inline-flex;
   white-space: nowrap;
+  width: 100%;
+  text-align: left;
+  max-width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .text {
@@ -39,15 +44,46 @@
   line-height: 1.25rem;
   color: inherit;
   font-weight: bold;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
-.separator {
-  display: inline-block;
-  white-space: pre;
-  flex-shrink: 0;
+.clone {
+  display: none;
 }
 
-.container:hover .textWrapper {
-  animation-play-state: paused;
+.container[data-scroll]:hover {
+  mask: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+
+  .textWrapper {
+    width: auto;
+    max-width: none;
+    flex: 0 0 auto;
+    animation: scroll var(--scroll-time, 8s) linear infinite;
+  }
+
+  .text {
+    flex-shrink: 0;
+    overflow: visible;
+    text-overflow: clip;
+    width: auto;
+  }
+
+  .clone {
+    display: inline-block;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 1em;
+      white-space: pre;
+    }
+
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 1em;
+      white-space: pre;
+    }
+  }
 }

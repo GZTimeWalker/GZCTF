@@ -1,75 +1,60 @@
 import { Box, BoxProps, Text, type MantineSize } from '@mantine/core'
-import { FC, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import cx from 'clsx'
+import { FC, useRef, useState, useCallback } from 'react'
 import classes from '@Styles/ScrollingText.module.css'
 
 interface ScrollingTextProps extends BoxProps {
   text: string
   onClick?: () => void
   size?: MantineSize
+  speedCharPerSec?: number
 }
 
-export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size, ...boxProps }) => {
+export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size, speedCharPerSec = 3.2, ...boxProps }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
-  const [shouldScroll, setShouldScroll] = useState(false)
-  const [textWidth, setTextWidth] = useState<number | null>(null)
-  const [containerWidth, setContainerWidth] = useState<number | null>(null)
+  const [overflow, setOverflow] = useState(false)
+  const [measured, setMeasured] = useState(false)
+  const [duration, setDuration] = useState(4)
 
-  useEffect(() => {
-    if (textRef.current) {
-      const width = textRef.current.scrollWidth
-      setTextWidth(width)
+  const handleMeasure = useCallback(() => {
+    if (measured) return
+
+    const c = containerRef.current
+    const t = textRef.current
+    if (!c || !t) return
+
+    const fontSize = parseFloat(getComputedStyle(t).fontSize || '14') || 14
+    const textWidth = t.scrollWidth
+    const extra = textWidth - c.clientWidth
+    const isOverflow = extra > 0
+
+    if (isOverflow) {
+      const duration = textWidth / (speedCharPerSec * fontSize)
+      setDuration(Math.max(3, duration))
+      setOverflow(true)
     }
-  }, [text])
-
-  useLayoutEffect(() => {
-    if (containerRef.current) {
-      const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          setContainerWidth(entry.contentRect.width)
-        }
-      })
-      resizeObserver.observe(containerRef.current)
-      return () => resizeObserver.disconnect()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (textWidth !== null && containerWidth !== null) {
-      setShouldScroll(textWidth > containerWidth)
-    }
-  }, [textWidth, containerWidth])
-
-  const baseDuration = 4
-  const widthPerSecond = 50
-  const maxDuration = 12
-
-  const dynamicDuration =
-    textWidth !== null ? Math.min(baseDuration + Math.floor(textWidth / widthPerSecond), maxDuration) : baseDuration
+    setMeasured(true)
+  }, [measured, speedCharPerSec])
 
   return (
     <Box
       ref={containerRef}
       className={classes.container}
       onClick={onClick}
-      __vars={{
-        '--scroll-time': `${dynamicDuration}s`,
-      }}
-      data-scroll={shouldScroll || undefined}
+      onMouseEnter={handleMeasure}
+      data-scroll={overflow || undefined}
+      __vars={{ '--scroll-time': `${duration}s` }}
       {...boxProps}
     >
       <div className={classes.textWrapper}>
         <Text ref={textRef} className={classes.text} title={text} fz={size}>
           {text}
-          <span className={classes.separator}>&nbsp;&nbsp;&nbsp;</span>
         </Text>
-        {shouldScroll && (
-          <>
-            <Text className={classes.text} title={text} fz={size}>
-              {text}
-              <span className={classes.separator}>&nbsp;&nbsp;&nbsp;</span>
-            </Text>
-          </>
+        {overflow && (
+          <Text className={cx(classes.text, classes.clone)} fz={size} aria-hidden>
+            {text}
+          </Text>
         )}
       </div>
     </Box>

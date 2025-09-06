@@ -2306,8 +2306,8 @@ packages:
   tinyexec@1.0.1:
     resolution: {integrity: sha512-5uC6DDlmeqiOwCPmK9jMSdOuZTh8bU39Ys6yidB+UTt5hfZUPGAypSgFRiEp+jbi9qH40BLDvy85jIU88wKSqw==}
 
-  tinyglobby@0.2.14:
-    resolution: {integrity: sha512-tX5e7OM1HnYr2+a2C/4V0htOcSQcoSTH9KgJnVvNm5zm/cyEWKJ7j7YutsH9CxMdtOkkLFy2AHrMci9IM8IPZQ==}
+  tinyglobby@0.2.15:
+    resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
   to-regex-range@5.0.1:
@@ -4035,7 +4035,7 @@ snapshots:
       postcss-js: 4.0.1(postcss@8.5.6)
       postcss-simple-vars: 7.0.1(postcss@8.5.6)
       sugarss: 5.0.1(postcss@8.5.6)
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
 
   postcss-nested@7.0.2(postcss@8.5.6):
     dependencies:
@@ -4237,7 +4237,7 @@ snapshots:
       picomatch: 4.0.3
       postcss: 8.5.6
       rolldown: 1.0.0-beta.34
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 24.3.1
       esbuild: 0.25.9
@@ -4513,7 +4513,7 @@ snapshots:
 
   tinyexec@1.0.1: {}
 
-  tinyglobby@0.2.14:
+  tinyglobby@0.2.15:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
@@ -4654,7 +4654,7 @@ snapshots:
       local-pkg: 1.1.2
       micromatch: 4.0.8
       picocolors: 1.1.1
-      tinyglobby: 0.2.14
+      tinyglobby: 0.2.15
       vite: rolldown-vite@7.1.5(@types/node@24.3.1)(esbuild@0.25.9)(jiti@2.5.1)(sass-embedded@1.81.0)(sugarss@5.0.1(postcss@8.5.6))(yaml@2.8.1)
       yaml: 2.8.1
     optionalDependencies:

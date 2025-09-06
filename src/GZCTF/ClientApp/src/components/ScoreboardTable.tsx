@@ -41,7 +41,7 @@ import misc from '@Styles/Misc.module.css'
 import classes from '@Styles/ScoreboardTable.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
-const Widths = [60, 60, 170, 60, 70, 60]
+const Widths = [60, 60, 175, 60, 70, 60]
 const Lefts = Widths.reduce(
   (acc, cur) => {
     acc.push(acc[acc.length - 1] + cur)
