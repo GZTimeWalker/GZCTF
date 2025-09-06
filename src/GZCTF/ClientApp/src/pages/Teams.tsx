@@ -1,7 +1,6 @@
 import {
   Button,
   Center,
-  Container,
   Group,
   Loader,
   Modal,
@@ -10,7 +9,6 @@ import {
   Text,
   TextInput,
   Title,
-  useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -87,8 +85,6 @@ const Teams: FC = () => {
       setJoinOpened(false)
     }
   }
-
-  const { colorScheme } = useMantineColorScheme()
 
   const btns = (
     <>

@@ -28,7 +28,11 @@
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^9.0.6",
+    "@shikijs/langs": "^3.12.2",
+    "@shikijs/themes": "^3.12.2",
+    "@shikijs/transformers": "^3.12.2",
     "@xdsec/wsrx": "^0.5.0",
+    "axios": "^1.11.0",
     "chroma-js": "^3.1.2",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.18",
@@ -54,7 +58,6 @@
     "swr": "^2.3.6"
   },
   "devDependencies": {
-    "@shikijs/transformers": "^3.12.2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/chroma-js": "^3.1.1",
     "@types/katex": "^0.16.7",
@@ -63,7 +66,6 @@
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.2",
-    "axios": "^1.11.0",
     "babel-plugin-prismjs": "^2.1.0",
     "oxlint": "^1.14.0",
     "postcss": "^8.5.6",
