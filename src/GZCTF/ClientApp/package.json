@@ -86,5 +86,8 @@
       "canvas": "npm:dry-uninstall",
       "vite": "npm:rolldown-vite@latest"
     }
-  }
+  },
+  "onlyBuiltDependencies": [
+    "esbuild"
+  ]
 }

@@ -3,13 +3,14 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [1.6.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.5.0..v1.6.0) - 2025-09-05
+## [1.6.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.5.0..v1.6.0) - 2025-09-06
 
 ### ⛰️ Features
 
 - **(ScrollingText)** add scrolling text component and integrate into ChallengeCard and ScoreboardTable - ([a55c38](https://github.com/GZTimeWalker/GZCTF/commit/a55c38)) by **GZTime**
 - **(TeamCard)** enhance TeamCard layout - ([d1781d](https://github.com/GZTimeWalker/GZCTF/commit/d1781d)) by **GZTime**
 - **(challenge)** allow recalculate submission count for teams - ([c63ef1](https://github.com/GZTimeWalker/GZCTF/commit/c63ef1)) by **GZTime**
+- **(contributors)** enhance About page layout - ([f3bea8](https://github.com/GZTimeWalker/GZCTF/commit/f3bea8)) by **GZTime**
 - **(logging)** enhance logging configuration for EF Core queries - ([5f2213](https://github.com/GZTimeWalker/GZCTF/commit/5f2213)) by **GZTime**
 - **(submission)** add submission limit for challenges (#450) - ([f65090](https://github.com/GZTimeWalker/GZCTF/commit/f65090)) by **Copilot**
 
@@ -19,7 +20,9 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### 🎨 Styling
 
+- **(TeamEditModal)** add CSS styles for team member and captain group - ([c8b1de](https://github.com/GZTimeWalker/GZCTF/commit/c8b1de)) by **GZTime**
 - **(components)** update styles in ChallengePanel and Scoreboard components - ([10c3eb](https://github.com/GZTimeWalker/GZCTF/commit/10c3eb)) by **GZTime**
+- **(scoreboard)** imporve render for item modal - ([31bb5c](https://github.com/GZTimeWalker/GZCTF/commit/31bb5c)) by **GZTime**
 
 ### 🚀 Performances
 
