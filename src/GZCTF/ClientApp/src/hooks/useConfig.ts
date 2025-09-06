@@ -4,9 +4,8 @@
  */
 import { useLocalStorage } from '@mantine/hooks'
 import dayjs from 'dayjs'
-import LZString from 'lz-string'
 import { useEffect, useRef } from 'react'
-import { Cache, SWRConfiguration } from 'swr'
+import { SWRConfiguration } from 'swr'
 import api, { ClientConfig, ContainerPortMappingType } from '@Api'
 
 export const OnceSWRConfig: SWRConfiguration = {
@@ -133,24 +132,4 @@ export const useBanner = () => {
       mounted.current = true
     }
   }, [])
-}
-
-const cacheKey = 'gzctf-cache'
-const cacheMap = new Map(JSON.parse(LZString.decompress(localStorage.getItem(cacheKey) || '') || '[]'))
-
-const saveCache = () => {
-  const appCache = LZString.compress(JSON.stringify(Array.from(cacheMap.entries())))
-  localStorage.setItem(cacheKey, appCache)
-}
-
-export const localCacheProvider = () => {
-  window.addEventListener('beforeunload', saveCache, true)
-  return cacheMap as Cache
-}
-
-export const clearLocalCache = () => {
-  window.removeEventListener('beforeunload', saveCache, true)
-  localStorage.removeItem(cacheKey)
-  cacheMap.clear()
-  window.location.reload()
 }
