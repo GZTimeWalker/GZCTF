@@ -23,7 +23,8 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 - **(TeamEditModal)** add CSS styles for team member and captain group - ([c8b1de](https://github.com/GZTimeWalker/GZCTF/commit/c8b1de)) by **GZTime**
 - **(components)** update styles in ChallengePanel and Scoreboard components - ([10c3eb](https://github.com/GZTimeWalker/GZCTF/commit/10c3eb)) by **GZTime**
-- **(game)** improve card layout - ([fdbacd](https://github.com/GZTimeWalker/GZCTF/commit/fdbacd)) by **GZTime**
+- **(game)** improve card layout - ([4fb797](https://github.com/GZTimeWalker/GZCTF/commit/4fb797)) by **GZTime**
+- **(hover)** add no-move data attribute for hover effect - ([8ed4a9](https://github.com/GZTimeWalker/GZCTF/commit/8ed4a9)) by **GZTime**
 - **(scoreboard)** imporve render for item modal - ([31bb5c](https://github.com/GZTimeWalker/GZCTF/commit/31bb5c)) by **GZTime**
 
 ### 🚀 Performances
