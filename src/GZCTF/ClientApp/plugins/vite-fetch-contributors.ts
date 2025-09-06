@@ -14,7 +14,7 @@ export function fetchContributors(): Plugin {
         }
         const contributors = (await response.json()) as any[]
         contributorsData = contributors
-          .filter((c) => !c.login.includes('bot') && c.contributions > 1)
+          .filter((c) => !c.login.includes('bot') && c.contributions)
           .map((c: any) => ({
             login: c.login,
             html_url: c.html_url,

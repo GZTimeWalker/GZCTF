@@ -1,4 +1,16 @@
-import { Anchor, Center, Group, Stack, Text, Title, useMantineTheme, Flex, Badge } from '@mantine/core'
+import {
+  Anchor,
+  Center,
+  Group,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+  Flex,
+  Badge,
+  Avatar,
+  Container,
+} from '@mantine/core'
 import { mdiScaleBalance, mdiFileDocumentOutline, mdiGithub, mdiTag, mdiAccountGroup, mdiLink } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
@@ -20,21 +32,21 @@ const About: FC = () => {
 
   const isMobile = useIsMobile()
 
+  const numRows = isMobile ? 4 : 3
+  const groups = Array.from({ length: numRows }, (_, i) =>
+    contributorsData.slice(
+      i * Math.ceil(contributorsData.length / numRows),
+      (i + 1) * Math.ceil(contributorsData.length / numRows)
+    )
+  )
+
   usePageTitle(t('common.title.about'))
 
   return (
     <WithNavBar minWidth={0}>
-      <Stack
-        justify="center"
-        align="center"
-        h="calc(100vh - 16px)"
-        gap="xl"
-        p="xl"
-        className={classes.container}
-        data-mobile={isMobile}
-      >
+      <Stack justify="center" align="center" gap="xl" className={classes.container} data-mobile={isMobile || undefined}>
         <Center>
-          <Stack align="center" gap="sm">
+          <Stack align="center" gap={0}>
             <MainIcon size="5rem" className={classes.mainIcon} />
             <Title order={1} size="3.5rem" fw={800} ta="center" className={classes.mainTitle}>
               GZ<span className={logoClasses.brand}>::</span>CTF
@@ -48,43 +60,27 @@ const About: FC = () => {
           </Stack>
         </Center>
 
-        <Flex gap="xl" direction="row" wrap="wrap" justify="center" align="center" className={classes.contentFlex}>
-          <Stack align="center" gap="md" miw="300px" maw="400px" className={classes.contentStack}>
-            <Group gap="xs" justify="center">
-              <Icon path={mdiAccountGroup} size={1} />
-              <Title order={3} fw={600} ta="center">
-                {t('common.content.about.contributors')}
-              </Title>
-            </Group>
-            <Group gap="sm" wrap="wrap" justify="center" className={classes.contributorsGroup}>
-              {contributorsData.map((contributor) => (
-                <Anchor
-                  key={contributor.login}
-                  href={contributor.html_url}
-                  c={theme.primaryColor}
-                  size="md"
-                  fw={500}
-                  underline="hover"
-                  className={classes.contributorLink}
-                >
-                  @{contributor.login}
-                </Anchor>
-              ))}
-            </Group>
-          </Stack>
-
-          <Stack align="center" gap="md" miw="300px" maw="400px" className={classes.contentStack}>
+        <Flex
+          gap={isMobile ? 'md' : 'xl'}
+          direction="column"
+          wrap="wrap"
+          justify="center"
+          align="center"
+          className={classes.contentFlex}
+        >
+          <Stack align="center" gap="md" className={classes.contentStack}>
             <Group gap="xs" justify="center">
               <Icon path={mdiLink} size={1} />
               <Title order={3} fw={600} ta="center">
                 {t('common.content.about.resources')}
               </Title>
             </Group>
-            <Stack gap="md" align="center">
+            <Stack gap="sm" align="center">
               <Group gap="sm" justify="center" align="center">
                 <Icon path={mdiFileDocumentOutline} size={0.8} />
                 <Anchor
                   href="https://gzctf.gzti.me"
+                  target="_blank"
                   c={theme.primaryColor}
                   size="md"
                   fw={500}
@@ -98,6 +94,7 @@ const About: FC = () => {
                 <Icon path={mdiGithub} size={0.8} />
                 <Anchor
                   href={repo}
+                  target="_blank"
                   c={theme.primaryColor}
                   size="md"
                   fw={500}
@@ -113,6 +110,7 @@ const About: FC = () => {
                   Licensed&nbsp;under&nbsp;
                   <Anchor
                     href="https://www.gnu.org/licenses/agpl-3.0.html"
+                    target="_blank"
                     c={theme.primaryColor}
                     size="md"
                     fw={500}
@@ -124,6 +122,45 @@ const About: FC = () => {
                 </Text>
               </Group>
             </Stack>
+          </Stack>
+
+          <Stack align="center" gap="md" className={classes.contentStack}>
+            <Group gap="xs" justify="center">
+              <Icon path={mdiAccountGroup} size={1} />
+              <Title order={3} fw={600} ta="center">
+                {t('common.content.about.contributors')}
+              </Title>
+            </Group>
+            <Container size="md" px={0}>
+              <Stack gap={0} align="center">
+                {groups.map((group, index) => (
+                  <div key={index} className={classes.scrollContainer}>
+                    <Group gap={0} wrap="nowrap" w="max-content" className={classes.scrollGroup}>
+                      {group.concat(group, group).map((contributor, i) => (
+                        <Group key={`${contributor.login}-${i}`} gap={2} align="center" justify="center" mr="md">
+                          <Avatar
+                            className={classes.contributorAvatar}
+                            src={`https://github.com/${contributor.login}.png`}
+                            size="sm"
+                          />
+                          <Anchor
+                            href={contributor.html_url}
+                            target="_blank"
+                            c={theme.primaryColor}
+                            size="sm"
+                            fw={500}
+                            underline="hover"
+                            className={classes.contributorLink}
+                          >
+                            @{contributor.login}
+                          </Anchor>
+                        </Group>
+                      ))}
+                    </Group>
+                  </div>
+                ))}
+              </Stack>
+            </Container>
           </Stack>
         </Flex>
 
@@ -149,7 +186,14 @@ const About: FC = () => {
             Copyright&nbsp;©&nbsp;
             <span style={{ whiteSpace: 'nowrap' }}>2022-now</span>
             &nbsp;
-            <Anchor href="https://github.com/GZTimeWalker" c="dimmed" size="sm" fw={500} underline="hover">
+            <Anchor
+              href="https://github.com/GZTimeWalker"
+              target="_blank"
+              c="dimmed"
+              size="sm"
+              fw={500}
+              underline="hover"
+            >
               @GZTimeWalker
             </Anchor>
           </Text>
