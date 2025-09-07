@@ -66,6 +66,14 @@ const initHighlighter = (): HighlighterCore => {
   return highlighter
 }
 
+const transformers = [
+  transformerNotationDiff(),
+  transformerNotationHighlight(),
+  transformerNotationWordHighlight(),
+  transformerNotationFocus(),
+  transformerNotationErrorLevel(),
+]
+
 const highlight = (code: string, lang: string) => {
   if (lang === 'json') lang = 'jsonc'
   if (lang === 'js' || lang === 'javascript') lang = 'typescript'
@@ -75,13 +83,7 @@ const highlight = (code: string, lang: string) => {
     themes: { dark: 'material-theme-darker', light: 'material-theme-lighter' },
     cssVariablePrefix: '--code-',
     defaultColor: 'light-dark()',
-    transformers: [
-      transformerNotationDiff(),
-      transformerNotationHighlight(),
-      transformerNotationWordHighlight(),
-      transformerNotationFocus(),
-      transformerNotationErrorLevel(),
-    ],
+    transformers,
   })
 }
 

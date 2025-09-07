@@ -1,0 +1,52 @@
+name: Feature request 功能请求
+description: Suggest an idea for this project. / 为这个项目建议一个想法。
+
+body:
+  - type: checkboxes
+    id: dependencies
+    attributes:
+      label: Before submitting / 提交之前
+      description: Before submitting a feature request please make sure that you search for similar requests in the repository. / 提交功能请求之前，请确保仓库中没有类似的功能请求。
+      options:
+        - label: I have searched for similar feature requests and found none. / 我已搜索类似的功能请求，但没有找到。
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the feature / 描述功能
+      placeholder: A clear and concise description of the feature you want. / 清晰简洁地描述您想要的功能。
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: category
+    attributes:
+      label: Feature category / 功能分类
+      description: Select all categories that apply to this feature request. At least one must be selected. / 选择适用于此功能请求的所有分类。至少选择一个。
+      options:
+        - label: Frontend / 前端需求
+        - label: Backend / 后端需求
+        - label: Database / 数据库变更
+        - label: Configuration / 用户配置项
+        - label: API / API接口
+        - label: Security / 安全相关
+        - label: Performance / 性能优化
+        - label: UI/UX / 用户界面/体验
+        - label: Other / 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why do you need this feature? / 为什么需要这个功能？
+      placeholder: Explain the use case or problem this feature would solve. / 解释这个功能将解决的使用场景或问题。
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Possible implementation / 可能的实现方式
+      description: If you have suggestions on how to implement this feature, please describe them here. / 如果您有关于如何实现这个功能的建议，请在此处描述。
