@@ -4,6 +4,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import { FC, useRef } from 'react'
 import { RecentGameSlide } from '@Components/mobile/RecentGameSlide'
 import { BasicGameInfoModel } from '@Api'
+import '@mantine/carousel/styles.css'
 
 interface RecentGameCarouselProps extends CarouselProps {
   games: BasicGameInfoModel[]
@@ -17,6 +18,7 @@ export const RecentGameCarousel: FC<RecentGameCarouselProps> = ({ games, ...prop
       <Carousel
         type="container"
         withIndicators
+        slideGap="md"
         withControls={false}
         plugins={[autoplay.current]}
         emblaOptions={{
