@@ -1,34 +1,33 @@
-import astro from '@shikijs/langs/astro'
+import applescript from '@shikijs/langs/applescript'
+import asm from '@shikijs/langs/asm'
 import bash from '@shikijs/langs/bash'
 import cLang from '@shikijs/langs/c'
 import cpp from '@shikijs/langs/cpp'
-import cs from '@shikijs/langs/cs'
 import csharp from '@shikijs/langs/csharp'
-import dart from '@shikijs/langs/dart'
+import diff from '@shikijs/langs/diff'
 import docker from '@shikijs/langs/docker'
 import dockerfile from '@shikijs/langs/dockerfile'
-import fsharp from '@shikijs/langs/fsharp'
-import gdscript from '@shikijs/langs/gdscript'
+import dotenv from '@shikijs/langs/dotenv'
 import glsl from '@shikijs/langs/glsl'
 import go from '@shikijs/langs/go'
-import gql from '@shikijs/langs/gql'
-import graphql from '@shikijs/langs/graphql'
 import html from '@shikijs/langs/html'
-import javascript from '@shikijs/langs/javascript'
+import ini from '@shikijs/langs/ini'
+import java from '@shikijs/langs/java'
 import json from '@shikijs/langs/json'
-import latex from '@shikijs/langs/latex'
+import jsonc from '@shikijs/langs/jsonc'
+import llvm from '@shikijs/langs/llvm'
+import log from '@shikijs/langs/log'
+import make from '@shikijs/langs/make'
 import markdown from '@shikijs/langs/markdown'
-import mdx from '@shikijs/langs/mdx'
-import plsql from '@shikijs/langs/plsql'
 import powershell from '@shikijs/langs/powershell'
-import prisma from '@shikijs/langs/prisma'
+import proto from '@shikijs/langs/proto'
 import python from '@shikijs/langs/python'
 import rust from '@shikijs/langs/rust'
+import shellscript from '@shikijs/langs/shellscript'
+import solidity from '@shikijs/langs/solidity'
 import sql from '@shikijs/langs/sql'
-import svelte from '@shikijs/langs/svelte'
 import toml from '@shikijs/langs/toml'
 import typescript from '@shikijs/langs/typescript'
-import vue from '@shikijs/langs/vue'
 import xml from '@shikijs/langs/xml'
 import yaml from '@shikijs/langs/yaml'
 import materialThemeDarker from '@shikijs/themes/material-theme-darker'
@@ -52,10 +51,11 @@ const initHighlighter = (): HighlighterCore => {
     /* prettier-ignore */
     highlighter = createHighlighterCoreSync({
       langs: [
-        astro, cLang, cpp, csharp, cs, css, dart, docker,
-        dockerfile, graphql, gql, fsharp, gdscript, glsl, bash, go,
-        html, javascript, json, latex, markdown, mdx, plsql, prisma,
-        powershell, python, rust, sql, svelte, toml, yaml, vue,
+        cLang, cpp, csharp, css, docker, shellscript,
+        dockerfile, glsl, bash, go, html, ini, java,
+        jsonc, json, applescript, asm, diff, dotenv,
+        llvm, log, make, proto, solidity, markdown,
+        powershell, python, rust, sql, toml, yaml,
         typescript, xml,
       ],
       themes: [materialThemeDarker, materialThemeLighter],
@@ -67,6 +67,9 @@ const initHighlighter = (): HighlighterCore => {
 }
 
 const highlight = (code: string, lang: string) => {
+  if (lang === 'json') lang = 'jsonc'
+  if (lang === 'js' || lang === 'javascript') lang = 'typescript'
+
   return initHighlighter().codeToHtml(code, {
     lang,
     themes: { dark: 'material-theme-darker', light: 'material-theme-lighter' },
