@@ -4,7 +4,7 @@ import path from 'path'
 import { createLogger } from 'vite'
 import type { Plugin } from 'vite'
 
-export default function i18nVirtualManifest(): Plugin {
+export function i18nVirtualManifest(): Plugin {
   let manifest: Record<string, string> = {}
   let contents: Record<string, object> = {}
   const logger = createLogger()

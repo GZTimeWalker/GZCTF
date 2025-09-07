@@ -7,7 +7,7 @@ import Pages from 'vite-plugin-pages'
 import webfontDownload from 'vite-plugin-webfont-dl'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { fetchContributors } from './plugins/vite-fetch-contributors'
-import i18nVirtualManifest from './plugins/vite-i18n-virtual-manifest'
+import { i18nVirtualManifest } from './plugins/vite-i18n-virtual-manifest'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
