@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  "baseBranchPatterns": ["work"],
+  "automerge": true,
+  "packageRules": [
+    {
+      "matchPackageNames": ["OpenTelemetry.Instrumentation.AWS"],
+      "allowedVersions": "<0.12"
+    }
   ]
 }

@@ -1,19 +1,16 @@
-name: Build & Publish Image
+name: Work Branch CI
 
 on:
-  push:
-    branches: ["develop", "ci/*", "v*"]
-    tags: ["v*"]
+  pull_request:
+    branches: ["work"]
     paths: ["src/**"]
-  workflow_dispatch:
-
-env:
-  # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
-  RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-')) }}
+  push:
+    branches: ["work"]
+    paths: ["src/**"]
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -32,17 +29,20 @@ jobs:
         with:
           node-version: latest
 
+      - name: Install pnpm
+        run: npm i -g pnpm
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
       - name: Get current date time
         id: datetime
         uses: Kaven-Universe/github-action-current-date-time@v1
         with:
           format: "YYYY-MM-DDTHH:mm:ssZ"
-
-      - name: Docker setup QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Docker setup Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Prebuild project
         run: |
@@ -52,70 +52,51 @@ jobs:
       - name: Publish project
         run: |
           dotnet publish "GZCTF.csproj" -c Release -o publish/linux/amd64 -r linux-x64 --no-self-contained /p:PublishReadyToRun=true
-
-          # ignore arm64 for non-release tags
-          if [ "${{ env.RELEASE }}" = "true" ]; then
-            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true /p:EFOptimizeContext=false
-          fi
         env:
           VITE_APP_BUILD_TIMESTAMP: ${{ steps.datetime.outputs.time }}
           VITE_APP_GIT_SHA: ${{ github.sha }}
           VITE_APP_GIT_NAME: ${{ github.ref_name }}
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: gztime
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker setup Buildx
+        if: github.event_name == 'push'
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
+        if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to Aliyun Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: registry.cn-shanghai.aliyuncs.com
-          username: ${{ secrets.ALIYUN_USER }}
-          password: ${{ secrets.ALIYUN_PASSWORD }}
-
       - name: Docker metadata action
+        if: github.event_name == 'push'
         uses: docker/metadata-action@v5
         id: meta
         with:
-          images: |
-            gztime/gzctf
-            ghcr.io/${{ github.repository }}/gzctf
-            registry.cn-shanghai.aliyuncs.com/gztime/gzctf
-          flavor: |
-            latest=${{ env.RELEASE }}
+          images: ghcr.io/${{ github.repository }}/gzctf
           tags: |
-            type=ref,event=branch
-            type=match,enable=${{ env.RELEASE }},pattern=v\d+,group=0
-            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+,group=0
-            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+.\d+,group=0
+            type=raw,value=work
 
-      - name: Publish images
+      - name: Publish image
+        if: github.event_name == 'push'
         uses: docker/build-push-action@v6
         with:
           context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          platforms: linux/amd64
           push: true
 
   prune:
     runs-on: ubuntu-latest
     needs: build
-    if: always()
+    if: github.event_name == 'push'
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Prune old packages
+      - name: Prune old work images
         uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
