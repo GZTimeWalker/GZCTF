@@ -7,6 +7,10 @@
     {
       "matchPackageNames": ["OpenTelemetry.Instrumentation.AWS"],
       "allowedVersions": "<0.12"
+    },
+    {
+      "matchPackageNames": ["pdfjs-dist"],
+      "allowedVersions": "<=5.3.93"
     }
   ]
 }
