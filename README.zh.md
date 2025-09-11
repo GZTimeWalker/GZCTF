@@ -170,6 +170,31 @@ _排名不分先后，欢迎提交 PR 进行补充。_
 
 感谢 THUCTF 2022 的组织者 NanoApe 提供的赞助及阿里云公网并发压力测试，帮助验证了 GZCTF 单机实例（16c90g）在千级并发、三分钟 134w 请求压力下的服务稳定性。
 
+## 许可证 📄
+
+GZCTF 采用双重许可模式：
+
+1.  **核心源代码**：采用 **GNU Affero General Public License v3.0 (AGPLv3)** 许可。这是项目的主体部分，赋予您广泛的自由以使用、修改和分发。详见 `LICENSE.txt`。
+
+2.  **受限组件**：采用自定义的 **GZCTF 受限许可证** (`LicenseRef-GZCTF-Restricted`)。
+    - **允许使用和分发**：您可以自由使用，并按原样（未经修改）分发这些组件，但必须保留所有版权声明和许可证文本。
+    - **禁止修改或删除**：未经作者书面授权，您**不得修改、删除**这些组件**或对其二次开发**。
+    - **文件列表**：受限组件的完整列表在 `PROPRIETARY_COMPONENTS.md` 文件中定义。
+    - **许可证全文**：请参阅 `license/LicenseRef-GZCTF-Restricted.txt` 以了解详细条款。
+
+当您部署 GZCTF 的 **修改版本** 并对外提供服务时，您需要保留：
+
+- 网站页脚等显著位置保留原始的版权及署名信息
+- 声明所使用的 GZCTF 及其许可证版本
+- 指向原始仓库及许可证原文的链接
+
+### 商标与品牌
+
+- "GZCTF" / "GZ::CTF" 名称、标识及相关品牌资产是作者的商标。
+- 使用规范见 `TRADEMARKS.md`。允许出于描述目的的引用（例如 "Forked from GZCTF"），但不得暗示任何形式的官方认可。
+
+另请参阅 `NOTICE` 文件，获取统一的版权和商标声明。
+
 ## Stars ✨
 
 [![Stargazers over time](https://starchart.cc/GZTimeWalker/GZCTF.svg?variant=adaptive)](https://starchart.cc/GZTimeWalker/GZCTF)

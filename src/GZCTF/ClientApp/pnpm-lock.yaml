@@ -206,7 +206,7 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
       vite:
-        specifier: npm:rolldown-vite@^7.1.8
+        specifier: npm:rolldown-vite@latest
         version: rolldown-vite@7.1.8(@types/node@24.3.1)(esbuild@0.25.9)(jiti@2.5.1)(sass-embedded@1.81.0)(sugarss@5.0.1(postcss@8.5.6))(yaml@2.8.1)
       vite-plugin-banner:
         specifier: ^0.8.1

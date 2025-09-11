@@ -1,0 +1,306 @@
+GZ::CTF RESTRICTED LICENSE
+Identifier: LicenseRef-GZCTF-Restricted
+Version: 1.0 (2025-09-11)
+
+IMPORTANT:
+
+This Restricted License applies ONLY to the Restricted Components
+(defined below). All other parts of the repository remain licensed
+under the GNU Affero General Public License v3.0 (AGPLv3) unless
+explicitly stated otherwise.
+
+This license MUST NOT be interpreted to impose additional restrictions
+on AGPLv3-licensed source code in this repository.
+
+Contact: Time.GZ@outlook.com
+
+0. ACCEPTANCE
+
+   By downloading, copying, installing, deploying, executing, offering a
+   network service that incorporates, or redistributing any Restricted
+   Components (as defined below), you accept and agree to be bound by
+   this License. If you do not agree, you must not use or redistribute
+   the Restricted Components.
+
+1. DEFINITIONS
+
+   1.1 "Restricted Components" mean the source files and/or compiled
+      artifacts located at (the "Initial Restricted Set") effective as of
+      the Version date of this License:
+
+        - src/GZCTF/Services/Container/Manager/*
+        - src/GZCTF/ClientApp/src/hooks/useConfig.ts
+        - src/GZCTF/ClientApp/src/components/Copyright.tsx
+
+      plus any future file explicitly designated in PROPRIETARY_COMPONENTS.md
+      as "Restricted" (each an "Added Restricted File").
+
+      An Added Restricted File becomes a Restricted Component upon the
+      git commit that first adds the designation "Restricted" for that
+      file to PROPRIETARY_COMPONENTS.md (the "Designation Commit").
+
+      Copies acquired by a Licensee before the Designation Commit are not
+      retroactively restricted (but later updates incorporating the
+      Added Restricted File are). The Initial Restricted Set is effective
+      as of this License Version date.
+
+   1.1.1 (Permitted Non-Substantive Changes) For clarity, purely
+      mechanical or packaging changes that do not alter logic or
+      semantics are NOT treated as a Modification (defined in Section 3)
+      and remain "unmodified" for purposes of Section 2. Examples:
+
+      (a) line-ending normalization;
+      (b) file renaming or relocation;
+      (c) build system wrapping (e.g., bundler wrappers, source maps);
+      (d) minification / compression without semantic alteration;
+      (e) cryptographic signing;
+      (f) injection of runtime configuration values (environment variables,
+          *.env) without changing code branches;
+      (g) removal of comments ONLY when required by an automated minifier
+         and not altering code tokens.
+
+   1.1.2 (Prohibited Without Separate Authorization) Any change beyond
+      the Permitted Non-Substantive Changes is a Modification.
+
+   1.2 "Licensee" means the individual or legal entity exercising
+      rights under this License.
+
+   1.3 "Licensor" means the original author and copyright holder of
+      the GZ::CTF project.
+
+2. GRANT OF RIGHTS
+
+   Subject to the conditions of this License, Licensor grants Licensee a
+   worldwide, royalty-free (unless otherwise agreed in writing),
+   non-exclusive, perpetual license to:
+
+      (a) Use, reproduce, and install the Restricted Components for any
+         purpose, including for commercial purposes and for providing
+         publicly accessible services.
+      (b) Distribute the unmodified Restricted Components to third
+         parties ("Redistribution") provided the conditions in Section 2.3
+         are satisfied.
+
+   2.3 Redistribution Conditions (Must Accompany Content). Any
+      redistribution (including internal corporate redistribution) of
+      unmodified Restricted Components MUST:
+
+      (a) Provide the Restricted Components in verbatim form (only
+         Permitted Non-Substantive Changes allowed).
+      (b) Include a complete, unaltered copy of this License text.
+      (c) Retain all copyright, trademark, attribution, and any
+         proprietary notices (including headers) intact and legible.
+      (d) Clearly identify the upstream project and provide a URL to the
+         official repository or website.
+      (e) Not impose additional terms that purport to restrict recipients
+         from exercising the rights granted by this License with respect
+         to the unmodified Restricted Components.
+      (f) Provide, upon any network provision of functionality that
+         relies on the Restricted Components, a reasonable method for
+         end users to obtain: (i) the unmodified Restricted Components
+         actually deployed (or a commit hash referencing them), (ii) this
+         License, and (iii) notices required by AGPLv3 for AGPL-covered
+         parts of the combined service.
+
+   2.4 No Sublicensing of Different Terms. You may NOT grant downstream
+      recipients additional or alternative license terms for the
+      Restricted Components. You may, however, distribute them as part
+      of a larger work where other parts carry their own licenses, so
+      long as (i) this License governs the Restricted Components; and
+      (ii) you do not misrepresent their licensing.
+
+   These rights are granted ONLY for the unmodified Restricted Components.
+   See Section 3 for restrictions regarding modification.
+
+3. RESTRICTIONS ON MODIFICATION
+
+   The rights granted in Section 2 apply ONLY to the Restricted Components
+   in their original, unmodified form as provided by the Licensor.
+
+   Any modification, adaptation, translation, creation of derivative works,
+   deletion, decompilation (except to the limited extent unavoidable under
+   applicable law for interoperability), disassembly, or reverse
+   engineering of the Restricted Components ("Modification") is a
+   material breach of this License. The rights granted in Section 2 do
+   not extend to any Modified version of the Restricted Components.
+
+   3.1 Security Patch Exception. Notwithstanding the foregoing, you MAY
+      apply and temporarily run a Minimal Security Patch to address a
+      bona fide, documented security vulnerability (CVSS 7.0+ or
+      materially exploitable) solely to protect systems you operate,
+      provided that:
+
+      (a) The patch is the least intrusive change reasonably necessary.
+      (b) You notify Licensor (security disclosure to the contact in
+         Section 15) within 7 days of deployment, supplying a diff.
+      (c) You do not redistribute the patched version (other than making
+         it available for network use to your own end users) unless and
+         until the Licensor publishes an official update or grants
+         written authorization.
+      (d) You remove or replace the patch with an official upstream
+         release within 30 days of such release (or agreed extension).
+      (e) Failure to meet any of (a)-(d) converts the patch into an
+         unauthorized Modification.
+
+      A "Minimal Security Patch" is a change whose primary effect is to
+      remediate the vulnerability and that does not add features or alter
+      functional behavior beyond what is strictly required.
+
+   To obtain the right to create or use a Modified version of the
+   Restricted Components, you must secure a separate, explicit written
+   agreement from the Licensor. Without such an agreement, you SHALL NOT:
+
+     (a) Create a Modification of the Restricted Components.
+     (b) Use, reproduce, distribute, or sublicense any Modified version
+         of the Restricted Components.
+     (c) Remove, alter, or obscure any proprietary notices, trademarks, or
+         attribution in the Restricted Components. This restriction applies
+         even to unmodified versions.
+
+4. SEPARATION FROM AGPL CODE / NETWORK SOURCE AVAILABILITY
+
+   4.1 The Restricted Components are NOT provided under AGPLv3. No rights in
+      them are granted by the AGPL license file in the repository.
+
+   4.2 Modifications to AGPL-licensed portions of the codebase are governed
+      exclusively by AGPLv3. This Restricted License does not add conditions
+      to AGPL-covered files.
+
+   4.3 Aggregation or dynamic linking between AGPL portions and Restricted
+     Components does not relicense either part.
+
+   4.4 Network Availability Alignment. If you provide the Restricted
+      Components as part of a network service together with AGPLv3
+      components, you must satisfy AGPLv3's network source requirements
+      for the AGPL-covered portions AND make available to remote users a
+      method (e.g., prominently linked page) to obtain the exact
+      unmodified Restricted Components you are deploying (or a cryptographic
+      hash / commit reference plus retrieval instructions) along with this
+      License. This Section 4.4 is an affirmative condition of the grant
+      in Section 2 and does not itself relicense the Restricted Components
+      under AGPLv3.
+
+   4.5 No Additional Restrictions on AGPL Code. Nothing in this License
+      may be construed to impose any further restriction on AGPLv3
+      licensed files. If a conflict appears to arise, the AGPLv3 terms
+      control for AGPL-covered code.
+
+5. EVALUATION / TRIAL (Optional – if granted)
+
+   Licensor may, at its sole discretion, grant a time-limited, non-renewable
+   evaluation right for *modified* versions of the Restricted Components.
+   Unless converted to a paid authorization, all such evaluation rights
+   terminate automatically at the end of the stated period.
+
+6. OWNERSHIP
+
+   The Restricted Components are licensed, not sold. Licensor retains all
+   intellectual property, moral, and neighboring rights. No implied licenses.
+
+7. COMPLIANCE VERIFICATION
+
+   Upon reasonable suspicion that the Restricted Components have been
+   modified in breach of Section 3, Licensor may request that Licensee
+   provide, in good faith, sufficient information (e.g., cryptographic
+   hashes, build logs, diffs) to verify compliance. Such information shall
+   be limited strictly to what is necessary to confirm that the Restricted
+   Components (excluding Permitted Non-Substantive Changes or a permitted
+   Security Patch) remain unmodified. Requests must: (a) be in writing;
+   (b) briefly state the grounds for suspicion; and (c) allow at least 14
+   days for a response unless exigent risk of active exploitation is shown.
+   Failure to reasonably cooperate (while not withholding legally
+   protected confidential or trade secret information beyond what is
+   strictly required) may be considered a material breach of this License.
+
+8. TERMINATION
+
+   This License terminates automatically if Licensee breaches Section 3
+   and fails to cure such breach within 15 days of written notice from
+   Licensor (email sufficient). Deliberate concealment of a breach waives
+   the cure period.
+
+   Upon termination, Licensee must cease all use of, and destroy all
+   copies of, any *modified* Restricted Components. Rights to use the
+   original, unmodified Restricted Components obtained prior to breach
+   remain unaffected unless termination is due to willful infringement or
+   fraudulent misrepresentation.
+
+   Termination of this Restricted License does not terminate Licensee's
+   rights under AGPLv3 for AGPL-covered code.
+
+9. TRADEMARKS
+
+   "GZ::CTF" and related names/logos are trademarks of Licensor.
+   No trademark rights are granted except for truthful, non-misleading
+   descriptive references.
+
+   Any implied endorsement is prohibited.
+
+10. WARRANTY DISCLAIMER
+
+   TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE RESTRICTED COMPONENTS
+   ARE PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS
+   FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR ACCURACY.
+
+11. LIMITATION OF LIABILITY
+
+   IN NO EVENT WILL LICENSOR BE LIABLE FOR ANY INDIRECT, SPECIAL,
+   INCIDENTAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES,
+   OR LOSS OF PROFITS, REVENUE, DATA, OR GOODWILL, EVEN IF ADVISED
+   OF THE POSSIBILITY. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW,
+   LICENSOR'S AGGREGATE LIABILITY FOR CLAIMS ARISING OUT OF OR RELATING TO
+   THE RESTRICTED COMPONENTS SHALL BE LIMITED TO THE GREATER OF: (A) ANY
+   MANDATORY MINIMUM AMOUNT THAT APPLICABLE LAW REQUIRES (IF SUCH LAW
+   PROHIBITS COMPLETE EXCLUSION); OR (B) ZERO (0) WHERE LAW PERMITS TOTAL
+   EXCLUSION AND NO FEES HAVE BEEN PAID. IF FEES WERE PAID UNDER A SEPARATE
+   WRITTEN AGREEMENT, LIABILITY SHALL NOT EXCEED THE AMOUNT ACTUALLY PAID
+   FOR THE MOST RECENT 12-MONTH PERIOD PRECEDING THE FIRST EVENT GIVING
+   RISE TO LIABILITY, SUBJECT ALWAYS TO ANY NON-DISCLAIMABLE STATUTORY
+   MINIMUM.
+
+12. EXPORT / COMPLIANCE
+
+   Licensee shall comply with all applicable export control and
+   sanctions laws with respect to the Restricted Components.
+
+13. GOVERNING LAW / VENUE
+
+   Unless otherwise specified in a separate Restricted Agreement,
+   disputes shall be governed by the laws of the jurisdiction of
+   Licensor's principal place of business, excluding conflict of
+   law rules. The United Nations Convention on Contracts for the
+   International Sale of Goods does not apply.
+
+14. MISCELLANEOUS
+
+   14.1 No waiver of any breach is a waiver of subsequent breaches.
+
+   14.2 If any provision is held unenforceable, the remainder remains
+      in effect and the provision will be replaced with an enforceable
+      one closest to its intent.
+
+   14.3 This License, together with any separate written agreement executed
+      between Licensor and Licensee for the modification of Restricted
+      Components, constitutes the entire agreement between the parties.
+
+   14.4 Severability for Jurisdictions with Mandatory Consumer / Statutory
+      Rights. Nothing in this License excludes or limits any right that
+      cannot be excluded under applicable law; affected clauses shall be
+      construed to the minimum extent necessary to comply.
+
+   14.5 No Implied Patent License. No patent rights are granted or implied
+      by this License. Any patent license must be expressly set forth in a
+      separate written agreement.
+
+   14.6 Reservation of Rights. All rights not expressly granted are
+      reserved by Licensor.
+
+   14.7 Language. In case of translation, the English text of this Version
+      governs.
+
+15. CONTACT
+
+   For Restricted Component inquiries: Time.GZ@outlook.com
+
+END OF LICENSE

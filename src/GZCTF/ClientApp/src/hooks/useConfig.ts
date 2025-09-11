@@ -1,7 +1,7 @@
-/*
- * This file is protected and may not be modified without permission.
- * See LICENSE_ADDENDUM.txt for details.
- */
+// SPDX-License-Identifier: LicenseRef-GZCTF-Restricted
+// Copyright (C) 2022-2025 GZTimeWalker
+// Restricted Component - NOT under AGPLv3.
+// See licenses/LicenseRef-GZCTF-Restricted.txt
 import { useLocalStorage } from '@mantine/hooks'
 import dayjs from 'dayjs'
 import { useEffect, useRef } from 'react'
@@ -93,9 +93,10 @@ const showBanner = () => {
   const textClr = ['font-weight: bold', 'font-weight: bold; color: #4ccaaa']
   const badClr = ['font-weight: bold', 'font-weight: bold; color: #fe3030']
 
-  // The GZCTF identifier is protected by the License.
-  // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
-  // Please see LICENSE_ADDENDUM.txt for details.
+  // GZCTF Banner Block
+  // Core licensed under AGPLv3; certain components under LicenseRef-GZCTF-Restricted.
+  // See NOTICE and LICENSE_ADDENDUM.txt for attribution & trademark guidance.
+  const current = new Date().getFullYear()
 
   const banner = `
   ██████╗ ███████╗           ██████╗████████╗███████╗
@@ -106,9 +107,10 @@ const showBanner = () => {
   ╚═════╝ ╚══════╝           ╚═════╝   ╚═╝   ╚═╝
   ${padding}%c@ %c${valid ? tag : 'Unknown'}
 
-%cCopyright (C) 2022-now, GZTimeWalker, All rights reserved.
+%cCopyright (C) 2022-${current}, GZTimeWalker, All rights reserved.
 
-%cLicense  : %cGNU Affero General Public License v3.0
+%cLicense  : %cGNU Affero General Public License v3.0 (Core)
+%cLicense  : %cLicenseRef-GZCTF-Restricted (Restricted components)
 %cCommit   : %c${valid ? sha : 'Unofficial build version'}
 %cBuilt at : %c${buildTime.format('YYYY-MM-DDTHH:mm:ssZ')}
 %cIssues   : %c${repo}/issues
@@ -120,7 +122,7 @@ const showBanner = () => {
     ...bannerClr.concat(bannerClr, bannerClr, bannerClr),
     ...(valid ? textClr : badClr),
     'font-weight: bold',
-    ...textClr.concat(valid ? textClr : badClr, textClr, textClr)
+    ...textClr.concat(textClr, valid ? textClr : badClr, textClr, textClr)
   )
 }
 
