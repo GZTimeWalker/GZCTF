@@ -3,6 +3,36 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.6.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.6.0..v1.6.1) - 2025-09-11
+
+### ⛰️ Features
+
+- **(cache)** implement persistent caching with IndexedDB and localStorage - ([9ccb9a](https://github.com/GZTimeWalker/GZCTF/commit/9ccb9a)) by **GZTime**
+- **(shiki)** use fine-grained bundle - ([fb1ff5](https://github.com/GZTimeWalker/GZCTF/commit/fb1ff5)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(carousel)** incorrect style import order - ([4e4424](https://github.com/GZTimeWalker/GZCTF/commit/4e4424)) by **GZTime**
+- **(deps)** update mantine monorepo to v8.3.1 (#470) - ([71e07e](https://github.com/GZTimeWalker/GZCTF/commit/71e07e)) by **renovate[bot]**
+
+### 🎨 Styling
+
+- make team name in TeamWriteupCard scrolling - ([c76051](https://github.com/GZTimeWalker/GZCTF/commit/c76051)) by **GZTime**
+
+### 🚀 Performances
+
+- **(bundle)** optimize bundle splitting and reduce small files - ([014643](https://github.com/GZTimeWalker/GZCTF/commit/014643)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(scrolling-text)** only scrolling when hover, improve rendering performance - ([588b78](https://github.com/GZTimeWalker/GZCTF/commit/588b78)) by **GZTime**
+- **(shiki)** reorganize language imports and remove unused ones - ([b58ce7](https://github.com/GZTimeWalker/GZCTF/commit/b58ce7)) by **GZTime**
+
+### 📦 Other Changes
+
+- Introduce dual-licensing model and clarify usage terms - ([2b925a](https://github.com/GZTimeWalker/GZCTF/commit/2b925a)) by **GZTime**
+
+---
 ## [1.6.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.5.0..v1.6.0) - 2025-09-06
 
 ### ⛰️ Features
@@ -13,6 +43,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - **(contributors)** enhance About page layout - ([f3bea8](https://github.com/GZTimeWalker/GZCTF/commit/f3bea8)) by **GZTime**
 - **(logging)** enhance logging configuration for EF Core queries - ([5f2213](https://github.com/GZTimeWalker/GZCTF/commit/5f2213)) by **GZTime**
 - **(submission)** add submission limit for challenges (#450) - ([f65090](https://github.com/GZTimeWalker/GZCTF/commit/f65090)) by **Copilot**
+- **(teams)** add view for users have no team - ([dfe222](https://github.com/GZTimeWalker/GZCTF/commit/dfe222)) by **GZTime**
 
 ### 🐛 Bug Fixes
 
