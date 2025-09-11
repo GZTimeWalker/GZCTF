@@ -75,7 +75,7 @@ const About: FC = () => {
                 {t('common.content.about.resources')}
               </Title>
             </Group>
-            <Stack gap="sm" align="center">
+            <Stack gap="xs" align="center">
               <Group gap="sm" justify="center" align="center">
                 <Icon path={mdiFileDocumentOutline} size={0.8} />
                 <Anchor
@@ -118,6 +118,23 @@ const About: FC = () => {
                     className={classes.licenseLink}
                   >
                     AGPLv3.0
+                  </Anchor>
+                </Text>
+              </Group>
+              <Group gap="sm" justify="center" align="center">
+                <Icon path={mdiScaleBalance} size={0.8} />
+                <Text size="sm" fw={400} c="dimmed" ta="center" className={classes.licenseText}>
+                  Licensed&nbsp;under&nbsp;
+                  <Anchor
+                    href="https://github.com/GZTimeWalker/GZCTF/blob/develop/license/LicenseRef-GZCTF-Restricted.txt"
+                    target="_blank"
+                    c={theme.primaryColor}
+                    size="sm"
+                    fw={500}
+                    underline="hover"
+                    className={classes.resourceLink}
+                  >
+                    LicenseRef-GZCTF-Restricted
                   </Anchor>
                 </Text>
               </Group>

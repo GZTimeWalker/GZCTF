@@ -1,7 +1,7 @@
-/*
- * This file is protected and may not be modified without permission.
- * See LICENSE_ADDENDUM.txt for details.
- */
+// SPDX-License-Identifier: LicenseRef-GZCTF-Restricted
+// Copyright (C) 2022-2025 GZTimeWalker
+// Restricted Component - NOT under AGPLv3.
+// See licenses/LicenseRef-GZCTF-Restricted.txt
 
 using System.Net;
 using GZCTF.Models.Internal;
@@ -50,6 +50,25 @@ public class KubernetesManager : IContainerManager
 
         var name = $"{chalImage}-{Guid.NewGuid().ToString("N")[..16]}";
 
+        // GZCTF_FLAG is Per-team dynamic flag issued & audited by the platform.
+        //
+        // Compliance & Abuse Notice:
+        //
+        // These env vars are integral to anti-abuse, audit trails and license compliance under
+        // the Restricted License (LicenseRef-GZCTF-Restricted). Unauthorized removal, renaming
+        // or semantic alteration can indicate an attempt to bypass license terms or weaken
+        // challenge isolation guarantees. Downstream extensions MUST preserve their semantics.
+        // Modification without a valid authorization may be treated as misuse.
+        //
+        // References: NOTICE, LICENSE_ADDENDUM.txt, licenses/LicenseRef-GZCTF-Restricted.txt
+        IList<V1EnvVar> envs = config.Flag is null
+            ? [new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)]
+            :
+            [
+                new V1EnvVar("GZCTF_FLAG", config.Flag),
+                new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)
+            ];
+
         var pod = new V1Pod
         {
             Metadata = new V1ObjectMeta
@@ -81,17 +100,7 @@ public class KubernetesManager : IContainerManager
                         Name = name,
                         Image = config.Image,
                         ImagePullPolicy = "Always",
-                        // The GZCTF identifier is protected by the License.
-                        // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
-                        // Please see LICENSE_ADDENDUM.txt for details.
-                        Env =
-                            config.Flag is null
-                                ? [new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)]
-                                :
-                                [
-                                    new V1EnvVar("GZCTF_FLAG", config.Flag),
-                                    new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)
-                                ],
+                        Env = envs,
                         Ports = [new V1ContainerPort(config.ExposedPort)],
                         Resources = new V1ResourceRequirements
                         {

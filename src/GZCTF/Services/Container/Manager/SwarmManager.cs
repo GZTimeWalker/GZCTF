@@ -1,7 +1,7 @@
-﻿/*
- * This file is protected and may not be modified without permission.
- * See LICENSE_ADDENDUM.txt for details.
- */
+﻿// SPDX-License-Identifier: LicenseRef-GZCTF-Restricted
+// Copyright (C) 2022-2025 GZTimeWalker
+// Restricted Component - NOT under AGPLv3.
+// See licenses/LicenseRef-GZCTF-Restricted.txt
 
 using System.Net;
 using Docker.DotNet;
@@ -168,8 +168,24 @@ public class SwarmManager : IContainerManager
         return container;
     }
 
-    ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config) =>
-        new()
+    ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config)
+    {
+        // GZCTF_FLAG is Per-team dynamic flag issued & audited by the platform.
+        //
+        // Compliance & Abuse Notice:
+        //
+        // These env vars are integral to anti-abuse, audit trails and license compliance under
+        // the Restricted License (LicenseRef-GZCTF-Restricted). Unauthorized removal, renaming
+        // or semantic alteration can indicate an attempt to bypass license terms or weaken
+        // challenge isolation guarantees. Downstream extensions MUST preserve their semantics.
+        // Modification without a valid authorization may be treated as misuse.
+        //
+        // References: NOTICE, LICENSE_ADDENDUM.txt, licenses/LicenseRef-GZCTF-Restricted.txt
+        IList<string> envs = config.Flag is null
+            ? [$"GZCTF_TEAM_ID={config.TeamId}"]
+            : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"];
+
+        return new()
         {
             RegistryAuth = _meta.AuthConfigs.GetForImage(config.Image),
             Service = new()
@@ -187,17 +203,7 @@ public class SwarmManager : IContainerManager
                 {
                     RestartPolicy = new() { Condition = "none" },
                     ContainerSpec =
-                        new()
-                        {
-                            Image = config.Image,
-                            // The GZCTF identifier is protected by the License.
-                            // DO NOT REMOVE OR MODIFY THE FOLLOWING LINE.
-                            // Please see LICENSE_ADDENDUM.txt for details.
-                            Env =
-                                config.Flag is null
-                                    ? [$"GZCTF_TEAM_ID={config.TeamId}"]
-                                    : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"]
-                        },
+                        new() { Image = config.Image, Env = envs, },
                     Resources = new()
                     {
                         Limits = new()
@@ -219,4 +225,5 @@ public class SwarmManager : IContainerManager
                 }
             }
         };
+    }
 }

@@ -13,13 +13,15 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
   const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:8080'
+  const current = new Date()
 
   const BANNER =
-    `/* The GZCTF Project @${env.VITE_APP_GIT_NAME ?? 'unknown'}\n * \n` +
-    ` * Commit  : ${env.VITE_APP_GIT_SHA ?? 'Unofficial build version'}\n` +
-    ` * Build   : ${env.VITE_APP_BUILD_TIMESTAMP ?? new Date().toISOString()}\n` +
-    ' * License : GNU Affero General Public License v3.0\n * \n' +
-    ' * Copyright © 2022-now @GZTimeWalker, All Rights Reserved.\n */'
+    `/* The GZ::CTF Project @${env.VITE_APP_GIT_NAME ?? 'unknown'}\n * \n` +
+    ` * License   : GNU Affero General Public License v3.0 (Core)\n` +
+    ` * License   : LicenseRef-GZCTF-Restricted (Restricted components)\n` +
+    ` * Commit    : ${env.VITE_APP_GIT_SHA ?? 'Unofficial build version'}\n` +
+    ` * Build     : ${env.VITE_APP_BUILD_TIMESTAMP ?? current.toISOString()}\n` +
+    ` * Copyright (C) 2022-${current.getFullYear()} GZTimeWalker. All Rights Reserved.\n */`
 
   console.log(`Using backend URL: ${TARGET}`)
 
@@ -40,7 +42,7 @@ export default defineConfig(({ mode }) => {
       assetsDir: 'static',
       cssMinify: 'esbuild',
       cssCodeSplit: false,
-      chunkSizeWarningLimit: 1600,
+      chunkSizeWarningLimit: 2400,
       reportCompressedSize: true,
       rollupOptions: {
         output: {

@@ -1,32 +1,60 @@
-License Addendum for GZ::CTF
+License Addendum (Clarification of Dual Licensing & Trademarks)
+Updated: 2025-09-11
 
-This addendum to the AGPLv3 license applies to the following specific files and
-the "GZCTF" string within this project.
+1. Scope
+	This Addendum clarifies the coexistence of (a) AGPLv3-licensed core code
+	and (b) separately licensed Restricted Components and trademarks. It does
+	NOT impose additional restrictions on any file already under AGPLv3;
+	instead it identifies material that is NOT covered by AGPLv3.
 
-### Restricted Files
+2. AGPLv3 Core
+	Except where explicitly designated below as "Restricted Components", the
+	source code in this repository is licensed under the GNU Affero General
+	Public License v3.0 (see LICENSE.txt).
 
-The following files may not be modified, redistributed, or used in derivative
-works without the express written permission of the original author or maintainers:
+3. Restricted Components (Restricted License ONLY)
+	The following paths are excluded from AGPLv3 coverage and are provided
+	(if distributed) solely under the GZCTF Restricted License
+    (Identifier: LicenseRef-GZCTF-Restricted):
 
-- src/GZCTF/Services/Container/Manager/*.cs
-- src/GZCTF/ClientApp/src/hooks/useConfig.ts
+	  - src/GZCTF/Services/Container/Manager/*
+	  - src/GZCTF/ClientApp/src/hooks/useConfig.ts
+      - src/GZCTF/ClientApp/src/components/Copyright.tsx
 
-### Restricted String
+	Use and redistribution of these components are governed by the terms
+	of the GZCTF Restricted License. Any modification, deletion, or derivative
+	creation of these Restricted Components requires a separate written
+	authorization or commercial agreement. Absent such authorization, you
+	have NO rights to modify or delete these components.
 
-Any string or identifier related to the "GZCTF" name, including but not limited
-to variations, derivations, or similar constructs, is considered a protected
-identifier within this project. Modification, removal, or replacement of these
-identifiers in any part of the codebase is strictly prohibited without the express
-written permission of the original author or maintainers.
+4. Trademarks / Protected Identifiers
+	"GZCTF" / "GZ::CTF" names, flags, tokens, and associated logos are
+	trademarks or identifiers of the project author. Their usage is governed
+	by TRADEMARKS.md. Descriptive, truthful references (e.g. "Forked from
+	GZCTF") are permitted. Misuse implying endorsement or official status is
+	prohibited.
 
-**Examples of protected identifiers include, but are not limited to:**
+5. Separation Principle
+	This Addendum must not be read to curtail any AGPLv3 right for
+	non-restricted files. If any clause appears to conflict with AGPLv3 as
+	applied to AGPL-covered code, AGPLv3 prevails for that code.
 
-- GZCTF
-- GZ::CTF
-- GZCTF_FLAG
-- GZCTF_Token
-- ASCII art or logos containing the GZCTF name
+6. Custom License Identifier
+	The restricted license text is stored at:
 
-These restrictions are in addition to the terms of the AGPLv3 license.
+      - licenses/LicenseRef-GZCTF-Restricted.txt
 
-[2024-08-10]
+	SPDX Custom Identifier: LicenseRef-GZCTF-Restricted
+
+7. Contact
+	Restricted & licensing inquiries: Time.GZ@outlook.com
+
+8. Attribution Example
+	"This deployment includes the open core of GZCTF (AGPLv3). Certain
+	functionality uses proprietary GZCTF Restricted Components under a
+	commercial license."
+
+9. Revision History
+	2024-08-10: Initial Addendum (superseded)
+	2025-09-11: Converted to dual-licensing clarification; introduced explicit
+	separation & SPDX custom identifier.
