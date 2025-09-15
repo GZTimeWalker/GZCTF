@@ -1004,7 +1004,7 @@ export interface GameNoticeModel {
 /** Challenge detailed information (Edit) */
 export interface ChallengeEditDetailModel {
   /**
-   * Challenge Id
+   * Challenge ID
    * @format int32
    */
   id?: number;
