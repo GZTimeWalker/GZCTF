@@ -22,8 +22,8 @@
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.3" />
     <PackageVersion Include="NPOI" Version="2.7.4" />
-    <PackageVersion Include="NSwag.AspNetCore" Version="14.5.0" />
-    <PackageVersion Include="NSwag.MSBuild" Version="14.5.0" />
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.6.0" />
+    <PackageVersion Include="NSwag.MSBuild" Version="14.6.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.12.0-beta.1" />
