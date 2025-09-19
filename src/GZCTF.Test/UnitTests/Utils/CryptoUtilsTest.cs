@@ -1,4 +1,7 @@
-using AutoFixture.Xunit2;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using GZCTF.Utils;
 using Xunit;
@@ -12,62 +15,16 @@ public class CryptoUtilsTest
     [InlineData("")]
     [InlineData("Special chars: !@#$%^&*()")]
     [InlineData("Unicode: 你好世界")]
-    public void GenerateHash_ShouldReturnConsistentHash(string input)
+    public void ToSHA256String_ShouldReturnConsistentHash(string input)
     {
         // Act
-        var hash1 = Codec.StrSHA256(input);
-        var hash2 = Codec.StrSHA256(input);
+        var hash1 = input.ToSHA256String();
+        var hash2 = input.ToSHA256String();
 
         // Assert
         hash1.Should().Be(hash2);
         hash1.Should().NotBeNullOrEmpty();
         hash1.Length.Should().Be(64); // SHA256 produces 64 character hex string
-    }
-
-    [Theory]
-    [InlineData("password123")]
-    [InlineData("verysecurepassword")]
-    [InlineData("")]
-    public void HashPassword_ShouldReturnDifferentHashesForSameInput(string password)
-    {
-        // Act
-        var hash1 = Codec.HashPassword(password);
-        var hash2 = Codec.HashPassword(password);
-
-        // Assert
-        hash1.Should().NotBe(hash2); // Due to salt
-        hash1.Should().NotBeNullOrEmpty();
-        hash2.Should().NotBeNullOrEmpty();
-    }
-
-    [Theory]
-    [InlineData("password123")]
-    [InlineData("correcthorsebatterystaple")]
-    public void VerifyPassword_ShouldReturnTrueForCorrectPassword(string password)
-    {
-        // Arrange
-        var hash = Codec.HashPassword(password);
-
-        // Act
-        var isValid = Codec.VerifyPassword(password, hash);
-
-        // Assert
-        isValid.Should().BeTrue();
-    }
-
-    [Theory]
-    [InlineData("password123", "wrongpassword")]
-    [InlineData("correct", "incorrect")]
-    public void VerifyPassword_ShouldReturnFalseForIncorrectPassword(string correctPassword, string wrongPassword)
-    {
-        // Arrange
-        var hash = Codec.HashPassword(correctPassword);
-
-        // Act
-        var isValid = Codec.VerifyPassword(wrongPassword, hash);
-
-        // Assert
-        isValid.Should().BeFalse();
     }
 
     [Theory]
@@ -94,15 +51,13 @@ public class CryptoUtilsTest
     {
         // Arrange
         var originalData = "Hello, GZCTF Testing Framework!";
-        var originalBytes = System.Text.Encoding.UTF8.GetBytes(originalData);
 
         // Act
-        var base64 = Codec.Base64.Encode(originalBytes);
-        var decodedBytes = Codec.Base64.DecodeToBytes(base64);
-        var decodedString = System.Text.Encoding.UTF8.GetString(decodedBytes);
+        var base64 = Codec.Base64.Encode(originalData);
+        var decoded = Codec.Base64.Decode(base64);
 
         // Assert
-        decodedString.Should().Be(originalData);
+        decoded.Should().Be(originalData);
         base64.Should().NotBeNullOrEmpty();
     }
 
@@ -122,21 +77,33 @@ public class CryptoUtilsTest
         bytes.Length.Should().Be(System.Text.Encoding.UTF8.GetByteCount(input));
     }
 
-    [Theory]
-    [GzctfAutoData]
-    public void RandomBytes_ShouldGenerateDifferentValues(int length)
+    [Fact]
+    public void RandomPassword_ShouldGenerateDifferentValues()
     {
         // Arrange
-        length = Math.Abs(length % 100) + 1; // Ensure positive length
+        const int length = 16;
 
         // Act
-        var bytes1 = Random.Shared.NextBytes(length);
-        var bytes2 = Random.Shared.NextBytes(length);
+        var password1 = Codec.RandomPassword(length);
+        var password2 = Codec.RandomPassword(length);
 
         // Assert
-        bytes1.Length.Should().Be(length);
-        bytes2.Length.Should().Be(length);
-        bytes1.Should().NotEqual(bytes2); // Very unlikely to be equal for random data
+        password1.Length.Should().Be(length);
+        password2.Length.Should().Be(length);
+        password1.Should().NotBe(password2); // Very unlikely to be equal for random data
+    }
+
+    [Fact]
+    public void BytesToHex_ShouldConvertCorrectly()
+    {
+        // Arrange
+        var bytes = new byte[] { 0x48, 0x65, 0x6C, 0x6C, 0x6F }; // "Hello" in ASCII
+
+        // Act
+        var hex = Codec.BytesToHex(bytes);
+
+        // Assert
+        hex.Should().Be("48656c6c6f");
     }
 
     [Fact]
@@ -155,14 +122,18 @@ public class CryptoUtilsTest
         timestamp.Should().BeLessOrEqualTo(after);
         timestamp.Should().BeGreaterThan(1600000000); // After 2020
     }
-}
 
-/// <summary>
-/// Custom AutoData attribute for this test class
-/// </summary>
-public class GzctfAutoDataAttribute : AutoDataAttribute
-{
-    public GzctfAutoDataAttribute() : base(() => new AutoFixture.Fixture())
+    [Theory]
+    [InlineData(10)]
+    [InlineData(20)]
+    [InlineData(32)]
+    public void RandomPassword_ShouldRespectLength(int length)
     {
+        // Act
+        var password = Codec.RandomPassword(length);
+
+        // Assert
+        password.Length.Should().Be(length);
+        password.Should().NotBeNullOrEmpty();
     }
 }

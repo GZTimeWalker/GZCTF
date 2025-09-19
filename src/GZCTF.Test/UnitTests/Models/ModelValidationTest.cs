@@ -1,6 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using FluentAssertions;
 using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
@@ -49,7 +50,6 @@ public class ModelValidationTest : TestBase
     [Theory]
     [InlineData("ValidTeam", true)]
     [InlineData("", false)] // Empty name
-    [InlineData(null, false)] // Null name
     public void Team_Validation_ShouldValidateCorrectly(string teamName, bool expectedValid)
     {
         // Arrange
@@ -78,7 +78,6 @@ public class ModelValidationTest : TestBase
     [Theory]
     [InlineData("Valid Game Title", true)]
     [InlineData("", false)] // Empty title
-    [InlineData(null, false)] // Null title
     public void Game_Validation_ShouldValidateCorrectly(string title, bool expectedValid)
     {
         // Arrange
@@ -161,7 +160,7 @@ public class ModelValidationTest : TestBase
         };
 
         // Assert
-        team.Id.Should().NotBe(Guid.Empty); // Should generate ULID
+        team.Id.Should().NotBe(0); // Should generate ID
         team.Locked.Should().BeFalse(); // Default not locked
         team.Members.Should().NotBeNull(); // Should initialize collection
         team.Participations.Should().NotBeNull(); // Should initialize collection

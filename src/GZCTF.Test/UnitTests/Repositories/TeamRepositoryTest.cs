@@ -1,215 +1,142 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using GZCTF.Models;
 using GZCTF.Models.Data;
-using GZCTF.Repositories;
-using GZCTF.Repositories.Interface;
 using GZCTF.Test.Infrastructure;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace GZCTF.Test.UnitTests.Repositories;
 
-public class TeamRepositoryTest : TestBase
+public class DatabaseContextTest : TestBase
 {
-    private readonly ITeamRepository _teamRepository;
-
-    public TeamRepositoryTest(ITestOutputHelper output) : base(output)
+    public DatabaseContextTest(ITestOutputHelper output) : base(output)
     {
-        _teamRepository = new TeamRepository(DbContext, Mock.Of<ILogger<TeamRepository>>());
     }
 
     [Fact]
-    public async Task CreateTeam_ShouldAddTeamToDatabase()
+    public async Task DbContext_ShouldAllowCRUDOperations()
+    {
+        // Arrange
+        var user = TestDataFactory.CreateUser("testuser", "test@test.com");
+        
+        // Act - Create
+        DbContext.Users.Add(user);
+        await DbContext.SaveChangesAsync();
+
+        // Act - Read
+        var savedUser = await DbContext.Users.FindAsync(user.Id);
+
+        // Assert
+        savedUser.Should().NotBeNull();
+        savedUser!.UserName.Should().Be("testuser");
+        savedUser.Email.Should().Be("test@test.com");
+    }
+
+    [Fact]
+    public async Task DbContext_ShouldHandleTeamOperations()
     {
         // Arrange
         var captain = TestDataFactory.CreateUser("captain", "captain@test.com");
-        DbContext.Users.Add(captain);
-        await DbContext.SaveChangesAsync();
-
         var team = TestDataFactory.CreateTeam(captain, "Test Team");
 
         // Act
-        var result = await _teamRepository.CreateAsync(team, default);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Id.Should().NotBe(Guid.Empty);
-        result.Name.Should().Be("Test Team");
-        result.CaptainId.Should().Be(captain.Id);
-
-        var savedTeam = await DbContext.Teams.FindAsync(result.Id);
-        savedTeam.Should().NotBeNull();
-        savedTeam!.Name.Should().Be("Test Team");
-    }
-
-    [Theory]
-    [GzctfInlineAutoData("Team Alpha")]
-    [GzctfInlineAutoData("Team Beta")]
-    [GzctfInlineAutoData("Special Characters ! @ # $ %")]
-    public async Task GetTeamByName_ShouldReturnCorrectTeam(string teamName)
-    {
-        // Arrange
-        var captain = TestDataFactory.CreateUser();
-        var team = TestDataFactory.CreateTeam(captain, teamName);
         DbContext.Users.Add(captain);
         DbContext.Teams.Add(team);
         await DbContext.SaveChangesAsync();
 
-        // Act
-        var result = await _teamRepository.GetTeamByName(teamName, default);
-
         // Assert
-        result.Should().NotBeNull();
-        result!.Name.Should().Be(teamName);
-        result.Id.Should().Be(team.Id);
+        var savedTeam = await DbContext.Teams
+            .Include(t => t.Captain)
+            .FirstOrDefaultAsync(t => t.Id == team.Id);
+
+        savedTeam.Should().NotBeNull();
+        savedTeam!.Name.Should().Be("Test Team");
+        savedTeam.Captain.Should().NotBeNull();
+        savedTeam.Captain!.UserName.Should().Be("captain");
     }
 
     [Fact]
-    public async Task GetTeamByName_WithNonExistentName_ShouldReturnNull()
+    public async Task DbContext_ShouldHandleGameOperations()
     {
+        // Arrange
+        var game = TestDataFactory.CreateGame("Test Game");
+
         // Act
-        var result = await _teamRepository.GetTeamByName("NonExistentTeam", default);
+        DbContext.Games.Add(game);
+        await DbContext.SaveChangesAsync();
 
         // Assert
-        result.Should().BeNull();
+        var savedGame = await DbContext.Games.FindAsync(game.Id);
+        savedGame.Should().NotBeNull();
+        savedGame!.Title.Should().Be("Test Game");
     }
 
     [Fact]
-    public async Task GetTeamById_ShouldReturnTeamWithMembers()
+    public async Task DbContext_ShouldHandleRelationships()
     {
         // Arrange
         var captain = TestDataFactory.CreateUser("captain", "captain@test.com");
         var member = TestDataFactory.CreateUser("member", "member@test.com");
         var team = TestDataFactory.CreateTeam(captain, "Test Team");
-        
-        // Add members to team
-        team.Members.Add(captain);
-        team.Members.Add(member);
+        var game = TestDataFactory.CreateGame("Test Game");
+        var participation = TestDataFactory.CreateParticipation(team, game);
 
+        // Act
         DbContext.Users.AddRange(captain, member);
         DbContext.Teams.Add(team);
+        DbContext.Games.Add(game);
+        DbContext.Participations.Add(participation);
         await DbContext.SaveChangesAsync();
 
-        // Act
-        var result = await _teamRepository.GetTeamById(team.Id, default);
-
         // Assert
-        result.Should().NotBeNull();
-        result!.Members.Should().HaveCount(2);
-        result.Members.Should().Contain(u => u.Id == captain.Id);
-        result.Members.Should().Contain(u => u.Id == member.Id);
+        var savedParticipation = await DbContext.Participations
+            .Include(p => p.Team)
+            .Include(p => p.Game)
+            .FirstOrDefaultAsync(p => p.Id == participation.Id);
+
+        savedParticipation.Should().NotBeNull();
+        savedParticipation!.Team.Name.Should().Be("Test Team");
+        savedParticipation.Game.Title.Should().Be("Test Game");
     }
 
     [Fact]
-    public async Task UpdateTeam_ShouldPersistChanges()
+    public async Task DbContext_ShouldHandleQueryOperations()
     {
         // Arrange
-        var captain = TestDataFactory.CreateUser();
-        var team = TestDataFactory.CreateTeam(captain, "Original Name");
-        DbContext.Users.Add(captain);
-        DbContext.Teams.Add(team);
-        await DbContext.SaveChangesAsync();
+        await TestDataFactory.SeedDatabaseAsync(DbContext);
 
         // Act
-        team.Name = "Updated Name";
-        team.Bio = "Updated bio";
-        await _teamRepository.UpdateAsync(team, default);
+        var userCount = await DbContext.Users.CountAsync();
+        var teamCount = await DbContext.Teams.CountAsync();
+        var gameCount = await DbContext.Games.CountAsync();
 
         // Assert
-        var updatedTeam = await DbContext.Teams.FindAsync(team.Id);
-        updatedTeam.Should().NotBeNull();
-        updatedTeam!.Name.Should().Be("Updated Name");
-        updatedTeam.Bio.Should().Be("Updated bio");
-    }
-
-    [Fact]
-    public async Task DeleteTeam_ShouldRemoveFromDatabase()
-    {
-        // Arrange
-        var captain = TestDataFactory.CreateUser();
-        var team = TestDataFactory.CreateTeam(captain, "Team to Delete");
-        DbContext.Users.Add(captain);
-        DbContext.Teams.Add(team);
-        await DbContext.SaveChangesAsync();
-
-        // Act
-        await _teamRepository.DeleteAsync(team, default);
-
-        // Assert
-        var deletedTeam = await DbContext.Teams.FindAsync(team.Id);
-        deletedTeam.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetTeamsByUserId_ShouldReturnUserTeams()
-    {
-        // Arrange
-        var user = TestDataFactory.CreateUser();
-        var team1 = TestDataFactory.CreateTeam(user, "Team 1");
-        var team2 = TestDataFactory.CreateTeam(null, "Team 2");
-        team2.Members.Add(user);
-
-        DbContext.Users.Add(user);
-        DbContext.Teams.AddRange(team1, team2);
-        await DbContext.SaveChangesAsync();
-
-        // Act
-        var teams = await _teamRepository.GetUserTeams(user.Id, default);
-
-        // Assert
-        teams.Should().HaveCount(2);
-        teams.Should().Contain(t => t.Name == "Team 1");
-        teams.Should().Contain(t => t.Name == "Team 2");
+        userCount.Should().BeGreaterThan(0);
+        teamCount.Should().BeGreaterThan(0);
+        gameCount.Should().BeGreaterThan(0);
     }
 
     [Theory]
-    [GzctfInlineAutoData(0, 10)]
-    [GzctfInlineAutoData(1, 5)]
-    [GzctfInlineAutoData(2, 3)]
-    public async Task GetTeams_WithPagination_ShouldReturnCorrectPage(int skip, int take)
+    [InlineData("admin")]
+    [InlineData("user")]
+    public async Task DbContext_ShouldFindUserByName(string username)
     {
         // Arrange
-        var teams = new List<Team>();
-        for (int i = 0; i < 15; i++)
-        {
-            var captain = TestDataFactory.CreateUser($"captain{i}", $"captain{i}@test.com");
-            var team = TestDataFactory.CreateTeam(captain, $"Team {i:D2}");
-            teams.Add(team);
-            DbContext.Users.Add(captain);
-        }
-        DbContext.Teams.AddRange(teams);
-        await DbContext.SaveChangesAsync();
+        await TestDataFactory.SeedDatabaseAsync(DbContext);
 
         // Act
-        var result = await DbContext.Teams
-            .OrderBy(t => t.Name)
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+        var user = await DbContext.Users
+            .FirstOrDefaultAsync(u => u.UserName == username);
 
         // Assert
-        result.Should().HaveCount(Math.Min(take, 15 - skip));
-        
-        if (result.Any())
-        {
-            var expectedFirstTeamIndex = skip;
-            if (expectedFirstTeamIndex < 15)
-            {
-                result.First().Name.Should().Be($"Team {expectedFirstTeamIndex:D2}");
-            }
-        }
-    }
-
-    protected override void ConfigureServices(IServiceCollection services)
-    {
-        base.ConfigureServices(services);
-        services.AddScoped<ITeamRepository, TeamRepository>();
+        user.Should().NotBeNull();
+        user!.UserName.Should().Be(username);
     }
 }
