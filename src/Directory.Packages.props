@@ -71,6 +71,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.9" />
     <PackageVersion Include="Xunit.Extensions.Logging" Version="1.0.0" />
     <PackageVersion Include="ZstdSharp.Port" Version="0.8.6" />
   </ItemGroup>

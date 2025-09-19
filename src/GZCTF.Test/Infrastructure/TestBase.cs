@@ -89,6 +89,30 @@ public abstract class TestBase : IDisposable
         services.AddMemoryCache();
     }
 
+    /// <summary>
+    /// Creates an isolated database context for transaction testing
+    /// This helps avoid issues with in-memory database transaction limitations
+    /// </summary>
+    protected AppDbContext CreateIsolatedDbContext() => 
+        TransactionTestHelper.CreateIsolatedDbContext(ServiceProvider);
+
+    /// <summary>
+    /// Executes an action in a transaction-like scope with proper handling for in-memory databases
+    /// </summary>
+    protected Task ExecuteInTransactionScopeAsync(Func<AppDbContext, Task> action, bool rollback = false) =>
+        TransactionTestHelper.ExecuteInTransactionScopeAsync(ServiceProvider, action, rollback);
+
+    /// <summary>
+    /// Simulates transaction rollback for testing scenarios where transactions need to be reverted
+    /// </summary>
+    protected Task SimulateTransactionRollback(Func<Task> action) =>
+        TransactionTestHelper.SimulateTransactionRollback(DbContext, action);
+
+    /// <summary>
+    /// Checks if the current database provider supports real transactions
+    /// </summary>
+    protected bool SupportsTransactions => TransactionTestHelper.SupportsTransactions(DbContext);
+
     protected T GetService<T>() where T : notnull => ServiceProvider.GetRequiredService<T>();
 
     protected T? GetOptionalService<T>() => ServiceProvider.GetService<T>();
