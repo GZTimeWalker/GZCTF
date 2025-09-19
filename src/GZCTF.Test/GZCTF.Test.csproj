@@ -19,6 +19,16 @@
         <PackageReference Include="xunit.runner.console"/>
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="coverlet.msbuild"/>
+        <PackageReference Include="Moq" />
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+        <PackageReference Include="AutoFixture" />
+        <PackageReference Include="AutoFixture.Xunit2" />
+        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <PackageReference Include="Xunit.Extensions.Logging" />
     </ItemGroup>
 
     <ItemGroup>
