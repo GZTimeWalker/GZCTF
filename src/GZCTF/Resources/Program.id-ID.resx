@@ -311,8 +311,26 @@
   <data name="ContainerManager_ContainerCreationFailed" xml:space="preserve">
     <value>Gagal membuat container {0}</value>
   </data>
+  <data name="ContainerManager_ComposeUnexpectedIDs" xml:space="preserve">
+    <value>Unexpected container IDs returned by docker compose.</value>
+  </data>
+  <data name="ContainerManager_ComposeDeletionFailedResponse" xml:space="preserve">
+    <value>Deleting compose project {0} failed with exit code {1}: {2}</value>
+  </data>
+  <data name="ContainerManager_ComposeDeletionFailed" xml:space="preserve">
+    <value>Failed deleting compose project {0}</value>
+  </data>
+  <data name="ContainerManager_ComposeNoMainService" xml:space="preserve">
+    <value>Compose file for challenge {0} contains no 'main' service.</value>
+  </data>
   <data name="ContainerManager_ContainerCreationFailedResponse" xml:space="preserve">
     <value>Gagal membuat container {0}, response: {1}</value>
+  </data>
+  <data name="ContainerManager_ComposeCreationFailed" xml:space="preserve">
+    <value>Launching compose file for challenge {0} failed with exit code {1}: {2}</value>
+  </data>
+  <data name="ContainerManager_DockerCommandFailed" xml:space="preserve">
+    <value>Docker command failed with exit code {0}: {1}</value>
   </data>
   <data name="ContainerManager_ContainerCreationFailedStatus" xml:space="preserve">
     <value>Gagal membuat container {0}, status: {1}</value>
@@ -345,6 +363,9 @@
     <value>Gagal mendapatkan informasi eksposur port setelah kontainer {0} dibuat</value>
   </data>
   <data name="ContainerManager_DockerMode" xml:space="preserve">
+    <value>Mode container ： kontrol container instance docker instance</value>
+  </data>
+  <data name="ContainerManager_DockerComposeMode" xml:space="preserve">
     <value>Mode container ： kontrol container instance docker instance</value>
   </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">

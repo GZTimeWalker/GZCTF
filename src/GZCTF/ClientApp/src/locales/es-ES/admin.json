@@ -108,6 +108,7 @@
         },
         "category": "Categoría",
         "container_image": "Imagen del Contenedor",
+        "container_compose": "Compose Script or Image Name",
         "cpu_limit": {
           "description": "Multiplicación de 0.1 núcleo de CPU",
           "label": "Límite de CPU (0.1 CPUs)"

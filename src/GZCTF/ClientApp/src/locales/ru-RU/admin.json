@@ -108,6 +108,7 @@
         },
         "category": "Категория",
         "container_image": "Образ контейнера",
+        "container_compose": "Compose Script or Image Name",
         "cpu_limit": {
           "description": "Макс. нагрузка на ядра",
           "label": "Лимит ЦП (0.1 ядра)"

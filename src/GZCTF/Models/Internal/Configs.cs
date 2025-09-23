@@ -400,7 +400,8 @@ public class EmailConfig
 public enum ContainerProviderType
 {
     Docker,
-    Kubernetes
+    Kubernetes,
+    DockerCompose
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<ContainerPortMappingType>))]
@@ -442,8 +443,10 @@ public class KubernetesConfig
 public class RegistrySet<T> : Dictionary<string, T>
     where T : class
 {
-    public T? GetForImage(string image)
+    public T? GetForImage(string image, out string registry)
     {
+        registry = "";
+
         if (string.IsNullOrWhiteSpace(image))
             return null;
 
@@ -452,8 +455,25 @@ public class RegistrySet<T> : Dictionary<string, T>
         if (!Uri.TryCreate(image, UriKind.Absolute, out var uri) || uri.HostNameType == UriHostNameType.Unknown)
             return null;
 
-        return TryGetValue(uri.Authority, out var cfg) ? cfg :
-            TryGetValue(uri.Host, out var cfgHost) ? cfgHost : null;
+        if (TryGetValue(uri.Authority, out var cfg))
+        {
+            registry = uri.Authority;
+            return cfg;
+        }
+
+
+        if (TryGetValue(uri.Host, out var cfgHost))
+        {
+            registry = uri.Host;
+            return cfgHost;
+        }
+
+        return null;
+    }
+
+    public T? GetForImage(string image)
+    {
+        return GetForImage(image, out var registry);
     }
 }
 

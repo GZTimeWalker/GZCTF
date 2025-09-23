@@ -108,6 +108,7 @@
         },
         "category": "Danh mục",
         "container_image": "Container Image",
+        "container_compose": "Compose Script or Image Name",
         "cpu_limit": {
           "description": "Bội của 0.1 CPU",
           "label": "CPU Limit (0.1 CPUs)"

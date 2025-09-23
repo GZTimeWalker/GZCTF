@@ -108,6 +108,7 @@
         },
         "category": "Kategorie",
         "container_image": "Container-Image",
+        "container_compose": "Compose-Script oder Image-Name",
         "cpu_limit": {
           "description": "Multiplikation von 0,1 CPU-Kern",
           "label": "CPU-Limit (0,1 CPUs)"

@@ -43,6 +43,27 @@ public class AdminController(
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
+    /// Get container provider
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get the current ContainerProvider config, requires Admin permission
+    /// </remarks>
+    /// <response code="200">Name of the container backend in use</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Forbidden</response>
+    [HttpGet("ContainerProvider")]
+    [ProducesResponseType(typeof(ContainerProviderModel), StatusCodes.Status200OK)]
+    public IActionResult GetContainerProvider()
+    {
+        ContainerProviderModel containerProvider = new()
+        {
+            Type = serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerProvider>>().Value.Type
+        };
+
+        return Ok(containerProvider);
+    }
+
+    /// <summary>
     /// Get configuration
     /// </summary>
     /// <remarks>

@@ -42,6 +42,8 @@ public static class ContainerServiceExtension
             {
                 ContainerProviderType.Docker => services
                     .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
+                ContainerProviderType.DockerCompose => services
+                    .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
                 ContainerProviderType.Kubernetes => services
                     .AddSingleton<IContainerProvider<Kubernetes, KubernetesMetadata>, KubernetesProvider>(),
                 _ => services
@@ -51,6 +53,7 @@ public static class ContainerServiceExtension
             => config.Type switch
             {
                 ContainerProviderType.Kubernetes => services.AddSingleton<IContainerManager, KubernetesManager>(),
+                ContainerProviderType.DockerCompose => services.AddSingleton<IContainerManager, DockerComposeManager>(),
                 _ => services.AddSingleton<IContainerManager, DockerManager>()
             };
     }

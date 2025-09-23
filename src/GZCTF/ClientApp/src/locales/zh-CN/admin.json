@@ -108,6 +108,7 @@
         },
         "category": "题目类别",
         "container_image": "容器镜像",
+        "container_compose": "Compose Script or Image Name",
         "cpu_limit": {
           "description": "乘以 0.1 即为 CPU 核心数",
           "label": "CPU 限制 (0.1 CPUs)"
