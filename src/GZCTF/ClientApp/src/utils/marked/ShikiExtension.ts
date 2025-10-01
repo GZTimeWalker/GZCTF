@@ -23,7 +23,6 @@ import powershell from '@shikijs/langs/powershell'
 import proto from '@shikijs/langs/proto'
 import python from '@shikijs/langs/python'
 import rust from '@shikijs/langs/rust'
-import shellscript from '@shikijs/langs/shellscript'
 import solidity from '@shikijs/langs/solidity'
 import sql from '@shikijs/langs/sql'
 import toml from '@shikijs/langs/toml'
@@ -45,22 +44,29 @@ import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
 import css from '@shikijs/langs/css'
 
 let highlighter: HighlighterCore | null = null
+let supportedLanguages: string[] | null = null
 
 const initHighlighter = (): HighlighterCore => {
   if (!highlighter) {
     /* prettier-ignore */
     highlighter = createHighlighterCoreSync({
       langs: [
-        cLang, cpp, csharp, css, docker, shellscript,
+        cLang, cpp, csharp, css, docker, typescript,
         dockerfile, glsl, bash, go, html, ini, java,
         jsonc, json, applescript, asm, diff, dotenv,
         llvm, log, make, proto, solidity, markdown,
-        powershell, python, rust, sql, toml, yaml,
-        typescript, xml,
+        powershell, python, rust, sql, toml, yaml, xml
       ],
+      langAlias: {
+        "js": "typescript",
+        "javascript": "typescript",
+        "json": "jsonc"
+      },
       themes: [materialThemeDarker, materialThemeLighter],
       engine: createJavaScriptRegexEngine(),
     })
+    supportedLanguages = highlighter.getLoadedLanguages()
+    supportedLanguages.push('text', 'plain', 'ansi')
   }
 
   return highlighter
@@ -75,10 +81,13 @@ const transformers = [
 ]
 
 const highlight = (code: string, lang: string) => {
-  if (lang === 'json') lang = 'jsonc'
-  if (lang === 'js' || lang === 'javascript') lang = 'typescript'
+  const highlighter = initHighlighter()
 
-  return initHighlighter().codeToHtml(code, {
+  if (supportedLanguages && !supportedLanguages.includes(lang)) {
+    lang = 'text'
+  }
+
+  return highlighter.codeToHtml(code, {
     lang,
     themes: { dark: 'material-theme-darker', light: 'material-theme-lighter' },
     cssVariablePrefix: '--code-',
