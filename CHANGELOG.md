@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.6.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.6.1..v1.6.2) - 2025-10-04
+
+### ⛰️ Features
+
+- **(shiki)** fallback unsupported languages to text - ([375e04](https://github.com/GZTimeWalker/GZCTF/commit/375e04)) by **GZTime**
+
+---
 ## [1.6.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.6.0..v1.6.1) - 2025-09-11
 
 ### ⛰️ Features
