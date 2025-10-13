@@ -40,6 +40,7 @@ public class GameController(
     IBlobRepository blobService,
     IGameRepository gameRepository,
     ITeamRepository teamRepository,
+    IDivisionRepository divisionRepository,
     IGameEventRepository eventRepository,
     IGameNoticeRepository noticeRepository,
     ICheatInfoRepository cheatInfoRepository,
@@ -150,11 +151,17 @@ public class GameController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
 
-        if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
+        Division? div = null;
+        if (model.DivisionId is { } divId)
+        {
+            div = await divisionRepository.GetDivision(id, divId, token);
+            if (div is null)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+        }
+        else if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
+        {
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
-
-        if (!game.IsValidDivision(model.Division))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+        }
 
         var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(model.TeamId, token);
@@ -184,21 +191,27 @@ public class GameController(
             {
                 Game = game,
                 Team = team,
-                Division = model.Division,
+                DivisionId = model.DivisionId,
                 Token = gameRepository.GetToken(game, team)
             };
 
             participationRepository.Add(part);
         }
+        else if (part.DivisionId is { } partDivId)
+        {
+            // Division is not included by default, so we need to query it
+            div = await divisionRepository.GetDivision(id, partDivId, token);
+        }
+
+        // Team already joined, check if the invite code matches
+        if (div is not null && !string.IsNullOrEmpty(div.InviteCode) && div.InviteCode != model.InviteCode)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
 
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_TeamMemberLimitExceeded)]));
 
         // Add current user to the team
         part.Members.Add(new(user!, game, team));
-
-        // Set division as the last request
-        part.Division = model.Division;
 
         if (part.Status == ParticipationStatus.Rejected)
             part.Status = ParticipationStatus.Pending;

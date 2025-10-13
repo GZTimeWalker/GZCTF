@@ -1055,4 +1055,7 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Failed to initialize storage provider: {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+      <value>Division not found</value>
+  </data>
 </root>

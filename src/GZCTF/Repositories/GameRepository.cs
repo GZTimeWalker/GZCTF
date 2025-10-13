@@ -254,12 +254,29 @@ public class GameRepository(
     {
         Dictionary<int, ScoreboardItem> items; // participant id -> scoreboard item
         Dictionary<int, ChallengeInfo> challenges;
+        Dictionary<int, DivisionItem> divisions;
         List<ChallengeItem> submissions;
 
         // 0. Begin transaction
         await using (var trans = await Context.Database.BeginTransactionAsync(token))
         {
-            // 1. Fetch all teams with their members from Participations, into ScoreboardItem
+            // 1. Fetch all divisions for this game
+            divisions = await Context.Divisions.AsNoTracking().IgnoreAutoIncludes()
+                .Where(d => d.GameId == game.Id)
+                .Include(d => d.ChallengeConfigs)
+                .Select(d => new DivisionItem
+                {
+                    Id = d.Id,
+                    Name = d.Name,
+                    DefaultPermissions = d.DefaultPermissions,
+                    ChallengeConfigs = d.ChallengeConfigs.Select(c => new
+                        DivisionChallengeItem
+                    { Permissions = c.Permissions }
+                    ).ToDictionary(c => c.ChallengeId)
+                })
+                .ToDictionaryAsync(d => d.Id, token);
+
+            // 2. Fetch all teams with their members from Participations, into ScoreboardItem
             items = await Context.Participations
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
@@ -271,7 +288,7 @@ public class GameRepository(
                     Bio = p.Team.Bio,
                     Name = p.Team.Name,
                     Avatar = p.Team.AvatarUrl,
-                    Division = p.Division,
+                    DivisionId = p.DivisionId,
                     ParticipantId = p.Id,
                     TeamInfo = p.Team,
                     // pending fields: SolvedChallenges
@@ -280,7 +297,7 @@ public class GameRepository(
                     // update: only store accepted challenges
                 }).ToDictionaryAsync(i => i.ParticipantId, token);
 
-            // 2. Fetch all challenges from GameChallenges, into ChallengeInfo
+            // 3. Fetch all challenges from GameChallenges, into ChallengeInfo
             challenges = await Context.GameChallenges
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
@@ -298,7 +315,7 @@ public class GameRepository(
                     // pending fields: Bloods
                 }).ToDictionaryAsync(c => c.Id, token);
 
-            // 3. fetch all needed submissions into a list of ChallengeItem
+            // 4. fetch all needed submissions into a list of ChallengeItem
             //    **take only the first accepted submission for each challenge & team**
             submissions = await Context.Submissions
                 .AsNoTracking()
@@ -334,7 +351,7 @@ public class GameRepository(
             await trans.CommitAsync(token);
         }
 
-        // 4. sort challenge items by submit time, and update the Score and Type fields
+        // 5. sort challenge items by submit time, and update the Score and Type fields
         var noBonus = game.BloodBonus.NoBonus;
 
         float[] bloodFactors =
@@ -352,8 +369,11 @@ public class GameRepository(
 
             var challenge = challenges[item.Id];
 
-            // 4.1. generate bloods
-            if (challenge is { DisableBloodBonus: false, Bloods.Count: < 3 })
+            DivisionItem? division = scoreboardItem.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
+
+            // 5.1. generate bloods
+            if (challenge is { DisableBloodBonus: false, Bloods.Count: < 3 } &&
+                IsDivisionAllowed(division, GamePermission.GetBlood, item.Id))
             {
                 item.Type = challenge.Bloods.Count switch
                 {
@@ -371,66 +391,79 @@ public class GameRepository(
                 });
             }
 
-            // 4.2. update score
-            item.Score = noBonus
-                ? item.Type switch
-                {
-                    SubmissionType.Unaccepted => throw new UnreachableException(),
-                    _ => challenge.Score
-                }
-                : item.Type switch
-                {
-                    SubmissionType.Unaccepted => throw new UnreachableException(),
-                    SubmissionType.FirstBlood => Convert.ToInt32(challenge.Score * bloodFactors[0]),
-                    SubmissionType.SecondBlood => Convert.ToInt32(challenge.Score * bloodFactors[1]),
-                    SubmissionType.ThirdBlood => Convert.ToInt32(challenge.Score * bloodFactors[2]),
-                    SubmissionType.Normal => challenge.Score,
-                    _ => throw new ArgumentException(nameof(item.Type))
-                };
+            // 5.2. update score
+            if (IsDivisionAllowed(division, GamePermission.GetScore, item.Id))
+            {
+                item.Score = noBonus
+                    ? item.Type switch
+                    {
+                        SubmissionType.Unaccepted => throw new UnreachableException(),
+                        _ => challenge.Score
+                    }
+                    : item.Type switch
+                    {
+                        SubmissionType.Unaccepted => throw new UnreachableException(),
+                        SubmissionType.FirstBlood => Convert.ToInt32(challenge.Score * bloodFactors[0]),
+                        SubmissionType.SecondBlood => Convert.ToInt32(challenge.Score * bloodFactors[1]),
+                        SubmissionType.ThirdBlood => Convert.ToInt32(challenge.Score * bloodFactors[2]),
+                        SubmissionType.Normal => challenge.Score,
+                        _ => throw new ArgumentException(nameof(item.Type))
+                    };
+            }
+            else
+            {
+                item.Score = 0;
+            }
 
-            // 4.3. update scoreboard item
+            // 5.3. update scoreboard item
             scoreboardItem.SolvedChallenges.Add(item);
             scoreboardItem.Score += item.Score;
             scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
         }
 
-        // 5. sort scoreboard items by score and last submission time
+        // 6. sort scoreboard items by score and last submission time
         items = items.Values
             .OrderByDescending(i => i.Score)
             .ThenBy(i => i.LastSubmissionTime)
             .ToDictionary(i => i.Id); // team id -> scoreboard item
 
-        // 6. update rank and organization rank
-        var ranks = new Dictionary<string, int>();
+        // 7. update rank and organization rank
         var currentRank = 1;
-        Dictionary<string, HashSet<int>> orgTeams = new() { ["all"] = [] };
+        Dictionary<int, int> ranks = [];
+        Dictionary<string, HashSet<int>> topTeams = new() { ["all"] = [] }; // division id -> list of team ids
+
         foreach (var item in items.Values)
         {
-            item.Rank = currentRank++;
+            DivisionItem? division = item.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
 
-            if (item.Rank <= 10)
-                orgTeams["all"].Add(item.Id);
+            if (division is null || IsDivisionAllowed(division, GamePermission.RankOverall))
+            {
+                item.Rank = currentRank++;
 
-            if (item.Division is null)
+                if (item.Rank <= 10)
+                    topTeams["all"].Add(item.Id);
+            }
+
+            if (division is null)
                 continue;
 
-            if (ranks.TryGetValue(item.Division, out var rank))
+            if (ranks.TryGetValue(division.Id, out var rank))
             {
                 item.DivisionRank = rank + 1;
-                ranks[item.Division]++;
+                ranks[division.Id]++;
                 if (item.DivisionRank <= 10)
-                    orgTeams[item.Division].Add(item.Id);
+                    topTeams[division.Name].Add(item.Id);
             }
             else
             {
                 item.DivisionRank = 1;
-                ranks[item.Division] = 1;
-                orgTeams[item.Division] = [item.Id];
+                ranks[division.Id] = 1;
+                topTeams[division.Name] = [item.Id];
             }
         }
 
         // 7. generate top timelines by solved challenges
-        var timelines = orgTeams.ToDictionary(
+        var timelines = topTeams.ToDictionary(
             i => i.Key,
             i => i.Value.Select(tid =>
                 {
@@ -462,8 +495,19 @@ public class GameRepository(
         {
             Challenges = challengesDict,
             Items = items,
+            Divisions = divisions,
             TimeLines = timelines,
             BloodBonusValue = game.BloodBonus.Val
         };
+    }
+
+    static bool IsDivisionAllowed(DivisionItem? division, GamePermission permission, int? challengeId = null)
+    {
+        if (division is null)
+            return true;
+
+        return challengeId is { } id && division.ChallengeConfigs.TryGetValue(id, out var config)
+            ? config.Permissions.HasFlag(permission)
+            : division.DefaultPermissions.HasFlag(permission);
     }
 }

@@ -9,7 +9,7 @@ namespace GZCTF.Models.Request.Edit;
 public class GameInfoModel
 {
     /// <summary>
-    /// Game Id
+    /// Game ID
     /// </summary>
     public int Id { get; set; }
 
@@ -51,16 +51,6 @@ public class GameInfoModel
         ErrorMessageResourceName = nameof(Resources.Program.Model_InvitationCodeTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? InviteCode { get; set; }
-
-    /// <summary>
-    /// List of divisions the game belongs to
-    /// </summary>
-    public List<string>? Divisions { get; set; }
-
-    /// <summary>
-    /// List of divisions the game belongs to
-    /// </summary>
-    public List<Division>? NewDivisions { get; set; }
 
     /// <summary>
     /// Team member count limit, 0 means no limit
@@ -130,7 +120,6 @@ public class GameInfoModel
             PosterUrl = game.PosterUrl,
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
-            Divisions = game.Divisions?.ToList(),
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,

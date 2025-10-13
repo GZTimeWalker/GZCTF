@@ -36,6 +36,7 @@ public class EditController(
     IGameRepository gameRepository,
     IContainerManager containerService,
     IBlobRepository blobService,
+    IDivisionRepository divisionRepository,
     IStringLocalizer<Program> localizer) : Controller
 {
     /// <summary>
@@ -437,6 +438,122 @@ public class EditController(
                 new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotDeletable)]));
 
         await gameNoticeRepository.RemoveNotice(notice, token);
+
+        return Ok();
+    }
+
+
+    /// <summary>
+    /// Create Division
+    /// </summary>
+    /// <remarks>
+    /// Add a new division for a game; requires administrator privileges
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="model">Division information</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully created division</response>
+    [HttpPost("Games/{id:int}/Divisions")]
+    [ProducesResponseType(typeof(Division), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CreateDivision([FromRoute] int id, [FromBody] DivisionCreateModel model,
+        CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var division = await divisionRepository.CreateDivision(game, model, token);
+
+        // scoreboard depends on divisions
+        await cacheHelper.FlushScoreboardCache(game.Id, token);
+
+        return Ok(division);
+    }
+
+    /// <summary>
+    /// Get Divisions
+    /// </summary>
+    /// <remarks>
+    /// Retrieve all divisions for a game; requires administrator privileges
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved divisions</response>
+    [HttpGet("Games/{id:int}/Divisions")]
+    [ProducesResponseType(typeof(Division[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDivisions([FromRoute] int id, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var divisions = await divisionRepository.GetDivisions(id, token);
+        return Ok(divisions);
+    }
+
+    /// <summary>
+    /// Update Division
+    /// </summary>
+    /// <remarks>
+    /// Update a division for a game; requires administrator privileges
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="divisionId">Division ID</param>
+    /// <param name="model">Division information</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully updated division</response>
+    [HttpPut("Games/{id:int}/Divisions/{divisionId:int}")]
+    [ProducesResponseType(typeof(Division), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateDivision([FromRoute] int id, [FromRoute] int divisionId,
+        [FromBody] DivisionEditModel model, CancellationToken token)
+    {
+        var division = await divisionRepository.GetDivision(id, divisionId, token);
+        if (division is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Division_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        await divisionRepository.UpdateDivision(division, model, token);
+
+        // scoreboard depends on divisions
+        await cacheHelper.FlushScoreboardCache(id, token);
+
+        return Ok(division);
+    }
+
+    /// <summary>
+    /// Delete Division
+    /// </summary>
+    /// <remarks>
+    /// Delete a division for a game; requires administrator privileges
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="divisionId">Division ID</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully deleted division</response>
+    [HttpDelete("Games/{id:int}/Divisions/{divisionId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteDivision([FromRoute] int id, [FromRoute] int divisionId, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var division = await divisionRepository.GetDivision(id, divisionId, token);
+        if (division is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Division_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        await divisionRepository.RemoveDivision(division, token);
+
+        // scoreboard depends on divisions
+        await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok();
     }

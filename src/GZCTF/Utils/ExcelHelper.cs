@@ -157,8 +157,10 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             row.CreateCell(colIndex++).SetCellValue(item.Rank);
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
-            if (withDiv)
-                row.CreateCell(colIndex++).SetCellValue(item.Division);
+            if (withDiv && item.DivisionId is { } id && scoreboard.Divisions.TryGetValue(id, out var division))
+            {
+                row.CreateCell(colIndex++).SetCellValue(division.Name);
+            }
 
             row.CreateCell(colIndex++).SetCellValue(TakeIfNotEmpty(item.TeamInfo?.Captain?.UserName));
 

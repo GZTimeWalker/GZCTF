@@ -10,7 +10,7 @@ public class GameJoinModel
     /// <summary>
     /// Division for participation
     /// </summary>
-    public string? Division { get; set; }
+    public int? DivisionId { get; set; }
 
     /// <summary>
     /// Invitation code for participation

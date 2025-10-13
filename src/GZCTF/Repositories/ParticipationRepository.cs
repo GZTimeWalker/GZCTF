@@ -8,6 +8,7 @@ namespace GZCTF.Repositories;
 public class ParticipationRepository(
     CacheHelper cacheHelper,
     IBlobRepository blobRepository,
+    IDivisionRepository divisionRepository,
     AppDbContext context) : RepositoryBase(context), IParticipationRepository
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
@@ -90,20 +91,36 @@ public class ParticipationRepository(
             }
         }
 
-        if (model.Division != part.Division && part.Game.IsValidDivision(model.Division))
-        {
-            part.Division = model.Division;
-            await SaveAsync(token);
-
-            // flush scoreboard when division is updated
-            if (part.Game.IsActive)
-                needFlush = true;
-        }
+        needFlush |= await UpdateDivision(part, model.DivisionId, token) && part.Game.IsActive;
 
         await trans.CommitAsync(token);
 
         if (needFlush)
             await cacheHelper.FlushScoreboardCache(part.GameId, token);
+    }
+
+    async Task<bool> UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
+    {
+        if (part.DivisionId == divisionId)
+            return false;
+
+        if (divisionId is { } divId)
+        {
+            var div = await divisionRepository.GetDivision(part.GameId, divId, token);
+            if (div is null)
+                return false;
+
+            part.DivisionId = divisionId;
+            part.NewDivision = div;
+        }
+        else
+        {
+            part.DivisionId = null;
+            part.NewDivision = null;
+        }
+
+        await SaveAsync(token);
+        return true;
     }
 
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>

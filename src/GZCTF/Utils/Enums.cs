@@ -375,8 +375,8 @@ public enum Difficulty : byte
 /// Game participant permission
 /// </summary>
 [Flags]
-[JsonConverter(typeof(JsonStringEnumConverter<GamePermission>))]
-public enum GamePermission : int
+[JsonConverter(typeof(JsonNumberEnumConverter<GamePermission>))]
+public enum GamePermission
 {
     /// <summary>
     /// Join the game
@@ -409,9 +409,9 @@ public enum GamePermission : int
     RankOverall = 1 << 5,
 
     /// <summary>
-    /// All permissions
+    /// All permissions, including future permissions
     /// </summary>
-    All = JoinGame | ViewChallenge | SubmitFlags | GetScore | GetBlood | RankOverall
+    All = int.MaxValue
 }
 
 /// <summary>

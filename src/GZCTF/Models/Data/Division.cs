@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using GZCTF.Models.Request.Edit;
 using MemoryPack;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,8 +44,7 @@ public partial class Division
     /// <summary>
     /// Challenge configs for this division.
     /// </summary>
-    [JsonIgnore]
-    public List<DivisionChallengeConfig> ChallengeConfigs { get; set; } = [];
+    public HashSet<DivisionChallengeConfig> ChallengeConfigs { get; set; } = [];
 
     /// <summary>
     /// The game this division belongs to.
@@ -54,6 +54,37 @@ public partial class Division
     public Game? Game { get; set; }
 
     #endregion
+
+    internal void Update(DivisionEditModel model)
+    {
+        Name = model.Name ?? Name;
+        InviteCode = model.InviteCode ?? InviteCode;
+        DefaultPermissions = model.DefaultPermissions ?? DefaultPermissions;
+
+        if (model.ChallengeConfigs is null)
+            return;
+
+        var newConfigs = model.ChallengeConfigs.ToDictionary(c => c.ChallengeId);
+        ChallengeConfigs.RemoveWhere(c => !newConfigs.ContainsKey(c.ChallengeId));
+
+        foreach (var config in newConfigs.Values)
+        {
+            var existingConfig = ChallengeConfigs.FirstOrDefault(c => c.ChallengeId == config.ChallengeId);
+            if (existingConfig is not null)
+            {
+                existingConfig.Permissions = config.Permissions;
+            }
+            else
+            {
+                ChallengeConfigs.Add(new DivisionChallengeConfig
+                {
+                    ChallengeId = config.ChallengeId,
+                    Permissions = config.Permissions,
+                    DivisionId = Id
+                });
+            }
+        }
+    }
 }
 
 [MemoryPackable]
@@ -61,18 +92,24 @@ public partial class Division
 public partial class DivisionChallengeConfig
 {
     [Required]
+    [JsonIgnore]
     public int DivisionId { get; set; }
 
     [Required]
     public int ChallengeId { get; set; }
 
+    /// <summary>
+    /// Challenge Specific Permissions
+    /// </summary>
     public GamePermission Permissions { get; set; } = GamePermission.All;
 
     #region Db Relationship
 
+    [JsonIgnore]
     [MemoryPackIgnore]
     public Division? Division { get; set; }
 
+    [JsonIgnore]
     [MemoryPackIgnore]
     public GameChallenge? Challenge { get; set; }
 

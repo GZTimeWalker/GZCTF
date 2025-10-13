@@ -38,11 +38,24 @@ public partial class ScoreboardModel
     public Dictionary<int, ScoreboardItem> Items { get; set; } = null!;
 
     /// <summary>
+    /// Division information
+    /// </summary>
+    [JsonIgnore]
+    public Dictionary<int, DivisionItem> Divisions { get; set; } = null!;
+
+    /// <summary>
     /// List of team information
     /// </summary>
     [MemoryPackIgnore]
     [JsonPropertyName("items")]
     public IEnumerable<ScoreboardItem> ItemList => Items.Values;
+
+    /// <summary>
+    /// List of division information
+    /// </summary>
+    [MemoryPackIgnore]
+    [JsonPropertyName("divisions")]
+    public IEnumerable<DivisionItem> DivisionList => Divisions.Values;
 
     /// <summary>
     /// Challenge information
@@ -62,6 +75,45 @@ public partial class ScoreboardModel
     /// </summary>
     [MemoryPackIgnore]
     public int ChallengeCount { get; private set; }
+}
+
+[MemoryPackable]
+public partial class DivisionItem
+{
+    /// <summary>
+    /// Division ID
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
+    /// The name of the division.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Permissions associated with the division.
+    /// </summary>
+    public GamePermission DefaultPermissions { get; set; } = GamePermission.All;
+
+    /// <summary>
+    /// Challenge configs for this division.
+    /// </summary>
+    public Dictionary<int, DivisionChallengeItem> ChallengeConfigs { get; set; } = [];
+
+}
+
+[MemoryPackable]
+public partial class DivisionChallengeItem
+{
+    /// <summary>
+    /// Challenge ID
+    /// </summary>
+    public int ChallengeId { get; set; }
+
+    /// <summary>
+    /// Permissions for a specific challenge.
+    /// </summary>
+    public GamePermission Permissions { get; set; } = GamePermission.All;
 }
 
 [MemoryPackable]
@@ -118,7 +170,7 @@ public partial class ScoreboardItem
     /// <summary>
     /// Division of participation
     /// </summary>
-    public string? Division { get; set; }
+    public int? DivisionId { get; set; }
 
     /// <summary>
     /// Team avatar

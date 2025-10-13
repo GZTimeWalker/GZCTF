@@ -183,14 +183,6 @@ public class Game
         return CryptoUtils.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
     }
 
-    internal bool IsValidDivision(string? division)
-    {
-        if (Divisions is not { Count: > 0 })
-            return division is null;
-
-        return !string.IsNullOrWhiteSpace(division) && Divisions.Contains(division);
-    }
-
     internal Game Update(GameInfoModel model)
     {
         Title = model.Title;
@@ -200,7 +192,6 @@ public class Game
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
-        Divisions = model.Divisions?.ToHashSet() ?? Divisions;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;

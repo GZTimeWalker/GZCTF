@@ -20,5 +20,5 @@ public class ParticipationEditModel
     /// <summary>
     /// The division of the participated team
     /// </summary>
-    public string? Division { get; set; }
+    public int? DivisionId { get; set; }
 }
