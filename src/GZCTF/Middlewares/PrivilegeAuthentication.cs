@@ -39,7 +39,7 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
 
         if (user is null)
         {
-            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_LoginRequired)],
+            context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_LoginRequired)],
                 StatusCodes.Status401Unauthorized);
             return;
         }
@@ -65,12 +65,9 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
                     context.HttpContext.Request.Path], user,
                 TaskStatus.Denied);
 
-        context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+        context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
             StatusCodes.Status403Forbidden);
     }
-
-    public static IActionResult GetResult(string msg, int code) =>
-        new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
 }
 
 /// <summary>

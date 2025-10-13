@@ -155,7 +155,7 @@ public class GameController(
         if (model.DivisionId is { } divId)
         {
             div = await divisionRepository.GetDivision(id, divId, token);
-            if (div is null)
+            if (div is null || !div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
         }
         else if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
@@ -702,6 +702,14 @@ public class GameController(
         eTag = GameETag(context.Game!.Id, lastModified);
         ContextHelper.SetCacheHeaders(Response, eTag, lastModified, true);
 
+        var challenges = scoreboard.Challenges;
+        if (context.Participation!.DivisionId is { } divId &&
+            scoreboard.Divisions.TryGetValue(divId, out var division))
+        {
+            // filter out challenges is can be viewed by division permission
+            challenges = FilterChallengesByPermission(scoreboard.Challenges, division);
+        }
+
         var boardItem = scoreboard.Items.TryGetValue(context.Participation!.TeamId, out var item)
             ? item
             : new()
@@ -716,8 +724,8 @@ public class GameController(
         {
             ScoreboardItem = boardItem,
             TeamToken = context.Participation!.Token,
-            Challenges = scoreboard.Challenges,
-            ChallengeCount = scoreboard.ChallengeCount,
+            Challenges = challenges,
+            ChallengeCount = challenges.Count,
             WriteupRequired = context.Game!.WriteupRequired,
             WriteupDeadline = context.Game!.WriteupDeadline
         });
@@ -922,6 +930,13 @@ public class GameController(
             if (instance is null)
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
+
+            if (!await divisionRepository.CheckPermission(context.Participation?.DivisionId, GamePermission.SubmitFlags,
+                    challengeId, token))
+            {
+                return BadRequest(
+                    new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionNoPermission)]));
+            }
 
             instance.SubmissionCount++;
 
@@ -1137,9 +1152,8 @@ public class GameController(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
         if (instance.IsContainerOperationTooFrequent)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests))
-            { StatusCode = StatusCodes.Status429TooManyRequests };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
+                StatusCodes.Status429TooManyRequests);
 
         if (instance.Container is not null)
         {
@@ -1254,9 +1268,8 @@ public class GameController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerNotCreated)]));
 
         if (instance.IsContainerOperationTooFrequent)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
-                StatusCodes.Status429TooManyRequests))
-            { StatusCode = StatusCodes.Status429TooManyRequests };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
+                StatusCodes.Status429TooManyRequests);
 
         var destroyId = instance.Container.ContainerId;
 
@@ -1322,6 +1335,29 @@ public class GameController(
 
     static string GameETag(int gameId, DateTimeOffset lastModified) =>
         $"\"{gameId}-{lastModified.ToUnixTimeSeconds():X}\"";
+
+    static Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> FilterChallengesByPermission(
+        Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> challenges,
+        DivisionItem division)
+    {
+        var res = new Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>>();
+
+        if (!division.DefaultPermissions.HasFlag(GamePermission.ViewChallenge))
+            return res;
+
+        foreach ((ChallengeCategory cat, IEnumerable<ChallengeInfo> chs) in challenges)
+        {
+            var infos = chs.Where(chal =>
+                division.ChallengeConfigs.TryGetValue(chal.Id, out var config) &&
+                config.Permissions.HasFlag(GamePermission.ViewChallenge)
+            ).ToArray();
+
+            if (infos.Length > 0)
+                res[cat] = infos;
+        }
+
+        return res;
+    }
 
     class ContextInfo
     {

@@ -31,6 +31,17 @@ public interface IDivisionRepository : IRepository
     Task<Division?> GetDivision(int gameId, int divisionId, CancellationToken token = default);
 
     /// <summary>
+    /// Check if a division has a specific permission, optionally for a specific challenge
+    /// </summary>
+    /// <param name="divisionId"></param>
+    /// <param name="permission"></param>
+    /// <param name="challengeId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    ValueTask<bool> CheckPermission(int? divisionId, GamePermission permission, int? challengeId,
+        CancellationToken token = default);
+
+    /// <summary>
     /// Update an existing division
     /// </summary>
     /// <param name="division"></param>

@@ -99,7 +99,6 @@ public partial class DivisionItem
     /// Challenge configs for this division.
     /// </summary>
     public Dictionary<int, DivisionChallengeItem> ChallengeConfigs { get; set; } = [];
-
 }
 
 [MemoryPackable]

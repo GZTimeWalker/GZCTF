@@ -71,11 +71,11 @@ export enum ChallengeType {
 /** Game participant permission */
 export enum GamePermission {
   JoinGame = 1,
-  ViewChallenge = 2,
-  SubmitFlags = 4,
-  GetScore = 8,
-  GetBlood = 16,
-  RankOverall = 32,
+  RankOverall = 2,
+  ViewChallenge = 256,
+  SubmitFlags = 512,
+  GetScore = 1024,
+  GetBlood = 2048,
   All = 2147483647,
 }
 

@@ -34,6 +34,30 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
             .Include(d => d.ChallengeConfigs)
             .FirstOrDefaultAsync(d => d.Id == divisionId && d.GameId == gameId, token);
 
+    public async ValueTask<bool> CheckPermission(int? divisionId, GamePermission permission, int? challengeId,
+        CancellationToken token = default)
+    {
+        if (divisionId is null)
+            return true;
+
+        var result = await Context.Divisions
+            .Where(d => d.Id == divisionId)
+            .Select(d => new
+            {
+                d.DefaultPermissions,
+                Config = d.ChallengeConfigs.FirstOrDefault(c => c.ChallengeId == challengeId)
+            })
+            .FirstOrDefaultAsync(token);
+
+        if (result is null)
+            return true;
+
+        if (result.Config is { } config)
+            return config.Permissions.HasFlag(permission);
+
+        return result.DefaultPermissions.HasFlag(permission);
+    }
+
     public async Task UpdateDivision(Division division, DivisionEditModel model, CancellationToken token = default)
     {
         division.Update(model);

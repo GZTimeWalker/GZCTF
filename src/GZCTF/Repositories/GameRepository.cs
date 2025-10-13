@@ -373,7 +373,7 @@ public class GameRepository(
 
             // 5.1. generate bloods
             if (challenge is { DisableBloodBonus: false, Bloods.Count: < 3 } &&
-                IsDivisionAllowed(division, GamePermission.GetBlood, item.Id))
+                CheckDivisionPermission(division, GamePermission.GetBlood, item.Id))
             {
                 item.Type = challenge.Bloods.Count switch
                 {
@@ -392,7 +392,7 @@ public class GameRepository(
             }
 
             // 5.2. update score
-            if (IsDivisionAllowed(division, GamePermission.GetScore, item.Id))
+            if (CheckDivisionPermission(division, GamePermission.GetScore, item.Id))
             {
                 item.Score = noBonus
                     ? item.Type switch
@@ -436,7 +436,7 @@ public class GameRepository(
         {
             DivisionItem? division = item.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
 
-            if (division is null || IsDivisionAllowed(division, GamePermission.RankOverall))
+            if (CheckDivisionPermission(division, GamePermission.RankOverall))
             {
                 item.Rank = currentRank++;
 
@@ -501,7 +501,7 @@ public class GameRepository(
         };
     }
 
-    static bool IsDivisionAllowed(DivisionItem? division, GamePermission permission, int? challengeId = null)
+    static bool CheckDivisionPermission(DivisionItem? division, GamePermission permission, int? challengeId = null)
     {
         if (division is null)
             return true;

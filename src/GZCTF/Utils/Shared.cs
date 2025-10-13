@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Channels;
 using MemoryPack;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IO;
 
 namespace GZCTF.Utils;
@@ -46,7 +47,11 @@ public record TaskResult<TResult>(TaskStatus Status, TResult? Result = default);
 /// </summary>
 /// <param name="Title">Response message</param>
 /// <param name="Status">Status code</param>
-public record RequestResponse(string Title, int Status = StatusCodes.Status400BadRequest);
+public record RequestResponse(string Title, int Status = StatusCodes.Status400BadRequest)
+{
+    internal static IActionResult Result(string title, int status = StatusCodes.Status400BadRequest) =>
+        new JsonResult(new RequestResponse(title, status)) { StatusCode = status };
+}
 
 /// <summary>
 /// Request response
