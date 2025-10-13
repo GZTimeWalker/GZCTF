@@ -29,11 +29,6 @@ public class Participation
     public string Token { get; set; } = string.Empty;
 
     /// <summary>
-    /// Division the team belongs to
-    /// </summary>
-    public string? Division { get; set; }
-
-    /// <summary>
     /// Team writeup
     /// </summary>
     public LocalFile? Writeup { get; set; }
@@ -90,7 +85,7 @@ public class Participation
     /// <summary>
     /// Division this participation belongs to
     /// </summary>
-    public Division? NewDivision { get; set; }
+    public Division? Division { get; set; }
 
     #endregion Db Relationship
 }

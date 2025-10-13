@@ -109,7 +109,7 @@ public record ChallengeModel(int Id, string Title, ChallengeCategory Category)
 public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Division)
 {
     internal static ParticipationModel FromParticipation(Participation part) =>
-        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division);
+        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division?.Name);
 }
 
 /// <summary>

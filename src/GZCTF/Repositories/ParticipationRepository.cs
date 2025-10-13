@@ -111,12 +111,12 @@ public class ParticipationRepository(
                 return false;
 
             part.DivisionId = divisionId;
-            part.NewDivision = div;
+            part.Division = div;
         }
         else
         {
             part.DivisionId = null;
-            part.NewDivision = null;
+            part.Division = null;
         }
 
         await SaveAsync(token);
@@ -126,6 +126,7 @@ public class ParticipationRepository(
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>
         Context.Participations.Where(p => ids.Contains(p.Id))
             .Include(p => p.Team)
+            .Include(p => p.Division)
             .ToArrayAsync(token);
 
     public async Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default) =>

@@ -48,7 +48,7 @@ public class TeamTrafficModel
             Id = part.Id,
             TeamId = part.Team.Id,
             Name = part.Team.Name,
-            Division = part.Division,
+            Division = part.Division?.Name,
             Avatar = part.Team.AvatarUrl,
             Count = (await storage.ListAsync(path, cancellationToken: token)).Count
         };

@@ -66,7 +66,7 @@ public class DetailedGameInfoModel
     /// <summary>
     /// Current registered division
     /// </summary>
-    public string? Division { get; set; }
+    public int? Division { get; set; }
 
     /// <summary>
     /// Team name for participation
@@ -100,7 +100,7 @@ public class DetailedGameInfoModel
     {
         Status = part?.Status ?? ParticipationStatus.Unsubmitted;
         TeamName = part?.Team.Name;
-        Division = part?.Division;
+        Division = part?.DivisionId;
         return this;
     }
 
@@ -114,7 +114,7 @@ public class DetailedGameInfoModel
             Content = game.Content,
             PracticeMode = game.PracticeMode,
             Divisions =
-                game.NewDivisions?.Select(d => new DivisionInfo
+                game.Divisions?.Select(d => new DivisionInfo
                 {
                     Id = d.Id,
                     Name = d.Name,

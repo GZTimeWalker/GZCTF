@@ -35,7 +35,7 @@ public class ParticipationInfoModel
         {
             Id = part.Id,
             Status = part.Status,
-            Division = part.Division,
+            Division = part.Division?.Name,
             RegisteredMembers = part.Members.Select(m => m.UserId).ToArray(),
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };

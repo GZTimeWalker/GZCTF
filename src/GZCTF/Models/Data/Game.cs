@@ -79,11 +79,6 @@ public class Game
     public string? InviteCode { get; set; }
 
     /// <summary>
-    /// List of divisions for the game
-    /// </summary>
-    public HashSet<string>? Divisions { get; set; }
-
-    /// <summary>
     /// Limit on the number of team members, 0 means no limit
     /// </summary>
     public int TeamMemberCountLimit { get; set; }
@@ -245,7 +240,7 @@ public class Game
     /// <summary>
     /// List of divisions for the game
     /// </summary>
-    public HashSet<Division>? NewDivisions { get; set; }
+    public HashSet<Division>? Divisions { get; set; }
 
     #endregion Db Relationship
 }

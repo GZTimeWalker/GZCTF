@@ -82,11 +82,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
         builder.Entity<Game>(entity =>
         {
-            entity.Property(e => e.Divisions)
-                .HasConversion(setConverter)
-                .Metadata
-                .SetValueComparer(setComparer);
-
             entity.HasMany(e => e.GameEvents)
                 .WithOne(e => e.Game)
                 .HasForeignKey(e => e.GameId);
@@ -103,7 +98,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithOne(e => e.Game)
                 .HasForeignKey(e => e.GameId);
 
-            entity.HasMany(e => e.NewDivisions)
+            entity.HasMany(e => e.Divisions)
                 .WithOne(e => e.Game)
                 .HasForeignKey(e => e.GameId);
 

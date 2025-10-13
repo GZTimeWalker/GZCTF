@@ -790,7 +790,7 @@ public class GameController(
         try
         {
             var scoreboard = await gameRepository.GetScoreboardWithMembers(game, token);
-            var stream = excelHelper.GetScoreboardExcel(scoreboard, game);
+            var stream = excelHelper.GetScoreboardExcel(scoreboard);
             stream.Seek(0, SeekOrigin.Begin);
 
             return File(stream,
