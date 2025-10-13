@@ -11,7 +11,7 @@
     <PackageVersion Include="FluentStorage" Version="6.0.0" />
     <PackageVersion Include="FluentStorage.AWS" Version="6.0.0" />
     <PackageVersion Include="FluentStorage.Azure.Blobs" Version="6.0.0" />
-    <PackageVersion Include="KubernetesClient" Version="17.0.14" />
+    <PackageVersion Include="KubernetesClient" Version="18.0.4" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.9" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.9" />
     <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.9" />
@@ -24,10 +24,10 @@
     <PackageVersion Include="NPOI" Version="2.7.5" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.6.1" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.6.1" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.13.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.13.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
     <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.12.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.13.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.13.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AWS" Version="1.12.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.2" />
@@ -38,6 +38,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.12.0-beta.2" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.8.11" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Enrichers.ClientInfo" Version="2.5.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />

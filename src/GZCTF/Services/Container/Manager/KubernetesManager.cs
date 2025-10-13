@@ -62,11 +62,11 @@ public class KubernetesManager : IContainerManager
         //
         // References: NOTICE, LICENSE_ADDENDUM.txt, licenses/LicenseRef-GZCTF-Restricted.txt
         IList<V1EnvVar> envs = config.Flag is null
-            ? [new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)]
+            ? [new V1EnvVar { Name = "GZCTF_TEAM_ID", Value = config.TeamId }]
             :
             [
-                new V1EnvVar("GZCTF_FLAG", config.Flag),
-                new V1EnvVar("GZCTF_TEAM_ID", config.TeamId)
+                new V1EnvVar { Name = "GZCTF_FLAG", Value = config.Flag },
+                new V1EnvVar { Name = "GZCTF_TEAM_ID", Value = config.TeamId }
             ];
 
         var pod = new V1Pod
@@ -101,7 +101,7 @@ public class KubernetesManager : IContainerManager
                         Image = config.Image,
                         ImagePullPolicy = "Always",
                         Env = envs,
-                        Ports = [new V1ContainerPort(config.ExposedPort)],
+                        Ports = [new V1ContainerPort { ContainerPort = config.ExposedPort }],
                         Resources = new V1ResourceRequirements
                         {
                             Limits = new Dictionary<string, ResourceQuantity>
@@ -148,8 +148,10 @@ public class KubernetesManager : IContainerManager
         }
 
         // Service is needed for port mapping
-        var service = new V1Service("v1", "Service")
+        var service = new V1Service
         {
+            ApiVersion = "v1",
+            Kind = "Service",
             Metadata = new V1ObjectMeta
             {
                 Name = name,
@@ -159,7 +161,7 @@ public class KubernetesManager : IContainerManager
             Spec = new V1ServiceSpec
             {
                 Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
-                Ports = [new V1ServicePort(config.ExposedPort, targetPort: config.ExposedPort)],
+                Ports = [new V1ServicePort { NodePort = config.ExposedPort, TargetPort = config.ExposedPort }],
                 Selector = new Dictionary<string, string> { ["gzctf.gzti.me/ResourceId"] = name }
             }
         };
