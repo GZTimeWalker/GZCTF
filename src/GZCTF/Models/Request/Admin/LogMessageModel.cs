@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -26,7 +27,7 @@ public class LogMessageModel
     /// IP address
     /// </summary>
     [JsonPropertyName("ip")]
-    public string? IP { get; set; }
+    public IPAddress? IP { get; set; }
 
     /// <summary>
     /// Log message
@@ -38,7 +39,7 @@ public class LogMessageModel
     /// Task status
     /// </summary>
     [JsonPropertyName("status")]
-    public string? Status { get; set; }
+    public TaskStatus? Status { get; set; }
 
     public static LogMessageModel FromLogModel(LogModel logInfo) =>
         new()

@@ -86,4 +86,9 @@ public static class Limits
     /// 最大日志状态长度
     /// </summary>
     public const int MaxLogStatusLength = 10;
+
+    /// <summary>
+    /// 分组名称最大长度
+    /// </summary>
+    public const int MaxDivisionNameLength = 31;
 }

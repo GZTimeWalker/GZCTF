@@ -11,6 +11,7 @@ static class AppBuilderExtensions
         {
             options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
             options.SerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
+            options.SerializerOptions.Converters.Add(new IPAddressJsonConverter());
         });
 
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MemoryPack;
 using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Utils;
@@ -368,6 +369,49 @@ public enum Difficulty : byte
     Hard = 5,
     Expert = 6,
     Insane = 7
+}
+
+/// <summary>
+/// Game participant permission
+/// </summary>
+[Flags]
+[JsonConverter(typeof(JsonStringEnumConverter<GamePermission>))]
+public enum GamePermission : int
+{
+    /// <summary>
+    /// Join the game
+    /// </summary>
+    JoinGame = 1 << 0,
+
+    /// <summary>
+    /// Can view challenges
+    /// </summary>
+    ViewChallenge = 1 << 1,
+
+    /// <summary>
+    /// Can submit flags
+    /// </summary>
+    SubmitFlags = 1 << 2,
+
+    /// <summary>
+    /// Can be awarded points
+    /// </summary>
+    GetScore = 1 << 3,
+
+    /// <summary>
+    /// Can earn blood bonuses
+    /// </summary>
+    GetBlood = 1 << 4,
+
+    /// <summary>
+    /// Can be ranked on the overall scoreboard
+    /// </summary>
+    RankOverall = 1 << 5,
+
+    /// <summary>
+    /// All permissions
+    /// </summary>
+    All = JoinGame | ViewChallenge | SubmitFlags | GetScore | GetBlood | RankOverall
 }
 
 /// <summary>

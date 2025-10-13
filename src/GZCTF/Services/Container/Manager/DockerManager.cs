@@ -90,7 +90,7 @@ public class DockerManager : IContainerManager
             parameters.HostConfig.PortBindings = new Dictionary<string, IList<PortBinding>>
             {
                 // let docker choose a random port, do not use "PublishAllPorts" option
-                // reference: https://github.com/moby/moby/blob/master/libnetwork/portallocator/portallocator.go
+                // reference: https://github.com/moby/moby/blob/master/daemon/libnetwork/portallocator/portallocator.go#L135
                 // function: RequestPortsInRange
                 // comment:
                 //     If portStart and portEnd are 0 it returns

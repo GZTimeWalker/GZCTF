@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace GZCTF.Models.Data;
 
@@ -18,11 +19,9 @@ public class LogModel
     [MaxLength(Limits.MaxLoggerLength)]
     public string Logger { get; set; } = string.Empty;
 
-    [MaxLength(Limits.MaxLogStatusLength)]
-    public string? Status { get; set; }
+    public TaskStatus? Status { get; set; }
 
-    [MaxLength(Limits.MaxIPLength)]
-    public string? RemoteIP { get; set; }
+    public IPAddress? RemoteIP { get; set; }
 
     [MaxLength(Limits.MaxUserNameLength)]
     public string? UserName { get; set; }

@@ -42,6 +42,11 @@ public class Game
     public bool Hidden { get; set; }
 
     /// <summary>
+    /// Whether the game is in practice mode (most operations can still be performed after the game ends)
+    /// </summary>
+    public bool PracticeMode { get; set; } = true;
+
+    /// <summary>
     /// Poster hash
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
@@ -244,12 +249,12 @@ public class Game
     /// Game teams
     /// </summary>
     [JsonIgnore]
-    public ICollection<Team>? Teams { get; set; }
+    public List<Team>? Teams { get; set; }
 
     /// <summary>
-    /// Whether the game is in practice mode (most operations can still be performed after the game ends)
+    /// List of divisions for the game
     /// </summary>
-    public bool PracticeMode { get; set; } = true;
+    public HashSet<Division>? NewDivisions { get; set; }
 
     #endregion Db Relationship
 }

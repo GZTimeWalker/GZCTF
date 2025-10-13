@@ -118,6 +118,7 @@ static class ServicesExtension
         {
             options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
             options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
+            options.JsonSerializerOptions.Converters.Add(new IPAddressJsonConverter());
         });
         builder.Services.AddResponseCaching();
     }
@@ -135,6 +136,7 @@ static class ServicesExtension
             settings.Description = "GZCTF Server API Document";
             settings.UseControllerSummaryAsTagDescription = true;
             settings.SchemaSettings.TypeMappers.Add(new OpenApiDateTimeOffsetToUIntMapper());
+            settings.SchemaSettings.TypeMappers.Add(new OpenApiIPAddressToStringMapper());
             settings.SchemaSettings.ReflectionService = new GenericsSystemTextJsonReflectionService();
         });
     }

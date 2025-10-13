@@ -49,7 +49,7 @@ public class AssetsController(
 
         if (!await storage.ExistsAsync(path, token))
         {
-            var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
+            var ip = HttpContext.Connection.RemoteIpAddress;
             logger.Log(StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), hash[..8], filename], ip,
                 TaskStatus.NotFound,
                 LogLevel.Warning);

@@ -58,6 +58,11 @@ public class GameInfoModel
     public List<string>? Divisions { get; set; }
 
     /// <summary>
+    /// List of divisions the game belongs to
+    /// </summary>
+    public List<Division>? NewDivisions { get; set; }
+
+    /// <summary>
     /// Team member count limit, 0 means no limit
     /// </summary>
     public int TeamMemberCountLimit { get; set; }

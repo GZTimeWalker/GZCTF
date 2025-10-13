@@ -148,7 +148,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
     {
         var rowIndex = 1;
-        var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
+        var withDiv = game.Divisions is not null && game.Divisions.Count > 0;
 
         foreach (var item in scoreboard.Items.Values)
         {
@@ -157,7 +157,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             row.CreateCell(colIndex++).SetCellValue(item.Rank);
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
-            if (withOrg)
+            if (withDiv)
                 row.CreateCell(colIndex++).SetCellValue(item.Division);
 
             row.CreateCell(colIndex++).SetCellValue(TakeIfNotEmpty(item.TeamInfo?.Captain?.UserName));

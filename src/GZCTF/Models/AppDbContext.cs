@@ -20,8 +20,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<Post> Posts { get; set; } = null!;
     public DbSet<Game> Games { get; set; } = null!;
     public DbSet<Team> Teams { get; set; } = null!;
-    public DbSet<LogModel> Logs { get; set; } = null!;
     public DbSet<Config> Configs { get; set; } = null!;
+    public DbSet<LogModel> Logs { get; set; } = null!;
+    public DbSet<Division> Divisions { get; set; } = null!;
     public DbSet<LocalFile> Files { get; set; } = null!;
     public DbSet<CheatInfo> CheatInfo { get; set; } = null!;
     public DbSet<Container> Containers { get; set; } = null!;
@@ -99,6 +100,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasForeignKey(e => e.GameId);
 
             entity.HasMany(e => e.Submissions)
+                .WithOne(e => e.Game)
+                .HasForeignKey(e => e.GameId);
+
+            entity.HasMany(e => e.NewDivisions)
                 .WithOne(e => e.Game)
                 .HasForeignKey(e => e.GameId);
 
@@ -255,6 +260,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Navigation(e => e.TestContainer).AutoInclude();
 
             entity.HasIndex(e => e.GameId);
+
+            entity.HasMany(e => e.DivisionConfigs)
+                .WithOne(e => e.Challenge)
+                .HasForeignKey(e => e.ChallengeId);
+        });
+
+        builder.Entity<Division>(entity =>
+        {
+            entity.HasMany(e => e.ChallengeConfigs)
+                .WithOne(e => e.Division)
+                .HasForeignKey(e => e.DivisionId);
         });
 
         builder.Entity<ExerciseChallenge>(entity =>
@@ -394,6 +410,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithMany()
                 .HasForeignKey(e => e.CreatorId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<LogModel>(entity =>
+        {
+            entity.Property(e => e.Status)
+                .HasConversion<string>()
+                .HasMaxLength(Limits.MaxLogStatusLength);
         });
     }
 }

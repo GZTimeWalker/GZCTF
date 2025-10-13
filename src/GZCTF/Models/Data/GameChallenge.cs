@@ -94,6 +94,11 @@ public class GameChallenge : Challenge
     public HashSet<Participation> Teams { get; set; } = [];
 
     /// <summary>
+    /// Configurations for divisions
+    /// </summary>
+    public HashSet<DivisionChallengeConfig> DivisionConfigs { get; set; } = [];
+
+    /// <summary>
     /// Game ID
     /// </summary>
     public int GameId { get; set; }

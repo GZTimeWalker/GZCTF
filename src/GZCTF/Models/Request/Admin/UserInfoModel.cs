@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Admin;
+﻿using System.Net;
+
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// User information (Admin)
@@ -48,7 +50,7 @@ public class UserInfoModel
     /// <summary>
     /// Last visit IP
     /// </summary>
-    public string IP { get; set; } = "0.0.0.0";
+    public IPAddress IP { get; set; } = IPAddress.Any;
 
     /// <summary>
     /// Email

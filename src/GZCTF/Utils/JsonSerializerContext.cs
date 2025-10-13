@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -77,6 +78,20 @@ public class DateTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
         writer.WriteNumberValue(value.ToUnixTimeMilliseconds());
 }
 
+public class IPAddressJsonConverter : JsonConverter<IPAddress>
+{
+    public override IPAddress Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var str = reader.GetString();
+        if (str == null || !IPAddress.TryParse(str, out var address))
+            return IPAddress.Any;
+        return address;
+    }
+
+    public override void Write(Utf8JsonWriter writer, IPAddress value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.ToString());
+}
+
 public class OpenApiDateTimeOffsetToUIntMapper : ITypeMapper
 {
     public void GenerateSchema(JsonSchema schema, TypeMapperContext context)
@@ -86,6 +101,19 @@ public class OpenApiDateTimeOffsetToUIntMapper : ITypeMapper
     }
 
     public Type MappedType => typeof(DateTimeOffset);
+
+    public bool UseReference => false;
+}
+
+public class OpenApiIPAddressToStringMapper : ITypeMapper
+{
+    public void GenerateSchema(JsonSchema schema, TypeMapperContext context)
+    {
+        schema.Type = JsonObjectType.String;
+        schema.Format = JsonFormatStrings.Hostname;
+    }
+
+    public Type MappedType => typeof(IPAddress);
 
     public bool UseReference => false;
 }

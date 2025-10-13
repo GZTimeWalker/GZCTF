@@ -20,7 +20,7 @@ public static class LogHelper
     const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
                                "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
                                "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
-                               "{#if Length(IP) > 0} @ {IP}{#end}{#end}\n{@x}";
+                               "{#if IP <> null} @ {IP}{#end}{#end}\n{@x}";
 
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
@@ -33,7 +33,7 @@ public static class LogHelper
     /// <param name="level">log level</param>
     public static void SystemLog<T>(this ILogger<T> logger, string msg, TaskStatus status = TaskStatus.Success,
         LogLevel? level = null) =>
-        Log(logger, msg, "System", string.Empty, status, level ?? LogLevel.Information);
+        Log(logger, msg, "System", null, status, level ?? LogLevel.Information);
 
     /// <summary>
     /// Log an error, no formatting
@@ -64,7 +64,7 @@ public static class LogHelper
     /// <param name="user">the user</param>
     public static void Log<T>(this ILogger<T> logger, string msg, UserInfo? user, TaskStatus status,
         LogLevel? level = null) =>
-        Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP ?? "0.0.0.0", status, level);
+        Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP, status, level);
 
     /// <summary>
     /// Record a log
@@ -77,10 +77,9 @@ public static class LogHelper
     public static void Log<T>(this ILogger<T> logger, string msg, HttpContext? context, TaskStatus status,
         LogLevel? level = null)
     {
-        var ip = context?.Connection.RemoteIpAddress?.ToString() ?? IPAddress.Loopback.ToString();
         var username = context?.User.Identity?.Name ?? "Anonymous";
 
-        Log(logger, msg, username, ip, status, level);
+        Log(logger, msg, username, context?.Connection.RemoteIpAddress, status, level);
     }
 
     /// <summary>
@@ -91,7 +90,8 @@ public static class LogHelper
     /// <param name="status">task status</param>
     /// <param name="level">log level</param>
     /// <param name="ip">ip</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, string ip, TaskStatus status, LogLevel? level = null)
+    public static void Log<T>(this ILogger<T> logger, string msg, IPAddress? ip, TaskStatus status,
+        LogLevel? level = null)
         => Log(logger, msg, "Anonymous", ip, status, level);
 
     /// <summary>
@@ -103,12 +103,12 @@ public static class LogHelper
     /// <param name="level">log level</param>
     /// <param name="uname">user name</param>
     /// <param name="ip">ip</param>
-    public static void Log<T>(this ILogger<T> logger, string msg, string uname, string ip, TaskStatus status,
+    public static void Log<T>(this ILogger<T> logger, string msg, string uname, IPAddress? ip, TaskStatus status,
         LogLevel? level = null)
     {
         using (LogContext.PushProperty("UserName", uname))
         using (LogContext.PushProperty("IP", ip))
-        using (LogContext.PushProperty("Status", status.ToString()))
+        using (LogContext.PushProperty("Status", status))
         {
             logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
         }
@@ -126,7 +126,8 @@ public static class LogHelper
 
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
-                diagnosticContext.Set("IP", httpContext.Connection.RemoteIpAddress?.ToString() ?? "");
+                if (httpContext.Connection.RemoteIpAddress is not null)
+                    diagnosticContext.Set("IP", httpContext.Connection.RemoteIpAddress);
             };
         });
 
@@ -149,6 +150,8 @@ public static class LogHelper
     {
         var enableQueryLogging = app.Environment.IsDevelopment() && app.Configuration.GetValue("QUERY_LOGGING", false);
         var loggerConfig = new LoggerConfiguration()
+            .Destructure.AsScalar<IPAddress>()
+            .Destructure.AsScalar<TaskStatus>()
             .Enrich.FromLogContext()
             .Filter.ByExcluding(
                 Matching.WithProperty<string>("RequestPath", v =>
@@ -206,12 +209,8 @@ public static class LogHelper
         return loggerConfig.CreateLogger();
     }
 
-    public static string GetStringValue(LogEventPropertyValue? value, string defaultValue = "")
-    {
-        if (value is ScalarValue { Value: string rawValue })
-            return rawValue;
-        return value?.ToString() ?? defaultValue;
-    }
+    public static T? GetLogPropertyValue<T>(LogEventPropertyValue? value, T? defaultValue) =>
+        value is ScalarValue { Value: T rawValue } ? rawValue : defaultValue;
 
     public static string RenderMessageWithExceptions(this LogEvent logEvent)
     {

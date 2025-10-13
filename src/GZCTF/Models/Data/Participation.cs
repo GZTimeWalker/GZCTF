@@ -82,5 +82,15 @@ public class Participation
     /// </summary>
     public Team Team { get; set; } = null!;
 
+    /// <summary>
+    /// Division ID
+    /// </summary>
+    public int? DivisionId { get; set; }
+
+    /// <summary>
+    /// Division this participation belongs to
+    /// </summary>
+    public Division? NewDivision { get; set; }
+
     #endregion Db Relationship
 }
