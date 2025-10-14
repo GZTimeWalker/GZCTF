@@ -141,7 +141,7 @@ public class ArrayResponse<T>(T[] array, int? tot = null)
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-public class IPAddressFormater : MemoryPackCustomFormatterAttribute<IPAddress>, IMemoryPackFormatter<IPAddress>
+public class IPAddressFormatter : MemoryPackCustomFormatterAttribute<IPAddress>, IMemoryPackFormatter<IPAddress>
 {
     public void Serialize<TBufferWriter>(ref MemoryPackWriter<TBufferWriter> writer, scoped ref IPAddress? value)
         where TBufferWriter : IBufferWriter<byte>

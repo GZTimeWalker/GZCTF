@@ -27,7 +27,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// User's recent IP address
     /// </summary>
-    [IPAddressFormater]
+    [IPAddressFormatter]
     public IPAddress IP { get; set; } = IPAddress.Any;
 
     /// <summary>

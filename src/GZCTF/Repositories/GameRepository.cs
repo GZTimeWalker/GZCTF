@@ -271,7 +271,7 @@ public class GameRepository(
                     DefaultPermissions = d.DefaultPermissions,
                     ChallengeConfigs = d.ChallengeConfigs.Select(c => new
                         DivisionChallengeItem
-                    { Permissions = c.Permissions }
+                    { ChallengeId = c.ChallengeId, Permissions = c.Permissions }
                     ).ToDictionary(c => c.ChallengeId)
                 })
                 .ToDictionaryAsync(d => d.Id, token);
