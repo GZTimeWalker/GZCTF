@@ -10,7 +10,6 @@ import {
   SimpleGrid,
   Stack,
   Switch,
-  TagsInput,
   Text,
   Textarea,
   TextInput,
@@ -311,68 +310,58 @@ const GameInfoEdit: FC = () => {
           withSeconds
           required
         />
+        <Switch
+          disabled={disabled}
+          checked={game?.acceptWithoutReview ?? false}
+          classNames={{ root: misc.switchVerticalMiddle }}
+          label={SwitchLabel(
+            t('admin.content.games.info.accept_without_review.label'),
+            t('admin.content.games.info.accept_without_review.description')
+          )}
+          onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
+        />
+        <Switch
+          disabled={disabled}
+          checked={game?.practiceMode ?? true}
+          classNames={{ root: misc.switchVerticalMiddle }}
+          label={SwitchLabel(
+            t('admin.content.games.info.practice_mode.label'),
+            t('admin.content.games.info.practice_mode.description')
+          )}
+          onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
+        />
+        <Switch
+          disabled={disabled}
+          checked={game?.writeupRequired ?? false}
+          classNames={{ root: misc.switchVerticalMiddle }}
+          label={SwitchLabel(
+            t('admin.content.games.info.writeup_required.label'),
+            t('admin.content.games.info.writeup_required.description')
+          )}
+          onChange={(e) => game && setGame({ ...game, writeupRequired: e.target.checked })}
+        />
+        <NumberInput
+          label={t('admin.content.games.info.writeup_deadline.label')}
+          description={t('admin.content.games.info.writeup_deadline.description')}
+          disabled={disabled}
+          min={0}
+          required
+          value={wpddl}
+          onChange={(e) => setWpddl(Number(e))}
+        />
       </SimpleGrid>
-      <Grid>
-        <Grid.Col span={6}>
-          <Textarea
-            label={t('admin.content.games.info.summary.label')}
-            description={t('admin.content.games.info.summary.description')}
-            value={game?.summary}
-            w="100%"
-            autosize
-            disabled={disabled}
-            minRows={3}
-            maxRows={3}
-            onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
-          />
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Stack gap="xs" h="100%" justify="space-between">
-            <Switch
-              pt="1.5em"
-              disabled={disabled}
-              checked={game?.writeupRequired ?? false}
-              label={SwitchLabel(
-                t('admin.content.games.info.writeup_required.label'),
-                t('admin.content.games.info.writeup_required.description')
-              )}
-              onChange={(e) => game && setGame({ ...game, writeupRequired: e.target.checked })}
-            />
-            <Switch
-              disabled={disabled}
-              checked={game?.acceptWithoutReview ?? false}
-              label={SwitchLabel(
-                t('admin.content.games.info.accept_without_review.label'),
-                t('admin.content.games.info.accept_without_review.description')
-              )}
-              onChange={(e) => game && setGame({ ...game, acceptWithoutReview: e.target.checked })}
-            />
-          </Stack>
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Stack gap="xs">
-            <NumberInput
-              label={t('admin.content.games.info.writeup_deadline.label')}
-              description={t('admin.content.games.info.writeup_deadline.description')}
-              disabled={disabled}
-              min={0}
-              required
-              value={wpddl}
-              onChange={(e) => setWpddl(Number(e))}
-            />
-            <Switch
-              disabled={disabled}
-              checked={game?.practiceMode ?? true}
-              label={SwitchLabel(
-                t('admin.content.games.info.practice_mode.label'),
-                t('admin.content.games.info.practice_mode.description')
-              )}
-              onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
-            />
-          </Stack>
-        </Grid.Col>
-      </Grid>
       <Group grow justify="space-between">
+        <Textarea
+          label={t('admin.content.games.info.summary.label')}
+          description={t('admin.content.games.info.summary.description')}
+          value={game?.summary}
+          w="100%"
+          autosize
+          disabled={disabled}
+          minRows={4}
+          maxRows={4}
+          onChange={(e) => game && setGame({ ...game, summary: e.target.value })}
+        />
         <Textarea
           label={t('admin.content.games.info.writeup_instruction')}
           description={t('admin.content.markdown_support')}
@@ -380,20 +369,9 @@ const GameInfoEdit: FC = () => {
           w="100%"
           autosize
           disabled={disabled}
-          minRows={3}
-          maxRows={3}
+          minRows={4}
+          maxRows={4}
           onChange={(e) => game && setGame({ ...game, writeupNote: e.target.value })}
-        />
-        <TagsInput
-          label={t('admin.content.games.info.divisions.label')}
-          description={t('admin.content.games.info.divisions.description')}
-          disabled={disabled}
-          placeholder={t('admin.placeholder.games.divisions')}
-          maxDropdownHeight={300}
-          value={game?.divisions ?? []}
-          classNames={{ input: misc.gameDivEdit }}
-          onChange={(e) => game && setGame({ ...game, divisions: e })}
-          onClear={() => game && setGame({ ...game, divisions: [] })}
         />
       </Group>
       <Grid grow>
@@ -411,8 +389,8 @@ const GameInfoEdit: FC = () => {
             w="100%"
             autosize
             disabled={disabled}
-            minRows={9}
-            maxRows={9}
+            minRows={10}
+            maxRows={10}
             onChange={(e) => game && setGame({ ...game, content: e.target.value })}
           />
         </Grid.Col>
@@ -436,7 +414,7 @@ const GameInfoEdit: FC = () => {
             >
               <Center className={misc.noPointerEvents}>
                 {game?.poster ? (
-                  <Image height="209px" fit="contain" src={game.poster} alt="poster" />
+                  <Image height="231px" fit="contain" src={game.poster} alt="poster" />
                 ) : (
                   <Center h="200px">
                     <Stack gap={0}>

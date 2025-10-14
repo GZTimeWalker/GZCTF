@@ -35,6 +35,10 @@
       },
       "update_accept_count": "Update AC Counter"
     },
+    "divisions": {
+      "edit": "Edit Division",
+      "new": "New Division"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -169,6 +173,64 @@
           "description": "Cannot be changed after creation",
           "label": "Type"
         }
+      },
+      "divisions": {
+        "default_permission_label": "Default Permissions",
+        "delete_confirm": "Delete division {{name}}?",
+        "empty": {
+          "description": "Click New Division to create the first division",
+          "title": "No divisions yet"
+        },
+        "form": {
+          "challenge_overrides": {
+            "description": "Select challenges to customize permissions",
+            "label": "Challenge Overrides",
+            "placeholder": "Search challenges to override permissions"
+          },
+          "default_permissions": {
+            "description": "The default permissions for teams in this division",
+            "label": "Default Permissions"
+          },
+          "invite_code": {
+            "description": "Override the game-level invitation code",
+            "generate": "Generate invitation code",
+            "label": "Invitation Code"
+          },
+          "name": {
+            "description": "The name of the division.",
+            "label": "Division Name"
+          }
+        },
+        "no_permission": "No permissions assigned",
+        "override_label": "Challenge Overrides",
+        "permissions": {
+          "all": "All permissions",
+          "get_blood": {
+            "description": "Allows receiving bonus points for blood rewards",
+            "label": "Blood Rewards"
+          },
+          "get_score": {
+            "description": "Allows earning points for challenges",
+            "label": "Earn Scores"
+          },
+          "join_game": {
+            "description": "Allows users in this division to join the game",
+            "label": "Join Game"
+          },
+          "rank_overall": {
+            "description": "Allows appearing on the overall scoreboard",
+            "label": "Overall Rankings"
+          },
+          "submit_flags": {
+            "description": "Allows submitting flags",
+            "label": "Submit Flags"
+          },
+          "view_challenge": {
+            "description": "Allows viewing challenge descriptions",
+            "label": "View Challenges"
+          }
+        },
+        "unknown_challenge": "Challenge #{{id}}"
       },
       "info": {
         "accept_without_review": {
@@ -403,6 +465,12 @@
         "updated": "Challenge updated"
       },
       "created": "Game created",
+      "divisions": {
+        "created": "Division created",
+        "deleted": "Division deleted",
+        "invite_copied": "Invite code copied to clipboard",
+        "updated": "Division updated"
+      },
       "info": {
         "accept_count_updated": "AC counter updated",
         "deleted": "Game deleted",
@@ -460,7 +528,7 @@
           }
         }
       },
-      "divisions": "Enter to add a division.",
+      "divisions": "Enter division name",
       "participation": {
         "bio": "(no bio)",
         "team": "(no name)"
@@ -496,6 +564,7 @@
   "tab": {
     "games": {
       "challenges": "Challenges",
+      "divisions": "Divisions",
       "index": "Games",
       "info": "Information",
       "notices": "Notices",

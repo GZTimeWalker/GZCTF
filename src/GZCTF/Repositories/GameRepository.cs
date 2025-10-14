@@ -261,20 +261,30 @@ public class GameRepository(
         await using (var trans = await Context.Database.BeginTransactionAsync(token))
         {
             // 1. Fetch all divisions for this game
-            divisions = await Context.Divisions.AsNoTracking().IgnoreAutoIncludes()
+            var divisionsQuery = await Context.Divisions.AsNoTracking().IgnoreAutoIncludes()
                 .Where(d => d.GameId == game.Id)
                 .Include(d => d.ChallengeConfigs)
-                .Select(d => new DivisionItem
+                .Select(d => new
+                {
+                    d.Id,
+                    d.Name,
+                    d.DefaultPermissions,
+                    ChallengeConfigs = d.ChallengeConfigs.Select(c => new DivisionChallengeItem
+                    {
+                        ChallengeId = c.ChallengeId, Permissions = c.Permissions
+                    }).ToList()
+                })
+                .ToListAsync(token);
+
+            divisions = divisionsQuery.ToDictionary(
+                d => d.Id,
+                d => new DivisionItem
                 {
                     Id = d.Id,
                     Name = d.Name,
                     DefaultPermissions = d.DefaultPermissions,
-                    ChallengeConfigs = d.ChallengeConfigs.Select(c => new
-                        DivisionChallengeItem
-                    { ChallengeId = c.ChallengeId, Permissions = c.Permissions }
-                    ).ToDictionary(c => c.ChallengeId)
-                })
-                .ToDictionaryAsync(d => d.Id, token);
+                    ChallengeConfigs = d.ChallengeConfigs.ToDictionary(c => c.ChallengeId)
+                });
 
             // 2. Fetch all teams with their members from Participations, into ScoreboardItem
             items = await Context.Participations
