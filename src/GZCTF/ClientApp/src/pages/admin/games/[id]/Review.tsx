@@ -33,7 +33,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { DivisionEditModal } from '@Components/admin/DivisionEditModal'
@@ -41,8 +41,14 @@ import { ParticipationStatusControl } from '@Components/admin/ParticipationStatu
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { useAdminGame } from '@Hooks/useGame'
-import api, { ParticipationEditModel, ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
+import { OnceSWRConfig } from '@Hooks/useConfig'
+import api, {
+  Division,
+  ParticipationEditModel,
+  ParticipationInfoModel,
+  ParticipationStatus,
+  ProfileUserInfoModel,
+} from '@Api'
 import classes from '@Styles/Accordion.module.css'
 import misc from '@Styles/Misc.module.css'
 import reviewClasses from '@Styles/Review.module.css'
@@ -129,10 +135,12 @@ interface ParticipationItemProps {
   disabled: boolean
   onEditDiv: () => void
   setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
+  canEditDivision: boolean
+  divisionName: string
 }
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
-  const { participation, disabled, onEditDiv, setParticipation } = props
+  const { participation, disabled, onEditDiv, setParticipation, canEditDivision, divisionName } = props
   const part = useParticipationStatusMap().get(participation.status!)!
 
   const { t } = useTranslation()
@@ -159,16 +167,16 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
             <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
               <Box w="10em">
-                {participation.division && (
-                  <Group gap={0} wrap="nowrap">
-                    <Text fw={500} truncate>
-                      {participation.division}
-                    </Text>
+                <Group gap={0} wrap="nowrap">
+                  <Text fw={500} truncate>
+                    {divisionName}
+                  </Text>
+                  {canEditDivision && (
                     <ActionIcon size="sm" onClick={onEditDiv} disabled={disabled}>
                       <Icon path={mdiPencil} size={0.6} />
                     </ActionIcon>
-                  </Group>
-                )}
+                  )}
+                </Group>
                 <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
@@ -210,12 +218,11 @@ const PART_NUM_PER_PAGE = 10
 const GameTeamReview: FC = () => {
   const navigate = useNavigate()
   const { id } = useParams()
-  const numId = parseInt(id ?? '-1')
-  const { game } = useAdminGame(numId)
+  const numId = parseInt(id ?? '-1', 10)
 
   const [disabled, setDisabled] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<ParticipationStatus | null>(null)
-  const [selectedOrg, setSelectedOrg] = useState<string | null>(null)
+  const [selectedDivisionId, setSelectedDivisionId] = useState<string | null>(null)
   const [participations, setParticipations] = useState<ParticipationInfoModel[]>()
   const [search, setSearch] = useInputState('')
   const participationStatusMap = useParticipationStatusMap()
@@ -226,20 +233,60 @@ const GameTeamReview: FC = () => {
   const { t } = useTranslation()
   const [activePage, setPage] = useState(1)
 
+  const { data: divisions } = api.edit.useEditGetDivisions(numId, OnceSWRConfig, numId > 0)
+
+  const divisionList = useMemo<Division[]>(() => divisions ?? [], [divisions])
+
+  const divisionNameMap = useMemo(() => {
+    const map = new Map<number, string>()
+    divisionList.forEach((division) => {
+      map.set(division.id, division.name && division.name.trim().length > 0 ? division.name : `#${division.id}`)
+    })
+    return map
+  }, [divisionList])
+
+  const divisionSelectOptions = useMemo(() => {
+    const optionMap = new Map<string, { value: string; label: string }>()
+
+    divisionList.forEach((division) => {
+      const value = division.id.toString()
+      optionMap.set(value, { value, label: divisionNameMap.get(division.id) ?? `#${division.id}` })
+    })
+
+    participations?.forEach((participation) => {
+      if (participation.divisionId !== undefined && participation.divisionId !== null) {
+        const value = participation.divisionId.toString()
+        if (!optionMap.has(value)) {
+          optionMap.set(value, { value, label: `#${participation.divisionId}` })
+        }
+      }
+    })
+
+    return Array.from(optionMap.values()).sort((a, b) => a.label.localeCompare(b.label))
+  }, [divisionList, divisionNameMap, participations])
+
+  const hasDivisions = divisionList.length > 0
+
   const setParticipation = async (id: number, model: ParticipationEditModel) => {
     setDisabled(true)
     try {
       await api.admin.adminParticipation(id, model)
-      setParticipations(
-        participations?.map((value) =>
-          value.id === id
-            ? {
-                ...value,
-                status: model.status ?? value.status,
-                division: model.division ?? value.division,
-              }
-            : value
-        )
+      setParticipations((prev) =>
+        prev?.map((value) => {
+          if (value.id !== id) return value
+
+          const next: ParticipationInfoModel = { ...value }
+
+          if (model.status !== undefined && model.status !== null) {
+            next.status = model.status
+          }
+
+          if (model.divisionId !== undefined) {
+            next.divisionId = model.divisionId ?? null
+          }
+
+          return next
+        })
       )
       showNotification({
         color: 'teal',
@@ -255,7 +302,7 @@ const GameTeamReview: FC = () => {
 
   useEffect(() => {
     setPage(1)
-  }, [selectedStatus, selectedOrg, search])
+  }, [selectedStatus, selectedDivisionId, search])
 
   useEffect(() => {
     if (numId < 0) {
@@ -280,14 +327,17 @@ const GameTeamReview: FC = () => {
     fetchData()
   }, [navigate, numId, t])
 
-  const divs = Array.from(new Set(participations?.map((p) => p.division ?? '') ?? [])).filter((div) => !!div)
+  const filteredParticipations = participations?.filter((participation) => {
+    const matchesStatus = selectedStatus === null || participation.status === selectedStatus
+    const matchesDivision =
+      selectedDivisionId === null ||
+      (participation.divisionId !== undefined &&
+        participation.divisionId !== null &&
+        participation.divisionId.toString() === selectedDivisionId)
+    const matchesSearch = search === '' || participation.team?.name?.toLowerCase().includes(search.toLowerCase())
 
-  const filteredParticipations = participations?.filter(
-    (participation) =>
-      (selectedStatus === null || participation.status === selectedStatus) &&
-      (selectedOrg === null || participation.division === selectedOrg) &&
-      (search === '' || participation.team?.name?.toLowerCase().includes(search.toLowerCase()))
-  )
+    return matchesStatus && matchesDivision && matchesSearch
+  })
 
   const pagedParticipations = filteredParticipations?.slice(
     (activePage - 1) * PART_NUM_PER_PAGE,
@@ -297,7 +347,7 @@ const GameTeamReview: FC = () => {
   return (
     <WithGameEditTab
       headProps={{ justify: 'apart' }}
-      isLoading={!participations}
+      isLoading={participations === undefined || (numId > 0 && divisions === undefined)}
       head={
         <Group justify="space-between" wrap="nowrap" w="100%">
           <TextInput
@@ -308,13 +358,13 @@ const GameTeamReview: FC = () => {
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
           <Group justify="right" wrap="nowrap">
-            {divs.length && (
+            {divisionSelectOptions.length > 0 && (
               <Select
                 placeholder={t('admin.content.show_all')}
                 clearable
-                data={divs.map((div) => ({ value: div, label: div }))}
-                value={selectedOrg}
-                onChange={(value) => setSelectedOrg(value)}
+                data={divisionSelectOptions}
+                value={selectedDivisionId}
+                onChange={(value) => setSelectedDivisionId(value)}
               />
             )}
             <Select
@@ -344,10 +394,19 @@ const GameTeamReview: FC = () => {
                 participation={participation}
                 disabled={disabled}
                 onEditDiv={() => {
+                  if (!hasDivisions) {
+                    return
+                  }
                   setCurParticipation(participation)
                   setDivModalOpened(true)
                 }}
                 setParticipation={setParticipation}
+                canEditDivision={hasDivisions}
+                divisionName={
+                  participation.divisionId !== undefined && participation.divisionId !== null
+                    ? (divisionNameMap.get(participation.divisionId) ?? `#${participation.divisionId}`)
+                    : ((participation as { division?: string }).division ?? '-')
+                }
               />
             ))}
           </Accordion>
@@ -361,13 +420,13 @@ const GameTeamReview: FC = () => {
           root: cx(misc.flex, misc.flexRow, misc.justifyEnd),
         }}
       />
-      {game?.divisions?.length && curParticipation && (
+      {hasDivisions && curParticipation && (
         <DivisionEditModal
           title={t('admin.content.games.review.edit_division')}
           opened={divModalOpened}
-          divisions={game.divisions}
+          divisions={divisionList}
           participateId={curParticipation?.id ?? -1}
-          currentDivision={curParticipation?.division ?? ''}
+          currentDivisionId={curParticipation?.divisionId ?? null}
           setParticipation={setParticipation}
           onClose={() => {
             setDivModalOpened(false)

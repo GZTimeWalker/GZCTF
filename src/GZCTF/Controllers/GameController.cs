@@ -118,6 +118,8 @@ public class GameController(
 
         var count = await participationRepository.GetParticipationCount(context.Game, token);
 
+        await gameRepository.LoadDivisions(context.Game!, token);
+
         return Ok(DetailedGameInfoModel.FromGame(context.Game, count)
             .WithParticipation(context.Participation));
     }
@@ -191,11 +193,16 @@ public class GameController(
             {
                 Game = game,
                 Team = team,
-                DivisionId = model.DivisionId,
+                Division = div,
                 Token = gameRepository.GetToken(game, team)
             };
 
             participationRepository.Add(part);
+        }
+        else if (part.Status == ParticipationStatus.Rejected)
+        {
+            // The team was rejected, use the division from the new request
+            part.Division = div;
         }
         else if (part.DivisionId is { } partDivId)
         {
@@ -749,12 +756,12 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Participations([FromRoute] int id, CancellationToken token = default)
     {
-        var context = await GetContextInfo(id, token: token);
+        var game = await gameRepository.GetGameById(id, token);
 
-        if (context.Game is null)
+        if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
 
-        return Ok((await participationRepository.GetParticipations(context.Game!, token))
+        return Ok((await participationRepository.GetParticipations(game, token))
             .Select(ParticipationInfoModel.FromParticipation));
     }
 

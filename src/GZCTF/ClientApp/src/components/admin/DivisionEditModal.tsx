@@ -1,29 +1,47 @@
 import { ModalProps, Modal, Stack, Select, Button } from '@mantine/core'
-import { FC, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ParticipationEditModel } from '@Api'
+import { Division, ParticipationEditModel } from '@Api'
 
 interface DivisionEditModalProps extends ModalProps {
   participateId: number
-  divisions: string[]
-  currentDivision: string
+  divisions: Division[]
+  currentDivisionId?: number | null
   setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }
 
 export const DivisionEditModal: FC<DivisionEditModalProps> = (props) => {
-  const { participateId, divisions, currentDivision, setParticipation, ...modalProps } = props
-  const [division, setDivision] = useState(currentDivision)
+  const { participateId, divisions, currentDivisionId, setParticipation, ...modalProps } = props
+  const [divisionId, setDivisionId] = useState(currentDivisionId ? currentDivisionId.toString() : '')
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
 
+  const options = useMemo(
+    () =>
+      divisions
+        .filter((div) => div.id !== undefined && div.id !== null)
+        .map((div) => ({ value: div.id!.toString(), label: div.name ?? `Division #${div.id}` })),
+    [divisions]
+  )
+
+  useEffect(() => {
+    setDivisionId(currentDivisionId ? currentDivisionId.toString() : '')
+    setDisabled(false)
+  }, [currentDivisionId, modalProps.opened])
+
   const onConfirm = async () => {
-    if (!division) return
+    const nextDivisionId = divisionId ? parseInt(divisionId, 10) : null
+
+    if ((currentDivisionId ?? null) === nextDivisionId) {
+      modalProps.onClose()
+      return
+    }
+
     setDisabled(true)
 
     try {
-      await setParticipation(participateId, { division })
-      setDisabled(false)
+      await setParticipation(participateId, { divisionId: nextDivisionId })
       modalProps.onClose()
     } finally {
       setDisabled(false)
@@ -34,12 +52,12 @@ export const DivisionEditModal: FC<DivisionEditModalProps> = (props) => {
     <Modal {...modalProps}>
       <Stack>
         <Select
-          required
           label={t('game.content.join.division.label')}
-          data={divisions}
+          data={options}
+          clearable
           disabled={disabled}
-          value={division}
-          onChange={(e) => setDivision(e ?? '')}
+          value={divisionId}
+          onChange={(e) => setDivisionId(e ?? '')}
         />
         <Button fullWidth disabled={disabled} onClick={onConfirm}>
           {t('common.modal.confirm_update')}

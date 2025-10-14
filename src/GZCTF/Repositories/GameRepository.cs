@@ -51,8 +51,11 @@ public class GameRepository(
 
     public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
 
-    public Task<Game?> GetGameById(int id, CancellationToken token = default) =>
-        Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
+    public Task<Game?> GetGameById(int id, CancellationToken token = default)
+        => Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
+
+    public Task LoadDivisions(Game game, CancellationToken token = default)
+        => Context.Entry(game).Collection(g => g.Divisions!).LoadAsync(token);
 
     public Task<int[]> GetUpcomingGames(CancellationToken token = default) =>
         Context.Games.Where(g => g.StartTimeUtc > DateTime.UtcNow
@@ -271,7 +274,8 @@ public class GameRepository(
                     d.DefaultPermissions,
                     ChallengeConfigs = d.ChallengeConfigs.Select(c => new DivisionChallengeItem
                     {
-                        ChallengeId = c.ChallengeId, Permissions = c.Permissions
+                        ChallengeId = c.ChallengeId,
+                        Permissions = c.Permissions
                     }).ToList()
                 })
                 .ToListAsync(token);

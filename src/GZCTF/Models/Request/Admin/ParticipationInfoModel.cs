@@ -23,7 +23,7 @@ public class ParticipationInfoModel
     /// <summary>
     /// Division of the game
     /// </summary>
-    public string? Division { get; set; }
+    public int? DivisionId { get; set; }
 
     /// <summary>
     /// Participation status
@@ -35,7 +35,7 @@ public class ParticipationInfoModel
         {
             Id = part.Id,
             Status = part.Status,
-            Division = part.Division?.Name,
+            DivisionId = part.DivisionId,
             RegisteredMembers = part.Members.Select(m => m.UserId).ToArray(),
             Team = TeamWithDetailedUserInfo.FromTeam(part.Team)
         };

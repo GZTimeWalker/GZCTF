@@ -1873,8 +1873,11 @@ export interface ParticipationInfoModel {
   team?: TeamWithDetailedUserInfo;
   /** Registered members */
   registeredMembers?: string[];
-  /** Division of the game */
-  division?: string | null;
+  /**
+   * Division of the game
+   * @format int32
+   */
+  divisionId?: number | null;
   /** Participation status */
   status?: ParticipationStatus;
 }

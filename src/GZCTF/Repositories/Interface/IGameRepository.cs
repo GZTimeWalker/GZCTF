@@ -48,6 +48,14 @@ public interface IGameRepository : IRepository
     public Task<Game?> GetGameById(int id, CancellationToken token = default);
 
     /// <summary>
+    /// Load divisions for a game
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task LoadDivisions(Game game, CancellationToken token = default);
+
+    /// <summary>
     /// Check if the game exists by ID
     /// </summary>
     /// <param name="id"></param>
