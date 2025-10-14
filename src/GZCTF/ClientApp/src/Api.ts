@@ -1160,6 +1160,11 @@ export interface ChallengeEditDetailModel {
   /** Whether to disable blood bonus */
   disableBloodBonus?: boolean | null;
   /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
+  /**
    * Maximum number of submissions allowed per team (0 = no limit)
    * @format int32
    */
@@ -1260,6 +1265,11 @@ export interface ChallengeInfoModel {
    * @format int32
    */
   originalScore?: number;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
 }
 
 /** Challenge update information (Edit) */
@@ -1284,6 +1294,11 @@ export interface ChallengeUpdateModel {
   isEnabled?: boolean | null;
   /** Unified file name */
   fileName?: string | null;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
   /**
    * Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
    * @format int32
@@ -1443,8 +1458,11 @@ export interface DetailedGameInfoModel {
    * @format int32
    */
   teamCount?: number;
-  /** Current registered division */
-  division?: string | null;
+  /**
+   * Current registered division
+   * @format int32
+   */
+  division?: number | null;
   /** Team name for participation */
   teamName?: string | null;
   /** Whether the game is in practice mode (can still be accessed after the game ends) */
@@ -1655,6 +1673,11 @@ export interface ChallengeInfo {
    * @format int32
    */
   solved?: number;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
   /** Bloods for the challenge */
   bloods?: Blood[];
   /** Whether to disable blood bonus */

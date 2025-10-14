@@ -931,6 +931,9 @@ public class GameController(
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
+            if (instance.Challenge.DeadlineUtc < submitTime)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_DeadlinePassed)]));
+
             if (!await divisionRepository.CheckPermission(context.Participation?.DivisionId, GamePermission.SubmitFlags,
                     challengeId, token))
             {
@@ -1348,7 +1351,9 @@ public class GameController(
         foreach ((ChallengeCategory cat, IEnumerable<ChallengeInfo> chs) in challenges)
         {
             var infos = chs.Where(chal =>
-                division.ChallengeConfigs.TryGetValue(chal.Id, out var config) &&
+                // If the challenge is not in the division config, fallback to default (can view)
+                !division.ChallengeConfigs.TryGetValue(chal.Id, out var config) ||
+                // If the challenge is in the division config, check the permission
                 config.Permissions.HasFlag(GamePermission.ViewChallenge)
             ).ToArray();
 

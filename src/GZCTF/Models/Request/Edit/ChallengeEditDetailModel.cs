@@ -125,6 +125,11 @@ public class ChallengeEditDetailModel
     public bool? DisableBloodBonus { get; set; } = false;
 
     /// <summary>
+    /// The deadline of the challenge, null means no deadline
+    /// </summary>
+    public DateTimeOffset? DeadlineUtc { get; set; }
+
+    /// <summary>
     /// Maximum number of submissions allowed per team (0 = no limit)
     /// </summary>
     [Required]
@@ -174,6 +179,7 @@ public class ChallengeEditDetailModel
             AcceptedCount = chal.AcceptedCount,
             Attachment = chal.Attachment,
             SubmissionLimit = chal.SubmissionLimit,
+            DeadlineUtc = chal.DeadlineUtc,
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
         };

@@ -311,6 +311,7 @@ public class GameRepository(
                     Category = c.Category,
                     Score = c.CurrentScore,
                     SolvedCount = c.AcceptedCount,
+                    DeadlineUtc = c.DeadlineUtc,
                     DisableBloodBonus = c.DisableBloodBonus
                     // pending fields: Bloods
                 }).ToDictionaryAsync(c => c.Id, token);

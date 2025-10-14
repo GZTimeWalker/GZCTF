@@ -68,6 +68,9 @@ public class GameChallenge : Challenge
         DisableBloodBonus = model.DisableBloodBonus ?? DisableBloodBonus;
         SubmissionLimit = model.SubmissionLimit ?? SubmissionLimit;
 
+        // allow setting DeadlineUtc (so null is allowed)
+        DeadlineUtc = model.DeadlineUtc;
+
         // only set FlagTemplate to null when pass an empty string (but not null)
         FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
             string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;

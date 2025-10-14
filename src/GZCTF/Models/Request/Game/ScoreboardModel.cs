@@ -296,6 +296,11 @@ public partial class ChallengeInfo
     public int SolvedCount { get; set; }
 
     /// <summary>
+    /// The deadline of the challenge, null means no deadline
+    /// </summary>
+    public DateTimeOffset? DeadlineUtc { get; set; }
+
+    /// <summary>
     /// Bloods for the challenge
     /// </summary>
     public List<Blood> Bloods { get; set; } = [];

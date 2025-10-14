@@ -1061,4 +1061,7 @@
   <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
     <value>No permission to submit flags</value>
   </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>The deadline for this challenge has passed</value>
+  </data>
 </root>
