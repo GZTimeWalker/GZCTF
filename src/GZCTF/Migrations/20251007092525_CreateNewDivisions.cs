@@ -14,12 +14,12 @@ namespace GZCTF.Migrations
         {
             var tempColumn = $"Temp{column}";
 
-            // make a temp column
+            // make a temp column (must be nullable to avoid failure on existing rows)
             migrationBuilder.AddColumn<IPAddress>(
                 name: tempColumn,
                 table: table,
                 type: "inet",
-                nullable: nullable);
+                nullable: true);
 
             if (nullable)
             {
@@ -31,6 +31,9 @@ namespace GZCTF.Migrations
                 EXCEPTION WHEN OTHERS THEN
                     RETURN NULL;
                 END; $$ LANGUAGE plpgsql;");
+
+                // For nullable target, just try-cast; invalid values become NULL
+                migrationBuilder.Sql($"UPDATE \"{table}\" SET \"{tempColumn}\" = try_cast_inet(\"{column}\");");
             }
             else
             {
@@ -42,9 +45,11 @@ namespace GZCTF.Migrations
                 EXCEPTION WHEN OTHERS THEN
                     RETURN '::'::inet;
                 END; $$ LANGUAGE plpgsql;");
+
+                // For non-nullable target, coalesce NULL (e.g., original NULLs) to a default '::'
+                migrationBuilder.Sql($"UPDATE \"{table}\" SET \"{tempColumn}\" = COALESCE(try_cast_inet(\"{column}\"), '::'::inet);");
             }
 
-            migrationBuilder.Sql($"UPDATE \"{table}\" SET \"{tempColumn}\" = try_cast_inet(\"{column}\") WHERE \"{column}\" IS NOT NULL;");
             migrationBuilder.Sql("DROP FUNCTION try_cast_inet(TEXT);");
 
             migrationBuilder.DropColumn(
@@ -55,6 +60,19 @@ namespace GZCTF.Migrations
                 name: tempColumn,
                 table: table,
                 newName: column);
+
+            // enforce NOT NULL after data has been migrated
+            if (!nullable)
+            {
+                migrationBuilder.AlterColumn<IPAddress>(
+                    name: column,
+                    table: table,
+                    type: "inet",
+                    nullable: false,
+                    oldClrType: typeof(IPAddress),
+                    oldType: "inet",
+                    oldNullable: true);
+            }
         }
 
         /// <inheritdoc />
