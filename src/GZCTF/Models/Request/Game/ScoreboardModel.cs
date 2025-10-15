@@ -29,7 +29,8 @@ public partial class ScoreboardModel
     /// <summary>
     /// Timeline of the top ten
     /// </summary>
-    public Dictionary<string, IEnumerable<TopTimeLine>> TimeLines { get; set; } = null!;
+    [JsonIgnore]
+    public Dictionary<int, IEnumerable<TopTimeLine>> TimeLines { get; set; } = null!;
 
     /// <summary>
     /// Team information
@@ -44,8 +45,17 @@ public partial class ScoreboardModel
     public Dictionary<int, DivisionItem> Divisions { get; set; } = null!;
 
     /// <summary>
+    /// List of top ten timelines
+    /// </summary>
+    [Required]
+    [MemoryPackIgnore]
+    [JsonPropertyName("timelines")]
+    public IEnumerable<TimeLineItem> TimeLineList => TimeLines.Select(x => new TimeLineItem(x.Key, x.Value));
+
+    /// <summary>
     /// List of team information
     /// </summary>
+    [Required]
     [MemoryPackIgnore]
     [JsonPropertyName("items")]
     public IEnumerable<ScoreboardItem> ItemList => Items.Values;
@@ -53,6 +63,7 @@ public partial class ScoreboardModel
     /// <summary>
     /// List of division information
     /// </summary>
+    [Required]
     [MemoryPackIgnore]
     [JsonPropertyName("divisions")]
     public IEnumerable<DivisionItem> DivisionList => Divisions.Values;
@@ -60,6 +71,7 @@ public partial class ScoreboardModel
     /// <summary>
     /// Challenge information
     /// </summary>
+    [Required]
     public Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> Challenges
     {
         get => _challenges;
@@ -73,9 +85,12 @@ public partial class ScoreboardModel
     /// <summary>
     /// Number of challenges
     /// </summary>
+    [Required]
     [MemoryPackIgnore]
     public int ChallengeCount { get; private set; }
 }
+
+public record TimeLineItem([Required] int DivisionId, [Required] IEnumerable<TopTimeLine> Teams);
 
 [MemoryPackable]
 public partial class DivisionItem
@@ -83,21 +98,25 @@ public partial class DivisionItem
     /// <summary>
     /// Division ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// The name of the division.
     /// </summary>
+    [Required]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Permissions associated with the division.
     /// </summary>
+    [Required]
     public GamePermission DefaultPermissions { get; set; } = GamePermission.All;
 
     /// <summary>
     /// Challenge configs for this division.
     /// </summary>
+    [Required]
     public Dictionary<int, DivisionChallengeItem> ChallengeConfigs { get; set; } = [];
 }
 
@@ -107,11 +126,13 @@ public partial class DivisionChallengeItem
     /// <summary>
     /// Challenge ID
     /// </summary>
+    [Required]
     public int ChallengeId { get; set; }
 
     /// <summary>
     /// Permissions for a specific challenge.
     /// </summary>
+    [Required]
     public GamePermission Permissions { get; set; } = GamePermission.All;
 }
 
@@ -121,16 +142,19 @@ public partial class TopTimeLine
     /// <summary>
     /// Team ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Team name
     /// </summary>
+    [Required]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Timeline
     /// </summary>
+    [Required]
     public List<TimeLine> Items { get; set; } = null!;
 }
 
@@ -140,11 +164,13 @@ public partial class TimeLine
     /// <summary>
     /// Time
     /// </summary>
+    [Required]
     public DateTimeOffset Time { get; set; }
 
     /// <summary>
     /// Score
     /// </summary>
+    [Required]
     public int Score { get; set; }
 }
 
@@ -154,11 +180,13 @@ public partial class ScoreboardItem
     /// <summary>
     /// Team ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Team name
     /// </summary>
+    [Required]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -179,11 +207,13 @@ public partial class ScoreboardItem
     /// <summary>
     /// Score
     /// </summary>
+    [Required]
     public int Score { get; set; }
 
     /// <summary>
     /// Rank
     /// </summary>
+    [Required]
     public int Rank { get; set; }
 
     /// <summary>
@@ -194,16 +224,19 @@ public partial class ScoreboardItem
     /// <summary>
     /// Last submission time
     /// </summary>
+    [Required]
     public DateTimeOffset LastSubmissionTime { get; set; }
 
     /// <summary>
     /// List of solved challenges
     /// </summary>
+    [Required]
     public List<ChallengeItem> SolvedChallenges { get; set; } = [];
 
     /// <summary>
     /// Number of solved challenges
     /// </summary>
+    [Required]
     public int SolvedCount => SolvedChallenges.Count;
 
     /// <summary>
@@ -234,16 +267,19 @@ public partial class ChallengeItem
     /// <summary>
     /// Challenge ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Challenge score
     /// </summary>
+    [Required]
     public int Score { get; set; }
 
     /// <summary>
     /// Submission type (unsolved, first blood, second blood, third blood, or others)
     /// </summary>
+    [Required]
     [JsonPropertyName("type")]
     public SubmissionType Type { get; set; }
 
@@ -255,6 +291,7 @@ public partial class ChallengeItem
     /// <summary>
     /// Submission time for the challenge, used to calculate the timeline
     /// </summary>
+    [Required]
     [JsonPropertyName("time")]
     public DateTimeOffset SubmitTimeUtc { get; set; }
 
@@ -272,26 +309,31 @@ public partial class ChallengeInfo
     /// <summary>
     /// Challenge ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Challenge title
     /// </summary>
+    [Required]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Challenge category
     /// </summary>
+    [Required]
     public ChallengeCategory Category { get; set; }
 
     /// <summary>
     /// Challenge score
     /// </summary>
+    [Required]
     public int Score { get; set; }
 
     /// <summary>
     /// Number of teams that solved the challenge
     /// </summary>
+    [Required]
     [JsonPropertyName("solved")]
     public int SolvedCount { get; set; }
 
@@ -303,11 +345,13 @@ public partial class ChallengeInfo
     /// <summary>
     /// Bloods for the challenge
     /// </summary>
+    [Required]
     public List<Blood> Bloods { get; set; } = [];
 
     /// <summary>
     /// Whether to disable blood bonus
     /// </summary>
+    [Required]
     [NotMapped]
     [MemoryPackIgnore]
     public bool DisableBloodBonus { get; set; }
@@ -319,11 +363,13 @@ public partial class Blood
     /// <summary>
     /// Team ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Team name
     /// </summary>
+    [Required]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>

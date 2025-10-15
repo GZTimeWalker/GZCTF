@@ -1521,19 +1521,25 @@ export interface ScoreboardModel {
    * @format int64
    */
   bloodBonus: number;
-  /** Timeline of the top ten */
-  timeLines?: Record<string, TopTimeLine[]>;
+  /** List of top ten timelines */
+  timelines: TimeLineItem[];
   /** List of team information */
-  items?: ScoreboardItem[];
+  items: ScoreboardItem[];
   /** List of division information */
-  divisions?: DivisionItem[];
+  divisions: DivisionItem[];
   /** Challenge information */
-  challenges?: Record<string, ChallengeInfo[]>;
+  challenges: Record<string, ChallengeInfo[]>;
   /**
    * Number of challenges
    * @format int32
    */
-  challengeCount?: number;
+  challengeCount: number;
+}
+
+export interface TimeLineItem {
+  /** @format int32 */
+  divisionId?: number;
+  teams?: TopTimeLine[];
 }
 
 export interface TopTimeLine {
@@ -1541,24 +1547,28 @@ export interface TopTimeLine {
    * Team ID
    * @format int32
    */
-  id?: number;
-  /** Team name */
-  name?: string;
+  id: number;
+  /**
+   * Team name
+   * @minLength 1
+   */
+  name: string;
   /** Timeline */
-  items?: TimeLine[];
+  items: TimeLine[];
 }
 
 export interface TimeLine {
   /**
    * Time
    * @format uint64
+   * @minLength 1
    */
-  time?: number;
+  time: number;
   /**
    * Score
    * @format int32
    */
-  score?: number;
+  score: number;
 }
 
 export interface ScoreboardItem {
@@ -1566,9 +1576,12 @@ export interface ScoreboardItem {
    * Team ID
    * @format int32
    */
-  id?: number;
-  /** Team name */
-  name?: string;
+  id: number;
+  /**
+   * Team name
+   * @minLength 1
+   */
+  name: string;
   /** Team Bio */
   bio?: string | null;
   /**
@@ -1582,12 +1595,12 @@ export interface ScoreboardItem {
    * Score
    * @format int32
    */
-  score?: number;
+  score: number;
   /**
    * Rank
    * @format int32
    */
-  rank?: number;
+  rank: number;
   /**
    * Division rank
    * @format int32
@@ -1596,15 +1609,16 @@ export interface ScoreboardItem {
   /**
    * Last submission time
    * @format uint64
+   * @minLength 1
    */
-  lastSubmissionTime?: number;
+  lastSubmissionTime: number;
   /** List of solved challenges */
-  solvedChallenges?: ChallengeItem[];
+  solvedChallenges: ChallengeItem[];
   /**
    * Number of solved challenges
    * @format int32
    */
-  solvedCount?: number;
+  solvedCount: number;
 }
 
 export interface ChallengeItem {
@@ -1612,21 +1626,22 @@ export interface ChallengeItem {
    * Challenge ID
    * @format int32
    */
-  id?: number;
+  id: number;
   /**
    * Challenge score
    * @format int32
    */
-  score?: number;
+  score: number;
   /** Submission type (unsolved, first blood, second blood, third blood, or others) */
-  type?: SubmissionType;
+  type: SubmissionType;
   /** Username of the solver */
   userName?: string | null;
   /**
    * Submission time for the challenge, used to calculate the timeline
    * @format uint64
+   * @minLength 1
    */
-  time?: number;
+  time: number;
 }
 
 export interface DivisionItem {
@@ -1634,13 +1649,16 @@ export interface DivisionItem {
    * Division ID
    * @format int32
    */
-  id?: number;
-  /** The name of the division. */
-  name?: string;
+  id: number;
+  /**
+   * The name of the division.
+   * @minLength 1
+   */
+  name: string;
   /** Permissions associated with the division. */
-  defaultPermissions?: GamePermission;
+  defaultPermissions: GamePermission;
   /** Challenge configs for this division. */
-  challengeConfigs?: Record<string, DivisionChallengeItem>;
+  challengeConfigs: Record<string, DivisionChallengeItem>;
 }
 
 export interface DivisionChallengeItem {
@@ -1648,9 +1666,9 @@ export interface DivisionChallengeItem {
    * Challenge ID
    * @format int32
    */
-  challengeId?: number;
+  challengeId: number;
   /** Permissions for a specific challenge. */
-  permissions?: GamePermission;
+  permissions: GamePermission;
 }
 
 export interface ChallengeInfo {
@@ -1658,30 +1676,33 @@ export interface ChallengeInfo {
    * Challenge ID
    * @format int32
    */
-  id?: number;
-  /** Challenge title */
-  title?: string;
+  id: number;
+  /**
+   * Challenge title
+   * @minLength 1
+   */
+  title: string;
   /** Challenge category */
-  category?: ChallengeCategory;
+  category: ChallengeCategory;
   /**
    * Challenge score
    * @format int32
    */
-  score?: number;
+  score: number;
   /**
    * Number of teams that solved the challenge
    * @format int32
    */
-  solved?: number;
+  solved: number;
   /**
    * The deadline of the challenge, null means no deadline
    * @format uint64
    */
   deadlineUtc?: number | null;
   /** Bloods for the challenge */
-  bloods?: Blood[];
+  bloods: Blood[];
   /** Whether to disable blood bonus */
-  disableBloodBonus?: boolean;
+  disableBloodBonus: boolean;
 }
 
 export interface Blood {
@@ -1689,9 +1710,12 @@ export interface Blood {
    * Team ID
    * @format int32
    */
-  id?: number;
-  /** Team name */
-  name?: string;
+  id: number;
+  /**
+   * Team name
+   * @minLength 1
+   */
+  name: string;
   /** Team avatar */
   avatar?: string | null;
   /**

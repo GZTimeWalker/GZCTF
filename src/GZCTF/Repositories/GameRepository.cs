@@ -445,7 +445,7 @@ public class GameRepository(
         // 7. update rank and organization rank
         var currentRank = 1;
         Dictionary<int, int> ranks = [];
-        Dictionary<string, HashSet<int>> topTeams = new() { ["all"] = [] }; // division id -> list of team ids
+        Dictionary<int, HashSet<int>> topTeams = new() { [0] = [] };
 
         foreach (var item in items.Values)
         {
@@ -456,7 +456,7 @@ public class GameRepository(
                 item.Rank = currentRank++;
 
                 if (item.Rank <= 10)
-                    topTeams["all"].Add(item.Id);
+                    topTeams[0].Add(item.Id);
             }
 
             if (division is null)
@@ -467,13 +467,13 @@ public class GameRepository(
                 item.DivisionRank = rank + 1;
                 ranks[division.Id]++;
                 if (item.DivisionRank <= 10)
-                    topTeams[division.Name].Add(item.Id);
+                    topTeams[division.Id].Add(item.Id);
             }
             else
             {
                 item.DivisionRank = 1;
                 ranks[division.Id] = 1;
-                topTeams[division.Name] = [item.Id];
+                topTeams[division.Id] = [item.Id];
             }
         }
 
