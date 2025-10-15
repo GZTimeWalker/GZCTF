@@ -118,10 +118,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
 
-  const deadlineTime = useMemo(
-    () => (challenge?.deadlineUtc ? dayjs(challenge.deadlineUtc) : null),
-    [challenge?.deadlineUtc]
-  )
+  const deadlineTime = useMemo(() => (challenge?.deadline ? dayjs(challenge.deadline) : null), [challenge?.deadline])
   const [isDeadlinePassed, setIsDeadlinePassed] = useState(() => (deadlineTime ? dayjs().isAfter(deadlineTime) : false))
 
   useEffect(() => {

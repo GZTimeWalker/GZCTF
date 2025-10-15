@@ -197,7 +197,6 @@
           },
           "invite_code": {
             "description": "Override the game-level invitation code",
-            "generate": "Generate invitation code",
             "label": "Invitation Code"
           },
           "name": {

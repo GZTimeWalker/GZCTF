@@ -1698,7 +1698,7 @@ export interface ChallengeInfo {
    * The deadline of the challenge, null means no deadline
    * @format uint64
    */
-  deadlineUtc?: number | null;
+  deadline?: number | null;
   /** Bloods for the challenge */
   bloods: Blood[];
   /** Whether to disable blood bonus */
@@ -1968,7 +1968,7 @@ export interface ChallengeDetailModel {
    * Deadline of the challenge, null means no deadline
    * @format uint64
    */
-  deadlineUtc?: number | null;
+  deadline?: number | null;
 }
 
 export interface ClientFlagContext {

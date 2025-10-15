@@ -340,6 +340,7 @@ public partial class ChallengeInfo
     /// <summary>
     /// The deadline of the challenge, null means no deadline
     /// </summary>
+    [JsonPropertyName("deadline")]
     public DateTimeOffset? DeadlineUtc { get; set; }
 
     /// <summary>

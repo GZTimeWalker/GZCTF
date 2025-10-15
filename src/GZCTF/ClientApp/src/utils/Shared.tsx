@@ -507,6 +507,11 @@ const showErrorNotification = (title: string, message: string) => {
   })
 }
 
+export const randomInviteCode = () => {
+  const pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  return Array.from({ length: 12 }, () => pool[Math.floor(Math.random() * pool.length)]).join('')
+}
+
 export const tryGetErrorMsg = (err: any, t: (key: string) => string): string => {
   const tryGetErrorString = (err: any): string | null => {
     return typeof err === 'string' ? err : null

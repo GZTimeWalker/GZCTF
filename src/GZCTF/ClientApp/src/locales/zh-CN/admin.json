@@ -197,7 +197,6 @@
           },
           "invite_code": {
             "description": "非空则覆盖比赛邀请码",
-            "generate": "生成随机邀请码",
             "label": "邀请码"
           },
           "name": {

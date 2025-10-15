@@ -569,7 +569,7 @@ const GameChallengeEdit: FC = () => {
           score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
           limit: tryDefault([challengeInfo?.submissionLimit, challenge?.submissionLimit], 0),
           category: category as ChallengeCategory,
-          deadlineUtc: deadline ? deadline.valueOf() : undefined,
+          deadline: deadline ? deadline.valueOf() : undefined,
           type: challenge?.type ?? ChallengeType.StaticAttachment,
         }}
         opened={previewOpened}

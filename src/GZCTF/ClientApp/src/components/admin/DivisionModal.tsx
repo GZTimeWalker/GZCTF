@@ -11,7 +11,6 @@ import {
   Stack,
   Text,
   TextInput,
-  Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDiceMultiple, mdiMinusCircle } from '@mdi/js'
@@ -21,7 +20,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollingText } from '@Components/ScrollingText'
 import { PermissionDot, PermissionSelector } from '@Components/admin/PermissionSelector'
 import { CHALLENGE_SCOPED_PERMISSIONS, permissionMaskToArray } from '@Utils/Permission'
-import { showErrorMsg } from '@Utils/Shared'
+import { randomInviteCode, showErrorMsg } from '@Utils/Shared'
 import { ChallengeInfoModel, Division, DivisionCreateModel, DivisionEditModel, GamePermission } from '@Api'
 import api from '@Api'
 
@@ -33,11 +32,6 @@ interface DivisionModalProps extends DrawerProps {
 }
 
 type ChallengePermissionState = Record<number, number>
-
-const randomInviteCode = () => {
-  const pool = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-  return Array.from({ length: 12 }, () => pool[Math.floor(Math.random() * pool.length)]).join('')
-}
 
 export const DivisionModal: FC<DivisionModalProps> = ({
   gameId,
@@ -277,11 +271,9 @@ export const DivisionModal: FC<DivisionModalProps> = ({
             disabled={loading}
             onChange={(event) => setInviteCode(event.currentTarget.value)}
             rightSection={
-              <Tooltip label={t('admin.content.games.divisions.form.invite_code.generate')}>
-                <ActionIcon disabled={loading} onClick={() => !loading && setInviteCode(randomInviteCode())}>
-                  <Icon path={mdiDiceMultiple} size={0.9} />
-                </ActionIcon>
-              </Tooltip>
+              <ActionIcon disabled={loading} onClick={() => !loading && setInviteCode(randomInviteCode())}>
+                <Icon path={mdiDiceMultiple} size={0.9} />
+              </ActionIcon>
             }
           />
         </Group>
@@ -315,7 +307,7 @@ export const DivisionModal: FC<DivisionModalProps> = ({
                     <Accordion.Control>
                       <Group justify="space-between" wrap="nowrap">
                         <Group gap="xs">
-                          <Text miw="2rem">{`#${id}`}</Text>
+                          <Text size="sm" miw="2rem">{`#${id}`}</Text>
                           <ScrollingText text={getChallengeTitle(id)} w="12rem" />
                           {renderPermissionDots(challengePermissions[id])}
                         </Group>

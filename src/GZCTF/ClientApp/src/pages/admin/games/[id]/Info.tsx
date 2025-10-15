@@ -19,7 +19,7 @@ import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClipboard, mdiClose, mdiContentSaveOutline, mdiDeleteOutline, mdiDice5Outline } from '@mdi/js'
+import { mdiCheck, mdiClipboard, mdiClose, mdiContentSaveOutline, mdiDeleteOutline, mdiDiceMultiple } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
@@ -28,22 +28,13 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
-import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
+import { randomInviteCode, showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
 dayjs.extend(localizedFormat)
-
-const GenerateRandomCode = () => {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let code = ''
-  for (let i = 0; i < 24; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)]
-  }
-  return code
-}
 
 const GameInfoEdit: FC = () => {
   const { id } = useParams()
@@ -243,8 +234,8 @@ const GameInfoEdit: FC = () => {
           disabled={disabled}
           onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
           rightSection={
-            <ActionIcon onClick={() => game && setGame({ ...game, inviteCode: GenerateRandomCode() })}>
-              <Icon path={mdiDice5Outline} size={0.85} />
+            <ActionIcon onClick={() => game && setGame({ ...game, inviteCode: randomInviteCode() })}>
+              <Icon path={mdiDiceMultiple} size={0.9} />
             </ActionIcon>
           }
         />

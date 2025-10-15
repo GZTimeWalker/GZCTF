@@ -1,5 +1,5 @@
-import { ActionIcon, Badge, Card, CardProps, Code, Group, Stack, Text, Title, Tooltip } from '@mantine/core'
-import { mdiContentCopy, mdiDeleteOutline, mdiPencilOutline } from '@mdi/js'
+import { ActionIcon, Badge, Card, CardProps, Group, Stack, Text, Title, Tooltip } from '@mantine/core'
+import { mdiContentCopy, mdiDeleteOutline, mdiPencilOutline, mdiTagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -63,16 +63,17 @@ export const DivisionCard: FC<DivisionCardProps> = ({
 
   return (
     <Card withBorder shadow="sm" radius="md" padding="md" {...cardProps}>
-      <Stack gap="sm">
+      <Stack gap="xs">
         <Group justify="space-between" align="flex-start">
-          <Stack gap={4} style={{ flex: 1 }}>
+          <Group gap="sm">
+            <Icon path={mdiTagOutline} size={0.8} />
             <Title order={4} lineClamp={1}>
               {division.name}
             </Title>
-          </Stack>
-          <Group gap={4} wrap="nowrap">
-            <ActionIcon variant="subtle" color="blue" onClick={() => onEdit(division)}>
-              <Icon path={mdiPencilOutline} size={0.75} />
+          </Group>
+          <Group gap="sm" wrap="nowrap">
+            <ActionIcon variant="transparent" color="blue" onClick={() => onEdit(division)}>
+              <Icon path={mdiPencilOutline} size={1} />
             </ActionIcon>
             <ActionIconWithConfirm
               iconPath={mdiDeleteOutline}
@@ -84,38 +85,31 @@ export const DivisionCard: FC<DivisionCardProps> = ({
         </Group>
 
         {division.inviteCode && (
-          <Group gap={8} align="center" wrap="wrap">
-            <Text size="xs" c="dimmed">
-              {t('admin.content.games.divisions.form.invite_code.label')}
-            </Text>
-            <Code fw={600} fz="sm">
+          <Group gap="sm" align="center" wrap="wrap">
+            <Text size="sm">{t('admin.content.games.divisions.form.invite_code.label')}</Text>
+            <Text ff="monospace" fw="bold" fz="sm">
               {division.inviteCode}
-            </Code>
+            </Text>
             <Tooltip label={t('common.button.copy')} withArrow>
-              <ActionIcon variant="subtle" onClick={() => onCopyInviteCode(division.inviteCode ?? '')}>
-                <Icon path={mdiContentCopy} size={0.85} />
+              <ActionIcon size="sm" variant="transparent" onClick={() => onCopyInviteCode(division.inviteCode ?? '')}>
+                <Icon path={mdiContentCopy} size={0.6} />
               </ActionIcon>
             </Tooltip>
           </Group>
         )}
 
-        <Group gap={8}>
-          <Text size="xs" c="dimmed">
-            {t('admin.content.games.divisions.default_permission_label')}
-          </Text>
-
+        <Group gap="sm">
+          <Text size="sm">{t('admin.content.games.divisions.default_permission_label')}</Text>
           {renderPermissionBadges(division.defaultPermissions, true)}
         </Group>
 
         {overrides.length > 0 && (
-          <Stack gap={6}>
-            <Text size="xs" c="dimmed">
-              {t('admin.content.games.divisions.override_label')}
-            </Text>
-            <Stack gap={6}>
+          <Stack gap="xs">
+            <Text size="sm">{t('admin.content.games.divisions.override_label')}</Text>
+            <Stack gap="xs">
               {overrides.map((config) => (
                 <Group key={config.challengeId}>
-                  <Text miw="2rem">{`#${config.challengeId}`}</Text>
+                  <Text size="sm" miw="2rem">{`#${config.challengeId}`}</Text>
                   <ScrollingText text={challengeTitleMap.get(config.challengeId) ?? ''} w="14rem" />
                   <Group gap={6} wrap="wrap">
                     {renderPermissionBadges(config.permissions)}
