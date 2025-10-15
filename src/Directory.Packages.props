@@ -12,13 +12,13 @@
     <PackageVersion Include="FluentStorage.AWS" Version="6.0.0" />
     <PackageVersion Include="FluentStorage.Azure.Blobs" Version="6.0.0" />
     <PackageVersion Include="KubernetesClient" Version="18.0.4" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common" Version="9.9.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common" Version="9.10.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.4" />
     <PackageVersion Include="NPOI" Version="2.7.5" />
@@ -36,7 +36,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.12.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.12.0-beta.2" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.8.11" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.9.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
@@ -44,19 +44,19 @@
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="Serilog.Sinks.File.Archive" Version="1.0.6" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.10" />
     <PackageVersion Include="MemoryPack" Version="1.21.4" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.10" />
     <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.11" />
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageVersion Include="PacketDotNet" Version="1.4.8" />
     <PackageVersion Include="SharpPcap" Version="6.3.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.10" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
