@@ -1964,6 +1964,11 @@ export interface ChallengeDetailModel {
    * @format int32
    */
   attempts?: number;
+  /**
+   * Deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
 }
 
 export interface ClientFlagContext {

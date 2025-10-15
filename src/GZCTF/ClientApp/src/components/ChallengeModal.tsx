@@ -14,14 +14,65 @@ import {
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
 import Icon from '@mdi/react'
-import { FC, useEffect, useState, useMemo } from 'react'
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
+import { useLanguage } from '@Utils/I18n'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
 import misc from '@Styles/Misc.module.css'
+
+dayjs.extend(duration)
+
+interface ChallengeDeadlineNoticeProps {
+  deadline: dayjs.Dayjs
+  onExpiredChange: (expired: boolean) => void
+}
+
+const ChallengeDeadlineNotice: FC<ChallengeDeadlineNoticeProps> = ({ deadline, onExpiredChange }) => {
+  const { t } = useTranslation()
+  const [now, setNow] = useState(dayjs())
+  const { locale } = useLanguage()
+
+  useEffect(() => {
+    setNow(dayjs())
+    const timer = setInterval(() => setNow(dayjs()), 1000)
+    return () => clearInterval(timer)
+  }, [deadline])
+
+  useEffect(() => {
+    onExpiredChange(now.isAfter(deadline))
+  }, [now, deadline, onExpiredChange])
+
+  if (now.isAfter(deadline)) {
+    return null
+  }
+
+  const diff = deadline.diff(now)
+  const formattedDeadline = useMemo(() => deadline.locale(locale).format('L LTS'), [deadline, locale])
+  const countdownText = dayjs.duration(diff).format('HH:mm:ss')
+
+  return (
+    <Group gap="xs" justify="space-between" wrap="nowrap">
+      <Text fw="bold" size="sm">
+        {t('challenge.content.deadline.remaining')}&nbsp;
+        <Text span ff="monospace" fw="bold" size="sm" c="brand">
+          {countdownText}
+        </Text>
+      </Text>
+      <Text fw="bold" size="xs" c="dimmed">
+        {t('challenge.content.deadline.label')}&nbsp;
+        <Text span ff="monospace" c="dimmed" fw="bold" size="xs">
+          {formattedDeadline}
+        </Text>
+      </Text>
+    </Group>
+  )
+}
 
 export interface ChallengeModalProps extends ModalProps {
   challenge?: ChallengeDetailModel
@@ -56,6 +107,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   } = props
   const { t } = useTranslation()
   const theme = useMantineTheme()
+  const { locale } = useLanguage()
 
   const placeholders = t('challenge.content.flag_placeholders', {
     returnObjects: true,
@@ -65,6 +117,16 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   useEffect(() => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
   }, [challenge])
+
+  const deadlineTime = useMemo(
+    () => (challenge?.deadlineUtc ? dayjs(challenge.deadlineUtc) : null),
+    [challenge?.deadlineUtc]
+  )
+  const [isDeadlinePassed, setIsDeadlinePassed] = useState(() => (deadlineTime ? dayjs().isAfter(deadlineTime) : false))
+
+  useEffect(() => {
+    setIsDeadlinePassed(deadlineTime ? dayjs().isAfter(deadlineTime) : false)
+  }, [deadlineTime])
 
   const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
 
@@ -108,6 +170,11 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
         </>
       )}
     </ScrollAreaAutosize>
+  )
+
+  const withDeadline = deadlineTime && !isDeadlinePassed
+  const deadline = withDeadline && (
+    <ChallengeDeadlineNotice deadline={deadlineTime} onExpiredChange={setIsDeadlinePassed} />
   )
 
   const withAttachment = !!challenge?.context?.url || onDownload
@@ -159,7 +226,11 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     if (typeof challenge?.attempts !== 'number' || solved) return null
 
     let content = null
-    if (challenge?.limit) {
+    if (deadlineTime && isDeadlinePassed) {
+      content = t('challenge.content.deadline.expired', {
+        deadline: deadlineTime.locale(locale).format('L LTS'),
+      })
+    } else if (challenge?.limit) {
       const remaining = challenge.limit - challenge.attempts
       if (remaining > 0) {
         content = t('challenge.content.attempts.remaining', { remaining })
@@ -171,7 +242,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     }
 
     return <Input.Label>{content}</Input.Label>
-  }, [challenge?.attempts, challenge?.limit, solved, t])
+  }, [challenge?.attempts, challenge?.limit, solved, deadlineTime, locale, isDeadlinePassed, t])
 
   const inputValue = solved
     ? t('challenge.content.already_solved')
@@ -179,16 +250,23 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       ? t('challenge.content.attempts.placeholder')
       : flag
 
+  const inputDisabled = disabled || solved || isLimitReached || isDeadlinePassed
+
   const footer = (
     <Stack gap="xs" className={classes.footer}>
-      {(withAttachment || withInstance) && <Divider />}
-      {attachment}
-      {instance}
-      <Divider label={attemptsInfo} />
+      {(withAttachment || withInstance || withDeadline) && (
+        <>
+          <Divider mb={attemptsInfo ? '0.2rem' : undefined} />
+          {attachment}
+          {instance}
+          {deadline}
+        </>
+      )}
+      <Divider label={attemptsInfo} my={attemptsInfo ? '-0.4rem' : undefined} />
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          if (!solved) {
+          if (!solved && !isDeadlinePassed) {
             onSubmitFlag()
           }
         }}
@@ -197,11 +275,11 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           <TextInput
             placeholder={placeholder}
             value={inputValue}
-            disabled={disabled || solved || isLimitReached}
+            disabled={inputDisabled}
             onChange={setFlag}
             classNames={{ root: misc.flexGrow, input: misc.ffmono }}
           />
-          <Button miw="6rem" type="submit" disabled={disabled || solved || isLimitReached}>
+          <Button miw="6rem" type="submit" disabled={inputDisabled}>
             {t('challenge.button.submit_flag')}
           </Button>
         </Group>

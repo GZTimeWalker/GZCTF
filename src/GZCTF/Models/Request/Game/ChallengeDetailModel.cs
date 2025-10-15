@@ -56,6 +56,11 @@ public class ChallengeDetailModel
     /// Current attempt count
     /// </summary>
     public int Attempts { get; set; }
+    
+    /// <summary>
+    /// Deadline of the challenge, null means no deadline
+    /// </summary>
+    public DateTimeOffset? DeadlineUtc { get; set; }
 
     internal static ChallengeDetailModel FromInstance(GameInstance gameInstance) =>
         new()
@@ -69,6 +74,7 @@ public class ChallengeDetailModel
             Type = gameInstance.Challenge.Type,
             Limit = gameInstance.Challenge.SubmissionLimit,
             Attempts = gameInstance.SubmissionCount,
+            DeadlineUtc = gameInstance.Challenge.DeadlineUtc,
             Context = new()
             {
                 InstanceEntry = gameInstance.Container?.Entry,

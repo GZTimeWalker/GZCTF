@@ -5,7 +5,7 @@ import {
   mdiFileDocumentCheckOutline,
   mdiFlagOutline,
   mdiKeyboardBackspace,
-  mdiSourceBranch,
+  mdiTagOutline,
   mdiTextBoxOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -41,7 +41,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
     { icon: mdiTextBoxOutline, title: t('admin.tab.games.info'), path: 'info' },
     { icon: mdiBullhornOutline, title: t('admin.tab.games.notices'), path: 'notices' },
     { icon: mdiFlagOutline, title: t('admin.tab.games.challenges'), path: 'challenges' },
-    { icon: mdiSourceBranch, title: t('admin.tab.games.divisions'), path: 'divisions' },
+    { icon: mdiTagOutline, title: t('admin.tab.games.divisions'), path: 'divisions' },
     { icon: mdiAccountGroupOutline, title: t('admin.tab.games.review'), path: 'review' },
     { icon: mdiFileDocumentCheckOutline, title: t('admin.tab.games.writeups'), path: 'writeups' },
   ]

@@ -1,5 +1,5 @@
 import { Button, Group, Modal, ModalProps, Stack, TextInput } from '@mantine/core'
-import { DatePickerInput, TimeInput } from '@mantine/dates'
+import { DateTimePicker } from '@mantine/dates'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -68,68 +68,34 @@ export const GameCreateModal: FC<GameCreateModalProps> = (props) => {
           value={title}
           onChange={setTitle}
         />
-
-        <Group grow justify="space-between">
-          <DatePickerInput
-            label={t('admin.content.games.info.start_date')}
-            size="sm"
-            value={start.toDate()}
-            clearable={false}
-            onChange={(e) => {
-              const newDate = dayjs(e).hour(start.hour()).minute(start.minute()).second(start.second())
-              setStart(newDate)
-              if (newDate && end < newDate) {
-                setEnd(newDate.add(2, 'h'))
-              }
-            }}
-            required
-          />
-          <TimeInput
-            label={t('admin.content.games.info.start_time')}
-            value={start.format('HH:mm:ss')}
-            onChange={(e) => {
-              const newTime = e.target.value.split(':')
-              const newDate = dayjs(start)
-                .hour(Number(newTime[0]))
-                .minute(Number(newTime[1]))
-                .second(Number(newTime[2]))
-              setStart(newDate)
-              if (newDate && end < newDate) {
-                setEnd(newDate.add(2, 'h'))
-              }
-            }}
-            withSeconds
-            required
-          />
-        </Group>
-
-        <Group grow justify="space-between">
-          <DatePickerInput
-            label={t('admin.content.games.info.end_date')}
-            size="sm"
-            minDate={start.toDate()}
-            value={end.toDate()}
-            clearable={false}
-            onChange={(e) => {
-              const newDate = dayjs(e).hour(end.hour()).minute(end.minute()).second(end.second())
-              setEnd(newDate)
-            }}
-            error={end < start}
-            required
-          />
-          <TimeInput
-            label={t('admin.content.games.info.end_time')}
-            value={end.format('HH:mm:ss')}
-            onChange={(e) => {
-              const newTime = e.target.value.split(':')
-              const newDate = dayjs(end).hour(Number(newTime[0])).minute(Number(newTime[1])).second(Number(newTime[2]))
-              setEnd(newDate)
-            }}
-            error={end < start}
-            withSeconds
-            required
-          />
-        </Group>
+        <DateTimePicker
+          label={t('admin.content.games.info.start_time')}
+          size="sm"
+          value={start.toDate()}
+          valueFormat="L LT"
+          clearable={false}
+          onChange={(e) => {
+            const newDate = dayjs(e)
+            setStart(newDate)
+            if (newDate && end < newDate) {
+              setEnd(newDate.add(2, 'h'))
+            }
+          }}
+          required
+        />
+        <DateTimePicker
+          label={t('admin.content.games.info.end_time')}
+          size="sm"
+          minDate={start.toDate()}
+          valueFormat="L LT"
+          value={end.toDate()}
+          clearable={false}
+          onChange={(e) => {
+            setEnd(dayjs(e))
+          }}
+          error={end < start}
+          required
+        />
         <Group grow m="auto" w="100%">
           <Button fullWidth disabled={disabled} onClick={onCreate}>
             {t('admin.button.games.new')}

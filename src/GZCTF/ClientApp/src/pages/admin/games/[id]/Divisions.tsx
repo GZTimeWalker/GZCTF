@@ -1,4 +1,4 @@
-import { Button, Center, Group, ScrollArea, Stack, Text, Title } from '@mantine/core'
+import { Button, Center, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
@@ -110,12 +110,11 @@ const GameDivisionManagement: FC = () => {
   return (
     <WithGameEditTab
       isLoading={isLoading}
+      contentPos="flex-end"
       head={
-        <Group justify="flex-end" w="100%">
-          <Button leftSection={<Icon path={mdiPlus} size={1} />} onClick={openCreateModal}>
-            {t('admin.button.divisions.new')}
-          </Button>
-        </Group>
+        <Button mr="18px" leftSection={<Icon path={mdiPlus} size={1} />} onClick={openCreateModal}>
+          {t('admin.button.divisions.new')}
+        </Button>
       }
     >
       <ScrollArea h="calc(100vh - 180px)" offsetScrollbars type="auto">

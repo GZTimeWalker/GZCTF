@@ -82,8 +82,8 @@ const GameChallengeEdit: FC = () => {
         icon: <Icon path={mdiCheck} size={1} />,
       })
       mutate()
-    } catch {
-      showErrorNotification(t('common.error.try_later'), t)
+    } catch (e) {
+      showErrorMsg(e, t)
     } finally {
       setDisabled(false)
     }

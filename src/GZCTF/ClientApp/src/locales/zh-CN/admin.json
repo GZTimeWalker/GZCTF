@@ -164,6 +164,10 @@
           "label": "最大提交次数",
           "placeholder": "不限制"
         },
+        "deadline": {
+          "label": "截止时间",
+          "placeholder": "不设截止时间"
+        },
         "title": "题目标题",
         "traffic_capture": {
           "description": "捕获队伍解题流量，需要开启平台代理",

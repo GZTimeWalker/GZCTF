@@ -89,6 +89,11 @@
         "no_container": "Test container is not running"
       }
     },
+    "deadline": {
+      "label": "Deadline",
+      "remaining": "Time remaining",
+      "expired": "Deadline passed at {{deadline}}, submissions are disabled"
+    },
     "solved": "<1>{{solved}}</1> SOLVES",
     "wrong_flag_hints": [
       "Where there's a will, there's a flag.",

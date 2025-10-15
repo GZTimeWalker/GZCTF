@@ -164,6 +164,10 @@
           "label": "Max Attempts Allowed",
           "placeholder": "Unlimited"
         },
+        "deadline": {
+          "label": "Deadline",
+          "placeholder": "No deadline"
+        },
         "title": "Title",
         "traffic_capture": {
           "description": "Capturing the traffic when the team solves challenges. Platform proxy needs to be enabled",
