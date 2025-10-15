@@ -538,7 +538,8 @@ public class EditController(
     [HttpDelete("Games/{id:int}/Divisions/{divisionId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteDivision([FromRoute] int id, [FromRoute] int divisionId, CancellationToken token)
+    public async Task<IActionResult> DeleteDivision([FromRoute] int id, [FromRoute] int divisionId,
+        CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
         if (game is null)

@@ -19,7 +19,7 @@ public static class LogHelper
 {
     const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
                                "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
-                               "{@m} {#if Length(Status) > 0}#{Status} <{UserName}>" +
+                               "{@m} {#if Status <> null}#{Status} <{UserName}> " +
                                "{#if IP <> null} @ {IP}{#end}{#end}\n{@x}";
 
     const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";

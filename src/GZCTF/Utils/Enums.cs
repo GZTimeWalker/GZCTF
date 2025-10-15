@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using MemoryPack;
 using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Utils;

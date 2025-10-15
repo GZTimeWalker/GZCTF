@@ -37,7 +37,7 @@ public class ParticipationRepository(
     public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default) =>
         Context.Participations
             .FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user),
-            token);
+                token);
 
     public Task<int> GetParticipationCount(Game game, CancellationToken token = default) =>
         Context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);

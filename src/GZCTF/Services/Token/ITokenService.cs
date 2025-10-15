@@ -21,4 +21,3 @@ public interface ITokenService
     /// <returns>true if the token is valid, false otherwise.</returns>
     Task<bool> ValidateToken(string token, CancellationToken cancellationToken = default);
 }
-

@@ -160,10 +160,7 @@ public class GameController(
             if (div is null || !div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
         }
-        else if (!string.IsNullOrEmpty(game.InviteCode) && game.InviteCode != model.InviteCode)
-        {
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
-        }
+
 
         var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(model.TeamId, token);
@@ -189,13 +186,7 @@ public class GameController(
         if (part is null)
         {
             // Create new participation object, do not update team-game-user triple tuple
-            part = new()
-            {
-                Game = game,
-                Team = team,
-                Division = div,
-                Token = gameRepository.GetToken(game, team)
-            };
+            part = new() { Game = game, Team = team, Division = div, Token = gameRepository.GetToken(game, team) };
 
             participationRepository.Add(part);
         }
@@ -210,8 +201,14 @@ public class GameController(
             div = await divisionRepository.GetDivision(id, partDivId, token);
         }
 
+        var inviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
+            ? div.InviteCode
+            : string.IsNullOrEmpty(game.InviteCode)
+                ? null
+                : game.InviteCode;
+
         // Team already joined, check if the invite code matches
-        if (div is not null && !string.IsNullOrEmpty(div.InviteCode) && div.InviteCode != model.InviteCode)
+        if (inviteCode is not null && inviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
 
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)

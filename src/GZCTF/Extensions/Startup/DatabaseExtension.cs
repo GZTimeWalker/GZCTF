@@ -11,8 +11,7 @@ static class DatabaseExtension
             ExitWithFatalMessage(
                 StaticLocalizer[nameof(Resources.Program.Database_NoConnectionString)]);
 
-        builder.Services.AddDbContext<AppDbContext>(
-            options =>
+        builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
