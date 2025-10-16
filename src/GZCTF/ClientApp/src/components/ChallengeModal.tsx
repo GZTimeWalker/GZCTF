@@ -52,9 +52,11 @@ const ChallengeDeadlineNotice: FC<ChallengeDeadlineNoticeProps> = ({ deadline, o
     return null
   }
 
-  const diff = deadline.diff(now)
   const formattedDeadline = useMemo(() => deadline.locale(locale).format('L LTS'), [deadline, locale])
-  const countdownText = dayjs.duration(diff).format('HH:mm:ss')
+
+  const diff = deadline.diff(now)
+  const duration = dayjs.duration(diff)
+  const countdownText = `${Math.floor(duration.asHours())}:${duration.format('mm:ss')}`
 
   return (
     <Group gap="xs" justify="space-between" wrap="nowrap">

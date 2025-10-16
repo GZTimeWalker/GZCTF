@@ -93,7 +93,7 @@ public class ParticipationRepository(
             }
         }
 
-        needFlush |= await UpdateDivision(part, model.DivisionId, token) && part.Game.IsActive;
+        needFlush |= await UpdateDivision(part, model.DivisionId, token);
 
         await trans.CommitAsync(token);
 
