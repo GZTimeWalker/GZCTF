@@ -1544,7 +1544,8 @@ namespace GZCTF.Migrations
                 {
                     b.HasOne("GZCTF.Models.Data.Division", "Division")
                         .WithMany()
-                        .HasForeignKey("DivisionId");
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("GZCTF.Models.Data.Game", "Game")
                         .WithMany("Participations")

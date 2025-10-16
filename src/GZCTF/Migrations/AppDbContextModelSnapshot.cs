@@ -18,7 +18,7 @@ namespace GZCTF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "9.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -1541,7 +1541,8 @@ namespace GZCTF.Migrations
                 {
                     b.HasOne("GZCTF.Models.Data.Division", "Division")
                         .WithMany()
-                        .HasForeignKey("DivisionId");
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("GZCTF.Models.Data.Game", "Game")
                         .WithMany("Participations")

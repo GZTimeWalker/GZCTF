@@ -161,6 +161,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.HasOne(e => e.Writeup)
                 .WithMany();
+            
+            entity.HasOne(e => e.Division)
+                .WithMany()
+                .HasForeignKey(e => e.DivisionId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.Navigation(e => e.Game).AutoInclude();
             entity.Navigation(e => e.Team).AutoInclude();

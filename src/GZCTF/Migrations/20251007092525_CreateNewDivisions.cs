@@ -167,7 +167,8 @@ namespace GZCTF.Migrations
                 table: "Participations",
                 column: "DivisionId",
                 principalTable: "Divisions",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
