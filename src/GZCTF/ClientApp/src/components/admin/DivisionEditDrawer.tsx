@@ -24,7 +24,7 @@ import { randomInviteCode, showErrorMsg } from '@Utils/Shared'
 import { ChallengeInfoModel, Division, DivisionCreateModel, DivisionEditModel, GamePermission } from '@Api'
 import api from '@Api'
 
-interface DivisionModalProps extends DrawerProps {
+interface DivisionEditDrawerProps extends DrawerProps {
   gameId: number
   division?: Division | null
   challenges: ChallengeInfoModel[] | null
@@ -33,7 +33,7 @@ interface DivisionModalProps extends DrawerProps {
 
 type ChallengePermissionState = Record<number, number>
 
-export const DivisionModal: FC<DivisionModalProps> = ({
+export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
   gameId,
   division,
   challenges,

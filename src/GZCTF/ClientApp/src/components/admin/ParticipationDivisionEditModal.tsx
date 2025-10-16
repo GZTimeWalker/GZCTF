@@ -3,27 +3,21 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Division, ParticipationEditModel } from '@Api'
 
-interface DivisionEditModalProps extends ModalProps {
+interface ParticipationDivisionEditModalProps extends ModalProps {
   participateId: number
   divisions: Division[]
   currentDivisionId?: number | null
   setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }
 
-export const DivisionEditModal: FC<DivisionEditModalProps> = (props) => {
+export const ParticipationDivisionEditModal: FC<ParticipationDivisionEditModalProps> = (props) => {
   const { participateId, divisions, currentDivisionId, setParticipation, ...modalProps } = props
   const [divisionId, setDivisionId] = useState(currentDivisionId ? currentDivisionId.toString() : '')
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
 
-  const options = useMemo(
-    () =>
-      divisions
-        .filter((div) => div.id !== undefined && div.id !== null)
-        .map((div) => ({ value: div.id!.toString(), label: div.name ?? `Division #${div.id}` })),
-    [divisions]
-  )
+  const options = useMemo(() => divisions.map((div) => ({ value: div.id.toString(), label: div.name })), [divisions])
 
   useEffect(() => {
     setDivisionId(currentDivisionId ? currentDivisionId.toString() : '')
@@ -57,6 +51,7 @@ export const DivisionEditModal: FC<DivisionEditModalProps> = (props) => {
           clearable
           disabled={disabled}
           value={divisionId}
+          placeholder={t('admin.content.games.review.participation.no_division')}
           onChange={(e) => setDivisionId(e ?? '')}
         />
         <Button fullWidth disabled={disabled} onClick={onConfirm}>

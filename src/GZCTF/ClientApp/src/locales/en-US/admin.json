@@ -110,6 +110,10 @@
           "description": "Multiplication of 0.1 CPU core",
           "label": "CPU Limit (0.1 CPUs)"
         },
+        "deadline": {
+          "label": "Deadline",
+          "placeholder": "No deadline"
+        },
         "delete": "Are you sure you want to delete challenge {{name}}?",
         "description": "Description",
         "difficulty": "Difficulty Factor",
@@ -163,10 +167,6 @@
           "description": "0 = unlimited",
           "label": "Max Attempts Allowed",
           "placeholder": "Unlimited"
-        },
-        "deadline": {
-          "label": "Deadline",
-          "placeholder": "No deadline"
         },
         "title": "Title",
         "traffic_capture": {
@@ -300,6 +300,7 @@
         },
         "participation": {
           "joined": "Joined",
+          "no_division": "No division",
           "not_joined": "Not Registered",
           "stats": "{{count}}/{{total}} joined",
           "update": "Set this team's status to: \"{{status}}\"?"

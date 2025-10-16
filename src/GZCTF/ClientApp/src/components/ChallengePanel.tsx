@@ -217,8 +217,8 @@ export const ChallengePanel: FC = () => {
         scrollbarSize={4}
         classNames={{ root: classes.scrollArea }}
       >
-        {/* if rank is 0, means scoreboard not ready yet */}
-        {!teamInfo?.rank?.rank ? (
+        {/* if rank is 0, and have no division, means scoreboard not ready yet */}
+        {!teamInfo.rank?.divisionId && !teamInfo?.rank?.rank ? (
           <Center h="calc(100vh - 10rem)">
             <Stack gap={0}>
               <Title order={2}>{t('game.content.scoreboard_not_ready.title')}</Title>

@@ -36,19 +36,13 @@ import cx from 'clsx'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
-import { DivisionEditModal } from '@Components/admin/DivisionEditModal'
+import { ParticipationDivisionEditModal } from '@Components/admin/ParticipationDivisionEditModal'
 import { ParticipationStatusControl } from '@Components/admin/ParticipationStatusControl'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
-import api, {
-  Division,
-  ParticipationEditModel,
-  ParticipationInfoModel,
-  ParticipationStatus,
-  ProfileUserInfoModel,
-} from '@Api'
+import api, { ParticipationEditModel, ParticipationInfoModel, ParticipationStatus, ProfileUserInfoModel } from '@Api'
 import classes from '@Styles/Accordion.module.css'
 import misc from '@Styles/Misc.module.css'
 import reviewClasses from '@Styles/Review.module.css'
@@ -135,12 +129,12 @@ interface ParticipationItemProps {
   disabled: boolean
   onEditDiv: () => void
   setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
-  canEditDivision: boolean
-  divisionName: string
+  hasDivisions: boolean
+  divisionName?: string | null
 }
 
 const ParticipationItem: FC<ParticipationItemProps> = (props) => {
-  const { participation, disabled, onEditDiv, setParticipation, canEditDivision, divisionName } = props
+  const { participation, disabled, onEditDiv, setParticipation, hasDivisions, divisionName } = props
   const part = useParticipationStatusMap().get(participation.status!)!
 
   const { t } = useTranslation()
@@ -167,16 +161,16 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
             <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
               <Box w="10em">
-                <Group gap={0} wrap="nowrap">
-                  <Text fw={500} truncate>
-                    {divisionName}
-                  </Text>
-                  {canEditDivision && (
+                {hasDivisions && (
+                  <Group gap={0} wrap="nowrap">
+                    <Text fz="sm" fw="bold" truncate>
+                      {divisionName ?? t('admin.content.games.review.participation.no_division')}
+                    </Text>
                     <ActionIcon size="sm" onClick={onEditDiv} disabled={disabled}>
                       <Icon path={mdiPencil} size={0.6} />
                     </ActionIcon>
-                  )}
-                </Group>
+                  </Group>
+                )}
                 <Text size="sm" c="dimmed" fw="bold">
                   {t('admin.content.games.review.participation.stats', {
                     count: participation.registeredMembers?.length ?? 0,
@@ -235,20 +229,18 @@ const GameTeamReview: FC = () => {
 
   const { data: divisions } = api.edit.useEditGetDivisions(numId, OnceSWRConfig, numId > 0)
 
-  const divisionList = useMemo<Division[]>(() => divisions ?? [], [divisions])
-
   const divisionNameMap = useMemo(() => {
     const map = new Map<number, string>()
-    divisionList.forEach((division) => {
+    divisions?.forEach((division) => {
       map.set(division.id, division.name && division.name.trim().length > 0 ? division.name : `#${division.id}`)
     })
     return map
-  }, [divisionList])
+  }, [divisions])
 
   const divisionSelectOptions = useMemo(() => {
     const optionMap = new Map<string, { value: string; label: string }>()
 
-    divisionList.forEach((division) => {
+    divisions?.forEach((division) => {
       const value = division.id.toString()
       optionMap.set(value, { value, label: divisionNameMap.get(division.id) ?? `#${division.id}` })
     })
@@ -263,9 +255,9 @@ const GameTeamReview: FC = () => {
     })
 
     return Array.from(optionMap.values()).sort((a, b) => a.label.localeCompare(b.label))
-  }, [divisionList, divisionNameMap, participations])
+  }, [divisions, divisionNameMap, participations])
 
-  const hasDivisions = divisionList.length > 0
+  const hasDivisions = (divisions?.length ?? 0) > 0
 
   const setParticipation = async (id: number, model: ParticipationEditModel) => {
     setDisabled(true)
@@ -277,12 +269,12 @@ const GameTeamReview: FC = () => {
 
           const next: ParticipationInfoModel = { ...value }
 
-          if (model.status !== undefined && model.status !== null) {
+          if (model.status) {
             next.status = model.status
           }
 
           if (model.divisionId !== undefined) {
-            next.divisionId = model.divisionId ?? null
+            next.divisionId = model.divisionId
           }
 
           return next
@@ -401,12 +393,8 @@ const GameTeamReview: FC = () => {
                   setDivModalOpened(true)
                 }}
                 setParticipation={setParticipation}
-                canEditDivision={hasDivisions}
-                divisionName={
-                  participation.divisionId !== undefined && participation.divisionId !== null
-                    ? (divisionNameMap.get(participation.divisionId) ?? `#${participation.divisionId}`)
-                    : ((participation as { division?: string }).division ?? '-')
-                }
+                hasDivisions={hasDivisions}
+                divisionName={participation.divisionId ? divisionNameMap.get(participation.divisionId) : null}
               />
             ))}
           </Accordion>
@@ -421,10 +409,10 @@ const GameTeamReview: FC = () => {
         }}
       />
       {hasDivisions && curParticipation && (
-        <DivisionEditModal
+        <ParticipationDivisionEditModal
           title={t('admin.content.games.review.edit_division')}
           opened={divModalOpened}
-          divisions={divisionList}
+          divisions={divisions ?? []}
           participateId={curParticipation?.id ?? -1}
           currentDivisionId={curParticipation?.divisionId ?? null}
           setParticipation={setParticipation}

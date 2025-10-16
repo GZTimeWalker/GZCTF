@@ -110,6 +110,10 @@
           "description": "乘以 0.1 即为 CPU 核心数",
           "label": "CPU 限制 (0.1 CPUs)"
         },
+        "deadline": {
+          "label": "截止时间",
+          "placeholder": "不设截止时间"
+        },
         "delete": "你确定要删除题目 {{name}} 吗？",
         "description": "题目描述",
         "difficulty": "难度系数",
@@ -163,10 +167,6 @@
           "description": "0 表示不限制",
           "label": "最大提交次数",
           "placeholder": "不限制"
-        },
-        "deadline": {
-          "label": "截止时间",
-          "placeholder": "不设截止时间"
         },
         "title": "题目标题",
         "traffic_capture": {
@@ -300,6 +300,7 @@
         },
         "participation": {
           "joined": "已报名",
+          "no_division": "未分组",
           "not_joined": "未报名",
           "stats": "{{count}}/{{total}} 已报名",
           "update": "确定要设为 \"{{status}}\" 吗？"

@@ -7,7 +7,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { DivisionCard } from '@Components/admin/DivisionCard'
-import { DivisionModal } from '@Components/admin/DivisionModal'
+import { DivisionEditDrawer } from '@Components/admin/DivisionEditDrawer'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
@@ -29,7 +29,7 @@ const GameDivisionManagement: FC = () => {
   const [activeDivision, setActiveDivision] = useState<Division | null>(null)
 
   useEffect(() => {
-    if (Number.isNaN(numId) || numId <= 0) {
+    if (Number.isNaN(numId) || numId < 0) {
       showNotification({
         color: 'red',
         message: t('common.error.param_error'),
@@ -39,15 +39,11 @@ const GameDivisionManagement: FC = () => {
     }
   }, [navigate, numId, t])
 
-  if (Number.isNaN(numId) || numId <= 0) {
-    return null
-  }
-
   const challengeTitleMap = useMemo(() => {
     const map = new Map<number, string>()
     challenges?.forEach((challenge) => {
-      if (challenge.id !== undefined && challenge.id !== null) {
-        map.set(challenge.id, challenge.title ?? `${t('common.label.challenge')} #${challenge.id}`)
+      if (challenge.id) {
+        map.set(challenge.id, challenge.title)
       }
     })
     return map
@@ -147,7 +143,7 @@ const GameDivisionManagement: FC = () => {
           </Stack>
         )}
       </ScrollArea>
-      <DivisionModal
+      <DivisionEditDrawer
         title={activeDivision ? t('admin.button.divisions.edit') : t('admin.button.divisions.new')}
         opened={modalOpened}
         onClose={() => {
