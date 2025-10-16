@@ -29,7 +29,7 @@
 .root {
   filter: saturate(0.9);
 
-  &[data-solved] {
+  &[data-faded] {
     @mixin dark {
       filter: brightness(0.8);
     }

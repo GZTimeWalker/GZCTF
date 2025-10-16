@@ -87,7 +87,7 @@ const GameChallengeEdit: FC = () => {
     try {
       const res = await api.edit.editUpdateGameChallenge(numId, numCId, {
         ...challenge,
-        deadlineUtc: deadline ? deadline.valueOf() : null,
+        deadlineUtc: deadline ? deadline.valueOf() : 0,
         isEnabled: undefined,
       })
       if (!noFeedback) {

@@ -16,7 +16,7 @@ import { mdiFlag } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { Trans } from 'react-i18next'
 import { ScrollingText } from '@Components/ScrollingText'
 import { useLanguage } from '@Utils/I18n'
@@ -42,13 +42,19 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
   const theme = useMantineTheme()
   const { locale } = useLanguage()
 
+  const isDeadlinePassed = useMemo(() => {
+    if (!challenge.deadline) return false
+
+    return dayjs().isAfter(dayjs(challenge.deadline))
+  }, [challenge.deadline])
+
   return (
     <Card
       onClick={onClick}
       radius="md"
       shadow="sm"
       className={cx(misc.hoverCard, classes.root)}
-      data-solved={solved || undefined}
+      data-faded={solved || isDeadlinePassed || undefined}
       data-no-move
     >
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
