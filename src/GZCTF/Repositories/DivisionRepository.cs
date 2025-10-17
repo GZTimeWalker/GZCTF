@@ -1,5 +1,6 @@
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
+using k8s.KubeConfigModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
@@ -16,11 +17,11 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
             InviteCode = model.InviteCode,
             DefaultPermissions = model.DefaultPermissions ?? GamePermission.All,
         };
-        
-        division.UpdateChallengeConfigs(model.ChallengeConfigs);
 
         await Context.AddAsync(division, token);
-        
+
+        division.UpdateChallengeConfigs(model.ChallengeConfigs);
+
         await SaveAsync(token);
 
         return division;
@@ -37,7 +38,14 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
             .Include(d => d.ChallengeConfigs)
             .FirstOrDefaultAsync(d => d.Id == divisionId && d.GameId == gameId, token);
 
-    public async ValueTask<GamePermission> GetPermission(int? divisionId, int? challengeId, CancellationToken token = default)
+    public Task<int[]> GetJoinableDivisionIds(int gameId, CancellationToken token = default) =>
+        Context.Divisions
+            .Where(d => d.GameId == gameId && d.DefaultPermissions.HasFlag(GamePermission.JoinGame))
+            .Select(d => d.Id)
+            .ToArrayAsync(token);
+
+    public async ValueTask<GamePermission> GetPermission(int? divisionId, int? challengeId,
+        CancellationToken token = default)
     {
         if (divisionId is null)
             return GamePermission.All;

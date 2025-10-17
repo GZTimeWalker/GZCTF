@@ -21,7 +21,7 @@ public class DivisionCreateModel
     /// Permissions associated with the division.
     /// </summary>
     public GamePermission? DefaultPermissions { get; set; } = GamePermission.All;
-    
+
     /// <summary>
     /// Challenge configs for this division.
     /// </summary>

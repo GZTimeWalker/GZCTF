@@ -81,14 +81,14 @@ public partial class Division
             }
         }
     }
-    
+
     internal void Update(DivisionEditModel model)
     {
         Name = model.Name ?? Name;
         InviteCode = model.InviteCode ?? InviteCode;
         DefaultPermissions = model.DefaultPermissions ?? DefaultPermissions;
 
-       UpdateChallengeConfigs(model.ChallengeConfigs);
+        UpdateChallengeConfigs(model.ChallengeConfigs);
     }
 }
 
