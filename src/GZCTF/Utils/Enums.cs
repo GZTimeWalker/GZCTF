@@ -371,6 +371,55 @@ public enum Difficulty : byte
 }
 
 /// <summary>
+/// Game participant permission
+/// </summary>
+[Flags]
+[JsonConverter(typeof(JsonNumberEnumConverter<GamePermission>))]
+public enum GamePermission
+{
+    /// <summary>
+    /// Join the game
+    /// </summary>
+    /// <remarks>
+    /// only used in division permissions
+    /// </remarks>
+    JoinGame = 1 << 0,
+
+    /// <summary>
+    /// Can be ranked on the overall scoreboard
+    /// </summary>
+    /// <remarks>
+    /// only used in division permissions
+    /// </remarks>
+    RankOverall = 1 << 1,
+
+    /// <summary>
+    /// Can view challenge
+    /// </summary>
+    ViewChallenge = 1 << 8,
+
+    /// <summary>
+    /// Can submit flags
+    /// </summary>
+    SubmitFlags = 1 << 9,
+
+    /// <summary>
+    /// Can be awarded points
+    /// </summary>
+    GetScore = 1 << 10,
+
+    /// <summary>
+    /// Can earn blood bonuses
+    /// </summary>
+    GetBlood = 1 << 11,
+
+    /// <summary>
+    /// All permissions, including future permissions
+    /// </summary>
+    All = int.MaxValue
+}
+
+/// <summary>
 /// Judgement result
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<AnswerResult>))]

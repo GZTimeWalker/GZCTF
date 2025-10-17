@@ -39,14 +39,16 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
 
         if (user is null)
         {
-            context.Result = GetResult(localizer[nameof(Resources.Program.Auth_LoginRequired)],
+            context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_LoginRequired)],
                 StatusCodes.Status401Unauthorized);
             return;
         }
 
         diagnosticContext.Set("UserId", user.Id);
         diagnosticContext.Set("UserName", user.UserName ?? "Anonymous");
-        diagnosticContext.Set("IP", context.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "");
+
+        if (context.HttpContext.Connection.RemoteIpAddress is { } ip)
+            diagnosticContext.Set("IP", ip);
 
         if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
         {
@@ -63,12 +65,9 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
                     context.HttpContext.Request.Path], user,
                 TaskStatus.Denied);
 
-        context.Result = GetResult(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+        context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
             StatusCodes.Status403Forbidden);
     }
-
-    public static IActionResult GetResult(string msg, int code) =>
-        new JsonResult(new RequestResponse(msg, code)) { StatusCode = code };
 }
 
 /// <summary>

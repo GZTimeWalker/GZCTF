@@ -68,8 +68,7 @@ public static class TelemetryExtension
         });
 
         if (TelemetryConfig is { AzureMonitor.Enable: true })
-            otl.UseAzureMonitor(
-                options => options.ConnectionString = TelemetryConfig.AzureMonitor.ConnectionString);
+            otl.UseAzureMonitor(options => options.ConnectionString = TelemetryConfig.AzureMonitor.ConnectionString);
 
         if (TelemetryConfig is { OpenTelemetry: { Enable: true, EndpointUri: not null } })
             otl.UseOtlpExporter(TelemetryConfig.OpenTelemetry.Protocol, new(TelemetryConfig.OpenTelemetry.EndpointUri));

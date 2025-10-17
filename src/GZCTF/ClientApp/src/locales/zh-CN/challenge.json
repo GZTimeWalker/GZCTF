@@ -89,6 +89,11 @@
         "no_container": "测试容器未开启"
       }
     },
+    "deadline": {
+      "label": "截止时间",
+      "remaining": "剩余时间",
+      "expired": "该题已于 {{deadline}} 截止，无法继续提交"
+    },
     "solved": "<1>{{solved}}</1> 次解出",
     "wrong_flag_hints": [
       "饮水思源，重新审题吧。",

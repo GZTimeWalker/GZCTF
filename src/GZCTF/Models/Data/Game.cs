@@ -42,6 +42,11 @@ public class Game
     public bool Hidden { get; set; }
 
     /// <summary>
+    /// Whether the game is in practice mode (most operations can still be performed after the game ends)
+    /// </summary>
+    public bool PracticeMode { get; set; } = true;
+
+    /// <summary>
     /// Poster hash
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
@@ -72,11 +77,6 @@ public class Game
     /// </summary>
     [MaxLength(Limits.InviteTokenLength)]
     public string? InviteCode { get; set; }
-
-    /// <summary>
-    /// List of divisions for the game
-    /// </summary>
-    public HashSet<string>? Divisions { get; set; }
 
     /// <summary>
     /// Limit on the number of team members, 0 means no limit
@@ -178,14 +178,6 @@ public class Game
         return CryptoUtils.GenerateSignature(str, privateKey, SignAlgorithm.Ed25519);
     }
 
-    internal bool IsValidDivision(string? division)
-    {
-        if (Divisions is not { Count: > 0 })
-            return division is null;
-
-        return !string.IsNullOrWhiteSpace(division) && Divisions.Contains(division);
-    }
-
     internal Game Update(GameInfoModel model)
     {
         Title = model.Title;
@@ -195,7 +187,6 @@ public class Game
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
         InviteCode = model.InviteCode;
-        Divisions = model.Divisions?.ToHashSet() ?? Divisions;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;
         TeamMemberCountLimit = model.TeamMemberCountLimit;
@@ -244,12 +235,12 @@ public class Game
     /// Game teams
     /// </summary>
     [JsonIgnore]
-    public ICollection<Team>? Teams { get; set; }
+    public List<Team>? Teams { get; set; }
 
     /// <summary>
-    /// Whether the game is in practice mode (most operations can still be performed after the game ends)
+    /// List of divisions for the game
     /// </summary>
-    public bool PracticeMode { get; set; } = true;
+    public HashSet<Division>? Divisions { get; set; }
 
     #endregion Db Relationship
 }

@@ -1,4 +1,5 @@
-﻿using GZCTF.Hubs;
+﻿using System.Net;
+using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
 using GZCTF.Models.Request.Admin;
 using Microsoft.AspNetCore.SignalR;
@@ -36,11 +37,11 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
                     Time = logEvent.Timestamp,
                     Level = logEvent.Level.ToString(),
                     Msg = logEvent.RenderMessageWithExceptions(),
-                    UserName = LogHelper.GetStringValue(userName, "Anonymous"),
-                    IP = LogHelper.GetStringValue(ip),
+                    UserName = LogHelper.GetLogPropertyValue(userName, "Anonymous"),
+                    IP = LogHelper.GetLogPropertyValue<IPAddress>(ip, null),
                     Status = logEvent.Exception is null
-                        ? LogHelper.GetStringValue(status)
-                        : nameof(TaskStatus.Failed)
+                        ? LogHelper.GetLogPropertyValue(status, TaskStatus.Failed)
+                        : TaskStatus.Failed,
                 }).Wait();
         }
         catch

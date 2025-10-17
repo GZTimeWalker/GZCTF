@@ -137,7 +137,7 @@ const Traffic: FC = () => {
     borderRight: `${rem(2)} solid ${colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[4]}`,
   }
 
-  const srollHeight = 'calc(100vh - 174px)'
+  const scrollHeight = 'calc(100vh - 174px)'
   const headerHeight = rem(32)
 
   challengeTraffic?.sort((a, b) => a.category?.localeCompare(b.category ?? '') ?? 0)
@@ -167,7 +167,7 @@ const Traffic: FC = () => {
                 items={challengeTraffic}
                 selectedId={challengeId}
                 onSelect={setChallengeId}
-                h={srollHeight}
+                h={scrollHeight}
               />
             </Grid.Col>
             <Grid.Col span={3} style={innerStyle}>
@@ -182,7 +182,7 @@ const Traffic: FC = () => {
                 items={teamTraffic}
                 selectedId={participationId}
                 onSelect={setParticipationId}
-                h={srollHeight}
+                h={scrollHeight}
               />
             </Grid.Col>
             <Grid.Col span={6}>
@@ -221,7 +221,7 @@ const Traffic: FC = () => {
                 itemComponent={FileItem}
                 itemComponentProps={{ onDownload, onDelete, disabled, t, locale }}
                 items={orderedFileRecords}
-                h={srollHeight}
+                h={scrollHeight}
               />
             </Grid.Col>
           </Grid>

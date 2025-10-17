@@ -60,4 +60,3 @@ public interface IApiTokenRepository
     /// <returns>True if the token was deleted, false otherwise.</returns>
     Task<bool> DeleteTokenAsync(ApiToken token, CancellationToken cancellationToken = default);
 }
-

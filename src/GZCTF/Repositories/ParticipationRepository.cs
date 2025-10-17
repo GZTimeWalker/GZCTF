@@ -1,4 +1,5 @@
 ﻿using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ namespace GZCTF.Repositories;
 public class ParticipationRepository(
     CacheHelper cacheHelper,
     IBlobRepository blobRepository,
+    IDivisionRepository divisionRepository,
     AppDbContext context) : RepositoryBase(context), IParticipationRepository
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
@@ -27,14 +29,16 @@ public class ParticipationRepository(
     }
 
     public Task<Participation?> GetParticipationById(int id, CancellationToken token = default) =>
-        Context.Participations.FirstOrDefaultAsync(p => p.Id == id, token);
+        Context.Participations.Include(p => p.Division)
+            .FirstOrDefaultAsync(p => p.Id == id, token);
 
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default) =>
         Context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 
     public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default) =>
-        Context.Participations.FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user),
-            token);
+        Context.Participations
+            .FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user),
+                token);
 
     public Task<int> GetParticipationCount(Game game, CancellationToken token = default) =>
         Context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
@@ -44,6 +48,16 @@ public class ParticipationRepository(
             .Include(p => p.Team)
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
+
+    public Task<JoinedTeam[]> GetJoinedTeams(Game game, UserInfo user, CancellationToken token = default) =>
+        Context.Participations
+            .Where(p => p.Game == game && p.Team.Members.Any(m => m == user))
+            .Select(p => new JoinedTeam
+            {
+                TeamId = p.TeamId,
+                DivisionId = p.DivisionId
+            })
+            .ToArrayAsync(token);
 
     public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default) =>
         Context.Participations.Where(p => p.Game == game && p.Writeup != null)
@@ -90,15 +104,7 @@ public class ParticipationRepository(
             }
         }
 
-        if (model.Division != part.Division && part.Game.IsValidDivision(model.Division))
-        {
-            part.Division = model.Division;
-            await SaveAsync(token);
-
-            // flush scoreboard when division is updated
-            if (part.Game.IsActive)
-                needFlush = true;
-        }
+        needFlush |= await UpdateDivision(part, model.DivisionId, token);
 
         await trans.CommitAsync(token);
 
@@ -106,9 +112,34 @@ public class ParticipationRepository(
             await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
+    async Task<bool> UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
+    {
+        if (part.DivisionId == divisionId)
+            return false;
+
+        if (divisionId is { } divId)
+        {
+            var div = await divisionRepository.GetDivision(part.GameId, divId, token);
+            if (div is null)
+                return false;
+
+            part.DivisionId = divisionId;
+            part.Division = div;
+        }
+        else
+        {
+            part.DivisionId = null;
+            part.Division = null;
+        }
+
+        await SaveAsync(token);
+        return true;
+    }
+
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>
         Context.Participations.Where(p => ids.Contains(p.Id))
             .Include(p => p.Team)
+            .Include(p => p.Division)
             .ToArrayAsync(token);
 
     public async Task RemoveUserParticipations(UserInfo user, Game game, CancellationToken token = default) =>

@@ -58,7 +58,7 @@
   }
 }
 
-.wapper {
+.wrapper {
   width: 100%;
   height: var(--mantine-line-height-sm);
 }

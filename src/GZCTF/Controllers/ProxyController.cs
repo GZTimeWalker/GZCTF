@@ -184,10 +184,10 @@ public class ProxyController(
                         e.SocketErrorCode,
                         $"{target.Address}:{target.Port}"],
                     TaskStatus.Failed, LogLevel.Debug);
-                return new JsonResult(new RequestResponse(
+
+                return RequestResponse.Result(
                     localizer[nameof(Resources.Program.Proxy_ContainerConnectionFailed), e.SocketErrorCode],
-                    StatusCodes.Status418ImATeapot))
-                { StatusCode = StatusCodes.Status418ImATeapot };
+                    StatusCodes.Status418ImATeapot);
             }
 
             using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();

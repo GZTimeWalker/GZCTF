@@ -36,7 +36,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_Email)]
     ];
 
-    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, Game game)
+    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard)
     {
         if (scoreboard.Items.Values.FirstOrDefault()?.TeamInfo is null)
             throw new ArgumentException(localizer[nameof(Resources.Program.Scoreboard_TeamNotLoaded)]);
@@ -44,8 +44,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var workbook = new XSSFWorkbook();
         var boardSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_Title)]);
         var headerStyle = GetHeaderStyle(workbook);
-        var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, game);
-        WriteBoardContent(boardSheet, scoreboard, challIds, game);
+        var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard);
+        WriteBoardContent(boardSheet, scoreboard, challIds);
 
         var stream = new MemoryStream();
         workbook.Write(stream, true);
@@ -112,12 +112,12 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
     }
 
-    int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard, Game game)
+    int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard)
     {
         var row = sheet.CreateRow(0);
         var colIndex = 0;
         var challIds = new List<int>();
-        var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
+        var withOrg = scoreboard.Divisions.Count > 0;
 
         foreach (var col in _commonScoreboardHeader)
         {
@@ -145,10 +145,10 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return challIds.ToArray();
     }
 
-    static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds, Game game)
+    static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds)
     {
         var rowIndex = 1;
-        var withOrg = game.Divisions is not null && game.Divisions.Count > 0;
+        var withDiv = scoreboard.Divisions.Count > 0;
 
         foreach (var item in scoreboard.Items.Values)
         {
@@ -157,8 +157,10 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             row.CreateCell(colIndex++).SetCellValue(item.Rank);
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
-            if (withOrg)
-                row.CreateCell(colIndex++).SetCellValue(item.Division);
+            if (withDiv && item.DivisionId is { } id && scoreboard.Divisions.TryGetValue(id, out var division))
+            {
+                row.CreateCell(colIndex++).SetCellValue(division.Name);
+            }
 
             row.CreateCell(colIndex++).SetCellValue(TakeIfNotEmpty(item.TeamInfo?.Captain?.UserName));
 

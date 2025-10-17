@@ -48,6 +48,11 @@ public class ChallengeUpdateModel
     public string? FileName { get; set; }
 
     /// <summary>
+    /// The deadline of the challenge, null means no deadline
+    /// </summary>
+    public DateTimeOffset? DeadlineUtc { get; set; }
+
+    /// <summary>
     /// Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
     /// </summary>
     [Range(0, 10000, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),

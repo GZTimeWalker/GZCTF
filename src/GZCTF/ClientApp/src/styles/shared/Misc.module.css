@@ -124,6 +124,12 @@
   flex-grow: 1;
 }
 
+.switchVerticalMiddle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .gameDivEdit {
   min-height: 79px;
   max-height: 79px;
@@ -131,7 +137,7 @@
 }
 
 .gamePoster {
-  height: 211px;
+  height: 233px;
   padding: 0 16px;
 }
 

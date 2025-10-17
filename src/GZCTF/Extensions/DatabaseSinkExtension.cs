@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Net;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
@@ -54,10 +55,12 @@ public class DatabaseSink : ILogEventSink, IDisposable
             TimeUtc = logEvent.Timestamp.ToUniversalTime(),
             Level = logEvent.Level.ToString(),
             Message = logEvent.RenderMessageWithExceptions(),
-            UserName = LogHelper.GetStringValue(userName, "Anonymous"),
-            Logger = LogHelper.GetStringValue(sourceContext, "Unknown"),
-            RemoteIP = LogHelper.GetStringValue(ip),
-            Status = logEvent.Exception is null ? LogHelper.GetStringValue(status) : nameof(TaskStatus.Failed),
+            UserName = LogHelper.GetLogPropertyValue(userName, "Anonymous"),
+            Logger = LogHelper.GetLogPropertyValue<string>(sourceContext, "Unknown") ?? string.Empty,
+            RemoteIP = LogHelper.GetLogPropertyValue<IPAddress>(ip, null),
+            Status = logEvent.Exception is null
+                ? LogHelper.GetLogPropertyValue(status, TaskStatus.Failed)
+                : TaskStatus.Failed,
             Exception = logEvent.Exception?.ToString()
         };
     }

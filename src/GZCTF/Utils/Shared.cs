@@ -1,6 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Buffers;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Channels;
 using MemoryPack;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IO;
 
 namespace GZCTF.Utils;
@@ -44,7 +47,11 @@ public record TaskResult<TResult>(TaskStatus Status, TResult? Result = default);
 /// </summary>
 /// <param name="Title">Response message</param>
 /// <param name="Status">Status code</param>
-public record RequestResponse(string Title, int Status = StatusCodes.Status400BadRequest);
+public record RequestResponse(string Title, int Status = StatusCodes.Status400BadRequest)
+{
+    internal static IActionResult Result(string title, int status = StatusCodes.Status400BadRequest) =>
+        new JsonResult(new RequestResponse(title, status)) { StatusCode = status };
+}
 
 /// <summary>
 /// Request response
@@ -102,7 +109,7 @@ public record ChallengeModel(int Id, string Title, ChallengeCategory Category)
 public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Division)
 {
     internal static ParticipationModel FromParticipation(Participation part) =>
-        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division);
+        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division?.Name);
 }
 
 /// <summary>
@@ -131,6 +138,59 @@ public class ArrayResponse<T>(T[] array, int? tot = null)
     /// Total length
     /// </summary>
     public int Total { get; set; } = tot ?? array.Length;
+}
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class IPAddressFormatter : MemoryPackCustomFormatterAttribute<IPAddress>, IMemoryPackFormatter<IPAddress>
+{
+    public void Serialize<TBufferWriter>(ref MemoryPackWriter<TBufferWriter> writer, scoped ref IPAddress? value)
+        where TBufferWriter : IBufferWriter<byte>
+    {
+        if (value is null)
+        {
+            writer.WriteNullObjectHeader();
+            return;
+        }
+
+        // Write object header
+        writer.WriteObjectHeader(1);
+
+        // Get the address bytes and write as byte array
+        // IPv4: 4 bytes, IPv6: 16 bytes
+        Span<byte> addressBytes = stackalloc byte[16];
+        // false: only if the destination is not long enough
+        value.TryWriteBytes(addressBytes, out int bytesWritten);
+        writer.WriteSpan(addressBytes[..bytesWritten]);
+    }
+
+    public void Deserialize(ref MemoryPackReader reader, scoped ref IPAddress? value)
+    {
+        if (!reader.TryReadObjectHeader(out var count))
+        {
+            value = null;
+            return;
+        }
+
+        if (count != 1)
+        {
+            MemoryPackSerializationException.ThrowInvalidPropertyCount(typeof(IPAddress), 1, count);
+            return;
+        }
+
+        // Read the byte array
+        var addressBytes = reader.ReadArray<byte>();
+
+        if (addressBytes is null)
+        {
+            value = null;
+            return;
+        }
+
+        // Construct IPAddress from bytes
+        value = new IPAddress(addressBytes);
+    }
+
+    public override IMemoryPackFormatter<IPAddress> GetFormatter() => this;
 }
 
 /// <summary>

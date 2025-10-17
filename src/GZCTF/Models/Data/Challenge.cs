@@ -50,6 +50,11 @@ public class Challenge
     public bool IsEnabled { get; set; }
 
     /// <summary>
+    /// The deadline of the challenge, null means no deadline
+    /// </summary>
+    public DateTimeOffset? DeadlineUtc { get; set; }
+
+    /// <summary>
     /// Number of people who solved the challenge
     /// </summary>
     [Required]

@@ -30,7 +30,8 @@ public class ApiTokenController(
     /// <returns>The generated token.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(ApiTokenResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GenerateToken([FromBody] ApiTokenCreateModel model, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GenerateToken([FromBody] ApiTokenCreateModel model,
+        CancellationToken cancellationToken = default)
     {
         var user = await userManager.GetUserAsync(User);
 
@@ -91,7 +92,8 @@ public class ApiTokenController(
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RevokeToken(Guid id, [FromQuery] bool delete = false, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> RevokeToken(Guid id, [FromQuery] bool delete = false,
+        CancellationToken cancellationToken = default)
     {
         var token = await apiTokenRepository.GetTokenByIdAsync(id, cancellationToken);
         if (token == null)

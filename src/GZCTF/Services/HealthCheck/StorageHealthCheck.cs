@@ -37,4 +37,3 @@ public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
         }
     }
 }
-

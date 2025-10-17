@@ -12,6 +12,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
+using Serilog;
 
 namespace GZCTF.Extensions;
 
@@ -25,7 +26,8 @@ public static class HandlerExtension
     const StringSplitOptions DefaultSplitOptions =
         StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
 
-    static readonly DistributedCacheEntryOptions StaticCacheOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
+    static readonly DistributedCacheEntryOptions
+        StaticCacheOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
     static readonly HashSet<string> SupportedCultures = Server.SupportedCultures
         .Select(c => c.ToLower()).ToHashSet();

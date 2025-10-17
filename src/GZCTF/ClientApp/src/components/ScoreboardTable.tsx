@@ -17,7 +17,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
-import { mdiAccountGroup, mdiMagnify } from '@mdi/js'
+import { mdiAccountGroup, mdiMagnify, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -136,11 +136,26 @@ const TableRow: FC<{
   onOpenDetail: () => void
   iconMap: Map<SubmissionType, PartialIconProps | undefined>
   challenges?: Record<string, ChallengeInfo[]>
-}> = React.memo(({ item, challenges, onOpenDetail, iconMap, tableRank, allRank }) => {
+  divisionMap: Map<number, string>
+}> = React.memo(({ item, challenges, onOpenDetail, iconMap, tableRank, allRank, divisionMap }) => {
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const solved = item.solvedChallenges
   const theme = useMantineTheme()
+  const { colorScheme } = useMantineColorScheme()
   const { locale } = useLanguage()
+  const divisionName =
+    item.divisionId !== undefined && item.divisionId !== null ? divisionMap.get(item.divisionId) : undefined
+
+  const zeroScoreIcon = useMemo(() => {
+    const normalIcon = iconMap.get(SubmissionType.Normal)
+    const color = colorScheme === 'dark' ? theme.colors.gray[4] : theme.colors.gray[6]
+
+    return {
+      path: mdiFlagOutline,
+      size: normalIcon?.size ?? 1,
+      color,
+    }
+  }, [iconMap, theme, colorScheme])
 
   const totalScore = useMemo(() => {
     return solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0) ?? 0
@@ -168,9 +183,9 @@ const TableRow: FC<{
           </Avatar>
           <Stack gap={0} h="2.5rem" justify="center" w={Widths[2] - 45}>
             <ScrollingText size="sm" text={item.name || ''} onClick={onOpenDetail} />
-            {!!item.division && (
+            {!!divisionName && (
               <Text size="xs" c="dimmed" ta="start" truncate className={classes.text}>
-                {item.division}
+                {divisionName}
               </Text>
             )}
           </Stack>
@@ -186,7 +201,8 @@ const TableRow: FC<{
         Object.keys(challenges).map((key) =>
           challenges[key].map((item) => {
             const chal = solved?.find((c) => c.id === item.id)
-            const icon = iconMap.get(chal?.type ?? SubmissionType.Unaccepted)
+            const isZeroScore = chal && chal.type === SubmissionType.Normal && (chal.score ?? 0) === 0
+            const icon = isZeroScore ? zeroScoreIcon : iconMap.get(chal?.type ?? SubmissionType.Unaccepted)
 
             if (!icon) return <Table.Td key={item.id} className={classes.mono} />
 
@@ -226,11 +242,11 @@ const TableRow: FC<{
 const ITEM_COUNT_PER_PAGE = 30
 
 export interface ScoreboardProps {
-  division: string | null
-  setDivision: (div: string | null) => void
+  divisionId: number | null
+  setDivisionId: (div: number | null) => void
 }
 
-export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
+export const ScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { iconMap } = SubmissionTypeIconMap(1)
@@ -242,6 +258,31 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
 
   const { scoreboard } = useGameScoreboard(numId)
 
+  const divisionMap = useMemo(() => {
+    const map = new Map<number, string>()
+    scoreboard?.divisions?.forEach((div) => {
+      map.set(div.id, div.name.trim())
+    })
+    return map
+  }, [scoreboard?.divisions])
+
+  const divisionOptions = useMemo(
+    () =>
+      (scoreboard?.divisions ?? []).map((div) => ({
+        value: div.id.toString(),
+        label: div.name.trim(),
+      })),
+    [scoreboard?.divisions]
+  )
+
+  const selectValue = useMemo(() => (divisionId === null ? 'all' : divisionId.toString()), [divisionId])
+
+  useEffect(() => {
+    if (divisionId !== null && !divisionMap.has(divisionId)) {
+      setDivisionId(null)
+    }
+  }, [divisionMap, divisionId, setDivisionId])
+
   const filteredList = useMemo(() => {
     if (!scoreboard?.items) return []
 
@@ -249,18 +290,18 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
       return scoreboard.items.filter((s) => s.name?.toLowerCase().includes(debouncedKeyword.toLowerCase()))
     }
 
-    if (division !== 'all') {
-      return scoreboard.items.filter((s) => s.division === division)
+    if (divisionId !== null) {
+      return scoreboard.items.filter((s) => (s.divisionId ?? null) === divisionId)
     }
 
     return scoreboard.items
-  }, [scoreboard, debouncedKeyword, division])
+  }, [scoreboard, debouncedKeyword, divisionId])
 
   useEffect(() => {
     setPage(1)
-    setDivision('all')
+    setDivisionId(null)
     setKeyword('')
-  }, [id])
+  }, [id, setDivisionId])
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = filteredList?.slice(base, base + ITEM_COUNT_PER_PAGE)
@@ -277,7 +318,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
   }, [scoreboard])
 
   const bloodData = useBonusLabels(bloodBonus)
-  const multiTimeline = scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1
+  const hasDivisionFilter = divisionOptions.length > 0
 
   return (
     <Paper shadow="md" p="md">
@@ -286,19 +327,16 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
           <Grid.Col span={3}>
             <Select
               defaultValue="all"
-              data={[
-                { value: 'all', label: t('game.label.score_table.all_teams') },
-                ...Object.keys(scoreboard?.timeLines ?? {})
-                  .filter((k) => k !== 'all')
-                  .map((o) => ({
-                    value: o,
-                    label: o === 'all' ? t('game.label.score_table.rank_total') : o,
-                  })),
-              ]}
-              value={division}
-              readOnly={!multiTimeline}
+              data={[{ value: 'all', label: t('game.label.score_table.all_teams') }, ...divisionOptions]}
+              value={selectValue}
+              readOnly={!hasDivisionFilter}
               onChange={(div) => {
-                setDivision(div)
+                if (!div || div === 'all') {
+                  setDivisionId(null)
+                } else {
+                  const parsed = Number(div)
+                  setDivisionId(Number.isNaN(parsed) ? null : parsed)
+                }
                 setPage(1)
               }}
               leftSection={<Icon path={mdiAccountGroup} size={1} />}
@@ -328,7 +366,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
                   currentItems?.map((item, idx) => (
                     <TableRow
                       key={base + idx}
-                      allRank={division === 'all'}
+                      allRank={divisionId === null}
                       tableRank={base + idx + 1}
                       item={item}
                       onOpenDetail={() => {
@@ -337,6 +375,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) 
                       }}
                       challenges={scoreboard.challenges}
                       iconMap={iconMap}
+                      divisionMap={divisionMap}
                     />
                   ))}
               </Table.Tbody>

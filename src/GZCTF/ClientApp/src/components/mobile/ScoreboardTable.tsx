@@ -56,7 +56,7 @@ const TableRow: FC<{
 
 const ITEM_COUNT_PER_PAGE = 10
 
-export const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivision }) => {
+export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const [activePage, setPage] = useState(1)
@@ -64,9 +64,29 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivisi
 
   const { scoreboard } = useGameScoreboard(numId)
 
+  const divisionOptions = useMemo(
+    () =>
+      (scoreboard?.divisions ?? [])
+        .filter((div) => div.id !== undefined && div.id !== null)
+        .map((div) => ({
+          value: div.id!.toString(),
+          label: div.name?.trim() || `#${div.id}`,
+        })),
+    [scoreboard?.divisions]
+  )
+
+  const selectValue = useMemo(() => (divisionId === null ? 'all' : divisionId.toString()), [divisionId])
+
+  useEffect(() => {
+    if (divisionId !== null && !divisionOptions.some((opt) => Number(opt.value) === divisionId)) {
+      setDivisionId(null)
+    }
+  }, [divisionOptions, divisionId, setDivisionId])
+
   const filtered = useMemo(() => {
-    return division === 'all' ? scoreboard?.items : scoreboard?.items?.filter((s) => s.division === division)
-  }, [scoreboard, division])
+    if (divisionId === null) return scoreboard?.items
+    return scoreboard?.items?.filter((s) => (s.divisionId ?? null) === divisionId)
+  }, [scoreboard, divisionId])
 
   const base = (activePage - 1) * ITEM_COUNT_PER_PAGE
   const currentItems = filtered?.slice(base, base + ITEM_COUNT_PER_PAGE)
@@ -87,21 +107,18 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ division, setDivisi
   return (
     <Paper shadow="xs" p="sm">
       <Stack gap="xs">
-        {scoreboard?.timeLines && Object.keys(scoreboard.timeLines).length > 1 && (
+        {divisionOptions.length > 0 && (
           <Select
             defaultValue="all"
-            data={[
-              { value: 'all', label: t('game.label.score_table.all_teams') },
-              ...Object.keys(scoreboard.timeLines)
-                .filter((k) => k !== 'all')
-                .map((o) => ({
-                  value: o,
-                  label: o === 'all' ? t('game.label.score_table.rank_total') : o,
-                })),
-            ]}
-            value={division}
+            data={[{ value: 'all', label: t('game.label.score_table.all_teams') }, ...divisionOptions]}
+            value={selectValue}
             onChange={(div) => {
-              setDivision(div)
+              if (!div || div === 'all') {
+                setDivisionId(null)
+              } else {
+                const parsed = Number(div)
+                setDivisionId(Number.isNaN(parsed) ? null : parsed)
+              }
               setPage(1)
             }}
           />

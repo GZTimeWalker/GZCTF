@@ -20,7 +20,8 @@ public interface IGameInstanceRepository : IRepository
     /// <param name="challengeId">Challenge id</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameInstance?> GetInstanceForSubmission(Participation team, int challengeId, CancellationToken token = default);
+    public Task<GameInstance?> GetInstanceForSubmission(Participation team, int challengeId,
+        CancellationToken token = default);
 
     /// <summary>
     /// Verify the answer of a submission

@@ -55,7 +55,6 @@ public class GameChallenge : Challenge
         Content = model.Content ?? Content;
         Category = model.Category ?? Category;
         Hints = model.Hints ?? Hints;
-        IsEnabled = model.IsEnabled ?? IsEnabled;
         CPUCount = model.CPUCount ?? CPUCount;
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;
@@ -68,9 +67,16 @@ public class GameChallenge : Challenge
         DisableBloodBonus = model.DisableBloodBonus ?? DisableBloodBonus;
         SubmissionLimit = model.SubmissionLimit ?? SubmissionLimit;
 
+        // isEnabled should be updated alone
+        IsEnabled = model.IsEnabled ?? IsEnabled;
+
+        // only set DeadlineUtc to null when pass DateTimeOffset.MinValue (but not null)
+        if (model.DeadlineUtc is { } time)
+            DeadlineUtc = time == DateTimeOffset.MinValue ? null : time;
+
         // only set FlagTemplate to null when pass an empty string (but not null)
-        FlagTemplate = model.FlagTemplate is null ? FlagTemplate :
-            string.IsNullOrWhiteSpace(model.FlagTemplate) ? null : model.FlagTemplate;
+        if (model.FlagTemplate is { } template)
+            FlagTemplate = string.IsNullOrWhiteSpace(template) ? null : template;
 
         // Container only
         EnableTrafficCapture = Type.IsContainer() && (model.EnableTrafficCapture ?? EnableTrafficCapture);
@@ -92,6 +98,11 @@ public class GameChallenge : Challenge
     /// Teams that activated the challenge
     /// </summary>
     public HashSet<Participation> Teams { get; set; } = [];
+
+    /// <summary>
+    /// Configurations for divisions
+    /// </summary>
+    public HashSet<DivisionChallengeConfig> DivisionConfigs { get; set; } = [];
 
     /// <summary>
     /// Game ID

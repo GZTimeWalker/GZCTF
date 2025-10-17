@@ -48,17 +48,6 @@ export enum SubmissionType {
   Normal = "Normal",
 }
 
-/** Task execution status */
-export enum TaskStatus {
-  Success = "Success",
-  Failed = "Failed",
-  Duplicate = "Duplicate",
-  Denied = "Denied",
-  NotFound = "NotFound",
-  Exit = "Exit",
-  Pending = "Pending",
-}
-
 /** Container status */
 export enum ContainerStatus {
   Pending = "Pending",
@@ -77,6 +66,17 @@ export enum ChallengeType {
   StaticContainer = "StaticContainer",
   DynamicAttachment = "DynamicAttachment",
   DynamicContainer = "DynamicContainer",
+}
+
+/** Game participant permission */
+export enum GamePermission {
+  JoinGame = 1,
+  RankOverall = 2,
+  ViewChallenge = 256,
+  SubmitFlags = 512,
+  GetScore = 1024,
+  GetBlood = 2048,
+  All = 2147483647,
 }
 
 /** Game announcement type */
@@ -112,6 +112,17 @@ export enum ParticipationStatus {
   Rejected = "Rejected",
   Suspended = "Suspended",
   Unsubmitted = "Unsubmitted",
+}
+
+/** Task execution status */
+export enum TaskStatus {
+  Success = "Success",
+  Failed = "Failed",
+  Duplicate = "Duplicate",
+  Denied = "Denied",
+  NotFound = "NotFound",
+  Exit = "Exit",
+  Pending = "Pending",
 }
 
 /** User role enumeration */
@@ -447,7 +458,10 @@ export interface UserInfoModel {
    * @format uint64
    */
   lastVisitedUtc?: number;
-  /** Last visit IP */
+  /**
+   * Last visit IP
+   * @format hostname
+   */
   ip?: string;
   /** Email */
   email?: string | null;
@@ -617,20 +631,26 @@ export interface LogMessageModel {
   /** Username */
   name?: string | null;
   level?: string | null;
-  /** IP address */
+  /**
+   * IP address
+   * @format hostname
+   */
   ip?: string | null;
   /** Log message */
   msg?: string | null;
   /** Task status */
-  status?: string | null;
+  status?: TaskStatus | null;
 }
 
 /** Modify the participation information */
 export interface ParticipationEditModel {
   /** Participation Status */
   status?: ParticipationStatus | null;
-  /** The division of the participated team */
-  division?: string | null;
+  /**
+   * The division of the participated team
+   * @format int32
+   */
+  divisionId?: number | null;
 }
 
 /** Game writeup information */
@@ -885,7 +905,7 @@ export interface PostDetailModel {
 /** Game information (Edit) */
 export interface GameInfoModel {
   /**
-   * Game Id
+   * Game ID
    * @format int32
    */
   id?: number;
@@ -909,8 +929,6 @@ export interface GameInfoModel {
    * @maxLength 32
    */
   inviteCode?: string | null;
-  /** List of divisions the game belongs to */
-  divisions?: string[] | null;
   /**
    * Team member count limit, 0 means no limit
    * @format int32
@@ -1001,6 +1019,78 @@ export interface GameNoticeModel {
   content: string;
 }
 
+export interface Division {
+  /** @format int32 */
+  id: number;
+  /**
+   * The name of the division.
+   * @minLength 1
+   * @maxLength 31
+   */
+  name: string;
+  /**
+   * Invitation code for joining the division.
+   * @maxLength 32
+   */
+  inviteCode?: string | null;
+  /** Permissions associated with the division. */
+  defaultPermissions?: GamePermission;
+  /** Challenge configs for this division. */
+  challengeConfigs?: DivisionChallengeConfig[];
+}
+
+export interface DivisionChallengeConfig {
+  /** @format int32 */
+  challengeId: number;
+  /** Challenge Specific Permissions */
+  permissions?: GamePermission;
+}
+
+export interface DivisionCreateModel {
+  /**
+   * The name of the division.
+   * @minLength 1
+   * @maxLength 31
+   */
+  name: string;
+  /**
+   * Invitation code for joining the division.
+   * @maxLength 32
+   */
+  inviteCode?: string | null;
+  /** Permissions associated with the division. */
+  defaultPermissions?: GamePermission | null;
+  /** Challenge configs for this division. */
+  challengeConfigs?: DivisionChallengeConfigModel[] | null;
+}
+
+export interface DivisionChallengeConfigModel {
+  /**
+   * Challenge ID
+   * @format int32
+   */
+  challengeId: number;
+  /** Challenge Specific Permissions */
+  permissions?: GamePermission;
+}
+
+export interface DivisionEditModel {
+  /**
+   * The name of the division.
+   * @maxLength 31
+   */
+  name?: string | null;
+  /**
+   * Invitation code for joining the division.
+   * @maxLength 32
+   */
+  inviteCode?: string | null;
+  /** Permissions associated with the division. */
+  defaultPermissions?: GamePermission | null;
+  /** Challenge configs for this division. */
+  challengeConfigs?: DivisionChallengeConfigModel[] | null;
+}
+
 /** Challenge detailed information (Edit) */
 export interface ChallengeEditDetailModel {
   /**
@@ -1070,6 +1160,11 @@ export interface ChallengeEditDetailModel {
   enableTrafficCapture?: boolean | null;
   /** Whether to disable blood bonus */
   disableBloodBonus?: boolean | null;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
   /**
    * Maximum number of submissions allowed per team (0 = no limit)
    * @format int32
@@ -1171,6 +1266,11 @@ export interface ChallengeInfoModel {
    * @format int32
    */
   originalScore?: number;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
 }
 
 /** Challenge update information (Edit) */
@@ -1195,6 +1295,11 @@ export interface ChallengeUpdateModel {
   isEnabled?: boolean | null;
   /** Unified file name */
   fileName?: string | null;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadlineUtc?: number | null;
   /**
    * Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
    * @format int32
@@ -1337,7 +1442,7 @@ export interface DetailedGameInfoModel {
   /** Whether the game is hidden */
   hidden?: boolean;
   /** List of participation divisions */
-  divisions?: string[] | null;
+  divisions?: DivisionInfo[] | null;
   /** Whether an invitation code is required */
   inviteCodeRequired?: boolean;
   /** Whether writeup submission is required */
@@ -1354,8 +1459,11 @@ export interface DetailedGameInfoModel {
    * @format int32
    */
   teamCount?: number;
-  /** Current registered division */
-  division?: string | null;
+  /**
+   * Current registered division
+   * @format int32
+   */
+  division?: number | null;
   /** Team name for participation */
   teamName?: string | null;
   /** Whether the game is in practice mode (can still be accessed after the game ends) */
@@ -1374,14 +1482,49 @@ export interface DetailedGameInfoModel {
   end?: number;
 }
 
+export interface DivisionInfo {
+  /**
+   * Division ID
+   * @format int32
+   */
+  id?: number;
+  /** Division name */
+  name?: string;
+  /** Is the division invite code required */
+  inviteCodeRequired?: boolean;
+}
+
+export interface GameJoinCheckInfoModel {
+  /** The teams that the current user has joined and participated in the game */
+  joinedTeams?: JoinedTeam[];
+  /** IDs of divisions that can be joined */
+  joinableDivisions?: number[];
+}
+
+export interface JoinedTeam {
+  /**
+   * Team ID
+   * @format int32
+   */
+  id: number;
+  /**
+   * The division ID the team has joined
+   * @format int32
+   */
+  division: number;
+}
+
 export interface GameJoinModel {
   /**
    * Team ID for participation
    * @format int32
    */
-  teamId?: number;
-  /** Division for participation */
-  division?: string | null;
+  teamId: number;
+  /**
+   * Division for participation
+   * @format int32
+   */
+  divisionId?: number | null;
   /** Invitation code for participation */
   inviteCode?: string | null;
 }
@@ -1399,17 +1542,25 @@ export interface ScoreboardModel {
    * @format int64
    */
   bloodBonus: number;
-  /** Timeline of the top ten */
-  timeLines?: Record<string, TopTimeLine[]>;
+  /** List of top ten timelines */
+  timelines: TimeLineItem[];
   /** List of team information */
-  items?: ScoreboardItem[];
+  items: ScoreboardItem[];
+  /** List of division information */
+  divisions: DivisionItem[];
   /** Challenge information */
-  challenges?: Record<string, ChallengeInfo[]>;
+  challenges: Record<string, ChallengeInfo[]>;
   /**
    * Number of challenges
    * @format int32
    */
-  challengeCount?: number;
+  challengeCount: number;
+}
+
+export interface TimeLineItem {
+  /** @format int32 */
+  divisionId?: number;
+  teams?: TopTimeLine[];
 }
 
 export interface TopTimeLine {
@@ -1417,24 +1568,28 @@ export interface TopTimeLine {
    * Team ID
    * @format int32
    */
-  id?: number;
-  /** Team name */
-  name?: string;
+  id: number;
+  /**
+   * Team name
+   * @minLength 1
+   */
+  name: string;
   /** Timeline */
-  items?: TimeLine[];
+  items: TimeLine[];
 }
 
 export interface TimeLine {
   /**
    * Time
    * @format uint64
+   * @minLength 1
    */
-  time?: number;
+  time: number;
   /**
    * Score
    * @format int32
    */
-  score?: number;
+  score: number;
 }
 
 export interface ScoreboardItem {
@@ -1442,25 +1597,31 @@ export interface ScoreboardItem {
    * Team ID
    * @format int32
    */
-  id?: number;
-  /** Team name */
-  name?: string;
+  id: number;
+  /**
+   * Team name
+   * @minLength 1
+   */
+  name: string;
   /** Team Bio */
   bio?: string | null;
-  /** Division of participation */
-  division?: string | null;
+  /**
+   * Division of participation
+   * @format int32
+   */
+  divisionId?: number | null;
   /** Team avatar */
   avatar?: string | null;
   /**
    * Score
    * @format int32
    */
-  score?: number;
+  score: number;
   /**
    * Rank
    * @format int32
    */
-  rank?: number;
+  rank: number;
   /**
    * Division rank
    * @format int32
@@ -1469,15 +1630,16 @@ export interface ScoreboardItem {
   /**
    * Last submission time
    * @format uint64
+   * @minLength 1
    */
-  lastSubmissionTime?: number;
+  lastSubmissionTime: number;
   /** List of solved challenges */
-  solvedChallenges?: ChallengeItem[];
+  solvedChallenges: ChallengeItem[];
   /**
    * Number of solved challenges
    * @format int32
    */
-  solvedCount?: number;
+  solvedCount: number;
 }
 
 export interface ChallengeItem {
@@ -1485,21 +1647,49 @@ export interface ChallengeItem {
    * Challenge ID
    * @format int32
    */
-  id?: number;
+  id: number;
   /**
    * Challenge score
    * @format int32
    */
-  score?: number;
+  score: number;
   /** Submission type (unsolved, first blood, second blood, third blood, or others) */
-  type?: SubmissionType;
+  type: SubmissionType;
   /** Username of the solver */
   userName?: string | null;
   /**
    * Submission time for the challenge, used to calculate the timeline
    * @format uint64
+   * @minLength 1
    */
-  time?: number;
+  time: number;
+}
+
+export interface DivisionItem {
+  /**
+   * Division ID
+   * @format int32
+   */
+  id: number;
+  /**
+   * The name of the division.
+   * @minLength 1
+   */
+  name: string;
+  /** Permissions associated with the division. */
+  defaultPermissions: GamePermission;
+  /** Challenge configs for this division. */
+  challengeConfigs: Record<string, DivisionChallengeItem>;
+}
+
+export interface DivisionChallengeItem {
+  /**
+   * Challenge ID
+   * @format int32
+   */
+  challengeId: number;
+  /** Permissions for a specific challenge. */
+  permissions: GamePermission;
 }
 
 export interface ChallengeInfo {
@@ -1507,25 +1697,33 @@ export interface ChallengeInfo {
    * Challenge ID
    * @format int32
    */
-  id?: number;
-  /** Challenge title */
-  title?: string;
+  id: number;
+  /**
+   * Challenge title
+   * @minLength 1
+   */
+  title: string;
   /** Challenge category */
-  category?: ChallengeCategory;
+  category: ChallengeCategory;
   /**
    * Challenge score
    * @format int32
    */
-  score?: number;
+  score: number;
   /**
    * Number of teams that solved the challenge
    * @format int32
    */
-  solved?: number;
+  solved: number;
+  /**
+   * The deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadline?: number | null;
   /** Bloods for the challenge */
-  bloods?: Blood[];
+  bloods: Blood[];
   /** Whether to disable blood bonus */
-  disableBloodBonus?: boolean;
+  disableBloodBonus: boolean;
 }
 
 export interface Blood {
@@ -1533,9 +1731,12 @@ export interface Blood {
    * Team ID
    * @format int32
    */
-  id?: number;
-  /** Team name */
-  name?: string;
+  id: number;
+  /**
+   * Team name
+   * @minLength 1
+   */
+  name: string;
   /** Team avatar */
   avatar?: string | null;
   /**
@@ -1717,8 +1918,11 @@ export interface ParticipationInfoModel {
   team?: TeamWithDetailedUserInfo;
   /** Registered members */
   registeredMembers?: string[];
-  /** Division of the game */
-  division?: string | null;
+  /**
+   * Division of the game
+   * @format int32
+   */
+  divisionId?: number | null;
   /** Participation status */
   status?: ParticipationStatus;
 }
@@ -1781,6 +1985,11 @@ export interface ChallengeDetailModel {
    * @format int32
    */
   attempts?: number;
+  /**
+   * Deadline of the challenge, null means no deadline
+   * @format uint64
+   */
+  deadline?: number | null;
 }
 
 export interface ClientFlagContext {
@@ -3484,6 +3693,28 @@ export class Api<
       }),
 
     /**
+     * @description Add a new division for a game; requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditCreateDivision
+     * @summary Create Division
+     * @request POST:/api/edit/games/{id}/divisions
+     */
+    editCreateDivision: (
+      id: number,
+      data: DivisionCreateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<Division, RequestResponse>({
+        path: `/api/edit/games/${id}/divisions`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Testing a game challenge container requires administrator privileges
      *
      * @tags Edit
@@ -3500,6 +3731,25 @@ export class Api<
         path: `/api/edit/games/${id}/challenges/${cId}/container`,
         method: "POST",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete a division for a game; requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditDeleteDivision
+     * @summary Delete Division
+     * @request DELETE:/api/edit/games/{id}/divisions/{divisionId}
+     */
+    editDeleteDivision: (
+      id: number,
+      divisionId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/divisions/${divisionId}`,
+        method: "DELETE",
         ...params,
       }),
 
@@ -3587,6 +3837,53 @@ export class Api<
         method: "DELETE",
         ...params,
       }),
+
+    /**
+     * @description Retrieve all divisions for a game; requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditGetDivisions
+     * @summary Get Divisions
+     * @request GET:/api/edit/games/{id}/divisions
+     */
+    editGetDivisions: (id: number, params: RequestParams = {}) =>
+      this.request<Division[], RequestResponse>({
+        path: `/api/edit/games/${id}/divisions`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Retrieve all divisions for a game; requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditGetDivisions
+     * @summary Get Divisions
+     * @request GET:/api/edit/games/{id}/divisions
+     */
+    useEditGetDivisions: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<Division[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/divisions` : null,
+        options,
+      ),
+
+    /**
+     * @description Retrieve all divisions for a game; requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditGetDivisions
+     * @summary Get Divisions
+     * @request GET:/api/edit/games/{id}/divisions
+     */
+    mutateEditGetDivisions: (
+      id: number,
+      data?: Division[] | Promise<Division[]>,
+      options?: MutatorOptions,
+    ) => mutate<Division[]>(`/api/edit/games/${id}/divisions`, data, options),
 
     /**
      * @description Retrieving a game requires administrator privileges
@@ -3934,6 +4231,29 @@ export class Api<
       this.request<number, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/attachment`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update a division for a game; requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditUpdateDivision
+     * @summary Update Division
+     * @request PUT:/api/edit/games/{id}/divisions/{divisionId}
+     */
+    editUpdateDivision: (
+      id: number,
+      divisionId: number,
+      data: DivisionEditModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<Division, RequestResponse>({
+        path: `/api/edit/games/${id}/divisions/${divisionId}`,
+        method: "PUT",
         body: data,
         type: ContentType.Json,
         format: "json",
@@ -4704,6 +5024,53 @@ export class Api<
         data,
         options,
       ),
+
+    /**
+     * No description
+     *
+     * @tags Game
+     * @name GameGetGameJoinCheckInfo
+     * @summary Get check info for joining a game
+     * @request GET:/api/game/{id}/check
+     */
+    gameGetGameJoinCheckInfo: (id: number, params: RequestParams = {}) =>
+      this.request<GameJoinCheckInfoModel, RequestResponse>({
+        path: `/api/game/${id}/check`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Game
+     * @name GameGetGameJoinCheckInfo
+     * @summary Get check info for joining a game
+     * @request GET:/api/game/{id}/check
+     */
+    useGameGetGameJoinCheckInfo: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<GameJoinCheckInfoModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/check` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Game
+     * @name GameGetGameJoinCheckInfo
+     * @summary Get check info for joining a game
+     * @request GET:/api/game/{id}/check
+     */
+    mutateGameGetGameJoinCheckInfo: (
+      id: number,
+      data?: GameJoinCheckInfoModel | Promise<GameJoinCheckInfoModel>,
+      options?: MutatorOptions,
+    ) => mutate<GameJoinCheckInfoModel>(`/api/game/${id}/check`, data, options),
 
     /**
      * @description Retrieves a traffic packet file; requires Monitor permission

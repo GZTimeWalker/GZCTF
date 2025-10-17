@@ -144,9 +144,8 @@ public partial class TeamController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden))
-            { StatusCode = StatusCodes.Status403Forbidden };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                StatusCodes.Status403Forbidden);
 
         team.UpdateInfo(model);
 
@@ -189,9 +188,8 @@ public partial class TeamController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
             if (team.CaptainId != user!.Id)
-                return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                    StatusCodes.Status403Forbidden))
-                { StatusCode = StatusCodes.Status403Forbidden };
+                return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                    StatusCodes.Status403Forbidden);
 
             var newCaptain = await userManager.Users.SingleOrDefaultAsync(u => u.Id == model.NewCaptainId, token);
 
@@ -242,9 +240,8 @@ public partial class TeamController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden))
-            { StatusCode = StatusCodes.Status403Forbidden };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                StatusCodes.Status403Forbidden);
 
         return Ok(team.InviteCode);
     }
@@ -276,9 +273,8 @@ public partial class TeamController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden))
-            { StatusCode = StatusCodes.Status403Forbidden };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                StatusCodes.Status403Forbidden);
 
         team.UpdateInviteToken();
 
@@ -320,9 +316,8 @@ public partial class TeamController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
 
             if (team.CaptainId != user!.Id)
-                return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                    StatusCodes.Status403Forbidden))
-                { StatusCode = StatusCodes.Status403Forbidden };
+                return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                    StatusCodes.Status403Forbidden);
 
             if (team.Locked && await teamRepository.AnyActiveGame(team, token))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));
@@ -501,9 +496,8 @@ public partial class TeamController(
                 StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden))
-            { StatusCode = StatusCodes.Status403Forbidden };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                StatusCodes.Status403Forbidden);
 
         switch (file.Length)
         {
@@ -556,9 +550,8 @@ public partial class TeamController(
                 StatusCodes.Status404NotFound));
 
         if (team.CaptainId != user!.Id)
-            return new JsonResult(new RequestResponse(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
-                StatusCodes.Status403Forbidden))
-            { StatusCode = StatusCodes.Status403Forbidden };
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+                StatusCodes.Status403Forbidden);
 
         if (team.Locked && await teamRepository.AnyActiveGame(team, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_Locked)]));

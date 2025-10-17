@@ -144,7 +144,6 @@ public class X25519KeyPair
     }
 }
 
-
 public class Ed25519KeyPair
 {
     /// <summary>

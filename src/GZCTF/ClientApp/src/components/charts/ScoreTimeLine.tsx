@@ -7,12 +7,13 @@ import { useParams } from 'react-router'
 import { EchartsContainer } from '@Components/charts/EchartsContainer'
 import { normalizeLanguage, useLanguage } from '@Utils/I18n'
 import { getGameStatus, useGame, useGameScoreboard } from '@Hooks/useGame'
+import { TimeLine, TopTimeLine } from '@Api'
 
 interface TimeLineProps {
-  division: string | null
+  divisionId: number | null
 }
 
-export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
+export const ScoreTimeLine: FC<TimeLineProps> = ({ divisionId }) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const theme = useMantineTheme()
@@ -38,10 +39,38 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
   const { language } = useLanguage()
   const locale = normalizeLanguage(language)
 
-  const chartData: SeriesOption[] = useMemo(() => {
-    if (!scoreboard?.timeLines || !game) return []
+  const divisionTimelineMap = useMemo(() => {
+    const map = new Map<number, TopTimeLine[]>()
 
-    const timeLine = scoreboard?.timeLines[division ?? 'all'] ?? []
+    if (!scoreboard?.timelines) return map
+
+    scoreboard.timelines.forEach((item) => {
+      const key = item.divisionId ?? 0
+      map.set(key, item.teams ?? [])
+    })
+
+    return map
+  }, [scoreboard?.timelines])
+
+  const selectedDivisionId = useMemo(() => (divisionId === null ? 0 : divisionId), [divisionId])
+
+  const activeTeams = useMemo(() => {
+    if (divisionTimelineMap.size === 0) return undefined
+
+    const direct = divisionTimelineMap.get(selectedDivisionId)
+    if (direct) return direct
+
+    const overall = divisionTimelineMap.get(0)
+    if (overall) return overall
+
+    const iterator = divisionTimelineMap.values().next()
+    return iterator.done ? undefined : iterator.value
+  }, [divisionTimelineMap, selectedDivisionId])
+
+  const chartData: SeriesOption[] = useMemo(() => {
+    if (!activeTeams || !game) return []
+
+    const timeLine = activeTeams
     const current = dayjs()
     const last = endTime.diff(current, 's') < 0 ? endTime : current
 
@@ -81,13 +110,13 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ division }) => {
             name: team.name,
             data: [
               [dayjs(game.start).toDate(), 0],
-              ...(team.items?.map((item) => [item.time, item.score]) ?? []),
+              ...(team.items?.map((timeline: TimeLine) => [timeline.time, timeline.score]) ?? []),
               [last.toDate(), (team.items && team.items[team.items.length - 1]?.score) ?? 0],
             ],
           }) satisfies SeriesOption
       ) ?? []),
     ]
-  }, [scoreboard, division, game, endTime, colorScheme, theme])
+  }, [activeTeams, game, endTime, colorScheme, theme])
 
   const staticOption: EChartsOption = useMemo(() => {
     const isDark = colorScheme === 'dark'
