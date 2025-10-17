@@ -55,16 +55,12 @@ public partial class Division
 
     #endregion
 
-    internal void Update(DivisionEditModel model)
+    internal void UpdateChallengeConfigs(HashSet<DivisionChallengeConfigModel>? configs)
     {
-        Name = model.Name ?? Name;
-        InviteCode = model.InviteCode ?? InviteCode;
-        DefaultPermissions = model.DefaultPermissions ?? DefaultPermissions;
-
-        if (model.ChallengeConfigs is null)
+        if (configs is null)
             return;
 
-        var newConfigs = model.ChallengeConfigs.ToDictionary(c => c.ChallengeId);
+        var newConfigs = configs.ToDictionary(c => c.ChallengeId);
         ChallengeConfigs.RemoveWhere(c => !newConfigs.ContainsKey(c.ChallengeId));
 
         foreach (var config in newConfigs.Values)
@@ -84,6 +80,15 @@ public partial class Division
                 });
             }
         }
+    }
+    
+    internal void Update(DivisionEditModel model)
+    {
+        Name = model.Name ?? Name;
+        InviteCode = model.InviteCode ?? InviteCode;
+        DefaultPermissions = model.DefaultPermissions ?? DefaultPermissions;
+
+       UpdateChallengeConfigs(model.ChallengeConfigs);
     }
 }
 

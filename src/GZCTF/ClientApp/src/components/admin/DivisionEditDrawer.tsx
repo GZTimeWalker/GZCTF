@@ -21,7 +21,7 @@ import { ScrollingText } from '@Components/ScrollingText'
 import { PermissionDot, PermissionSelector } from '@Components/admin/PermissionSelector'
 import { CHALLENGE_SCOPED_PERMISSIONS, permissionMaskToArray } from '@Utils/Permission'
 import { randomInviteCode, showErrorMsg } from '@Utils/Shared'
-import { ChallengeInfoModel, Division, DivisionCreateModel, DivisionEditModel, GamePermission } from '@Api'
+import { ChallengeInfoModel, Division, DivisionCreateModel, GamePermission } from '@Api'
 import api from '@Api'
 
 interface DivisionEditDrawerProps extends DrawerProps {
@@ -152,7 +152,7 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
   const getChallengeTitle = (id: number) =>
     challengeMap.get(id)?.title ?? t('admin.content.games.divisions.unknown_challenge', { id })
 
-  const buildEditModel = (trimmedName: string): DivisionEditModel => ({
+  const buildModel = (trimmedName: string): DivisionCreateModel => ({
     name: trimmedName,
     inviteCode: inviteCode.trim() ? inviteCode.trim() : null,
     defaultPermissions,
@@ -163,12 +163,6 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
         permissions: challengePermissions[id] ?? defaultPermissions,
       }
     }),
-  })
-
-  const buildCreateModel = (trimmedName: string): DivisionCreateModel => ({
-    name: trimmedName,
-    inviteCode: inviteCode.trim() ? inviteCode.trim() : null,
-    defaultPermissions,
   })
 
   const handleSubmit = async () => {
@@ -184,10 +178,11 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
 
     setLoading(true)
 
+    const model = buildModel(trimmedName)
+
     try {
       if (division) {
-        const editModel = buildEditModel(trimmedName)
-        const response = await api.edit.editUpdateDivision(gameId, division.id, editModel)
+        const response = await api.edit.editUpdateDivision(gameId, division.id, model)
         showNotification({
           color: 'teal',
           message: t('admin.notification.games.divisions.updated'),
@@ -195,12 +190,11 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
         })
         onDivisionSaved({ ...response.data, challengeConfigs: response.data.challengeConfigs ?? [] })
       } else {
-        const createModel = buildCreateModel(trimmedName)
-        const created = await api.edit.editCreateDivision(gameId, createModel)
+        const created = await api.edit.editCreateDivision(gameId, model)
         let latest = created.data
 
         if (selectedChallenges.length > 0) {
-          const response = await api.edit.editUpdateDivision(gameId, created.data.id, buildEditModel(trimmedName))
+          const response = await api.edit.editUpdateDivision(gameId, created.data.id, buildModel(trimmedName))
           latest = response.data
         }
 

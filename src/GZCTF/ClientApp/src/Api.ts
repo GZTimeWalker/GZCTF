@@ -1060,22 +1060,6 @@ export interface DivisionCreateModel {
   inviteCode?: string | null;
   /** Permissions associated with the division. */
   defaultPermissions?: GamePermission | null;
-}
-
-export interface DivisionEditModel {
-  /**
-   * The name of the division.
-   * @minLength 1
-   * @maxLength 31
-   */
-  name: string;
-  /**
-   * Invitation code for joining the division.
-   * @maxLength 32
-   */
-  inviteCode?: string | null;
-  /** Permissions associated with the division. */
-  defaultPermissions?: GamePermission | null;
   /** Challenge configs for this division. */
   challengeConfigs?: DivisionChallengeConfigModel[] | null;
 }
@@ -1088,6 +1072,23 @@ export interface DivisionChallengeConfigModel {
   challengeId: number;
   /** Challenge Specific Permissions */
   permissions?: GamePermission;
+}
+
+export interface DivisionEditModel {
+  /**
+   * The name of the division.
+   * @maxLength 31
+   */
+  name?: string | null;
+  /**
+   * Invitation code for joining the division.
+   * @maxLength 32
+   */
+  inviteCode?: string | null;
+  /** Permissions associated with the division. */
+  defaultPermissions?: GamePermission | null;
+  /** Challenge configs for this division. */
+  challengeConfigs?: DivisionChallengeConfigModel[] | null;
 }
 
 /** Challenge detailed information (Edit) */
@@ -1497,7 +1498,7 @@ export interface GameJoinCheckInfoModel {
   /** The teams that the current user has joined and participated in the game */
   joinedTeams?: JoinedTeam[];
   /** IDs of divisions that can be joined */
-  joinableDivisions?: number[] | null;
+  joinableDivisions?: number[];
 }
 
 export interface JoinedTeam {

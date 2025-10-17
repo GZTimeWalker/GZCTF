@@ -21,6 +21,11 @@ public class DivisionCreateModel
     /// Permissions associated with the division.
     /// </summary>
     public GamePermission? DefaultPermissions { get; set; } = GamePermission.All;
+    
+    /// <summary>
+    /// Challenge configs for this division.
+    /// </summary>
+    public HashSet<DivisionChallengeConfigModel>? ChallengeConfigs { get; set; } = [];
 }
 
 public class DivisionEditModel
@@ -28,7 +33,6 @@ public class DivisionEditModel
     /// <summary>
     /// The name of the division.
     /// </summary>
-    [Required]
     [MaxLength(Limits.MaxDivisionNameLength)]
     public string? Name { get; set; } = string.Empty;
 
@@ -41,15 +45,15 @@ public class DivisionEditModel
     /// <summary>
     /// Permissions associated with the division.
     /// </summary>
-    public GamePermission? DefaultPermissions { get; set; } = GamePermission.All;
+    public GamePermission? DefaultPermissions { get; set; }
 
     /// <summary>
     /// Challenge configs for this division.
     /// </summary>
-    public HashSet<DivisionChallengeConfigModel>? ChallengeConfigs { get; set; } = [];
+    public HashSet<DivisionChallengeConfigModel>? ChallengeConfigs { get; set; }
 }
 
-public class DivisionChallengeConfigModel
+public record DivisionChallengeConfigModel
 {
     /// <summary>
     /// Challenge ID

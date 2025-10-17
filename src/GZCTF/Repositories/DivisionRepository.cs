@@ -14,10 +14,13 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
             GameId = game.Id,
             Name = model.Name,
             InviteCode = model.InviteCode,
-            DefaultPermissions = GamePermission.All
+            DefaultPermissions = model.DefaultPermissions ?? GamePermission.All,
         };
+        
+        division.UpdateChallengeConfigs(model.ChallengeConfigs);
 
         await Context.AddAsync(division, token);
+        
         await SaveAsync(token);
 
         return division;
