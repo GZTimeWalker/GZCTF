@@ -48,6 +48,15 @@ public interface IGameRepository : IRepository
     public Task<Game?> GetGameById(int id, CancellationToken token = default);
 
     /// <summary>
+    /// Get check info for joining a game
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="user"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<GameJoinCheckInfoModel> GetCheckInfo(Game game, UserInfo user, CancellationToken token = default);
+
+    /// <summary>
     /// Load divisions for a game
     /// </summary>
     /// <param name="game"></param>

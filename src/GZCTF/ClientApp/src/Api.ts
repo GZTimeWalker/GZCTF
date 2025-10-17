@@ -1493,12 +1493,32 @@ export interface DivisionInfo {
   inviteCodeRequired?: boolean;
 }
 
+export interface GameJoinCheckInfoModel {
+  /** The teams that the current user has joined and participated in the game */
+  joinedTeams?: JoinedTeam[];
+  /** IDs of divisions that can be joined */
+  joinableDivisions?: number[] | null;
+}
+
+export interface JoinedTeam {
+  /**
+   * Team ID
+   * @format int32
+   */
+  id: number;
+  /**
+   * The division ID the team has joined
+   * @format int32
+   */
+  division: number;
+}
+
 export interface GameJoinModel {
   /**
    * Team ID for participation
    * @format int32
    */
-  teamId?: number;
+  teamId: number;
   /**
    * Division for participation
    * @format int32
@@ -5003,6 +5023,53 @@ export class Api<
         data,
         options,
       ),
+
+    /**
+     * No description
+     *
+     * @tags Game
+     * @name GameGetGameJoinCheckInfo
+     * @summary Get check info for joining a game
+     * @request GET:/api/game/{id}/check
+     */
+    gameGetGameJoinCheckInfo: (id: number, params: RequestParams = {}) =>
+      this.request<GameJoinCheckInfoModel, RequestResponse>({
+        path: `/api/game/${id}/check`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Game
+     * @name GameGetGameJoinCheckInfo
+     * @summary Get check info for joining a game
+     * @request GET:/api/game/{id}/check
+     */
+    useGameGetGameJoinCheckInfo: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<GameJoinCheckInfoModel, RequestResponse>(
+        doFetch ? `/api/game/${id}/check` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Game
+     * @name GameGetGameJoinCheckInfo
+     * @summary Get check info for joining a game
+     * @request GET:/api/game/{id}/check
+     */
+    mutateGameGetGameJoinCheckInfo: (
+      id: number,
+      data?: GameJoinCheckInfoModel | Promise<GameJoinCheckInfoModel>,
+      options?: MutatorOptions,
+    ) => mutate<GameJoinCheckInfoModel>(`/api/game/${id}/check`, data, options),
 
     /**
      * @description Retrieves a traffic packet file; requires Monitor permission

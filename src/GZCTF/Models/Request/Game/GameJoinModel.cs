@@ -1,10 +1,13 @@
-﻿namespace GZCTF.Models.Request.Game;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GZCTF.Models.Request.Game;
 
 public class GameJoinModel
 {
     /// <summary>
     /// Team ID for participation
     /// </summary>
+    [Required]
     public int TeamId { get; set; }
 
     /// <summary>

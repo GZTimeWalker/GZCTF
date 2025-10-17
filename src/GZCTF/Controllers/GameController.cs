@@ -125,6 +125,29 @@ public class GameController(
     }
 
     /// <summary>
+    /// Get check info for joining a game
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [RequireUser]
+    [HttpGet("{id:int}/Check")]
+    [ProducesResponseType(typeof(GameJoinCheckInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetGameJoinCheckInfo(int id, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var user = await userManager.GetUserAsync(User);
+
+        return Ok(await gameRepository.GetCheckInfo(game, user!, token));
+    }
+
+    /// <summary>
     /// Join a game
     /// </summary>
     /// <remarks>
@@ -157,10 +180,9 @@ public class GameController(
         if (model.DivisionId is { } divId)
         {
             div = await divisionRepository.GetDivision(id, divId, token);
-            if (div is null || !div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
+            if (div is null)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
         }
-
 
         var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(model.TeamId, token);
@@ -182,6 +204,24 @@ public class GameController(
         // Try to get participation object
         var part = await participationRepository.GetParticipation(team, game, token);
 
+        // If not joined yet, check division permission
+        if (part is null && div is not null && !div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+
+        // If the division is set, check if it matches
+        if (part is not null && part.DivisionId != model.DivisionId)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+
+        // now the div is the target division, check invite code
+        var inviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
+            ? div.InviteCode
+            : string.IsNullOrEmpty(game.InviteCode)
+                ? null
+                : game.InviteCode;
+
+        if (inviteCode is not null && inviteCode != model.InviteCode)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
+
         // If the team is not in the game, create a new participation object
         if (part is null)
         {
@@ -190,26 +230,6 @@ public class GameController(
 
             participationRepository.Add(part);
         }
-        else if (part.Status == ParticipationStatus.Rejected)
-        {
-            // The team was rejected, use the division from the new request
-            part.Division = div;
-        }
-        else if (part.DivisionId is { } partDivId)
-        {
-            // Division is not included by default, so we need to query it
-            div = await divisionRepository.GetDivision(id, partDivId, token);
-        }
-
-        var inviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
-            ? div.InviteCode
-            : string.IsNullOrEmpty(game.InviteCode)
-                ? null
-                : game.InviteCode;
-
-        // Team already joined, check if the invite code matches
-        if (inviteCode is not null && inviteCode != model.InviteCode)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
 
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_TeamMemberLimitExceeded)]));
@@ -878,6 +898,12 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
+        var permission = await divisionRepository.GetPermission(context.Participation?.DivisionId, challengeId, token);
+
+        if (!permission.HasFlag(GamePermission.ViewChallenge))
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
+                StatusCodes.Status404NotFound));
+
         var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null)
@@ -938,12 +964,12 @@ public class GameController(
             if (instance.Challenge.DeadlineUtc < submitTime)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_DeadlinePassed)]));
 
-            if (!await divisionRepository.CheckPermission(context.Participation?.DivisionId, GamePermission.SubmitFlags,
-                    challengeId, token))
-            {
+            var permission =
+                await divisionRepository.GetPermission(context.Participation?.DivisionId, challengeId, token);
+
+            if (!permission.HasFlag(GamePermission.ViewChallenge | GamePermission.SubmitFlags))
                 return BadRequest(
                     new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionNoPermission)]));
-            }
 
             instance.SubmissionCount++;
 
@@ -1148,6 +1174,12 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
+        var permission = await divisionRepository.GetPermission(context.Participation?.DivisionId, challengeId, token);
+
+        if (!permission.HasFlag(GamePermission.ViewChallenge))
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
+                StatusCodes.Status404NotFound));
+
         var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
         if (instance is null || !instance.Challenge.IsEnabled)
@@ -1349,16 +1381,12 @@ public class GameController(
     {
         var res = new Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>>();
 
-        if (!division.DefaultPermissions.HasFlag(GamePermission.ViewChallenge))
-            return res;
-
         foreach ((ChallengeCategory cat, IEnumerable<ChallengeInfo> chs) in challenges)
         {
             var infos = chs.Where(chal =>
-                // If the challenge is not in the division config, fallback to default (can view)
-                !division.ChallengeConfigs.TryGetValue(chal.Id, out var config) ||
-                // If the challenge is in the division config, check the permission
-                config.Permissions.HasFlag(GamePermission.ViewChallenge)
+                division.ChallengeConfigs.TryGetValue(chal.Id, out var config)
+                    ? config.Permissions.HasFlag(GamePermission.ViewChallenge)
+                    : division.DefaultPermissions.HasFlag(GamePermission.ViewChallenge)
             ).ToArray();
 
             if (infos.Length > 0)

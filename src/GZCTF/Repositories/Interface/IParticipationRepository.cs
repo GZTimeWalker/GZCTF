@@ -1,4 +1,5 @@
 ﻿using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Repositories.Interface;
 
@@ -27,6 +28,15 @@ public interface IParticipationRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default);
+
+    /// <summary>
+    /// Get teams for a user in a specific game, in which some participations may exist
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="user"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<JoinedTeam[]> GetJoinedTeams(Game game, UserInfo user, CancellationToken token = default);
 
     /// <summary>
     /// Get write-up information for all participations in a game

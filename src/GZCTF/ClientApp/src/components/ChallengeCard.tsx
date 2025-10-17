@@ -42,7 +42,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
   const theme = useMantineTheme()
   const { locale } = useLanguage()
 
-  const isDeadlinePassed = useMemo(() => {
+  const isFaded = useMemo(() => {
     if (!challenge.deadline) return false
 
     return dayjs().isAfter(dayjs(challenge.deadline))
@@ -54,7 +54,7 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
       radius="md"
       shadow="sm"
       className={cx(misc.hoverCard, classes.root)}
-      data-faded={solved || isDeadlinePassed || undefined}
+      data-faded={solved || isFaded || undefined}
       data-no-move
     >
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>

@@ -1,4 +1,5 @@
 ﻿using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,16 @@ public class ParticipationRepository(
             .Include(p => p.Team)
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);
+
+    public Task<JoinedTeam[]> GetJoinedTeams(Game game, UserInfo user, CancellationToken token = default) =>
+        Context.Participations
+            .Where(p => p.Game == game && p.Team.Members.Any(m => m == user))
+            .Select(p => new JoinedTeam
+            {
+                TeamId = p.TeamId,
+                DivisionId = p.DivisionId
+            })
+            .ToArrayAsync(token);
 
     public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default) =>
         Context.Participations.Where(p => p.Game == game && p.Writeup != null)

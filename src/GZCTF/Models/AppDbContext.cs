@@ -161,7 +161,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.HasOne(e => e.Writeup)
                 .WithMany();
-            
+
             entity.HasOne(e => e.Division)
                 .WithMany()
                 .HasForeignKey(e => e.DivisionId)

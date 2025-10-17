@@ -54,6 +54,20 @@ public class GameRepository(
     public Task<Game?> GetGameById(int id, CancellationToken token = default)
         => Context.Games.FirstOrDefaultAsync(x => x.Id == id, token);
 
+    public async Task<GameJoinCheckInfoModel> GetCheckInfo(Game game, UserInfo user, CancellationToken token = default) =>
+        new()
+        {
+            JoinedTeams = await participationRepository.GetJoinedTeams(game, user, token),
+            JoinableDivisions = await Context.Divisions
+                .Where(d => d.GameId == game.Id)
+                .Select(d => new { Id = d.Id, Permission = d.DefaultPermissions })
+                .ToListAsync(token)
+                .ContinueWith(t => t.Result
+                    .Where(d => d.Permission.HasFlag(GamePermission.JoinGame))
+                    .Select(d => d.Id)
+                    .ToArray(), token),
+        };
+
     public Task LoadDivisions(Game game, CancellationToken token = default)
         => Context.Entry(game).Collection(g => g.Divisions!).LoadAsync(token);
 

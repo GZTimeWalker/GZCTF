@@ -34,13 +34,13 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
             .Include(d => d.ChallengeConfigs)
             .FirstOrDefaultAsync(d => d.Id == divisionId && d.GameId == gameId, token);
 
-    public async ValueTask<bool> CheckPermission(int? divisionId, GamePermission permission, int? challengeId,
-        CancellationToken token = default)
+    public async ValueTask<GamePermission> GetPermission(int? divisionId, int? challengeId, CancellationToken token = default)
     {
         if (divisionId is null)
-            return true;
+            return GamePermission.All;
 
         var result = await Context.Divisions
+            .AsNoTracking()
             .Where(d => d.Id == divisionId)
             .Select(d => new
             {
@@ -50,12 +50,12 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
             .FirstOrDefaultAsync(token);
 
         if (result is null)
-            return true;
+            return GamePermission.All;
 
         if (result.Config is { } config)
-            return config.Permissions.HasFlag(permission);
+            return config.Permissions;
 
-        return result.DefaultPermissions.HasFlag(permission);
+        return result.DefaultPermissions;
     }
 
     public async Task UpdateDivision(Division division, DivisionEditModel model, CancellationToken token = default)
