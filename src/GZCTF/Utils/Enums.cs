@@ -59,6 +59,16 @@ public enum RegisterStatus : byte
 public enum TaskStatus : sbyte
 {
     /// <summary>
+    /// System is unhealthy
+    /// </summary>
+    Unhealthy = -3,
+    
+    /// <summary>
+    /// System is in a degraded state
+    /// </summary>
+    Degraded = -2,
+    
+    /// <summary>
     /// Task is in progress
     /// </summary>
     Pending = -1,
@@ -91,12 +101,7 @@ public enum TaskStatus : sbyte
     /// <summary>
     /// Task thread is about to exit
     /// </summary>
-    Exit = 5,
-    
-    /// <summary>
-    /// System is in a degraded state
-    /// </summary>
-    Degraded = 6
+    Exit = 5
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<FileType>))]

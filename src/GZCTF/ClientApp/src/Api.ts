@@ -122,6 +122,7 @@ export enum TaskStatus {
   Denied = "Denied",
   NotFound = "NotFound",
   Exit = "Exit",
+  Unhealthy = "Unhealthy",
   Degraded = "Degraded",
   Pending = "Pending",
 }

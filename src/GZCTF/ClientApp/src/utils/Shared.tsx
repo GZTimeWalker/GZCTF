@@ -448,6 +448,7 @@ export const TaskStatusColorMap = new Map<TaskStatus | null, string>([
   [TaskStatus.NotFound, 'violet'],
   [TaskStatus.Duplicate, 'lime'],
   [TaskStatus.Degraded, 'orange'],
+  [TaskStatus.Unhealthy, 'alert'],
   [null, 'gray'],
 ])
 
