@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FluentStorage;
-using FluentStorage.Blobs;
+using GZCTF.Storage;
 
 namespace GZCTF.Models.Request.Game;
 
@@ -52,7 +51,7 @@ public class ChallengeTrafficModel
             Category = chal.Category,
             Type = chal.Type,
             IsEnabled = chal.IsEnabled,
-            Count = (await storage.ListAsync(path, cancellationToken: token)).Count
+            Count = await storage.CountAsync(path, token)
         };
     }
 }

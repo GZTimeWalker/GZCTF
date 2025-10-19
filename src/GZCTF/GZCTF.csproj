@@ -33,9 +33,7 @@
         <PackageReference Include="Cronos"/>
         <PackageReference Include="Docker.DotNet"/>
         <PackageReference Include="Docker.DotNet.BasicAuth"/>
-        <PackageReference Include="FluentStorage"/>
-        <PackageReference Include="FluentStorage.AWS"/>
-        <PackageReference Include="FluentStorage.Azure.Blobs"/>
+        <PackageReference Include="AWSSDK.S3"/>
         <PackageReference Include="KubernetesClient"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json"/>

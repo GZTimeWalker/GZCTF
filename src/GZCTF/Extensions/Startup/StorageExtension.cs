@@ -1,4 +1,4 @@
-using FluentStorage;
+using GZCTF.Storage;
 
 namespace GZCTF.Extensions.Startup;
 
@@ -11,28 +11,15 @@ static class StorageExtension
         var connectionString = builder.Configuration.GetConnectionString("Storage");
 
         var isEmpty = string.IsNullOrWhiteSpace(connectionString);
-        var useDisk = !isEmpty && connectionString!.StartsWith("disk://");
+        var useDisk = !isEmpty && connectionString!.StartsWith("disk://", StringComparison.OrdinalIgnoreCase);
 
         // force the path used by the disk storage to avoid unintended behavior
         if (isEmpty || useDisk)
             connectionString = DefaultConnectionString;
 
-        var prefix = connectionString!.Split("://")[0].Trim();
-
-        switch (prefix)
-        {
-            case "aws.s3":
-            case "minio.s3":
-                StorageFactory.Modules.UseAwsStorage();
-                break;
-            case "azure.blobs":
-                StorageFactory.Modules.UseAzureBlobStorage();
-                break;
-        }
-
         try
         {
-            var storage = StorageFactory.Blobs.FromConnectionString(connectionString);
+            var storage = StorageProviderFactory.Create(connectionString!);
             builder.Services.AddSingleton(storage);
         }
         catch (Exception e)

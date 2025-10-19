@@ -1,5 +1,4 @@
-using FluentStorage;
-using FluentStorage.Blobs;
+using GZCTF.Storage;
 
 namespace GZCTF.Models.Request.Game;
 
@@ -50,7 +49,7 @@ public class TeamTrafficModel
             Name = part.Team.Name,
             Division = part.Division?.Name,
             Avatar = part.Team.AvatarUrl,
-            Count = (await storage.ListAsync(path, cancellationToken: token)).Count
+            Count = await storage.CountAsync(path, token)
         };
     }
 }

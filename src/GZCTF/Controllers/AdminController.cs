@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
-using FluentStorage.Blobs;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
@@ -11,6 +10,7 @@ using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
+using GZCTF.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

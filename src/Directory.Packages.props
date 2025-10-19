@@ -8,9 +8,7 @@
         <PackageVersion Include="Cronos" Version="0.11.1"/>
         <PackageVersion Include="Docker.DotNet" Version="3.125.15"/>
         <PackageVersion Include="Docker.DotNet.BasicAuth" Version="3.125.15"/>
-        <PackageVersion Include="FluentStorage" Version="6.0.0"/>
-        <PackageVersion Include="FluentStorage.AWS" Version="6.0.0"/>
-        <PackageVersion Include="FluentStorage.Azure.Blobs" Version="6.0.0"/>
+        <PackageVersion Include="AWSSDK.S3" Version="4.0.7.12"/>
         <PackageVersion Include="KubernetesClient" Version="18.0.4"/>
         <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10"/>
         <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="9.0.10"/>

@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
-using FluentStorage;
-using FluentStorage.Blobs;
 using GZCTF.Repositories.Interface;
+using GZCTF.Storage;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;

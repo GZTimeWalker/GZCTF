@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
-using FluentStorage;
-using FluentStorage.Blobs;
 using GZCTF.Middlewares;
 using GZCTF.Repositories.Interface;
+using GZCTF.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Localization;

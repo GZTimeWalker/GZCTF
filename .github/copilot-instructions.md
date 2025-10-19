@@ -17,7 +17,7 @@ GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and 
   - Middlewares & maps: `Extensions/AppExtensions.cs` sets routing, rate limit, auth, request logging, health/metrics, SignalR hubs at `/hub/{user|monitor|admin}`, static/cached `index.html` via `UseIndexAsync()` and custom favicon via `UseCustomFavicon()`.
   - Data: EF Core PostgreSQL is mandatory. App exits if `ConnectionStrings:Database` missing (`DatabaseExtension.ConfigureDatabase`).
   - Caching: Redis optional; when absent falls back to in-memory (`ConfigureCacheAndSignalR`).
-  - Storage: `FluentStorage` chosen by connection string prefix; default forced to `disk://path=./files` (`StorageExtension`).
+  - Storage: custom storage providers (local disk and S3) selected via connection string; default forced to `disk://path=./files` (`StorageExtension`).
   - Telemetry: Health on `/healthz` and Prometheus `/metrics` are served only on metrics port `3000` (`Server.MetricPort` and `TelemetryExtension`). App serves HTTP on `8080`.
   - Auth & roles: IdentityCore with cookies; use attributes `RequireUser`, `RequireMonitor`, `RequireAdmin`, `RequireAdminOrToken` (`Middlewares/PrivilegeAuthentication.cs`).
   - Rate limiting: Global sliding window + named policies (`Middlewares/RateLimiter.cs`), disabled by `DisableRateLimit=true`.

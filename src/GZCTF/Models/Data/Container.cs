@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using FluentStorage;
+using GZCTF.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;

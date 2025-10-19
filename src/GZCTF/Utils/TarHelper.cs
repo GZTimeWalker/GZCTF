@@ -1,8 +1,7 @@
 using System.Formats.Tar;
 using System.IO.Compression;
 using System.Web;
-using FluentStorage;
-using FluentStorage.Blobs;
+using GZCTF.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GZCTF.Utils;
@@ -75,7 +74,7 @@ public static class TarHelper
         await using var writer = new TarWriter(compress);
 
         var files = await storage.ListAsync(directory, cancellationToken: token);
-        foreach (Blob blob in files)
+        foreach (var blob in files)
         {
             var entryPath = $"{fileName}/{blob.Name}";
 
@@ -96,7 +95,7 @@ public static class TarHelper
     /// <param name="fileBlob">File blob</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    static async Task<Stream> GetFileStream(IBlobStorage storage, Blob fileBlob,
+    static async Task<Stream> GetFileStream(IBlobStorage storage, StorageItem fileBlob,
         CancellationToken token)
     {
         var sourceStream = await storage.OpenReadAsync(fileBlob.FullPath, token);

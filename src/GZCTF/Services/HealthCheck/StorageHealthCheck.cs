@@ -1,4 +1,4 @@
-﻿using FluentStorage.Blobs;
+﻿using GZCTF.Storage;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace GZCTF.Services.HealthCheck;
