@@ -66,7 +66,7 @@ public static class StorageProviderFactory
         config.ForcePathStyle = forcePathStyle;
 
         var client = new AmazonS3Client(credentials, config);
-        return new S3BlobStorage(client, bucket, ownsClient: true);
+        return new S3BlobStorage(client, bucket);
     }
 
     static AWSCredentials ResolveCredentials(IReadOnlyDictionary<string, string> parameters)

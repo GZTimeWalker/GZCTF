@@ -10,6 +10,9 @@ public sealed class LocalBlobStorage : IBlobStorage
     readonly string _root;
     readonly string _rootWithSeparator;
 
+    const int ReadBufferSize = 4096;
+    const int WriteBufferSize = 8192;
+
     public LocalBlobStorage(string rootPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(rootPath);
@@ -90,7 +93,7 @@ public sealed class LocalBlobStorage : IBlobStorage
             throw new FileNotFoundException($"Storage object '{path}' does not exist.");
 
         Stream stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read,
-            4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            ReadBufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
 
         return Task.FromResult(stream);
     }
@@ -104,7 +107,7 @@ public sealed class LocalBlobStorage : IBlobStorage
         var fileMode = append ? FileMode.Append : FileMode.Create;
 
         await using var fileStream = new FileStream(fullPath, fileMode, FileAccess.Write, FileShare.None,
-            8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            WriteBufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan);
         await content.CopyToAsync(fileStream, cancellationToken);
     }
 
@@ -114,10 +117,12 @@ public sealed class LocalBlobStorage : IBlobStorage
 
         var fullPath = ResolvePhysicalPath(path, ensureDirectory: true);
 
+        const FileOptions copyOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
+
         await using var source = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
-            8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            WriteBufferSize, copyOptions);
         await using var destination = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
-            8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            WriteBufferSize, copyOptions);
         await source.CopyToAsync(destination, cancellationToken);
     }
 

@@ -12,16 +12,14 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
 {
     readonly IAmazonS3 _client;
     readonly string _bucket;
-    readonly bool _ownsClient;
 
-    public S3BlobStorage(IAmazonS3 client, string bucket, bool ownsClient = false)
+    public S3BlobStorage(IAmazonS3 client, string bucket)
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentException.ThrowIfNullOrWhiteSpace(bucket);
 
         _client = client;
         _bucket = bucket;
-        _ownsClient = ownsClient;
     }
 
     public async Task<bool> ExistsAsync(string path, CancellationToken cancellationToken = default)
@@ -48,6 +46,20 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
 
         List<KeyVersion> batch = [];
 
+        var meta = await TryGetObjectMetadataAsync(key, cancellationToken);
+        if (meta is not null)
+            batch.Add(new KeyVersion { Key = key });
+
+        await foreach (var childKey in EnumerateKeysAsync(EnsureDirectoryPrefix(key), cancellationToken))
+        {
+            batch.Add(new KeyVersion { Key = childKey });
+            if (batch.Count >= 1000)
+                await FlushAsync();
+        }
+
+        await FlushAsync();
+        return;
+
         async Task FlushAsync()
         {
             if (batch.Count == 0)
@@ -65,19 +77,6 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
                 // ignore missing keys
             }
         }
-
-        var meta = await TryGetObjectMetadataAsync(key, cancellationToken);
-        if (meta is not null)
-            batch.Add(new KeyVersion { Key = key });
-
-        await foreach (var childKey in EnumerateKeysAsync(EnsureDirectoryPrefix(key), cancellationToken))
-        {
-            batch.Add(new KeyVersion { Key = childKey });
-            if (batch.Count >= 1000)
-                await FlushAsync();
-        }
-
-        await FlushAsync();
     }
 
     public async Task<StorageItem> GetBlobAsync(string path, CancellationToken cancellationToken = default)
@@ -124,16 +123,9 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
 
             if (response.S3Objects is { } objects)
             {
-                foreach (var obj in objects)
-                {
-                    if (!string.IsNullOrEmpty(prefix) && string.Equals(obj.Key, prefix, StringComparison.Ordinal))
-                        continue;
-
-                    if (obj.Key.EndsWith('/'))
-                        continue;
-
-                    total++;
-                }
+                total += objects.Where(obj =>
+                        string.IsNullOrEmpty(prefix) || !string.Equals(obj.Key, prefix, StringComparison.Ordinal))
+                    .Count(obj => !obj.Key.EndsWith('/'));
             }
 
             request.ContinuationToken = response.IsTruncated is true ? response.NextContinuationToken : null;
@@ -151,13 +143,11 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         try
         {
             var response = await _client.GetObjectAsync(_bucket, key, cancellationToken);
-            if (response.ResponseStream is null)
-            {
-                response.Dispose();
-                throw new InvalidOperationException($"Object '{key}' returned no data stream.");
-            }
+            if (response.ResponseStream is not null)
+                return new S3ObjectReadStream(response);
 
-            return new S3ObjectReadStream(response);
+            response.Dispose();
+            throw new InvalidOperationException($"Object '{key}' returned no data stream.");
         }
         catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
@@ -259,28 +249,21 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
 
             if (!useFlatListing && response.CommonPrefixes is { } prefixes)
             {
-                foreach (var commonPrefix in prefixes)
-                {
-                    var directoryKey = StoragePath.Normalize(commonPrefix);
-                    var name = GetLeafName(directoryKey);
-                    results.Add(new StorageItem(directoryKey, name, true));
-                }
+                results.AddRange(from commonPrefix in prefixes
+                                 select StoragePath.Normalize(commonPrefix)
+                    into directoryKey
+                                 let name = GetLeafName(directoryKey)
+                                 select new StorageItem(directoryKey, name, true));
             }
 
             if (response.S3Objects is { } objects)
             {
-                foreach (var obj in objects)
-                {
-                    if (!useFlatListing && obj.Key.EndsWith('/'))
-                        continue;
-
-                    if (!useFlatListing && string.Equals(obj.Key, prefix, StringComparison.Ordinal))
-                        continue;
-
-                    var itemKey = StoragePath.Normalize(obj.Key);
-                    var name = GetLeafName(itemKey);
-                    results.Add(new StorageItem(itemKey, name, false, obj.Size, obj.LastModified));
-                }
+                results.AddRange(from obj in objects
+                                 where useFlatListing || !obj.Key.EndsWith('/')
+                                 where useFlatListing || !string.Equals(obj.Key, prefix, StringComparison.Ordinal)
+                                 let itemKey = StoragePath.Normalize(obj.Key)
+                                 let name = GetLeafName(itemKey)
+                                 select new StorageItem(itemKey, name, false, obj.Size, obj.LastModified));
             }
 
             request.ContinuationToken = response.IsTruncated is true ? response.NextContinuationToken : null;
@@ -289,11 +272,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         return results;
     }
 
-    public void Dispose()
-    {
-        if (_ownsClient)
-            _client.Dispose();
-    }
+    public void Dispose() => _client.Dispose();
 
     async Task<GetObjectMetadataResponse?> TryGetObjectMetadataAsync(string key,
         CancellationToken cancellationToken)
@@ -320,8 +299,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         {
             var response = await _client.ListObjectsV2Async(request, cancellationToken);
 
-            var objects = response.S3Objects;
-            if (objects is not null)
+            if (response.S3Objects is { } objects)
             {
                 foreach (var obj in objects)
                     yield return obj.Key;
@@ -347,9 +325,9 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         return segments.Length == 0 ? string.Empty : segments[^1];
     }
 
-    sealed class S3ObjectReadStream(GetObjectResponse response) : Stream
+    sealed class S3ObjectReadStream(GetObjectResponse? response) : Stream
     {
-        Stream Inner => response.ResponseStream;
+        Stream Inner => response?.ResponseStream ?? Null;
 
         public override bool CanRead => Inner.CanRead;
         public override bool CanSeek => Inner.CanSeek;
@@ -374,9 +352,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
 
         public override async ValueTask DisposeAsync()
         {
-            if (Inner is not null)
-                await Inner.DisposeAsync();
-
+            await Inner.DisposeAsync();
             response?.Dispose();
         }
 
@@ -384,7 +360,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         {
             if (disposing)
             {
-                Inner?.Dispose();
+                Inner.Dispose();
                 response?.Dispose();
             }
 
