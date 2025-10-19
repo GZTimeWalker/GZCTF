@@ -9,6 +9,10 @@
   },
   "content": {
     "create": "創建一個隊伍，並且邀請其他人加入。",
+    "disallow_create": {
+      "content": "你已經超過了允許擁有的隊伍數量限制。<br/>你可以解散現有隊伍並創建一個新隊伍。",
+      "title": "超出隊伍數量限制"
+    },
     "disband": {
       "confirm": {
         "message": "你確定要解散隊伍 \"{{team}}\" 嗎？",
@@ -31,10 +35,6 @@
     "no_team": {
       "hint": "創建新隊伍或加入現有隊伍以開始",
       "title": "暫無隊伍"
-    },
-    "disallow_create": {
-      "content": "你已經超過了允許擁有的隊伍數量限制。<br/>你可以解散現有隊伍並創建一個新隊伍。",
-      "title": "超出隊伍數量限制"
     },
     "role": {
       "captain": "隊長",

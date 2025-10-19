@@ -35,6 +35,10 @@
       },
       "update_accept_count": "Mettre à jour le compteur AC"
     },
+    "divisions": {
+      "edit": "Modifier la division",
+      "new": "Nouvelle division"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -106,6 +110,10 @@
           "description": "Multiplication de 0.1 cœur CPU",
           "label": "Limite CPU (0,1 CPU)"
         },
+        "deadline": {
+          "label": "Date limite",
+          "placeholder": "Aucune date limite"
+        },
         "delete": "Êtes-vous sûr de vouloir supprimer le défi {{name}} ?",
         "description": "Description",
         "difficulty": "Facteur de difficulté",
@@ -169,6 +177,63 @@
           "description": "Non modifiable après création",
           "label": "Type"
         }
+      },
+      "divisions": {
+        "default_permission_label": "Autorisations par défaut",
+        "delete_confirm": "Supprimer la division {{name}} ?",
+        "empty": {
+          "description": "Cliquez sur Nouvelle division pour créer la première",
+          "title": "Aucune division pour le moment"
+        },
+        "form": {
+          "challenge_overrides": {
+            "description": "Sélectionnez des défis pour personnaliser les autorisations",
+            "label": "Remplacements de défis",
+            "placeholder": "Rechercher des défis pour remplacer les autorisations"
+          },
+          "default_permissions": {
+            "description": "Autorisations par défaut pour les équipes de cette division",
+            "label": "Autorisations par défaut"
+          },
+          "invite_code": {
+            "description": "Remplace le code d'invitation du jeu",
+            "label": "Code d'invitation"
+          },
+          "name": {
+            "description": "Le nom de la division.",
+            "label": "Nom de la division"
+          }
+        },
+        "no_permission": "Aucune autorisation attribuée",
+        "override_label": "Remplacements de défis",
+        "permissions": {
+          "all": "Toutes les autorisations",
+          "get_blood": {
+            "description": "Autorise les points bonus des récompenses de blood",
+            "label": "Récompenses blood"
+          },
+          "get_score": {
+            "description": "Autorise à gagner des points pour les défis",
+            "label": "Gagner des points"
+          },
+          "join_game": {
+            "description": "Autorise les utilisateurs de cette division à rejoindre le jeu",
+            "label": "Rejoindre le jeu"
+          },
+          "rank_overall": {
+            "description": "Autorise l'apparition dans le classement général",
+            "label": "Classement général"
+          },
+          "submit_flags": {
+            "description": "Autorise la soumission de flags",
+            "label": "Soumettre des flags"
+          },
+          "view_challenge": {
+            "description": "Autorise l'affichage des descriptions de défi",
+            "label": "Voir les défis"
+          }
+        },
+        "unknown_challenge": "Défi #{{id}}"
       },
       "info": {
         "accept_without_review": {
@@ -235,6 +300,7 @@
         },
         "participation": {
           "joined": "Rejoint",
+          "no_division": "Aucune division",
           "not_joined": "Non Inscrit",
           "stats": "{{count}}/{{total}} rejoint",
           "update": "Définir le statut de cette équipe sur : \"{{status}}\" ?"
@@ -403,6 +469,12 @@
         "updated": "Défi mis à jour"
       },
       "created": "Jeu créé",
+      "divisions": {
+        "created": "Division créée",
+        "deleted": "Division supprimée",
+        "invite_copied": "Code d'invitation copié dans le presse-papiers",
+        "updated": "Division mise à jour"
+      },
       "info": {
         "accept_count_updated": "Compteur AC mis à jour",
         "deleted": "Jeu supprimé",
@@ -460,7 +532,7 @@
           }
         }
       },
-      "divisions": "Appuyez sur Entrée pour ajouter une division.",
+      "divisions": "Saisir le nom de la division",
       "participation": {
         "bio": "(pas de bio)",
         "team": "(pas de nom)"
@@ -496,6 +568,7 @@
   "tab": {
     "games": {
       "challenges": "Défis",
+      "divisions": "Divisions",
       "index": "Jeux",
       "info": "Informations",
       "notices": "Avis",

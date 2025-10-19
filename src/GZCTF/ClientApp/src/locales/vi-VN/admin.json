@@ -35,6 +35,10 @@
       },
       "update_accept_count": "Cập nhật bộ đếm AC"
     },
+    "divisions": {
+      "edit": "Chỉnh sửa Bảng",
+      "new": "Bảng mới"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -106,6 +110,10 @@
           "description": "Bội của 0.1 CPU",
           "label": "CPU Limit (0.1 CPUs)"
         },
+        "deadline": {
+          "label": "Hạn chót",
+          "placeholder": "Không có hạn chót"
+        },
         "delete": "Bạn có chắc chắn muốn xóa thử thách {{name}} không?",
         "description": "Mô tả",
         "difficulty": "Độ khó",
@@ -169,6 +177,63 @@
           "description": "Không thể thay đổi một khi đã tạo",
           "label": "Loại"
         }
+      },
+      "divisions": {
+        "default_permission_label": "Quyền mặc định",
+        "delete_confirm": "Xóa bảng {{name}}?",
+        "empty": {
+          "description": "Nhấn \"Bảng mới\" để tạo bảng đầu tiên",
+          "title": "Chưa có bảng nào"
+        },
+        "form": {
+          "challenge_overrides": {
+            "description": "Chọn thử thách muốn ghi đè quyền",
+            "label": "Ghi đè thử thách",
+            "placeholder": "Tìm thử thách để ghi đè quyền"
+          },
+          "default_permissions": {
+            "description": "Quyền mặc định áp dụng cho các đội trong bảng này",
+            "label": "Quyền mặc định"
+          },
+          "invite_code": {
+            "description": "Ghi đè mã mời ở cấp trò chơi",
+            "label": "Mã mời"
+          },
+          "name": {
+            "description": "Tên của bảng.",
+            "label": "Tên bảng"
+          }
+        },
+        "no_permission": "Không có quyền nào được gán",
+        "override_label": "Ghi đè thử thách",
+        "permissions": {
+          "all": "Tất cả quyền",
+          "get_blood": {
+            "description": "Cho phép nhận điểm thưởng blood",
+            "label": "Thưởng Blood"
+          },
+          "get_score": {
+            "description": "Cho phép ghi điểm cho thử thách",
+            "label": "Nhận điểm"
+          },
+          "join_game": {
+            "description": "Cho phép người trong bảng này tham gia trò chơi",
+            "label": "Tham gia trò chơi"
+          },
+          "rank_overall": {
+            "description": "Cho phép hiển thị trên bảng xếp hạng tổng",
+            "label": "Bảng xếp hạng tổng"
+          },
+          "submit_flags": {
+            "description": "Cho phép gửi flag",
+            "label": "Nộp flag"
+          },
+          "view_challenge": {
+            "description": "Cho phép xem mô tả thử thách",
+            "label": "Xem thử thách"
+          }
+        },
+        "unknown_challenge": "Thử thách #{{id}}"
       },
       "info": {
         "accept_without_review": {
@@ -235,6 +300,7 @@
         },
         "participation": {
           "joined": "Đã tham gia.",
+          "no_division": "Không có bảng",
           "not_joined": "Chưa đăng ký.",
           "stats": "{{count}}/{{total}} đã tham gia.",
           "update": "Đặt trạng thái của đội này thành: \"{{status}}\"?"
@@ -403,6 +469,12 @@
         "updated": "Thử thách đã được cập nhật."
       },
       "created": "Trò chơi đã được tạo.",
+      "divisions": {
+        "created": "Bảng đã được tạo.",
+        "deleted": "Bảng đã bị xóa.",
+        "invite_copied": "Mã mời đã được sao chép vào bộ nhớ tạm.",
+        "updated": "Bảng đã được cập nhật."
+      },
       "info": {
         "accept_count_updated": "AC counter đã được cập nhật.",
         "deleted": "Trò chơi đã bị xóa.",
@@ -496,6 +568,7 @@
   "tab": {
     "games": {
       "challenges": "Thử thách",
+      "divisions": "Bảng",
       "index": "Trò chơi",
       "info": "Thông tin",
       "notices": "Thông báo",

@@ -42,6 +42,11 @@
       "placeholder": "Vous avez atteint la limite !",
       "remaining": "{{remaining}} tentatives restantes, continuez !"
     },
+    "deadline": {
+      "expired": "Date limite dépassée à {{deadline}}, soumissions désactivées",
+      "label": "Date limite",
+      "remaining": "Temps restant"
+    },
     "flag_placeholders": [
       "Être ou ne pas être, telle est la question pour le flag",
       "Tout ce qui brille n'est pas un flag",

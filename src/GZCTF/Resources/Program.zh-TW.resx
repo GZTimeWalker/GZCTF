@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>無法初始化儲存提供者：{0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>找不到分組</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>沒有提交 flag 的權限</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>此題目的截止時間已過</value>
+  </data>
 </root>

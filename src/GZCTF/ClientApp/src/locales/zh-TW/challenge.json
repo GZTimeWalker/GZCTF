@@ -42,6 +42,11 @@
       "placeholder": "已達到提交上限",
       "remaining": "還有 {{remaining}} 次機會，加油！"
     },
+    "deadline": {
+      "expired": "截止時間 {{deadline}} 已過，禁止提交",
+      "label": "截止時間",
+      "remaining": "剩餘時間"
+    },
     "flag_placeholders": [
       "橫看成嶺側成峰，flag 高低各不同",
       "flag 當關，萬夫莫開",

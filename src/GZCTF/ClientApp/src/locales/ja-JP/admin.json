@@ -35,6 +35,10 @@
       },
       "update_accept_count": "解答数を更新"
     },
+    "divisions": {
+      "edit": "ディビジョンを編集",
+      "new": "新規ディビジョン"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -106,6 +110,10 @@
           "description": "0.1を掛けると、CPUのコア数になります",
           "label": "CPU 制限 (0.1 CPUs)"
         },
+        "deadline": {
+          "label": "締切",
+          "placeholder": "締切なし"
+        },
         "delete": "チャレンジ {{name}} を削除してもよろしいですか？",
         "description": "説明",
         "difficulty": "難易度",
@@ -169,6 +177,63 @@
           "description": "作成後は変更できません",
           "label": "種類"
         }
+      },
+      "divisions": {
+        "default_permission_label": "デフォルト権限",
+        "delete_confirm": "ディビジョン {{name}} を削除しますか？",
+        "empty": {
+          "description": "「新規ディビジョン」をクリックして最初のディビジョンを作成",
+          "title": "ディビジョンがまだありません"
+        },
+        "form": {
+          "challenge_overrides": {
+            "description": "権限をカスタマイズするチャレンジを選択",
+            "label": "チャレンジ上書き",
+            "placeholder": "権限を上書きするチャレンジを検索"
+          },
+          "default_permissions": {
+            "description": "このディビジョンのチームに適用されるデフォルト権限",
+            "label": "デフォルト権限"
+          },
+          "invite_code": {
+            "description": "ゲーム全体の招待コードを上書き",
+            "label": "招待コード"
+          },
+          "name": {
+            "description": "ディビジョンの名称です。",
+            "label": "ディビジョン名"
+          }
+        },
+        "no_permission": "付与された権限はありません",
+        "override_label": "チャレンジ上書き",
+        "permissions": {
+          "all": "すべての権限",
+          "get_blood": {
+            "description": "先取りボーナスの加点を許可します",
+            "label": "ボーナス受取"
+          },
+          "get_score": {
+            "description": "チャレンジで得点することを許可します",
+            "label": "得点"
+          },
+          "join_game": {
+            "description": "このディビジョンのユーザーにゲーム参加を許可します",
+            "label": "ゲーム参加"
+          },
+          "rank_overall": {
+            "description": "総合スコアボードへの表示を許可します",
+            "label": "総合順位"
+          },
+          "submit_flags": {
+            "description": "フラグの提出を許可します",
+            "label": "フラグ提出"
+          },
+          "view_challenge": {
+            "description": "チャレンジの説明を閲覧可能にします",
+            "label": "チャレンジ閲覧"
+          }
+        },
+        "unknown_challenge": "チャレンジ #{{id}}"
       },
       "info": {
         "accept_without_review": {
@@ -235,6 +300,7 @@
         },
         "participation": {
           "joined": "参加申請済み",
+          "no_division": "ディビジョンなし",
           "not_joined": "参加未申請",
           "stats": "{{count}}/{{total}} 参加申請済み",
           "update": "{{status}}に設定してもよろしいですか?"
@@ -403,6 +469,12 @@
         "updated": "チャレンジを更新しました"
       },
       "created": "ゲームが作成されました",
+      "divisions": {
+        "created": "ディビジョンを作成しました",
+        "deleted": "ディビジョンを削除しました",
+        "invite_copied": "招待コードをクリップボードにコピーしました",
+        "updated": "ディビジョンを更新しました"
+      },
       "info": {
         "accept_count_updated": "解答数が更新されました",
         "deleted": "ゲームが削除されました",
@@ -460,7 +532,7 @@
           }
         }
       },
-      "divisions": "参加区分を追加する",
+      "divisions": "ディビジョン名を入力",
       "participation": {
         "bio": "（自己紹介なし）",
         "team": "（チーム名なし）"
@@ -496,6 +568,7 @@
   "tab": {
     "games": {
       "challenges": "チャレンジ",
+      "divisions": "ディビジョン",
       "index": "ゲーム管理",
       "info": "情報編集",
       "notices": "お知らせ",

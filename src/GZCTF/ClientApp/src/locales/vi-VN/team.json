@@ -9,6 +9,10 @@
   },
   "content": {
     "create": "Bạn có thể tạo một đội và mời người khác gia nhập. Mỗi người chơi chỉ có thể tạo một đội.",
+    "disallow_create": {
+      "content": "Bạn đã đạt giới hạn tối đa số đội có thể tạo.<br/>Vui lòng giải tán một đội hiện có để tạo đội mới.",
+      "title": "Bạn đã vượt quá giới hạn"
+    },
     "disband": {
       "confirm": {
         "message": "Bạn có chắc chắn muốn giải tán đội \"{{team}}\" không?",
@@ -31,10 +35,6 @@
     "no_team": {
       "hint": "Tạo đội mới hoặc gia nhập đội hiện có để bắt đầu",
       "title": "Chưa có đội"
-    },
-    "disallow_create": {
-      "content": "Bạn đã đạt giới hạn tối đa số đội có thể tạo.<br/>Vui lòng giải tán một đội hiện có để tạo đội mới.",
-      "title": "Bạn đã vượt quá giới hạn"
     },
     "role": {
       "captain": "Đội trưởng",

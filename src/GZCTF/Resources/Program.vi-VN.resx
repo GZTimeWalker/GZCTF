@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Không thể khởi tạo storage provider: {0}.</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>Không tìm thấy bảng đấu</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>Bạn không có quyền nộp flag</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>Thời hạn cho thử thách này đã hết</value>
+  </data>
 </root>

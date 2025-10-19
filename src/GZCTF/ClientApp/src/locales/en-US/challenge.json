@@ -42,6 +42,11 @@
       "placeholder": "You've reached the limit!",
       "remaining": "{{remaining}} attempts left, keep going!"
     },
+    "deadline": {
+      "expired": "Deadline passed at {{deadline}}, submissions are disabled",
+      "label": "Deadline",
+      "remaining": "Time remaining"
+    },
     "flag_placeholders": [
       "To be, or not to be, flag is the question",
       "All that glisters is not flag",
@@ -88,11 +93,6 @@
       "test": {
         "no_container": "Test container is not running"
       }
-    },
-    "deadline": {
-      "label": "Deadline",
-      "remaining": "Time remaining",
-      "expired": "Deadline passed at {{deadline}}, submissions are disabled"
     },
     "solved": "<1>{{solved}}</1> SOLVES",
     "wrong_flag_hints": [

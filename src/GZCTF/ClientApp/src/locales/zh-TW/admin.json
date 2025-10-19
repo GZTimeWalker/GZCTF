@@ -35,6 +35,10 @@
       },
       "update_accept_count": "更新解題計數"
     },
+    "divisions": {
+      "edit": "編輯分組",
+      "new": "新建分組"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -106,6 +110,10 @@
           "description": "乘以 0.1 即為 CPU 核心數",
           "label": "CPU 限制 (0.1 CPUs)"
         },
+        "deadline": {
+          "label": "截止時間",
+          "placeholder": "無截止時間"
+        },
         "delete": "你確定要刪除題目 {{name}} 嗎？",
         "description": "題目描述",
         "difficulty": "難度係數",
@@ -169,6 +177,63 @@
           "description": "創建後不可更改",
           "label": "題目類型"
         }
+      },
+      "divisions": {
+        "default_permission_label": "預設權限",
+        "delete_confirm": "刪除分組 {{name}}？",
+        "empty": {
+          "description": "點擊「新建分組」以建立第一個分組",
+          "title": "暫無分組"
+        },
+        "form": {
+          "challenge_overrides": {
+            "description": "選擇要自訂權限的題目",
+            "label": "題目權限覆寫",
+            "placeholder": "搜尋欲覆寫權限的題目"
+          },
+          "default_permissions": {
+            "description": "適用於此分組隊伍的預設權限",
+            "label": "預設權限"
+          },
+          "invite_code": {
+            "description": "覆寫比賽層級的邀請碼",
+            "label": "邀請碼"
+          },
+          "name": {
+            "description": "分組的名稱。",
+            "label": "分組名稱"
+          }
+        },
+        "no_permission": "尚未配置權限",
+        "override_label": "題目權限覆寫",
+        "permissions": {
+          "all": "全部權限",
+          "get_blood": {
+            "description": "允許獲得三血獎勵積分",
+            "label": "三血加分"
+          },
+          "get_score": {
+            "description": "允許此分組的隊伍獲得題目分數",
+            "label": "獲取分數"
+          },
+          "join_game": {
+            "description": "允許此分組的用戶加入比賽",
+            "label": "加入比賽"
+          },
+          "rank_overall": {
+            "description": "允許顯示於總排行榜",
+            "label": "總榜排名"
+          },
+          "submit_flags": {
+            "description": "允許提交 flag",
+            "label": "提交 flag"
+          },
+          "view_challenge": {
+            "description": "允許瀏覽題目描述",
+            "label": "查看題目"
+          }
+        },
+        "unknown_challenge": "題目 #{{id}}"
       },
       "info": {
         "accept_without_review": {
@@ -235,6 +300,7 @@
         },
         "participation": {
           "joined": "已報名",
+          "no_division": "未分組",
           "not_joined": "未報名",
           "stats": "{{count}}/{{total}} 已報名",
           "update": "確定要設為 \"{{status}}\" 嗎？"
@@ -403,6 +469,12 @@
         "updated": "題目已更新"
       },
       "created": "比賽已創建",
+      "divisions": {
+        "created": "分組已創建",
+        "deleted": "分組已刪除",
+        "invite_copied": "邀請碼已複製到剪貼板",
+        "updated": "分組已更新"
+      },
       "info": {
         "accept_count_updated": "解題數量已刷新",
         "deleted": "比賽已刪除",
@@ -496,6 +568,7 @@
   "tab": {
     "games": {
       "challenges": "題目管理",
+      "divisions": "分組管理",
       "index": "比賽管理",
       "info": "信息編輯",
       "notices": "比賽公告",

@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>ストレージプロバイダーの初期化に失敗しました：{0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>ディビジョンが見つかりません</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>フラグを提出する権限がありません</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>このチャレンジの締め切りが過ぎています</value>
+  </data>
 </root>

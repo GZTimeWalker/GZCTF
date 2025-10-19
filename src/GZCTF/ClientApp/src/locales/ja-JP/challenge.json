@@ -42,6 +42,11 @@
       "placeholder": "制限に達しました！",
       "remaining": "残り {{remaining}} 回の試行があります、頑張って！"
     },
+    "deadline": {
+      "expired": "このチャレンジは {{deadline}} に締切済みです。提出は無効です",
+      "label": "締切",
+      "remaining": "残り時間"
+    },
     "flag_placeholders": [
       "フラッグを入力してください",
       "フラッグを入力してください",

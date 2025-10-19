@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Gagal menginisialisasi penyedia penyimpanan: {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>Divisi tidak ditemukan</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>Tidak memiliki izin untuk mengirim flag</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>Batas waktu untuk tantangan ini telah berakhir</value>
+  </data>
 </root>

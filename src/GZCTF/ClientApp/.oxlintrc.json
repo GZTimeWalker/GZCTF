@@ -5,11 +5,7 @@
   },
   "globals": {},
   "overrides": [],
-  "plugins": [
-    "import",
-    "typescript",
-    "react"
-  ],
+  "plugins": ["import", "typescript", "react"],
   "rules": {
     "react/exhaustive-deps": "allow"
   },

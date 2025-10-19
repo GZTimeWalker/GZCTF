@@ -1068,4 +1068,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Échec de l'initialisation du fournisseur de stockage : {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>Division introuvable</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>Vous n'avez pas l'autorisation de soumettre des flags</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>La date limite pour ce challenge est dépassée</value>
+  </data>
 </root>

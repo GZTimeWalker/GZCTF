@@ -1071,4 +1071,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Error al inicializar el proveedor de almacenamiento: {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>División no encontrada</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>Sin permiso para enviar flags</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>La fecha límite de este desafío ha pasado</value>
+  </data>
 </root>

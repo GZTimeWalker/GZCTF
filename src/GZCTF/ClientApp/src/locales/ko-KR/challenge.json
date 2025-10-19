@@ -42,6 +42,11 @@
       "placeholder": "제한에 도달했습니다!",
       "remaining": "{{remaining}}번의 시도가 남았습니다, 계속 해보세요!"
     },
+    "deadline": {
+      "expired": "이 챌린지는 {{deadline}}에 마감되어 제출이 비활성화되었습니다",
+      "label": "마감 시간",
+      "remaining": "남은 시간"
+    },
     "flag_placeholders": [
       "죽느냐, 사느냐, Flag 가 문제로다.",
       "Flag, 누구냐 넌?",

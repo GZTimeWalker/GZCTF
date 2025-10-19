@@ -42,6 +42,11 @@
       "placeholder": "Du hast das Limit erreicht!",
       "remaining": "{{remaining}} Versuche übrig, weitermachen!"
     },
+    "deadline": {
+      "expired": "Frist abgelaufen am {{deadline}}, Einsendungen deaktiviert",
+      "label": "Abgabefrist",
+      "remaining": "Verbleibende Zeit"
+    },
     "flag_placeholders": [
       "Sein oder nicht sein, Flagge ist die Frage",
       "Nicht alles, was glänzt, ist eine Flagge",

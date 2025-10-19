@@ -42,6 +42,11 @@
       "placeholder": "Bạn đã đạt giới hạn!",
       "remaining": "Còn {{remaining}} lượt thử, cố lên!"
     },
+    "deadline": {
+      "expired": "Hạn chót đã qua lúc {{deadline}}, không thể nộp bài",
+      "label": "Hạn chót",
+      "remaining": "Thời gian còn lại"
+    },
     "flag_placeholders": [
       "Có hay không, flag là câu hỏi",
       "Không phải tất cả những gì lấp lánh đều là flag",

@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>저장소 초기화에 실패했습니다: {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>디비전을 찾을 수 없습니다</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>플래그를 제출할 권한이 없습니다</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>이 도전 과제의 마감 시간이 지났습니다</value>
+  </data>
 </root>

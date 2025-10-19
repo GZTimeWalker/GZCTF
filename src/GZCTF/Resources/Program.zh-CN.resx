@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>数据存储初始化失败：{0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>未找到分组</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>没有提交 flag 的权限</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>该题目的截止时间已过</value>
+  </data>
 </root>

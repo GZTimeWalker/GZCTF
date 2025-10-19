@@ -42,6 +42,11 @@
       "placeholder": "Kamu sudah mencapai batas!",
       "remaining": "{{remaining}} percobaan tersisa, terus berusaha!"
     },
+    "deadline": {
+      "expired": "Batas waktu berakhir pada {{deadline}}, pengiriman dinonaktifkan",
+      "label": "Batas waktu",
+      "remaining": "Sisa waktu"
+    },
     "flag_placeholders": [
       "Untuk ada, atau tidak ada, flag adalah pertanyaannya",
       "Semua yang berkilau bukanlah flag",

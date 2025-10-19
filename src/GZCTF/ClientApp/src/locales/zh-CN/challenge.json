@@ -42,6 +42,11 @@
       "placeholder": "已达到提交上限",
       "remaining": "还有 {{remaining}} 次提交机会"
     },
+    "deadline": {
+      "expired": "该题已于 {{deadline}} 截止，无法继续提交",
+      "label": "截止时间",
+      "remaining": "剩余时间"
+    },
     "flag_placeholders": [
       "横看成岭侧成峰，flag 高低各不同",
       "flag 当关，万夫莫开",
@@ -88,11 +93,6 @@
       "test": {
         "no_container": "测试容器未开启"
       }
-    },
-    "deadline": {
-      "label": "截止时间",
-      "remaining": "剩余时间",
-      "expired": "该题已于 {{deadline}} 截止，无法继续提交"
     },
     "solved": "<1>{{solved}}</1> 次解出",
     "wrong_flag_hints": [

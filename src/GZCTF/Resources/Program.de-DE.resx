@@ -1075,4 +1075,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Fehler bei der Initialisierung des Speicheranbieters: {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>Division nicht gefunden</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>Keine Berechtigung, Flaggen einzureichen</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>Die Frist für diese Herausforderung ist abgelaufen</value>
+  </data>
 </root>

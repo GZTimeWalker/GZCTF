@@ -42,6 +42,11 @@
       "placeholder": "¡Has alcanzado el límite!",
       "remaining": "{{remaining}} intentos restantes, ¡sigue adelante!"
     },
+    "deadline": {
+      "expired": "La fecha límite venció a las {{deadline}}, envíos deshabilitados",
+      "label": "Fecha límite",
+      "remaining": "Tiempo restante"
+    },
     "flag_placeholders": [
       "Ser o no ser, esa es la cuestión del flag",
       "No todo lo que reluce es flag",

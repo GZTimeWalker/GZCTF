@@ -1055,4 +1055,13 @@
   <data name="Init_StorageInitFailed" xml:space="preserve">
     <value>Ошибка инициализации поставщика хранилища: {0}</value>
   </data>
+  <data name="Division_NotFound" xml:space="preserve">
+    <value>Дивизион не найден</value>
+  </data>
+  <data name="Challenge_SubmissionNoPermission" xml:space="preserve">
+    <value>Нет прав для отправки флагов</value>
+  </data>
+  <data name="Challenge_DeadlinePassed" xml:space="preserve">
+    <value>Срок сдачи этого задания истёк</value>
+  </data>
 </root>
