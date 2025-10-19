@@ -183,6 +183,7 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
     try {
       if (division) {
         const response = await api.edit.editUpdateDivision(gameId, division.id, model)
+
         showNotification({
           color: 'teal',
           message: t('admin.notification.games.divisions.updated'),
@@ -191,19 +192,13 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
         onDivisionSaved({ ...response.data, challengeConfigs: response.data.challengeConfigs ?? [] })
       } else {
         const created = await api.edit.editCreateDivision(gameId, model)
-        let latest = created.data
-
-        if (selectedChallenges.length > 0) {
-          const response = await api.edit.editUpdateDivision(gameId, created.data.id, buildModel(trimmedName))
-          latest = response.data
-        }
 
         showNotification({
           color: 'teal',
           message: t('admin.notification.games.divisions.created'),
           icon: <Icon path={mdiCheck} size={1} />,
         })
-        onDivisionSaved({ ...latest, challengeConfigs: latest.challengeConfigs ?? [] })
+        onDivisionSaved({ ...created.data, challengeConfigs: created.data.challengeConfigs ?? [] })
       }
 
       onClose?.()

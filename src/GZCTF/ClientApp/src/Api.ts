@@ -459,10 +459,7 @@ export interface UserInfoModel {
    * @format uint64
    */
   lastVisitedUtc?: number;
-  /**
-   * Last visit IP
-   * @format hostname
-   */
+  /** Last visit IP */
   ip?: string;
   /** Email */
   email?: string | null;
@@ -632,10 +629,7 @@ export interface LogMessageModel {
   /** Username */
   name?: string | null;
   level?: string | null;
-  /**
-   * IP address
-   * @format hostname
-   */
+  /** IP address */
   ip?: string | null;
   /** Log message */
   msg?: string | null;
