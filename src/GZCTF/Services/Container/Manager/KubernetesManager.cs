@@ -161,7 +161,7 @@ public class KubernetesManager : IContainerManager
             Spec = new V1ServiceSpec
             {
                 Type = _meta.ExposePort ? "NodePort" : "ClusterIP",
-                Ports = [new V1ServicePort { NodePort = config.ExposedPort, TargetPort = config.ExposedPort }],
+                Ports = [new V1ServicePort { Port = config.ExposedPort, TargetPort = config.ExposedPort }],
                 Selector = new Dictionary<string, string> { ["gzctf.gzti.me/ResourceId"] = name }
             }
         };
