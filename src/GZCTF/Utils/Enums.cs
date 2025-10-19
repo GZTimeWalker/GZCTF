@@ -91,7 +91,12 @@ public enum TaskStatus : sbyte
     /// <summary>
     /// Task thread is about to exit
     /// </summary>
-    Exit = 5
+    Exit = 5,
+    
+    /// <summary>
+    /// System is in a degraded state
+    /// </summary>
+    Degraded = 6
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<FileType>))]
