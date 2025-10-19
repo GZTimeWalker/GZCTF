@@ -28,6 +28,7 @@ import tableClasses from '@Styles/Table.module.css'
 
 export interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
+  divisionMap: Map<number, string>
   bloodBonusMap: Map<SubmissionType, BonusLabel>
   scoreboard?: ScoreboardModel
 }
@@ -75,7 +76,7 @@ function calculateMemberContribution(item?: ScoreboardItem): MemberContributionP
 }
 
 export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
-  const { item, scoreboard, bloodBonusMap, ...modalProps } = props
+  const { item, scoreboard, bloodBonusMap, divisionMap, ...modalProps } = props
   const { t } = useTranslation()
   const { locale } = useLanguage()
   const challenges = scoreboard?.challenges
@@ -115,9 +116,9 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
               <Title order={4} lineClamp={1} className={modalClasses.teamName} title={item?.name ?? 'Team'}>
                 {item?.name ?? 'Team'}
               </Title>
-              {item?.division && (
+              {item?.divisionId && (
                 <Badge size="sm" variant="outline" className={modalClasses.divisionBadge}>
-                  {item.division}
+                  {divisionMap.get(item.divisionId) ?? 'Unknown'}
                 </Badge>
               )}
             </Group>
@@ -146,16 +147,16 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           <Group grow ta="center">
             <Stack gap={2}>
               <Text fw="bold" size="sm" ff="monospace">
-                {item?.rank}
+                {item?.rank || '-'}
               </Text>
               <Text size="xs" fw={500}>
                 {t('game.label.score_table.rank_total')}
               </Text>
             </Stack>
-            {item?.division && (
+            {item?.divisionId && (
               <Stack gap={2}>
                 <Text fw="bold" size="sm" ff="monospace">
-                  {item?.divisionRank}
+                  {item?.divisionRank || '-'}
                 </Text>
                 <Text size="xs" fw={500}>
                   {t('game.label.score_table.rank_division')}

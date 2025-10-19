@@ -164,7 +164,7 @@ const TableRow: FC<{
   return (
     <Table.Tr>
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[0] }}>
-        {item.rank}
+        {item.rank || '-'}
       </Table.Td>
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[1] }}>
         {allRank ? item.rank : (item.divisionRank ?? tableRank)}
@@ -415,6 +415,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId
       </Stack>
       <ScoreboardItemModal
         scoreboard={scoreboard}
+        divisionMap={divisionMap}
         bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}

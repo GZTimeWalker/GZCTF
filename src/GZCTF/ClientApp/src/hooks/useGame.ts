@@ -86,5 +86,5 @@ export const useGameTeamInfo = (numId: number) => {
     refreshInterval: status === GameStatus.OnGoing ? 10 * 1000 : 0,
   })
 
-  return { teamInfo, error, mutate }
+  return { teamInfo, game, error, mutate }
 }

@@ -16,7 +16,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { ErrorCodes } from '@Utils/Shared'
@@ -28,7 +28,7 @@ export const TeamRank: FC<CardProps> = (props) => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const navigate = useNavigate()
-  const { teamInfo, error } = useGameTeamInfo(numId)
+  const { teamInfo, game, error } = useGameTeamInfo(numId)
 
   const clipboard = useClipboard()
   const isMobile = useIsMobile(1080)
@@ -36,6 +36,15 @@ export const TeamRank: FC<CardProps> = (props) => {
   const { t } = useTranslation()
 
   const solved = (teamInfo?.rank?.solvedCount ?? 0) / (teamInfo?.challengeCount ?? 1)
+
+  const division = useMemo(() => {
+    if (teamInfo?.rank?.divisionId && game?.divisions) {
+      const division = game.divisions.find((d) => d.id === teamInfo.rank!.divisionId)
+      return division?.name ?? ''
+    }
+
+    return null
+  }, [teamInfo?.rank?.divisionId, game?.divisions])
 
   useEffect(() => {
     if (error?.status === ErrorCodes.GameEnded) {
@@ -75,17 +84,17 @@ export const TeamRank: FC<CardProps> = (props) => {
               <Title order={3} lineClamp={1}>
                 {rank?.name ?? 'Team'}
               </Title>
-              {rank?.division && (
+              {division && (
                 <Badge size="xs" variant="outline">
-                  {rank.division}
+                  {division}
                 </Badge>
               )}
             </Stack>
           </Skeleton>
         </Group>
         <Group grow ta="center">
-          {item(t('game.label.score_table.rank_total'), rank?.rank)}
-          {rank?.division && item(t('game.label.score_table.rank_division'), rank?.divisionRank)}
+          {item(t('game.label.score_table.rank_total'), rank?.rank || '-')}
+          {division && item(t('game.label.score_table.rank_division'), rank?.divisionRank)}
           {item(t('game.label.score_table.score'), rank?.score)}
           {item(t('game.label.score_table.solved_count'), rank?.solvedCount)}
         </Group>

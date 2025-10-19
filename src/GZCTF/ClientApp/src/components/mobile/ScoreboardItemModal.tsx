@@ -26,7 +26,7 @@ import modalClasses from '@Styles/ScoreboardItemModal.module.css'
 import tableClasses from '@Styles/Table.module.css'
 
 export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.memo((props) => {
-  const { item, scoreboard, ...modalProps } = props
+  const { item, scoreboard, divisionMap, ...modalProps } = props
   const { t } = useTranslation()
   const { locale } = useLanguage()
 
@@ -82,9 +82,9 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.mem
               <Title order={4} lineClamp={1} className={modalClasses.teamName} title={item?.name ?? 'Team'}>
                 {item?.name ?? 'Team'}
               </Title>
-              {item?.division && (
+              {item?.divisionId && (
                 <Badge size="sm" variant="outline" className={modalClasses.divisionBadge}>
-                  {item.division}
+                  {divisionMap.get(item.divisionId) ?? 'Unknown'}
                 </Badge>
               )}
             </Group>
@@ -111,14 +111,14 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.mem
           <Group grow ta="center">
             <Stack gap={1}>
               <Text fw="bold" size="sm" ff="monospace">
-                {item?.rank}
+                {item?.rank || '-'}
               </Text>
               <Text size="xs">{t('game.label.score_table.rank_total')}</Text>
             </Stack>
-            {item?.division && (
+            {item?.divisionId && (
               <Stack gap={1}>
                 <Text fw="bold" size="sm" ff="monospace">
-                  {item?.divisionRank}
+                  {item?.divisionRank || '-'}
                 </Text>
                 <Text size="xs">{t('game.label.score_table.rank_division')}</Text>
               </Stack>

@@ -28,7 +28,7 @@ const TableRow: FC<{
 
   return (
     <Table.Tr>
-      <Table.Td className={cx(classes.mono, classes.left)}>{item.rank}</Table.Td>
+      <Table.Td className={cx(classes.mono, classes.left)}>{item.rank || '-'}</Table.Td>
       <Table.Td className={cx(classes.left, classes.teamCell)}>
         <Group justify="left" gap={5} wrap="nowrap" style={{ minWidth: 0, flex: 1 }}>
           <Avatar
@@ -101,6 +101,14 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivi
       setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
     }
   }, [scoreboard])
+
+  const divisionMap = useMemo(() => {
+    const map = new Map<number, string>()
+    scoreboard?.divisions?.forEach((div) => {
+      map.set(div.id, div.name.trim())
+    })
+    return map
+  }, [scoreboard?.divisions])
 
   const bloodData = useBonusLabels(bloodBonus)
 
@@ -178,6 +186,7 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivi
       </Stack>
       <MobileScoreboardItemModal
         scoreboard={scoreboard}
+        divisionMap={divisionMap}
         bloodBonusMap={bloodData}
         opened={itemDetailOpened}
         withCloseButton={false}
