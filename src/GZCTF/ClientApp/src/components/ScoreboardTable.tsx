@@ -294,7 +294,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId
       return scoreboard.items.filter((s) => (s.divisionId ?? null) === divisionId)
     }
 
-    return scoreboard.items
+    return scoreboard.items.filter((s) => s.rank > 0)
   }, [scoreboard, debouncedKeyword, divisionId])
 
   useEffect(() => {
