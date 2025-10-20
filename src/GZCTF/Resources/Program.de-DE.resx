@@ -887,7 +887,7 @@
     <value>Team nicht geladen</value>
   </data>
   <data name="Scoreboard_Title" xml:space="preserve">
-    <value>Scoreboard</value>
+    <value>Ergebnistafel</value>
   </data>
   <data name="Server_Exited" xml:space="preserve">
     <value>Server beendet</value>
