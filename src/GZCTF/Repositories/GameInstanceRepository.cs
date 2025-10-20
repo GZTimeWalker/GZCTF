@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using GZCTF.Models.Data;
-using GZCTF.Models.Internal;
+﻿using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Container.Manager;
 using Microsoft.EntityFrameworkCore;
@@ -308,7 +306,8 @@ public class GameInstanceRepository(
                 return new(SubmissionType.Unaccepted, updateSub.Status);
             }
 
-            await Context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock({0})", [updateSub.ChallengeId],
+            await Context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock({0}, {1})",
+                [updateSub.ParticipationId, updateSub.ChallengeId],
                 cancellationToken: token);
 
             var alreadySolved = await Context.FirstSolves
@@ -371,17 +370,17 @@ public class GameInstanceRepository(
         {
             logger.LogError(ex, "An error occurred during answer verification for submission {SubmissionId}.",
                 submission.Id);
-            await transaction.RollbackAsync(CancellationToken.None);
+            await transaction.RollbackAsync(token);
             throw;
         }
     }
 
     Task<int> CountBloodEligibleSolves(int challengeId, DateTimeOffset start, DateTimeOffset end,
         CancellationToken token)
-        => (
-            from fs in Context.FirstSolves.AsNoTracking()
-            join participation in Context.Participations.AsNoTracking() on fs.ParticipationId equals participation.Id
-            join submission in Context.Submissions.AsNoTracking() on fs.SubmissionId equals submission.Id
+    {
+        // First, get blood-eligible participation IDs for the challenge
+        var eligibleParticipationIds =
+            from participation in Context.Participations.AsNoTracking()
             join config in Context.Set<DivisionChallengeConfig>().AsNoTracking()
                     .Where(c => c.ChallengeId == challengeId)
                 on participation.DivisionId equals config.DivisionId into configJoin
@@ -389,14 +388,23 @@ public class GameInstanceRepository(
             join division in Context.Divisions.AsNoTracking()
                 on participation.DivisionId equals division.Id into divisionJoin
             from div in divisionJoin.DefaultIfEmpty()
-            where fs.ChallengeId == challengeId
-                  && participation.Status == ParticipationStatus.Accepted
-                  && submission.SubmitTimeUtc >= start
-                  && submission.SubmitTimeUtc < end
+            where participation.Status == ParticipationStatus.Accepted
                   && (cfg != null
                       ? cfg.Permissions.HasFlag(GamePermission.GetBlood)
                       : div == null || div.DefaultPermissions.HasFlag(GamePermission.GetBlood))
-            select fs.ParticipationId).CountAsync(token);
+            select participation.Id;
+
+        // Now, count FirstSolves for the challenge with eligible participations and time window
+        return (
+            from fs in Context.FirstSolves.AsNoTracking()
+            join submission in Context.Submissions.AsNoTracking() on fs.SubmissionId equals submission.Id
+            where fs.ChallengeId == challengeId
+                  && eligibleParticipationIds.Contains(fs.ParticipationId)
+                  && submission.SubmitTimeUtc >= start
+                  && submission.SubmitTimeUtc < end
+            select fs.ParticipationId
+        ).CountAsync(token);
+    }
 
 
     static bool HasPermission(Division? division, GamePermission permission, int challengeId)

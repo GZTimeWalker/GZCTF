@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GZCTF.Models.Request.Shared;
+﻿using GZCTF.Models.Request.Shared;
 
 namespace GZCTF.Models.Request.Game;
 

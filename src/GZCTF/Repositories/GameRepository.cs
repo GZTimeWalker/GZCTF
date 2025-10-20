@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using GZCTF.Models.Data;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -265,12 +264,11 @@ public class GameRepository(
     // Refactored by GZTimeWalker @ 2024/08/31
     public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
     {
-        Dictionary<int, ScoreboardItem> items; // participant id -> scoreboard item
+        Dictionary<int, ScoreboardItem> items;
         Dictionary<int, ChallengeInfo> challenges;
         Dictionary<int, DivisionItem> divisions;
         Dictionary<int, (int OriginalScore, double MinScoreRate, double Difficulty)> challengeMetas;
         List<SolveSnapshot> solveSnapshots;
-        List<ScoreboardSolve> solves;
 
         // 0. Begin transaction
         await using (var trans = await Context.Database.BeginTransactionAsync(token))
@@ -387,7 +385,7 @@ public class GameRepository(
 
         // Prepare solve metadata for scoring and statistics
         Dictionary<int, int> challengeAcceptedCounts = [];
-        solves = [];
+        List<ScoreboardSolve> solves = [];
 
         foreach (var snapshot in solveSnapshots)
         {
@@ -402,10 +400,8 @@ public class GameRepository(
                                 CheckDivisionPermission(division, GamePermission.GetScore, snapshot.ChallengeId);
 
             if (scoreEligible)
-            {
                 challengeAcceptedCounts[snapshot.ChallengeId] =
                     challengeAcceptedCounts.GetValueOrDefault(snapshot.ChallengeId) + 1;
-            }
 
             var bloodEligible = withinWindow &&
                                 CheckDivisionPermission(division, GamePermission.GetBlood, snapshot.ChallengeId);
@@ -424,7 +420,8 @@ public class GameRepository(
             var meta = challengeMetas[challengeId];
             var solvedCount = challengeAcceptedCounts.GetValueOrDefault(challengeId);
             info.SolvedCount = solvedCount;
-            info.Score = CalculateChallengeScore(meta.OriginalScore, meta.MinScoreRate, meta.Difficulty, solvedCount);
+            info.Score = GameChallenge.CalculateChallengeScore(meta.OriginalScore,
+                meta.MinScoreRate, meta.Difficulty, solvedCount);
         }
 
         // 5. sort challenge items by submit time, and update the Score and Type fields
@@ -446,8 +443,6 @@ public class GameRepository(
             if (!challenges.TryGetValue(solve.ChallengeId, out var challenge))
                 continue;
 
-            DivisionItem? division = scoreboardItem.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
-
             var item = new ChallengeItem
             {
                 Id = solve.ChallengeId,
@@ -459,8 +454,7 @@ public class GameRepository(
             };
 
             // 5.1. generate bloods
-            if (solve.BloodEligible && challenge is { DisableBloodBonus: false, Bloods.Count: < 3 } &&
-                CheckDivisionPermission(division, GamePermission.GetScore, solve.ChallengeId))
+            if (solve.BloodEligible && challenge is { DisableBloodBonus: false, Bloods.Count: < 3 })
             {
                 item.Type = challenge.Bloods.Count switch
                 {
@@ -587,16 +581,6 @@ public class GameRepository(
             TimeLines = timelines,
             BloodBonusValue = game.BloodBonus.Val
         };
-    }
-
-    static int CalculateChallengeScore(int originalScore, double minScoreRate, double difficulty, int acceptedCount)
-    {
-        if (acceptedCount <= 1)
-            return originalScore;
-
-        return (int)Math.Floor(
-            originalScore *
-            (minScoreRate + (1.0 - minScoreRate) * Math.Exp((1 - acceptedCount) / difficulty)));
     }
 
     readonly record struct SolveSnapshot(
