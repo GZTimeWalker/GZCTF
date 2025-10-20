@@ -1,14 +1,12 @@
 ﻿using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
 public class GameChallengeRepository(
     AppDbContext context,
-    IBlobRepository blobRepository,
-    CacheHelper cacheHelper
+    IBlobRepository blobRepository
 ) : RepositoryBase(context),
     IGameChallengeRepository
 {
@@ -103,12 +101,6 @@ public class GameChallengeRepository(
         }
 
         return TaskStatus.Success;
-    }
-
-    public async Task<bool> RecalculateAcceptedCount(Game game, CancellationToken token = default)
-    {
-        await cacheHelper.FlushScoreboardCache(game.Id, token);
-        return true;
     }
 
     public async Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,

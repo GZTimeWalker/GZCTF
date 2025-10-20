@@ -22,6 +22,7 @@
         "delete": "Supprimer",
         "save": "Enregistrer le modèle"
       },
+      "flush_scoreboard": "Actualiser le classement",
       "hint": {
         "add": "Ajouter un indice"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "Créer",
         "destroy": "Détruire"
-      },
-      "update_accept_count": "Mettre à jour le compteur AC"
+      }
     },
     "divisions": {
       "edit": "Modifier la division",
@@ -476,7 +476,6 @@
         "updated": "Division mise à jour"
       },
       "info": {
-        "accept_count_updated": "Compteur AC mis à jour",
         "deleted": "Jeu supprimé",
         "info_updated": "Jeu mis à jour",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "Affiche téléchargée avec succès",
           "uploading": "Téléchargement de l'affiche..."
         },
-        "public_key_copied": "Clé publique copiée dans le presse-papiers"
+        "public_key_copied": "Clé publique copiée dans le presse-papiers",
+        "scoreboard_flushed": "Cache du classement actualisé"
       },
       "instances": {
         "created": "Instance créée",

@@ -22,6 +22,7 @@
         "delete": "Xóa",
         "save": "Lưu Bản mẫu"
       },
+      "flush_scoreboard": "Làm mới bảng điểm",
       "hint": {
         "add": "Thêm gợi ý"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "Tạo",
         "destroy": "Phá hủy"
-      },
-      "update_accept_count": "Cập nhật bộ đếm AC"
+      }
     },
     "divisions": {
       "edit": "Chỉnh sửa Bảng",
@@ -476,7 +476,6 @@
         "updated": "Bảng đã được cập nhật."
       },
       "info": {
-        "accept_count_updated": "AC counter đã được cập nhật.",
         "deleted": "Trò chơi đã bị xóa.",
         "info_updated": "Trò chơi đã được cập nhật.",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "Poster đã được tải lên thành công.",
           "uploading": "Đang tải lên Poster..."
         },
-        "public_key_copied": "Public key đã được sao chép vào clipboard."
+        "public_key_copied": "Public key đã được sao chép vào clipboard.",
+        "scoreboard_flushed": "Bộ nhớ đệm bảng điểm đã được làm mới."
       },
       "instances": {
         "created": "Instance đã được tạo.",

@@ -3835,6 +3835,21 @@ export class Api<
       }),
 
     /**
+     * No description
+     *
+     * @tags Edit
+     * @name EditFlushScoreboardCache
+     * @summary Flush Scoreboard Cache
+     * @request POST:/api/edit/games/{id}/scoreboard/flush
+     */
+    editFlushScoreboardCache: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/scoreboard/flush`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
      * @description Retrieve all divisions for a game; requires administrator privileges
      *
      * @tags Edit
@@ -4298,24 +4313,6 @@ export class Api<
         body: data,
         type: ContentType.Json,
         format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Updating the accepted count for all game challenges requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditUpdateGameChallengesAcceptedCount
-     * @summary Update AC Counter for Challenges
-     * @request POST:/api/edit/games/{id}/challenges/updateaccepted
-     */
-    editUpdateGameChallengesAcceptedCount: (
-      id: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/updateaccepted`,
-        method: "POST",
         ...params,
       }),
 

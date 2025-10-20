@@ -602,28 +602,17 @@ public class EditController(
         Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
 
     /// <summary>
-    /// Update AC Counter for Challenges
+    /// Flush Scoreboard Cache
     /// </summary>
-    /// <remarks>
-    /// Updating the accepted count for all game challenges requires administrator privileges
-    /// </remarks>
     /// <param name="id">Game ID</param>
     /// <param name="token"></param>
-    /// <response code="200">Successfully updated accepted counts</response>
-    [HttpPost("Games/{id:int}/Challenges/UpdateAccepted")]
+    /// <response code="200"></response>
+    [HttpPost("Games/{id:int}/Scoreboard/Flush")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateGameChallengesAcceptedCount([FromRoute] int id, CancellationToken token)
+    public async Task<IActionResult> FlushScoreboardCache([FromRoute] int id, CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
-        if (await challengeRepository.RecalculateAcceptedCount(game, token))
-            return Ok();
-
-        return BadRequest();
+        await cacheHelper.FlushScoreboardCache(id, token);
+        return Ok();
     }
 
     /// <summary>

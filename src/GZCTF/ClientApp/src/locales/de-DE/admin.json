@@ -22,6 +22,7 @@
         "delete": "Löschen",
         "save": "Vorlage speichern"
       },
+      "flush_scoreboard": "Scoreboard aktualisieren",
       "hint": {
         "add": "Hinweis hinzufügen"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "Erstellen",
         "destroy": "Zerstören"
-      },
-      "update_accept_count": "AC-Zähler aktualisieren"
+      }
     },
     "divisions": {
       "edit": "Abteilung bearbeiten",
@@ -476,7 +476,6 @@
         "updated": "Division aktualisiert"
       },
       "info": {
-        "accept_count_updated": "AC-Zähler aktualisiert",
         "deleted": "Spiel gelöscht",
         "info_updated": "Spiel aktualisiert",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "Poster erfolgreich hochgeladen",
           "uploading": "Poster wird hochgeladen..."
         },
-        "public_key_copied": "Öffentlicher Schlüssel in die Zwischenablage kopiert"
+        "public_key_copied": "Öffentlicher Schlüssel in die Zwischenablage kopiert",
+        "scoreboard_flushed": "Scoreboard-Cache geleert"
       },
       "instances": {
         "created": "Instanz erstellt",

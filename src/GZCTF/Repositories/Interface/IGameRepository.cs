@@ -146,7 +146,7 @@ public interface IGameRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default);
-
+    
     /// <summary>
     /// Try to get scoreboard by game id, return null if not exists
     /// </summary>
