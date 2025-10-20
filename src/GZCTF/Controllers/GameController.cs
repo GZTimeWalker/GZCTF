@@ -960,7 +960,7 @@ public class GameController(
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-            if (instance.Challenge.DeadlineUtc < submitTime)
+            if (instance.Challenge.DeadlineUtc is not null && submitTime < instance.Challenge.DeadlineUtc)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_DeadlinePassed)]));
 
             var permission =
