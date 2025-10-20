@@ -11,7 +11,6 @@ import {
   Table,
   Text,
   Title,
-  Input,
 } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC, useMemo } from 'react'
@@ -22,9 +21,9 @@ import { TeamRadarMap, TeamRadarMapProps } from '@Components/charts/TeamRadarMap
 import { useLanguage } from '@Utils/I18n'
 import { BloodsTypes, BonusLabel } from '@Utils/Shared'
 import { ChallengeInfo, ScoreboardItem, ScoreboardModel, SubmissionType } from '@Api'
-import inputClasses from '@Styles/Input.module.css'
 import modalClasses from '@Styles/ScoreboardItemModal.module.css'
 import tableClasses from '@Styles/Table.module.css'
+import { ScrollingText } from './ScrollingText'
 
 export interface ScoreboardItemModalProps extends ModalProps {
   item?: ScoreboardItem | null
@@ -205,21 +204,7 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                         <Table.Tr key={chal.id}>
                           <Table.Td fw="bold">{chal.userName}</Table.Td>
                           <Table.Td>
-                            <Input
-                              variant="unstyled"
-                              value={info.title}
-                              readOnly
-                              size="sm"
-                              miw="14rem"
-                              maw="20rem"
-                              __vars={{
-                                '--input-height': 'var(--mantine-line-height-sm)',
-                              }}
-                              classNames={{
-                                input: inputClasses.input,
-                                wrapper: inputClasses.wrapper,
-                              }}
-                            />
+                            <ScrollingText text={info.title} miw="14rem" maw="20rem" />
                           </Table.Td>
                           <Table.Td fz="sm">{info.category}</Table.Td>
                           <Table.Td ff="monospace" fz="sm">

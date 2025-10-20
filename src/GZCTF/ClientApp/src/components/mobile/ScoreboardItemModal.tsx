@@ -3,7 +3,6 @@ import {
   Badge,
   Center,
   Group,
-  Input,
   LoadingOverlay,
   Modal,
   Progress,
@@ -18,10 +17,10 @@ import { FC, useMemo } from 'react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScoreboardItemModalProps } from '@Components/ScoreboardItemModal'
+import { ScrollingText } from '@Components/ScrollingText'
 import { TeamRadarMap } from '@Components/charts/TeamRadarMap'
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeInfo } from '@Api'
-import inputClasses from '@Styles/Input.module.css'
 import modalClasses from '@Styles/ScoreboardItemModal.module.css'
 import tableClasses from '@Styles/Table.module.css'
 
@@ -156,19 +155,7 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.mem
                     return (
                       <Table.Tr key={chal.id} ff="monospace">
                         <Table.Td>
-                          <Input
-                            variant="unstyled"
-                            value={info?.title}
-                            readOnly
-                            size="sm"
-                            __vars={{
-                              '--input-height': 'var(--mantine-line-height-sm)',
-                            }}
-                            classNames={{
-                              input: inputClasses.input,
-                              wrapper: inputClasses.wrapper,
-                            }}
-                          />
+                          <ScrollingText text={info?.title ?? ''} />
                         </Table.Td>
                         <Table.Td>{chal.score}</Table.Td>
                         <Table.Td>{dayjs(chal.time).locale(locale).format('SL HH:mm')}</Table.Td>

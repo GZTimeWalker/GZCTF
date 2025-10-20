@@ -16,7 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  cursor: pointer;
+  cursor: inherit;
   min-width: 0;
 
   .text {
