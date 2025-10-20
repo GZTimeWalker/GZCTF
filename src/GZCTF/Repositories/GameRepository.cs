@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using GZCTF.Models.Data;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -267,7 +268,9 @@ public class GameRepository(
         Dictionary<int, ScoreboardItem> items; // participant id -> scoreboard item
         Dictionary<int, ChallengeInfo> challenges;
         Dictionary<int, DivisionItem> divisions;
-        List<ChallengeItem> submissions;
+        Dictionary<int, (int OriginalScore, double MinScoreRate, double Difficulty)> challengeMetas;
+        List<SolveSnapshot> solveSnapshots;
+        List<ScoreboardSolve> solves;
 
         // 0. Begin transaction
         await using (var trans = await Context.Database.BeginTransactionAsync(token))
@@ -320,59 +323,108 @@ public class GameRepository(
                     // update: only store accepted challenges
                 }).ToDictionaryAsync(i => i.ParticipantId, token);
 
-            // 3. Fetch all challenges from GameChallenges, into ChallengeInfo
-            challenges = await Context.GameChallenges
+            // 3. Fetch all challenges from GameChallenges, capture scoring metadata
+            var challengeRecords = await Context.GameChallenges
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
                 .Where(c => c.GameId == game.Id && c.IsEnabled)
                 .OrderBy(c => c.Category)
                 .ThenBy(c => c.Title)
-                .Select(c => new ChallengeInfo
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Title,
+                    c.Category,
+                    c.OriginalScore,
+                    c.MinScoreRate,
+                    c.Difficulty,
+                    c.DeadlineUtc,
+                    c.DisableBloodBonus
+                })
+                .ToListAsync(token);
+
+            challengeMetas = challengeRecords.ToDictionary(
+                c => c.Id,
+                c => (c.OriginalScore, c.MinScoreRate, c.Difficulty));
+
+            challenges = challengeRecords.ToDictionary(
+                c => c.Id,
+                c => new ChallengeInfo
                 {
                     Id = c.Id,
                     Title = c.Title,
                     Category = c.Category,
-                    Score = c.CurrentScore,
-                    SolvedCount = c.AcceptedCount,
+                    Score = c.OriginalScore,
+                    SolvedCount = 0,
                     DeadlineUtc = c.DeadlineUtc,
                     DisableBloodBonus = c.DisableBloodBonus
-                    // pending fields: Bloods
-                }).ToDictionaryAsync(c => c.Id, token);
+                });
 
-            // 4. fetch all needed submissions into a list of ChallengeItem
-            //    **take only the first accepted submission for each challenge & team**
-            submissions = await Context.Submissions
+            var challengeIds = challengeRecords.Select(c => c.Id).ToArray();
+
+            // 4. fetch all recorded first solves for this game
+            solveSnapshots = await Context.FirstSolves
                 .AsNoTracking()
-                .IgnoreAutoIncludes()
-                .Include(s => s.User)
-                .Include(s => s.GameChallenge)
-                .Where(s => s.Status == AnswerResult.Accepted
-                            && s.GameId == game.Id
-                            && s.GameChallenge != null
-                            && s.GameChallenge.IsEnabled
-                            && s.SubmitTimeUtc < game.EndTimeUtc)
-                .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
-                .Where(g => g.Any())
-                .Select(g =>
-                    g.OrderBy(s => s.SubmitTimeUtc)
-                        .Take(1)
-                        .Select(s =>
-                            new ChallengeItem
-                            {
-                                Id = s.ChallengeId,
-                                UserName = s.UserName,
-                                SubmitTimeUtc = s.SubmitTimeUtc,
-                                ParticipantId = s.ParticipationId,
-                                // pending fields
-                                Score = 0,
-                                Type = SubmissionType.Normal
-                            }
-                        )
-                        .First()
-                )
+                .Join(Context.Participations.AsNoTracking(),
+                    fs => fs.ParticipationId,
+                    participation => participation.Id,
+                    (fs, participation) => new { fs, participation })
+                .Where(x => x.participation.GameId == game.Id &&
+                            x.participation.Status == ParticipationStatus.Accepted &&
+                            challengeIds.Contains(x.fs.ChallengeId))
+                .Join(Context.Submissions.AsNoTracking().IgnoreAutoIncludes().Include(s => s.User),
+                    x => x.fs.SubmissionId,
+                    submission => submission.Id,
+                    (x, submission) => new SolveSnapshot(
+                        x.fs.ChallengeId,
+                        x.fs.ParticipationId,
+                        submission.SubmitTimeUtc,
+                        submission.UserName))
                 .ToListAsync(token);
 
             await trans.CommitAsync(token);
+        }
+
+        // Prepare solve metadata for scoring and statistics
+        Dictionary<int, int> challengeAcceptedCounts = [];
+        solves = [];
+
+        foreach (var snapshot in solveSnapshots)
+        {
+            if (!items.TryGetValue(snapshot.ParticipantId, out var scoreboardItem))
+                continue;
+
+            var division = scoreboardItem.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
+            var withinWindow = snapshot.SubmitTimeUtc >= game.StartTimeUtc &&
+                               snapshot.SubmitTimeUtc < game.EndTimeUtc;
+
+            var scoreEligible = withinWindow &&
+                                CheckDivisionPermission(division, GamePermission.GetScore, snapshot.ChallengeId);
+
+            if (scoreEligible)
+            {
+                challengeAcceptedCounts[snapshot.ChallengeId] =
+                    challengeAcceptedCounts.GetValueOrDefault(snapshot.ChallengeId) + 1;
+            }
+
+            var bloodEligible = withinWindow &&
+                                CheckDivisionPermission(division, GamePermission.GetBlood, snapshot.ChallengeId);
+
+            solves.Add(new ScoreboardSolve(
+                snapshot.ChallengeId,
+                snapshot.ParticipantId,
+                snapshot.SubmitTimeUtc,
+                snapshot.UserName,
+                scoreEligible,
+                bloodEligible));
+        }
+
+        foreach (var (challengeId, info) in challenges)
+        {
+            var meta = challengeMetas[challengeId];
+            var solvedCount = challengeAcceptedCounts.GetValueOrDefault(challengeId);
+            info.SolvedCount = solvedCount;
+            info.Score = CalculateChallengeScore(meta.OriginalScore, meta.MinScoreRate, meta.Difficulty, solvedCount);
         }
 
         // 5. sort challenge items by submit time, and update the Score and Type fields
@@ -385,19 +437,30 @@ public class GameRepository(
             game.BloodBonus.ThirdBloodFactor
         ];
 
-        foreach (var item in submissions.OrderBy(s => s.SubmitTimeUtc))
+        foreach (var solve in solves.OrderBy(s => s.SubmitTimeUtc))
         {
             // skip if the team is not in the scoreboard
-            if (!items.TryGetValue(item.ParticipantId, out var scoreboardItem))
+            if (!items.TryGetValue(solve.ParticipantId, out var scoreboardItem))
                 continue;
 
-            var challenge = challenges[item.Id];
+            if (!challenges.TryGetValue(solve.ChallengeId, out var challenge))
+                continue;
 
             DivisionItem? division = scoreboardItem.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
 
+            var item = new ChallengeItem
+            {
+                Id = solve.ChallengeId,
+                ParticipantId = solve.ParticipantId,
+                SubmitTimeUtc = solve.SubmitTimeUtc,
+                UserName = solve.UserName,
+                Type = SubmissionType.Normal,
+                Score = 0
+            };
+
             // 5.1. generate bloods
-            if (challenge is { DisableBloodBonus: false, Bloods.Count: < 3 } &&
-                CheckDivisionPermission(division, GamePermission.GetBlood, item.Id))
+            if (solve.BloodEligible && challenge is { DisableBloodBonus: false, Bloods.Count: < 3 } &&
+                CheckDivisionPermission(division, GamePermission.GetScore, solve.ChallengeId))
             {
                 item.Type = challenge.Bloods.Count switch
                 {
@@ -406,6 +469,7 @@ public class GameRepository(
                     2 => SubmissionType.ThirdBlood,
                     _ => throw new UnreachableException()
                 };
+
                 challenge.Bloods.Add(new Blood
                 {
                     Id = scoreboardItem.Id,
@@ -416,7 +480,7 @@ public class GameRepository(
             }
 
             // 5.2. update score
-            if (CheckDivisionPermission(division, GamePermission.GetScore, item.Id))
+            if (solve.ScoreEligible)
             {
                 item.Score = noBonus
                     ? item.Type switch
@@ -524,6 +588,30 @@ public class GameRepository(
             BloodBonusValue = game.BloodBonus.Val
         };
     }
+
+    static int CalculateChallengeScore(int originalScore, double minScoreRate, double difficulty, int acceptedCount)
+    {
+        if (acceptedCount <= 1)
+            return originalScore;
+
+        return (int)Math.Floor(
+            originalScore *
+            (minScoreRate + (1.0 - minScoreRate) * Math.Exp((1 - acceptedCount) / difficulty)));
+    }
+
+    readonly record struct SolveSnapshot(
+        int ChallengeId,
+        int ParticipantId,
+        DateTimeOffset SubmitTimeUtc,
+        string? UserName);
+
+    readonly record struct ScoreboardSolve(
+        int ChallengeId,
+        int ParticipantId,
+        DateTimeOffset SubmitTimeUtc,
+        string? UserName,
+        bool ScoreEligible,
+        bool BloodEligible);
 
     static bool CheckDivisionPermission(DivisionItem? division, GamePermission permission, int? challengeId = null)
     {

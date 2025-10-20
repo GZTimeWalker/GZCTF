@@ -56,6 +56,11 @@ public class Participation
     public List<Submission> Submissions { get; set; } = [];
 
     /// <summary>
+    /// First solves recorded for this participation.
+    /// </summary>
+    public List<FirstSolve> FirstSolves { get; set; } = [];
+
+    /// <summary>
     /// Game ID
     /// </summary>
     [Required]

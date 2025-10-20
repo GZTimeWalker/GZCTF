@@ -34,6 +34,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<Participation> Participations { get; set; } = null!;
     public DbSet<GameInstance> GameInstances { get; set; } = null!;
     public DbSet<GameChallenge> GameChallenges { get; set; } = null!;
+    public DbSet<FirstSolve> FirstSolves { get; set; } = null!;
     public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = null!;
     public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = null!;
     public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
@@ -155,6 +156,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId);
 
+            entity.HasMany(e => e.FirstSolves)
+                .WithOne(e => e.Participation)
+                .HasForeignKey(e => e.ParticipationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasMany(e => e.Members)
                 .WithOne(e => e.Participation)
                 .HasForeignKey(e => e.ParticipationId);
@@ -245,6 +251,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.GameChallenge)
                 .HasForeignKey(e => e.ChallengeId);
+
+            entity.HasMany(e => e.FirstSolves)
+                .WithOne(e => e.Challenge)
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Attachment)
                 .WithMany()
@@ -385,6 +396,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasForeignKey(e => e.SubmissionId);
 
             entity.HasKey(e => e.SubmissionId);
+        });
+
+        builder.Entity<FirstSolve>(entity =>
+        {
+            entity.HasKey(e => new { e.ParticipationId, e.ChallengeId });
+
+            entity.HasOne(e => e.Submission)
+                .WithMany()
+                .HasForeignKey(e => e.SubmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<UserParticipation>(entity =>

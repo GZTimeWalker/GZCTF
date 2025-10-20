@@ -74,6 +74,10 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     [divisionId, game?.divisions]
   )
 
+  const teamsData = useMemo(() => {
+    return teams?.map((t) => ({ label: t.name!, value: t.id!.toString() })) ?? []
+  }, [teams])
+
   const joinedTeam = team ? gameCheckInfo.get(team) : null
   const joinedDivision = joinedTeam?.div ? game?.divisions?.find((d) => d.id === joinedTeam?.div) : null
   const hasDivision = divisionOptions.length > 0 || joinedTeam?.div
@@ -144,7 +148,7 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
           required
           label={t('game.content.join.team.label')}
           description={t('game.content.join.team.description')}
-          data={teams?.map((t) => ({ label: t.name!, value: t.id!.toString() })) ?? []}
+          data={teamsData}
           disabled={disabled}
           value={team}
           onChange={(e) => setTeam(e ?? '')}

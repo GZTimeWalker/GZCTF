@@ -107,7 +107,7 @@ public class OpenApiDateTimeOffsetToUIntMapper : ITypeMapper
 
 public class OpenApiIPAddressToStringMapper : ITypeMapper
 {
-    public void GenerateSchema(JsonSchema schema, TypeMapperContext context) => 
+    public void GenerateSchema(JsonSchema schema, TypeMapperContext context) =>
         schema.Type = JsonObjectType.String;
 
     public Type MappedType => typeof(IPAddress);

@@ -70,4 +70,9 @@ public interface ISubmissionRepository : IRepository
     /// <returns></returns>
     public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default);
+
+    /// <summary>
+    /// Count submissions for a specific participation and challenge.
+    /// </summary>
+    public Task<int> CountSubmissions(int participationId, int challengeId, CancellationToken token = default);
 }

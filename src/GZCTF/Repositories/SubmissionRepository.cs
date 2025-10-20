@@ -21,9 +21,13 @@ public class SubmissionRepository(
 
     public Task<Submission?> GetSubmission(int gameId, int challengeId, Guid userId, int submitId,
         CancellationToken token = default)
-        => Context.Submissions.Where(s =>
+        => Context.Submissions.IgnoreAutoIncludes().Where(s =>
                 s.Id == submitId && s.UserId == userId && s.GameId == gameId && s.ChallengeId == challengeId)
             .SingleOrDefaultAsync(token);
+
+    public Task<int> CountSubmissions(int participationId, int challengeId, CancellationToken token = default) =>
+        Context.Submissions.CountAsync(s =>
+            s.ParticipationId == participationId && s.ChallengeId == challengeId, token);
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default) =>
         Context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)

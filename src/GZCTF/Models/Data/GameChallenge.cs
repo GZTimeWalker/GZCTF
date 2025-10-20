@@ -41,12 +41,18 @@ public class GameChallenge : Challenge
     [NotMapped]
     public int CurrentScore
     {
-        get => AcceptedCount <= 1
-            ? OriginalScore
-            : (int)Math.Floor(
+        get
+        {
+            var solveCount = FirstSolves?.Count ?? 0;
+
+            if (solveCount <= 1)
+                return OriginalScore;
+
+            return (int)Math.Floor(
                 OriginalScore * (MinScoreRate +
-                                 (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
+                                 (1.0 - MinScoreRate) * Math.Exp((1 - solveCount) / Difficulty)
                 ));
+        }
     }
 
     internal void Update(ChallengeUpdateModel model)
@@ -72,7 +78,7 @@ public class GameChallenge : Challenge
 
         // only set DeadlineUtc to null when pass DateTimeOffset.MinValue (but not null)
         if (model.DeadlineUtc is { } time)
-            DeadlineUtc = time == DateTimeOffset.MinValue ? null : time;
+            DeadlineUtc = time.ToUnixTimeSeconds() == 0 ? null : time;
 
         // only set FlagTemplate to null when pass an empty string (but not null)
         if (model.FlagTemplate is { } template)
@@ -103,6 +109,11 @@ public class GameChallenge : Challenge
     /// Configurations for divisions
     /// </summary>
     public HashSet<DivisionChallengeConfig> DivisionConfigs { get; set; } = [];
+
+    /// <summary>
+    /// First solves recorded for this challenge.
+    /// </summary>
+    public List<FirstSolve>? FirstSolves { get; set; } = [];
 
     /// <summary>
     /// Game ID

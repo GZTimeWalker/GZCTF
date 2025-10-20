@@ -226,12 +226,11 @@ public class ExerciseInstanceRepository(
 
     internal async Task MarkSolved(ExerciseInstance instance, CancellationToken token = default)
     {
-        if (instance.IsSolved)
+        if (instance.SolveTimeUtc > DateTimeOffset.FromUnixTimeSeconds(0))
             return;
 
         await using var transaction = await Context.Database.BeginTransactionAsync(token);
 
-        instance.IsSolved = true;
         instance.SolveTimeUtc = DateTimeOffset.UtcNow;
         await SaveAsync(token);
 
@@ -260,7 +259,8 @@ public class ExerciseInstanceRepository(
                 Context.ExerciseDependencies.All(dep =>
                     dep.TargetId == chal.Id &&
                     Context.ExerciseInstances.Any(e =>
-                        e.IsSolved && e.ExerciseId == dep.SourceId
+                        e.SolveTimeUtc > DateTimeOffset.FromUnixTimeSeconds(0) &&
+                        e.ExerciseId == dep.SourceId
                     ))).Select(e => e.Id).AsAsyncEnumerable()
             .WithCancellation(token);
 }
