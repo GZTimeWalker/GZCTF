@@ -116,6 +116,7 @@
       
         <PropertyGroup>
             <NodePackageManager>pnpm</NodePackageManager>
+            <NodePackageInstallArgs></NodePackageInstallArgs>
         </PropertyGroup>
 
         <!-- Check if pnpm is installed -->
@@ -126,6 +127,7 @@
         <!-- Fallback to npm if pnpm is not installed -->
         <PropertyGroup Condition="'$(ErrorCode)' != '0'">
             <NodePackageManager>npm</NodePackageManager>
+            <NodePackageInstallArgs>--legacy-peer-deps</NodePackageInstallArgs>
         </PropertyGroup>
         <Message Condition="'$(NodePackageManager)' == 'npm'" Importance="high" Text="Falling back to npm for dependency management. For better performance, consider installing pnpm from https://pnpm.io/installation/."/>
     </Target>
@@ -137,12 +139,12 @@
         <Error Condition="'$(ErrorCode)' != '0'" Text="pnpm is required to build and run this project. To continue, please install pnpm from https://pnpm.io/installation/, and then restart your command prompt or IDE."/>
       
         <Message Importance="high" Text="Restoring dependencies using '$(NodePackageManager)'. This may take several minutes..."/>
-        <Exec WorkingDirectory="$(SpaRoot)" Command="$(NodePackageManager) install"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="$(NodePackageManager) install $(NodePackageInstallArgs)"/>
     </Target>
 
     <Target Name="PublishFrontend" AfterTargets="ComputeFilesToPublish" DependsOnTargets="DetectNodeEnv">
         <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-        <Exec WorkingDirectory="$(SpaRoot)" Command="$(NodePackageManager) install"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="$(NodePackageManager) install $(NodePackageInstallArgs)"/>
         <Exec WorkingDirectory="$(SpaRoot)" Command="$(NodePackageManager) run build"/>
 
         <!-- Include the newly-built files in the publish output -->
