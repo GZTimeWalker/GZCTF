@@ -543,3 +543,11 @@ export const showErrorMsg = (err: any, t: (key: string) => string) => {
   const clientError = tryGetClientError(err, t)
   showErrorNotification(clientError.title, clientError.message)
 }
+
+export const getInputNumber = (value: string | number, float?: boolean): number => {
+  if (typeof value === 'number') {
+    return value
+  }
+
+  return float ? parseFloat(value) : parseInt(value)
+}

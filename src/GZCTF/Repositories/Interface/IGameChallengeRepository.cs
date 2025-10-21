@@ -91,12 +91,4 @@ public interface IGameChallengeRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<TaskStatus> RemoveFlag(GameChallenge challenge, int flagId, CancellationToken token = default);
-
-    /// <summary>
-    /// Recalculate the accepted count for all challenges in a game
-    /// </summary>
-    /// <param name="game"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public Task<bool> RecalculateAcceptedCount(Game game, CancellationToken token = default);
 }

@@ -62,12 +62,12 @@ public enum TaskStatus : sbyte
     /// System is unhealthy
     /// </summary>
     Unhealthy = -3,
-    
+
     /// <summary>
     /// System is in a degraded state
     /// </summary>
     Degraded = -2,
-    
+
     /// <summary>
     /// Task is in progress
     /// </summary>

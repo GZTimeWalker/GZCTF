@@ -52,19 +52,7 @@ public class Challenge
     /// <summary>
     /// The deadline of the challenge, null means no deadline
     /// </summary>
-    public DateTimeOffset? DeadlineUtc { get; set; }
-
-    /// <summary>
-    /// Number of people who solved the challenge
-    /// </summary>
-    [Required]
-    public int AcceptedCount { get; set; }
-
-    /// <summary>
-    /// Number of submissions
-    /// </summary>
-    [Required]
-    public int SubmissionCount { get; set; }
+    public DateTimeOffset? DeadlineUtc { get; set; } = null;
 
     /// <summary>
     /// Maximum number of submissions allowed per team (0 = no limit)

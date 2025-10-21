@@ -78,9 +78,18 @@ public partial class ScoreboardModel
         set
         {
             _challenges = value;
-            ChallengeCount = value.Values.Select(x => x.Count()).Sum();
+            ChallengeMap = value.Values.SelectMany(x => x)
+                .ToDictionary(x => x.Id, x => x);
+            ChallengeCount = ChallengeMap.Count;
         }
     }
+
+    /// <summary>
+    /// The map of challenge ID to challenge information
+    /// </summary>
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public Dictionary<int, ChallengeInfo> ChallengeMap { get; private set; } = null!;
 
     /// <summary>
     /// Number of challenges

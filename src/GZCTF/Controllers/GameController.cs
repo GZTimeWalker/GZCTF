@@ -909,7 +909,13 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                 StatusCodes.Status404NotFound));
 
-        return Ok(ChallengeDetailModel.FromInstance(instance));
+        var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
+        ChallengeInfo? scoreboardChallenge =
+            scoreboard.ChallengeMap.TryGetValue(challengeId, out var challenge) ? challenge : null;
+
+        var attempts = await submissionRepository.CountSubmissions(context.Participation!.Id, challengeId, token);
+
+        return Ok(ChallengeDetailModel.FromInstance(instance, attempts, scoreboardChallenge));
     }
 
     /// <summary>
@@ -960,7 +966,7 @@ public class GameController(
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-            if (instance.Challenge.DeadlineUtc is not null && submitTime < instance.Challenge.DeadlineUtc)
+            if (instance.Challenge.DeadlineUtc is { } deadline && submitTime > deadline)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_DeadlinePassed)]));
 
             var permission =
@@ -970,9 +976,10 @@ public class GameController(
                 return BadRequest(
                     new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionNoPermission)]));
 
-            instance.SubmissionCount++;
+            var currentAttempts =
+                await submissionRepository.CountSubmissions(context.Participation!.Id, challengeId, token);
 
-            if (instance.Challenge.SubmissionLimit > 0 && instance.SubmissionCount > instance.Challenge.SubmissionLimit)
+            if (instance.Challenge.SubmissionLimit > 0 && currentAttempts >= instance.Challenge.SubmissionLimit)
             {
                 return BadRequest(
                     new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));

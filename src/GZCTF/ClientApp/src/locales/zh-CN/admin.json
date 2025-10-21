@@ -22,6 +22,7 @@
         "delete": "删除 flag",
         "save": "保存 flag 模版"
       },
+      "flush_scoreboard": "刷新积分榜",
       "hint": {
         "add": "添加提示"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "创建测试容器",
         "destroy": "销毁测试容器"
-      },
-      "update_accept_count": "更新解题计数"
+      }
     },
     "divisions": {
       "edit": "编辑分组",
@@ -476,7 +476,6 @@
         "updated": "分组已更新"
       },
       "info": {
-        "accept_count_updated": "解题数量已刷新",
         "deleted": "比赛已删除",
         "info_updated": "比赛信息已更新",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "海报上传成功",
           "uploading": "正在上传海报..."
         },
-        "public_key_copied": "公钥已复制到剪贴板"
+        "public_key_copied": "公钥已复制到剪贴板",
+        "scoreboard_flushed": "积分榜缓存已刷新"
       },
       "instances": {
         "created": "实例已创建",

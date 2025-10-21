@@ -29,7 +29,7 @@ import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { ScoreFunc } from '@Components/charts/ScoreFunc'
-import { showErrorMsg } from '@Utils/Shared'
+import { getInputNumber, showErrorMsg } from '@Utils/Shared'
 import {
   ChallengeCategoryItem,
   useChallengeCategoryLabelMap,
@@ -341,11 +341,9 @@ const GameChallengeEdit: FC = () => {
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo?.submissionLimit || undefined}
                 onChange={(e) => {
-                  if (typeof e === 'number') {
-                    setChallengeInfo({ ...challengeInfo, submissionLimit: e })
-                  } else if (e === '') {
-                    setChallengeInfo({ ...challengeInfo, submissionLimit: 0 })
-                  }
+                  const number = getInputNumber(e)
+                  if (isNaN(number)) return
+                  setChallengeInfo({ ...challengeInfo, submissionLimit: number })
                 }}
               />
               <DateTimePicker
@@ -391,7 +389,11 @@ const GameChallengeEdit: FC = () => {
                   stepHoldDelay={500}
                   stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                   value={challengeInfo?.originalScore ?? 500}
-                  onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, originalScore: e })}
+                  onChange={(e) => {
+                    const number = getInputNumber(e)
+                    if (isNaN(number)) return
+                    setChallengeInfo({ ...challengeInfo, originalScore: number })
+                  }}
                 />
                 <NumberInput
                   label={t('admin.content.games.challenges.difficulty')}
@@ -404,7 +406,11 @@ const GameChallengeEdit: FC = () => {
                   value={challengeInfo?.difficulty ?? 100}
                   stepHoldDelay={500}
                   stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                  onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, difficulty: e })}
+                  onChange={(e) => {
+                    const number = getInputNumber(e, true)
+                    if (isNaN(number)) return
+                    setChallengeInfo({ ...challengeInfo, difficulty: number })
+                  }}
                 />
               </Group>
               <Input.Wrapper label={t('admin.content.games.challenges.min_score_radio.label')} h="3.8rem" required>
@@ -500,9 +506,11 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.containerExposePort ?? 1}
-                onChange={(e) =>
-                  typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, containerExposePort: e })
-                }
+                onChange={(e) => {
+                  const number = getInputNumber(e)
+                  if (isNaN(number)) return
+                  setChallengeInfo({ ...challengeInfo, containerExposePort: number })
+                }}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -516,7 +524,11 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.cpuCount ?? 1}
-                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, cpuCount: e })}
+                onChange={(e) => {
+                  const number = getInputNumber(e)
+                  if (isNaN(number)) return
+                  setChallengeInfo({ ...challengeInfo, cpuCount: number })
+                }}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -530,7 +542,11 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.memoryLimit ?? 32}
-                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, memoryLimit: e })}
+                onChange={(e) => {
+                  const number = getInputNumber(e)
+                  if (isNaN(number)) return
+                  setChallengeInfo({ ...challengeInfo, memoryLimit: number })
+                }}
               />
             </Grid.Col>
             <Grid.Col span={2}>
@@ -544,7 +560,11 @@ const GameChallengeEdit: FC = () => {
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
                 value={challengeInfo.storageLimit ?? 128}
-                onChange={(e) => typeof e !== 'string' && setChallengeInfo({ ...challengeInfo, storageLimit: e })}
+                onChange={(e) => {
+                  const number = getInputNumber(e)
+                  if (isNaN(number)) return
+                  setChallengeInfo({ ...challengeInfo, storageLimit: number })
+                }}
               />
             </Grid.Col>
             <Grid.Col span={4} display="flex" className={misc.alignCenter}>

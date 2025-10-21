@@ -39,14 +39,22 @@ public class GameChallenge : Challenge
     /// Current score of the challenge
     /// </summary>
     [NotMapped]
-    public int CurrentScore
+    public int CurrentScore => CalculateChallengeScore(
+        OriginalScore,
+        MinScoreRate,
+        Difficulty,
+        FirstSolves?.Count ?? 0);
+
+
+    internal static int CalculateChallengeScore(int originalScore, double minScoreRate, double difficulty,
+        int acceptedCount)
     {
-        get => AcceptedCount <= 1
-            ? OriginalScore
-            : (int)Math.Floor(
-                OriginalScore * (MinScoreRate +
-                                 (1.0 - MinScoreRate) * Math.Exp((1 - AcceptedCount) / Difficulty)
-                ));
+        if (acceptedCount <= 1)
+            return originalScore;
+
+        return (int)Math.Floor(
+            originalScore *
+            (minScoreRate + (1.0 - minScoreRate) * Math.Exp((1 - acceptedCount) / difficulty)));
     }
 
     internal void Update(ChallengeUpdateModel model)
@@ -72,7 +80,7 @@ public class GameChallenge : Challenge
 
         // only set DeadlineUtc to null when pass DateTimeOffset.MinValue (but not null)
         if (model.DeadlineUtc is { } time)
-            DeadlineUtc = time == DateTimeOffset.MinValue ? null : time;
+            DeadlineUtc = time.ToUnixTimeSeconds() == 0 ? null : time;
 
         // only set FlagTemplate to null when pass an empty string (but not null)
         if (model.FlagTemplate is { } template)
@@ -103,6 +111,11 @@ public class GameChallenge : Challenge
     /// Configurations for divisions
     /// </summary>
     public HashSet<DivisionChallengeConfig> DivisionConfigs { get; set; } = [];
+
+    /// <summary>
+    /// First solves recorded for this challenge.
+    /// </summary>
+    public List<FirstSolve>? FirstSolves { get; set; } = [];
 
     /// <summary>
     /// Game ID

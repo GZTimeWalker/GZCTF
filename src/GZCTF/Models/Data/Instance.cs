@@ -7,19 +7,9 @@ namespace GZCTF.Models.Data;
 public class Instance
 {
     /// <summary>
-    /// Whether the challenge is solved
-    /// </summary>
-    public bool IsSolved { get; set; }
-
-    /// <summary>
     /// Whether the challenge is loaded
     /// </summary>
     public bool IsLoaded { get; set; }
-
-    /// <summary>
-    /// Number of submissions for this instance
-    /// </summary>
-    public int SubmissionCount { get; set; }
 
     /// <summary>
     /// Concurrency token

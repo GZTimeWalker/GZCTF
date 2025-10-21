@@ -62,19 +62,20 @@ public class ChallengeDetailModel
     /// </summary>
     public DateTimeOffset? Deadline { get; set; }
 
-    internal static ChallengeDetailModel FromInstance(GameInstance gameInstance) =>
+    internal static ChallengeDetailModel FromInstance(GameInstance gameInstance, int attemptCount,
+        ChallengeInfo? scoreboardChallenge = null) =>
         new()
         {
             Id = gameInstance.Challenge.Id,
             Content = gameInstance.Challenge.Content,
             Hints = gameInstance.Challenge.Hints,
-            Score = gameInstance.Challenge.CurrentScore,
+            Score = scoreboardChallenge?.Score ?? gameInstance.Challenge.CurrentScore,
             Category = gameInstance.Challenge.Category,
             Title = gameInstance.Challenge.Title,
             Type = gameInstance.Challenge.Type,
             Limit = gameInstance.Challenge.SubmissionLimit,
             Deadline = gameInstance.Challenge.DeadlineUtc,
-            Attempts = gameInstance.SubmissionCount,
+            Attempts = attemptCount,
             Context = new()
             {
                 InstanceEntry = gameInstance.Container?.Entry,

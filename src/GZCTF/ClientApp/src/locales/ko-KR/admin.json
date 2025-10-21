@@ -22,6 +22,7 @@
         "delete": "삭제",
         "save": "템플릿 저장"
       },
+      "flush_scoreboard": "스코어보드 새로고침",
       "hint": {
         "add": "힌트 추가"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "생성",
         "destroy": "삭제"
-      },
-      "update_accept_count": "문제 풀이 수 업데이트"
+      }
     },
     "divisions": {
       "edit": "디비전을 편집",
@@ -476,7 +476,6 @@
         "updated": "디비전이 업데이트되었습니다"
       },
       "info": {
-        "accept_count_updated": "문제 풀이 수가 업데이트 되었습니다.",
         "deleted": "게임이 삭제되었습니다",
         "info_updated": "게임이 업데이트 되었습니다.",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "포스터가 업로드되었습니다.",
           "uploading": "포스터 업로드 중..."
         },
-        "public_key_copied": "공개키가 클립보드에 복사되었습니다."
+        "public_key_copied": "공개키가 클립보드에 복사되었습니다.",
+        "scoreboard_flushed": "스코어보드 캐시를 초기화했습니다."
       },
       "instances": {
         "created": "인스턴스가 생성되었습니다.",

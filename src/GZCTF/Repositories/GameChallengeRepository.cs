@@ -1,14 +1,12 @@
 ﻿using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
 public class GameChallengeRepository(
     AppDbContext context,
-    IBlobRepository blobRepository,
-    CacheHelper cacheHelper
+    IBlobRepository blobRepository
 ) : RepositoryBase(context),
     IGameChallengeRepository
 {
@@ -48,13 +46,16 @@ public class GameChallengeRepository(
 
     public Task<GameChallenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
         => Context.GameChallenges
+            .Include(c => c.FirstSolves)
             .Where(c => c.Id == id && c.GameId == gameId).FirstOrDefaultAsync(token);
 
     public Task LoadFlags(GameChallenge challenge, CancellationToken token = default) =>
         Context.Entry(challenge).Collection(c => c.Flags).LoadAsync(token);
 
     public Task<GameChallenge[]> GetChallenges(int gameId, CancellationToken token = default) =>
-        Context.GameChallenges.Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
+        Context.GameChallenges
+            .Include(c => c.FirstSolves)
+            .Where(c => c.GameId == gameId).OrderBy(c => c.Id).ToArrayAsync(token);
 
     public Task<GameChallenge[]> GetChallengesWithTrafficCapturing(int gameId, CancellationToken token = default) =>
         Context.GameChallenges.IgnoreAutoIncludes().Where(c => c.GameId == gameId && c.EnableTrafficCapture)
@@ -100,58 +101,6 @@ public class GameChallengeRepository(
         }
 
         return TaskStatus.Success;
-    }
-
-    public async Task<bool> RecalculateAcceptedCount(Game game, CancellationToken token = default)
-    {
-        var trans = await Context.Database.BeginTransactionAsync(token);
-
-        try
-        {
-            var query = Context.GameInstances.AsNoTracking()
-                .IgnoreAutoIncludes()
-                .Include(i => i.Participation)
-                .Include(i => i.Challenge)
-                .Where(i => i.Challenge.GameId == game.Id && i.IsSolved &&
-                            i.Participation.Status == ParticipationStatus.Accepted)
-                .GroupBy(i => i.ChallengeId)
-                .Select(g => new { ChallengeId = g.Key, Count = g.Count() });
-
-            await Context.GameChallenges.AsNoTracking().IgnoreAutoIncludes()
-                .Where(c => query.Any(r => r.ChallengeId == c.Id))
-                .ExecuteUpdateAsync(
-                    setter =>
-                        setter.SetProperty(
-                            c => c.AcceptedCount,
-                            c => query.First(r => r.ChallengeId == c.Id).Count),
-                    token);
-
-            var attempts = Context.Submissions.AsNoTracking()
-                .IgnoreAutoIncludes()
-                .Where(s => s.GameId == game.Id)
-                .GroupBy(s => new { s.ChallengeId, s.ParticipationId })
-                .Select(g => new { g.Key.ChallengeId, g.Key.ParticipationId, Count = g.Count() });
-
-            await Context.GameInstances.AsNoTracking().IgnoreAutoIncludes()
-                .Where(i => attempts.Any(a =>
-                    a.ChallengeId == i.ChallengeId && a.ParticipationId == i.ParticipationId))
-                .ExecuteUpdateAsync(
-                    setter => setter.SetProperty(
-                        i => i.SubmissionCount,
-                        i => attempts.First(a =>
-                            a.ChallengeId == i.ChallengeId && a.ParticipationId == i.ParticipationId).Count),
-                    token);
-
-            await trans.CommitAsync(token);
-            await cacheHelper.FlushScoreboardCache(game.Id, token);
-        }
-        catch
-        {
-            await trans.RollbackAsync(token);
-            return false;
-        }
-
-        return true;
     }
 
     public async Task UpdateAttachment(GameChallenge challenge, AttachmentCreateModel model,

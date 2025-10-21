@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Models.Request.Edit;
@@ -176,7 +177,7 @@ public class ChallengeEditDetailModel
             MinScoreRate = chal.MinScoreRate,
             Difficulty = chal.Difficulty,
             FileName = chal.FileName,
-            AcceptedCount = chal.AcceptedCount,
+            AcceptedCount = chal.FirstSolves?.Count ?? 0,
             Attachment = chal.Attachment,
             SubmissionLimit = chal.SubmissionLimit,
             DeadlineUtc = chal.DeadlineUtc,

@@ -258,85 +258,167 @@ public class GameInstanceRepository(
 
     public async Task<VerifyResult> VerifyAnswer(Submission submission, CancellationToken token = default)
     {
-        const int maxRetries = 3;
-        for (int retry = 0; retry < maxRetries; retry++)
+        await using var transaction = await Context.Database.BeginTransactionAsync(token);
+
+        try
         {
-            var trans = await Context.Database.BeginTransactionAsync(token);
+            var instance = await Context.GameInstances.IgnoreAutoIncludes()
+                .Include(i => i.FlagContext)
+                .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
+                                           i.ParticipationId == submission.ParticipationId, token);
 
-            try
+            if (instance is null)
             {
-                var instance = await Context.GameInstances.IgnoreAutoIncludes()
-                    .Include(i => i.FlagContext)
-                    .SingleOrDefaultAsync(i => i.ChallengeId == submission.ChallengeId &&
-                                               i.ParticipationId == submission.ParticipationId, token);
+                submission.Status = AnswerResult.NotFound;
+                await transaction.RollbackAsync(token);
+                return new(SubmissionType.Unaccepted, AnswerResult.NotFound);
+            }
 
-                SubmissionType ret;
+            var updateSub = await Context.Submissions
+                .IgnoreAutoIncludes()
+                .SingleAsync(s => s.Id == submission.Id, token);
 
-                if (instance is null)
-                {
-                    submission.Status = AnswerResult.NotFound;
-                    return new(SubmissionType.Unaccepted, AnswerResult.NotFound);
-                }
+            var challenge = await Context.GameChallenges
+                .AsNoTracking()
+                .Select(c => new { c.Id, c.Type, c.DisableBloodBonus })
+                .SingleAsync(c => c.Id == submission.ChallengeId, token);
 
-                // submission is from the queue, do not modify it directly
-                // we need to fetch the entity again to ensure it is being tracked correctly
-                var updateSub = await Context.Submissions.SingleAsync(s => s.Id == submission.Id, token);
+            if (instance.FlagContext is null && challenge.Type.IsStatic())
+            {
+                updateSub.Status = await Context.FlagContexts.AsNoTracking()
+                    .AnyAsync(
+                        f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
+                        token)
+                    ? AnswerResult.Accepted
+                    : AnswerResult.WrongAnswer;
+            }
+            else
+            {
+                updateSub.Status = instance.FlagContext?.Flag == submission.Answer
+                    ? AnswerResult.Accepted
+                    : AnswerResult.WrongAnswer;
+            }
 
-                if (instance.FlagContext is null && submission.GameChallenge?.Type.IsStatic() is true)
-                    updateSub.Status = await Context.FlagContexts.AsNoTracking()
-                        .AnyAsync(
-                            f => f.ChallengeId == submission.ChallengeId && f.Flag == submission.Answer,
-                            token)
-                        ? AnswerResult.Accepted
-                        : AnswerResult.WrongAnswer;
-                else
-                    updateSub.Status = instance.FlagContext?.Flag == submission.Answer
-                        ? AnswerResult.Accepted
-                        : AnswerResult.WrongAnswer;
-
-                var firstTime = !instance.IsSolved && updateSub.Status == AnswerResult.Accepted;
-                var beforeEnd = submission.Game!.EndTimeUtc > submission.SubmitTimeUtc;
-
-                updateSub.GameChallenge!.SubmissionCount++;
-
-                if (firstTime && beforeEnd)
-                {
-                    instance.IsSolved = true;
-                    updateSub.GameChallenge!.AcceptedCount++;
-                    ret = updateSub.GameChallenge.AcceptedCount switch
-                    {
-                        1 => SubmissionType.FirstBlood,
-                        2 => SubmissionType.SecondBlood,
-                        3 => SubmissionType.ThirdBlood,
-                        _ => SubmissionType.Normal
-                    };
-                }
-                else
-                {
-                    ret = updateSub.Status == AnswerResult.Accepted ? SubmissionType.Normal : SubmissionType.Unaccepted;
-                }
-
+            if (updateSub.Status != AnswerResult.Accepted)
+            {
                 await SaveAsync(token);
-                await trans.CommitAsync(token);
+                await transaction.CommitAsync(token);
+                return new(SubmissionType.Unaccepted, updateSub.Status);
+            }
 
-                return new(ret, updateSub.Status);
-            }
-            catch (DbUpdateConcurrencyException) when (retry < maxRetries - 1)
+            // Acquire a PostgresSQL advisory lock to prevent race conditions:
+            // This lock ensures that only one concurrent submission for the same participation/challenge pair
+            // can proceed past this point, preventing duplicate FirstSolve entries if multiple submissions
+            // are processed at the same time. Without this, two submissions could both pass the check and
+            // insert duplicate records.
+            await Context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock({0}, {1})",
+                [updateSub.ParticipationId, updateSub.ChallengeId],
+                cancellationToken: token);
+
+            var alreadySolved = await Context.FirstSolves
+                .AnyAsync(fs => fs.ParticipationId == submission.ParticipationId &&
+                                fs.ChallengeId == submission.ChallengeId, token);
+
+            if (alreadySolved)
             {
-                await trans.RollbackAsync(token);
-                // Retry
+                await SaveAsync(token);
+                await transaction.CommitAsync(token);
+                return new(SubmissionType.Normal, updateSub.Status);
             }
-            catch
+
+            var participation = await Context.Participations
+                .IgnoreAutoIncludes().AsNoTracking()
+                .Include(p => p.Division)
+                .ThenInclude(d => d!.ChallengeConfigs)
+                .SingleAsync(p => p.Id == submission.ParticipationId, token);
+
+            var time = await Context.Games.IgnoreAutoIncludes().AsNoTracking()
+                .Where(g => g.Id == participation.GameId)
+                .Select(g => new { g.StartTimeUtc, g.EndTimeUtc })
+                .SingleAsync(token);
+
+            var withinWindow = updateSub.SubmitTimeUtc >= time.StartTimeUtc &&
+                               updateSub.SubmitTimeUtc < time.EndTimeUtc;
+
+            var hasBloodPermission = withinWindow && !challenge.DisableBloodBonus &&
+                                     HasPermission(participation.Division, GamePermission.GetBlood,
+                                         submission.ChallengeId);
+
+            var submissionType = SubmissionType.Normal;
+            if (hasBloodPermission)
             {
-                await trans.RollbackAsync(token);
-                throw;
+                var bloodEligibleCount = await CountBloodEligibleSolves(submission.ChallengeId, time.StartTimeUtc,
+                    time.EndTimeUtc, token);
+
+                submissionType = bloodEligibleCount switch
+                {
+                    0 => SubmissionType.FirstBlood,
+                    1 => SubmissionType.SecondBlood,
+                    2 => SubmissionType.ThirdBlood,
+                    _ => SubmissionType.Normal
+                };
             }
+
+            Context.FirstSolves.Add(new FirstSolve
+            {
+                ParticipationId = submission.ParticipationId,
+                ChallengeId = submission.ChallengeId,
+                SubmissionId = submission.Id
+            });
+
+            await SaveAsync(token);
+            await transaction.CommitAsync(token);
+
+            return new(submissionType, updateSub.Status);
         }
-
-        throw new InvalidOperationException("Failed to verify answer after retries due to concurrency conflicts.");
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred during answer verification for submission {SubmissionId}.",
+                submission.Id);
+            await transaction.RollbackAsync(token);
+            throw;
+        }
     }
 
-    public Task<GameInstance[]> GetInstances(GameChallenge challenge, CancellationToken token = default) =>
-        Context.GameInstances.Where(i => i.Challenge == challenge).OrderBy(i => i.ParticipationId)
-            .Include(i => i.Participation).ThenInclude(i => i.Team).ToArrayAsync(token);
+    Task<int> CountBloodEligibleSolves(int challengeId, DateTimeOffset start, DateTimeOffset end,
+        CancellationToken token)
+    {
+        // First, get blood-eligible participation IDs for the challenge
+        var eligibleParticipationIds =
+            from participation in Context.Participations.AsNoTracking()
+            join config in Context.Set<DivisionChallengeConfig>().AsNoTracking()
+                    .Where(c => c.ChallengeId == challengeId)
+                on participation.DivisionId equals config.DivisionId into configJoin
+            from cfg in configJoin.DefaultIfEmpty()
+            join division in Context.Divisions.AsNoTracking()
+                on participation.DivisionId equals division.Id into divisionJoin
+            from div in divisionJoin.DefaultIfEmpty()
+            where participation.Status == ParticipationStatus.Accepted
+                  && (cfg != null
+                      ? cfg.Permissions.HasFlag(GamePermission.GetBlood)
+                      : div == null || div.DefaultPermissions.HasFlag(GamePermission.GetBlood))
+            select participation.Id;
+
+        // Now, count FirstSolves for the challenge with eligible participations and time window
+        return (
+            from fs in Context.FirstSolves.AsNoTracking()
+            join submission in Context.Submissions.AsNoTracking() on fs.SubmissionId equals submission.Id
+            where fs.ChallengeId == challengeId
+                  && eligibleParticipationIds.Contains(fs.ParticipationId)
+                  && submission.SubmitTimeUtc >= start
+                  && submission.SubmitTimeUtc < end
+            orderby submission.SubmitTimeUtc
+            select fs.ParticipationId
+        ).Take(4).CountAsync(token);
+    }
+
+    static bool HasPermission(Division? division, GamePermission permission, int challengeId)
+    {
+        if (division is null)
+            return true;
+
+        var specific = division.ChallengeConfigs.FirstOrDefault(c => c.ChallengeId == challengeId);
+        var permissions = specific?.Permissions ?? division.DefaultPermissions;
+        return permissions.HasFlag(permission);
+    }
 }
