@@ -13,6 +13,8 @@ public abstract class TransactionTestBase : TestBase
 {
     protected TransactionTestBase(ITestOutputHelper output) : base(output)
     {
+        // Ensure database schema is created for SQLite
+        DbContext.Database.EnsureCreated();
     }
 
     protected override void ConfigureServices(IServiceCollection services)
@@ -81,7 +83,16 @@ public abstract class TransactionTestBase : TestBase
         await DbContext.SaveChangesAsync();
 
         // Execute test action in transaction that will be rolled back
-        await ExecuteInTransactionAsync(testAction, shouldCommit: false);
+        // If the action throws, the transaction is automatically rolled back
+        try
+        {
+            await ExecuteInTransactionAsync(testAction, shouldCommit: false);
+        }
+        catch
+        {
+            // Exception is expected in rollback tests - it triggers the rollback
+            // Swallow it and proceed to verification
+        }
 
         // Verify rollback
         await verificationAction();

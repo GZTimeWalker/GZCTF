@@ -29,12 +29,21 @@ namespace GZCTF.Test.Infrastructure;
 /// </summary>
 public class GzctfWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly ITestOutputHelper? _output;
-    private readonly Action<IServiceCollection>? _configureServices;
+    private ITestOutputHelper? _output;
+    private Action<IServiceCollection>? _configureServices;
 
-    public GzctfWebApplicationFactory(ITestOutputHelper? output = null, Action<IServiceCollection>? configureServices = null)
+    public GzctfWebApplicationFactory()
+    {
+        // Parameterless constructor for xUnit IClassFixture
+    }
+
+    public void SetOutput(ITestOutputHelper output)
     {
         _output = output;
+    }
+
+    public void SetConfigureServices(Action<IServiceCollection> configureServices)
+    {
         _configureServices = configureServices;
     }
 
@@ -140,6 +149,7 @@ public abstract class IntegrationTestBase : IClassFixture<GzctfWebApplicationFac
     protected IntegrationTestBase(GzctfWebApplicationFactory factory, ITestOutputHelper output)
     {
         Factory = factory;
+        Factory.SetOutput(output);
         Output = output;
         Client = factory.CreateClient();
     }

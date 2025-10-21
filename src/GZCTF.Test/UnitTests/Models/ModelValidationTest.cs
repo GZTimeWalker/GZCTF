@@ -85,6 +85,7 @@ public class ModelValidationTest : TestBase
             Title = title,
             PublicKey = publicKey,
             PrivateKey = privateKey,
+            WriteupNote = "Test writeup note", // Required field
             StartTimeUtc = DateTimeOffset.UtcNow.AddDays(1),
             EndTimeUtc = DateTimeOffset.UtcNow.AddDays(2)
         };

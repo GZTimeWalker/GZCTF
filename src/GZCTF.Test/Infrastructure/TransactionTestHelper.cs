@@ -131,10 +131,18 @@ public static class TransactionTestHelper
         if (descriptor != null)
             services.Remove(descriptor);
 
+        // Create and open a connection that will be kept open for the lifetime of the test
+        // This prevents SQLite in-memory database from being deleted
+        var connection = new Microsoft.Data.Sqlite.SqliteConnection("Data Source=:memory:");
+        connection.Open();
+        
+        // Register the connection as a singleton so it stays open
+        services.AddSingleton(connection);
+
         // Add SQLite in-memory database which has better transaction support
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlite($"Data Source={databaseName};Mode=Memory;Cache=Shared");
+            options.UseSqlite(connection);
         });
     }
 }

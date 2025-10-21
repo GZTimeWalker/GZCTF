@@ -19,15 +19,12 @@ namespace GZCTF.Test.UnitTests.Services;
 public class ConfigServiceTest : TestBase
 {
     private readonly IConfigService _configService;
-    private readonly Mock<IOptionsSnapshot<GlobalConfig>> _mockGlobalConfig;
-    private readonly Mock<IOptionsSnapshot<ManagedConfig>> _mockManagedConfig;
+    private readonly Mock<IOptionsSnapshot<GlobalConfig>> _mockGlobalConfig = new Mock<IOptionsSnapshot<GlobalConfig>>();
+    private readonly Mock<IOptionsSnapshot<ManagedConfig>> _mockManagedConfig = new Mock<IOptionsSnapshot<ManagedConfig>>();
 
     public ConfigServiceTest(ITestOutputHelper output) : base(output)
     {
         // Setup additional mocks
-        _mockGlobalConfig = new Mock<IOptionsSnapshot<GlobalConfig>>();
-        _mockManagedConfig = new Mock<IOptionsSnapshot<ManagedConfig>>();
-
         _mockGlobalConfig.Setup(x => x.Value).Returns(new GlobalConfig 
         { 
             Title = "Test GZCTF",
