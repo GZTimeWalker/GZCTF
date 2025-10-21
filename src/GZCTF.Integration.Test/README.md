@@ -52,7 +52,6 @@ GZCTF.Integration.Test/
 │       ├── AuthenticationTests.cs
 │       ├── RoutingTests.cs
 │       └── OpenApiTests.cs
-├── appsettings.Test.json        # Test configuration
 ├── README.md
 └── IMPLEMENTATION_SUMMARY.md
 ```
@@ -76,14 +75,13 @@ All tests use the `IntegrationTestCollection` to ensure they don't run in parall
 
 ## Configuration
 
-Tests use `appsettings.Test.json` which is automatically copied to the test directory. The database connection string is dynamically replaced with the Testcontainers PostgreSQL connection string.
-
-Key configuration:
-- Database: PostgreSQL 17 (via Testcontainers)
+All test configuration is provided programmatically by the `GZCTFApplicationFactory`:
+- Database: PostgreSQL 17 (via Testcontainers with dynamic connection string)
 - Storage: Disk storage in temporary test directory
 - Rate limiting: Disabled
 - Captcha: Disabled
 - Environment: Development (enables OpenAPI)
+- Email confirmation: Disabled for testing
 
 ## Adding New Tests
 

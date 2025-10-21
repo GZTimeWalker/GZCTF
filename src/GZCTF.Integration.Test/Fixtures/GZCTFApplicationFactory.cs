@@ -39,14 +39,6 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         var testProjectDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
         Directory.CreateDirectory(testProjectDir);
         
-        // Copy appsettings.Test.json to the test directory
-        var sourceConfig = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Test.json");
-        var destConfig = Path.Combine(testProjectDir, "appsettings.Test.json");
-        if (File.Exists(sourceConfig))
-        {
-            File.Copy(sourceConfig, destConfig, true);
-        }
-        
         builder.UseContentRoot(testProjectDir);
         
         builder.ConfigureAppConfiguration((context, config) =>

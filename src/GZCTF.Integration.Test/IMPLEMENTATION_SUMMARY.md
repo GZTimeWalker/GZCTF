@@ -37,10 +37,11 @@ GZCTF.Integration.Test/
 │   │   ├── RoutingTests.cs
 │   │   └── OpenApiTests.cs
 │   └── Infrastructure/          # Infrastructure tests (future)
-├── appsettings.Test.json        # Test configuration
 ├── README.md
 └── IMPLEMENTATION_SUMMARY.md
 ```
+
+Note: All test configuration is provided programmatically via in-memory configuration in the factory, so no appsettings file is needed.
 
 ### Key Components
 
@@ -73,9 +74,10 @@ Located in `Fixtures/IntegrationTestCollection.cs`, this collection fixture uses
 
 #### 3. Configuration Management
 
-- `appsettings.Test.json`: Base configuration
-- Environment variables: Dynamic overrides (connection string)
-- In-memory configuration: Additional test-specific settings
+All configuration is provided programmatically:
+- Environment variables: Connection string injection (GZCTF_ConnectionStrings__Database)
+- In-memory configuration: All test-specific settings (rate limiting, captcha, storage, etc.)
+- No appsettings.json file needed - everything is configured via code
 
 ### Test Suites
 

@@ -28,7 +28,5 @@
         <ProjectReference Include="..\GZCTF\GZCTF.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="appsettings.Test.json" CopyToOutputDirectory="PreserveNewest" />
-    </ItemGroup>
+
 </Project>
