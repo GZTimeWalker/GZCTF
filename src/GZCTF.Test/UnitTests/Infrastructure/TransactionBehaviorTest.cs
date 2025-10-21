@@ -128,9 +128,9 @@ public class TransactionBehaviorTest : TransactionTestBase
     }
 
     // Helper repository class for testing
-    private class TestRepository : Repositories.RepositoryBase
+    private class TestRepository : GZCTF.Repositories.RepositoryBase
     {
-        public TestRepository(AppDbContext context, ILogger<TestRepository> logger) 
+        public TestRepository(GZCTF.Models.AppDbContext context, ILogger<TestRepository> logger) 
             : base(context)
         {
         }
