@@ -1,12 +1,19 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+var isDevelopment = builder.Environment.EnvironmentName == "Development";
+
 // PostgreSQL database
 var postgres = builder.AddPostgres("postgres")
     .WithEnvironment("POSTGRES_DB", "gzctf")
-    .WithDataVolume()
-    .WithPgAdmin();
+    .WithDataVolume();
 
-var database = postgres.AddDatabase("gzctf");
+// Add PgAdmin only in development
+if (isDevelopment)
+{
+    postgres.WithPgAdmin();
+}
+
+var database = postgres.AddDatabase("database");
 
 // Redis cache and SignalR backplane
 var redis = builder.AddRedis("redis")
@@ -16,9 +23,17 @@ var redis = builder.AddRedis("redis")
 var apiService = builder.AddProject<Projects.GZCTF>("gzctf")
     .WithReference(database)
     .WithReference(redis)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", builder.Environment.EnvironmentName == "Development" ? "Development" : "Production")
+    .WithEnvironment("ASPNETCORE_ENVIRONMENT", isDevelopment ? "Development" : "Production")
+    .WithEnvironment("DOTNET_RUNNING_IN_ASPIRE", "true")
     .WithHttpEndpoint(port: 8080, targetPort: 8080, name: "http")
     .WithEndpoint(port: 3000, targetPort: 3000, name: "metrics")
     .WithExternalHttpEndpoints();
+
+// Enable Kubernetes manifest generation for production deployment
+if (!isDevelopment)
+{
+    // Configure for production deployment
+    apiService.WithEnvironment("Storage__ConnectionString", "disk://path=/app/files");
+}
 
 builder.Build().Run();
