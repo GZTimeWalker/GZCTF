@@ -1,0 +1,61 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: ["develop", "ci/*", "v*"]
+    paths: 
+      - "src/**"
+      - ".github/workflows/integration-tests.yml"
+  pull_request:
+    branches: ["develop"]
+    paths:
+      - "src/**"
+      - ".github/workflows/integration-tests.yml"
+  workflow_dispatch:
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: src/global.json
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: latest
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Restore dependencies
+        working-directory: src
+        run: dotnet restore
+
+      - name: Build
+        working-directory: src
+        run: dotnet build --no-restore -c Release
+
+      - name: Run Integration Tests
+        working-directory: src
+        run: dotnet test GZCTF.Integration.Test/GZCTF.Integration.Test.csproj --no-build -c Release --logger "trx;LogFileName=test-results.trx" --logger "console;verbosity=detailed"
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: src/**/test-results.trx
+          retention-days: 7
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Integration Test Results
+          path: src/**/test-results.trx
+          reporter: dotnet-trx
