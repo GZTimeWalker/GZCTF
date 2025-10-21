@@ -48,11 +48,19 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
             var sources = config.Sources.ToList();
             config.Sources.Clear();
             
-            // Add our connection string FIRST
+            // Add complete test configuration in-memory
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:Database"] = _connectionString,
-                ["ConnectionStrings:Storage"] = "disk://path=./files/test"
+                ["ConnectionStrings:Storage"] = "disk://path=./files/test",
+                ["DisableRateLimit"] = "true",
+                ["CaptchaConfig:Provider"] = "None",
+                ["AccountPolicy:AllowRegister"] = "true",
+                ["AccountPolicy:RequireEmailConfirmation"] = "false",
+                ["Logging:LogLevel:Default"] = "Warning",
+                ["Logging:LogLevel:Microsoft.AspNetCore"] = "Warning",
+                ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning",
+                ["Server:MetricPort"] = "0"
             });
             
             // Then add back all the original sources
