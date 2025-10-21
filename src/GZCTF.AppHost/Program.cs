@@ -24,10 +24,7 @@ var apiService = builder.AddProject<Projects.GZCTF>("gzctf")
     .WithReference(database)
     .WithReference(redis)
     .WithEnvironment("ASPNETCORE_ENVIRONMENT", isDevelopment ? "Development" : "Production")
-    .WithEnvironment("DOTNET_RUNNING_IN_ASPIRE", "true")
-    .WithHttpEndpoint(port: 8080, targetPort: 8080, name: "http")
-    .WithEndpoint(port: 3000, targetPort: 3000, name: "metrics")
-    .WithExternalHttpEndpoints();
+    .WithEnvironment("DOTNET_RUNNING_IN_ASPIRE", "true");
 
 // Enable Kubernetes manifest generation for production deployment
 if (!isDevelopment)
