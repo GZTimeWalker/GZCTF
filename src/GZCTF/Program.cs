@@ -31,6 +31,13 @@ Banner();
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Aspire ServiceDefaults if running under Aspire
+if (builder.Configuration.GetValue<bool>("DOTNET_RUNNING_IN_ASPIRE") || 
+    builder.Environment.EnvironmentName.Contains("Aspire", StringComparison.OrdinalIgnoreCase))
+{
+    builder.AddServiceDefaults();
+}
+
 await PathHelper.EnsureDirsAsync(builder.Environment);
 
 builder.ConfigureWebHost();
