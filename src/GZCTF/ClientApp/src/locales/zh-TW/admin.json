@@ -22,6 +22,7 @@
         "delete": "刪除 flag",
         "save": "保存 flag 模版"
       },
+      "flush_scoreboard": "刷新計分板",
       "hint": {
         "add": "添加提示"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "創建測試容器",
         "destroy": "銷毀測試容器"
-      },
-      "update_accept_count": "更新解題計數"
+      }
     },
     "divisions": {
       "edit": "編輯分組",
@@ -476,7 +476,6 @@
         "updated": "分組已更新"
       },
       "info": {
-        "accept_count_updated": "解題數量已刷新",
         "deleted": "比賽已刪除",
         "info_updated": "比賽信息已更新",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "海報上傳成功",
           "uploading": "正在上傳海報..."
         },
-        "public_key_copied": "公鑰已複製到剪貼板"
+        "public_key_copied": "公鑰已複製到剪貼板",
+        "scoreboard_flushed": "計分板快取已刷新"
       },
       "instances": {
         "created": "實例已創建",
