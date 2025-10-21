@@ -1,7 +1,7 @@
 using GZCTF.Utils;
 using Xunit;
 
-namespace GZCTF.Integration.Test.Tests.Utils;
+namespace GZCTF.Test.UnitTests.Utils;
 
 /// <summary>
 /// Tests for cryptographic utilities

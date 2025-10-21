@@ -41,20 +41,38 @@ dotnet test GZCTF.Integration.Test/GZCTF.Integration.Test.csproj --filter "Fully
 
 ### Directory Organization
 
+**Unit Tests (GZCTF.Test)**:
+```
+GZCTF.Test/
+├── UnitTests/
+│   └── Utils/
+│       └── CryptoUtilsTests.cs  (11 tests)
+├── ConfigServiceTest.cs         (6 tests)
+└── SignatureTest.cs             (2 tests)
+```
+
+**Integration Tests (GZCTF.Integration.Test)**:
 ```
 GZCTF.Integration.Test/
 ├── Fixtures/                    # Shared test infrastructure
 │   ├── GZCTFApplicationFactory.cs
 │   └── IntegrationTestCollection.cs
 ├── Tests/
-│   └── Api/                     # API endpoint tests
-│       ├── BasicApiTests.cs
-│       ├── AuthenticationTests.cs
-│       ├── RoutingTests.cs
-│       └── OpenApiTests.cs
+│   ├── Api/                     # API endpoint tests
+│   │   ├── BasicApiTests.cs
+│   │   ├── AuthenticationTests.cs
+│   │   ├── RoutingTests.cs
+│   │   └── OpenApiTests.cs
+│   └── Database/                # Database operation tests
+│       └── DatabaseContextTests.cs
 ├── README.md
 └── IMPLEMENTATION_SUMMARY.md
 ```
+
+### Test Categories
+
+- **Unit Tests (GZCTF.Test)**: Fast, isolated tests with no external dependencies (crypto, services, signatures)
+- **Integration Tests (GZCTF.Integration.Test)**: Tests requiring real PostgreSQL database and HTTP server
 
 ### Test Collections
 
