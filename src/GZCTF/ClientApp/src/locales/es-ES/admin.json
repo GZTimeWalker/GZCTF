@@ -22,6 +22,7 @@
         "delete": "Eliminar",
         "save": "Guardar Plantilla"
       },
+      "flush_scoreboard": "Actualizar marcador",
       "hint": {
         "add": "Añadir Pista"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "Crear",
         "destroy": "Destruir"
-      },
-      "update_accept_count": "Actualizar Contador de AC"
+      }
     },
     "divisions": {
       "edit": "Editar división",
@@ -476,7 +476,6 @@
         "updated": "División actualizada"
       },
       "info": {
-        "accept_count_updated": "Contador AC actualizado",
         "deleted": "Juego eliminado",
         "info_updated": "Juego actualizado",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "Cartel subido con éxito",
           "uploading": "Subiendo cartel..."
         },
-        "public_key_copied": "Clave pública copiada al portapapeles"
+        "public_key_copied": "Clave pública copiada al portapapeles",
+        "scoreboard_flushed": "Caché del marcador limpiada"
       },
       "instances": {
         "created": "Instancia creada",
