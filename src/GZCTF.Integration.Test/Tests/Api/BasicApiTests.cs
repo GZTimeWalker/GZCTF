@@ -1,6 +1,10 @@
+using System;
 using System.Net;
 using System.Net.Http.Json;
 using GZCTF.Integration.Test.Fixtures;
+using GZCTF.Models;
+using GZCTF.Models.Request.Account;
+using GZCTF.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -29,7 +33,7 @@ public class BasicApiTests
         // Verify the server is running by checking an actual API endpoint
         var response = await _client.GetAsync("/api/Config");
         _output.WriteLine($"Status: {response.StatusCode}");
-        
+
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
@@ -39,12 +43,12 @@ public class BasicApiTests
     {
         var response = await _client.GetAsync("/api/Config");
         _output.WriteLine($"Status: {response.StatusCode}");
-        
+
         response.EnsureSuccessStatusCode();
-        
+
         var content = await response.Content.ReadAsStringAsync();
         _output.WriteLine($"Response: {content}");
-        
+
         Assert.NotEmpty(content);
     }
 
@@ -53,36 +57,57 @@ public class BasicApiTests
     {
         var response = await _client.GetAsync("/openapi/v1.json");
         _output.WriteLine($"Status: {response.StatusCode}");
-        
+
         response.EnsureSuccessStatusCode();
-        
+
         var content = await response.Content.ReadAsStringAsync();
         _output.WriteLine($"Response length: {content.Length}");
-        
+
         Assert.NotEmpty(content);
         Assert.Contains("openapi", content.ToLower());
     }
 
     [Fact]
-    public async Task Api_Account_Register_WithoutData_ReturnsBadRequest()
+    public async Task Api_Account_Register_And_Profile_Succeeds()
     {
-        var response = await _client.PostAsJsonAsync("/api/Account/Register", new { });
-        _output.WriteLine($"Status: {response.StatusCode}");
-        
-        // Should fail validation
-        Assert.True(
-            response.StatusCode == HttpStatusCode.BadRequest || 
-            response.StatusCode == HttpStatusCode.UnprocessableEntity,
-            $"Expected BadRequest or UnprocessableEntity but got {response.StatusCode}"
-        );
+        using var client = _factory.CreateClient();
+
+        var userName = $"t{Guid.NewGuid():N}".Substring(0, Limits.MaxUserNameLength);
+        var email = $"{userName}@example.com";
+
+        var registerModel = new RegisterModel
+        {
+            UserName = userName,
+            Email = email,
+            Password = "P@ssw0rd!123"
+        };
+
+        var registerResponse = await client.PostAsJsonAsync("/api/Account/Register", registerModel);
+        _output.WriteLine($"Register status: {registerResponse.StatusCode}");
+        registerResponse.EnsureSuccessStatusCode();
+
+        var payload = await registerResponse.Content.ReadFromJsonAsync<RequestResponse<RegisterStatus>>();
+        Assert.NotNull(payload);
+        Assert.Equal(RegisterStatus.LoggedIn, payload!.Data);
+
+        var profileResponse = await client.GetAsync("/api/Account/Profile");
+        _output.WriteLine($"Profile status: {profileResponse.StatusCode}");
+        profileResponse.EnsureSuccessStatusCode();
+
+        var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
+        Assert.NotNull(profile);
+        Assert.Equal(registerModel.UserName, profile!.UserName);
+        Assert.Equal(registerModel.Email, profile.Email);
     }
 
     [Fact]
     public async Task Api_Unauthenticated_Profile_ReturnsUnauthorized()
     {
-        var response = await _client.GetAsync("/api/Account/Profile");
+        using var client = _factory.CreateClient();
+
+        var response = await client.GetAsync("/api/Account/Profile");
         _output.WriteLine($"Status: {response.StatusCode}");
-        
+
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

@@ -34,20 +34,20 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         Environment.SetEnvironmentVariable("YES_I_KNOW_FILES_ARE_NOT_PERSISTED_GO_AHEAD_PLEASE", "true");
 
         builder.UseEnvironment("Development");
-        
+
         // Set content root to a unique test directory to avoid file conflicts
         var testProjectDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
         Directory.CreateDirectory(testProjectDir);
-        
+
         builder.UseContentRoot(testProjectDir);
-        
+
         builder.ConfigureAppConfiguration((context, config) =>
         {
             // Clear existing sources and rebuild with our connection string first
             // This ensures it's available during ConfigureDatabase()
             var sources = config.Sources.ToList();
             config.Sources.Clear();
-            
+
             // Add complete test configuration in-memory
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
@@ -55,6 +55,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 ["ConnectionStrings:Storage"] = "disk://path=./files/test",
                 ["DisableRateLimit"] = "true",
                 ["CaptchaConfig:Provider"] = "None",
+                ["XorKey"] = "integration-test-xor-key",
                 ["AccountPolicy:AllowRegister"] = "true",
                 ["AccountPolicy:RequireEmailConfirmation"] = "false",
                 ["Logging:LogLevel:Default"] = "Warning",
@@ -62,7 +63,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning",
                 ["Server:MetricPort"] = "0"
             });
-            
+
             // Then add back all the original sources
             foreach (var source in sources)
             {
@@ -74,7 +75,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         {
             // Remove any background services that might interfere with testing
             services.RemoveAll(typeof(IHostedService));
-            
+
             // Replace the DbContext with our test connection string
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.AddDbContext<AppDbContext>(options =>
@@ -91,18 +92,18 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
     {
         // Start PostgreSQL container first
         await _postgresContainer.StartAsync();
-        
+
         // Get and cache connection string
         _connectionString = _postgresContainer.GetConnectionString();
-        
+
         // Set environment variable so it's available during configuration
         Environment.SetEnvironmentVariable("GZCTF_ConnectionStrings__Database", _connectionString);
-        
+
         // Ensure the database is created and migrated
         // We do this after container is fully started
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(_connectionString);
-        
+
         using var context = new AppDbContext(optionsBuilder.Options);
         await context.Database.MigrateAsync();
     }
@@ -111,7 +112,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
     {
         await _postgresContainer.DisposeAsync();
         await base.DisposeAsync();
-        
+
         // Clean up test directory
         var testProjectDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
         if (Directory.Exists(testProjectDir))

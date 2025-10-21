@@ -290,6 +290,40 @@ https://editor.swagger.io/
    - Fixture management
    - Database seeding
 
+## Transformation Plan
+
+### Tests to Deprecate or Archive
+
+- `src/GZCTF.Test/UnitTests/Utils/CodecTests.cs` and `CryptoUtilsTests.cs` duplicate coverage from runtime usage, exercise implementation details, and provide little regression value. They should be removed or marked obsolete once higher-value scenario tests exist.
+- Snapshot-style checks that simply confirm endpoints return any payload (for example, `BasicApiTests.Api_Config_ReturnsServerConfig`) do not guard behavior. Replace with scenario-driven assertions or drop them.
+
+### Tests That Cannot Be Fulfilled Reliably
+
+- Any automation that tries to start challenge containers (Docker Swarm/Kubernetes) from integration tests cannot run in hosted CI without privileged access. Keep container lifecycle covered by dedicated component tests or manual smoke suites instead.
+- Tests that depend on external services (captcha, storage providers other than disk, SignalR backplanes) cannot be exercised without bespoke mocks. These should be refactored to use fake implementations or excluded from CI.
+
+### Tests That Should Be Rewritten
+
+- Validation checks that assert `400` responses for endpoints intended to succeed (e.g., attempting registration without payload) no longer match target behavior. Replace them with positive-path tests that create accounts via realistic DTOs and assert domain side effects (user created, email confirmation state, audit entries).
+
+### Target End-to-End Scenario
+
+1. Provision tournament: create administrators, configure base settings, and publish a game window with division setup via API calls.
+2. Author challenges: upload metadata, statements, attachments, scoring rules, and ensure they appear in the public catalog without container deployment.
+3. Configure groups/divisions: assign teams to divisions, verify access rules, and seed scoreboard weights.
+4. Simulate participants: create teams, invite members, enroll in the tournament, and accept invitations.
+5. Playthrough: issue submissions across divisions (correct, incorrect, rate-limited) and verify scoring, unlock flow, and notifications.
+6. Leaderboard validation: query aggregate APIs to confirm standings, tie-breaking, and division filters reflect expected outcomes.
+7. Cleanup hooks: ensure teardown resets storage paths created per test run.
+
+### Roadmap Checkpoints
+
+- Phase 1: Remove deprecated utility tests, stabilize application factory, and add seed helpers for users, teams, and challenges.
+- Phase 2: Build API client helpers to orchestrate tournament setup and participant actions; introduce deterministic sample data fixtures.
+- Phase 3: Implement full workflow test suite gated behind CI flag, ensuring each step asserts both HTTP responses and persisted state via read models.
+- Phase 4: Add leaderboard cross-checks (overall, division-specific, per-team history) and reporting verifications.
+- Phase 5: Document new workflow in `README.md`, provide troubleshooting guidance, and wire tests into CI without requiring Docker-in-Docker beyond PostgreSQL.
+
 ## Maintenance
 
 ### Updating Tests
