@@ -193,4 +193,54 @@ public class SignatureTest(ITestOutputHelper output)
         output.WriteLine($"解密数据：({decryptedString.Length})\n{decryptedString}");
         Assert.Equal(data, Encoding.UTF8.GetString(decryptedData));
     }
+
+    [Fact]
+    public void Ed25519_VerifySignature_WithWrongKey_ReturnsFalse()
+    {
+        // Arrange
+        const SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
+        var message = "Test Message";
+        
+        SecureRandom sr = new();
+        Ed25519KeyPairGenerator kpg = new();
+        kpg.Init(new Ed25519KeyGenerationParameters(sr));
+
+        // Generate two different key pairs
+        AsymmetricCipherKeyPair kp1 = kpg.GenerateKeyPair();
+        AsymmetricCipherKeyPair kp2 = kpg.GenerateKeyPair();
+        
+        var privateKey1 = (Ed25519PrivateKeyParameters)kp1.Private;
+        var publicKey2 = (Ed25519PublicKeyParameters)kp2.Public;
+
+        // Act - Sign with key 1, verify with key 2
+        var signature = CryptoUtils.GenerateSignature(message, privateKey1, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(message, signature, publicKey2, sAlgorithm);
+
+        // Assert
+        Assert.False(verified);
+    }
+
+    [Fact]
+    public void Ed25519_VerifySignature_WithModifiedMessage_ReturnsFalse()
+    {
+        // Arrange
+        const SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
+        var originalMessage = "Original Message";
+        var modifiedMessage = "Modified Message";
+        
+        SecureRandom sr = new();
+        Ed25519KeyPairGenerator kpg = new();
+        kpg.Init(new Ed25519KeyGenerationParameters(sr));
+
+        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
+        var publicKey = (Ed25519PublicKeyParameters)kp.Public;
+
+        // Act - Sign original, verify modified
+        var signature = CryptoUtils.GenerateSignature(originalMessage, privateKey, sAlgorithm);
+        var verified = CryptoUtils.VerifySignature(modifiedMessage, signature, publicKey, sAlgorithm);
+
+        // Assert
+        Assert.False(verified);
+    }
 }
