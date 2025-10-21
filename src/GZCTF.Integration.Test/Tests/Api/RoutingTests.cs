@@ -1,8 +1,9 @@
 using System.Net;
+using GZCTF.Integration.Test.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GZCTF.Integration.Test;
+namespace GZCTF.Integration.Test.Tests.Api;
 
 /// <summary>
 /// Tests to verify routes are properly configured

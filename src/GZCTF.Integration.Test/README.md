@@ -39,6 +39,24 @@ dotnet test GZCTF.Integration.Test/GZCTF.Integration.Test.csproj --filter "Fully
 
 ## Test Structure
 
+### Directory Organization
+
+```
+GZCTF.Integration.Test/
+├── Fixtures/                    # Shared test infrastructure
+│   ├── GZCTFApplicationFactory.cs
+│   └── IntegrationTestCollection.cs
+├── Tests/
+│   └── Api/                     # API endpoint tests
+│       ├── BasicApiTests.cs
+│       ├── AuthenticationTests.cs
+│       ├── RoutingTests.cs
+│       └── OpenApiTests.cs
+├── appsettings.Test.json        # Test configuration
+├── README.md
+└── IMPLEMENTATION_SUMMARY.md
+```
+
 ### Test Collections
 
 All tests use the `IntegrationTestCollection` to ensure they don't run in parallel. This is necessary because:
@@ -48,13 +66,13 @@ All tests use the `IntegrationTestCollection` to ensure they don't run in parall
 
 ### Current Test Coverage
 
-1. **BasicApiTests**: Tests for core API endpoints
+1. **BasicApiTests** (Tests/Api/): Tests for core API endpoints
    - Server configuration retrieval
    - Authentication/authorization
    - Registration validation
    - OpenAPI specification availability
 
-2. **RoutingTests**: Verifies routing and endpoint availability
+2. **RoutingTests** (Tests/Api/): Verifies routing and endpoint availability
 
 ## Configuration
 
@@ -69,14 +87,23 @@ Key configuration:
 
 ## Adding New Tests
 
-1. Create a new test class
-2. Add `[Collection(nameof(IntegrationTestCollection))]` attribute
-3. Inject `GZCTFApplicationFactory` in constructor
-4. Create HttpClient: `_client = factory.CreateClient()`
+1. Create a new test class in the appropriate `Tests/` subdirectory
+   - API tests go in `Tests/Api/`
+   - Infrastructure tests go in `Tests/Infrastructure/`
+2. Add the appropriate namespace (e.g., `GZCTF.Integration.Test.Tests.Api`)
+3. Import fixtures: `using GZCTF.Integration.Test.Fixtures;`
+4. Add `[Collection(nameof(IntegrationTestCollection))]` attribute
+5. Inject `GZCTFApplicationFactory` in constructor
+6. Create HttpClient: `_client = factory.CreateClient()`
 
 Example:
 
 ```csharp
+using GZCTF.Integration.Test.Fixtures;
+using Xunit;
+
+namespace GZCTF.Integration.Test.Tests.Api;
+
 [Collection(nameof(IntegrationTestCollection))]
 public class MyNewTests
 {

@@ -23,11 +23,30 @@ The requirement was to design a set of tests specifically for a CI environment t
 - **HTTP Client**: Built-in HttpClient from WebApplicationFactory
 - **Coverage**: Coverlet for code coverage reporting
 
+### Project Structure
+
+```
+GZCTF.Integration.Test/
+├── Fixtures/                    # Shared test infrastructure
+│   ├── GZCTFApplicationFactory.cs
+│   └── IntegrationTestCollection.cs
+├── Tests/
+│   ├── Api/                     # API endpoint tests
+│   │   ├── BasicApiTests.cs
+│   │   ├── AuthenticationTests.cs
+│   │   ├── RoutingTests.cs
+│   │   └── OpenApiTests.cs
+│   └── Infrastructure/          # Infrastructure tests (future)
+├── appsettings.Test.json        # Test configuration
+├── README.md
+└── IMPLEMENTATION_SUMMARY.md
+```
+
 ### Key Components
 
 #### 1. GZCTFApplicationFactory
 
-Located in `GZCTFApplicationFactory.cs`, this class:
+Located in `Fixtures/GZCTFApplicationFactory.cs`, this class:
 - Extends `WebApplicationFactory<Program>`
 - Implements `IAsyncLifetime` for test lifecycle management
 - Starts PostgreSQL container before tests
@@ -44,9 +63,9 @@ Key features:
 - Disabled background services for test stability
 ```
 
-#### 2. Test Collections
+#### 2. IntegrationTestCollection
 
-Using xUnit's `ICollectionFixture` to ensure:
+Located in `Fixtures/IntegrationTestCollection.cs`, this collection fixture uses xUnit's `ICollectionFixture` to ensure:
 - Single factory instance per test run
 - Sequential test execution (not parallel)
 - Shared database and application state
@@ -60,7 +79,9 @@ Using xUnit's `ICollectionFixture` to ensure:
 
 ### Test Suites
 
-#### BasicApiTests (6 tests)
+All test suites are organized under the `Tests/` directory by their purpose.
+
+#### BasicApiTests (6 tests) - Tests/Api/BasicApiTests.cs
 Tests fundamental API operations:
 - Server availability via Config endpoint
 - OpenAPI specification availability
@@ -68,13 +89,13 @@ Tests fundamental API operations:
 - Registration validation
 - Input validation
 
-#### RoutingTests (2 tests)
+#### RoutingTests (2 tests) - Tests/Api/RoutingTests.cs
 Verifies routing configuration:
 - Root endpoint behavior
 - API endpoint availability
 - HTTP method validation
 
-#### AuthenticationTests (6 tests)
+#### AuthenticationTests (6 tests) - Tests/Api/AuthenticationTests.cs
 Covers authentication workflows:
 - User registration with various inputs
 - Login/logout flows
@@ -82,7 +103,7 @@ Covers authentication workflows:
 - Password validation
 - Invalid credential handling
 
-#### OpenApiTests (4 tests)
+#### OpenApiTests (4 tests) - Tests/Api/OpenApiTests.cs
 Validates OpenAPI integration:
 - JSON structure validation
 - Required endpoint presence

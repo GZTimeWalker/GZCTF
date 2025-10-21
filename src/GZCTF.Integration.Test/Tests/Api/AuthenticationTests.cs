@@ -1,9 +1,10 @@
 using System.Net;
 using System.Net.Http.Json;
+using GZCTF.Integration.Test.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GZCTF.Integration.Test;
+namespace GZCTF.Integration.Test.Tests.Api;
 
 /// <summary>
 /// Tests for authentication and authorization workflows

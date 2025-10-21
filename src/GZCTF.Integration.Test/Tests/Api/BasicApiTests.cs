@@ -1,17 +1,10 @@
 using System.Net;
 using System.Net.Http.Json;
+using GZCTF.Integration.Test.Fixtures;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GZCTF.Integration.Test;
-
-/// <summary>
-/// Collection to ensure tests don't run in parallel (share the same factory instance)
-/// </summary>
-[CollectionDefinition(nameof(IntegrationTestCollection))]
-public class IntegrationTestCollection : ICollectionFixture<GZCTFApplicationFactory>
-{
-}
+namespace GZCTF.Integration.Test.Tests.Api;
 
 /// <summary>
 /// Basic API integration tests to verify server is running and responding

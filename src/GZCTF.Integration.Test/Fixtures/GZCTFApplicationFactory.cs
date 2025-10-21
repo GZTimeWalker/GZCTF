@@ -10,7 +10,7 @@ using GZCTF.Models;
 using Testcontainers.PostgreSql;
 using Xunit;
 
-namespace GZCTF.Integration.Test;
+namespace GZCTF.Integration.Test.Fixtures;
 
 /// <summary>
 /// Test application factory for integration tests with PostgreSQL testcontainer
