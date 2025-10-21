@@ -6,9 +6,18 @@ using Xunit.Abstractions;
 namespace GZCTF.Integration.Test;
 
 /// <summary>
+/// Collection to ensure tests don't run in parallel (share the same factory instance)
+/// </summary>
+[CollectionDefinition(nameof(IntegrationTestCollection))]
+public class IntegrationTestCollection : ICollectionFixture<GZCTFApplicationFactory>
+{
+}
+
+/// <summary>
 /// Basic API integration tests to verify server is running and responding
 /// </summary>
-public class BasicApiTests : IClassFixture<GZCTFApplicationFactory>
+[Collection(nameof(IntegrationTestCollection))]
+public class BasicApiTests
 {
     private readonly HttpClient _client;
     private readonly ITestOutputHelper _output;
@@ -22,26 +31,20 @@ public class BasicApiTests : IClassFixture<GZCTFApplicationFactory>
     }
 
     [Fact]
-    public async Task HealthCheck_ReturnsOk()
+    public async Task Server_IsRunning_AndResponding()
     {
-        // Health endpoint is on metrics port (3000), but we disabled it in tests
-        // Instead we test the root endpoint to verify server is running
-        var response = await _client.GetAsync("/");
+        // Verify the server is running by checking an actual API endpoint
+        var response = await _client.GetAsync("/api/Config");
         _output.WriteLine($"Status: {response.StatusCode}");
         
-        // Should return OK or redirect, either is fine for basic health check
-        Assert.True(
-            response.StatusCode == HttpStatusCode.OK || 
-            response.StatusCode == HttpStatusCode.Redirect ||
-            response.StatusCode == HttpStatusCode.MovedPermanently,
-            $"Expected OK, Redirect, or MovedPermanently but got {response.StatusCode}"
-        );
+        response.EnsureSuccessStatusCode();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public async Task Api_Info_ReturnsServerInfo()
+    public async Task Api_Config_ReturnsServerConfig()
     {
-        var response = await _client.GetAsync("/api/info");
+        var response = await _client.GetAsync("/api/Config");
         _output.WriteLine($"Status: {response.StatusCode}");
         
         response.EnsureSuccessStatusCode();
@@ -70,7 +73,7 @@ public class BasicApiTests : IClassFixture<GZCTFApplicationFactory>
     [Fact]
     public async Task Api_Account_Register_WithoutData_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/api/account/register", new { });
+        var response = await _client.PostAsJsonAsync("/api/Account/Register", new { });
         _output.WriteLine($"Status: {response.StatusCode}");
         
         // Should fail validation
@@ -84,7 +87,7 @@ public class BasicApiTests : IClassFixture<GZCTFApplicationFactory>
     [Fact]
     public async Task Api_Unauthenticated_Profile_ReturnsUnauthorized()
     {
-        var response = await _client.GetAsync("/api/account/profile");
+        var response = await _client.GetAsync("/api/Account/Profile");
         _output.WriteLine($"Status: {response.StatusCode}");
         
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);

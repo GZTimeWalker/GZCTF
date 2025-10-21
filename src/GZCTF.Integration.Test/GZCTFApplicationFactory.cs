@@ -26,16 +26,27 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         .Build();
 
     private string? _connectionString;
+    private readonly string _testId = Guid.NewGuid().ToString("N")[..8];
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         // Set environment variable to allow file directory creation
         Environment.SetEnvironmentVariable("YES_I_KNOW_FILES_ARE_NOT_PERSISTED_GO_AHEAD_PLEASE", "true");
 
-        builder.UseEnvironment("Test");
+        builder.UseEnvironment("Development");
         
-        // Set content root to the test project output directory so appsettings.Test.json is found
-        var testProjectDir = Directory.GetCurrentDirectory();
+        // Set content root to a unique test directory to avoid file conflicts
+        var testProjectDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
+        Directory.CreateDirectory(testProjectDir);
+        
+        // Copy appsettings.Test.json to the test directory
+        var sourceConfig = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Test.json");
+        var destConfig = Path.Combine(testProjectDir, "appsettings.Test.json");
+        if (File.Exists(sourceConfig))
+        {
+            File.Copy(sourceConfig, destConfig, true);
+        }
+        
         builder.UseContentRoot(testProjectDir);
         
         builder.ConfigureAppConfiguration((context, config) =>
@@ -100,5 +111,19 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
     {
         await _postgresContainer.DisposeAsync();
         await base.DisposeAsync();
+        
+        // Clean up test directory
+        var testProjectDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
+        if (Directory.Exists(testProjectDir))
+        {
+            try
+            {
+                Directory.Delete(testProjectDir, true);
+            }
+            catch
+            {
+                // Ignore cleanup errors
+            }
+        }
     }
 }
