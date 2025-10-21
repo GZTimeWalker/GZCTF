@@ -9,6 +9,9 @@ using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoFixture;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 namespace GZCTF.Test.Infrastructure;
 
@@ -52,13 +55,14 @@ public static class TestDataFactory
     {
         captain ??= CreateUser();
         
-        var team = _fixture.Build<Team>()
-            .With(t => t.Name, teamName ?? _fixture.Create<string>())
-            .With(t => t.Captain, captain)
-            .With(t => t.CaptainId, captain.Id)
-            .Without(t => t.Members)
-            .Without(t => t.Participations)
-            .Create();
+        var team = new Team
+        {
+            Name = teamName ?? $"TestTeam_{Guid.NewGuid().ToString()[..8]}",
+            Captain = captain,
+            CaptainId = captain.Id,
+            Bio = "Test team bio",
+            Locked = false
+        };
 
         return team;
     }
@@ -69,15 +73,23 @@ public static class TestDataFactory
     public static Game CreateGame(string? title = null, DateTimeOffset? start = null, DateTimeOffset? end = null)
     {
         var now = DateTimeOffset.UtcNow;
+        var kpg = new Ed25519KeyPairGenerator();
+        kpg.Init(new Org.BouncyCastle.Crypto.KeyGenerationParameters(new SecureRandom(), 256));
+        var kp = kpg.GenerateKeyPair();
+        var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
+        var publicKey = (Ed25519PublicKeyParameters)kp.Public;
         
-        var game = _fixture.Build<Game>()
-            .With(g => g.Title, title ?? _fixture.Create<string>())
-            .With(g => g.StartTimeUtc, start ?? now.AddDays(1))
-            .With(g => g.EndTimeUtc, end ?? now.AddDays(2))
-            .Without(g => g.Challenges)
-            .Without(g => g.Participations)
-            .Without(g => g.Submissions)
-            .Create();
+        var game = new Game
+        {
+            Title = title ?? $"TestGame_{Guid.NewGuid().ToString()[..8]}",
+            StartTimeUtc = start ?? now.AddDays(1),
+            EndTimeUtc = end ?? now.AddDays(2),
+            PublicKey = Convert.ToBase64String(publicKey.GetEncoded()),
+            PrivateKey = Convert.ToBase64String(privateKey.GetEncoded()),
+            Hidden = false,
+            PracticeMode = true,
+            AcceptWithoutReview = true
+        };
 
         return game;
     }
@@ -89,19 +101,20 @@ public static class TestDataFactory
     {
         game ??= CreateGame();
         
-        var challenge = _fixture.Build<GameChallenge>()
-            .With(c => c.Title, title ?? _fixture.Create<string>())
-            .With(c => c.OriginalScore, points)
-            .With(c => c.Game, game)
-            .With(c => c.GameId, game.Id)
-            .With(c => c.Type, ChallengeType.StaticAttachment)
-            .With(c => c.IsEnabled, true)
-            .Without(c => c.Flags)
-            .Without(c => c.Instances)
-            .Without(c => c.Submissions)
-            .Without(c => c.Attachment)
-            .Without(c => c.TestContainer)
-            .Create();
+        var challenge = new GameChallenge
+        {
+            Title = title ?? $"TestChallenge_{Guid.NewGuid().ToString()[..8]}",
+            OriginalScore = points,
+            Game = game,
+            GameId = game.Id,
+            Type = ChallengeType.StaticAttachment,
+            IsEnabled = true,
+            Content = "Test challenge content",
+            Difficulty = 5.0,
+            MinScoreRate = 0.25,
+            EnableTrafficCapture = false,
+            DisableBloodBonus = false
+        };
 
         return challenge;
     }
@@ -113,12 +126,13 @@ public static class TestDataFactory
     {
         challenge ??= CreateChallenge();
         
-        var flagContext = _fixture.Build<FlagContext>()
-            .With(f => f.Flag, flag ?? $"flag{{{_fixture.Create<string>()}}}")
-            .With(f => f.Challenge, challenge)
-            .With(f => f.ChallengeId, challenge.Id)
-            .Without(f => f.Attachment)
-            .Create();
+        var flagContext = new FlagContext
+        {
+            Flag = flag ?? $"flag{{{Guid.NewGuid().ToString()[..16]}}}",
+            Challenge = challenge,
+            ChallengeId = challenge.Id,
+            IsOccupied = false
+        };
 
         return flagContext;
     }
@@ -137,17 +151,19 @@ public static class TestDataFactory
         team ??= CreateTeam(user);
         challenge ??= CreateChallenge();
         
-        var submission = _fixture.Build<Submission>()
-            .With(s => s.Answer, answer ?? _fixture.Create<string>())
-            .With(s => s.Status, status)
-            .With(s => s.SubmitTimeUtc, DateTimeOffset.UtcNow)
-            .With(s => s.User, user)
-            .With(s => s.UserId, user.Id)
-            .With(s => s.Team, team)
-            .With(s => s.TeamId, team.Id)
-            .With(s => s.GameChallenge, challenge)
-            .With(s => s.ChallengeId, challenge.Id)
-            .Create();
+        var submission = new Submission
+        {
+            Answer = answer ?? "test_answer",
+            Status = status,
+            SubmitTimeUtc = DateTimeOffset.UtcNow,
+            User = user,
+            UserId = user.Id,
+            Team = team,
+            TeamId = team.Id,
+            GameChallenge = challenge,
+            ChallengeId = challenge.Id,
+            GameId = challenge.GameId
+        };
 
         return submission;
     }
@@ -160,17 +176,15 @@ public static class TestDataFactory
         team ??= CreateTeam();
         game ??= CreateGame();
         
-        var participation = _fixture.Build<Participation>()
-            .With(p => p.Team, team)
-            .With(p => p.TeamId, team.Id)
-            .With(p => p.Game, game)
-            .With(p => p.GameId, game.Id)
-            .With(p => p.Status, status)
-            .Without(p => p.Members)
-            .Without(p => p.Instances)
-            .Without(p => p.Submissions)
-            .Without(p => p.Writeup)
-            .Create();
+        var participation = new Participation
+        {
+            Team = team,
+            TeamId = team.Id,
+            Game = game,
+            GameId = game.Id,
+            Status = status,
+            Token = Guid.NewGuid().ToString()
+        };
 
         return participation;
     }
@@ -180,14 +194,16 @@ public static class TestDataFactory
     /// </summary>
     public static Post CreatePost(UserInfo? author = null, string? title = null, string? content = null)
     {
-        var post = _fixture.Build<Post>()
-            .With(p => p.Title, title ?? _fixture.Create<string>())
-            .With(p => p.Content, content ?? _fixture.Create<string>())
-            .With(p => p.Author, author)
-            .With(p => p.AuthorId, author?.Id)
-            .With(p => p.UpdateTimeUtc, DateTimeOffset.UtcNow)
-            .With(p => p.IsPinned, false)
-            .Create();
+        var post = new Post
+        {
+            Title = title ?? $"TestPost_{Guid.NewGuid().ToString()[..8]}",
+            Content = content ?? "Test post content",
+            Author = author,
+            AuthorId = author?.Id,
+            UpdateTimeUtc = DateTimeOffset.UtcNow,
+            IsPinned = false,
+            Summary = "Test summary"
+        };
 
         return post;
     }
