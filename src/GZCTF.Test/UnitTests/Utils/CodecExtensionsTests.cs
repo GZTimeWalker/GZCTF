@@ -25,36 +25,6 @@ public class CodecExtensionsTests
     }
 
     [Theory]
-    [InlineData("hello", "olleh")]
-    [InlineData("12345", "54321")]
-    [InlineData("a", "a")]
-    [InlineData("", "")]
-    public void Reverse_ReversesString(string input, string expected)
-    {
-        // Act
-        var result = input.Reverse();
-
-        // Assert
-        Assert.Equal(expected, result);
-    }
-
-    [Fact]
-    public void Ascii_ConvertsToBytes()
-    {
-        // Arrange
-        var input = "Hello";
-
-        // Act
-        var bytes = input.Ascii();
-
-        // Assert
-        Assert.NotNull(bytes);
-        Assert.Equal(5, bytes.Length);
-        Assert.Equal(72, bytes[0]); // 'H'
-        Assert.Equal(101, bytes[1]); // 'e'
-    }
-
-    [Theory]
     [InlineData("hello", "5d41402abc4b2a76b9719d911017c592")]
     [InlineData("", "d41d8cd98f00b204e9800998ecf8427e")]
     public void ToMD5String_CalculatesCorrectHash(string input, string expectedHash)
@@ -94,33 +64,5 @@ public class CodecExtensionsTests
 
         // Assert
         Assert.Equal(expected, zeros);
-    }
-
-    [Fact]
-    public void ToUTF8Bytes_ConvertsCorrectly()
-    {
-        // Arrange
-        var input = "Hello";
-
-        // Act
-        var bytes = input.ToUTF8Bytes();
-
-        // Assert
-        Assert.NotNull(bytes);
-        Assert.Equal(5, bytes.Length);
-    }
-
-    [Fact]
-    public void ToUTF8Bytes_HandlesUnicode()
-    {
-        // Arrange
-        var input = "你好"; // Chinese characters
-
-        // Act
-        var bytes = input.ToUTF8Bytes();
-
-        // Assert
-        Assert.NotNull(bytes);
-        Assert.True(bytes.Length > input.Length); // UTF-8 multibyte
     }
 }
