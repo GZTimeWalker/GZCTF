@@ -283,7 +283,7 @@ public class GameInstanceRepository(
                 .Select(c => new { c.Id, c.Type, c.DisableBloodBonus })
                 .SingleAsync(c => c.Id == submission.ChallengeId, token);
 
-            if (instance.FlagContext is null && challenge.Type.IsStatic() is true)
+            if (instance.FlagContext is null && challenge.Type.IsStatic())
             {
                 updateSub.Status = await Context.FlagContexts.AsNoTracking()
                     .AnyAsync(
@@ -306,6 +306,11 @@ public class GameInstanceRepository(
                 return new(SubmissionType.Unaccepted, updateSub.Status);
             }
 
+            // Acquire a PostgresSQL advisory lock to prevent race conditions:
+            // This lock ensures that only one concurrent submission for the same participation/challenge pair
+            // can proceed past this point, preventing duplicate FirstSolve entries if multiple submissions
+            // are processed at the same time. Without this, two submissions could both pass the check and
+            // insert duplicate records.
             await Context.Database.ExecuteSqlRawAsync("SELECT pg_advisory_xact_lock({0}, {1})",
                 [updateSub.ParticipationId, updateSub.ChallengeId],
                 cancellationToken: token);
@@ -402,10 +407,10 @@ public class GameInstanceRepository(
                   && eligibleParticipationIds.Contains(fs.ParticipationId)
                   && submission.SubmitTimeUtc >= start
                   && submission.SubmitTimeUtc < end
+            orderby submission.SubmitTimeUtc
             select fs.ParticipationId
-        ).CountAsync(token);
+        ).Take(4).CountAsync(token);
     }
-
 
     static bool HasPermission(Division? division, GamePermission permission, int challengeId)
     {

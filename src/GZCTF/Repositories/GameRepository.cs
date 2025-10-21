@@ -267,7 +267,7 @@ public class GameRepository(
         Dictionary<int, ScoreboardItem> items;
         Dictionary<int, ChallengeInfo> challenges;
         Dictionary<int, DivisionItem> divisions;
-        Dictionary<int, (int OriginalScore, double MinScoreRate, double Difficulty)> challengeMetas;
+        Dictionary<int, ChallengeScoreMeta> challengeMetas;
         List<SolveSnapshot> solveSnapshots;
 
         // 0. Begin transaction
@@ -328,37 +328,30 @@ public class GameRepository(
                 .Where(c => c.GameId == game.Id && c.IsEnabled)
                 .OrderBy(c => c.Category)
                 .ThenBy(c => c.Title)
-                .Select(c => new
-                {
+                .Select(c => new ChallengeRecord
+                (
                     c.Id,
-                    c.Title,
-                    c.Category,
-                    c.OriginalScore,
-                    c.MinScoreRate,
-                    c.Difficulty,
-                    c.DeadlineUtc,
-                    c.DisableBloodBonus
-                })
-                .ToListAsync(token);
+                    new ChallengeScoreMeta(
+                        c.OriginalScore,
+                        c.MinScoreRate,
+                        c.Difficulty),
+                    new ChallengeInfo
+                    {
+                        Id = c.Id,
+                        Title = c.Title,
+                        Category = c.Category,
+                        Score = c.OriginalScore,
+                        SolvedCount = 0,
+                        DeadlineUtc = c.DeadlineUtc,
+                        DisableBloodBonus = c.DisableBloodBonus
+                    }
+                ))
+                .ToDictionaryAsync(c => c.Id, c => c, token);
 
-            challengeMetas = challengeRecords.ToDictionary(
-                c => c.Id,
-                c => (c.OriginalScore, c.MinScoreRate, c.Difficulty));
+            challenges = challengeRecords.ToDictionary(c => c.Key, c => c.Value.Info);
+            challengeMetas = challengeRecords.ToDictionary(c => c.Key, c => c.Value.Meta);
 
-            challenges = challengeRecords.ToDictionary(
-                c => c.Id,
-                c => new ChallengeInfo
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    Category = c.Category,
-                    Score = c.OriginalScore,
-                    SolvedCount = 0,
-                    DeadlineUtc = c.DeadlineUtc,
-                    DisableBloodBonus = c.DisableBloodBonus
-                });
-
-            var challengeIds = challengeRecords.Select(c => c.Id).ToArray();
+            var challengeIds = challengeRecords.Keys.ToArray();
 
             // 4. fetch all recorded first solves for this game
             solveSnapshots = await Context.FirstSolves
@@ -582,6 +575,16 @@ public class GameRepository(
             BloodBonusValue = game.BloodBonus.Val
         };
     }
+
+    readonly record struct ChallengeRecord(
+        int Id,
+        ChallengeScoreMeta Meta,
+        ChallengeInfo Info);
+
+    readonly record struct ChallengeScoreMeta(
+        int OriginalScore,
+        double MinScoreRate,
+        double Difficulty);
 
     readonly record struct SolveSnapshot(
         int ChallengeId,
