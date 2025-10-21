@@ -22,6 +22,7 @@
         "delete": "Delete",
         "save": "Save Template"
       },
+      "flush_scoreboard": "Refresh Scoreboard",
       "hint": {
         "add": "Add Hint"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "Create",
         "destroy": "Destroy"
-      },
-      "update_accept_count": "Update AC Counter"
+      }
     },
     "divisions": {
       "edit": "Edit Division",
@@ -476,7 +476,6 @@
         "updated": "Division updated"
       },
       "info": {
-        "accept_count_updated": "AC counter updated",
         "deleted": "Game deleted",
         "info_updated": "Game updated",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "Poster successfully uploaded",
           "uploading": "Uploading poster..."
         },
-        "public_key_copied": "Public key copied to clipboard"
+        "public_key_copied": "Public key copied to clipboard",
+        "scoreboard_flushed": "Scoreboard cache flushed"
       },
       "instances": {
         "created": "Instance created",
