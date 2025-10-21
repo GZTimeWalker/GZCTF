@@ -22,6 +22,7 @@
         "delete": "Hapus",
         "save": "Simpan template"
       },
+      "flush_scoreboard": "Segarkan papan skor",
       "hint": {
         "add": "Tambahkan hint"
       },
@@ -32,8 +33,7 @@
       "test_container": {
         "create": "Buat",
         "destroy": "Hapus"
-      },
-      "update_accept_count": "Perbarui AC Counter"
+      }
     },
     "divisions": {
       "edit": "Edit divisi",
@@ -476,7 +476,6 @@
         "updated": "Divisi diperbarui"
       },
       "info": {
-        "accept_count_updated": "AC counter diperbarui",
         "deleted": "Game dihapus",
         "info_updated": "Game diperbarui",
         "poster": {
@@ -484,7 +483,8 @@
           "uploaded": "Poster berhasil diunggah",
           "uploading": "Mengunggah poster..."
         },
-        "public_key_copied": "Public key disalin ke clipboard"
+        "public_key_copied": "Public key disalin ke clipboard",
+        "scoreboard_flushed": "Cache papan skor telah disegarkan"
       },
       "instances": {
         "created": "Instance berhasil dibuat",
