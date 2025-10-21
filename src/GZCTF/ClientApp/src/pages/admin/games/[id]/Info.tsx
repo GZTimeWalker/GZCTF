@@ -28,7 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
-import { randomInviteCode, showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
+import { getInputNumber, randomInviteCode, showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
@@ -216,7 +216,11 @@ const GameInfoEdit: FC = () => {
           min={0}
           required
           value={game?.teamMemberCountLimit}
-          onChange={(e) => game && setGame({ ...game, teamMemberCountLimit: Number(e) })}
+          onChange={(e) => {
+            const number = getInputNumber(e)
+            if (!game || isNaN(number)) return
+            setGame({ ...game, teamMemberCountLimit: number })
+          }}
         />
         <NumberInput
           label={t('admin.content.games.info.container_limit.label')}
@@ -225,7 +229,11 @@ const GameInfoEdit: FC = () => {
           min={0}
           required
           value={game?.containerCountLimit}
-          onChange={(e) => game && setGame({ ...game, containerCountLimit: Number(e) })}
+          onChange={(e) => {
+            const number = getInputNumber(e)
+            if (!game || isNaN(number)) return
+            setGame({ ...game, containerCountLimit: number })
+          }}
         />
         <TextInput
           label={t('admin.content.games.info.invite_code.label')}
@@ -321,7 +329,7 @@ const GameInfoEdit: FC = () => {
               min={0}
               required
               value={wpddl}
-              onChange={(e) => setWpddl(Number(e))}
+              onChange={(e) => setWpddl(getInputNumber(e))}
             />
           </Group>
           <Textarea

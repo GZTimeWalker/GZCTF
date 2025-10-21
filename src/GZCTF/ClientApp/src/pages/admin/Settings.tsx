@@ -27,7 +27,7 @@ import { LogoBox } from '@Components/LogoBox'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { webCryptoAvailable } from '@Utils/Crypto'
-import { showErrorMsg } from '@Utils/Shared'
+import { getInputNumber, showErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
@@ -342,10 +342,9 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.defaultLifetime ?? 120}
               onChange={(e) => {
-                if (typeof e === 'string') return
-
-                const num = e ? Math.min(Math.max(e, 1), 7200) : 120
-                setContainerPolicy({ ...containerPolicy, defaultLifetime: num })
+                const number = getInputNumber(e)
+                if (isNaN(number)) return
+                setContainerPolicy({ ...containerPolicy, defaultLifetime: number })
               }}
             />
             <NumberInput
@@ -357,10 +356,9 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.extensionDuration ?? 120}
               onChange={(e) => {
-                if (typeof e === 'string') return
-
-                const num = e ? Math.min(Math.max(e, 1), 7200) : 120
-                setContainerPolicy({ ...containerPolicy, extensionDuration: num })
+                const number = getInputNumber(e)
+                if (isNaN(number)) return
+                setContainerPolicy({ ...containerPolicy, extensionDuration: number })
               }}
             />
             <NumberInput
@@ -372,10 +370,9 @@ const Configs: FC = () => {
               disabled={disabled}
               value={containerPolicy?.renewalWindow ?? 10}
               onChange={(e) => {
-                if (typeof e === 'string') return
-
-                const num = e ? Math.min(Math.max(e, 1), 360) : 10
-                setContainerPolicy({ ...containerPolicy, renewalWindow: num })
+                const number = getInputNumber(e)
+                if (isNaN(number)) return
+                setContainerPolicy({ ...containerPolicy, renewalWindow: number })
               }}
             />
             <Switch
