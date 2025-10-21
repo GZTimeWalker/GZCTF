@@ -256,3 +256,6 @@ _Pvt_Extensions
 **/files/**
 **/uploads/**
 **/.DS_Store
+
+# Node package lock files (npm)
+**/package-lock.json

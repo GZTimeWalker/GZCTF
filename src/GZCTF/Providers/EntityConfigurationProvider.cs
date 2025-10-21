@@ -55,6 +55,11 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
 
                 _lastHash = computedHash;
             }
+            catch (TaskCanceledException)
+            {
+                // Expected during shutdown or test cleanup, don't log as error
+                break;
+            }
             catch (Exception ex)
             {
                 Log.Logger?.Error(ex, StaticLocalizer[nameof(Resources.Program.Config_ReloadFailed)]);

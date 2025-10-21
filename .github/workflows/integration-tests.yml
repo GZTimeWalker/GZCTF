@@ -1,0 +1,91 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: ["develop", "ci/*", "v*"]
+    paths: 
+      - "src/**"
+      - ".github/workflows/integration-tests.yml"
+  pull_request:
+    branches: ["develop"]
+    paths:
+      - "src/**"
+      - ".github/workflows/integration-tests.yml"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: src/global.json
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: latest
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Restore dependencies
+        working-directory: src
+        run: dotnet restore
+
+      - name: Build
+        working-directory: src
+        run: dotnet build --no-restore -c Release
+
+      - name: Run Unit Tests
+        working-directory: src
+        run: dotnet test GZCTF.Test/GZCTF.Test.csproj --no-build -c Release --logger "trx;LogFileName=unit-test-results.trx" --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+      - name: Run Integration Tests
+        working-directory: src
+        run: dotnet test GZCTF.Integration.Test/GZCTF.Integration.Test.csproj --no-build -c Release --logger "trx;LogFileName=integration-test-results.trx" --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+      - name: Upload Unit Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: src/GZCTF.Test/**/unit-test-results.trx
+          retention-days: 7
+
+      - name: Upload Integration Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: src/GZCTF.Integration.Test/**/integration-test-results.trx
+          retention-days: 7
+
+      - name: Upload Coverage Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            src/GZCTF.Test/coverage/coverage.cobertura.xml
+            src/GZCTF.Integration.Test/coverage/coverage.cobertura.xml
+          retention-days: 7
+
+      - name: Unit Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Unit Test Results
+          path: src/GZCTF.Test/**/unit-test-results.trx
+          reporter: dotnet-trx
+
+      - name: Integration Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Integration Test Results
+          path: src/GZCTF.Integration.Test/**/integration-test-results.trx
+          reporter: dotnet-trx
