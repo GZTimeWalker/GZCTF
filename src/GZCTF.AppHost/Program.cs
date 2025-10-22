@@ -1,4 +1,3 @@
-using Aspire.Hosting;
 using Microsoft.Extensions.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -19,10 +18,7 @@ var apiService = builder.AddProject<Projects.GZCTF>("GZCTF")
     .WithReference(redis)
     .WithEnvironment("Telemetry__OpenTelemetry__Enable", "true")
     .WithEnvironment("Telemetry__Prometheus__Enable", "true")
-    .WithEndpoint("http", e =>
-    {
-        e.IsProxied = false;
-    })
+    .WithEndpoint("http", e => e.IsProxied = false)
     .WithOtlpExporter();
 
 if (!builder.Environment.IsDevelopment())
