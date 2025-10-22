@@ -1,0 +1,24 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="GenAPI" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="GZCTF.AppHost/GZCTF.AppHost.csproj">
+    <BuildType Solution="GenAPI|*" Project="Debug" />
+  </Project>
+  <Project Path="GZCTF.Integration.Test/GZCTF.Integration.Test.csproj">
+    <BuildType Solution="GenAPI|*" Project="Debug" />
+  </Project>
+  <Project Path="GZCTF.Test/GZCTF.Test.csproj" />
+  <Project Path="GZCTF/GZCTF.csproj" />
+  <Properties Name="MonoDevelopProperties">
+    <Property Name="version" Value="1.7.0" />
+  </Properties>
+</Solution>

@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.5.1" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
@@ -8,15 +8,12 @@
     <IsAspireHost>true</IsAspireHost>
     <UserSecretsId>f3396213-2192-42cc-8c19-02af2ab41772</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.Redis" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\GZCTF\GZCTF.csproj" />
   </ItemGroup>
-
 </Project>

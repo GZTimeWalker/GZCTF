@@ -37,8 +37,16 @@ static class AppBuilderExtensions
 
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
+        builder.Logging.AddSerilog(dispose: true);
         builder.Host.UseSerilog(dispose: true);
         builder.Configuration.AddEnvironmentVariables("GZCTF_");
+
+        builder.Services.AddServiceDiscovery();
+        builder.Services.ConfigureHttpClientDefaults(http =>
+        {
+            http.AddStandardResilienceHandler();
+            http.AddServiceDiscovery();
+        });
     }
 
     internal static void ConfigureCacheAndSignalR(this WebApplicationBuilder builder)

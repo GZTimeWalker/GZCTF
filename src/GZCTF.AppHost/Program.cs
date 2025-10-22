@@ -1,35 +1,32 @@
+using Aspire.Hosting;
+using Microsoft.Extensions.Hosting;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
-var isDevelopment = builder.Environment.EnvironmentName == "Development";
+var postgres = builder.AddPostgres("PostgreSQL").WithDataVolume();
 
-// PostgreSQL database
-var postgres = builder.AddPostgres("postgres")
-    .WithEnvironment("POSTGRES_DB", "gzctf")
-    .WithDataVolume();
-
-// Add PgAdmin only in development
-if (isDevelopment)
+if (builder.Environment.IsDevelopment())
 {
     postgres.WithPgAdmin();
 }
 
-var database = postgres.AddDatabase("database");
+var database = postgres.AddDatabase("Database");
 
-// Redis cache and SignalR backplane
-var redis = builder.AddRedis("redis")
-    .WithDataVolume();
+var redis = builder.AddRedis("Redis").WithDataVolume();
 
-// GZCTF Backend API
-var apiService = builder.AddProject<Projects.GZCTF>("gzctf")
+var apiService = builder.AddProject<Projects.GZCTF>("GZCTF")
     .WithReference(database)
     .WithReference(redis)
-    .WithEnvironment("ASPNETCORE_ENVIRONMENT", isDevelopment ? "Development" : "Production")
-    .WithEnvironment("DOTNET_RUNNING_IN_ASPIRE", "true");
+    .WithEnvironment("Telemetry__OpenTelemetry__Enable", "true")
+    .WithEnvironment("Telemetry__Prometheus__Enable", "true")
+    .WithEndpoint("http", e =>
+    {
+        e.IsProxied = false;
+    })
+    .WithOtlpExporter();
 
-// Enable Kubernetes manifest generation for production deployment
-if (!isDevelopment)
+if (!builder.Environment.IsDevelopment())
 {
-    // Configure for production deployment
     apiService.WithEnvironment("Storage__ConnectionString", "disk://path=/app/files");
 }
 
