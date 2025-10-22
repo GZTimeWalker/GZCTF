@@ -23,7 +23,7 @@ public class DockerMetadata : ContainerProviderMetadata
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>
-    public static string GetName(ContainerConfig config) =>
+    public static string GetName(GZCTF.Models.Internal.ContainerConfig config) =>
         $"{config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault()}_" +
         (config.Flag ?? Guid.NewGuid().ToString("N")).ToMD5String()[..16];
 }

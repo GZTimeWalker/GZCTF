@@ -6,7 +6,6 @@
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
-using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
@@ -68,7 +67,7 @@ public class SwarmManager : IContainerManager
         container.Status = ContainerStatus.Destroyed;
     }
 
-    public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
+    public async Task<Models.Data.Container?> CreateContainerAsync(GZCTF.Models.Internal.ContainerConfig config,
         CancellationToken token = default)
     {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
@@ -168,7 +167,7 @@ public class SwarmManager : IContainerManager
         return container;
     }
 
-    ServiceCreateParameters GetServiceCreateParameters(ContainerConfig config)
+    ServiceCreateParameters GetServiceCreateParameters(GZCTF.Models.Internal.ContainerConfig config)
     {
         // GZCTF_FLAG is Per-team dynamic flag issued & audited by the platform.
         //

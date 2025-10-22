@@ -6,7 +6,6 @@
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
-using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
@@ -69,7 +68,7 @@ public class DockerManager : IContainerManager
         container.Status = ContainerStatus.Destroyed;
     }
 
-    public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
+    public async Task<Models.Data.Container?> CreateContainerAsync(GZCTF.Models.Internal.ContainerConfig config,
         CancellationToken token = default)
     {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
@@ -246,7 +245,7 @@ public class DockerManager : IContainerManager
         return container;
     }
 
-    CreateContainerParameters GetCreateContainerParameters(ContainerConfig config) =>
+    CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
         new()
         {
             Image = config.Image,
