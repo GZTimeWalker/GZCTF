@@ -1,3 +1,4 @@
+using GZCTF.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -6,11 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using GZCTF.Models;
 using Testcontainers.PostgreSql;
 using Xunit;
 
-namespace GZCTF.Integration.Test.Fixtures;
+namespace GZCTF.Integration.Test.Base;
 
 /// <summary>
 /// Test application factory for integration tests with PostgreSQL testcontainer
@@ -128,3 +128,9 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         }
     }
 }
+
+/// <summary>
+/// Collection to ensure tests don't run in parallel (share the same factory instance)
+/// </summary>
+[CollectionDefinition(nameof(IntegrationTestCollection))]
+public class IntegrationTestCollection : ICollectionFixture<GZCTFApplicationFactory>;

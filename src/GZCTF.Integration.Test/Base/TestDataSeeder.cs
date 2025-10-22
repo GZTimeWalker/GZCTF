@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Repositories.Interface;
@@ -11,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace GZCTF.Integration.Test.Fixtures;
+namespace GZCTF.Integration.Test.Base;
 
 public static class TestDataSeeder
 {
@@ -151,7 +146,14 @@ public static class TestDataSeeder
         return new SeededChallenge(challenge.Id, challenge.Title, flag);
     }
 
-    private static string NormalizeUserName(string userName)
+    public static string RandomName(int length = 15)
+    {
+        Span<byte> bytes = stackalloc byte[length * 6 / 8 + 1];
+        Random.Shared.NextBytes(bytes);
+        return SimpleBase.Base62.Default.Encode(bytes)[..length];
+    }
+
+    private static string NormalizeUserName(string? userName)
     {
         var trimmed = (userName ?? string.Empty).Trim();
 

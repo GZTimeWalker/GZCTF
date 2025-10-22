@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using GZCTF.Integration.Test.Fixtures;
+using GZCTF.Integration.Test.Base;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,16 +10,9 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// Tests for authentication and authorization workflows
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class AuthenticationTests
+public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
-    private readonly HttpClient _client;
-    private readonly ITestOutputHelper _output;
-
-    public AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
-    {
-        _output = output;
-        _client = factory.CreateClient();
-    }
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task Register_WithValidData_ReturnsSuccess()
@@ -27,23 +20,23 @@ public class AuthenticationTests
         // Arrange
         var registerModel = new
         {
-            userName = $"testuser_{Guid.NewGuid():N}",
+            userName = TestDataSeeder.RandomName(),
             password = "TestPassword123!",
             email = $"test_{Guid.NewGuid():N}@example.com"
         };
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
-        _output.WriteLine($"Status: {response.StatusCode}");
-        
+        output.WriteLine($"Status: {response.StatusCode}");
+
         var content = await response.Content.ReadAsStringAsync();
-        _output.WriteLine($"Response: {content}");
+        output.WriteLine($"Response: {content}");
 
         // Assert
         // Registration might succeed or fail depending on global config
         // We just verify we get a valid response (not a 404 or 500)
         Assert.True(
-            response.StatusCode == HttpStatusCode.OK || 
+            response.StatusCode == HttpStatusCode.OK ||
             response.StatusCode == HttpStatusCode.BadRequest,
             $"Expected OK or BadRequest but got {response.StatusCode}"
         );
@@ -55,14 +48,14 @@ public class AuthenticationTests
         // Arrange
         var registerModel = new
         {
-            userName = "testuser",
+            userName = TestDataSeeder.RandomName(),
             password = "TestPassword123!",
             email = "invalid-email"
         };
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
-        _output.WriteLine($"Status: {response.StatusCode}");
+        output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -81,7 +74,7 @@ public class AuthenticationTests
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
-        _output.WriteLine($"Status: {response.StatusCode}");
+        output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -95,7 +88,7 @@ public class AuthenticationTests
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/LogIn", loginModel);
-        _output.WriteLine($"Status: {response.StatusCode}");
+        output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -106,7 +99,7 @@ public class AuthenticationTests
     {
         // Act
         var response = await _client.PostAsync("/api/Account/LogOut", null);
-        _output.WriteLine($"Status: {response.StatusCode}");
+        output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -124,14 +117,14 @@ public class AuthenticationTests
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/Verify", verifyModel);
-        _output.WriteLine($"Status: {response.StatusCode}");
-        
+        output.WriteLine($"Status: {response.StatusCode}");
+
         var content = await response.Content.ReadAsStringAsync();
-        _output.WriteLine($"Response: {content}");
+        output.WriteLine($"Response: {content}");
 
         // Assert - endpoint returns OK with error message in body
         Assert.True(
-            response.StatusCode == HttpStatusCode.OK || 
+            response.StatusCode == HttpStatusCode.OK ||
             response.StatusCode == HttpStatusCode.BadRequest,
             $"Expected OK or BadRequest but got {response.StatusCode}"
         );

@@ -8,7 +8,7 @@ using Org.BouncyCastle.Utilities.Encoders;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace GZCTF.Test;
+namespace GZCTF.Test.UnitTests.Crypto;
 
 public class SignatureTest(ITestOutputHelper output)
 {
@@ -200,7 +200,7 @@ public class SignatureTest(ITestOutputHelper output)
         // Arrange
         const SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
         var message = "Test Message";
-        
+
         SecureRandom sr = new();
         Ed25519KeyPairGenerator kpg = new();
         kpg.Init(new Ed25519KeyGenerationParameters(sr));
@@ -208,7 +208,7 @@ public class SignatureTest(ITestOutputHelper output)
         // Generate two different key pairs
         AsymmetricCipherKeyPair kp1 = kpg.GenerateKeyPair();
         AsymmetricCipherKeyPair kp2 = kpg.GenerateKeyPair();
-        
+
         var privateKey1 = (Ed25519PrivateKeyParameters)kp1.Private;
         var publicKey2 = (Ed25519PublicKeyParameters)kp2.Public;
 
@@ -227,7 +227,7 @@ public class SignatureTest(ITestOutputHelper output)
         const SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
         var originalMessage = "Original Message";
         var modifiedMessage = "Modified Message";
-        
+
         SecureRandom sr = new();
         Ed25519KeyPairGenerator kpg = new();
         kpg.Init(new Ed25519KeyGenerationParameters(sr));

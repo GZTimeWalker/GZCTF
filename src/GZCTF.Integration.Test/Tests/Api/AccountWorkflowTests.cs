@@ -1,8 +1,5 @@
-using System;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using GZCTF.Integration.Test.Fixtures;
-using GZCTF.Models;
+using GZCTF.Integration.Test.Base;
 using GZCTF.Models.Request.Account;
 using Xunit;
 
@@ -12,27 +9,20 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// Account workflow tests covering login with seeded data
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class AccountWorkflowTests
+public class AccountWorkflowTests(GZCTFApplicationFactory factory)
 {
-    private readonly GZCTFApplicationFactory _factory;
-
-    public AccountWorkflowTests(GZCTFApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task Api_Account_Login_WithSeededUser_Succeeds()
     {
         var password = "S3eded!Pass";
-        var userName = $"sd{Guid.NewGuid():N}".Substring(0, Limits.MaxUserNameLength);
+        var userName = TestDataSeeder.RandomName();
         var email = $"{userName}@example.com";
-        var seeded = await TestDataSeeder.CreateUserAsync(_factory.Services,
+        var seeded = await TestDataSeeder.CreateUserAsync(factory.Services,
             userName,
             email,
             password);
 
-        using var client = _factory.CreateClient();
+        using var client = factory.CreateClient();
 
         var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
         {

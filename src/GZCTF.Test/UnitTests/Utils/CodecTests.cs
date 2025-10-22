@@ -74,7 +74,7 @@ public class CodecTests
 
     [Theory]
     [InlineData("flag{test}", false, true)] // Should have entropy
-    [InlineData("flag{ABC123}", false, true)] 
+    [InlineData("flag{ABC123}", false, true)]
     [InlineData("noflag", false, false)] // No entropy without braces
     public void LeetEntropy_CalculatesCorrectly(string flag, bool expectedZero, bool expectedPositive)
     {

@@ -1,10 +1,6 @@
-using System;
-using System.Linq;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
-using GZCTF.Integration.Test.Fixtures;
-using GZCTF.Models;
+using GZCTF.Integration.Test.Base;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Game;
 using GZCTF.Utils;
@@ -16,32 +12,25 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// End-to-end workflow covering team participation in a game.
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class GameWorkflowTests
+public class GameWorkflowTests(GZCTFApplicationFactory factory)
 {
-    private readonly GZCTFApplicationFactory _factory;
-
-    public GameWorkflowTests(GZCTFApplicationFactory factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task User_Can_Join_Game_and_Interact_With_Challenge()
     {
         var password = "Pl@yHard#2025";
-        var userName = $"gw{Guid.NewGuid():N}".Substring(0, Limits.MaxUserNameLength);
+        var userName = TestDataSeeder.RandomName();
         var email = $"{userName}@example.com";
 
-        var seededUser = await TestDataSeeder.CreateUserAsync(_factory.Services, userName, email, password);
-        var seededTeam = await TestDataSeeder.CreateTeamAsync(_factory.Services, seededUser.Id, $"Team {userName}");
-        var seededGame = await TestDataSeeder.CreateGameAsync(_factory.Services, "Integration Game");
+        var seededUser = await TestDataSeeder.CreateUserAsync(factory.Services, userName, email, password);
+        var seededTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, seededUser.Id, $"Team {userName}");
+        var seededGame = await TestDataSeeder.CreateGameAsync(factory.Services, "Integration Game");
         var seededChallenge = await TestDataSeeder.CreateStaticChallengeAsync(
-            _factory.Services,
+            factory.Services,
             seededGame.Id,
             "Warmup Binary",
             "flag{warmup}");
 
-        using var client = _factory.CreateClient();
+        using var client = factory.CreateClient();
 
         var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
         {

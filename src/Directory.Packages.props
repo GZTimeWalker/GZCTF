@@ -55,6 +55,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.10" />
     <PackageVersion Include="Serilog.Sinks.Grafana.Loki" Version="8.3.1" />
     <PackageVersion Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
+    <PackageVersion Include="SimpleBase" Version="5.5.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.11" />
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageVersion Include="PacketDotNet" Version="1.4.8" />
@@ -69,6 +70,6 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
     <PackageVersion Include="ZstdSharp.Port" Version="0.8.6" />
-    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.8.0" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.8.1" />
   </ItemGroup>
 </Project>

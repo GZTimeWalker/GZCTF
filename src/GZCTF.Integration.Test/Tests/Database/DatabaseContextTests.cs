@@ -1,4 +1,4 @@
-using GZCTF.Integration.Test.Fixtures;
+using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Utils;
@@ -13,27 +13,18 @@ namespace GZCTF.Integration.Test.Tests.Database;
 /// Tests for database context operations using real PostgreSQL
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class DatabaseContextTests
+public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
-    private readonly GZCTFApplicationFactory _factory;
-    private readonly ITestOutputHelper _output;
-
-    public DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
-    {
-        _factory = factory;
-        _output = output;
-    }
-
     [Fact]
     public async Task DbContext_ShouldAllowUserCRUDOperations()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
+
         var user = new UserInfo
         {
-            UserName = $"test_{Guid.NewGuid():N}"[..16], // Max 16 chars for username
+            UserName = TestDataSeeder.RandomName(),
             Email = $"test_{Guid.NewGuid():N}@test.com",
             Role = Role.User,
             EmailConfirmed = true,
@@ -43,7 +34,7 @@ public class DatabaseContextTests
         // Act - Create
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
-        _output.WriteLine($"Created user with ID: {user.Id}");
+        output.WriteLine($"Created user with ID: {user.Id}");
 
         // Act - Read
         var savedUser = await dbContext.Users.FindAsync(user.Id);
@@ -62,12 +53,12 @@ public class DatabaseContextTests
     public async Task DbContext_ShouldHandleTeamOperations()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
+
         var captain = new UserInfo
         {
-            UserName = $"cap_{Guid.NewGuid():N}"[..16], // Max 16 chars for username
+            UserName = TestDataSeeder.RandomName(),
             Email = $"captain_{Guid.NewGuid():N}@test.com",
             Role = Role.User,
             EmailConfirmed = true,
@@ -76,7 +67,7 @@ public class DatabaseContextTests
 
         var team = new Team
         {
-            Name = $"Team_{Guid.NewGuid():N}"[..20],
+            Name = TestDataSeeder.RandomName(),
             Captain = captain,
             Bio = "Test team bio",
             Locked = false
@@ -86,7 +77,7 @@ public class DatabaseContextTests
         dbContext.Users.Add(captain);
         dbContext.Teams.Add(team);
         await dbContext.SaveChangesAsync();
-        _output.WriteLine($"Created team with ID: {team.Id}");
+        output.WriteLine($"Created team with ID: {team.Id}");
 
         // Assert
         var savedTeam = await dbContext.Teams
@@ -108,13 +99,13 @@ public class DatabaseContextTests
     public async Task DbContext_ShouldHandleGameOperations()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
+
         var now = DateTimeOffset.UtcNow;
         var game = new Game
         {
-            Title = $"Game_{Guid.NewGuid():N}"[..20],
+            Title = TestDataSeeder.RandomName(),
             StartTimeUtc = now.AddDays(1),
             EndTimeUtc = now.AddDays(2),
             Hidden = false,
@@ -124,7 +115,7 @@ public class DatabaseContextTests
         // Act
         dbContext.Games.Add(game);
         await dbContext.SaveChangesAsync();
-        _output.WriteLine($"Created game with ID: {game.Id}");
+        output.WriteLine($"Created game with ID: {game.Id}");
 
         // Assert
         var savedGame = await dbContext.Games.FindAsync(game.Id);
@@ -140,12 +131,12 @@ public class DatabaseContextTests
     public async Task DbContext_ShouldHandleParticipationRelationships()
     {
         // Arrange
-        using var scope = _factory.Services.CreateScope();
+        using var scope = factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        
+
         var captain = new UserInfo
         {
-            UserName = $"cap_{Guid.NewGuid():N}"[..16], // Max 16 chars for username
+            UserName = TestDataSeeder.RandomName(),
             Email = $"captain_{Guid.NewGuid():N}@test.com",
             Role = Role.User,
             EmailConfirmed = true,
@@ -154,7 +145,7 @@ public class DatabaseContextTests
 
         var team = new Team
         {
-            Name = $"Team_{Guid.NewGuid():N}"[..20],
+            Name = TestDataSeeder.RandomName(),
             Captain = captain,
             Locked = false
         };
@@ -162,7 +153,7 @@ public class DatabaseContextTests
         var now = DateTimeOffset.UtcNow;
         var game = new Game
         {
-            Title = $"Game_{Guid.NewGuid():N}"[..20],
+            Title = TestDataSeeder.RandomName(),
             StartTimeUtc = now.AddDays(1),
             EndTimeUtc = now.AddDays(2),
             Hidden = false,
@@ -182,7 +173,7 @@ public class DatabaseContextTests
         dbContext.Games.Add(game);
         dbContext.Participations.Add(participation);
         await dbContext.SaveChangesAsync();
-        _output.WriteLine($"Created participation with Team ID: {team.Id}, Game ID: {game.Id}");
+        output.WriteLine($"Created participation with Team ID: {team.Id}, Game ID: {game.Id}");
 
         // Assert
         var savedParticipation = await dbContext.Participations

@@ -2,8 +2,8 @@ name: Integration Tests
 
 on:
   push:
-    branches: ["develop", "ci/*", "v*"]
-    paths: 
+    branches: ["work", "develop", "ci/*", "v*"]
+    paths:
       - "src/**"
       - ".github/workflows/integration-tests.yml"
   pull_request:
@@ -17,7 +17,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - uses: actions/checkout@v5
 
