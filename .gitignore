@@ -241,6 +241,7 @@ _Pvt_Extensions
 **/appsettings.json
 **/appsettings.*.json
 !**/appsettings.Template.json
+!**/GZCTF.AppHost/appsettings*.json
 **/kube-config.yaml
 
 .VSCodeCounter/*

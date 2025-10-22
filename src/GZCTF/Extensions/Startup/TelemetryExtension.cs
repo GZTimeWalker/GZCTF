@@ -3,6 +3,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Services.HealthCheck;
 using Npgsql;
 using OpenTelemetry;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -11,7 +12,7 @@ namespace GZCTF.Extensions.Startup;
 
 public static class TelemetryExtension
 {
-    static TelemetryConfig? TelemetryConfig;
+    internal static TelemetryConfig? TelemetryConfig;
 
     public static void ConfigureTelemetry(this WebApplicationBuilder builder)
     {
@@ -70,8 +71,20 @@ public static class TelemetryExtension
         if (TelemetryConfig is { AzureMonitor.Enable: true })
             otl.UseAzureMonitor(options => options.ConnectionString = TelemetryConfig.AzureMonitor.ConnectionString);
 
-        if (TelemetryConfig is { OpenTelemetry: { Enable: true, EndpointUri: not null } })
-            otl.UseOtlpExporter(TelemetryConfig.OpenTelemetry.Protocol, new(TelemetryConfig.OpenTelemetry.EndpointUri));
+        if (TelemetryConfig is { OpenTelemetry: { Enable: true, EndpointUri: var uri } })
+        {
+            builder.Logging.AddOpenTelemetry(options =>
+            {
+                options.IncludeScopes = true;
+                options.IncludeFormattedMessage = true;
+                options.ParseStateValues = true;
+            });
+
+            if (uri is null)
+                otl.UseOtlpExporter();
+            else
+                otl.UseOtlpExporter(TelemetryConfig.OpenTelemetry.Protocol, new(uri));
+        }
     }
 
     public static void MapHealthCheck(this WebApplication app) =>

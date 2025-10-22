@@ -2,7 +2,9 @@
 using System.Net;
 using System.Text;
 using GZCTF.Extensions;
+using GZCTF.Extensions.Startup;
 using GZCTF.Models.Internal;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
@@ -169,7 +171,7 @@ public static class LogHelper
         if (enableQueryLogging)
             loggerConfig = loggerConfig.MinimumLevel.Override(EFCoreQuerySource, LogEventLevel.Information);
 
-        loggerConfig.WriteTo.Async(t => t.Console(
+        loggerConfig = loggerConfig.WriteTo.Async(t => t.Console(
             new ExpressionTemplate(LogTemplate, theme: TemplateTheme.Literate),
             LogEventLevel.Debug)
         ).WriteTo.Logger(config =>
@@ -194,10 +196,9 @@ public static class LogHelper
             }
         );
 
-        if (app.Configuration.GetSection("Logging").GetSection("Loki") is not { } lokiSection || !lokiSection.Exists())
-            return loggerConfig.CreateLogger();
-
-        if (lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
+        if (app.Configuration.GetSection("Logging").GetSection("Loki") is { } lokiSection && lokiSection.Exists()
+            && lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
+        {
             loggerConfig = loggerConfig.WriteTo.GrafanaLoki(
                 lokiOptions.EndpointUri,
                 lokiOptions.Labels ?? [new() { Key = "app", Value = "gzctf" }],
@@ -205,6 +206,18 @@ public static class LogHelper
                 lokiOptions.Credentials,
                 lokiOptions.Tenant,
                 (LogEventLevel)(lokiOptions.MinimumLevel ?? LogLevel.Trace));
+        }
+
+        if (TelemetryExtension.TelemetryConfig is { Enable: true })
+        {
+            var options = app.Services.GetRequiredService<IOptions<OpenTelemetry.Exporter.OtlpExporterOptions>>().Value;
+            loggerConfig = loggerConfig.WriteTo.OpenTelemetry(options.Endpoint.ToString(), options.Protocol switch
+            {
+                OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf => Serilog.Sinks.OpenTelemetry.OtlpProtocol.HttpProtobuf,
+                _ => Serilog.Sinks.OpenTelemetry.OtlpProtocol.Grpc
+            });
+        }
+
 
         return loggerConfig.CreateLogger();
     }
