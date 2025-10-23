@@ -120,9 +120,8 @@ public class FlagChecker(
                                 await eventRepository.AddEvent(
                                     GameEvent.FromSubmission(item, type, ans, StaticLocalizer), token);
 
-                                // only flush the scoreboard if the contest is not ended and the submission is accepted
-                                if (item.Game!.EndTimeUtc > item.SubmitTimeUtc)
-                                    await cacheHelper.FlushScoreboardCache(item.GameId, token);
+                                // always flush the scoreboard
+                                await cacheHelper.FlushScoreboardCache(item.GameId, token);
                                 break;
                             }
                         default:
