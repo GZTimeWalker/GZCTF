@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using GZCTF.Models.Request.Edit;
+using MemoryPack;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
@@ -9,7 +10,8 @@ using Org.BouncyCastle.Utilities.Encoders;
 
 namespace GZCTF.Models.Data;
 
-public class Game
+[MemoryPackable]
+public partial class Game
 {
     [Key]
     [Required]
@@ -123,6 +125,7 @@ public class Game
     /// </summary>
     [NotMapped]
     [Required]
+    [MemoryPackIgnore]
     public BloodBonus BloodBonus
     {
         get => BloodBonus.FromValue(BloodBonusValue);
@@ -134,18 +137,21 @@ public class Game
     /// </summary>
     [NotMapped]
     [JsonIgnore]
+    [MemoryPackIgnore]
     public bool IsActive => StartTimeUtc <= DateTimeOffset.Now && DateTimeOffset.Now <= EndTimeUtc;
 
     /// <summary>
     /// Poster URL
     /// </summary>
     [NotMapped]
+    [MemoryPackIgnore]
     public string? PosterUrl => GetPosterUrl(PosterHash);
 
     /// <summary>
     /// Team hash salt
     /// </summary>
     [NotMapped]
+    [MemoryPackIgnore]
     public string TeamHashSalt => $"GZCTF@{PrivateKey}@PK".ToSHA256String();
 
     internal static string? GetPosterUrl(string? hash) => hash is null ? null : $"/assets/{hash}/poster";

@@ -35,13 +35,13 @@ public class ParticipationRepository(
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default) =>
         Context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 
-    public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default) =>
+    public Task<Participation?> GetParticipation(Guid userId, int gameId, CancellationToken token = default) =>
         Context.Participations
-            .FirstOrDefaultAsync(p => p.Members.Any(m => m.Game == game && m.User == user),
+            .FirstOrDefaultAsync(p => p.Members.Any(m => m.GameId == gameId && m.UserId == userId),
                 token);
 
-    public Task<int> GetParticipationCount(Game game, CancellationToken token = default) =>
-        Context.Participations.Where(p => p.GameId == game.Id).CountAsync(token);
+    public Task<int> GetParticipationCount(int gameId, CancellationToken token = default) =>
+        Context.Participations.Where(p => p.GameId == gameId).CountAsync(token);
 
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default) =>
         Context.Participations.Where(p => p.GameId == game.Id)
@@ -52,11 +52,7 @@ public class ParticipationRepository(
     public Task<JoinedTeam[]> GetJoinedTeams(Game game, UserInfo user, CancellationToken token = default) =>
         Context.Participations
             .Where(p => p.Game == game && p.Team.Members.Any(m => m == user))
-            .Select(p => new JoinedTeam
-            {
-                TeamId = p.TeamId,
-                DivisionId = p.DivisionId
-            })
+            .Select(p => new JoinedTeam { TeamId = p.TeamId, DivisionId = p.DivisionId })
             .ToArrayAsync(token);
 
     public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default) =>

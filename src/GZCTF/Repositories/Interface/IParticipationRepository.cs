@@ -8,10 +8,10 @@ public interface IParticipationRepository : IRepository
     /// <summary>
     /// Get the count of participants in a game
     /// </summary>
-    /// <param name="game"></param>
+    /// <param name="gameId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<int> GetParticipationCount(Game game, CancellationToken token = default);
+    public Task<int> GetParticipationCount(int gameId, CancellationToken token = default);
 
     /// <summary>
     /// List all participations in a game
@@ -93,11 +93,11 @@ public interface IParticipationRepository : IRepository
     /// <summary>
     /// Get the participation object and its corresponding challenge list
     /// </summary>
-    /// <param name="user"></param>
-    /// <param name="game"></param>
+    /// <param name="userId"></param>
+    /// <param name="gameId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Participation?> GetParticipation(UserInfo user, Game game, CancellationToken token = default);
+    public Task<Participation?> GetParticipation(Guid userId, int gameId, CancellationToken token = default);
 
     /// <summary>
     /// Get the participation object for a specific team in a specific game

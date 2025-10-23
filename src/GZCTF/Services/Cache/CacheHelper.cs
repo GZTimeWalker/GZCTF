@@ -249,6 +249,11 @@ public static class CacheKey
     public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
 
     /// <summary>
+    /// Game cache
+    /// </summary>
+    public static string GameCache(int id) => $"_GameCache_{id}";
+
+    /// <summary>
     /// Game notice cache
     /// </summary>
     public static string GameNotice(int id) => $"_GameNotice_{id}";

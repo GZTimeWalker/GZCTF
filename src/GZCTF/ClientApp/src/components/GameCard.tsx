@@ -6,8 +6,8 @@ import {
   Group,
   MantineColor,
   Stack,
-  Text,
   Title,
+  Text,
   useMantineTheme,
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'

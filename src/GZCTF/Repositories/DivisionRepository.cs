@@ -1,12 +1,19 @@
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
-using k8s.KubeConfigModels;
+using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
-public class DivisionRepository(AppDbContext context) : RepositoryBase(context), IDivisionRepository
+public class DivisionRepository(AppDbContext context, CacheHelper cacheHelper)
+    : RepositoryBase(context), IDivisionRepository
 {
+    private async ValueTask FlushCache(int gameId, CancellationToken token = default)
+    {
+        await cacheHelper.RemoveAsync(CacheKey.GameCache(gameId), token);
+        await cacheHelper.FlushScoreboardCache(gameId, token);
+    }
+
     public async Task<Division> CreateDivision(Game game, DivisionCreateModel model, CancellationToken token = default)
     {
         // Create base division first to obtain ID
@@ -23,6 +30,7 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
         division.UpdateChallengeConfigs(model.ChallengeConfigs);
 
         await SaveAsync(token);
+        await FlushCache(game.Id, token);
 
         return division;
     }
@@ -73,11 +81,14 @@ public class DivisionRepository(AppDbContext context) : RepositoryBase(context),
     {
         division.Update(model);
         await SaveAsync(token);
+        await FlushCache(division.GameId, token);
     }
 
     public async Task RemoveDivision(Division division, CancellationToken token = default)
     {
+        var gameId = division.GameId;
         Context.Remove(division);
         await SaveAsync(token);
+        await FlushCache(gameId, token);
     }
 }

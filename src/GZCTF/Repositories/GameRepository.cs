@@ -45,6 +45,7 @@ public class GameRepository(
     {
         await SaveAsync(token);
 
+        await cacheHelper.RemoveAsync(CacheKey.GameCache(game.Id), token);
         await cacheHelper.FlushGameListCache(token);
         await cacheHelper.FlushRecentGamesCache(token);
         await cacheHelper.FlushScoreboardCache(game.Id, token);
@@ -85,6 +86,19 @@ public class GameRepository(
                 TeamMemberCountLimit = game.TeamMemberCountLimit
             }).ToArrayAsync(token);
 
+    public async Task<DetailedGameInfoModel?> GetDetailedGameInfo(int gameId, CancellationToken token = default)
+    {
+        var game = await cacheHelper.GetOrCreateAsync(logger, CacheKey.GameCache(gameId),
+            entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(2);
+                return Context.Games.AsNoTracking()
+                    .Include(g => g.Divisions)
+                    .FirstOrDefaultAsync(x => x.Id == gameId, token);
+            }, token: token);
+
+        return game is null ? null : DetailedGameInfoModel.FromGame(game);
+    }
 
     public async Task<ArrayResponse<BasicGameInfoModel>> GetGameInfo(int count = 20, int skip = 0,
         CancellationToken token = default)

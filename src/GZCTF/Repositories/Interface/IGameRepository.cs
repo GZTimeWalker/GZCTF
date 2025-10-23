@@ -24,6 +24,14 @@ public interface IGameRepository : IRepository
     public Task<BasicGameInfoModel[]> FetchGameList(int count, int skip, CancellationToken token);
 
     /// <summary>
+    /// Get detailed game info by ID, without team-specific data
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<DetailedGameInfoModel?> GetDetailedGameInfo(int gameId, CancellationToken token = default);
+
+    /// <summary>
     /// Get games with pagination for admins
     /// </summary>
     /// <param name="count"></param>

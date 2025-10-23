@@ -466,9 +466,6 @@ public class EditController(
 
         var division = await divisionRepository.CreateDivision(game, model, token);
 
-        // scoreboard depends on divisions
-        await cacheHelper.FlushScoreboardCache(game.Id, token);
-
         return Ok(division);
     }
 
@@ -519,9 +516,6 @@ public class EditController(
 
         await divisionRepository.UpdateDivision(division, model, token);
 
-        // scoreboard depends on divisions
-        await cacheHelper.FlushScoreboardCache(id, token);
-
         return Ok(division);
     }
 
@@ -552,9 +546,6 @@ public class EditController(
                 StatusCodes.Status404NotFound));
 
         await divisionRepository.RemoveDivision(division, token);
-
-        // scoreboard depends on divisions
-        await cacheHelper.FlushScoreboardCache(game.Id, token);
 
         return Ok();
     }

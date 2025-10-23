@@ -109,18 +109,18 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Game(int id, CancellationToken token)
     {
-        var context = await GetContextInfo(id, token: token);
+        var gameInfo = await gameRepository.GetDetailedGameInfo(id, token);
 
-        if (context.Game is null)
+        if (gameInfo is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        var count = await participationRepository.GetParticipationCount(context.Game, token);
+        var user = await userManager.GetUserAsync(User);
 
-        await gameRepository.LoadDivisions(context.Game!, token);
+        var part = await participationRepository.GetParticipation(user!.Id, id, token);
+        var count = await participationRepository.GetParticipationCount(id, token);
 
-        return Ok(DetailedGameInfoModel.FromGame(context.Game, count)
-            .WithParticipation(context.Participation));
+        return Ok(gameInfo.WithParticipation(part, count));
     }
 
     /// <summary>
@@ -277,7 +277,7 @@ public class GameController(
 
         var user = await userManager.GetUserAsync(User);
 
-        var part = await participationRepository.GetParticipation(user!, game, token);
+        var part = await participationRepository.GetParticipation(user!.Id, game.Id, token);
 
         if (part is null || part.Members.All(u => u.UserId != user!.Id))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CannotLeaveWithoutJoin)]));
@@ -1354,7 +1354,7 @@ public class GameController(
             return res.WithResult(NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound)));
 
-        var part = await participationRepository.GetParticipation(res.User!, res.Game, token);
+        var part = await participationRepository.GetParticipation(res.User!.Id, res.Game.Id, token);
 
         if (part is null)
             return res.WithResult(

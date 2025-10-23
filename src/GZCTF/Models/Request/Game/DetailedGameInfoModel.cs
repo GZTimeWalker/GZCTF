@@ -96,15 +96,16 @@ public class DetailedGameInfoModel
     [JsonPropertyName("end")]
     public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
-    public DetailedGameInfoModel WithParticipation(Participation? part)
+    public DetailedGameInfoModel WithParticipation(Participation? part, int teamCount)
     {
+        TeamCount = teamCount;
         Status = part?.Status ?? ParticipationStatus.Unsubmitted;
         TeamName = part?.Team.Name;
         Division = part?.DivisionId;
         return this;
     }
 
-    internal static DetailedGameInfoModel FromGame(Data.Game game, int count) =>
+    internal static DetailedGameInfoModel FromGame(Data.Game game) =>
         new()
         {
             Id = game.Id,
@@ -122,7 +123,6 @@ public class DetailedGameInfoModel
                 }).ToHashSet(),
             InviteCodeRequired = !string.IsNullOrWhiteSpace(game.InviteCode),
             WriteupRequired = game.WriteupRequired,
-            TeamCount = count,
             PosterUrl = game.PosterUrl,
             StartTimeUtc = game.StartTimeUtc,
             EndTimeUtc = game.EndTimeUtc,
