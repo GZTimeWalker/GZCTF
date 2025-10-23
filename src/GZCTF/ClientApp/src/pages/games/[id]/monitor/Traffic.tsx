@@ -16,7 +16,7 @@ import {
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiDeleteForeverOutline, mdiDownloadMultiple } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'

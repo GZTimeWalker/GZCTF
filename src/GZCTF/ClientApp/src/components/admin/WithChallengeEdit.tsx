@@ -1,6 +1,6 @@
 import { Stack, Group, Button, Text, useMantineTheme } from '@mantine/core'
 import { mdiArrowLeft, mdiArrowRight } from '@mdi/js'
-import Icon from '@mdi/react'
+import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useLocation } from 'react-router'
