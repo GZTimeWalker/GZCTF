@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+// ReSharper disable NotAccessedPositionalProperty.Global
+
 namespace GZCTF.Integration.Test.Base;
 
 public static class TestDataSeeder
@@ -37,7 +39,7 @@ public static class TestDataSeeder
             var result = await userManager.CreateAsync(user, password);
             if (!result.Succeeded)
                 throw new InvalidOperationException($"Failed to create user {normalizedUserName}: " +
-                    string.Join(", ", result.Errors.Select(e => e.Description)));
+                                                    string.Join(", ", result.Errors.Select(e => e.Description)));
         }
         else
         {
@@ -48,10 +50,10 @@ public static class TestDataSeeder
             var updateResult = await userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
                 throw new InvalidOperationException($"Failed to update user {normalizedUserName}: " +
-                    string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+                                                    string.Join(", ", updateResult.Errors.Select(e => e.Description)));
         }
 
-        return new SeededUser(user.Id, user.UserName!, user.Email!, password, role);
+        return new SeededUser(user.Id, user.UserName, user.Email!, password, role);
     }
 
     public static async Task<SeededTeam> CreateTeamAsync(IServiceProvider services, Guid ownerId, string name,
@@ -128,12 +130,12 @@ public static class TestDataSeeder
             Content = "Static challenge content",
             Category = ChallengeCategory.Misc,
             Type = ChallengeType.StaticAttachment,
-            Hints = new List<string>(),
+            Hints = [],
             IsEnabled = true,
             SubmissionLimit = 0,
-            OriginalScore = 100,
-            MinScoreRate = 0.5,
-            Difficulty = 2,
+            OriginalScore = 1000,
+            MinScoreRate = 0.8,
+            Difficulty = 5,
             Game = game,
             GameId = game.Id
         };
@@ -166,7 +168,7 @@ public static class TestDataSeeder
         return trimmed;
     }
 
-    private static string NormalizeTeamName(string teamName)
+    private static string NormalizeTeamName(string? teamName)
     {
         var trimmed = (teamName ?? string.Empty).Trim();
 

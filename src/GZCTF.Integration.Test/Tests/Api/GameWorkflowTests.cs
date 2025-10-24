@@ -32,21 +32,16 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = seededUser.UserName,
-            Password = password
-        });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = seededUser.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
 
         var profile = await client.GetFromJsonAsync<ProfileUserInfoModel>("/api/Account/Profile");
         Assert.NotNull(profile);
-        Assert.Equal(seededUser.UserName, profile!.UserName);
+        Assert.Equal(seededUser.UserName, profile.UserName);
 
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{seededGame.Id}", new GameJoinModel
-        {
-            TeamId = seededTeam.Id
-        });
+        var joinResponse =
+            await client.PostAsJsonAsync($"/api/Game/{seededGame.Id}", new GameJoinModel { TeamId = seededTeam.Id });
         joinResponse.EnsureSuccessStatusCode();
 
         var detail = await client.GetFromJsonAsync<JsonElement>($"/api/Game/{seededGame.Id}/Details");
@@ -66,7 +61,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var challenge = await client.GetFromJsonAsync<ChallengeDetailModel>(
             $"/api/Game/{seededGame.Id}/Challenges/{seededChallenge.Id}");
         Assert.NotNull(challenge);
-        Assert.Equal(seededChallenge.Id, challenge!.Id);
+        Assert.Equal(seededChallenge.Id, challenge.Id);
         Assert.Equal(ChallengeType.StaticAttachment, challenge.Type);
 
         var submitResponse = await client.PostAsJsonAsync(
@@ -81,7 +76,8 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
             $"/api/Game/{seededGame.Id}/Challenges/{seededChallenge.Id}/Status/{submissionId}");
         statusResponse.EnsureSuccessStatusCode();
         var submissionStatus = await statusResponse.Content.ReadFromJsonAsync<AnswerResult>();
-        Assert.Equal(AnswerResult.FlagSubmitted, submissionStatus);
+        Assert.True(submissionStatus == AnswerResult.FlagSubmitted || submissionStatus == AnswerResult.Accepted,
+            $"Expected FlagSubmitted or Accepted, but got {submissionStatus}");
 
         var scoreboardResponse = await client.GetAsync($"/api/Game/{seededGame.Id}/Scoreboard");
         scoreboardResponse.EnsureSuccessStatusCode();

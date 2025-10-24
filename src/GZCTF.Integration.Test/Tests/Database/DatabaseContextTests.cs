@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace GZCTF.Integration.Test.Tests.Database;
 
 /// <summary>
-/// Tests for database context operations using real PostgreSQL
+/// Tests for database context operations using real PostgresSQL
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
 public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
@@ -143,12 +143,7 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
             RegisterTimeUtc = DateTimeOffset.UtcNow
         };
 
-        var team = new Team
-        {
-            Name = TestDataSeeder.RandomName(),
-            Captain = captain,
-            Locked = false
-        };
+        var team = new Team { Name = TestDataSeeder.RandomName(), Captain = captain, Locked = false };
 
         var now = DateTimeOffset.UtcNow;
         var game = new Game
@@ -160,12 +155,7 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
             PracticeMode = true
         };
 
-        var participation = new Participation
-        {
-            Team = team,
-            Game = game,
-            Status = ParticipationStatus.Accepted
-        };
+        var participation = new Participation { Team = team, Game = game, Status = ParticipationStatus.Accepted };
 
         // Act
         dbContext.Users.Add(captain);

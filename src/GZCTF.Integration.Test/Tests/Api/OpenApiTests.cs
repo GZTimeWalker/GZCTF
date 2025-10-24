@@ -58,16 +58,14 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
         // Expected endpoints
         var expectedEndpoints = new[]
         {
-            "/api/Config",
-            "/api/Account/Register",
-            "/api/Account/LogIn",
-            "/api/Account/Profile"
+            "/api/Config", "/api/Account/Register", "/api/Account/LogIn", "/api/Account/Profile"
         };
 
         // Assert
         foreach (var endpoint in expectedEndpoints)
         {
-            var hasEndpoint = paths.EnumerateObject().Any(p => p.Name.Equals(endpoint, StringComparison.OrdinalIgnoreCase));
+            var hasEndpoint = paths.EnumerateObject()
+                .Any(p => p.Name.Equals(endpoint, StringComparison.OrdinalIgnoreCase));
             output.WriteLine($"Endpoint '{endpoint}': {(hasEndpoint ? "Found" : "Missing")}");
             Assert.True(hasEndpoint, $"Expected endpoint '{endpoint}' not found in OpenAPI spec");
         }
