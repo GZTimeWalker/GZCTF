@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -14,6 +13,11 @@ using GZCTF.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
+
+// ReSharper disable UnusedAutoPropertyAccessor.Local
+// ReSharper disable NotAccessedPositionalProperty.Local
+// ReSharper disable UnusedMember.Local
+// ReSharper disable ClassNeverInstantiated.Local
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
@@ -230,7 +234,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         foreach (var item in scoreboard.Teams.OrderBy(i => i.Rank == 0 ? int.MaxValue : i.Rank))
         {
             output.WriteLine($"Team: {item.Name}, Division: {item.DivisionId}, Score: {item.Score}, " +
-                           $"Rank: {item.Rank}, DivisionRank: {item.DivisionRank}");
+                             $"Rank: {item.Rank}, DivisionRank: {item.DivisionRank}");
         }
 
         // Verify scores:
@@ -313,7 +317,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var scoreboard = await GetScoreboard(
             team.client,
             game.Id,
-            expectedTeamIds: new[] { team.team.Id },
+            expectedTeamIds: [team.team.Id],
             readiness: s => s.GetTeam(team.team.Id).SolvedChallenges.Any(c => c.Id == challenge1.Id));
 
         // Team should get:
@@ -352,8 +356,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             "Dynamic Challenge",
             "flag{dynamic}",
             originalScore: 1000,
-            minScoreRate: 0.2,  // Minimum 20% of original score
-            difficulty: 10      // Higher difficulty = faster decay
+            minScoreRate: 0.2, // Minimum 20% of original score
+            difficulty: 10 // Higher difficulty = faster decay
         );
 
         // Create 10 teams
@@ -415,28 +419,31 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var challenge3 = await CreateChallenge(game.Id, "Mixed Challenge", "flag{mixed}", 1500);
 
         // Division 1: Professional - Full access, can rank overall
-        var divPro = await CreateDivision(game.Id, new DivisionCreateModel
-        {
-            Name = "Professional",
-            InviteCode = "PRO2025",
-            DefaultPermissions = GamePermission.All
-        });
+        var divPro = await CreateDivision(game.Id,
+            new DivisionCreateModel
+            {
+                Name = "Professional",
+                InviteCode = "PRO2025",
+                DefaultPermissions = GamePermission.All
+            });
 
         // Division 2: Student - Full access, can rank overall
-        var divStudent = await CreateDivision(game.Id, new DivisionCreateModel
-        {
-            Name = "Student",
-            InviteCode = "STU2025",
-            DefaultPermissions = GamePermission.All
-        });
+        var divStudent = await CreateDivision(game.Id,
+            new DivisionCreateModel
+            {
+                Name = "Student",
+                InviteCode = "STU2025",
+                DefaultPermissions = GamePermission.All
+            });
 
         // Division 3: Unofficial - Can play but no overall ranking, no blood bonuses
-        var divUnofficial = await CreateDivision(game.Id, new DivisionCreateModel
-        {
-            Name = "Unofficial",
-            InviteCode = "UNOFF2025",
-            DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.GetBlood
-        });
+        var divUnofficial = await CreateDivision(game.Id,
+            new DivisionCreateModel
+            {
+                Name = "Unofficial",
+                InviteCode = "UNOFF2025",
+                DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.GetBlood
+            });
 
         // Division 4: Observer - Can only see challenge2 and challenge3, no scoring
         var divObserver = await CreateDivision(game.Id, new DivisionCreateModel
@@ -506,11 +513,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         var multiDivisionTeamIds = new[]
         {
-            teamPro1.team.Id,
-            teamPro2.team.Id,
-            teamStu1.team.Id,
-            teamStu2.team.Id,
-            teamUnoff1.team.Id,
+            teamPro1.team.Id, teamPro2.team.Id, teamStu1.team.Id, teamStu2.team.Id, teamUnoff1.team.Id,
             teamObs1.team.Id
         };
 
@@ -616,10 +619,11 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         var now = DateTimeOffset.UtcNow;
 
-        // Convert blood bonus factors to the packed format
+        // Convert blood bonus factors to packed
         // Format: (first << 20) + (second << 10) + third
         // Factors are stored as (factor - 1.0) * 1000
-        static long PackBloodFactor(float factor) => (long)MathF.Round((factor - 1.0f) * 1000f, MidpointRounding.AwayFromZero);
+        static long PackBloodFactor(float factor) =>
+            (long)MathF.Round((factor - 1.0f) * 1000f, MidpointRounding.AwayFromZero);
 
         long firstValue = PackBloodFactor(firstBlood);
         long secondValue = PackBloodFactor(secondBlood);
@@ -740,9 +744,10 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         return division;
     }
 
-    private async Task<List<(TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team, HttpClient client)>> CreateMultipleTeams(
-        int count,
-        string namePrefix)
+    private async Task<List<(TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team, HttpClient client)>>
+        CreateMultipleTeams(
+            int count,
+            string namePrefix)
     {
         var teams = new List<(TestDataSeeder.SeededUser, TestDataSeeder.SeededTeam, HttpClient)>();
         var password = $"{namePrefix}@Pass123";
@@ -776,11 +781,12 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         return teams;
     }
 
-    private async Task<(TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team, HttpClient client)> CreateTeamInDivision(
-        string teamName,
-        int gameId,
-        int divisionId,
-        string inviteCode)
+    private async Task<(TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team, HttpClient client)>
+        CreateTeamInDivision(
+            string teamName,
+            int gameId,
+            int divisionId,
+            string inviteCode)
     {
         var password = $"{teamName}@Pass123";
         var userName = TestDataSeeder.RandomName();
@@ -814,7 +820,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         return (user, team, client);
     }
 
-    private async Task JoinGame((TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team, HttpClient client) team, int gameId)
+    private async Task JoinGame(
+        (TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team, HttpClient client) team, int gameId)
     {
         using var joinResponse = await team.client.PostAsJsonAsync($"/api/Game/{gameId}",
             new GameJoinModel { TeamId = team.team.Id });
@@ -879,7 +886,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         {
             last = await FetchScoreboardAsync(client, gameId);
 
-            var hasExpectedTeams = expected is null || expected.All(id => last!.TeamsById.ContainsKey(id));
+            var hasExpectedTeams = expected is null || expected.All(id => last.TeamsById.ContainsKey(id));
             if (hasExpectedTeams && readiness(last))
                 return last;
 
@@ -899,7 +906,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var payload = await JsonSerializer.DeserializeAsync<ScoreboardResponse>(stream, ScoreboardJsonOptions);
         Assert.NotNull(payload);
 
-        return ScoreboardSnapshot.FromResponse(payload!);
+        return ScoreboardSnapshot.FromResponse(payload);
     }
 
     private static int GetTeamScore(ScoreboardSnapshot scoreboard, int teamId) =>
@@ -907,8 +914,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
     private sealed class ScoreboardSnapshot
     {
-        readonly IReadOnlyDictionary<int, ScoreboardTeam> teamMap;
-        readonly IReadOnlyDictionary<int, ChallengeSnapshot> challengeMap;
+        readonly IReadOnlyDictionary<int, ScoreboardTeam> _teamMap;
+        readonly IReadOnlyDictionary<int, ChallengeSnapshot> _challengeMap;
 
         ScoreboardSnapshot(
             DateTimeOffset updateTimeUtc,
@@ -924,8 +931,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             BloodBonusValue = bloodBonusValue;
             ChallengeCount = challengeCount;
             Teams = teams;
-            this.teamMap = teamMap;
-            this.challengeMap = challengeMap;
+            this._teamMap = teamMap;
+            this._challengeMap = challengeMap;
             Divisions = divisions;
             Timelines = timelines;
         }
@@ -936,25 +943,26 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         public IReadOnlyList<ScoreboardTeam> Teams { get; }
         public IReadOnlyDictionary<int, DivisionSnapshot> Divisions { get; }
         public IReadOnlyList<TimeLineItemSnapshot> Timelines { get; }
-        public int TeamCount => teamMap.Count;
-        public IReadOnlyDictionary<int, ScoreboardTeam> TeamsById => teamMap;
-        public IEnumerable<ChallengeSnapshot> ChallengeList => challengeMap.Values;
+        public int TeamCount => _teamMap.Count;
+        public IReadOnlyDictionary<int, ScoreboardTeam> TeamsById => _teamMap;
+        public IEnumerable<ChallengeSnapshot> ChallengeList => _challengeMap.Values;
 
         public ScoreboardTeam GetTeam(int teamId) =>
-            teamMap.TryGetValue(teamId, out var team)
+            _teamMap.TryGetValue(teamId, out var team)
                 ? team
                 : throw new KeyNotFoundException($"Team {teamId} not found on scoreboard.");
 
         public int GetTeamScore(int teamId) => GetTeam(teamId).Score;
 
         public ChallengeSnapshot GetChallenge(int challengeId) =>
-            challengeMap.TryGetValue(challengeId, out var challenge)
+            _challengeMap.TryGetValue(challengeId, out var challenge)
                 ? challenge
                 : throw new KeyNotFoundException($"Challenge {challengeId} not found on scoreboard.");
 
         public static ScoreboardSnapshot FromResponse(ScoreboardResponse payload)
         {
-            var teams = (payload.Items ?? new List<ScoreboardItemResponse>()).Select(ScoreboardTeam.FromResponse).ToList();
+            var teams = (payload.Items ?? new List<ScoreboardItemResponse>()).Select(ScoreboardTeam.FromResponse)
+                .ToList();
             var teamMap = teams.ToDictionary(team => team.Id);
 
             var challengeMap = new Dictionary<int, ChallengeSnapshot>();
@@ -966,12 +974,9 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
                         ? parsedCategory
                         : ChallengeCategory.Misc;
 
-                    if (challengeList is null)
-                        continue;
-
-                    foreach (var challenge in challengeList)
+                    foreach (var snapshot in challengeList.Select(challenge =>
+                                 ChallengeSnapshot.FromResponse(challenge, category)))
                     {
-                        var snapshot = ChallengeSnapshot.FromResponse(challenge, category);
                         challengeMap[snapshot.Id] = snapshot;
                     }
                 }
@@ -979,9 +984,10 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
             var divisions = (payload.Divisions ?? new List<DivisionItemResponse>()).ToDictionary(
                 division => division.Id,
-                division => DivisionSnapshot.FromResponse(division));
+                DivisionSnapshot.FromResponse);
 
-            var timelines = (payload.Timelines ?? new List<TimeLineItemResponse>()).Select(TimeLineItemSnapshot.FromResponse).ToList();
+            var timelines = (payload.Timelines ?? new List<TimeLineItemResponse>())
+                .Select(TimeLineItemSnapshot.FromResponse).ToList();
 
             return new ScoreboardSnapshot(
                 ConvertToDateTime(payload.UpdateTimeUtc),
@@ -1011,7 +1017,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         public static ScoreboardTeam FromResponse(ScoreboardItemResponse item)
         {
-            var solved = (item.SolvedChallenges ?? new List<SolvedChallengeResponse>()).Select(SolvedChallenge.FromResponse).ToList();
+            var solved = (item.SolvedChallenges ?? []).Select(SolvedChallenge.FromResponse).ToList();
             return new ScoreboardTeam(
                 item.Id,
                 item.Name,
@@ -1107,7 +1113,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
     private sealed record DivisionChallengeConfigSnapshot(int ChallengeId, GamePermission Permissions)
     {
-        public static DivisionChallengeConfigSnapshot FromResponse(int challengeId, DivisionChallengeItemResponse response)
+        public static DivisionChallengeConfigSnapshot FromResponse(int challengeId,
+            DivisionChallengeItemResponse response)
             => new(challengeId, response.Permissions);
     }
 
@@ -1115,7 +1122,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     {
         public static TimeLineItemSnapshot FromResponse(TimeLineItemResponse response)
         {
-            var teams = (response.Teams ?? new List<TopTimeLineResponse>()).Select(TopTimeLineSnapshot.FromResponse).ToList();
+            var teams = (response.Teams ?? new List<TopTimeLineResponse>()).Select(TopTimeLineSnapshot.FromResponse)
+                .ToList();
             return new TimeLineItemSnapshot(response.DivisionId ?? 0, teams);
         }
     }
@@ -1137,13 +1145,13 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
     private sealed class ScoreboardResponse
     {
-        public long UpdateTimeUtc { get; set; }
-        public long BloodBonus { get; set; }
-        public List<TimeLineItemResponse>? Timelines { get; set; }
-        public List<ScoreboardItemResponse>? Items { get; set; }
-        public List<DivisionItemResponse>? Divisions { get; set; }
-        public Dictionary<string, List<ChallengeInfoResponse>>? Challenges { get; set; }
-        public int ChallengeCount { get; set; }
+        public long UpdateTimeUtc { get; init; }
+        public long BloodBonus { get; init; }
+        public List<TimeLineItemResponse>? Timelines { get; init; }
+        public List<ScoreboardItemResponse>? Items { get; init; }
+        public List<DivisionItemResponse>? Divisions { get; init; }
+        public Dictionary<string, List<ChallengeInfoResponse>>? Challenges { get; init; }
+        public int ChallengeCount { get; init; }
     }
 
     private sealed class TimeLineItemResponse
@@ -1221,6 +1229,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     }
 
     private record SeededGame(int Id, string Title, DateTimeOffset Start, DateTimeOffset End);
+
     private record SeededChallenge(int Id, string Title, string Flag);
 
     #endregion

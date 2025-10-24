@@ -41,7 +41,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
 
             var gameObj = await gameRepository.GetGameById(game.Id)
-                ?? throw new InvalidOperationException($"Game {game.Id} not found");
+                          ?? throw new InvalidOperationException($"Game {game.Id} not found");
 
             GameChallenge challenge = new()
             {
@@ -78,11 +78,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -125,7 +122,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
 
             var gameObj = await gameRepository.GetGameById(game.Id)
-                ?? throw new InvalidOperationException($"Game {game.Id} not found");
+                          ?? throw new InvalidOperationException($"Game {game.Id} not found");
 
             GameChallenge challenge = new()
             {
@@ -153,11 +150,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -194,11 +188,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             "Division Challenge", "flag{division}");
 
         using var adminClient = factory.CreateClient();
-        await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
 
         // Create two divisions
         var divisionAResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
@@ -223,34 +214,20 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
 
         // Team 1 joins Division A
         using var client1 = factory.CreateClient();
-        await client1.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user1.UserName,
-            Password = password
-        });
-        await client1.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team1.Id,
-            DivisionId = divisionA!.Id,
-            InviteCode = "DIVA"
-        });
-        
+        await client1.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user1.UserName, Password = password });
+        await client1.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team1.Id, DivisionId = divisionA!.Id, InviteCode = "DIVA" });
+
         await Task.Delay(100);
 
         // Team 2 joins Division B
         using var client2 = factory.CreateClient();
-        await client2.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user2.UserName,
-            Password = password
-        });
-        await client2.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team2.Id,
-            DivisionId = divisionB!.Id,
-            InviteCode = "DIVB"
-        });
-        
+        await client2.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user2.UserName, Password = password });
+        await client2.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team2.Id, DivisionId = divisionB!.Id, InviteCode = "DIVB" });
+
         await Task.Delay(100);
 
         // Check scoreboard has both teams
@@ -259,7 +236,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         var scoreboard1 = await scoreboard1Response.Content.ReadFromJsonAsync<JsonElement>();
         Assert.True(scoreboard1.TryGetProperty("items", out var items1));
         var itemsArray1 = items1.EnumerateArray().ToArray();
-        
+
         // Verify both teams are present
         var hasTeam1 = itemsArray1.Any(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team1.Id);
@@ -280,7 +257,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         scoreboard2Response.EnsureSuccessStatusCode();
         var scoreboard2 = await scoreboard2Response.Content.ReadFromJsonAsync<JsonElement>();
         Assert.True(scoreboard2.TryGetProperty("items", out var items2));
-        
+
         // Verify the scoreboard structure is still valid
         var itemsArray2 = items2.EnumerateArray().ToArray();
         // After division deletion, teams in that division may be removed from participation
@@ -310,11 +287,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             "Challenge Two", "flag{two}");
 
         using var client = factory.CreateClient();
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -335,11 +309,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
 
         // Delete challenge1 via admin
         using var adminClient = factory.CreateClient();
-        await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
 
         var deleteResponse = await adminClient.DeleteAsync($"/api/Edit/Games/{game.Id}/Challenges/{challenge1.Id}");
         deleteResponse.EnsureSuccessStatusCode();
@@ -352,12 +323,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         scoreboard2Response.EnsureSuccessStatusCode();
         var scoreboard2 = await scoreboard2Response.Content.ReadFromJsonAsync<JsonElement>();
         Assert.True(scoreboard2.TryGetProperty("items", out var items2));
-        
+
         // Team should still be on scoreboard
         var teamItem2 = items2.EnumerateArray().FirstOrDefault(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team.Id);
         Assert.NotEqual(default, teamItem2);
-        
+
         // Scoreboard should be recalculated without the deleted challenge
         // Note: Actual score processing requires background services which are disabled
     }
@@ -388,7 +359,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
 
             var gameObj = await gameRepository.GetGameById(game.Id)
-                ?? throw new InvalidOperationException($"Game {game.Id} not found");
+                          ?? throw new InvalidOperationException($"Game {game.Id} not found");
 
             GameChallenge challenge = new()
             {
@@ -414,11 +385,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         }
 
         using var client = factory.CreateClient();
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -428,17 +396,11 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
 
         // Admin disables the challenge
         using var adminClient = factory.CreateClient();
-        await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
 
         var updateResponse = await adminClient.PutAsJsonAsync($"/api/Edit/Games/{game.Id}/Challenges/{challengeId}",
-            new ChallengeUpdateModel
-            {
-                IsEnabled = false
-            });
+            new ChallengeUpdateModel { IsEnabled = false });
         updateResponse.EnsureSuccessStatusCode();
 
         // Wait for update
@@ -450,12 +412,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         {
             var details = await detailsResponse.Content.ReadFromJsonAsync<JsonElement>();
             Assert.True(details.TryGetProperty("challenges", out var challenges));
-            
+
             var challengeIds = challenges.EnumerateObject()
                 .SelectMany(category => category.Value.EnumerateArray()
                     .Select(ch => ch.GetProperty("id").GetInt32()))
                 .ToHashSet();
-            
+
             // Disabled challenge should not appear in the list
             Assert.DoesNotContain(challengeId, challengeIds);
         }
@@ -487,7 +449,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
 
             var gameObj = await gameRepository.GetGameById(game.Id)
-                ?? throw new InvalidOperationException($"Game {game.Id} not found");
+                          ?? throw new InvalidOperationException($"Game {game.Id} not found");
 
             GameChallenge challenge = new()
             {
@@ -513,11 +475,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         }
 
         using var client = factory.CreateClient();
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -527,11 +486,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
 
         // Admin updates the challenge score
         using var adminClient = factory.CreateClient();
-        await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
 
         var updateResponse = await adminClient.PutAsJsonAsync($"/api/Edit/Games/{game.Id}/Challenges/{challengeId}",
             new ChallengeUpdateModel
@@ -550,7 +506,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var challenge = await context.GameChallenges.FindAsync(challengeId);
             Assert.NotNull(challenge);
-            Assert.Equal(500, challenge!.OriginalScore);
+            Assert.Equal(500, challenge.OriginalScore);
         }
 
         // Check scoreboard - scoreboard should reflect updated challenge properties
@@ -558,11 +514,11 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         scoreboardResponse.EnsureSuccessStatusCode();
         var scoreboard = await scoreboardResponse.Content.ReadFromJsonAsync<JsonElement>();
         Assert.True(scoreboard.TryGetProperty("items", out var items));
-        
+
         var teamItem = items.EnumerateArray().FirstOrDefault(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team.Id);
         Assert.NotEqual(default, teamItem);
-        
+
         // Note: Actual score recalculation requires background services
         // We verify that the scoreboard is still valid after the update
     }
@@ -593,7 +549,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
 
             var gameObj = await gameRepository.GetGameById(game.Id)
-                ?? throw new InvalidOperationException($"Game {game.Id} not found");
+                          ?? throw new InvalidOperationException($"Game {game.Id} not found");
 
             GameChallenge challenge = new()
             {
@@ -619,21 +575,15 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         }
 
         using var client = factory.CreateClient();
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
         // Admin disables then re-enables the challenge
         using var adminClient = factory.CreateClient();
-        await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
 
         // Disable
         await adminClient.PutAsJsonAsync($"/api/Edit/Games/{game.Id}/Challenges/{challengeId}",
@@ -652,12 +602,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         {
             var details = await detailsResponse.Content.ReadFromJsonAsync<JsonElement>();
             Assert.True(details.TryGetProperty("challenges", out var challenges));
-            
+
             var challengeIds = challenges.EnumerateObject()
                 .SelectMany(category => category.Value.EnumerateArray()
                     .Select(ch => ch.GetProperty("id").GetInt32()))
                 .ToHashSet();
-            
+
             // Re-enabled challenge should appear in the list
             Assert.Contains(challengeId, challengeIds);
         }

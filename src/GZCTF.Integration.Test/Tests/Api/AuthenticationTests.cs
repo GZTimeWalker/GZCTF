@@ -38,7 +38,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
         Assert.NotNull(profile);
-        Assert.Equal(seeded.UserName, profile!.UserName);
+        Assert.Equal(seeded.UserName, profile.UserName);
         Assert.Equal(seeded.Email, profile.Email);
     }
 

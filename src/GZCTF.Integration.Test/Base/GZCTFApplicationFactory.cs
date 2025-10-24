@@ -6,15 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Testcontainers.PostgreSql;
 using Xunit;
 
 namespace GZCTF.Integration.Test.Base;
 
 /// <summary>
-/// Test application factory for integration tests with PostgreSQL testcontainer
+/// Test application factory for integration tests with PostgresSQL test container
 /// </summary>
+// ReSharper disable once ClassNeverInstantiated.Global
+// ReSharper disable once InconsistentNaming
 public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
@@ -41,7 +42,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
 
         builder.UseContentRoot(testProjectDir);
 
-        builder.ConfigureAppConfiguration((context, config) =>
+        builder.ConfigureAppConfiguration((_, config) =>
         {
             // Clear existing sources and rebuild with our connection string first
             // This ensures it's available during ConfigureDatabase()
@@ -87,7 +88,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
 
     public async Task InitializeAsync()
     {
-        // Start PostgreSQL container first
+        // Start PostgresSQL container first
         await _postgresContainer.StartAsync();
 
         // Get and cache connection string
@@ -101,7 +102,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(_connectionString);
 
-        using var context = new AppDbContext(optionsBuilder.Options);
+        await using var context = new AppDbContext(optionsBuilder.Options);
         await context.Database.MigrateAsync();
     }
 

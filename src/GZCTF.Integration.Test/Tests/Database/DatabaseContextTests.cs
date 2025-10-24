@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 namespace GZCTF.Integration.Test.Tests.Database;
 
 /// <summary>
-/// Tests for database context operations using real PostgreSQL
+/// Tests for database context operations using real PostgresSQL
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
 public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHelper output)

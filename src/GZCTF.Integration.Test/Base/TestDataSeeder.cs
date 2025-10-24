@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+// ReSharper disable NotAccessedPositionalProperty.Global
+
 namespace GZCTF.Integration.Test.Base;
 
 public static class TestDataSeeder
@@ -51,7 +53,7 @@ public static class TestDataSeeder
                                                     string.Join(", ", updateResult.Errors.Select(e => e.Description)));
         }
 
-        return new SeededUser(user.Id, user.UserName!, user.Email!, password, role);
+        return new SeededUser(user.Id, user.UserName, user.Email!, password, role);
     }
 
     public static async Task<SeededTeam> CreateTeamAsync(IServiceProvider services, Guid ownerId, string name,
@@ -166,7 +168,7 @@ public static class TestDataSeeder
         return trimmed;
     }
 
-    private static string NormalizeTeamName(string teamName)
+    private static string NormalizeTeamName(string? teamName)
     {
         var trimmed = (teamName ?? string.Empty).Trim();
 

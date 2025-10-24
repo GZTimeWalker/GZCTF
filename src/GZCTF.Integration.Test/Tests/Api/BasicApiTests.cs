@@ -72,7 +72,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
 
         var payload = await registerResponse.Content.ReadFromJsonAsync<RequestResponse<RegisterStatus>>();
         Assert.NotNull(payload);
-        Assert.Equal(RegisterStatus.LoggedIn, payload!.Data);
+        Assert.Equal(RegisterStatus.LoggedIn, payload.Data);
 
         var profileResponse = await client.GetAsync("/api/Account/Profile");
         output.WriteLine($"Profile status: {profileResponse.StatusCode}");
@@ -80,7 +80,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
 
         var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
         Assert.NotNull(profile);
-        Assert.Equal(registerModel.UserName, profile!.UserName);
+        Assert.Equal(registerModel.UserName, profile.UserName);
         Assert.Equal(registerModel.Email, profile.Email);
     }
 

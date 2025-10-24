@@ -1,11 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 using GZCTF.Integration.Test.Base;
-using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Info;
-using GZCTF.Utils;
 using Xunit;
 
 namespace GZCTF.Integration.Test.Tests.Api;
@@ -39,7 +36,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         createResponse.EnsureSuccessStatusCode();
         var createdTeam = await createResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
         Assert.NotNull(createdTeam);
-        Assert.Equal("Test Team Alpha", createdTeam!.Name);
+        Assert.Equal("Test Team Alpha", createdTeam.Name);
         Assert.Equal("This is a test team for integration testing", createdTeam.Bio);
 
         // Test 2: Retrieve the created team by ID
@@ -47,7 +44,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         getResponse.EnsureSuccessStatusCode();
         var retrievedTeam = await getResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
         Assert.NotNull(retrievedTeam);
-        Assert.Equal(createdTeam.Id, retrievedTeam!.Id);
+        Assert.Equal(createdTeam.Id, retrievedTeam.Id);
         Assert.Equal(createdTeam.Name, retrievedTeam.Name);
 
         // Test 3: Get user's teams
@@ -55,7 +52,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         teamsResponse.EnsureSuccessStatusCode();
         var teams = await teamsResponse.Content.ReadFromJsonAsync<TeamInfoModel[]>();
         Assert.NotNull(teams);
-        Assert.Contains(teams!, t => t.Id == createdTeam.Id);
+        Assert.Contains(teams, t => t.Id == createdTeam.Id);
     }
 
     /// <summary>
@@ -81,7 +78,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         updateResponse.EnsureSuccessStatusCode();
         var updatedTeam = await updateResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
         Assert.NotNull(updatedTeam);
-        Assert.Equal("Updated Team Name", updatedTeam!.Name);
+        Assert.Equal("Updated Team Name", updatedTeam.Name);
         Assert.Equal("Updated bio information", updatedTeam.Bio);
 
         // Test 2: Verify the update persisted
@@ -89,7 +86,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         getResponse.EnsureSuccessStatusCode();
         var retrievedTeam = await getResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
         Assert.NotNull(retrievedTeam);
-        Assert.Equal("Updated Team Name", retrievedTeam!.Name);
+        Assert.Equal("Updated Team Name", retrievedTeam.Name);
         Assert.Equal("Updated bio information", retrievedTeam.Bio);
     }
 

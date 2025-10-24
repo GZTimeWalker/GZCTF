@@ -57,18 +57,18 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
             joinResponse1.EnsureSuccessStatusCode();
         }
 
-        using (var submission1a = await client1.PostAsJsonAsync(
+        using (var submission1 = await client1.PostAsJsonAsync(
                    $"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
                    new FlagSubmitModel { Flag = "flag{one}" }))
         {
-            submission1a.EnsureSuccessStatusCode();
+            submission1.EnsureSuccessStatusCode();
         }
 
-        using (var submission1b = await client1.PostAsJsonAsync(
+        using (var submission2 = await client1.PostAsJsonAsync(
                    $"/api/Game/{game.Id}/Challenges/{challenge2.Id}",
                    new FlagSubmitModel { Flag = "flag{two}" }))
         {
-            submission1b.EnsureSuccessStatusCode();
+            submission2.EnsureSuccessStatusCode();
         }
 
         // Team 2: solves only challenge1
@@ -261,7 +261,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         var games = await recentResponse.Content.ReadFromJsonAsync<JsonElement[]>();
 
         Assert.NotNull(games);
-        Assert.NotEmpty(games!);
+        Assert.NotEmpty(games);
 
         // Verify the structure of game info
         var firstGame = games[0];
@@ -294,7 +294,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
             await Task.Delay(delayMilliseconds);
         }
 
-        Assert.Fail($"Scoreboard for game {gameId} did not include {expectedTeamCount} teams after {maxAttempts} attempts.");
+        Assert.Fail(
+            $"Scoreboard for game {gameId} did not include {expectedTeamCount} teams after {maxAttempts} attempts.");
         return scoreboard;
     }
 
@@ -302,7 +303,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     {
         using var scope = factory.Services.CreateScope();
         var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
-        await cacheHelper.FlushScoreboardCache(gameId, System.Threading.CancellationToken.None);
+        await cacheHelper.FlushScoreboardCache(gameId, CancellationToken.None);
     }
 
     /// <summary>
@@ -361,7 +362,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
             $"/api/Game/{game.Id}/Challenges/{challenge.Id}");
 
         Assert.NotNull(detailResponse);
-        Assert.Equal(challenge.Id, detailResponse!.Id);
+        Assert.Equal(challenge.Id, detailResponse.Id);
         Assert.Equal("Detailed Challenge", detailResponse.Title);
         Assert.Equal(ChallengeType.StaticAttachment, detailResponse.Type);
     }

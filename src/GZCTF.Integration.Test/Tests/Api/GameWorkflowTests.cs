@@ -38,7 +38,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
 
         var profile = await client.GetFromJsonAsync<ProfileUserInfoModel>("/api/Account/Profile");
         Assert.NotNull(profile);
-        Assert.Equal(seededUser.UserName, profile!.UserName);
+        Assert.Equal(seededUser.UserName, profile.UserName);
 
         var joinResponse =
             await client.PostAsJsonAsync($"/api/Game/{seededGame.Id}", new GameJoinModel { TeamId = seededTeam.Id });
@@ -61,7 +61,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var challenge = await client.GetFromJsonAsync<ChallengeDetailModel>(
             $"/api/Game/{seededGame.Id}/Challenges/{seededChallenge.Id}");
         Assert.NotNull(challenge);
-        Assert.Equal(seededChallenge.Id, challenge!.Id);
+        Assert.Equal(seededChallenge.Id, challenge.Id);
         Assert.Equal(ChallengeType.StaticAttachment, challenge.Type);
 
         var submitResponse = await client.PostAsJsonAsync(
