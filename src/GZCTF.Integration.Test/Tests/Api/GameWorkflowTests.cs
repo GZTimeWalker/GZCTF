@@ -76,7 +76,8 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
             $"/api/Game/{seededGame.Id}/Challenges/{seededChallenge.Id}/Status/{submissionId}");
         statusResponse.EnsureSuccessStatusCode();
         var submissionStatus = await statusResponse.Content.ReadFromJsonAsync<AnswerResult>();
-        Assert.Equal(AnswerResult.FlagSubmitted, submissionStatus);
+        Assert.True(submissionStatus == AnswerResult.FlagSubmitted || submissionStatus == AnswerResult.Accepted,
+            $"Expected FlagSubmitted or Accepted, but got {submissionStatus}");
 
         var scoreboardResponse = await client.GetAsync($"/api/Game/{seededGame.Id}/Scoreboard");
         scoreboardResponse.EnsureSuccessStatusCode();

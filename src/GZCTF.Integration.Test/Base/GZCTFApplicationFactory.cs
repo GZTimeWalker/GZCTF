@@ -73,9 +73,6 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
 
         builder.ConfigureTestServices(services =>
         {
-            // Remove any background services that might interfere with testing
-            services.RemoveAll(typeof(IHostedService));
-
             // Replace the DbContext with our test connection string
             services.RemoveAll<DbContextOptions<AppDbContext>>();
             services.AddDbContext<AppDbContext>(options =>

@@ -19,7 +19,7 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// Comprehensive integration tests covering complete game workflows with divisions, teams, challenges, and scoring
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
+public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 {
     /// <summary>
     /// Test complete workflow: division management, team participation, challenge access, and scoring
@@ -92,7 +92,7 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITe
         divisionsResponse.EnsureSuccessStatusCode();
         var divisions = await divisionsResponse.Content.ReadFromJsonAsync<Division[]>();
         Assert.NotNull(divisions);
-        Assert.Equal(2, divisions!.Length);
+        Assert.Equal(2, divisions.Length);
         Assert.Contains(divisions, d => d.Name == "Division A");
         Assert.Contains(divisions, d => d.Name == "Division B");
 
@@ -291,18 +291,18 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITe
         var challenge1Detail = await client.GetFromJsonAsync<ChallengeDetailModel>(
             $"/api/Game/{game.Id}/Challenges/{challenge1.Id}");
         Assert.NotNull(challenge1Detail);
-        Assert.Equal(challenge1.Id, challenge1Detail!.Id);
+        Assert.Equal(challenge1.Id, challenge1Detail.Id);
         Assert.Equal("Web Challenge", challenge1Detail.Title);
 
         var challenge2Detail = await client.GetFromJsonAsync<ChallengeDetailModel>(
             $"/api/Game/{game.Id}/Challenges/{challenge2.Id}");
         Assert.NotNull(challenge2Detail);
-        Assert.Equal(challenge2.Id, challenge2Detail!.Id);
+        Assert.Equal(challenge2.Id, challenge2Detail.Id);
 
         var challenge3Detail = await client.GetFromJsonAsync<ChallengeDetailModel>(
             $"/api/Game/{game.Id}/Challenges/{challenge3.Id}");
         Assert.NotNull(challenge3Detail);
-        Assert.Equal(challenge3.Id, challenge3Detail!.Id);
+        Assert.Equal(challenge3.Id, challenge3Detail.Id);
     }
 
     private static async Task<TestDataSeeder.SeededChallenge> CreateChallengeAsync(
@@ -392,7 +392,6 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITe
         Assert.Equal(AnswerResult.FlagSubmitted, correctStatus);
 
         // Test 3: Verify team appears on scoreboard
-        // Note: Actual score processing happens asynchronously
         var scoreboardResponse = await client.GetAsync($"/api/Game/{game.Id}/Scoreboard");
         scoreboardResponse.EnsureSuccessStatusCode();
         var scoreboard = await scoreboardResponse.Content.ReadFromJsonAsync<JsonElement>();
@@ -408,8 +407,6 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITe
 
     /// <summary>
     /// Test score calculation accuracy across multiple submissions
-    /// Note: Actual score processing happens via background services which are disabled in tests.
-    /// This test verifies submission tracking and scoreboard structure.
     /// </summary>
     [Fact]
     public async Task ScoreCalculation_ShouldBeAccurate()
@@ -518,7 +515,7 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITe
         Assert.NotNull(division);
 
         // Update division to restrict challenge access
-        var updateResponse = await adminClient.PutAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions/{division!.Id}",
+        var updateResponse = await adminClient.PutAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions/{division.Id}",
             new DivisionEditModel
             {
                 Name = "Updated Division",
@@ -527,21 +524,20 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITe
         updateResponse.EnsureSuccessStatusCode();
         var updatedDivision = await updateResponse.Content.ReadFromJsonAsync<Division>();
         Assert.NotNull(updatedDivision);
-        Assert.Equal("Updated Division", updatedDivision!.Name);
+        Assert.Equal("Updated Division", updatedDivision.Name);
 
         // Verify division was updated
         var getResponse = await adminClient.GetAsync($"/api/Edit/Games/{game.Id}/Divisions");
         getResponse.EnsureSuccessStatusCode();
         var divisions = await getResponse.Content.ReadFromJsonAsync<Division[]>();
         Assert.NotNull(divisions);
-        var foundDivision = divisions!.FirstOrDefault(d => d.Id == division.Id);
+        var foundDivision = divisions.FirstOrDefault(d => d.Id == division.Id);
         Assert.NotNull(foundDivision);
-        Assert.Equal("Updated Division", foundDivision!.Name);
+        Assert.Equal("Updated Division", foundDivision.Name);
     }
 
     /// <summary>
     /// Test that multiple wrong submissions are handled correctly and don't cause cheat detection false positives.
-    /// Note: Score processing requires background services which are disabled in tests.
     /// </summary>
     [Fact]
     public async Task MultipleWrongSubmissions_ShouldNotTriggerCheatDetection()
