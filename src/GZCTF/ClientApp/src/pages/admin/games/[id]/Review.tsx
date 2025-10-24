@@ -183,8 +183,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               </Center>
               <ParticipationStatusControl
                 disabled={disabled}
-                participateId={participation.id!}
-                status={participation.status!}
+                participation={participation}
                 setParticipation={setParticipation}
               />
             </Group>

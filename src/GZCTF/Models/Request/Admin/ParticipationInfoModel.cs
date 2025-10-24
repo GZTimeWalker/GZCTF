@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Admin;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GZCTF.Models.Request.Admin;
 
 /// <summary>
 /// Participation for review (Admin)
@@ -8,16 +10,19 @@ public class ParticipationInfoModel
     /// <summary>
     /// Participation ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Participating team
     /// </summary>
+    [Required]
     public TeamWithDetailedUserInfo Team { get; set; } = null!;
 
     /// <summary>
     /// Registered members
     /// </summary>
+    [Required]
     public Guid[] RegisteredMembers { get; set; } = [];
 
     /// <summary>
@@ -28,6 +33,7 @@ public class ParticipationInfoModel
     /// <summary>
     /// Participation status
     /// </summary>
+    [Required]
     public ParticipationStatus Status { get; set; } = ParticipationStatus.Pending;
 
     internal static ParticipationInfoModel FromParticipation(Participation part) =>

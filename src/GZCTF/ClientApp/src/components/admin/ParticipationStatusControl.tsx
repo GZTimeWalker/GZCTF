@@ -3,20 +3,19 @@ import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { ParticipationEditModel, ParticipationStatus } from '@Api'
+import { ParticipationEditModel, ParticipationInfoModel } from '@Api'
 
 interface ParticipationStatusControlProps extends GroupProps {
   disabled: boolean
-  participateId: number
+  participation: ParticipationInfoModel
   size?: MantineSpacing
-  status: ParticipationStatus
   setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }
 
 export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (props) => {
-  const { disabled, participateId, status, setParticipation, size, ...others } = props
+  const { disabled, participation, setParticipation, size, ...others } = props
   const partStatusMap = useParticipationStatusMap()
-  const part = partStatusMap.get(status)!
+  const part = partStatusMap.get(participation.status)!
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
@@ -27,7 +26,7 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
         const s = partStatusMap.get(value)!
         return (
           <ActionIconWithConfirm
-            key={`${participateId}@${value}`}
+            key={`${participation.id}@${value}`}
             size={size}
             iconPath={s.iconPath}
             color={s.color}
@@ -35,7 +34,7 @@ export const ParticipationStatusControl: FC<ParticipationStatusControlProps> = (
               status: s.title,
             })}
             disabled={disabled}
-            onClick={() => setParticipation(participateId, { status: value })}
+            onClick={() => setParticipation(participation.id, { status: value, divisionId: participation.divisionId })}
           />
         )
       })}

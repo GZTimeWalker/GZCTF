@@ -165,6 +165,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> JoinGame(int id, [FromBody] GameJoinModel model, CancellationToken token)
     {
+        await using var transaction = await gameRepository.BeginTransactionAsync(token);
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
@@ -242,8 +243,9 @@ public class GameController(
         await participationRepository.SaveAsync(token);
 
         if (game.AcceptWithoutReview)
-            await participationRepository.UpdateParticipation(part,
-                new ParticipationEditModel(ParticipationStatus.Accepted), token);
+            await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
+
+        await transaction.CommitAsync(token);
 
         logger.Log(StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user,
             TaskStatus.Success);
@@ -279,14 +281,14 @@ public class GameController(
 
         var part = await participationRepository.GetParticipation(user!.Id, game.Id, token);
 
-        if (part is null || part.Members.All(u => u.UserId != user!.Id))
+        if (part is null || part.Members.All(u => u.UserId != user.Id))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CannotLeaveWithoutJoin)]));
 
         if (part.Status != ParticipationStatus.Pending && part.Status != ParticipationStatus.Rejected)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_CannotLeaveAfterApproval)]));
 
         // FIXME: After approval, new users can be added, but cannot exit?
-        part.Members.RemoveWhere(u => u.UserId == user!.Id);
+        part.Members.RemoveWhere(u => u.UserId == user.Id);
 
         if (part.Members.Count == 0)
             await participationRepository.RemoveParticipation(part, true, token);

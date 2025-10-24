@@ -565,6 +565,8 @@ public class AdminController(
     public async Task<IActionResult> Participation(int id, [FromBody] ParticipationEditModel model,
         CancellationToken token = default)
     {
+        await using var transaction = await participationRepository.BeginTransactionAsync(token);
+
         var participation = await participationRepository.GetParticipationById(id, token);
 
         if (participation is null)
@@ -572,6 +574,8 @@ public class AdminController(
                 StatusCodes.Status404NotFound));
 
         await participationRepository.UpdateParticipation(participation, model, token);
+
+        await transaction.CommitAsync(token);
 
         return Ok();
     }

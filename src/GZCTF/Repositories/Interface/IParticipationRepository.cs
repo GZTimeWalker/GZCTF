@@ -126,12 +126,22 @@ public interface IParticipationRepository : IRepository
     public Task RemoveParticipation(Participation part, bool save = true, CancellationToken token = default);
 
     /// <summary>
-    /// Update participation information
+    /// Update participation
     /// </summary>
     /// <param name="part"></param>
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task UpdateParticipation(Participation part, ParticipationEditModel model,
+        CancellationToken token = default);
+
+    /// <summary>
+    /// Update participation status
+    /// </summary>
+    /// <param name="part"></param>
+    /// <param name="status"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task UpdateParticipationStatus(Participation part, ParticipationStatus status,
         CancellationToken token = default);
 }

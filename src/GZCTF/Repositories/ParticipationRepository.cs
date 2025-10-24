@@ -15,10 +15,7 @@ public class ParticipationRepository(
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
         var challenges =
-            await Context.GameChallenges.Where(c => c.Game == game && c.IsEnabled).ToArrayAsync(token);
-
-        // re-query instead of Entry
-        part = await Context.Participations.Include(p => p.Challenges).SingleAsync(p => p.Id == part.Id, token);
+            await Context.GameChallenges.Where(c => c.GameId == game.Id && c.IsEnabled).ToArrayAsync(token);
 
         var update = challenges.Aggregate(false,
             (current, challenge) => part.Challenges.Add(challenge) || current);
@@ -69,55 +66,54 @@ public class ParticipationRepository(
     public async Task UpdateParticipation(Participation part, ParticipationEditModel model,
         CancellationToken token = default)
     {
-        var trans = await Context.Database.BeginTransactionAsync(token);
-        var needFlush = false;
+        await UpdateDivision(part, model.DivisionId, token);
 
-        if (model.Status != part.Status && model.Status is not null)
-        {
-            var oldStatus = part.Status;
-            part.Status = model.Status.Value;
-
-            if (model.Status == ParticipationStatus.Accepted)
-            {
-                // lock team when accepted
-                part.Team.Locked = true;
-
-                // will also update participation status, update team lock
-                // will call SaveAsync
-                // also flush scoreboard when a team is re-accepted
-                if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
-                    // flush scoreboard when instances are updated
-                    needFlush = true;
-            }
-            else
-            {
-                // team will unlock automatically when request occur
-                await SaveAsync(token);
-
-                // flush scoreboard when a team is suspended
-                if (model.Status == ParticipationStatus.Suspended && part.Game.IsActive)
-                    needFlush = true;
-            }
-        }
-
-        needFlush |= await UpdateDivision(part, model.DivisionId, token);
-
-        await trans.CommitAsync(token);
-
-        if (needFlush)
-            await cacheHelper.FlushScoreboardCache(part.GameId, token);
+        if (model.Status is { } status)
+            await UpdateParticipationStatus(part, status, token);
     }
 
-    async Task<bool> UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
+    public async Task UpdateParticipationStatus(Participation part, ParticipationStatus status,
+        CancellationToken token = default)
+    {
+        if (status == part.Status)
+            return;
+
+        var oldStatus = part.Status;
+        part.Status = status;
+
+        if (status == ParticipationStatus.Accepted)
+        {
+            // lock team when accepted
+            part.Team.Locked = true;
+
+            // will also update participation status, update team lock
+            // will call SaveAsync
+            // also flush scoreboard when a team is re-accepted
+            if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
+                // flush scoreboard when instances are updated
+                await cacheHelper.FlushScoreboardCache(part.GameId, token);
+        }
+        else
+        {
+            // team will unlock automatically when request occur
+            await SaveAsync(token);
+
+            // flush scoreboard when a team is suspended
+            if (status == ParticipationStatus.Suspended && part.Game.IsActive)
+                await cacheHelper.FlushScoreboardCache(part.GameId, token);
+        }
+    }
+
+    async Task UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
     {
         if (part.DivisionId == divisionId)
-            return false;
+            return;
 
         if (divisionId is { } divId)
         {
             var div = await divisionRepository.GetDivision(part.GameId, divId, token);
             if (div is null)
-                return false;
+                return;
 
             part.DivisionId = divisionId;
             part.Division = div;
@@ -129,7 +125,7 @@ public class ParticipationRepository(
         }
 
         await SaveAsync(token);
-        return true;
+        await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>

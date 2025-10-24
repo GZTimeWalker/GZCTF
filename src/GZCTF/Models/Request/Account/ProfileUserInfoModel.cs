@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Account;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GZCTF.Models.Request.Account;
 
 /// <summary>
 /// Basic account information
@@ -8,7 +10,14 @@ public class ProfileUserInfoModel
     /// <summary>
     /// User ID
     /// </summary>
-    public Guid? UserId { get; set; }
+    [Required]
+    public Guid UserId { get; set; }
+
+    /// <summary>
+    /// User role
+    /// </summary>
+    [Required]
+    public Role Role { get; set; }
 
     /// <summary>
     /// Username
@@ -44,11 +53,6 @@ public class ProfileUserInfoModel
     /// Avatar URL
     /// </summary>
     public string? Avatar { get; set; }
-
-    /// <summary>
-    /// User role
-    /// </summary>
-    public Role? Role { get; set; }
 
     internal static ProfileUserInfoModel FromUserInfo(UserInfo user) =>
         new()

@@ -321,8 +321,11 @@ export interface ProfileUserInfoModel {
   /**
    * User ID
    * @format guid
+   * @minLength 1
    */
-  userId?: string | null;
+  userId: string;
+  /** User role */
+  role: Role;
   /** Username */
   userName?: string | null;
   /** Email */
@@ -337,8 +340,6 @@ export interface ProfileUserInfoModel {
   stdNumber?: string | null;
   /** Avatar URL */
   avatar?: string | null;
-  /** User role */
-  role?: Role | null;
 }
 
 /** Global configuration update */
@@ -1909,18 +1910,18 @@ export interface ParticipationInfoModel {
    * Participation ID
    * @format int32
    */
-  id?: number;
+  id: number;
   /** Participating team */
-  team?: TeamWithDetailedUserInfo;
+  team: TeamWithDetailedUserInfo;
   /** Registered members */
-  registeredMembers?: string[];
+  registeredMembers: string[];
   /**
    * Division of the game
    * @format int32
    */
   divisionId?: number | null;
   /** Participation status */
-  status?: ParticipationStatus;
+  status: ParticipationStatus;
 }
 
 /** Detailed team information for review (Admin) */
@@ -1929,22 +1930,23 @@ export interface TeamWithDetailedUserInfo {
    * Team ID
    * @format int32
    */
-  id?: number;
+  id: number;
+  /** Is locked */
+  locked: boolean;
+  /**
+   * Captain ID
+   * @format guid
+   * @minLength 1
+   */
+  captainId: string;
   /** Team name */
   name?: string | null;
   /** Team bio */
   bio?: string | null;
   /** Avatar URL */
   avatar?: string | null;
-  /** Is locked */
-  locked?: boolean;
-  /**
-   * Captain Id
-   * @format guid
-   */
-  captainId?: string;
   /** Team members */
-  members?: ProfileUserInfoModel[] | null;
+  members: ProfileUserInfoModel[];
 }
 
 /** Challenge detailed information */

@@ -1,4 +1,5 @@
-﻿using GZCTF.Models.Request.Account;
+﻿using System.ComponentModel.DataAnnotations;
+using GZCTF.Models.Request.Account;
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -10,7 +11,20 @@ public class TeamWithDetailedUserInfo
     /// <summary>
     /// Team ID
     /// </summary>
+    [Required]
     public int Id { get; set; }
+
+    /// <summary>
+    /// Is locked
+    /// </summary>
+    [Required]
+    public bool Locked { get; set; }
+
+    /// <summary>
+    /// Captain ID
+    /// </summary>
+    [Required]
+    public Guid CaptainId { get; set; }
 
     /// <summary>
     /// Team name
@@ -28,19 +42,10 @@ public class TeamWithDetailedUserInfo
     public string? Avatar { get; set; }
 
     /// <summary>
-    /// Is locked
-    /// </summary>
-    public bool Locked { get; set; }
-
-    /// <summary>
-    /// Captain Id
-    /// </summary>
-    public Guid CaptainId { get; set; }
-
-    /// <summary>
     /// Team members
     /// </summary>
-    public ProfileUserInfoModel[]? Members { get; set; }
+    [Required]
+    public ProfileUserInfoModel[] Members { get; set; } = [];
 
     internal static TeamWithDetailedUserInfo FromTeam(Team team) =>
         new()
