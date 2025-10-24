@@ -37,9 +37,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         // Setup: Create game with specific blood bonus configuration
         var game = await CreateGameWithBloodBonus(
             title: "Score Precision Test",
-            firstBlood: 1.3f,
-            secondBlood: 1.15f,
-            thirdBlood: 1.05f
+            packBloods(1.3f, 1.15f, 1.05f)
         );
 
         // Create 5 challenges with different base scores
@@ -171,7 +169,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     [Fact]
     public async Task Scoreboard_ShouldRespect_DivisionPermissions()
     {
-        var game = await CreateGameWithBloodBonus("Division Permission Test", 1.5f, 1.3f, 1.1f);
+        var game = await CreateGameWithBloodBonus("Division Permission Test", packBloods(1.5f, 1.3f, 1.1f));
         var challenge1 = await CreateChallenge(game.Id, "Perm Challenge 1", "flag{perm1}", 1000);
         await CreateChallenge(game.Id, "Perm Challenge 2", "flag{perm2}", 1000);
 
@@ -283,7 +281,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     [Fact]
     public async Task Scoreboard_ShouldRespect_ChallengeSpecificPermissions()
     {
-        var game = await CreateGameWithBloodBonus("Challenge Permission Test", 1.5f, 1.3f, 1.1f);
+        var game = await CreateGameWithBloodBonus("Challenge Permission Test", packBloods(1.5f, 1.3f, 1.1f));
         var challenge1 = await CreateChallenge(game.Id, "Open Challenge", "flag{open}", 1000);
         var challenge2 = await CreateChallenge(game.Id, "Restricted Challenge", "flag{restricted}", 2000);
 
@@ -348,7 +346,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     [Fact]
     public async Task Scoreboard_ShouldCalculate_DynamicScoring()
     {
-        var game = await CreateGameWithBloodBonus("Dynamic Scoring Test", 1.0f, 1.0f, 1.0f); // No blood bonus
+        var game = await CreateGameWithBloodBonus("Dynamic Scoring Test",
+            packBloods(1.0f, 1.0f, 1.0f)); // No blood bonus
 
         // Create challenge with dynamic scoring
         var challenge = await CreateDynamicChallenge(
@@ -412,7 +411,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     [Fact]
     public async Task Scoreboard_ShouldHandle_ComplexMultiDivisionScenarios()
     {
-        var game = await CreateGameWithBloodBonus("Multi-Division Test", 2.0f, 1.5f, 1.25f);
+        var game = await CreateGameWithBloodBonus("Multi-Division Test", packBloods(2.0f, 1.5f, 1.25f));
 
         var challenge1 = await CreateChallenge(game.Id, "Public Challenge", "flag{public}", 500);
         var challenge2 = await CreateChallenge(game.Id, "Exclusive Challenge", "flag{exclusive}", 1000);
@@ -610,25 +609,12 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
     private async Task<SeededGame> CreateGameWithBloodBonus(
         string title,
-        float firstBlood,
-        float secondBlood,
-        float thirdBlood)
+        long bloodBonusValue)
     {
         using var scope = factory.Services.CreateScope();
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
 
         var now = DateTimeOffset.UtcNow;
-
-        // Convert blood bonus factors to packed
-        // Format: (first << 20) + (second << 10) + third
-        // Factors are stored as (factor - 1.0) * 1000
-        static long PackBloodFactor(float factor) =>
-            (long)MathF.Round((factor - 1.0f) * 1000f, MidpointRounding.AwayFromZero);
-
-        long firstValue = PackBloodFactor(firstBlood);
-        long secondValue = PackBloodFactor(secondBlood);
-        long thirdValue = PackBloodFactor(thirdBlood);
-        long bloodBonusValue = (firstValue << 20) + (secondValue << 10) + thirdValue;
 
         var game = new Game
         {
@@ -652,6 +638,15 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         return new SeededGame(created.Id, created.Title, created.StartTimeUtc, created.EndTimeUtc);
     }
+
+    // Convert blood bonus factors to packed
+    // Format: (first << 20) + (second << 10) + third
+    // Factors are stored as (factor - 1.0) * 1000
+    static long PackBloodFactor(float factor) =>
+        (long)MathF.Round((factor - 1.0f) * 1000f, MidpointRounding.AwayFromZero);
+
+    private long packBloods(float first, float second, float third) =>
+        (PackBloodFactor(first) << 20) + (PackBloodFactor(second) << 10) + PackBloodFactor(third);
 
     private async Task<SeededChallenge> CreateChallenge(
         int gameId,

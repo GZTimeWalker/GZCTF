@@ -56,10 +56,9 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
         var paths = jsonDoc.RootElement.GetProperty("paths");
 
         // Expected endpoints
-        var expectedEndpoints = new[]
-        {
+        string[] expectedEndpoints = [
             "/api/Config", "/api/Account/Register", "/api/Account/LogIn", "/api/Account/Profile"
-        };
+        ];
 
         // Assert
         foreach (var endpoint in expectedEndpoints)
@@ -105,8 +104,7 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
         // Assert - in development mode, Scalar should be available
         // It might return 404 in some configurations, so we just verify it responds
         Assert.True(
-            response.StatusCode == HttpStatusCode.OK ||
-            response.StatusCode == HttpStatusCode.NotFound,
+            response.StatusCode is HttpStatusCode.OK or HttpStatusCode.NotFound,
             $"Expected OK or NotFound but got {response.StatusCode}"
         );
     }
