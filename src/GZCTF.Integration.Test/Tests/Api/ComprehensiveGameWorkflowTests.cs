@@ -370,13 +370,14 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
         wrongSubmitResponse.EnsureSuccessStatusCode();
         var wrongSubmissionId = await wrongSubmitResponse.Content.ReadFromJsonAsync<int>();
 
-        // Initial status will be FlagSubmitted
+        // Initial status will be FlagSubmitted, but may quickly change to WrongAnswer
         var wrongStatusResponse = await client.GetAsync(
             $"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{wrongSubmissionId}");
         wrongStatusResponse.EnsureSuccessStatusCode();
         var wrongStatus = await wrongStatusResponse.Content.ReadFromJsonAsync<AnswerResult>();
-        // Status check returns FlagSubmitted initially, regardless of correctness
-        Assert.Equal(AnswerResult.FlagSubmitted, wrongStatus);
+        // Status may be FlagSubmitted or WrongAnswer depending on async processing timing
+        Assert.True(wrongStatus == AnswerResult.FlagSubmitted || wrongStatus == AnswerResult.WrongAnswer,
+            $"Wrong flag status should be FlagSubmitted or WrongAnswer, but got {wrongStatus}");
 
         // Test 2: Submit correct flag
         var correctSubmitResponse = await client.PostAsJsonAsync(
