@@ -21,13 +21,17 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         using var scope = factory.Services.CreateScope();
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
         
-        // Create teams with distinct names
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "search1@test.com", "Test@123");
+        // Create teams with distinct names and different captains
+        var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), $"search1{Guid.NewGuid():N}@test.com", "Test@123");
+        var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), $"search2{Guid.NewGuid():N}@test.com", "Test@123");
+        var user3 = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), $"search3{Guid.NewGuid():N}@test.com", "Test@123");
         
-        var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "SearchableTeam Alpha");
-        var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "SearchableTeam Beta");
-        var team3 = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "DifferentName Gamma");
+        var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, "SearchableTeam Alpha");
+        var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, "SearchableTeam Beta");
+        var team3 = await TestDataSeeder.CreateTeamAsync(factory.Services, user3.Id, "DifferentName Gamma");
         
         // Search for teams containing "searchable"
         var results = await teamRepo.SearchTeams("searchable", CancellationToken.None);
