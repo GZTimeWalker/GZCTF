@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using GZCTF.Integration.Test.Base;
@@ -12,6 +11,7 @@ using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
@@ -19,7 +19,7 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// Comprehensive integration tests covering complete game workflows with divisions, teams, challenges, and scoring
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
+public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
     /// <summary>
     /// Test complete workflow: division management, team participation, challenge access, and scoring
@@ -57,11 +57,8 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
         using var adminClient = factory.CreateClient();
 
         // Admin login
-        var adminLoginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        var adminLoginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
         adminLoginResponse.EnsureSuccessStatusCode();
 
         // Test 1: Create divisions via Edit API
@@ -75,7 +72,7 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
         divisionAResponse.EnsureSuccessStatusCode();
         var divisionA = await divisionAResponse.Content.ReadFromJsonAsync<Division>();
         Assert.NotNull(divisionA);
-        Assert.Equal("Division A", divisionA!.Name);
+        Assert.Equal("Division A", divisionA.Name);
 
         var divisionBResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
@@ -83,15 +80,12 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
                 Name = "Division B",
                 InviteCode = "DIVB2025",
                 DefaultPermissions = GamePermission.All,
-                ChallengeConfigs = new HashSet<DivisionChallengeConfigModel>
-                {
-                    new() { ChallengeId = challenge1.Id, Permissions = GamePermission.All }
-                }
+                ChallengeConfigs = [new() { ChallengeId = challenge1.Id, Permissions = GamePermission.All }]
             });
         divisionBResponse.EnsureSuccessStatusCode();
         var divisionB = await divisionBResponse.Content.ReadFromJsonAsync<Division>();
         Assert.NotNull(divisionB);
-        Assert.Equal("Division B", divisionB!.Name);
+        Assert.Equal("Division B", divisionB.Name);
 
         // Test 2: Retrieve divisions
         var divisionsResponse = await adminClient.GetAsync($"/api/Edit/Games/{game.Id}/Divisions");
@@ -104,36 +98,22 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         // Test 3: User1 joins Division A
         using var user1Client = factory.CreateClient();
-        var user1LoginResponse = await user1Client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user1.UserName,
-            Password = user1Password
-        });
+        var user1LoginResponse = await user1Client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user1.UserName, Password = user1Password });
         user1LoginResponse.EnsureSuccessStatusCode();
 
-        var joinDivAResponse = await user1Client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team1.Id,
-            DivisionId = divisionA.Id,
-            InviteCode = "DIVA2025"
-        });
+        var joinDivAResponse = await user1Client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team1.Id, DivisionId = divisionA.Id, InviteCode = "DIVA2025" });
         joinDivAResponse.EnsureSuccessStatusCode();
 
         // Test 4: User2 joins Division B
         using var user2Client = factory.CreateClient();
-        var user2LoginResponse = await user2Client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user2.UserName,
-            Password = user2Password
-        });
+        var user2LoginResponse = await user2Client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user2.UserName, Password = user2Password });
         user2LoginResponse.EnsureSuccessStatusCode();
 
-        var joinDivBResponse = await user2Client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team2.Id,
-            DivisionId = divisionB.Id,
-            InviteCode = "DIVB2025"
-        });
+        var joinDivBResponse = await user2Client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team2.Id, DivisionId = divisionB.Id, InviteCode = "DIVB2025" });
         joinDivBResponse.EnsureSuccessStatusCode();
 
         // Test 5: Verify division assignment in game details
@@ -209,12 +189,9 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
         Assert.NotEqual(default, team2Item);
 
         // Test 11: Verify scores (may need async processing time)
-        // Note: Scores are processed asynchronously via a background channel
-        // In a real test environment, scores might not be immediately available
-        // We can verify the scoreboard structure is correct
         var scoreItems = items.EnumerateArray().ToArray();
         Assert.True(scoreItems.Length >= 2, "Scoreboard should contain at least 2 teams");
-        
+
         // Verify both teams are in the scoreboard
         Assert.Contains(scoreItems, item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team1.Id);
@@ -237,44 +214,30 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
 
         // Test 1: Join the game
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team.Id
-        });
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
         joinResponse.EnsureSuccessStatusCode();
 
-        // Wait for the participation status update to be fully committed
-        await Task.Delay(500);
-
         // Test 2: Verify team status in participation via repository with fresh scope
-        using (var scope = factory.Services.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            
-            // Query directly from database to ensure we get the latest state
-            var participation = await context.Participations
-                .Include(p => p.Members)
-                .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
-            
-            Assert.NotNull(participation);
-            Assert.Equal(team.Id, participation!.TeamId);
-            Assert.Equal(game.Id, participation.GameId);
-            // AcceptWithoutReview is true, so status should be Accepted
-            // However, UpdateParticipationStatus may not complete before this check
-            // For now, verify the participation exists and has members
-            Assert.NotEqual(ParticipationStatus.Rejected, participation.Status);
-            
-            // Test 3: Verify user is in the participation members
-            Assert.Contains(participation.Members, m => m.UserId == user.Id);
-        }
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // Query directly from database to ensure we get the latest state
+        var participation = await context.Participations
+            .Include(p => p.Members)
+            .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+
+        Assert.NotNull(participation);
+        Assert.Equal(team.Id, participation.TeamId);
+        Assert.Equal(game.Id, participation.GameId);
+        Assert.Equal(ParticipationStatus.Accepted, participation.Status);
+
+        // Test 3: Verify user is in the participation members
+        Assert.Contains(participation.Members, m => m.UserId == user.Id);
     }
 
     /// <summary>
@@ -300,17 +263,11 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
 
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team.Id
-        });
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
         joinResponse.EnsureSuccessStatusCode();
 
         // Test 1: Get game details and verify all challenges are accessible
@@ -364,12 +321,12 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
             Content = $"{title} content",
             Category = category,
             Type = ChallengeType.StaticAttachment,
-            Hints = new List<string>(),
+            Hints = [],
             IsEnabled = true,
             SubmissionLimit = 0,
-            OriginalScore = 100,
-            MinScoreRate = 0.5,
-            Difficulty = 2,
+            OriginalScore = 1000,
+            MinScoreRate = 0.8,
+            Difficulty = 5,
             Game = game,
             GameId = game.Id
         };
@@ -399,17 +356,11 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
 
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = team.Id
-        });
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
         joinResponse.EnsureSuccessStatusCode();
 
         // Test 1: Submit incorrect flag
@@ -482,20 +433,17 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         // Team 1 solves both challenges
         using var client1 = factory.CreateClient();
-        await client1.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user1.UserName,
-            Password = password
-        });
+        await client1.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user1.UserName, Password = password });
         await client1.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team1.Id });
-        
+
         // Submit first challenge for team 1
         var submit1Response = await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
             new FlagSubmitModel { Flag = "flag{one}" });
         submit1Response.EnsureSuccessStatusCode();
         var submission1Id = await submit1Response.Content.ReadFromJsonAsync<int>();
         Assert.True(submission1Id > 0);
-        
+
         // Submit second challenge for team 1
         var submit2Response = await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}",
             new FlagSubmitModel { Flag = "flag{two}" });
@@ -505,13 +453,10 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         // Team 2 solves only challenge 1
         using var client2 = factory.CreateClient();
-        await client2.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user2.UserName,
-            Password = password
-        });
+        await client2.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user2.UserName, Password = password });
         await client2.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team2.Id });
-        
+
         var submit3Response = await client2.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
             new FlagSubmitModel { Flag = "flag{one}" });
         submit3Response.EnsureSuccessStatusCode();
@@ -540,10 +485,6 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
         // Score processing happens asynchronously via ChannelWriter which requires hosted services
         Assert.True(team1Item.TryGetProperty("score", out var team1ScoreElement));
         Assert.True(team2Item.TryGetProperty("score", out var team2ScoreElement));
-        
-        // Verify submission IDs were returned correctly indicating submissions were accepted
-        Assert.True(submission1Id > 0 && submission2Id > 0 && submission3Id > 0,
-            "All submissions should return valid IDs");
     }
 
     /// <summary>
@@ -561,11 +502,8 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
             "Restricted Challenge", "flag{restricted}");
 
         using var adminClient = factory.CreateClient();
-        await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = adminUser.UserName,
-            Password = adminPassword
-        });
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
 
         // Create division with all permissions
         var createResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
@@ -584,10 +522,7 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
             new DivisionEditModel
             {
                 Name = "Updated Division",
-                ChallengeConfigs = new HashSet<DivisionChallengeConfigModel>
-                {
-                    new() { ChallengeId = challenge.Id, Permissions = 0 }
-                }
+                ChallengeConfigs = [new() { ChallengeId = challenge.Id, Permissions = 0 }]
             });
         updateResponse.EnsureSuccessStatusCode();
         var updatedDivision = await updateResponse.Content.ReadFromJsonAsync<Division>();
@@ -622,11 +557,8 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -675,7 +607,5 @@ public class ComprehensiveGameWorkflowTests(GZCTFApplicationFactory factory)
 
         Assert.NotEqual(default, teamScoreItem);
         Assert.True(teamScoreItem.TryGetProperty("score", out var score));
-        // Note: Score will be 0 because background services are disabled in tests
-        // The important part is that the team appears on the scoreboard
     }
 }

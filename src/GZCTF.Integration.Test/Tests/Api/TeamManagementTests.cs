@@ -29,19 +29,13 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
 
         // Test 1: Create a new team via API
-        var createResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = "Test Team Alpha",
-            Bio = "This is a test team for integration testing"
-        });
+        var createResponse = await client.PostAsJsonAsync("/api/Team",
+            new TeamUpdateModel { Name = "Test Team Alpha", Bio = "This is a test team for integration testing" });
         createResponse.EnsureSuccessStatusCode();
         var createdTeam = await createResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
         Assert.NotNull(createdTeam);
@@ -78,18 +72,12 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         // Test 1: Update team information
-        var updateResponse = await client.PutAsJsonAsync($"/api/Team/{team.Id}", new TeamUpdateModel
-        {
-            Name = "Updated Team Name",
-            Bio = "Updated bio information"
-        });
+        var updateResponse = await client.PutAsJsonAsync($"/api/Team/{team.Id}",
+            new TeamUpdateModel { Name = "Updated Team Name", Bio = "Updated bio information" });
         updateResponse.EnsureSuccessStatusCode();
         var updatedTeam = await updateResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
         Assert.NotNull(updatedTeam);
@@ -118,36 +106,21 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         // Create teams up to the limit (MaxTeamsAllowed = 3 per TeamController)
-        var team1Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = "Team One"
-        });
+        var team1Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team One" });
         team1Response.EnsureSuccessStatusCode();
 
-        var team2Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = "Team Two"
-        });
+        var team2Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Two" });
         team2Response.EnsureSuccessStatusCode();
 
-        var team3Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = "Team Three"
-        });
+        var team3Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Three" });
         team3Response.EnsureSuccessStatusCode();
 
         // Test: Attempt to create a 4th team should fail
-        var team4Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = "Team Four"
-        });
+        var team4Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Four" });
         Assert.Equal(HttpStatusCode.BadRequest, team4Response.StatusCode);
     }
 
@@ -164,17 +137,12 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.Unauthorized, getTeamsResponse.StatusCode);
 
         // Test 2: POST /api/Team should return 401
-        var createResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = "Unauthorized Team"
-        });
+        var createResponse =
+            await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Unauthorized Team" });
         Assert.Equal(HttpStatusCode.Unauthorized, createResponse.StatusCode);
 
         // Test 3: PUT /api/Team/{id} should return 401
-        var updateResponse = await client.PutAsJsonAsync("/api/Team/1", new TeamUpdateModel
-        {
-            Name = "Updated Name"
-        });
+        var updateResponse = await client.PutAsJsonAsync("/api/Team/1", new TeamUpdateModel { Name = "Updated Name" });
         Assert.Equal(HttpStatusCode.Unauthorized, updateResponse.StatusCode);
     }
 
@@ -191,24 +159,15 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         // Test 1: Empty team name should be rejected
-        var emptyNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = ""
-        });
+        var emptyNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "" });
         Assert.Equal(HttpStatusCode.BadRequest, emptyNameResponse.StatusCode);
 
         // Test 2: Null team name should be rejected
-        var nullNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel
-        {
-            Name = null!
-        });
+        var nullNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = null! });
         Assert.Equal(HttpStatusCode.BadRequest, nullNameResponse.StatusCode);
     }
 }

@@ -64,12 +64,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
         var userName = TestDataSeeder.RandomName();
         var email = $"{userName}@example.com";
 
-        var registerModel = new RegisterModel
-        {
-            UserName = userName,
-            Email = email,
-            Password = "P@ssw0rd!123"
-        };
+        var registerModel = new RegisterModel { UserName = userName, Email = email, Password = "P@ssw0rd!123" };
 
         var registerResponse = await client.PostAsJsonAsync("/api/Account/Register", registerModel);
         output.WriteLine($"Register status: {registerResponse.StatusCode}");

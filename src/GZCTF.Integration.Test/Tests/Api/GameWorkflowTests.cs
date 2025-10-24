@@ -32,21 +32,16 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = seededUser.UserName,
-            Password = password
-        });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = seededUser.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
 
         var profile = await client.GetFromJsonAsync<ProfileUserInfoModel>("/api/Account/Profile");
         Assert.NotNull(profile);
         Assert.Equal(seededUser.UserName, profile!.UserName);
 
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{seededGame.Id}", new GameJoinModel
-        {
-            TeamId = seededTeam.Id
-        });
+        var joinResponse =
+            await client.PostAsJsonAsync($"/api/Game/{seededGame.Id}", new GameJoinModel { TeamId = seededTeam.Id });
         joinResponse.EnsureSuccessStatusCode();
 
         var detail = await client.GetFromJsonAsync<JsonElement>($"/api/Game/{seededGame.Id}/Details");

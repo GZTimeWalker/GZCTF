@@ -30,7 +30,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         // Create 3 teams
         var password = "Multi@Team123";
         var teams = new List<(TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team)>();
-        
+
         for (int i = 1; i <= 3; i++)
         {
             var userName = TestDataSeeder.RandomName();
@@ -43,11 +43,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         // Each team joins and solves different challenges
         // Team 1: solves both
         using var client1 = factory.CreateClient();
-        await client1.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = teams[0].user.UserName,
-            Password = password
-        });
+        await client1.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = teams[0].user.UserName, Password = password });
         await client1.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = teams[0].team.Id });
         await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
             new FlagSubmitModel { Flag = "flag{one}" });
@@ -56,22 +53,16 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
 
         // Team 2: solves only challenge1
         using var client2 = factory.CreateClient();
-        await client2.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = teams[1].user.UserName,
-            Password = password
-        });
+        await client2.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = teams[1].user.UserName, Password = password });
         await client2.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = teams[1].team.Id });
         await client2.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
             new FlagSubmitModel { Flag = "flag{one}" });
 
         // Team 3: doesn't solve any
         using var client3 = factory.CreateClient();
-        await client3.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = teams[2].user.UserName,
-            Password = password
-        });
+        await client3.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = teams[2].user.UserName, Password = password });
         await client3.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = teams[2].team.Id });
 
         // Verify scoreboard contains all teams
@@ -108,11 +99,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
@@ -125,7 +113,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         Assert.True(details.TryGetProperty("rank", out _), "Details should contain 'rank'");
         Assert.True(details.TryGetProperty("challenges", out _), "Details should contain 'challenges'");
         Assert.True(details.TryGetProperty("challengeCount", out _), "Details should contain 'challengeCount'");
-        
+
         // Verify rank contains team information
         Assert.True(details.TryGetProperty("rank", out var rank));
         Assert.True(rank.TryGetProperty("id", out var teamId));
@@ -149,11 +137,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
 
         // Try to access challenge without joining game
         var challengeResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}");
@@ -184,11 +169,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
             teams.Add(team);
 
             using var client = factory.CreateClient();
-            await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-            {
-                UserName = user.UserName,
-                Password = password
-            });
+            await client.PostAsJsonAsync("/api/Account/LogIn",
+                new LoginModel { UserName = user.UserName, Password = password });
             await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
         }
 
@@ -221,7 +203,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
 
         Assert.NotNull(games);
         Assert.NotEmpty(games!);
-        
+
         // Verify the structure of game info
         var firstGame = games[0];
         Assert.True(firstGame.TryGetProperty("id", out _), "Game should have 'id'");
@@ -267,11 +249,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel
-        {
-            UserName = user.UserName,
-            Password = password
-        });
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
         // Get challenge details
@@ -297,10 +276,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         using var client = factory.CreateClient();
 
         // Unauthenticated access to join game should fail
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel
-        {
-            TeamId = 1
-        });
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = 1 });
         Assert.Equal(HttpStatusCode.Unauthorized, joinResponse.StatusCode);
 
         // Unauthenticated access to submit flag should fail

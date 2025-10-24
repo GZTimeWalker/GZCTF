@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using GZCTF.Integration.Test.Base;
+using GZCTF.Models.Request.Account;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -13,6 +14,33 @@ namespace GZCTF.Integration.Test.Tests.Api;
 public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
     private readonly HttpClient _client = factory.CreateClient();
+
+    [Fact]
+    public async Task Account_Login_WithSeededUser_Succeeds()
+    {
+        var password = "S3eded!Pass";
+        var userName = TestDataSeeder.RandomName();
+        var email = $"{userName}@example.com";
+        var seeded = await TestDataSeeder.CreateUserAsync(factory.Services,
+            userName,
+            email,
+            password);
+
+        using var client = factory.CreateClient();
+
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = seeded.UserName, Password = password });
+
+        loginResponse.EnsureSuccessStatusCode();
+
+        var profileResponse = await client.GetAsync("/api/Account/Profile");
+        profileResponse.EnsureSuccessStatusCode();
+
+        var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
+        Assert.NotNull(profile);
+        Assert.Equal(seeded.UserName, profile!.UserName);
+        Assert.Equal(seeded.Email, profile.Email);
+    }
 
     [Fact]
     public async Task Register_WithValidData_ReturnsSuccess()
@@ -65,12 +93,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
     public async Task Register_WithShortPassword_ReturnsBadRequest()
     {
         // Arrange
-        var registerModel = new
-        {
-            userName = "testuser",
-            password = "123",
-            email = "test@example.com"
-        };
+        var registerModel = new { userName = "testuser", password = "123", email = "test@example.com" };
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
@@ -109,11 +132,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
     public async Task VerifyEmail_WithInvalidToken_ReturnsBadRequest()
     {
         // Arrange
-        var verifyModel = new
-        {
-            email = "test@example.com",
-            token = "invalid-token"
-        };
+        var verifyModel = new { email = "test@example.com", token = "invalid-token" };
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/Account/Verify", verifyModel);

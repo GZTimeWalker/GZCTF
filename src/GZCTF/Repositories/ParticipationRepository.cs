@@ -98,6 +98,8 @@ public class ParticipationRepository(
             if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
                 // flush scoreboard when instances are updated
                 await cacheHelper.FlushScoreboardCache(part.GameId, token);
+            else
+                await SaveAsync(token);
         }
         else
         {
