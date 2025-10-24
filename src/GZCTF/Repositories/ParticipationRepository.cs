@@ -14,15 +14,21 @@ public class ParticipationRepository(
 {
     public async Task<bool> EnsureInstances(Participation part, Game game, CancellationToken token = default)
     {
-        var challenges =
-            await Context.GameChallenges.Where(c => c.GameId == game.Id && c.IsEnabled).ToArrayAsync(token);
+        var newInstances = Context.GameChallenges
+            .Where(c => c.GameId == game.Id && c.IsEnabled && !Context.Set<GameInstance>()
+                .Where(gi => gi.ParticipationId == part.Id)
+                .Select(gi => gi.ChallengeId).Contains(c.Id)
+            )
+            .Select(c => new GameInstance { ParticipationId = part.Id, ChallengeId = c.Id })
+            .ToList();
 
-        var update = challenges.Aggregate(false,
-            (current, challenge) => part.Challenges.Add(challenge) || current);
+        if (newInstances.Count == 0)
+            return false;
 
+        await Context.Set<GameInstance>().AddRangeAsync(newInstances, token);
         await SaveAsync(token);
 
-        return update;
+        return true;
     }
 
     public Task<Participation?> GetParticipationById(int id, CancellationToken token = default) =>

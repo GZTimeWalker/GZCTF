@@ -33,15 +33,21 @@ public class GameChallengeRepository(
 
     public async Task<bool> EnsureInstances(GameChallenge challenge, Game game, CancellationToken token = default)
     {
-        await Context.Entry(challenge).Collection(c => c.Teams).LoadAsync(token);
-        await Context.Entry(game).Collection(g => g.Participations).LoadAsync(token);
+        var newInstances = Context.Participations
+            .Where(p => p.GameId == game.Id && !Context.Set<GameInstance>()
+                .Where(gi => gi.ChallengeId == challenge.Id)
+                .Select(gi => gi.ParticipationId).Contains(p.Id)
+            )
+            .Select(p => new GameInstance { ParticipationId = p.Id, ChallengeId = challenge.Id })
+            .ToList();
 
-        var update = game.Participations.Aggregate(false,
-            (current, participation) => challenge.Teams.Add(participation) || current);
+        if (newInstances.Count == 0)
+            return false;
 
+        await Context.Set<GameInstance>().AddRangeAsync(newInstances, token);
         await SaveAsync(token);
 
-        return update;
+        return true;
     }
 
     public Task<GameChallenge?> GetChallenge(int gameId, int id, CancellationToken token = default)
