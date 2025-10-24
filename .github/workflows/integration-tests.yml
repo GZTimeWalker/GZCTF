@@ -7,7 +7,7 @@ on:
       - "src/**"
       - ".github/workflows/integration-tests.yml"
   pull_request:
-    branches: ["develop"]
+    branches: ["develop", "work"]
     paths:
       - "src/**"
       - ".github/workflows/integration-tests.yml"
