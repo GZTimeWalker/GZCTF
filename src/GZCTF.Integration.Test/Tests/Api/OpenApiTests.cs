@@ -56,7 +56,8 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
         var paths = jsonDoc.RootElement.GetProperty("paths");
 
         // Expected endpoints
-        string[] expectedEndpoints = [
+        string[] expectedEndpoints =
+        [
             "/api/Config", "/api/Account/Register", "/api/Account/LogIn", "/api/Account/Profile"
         ];
 
