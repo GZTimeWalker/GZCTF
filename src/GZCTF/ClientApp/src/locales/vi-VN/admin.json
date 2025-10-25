@@ -228,6 +228,10 @@
             "description": "Cho phép hiển thị trên bảng xếp hạng tổng",
             "label": "Bảng xếp hạng tổng"
           },
+          "require_review": {
+            "description": "Đăng ký đội yêu cầu phê duyệt thủ công",
+            "label": "Yêu cầu xét duyệt"
+          },
           "submit_flags": {
             "description": "Cho phép gửi flag",
             "label": "Nộp flag"

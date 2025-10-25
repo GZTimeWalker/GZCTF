@@ -228,6 +228,10 @@
             "description": "Allows appearing on the overall scoreboard",
             "label": "Overall Rankings"
           },
+          "require_review": {
+            "description": "Team enrollments require manual approval",
+            "label": "Require Review"
+          },
           "submit_flags": {
             "description": "Allows submitting flags",
             "label": "Submit Flags"

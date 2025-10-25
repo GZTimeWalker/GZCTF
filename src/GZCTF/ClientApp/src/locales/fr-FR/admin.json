@@ -228,6 +228,10 @@
             "description": "Autorise l'apparition dans le classement général",
             "label": "Classement général"
           },
+          "require_review": {
+            "description": "Inscriptions nécessitent approbation manuelle",
+            "label": "Exiger révision"
+          },
           "submit_flags": {
             "description": "Autorise la soumission de flags",
             "label": "Soumettre des flags"

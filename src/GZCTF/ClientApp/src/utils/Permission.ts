@@ -21,6 +21,12 @@ export const PERMISSION_DEFINITIONS: PermissionDefinition[] = [
     color: 'violet',
   },
   {
+    value: GamePermission.RequireReview,
+    challengeScoped: false,
+    i18nKey: 'require_review',
+    color: 'orange',
+  },
+  {
     value: GamePermission.ViewChallenge,
     challengeScoped: true,
     i18nKey: 'view_challenge',

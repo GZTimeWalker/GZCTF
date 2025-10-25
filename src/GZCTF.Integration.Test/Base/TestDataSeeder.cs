@@ -85,7 +85,8 @@ public static class TestDataSeeder
     }
 
     public static async Task<SeededGame> CreateGameAsync(IServiceProvider services, string title,
-        DateTimeOffset? start = null, DateTimeOffset? end = null, CancellationToken token = default)
+        DateTimeOffset? start = null, DateTimeOffset? end = null, bool acceptWithoutReview = true,
+        CancellationToken token = default)
     {
         using var scope = services.CreateScope();
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
@@ -98,7 +99,7 @@ public static class TestDataSeeder
             Content = "Test game content",
             Hidden = false,
             PracticeMode = false,
-            AcceptWithoutReview = true,
+            AcceptWithoutReview = acceptWithoutReview,
             WriteupRequired = false,
             TeamMemberCountLimit = 0,
             ContainerCountLimit = 3,

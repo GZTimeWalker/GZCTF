@@ -228,6 +228,10 @@
             "description": "Erlaubt die Anzeige in der Gesamtrangliste",
             "label": "Gesamtrangliste"
           },
+          "require_review": {
+            "description": "Teamregistrierung erfordert manuelle Genehmigung",
+            "label": "Überprüfung erforderlich"
+          },
           "submit_flags": {
             "description": "Erlaubt das Einreichen von Flags",
             "label": "Flags einreichen"

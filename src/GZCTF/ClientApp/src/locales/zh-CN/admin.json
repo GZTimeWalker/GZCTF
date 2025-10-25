@@ -228,6 +228,10 @@
             "description": "允许在全局排行榜排名",
             "label": "总榜排名"
           },
+          "require_review": {
+            "description": "队伍报名需要手动审核",
+            "label": "需要审核"
+          },
           "submit_flags": {
             "description": "允许提交 flag",
             "label": "提交 flag"

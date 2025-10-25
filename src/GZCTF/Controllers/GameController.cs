@@ -243,7 +243,11 @@ public class GameController(
 
         await participationRepository.SaveAsync(token);
 
-        if (game.AcceptWithoutReview)
+        var requireReview = div is not null && div.DefaultPermissions.HasFlag(GamePermission.RequireReview)
+            ? true
+            : !game.AcceptWithoutReview;
+
+        if (!requireReview)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
         await transaction.CommitAsync(token);

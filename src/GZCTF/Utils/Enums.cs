@@ -407,6 +407,18 @@ public enum GamePermission
     RankOverall = 1 << 1,
 
     /// <summary>
+    /// Require review before acceptance
+    /// </summary>
+    /// <remarks>
+    /// Division-level permission only. When enabled, participations require manual admin approval (Pending status).
+    /// When disabled, participations are automatically accepted without review (Accepted status).
+    /// Overrides game-level AcceptWithoutReview setting for this specific division.
+    /// Use case: Require review for external registrations while auto-accepting internal teams.
+    /// Note: Permission name is positive (require review) so that All permission defaults to the secure behavior.
+    /// </remarks>
+    RequireReview = 1 << 2,
+
+    /// <summary>
     /// Can view challenge
     /// </summary>
     /// <remarks>

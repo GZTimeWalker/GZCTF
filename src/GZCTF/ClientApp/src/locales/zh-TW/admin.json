@@ -228,6 +228,10 @@
             "description": "允許顯示於總排行榜",
             "label": "總榜排名"
           },
+          "require_review": {
+            "description": "隊伍報名需要手動審核",
+            "label": "需要審核"
+          },
           "submit_flags": {
             "description": "允許提交 flag",
             "label": "提交 flag"

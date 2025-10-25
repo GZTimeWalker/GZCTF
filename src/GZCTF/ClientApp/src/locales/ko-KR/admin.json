@@ -228,6 +228,10 @@
             "description": "전체 순위표에 표시되도록 허용",
             "label": "전체 순위"
           },
+          "require_review": {
+            "description": "팀 등록 시 수동 승인 필요",
+            "label": "승인 필요"
+          },
           "submit_flags": {
             "description": "플래그 제출을 허용",
             "label": "플래그 제출"

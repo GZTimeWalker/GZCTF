@@ -72,6 +72,7 @@ export enum ChallengeType {
 export enum GamePermission {
   JoinGame = 1,
   RankOverall = 2,
+  RequireReview = 4,
   ViewChallenge = 256,
   SubmitFlags = 512,
   GetScore = 1024,

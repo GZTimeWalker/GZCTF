@@ -228,6 +228,10 @@
             "description": "総合スコアボードへの表示を許可します",
             "label": "総合順位"
           },
+          "require_review": {
+            "description": "チーム登録に手動承認が必要です",
+            "label": "審査必須"
+          },
           "submit_flags": {
             "description": "フラグの提出を許可します",
             "label": "フラグ提出"

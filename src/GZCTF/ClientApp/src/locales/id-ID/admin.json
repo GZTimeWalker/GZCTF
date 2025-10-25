@@ -228,6 +228,10 @@
             "description": "Mengizinkan tampil di papan peringkat keseluruhan",
             "label": "Peringkat keseluruhan"
           },
+          "require_review": {
+            "description": "Pendaftaran tim memerlukan persetujuan manual",
+            "label": "Perlu tinjauan"
+          },
           "submit_flags": {
             "description": "Mengizinkan mengirim flag",
             "label": "Kirim flag"

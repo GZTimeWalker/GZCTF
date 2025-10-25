@@ -676,4 +676,132 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         Assert.Contains(items.EnumerateArray(), item =>
             item.TryGetProperty("id", out var idElement) && idElement.GetInt32() == seededTeam.Id);
     }
+
+    /// <summary>
+    /// Test that RequireReview permission correctly controls manual review requirement per division
+    /// </summary>
+    [Fact]
+    public async Task Participation_ShouldRespect_RequireReviewPermission()
+    {
+        // Create game with AcceptWithoutReview = true (auto-accepts by default)
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Review Test Game", acceptWithoutReview: true);
+
+        // Create divisions using admin scope
+        using var adminScope = factory.Services.CreateScope();
+        var gameRepo = adminScope.ServiceProvider.GetRequiredService<IGameRepository>();
+        var divisionRepo = adminScope.ServiceProvider.GetRequiredService<IDivisionRepository>();
+        var fullGame = await gameRepo.GetGameById(game.Id, CancellationToken.None);
+        Assert.NotNull(fullGame);
+
+        // Division 1: NoReview - No RequireReview permission (auto-accepted, follows game default)
+        var noReviewDiv = await divisionRepo.CreateDivision(fullGame, new DivisionCreateModel
+        {
+            Name = "NoReview",
+            DefaultPermissions = GamePermission.JoinGame | GamePermission.ViewChallenge |
+                                 GamePermission.SubmitFlags | GamePermission.GetScore
+            // No RequireReview - auto-accepts
+        }, CancellationToken.None);
+
+        // Division 2: WithReview - Has RequireReview permission (requires manual review)
+        var withReviewDiv = await divisionRepo.CreateDivision(fullGame, new DivisionCreateModel
+        {
+            Name = "WithReview",
+            DefaultPermissions = GamePermission.JoinGame | GamePermission.ViewChallenge |
+                                 GamePermission.SubmitFlags | GamePermission.GetScore |
+                                 GamePermission.RequireReview
+        }, CancellationToken.None);
+
+        // Division 3: GameDefault - No explicit permission, should follow game setting (auto-accepts)
+        var gameDefaultDiv = await divisionRepo.CreateDivision(fullGame, new DivisionCreateModel
+        {
+            Name = "GameDefault",
+            DefaultPermissions = GamePermission.JoinGame | GamePermission.ViewChallenge |
+                                 GamePermission.SubmitFlags | GamePermission.GetScore
+            // No RequireReview, follows game setting
+        }, CancellationToken.None);
+
+        // Create three teams with different users
+        var password = "Team@Pass123";
+        var teams = new List<(Guid userId, int teamId, HttpClient client)>();
+
+        for (int i = 0; i < 3; i++)
+        {
+            var userName = TestDataSeeder.RandomName();
+            var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+                userName, $"{userName}@test.com", password);
+            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"TestTeam {i + 1}");
+
+            var client = factory.CreateClient();
+            var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+                new LoginModel { UserName = user.UserName, Password = password });
+            loginResponse.EnsureSuccessStatusCode();
+
+            teams.Add((user.Id, team.Id, client));
+        }
+
+        // Join teams to different divisions
+        var noReviewJoinResponse = await teams[0].client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = teams[0].teamId, DivisionId = noReviewDiv.Id });
+        noReviewJoinResponse.EnsureSuccessStatusCode();
+
+        var withReviewJoinResponse = await teams[1].client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = teams[1].teamId, DivisionId = withReviewDiv.Id });
+        withReviewJoinResponse.EnsureSuccessStatusCode();
+
+        var gameDefaultJoinResponse = await teams[2].client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = teams[2].teamId, DivisionId = gameDefaultDiv.Id });
+        gameDefaultJoinResponse.EnsureSuccessStatusCode();
+
+        // Verify participation status
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var noReviewPart = await context.Participations
+            .FirstOrDefaultAsync(p => p.TeamId == teams[0].teamId && p.GameId == game.Id);
+        var withReviewPart = await context.Participations
+            .FirstOrDefaultAsync(p => p.TeamId == teams[1].teamId && p.GameId == game.Id);
+        var gameDefaultPart = await context.Participations
+            .FirstOrDefaultAsync(p => p.TeamId == teams[2].teamId && p.GameId == game.Id);
+
+        // Assertions
+        Assert.NotNull(noReviewPart);
+        Assert.NotNull(withReviewPart);
+        Assert.NotNull(gameDefaultPart);
+
+        // NoReview division should be auto-accepted (no RequireReview permission)
+        Assert.Equal(ParticipationStatus.Accepted, noReviewPart.Status);
+
+        // WithReview division should be pending (has RequireReview permission)
+        Assert.Equal(ParticipationStatus.Pending, withReviewPart.Status);
+
+        // GameDefault division should be auto-accepted (follows game's AcceptWithoutReview=true setting)
+        Assert.Equal(ParticipationStatus.Accepted, gameDefaultPart.Status);
+
+        // Test backward compatibility: Change game to AcceptWithoutReview = false
+        var updatedGame = await context.Games.FindAsync(game.Id);
+        Assert.NotNull(updatedGame);
+        updatedGame.AcceptWithoutReview = false;
+        await context.SaveChangesAsync();
+
+        // Create a new team and join GameDefault division
+        var newUserName = TestDataSeeder.RandomName();
+        var newUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            newUserName, $"{newUserName}@test.com", password);
+        var newTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, newUser.Id, "NewTeam");
+
+        var newClient = factory.CreateClient();
+        var newLoginResponse = await newClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = newUser.UserName, Password = password });
+        newLoginResponse.EnsureSuccessStatusCode();
+
+        var newJoinResponse = await newClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = newTeam.Id, DivisionId = gameDefaultDiv.Id });
+        newJoinResponse.EnsureSuccessStatusCode();
+
+        // Verify new participation follows game's AcceptWithoutReview = false (requires review)
+        var newPart = await context.Participations
+            .FirstOrDefaultAsync(p => p.TeamId == newTeam.Id && p.GameId == game.Id);
+        Assert.NotNull(newPart);
+        Assert.Equal(ParticipationStatus.Pending, newPart.Status);
+    }
 }

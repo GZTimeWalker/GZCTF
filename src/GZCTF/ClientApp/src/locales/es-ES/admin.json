@@ -228,6 +228,10 @@
             "description": "Permite aparecer en la clasificación general",
             "label": "Clasificación general"
           },
+          "require_review": {
+            "description": "Inscripciones requieren aprobación manual",
+            "label": "Requiere revisión"
+          },
           "submit_flags": {
             "description": "Permite enviar flags",
             "label": "Enviar flags"
