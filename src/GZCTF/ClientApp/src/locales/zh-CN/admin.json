@@ -207,6 +207,10 @@
         "no_permission": "未授予任何权限",
         "override_label": "题目权限覆盖",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "影响动态分值计算",
+            "label": "影响动态分值"
+          },
           "all": "全部权限",
           "get_blood": {
             "description": "允许获得题目的三血加分",

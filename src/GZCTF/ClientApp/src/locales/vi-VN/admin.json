@@ -207,6 +207,10 @@
         "no_permission": "Không có quyền nào được gán",
         "override_label": "Ghi đè thử thách",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "Ảnh hưởng tính toán điểm động",
+            "label": "Ảnh hưởng điểm động"
+          },
           "all": "Tất cả quyền",
           "get_blood": {
             "description": "Cho phép nhận điểm thưởng blood",

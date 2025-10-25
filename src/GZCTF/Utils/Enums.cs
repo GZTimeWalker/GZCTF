@@ -391,7 +391,8 @@ public enum GamePermission
     /// Join the game
     /// </summary>
     /// <remarks>
-    /// only used in division permissions
+    /// Division-level permission only. Controls whether users can join the game through this division.
+    /// Without this permission, the division cannot accept new participants.
     /// </remarks>
     JoinGame = 1 << 0,
 
@@ -399,33 +400,68 @@ public enum GamePermission
     /// Can be ranked on the overall scoreboard
     /// </summary>
     /// <remarks>
-    /// only used in division permissions
+    /// Division-level permission only. Determines if teams in this division appear on the overall scoreboard rankings.
+    /// Teams without this permission will only have division-specific rankings.
+    /// Use case: Unofficial participants or guest teams that should not compete for overall prizes.
     /// </remarks>
     RankOverall = 1 << 1,
 
     /// <summary>
     /// Can view challenge
     /// </summary>
+    /// <remarks>
+    /// Challenge-specific permission. Controls access to challenge details, descriptions, and attachments.
+    /// Without this permission, challenges will be hidden from the team.
+    /// </remarks>
     ViewChallenge = 1 << 8,
 
     /// <summary>
     /// Can submit flags
     /// </summary>
+    /// <remarks>
+    /// Challenge-specific permission. Allows teams to submit flag answers for challenges.
+    /// Can be combined with ViewChallenge but without GetScore for practice/demo scenarios.
+    /// </remarks>
     SubmitFlags = 1 << 9,
 
     /// <summary>
     /// Can be awarded points
     /// </summary>
+    /// <remarks>
+    /// Challenge-specific permission. Determines if successful flag submissions award points to the team.
+    /// Teams without this permission can submit flags but won't receive any score.
+    /// Use case: Observer teams or late joiners who participate without competing.
+    /// </remarks>
     GetScore = 1 << 10,
 
     /// <summary>
     /// Can earn blood bonuses
     /// </summary>
+    /// <remarks>
+    /// Challenge-specific permission. Allows teams to receive first/second/third blood bonus points.
+    /// Requires GetScore permission to be effective. Blood bonuses are typically 30%, 20%, and 10% extra points.
+    /// Use case: Restrict blood bonuses to specific divisions while allowing others to score normally.
+    /// </remarks>
     GetBlood = 1 << 11,
+
+    /// <summary>
+    /// Affects dynamic scoring calculation
+    /// </summary>
+    /// <remarks>
+    /// Challenge-specific permission. Controls whether this team's submissions count toward challenge accept count,
+    /// which influences dynamic score calculation for all teams.
+    /// Independent of GetScore - teams can score without affecting others' challenge values.
+    /// Use case: Allow external participants to score without affecting internal competition's dynamic scoring.
+    /// </remarks>
+    AffectDynamicScore = 1 << 12,
 
     /// <summary>
     /// All permissions, including future permissions
     /// </summary>
+    /// <remarks>
+    /// Special value representing all current and future permissions.
+    /// Use int.MaxValue to ensure compatibility with newly added permission flags.
+    /// </remarks>
     All = int.MaxValue
 }
 

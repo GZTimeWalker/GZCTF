@@ -207,6 +207,10 @@
         "no_permission": "Sin permisos asignados",
         "override_label": "Anulaciones de desafíos",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "Afectar el cálculo de puntuación dinámica",
+            "label": "Afectar puntuación dinámica"
+          },
           "all": "Todos los permisos",
           "get_blood": {
             "description": "Permite recibir puntos extra por recompensas de blood",

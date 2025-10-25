@@ -406,7 +406,10 @@ public class GameRepository(
             var scoreEligible = withinWindow &&
                                 CheckDivisionPermission(division, GamePermission.GetScore, snapshot.ChallengeId);
 
-            if (scoreEligible)
+            var affectDynamicScore = withinWindow &&
+                                     CheckDivisionPermission(division, GamePermission.AffectDynamicScore, snapshot.ChallengeId);
+
+            if (affectDynamicScore)
                 challengeAcceptedCounts[snapshot.ChallengeId] =
                     challengeAcceptedCounts.GetValueOrDefault(snapshot.ChallengeId) + 1;
 

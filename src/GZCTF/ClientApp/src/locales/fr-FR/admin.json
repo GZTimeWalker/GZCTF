@@ -207,6 +207,10 @@
         "no_permission": "Aucune autorisation attribuée",
         "override_label": "Remplacements de défis",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "Affecter le calcul du score dynamique",
+            "label": "Affecter le score dynamique"
+          },
           "all": "Toutes les autorisations",
           "get_blood": {
             "description": "Autorise les points bonus des récompenses de blood",

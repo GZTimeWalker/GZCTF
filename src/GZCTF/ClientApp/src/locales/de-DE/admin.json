@@ -207,6 +207,10 @@
         "no_permission": "Keine Berechtigungen zugewiesen",
         "override_label": "Challenge-Überschreibungen",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "Dynamische Punkteberechnung beeinflussen",
+            "label": "Dynamische Punktzahl beeinflussen"
+          },
           "all": "Alle Berechtigungen",
           "get_blood": {
             "description": "Erlaubt Bonuspunkte für Blood-Prämien",

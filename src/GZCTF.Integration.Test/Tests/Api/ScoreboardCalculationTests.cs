@@ -587,6 +587,134 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         Assert.Equal(teamPro2.team.Id, challenge1Info.Bloods[2].Id); // Third blood
     }
 
+    /// <summary>
+    /// Test AffectDynamicScore permission - separates scoring from dynamic score calculation
+    /// Verifies that teams can score without affecting challenge dynamic scoring
+    /// Use case: External participants score normally but don't affect internal competition's dynamic scoring
+    /// </summary>
+    [Fact]
+    public async Task Scoreboard_ShouldRespect_AffectDynamicScorePermission()
+    {
+        var game = await CreateGameWithBloodBonus("AffectDynamicScore Test", packBloods(1.0f, 1.0f, 1.0f));
+
+        // Create a dynamic scoring challenge
+        var challenge = await CreateDynamicChallenge(
+            game.Id,
+            "Dynamic Challenge",
+            "flag{dynamic}",
+            originalScore: 1000,
+            minScoreRate: 0.2, // Min 20% of original
+            difficulty: 10
+        );
+
+        // Division 1: Internal - Full permissions including AffectDynamicScore
+        var divInternal = await CreateDivision(game.Id, new DivisionCreateModel
+        {
+            Name = "Internal",
+            InviteCode = "INTERNAL",
+            DefaultPermissions = GamePermission.All // Includes AffectDynamicScore
+        });
+
+        // Division 2: External - Can score but doesn't affect dynamic scoring
+        var divExternal = await CreateDivision(game.Id, new DivisionCreateModel
+        {
+            Name = "External",
+            InviteCode = "EXTERNAL",
+            DefaultPermissions = GamePermission.All & ~GamePermission.AffectDynamicScore
+        });
+
+        // Division 3: Observer - Cannot score and doesn't affect dynamic scoring
+        var divObserver = await CreateDivision(game.Id, new DivisionCreateModel
+        {
+            Name = "Observer",
+            InviteCode = "OBSERVER",
+            DefaultPermissions = GamePermission.JoinGame | GamePermission.ViewChallenge | GamePermission.SubmitFlags // No GetScore or AffectDynamicScore
+        });
+
+        // Create teams in each division
+        var teamInternal1 = await CreateTeamInDivision("Internal1", game.Id, divInternal.Id, "INTERNAL");
+        var teamInternal2 = await CreateTeamInDivision("Internal2", game.Id, divInternal.Id, "INTERNAL");
+        var teamExternal1 = await CreateTeamInDivision("External1", game.Id, divExternal.Id, "EXTERNAL");
+        var teamExternal2 = await CreateTeamInDivision("External2", game.Id, divExternal.Id, "EXTERNAL");
+        var teamObserver = await CreateTeamInDivision("Observer", game.Id, divObserver.Id, "OBSERVER");
+
+        // Internal teams solve (affects dynamic score)
+        await SubmitFlag(teamInternal1.client, game.Id, challenge.Id, "flag{dynamic}");
+        await SubmitFlag(teamInternal2.client, game.Id, challenge.Id, "flag{dynamic}");
+
+        // Get scoreboard after 2 internal solves
+        await FlushScoreboardCache(game.Id);
+        var scoreboard1 = await GetScoreboard(
+            teamInternal1.client,
+            game.Id,
+            expectedTeamIds: [teamInternal1.team.Id, teamInternal2.team.Id],
+            readiness: s => s.GetChallenge(challenge.Id).SolvedCount >= 2
+        );
+
+        var scoreAfter2Internal = scoreboard1.GetChallenge(challenge.Id).Score;
+        output.WriteLine($"Score after 2 internal solves: {scoreAfter2Internal}");
+
+        // External teams solve (should get points but not affect dynamic score)
+        await SubmitFlag(teamExternal1.client, game.Id, challenge.Id, "flag{dynamic}");
+        await SubmitFlag(teamExternal2.client, game.Id, challenge.Id, "flag{dynamic}");
+
+        // Observer solves (no points, no affect)
+        await SubmitFlag(teamObserver.client, game.Id, challenge.Id, "flag{dynamic}");
+
+        // Get final scoreboard
+        await FlushScoreboardCache(game.Id);
+        var scoreboard2 = await GetScoreboard(
+            teamInternal1.client,
+            game.Id,
+            expectedTeamIds: [teamInternal1.team.Id, teamInternal2.team.Id, teamExternal1.team.Id, teamExternal2.team.Id],
+            readiness: s =>
+            {
+                var internal1Solved = s.TeamsById.TryGetValue(teamInternal1.team.Id, out var t1) && t1.SolvedChallenges.Count >= 1;
+                var internal2Solved = s.TeamsById.TryGetValue(teamInternal2.team.Id, out var t2) && t2.SolvedChallenges.Count >= 1;
+                var external1Solved = s.TeamsById.TryGetValue(teamExternal1.team.Id, out var t3) && t3.SolvedChallenges.Count >= 1;
+                var external2Solved = s.TeamsById.TryGetValue(teamExternal2.team.Id, out var t4) && t4.SolvedChallenges.Count >= 1;
+                return internal1Solved && internal2Solved && external1Solved && external2Solved;
+            }
+        );
+
+        var scoreAfterExternal = scoreboard2.GetChallenge(challenge.Id).Score;
+        var solvedCount = scoreboard2.GetChallenge(challenge.Id).SolvedCount;
+
+        output.WriteLine($"Score after external solves: {scoreAfterExternal}");
+        output.WriteLine($"Solved count (should be 2, only internal): {solvedCount}");
+
+        // Verify: Challenge score should be same as after 2 internal solves
+        // because external solves don't affect dynamic scoring
+        Assert.Equal(scoreAfter2Internal, scoreAfterExternal);
+        Assert.Equal(2, solvedCount); // Only internal teams count
+
+        // Verify scores of teams
+        var scoreInternal1 = GetTeamScore(scoreboard2, teamInternal1.team.Id);
+        var scoreInternal2 = GetTeamScore(scoreboard2, teamInternal2.team.Id);
+        var scoreExternal1 = GetTeamScore(scoreboard2, teamExternal1.team.Id);
+        var scoreExternal2 = GetTeamScore(scoreboard2, teamExternal2.team.Id);
+
+        output.WriteLine($"Internal1 score: {scoreInternal1}");
+        output.WriteLine($"Internal2 score: {scoreInternal2}");
+        output.WriteLine($"External1 score: {scoreExternal1}");
+        output.WriteLine($"External2 score: {scoreExternal2}");
+
+        // All teams that can score should have the same score
+        // (because they all solved at the same challenge score value)
+        Assert.True(scoreInternal1 > 0, "Internal team should have score");
+        Assert.True(scoreInternal2 > 0, "Internal team should have score");
+        Assert.True(scoreExternal1 > 0, "External team should have score");
+        Assert.True(scoreExternal2 > 0, "External team should have score");
+        Assert.Equal(scoreInternal1, scoreExternal1); // Same score value
+
+        // Observer should have no score
+        if (scoreboard2.TeamsById.ContainsKey(teamObserver.team.Id))
+        {
+            var scoreObserver = GetTeamScore(scoreboard2, teamObserver.team.Id);
+            Assert.Equal(0, scoreObserver);
+        }
+    }
+
     #region Helper Methods
 
     private static readonly JsonSerializerOptions ScoreboardJsonOptions = new(JsonSerializerDefaults.Web)

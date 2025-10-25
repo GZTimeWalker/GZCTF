@@ -207,6 +207,10 @@
         "no_permission": "No permissions assigned",
         "override_label": "Challenge Overrides",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "Affect dynamic score calculation",
+            "label": "Affect Dynamic Score"
+          },
           "all": "All permissions",
           "get_blood": {
             "description": "Allows receiving bonus points for blood rewards",

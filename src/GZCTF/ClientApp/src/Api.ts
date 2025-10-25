@@ -76,6 +76,7 @@ export enum GamePermission {
   SubmitFlags = 512,
   GetScore = 1024,
   GetBlood = 2048,
+  AffectDynamicScore = 4096,
   All = 2147483647,
 }
 

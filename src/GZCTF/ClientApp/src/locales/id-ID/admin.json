@@ -207,6 +207,10 @@
         "no_permission": "Tidak ada izin yang diberikan",
         "override_label": "Override Tantangan",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "Memengaruhi perhitungan skor dinamis",
+            "label": "Pengaruh skor dinamis"
+          },
           "all": "Semua izin",
           "get_blood": {
             "description": "Mengizinkan menerima poin bonus hadiah blood",

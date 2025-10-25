@@ -207,6 +207,10 @@
         "no_permission": "付与された権限はありません",
         "override_label": "チャレンジ上書き",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "動的スコア計算に影響",
+            "label": "動的スコア影響"
+          },
           "all": "すべての権限",
           "get_blood": {
             "description": "先取りボーナスの加点を許可します",

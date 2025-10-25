@@ -44,6 +44,12 @@ export const PERMISSION_DEFINITIONS: PermissionDefinition[] = [
     i18nKey: 'get_blood',
     color: 'red',
   },
+  {
+    value: GamePermission.AffectDynamicScore,
+    challengeScoped: true,
+    i18nKey: 'affect_dynamic_score',
+    color: 'cyan',
+  },
 ]
 
 export const CHALLENGE_SCOPED_PERMISSIONS = PERMISSION_DEFINITIONS.filter((definition) => definition.challengeScoped)

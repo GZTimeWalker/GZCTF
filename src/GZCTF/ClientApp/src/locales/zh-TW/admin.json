@@ -207,6 +207,10 @@
         "no_permission": "尚未配置權限",
         "override_label": "題目權限覆寫",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "影響動態分值計算",
+            "label": "影響動態分值"
+          },
           "all": "全部權限",
           "get_blood": {
             "description": "允許獲得三血獎勵積分",

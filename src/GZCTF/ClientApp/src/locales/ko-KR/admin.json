@@ -207,6 +207,10 @@
         "no_permission": "부여된 권한이 없습니다",
         "override_label": "챌린지 권한 재정의",
         "permissions": {
+          "affect_dynamic_score": {
+            "description": "동적 점수 계산에 영향",
+            "label": "동적 점수 영향"
+          },
           "all": "모든 권한",
           "get_blood": {
             "description": "선혈 보너스를 받아 점수를 얻을 수 있도록 허용",
