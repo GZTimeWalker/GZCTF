@@ -1,0 +1,25 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+        base: auto
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+
+ignore:
+  - "src/GZCTF/ClientApp/**"
+  - "src/GZCTF.AppHost/**"
+  - "src/**/obj/**"
+  - "src/**/bin/**"
+  - "**/Migrations/**"
+  - "**/*.Designer.cs"
