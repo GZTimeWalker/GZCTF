@@ -178,28 +178,28 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         {
             Name = "Division A - Full Permissions",
             InviteCode = "DIVA_FULL",
-            DefaultPermissions = GamePermission.All // Full permissions
+            DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview // Full permissions
         });
 
         var divisionB = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Division B - No Blood Bonus",
             InviteCode = "DIVB_NO_BLOOD",
-            DefaultPermissions = GamePermission.All & ~GamePermission.GetBlood // Can score but no blood bonus
+            DefaultPermissions = GamePermission.All & ~GamePermission.GetBlood & ~GamePermission.RequireReview // Can score but no blood bonus
         });
 
         var divisionC = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Division C - No Overall Rank",
             InviteCode = "DIVC_NO_RANK",
-            DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall // Can score but not ranked overall
+            DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.RequireReview // Can score but not ranked overall
         });
 
         var divisionD = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Division D - No Score",
             InviteCode = "DIVD_NO_SCORE",
-            DefaultPermissions = GamePermission.All & ~GamePermission.GetScore // Can participate but no score
+            DefaultPermissions = GamePermission.All & ~GamePermission.GetScore & ~GamePermission.RequireReview // Can participate but no score
         });
 
         // Create teams in each division
@@ -286,13 +286,13 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var challenge2 = await CreateChallenge(game.Id, "Restricted Challenge", "flag{restricted}", 2000);
 
         // Create division with:
-        // - Default: All permissions
+        // - Default: All permissions except RequireReview (auto-accept)
         // - Challenge2: No score permission (view and submit only)
         var division = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Mixed Permission Division",
             InviteCode = "MIXED_PERM",
-            DefaultPermissions = GamePermission.All,
+            DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview,
             ChallengeConfigs =
             [
                 new()
@@ -423,7 +423,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             {
                 Name = "Professional",
                 InviteCode = "PRO2025",
-                DefaultPermissions = GamePermission.All
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
             });
 
         // Division 2: Student - Full access, can rank overall
@@ -432,7 +432,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             {
                 Name = "Student",
                 InviteCode = "STU2025",
-                DefaultPermissions = GamePermission.All
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
             });
 
         // Division 3: Unofficial - Can play but no overall ranking, no blood bonuses
@@ -441,7 +441,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             {
                 Name = "Unofficial",
                 InviteCode = "UNOFF2025",
-                DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.GetBlood
+                DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.GetBlood & ~GamePermission.RequireReview
             });
 
         // Division 4: Observer - Can only see challenge2 and challenge3, no scoring
@@ -612,7 +612,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         {
             Name = "Internal",
             InviteCode = "INTERNAL",
-            DefaultPermissions = GamePermission.All // Includes AffectDynamicScore
+            DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview // Includes AffectDynamicScore
         });
 
         // Division 2: External - Can score but doesn't affect dynamic scoring
@@ -620,7 +620,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         {
             Name = "External",
             InviteCode = "EXTERNAL",
-            DefaultPermissions = GamePermission.All & ~GamePermission.AffectDynamicScore
+            DefaultPermissions = GamePermission.All & ~GamePermission.AffectDynamicScore & ~GamePermission.RequireReview
         });
 
         // Division 3: Observer - Cannot score and doesn't affect dynamic scoring

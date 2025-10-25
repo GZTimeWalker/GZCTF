@@ -197,7 +197,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             {
                 Name = "Division A",
                 InviteCode = "DIVA",
-                DefaultPermissions = GamePermission.All
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
             });
         divisionAResponse.EnsureSuccessStatusCode();
         var divisionA = await divisionAResponse.Content.ReadFromJsonAsync<Division>();
@@ -207,7 +207,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
             {
                 Name = "Division B",
                 InviteCode = "DIVB",
-                DefaultPermissions = GamePermission.All
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
             });
         divisionBResponse.EnsureSuccessStatusCode();
         var divisionB = await divisionBResponse.Content.ReadFromJsonAsync<Division>();

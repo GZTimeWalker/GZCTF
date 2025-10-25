@@ -66,7 +66,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
             {
                 Name = "Division A",
                 InviteCode = "DIVA2025",
-                DefaultPermissions = GamePermission.All
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
             });
         divisionAResponse.EnsureSuccessStatusCode();
         var divisionA = await divisionAResponse.Content.ReadFromJsonAsync<Division>();
@@ -78,7 +78,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
             {
                 Name = "Division B",
                 InviteCode = "DIVB2025",
-                DefaultPermissions = GamePermission.All,
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview,
                 ChallengeConfigs = [new() { ChallengeId = challenge1.Id, Permissions = GamePermission.All }]
             });
         divisionBResponse.EnsureSuccessStatusCode();
