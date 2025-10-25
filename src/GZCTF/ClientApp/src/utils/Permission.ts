@@ -1,10 +1,11 @@
+import { MantineColor } from '@mantine/core'
 import { GamePermission } from '@Api'
 
 export interface PermissionDefinition {
   value: GamePermission
   challengeScoped: boolean
   i18nKey: string
-  color: string
+  color: MantineColor
 }
 
 export const PERMISSION_DEFINITIONS: PermissionDefinition[] = [
@@ -12,49 +13,49 @@ export const PERMISSION_DEFINITIONS: PermissionDefinition[] = [
     value: GamePermission.JoinGame,
     challengeScoped: false,
     i18nKey: 'join_game',
-    color: 'grape',
+    color: 'red',
   },
   {
     value: GamePermission.RankOverall,
     challengeScoped: false,
     i18nKey: 'rank_overall',
-    color: 'violet',
+    color: 'pink',
   },
   {
     value: GamePermission.RequireReview,
     challengeScoped: false,
     i18nKey: 'require_review',
-    color: 'orange',
+    color: 'grape',
   },
   {
     value: GamePermission.ViewChallenge,
     challengeScoped: true,
     i18nKey: 'view_challenge',
-    color: 'yellow',
+    color: 'indigo',
   },
   {
     value: GamePermission.SubmitFlags,
     challengeScoped: true,
     i18nKey: 'submit_flags',
-    color: 'green',
+    color: 'blue',
   },
   {
     value: GamePermission.GetScore,
     challengeScoped: true,
     i18nKey: 'get_score',
-    color: 'blue',
+    color: 'green',
   },
   {
     value: GamePermission.GetBlood,
     challengeScoped: true,
     i18nKey: 'get_blood',
-    color: 'red',
+    color: 'yellow',
   },
   {
     value: GamePermission.AffectDynamicScore,
     challengeScoped: true,
     i18nKey: 'affect_dynamic_score',
-    color: 'cyan',
+    color: 'orange',
   },
 ]
 

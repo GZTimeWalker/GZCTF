@@ -1,11 +1,12 @@
-import { ActionIcon, Badge, Card, CardProps, Group, Stack, Text, Title, Tooltip } from '@mantine/core'
+import { ActionIcon, Card, CardProps, Group, Stack, Text, Title, Tooltip } from '@mantine/core'
 import { mdiContentCopy, mdiDeleteOutline, mdiPencilOutline, mdiTagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { ScrollingText } from '@Components/ScrollingText'
-import { getPermissionI18nKey, PERMISSION_DEFINITIONS, permissionMaskToArray } from '@Utils/Permission'
+import { PermissionDot } from '@Components/admin/PermissionSelector'
+import { PERMISSION_DEFINITIONS, permissionMaskToArray } from '@Utils/Permission'
 import { Division } from '@Api'
 
 export interface DivisionCardProps extends CardProps {
@@ -32,33 +33,18 @@ export const DivisionCard: FC<DivisionCardProps> = ({
     return left.localeCompare(right)
   })
 
-  const renderPermissionBadges = (mask?: number | null, includeGlobal = false) => {
-    const values = permissionMaskToArray(mask)
-    if (values.length === 0) {
-      return (
-        <Badge key="empty" color="gray" variant="light" size="sm">
-          {t('admin.content.games.divisions.no_permission')}
-        </Badge>
-      )
-    }
+  const renderPermissionDots = (mask?: number | null, includeGlobal = false) => {
+    const grantedValues = new Set(permissionMaskToArray(mask))
+    const allDefinitions = PERMISSION_DEFINITIONS.filter((definition) => includeGlobal || definition.challengeScoped)
 
-    const filtered = PERMISSION_DEFINITIONS.filter((definition) => includeGlobal || definition.challengeScoped).filter(
-      (definition) => values.includes(definition.value)
+    return (
+      <Group gap={6} wrap="wrap">
+        {allDefinitions.map((definition) => {
+          const isGranted = grantedValues.has(definition.value)
+          return <PermissionDot key={definition.value} {...definition} granted={isGranted} />
+        })}
+      </Group>
     )
-
-    if (filtered.length === 0) {
-      return (
-        <Badge key="empty" color="gray" variant="light" size="sm">
-          {t('admin.content.games.divisions.no_permission')}
-        </Badge>
-      )
-    }
-
-    return filtered.map((definition) => (
-      <Badge key={definition.value} color={definition.color} variant="light" size="sm">
-        {t(getPermissionI18nKey(definition.i18nKey, 'label'))}
-      </Badge>
-    ))
   }
 
   return (
@@ -98,9 +84,9 @@ export const DivisionCard: FC<DivisionCardProps> = ({
           </Group>
         )}
 
-        <Group gap="sm">
+        <Group gap="sm" align="center">
           <Text size="sm">{t('admin.content.games.divisions.default_permission_label')}</Text>
-          {renderPermissionBadges(division.defaultPermissions, true)}
+          {renderPermissionDots(division.defaultPermissions, true)}
         </Group>
 
         {overrides.length > 0 && (
@@ -108,12 +94,10 @@ export const DivisionCard: FC<DivisionCardProps> = ({
             <Text size="sm">{t('admin.content.games.divisions.override_label')}</Text>
             <Stack gap="xs">
               {overrides.map((config) => (
-                <Group key={config.challengeId}>
+                <Group key={config.challengeId} align="center">
                   <Text size="sm" miw="2rem">{`#${config.challengeId}`}</Text>
                   <ScrollingText text={challengeTitleMap.get(config.challengeId) ?? ''} w="14rem" />
-                  <Group gap={6} wrap="wrap">
-                    {renderPermissionBadges(config.permissions)}
-                  </Group>
+                  {renderPermissionDots(config.permissions)}
                 </Group>
               ))}
             </Stack>

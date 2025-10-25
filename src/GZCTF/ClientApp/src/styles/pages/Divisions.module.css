@@ -1,0 +1,36 @@
+.masonryContainer {
+  padding: var(--mantine-spacing-sm);
+  column-count: 1;
+  column-gap: var(--mantine-spacing-md);
+}
+
+@media (min-width: 1400px) {
+  .masonryContainer {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 2000px) {
+  .masonryContainer {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 2800px) {
+  .masonryContainer {
+    column-count: 4;
+  }
+}
+
+@media (min-width: 3500px) {
+  .masonryContainer {
+    column-count: 5;
+  }
+}
+
+.masonryItem {
+  break-inside: avoid;
+  margin-bottom: var(--mantine-spacing-md);
+  display: inline-block;
+  width: 100%;
+}

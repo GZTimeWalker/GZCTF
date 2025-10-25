@@ -19,7 +19,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollingText } from '@Components/ScrollingText'
 import { PermissionDot, PermissionSelector } from '@Components/admin/PermissionSelector'
-import { CHALLENGE_SCOPED_PERMISSIONS, permissionMaskToArray } from '@Utils/Permission'
+import { PERMISSION_DEFINITIONS, permissionMaskToArray } from '@Utils/Permission'
 import { randomInviteCode, showErrorMsg } from '@Utils/Shared'
 import { ChallengeInfoModel, Division, DivisionCreateModel, GamePermission } from '@Api'
 import api from '@Api'
@@ -209,22 +209,14 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
     }
   }
 
-  const renderPermissionDots = (mask?: number | null) => {
-    const values = permissionMaskToArray(mask)
-    if (values.length === 0) {
-      return <></>
-    }
-
-    const filtered = CHALLENGE_SCOPED_PERMISSIONS.filter((definition) => values.includes(definition.value))
-
-    if (filtered.length === 0) {
-      return <></>
-    }
+  const renderPermissionDots = (mask?: number | null, includeGlobal = false) => {
+    const grantedValues = new Set(permissionMaskToArray(mask))
+    const allDefinitions = PERMISSION_DEFINITIONS.filter((def) => includeGlobal || def.challengeScoped)
 
     return (
       <Group gap={6} wrap="wrap">
-        {filtered.map((definition) => (
-          <PermissionDot key={definition.value} {...definition} />
+        {allDefinitions.map((definition) => (
+          <PermissionDot key={definition.value} {...definition} granted={grantedValues.has(definition.value)} />
         ))}
       </Group>
     )
@@ -287,7 +279,7 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
         />
 
         {sortedSelected.length > 0 && (
-          <ScrollArea type="auto" offsetScrollbars h={320}>
+          <ScrollArea type="auto" offsetScrollbars h={300}>
             <Accordion chevronPosition="left" variant="filled" radius="md">
               {sortedSelected.map((value) => {
                 const id = Number(value)

@@ -1,4 +1,4 @@
-import { Checkbox, Group, SimpleGrid, Stack, StackProps, Tooltip } from '@mantine/core'
+import { Box, Checkbox, Group, SimpleGrid, Stack, StackProps, Tooltip } from '@mantine/core'
 import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -9,6 +9,8 @@ import {
   permissionsToMask,
 } from '@Utils/Permission'
 import { GamePermission } from '@Api'
+import classes from '@Styles/PermissionDot.module.css'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface PermissionSelectorProps extends Omit<StackProps, 'onChange' | 'children'> {
   value?: number | null
@@ -82,6 +84,7 @@ export const PermissionSelector: FC<PermissionSelectorProps> = ({
               label={t(getPermissionI18nKey(definition.i18nKey, 'label'))}
               description={t(getPermissionI18nKey(definition.i18nKey, 'description'))}
               disabled={disabled}
+              color={definition.color}
             />
           ))}
         </SimpleGrid>
@@ -90,7 +93,11 @@ export const PermissionSelector: FC<PermissionSelectorProps> = ({
   )
 }
 
-export const PermissionDot: FC<PermissionDefinition> = (definition) => {
+export interface PermissionDotProps extends PermissionDefinition {
+  granted?: boolean
+}
+
+export const PermissionDot: FC<PermissionDotProps> = ({ granted = true, ...definition }) => {
   const { t } = useTranslation()
 
   return (
@@ -99,14 +106,14 @@ export const PermissionDot: FC<PermissionDefinition> = (definition) => {
       label={t(getPermissionI18nKey(definition.i18nKey, 'label'))}
       withArrow
       position="top"
+      classNames={tooltipClasses}
     >
-      <span
+      <Box
+        component="span"
+        className={classes.dot}
+        data-granted={granted || undefined}
         style={{
-          width: 10,
-          height: 10,
-          borderRadius: '50%',
-          backgroundColor: `var(--mantine-color-${definition.color}-6)`,
-          display: 'inline-block',
+          '--dot-color': `var(--mantine-color-${definition.color}-6)`,
         }}
       />
     </Tooltip>

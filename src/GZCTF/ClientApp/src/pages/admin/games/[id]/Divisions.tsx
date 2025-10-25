@@ -1,4 +1,4 @@
-import { Button, Center, ScrollArea, Stack, Text, Title } from '@mantine/core'
+import { Box, Button, Center, ScrollArea, Stack, Text, Title } from '@mantine/core'
 import { useClipboard } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiPlus } from '@mdi/js'
@@ -13,6 +13,7 @@ import { showErrorMsg } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import { useEditChallenges } from '@Hooks/useEdit'
 import api, { Division } from '@Api'
+import classes from '@Styles/Divisions.module.css'
 
 const GameDivisionManagement: FC = () => {
   const { id } = useParams()
@@ -126,7 +127,7 @@ const GameDivisionManagement: FC = () => {
             </Stack>
           </Center>
         ) : (
-          <Stack gap="lg" p="md">
+          <Box className={classes.masonryContainer}>
             {sortedDivisions.map((division) => (
               <DivisionCard
                 key={division.id}
@@ -138,9 +139,10 @@ const GameDivisionManagement: FC = () => {
                 }}
                 onDelete={handleDeleteDivision}
                 onCopyInviteCode={handleCopyInviteCode}
+                className={classes.masonryItem}
               />
             ))}
-          </Stack>
+          </Box>
         )}
       </ScrollArea>
       <DivisionEditDrawer
