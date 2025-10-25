@@ -89,3 +89,14 @@ jobs:
           name: Integration Test Results
           path: src/GZCTF.Integration.Test/**/integration-test-results.trx
           reporter: dotnet-trx
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: |
+            src/GZCTF.Test/coverage/coverage.cobertura.xml
+            src/GZCTF.Integration.Test/coverage/coverage.cobertura.xml
+          fail_ci_if_error: false
+          verbose: true
