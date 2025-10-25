@@ -115,10 +115,11 @@ public class GameController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        var user = await userManager.GetUserAsync(User);
-
-        var part = await participationRepository.GetParticipation(user!.Id, id, token);
         var count = await participationRepository.GetParticipationCount(id, token);
+
+        Participation? part = null;
+        if (await userManager.GetUserAsync(User) is { } user)
+            part = await participationRepository.GetParticipation(user.Id, id, token);
 
         return Ok(gameInfo.WithParticipation(part, count));
     }

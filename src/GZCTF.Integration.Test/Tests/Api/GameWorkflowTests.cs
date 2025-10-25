@@ -64,9 +64,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var divisionAResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "Division A",
-                InviteCode = "DIVA2025",
-                DefaultPermissions = GamePermission.All
+                Name = "Division A", InviteCode = "DIVA2025", DefaultPermissions = GamePermission.All
             });
         divisionAResponse.EnsureSuccessStatusCode();
         var divisionA = await divisionAResponse.Content.ReadFromJsonAsync<Division>();
@@ -501,9 +499,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var createResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "Test Division",
-                InviteCode = "TEST123",
-                DefaultPermissions = GamePermission.All
+                Name = "Test Division", InviteCode = "TEST123", DefaultPermissions = GamePermission.All
             });
         createResponse.EnsureSuccessStatusCode();
         var division = await createResponse.Content.ReadFromJsonAsync<Division>();
@@ -618,6 +614,10 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
 
         using var client = factory.CreateClient();
 
+        var beforeLogin = await client.GetFromJsonAsync<JsonElement>($"/api/Game/{seededGame.Id}");
+        Assert.Equal(JsonValueKind.Object, beforeLogin.ValueKind);
+        Assert.Equal(nameof(ParticipationStatus.Unsubmitted), beforeLogin.GetProperty("status").GetString());
+
         var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
             new LoginModel { UserName = seededUser.UserName, Password = password });
         loginResponse.EnsureSuccessStatusCode();
@@ -631,7 +631,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         joinResponse.EnsureSuccessStatusCode();
 
         var detail = await client.GetFromJsonAsync<JsonElement>($"/api/Game/{seededGame.Id}/Details");
-        Assert.True(detail.ValueKind == JsonValueKind.Object);
+        Assert.Equal(JsonValueKind.Object, detail.ValueKind);
         Assert.True(detail.TryGetProperty("rank", out var rankElement));
         Assert.Equal(seededTeam.Id, rankElement.GetProperty("id").GetInt32());
         Assert.True(detail.TryGetProperty("challengeCount", out var challengeCountElement));
