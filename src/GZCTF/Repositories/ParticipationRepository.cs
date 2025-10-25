@@ -84,7 +84,6 @@ public class ParticipationRepository(
         if (status == part.Status)
             return;
 
-        var oldStatus = part.Status;
         part.Status = status;
 
         if (status == ParticipationStatus.Accepted)
@@ -92,24 +91,12 @@ public class ParticipationRepository(
             // lock team when accepted
             part.Team.Locked = true;
 
-            // will also update participation status, update team lock
-            // will call SaveAsync
-            // also flush scoreboard when a team is re-accepted
-            if (await EnsureInstances(part, part.Game, token) || oldStatus == ParticipationStatus.Suspended)
-                // flush scoreboard when instances are updated
-                await cacheHelper.FlushScoreboardCache(part.GameId, token);
-            else
-                await SaveAsync(token);
+            await EnsureInstances(part, part.Game, token);
         }
-        else
-        {
-            // team will unlock automatically when request occur
-            await SaveAsync(token);
 
-            // flush scoreboard when a team is suspended
-            if (status == ParticipationStatus.Suspended && part.Game.IsActive)
-                await cacheHelper.FlushScoreboardCache(part.GameId, token);
-        }
+        await SaveAsync(token);
+        // always flush scoreboard, it's inexpensive
+        await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
     async Task UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
