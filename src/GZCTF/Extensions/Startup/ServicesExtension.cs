@@ -90,6 +90,7 @@ static class ServicesExtension
         builder.Services.AddHostedService<CronJobService>();
     }
 
+
     internal static void AddWebServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -117,9 +118,7 @@ static class ServicesExtension
                 factory.Create(typeof(Resources.Program));
         }).AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-            options.JsonSerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
-            options.JsonSerializerOptions.Converters.Add(new IPAddressJsonConverter());
+            options.JsonSerializerOptions.ConfigCustomSerializerOptions();
         });
         builder.Services.AddResponseCaching();
     }

@@ -9,9 +9,7 @@ static class AppBuilderExtensions
     {
         builder.Services.ConfigureHttpJsonOptions(options =>
         {
-            options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-            options.SerializerOptions.Converters.Add(new DateTimeOffsetJsonConverter());
-            options.SerializerOptions.Converters.Add(new IPAddressJsonConverter());
+            options.SerializerOptions.ConfigCustomSerializerOptions();
         });
 
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
@@ -51,7 +49,10 @@ static class AppBuilderExtensions
 
     internal static void ConfigureCacheAndSignalR(this WebApplicationBuilder builder)
     {
-        var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol();
+        var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol(options =>
+        {
+            options.PayloadSerializerOptions.ConfigCustomSerializerOptions();
+        });
 
         var connectionString = builder.Configuration.GetConnectionString("RedisCache");
 

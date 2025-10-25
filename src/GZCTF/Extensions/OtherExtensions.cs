@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json;
 
 namespace GZCTF.Extensions;
 
@@ -40,4 +41,14 @@ public static class IPAddressExtensions
         !string.IsNullOrWhiteSpace(host)
             ? Dns.GetHostAddresses(host)
             : [];
+}
+
+internal static class JsonSerializerOptionsExtensions
+{
+    public static void ConfigCustomSerializerOptions(this JsonSerializerOptions options)
+    {
+        options.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+        options.Converters.Add(new DateTimeOffsetJsonConverter());
+        options.Converters.Add(new IPAddressJsonConverter());
+    }
 }
