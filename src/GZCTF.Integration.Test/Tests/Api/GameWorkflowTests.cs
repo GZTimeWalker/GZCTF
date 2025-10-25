@@ -64,7 +64,9 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var divisionAResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "Division A", InviteCode = "DIVA2025", DefaultPermissions = GamePermission.All
+                Name = "Division A",
+                InviteCode = "DIVA2025",
+                DefaultPermissions = GamePermission.All
             });
         divisionAResponse.EnsureSuccessStatusCode();
         var divisionA = await divisionAResponse.Content.ReadFromJsonAsync<Division>();
@@ -499,7 +501,9 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var createResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "Test Division", InviteCode = "TEST123", DefaultPermissions = GamePermission.All
+                Name = "Test Division",
+                InviteCode = "TEST123",
+                DefaultPermissions = GamePermission.All
             });
         createResponse.EnsureSuccessStatusCode();
         var division = await createResponse.Content.ReadFromJsonAsync<Division>();

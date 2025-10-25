@@ -22,7 +22,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         var submissionRepo = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
-        
+
         // Create game
         var game = new Game
         {
@@ -33,9 +33,9 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             EndTimeUtc = DateTimeOffset.UtcNow.AddHours(2),
             AcceptWithoutReview = true
         };
-        
+
         await gameRepo.CreateGame(game, CancellationToken.None);
-        
+
         // Create challenge
         var challenge = new GameChallenge
         {
@@ -48,14 +48,14 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             MinScoreRate = 1.0,
             Difficulty = 1
         };
-        
+
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
-        
+
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
             TestDataSeeder.RandomName(), "submission@test.com", "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Submission Team");
-        
+
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
         {
@@ -63,14 +63,15 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             TeamId = team.Id,
             Status = ParticipationStatus.Accepted
         };
-        
+
         await context.Participations.AddAsync(participation);
         await context.SaveChangesAsync();
-        
+
         // Initially no submissions
-        var initialCount = await submissionRepo.CountSubmissions(participation.Id, challenge.Id, CancellationToken.None);
+        var initialCount =
+            await submissionRepo.CountSubmissions(participation.Id, challenge.Id, CancellationToken.None);
         Assert.Equal(0, initialCount);
-        
+
         // Add submissions
         for (int i = 0; i < 3; i++)
         {
@@ -85,17 +86,17 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
                 Status = AnswerResult.WrongAnswer,
                 SubmitTimeUtc = DateTimeOffset.UtcNow
             };
-            
+
             await submissionRepo.AddSubmission(submission, CancellationToken.None);
         }
-        
+
         // Count should be 3
         var finalCount = await submissionRepo.CountSubmissions(participation.Id, challenge.Id, CancellationToken.None);
         Assert.Equal(3, finalCount);
-        
+
         output.WriteLine($"Submission count verified: {finalCount}");
     }
-    
+
     [Fact]
     public async Task GetSubmissions_ShouldFilterByType()
     {
@@ -103,7 +104,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         var submissionRepo = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
-        
+
         // Create game
         var game = new Game
         {
@@ -114,9 +115,9 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             EndTimeUtc = DateTimeOffset.UtcNow.AddHours(2),
             AcceptWithoutReview = true
         };
-        
+
         await gameRepo.CreateGame(game, CancellationToken.None);
-        
+
         // Create challenge
         var challenge = new GameChallenge
         {
@@ -129,14 +130,14 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             MinScoreRate = 1.0,
             Difficulty = 1
         };
-        
+
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
-        
+
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
             TestDataSeeder.RandomName(), "filter@test.com", "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Filter Team");
-        
+
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
         {
@@ -144,19 +145,16 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             TeamId = team.Id,
             Status = ParticipationStatus.Accepted
         };
-        
+
         await context.Participations.AddAsync(participation);
         await context.SaveChangesAsync();
-        
+
         // Add different types of submissions
-        var submissionTypes = new[] 
-        { 
-            AnswerResult.Accepted, 
-            AnswerResult.WrongAnswer, 
-            AnswerResult.WrongAnswer,
-            AnswerResult.Accepted 
+        var submissionTypes = new[]
+        {
+            AnswerResult.Accepted, AnswerResult.WrongAnswer, AnswerResult.WrongAnswer, AnswerResult.Accepted
         };
-        
+
         foreach (var status in submissionTypes)
         {
             var submission = new Submission
@@ -170,30 +168,31 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
                 Status = status,
                 SubmitTimeUtc = DateTimeOffset.UtcNow
             };
-            
+
             await submissionRepo.AddSubmission(submission, CancellationToken.None);
             await Task.Delay(10); // Ensure different timestamps
         }
-        
+
         // Get all submissions
         var allSubmissions = await submissionRepo.GetSubmissions(game, null, 100, 0, CancellationToken.None);
         Assert.Equal(4, allSubmissions.Length);
-        
+
         // Get only accepted submissions
         var acceptedSubmissions = await submissionRepo.GetSubmissions(game, AnswerResult.Accepted, 100, 0,
             CancellationToken.None);
         Assert.Equal(2, acceptedSubmissions.Length);
         Assert.All(acceptedSubmissions, s => Assert.Equal(AnswerResult.Accepted, s.Status));
-        
+
         // Get only wrong submissions
         var wrongSubmissions = await submissionRepo.GetSubmissions(game, AnswerResult.WrongAnswer, 100, 0,
             CancellationToken.None);
         Assert.Equal(2, wrongSubmissions.Length);
         Assert.All(wrongSubmissions, s => Assert.Equal(AnswerResult.WrongAnswer, s.Status));
-        
-        output.WriteLine($"Filter test passed - All: {allSubmissions.Length}, Accepted: {acceptedSubmissions.Length}, Wrong: {wrongSubmissions.Length}");
+
+        output.WriteLine(
+            $"Filter test passed - All: {allSubmissions.Length}, Accepted: {acceptedSubmissions.Length}, Wrong: {wrongSubmissions.Length}");
     }
-    
+
     [Fact]
     public async Task GetSubmissions_ShouldRespectPagination()
     {
@@ -201,7 +200,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         var submissionRepo = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
-        
+
         // Create game
         var game = new Game
         {
@@ -212,9 +211,9 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             EndTimeUtc = DateTimeOffset.UtcNow.AddHours(2),
             AcceptWithoutReview = true
         };
-        
+
         await gameRepo.CreateGame(game, CancellationToken.None);
-        
+
         // Create challenge
         var challenge = new GameChallenge
         {
@@ -227,14 +226,14 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             MinScoreRate = 1.0,
             Difficulty = 1
         };
-        
+
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
-        
+
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
             TestDataSeeder.RandomName(), "page@test.com", "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Page Team");
-        
+
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
         {
@@ -242,10 +241,10 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             TeamId = team.Id,
             Status = ParticipationStatus.Accepted
         };
-        
+
         await context.Participations.AddAsync(participation);
         await context.SaveChangesAsync();
-        
+
         // Add 10 submissions
         for (int i = 0; i < 10; i++)
         {
@@ -260,26 +259,26 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
                 Status = AnswerResult.WrongAnswer,
                 SubmitTimeUtc = DateTimeOffset.UtcNow.AddSeconds(i)
             };
-            
+
             await submissionRepo.AddSubmission(submission, CancellationToken.None);
         }
-        
+
         // Get first 5
         var firstPage = await submissionRepo.GetSubmissions(game, null, 5, 0, CancellationToken.None);
         Assert.Equal(5, firstPage.Length);
-        
+
         // Get next 5
         var secondPage = await submissionRepo.GetSubmissions(game, null, 5, 5, CancellationToken.None);
         Assert.Equal(5, secondPage.Length);
-        
+
         // Verify no overlap
         var firstIds = firstPage.Select(s => s.Id).ToHashSet();
         var secondIds = secondPage.Select(s => s.Id).ToHashSet();
         Assert.Empty(firstIds.Intersect(secondIds));
-        
+
         output.WriteLine($"Pagination test passed - First page: {firstPage.Length}, Second page: {secondPage.Length}");
     }
-    
+
     [Fact]
     public async Task GetUncheckedFlags_ShouldReturnOnlyFlagSubmitted()
     {
@@ -287,7 +286,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         var submissionRepo = scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
-        
+
         // Create game
         var game = new Game
         {
@@ -298,9 +297,9 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             EndTimeUtc = DateTimeOffset.UtcNow.AddHours(2),
             AcceptWithoutReview = true
         };
-        
+
         await gameRepo.CreateGame(game, CancellationToken.None);
-        
+
         // Create challenge
         var challenge = new GameChallenge
         {
@@ -313,14 +312,14 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             MinScoreRate = 1.0,
             Difficulty = 1
         };
-        
+
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
-        
+
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
             TestDataSeeder.RandomName(), "unchecked@test.com", "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Unchecked Team");
-        
+
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
         {
@@ -328,10 +327,10 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             TeamId = team.Id,
             Status = ParticipationStatus.Accepted
         };
-        
+
         await context.Participations.AddAsync(participation);
         await context.SaveChangesAsync();
-        
+
         // Add submissions with different statuses
         var unchecked1 = new Submission
         {
@@ -344,7 +343,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUtc = DateTimeOffset.UtcNow
         };
-        
+
         var unchecked2 = new Submission
         {
             GameId = game.Id,
@@ -356,7 +355,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = AnswerResult.FlagSubmitted,
             SubmitTimeUtc = DateTimeOffset.UtcNow
         };
-        
+
         var checkedSubmission = new Submission
         {
             GameId = game.Id,
@@ -368,17 +367,17 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = AnswerResult.Accepted,
             SubmitTimeUtc = DateTimeOffset.UtcNow
         };
-        
+
         await submissionRepo.AddSubmission(unchecked1, CancellationToken.None);
         await submissionRepo.AddSubmission(unchecked2, CancellationToken.None);
         await submissionRepo.AddSubmission(checkedSubmission, CancellationToken.None);
-        
+
         // Get unchecked flags
         var uncheckedFlags = await submissionRepo.GetUncheckedFlags(CancellationToken.None);
-        
+
         Assert.Equal(2, uncheckedFlags.Length);
         Assert.All(uncheckedFlags, s => Assert.Equal(AnswerResult.FlagSubmitted, s.Status));
-        
+
         output.WriteLine($"Unchecked flags test passed - Found {uncheckedFlags.Length} unchecked submissions");
     }
 }
