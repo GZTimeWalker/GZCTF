@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload Unit Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: unit-test-results
           path: src/GZCTF.Test/**/unit-test-results.trx
@@ -59,24 +59,14 @@ jobs:
 
       - name: Upload Integration Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: integration-test-results
           path: src/GZCTF.Integration.Test/**/integration-test-results.trx
           retention-days: 7
 
-      - name: Upload Coverage Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-reports
-          path: |
-            src/GZCTF.Test/coverage/coverage.cobertura.xml
-            src/GZCTF.Integration.Test/coverage/coverage.cobertura.xml
-          retention-days: 7
-
       - name: Unit Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: always()
         with:
           name: Unit Test Results
@@ -84,7 +74,7 @@ jobs:
           reporter: dotnet-trx
 
       - name: Integration Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: always()
         with:
           name: Integration Test Results
