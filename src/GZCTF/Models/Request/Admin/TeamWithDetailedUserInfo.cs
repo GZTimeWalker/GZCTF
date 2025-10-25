@@ -11,19 +11,16 @@ public class TeamWithDetailedUserInfo
     /// <summary>
     /// Team ID
     /// </summary>
-    [Required]
     public int Id { get; set; }
 
     /// <summary>
     /// Is locked
     /// </summary>
-    [Required]
     public bool Locked { get; set; }
 
     /// <summary>
     /// Captain ID
     /// </summary>
-    [Required]
     public Guid CaptainId { get; set; }
 
     /// <summary>
@@ -44,7 +41,6 @@ public class TeamWithDetailedUserInfo
     /// <summary>
     /// Team members
     /// </summary>
-    [Required]
     public ProfileUserInfoModel[] Members { get; set; } = [];
 
     internal static TeamWithDetailedUserInfo FromTeam(Team team) =>

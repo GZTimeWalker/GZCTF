@@ -106,10 +106,11 @@ public record ChallengeModel(int Id, string Title, ChallengeCategory Category)
 /// <param name="Team">Team information</param>
 /// <param name="Status">Team participation status</param>
 /// <param name="Division">Team division</param>
-public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Division)
+/// <param name="DivisionId">Team division ID</param>
+public record ParticipationModel(int Id, TeamModel Team, ParticipationStatus Status, string? Division, int? DivisionId)
 {
     internal static ParticipationModel FromParticipation(Participation part) =>
-        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division?.Name);
+        new(part.Id, TeamModel.FromTeam(part.Team), part.Status, part.Division?.Name, part.DivisionId);
 }
 
 /// <summary>

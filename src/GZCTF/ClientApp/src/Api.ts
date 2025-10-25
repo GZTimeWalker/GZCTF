@@ -323,11 +323,10 @@ export interface ProfileUserInfoModel {
   /**
    * User ID
    * @format guid
-   * @minLength 1
    */
-  userId: string;
+  userId?: string;
   /** User role */
-  role: Role;
+  role?: Role;
   /** Username */
   userName?: string | null;
   /** Email */
@@ -1814,6 +1813,11 @@ export interface ParticipationModel {
   status?: ParticipationStatus;
   /** Team division */
   division?: string | null;
+  /**
+   * Team division ID
+   * @format int32
+   */
+  divisionId?: number | null;
 }
 
 export interface ChallengeTrafficModel {
@@ -1932,15 +1936,14 @@ export interface TeamWithDetailedUserInfo {
    * Team ID
    * @format int32
    */
-  id: number;
+  id?: number;
   /** Is locked */
-  locked: boolean;
+  locked?: boolean;
   /**
    * Captain ID
    * @format guid
-   * @minLength 1
    */
-  captainId: string;
+  captainId?: string;
   /** Team name */
   name?: string | null;
   /** Team bio */
@@ -1948,7 +1951,7 @@ export interface TeamWithDetailedUserInfo {
   /** Avatar URL */
   avatar?: string | null;
   /** Team members */
-  members: ProfileUserInfoModel[];
+  members?: ProfileUserInfoModel[];
 }
 
 /** Challenge detailed information */

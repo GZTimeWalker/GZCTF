@@ -7,7 +7,7 @@ import { ParticipationEditModel, ParticipationInfoModel } from '@Api'
 
 interface ParticipationStatusControlProps extends GroupProps {
   disabled: boolean
-  participation: ParticipationInfoModel
+  participation: Pick<ParticipationInfoModel, 'id' | 'status' | 'divisionId'>
   size?: MantineSpacing
   setParticipation: (id: number, model: ParticipationEditModel) => Promise<void>
 }

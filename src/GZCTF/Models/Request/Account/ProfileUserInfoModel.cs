@@ -10,13 +10,11 @@ public class ProfileUserInfoModel
     /// <summary>
     /// User ID
     /// </summary>
-    [Required]
     public Guid UserId { get; set; }
 
     /// <summary>
     /// User role
     /// </summary>
-    [Required]
     public Role Role { get; set; }
 
     /// <summary>

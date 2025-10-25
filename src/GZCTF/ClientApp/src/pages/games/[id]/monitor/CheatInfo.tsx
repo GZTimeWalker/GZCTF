@@ -76,6 +76,7 @@ interface CheatTeamInfo {
   lastSubmitTime?: dayjs.Dayjs
   participateId?: number
   division?: string | null
+  divisionId?: number | null
   submissionInfo: Set<CheatSubmissionInfo>
 }
 
@@ -95,6 +96,7 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
           teamId: part.team?.id,
           status: part.status,
           participateId: part.id,
+          divisionId: part.divisionId,
           division: part.division,
           lastSubmitTime: time,
           submissionInfo: new Set<CheatSubmissionInfo>(),
@@ -221,8 +223,11 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
               {RequireRole(Role.Admin, userRole) && (
                 <ParticipationStatusControl
                   disabled={disabled}
-                  participateId={cheatTeamInfo.participateId!}
-                  status={cheatTeamInfo.status!}
+                  participation={{
+                    id: cheatTeamInfo.participateId!,
+                    divisionId: cheatTeamInfo.divisionId!,
+                    status: cheatTeamInfo.status!,
+                  }}
                   setParticipation={setParticipation}
                   m={`0 ${theme.spacing.xl}`}
                   miw={theme.spacing.xl}

@@ -34,7 +34,7 @@ import { AdminPage } from '@Components/admin/AdminPage'
 import { TeamEditModal } from '@Components/admin/TeamEditModal'
 import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
-import api, { TeamInfoModel, TeamWithDetailedUserInfo } from '@Api'
+import api, { TeamInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
@@ -50,7 +50,7 @@ const Teams: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [current, setCurrent] = useState(0)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [activeTeam, setActiveTeam] = useState<TeamWithDetailedUserInfo>({})
+  const [activeTeam, setActiveTeam] = useState<TeamInfoModel>({})
 
   const { t } = useTranslation()
   const viewport = useRef<HTMLDivElement>(null)
@@ -317,7 +317,7 @@ const Teams: FC = () => {
           team={activeTeam}
           opened={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          mutateTeam={(team: TeamWithDetailedUserInfo) => {
+          mutateTeam={(team: TeamInfoModel) => {
             updateTeams(
               [team, ...(teams?.filter((n) => n.id !== team.id) ?? [])].sort((a, b) => (a.id! < b.id! ? -1 : 1))
             )

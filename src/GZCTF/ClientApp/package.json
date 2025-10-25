@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "lint": "oxlint --fix",
-    "check": "tsc --noEmit --strict",
-    "build": "tsc --noEmit --strict && vite build",
+    "check": "tsc --noEmit --strict --project tsconfig.app.json",
+    "build": "pnpm check && vite build",
     "preview": "vite preview",
     "prettier": "prettier --write src --write plugins --write *.mjs --write *.mts",
     "genapi": "swagger-typescript-api generate -p http://localhost:8080/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
