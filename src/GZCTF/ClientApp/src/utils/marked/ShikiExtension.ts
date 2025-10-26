@@ -1,3 +1,4 @@
+import { transformerColorizedBrackets } from '@shikijs/colorized-brackets'
 import applescript from '@shikijs/langs/applescript'
 import asm from '@shikijs/langs/asm'
 import bash from '@shikijs/langs/bash'
@@ -78,6 +79,7 @@ const transformers = [
   transformerNotationWordHighlight(),
   transformerNotationFocus(),
   transformerNotationErrorLevel(),
+  transformerColorizedBrackets(),
 ]
 
 const highlight = (code: string, lang: string) => {
