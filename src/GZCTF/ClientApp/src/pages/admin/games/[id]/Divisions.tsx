@@ -116,14 +116,10 @@ const GameDivisionManagement: FC = () => {
     >
       <ScrollArea h="calc(100vh - 180px)" offsetScrollbars type="auto">
         {sortedDivisions.length === 0 ? (
-          <Center h="calc(100vh - 220px)">
-            <Stack gap={4} align="center">
-              <Title order={3} ta="center">
-                {t('admin.content.games.divisions.empty.title')}
-              </Title>
-              <Text size="sm" c="dimmed" ta="center">
-                {t('admin.content.games.divisions.empty.description')}
-              </Text>
+          <Center h="calc(100vh - 200px)">
+            <Stack gap={0}>
+              <Title order={2}>{t('admin.content.games.divisions.empty.title')}</Title>
+              <Text>{t('admin.content.games.divisions.empty.description')}</Text>
             </Stack>
           </Center>
         ) : (

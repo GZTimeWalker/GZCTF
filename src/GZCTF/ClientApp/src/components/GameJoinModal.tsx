@@ -26,29 +26,26 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
 
   const [inviteCode, setInviteCode] = useState('')
   const [divisionId, setDivisionId] = useState('')
-  const [team, setTeam] = useState('')
+  const [team, setTeam] = useState<string | null>(null)
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
 
   useEffect(() => {
-    if (teams && teams.length === 1) {
+    if (!team && teams && teams.length >= 1) {
       setTeam(teams[0].id!.toString())
     }
-  }, [teams])
+  }, [team, teams])
 
   useEffect(() => {
-    if (!divisionId && game?.division !== undefined && game.division !== null) {
+    if (divisionId) return
+
+    if (typeof game?.division === 'number') {
       setDivisionId(game.division.toString())
-    }
-  }, [divisionId, game?.division])
-
-  useEffect(() => {
-    if (!game?.divisions || divisionId) return
-    if (game.divisions.length === 1 && game.divisions[0].id !== undefined && game.divisions[0].id !== null) {
+    } else if (game?.divisions && game.divisions.length >= 1 && !!game.divisions[0].id) {
       setDivisionId(game.divisions[0].id.toString())
     }
-  }, [divisionId, game?.divisions])
+  }, [divisionId, game])
 
   const divisionOptions = useMemo(
     () =>
@@ -91,7 +88,7 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     }
   }, [shouldRequireInviteCode])
 
-  const onJoinGame = () => {
+  const onJoinGame = async () => {
     setDisabled(true)
 
     if (!team) {
@@ -124,21 +121,23 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
       return
     }
 
-    onSubmitJoin({
-      teamId: parseInt(team, 10),
-      inviteCode: shouldRequireInviteCode ? inviteCode : undefined,
-      divisionId:
-        canSelectDivision && hasDivision
-          ? parseInt(divisionId, 10)
-          : !canSelectDivision && joinedDivision
-            ? joinedDivision.id
-            : undefined,
-    }).finally(() => {
+    try {
+      await onSubmitJoin({
+        teamId: parseInt(team, 10),
+        inviteCode: shouldRequireInviteCode ? inviteCode : undefined,
+        divisionId:
+          canSelectDivision && hasDivision
+            ? parseInt(divisionId, 10)
+            : !canSelectDivision && joinedDivision
+              ? joinedDivision.id
+              : undefined,
+      })
+    } finally {
       setInviteCode('')
       setDivisionId('')
       setDisabled(false)
       props.onClose()
-    })
+    }
   }
 
   return (
@@ -151,7 +150,7 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
           data={teamsData}
           disabled={disabled}
           value={team}
-          onChange={(e) => setTeam(e ?? '')}
+          onChange={(e) => e && setTeam(e)}
         />
         {canSelectDivision && hasDivision && (
           <Select
