@@ -22,7 +22,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         var password = "Team@Create123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
 
         using var client = factory.CreateClient();
 
@@ -64,7 +64,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         var password = "Team@Update123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Original Team Name");
 
         using var client = factory.CreateClient();
@@ -99,7 +99,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         var password = "Team@Limit123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
 
         using var client = factory.CreateClient();
 
@@ -152,7 +152,7 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         var password = "Team@Validate123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
 
         using var client = factory.CreateClient();
 

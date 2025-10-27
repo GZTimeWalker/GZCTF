@@ -23,11 +23,11 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create teams with distinct names and different captains
         var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), $"search1{Guid.NewGuid():N}@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123", $"search1{Guid.NewGuid():N}@test.com");
         var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), $"search2{Guid.NewGuid():N}@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123", $"search2{Guid.NewGuid():N}@test.com");
         var user3 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), $"search3{Guid.NewGuid():N}@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123", $"search3{Guid.NewGuid():N}@test.com");
 
         var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, "SearchableTeam Alpha");
         var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, "SearchableTeam Beta");
@@ -56,7 +56,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "searchid@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Team By ID");
 
         // Search by ID
@@ -75,7 +75,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "active1@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "No Active Games Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -98,7 +98,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "active2@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Active Game Team");
 
         // Create active game
@@ -144,7 +144,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create locked team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "unlock@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Locked Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -178,12 +178,12 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team with original captain
         var captain1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "captain1@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, captain1.Id, "Transfer Team");
 
         // Create new captain
         var captain2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "captain2@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
@@ -218,7 +218,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team
         var captain = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "captain@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         await TestDataSeeder.CreateTeamAsync(factory.Services, captain.Id, "Captain Check Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -240,7 +240,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create non-captain user
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "noncaptain@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var userEntity = await context.Users.FindAsync(user.Id);
@@ -261,7 +261,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "token@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Token Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

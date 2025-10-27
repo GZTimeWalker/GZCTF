@@ -327,7 +327,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Create team and participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), $"instance{Guid.NewGuid():N}@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Instance Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

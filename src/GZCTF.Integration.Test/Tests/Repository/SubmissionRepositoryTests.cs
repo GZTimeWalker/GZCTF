@@ -53,7 +53,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
 
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "submission@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Submission Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -135,7 +135,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
 
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "filter@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Filter Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -231,7 +231,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
 
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "page@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Page Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -317,7 +317,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
 
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "unchecked@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Unchecked Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

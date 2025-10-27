@@ -29,19 +29,19 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         // Setup: Create admin user for game management
         var adminPassword = "Admin@Pass123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "admin@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         // Setup: Create two regular users and their teams
         var user1Password = "User1@Pass123";
         var user1Name = TestDataSeeder.RandomName();
         var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            user1Name, $"{user1Name}@test.com", user1Password);
+            user1Name, user1Password);
         var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, $"Team {user1Name}");
 
         var user2Password = "User2@Pass123";
         var user2Name = TestDataSeeder.RandomName();
         var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            user2Name, $"{user2Name}@test.com", user2Password);
+            user2Name, user2Password);
         var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, $"Team {user2Name}");
 
         // Create game as admin
@@ -207,7 +207,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var password = "Team@Status123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Status Team {userName}");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Status Test Game");
 
@@ -248,7 +248,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var password = "Challenge@Test123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Challenge Team {userName}");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Retrieval Game");
 
@@ -347,7 +347,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var password = "Flag@Submit123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Submit Team {userName}");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Flag Submission Game");
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
@@ -415,12 +415,12 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var password = "Score@Test123";
         var user1Name = TestDataSeeder.RandomName();
         var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            user1Name, $"{user1Name}@test.com", password);
+            user1Name, password);
         var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, $"Score Team 1 {user1Name}");
 
         var user2Name = TestDataSeeder.RandomName();
         var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            user2Name, $"{user2Name}@test.com", password);
+            user2Name, password);
         var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, $"Score Team 2 {user2Name}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Score Calculation Game");
@@ -487,7 +487,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
     {
         var adminPassword = "Admin@Div123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "divadmin@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Division Update Game");
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
@@ -540,7 +540,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var password = "Cheat@Check123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Cheat Team {userName}");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Cheat Check Game");
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
@@ -607,7 +607,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var userName = TestDataSeeder.RandomName();
         var email = $"{userName}@example.com";
 
-        var seededUser = await TestDataSeeder.CreateUserAsync(factory.Services, userName, email, password);
+        var seededUser = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, email);
         var seededTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, seededUser.Id, $"Team {userName}");
         var seededGame = await TestDataSeeder.CreateGameAsync(factory.Services, "Integration Game");
         var seededChallenge = await TestDataSeeder.CreateStaticChallengeAsync(
@@ -684,7 +684,8 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
     public async Task Participation_ShouldRespect_RequireReviewPermission()
     {
         // Create game with AcceptWithoutReview = true (auto-accepts by default)
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Review Test Game", acceptWithoutReview: true);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Review Test Game",
+            acceptWithoutReview: true);
 
         // Create divisions using admin scope
         using var adminScope = factory.Services.CreateScope();
@@ -728,7 +729,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                userName, $"{userName}@test.com", password);
+                userName, password);
             var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"TestTeam {i + 1}");
 
             var client = factory.CreateClient();
@@ -786,7 +787,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         // Create a new team and join GameDefault division
         var newUserName = TestDataSeeder.RandomName();
         var newUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            newUserName, $"{newUserName}@test.com", password);
+            newUserName, password);
         var newTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, newUser.Id, "NewTeam");
 
         var newClient = factory.CreateClient();

@@ -37,7 +37,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                userName, $"{userName}@test.com", password);
+                userName, password);
             var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Team {i}");
             teams.Add((user, team));
         }
@@ -129,10 +129,10 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     [Fact]
     public async Task GameDetails_ShouldContain_CompleteInformation()
     {
-        var password = "Game@Details123";
+        const string password = "Game@Details123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Details Team");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Detailed Game");
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
@@ -178,7 +178,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         var password = "Game@Access123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Restricted Game");
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
             "Locked Challenge", "flag{locked}");
@@ -207,7 +207,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
             "Scoreboard Challenge", "flag{scoreboard}");
 
-        var password = "Scoreboard@Test123";
+        const string password = "Scoreboard@Test123";
         var teams = new List<TestDataSeeder.SeededTeam>();
 
         // Create 5 teams
@@ -215,7 +215,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                userName, $"{userName}@test.com", password);
+                userName, password);
             var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Scoreboard Team {i}");
             teams.Add(team);
 
@@ -251,7 +251,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     public async Task RecentGames_ShouldReturn_GamesList()
     {
         // Create a recent game
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Recent Game Test");
+        await TestDataSeeder.CreateGameAsync(factory.Services, "Recent Game Test");
 
         using var client = factory.CreateClient();
 
@@ -334,10 +334,10 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     [Fact]
     public async Task ChallengeDetails_ShouldContain_RequiredFields()
     {
-        var password = "Challenge@Detail123";
+        const string password = "Challenge@Detail123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Detail Team");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Detail Game");
         var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,

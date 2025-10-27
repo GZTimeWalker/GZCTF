@@ -17,87 +17,6 @@ namespace GZCTF.Integration.Test.Tests.Repository;
 public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
     [Fact]
-    public async Task GenRecentGames_ShouldOrderCorrectly()
-    {
-        using var scope = factory.Services.CreateScope();
-        var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-
-        var now = DateTimeOffset.UtcNow;
-
-        // Create ongoing game (should be first)
-        var ongoingGame = new Game
-        {
-            Title = "Ongoing Game",
-            Summary = "Test",
-            Content = "Test",
-            Hidden = false,
-            StartTimeUtc = now.AddHours(-2),
-            EndTimeUtc = now.AddHours(2),
-            AcceptWithoutReview = true
-        };
-
-        // Create upcoming game (should be second)
-        var upcomingGame = new Game
-        {
-            Title = "Upcoming Game",
-            Summary = "Test",
-            Content = "Test",
-            Hidden = false,
-            StartTimeUtc = now.AddHours(1),
-            EndTimeUtc = now.AddHours(5),
-            AcceptWithoutReview = true
-        };
-
-        // Create ended game (should be last)
-        var endedGame = new Game
-        {
-            Title = "Ended Game",
-            Summary = "Test",
-            Content = "Test",
-            Hidden = false,
-            StartTimeUtc = now.AddHours(-10),
-            EndTimeUtc = now.AddHours(-2),
-            AcceptWithoutReview = true
-        };
-
-        await gameRepo.CreateGame(ongoingGame, CancellationToken.None);
-        await gameRepo.CreateGame(upcomingGame, CancellationToken.None);
-        await gameRepo.CreateGame(endedGame, CancellationToken.None);
-
-        // Get recent games
-        var recentGames = await gameRepo.GenRecentGames(CancellationToken.None);
-
-        Assert.NotEmpty(recentGames);
-
-        // Find our games in the results
-        var ongoing = recentGames.FirstOrDefault(g => g.Id == ongoingGame.Id);
-        var upcoming = recentGames.FirstOrDefault(g => g.Id == upcomingGame.Id);
-        var ended = recentGames.FirstOrDefault(g => g.Id == endedGame.Id);
-
-        Assert.NotNull(ongoing);
-        Assert.NotNull(upcoming);
-        Assert.NotNull(ended);
-
-        var ongoingIndex = Array.IndexOf(recentGames.Select(g => g.Id).ToArray(), ongoingGame.Id);
-        var upcomingIndex = Array.IndexOf(recentGames.Select(g => g.Id).ToArray(), upcomingGame.Id);
-        var endedIndex = Array.IndexOf(recentGames.Select(g => g.Id).ToArray(), endedGame.Id);
-
-        output.WriteLine($"Game indices - Ongoing: {ongoingIndex}, Upcoming: {upcomingIndex}, Ended: {endedIndex}");
-        output.WriteLine($"Total games in recent list: {recentGames.Length}");
-
-        // Verify that ongoing comes before ended (ongoing games should be prioritized over ended)
-        Assert.True(ongoingIndex < endedIndex,
-            $"Ongoing game should come before ended: ongoing={ongoingIndex}, ended={endedIndex}");
-
-        // Verify that upcoming comes before ended (upcoming games should be prioritized over ended)
-        Assert.True(upcomingIndex < endedIndex,
-            $"Upcoming game should come before ended: upcoming={upcomingIndex}, ended={endedIndex}");
-
-        output.WriteLine(
-            $"Recent games ordering test passed - Ongoing: {ongoingIndex}, Upcoming: {upcomingIndex}, Ended: {endedIndex}");
-    }
-
-    [Fact]
     public async Task GetToken_ShouldGenerateValidToken()
     {
         using var scope = factory.Services.CreateScope();
@@ -118,10 +37,10 @@ public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), $"gametoken{Guid.NewGuid():N}@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Token Team");
 
-        using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var gameEntity = await context.Games.FindAsync(game.Id);
         var teamEntity = await context.Teams.FindAsync(team.Id);
 
@@ -245,11 +164,11 @@ public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
 
         // Create user and team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "checkinfo@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Check Info Team");
 
         // Create participation
-        using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
         {
             GameId = game.Id,

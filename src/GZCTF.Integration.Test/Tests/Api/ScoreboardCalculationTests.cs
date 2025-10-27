@@ -185,21 +185,27 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         {
             Name = "Division B - No Blood Bonus",
             InviteCode = "DIVB_NO_BLOOD",
-            DefaultPermissions = GamePermission.All & ~GamePermission.GetBlood & ~GamePermission.RequireReview // Can score but no blood bonus
+            DefaultPermissions =
+                GamePermission.All & ~GamePermission.GetBlood &
+                ~GamePermission.RequireReview // Can score but no blood bonus
         });
 
         var divisionC = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Division C - No Overall Rank",
             InviteCode = "DIVC_NO_RANK",
-            DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.RequireReview // Can score but not ranked overall
+            DefaultPermissions =
+                GamePermission.All & ~GamePermission.RankOverall &
+                ~GamePermission.RequireReview // Can score but not ranked overall
         });
 
         var divisionD = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Division D - No Score",
             InviteCode = "DIVD_NO_SCORE",
-            DefaultPermissions = GamePermission.All & ~GamePermission.GetScore & ~GamePermission.RequireReview // Can participate but no score
+            DefaultPermissions =
+                GamePermission.All & ~GamePermission.GetScore &
+                ~GamePermission.RequireReview // Can participate but no score
         });
 
         // Create teams in each division
@@ -441,7 +447,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             {
                 Name = "Unofficial",
                 InviteCode = "UNOFF2025",
-                DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.GetBlood & ~GamePermission.RequireReview
+                DefaultPermissions = GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.GetBlood &
+                                     ~GamePermission.RequireReview
             });
 
         // Division 4: Observer - Can only see challenge2 and challenge3, no scoring
@@ -616,19 +623,23 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         });
 
         // Division 2: External - Can score but doesn't affect dynamic scoring
-        var divExternal = await CreateDivision(game.Id, new DivisionCreateModel
-        {
-            Name = "External",
-            InviteCode = "EXTERNAL",
-            DefaultPermissions = GamePermission.All & ~GamePermission.AffectDynamicScore & ~GamePermission.RequireReview
-        });
+        var divExternal = await CreateDivision(game.Id,
+            new DivisionCreateModel
+            {
+                Name = "External",
+                InviteCode = "EXTERNAL",
+                DefaultPermissions = GamePermission.All & ~GamePermission.AffectDynamicScore &
+                                     ~GamePermission.RequireReview
+            });
 
         // Division 3: Observer - Cannot score and doesn't affect dynamic scoring
         var divObserver = await CreateDivision(game.Id, new DivisionCreateModel
         {
             Name = "Observer",
             InviteCode = "OBSERVER",
-            DefaultPermissions = GamePermission.JoinGame | GamePermission.ViewChallenge | GamePermission.SubmitFlags // No GetScore or AffectDynamicScore
+            DefaultPermissions =
+                GamePermission.JoinGame | GamePermission.ViewChallenge |
+                GamePermission.SubmitFlags // No GetScore or AffectDynamicScore
         });
 
         // Create teams in each division
@@ -666,13 +677,18 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var scoreboard2 = await GetScoreboard(
             teamInternal1.client,
             game.Id,
-            expectedTeamIds: [teamInternal1.team.Id, teamInternal2.team.Id, teamExternal1.team.Id, teamExternal2.team.Id],
+            expectedTeamIds:
+            [teamInternal1.team.Id, teamInternal2.team.Id, teamExternal1.team.Id, teamExternal2.team.Id],
             readiness: s =>
             {
-                var internal1Solved = s.TeamsById.TryGetValue(teamInternal1.team.Id, out var t1) && t1.SolvedChallenges.Count >= 1;
-                var internal2Solved = s.TeamsById.TryGetValue(teamInternal2.team.Id, out var t2) && t2.SolvedChallenges.Count >= 1;
-                var external1Solved = s.TeamsById.TryGetValue(teamExternal1.team.Id, out var t3) && t3.SolvedChallenges.Count >= 1;
-                var external2Solved = s.TeamsById.TryGetValue(teamExternal2.team.Id, out var t4) && t4.SolvedChallenges.Count >= 1;
+                var internal1Solved = s.TeamsById.TryGetValue(teamInternal1.team.Id, out var t1) &&
+                                      t1.SolvedChallenges.Count >= 1;
+                var internal2Solved = s.TeamsById.TryGetValue(teamInternal2.team.Id, out var t2) &&
+                                      t2.SolvedChallenges.Count >= 1;
+                var external1Solved = s.TeamsById.TryGetValue(teamExternal1.team.Id, out var t3) &&
+                                      t3.SolvedChallenges.Count >= 1;
+                var external2Solved = s.TeamsById.TryGetValue(teamExternal2.team.Id, out var t4) &&
+                                      t4.SolvedChallenges.Count >= 1;
                 return internal1Solved && internal2Solved && external1Solved && external2Solved;
             }
         );
@@ -881,7 +897,6 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             var user = await TestDataSeeder.CreateUserAsync(
                 factory.Services,
                 userName,
-                $"{userName}@test.com",
                 password
             );
 
@@ -917,7 +932,6 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var user = await TestDataSeeder.CreateUserAsync(
             factory.Services,
             userName,
-            $"{userName}@test.com",
             password
         );
 

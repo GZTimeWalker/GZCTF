@@ -23,8 +23,8 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         var email = $"{userName}@example.com";
         var seeded = await TestDataSeeder.CreateUserAsync(factory.Services,
             userName,
-            email,
-            password);
+            password,
+            email);
 
         using var client = factory.CreateClient();
 

@@ -12,8 +12,8 @@ namespace GZCTF.Integration.Test.Base;
 
 public static class TestDataSeeder
 {
-    public static async Task<SeededUser> CreateUserAsync(IServiceProvider services, string userName, string email,
-        string password, Role role = Role.User, CancellationToken token = default)
+    public static async Task<SeededUser> CreateUserAsync(IServiceProvider services, string userName,
+        string password, string? email = null, Role role = Role.User, CancellationToken token = default)
     {
         using var scope = services.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserInfo>>();
@@ -116,7 +116,7 @@ public static class TestDataSeeder
     }
 
     public static async Task<SeededChallenge> CreateStaticChallengeAsync(IServiceProvider services, int gameId,
-        string title, string flag, CancellationToken token = default)
+        string title, string flag, int originalScore = 1000, CancellationToken token = default)
     {
         using var scope = services.CreateScope();
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
@@ -134,7 +134,7 @@ public static class TestDataSeeder
             Hints = [],
             IsEnabled = true,
             SubmissionLimit = 0,
-            OriginalScore = 1000,
+            OriginalScore = originalScore,
             MinScoreRate = 0.8,
             Difficulty = 5,
             Game = game,
@@ -147,6 +147,98 @@ public static class TestDataSeeder
         await challengeRepository.CreateChallenge(game, challenge, token);
 
         return new SeededChallenge(challenge.Id, challenge.Title, flag);
+    }
+
+    public static async Task<SeededParticipation> JoinGameAsync(IServiceProvider services, int gameId, int teamId,
+        Guid userId, int? divisionId = null, CancellationToken token = default)
+    {
+        using var scope = services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var participationRepository = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+
+        var game = await context.Games.FirstOrDefaultAsync(g => g.Id == gameId, token)
+                   ?? throw new InvalidOperationException($"Game {gameId} not found");
+
+        var team = await context.Teams.Include(t => t.Members)
+                       .FirstOrDefaultAsync(t => t.Id == teamId, token)
+                   ?? throw new InvalidOperationException($"Team {teamId} not found");
+
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, token)
+                   ?? throw new InvalidOperationException($"User {userId} not found");
+
+        // Check if already participating
+        var existingPart = await context.Participations
+            .FirstOrDefaultAsync(p => p.GameId == gameId && p.TeamId == teamId, token);
+
+        if (existingPart is not null)
+        {
+            // Add user to participation if not already a member
+            if (!existingPart.Members.Any(m => m.UserId == userId))
+            {
+                existingPart.Members.Add(new UserParticipation
+                {
+                    GameId = gameId,
+                    TeamId = teamId,
+                    UserId = userId,
+                    User = user
+                });
+                await context.SaveChangesAsync(token);
+            }
+
+            return new SeededParticipation(existingPart.Id, existingPart.GameId, existingPart.TeamId,
+                existingPart.Status);
+        }
+
+        // Load division if specified
+        Division? division = null;
+        if (divisionId.HasValue)
+        {
+            division = await context.Divisions.FirstOrDefaultAsync(d => d.Id == divisionId.Value, token);
+        }
+
+        // Determine participation status based on division and game settings
+        var divWithoutReview = division is null || !division.DefaultPermissions.HasFlag(GamePermission.RequireReview);
+        var status = divWithoutReview && game.AcceptWithoutReview
+            ? ParticipationStatus.Accepted
+            : ParticipationStatus.Pending;
+
+        // Create new participation
+        var participation = new Participation
+        {
+            GameId = gameId,
+            TeamId = teamId,
+            DivisionId = divisionId,
+            Status = status
+        };
+
+        participation.Members.Add(new UserParticipation
+        {
+            GameId = gameId,
+            TeamId = teamId,
+            UserId = userId,
+            User = user
+        });
+
+        await context.Participations.AddAsync(participation, token);
+        await context.SaveChangesAsync(token);
+
+        // If participation is accepted, create game instances for all enabled challenges
+        if (status == ParticipationStatus.Accepted)
+        {
+            var gameInstances = context.GameChallenges
+                .Where(c => c.GameId == gameId && c.IsEnabled)
+                .Select(c => new GameInstance { ParticipationId = participation.Id, ChallengeId = c.Id })
+                .ToList();
+
+            if (gameInstances.Any())
+            {
+                await context.GameInstances.AddRangeAsync(gameInstances, token);
+                await context.SaveChangesAsync(token);
+            }
+        }
+
+        return new SeededParticipation(participation.Id, participation.GameId, participation.TeamId,
+            participation.Status);
     }
 
     public static string RandomName(int length = 15)
@@ -189,4 +281,6 @@ public static class TestDataSeeder
     public record SeededGame(int Id, string Title, DateTimeOffset Start, DateTimeOffset End);
 
     public record SeededChallenge(int Id, string Title, string Flag);
+
+    public record SeededParticipation(int Id, int GameId, int TeamId, ParticipationStatus Status);
 }

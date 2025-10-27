@@ -41,7 +41,7 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Create team and participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "test@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Test Team");
 
         var participation = new Participation
@@ -114,7 +114,7 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Create team and participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "lock@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Lock Team");
 
         // Verify team is not locked initially
@@ -174,7 +174,7 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         for (int i = 0; i < 5; i++)
         {
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                TestDataSeeder.RandomName(), $"count{i}@test.com", "Test@123");
+                TestDataSeeder.RandomName(), "Test@123");
             var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Count Team {i}");
 
             var participation = new Participation
@@ -218,7 +218,7 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Create user and team
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "repeat@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Repeat Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -302,7 +302,7 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Create participation
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "division@test.com", "Test@123");
+            TestDataSeeder.RandomName(), "Test@123");
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Division Team");
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();

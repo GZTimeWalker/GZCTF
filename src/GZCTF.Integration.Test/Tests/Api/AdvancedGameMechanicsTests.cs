@@ -30,7 +30,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         var password = "Limit@Test123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Limit Team {userName}");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Submission Limit Game");
 
@@ -110,7 +110,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         var password = "Deadline@Test123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Deadline Team {userName}");
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Deadline Game");
 
@@ -170,17 +170,17 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
     {
         var adminPassword = "Admin@Division123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "divdel@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         var password = "Division@Delete123";
         var user1Name = TestDataSeeder.RandomName();
         var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            user1Name, $"{user1Name}@test.com", password);
+            user1Name, password);
         var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, $"DivDel Team 1 {user1Name}");
 
         var user2Name = TestDataSeeder.RandomName();
         var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            user2Name, $"{user2Name}@test.com", password);
+            user2Name, password);
         var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, $"DivDel Team 2 {user2Name}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Division Delete Game");
@@ -272,12 +272,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
     {
         var adminPassword = "Admin@Challenge123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "chaldel@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         var password = "Challenge@Delete123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"ChalDel Team {userName}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Delete Game");
@@ -341,12 +341,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
     {
         var adminPassword = "Admin@Disable123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "chaldis@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         var password = "Challenge@Disable123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Disable Team {userName}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Disable Game");
@@ -431,12 +431,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
     {
         var adminPassword = "Admin@Score123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "chalscore@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         var password = "Challenge@Score123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Score Team {userName}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Score Update Game");
@@ -531,12 +531,12 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
     {
         var adminPassword = "Admin@ReEnable123";
         var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "chalre@test.com", adminPassword, Role.Admin);
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
 
         var password = "Challenge@ReEnable123";
         var userName = TestDataSeeder.RandomName();
         var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, $"{userName}@test.com", password);
+            userName, password);
         var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"ReEnable Team {userName}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge ReEnable Game");
