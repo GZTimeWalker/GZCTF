@@ -177,10 +177,10 @@ public class ChallengeEditDetailModel
             MinScoreRate = chal.MinScoreRate,
             Difficulty = chal.Difficulty,
             FileName = chal.FileName,
-            AcceptedCount = chal.FirstSolves?.Count ?? 0,
             Attachment = chal.Attachment,
             SubmissionLimit = chal.SubmissionLimit,
             DeadlineUtc = chal.DeadlineUtc,
+            AcceptedCount = 0, // This field should be set externally
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
             Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
         };

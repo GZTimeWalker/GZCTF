@@ -535,11 +535,6 @@ public class EditController(
     public async Task<IActionResult> DeleteDivision([FromRoute] int id, [FromRoute] int divisionId,
         CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var division = await divisionRepository.GetDivision(id, divisionId, token);
         if (division is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Division_NotFound)],
@@ -589,8 +584,22 @@ public class EditController(
     /// <response code="200">Successfully retrieved game challenges</response>
     [HttpGet("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token) =>
-        Ok((await challengeRepository.GetChallenges(id, token)).Select(ChallengeInfoModel.FromChallenge));
+    public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
+    {
+        var challenges = await challengeRepository.GetChallenges(id, token);
+
+        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
+
+        var result = challenges.Select(c =>
+        {
+            var model = ChallengeInfoModel.FromChallenge(c);
+            if (scoreboard is not null && scoreboard.ChallengeMap.TryGetValue(c.Id, out var challengeInfo))
+                model.Score = challengeInfo.Score;
+            return model;
+        });
+
+        return Ok(result);
+    }
 
     /// <summary>
     /// Flush Scoreboard Cache
@@ -621,12 +630,6 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGameChallenge([FromRoute] int id, [FromRoute] int cId, CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
@@ -637,7 +640,13 @@ public class EditController(
         if (challenge.Type != ChallengeType.DynamicContainer)
             await challengeRepository.LoadFlags(challenge, token);
 
-        return Ok(ChallengeEditDetailModel.FromChallenge(challenge));
+        var result = ChallengeEditDetailModel.FromChallenge(challenge);
+        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
+
+        if (scoreboard is not null && scoreboard.ChallengeMap.TryGetValue(cId, out var challengeInfo))
+            result.AcceptedCount = challengeInfo.SolvedCount;
+
+        return Ok(result);
     }
 
     /// <summary>
@@ -737,12 +746,6 @@ public class EditController(
     public async Task<IActionResult> CreateTestContainer([FromRoute] int id, [FromRoute] int cId,
         CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
@@ -803,12 +806,6 @@ public class EditController(
     public async Task<IActionResult> DestroyTestContainer([FromRoute] int id, [FromRoute] int cId,
         CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
@@ -839,12 +836,6 @@ public class EditController(
     public async Task<IActionResult> RemoveGameChallenge([FromRoute] int id, [FromRoute] int cId,
         CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var res = await challengeRepository.GetChallenge(id, cId, token);
 
         if (res is null)
@@ -854,7 +845,7 @@ public class EditController(
         await challengeRepository.RemoveChallenge(res, true, token);
 
         // Always flush scoreboard
-        await cacheHelper.FlushScoreboardCache(game.Id, token);
+        await cacheHelper.FlushScoreboardCache(id, token);
 
         return Ok();
     }
@@ -876,12 +867,6 @@ public class EditController(
     public async Task<IActionResult> UpdateAttachment([FromRoute] int id, [FromRoute] int cId,
         [FromBody] AttachmentCreateModel model, CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
@@ -914,12 +899,6 @@ public class EditController(
     public async Task<IActionResult> AddFlags([FromRoute] int id, [FromRoute] int cId,
         [FromBody] FlagCreateModel[] models, CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)
@@ -948,12 +927,6 @@ public class EditController(
     public async Task<IActionResult> RemoveFlag([FromRoute] int id, [FromRoute] int cId, [FromRoute] int fId,
         CancellationToken token)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
         var challenge = await challengeRepository.GetChallenge(id, cId, token);
 
         if (challenge is null)

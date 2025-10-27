@@ -8,7 +8,7 @@ namespace GZCTF.Models.Request.Edit;
 public class ChallengeInfoModel
 {
     /// <summary>
-    /// Challenge Id
+    /// Challenge ID
     /// </summary>
     public int Id { get; set; }
 
@@ -63,7 +63,7 @@ public class ChallengeInfoModel
             Title = challenge.Title,
             Category = challenge.Category,
             Type = challenge.Type,
-            Score = challenge.CurrentScore,
+            Score = challenge.OriginalScore, // This field should be updated with scoreboard
             MinScore = (int)Math.Floor(challenge.MinScoreRate * challenge.OriginalScore),
             OriginalScore = challenge.OriginalScore,
             IsEnabled = challenge.IsEnabled,
