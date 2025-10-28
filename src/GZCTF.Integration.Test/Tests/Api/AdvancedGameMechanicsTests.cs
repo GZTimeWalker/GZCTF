@@ -12,6 +12,7 @@ using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
@@ -19,7 +20,7 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// Advanced integration tests for game mechanics including deadlines, limits, deletion, and score updates
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
+public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
     /// <summary>
     /// Test that submission limit prevents submissions after limit is reached
@@ -616,5 +617,141 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory)
         var submitResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challengeId}",
             new FlagSubmitModel { Flag = "flag{reenable}" });
         submitResponse.EnsureSuccessStatusCode();
+    }
+
+    /// <summary>
+    /// Test dynamic container challenge with flag retrieval
+    /// </summary>
+    [Fact]
+    public async Task DynamicContainerChallenge_ShouldRetrieveFlagSuccessfully()
+    {
+        // Create game
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Dynamic Container Game");
+
+        // Create challenge
+        int challengeId;
+        using (var scope = factory.Services.CreateScope())
+        {
+            var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+            var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
+
+            var gameObj = await gameRepository.GetGameById(game.Id)
+                          ?? throw new InvalidOperationException($"Game {game.Id} not found");
+
+            GameChallenge challenge = new()
+            {
+                Title = "Dynamic Echo Challenge",
+                Content = "Dynamic container challenge with echo",
+                Category = ChallengeCategory.Misc,
+                Type = ChallengeType.DynamicContainer,
+                ContainerImage = "ghcr.io/gzctf/challenge-base/echo:latest",
+                ContainerExposePort = 70,
+                FlagTemplate = "flag{The quick brown fox jumps over the lazy dog}",
+                Hints = [],
+                IsEnabled = true,
+                OriginalScore = 100,
+                MinScoreRate = 0.5,
+                Difficulty = 2,
+                Game = gameObj,
+                GameId = gameObj.Id
+            };
+
+            await challengeRepository.CreateChallenge(gameObj, challenge);
+            challengeId = challenge.Id;
+        }
+
+        // Create user and team
+        var password = "Dynamic@Test123";
+        var userName = TestDataSeeder.RandomName();
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            userName, password);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Dynamic Team {userName}");
+
+        // Join game
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+        var participationId = participation.Id;
+
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = password });
+
+        // 1. Visit the detailed challenge
+        var challengeDetailResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challengeId}");
+        challengeDetailResponse.EnsureSuccessStatusCode();
+        var challengeDetail = await challengeDetailResponse.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.NotEqual(JsonValueKind.Null, challengeDetail.ValueKind);
+
+        // 2. Post to create a container
+        var createContainerResponse = await client.PostAsync($"/api/Game/{game.Id}/Container/{challengeId}", null);
+        createContainerResponse.EnsureSuccessStatusCode();
+        var containerInfo = await createContainerResponse.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.NotEqual(JsonValueKind.Null, containerInfo.ValueKind);
+
+        // 3. Re-get the detailed challenge to find the container entry
+        string entry = string.Empty;
+        for (int i = 0; i < 5; i++)
+        {
+            await Task.Delay(500);
+            var detailResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challengeId}");
+            detailResponse.EnsureSuccessStatusCode();
+            var detail = await detailResponse.Content.ReadFromJsonAsync<JsonElement>();
+            if (detail.ValueKind != JsonValueKind.Object)
+                continue;
+
+            if (detail.TryGetProperty("context", out var context) &&
+                context.TryGetProperty("instanceEntry", out var insEntry) &&
+                insEntry.ValueKind == JsonValueKind.String)
+            {
+                entry = insEntry.GetString() ?? string.Empty;
+            }
+            break;
+        }
+
+        Assert.False(string.IsNullOrEmpty(entry), "Container entry should be available");
+
+        // 4. Wait for container to be ready
+        await ContainerHelper.WaitUserContainerAsync(factory.Services, challengeId, participationId, output);
+
+        // 5. Fetch the flag
+        var flag = await ContainerHelper.FetchFlag(entry);
+        Assert.NotNull(flag);
+        Assert.StartsWith("flag{", flag);
+
+        output.WriteLine($"✅ Retrieved flag: {flag}");
+
+        // 6. Submit flag and poll the result
+        var submitResponse = await client.PostAsJsonAsync(
+            $"/api/Game/{game.Id}/Challenges/{challengeId}",
+            new FlagSubmitModel { Flag = flag });
+        submitResponse.EnsureSuccessStatusCode();
+
+        var submissionId = await submitResponse.Content.ReadFromJsonAsync<int>();
+        Assert.True(submissionId > 0);
+
+        // Poll submission status until it's accepted or timeout
+        AnswerResult status = AnswerResult.FlagSubmitted;
+        for (int attempt = 0; attempt < 10; attempt++)
+        {
+            await Task.Delay(500);
+            var statusResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challengeId}/Status/{submissionId}");
+            if (!statusResponse.IsSuccessStatusCode)
+                continue;
+
+            status = await statusResponse.Content.ReadFromJsonAsync<AnswerResult>();
+            output.WriteLine($"  Submission status: {status}");
+            if (status == AnswerResult.Accepted)
+                break;
+        }
+
+        Assert.Equal(AnswerResult.Accepted, status);
+
+        // Wait for a short while to avoid 429
+        await Task.Delay(12 * 1000);
+
+        // 7. Destroy the container
+        var destroyResponse = await client.DeleteAsync($"/api/Game/{game.Id}/Container/{challengeId}");
+        destroyResponse.EnsureSuccessStatusCode();
+
+        output.WriteLine($"✅ Container destroyed successfully");
     }
 }

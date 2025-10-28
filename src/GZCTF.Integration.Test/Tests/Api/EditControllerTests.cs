@@ -533,46 +533,15 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
 
             output.WriteLine($"✅ Container entry: {entry}");
 
-            // Parse the Entry field to get IP and port
-            // Entry format is either "proxy-id" or "IP:Port"
-            // For test environments, use localhost since Docker containers are accessible locally
-            var parts = entry.Split(':');
+            var flag = await ContainerHelper.FetchFlag(entry);
 
-            if (parts.Length == 2 && int.TryParse(parts[1], out var port))
-            {
-                // Use localhost for test environment instead of the container IP
-                var host = parts[0];
+            // Assert: Should have retrieved a flag
+            Assert.NotNull(flag);
+            Assert.NotEmpty(flag);
+            Assert.Equal("flag{GZCTF_dynamic_flag_test}", flag);
 
-                // Try to connect to the container and retrieve the flag
-                string? flag = null;
-                for (int attempt = 0; attempt < 10; attempt++)
-                {
-                    try
-                    {
-                        using var client = new TcpClient();
-                        await client.ConnectAsync(host, port);
-                        await using var stream = client.GetStream();
-                        // Read the flag from the echo container
-                        byte[] buffer = new byte[256];
-                        int bytesRead = await stream.ReadAsync(buffer);
-                        flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                        break;
-                    }
-                    catch (SocketException) when (attempt < 9)
-                    {
-                        // Container might not be ready yet, retry after delay
-                        await Task.Delay(1000);
-                    }
-                }
-
-                // Assert: Should have retrieved a flag
-                Assert.NotNull(flag);
-                Assert.NotEmpty(flag);
-                Assert.Equal("flag{GZCTF_dynamic_flag_test}", flag);
-
-                // Output the retrieved flag for verification
-                output.WriteLine($"✅ Successfully retrieved flag from container: {flag}");
-            }
+            // Output the retrieved flag for verification
+            output.WriteLine($"✅ Successfully retrieved flag from container: {flag}");
 
             // Clean up: Destroy the container
             var destroyContainerResponse = await adminClient.DeleteAsync(

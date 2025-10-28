@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Docker.DotNet;
 using GZCTF.Models;
 using GZCTF.Models.Data;
@@ -83,6 +84,55 @@ public static class ContainerHelper
 
         // Wait for container readiness
         await WaitContainerReadyAsync(serviceProvider, container, output);
+    }
+
+    /// <summary>
+    /// Fetch flag from container
+    /// NOTE: use `ghcr.io/gzctf/challenge-base/echo:latest`
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <returns></returns>
+    public static async Task<string?> FetchFlag(string entry)
+    {
+        Console.WriteLine($@"🔍 Fetching flag from container entry: {entry}");
+
+        // Parse the Entry field to get IP and port
+        // Entry format is either "proxy-id" or "IP:Port"
+        // For test environments, use localhost since Docker containers are accessible locally
+        var parts = entry.Split(':');
+
+        if (parts.Length != 2 || !int.TryParse(parts[1], out var port))
+            return null;
+
+        // Use localhost for test environment instead of the container IP
+        var host = parts[0];
+
+        // Try to connect to the container and retrieve the flag
+        string? flag = null;
+        for (int attempt = 0; attempt < 10; attempt++)
+        {
+            try
+            {
+                using var client = new TcpClient();
+                await client.ConnectAsync(host, port);
+                await using var stream = client.GetStream();
+                // Read the flag from the echo container
+                byte[] buffer = new byte[256];
+                int bytesRead = await stream.ReadAsync(buffer);
+                flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                break;
+            }
+            catch (SocketException) when (attempt < 9)
+            {
+                // Container might not be ready yet, retry after delay
+                await Task.Delay(500);
+            }
+        }
+
+        // Output the retrieved flag for verification
+        Console.WriteLine($@"✅ Successfully retrieved flag from {entry}: {flag}");
+
+        return flag;
     }
 
     /// <summary>
