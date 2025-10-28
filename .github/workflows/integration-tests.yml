@@ -15,7 +15,7 @@ on:
 
 jobs:
   test:
-    name: Run Tests
+    name: Run Tests (Local Mode)
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -45,8 +45,10 @@ jobs:
         working-directory: src
         run: dotnet test GZCTF.Test/GZCTF.Test.csproj --no-build -c Release --logger "trx;LogFileName=unit-test-results.trx" --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
 
-      - name: Run Integration Tests
+      - name: Run Integration Tests (Local Mode)
         working-directory: src
+        env:
+          GZCTF_INTEGRATION_TEST_MODE: local
         run: dotnet test GZCTF.Integration.Test/GZCTF.Integration.Test.csproj --no-build -c Release --logger "trx;LogFileName=integration-test-results.trx" --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
 
       - name: Upload Unit Test Results
@@ -61,7 +63,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: integration-test-results
+          name: integration-test-results-local
           path: src/GZCTF.Integration.Test/**/integration-test-results.trx
           retention-days: 7
 
@@ -77,17 +79,103 @@ jobs:
         uses: dorny/test-reporter@v2
         if: always()
         with:
-          name: Integration Test Results
+          name: Integration Test Results (Local Mode)
           path: src/GZCTF.Integration.Test/**/integration-test-results.trx
           reporter: dotnet-trx
 
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-local
+          path: |
+            src/GZCTF.Test/coverage/coverage.cobertura.xml
+            src/GZCTF.Integration.Test/coverage/coverage.cobertura.xml
+          retention-days: 1
+
+  test-cloud-mode:
+    name: Run Tests (Cloud Mode - K3s + MinIO)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: src/global.json
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: latest
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Restore dependencies
+        working-directory: src
+        run: dotnet restore
+
+      - name: Build
+        working-directory: src
+        run: dotnet build --no-restore -c Release
+
+      - name: Run Integration Tests (Cloud Mode - K3s + MinIO)
+        working-directory: src
+        env:
+          GZCTF_INTEGRATION_TEST_MODE: cloud
+        run: dotnet test GZCTF.Integration.Test/GZCTF.Integration.Test.csproj --no-build -c Release --logger "trx;LogFileName=integration-test-results-cloud.trx" --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage-cloud/
+
+      - name: Upload Integration Test Results (Cloud Mode)
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: integration-test-results-cloud
+          path: src/GZCTF.Integration.Test/**/integration-test-results-cloud.trx
+          retention-days: 7
+
+      - name: Integration Test Report (Cloud Mode)
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: Integration Test Results (Cloud Mode - K3s + MinIO)
+          path: src/GZCTF.Integration.Test/**/integration-test-results-cloud.trx
+          reporter: dotnet-trx
+
+      - name: Upload coverage artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-cloud
+          path: src/GZCTF.Integration.Test/coverage-cloud/coverage.cobertura.xml
+          retention-days: 1
+
+  upload-coverage:
+    name: Upload Coverage
+    runs-on: ubuntu-latest
+    needs: [test, test-cloud-mode]
+    if: always()
+
+    steps:
+      - name: Download coverage artifacts (local)
+        uses: actions/download-artifact@v5
+        with:
+          name: coverage-local
+          path: coverage-local
+
+      - name: Download coverage artifacts (cloud)
+        uses: actions/download-artifact@v5
+        with:
+          name: coverage-cloud
+          path: coverage-cloud
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
-        if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: |
-            src/GZCTF.Test/coverage/coverage.cobertura.xml
-            src/GZCTF.Integration.Test/coverage/coverage.cobertura.xml
+            coverage-local/src/GZCTF.Test/coverage/coverage.cobertura.xml
+            coverage-local/src/GZCTF.Integration.Test/coverage/coverage.cobertura.xml
+            coverage-cloud/src/GZCTF.Integration.Test/coverage-cloud/coverage.cobertura.xml
           fail_ci_if_error: false
           verbose: true
