@@ -62,7 +62,8 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 ["Logging:LogLevel:Default"] = "Warning",
                 ["Logging:LogLevel:Microsoft.AspNetCore"] = "Warning",
                 ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning",
-                ["Server:MetricPort"] = "0"
+                ["Server:MetricPort"] = "0",
+                ["ContainerProvider:PublicEntry"] = "localhost",
             });
 
             // Then add back all the original sources

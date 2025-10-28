@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Sockets;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
@@ -11,6 +12,7 @@ using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
@@ -20,7 +22,7 @@ namespace GZCTF.Integration.Test.Tests.Api;
 /// - Challenge and division management operations
 /// </summary>
 [Collection(nameof(IntegrationTestCollection))]
-public class EditControllerTests(GZCTFApplicationFactory factory)
+public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
 {
     /// <summary>
     /// Test GetGameChallenges returns challenges with scores from scoreboard when available
@@ -468,10 +470,10 @@ public class EditControllerTests(GZCTFApplicationFactory factory)
     }
 
     /// <summary>
-    /// Test CreateTestContainer and DestroyTestContainer work correctly
+    /// Test CreateTestContainer and retrieve flag via TCP connection
     /// </summary>
     [Fact]
-    public async Task TestContainerOperations_ShouldWorkCorrectly()
+    public async Task TestContainerOperations_ShouldRetrieveFlagSuccessfully()
     {
         // Arrange: Create admin user, game, and dynamic container challenge
         var adminPassword = "Admin@Pass123";
@@ -493,8 +495,8 @@ public class EditControllerTests(GZCTFApplicationFactory factory)
                 Type = ChallengeType.DynamicContainer,
                 GameId = game.Id,
                 IsEnabled = true,
-                ContainerImage = "nginx:alpine",
-                ContainerExposePort = 80,
+                ContainerImage = "ghcr.io/gzctf/challenge-base/echo:latest",
+                ContainerExposePort = 70,
                 MemoryLimit = 64,
                 CPUCount = 1,
                 StorageLimit = 256
@@ -507,25 +509,90 @@ public class EditControllerTests(GZCTFApplicationFactory factory)
             new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
         loginResponse.EnsureSuccessStatusCode();
 
-        // Act & Assert: These operations should work without game existence checks
-        // Note: Actual container creation might fail in test environment without proper setup,
-        // but the endpoint routing and validation should work
-
-        // Try to create test container
+        // Act: Create test container
         var createContainerResponse = await adminClient.PostAsync(
             $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container", null);
 
-        // We expect either success or a container-specific error, not 404 for game
-        Assert.NotEqual(HttpStatusCode.NotFound, createContainerResponse.StatusCode);
-
-        // If container was created, try to destroy it
-        if (createContainerResponse.IsSuccessStatusCode)
+        try
         {
-            var destroyContainerResponse = await adminClient.DeleteAsync(
-                $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container");
+            // We expect either success or a container-specific error, not 404 for game
+            Assert.NotEqual(HttpStatusCode.NotFound, createContainerResponse.StatusCode);
 
-            // Should not return 404 for game
-            Assert.NotEqual(HttpStatusCode.NotFound, destroyContainerResponse.StatusCode);
+            // If container was created successfully, try to get the flag
+            if (createContainerResponse.IsSuccessStatusCode)
+            {
+                var responseText = await createContainerResponse.Content.ReadAsStringAsync();
+                using var responseJson = System.Text.Json.JsonDocument.Parse(responseText);
+                var root = responseJson.RootElement;
+                Assert.True(root.TryGetProperty("entry", out var entryElement));
+                var entry = entryElement.GetString();
+                Assert.NotNull(entry);
+                Assert.NotEmpty(entry);
+
+                output.WriteLine($"✅ Container entry: {entry}");
+
+                // Parse the Entry field to get IP and port
+                // Entry format is either "proxy-id" or "IP:Port"
+                // For test environments, use localhost since Docker containers are accessible locally
+                var parts = entry.Split(':');
+
+                if (parts.Length == 2 && int.TryParse(parts[1], out var port))
+                {
+                    // Use localhost for test environment instead of the container IP
+                    var host = parts[0];
+
+                    // Try to connect to the container and retrieve the flag
+                    string? flag = null;
+                    for (int attempt = 0; attempt < 5; attempt++)
+                    {
+                        try
+                        {
+                            using var client = new TcpClient();
+                            await client.ConnectAsync(host, port);
+                            await using var stream = client.GetStream();
+                            // Read the flag from the echo container
+                            byte[] buffer = new byte[256];
+                            int bytesRead = await stream.ReadAsync(buffer);
+                            flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                            break;
+                        }
+                        catch (SocketException) when (attempt < 4)
+                        {
+                            // Container might not be ready yet, retry after delay
+                            await Task.Delay(500);
+                        }
+                    }
+
+                    // Assert: Should have retrieved a flag
+                    Assert.NotNull(flag);
+                    Assert.NotEmpty(flag);
+                    Assert.Equal("flag{GZCTF_dynamic_flag_test}", flag);
+
+                    // Output the retrieved flag for verification
+                    output.WriteLine($"✅ Successfully retrieved flag from container: {flag}");
+                }
+
+                // Clean up: Destroy the container
+                var destroyContainerResponse = await adminClient.DeleteAsync(
+                    $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container");
+
+                // Should not return 404 for game
+                Assert.NotEqual(HttpStatusCode.NotFound, destroyContainerResponse.StatusCode);
+            }
+        }
+        finally
+        {
+            // Ensure cleanup even if test fails
+            try
+            {
+                await adminClient.DeleteAsync(
+                    $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container");
+                // Ignore cleanup errors
+            }
+            catch
+            {
+                // Ignore cleanup errors
+            }
         }
     }
 
