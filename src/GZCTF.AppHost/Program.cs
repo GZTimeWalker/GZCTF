@@ -14,10 +14,7 @@ var database = postgres.AddDatabase("database");
 
 var redis = builder.AddRedis("redis").WithDataVolume();
 
-var storage = builder.AddMinIO("minio", options =>
-{
-    options.WithBucket("gzctf");
-});
+var storage = builder.AddMinIO("minio", options => options.WithBucket("gzctf"));
 
 var web = builder.AddProject<Projects.GZCTF>("gzctf")
     .WithReference(database)
