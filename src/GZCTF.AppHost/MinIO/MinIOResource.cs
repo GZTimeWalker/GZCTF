@@ -49,14 +49,12 @@ class MinIOResource(string name, string? accessKey = null, string? secretKey = n
 
     public ReferenceExpression ConnectionStringExpression =>
         ReferenceExpression.Create(
-            $"http://{ApiEndpoint.Property(EndpointProperty.Host)}:{ApiEndpoint.Property(EndpointProperty.Port)};" +
-            $"AccessKey={AccessKey ?? "minioadmin"};" +
-            $"SecretKey={SecretKey ?? "minioadmin"}");
+            $"s3://accessKey={AccessKey ?? "minioadmin"};secretKey={SecretKey ?? "minioadmin"};bucket=gzctf;endpoint={ApiEndpoint.Property(EndpointProperty.Url)};useHttp=true");
 
     public string? AccessKey { get; } = accessKey;
     public string? SecretKey { get; } = secretKey;
 
-    string? IResourceWithConnectionString.ConnectionStringEnvironmentVariable => "Storage__ConnectionString";
+    string? IResourceWithConnectionString.ConnectionStringEnvironmentVariable => "ConnectionStrings__Storage";
 }
 
 
@@ -80,7 +78,7 @@ static class MinIOResourceBuilderExtensions
                 targetPort: MinIOResource.DefaultApiPort,
                 port: options.ApiPort,
                 name: MinIOResource.ApiEndpointName)
-            .WithEndpoint(
+            .WithHttpEndpoint(
                 targetPort: MinIOResource.DefaultConsolePort,
                 port: options.ConsolePort,
                 name: MinIOResource.ConsoleEndpointName)
