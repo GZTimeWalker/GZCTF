@@ -2,20 +2,22 @@ using Microsoft.Extensions.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("PostgreSQL").WithDataVolume();
+var postgres = builder.AddPostgres("postgres").WithDataVolume();
 
 if (builder.Environment.IsDevelopment())
 {
     postgres.WithPgAdmin();
 }
 
-var database = postgres.AddDatabase("Database");
+var database = postgres.AddDatabase("database");
 
-var redis = builder.AddRedis("Redis").WithDataVolume();
+var redis = builder.AddRedis("redis").WithDataVolume();
 
-var apiService = builder.AddProject<Projects.GZCTF>("GZCTF")
+var web = builder.AddProject<Projects.GZCTF>("gzctf")
     .WithReference(database)
+    .WaitFor(database)
     .WithReference(redis)
+    .WaitFor(redis)
     .WithEnvironment("Telemetry__OpenTelemetry__Enable", "true")
     .WithEnvironment("Telemetry__Prometheus__Enable", "true")
     .WithEndpoint("http", e => e.IsProxied = false)
@@ -23,7 +25,7 @@ var apiService = builder.AddProject<Projects.GZCTF>("GZCTF")
 
 if (!builder.Environment.IsDevelopment())
 {
-    apiService.WithEnvironment("Storage__ConnectionString", "disk://path=/app/files");
+    web.WithEnvironment("Storage__ConnectionString", "disk://path=/app/files");
 }
 
 builder.Build().Run();
