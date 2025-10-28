@@ -7,6 +7,7 @@ class MinIOBuilder
     public string? AccessKey { get; set; }
     public string? SecretKey { get; set; }
     public string? DataVolumePath { get; set; }
+    public string? BucketName { get; set; }
 
     public MinIOBuilder WithPorts(int? apiPort = null, int? consolePort = null)
     {
@@ -27,11 +28,17 @@ class MinIOBuilder
         DataVolumePath = path;
         return this;
     }
+
+    public MinIOBuilder WithBucket(string bucketName)
+    {
+        BucketName = bucketName;
+        return this;
+    }
 }
 
 
 class MinIOResource(string name, string? accessKey = null, string? secretKey = null)
-    : ContainerResource(name), IResourceWithConnectionString
+    : ContainerResource(name), IResourceWithConnectionString, IResourceWithServiceDiscovery
 {
     internal const string ApiEndpointName = "api";
     internal const string ConsoleEndpointName = "console";
@@ -70,7 +77,7 @@ static class MinIOResourceBuilderExtensions
 
         var resource = new MinIOResource(name, options.AccessKey, options.SecretKey);
 
-        return builder.AddResource(resource)
+        var resourceBuilder = builder.AddResource(resource)
             .WithImage("minio/minio")
             .WithImageRegistry("docker.io")
             .WithImageTag("latest")
@@ -85,6 +92,9 @@ static class MinIOResourceBuilderExtensions
             .ConfigureCredentials(options)
             .ConfigureVolume(options)
             .WithArgs("server", "/data", "--console-address", $":{MinIOResource.DefaultConsolePort}");
+        return !string.IsNullOrEmpty(options.BucketName)
+            ? resourceBuilder.WithEnvironment("MINIO_DEFAULT_BUCKETS", options.BucketName)
+            : resourceBuilder;
     }
 
     private static IResourceBuilder<MinIOResource> ConfigureCredentials(
