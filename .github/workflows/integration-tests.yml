@@ -159,12 +159,14 @@ jobs:
     steps:
       - name: Download coverage artifacts (local)
         uses: actions/download-artifact@v5
+        continue-on-error: true
         with:
           name: coverage-local
           path: coverage-local
 
       - name: Download coverage artifacts (cloud)
         uses: actions/download-artifact@v5
+        continue-on-error: true
         with:
           name: coverage-cloud
           path: coverage-cloud

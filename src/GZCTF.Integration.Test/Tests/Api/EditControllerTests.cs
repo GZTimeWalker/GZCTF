@@ -8,7 +8,10 @@ using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Container.Provider;
 using GZCTF.Utils;
+using k8s;
+using k8s.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -513,72 +516,70 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         var createContainerResponse = await adminClient.PostAsync(
             $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container", null);
 
+        Assert.True(createContainerResponse.IsSuccessStatusCode);
+
+        // Try to wait for admin test container if available
+        await ContainerHelper.WaitAdminContainerAsync(factory.Services, challenge.Id, output);
+
         try
         {
-            // We expect either success or a container-specific error, not 404 for game
-            Assert.NotEqual(HttpStatusCode.NotFound, createContainerResponse.StatusCode);
+            var responseText = await createContainerResponse.Content.ReadAsStringAsync();
+            using var responseJson = System.Text.Json.JsonDocument.Parse(responseText);
+            var root = responseJson.RootElement;
+            Assert.True(root.TryGetProperty("entry", out var entryElement));
+            var entry = entryElement.GetString();
+            Assert.NotNull(entry);
+            Assert.NotEmpty(entry);
 
-            // If container was created successfully, try to get the flag
-            if (createContainerResponse.IsSuccessStatusCode)
+            output.WriteLine($"✅ Container entry: {entry}");
+
+            // Parse the Entry field to get IP and port
+            // Entry format is either "proxy-id" or "IP:Port"
+            // For test environments, use localhost since Docker containers are accessible locally
+            var parts = entry.Split(':');
+
+            if (parts.Length == 2 && int.TryParse(parts[1], out var port))
             {
-                var responseText = await createContainerResponse.Content.ReadAsStringAsync();
-                using var responseJson = System.Text.Json.JsonDocument.Parse(responseText);
-                var root = responseJson.RootElement;
-                Assert.True(root.TryGetProperty("entry", out var entryElement));
-                var entry = entryElement.GetString();
-                Assert.NotNull(entry);
-                Assert.NotEmpty(entry);
+                // Use localhost for test environment instead of the container IP
+                var host = parts[0];
 
-                output.WriteLine($"✅ Container entry: {entry}");
-
-                // Parse the Entry field to get IP and port
-                // Entry format is either "proxy-id" or "IP:Port"
-                // For test environments, use localhost since Docker containers are accessible locally
-                var parts = entry.Split(':');
-
-                if (parts.Length == 2 && int.TryParse(parts[1], out var port))
+                // Try to connect to the container and retrieve the flag
+                string? flag = null;
+                for (int attempt = 0; attempt < 10; attempt++)
                 {
-                    // Use localhost for test environment instead of the container IP
-                    var host = parts[0];
-
-                    // Try to connect to the container and retrieve the flag
-                    string? flag = null;
-                    for (int attempt = 0; attempt < 5; attempt++)
+                    try
                     {
-                        try
-                        {
-                            using var client = new TcpClient();
-                            await client.ConnectAsync(host, port);
-                            await using var stream = client.GetStream();
-                            // Read the flag from the echo container
-                            byte[] buffer = new byte[256];
-                            int bytesRead = await stream.ReadAsync(buffer);
-                            flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                            break;
-                        }
-                        catch (SocketException) when (attempt < 4)
-                        {
-                            // Container might not be ready yet, retry after delay
-                            await Task.Delay(500);
-                        }
+                        using var client = new TcpClient();
+                        await client.ConnectAsync(host, port);
+                        await using var stream = client.GetStream();
+                        // Read the flag from the echo container
+                        byte[] buffer = new byte[256];
+                        int bytesRead = await stream.ReadAsync(buffer);
+                        flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                        break;
                     }
-
-                    // Assert: Should have retrieved a flag
-                    Assert.NotNull(flag);
-                    Assert.NotEmpty(flag);
-                    Assert.Equal("flag{GZCTF_dynamic_flag_test}", flag);
-
-                    // Output the retrieved flag for verification
-                    output.WriteLine($"✅ Successfully retrieved flag from container: {flag}");
+                    catch (SocketException) when (attempt < 9)
+                    {
+                        // Container might not be ready yet, retry after delay
+                        await Task.Delay(1000);
+                    }
                 }
 
-                // Clean up: Destroy the container
-                var destroyContainerResponse = await adminClient.DeleteAsync(
-                    $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container");
+                // Assert: Should have retrieved a flag
+                Assert.NotNull(flag);
+                Assert.NotEmpty(flag);
+                Assert.Equal("flag{GZCTF_dynamic_flag_test}", flag);
 
-                // Should not return 404 for game
-                Assert.NotEqual(HttpStatusCode.NotFound, destroyContainerResponse.StatusCode);
+                // Output the retrieved flag for verification
+                output.WriteLine($"✅ Successfully retrieved flag from container: {flag}");
             }
+
+            // Clean up: Destroy the container
+            var destroyContainerResponse = await adminClient.DeleteAsync(
+                $"/api/Edit/Games/{game.Id}/Challenges/{challenge.Id}/Container");
+
+            // Should not return 404 for game
+            Assert.NotEqual(HttpStatusCode.NotFound, destroyContainerResponse.StatusCode);
         }
         finally
         {

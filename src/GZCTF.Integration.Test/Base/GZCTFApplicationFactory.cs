@@ -1,4 +1,8 @@
+using Docker.DotNet.Models;
 using GZCTF.Models;
+using GZCTF.Services.Container.Manager;
+using GZCTF.Services.Container.Provider;
+using GZCTF.Storage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -50,12 +54,12 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         _useK3sMode = testMode == "cloud" || testMode == "k3s";
         _useMinioStorage = testMode == "cloud" || testMode == "minio";
 
-        Console.WriteLine($"[GZCTFApplicationFactory] Test mode: {testMode}");
+        Console.WriteLine($@"[GZCTFApplicationFactory] Test mode: {testMode}");
 
         // Initialize containers based on mode
         if (_useMinioStorage)
         {
-            Console.WriteLine("[GZCTFApplicationFactory] Creating MinIO container...");
+            Console.WriteLine(@"[GZCTFApplicationFactory] Creating MinIO container...");
             _minioContainer = new MinioBuilder()
                 .WithImage("minio/minio:latest")
                 .WithUsername("minioadmin")
@@ -66,19 +70,22 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
 
         if (_useK3sMode)
         {
-            Console.WriteLine("[GZCTFApplicationFactory] Creating K3s container...");
-            _k3sContainer = new K3sBuilder()
+            Console.WriteLine(@"[GZCTFApplicationFactory] Creating K3s container...");
+
+            var builder = new K3sBuilder()
                 .WithImage("rancher/k3s:v1.34.1-k3s1")
-                .WithCleanUp(true)
-                .Build();
+                .WithCleanUp(true);
+
+            _k3sContainer = builder.Build();
         }
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        Console.WriteLine("[ConfigureWebHost] Starting web host configuration...");
-        Console.WriteLine($"[ConfigureWebHost] K3s mode: {_useK3sMode}, Kubeconfig path: {_kubeConfigPath ?? "null"}");
-        Console.WriteLine($"[ConfigureWebHost] MinIO mode: {_useMinioStorage}, Storage connection: {(_storageConnectionString != null ? "set" : "null")}");
+        Console.WriteLine(@"[ConfigureWebHost] Starting web host configuration...");
+        Console.WriteLine($@"[ConfigureWebHost] K3s mode: {_useK3sMode}, Kubeconfig path: {_kubeConfigPath ?? "null"}");
+        Console.WriteLine(
+            $@"[ConfigureWebHost] MinIO mode: {_useMinioStorage}, Storage connection: {(_storageConnectionString != null ? "set" : "null")}");
 
         // Set environment variable to allow file directory creation
         Environment.SetEnvironmentVariable("YES_I_KNOW_FILES_ARE_NOT_PERSISTED_GO_AHEAD_PLEASE", "true");
@@ -111,23 +118,27 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 ["Logging:LogLevel:Default"] = "Warning",
                 ["Logging:LogLevel:Microsoft.AspNetCore"] = "Warning",
                 ["Logging:LogLevel:Microsoft.EntityFrameworkCore"] = "Warning",
-                ["Server:MetricPort"] = "0",
-                ["ContainerProvider:PublicEntry"] = "localhost",
+                ["Server:MetricPort"] = "0"
             };
 
             // Add K3s-specific configuration if in K3s mode
-            if (_useK3sMode && !string.IsNullOrEmpty(_kubeConfigPath))
+            if (_useK3sMode && _k3sContainer is not null && !string.IsNullOrEmpty(_kubeConfigPath))
             {
-                Console.WriteLine($"[ConfigureWebHost] Setting ContainerProvider to Kubernetes with kubeconfig: {_kubeConfigPath}");
+                Console.WriteLine(
+                    $@"[ConfigureWebHost] Setting ContainerProvider to Kubernetes with kubeconfig: {_kubeConfigPath}");
                 configDict["ContainerProvider:Type"] = "Kubernetes";
+                configDict["ContainerProvider:PublicEntry"] = _k3sContainer.IpAddress ?? "localhost";
                 configDict["ContainerProvider:KubernetesConfig:Namespace"] = "gzctf-test";
                 configDict["ContainerProvider:KubernetesConfig:KubeConfig"] = _kubeConfigPath;
             }
             else
             {
-                Console.WriteLine($"[ConfigureWebHost] Setting ContainerProvider to Docker (K3s mode: {_useK3sMode}, path: {_kubeConfigPath ?? "null"})");
+                Console.WriteLine(
+                    $@"[ConfigureWebHost] Setting ContainerProvider to Docker (K3s mode: {_useK3sMode}, path: {_kubeConfigPath ?? "null"})");
                 configDict["ContainerProvider:Type"] = "Docker";
+                configDict["ContainerProvider:PublicEntry"] = "localhost";
             }
+
             config.AddInMemoryCollection(configDict);
 
             // Then add back all the original sources
@@ -148,69 +159,104 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();
             });
+
+            // Reconfigure container services if in K3s mode
+            if (_useK3sMode && !string.IsNullOrEmpty(_kubeConfigPath))
+            {
+                Console.WriteLine(@"[ConfigureTestServices] Reconfiguring container services for Kubernetes...");
+
+                // Remove existing container services
+                services.RemoveAll(typeof(IContainerManager));
+                services.RemoveAll(typeof(IContainerProvider<k8s.Kubernetes, KubernetesMetadata>));
+                services.RemoveAll(typeof(IContainerProvider<Docker.DotNet.DockerClient, DockerMetadata>));
+
+                // Add Kubernetes provider and manager
+                services.AddSingleton<IContainerProvider<k8s.Kubernetes, KubernetesMetadata>, KubernetesProvider>();
+                services.AddSingleton<IContainerManager, KubernetesManager>();
+
+                Console.WriteLine(@"[ConfigureTestServices] Kubernetes container services registered");
+            }
+
+            // Reconfigure storage services if in MinIO mode
+            if (_useMinioStorage && _minioContainer is not null && !string.IsNullOrEmpty(_storageConnectionString))
+            {
+                services.RemoveAll(typeof(IBlobStorage));
+
+                services.AddSingleton(StorageProviderFactory.Create(_storageConnectionString));
+
+                Console.WriteLine(@"[ConfigureTestServices] MinIO storage service registered");
+            }
         });
+    }
+
+    async Task InitializeK3sAsync()
+    {
+        if (_k3sContainer is null)
+            throw new InvalidOperationException("K3s container is not initialized");
+
+        await _k3sContainer.StartAsync();
+
+        Console.WriteLine($@"[InitializeK3sAsync] K3s container IP: {_k3sContainer.IpAddress}");
+
+        var kubeConfigContent = await _k3sContainer.GetKubeconfigAsync();
+        var tempDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
+        Directory.CreateDirectory(tempDir);
+        _kubeConfigPath = Path.Combine(tempDir, "kubeconfig.yaml");
+
+        await File.WriteAllTextAsync(_kubeConfigPath, kubeConfigContent);
+    }
+
+    async Task InitializePostgresAsync()
+    {
+        await _postgresContainer.StartAsync();
+        _connectionString = _postgresContainer.GetConnectionString();
+    }
+
+    async Task InitializeMinioAsync()
+    {
+        if (_minioContainer is null)
+            throw new InvalidOperationException("MinIO container is not initialized");
+
+        await _minioContainer.StartAsync();
+        var minioEndpoint = _minioContainer.GetConnectionString();
+        _storageConnectionString =
+            $"minio.s3://bucket=gzctf-test;endpoint={minioEndpoint};accessKey=minioadmin;secretKey=minioadmin;forcePathStyle=true;useHttp=true;";
     }
 
     public async Task InitializeAsync()
     {
-        Console.WriteLine("[InitializeAsync] Starting container initialization...");
+        Console.WriteLine(@"[InitializeAsync] Starting container initialization...");
+
+        var tasks = new List<Task>();
 
         // Start K3s container first if in K3s mode (before PostgreSQL)
         // This ensures kubeconfig is available during ConfigureWebHost
         if (_useK3sMode && _k3sContainer is not null)
-        {
-            Console.WriteLine("[InitializeAsync] Starting K3s container...");
-            await _k3sContainer.StartAsync();
-            Console.WriteLine("[InitializeAsync] K3s container started successfully");
+            tasks.Add(InitializeK3sAsync());
 
-            // Get kubeconfig and save to a temporary file
-            var kubeConfigContent = await _k3sContainer.GetKubeconfigAsync();
-            var tempDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
-            Directory.CreateDirectory(tempDir);
-            _kubeConfigPath = Path.Combine(tempDir, "kubeconfig.yaml");
-            await File.WriteAllTextAsync(_kubeConfigPath, kubeConfigContent);
-            Console.WriteLine($"[InitializeAsync] Kubeconfig saved to: {_kubeConfigPath}");
-        }
+        // Start MinIO container if in MinIO mode
+        if (_useMinioStorage && _minioContainer is not null)
+            tasks.Add(InitializeMinioAsync());
 
         // Start PostgresSQL container
-        Console.WriteLine("[InitializeAsync] Starting PostgreSQL container...");
-        await _postgresContainer.StartAsync();
-        Console.WriteLine("[InitializeAsync] PostgreSQL container started successfully");
+        tasks.Add(InitializePostgresAsync());
 
-        // Get and cache connection string
-        _connectionString = _postgresContainer.GetConnectionString();
+        await Task.WhenAll(tasks);
 
         // Set environment variable so it's available during configuration
         Environment.SetEnvironmentVariable("GZCTF_ConnectionStrings__Database", _connectionString);
 
-        // Start MinIO container if in MinIO mode
-        if (_useMinioStorage && _minioContainer is not null)
-        {
-            Console.WriteLine("[InitializeAsync] Starting MinIO container...");
-            await _minioContainer.StartAsync();
-            Console.WriteLine("[InitializeAsync] MinIO container started successfully");
-
-            // Build MinIO connection string in S3 format
-            var minioEndpoint = _minioContainer.GetConnectionString();
-            _storageConnectionString = $"minio.s3://bucket=gzctf-test;endpoint={minioEndpoint};accessKey=minioadmin;secretKey=minioadmin;forcePathStyle=true;useHttp=true;";
-            Console.WriteLine($"[InitializeAsync] MinIO endpoint: {minioEndpoint}");
-        }
-
         // Ensure the database is created and migrated
         // We do this after container is fully started
-        Console.WriteLine("[InitializeAsync] Running database migrations...");
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(_connectionString);
 
         await using var context = new AppDbContext(optionsBuilder.Options);
         await context.Database.MigrateAsync();
-        Console.WriteLine("[InitializeAsync] Initialization complete!");
     }
 
     public new async Task DisposeAsync()
     {
-        Console.WriteLine("[DisposeAsync] Cleaning up containers...");
-
         // Dispose containers
         await _postgresContainer.DisposeAsync();
 
@@ -235,8 +281,6 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 // Ignore cleanup errors
             }
         }
-
-        Console.WriteLine("[DisposeAsync] Cleanup complete");
     }
 }
 
