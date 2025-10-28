@@ -47,6 +47,7 @@ const Countdown: FC<CountdownProps> = (props) => {
   const { time, onTimeout, extendEnabled, enableExtend } = props
   const { config } = useConfig()
   const [now, setNow] = useState(dayjs())
+  const [timeoutExecuted, setTimeoutExecuted] = useState(false)
   const end = time ? dayjs(time) : now.add(config.defaultLifetime ?? 120, 'minutes')
 
   const countdown = dayjs.duration(end.diff(now))
@@ -59,8 +60,17 @@ const Countdown: FC<CountdownProps> = (props) => {
 
   useEffect(() => {
     if (!extendEnabled && config.renewalWindow && countdown.asMinutes() < config.renewalWindow) enableExtend()
-    if (onTimeout && countdown.asSeconds() <= 0) onTimeout()
-  }, [countdown, config.renewalWindow])
+
+    const isExpired = countdown.asSeconds() <= 0
+    if (isExpired && !timeoutExecuted && onTimeout) {
+      setTimeoutExecuted(true)
+      onTimeout()
+    }
+
+    if (!isExpired && timeoutExecuted) {
+      setTimeoutExecuted(false)
+    }
+  }, [countdown, config.renewalWindow, timeoutExecuted, onTimeout])
 
   return (
     <Text span fw="bold">
