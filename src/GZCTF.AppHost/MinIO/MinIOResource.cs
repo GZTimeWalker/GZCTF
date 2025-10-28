@@ -61,7 +61,7 @@ class MinIOResource(string name, string? accessKey = null, string? secretKey = n
 
     public ReferenceExpression ConnectionStringExpression =>
         ReferenceExpression.Create(
-            $"s3://accessKey={AccessKey};secretKey={SecretKey};bucket=gzctf;endpoint=http://127.0.0.1:{ApiEndpoint.Property(EndpointProperty.Port)};useHttp=true");
+            $"s3://accessKey={AccessKey};secretKey={SecretKey};bucket=gzctf;endpoint=http://{(ApiEndpoint.Host is "localhost" ? "127.0.0.1" : ApiEndpoint.Host)}:{ApiEndpoint.Property(EndpointProperty.Port)};useHttp=true");
 
     public string? AccessKey { get; } = accessKey ?? "minioadmin";
     public string? SecretKey { get; } = secretKey ?? "minioadmin";
