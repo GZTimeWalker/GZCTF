@@ -1,4 +1,9 @@
-﻿namespace GZCTF.AppHost.MinIO;
+﻿using Aspire.Hosting.Lifecycle;
+using Microsoft.Extensions.DependencyInjection;
+using Minio;
+using Minio.DataModel.Args;
+
+namespace GZCTF.AppHost.MinIO;
 
 class MinIOBuilder
 {
@@ -37,8 +42,8 @@ class MinIOBuilder
 }
 
 
-class MinIOResource(string name, string? accessKey = null, string? secretKey = null)
-    : ContainerResource(name), IResourceWithConnectionString, IResourceWithServiceDiscovery
+class MinIOResource(string name, string? accessKey = null, string? secretKey = null, string? bucketName = null)
+    : ContainerResource(name), IResourceWithConnectionString
 {
     internal const string ApiEndpointName = "api";
     internal const string ConsoleEndpointName = "console";
@@ -56,14 +61,40 @@ class MinIOResource(string name, string? accessKey = null, string? secretKey = n
 
     public ReferenceExpression ConnectionStringExpression =>
         ReferenceExpression.Create(
-            $"s3://accessKey={AccessKey ?? "minioadmin"};secretKey={SecretKey ?? "minioadmin"};bucket=gzctf;endpoint={ApiEndpoint.Property(EndpointProperty.Url)};useHttp=true");
+            $"s3://accessKey={AccessKey};secretKey={SecretKey};bucket=gzctf;endpoint=http://127.0.0.1:{ApiEndpoint.Property(EndpointProperty.Port)};useHttp=true");
 
-    public string? AccessKey { get; } = accessKey;
-    public string? SecretKey { get; } = secretKey;
+    public string? AccessKey { get; } = accessKey ?? "minioadmin";
+    public string? SecretKey { get; } = secretKey ?? "minioadmin";
+    public string? BucketName { get; } = bucketName;
 
-    string? IResourceWithConnectionString.ConnectionStringEnvironmentVariable => "ConnectionStrings__Storage";
+    public string ConnectionStringEnvironmentVariable => "ConnectionStrings__Storage";
 }
+class MinioBucketInitializer : IDistributedApplicationLifecycleHook
+{
+    public async Task AfterResourcesCreatedAsync(DistributedApplicationModel appModel, CancellationToken cancellationToken)
+    {
+        var resources = appModel.Resources
+            .OfType<MinIOResource>();
 
+        foreach (var resource in resources)
+        {
+            if (string.IsNullOrEmpty(resource.BucketName))
+                continue;
+
+            var endpoint = resource.GetEndpoint(MinIOResource.ApiEndpointName);
+            using var minioClient = new MinioClient()
+                .WithEndpoint($"{endpoint.Host}:{endpoint.Port}")
+                .WithCredentials(resource.AccessKey, resource.SecretKey)
+                .WithSSL(false)
+                .Build();
+
+            if (!await minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(resource.BucketName), cancellationToken))
+            {
+                await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(resource.BucketName), cancellationToken);
+            }
+        }
+    }
+}
 
 static class MinIOResourceBuilderExtensions
 {
@@ -75,9 +106,9 @@ static class MinIOResourceBuilderExtensions
         var options = new MinIOBuilder();
         configure?.Invoke(options);
 
-        var resource = new MinIOResource(name, options.AccessKey, options.SecretKey);
-
-        var resourceBuilder = builder.AddResource(resource)
+        var resource = new MinIOResource(name, options.AccessKey, options.SecretKey, options.BucketName);
+        builder.Services.AddSingleton<IDistributedApplicationLifecycleHook, MinioBucketInitializer>();
+        return builder.AddResource(resource)
             .WithImage("minio/minio")
             .WithImageRegistry("docker.io")
             .WithImageTag("latest")
@@ -92,9 +123,6 @@ static class MinIOResourceBuilderExtensions
             .ConfigureCredentials(options)
             .ConfigureVolume(options)
             .WithArgs("server", "/data", "--console-address", $":{MinIOResource.DefaultConsolePort}");
-        return !string.IsNullOrEmpty(options.BucketName)
-            ? resourceBuilder.WithEnvironment("MINIO_DEFAULT_BUCKETS", options.BucketName)
-            : resourceBuilder;
     }
 
     private static IResourceBuilder<MinIOResource> ConfigureCredentials(

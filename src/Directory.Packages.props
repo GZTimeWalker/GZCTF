@@ -33,6 +33,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.10" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageVersion Include="Minio" Version="6.0.5" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.4" />
     <PackageVersion Include="NPOI" Version="2.7.5" />
