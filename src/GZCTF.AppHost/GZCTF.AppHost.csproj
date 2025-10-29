@@ -12,7 +12,6 @@
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.Redis" />
-    <PackageReference Include="Minio" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GZCTF\GZCTF.csproj" />
