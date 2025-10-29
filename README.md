@@ -113,6 +113,7 @@ If you are interested in contributing to the translation, please refer to the [C
 ![admin.challenge.flags.webp](assets/images/admin.challenge.flags.webp)
 ![admin.game.info.webp](assets/images/admin.game.info.webp)
 ![admin.game.review.webp](assets/images/admin.game.review.webp)
+![admin.game.divisions.webp](assets/images/admin.game.divisions.webp)
 ![admin.teams.webp](assets/images/admin.teams.webp)
 ![admin.instances.webp](assets/images/admin.instances.webp)
 ![monitor.game.events.webp](assets/images/monitor.game.events.webp)
