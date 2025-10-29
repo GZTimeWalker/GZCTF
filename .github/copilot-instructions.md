@@ -1,6 +1,6 @@
 # GZ::CTF — AI Coding Agent Guide
 
-GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 9 + EF Core (PostgreSQL), frontend is React 18 + Vite with real‑time SignalR.
+GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 9 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
 
 ## Development principles
 
@@ -35,12 +35,17 @@ GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and 
   - `UserInfo` extends `IdentityUser<Guid>`; `Role` stored as int, requires confirmed email. One‑to‑many `UserInfo -> Submission` (FK set null on delete). Many‑to‑many with `Team` for membership.
 - Teams and games
   - `Team` has many `Members` (users) and an owner `Captain`. Many‑to‑many `Team <-> Game` via `Participation` (join entity) to carry team‑in‑game state.
-  - `Game` aggregates `GameEvents`, `GameNotices`, `GameChallenges`, `Submissions`, and `Participations`. `Divisions` stored as `HashSet<string>` JSON for flexibility.
+  - `Game` aggregates `GameEvents`, `GameNotices`, `GameChallenges`, `Submissions`, `Participations`, and `Divisions` (new dedicated table). `Divisions` entity manages division-specific configs including challenge visibility and scoring rules.
+- Divisions & challenge configs
+  - `Divisions`: Dedicated table for multi-division support with `DivisionChallengeConfig` join entity for per-division challenge configuration.
+  - `DivisionChallengeConfig`: Manages per-division challenge settings (visibility, deadline, scoring).
+  - `Participation` references a `Division`; supports division-scoped team participation and scoring.
 - Participation and instances
-  - `Participation` (PK: generated) joins `Team` and `Game`; holds `Instances` (challenge instances for the team), `Submissions`, `Members` (`UserParticipation`), and optional `Writeup`.
+  - `Participation` (PK: generated) joins `Team` and `Game`; holds `Instances` (challenge instances for the team), `Submissions`, `Members` (`UserParticipation`), optional `Writeup`, and optional `DivisionId`.
   - Many‑to‑many `Participation <-> GameChallenge` via `GameInstance` (composite key). `GameInstance` may reference a running `Container` (1‑1) and a `FlagContext` (dynamic flag) and is auto‑included with `Challenge`.
 - Challenges & training
-  - `GameChallenge` (derives `Challenge`) relates to `Game`, has `Flags`, `Submissions`, optional `Attachment` and `TestContainer`; `Hints` stored as JSON; indexed by `GameId`.
+  - `GameChallenge` (derives `Challenge`) relates to `Game`, has `Flags`, `Submissions`, optional `Attachment` and `TestContainer`; `Hints` stored as JSON; indexed by `GameId`. Per-challenge `Deadline` field for submission cutoff.
+  - `FirstSolves`: Tracks first blood for each challenge per-division or globally (team, user, submission time).
 - Submissions & flags
   - `Submission.Status` persisted as string (compat/readability); navigations to `Team`, `User`, `GameChallenge` auto‑included for audit/monitor views.
   - `FlagContext` may reference an `Attachment` (SetNull on delete) to support static/dynamic flag sources.
@@ -64,11 +69,15 @@ Design notes (flexibility vs performance)
 
 - Controllers return JSON `RequestResponse` on errors; model validation is centralized. Keep URLs lowercase (`AddRouting(LowercaseUrls=true)`).
 - Use SignalR endpoints `/hub/user`, `/hub/monitor`, `/hub/admin`; Vite dev proxy forwards `/hub` as WebSocket.
+- Permissions: Use `[RequireUser]`, `[RequireMonitor]`, `[RequireAdmin]`, `[RequireAdminOrToken]` attributes. New permissions: `RequireReview` (submission review) and `AffectDynamicScore` (dynamic scoring).
 - Captcha pluggable via `CaptchaConfig.Provider`: `HashPow` (default) or `CloudflareTurnstile` (`Extensions/CaptchaExtension.cs`).
-- Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`.
+- Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`. Self-maintenance storage ensures blob cleanup and consistency.
 - Environment configuration prefix: `GZCTF_` (env vars override config).
 - Role hierarchy: `Admin` (3) > `Monitor` (1) > `User` (0) > `Banned` (-1). Frontend `WithRole` component uses `RoleMap` for access control.
-- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support. Use `IContainerManager` interface for consistency.
+- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/MinIO integration. Use `IContainerManager` interface for consistency.
+- Task Status: Enum includes `Success`, `Failed`, `Pending`, `Running`, `Unhealthy`, `Degraded` statuses for container/service health.
+- Divisions API: Endpoints for game-scoped division management with challenge configs. Division affects challenge visibility, scoring, and deadline enforcement.
+- FirstSolves tracking: Separate table for first-blood metadata (team, user, timestamp); used for bonus scoring and statistics.
 - TypeScript API generation: Run `pnpm genapi` in ClientApp to regenerate types from OpenAPI spec at `/openapi/v1.json`.
 - Repository pattern: All data access through `IRepository<T>` interfaces with `RepositoryBase` implementation.
 - Logging: Use `logger.SystemLog(message, status, level)` for structured logging with `TaskStatus` enum.
@@ -76,7 +85,7 @@ Design notes (flexibility vs performance)
 
 ## Dev workflows
 
-- Prereqs: .NET 9 SDK, Node 18+, `pnpm`.
+- Prereqs: .NET 9 SDK, Node 24+, `pnpm`.
 - Single-command dev (SpaProxy auto-starts Vite):
   - `dotnet run --project src/GZCTF/GZCTF.csproj`
   - Launch profile sets `ASPNETCORE_ENVIRONMENT=Development` and enables `Microsoft.AspNetCore.SpaProxy` (see `Properties/launchSettings.json`); Vite dev runs on `63000` and proxies to backend.
@@ -88,6 +97,10 @@ Design notes (flexibility vs performance)
   - Run: `dotnet ./publish/GZCTF.dll`
 - Tests (xUnit + coverlet):
   - `dotnet test src/GZCTF.Test/GZCTF.Test.csproj -v minimal /p:CollectCoverage=true`
+  - `dotnet test src/GZCTF.Integration.Test/GZCTF.Integration.Test.csproj -v minimal /p:CollectCoverage=true` (requires Docker; uses Testcontainers for K3s, MinIO, PostgreSQL)
+- Testing framework:
+  - Unit tests: xUnit with `IRepository<T>` and service mocking; examples in `GZCTF.Test/UnitTests/`.
+  - Integration tests: Testcontainers for Docker Swarm/Kubernetes, MinIO S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation.
 - EF Core migrations (PostgreSQL):
   - `dotnet ef migrations add <Name> --project src/GZCTF/GZCTF.csproj --startup-project src/GZCTF/GZCTF.csproj`
   - `dotnet ef database update`
