@@ -1,4 +1,4 @@
-namespace GZCTF.Storage;
+namespace GZCTF.Storage.Interface;
 
 /// <summary>
 /// Represents an item stored in the configured blob storage backend.

@@ -1,4 +1,4 @@
-namespace GZCTF.Storage;
+namespace GZCTF.Storage.Interface;
 
 static class StorageConnectionString
 {

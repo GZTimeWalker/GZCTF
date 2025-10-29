@@ -6,6 +6,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
 using GZCTF.Storage;
+using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;

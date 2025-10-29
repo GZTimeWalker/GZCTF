@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GZCTF.Storage.Interface;
 
 namespace GZCTF.Storage;
 
@@ -20,8 +21,14 @@ public sealed class LocalBlobStorage : IBlobStorage
         _root = Path.GetFullPath(rootPath)
             .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         _rootWithSeparator = _root + Path.DirectorySeparatorChar;
+    }
 
-        Directory.CreateDirectory(_root);
+    public Task EnsureInitializedAsync(CancellationToken cancellationToken = default)
+    {
+        if (!Directory.Exists(_root))
+            Directory.CreateDirectory(_root);
+
+        return Task.CompletedTask;
     }
 
     public Task<bool> ExistsAsync(string path, CancellationToken cancellationToken = default)

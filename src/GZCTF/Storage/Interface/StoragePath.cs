@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace GZCTF.Storage;
+namespace GZCTF.Storage.Interface;
 
 /// <summary>
 /// Utility helpers for working with storage object keys in a provider-agnostic fashion.

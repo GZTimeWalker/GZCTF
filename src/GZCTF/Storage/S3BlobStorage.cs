@@ -2,6 +2,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using Amazon.S3;
 using Amazon.S3.Model;
+using GZCTF.Storage.Interface;
 
 namespace GZCTF.Storage;
 
@@ -22,12 +23,25 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         _bucket = bucket;
     }
 
+    public async Task EnsureInitializedAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var request = new HeadBucketRequest { BucketName = _bucket };
+            await _client.HeadBucketAsync(request, cancellationToken);
+        }
+        catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            var request = new PutBucketRequest { BucketName = _bucket };
+            await _client.PutBucketAsync(request, cancellationToken);
+        }
+    }
+
     public async Task<bool> ExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         var key = NormalizeKey(path);
         if (string.IsNullOrEmpty(key))
             return true;
-
         if (await TryGetObjectMetadataAsync(key, cancellationToken) is not null)
             return true;
 

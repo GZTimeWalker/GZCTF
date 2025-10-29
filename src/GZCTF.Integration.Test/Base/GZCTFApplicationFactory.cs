@@ -3,6 +3,7 @@ using GZCTF.Models;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Storage;
+using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;

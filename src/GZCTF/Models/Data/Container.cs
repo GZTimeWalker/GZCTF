@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using GZCTF.Storage;
+using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;

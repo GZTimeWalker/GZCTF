@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.Runtime.Credentials;
 using Amazon.S3;
+using GZCTF.Storage.Interface;
 
 namespace GZCTF.Storage;
 
@@ -16,12 +17,15 @@ public static class StorageProviderFactory
     {
         var (scheme, parameters) = StorageConnectionString.Parse(connectionString);
 
-        return scheme switch
+        IBlobStorage storage = scheme switch
         {
             "disk" => CreateDiskStorage(parameters),
             "aws.s3" or "minio.s3" or "s3" => CreateS3Storage(parameters, scheme),
             _ => throw new NotSupportedException($"Storage provider '{scheme}' is not supported.")
         };
+
+        storage.EnsureInitializedAsync().GetAwaiter().GetResult();
+        return storage;
     }
 
     static LocalBlobStorage CreateDiskStorage(IReadOnlyDictionary<string, string> parameters)

@@ -2,6 +2,7 @@ using System.Formats.Tar;
 using System.IO.Compression;
 using System.Web;
 using GZCTF.Storage;
+using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GZCTF.Utils;

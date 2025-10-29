@@ -3,6 +3,7 @@ using System.Net.Mime;
 using GZCTF.Middlewares;
 using GZCTF.Repositories.Interface;
 using GZCTF.Storage;
+using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Localization;

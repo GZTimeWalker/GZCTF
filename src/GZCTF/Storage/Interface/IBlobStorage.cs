@@ -1,10 +1,15 @@
-namespace GZCTF.Storage;
+namespace GZCTF.Storage.Interface;
 
 /// <summary>
 /// Abstraction for blob/object storage backends used by the application.
 /// </summary>
 public interface IBlobStorage
 {
+    /// <summary>
+    /// Ensures that the storage backend is properly initialized.
+    /// </summary>
+    Task EnsureInitializedAsync(CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Determines whether an object exists at the specified path.
     /// </summary>
