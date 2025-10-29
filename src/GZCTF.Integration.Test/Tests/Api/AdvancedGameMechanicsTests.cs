@@ -185,7 +185,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, $"DivDel Team 2 {user2Name}");
 
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Division Delete Game");
-        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
+        await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
             "Division Challenge", "flag{division}");
 
         using var adminClient = factory.CreateClient();
@@ -220,8 +220,6 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         await client1.PostAsJsonAsync($"/api/Game/{game.Id}",
             new GameJoinModel { TeamId = team1.Id, DivisionId = divisionA!.Id, InviteCode = "DIVA" });
 
-        await Task.Delay(100);
-
         // Team 2 joins Division B
         using var client2 = factory.CreateClient();
         await client2.PostAsJsonAsync("/api/Account/LogIn",
@@ -251,18 +249,27 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         deleteResponse.EnsureSuccessStatusCode();
 
         // Wait for scoreboard update
-        await Task.Delay(200);
+        await Task.Delay(100);
 
         // Check scoreboard - Division B teams should be removed or updated
         var scoreboard2Response = await client1.GetAsync($"/api/Game/{game.Id}/Scoreboard");
         scoreboard2Response.EnsureSuccessStatusCode();
         var scoreboard2 = await scoreboard2Response.Content.ReadFromJsonAsync<JsonElement>();
         Assert.True(scoreboard2.TryGetProperty("items", out var items2));
-
-        // Verify the scoreboard structure is still valid
+        Assert.Equal(JsonValueKind.Array, items2.ValueKind);
         var itemsArray2 = items2.EnumerateArray().ToArray();
-        // After division deletion, teams in that division may be removed from participation
-        // The exact behavior depends on implementation
+
+        // Team 1 should still be present
+        hasTeam1 = itemsArray2.Any(item =>
+            item.TryGetProperty("id", out var id) && id.GetInt32() == team1.Id);
+        Assert.True(hasTeam1, "Team 1 should still be on scoreboard");
+
+        // Team 2 should be present without division
+        var team2Item = itemsArray2.FirstOrDefault(item =>
+            item.TryGetProperty("id", out var id) && id.GetInt32() == team2.Id);
+        Assert.Equal(JsonValueKind.Object, team2Item.ValueKind);
+        if (team2Item.TryGetProperty("divisionId", out var divisionProp))
+            Assert.Equal(JsonValueKind.Null, divisionProp.ValueKind);
     }
 
     /// <summary>
