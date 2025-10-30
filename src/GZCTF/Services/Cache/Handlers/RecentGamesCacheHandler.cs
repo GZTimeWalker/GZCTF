@@ -1,3 +1,4 @@
+using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using MemoryPack;
 
@@ -14,7 +15,8 @@ public class RecentGamesCacheHandler : ICacheRequestHandler
         try
         {
             var games = await gameRepository.GenRecentGames(token);
-            return MemoryPackSerializer.Serialize(games);
+            var data = new DataWithModifiedTime<BasicGameInfoModel[]>(games, DateTimeOffset.UtcNow);
+            return MemoryPackSerializer.Serialize(data);
         }
         catch (Exception e)
         {

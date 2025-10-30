@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading.Channels;
 using GZCTF.Services.Cache.Handlers;
 using MemoryPack;
 using Microsoft.Extensions.Caching.Distributed;
@@ -39,7 +40,7 @@ public class CacheHelper(
             return value;
 
         var bytes = await distributedCache.GetAsync(key, token);
-        if (TryDeserialize(bytes, ref value) && value is not null)
+        if (TryDeserialize(bytes, ref value))
             memoryCache.Set(key, value, CommonMemoryCacheOptions);
 
         return value;
@@ -94,13 +95,13 @@ public class CacheHelper(
 
         // most of the time, the cache is already been set
         if (TryDeserialize(value, ref result))
-            return result!;
+            return result;
 
         // wait if the cache is updating
         value = await WaitLockAsync(key, token);
 
         if (TryDeserialize(value, ref result))
-            return result!;
+            return result;
 
         var lockKey = CacheKey.UpdateLock(key);
         await SetLockAsync(lockKey, token);
@@ -131,14 +132,16 @@ public class CacheHelper(
         return result;
     }
 
-    static bool TryDeserialize<TResult>(byte[]? value, ref TResult? result)
+    static bool TryDeserialize<TResult>(byte[]? value, [NotNullWhen(true)] ref TResult? result)
     {
         if (value is null)
             return false;
 
         try
         {
-            result = MemoryPackSerializer.Deserialize<TResult>(value);
+            if (MemoryPackSerializer.Deserialize<TResult>(value) is { } deserialized)
+                result = deserialized;
+
             return result is not null;
         }
         catch

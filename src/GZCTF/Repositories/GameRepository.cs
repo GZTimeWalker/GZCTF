@@ -136,6 +136,7 @@ public class GameRepository(
         // 3. upcoming games: by start time, ascending
         // 4. ended games: by end time, descending
         Context.Games
+            .AsNoTracking()
             .Where(g => !g.Hidden)
             .OrderBy(g =>
                 g.EndTimeUtc <= DateTimeOffset.UtcNow
@@ -407,7 +408,8 @@ public class GameRepository(
                                 CheckDivisionPermission(division, GamePermission.GetScore, snapshot.ChallengeId);
 
             var affectDynamicScore = withinWindow &&
-                                     CheckDivisionPermission(division, GamePermission.AffectDynamicScore, snapshot.ChallengeId);
+                                     CheckDivisionPermission(division, GamePermission.AffectDynamicScore,
+                                         snapshot.ChallengeId);
 
             if (affectDynamicScore)
                 challengeAcceptedCounts[snapshot.ChallengeId] =
