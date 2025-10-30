@@ -99,34 +99,34 @@ public class TransferChallengeTests(ITestOutputHelper output)
         Assert.Equal("exploit", transfer.Container.FileName);
     }
 
-    static readonly TransferChallenge TransferChallenge = new ()
+    static readonly TransferChallenge TransferChallenge = new()
+    {
+        Id = 3,
+        Title = "Crypto Challenge",
+        Content = "Decrypt this",
+        Category = "Crypto",
+        Type = "StaticAttachment",
+        Enabled = true,
+        Scoring = new ScoringSection
         {
-            Id = 3,
-            Title = "Crypto Challenge",
-            Content = "Decrypt this",
-            Category = "Crypto",
-            Type = "StaticAttachment",
-            Enabled = true,
-            Scoring = new ScoringSection
-            {
-                Original = 800,
-                MinRate = 0.3,
-                Difficulty = 4.0
-            },
-            Limits = new LimitsSection
-            {
-                Submission = 10,
-                Deadline = DateTimeOffset.UtcNow.AddDays(5)
-            },
-            Flags = new FlagsSection
-            {
-                Template = null,
-                DisableBloodBonus = true,
-                EnableTrafficCapture = false,
-                Static = [new() { Value = "flag{crypto_master}" }]
-            },
-            Hints = ["RSA", "Small e"]
-        };
+            Original = 800,
+            MinRate = 0.3,
+            Difficulty = 4.0
+        },
+        Limits = new LimitsSection
+        {
+            Submission = 10,
+            Deadline = DateTimeOffset.UtcNow.AddDays(5)
+        },
+        Flags = new FlagsSection
+        {
+            Template = null,
+            DisableBloodBonus = true,
+            EnableTrafficCapture = false,
+            Static = [new() { Value = "flag{crypto_master}" }]
+        },
+        Hints = ["RSA", "Small e"]
+    };
 
     [Fact]
     public void ToChallenge_ConvertTransfer_Success()
@@ -169,7 +169,7 @@ public class TransferChallengeTests(ITestOutputHelper output)
         {
             deserialized = TransferHelper.FromToml<TransferChallenge>(toml);
         }
-        catch (CsTomlSerializeException ex) when(ex.ParseExceptions is not null)
+        catch (CsTomlSerializeException ex) when (ex.ParseExceptions is not null)
         {
             foreach (var exception in ex.ParseExceptions)
             {

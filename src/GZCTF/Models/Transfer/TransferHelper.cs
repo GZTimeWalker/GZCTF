@@ -119,7 +119,7 @@ public static class TransferHelper
                 ChallengeCount = challengeCount,
                 TotalFlags = totalFlags,
                 TotalFiles = totalFiles,
-                TotalSize = totalSize,
+                TotalFileSize = totalSize,
                 DivisionCount = divisionCount
             },
             Checksum = new ChecksumSection { Algorithm = "SHA256" }

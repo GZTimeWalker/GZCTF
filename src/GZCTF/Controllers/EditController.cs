@@ -8,6 +8,7 @@ using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container.Manager;
+using GZCTF.Services.Transfer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -36,6 +37,7 @@ public class EditController(
     IGameRepository gameRepository,
     IContainerManager containerService,
     IBlobRepository blobService,
+    GameExportService exportService,
     IDivisionRepository divisionRepository,
     IStringLocalizer<Program> localizer) : Controller
 {
@@ -935,4 +937,76 @@ public class EditController(
 
         return Ok(await challengeRepository.RemoveFlag(challenge, fId, token));
     }
+
+
+    /// <summary>
+    /// Export game package
+    /// </summary>
+    /// <remarks>
+    /// Export game with all challenges, divisions, and attachments as a ZIP file; requires Admin permission
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully exported game package</response>
+    /// <response code="400">Invalid operation</response>
+    /// <response code="404">Game not found</response>
+    /// <response code="500">Internal server error during export</response>
+    [HttpPost("Games/{id:int}/Export")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ExportGame([FromRoute] int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
+
+        try
+        {
+            var exportPath = await exportService.ExportGameAsync(id, token);
+
+            if (exportPath is null)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
+
+            var fileName = $"{game.Title}-export-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.zip";
+            var workDir = Path.GetDirectoryName(exportPath);
+
+            // Open file stream that will be disposed after download completes
+            var fileStream = new FileStream(
+                exportPath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.None,
+                bufferSize: 4096,
+                FileOptions.DeleteOnClose | FileOptions.SequentialScan | FileOptions.Asynchronous);
+
+            // Schedule cleanup of work directory after stream is disposed
+            HttpContext.Response.OnCompleted(async () =>
+            {
+                try
+                {
+                    // Give a small delay to ensure file handle is released
+                    await Task.Delay(TimeSpan.FromMilliseconds(100), token);
+
+                    if (workDir is not null && Directory.Exists(workDir))
+                        Directory.Delete(workDir, recursive: true);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Failed to clean up export directory at {Path}", workDir);
+                }
+            });
+
+            return File(fileStream, "application/zip", fileName, enableRangeProcessing: true);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to export game {GameId}", id);
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Error_InternalServerError)],
+                StatusCodes.Status500InternalServerError);
+        }
+    }
+
 }

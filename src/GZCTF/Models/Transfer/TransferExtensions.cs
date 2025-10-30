@@ -22,7 +22,8 @@ public static class TransferExtensions
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
             StartTime = game.StartTimeUtc,
-            EndTime = game.EndTimeUtc
+            EndTime = game.EndTimeUtc,
+            Divisions = game.Divisions?.Select(d => d.ToTransfer()).ToList() ?? []
         };
 
         // Writeup configuration

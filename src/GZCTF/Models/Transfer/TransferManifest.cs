@@ -99,7 +99,7 @@ public partial class StatisticsSection
     /// Total size in bytes
     /// </summary>
     [TomlValueOnSerialized]
-    public long TotalSize { get; set; }
+    public long TotalFileSize { get; set; }
 }
 
 [TomlSerializedObject(TomlNamingConvention.SnakeCase)]

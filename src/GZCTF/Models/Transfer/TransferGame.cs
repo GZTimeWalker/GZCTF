@@ -91,6 +91,12 @@ public partial class TransferGame
     /// </summary>
     [TomlValueOnSerialized(NullHandling = TomlNullHandling.Ignore)]
     public string? PosterHash { get; set; }
+
+    /// <summary>
+    /// Game divisions
+    /// </summary>
+    [TomlValueOnSerialized]
+    public List<TransferDivision> Divisions { get; set; } = [];
 }
 
 
