@@ -9,6 +9,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 {
     const string Empty = "<empty>";
     const string Split = " / ";
+    const string Ignore = "-";
 
     readonly string[] _commonScoreboardHeader =
     [
@@ -117,7 +118,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var row = sheet.CreateRow(0);
         var colIndex = 0;
         var challIds = new List<int>();
-        var withOrg = scoreboard.Divisions.Count > 0;
+        var withDiv = scoreboard.Divisions.Count > 0;
 
         foreach (var col in _commonScoreboardHeader)
         {
@@ -125,7 +126,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             cell.SetCellValue(col);
             cell.CellStyle = style;
 
-            if (!withOrg || colIndex != 2)
+            if (!withDiv || colIndex != 2)
                 continue;
 
             cell = row.CreateCell(colIndex++);
@@ -154,12 +155,21 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         {
             var colIndex = 0;
             var row = sheet.CreateRow(rowIndex);
-            row.CreateCell(colIndex++).SetCellValue(item.Rank);
+
+            // rank starts from 1, 0 means unranked
+            if (item.Rank == 0)
+                row.CreateCell(colIndex++).SetCellValue(Ignore);
+            else
+                row.CreateCell(colIndex++).SetCellValue(item.Rank);
+
             row.CreateCell(colIndex++).SetCellValue(item.Name);
 
-            if (withDiv && item.DivisionId is { } id && scoreboard.Divisions.TryGetValue(id, out var division))
+            if (withDiv)
             {
-                row.CreateCell(colIndex++).SetCellValue(division.Name);
+                if (item.DivisionId is { } id && scoreboard.Divisions.TryGetValue(id, out var division))
+                    row.CreateCell(colIndex++).SetCellValue(division.Name);
+                else
+                    row.CreateCell(colIndex++).SetCellValue(Ignore);
             }
 
             row.CreateCell(colIndex++).SetCellValue(TakeIfNotEmpty(item.TeamInfo?.Captain?.UserName));
