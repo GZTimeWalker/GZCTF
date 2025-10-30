@@ -31,6 +31,8 @@
         <PackageReference Include="Aigamo.ResXGenerator"/>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore"/>
         <PackageReference Include="Cronos"/>
+        <PackageReference Include="CsToml"/>
+        <PackageReference Include="CsToml.Generator"/>
         <PackageReference Include="AWSSDK.S3"/>
         <PackageReference Include="Docker.DotNet.Enhanced"/>
         <PackageReference Include="Docker.DotNet.Enhanced.BasicAuth"/>
