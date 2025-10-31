@@ -54,15 +54,15 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
             };
 
             // Write manifest
-            var manifestPath = Path.Combine(workDir, "manifest.toml");
-            var manifestToml = TransferHelper.ToToml(manifest);
-            await File.WriteAllTextAsync(manifestPath, manifestToml, ct);
+            var manifestPath = Path.Combine(workDir, "manifest.json");
+            var manifestContent = TransferHelper.ToJson(manifest);
+            await File.WriteAllTextAsync(manifestPath, manifestContent, ct);
 
             // Create ZIP package
             var zipPath = Path.Combine(Path.GetTempPath(),
                 $"game-{gameId}-export-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.zip");
-            await CreateZipPackageAsync(workDir, zipPath, ct);
 
+            ZipFile.CreateFromDirectory(workDir, zipPath);
             return zipPath;
         }
         finally
@@ -99,9 +99,9 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         List<TransferChallenge> transferChallenges,
         CancellationToken ct)
     {
-        // Write game.toml
-        var gamePath = Path.Combine(workDir, "game.toml");
-        var gameToml = TransferHelper.ToToml(transferGame);
+        // Write game.json
+        var gamePath = Path.Combine(workDir, "game.json");
+        var gameToml = TransferHelper.ToJson(transferGame);
         await File.WriteAllTextAsync(gamePath, gameToml, ct);
 
         // Create challenges directory and write challenge files
@@ -109,8 +109,8 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         Directory.CreateDirectory(challengesDir);
         foreach (var challenge in transferChallenges)
         {
-            var challengePath = Path.Combine(challengesDir, $"challenge-{challenge.Id}.toml");
-            var challengeToml = TransferHelper.ToToml(challenge);
+            var challengePath = Path.Combine(challengesDir, $"challenge-{challenge.Id}.json");
+            var challengeToml = TransferHelper.ToJson(challenge);
             await File.WriteAllTextAsync(challengePath, challengeToml, ct);
         }
     }
@@ -199,41 +199,40 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         var totalFlags = transferChallenges.Sum(c =>
             (c.Flags.Template is not null ? 1 : 0) + (c.Flags.Static?.Count ?? 0));
 
-        // Count total files and calculate total size with hash verification
-        var totalFiles = 0;
-        long totalSize = 0;
-
-        if (Directory.Exists(filesDir))
-        {
-            var files = Directory.GetFiles(filesDir);
-            totalFiles = files.Length;
-
-            foreach (var file in files)
-            {
-                var fileInfo = new FileInfo(file);
-                totalSize += fileInfo.Length;
-
-                // Verify file integrity using streaming hash computation
-                var expectedHash = Path.GetFileName(file);
-                var computedHash = await ComputeFileHashAsync(file, ct);
-
-                if (!computedHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new InvalidOperationException(
-                        $"File integrity check failed for '{expectedHash}': " +
-                        $"computed hash '{computedHash}' does not match filename");
-                }
-            }
-        }
-
-        return new StatisticsSection
+        var statistics = new StatisticsSection
         {
             ChallengeCount = transferChallenges.Count,
             DivisionCount = transferGame.Divisions.Count,
             TotalFlags = totalFlags,
-            TotalFiles = totalFiles,
-            TotalFileSize = totalSize
+            TotalFiles = 0,
+            TotalFileSize = 0
         };
+
+        if (!Directory.Exists(filesDir))
+            return statistics;
+
+        // Count total files and calculate total size with hash verification
+        var files = Directory.GetFiles(filesDir);
+        statistics.TotalFiles = files.Length;
+
+        foreach (var file in files)
+        {
+            var fileInfo = new FileInfo(file);
+            statistics.TotalFileSize += fileInfo.Length;
+
+            // Verify file integrity using streaming hash computation
+            var expectedHash = Path.GetFileName(file);
+            var computedHash = await ComputeFileHashAsync(file, ct);
+
+            if (!computedHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    $"File integrity check failed for '{expectedHash}': " +
+                    $"computed hash '{computedHash}' does not match filename");
+            }
+        }
+
+        return statistics;
     }
 
     /// <summary>
@@ -247,10 +246,4 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         var hash = await hasher.ComputeHashAsync(file, ct);
         return Convert.ToHexStringLower(hash);
     }
-
-    /// <summary>
-    /// Create ZIP package from the working directory
-    /// </summary>
-    private static Task CreateZipPackageAsync(string sourceDir, string zipPath, CancellationToken ct) =>
-        Task.Run(() => ZipFile.CreateFromDirectory(sourceDir, zipPath), ct);
 }

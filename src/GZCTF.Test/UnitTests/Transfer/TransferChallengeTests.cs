@@ -1,14 +1,12 @@
 using System;
-using CsToml.Error;
 using GZCTF.Models.Data;
 using GZCTF.Models.Transfer;
 using GZCTF.Utils;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Test.UnitTests.Transfer;
 
-public class TransferChallengeTests(ITestOutputHelper output)
+public class TransferChallengeTests
 {
     [Fact]
     public void ToTransfer_StaticChallenge_Success()
@@ -149,33 +147,13 @@ public class TransferChallengeTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void ToToml_SerializeObject_Success()
+    public void ToJson_SerializeObject_Success()
     {
-        // Act
-        var toml = TransferHelper.ToToml(TransferChallenge);
-
-        // Assert
-        Assert.NotNull(toml);
-        Assert.Contains("title = \"Crypto Challenge\"", toml);
-        Assert.Contains("category = \"Crypto\"", toml);
-        Assert.Contains("original = 800", toml);
-        Assert.Contains("flag{crypto_master}", toml);
-
-        output.WriteLine(toml);
+        // Arrange
+        var json = TransferHelper.ToJson(TransferChallenge);
 
         // Act
-        TransferChallenge? deserialized = null;
-        try
-        {
-            deserialized = TransferHelper.FromToml<TransferChallenge>(toml);
-        }
-        catch (CsTomlSerializeException ex) when (ex.ParseExceptions is not null)
-        {
-            foreach (var exception in ex.ParseExceptions)
-            {
-                output.WriteLine(exception.Message);
-            }
-        }
+        var deserialized = TransferHelper.FromJson<TransferChallenge>(json);
 
         // Assert
         Assert.NotNull(deserialized);

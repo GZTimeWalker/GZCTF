@@ -19,7 +19,6 @@
         <PackageReference Include="xunit.runner.console" />
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="coverlet.msbuild" />
-        <PackageReference Include="CsToml" />
     </ItemGroup>
 
     <ItemGroup>

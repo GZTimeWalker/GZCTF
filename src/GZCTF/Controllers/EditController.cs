@@ -971,7 +971,6 @@ public class EditController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
 
             var fileName = $"{game.Title}-export-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.zip";
-            var workDir = Path.GetDirectoryName(exportPath);
 
             // Open file stream that will be disposed after download completes
             var fileStream = new FileStream(
@@ -981,24 +980,7 @@ public class EditController(
                 FileShare.None,
                 bufferSize: 4096,
                 FileOptions.DeleteOnClose | FileOptions.SequentialScan | FileOptions.Asynchronous);
-
-            // Schedule cleanup of work directory after stream is disposed
-            HttpContext.Response.OnCompleted(async () =>
-            {
-                try
-                {
-                    // Give a small delay to ensure file handle is released
-                    await Task.Delay(TimeSpan.FromMilliseconds(100), token);
-
-                    if (workDir is not null && Directory.Exists(workDir))
-                        Directory.Delete(workDir, recursive: true);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogWarning(ex, "Failed to clean up export directory at {Path}", workDir);
-                }
-            });
-
+            
             return File(fileStream, "application/zip", fileName, enableRangeProcessing: true);
         }
         catch (Exception ex)

@@ -11,8 +11,6 @@
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0-beta.1" />
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageVersion Include="Cronos" Version="0.11.1" />
-    <PackageVersion Include="CsToml" Version="1.7.5" />
-    <PackageVersion Include="CsToml.Generator" Version="1.7.5" />
     <PackageVersion Include="Docker.DotNet.Enhanced" Version="3.129.0" />
     <PackageVersion Include="Docker.DotNet.Enhanced.BasicAuth" Version="3.129.0" />
     <PackageVersion Include="KubernetesClient" Version="18.0.5" />

@@ -137,15 +137,20 @@ public static class TransferExtensions
             Type = attachment.Type.ToString()
         };
 
-        if (attachment.Type == FileType.Local && attachment.LocalFile != null)
+        switch (attachment.Type)
         {
-            transfer.Hash = attachment.LocalFile.Hash;
-            transfer.FileName = attachment.LocalFile.Name;
-            transfer.FileSize = attachment.LocalFile.FileSize;
-        }
-        else if (attachment.Type == FileType.Remote)
-        {
-            transfer.RemoteUrl = attachment.RemoteUrl;
+            case FileType.Local when attachment.LocalFile != null:
+                transfer.Hash = attachment.LocalFile.Hash;
+                transfer.FileName = attachment.LocalFile.Name;
+                transfer.FileSize = attachment.LocalFile.FileSize;
+                break;
+            case FileType.Remote:
+                transfer.RemoteUrl = attachment.RemoteUrl;
+                break;
+            case FileType.None:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(attachment.Type));
         }
 
         return transfer;
@@ -313,28 +318,22 @@ public static class TransferExtensions
     /// </summary>
     public static List<string> PermissionsToStrings(GamePermission permissions)
     {
-        // Special cases
-        if (permissions == GamePermission.All)
-            return ["All"];
-
-        if (permissions == 0)
-            return ["None"];
-
-        // Extract individual flags
-        var flags = new List<string>();
-        foreach (GamePermission value in Enum.GetValues<GamePermission>())
+        switch (permissions)
         {
-            // Skip special values
-            if (value == 0 || value == GamePermission.All)
-                continue;
-
-            if (permissions.HasFlag(value))
-            {
-                flags.Add(value.ToString());
-            }
+            // Special cases
+            case GamePermission.All:
+                return ["All"];
+            case 0:
+                return ["None"];
         }
 
-        return flags;
+        // Extract individual flags
+        var result = from value in Enum.GetValues<GamePermission>()
+            where value is not (0 or GamePermission.All)
+            where permissions.HasFlag(value)
+            select value.ToString();
+            
+        return result.ToList();
     }
 
     /// <summary>
@@ -357,9 +356,7 @@ public static class TransferExtensions
         foreach (var str in permissionStrings)
         {
             if (Enum.TryParse<GamePermission>(str, out var value))
-            {
                 result |= value;
-            }
         }
 
         return result;
