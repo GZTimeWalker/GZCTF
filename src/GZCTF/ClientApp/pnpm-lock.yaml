@@ -73,8 +73,8 @@ importers:
         specifier: ^3.14.0
         version: 3.14.0
       '@xdsec/wsrx':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.5.5
+        version: 0.5.5
       axios:
         specifier: ^1.13.1
         version: 1.13.1
@@ -1014,8 +1014,8 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  '@xdsec/wsrx@0.5.0':
-    resolution: {integrity: sha512-HzVSS+t8JF8/OICi65RDJjzSRXatSox5YWSvIfLadKfznpN7a/G/L1OTHZoV8fGwjNtoBADpW0rvYoewBw1laA==}
+  '@xdsec/wsrx@0.5.5':
+    resolution: {integrity: sha512-agQ13POWJNSjK4Co/YumDRrM+WUFlXIcckZcKho3cEKOSI8liA8O2jHJuc1FVFT54+yoFBFBGq56swP+2tdOXA==}
     engines: {node: '>=18'}
 
   abort-controller@3.0.0:
@@ -3318,7 +3318,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@xdsec/wsrx@0.5.0':
+  '@xdsec/wsrx@0.5.5':
     dependencies:
       ky: 1.13.0
       nanoid: 5.1.6
