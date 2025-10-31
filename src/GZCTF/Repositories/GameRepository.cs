@@ -401,13 +401,23 @@ public class GameRepository(
                 continue;
 
             var division = scoreboardItem.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
-            var withinWindow = snapshot.SubmitTimeUtc >= game.StartTimeUtc &&
-                               snapshot.SubmitTimeUtc < game.EndTimeUtc;
 
-            var scoreEligible = withinWindow &&
+            // Check if submission is within game time window
+            var withinGameWindow = snapshot.SubmitTimeUtc >= game.StartTimeUtc &&
+                                   snapshot.SubmitTimeUtc < game.EndTimeUtc;
+
+            // Check if submission is within challenge deadline (if deadline is set)
+            var challengeDeadline = challenges[snapshot.ChallengeId].DeadlineUtc;
+            var withinDeadline = !challengeDeadline.HasValue ||
+                                 snapshot.SubmitTimeUtc <= challengeDeadline.Value;
+
+            // Submission is only eligible for scoring if within both game window and deadline
+            var withinValidSubmissionWindow = withinGameWindow && withinDeadline;
+
+            var scoreEligible = withinValidSubmissionWindow &&
                                 CheckDivisionPermission(division, GamePermission.GetScore, snapshot.ChallengeId);
 
-            var affectDynamicScore = withinWindow &&
+            var affectDynamicScore = withinValidSubmissionWindow &&
                                      CheckDivisionPermission(division, GamePermission.AffectDynamicScore,
                                          snapshot.ChallengeId);
 
@@ -415,7 +425,7 @@ public class GameRepository(
                 challengeAcceptedCounts[snapshot.ChallengeId] =
                     challengeAcceptedCounts.GetValueOrDefault(snapshot.ChallengeId) + 1;
 
-            var bloodEligible = withinWindow &&
+            var bloodEligible = withinValidSubmissionWindow &&
                                 CheckDivisionPermission(division, GamePermission.GetBlood, snapshot.ChallengeId);
 
             solves.Add(new ScoreboardSolve(

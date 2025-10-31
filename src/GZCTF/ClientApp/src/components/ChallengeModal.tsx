@@ -82,6 +82,8 @@ export interface ChallengeModalProps extends ModalProps {
   solved?: boolean
   disabled?: boolean
   gameTitle?: string
+  gameEnded?: boolean
+  practiceMode?: boolean
   flag: string
   setFlag: (value: string | React.ChangeEvent<any> | null | undefined) => void
   onCreate: () => void
@@ -98,6 +100,8 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     solved,
     disabled,
     gameTitle,
+    gameEnded,
+    practiceMode,
     flag,
     setFlag,
     onCreate,
@@ -249,7 +253,9 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       ? t('challenge.content.attempts.placeholder')
       : flag
 
-  const inputDisabled = disabled || solved || isLimitReached || isDeadlinePassed
+  // Allow submission if deadline not passed OR (game ended AND practice mode enabled)
+  const canSubmitDespiteDeadline = !isDeadlinePassed || (gameEnded && practiceMode)
+  const inputDisabled = disabled || solved || isLimitReached || !canSubmitDespiteDeadline
 
   const footer = (
     <Stack gap="xs" className={classes.footer}>
@@ -265,7 +271,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          if (!solved && !isDeadlinePassed) {
+          if (!solved && canSubmitDespiteDeadline) {
             onSubmitFlag()
           }
         }}

@@ -161,7 +161,7 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
             </Group>
             <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
               <Box w="10em">
-                {hasDivisions && (
+                {hasDivisions && participation.status !== ParticipationStatus.Rejected && (
                   <Group gap={0} wrap="nowrap">
                     <Text fz="sm" fw="bold" truncate>
                       {divisionName ?? t('admin.content.games.review.participation.no_division')}
@@ -274,6 +274,10 @@ const GameTeamReview: FC = () => {
 
           if (model.divisionId !== undefined) {
             next.divisionId = model.divisionId
+          }
+
+          if (model.status === ParticipationStatus.Rejected) {
+            next.divisionId = null
           }
 
           return next

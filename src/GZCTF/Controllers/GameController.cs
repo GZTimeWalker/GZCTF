@@ -177,14 +177,6 @@ public class GameController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_Ended)], ErrorCodes.GameEnded));
 
-        Division? div = null;
-        if (model.DivisionId is { } divId)
-        {
-            div = await divisionRepository.GetDivision(id, divId, token);
-            if (div is null)
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
-        }
-
         var user = await userManager.GetUserAsync(User);
         var team = await teamRepository.GetTeamById(model.TeamId, token);
 
@@ -195,51 +187,72 @@ public class GameController(
         if (team.Members.All(u => u.Id != user!.Id))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotMemberOfTeam)]));
 
-        // If already joined (not rejected)
+        // =============== Validate division and permissions ===============
+
+        Division? div = null;
+        if (model.DivisionId is { } divId)
+        {
+            div = await divisionRepository.GetDivision(id, divId, token);
+            if (div is null)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+
+            // Division must allow joining
+            if (!div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+        }
+
+        // =============== Validate invitation code ===============
+
+        // Determine which invite code to check:
+        // - If joining a division with an invite code, use division's invite code
+        // - Otherwise, use game's invite code (if any)
+        var requiredInviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
+            ? div.InviteCode
+            : !string.IsNullOrEmpty(game.InviteCode)
+                ? game.InviteCode
+                : null;
+
+        if (requiredInviteCode is not null && requiredInviteCode != model.InviteCode)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
+
+        // =============== Check and handle participation state ===============
+
+        // Get existing participation for this team in this game
+        var part = await participationRepository.GetParticipation(team, game, token);
+
+        // Check if user is already in this game through a different team (exclude rejected participations)
         if (await participationRepository.CheckRepeatParticipation(user!, game, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InOtherTeam)]));
 
-        // Remove all existing participations
+        // Always clean up rejected user participations in this game
         await participationRepository.RemoveUserParticipations(user!, game, token);
 
-        // Try to get participation object
-        var part = await participationRepository.GetParticipation(team, game, token);
-
-        // If not joined yet, check division permission
-        if (part is null && div is not null && !div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
-
-        // If the division is set, check if it matches
-        if (part is not null && part.DivisionId != model.DivisionId)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
-
-        // now the div is the target division, check invite code
-        var inviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
-            ? div.InviteCode
-            : string.IsNullOrEmpty(game.InviteCode)
-                ? null
-                : game.InviteCode;
-
-        if (inviteCode is not null && inviteCode != model.InviteCode)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));
-
-        // If the team is not in the game, create a new participation object
         if (part is null)
         {
-            // Create new participation object, do not update team-game-user triple tuple
+            // Create new participation
             part = new() { Game = game, Team = team, Division = div, Token = gameRepository.GetToken(game, team) };
-
             participationRepository.Add(part);
         }
+        else if (part.Status == ParticipationStatus.Rejected)
+        {
+            // Allow changing division when re-joining after rejection
+            part.Division = div;
+            part.Status = ParticipationStatus.Pending;
+        }
+        else if (part.DivisionId != model.DivisionId)
+        {
+            // If trying to change division, reject
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
+        }
+
+        // =============== Verify team member count limit ===============
 
         if (game.TeamMemberCountLimit > 0 && part.Members.Count >= game.TeamMemberCountLimit)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_TeamMemberLimitExceeded)]));
 
-        // Add current user to the team
-        part.Members.Add(new(user!, game, team));
+        // =============== All checks passed, add user to the team ===============
 
-        if (part.Status == ParticipationStatus.Rejected)
-            part.Status = ParticipationStatus.Pending;
+        part.Members.Add(new(user!, game, team));
 
         await participationRepository.SaveAsync(token);
 
@@ -970,7 +983,9 @@ public class GameController(
                 return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
                     StatusCodes.Status404NotFound));
 
-            if (instance.Challenge.DeadlineUtc is { } deadline && submitTime > deadline)
+            // Check if submission exceeds challenge deadline (only reject in non-practice mode)
+            var hasExceededDeadline = instance.Challenge.DeadlineUtc is { } deadline && submitTime > deadline;
+            if (hasExceededDeadline && !context.Game!.PracticeMode)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Challenge_DeadlinePassed)]));
 
             var permission =

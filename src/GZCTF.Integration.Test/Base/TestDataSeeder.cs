@@ -12,6 +12,130 @@ namespace GZCTF.Integration.Test.Base;
 
 public static class TestDataSeeder
 {
+    // Shared game instances for test reuse
+    private static int _sharedBasicGameId;
+    private static int _sharedInviteGameId;
+    private static int _sharedPracticeModeGameId;
+    private static int _sharedWithReviewGameId;
+
+    private static readonly SemaphoreSlim _basicGameLock = new(1, 1);
+    private static readonly SemaphoreSlim _inviteGameLock = new(1, 1);
+    private static readonly SemaphoreSlim _practiceModeGameLock = new(1, 1);
+    private static readonly SemaphoreSlim _withReviewGameLock = new(1, 1);
+
+    /// <summary>
+    /// Get or create a shared basic game (no special configuration)
+    /// Suitable for: basic join, permission tests, multi-user scenarios
+    /// </summary>
+    public static async Task<int> GetOrCreateBasicGameAsync(IServiceProvider services)
+    {
+        if (_sharedBasicGameId > 0)
+            return _sharedBasicGameId;
+
+        await _basicGameLock.WaitAsync();
+        try
+        {
+            if (_sharedBasicGameId > 0)
+                return _sharedBasicGameId;
+
+            var game = await CreateGameAsync(services, "Shared Basic Game");
+            _sharedBasicGameId = game.Id;
+            return _sharedBasicGameId;
+        }
+        finally
+        {
+            _basicGameLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Get or create a shared game with invite code (InviteCode = "SHARED_INVITE_2025")
+    /// Suitable for: invite code validation tests
+    /// </summary>
+    public static async Task<int> GetOrCreateInviteGameAsync(IServiceProvider services)
+    {
+        if (_sharedInviteGameId > 0)
+            return _sharedInviteGameId;
+
+        await _inviteGameLock.WaitAsync();
+        try
+        {
+            if (_sharedInviteGameId > 0)
+                return _sharedInviteGameId;
+
+            var game = await CreateGameAsync(services, "Shared Invite Game");
+
+            // Set game invite code
+            using var scope = services.CreateScope();
+            var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+            var gameEntity = await gameRepo.GetGameById(game.Id, default);
+            if (gameEntity != null)
+            {
+                gameEntity.InviteCode = "SHARED_INVITE_2025";
+                await gameRepo.SaveAsync(default);
+            }
+
+            _sharedInviteGameId = game.Id;
+            return _sharedInviteGameId;
+        }
+        finally
+        {
+            _inviteGameLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Get or create a shared practice mode game
+    /// Suitable for: practice mode tests, deadline-related tests
+    /// </summary>
+    public static async Task<int> GetOrCreatePracticeModeGameAsync(IServiceProvider services)
+    {
+        if (_sharedPracticeModeGameId > 0)
+            return _sharedPracticeModeGameId;
+
+        await _practiceModeGameLock.WaitAsync();
+        try
+        {
+            if (_sharedPracticeModeGameId > 0)
+                return _sharedPracticeModeGameId;
+
+            var game = await CreateGameAsync(services, "Shared Practice Mode Game",
+                practiceMode: true);
+            _sharedPracticeModeGameId = game.Id;
+            return _sharedPracticeModeGameId;
+        }
+        finally
+        {
+            _practiceModeGameLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Get or create a shared game with review requirement (AcceptWithoutReview = false)
+    /// Suitable for: participation status tests, review workflow tests
+    /// </summary>
+    public static async Task<int> GetOrCreateWithReviewGameAsync(IServiceProvider services)
+    {
+        if (_sharedWithReviewGameId > 0)
+            return _sharedWithReviewGameId;
+
+        await _withReviewGameLock.WaitAsync();
+        try
+        {
+            if (_sharedWithReviewGameId > 0)
+                return _sharedWithReviewGameId;
+
+            var game = await CreateGameAsync(services, "Shared With Review Game",
+                acceptWithoutReview: false);
+            _sharedWithReviewGameId = game.Id;
+            return _sharedWithReviewGameId;
+        }
+        finally
+        {
+            _withReviewGameLock.Release();
+        }
+    }
+
     public static async Task<SeededUser> CreateUserAsync(IServiceProvider services, string userName,
         string password, string? email = null, Role role = Role.User, CancellationToken token = default)
     {
@@ -86,7 +210,7 @@ public static class TestDataSeeder
 
     public static async Task<SeededGame> CreateGameAsync(IServiceProvider services, string title,
         DateTimeOffset? start = null, DateTimeOffset? end = null, bool acceptWithoutReview = true,
-        CancellationToken token = default)
+        bool practiceMode = false, CancellationToken token = default)
     {
         using var scope = services.CreateScope();
         var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
@@ -98,7 +222,7 @@ public static class TestDataSeeder
             Summary = "Test game summary",
             Content = "Test game content",
             Hidden = false,
-            PracticeMode = false,
+            PracticeMode = practiceMode,
             AcceptWithoutReview = acceptWithoutReview,
             WriteupRequired = false,
             TeamMemberCountLimit = 0,

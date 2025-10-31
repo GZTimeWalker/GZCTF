@@ -54,7 +54,7 @@ public class ParticipationRepository(
 
     public Task<JoinedTeam[]> GetJoinedTeams(Game game, UserInfo user, CancellationToken token = default) =>
         Context.Participations
-            .Where(p => p.Game == game && p.Team.Members.Any(m => m == user))
+            .Where(p => p.Game == game && p.DivisionId != null && p.Team.Members.Any(m => m == user))
             .Select(p => new JoinedTeam { TeamId = p.TeamId, DivisionId = p.DivisionId })
             .ToArrayAsync(token);
 
@@ -86,12 +86,18 @@ public class ParticipationRepository(
 
         part.Status = status;
 
-        if (status == ParticipationStatus.Accepted)
+        switch (status)
         {
-            // lock team when accepted
-            part.Team.Locked = true;
-
-            await EnsureInstances(part, part.Game, token);
+            case ParticipationStatus.Accepted:
+                // lock team when accepted
+                part.Team.Locked = true;
+                await EnsureInstances(part, part.Game, token);
+                break;
+            case ParticipationStatus.Rejected:
+                // clear division when rejected
+                part.Division = null;
+                part.DivisionId = null;
+                break;
         }
 
         await SaveAsync(token);

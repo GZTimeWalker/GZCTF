@@ -280,7 +280,7 @@ public class GameInstanceRepository(
 
             var challenge = await Context.GameChallenges
                 .AsNoTracking()
-                .Select(c => new { c.Id, c.Type, c.DisableBloodBonus })
+                .Select(c => new { c.Id, c.Type, c.DisableBloodBonus, c.DeadlineUtc })
                 .SingleAsync(c => c.Id == submission.ChallengeId, token);
 
             if (instance.FlagContext is null && challenge.Type.IsStatic())
@@ -337,10 +337,16 @@ public class GameInstanceRepository(
                 .Select(g => new { g.StartTimeUtc, g.EndTimeUtc })
                 .SingleAsync(token);
 
-            var withinWindow = updateSub.SubmitTimeUtc >= time.StartTimeUtc &&
-                               updateSub.SubmitTimeUtc < time.EndTimeUtc;
+            // Check if submission is within game time window
+            var withinGameWindow = updateSub.SubmitTimeUtc >= time.StartTimeUtc &&
+                                   updateSub.SubmitTimeUtc < time.EndTimeUtc;
 
-            var hasBloodPermission = withinWindow && !challenge.DisableBloodBonus &&
+            // Check if submission is within challenge deadline (if deadline is set)
+            var withinDeadline = !challenge.DeadlineUtc.HasValue ||
+                                 updateSub.SubmitTimeUtc <= challenge.DeadlineUtc.Value;
+
+            // Blood bonus is only awarded if submission is within both game window and deadline
+            var hasBloodPermission = withinGameWindow && withinDeadline && !challenge.DisableBloodBonus &&
                                      HasPermission(participation.Division, GamePermission.GetBlood,
                                          submission.ChallengeId);
 

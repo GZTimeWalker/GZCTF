@@ -155,14 +155,18 @@ const GameDetail: FC = () => {
     }
   }
 
+  // Allow join if game is not finished OR practice mode is enabled
+  const isGameOpenForJoin = !finished || game?.practiceMode
+
   const canSubmit =
     (status === ParticipationStatus.Unsubmitted || status === ParticipationStatus.Rejected) &&
-    !finished &&
+    isGameOpenForJoin &&
     user &&
     teams &&
     teams.length > 0
 
-  const teamRequire = user && status === ParticipationStatus.Unsubmitted && !finished && teams && teams.length === 0
+  const teamRequire =
+    user && status === ParticipationStatus.Unsubmitted && isGameOpenForJoin && teams && teams.length === 0
 
   const onJoin = () =>
     modals.openConfirmModal({
@@ -198,7 +202,11 @@ const GameDetail: FC = () => {
   const ControlButtons = (
     <>
       <Button disabled={!canSubmit} onClick={onJoin}>
-        {finished ? t('game.button.finished') : !user ? t('game.button.login_required') : GameActionMap.get(status)}
+        {!isGameOpenForJoin
+          ? t('game.button.finished')
+          : !user
+            ? t('game.button.login_required')
+            : GameActionMap.get(status)}
       </Button>
       {started && (
         <Button component={Link} to={`/games/${numId}/scoreboard`}>

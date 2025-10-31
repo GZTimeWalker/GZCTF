@@ -49,7 +49,8 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
     }
 
     public Task<Team?> GetTeamById(int id, CancellationToken token = default) =>
-        Context.Teams.Include(e => e.Members).FirstOrDefaultAsync(t => t.Id == id, token);
+        Context.Teams.Include(e => e.Members)
+            .FirstOrDefaultAsync(t => t.Id == id, token);
 
     public Task<Team[]> GetTeams(int count = 100, int skip = 0, CancellationToken token = default) =>
         Context.Teams.Include(t => t.Members).OrderBy(t => t.Id)
