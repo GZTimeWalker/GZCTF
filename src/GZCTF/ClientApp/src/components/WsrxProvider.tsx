@@ -79,6 +79,12 @@ const getWsrxConfig = (options: CustomWsrxOptions) => {
     name: options.name ?? DefaultWsrxOptions.name,
     api: options.api ?? DefaultWsrxOptions.api,
     features: [WsrxFeature.Basic, WsrxFeature.Pingfall],
+    settings: {
+      pingfall: {
+        status: [400, 404],
+        drop_unknown: false,
+      }
+    }
   }
 
   return config
