@@ -465,7 +465,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 Content = "Challenge with changing score",
                 Category = ChallengeCategory.Misc,
                 Type = ChallengeType.StaticAttachment,
-                Hints = new List<string>(),
+                Hints = [],
                 IsEnabled = true,
                 SubmissionLimit = 0,
                 OriginalScore = 100, // Initial score
@@ -711,6 +711,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
             {
                 entry = insEntry.GetString() ?? string.Empty;
             }
+
             break;
         }
 
@@ -740,7 +741,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         for (int attempt = 0; attempt < 10; attempt++)
         {
             await Task.Delay(500);
-            var statusResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challengeId}/Status/{submissionId}");
+            var statusResponse =
+                await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challengeId}/Status/{submissionId}");
             if (!statusResponse.IsSuccessStatusCode)
                 continue;
 
@@ -752,13 +754,28 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
 
         Assert.Equal(AnswerResult.Accepted, status);
 
-        // Wait for a short while to avoid 429
-        await Task.Delay(12 * 1000);
+        // Update LastContainerOperation in database to bypass 10-second rate limit
+        using (var scope = factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var instance = await context.GameInstances
+                .Include(i => i.Participation)
+                .FirstOrDefaultAsync(
+                    i => i.ChallengeId == challengeId &&
+                         i.ParticipationId == participationId);
+
+            if (instance != null)
+            {
+                instance.LastContainerOperation = DateTimeOffset.UtcNow.AddSeconds(-15);
+                await context.SaveChangesAsync();
+                output.WriteLine("✅ Updated LastContainerOperation to bypass rate limit");
+            }
+        }
 
         // 7. Destroy the container
         var destroyResponse = await client.DeleteAsync($"/api/Game/{game.Id}/Container/{challengeId}");
         destroyResponse.EnsureSuccessStatusCode();
 
-        output.WriteLine($"✅ Container destroyed successfully");
+        output.WriteLine("✅ Container destroyed successfully");
     }
 }

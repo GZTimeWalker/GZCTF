@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models.Data;

@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
-using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
@@ -51,7 +50,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         // Verify participation was created
         using var scope = factory.Services.CreateScope();
         var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
-        var participation = await participationRepo.GetParticipation(user.Id, gameId, default);
+        var participation = await participationRepo.GetParticipation(user.Id, gameId, CancellationToken.None);
         Assert.NotNull(participation);
         Assert.Null(participation.DivisionId);
         Assert.Equal(ParticipationStatus.Accepted, participation.Status);
@@ -138,7 +137,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         // Verify participation
         using var scope = factory.Services.CreateScope();
         var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
-        var participation = await participationRepo.GetParticipation(user.Id, game.Id, default);
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
         Assert.NotNull(participation);
         Assert.Equal(division.Id, participation.DivisionId);
         Assert.Equal(ParticipationStatus.Accepted, participation.Status);
@@ -308,15 +307,15 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         var gameRepo = scope1.ServiceProvider.GetRequiredService<IGameRepository>();
         var teamRepo = scope1.ServiceProvider.GetRequiredService<ITeamRepository>();
 
-        var gameEntity = await gameRepo.GetGameById(game.Id, default);
-        var teamEntity = await teamRepo.GetTeamById(team.Id, default);
+        var gameEntity = await gameRepo.GetGameById(game.Id);
+        var teamEntity = await teamRepo.GetTeamById(team.Id);
         Assert.NotNull(gameEntity);
         Assert.NotNull(teamEntity);
 
-        var participation = await participationRepo.GetParticipation(teamEntity, gameEntity, default);
+        var participation = await participationRepo.GetParticipation(teamEntity, gameEntity);
         Assert.NotNull(participation);
 
-        await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Rejected, default);
+        await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Rejected);
 
         // Act - User rejoins with Division 2
         var join2Response = await userClient.PostAsJsonAsync($"/api/Game/{game.Id}",
@@ -328,7 +327,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         // Verify division changed and status is pending
         using var scope2 = factory.Services.CreateScope();
         var participationRepo2 = scope2.ServiceProvider.GetRequiredService<IParticipationRepository>();
-        var updatedParticipation = await participationRepo2.GetParticipation(user.Id, game.Id, default);
+        var updatedParticipation = await participationRepo2.GetParticipation(user.Id, game.Id);
         Assert.NotNull(updatedParticipation);
         Assert.Equal(division2.Id, updatedParticipation.DivisionId);
         Assert.Equal(ParticipationStatus.Accepted, updatedParticipation.Status);
@@ -393,7 +392,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         // Verify accepted status
         using var scope = factory.Services.CreateScope();
         var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
-        var participation = await participationRepo.GetParticipation(user.Id, game.Id, default);
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
         Assert.NotNull(participation);
         Assert.Equal(ParticipationStatus.Accepted, participation.Status);
 
@@ -555,10 +554,10 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
 
         using var scope0 = factory.Services.CreateScope();
         var gameRepo = scope0.ServiceProvider.GetRequiredService<IGameRepository>();
-        var gameEntity = await gameRepo.GetGameById(game.Id, default);
+        var gameEntity = await gameRepo.GetGameById(game.Id);
         Assert.NotNull(gameEntity);
         gameEntity.TeamMemberCountLimit = 2;
-        await gameRepo.SaveAsync(default);
+        await gameRepo.SaveAsync();
 
         var user1Password = "User1@Pass123";
         var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
@@ -687,7 +686,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         var divisionResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "PriorityDiv",  // Shorter name to fit within max length
+                Name = "PriorityDiv", // Shorter name to fit within max length
                 InviteCode = "DIVCODE",
                 DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
             });
@@ -771,9 +770,10 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         // Verify participation is pending (not auto-accepted)
         using var scope = factory.Services.CreateScope();
         var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
-        var participation = await participationRepo.GetParticipation(user.Id, game.Id, default);
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
         Assert.NotNull(participation);
         Assert.Equal(division.Id, participation.DivisionId);
-        Assert.Equal(ParticipationStatus.Pending, participation.Status); // Should be pending due to division requiring review
+        Assert.Equal(ParticipationStatus.Pending,
+            participation.Status); // Should be pending due to division requiring review
     }
 }

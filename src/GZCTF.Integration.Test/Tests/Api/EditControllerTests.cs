@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Net.Sockets;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
@@ -8,10 +7,7 @@ using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Container.Provider;
 using GZCTF.Utils;
-using k8s;
-using k8s.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -610,5 +606,77 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             $"/api/Edit/Games/{nonExistentGameId}/Challenges/{nonExistentChallengeId}/Attachment",
             new AttachmentCreateModel { AttachmentType = FileType.Local, FileHash = "test-hash" });
         Assert.Equal(HttpStatusCode.NotFound, updateAttachmentResponse.StatusCode);
+    }
+
+    /// <summary>
+    /// Test DeleteGame endpoint - successful deletion
+    /// </summary>
+    [Fact]
+    public async Task DeleteGame_WhenGameExists_ShouldDeleteSuccessfully()
+    {
+        // Setup: Create admin user
+        var adminPassword = "Admin@Delete123";
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        // Create a game to delete with challenges and teams
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game To Delete");
+        var gameId = game.Id;
+
+        // Add challenges
+        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, gameId,
+            "Challenge 1", "flag{delete1}");
+        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, gameId,
+            "Challenge 2", "flag{delete2}");
+
+        // Add teams to verify cascade
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "Pass@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Delete Test Team");
+
+        // Join game
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "Pass@123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{gameId}", new GameJoinModel { TeamId = team.Id });
+
+        // Login as admin and delete the game
+        using var adminClient = factory.CreateClient();
+        var adminLoginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        adminLoginResponse.EnsureSuccessStatusCode();
+
+        // Attempt to delete on non-existent game should return 404
+        var notFoundResponse = await adminClient.DeleteAsync("/api/Edit/Games/99999");
+        Assert.Equal(HttpStatusCode.NotFound, notFoundResponse.StatusCode);
+
+        // Attempt to delete as non-admin should return 403
+        using var normalUserClient = factory.CreateClient();
+        await normalUserClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "Pass@123" });
+        var forbiddenResponse = await normalUserClient.DeleteAsync($"/api/Edit/Games/{gameId}");
+        Assert.Equal(HttpStatusCode.Forbidden, forbiddenResponse.StatusCode);
+
+        // Actual deletion by admin should succeed
+        var deleteResponse = await adminClient.DeleteAsync($"/api/Edit/Games/{gameId}");
+        deleteResponse.EnsureSuccessStatusCode();
+
+        // Verify game and all related data are deleted
+        using var postDeleteScope = factory.Services.CreateScope();
+        var postDeleteDb = postDeleteScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameAfterDelete = await postDeleteDb.Games.FirstOrDefaultAsync(g => g.Id == gameId);
+        Assert.Null(gameAfterDelete);
+
+        // Verify challenges are cascade deleted
+        var challengesAfterDelete = await postDeleteDb.GameChallenges
+            .Where(c => c.Id == challenge1.Id || c.Id == challenge2.Id)
+            .ToListAsync();
+        Assert.Empty(challengesAfterDelete);
+
+        // Verify participations are deleted
+        var participationsAfterDelete = await postDeleteDb.Participations
+            .Where(p => p.GameId == gameId)
+            .ToListAsync();
+        Assert.Empty(participationsAfterDelete);
     }
 }

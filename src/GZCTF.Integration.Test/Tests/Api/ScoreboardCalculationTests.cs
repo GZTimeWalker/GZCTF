@@ -1,5 +1,7 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GZCTF.Integration.Test.Base;
@@ -11,6 +13,7 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Utils;
 using Microsoft.Extensions.DependencyInjection;
+using NPOI.SS.UserModel;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -729,6 +732,303 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             var scoreObserver = GetTeamScore(scoreboard2, teamObserver.team.Id);
             Assert.Equal(0, scoreObserver);
         }
+    }
+
+
+    /// <summary>
+    /// Test ScoreboardSheet download - verify Excel contains team rankings and scores with division permissions
+    /// Tests that teams with RankOverall=false show "-" for rank while teams with RankOverall=true show numeric rank
+    /// </summary>
+    [Fact]
+    public async Task ScoreboardSheet_ShouldContainTeamRankingsAndScores()
+    {
+        // Setup: Create monitor user
+        var monitorPassword = "Monitor@Sheet123";
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), monitorPassword, role: Role.Monitor);
+
+        // Create game with specific scoring setup
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game For Excel Export");
+        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
+            "Challenge 1", "flag{one}", originalScore: 1000);
+        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
+            "Challenge 2", "flag{two}", originalScore: 500);
+
+        // Create two divisions:
+        // 1. Regular: Full permissions with RankOverall
+        var divRegular = await CreateDivision(game.Id,
+            new DivisionCreateModel
+            {
+                Name = "Regular Division",
+                InviteCode = "REGULAR",
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
+            });
+
+        // 2. Special: No RankOverall permission
+        var divSpecial = await CreateDivision(game.Id,
+            new DivisionCreateModel
+            {
+                Name = "Special Division",
+                InviteCode = "SPECIAL",
+                DefaultPermissions =
+                    GamePermission.All & ~GamePermission.RankOverall & ~GamePermission.RequireReview
+            });
+
+        // Create three teams:
+        // Team 1 & 3 in Regular division, Team 2 in Special division
+        var team1 = await CreateTeamInDivision("Excel Team 1", game.Id, divRegular.Id, "REGULAR");
+        var team2 = await CreateTeamInDivision("Excel Team 2", game.Id, divSpecial.Id, "SPECIAL");
+        var team3 = await CreateTeamInDivision("Excel Team 3", game.Id, divRegular.Id, "REGULAR");
+
+        // Solve challenges:
+        // Team 1: Solves both challenges (highest score = 1500)
+        await SubmitFlag(team1.client, game.Id, challenge1.Id, "flag{one}");
+        await SubmitFlag(team1.client, game.Id, challenge2.Id, "flag{two}");
+        await Task.Delay(100);
+
+        // Team 2: Solves only challenge 1 (score = 1000, but no overall rank)
+        await SubmitFlag(team2.client, game.Id, challenge1.Id, "flag{one}");
+        await Task.Delay(100);
+
+        // Team 3: Solves nothing (score = 0)
+        // (just join the game)
+
+        // Flush scoreboard cache to ensure latest data
+        await FlushScoreboardCache(game.Id);
+
+        // Download scoreboard as monitor
+        using var monitorClient = factory.CreateClient();
+        await monitorClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = monitorUser.UserName, Password = monitorPassword });
+
+        // Test: Non-existent game returns 404
+        var notFoundResponse = await monitorClient.GetAsync("/api/Game/99999/ScoreboardSheet");
+        Assert.Equal(HttpStatusCode.NotFound, notFoundResponse.StatusCode);
+
+        // Test: Non-started game returns BadRequest
+        var futureStart = DateTimeOffset.UtcNow.AddHours(1);
+        var futureGame = await TestDataSeeder.CreateGameAsync(factory.Services, "Future Game",
+            start: futureStart);
+        var futureResponse = await monitorClient.GetAsync($"/api/Game/{futureGame.Id}/ScoreboardSheet");
+        Assert.Equal(HttpStatusCode.BadRequest, futureResponse.StatusCode);
+
+        // Test: Non-monitor user returns Forbidden
+        var normalUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "Pass@123", role: Role.User);
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = normalUser.UserName, Password = "Pass@123" });
+        var forbiddenResponse = await userClient.GetAsync($"/api/Game/{game.Id}/ScoreboardSheet");
+        Assert.Equal(HttpStatusCode.Forbidden, forbiddenResponse.StatusCode);
+
+        // Main test: Download and verify Excel content
+        var scoreboardResponse = await monitorClient.GetAsync($"/api/Game/{game.Id}/ScoreboardSheet");
+        scoreboardResponse.EnsureSuccessStatusCode();
+
+        // Verify Excel file format
+        Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            scoreboardResponse.Content.Headers.ContentType?.MediaType);
+
+        // Parse and validate Excel structure
+        await using var excelStream = await scoreboardResponse.Content.ReadAsStreamAsync();
+        Assert.True(excelStream.Length > 0, "Excel file should not be empty");
+
+        using var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook(excelStream);
+        var sheet = workbook.GetSheetAt(0);
+
+        // Excel structure (from ExcelHelper):
+        // Column 0: Rank (or "-" for unranked)
+        // Column 1: Team Name
+        // Column 2: Division (if divisions exist)
+        // Column 3+: Challenge scores
+
+        Assert.True(sheet.PhysicalNumberOfRows >= 3,
+            $"Excel should contain at least 1 header row + 3 teams, got {sheet.PhysicalNumberOfRows} rows");
+
+        // Extract team data from Excel rows
+        var teamDataMap = new Dictionary<string, (int rank, int totalScore, int[] challengeScores)>();
+
+        // Row 0 is header, find challenge column indices
+        var headerRow = sheet.GetRow(0);
+
+        // Find the index where challenge columns start and where total score is
+        // Based on ExcelHelper: Rank, Team, [Division], Captain, Members, RealName, Email, StdNumber, Phone, SolvedCount, ScoringTime, TotalScore, [Challenges...]
+        int totalScoreColumnIndex = -1;
+        int challengeStartColumnIndex = -1;
+
+        // Count header cells to find structure
+        for (int i = 0; i < headerRow.LastCellNum; i++)
+        {
+            var headerCell = headerRow.GetCell(i);
+            var headerValue = GetCellStringValue(headerCell);
+
+            // The header contains "Total Score" or similar
+            if (headerValue.Contains("Score") && i > 5) // Likely the summary score column
+                totalScoreColumnIndex = i;
+        }
+
+        // If we found total score, challenges start after it
+        if (totalScoreColumnIndex >= 0)
+            challengeStartColumnIndex = totalScoreColumnIndex + 1;
+
+        // Process data rows (starting from row 1)
+        for (int row = 1; row < sheet.PhysicalNumberOfRows; row++)
+        {
+            var dataRow = sheet.GetRow(row);
+            if (dataRow == null)
+                continue;
+
+            // Column 0: Rank (or "-" for unranked)
+            var rankCell = dataRow.GetCell(0);
+            string rankValue = GetCellStringValue(rankCell);
+
+            // Column 1: Team Name
+            var teamNameCell = dataRow.GetCell(1);
+            string teamName = GetCellStringValue(teamNameCell);
+
+            // Get total score from the expected column (usually around column 10-12)
+            int totalScore = 0;
+            if (totalScoreColumnIndex >= 0 && totalScoreColumnIndex < dataRow.LastCellNum)
+            {
+                var scoreCell = dataRow.GetCell(totalScoreColumnIndex);
+                if (scoreCell?.CellType == CellType.Numeric)
+                    totalScore = (int)scoreCell.NumericCellValue;
+            }
+
+            // Get challenge-specific scores
+            var challengeScores = new List<int>();
+            if (challengeStartColumnIndex >= 0)
+            {
+                for (int col = challengeStartColumnIndex; col < dataRow.LastCellNum; col++)
+                {
+                    var cell = dataRow.GetCell(col);
+                    if (cell is { CellType: CellType.Numeric })
+                        challengeScores.Add((int)cell.NumericCellValue);
+                }
+            }
+
+            teamDataMap[teamName] = (ParseRank(rankValue), totalScore, challengeScores.ToArray());
+        }
+
+        // Verify team data
+        output.WriteLine("=== Excel Data Verification ===");
+
+        // Debug: Print all extracted data
+        foreach (var kvp in teamDataMap)
+            output.WriteLine(
+                $"  {kvp.Key}: Rank={kvp.Value.rank}, TotalScore={kvp.Value.totalScore}, Challenges=[{string.Join(",", kvp.Value.challengeScores)}]");
+
+        // Debug: Print raw Excel content for inspection
+        output.WriteLine("\n=== Raw Excel Row Data ===");
+        for (int row = 0; row < Math.Min(5, sheet.PhysicalNumberOfRows); row++)
+        {
+            var dataRow = sheet.GetRow(row);
+            if (dataRow == null)
+                continue;
+
+            var rowData = new List<string>();
+            for (int col = 0; col < dataRow.LastCellNum; col++)
+            {
+                rowData.Add($"[{col}]={GetCellStringValue(dataRow.GetCell(col))}");
+            }
+
+            output.WriteLine($"Row {row}: {string.Join(", ", rowData)}");
+        }
+
+        // Team 1: Should have numeric rank (1), in Regular division (RankOverall=true)
+        Assert.True(teamDataMap.TryGetValue("Excel Team 1", out var team1Data), "Team 1 should be in Excel");
+        output.WriteLine(
+            $"\nTeam 1 Verification: Rank={team1Data.rank}, TotalScore={team1Data.totalScore}, Challenges=[{string.Join(",", team1Data.challengeScores)}]");
+
+        // Verify Team 1 has a numeric rank (not 0, which means "-")
+        Assert.NotEqual(0, team1Data.rank);
+        Assert.Equal(1, team1Data.rank);
+        output.WriteLine($"  ✓ Team 1 has numeric rank {team1Data.rank} (RankOverall permission enabled)");
+
+        // Verify Team 1 solved both challenges
+        Assert.True(team1Data.challengeScores.Length >= 2, "Team 1 should have at least 2 challenge scores");
+        Assert.True(team1Data.challengeScores[0] > 0, "Team 1 should have score for Challenge 1");
+        Assert.True(team1Data.challengeScores[1] > 0, "Team 1 should have score for Challenge 2");
+        output.WriteLine(
+            $"  ✓ Team 1 solved both challenges with scores {team1Data.challengeScores[0]} and {team1Data.challengeScores[1]}");
+
+        // Total score should be sum of challenge scores
+        int team1ExpectedMin = team1Data.challengeScores[0] + team1Data.challengeScores[1];
+        Assert.True(team1Data.totalScore == team1ExpectedMin,
+            $"Team 1 total score {team1Data.totalScore} should be at least sum of challenges {team1ExpectedMin}");
+        output.WriteLine($"  ✓ Team 1 total score {team1Data.totalScore} >= {team1ExpectedMin}");
+
+        // Team 2: Should have rank 0 (displayed as "-"), in Special division (RankOverall=false)
+        Assert.True(teamDataMap.TryGetValue("Excel Team 2", out var team2Data), "Team 2 should be in Excel");
+        output.WriteLine(
+            $"\nTeam 2 Verification: Rank={team2Data.rank}, TotalScore={team2Data.totalScore}, Challenges=[{string.Join(",", team2Data.challengeScores)}]");
+
+        // Verify Team 2 has NO overall rank (rank=0 means "-")
+        Assert.Equal(0, team2Data.rank);
+        output.WriteLine("  ✓ Team 2 has no overall rank (displayed as \"-\") due to RankOverall permission disabled");
+
+        // Verify Team 2 solved only Challenge 1
+        Assert.True(team2Data.challengeScores.Length >= 2, "Team 2 should have scores for both challenge columns");
+        Assert.True(team2Data.challengeScores[0] > 0, "Team 2 should have score for Challenge 1");
+        Assert.Equal(0, team2Data.challengeScores[1]);
+        output.WriteLine(
+            $"  ✓ Team 2 solved only Challenge 1 with score {team2Data.challengeScores[0]}, Challenge 2 score is 0");
+
+        // Verify Team 2's total score matches Challenge 1 score (no overall rank but still has division-specific scoring)
+        Assert.True(team2Data.totalScore >= team2Data.challengeScores[0],
+            $"Team 2 total score {team2Data.totalScore} should include Challenge 1 score {team2Data.challengeScores[0]}");
+        output.WriteLine($"  ✓ Team 2 total score {team2Data.totalScore} includes Challenge 1 score");
+
+        // Team 3: Should have numeric rank (2), in Regular division (RankOverall=true), no challenges solved
+        Assert.True(teamDataMap.TryGetValue("Excel Team 3", out var team3Data), "Team 3 should be in Excel");
+        output.WriteLine(
+            $"\nTeam 3 Verification: Rank={team3Data.rank}, TotalScore={team3Data.totalScore}, Challenges=[{string.Join(",", team3Data.challengeScores)}]");
+
+        // Verify Team 3 has numeric rank (ranked 2nd in Regular division)
+        Assert.NotEqual(0, team3Data.rank);
+        Assert.Equal(2, team3Data.rank);
+        output.WriteLine($"  ✓ Team 3 has numeric rank {team3Data.rank} (RankOverall permission enabled)");
+
+        // Verify Team 3 solved no challenges
+        Assert.True(team3Data.challengeScores.Length >= 2, "Team 3 should have 2 challenge columns");
+        Assert.Equal(0, team3Data.challengeScores[0]);
+        Assert.Equal(0, team3Data.challengeScores[1]);
+        output.WriteLine("  ✓ Team 3 solved no challenges (all scores are 0)");
+
+        // Verify Team 3's total score is 0
+        Assert.Equal(0, team3Data.totalScore);
+        output.WriteLine("  ✓ Team 3 total score is 0");
+    }
+
+    /// <summary>
+    /// Helper: Extract string value from cell, handling different cell types
+    /// </summary>
+    private string GetCellStringValue(ICell? cell)
+    {
+        if (cell == null)
+            return string.Empty;
+
+        return cell.CellType switch
+        {
+            CellType.String => cell.StringCellValue ?? "",
+            CellType.Numeric => cell.NumericCellValue.ToString(CultureInfo.InvariantCulture),
+            CellType.Boolean => cell.BooleanCellValue.ToString(),
+            _ => ""
+        };
+    }
+
+    /// <summary>
+    /// Helper: Parse rank value from Excel (numeric or "-" for unranked)
+    /// </summary>
+    private int ParseRank(string rankValue)
+    {
+        if (rankValue == "-" || rankValue == "<empty>")
+            return 0; // Unranked
+
+        if (int.TryParse(rankValue, out var rank))
+            return rank;
+
+        return 0;
     }
 
     #region Helper Methods

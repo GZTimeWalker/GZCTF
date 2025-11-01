@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using GZCTF.Integration.Test.Base;
@@ -8,6 +9,7 @@ using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -804,5 +806,513 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
             .FirstOrDefaultAsync(p => p.TeamId == newTeam.Id && p.GameId == game.Id);
         Assert.NotNull(newPart);
         Assert.Equal(ParticipationStatus.Accepted, newPart.Status);
+    }
+
+    /// <summary>
+    /// Helper method to create a valid PDF in memory
+    /// </summary>
+    private IFormFile CreateMockPdfFile(string fileName = "writeup.pdf")
+    {
+        // Create a minimal PDF structure
+        var pdfContent = CreateMinimalPdfBytes();
+        var stream = new MemoryStream(pdfContent);
+
+        return new FormFile(stream, 0, pdfContent.Length, "file", fileName)
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "application/pdf"
+        };
+    }
+
+    /// <summary>
+    /// Create multipart form content for writeup submission
+    /// </summary>
+    private MultipartFormDataContent CreateWriteupFormContent(string fileName = "writeup.pdf")
+    {
+        var pdfBytes = CreateMinimalPdfBytes();
+        var content = new MultipartFormDataContent();
+        var fileContent = new ByteArrayContent(pdfBytes);
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/pdf");
+        content.Add(fileContent, "file", fileName);
+        return content;
+    }
+
+    /// <summary>
+    /// Create minimal valid PDF bytes for testing
+    /// </summary>
+    private byte[] CreateMinimalPdfBytes()
+    {
+        // Minimal PDF structure that's valid but empty
+        var pdfText = @"%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 44 >>
+stream
+BT
+/F1 12 Tf
+100 700 Td
+(Test Writeup) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000214 00000 n
+0000000302 00000 n
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+390
+%%EOF";
+
+        return System.Text.Encoding.ASCII.GetBytes(pdfText);
+    }
+
+    /// <summary>
+    /// Test Writeup submission - valid PDF upload
+    /// </summary>
+    [Fact]
+    public async Task SubmitWriteup_WhenValidPdfProvided_ShouldSucceed()
+    {
+        // Setup: Create game that requires writeup
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game With Writeup",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(2);
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@Writeup123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Writeup Team");
+
+        // Join game
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@Writeup123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        // Submit writeup
+        using var formContent = CreateWriteupFormContent();
+        var submitResponse = await userClient.PostAsync(
+            $"/api/Game/{game.Id}/Writeup", formContent);
+
+        submitResponse.EnsureSuccessStatusCode();
+
+        // Verify writeup is saved in database
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var participation = await context.Participations
+            .Include(p => p.Writeup)
+            .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+
+        Assert.NotNull(participation);
+        Assert.NotNull(participation.Writeup);
+        Assert.NotNull(participation.Writeup.Hash);
+    }
+
+    /// <summary>
+    /// Test Writeup submission - update existing writeup
+    /// </summary>
+    [Fact]
+    public async Task SubmitWriteup_WhenUpdatingExisting_ShouldReplaceOldWriteup()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game With Updated Writeup",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(2);
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@Update123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Update Team");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@Update123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        // Submit first writeup
+        using var formContent1 = CreateWriteupFormContent("writeup1.pdf");
+        var response1 = await userClient.PostAsync(
+            $"/api/Game/{game.Id}/Writeup", formContent1);
+        response1.EnsureSuccessStatusCode();
+
+        // Get first writeup hash
+        using var scope1 = factory.Services.CreateScope();
+        var context1 = scope1.ServiceProvider.GetRequiredService<AppDbContext>();
+        var participation1 = await context1.Participations
+            .Include(p => p.Writeup)
+            .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+        var firstHash = participation1?.Writeup?.Hash;
+        Assert.NotNull(firstHash);
+
+        // Submit second writeup (replacement)
+        using var formContent2 = CreateWriteupFormContent("writeup2.pdf");
+        var response2 = await userClient.PostAsync(
+            $"/api/Game/{game.Id}/Writeup", formContent2);
+        response2.EnsureSuccessStatusCode();
+
+        // Verify writeup is updated
+        using var scope2 = factory.Services.CreateScope();
+        var context2 = scope2.ServiceProvider.GetRequiredService<AppDbContext>();
+        var participation2 = await context2.Participations
+            .Include(p => p.Writeup)
+            .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+
+        Assert.NotNull(participation2);
+        Assert.NotNull(participation2.Writeup);
+    }
+
+    /// <summary>
+    /// Test Writeup submission - invalid file type
+    /// </summary>
+    [Fact]
+    public async Task SubmitWriteup_WhenNotPdfFile_ShouldReturnBadRequest()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game Writeup Type Check",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(2);
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@TypeCheck123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Type Check Team");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@TypeCheck123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        // Try to submit a non-PDF file
+        var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(new MemoryStream(System.Text.Encoding.UTF8.GetBytes("Not a PDF")));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/plain");
+        content.Add(fileContent, "file", "test.txt");
+
+        var response = await userClient.PostAsync($"/api/Game/{game.Id}/Writeup", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Test Writeup submission - file too large
+    /// </summary>
+    [Fact]
+    public async Task SubmitWriteup_WhenFileTooLarge_ShouldReturnBadRequest()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game Writeup Size Check",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(2);
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@SizeCheck123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Size Check Team");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@SizeCheck123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        // Create a file larger than 20MB
+        var largeContent = new byte[21 * 1024 * 1024];
+        new Random().NextBytes(largeContent);
+        var stream = new MemoryStream(largeContent);
+
+        var form = new MultipartFormDataContent();
+        form.Add(new StreamContent(stream), "file", "large.pdf");
+
+        var response = await userClient.PostAsync($"/api/Game/{game.Id}/Writeup", form);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Test Writeup submission - deadline expired
+    /// </summary>
+    [Fact]
+    public async Task SubmitWriteup_WhenDeadlineExpired_ShouldReturnBadRequest()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game Writeup Deadline Check",
+            start: now.AddHours(-2),
+            end: now.AddHours(-1));
+
+        // Enable writeup requirement with expired deadline
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(-1);
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@DeadlineCheck123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Deadline Check Team");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@DeadlineCheck123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        var pdfFile = CreateMockPdfFile();
+        var response = await userClient.PostAsync(
+            $"/api/Game/{game.Id}/Writeup",
+            new MultipartFormDataContent { { new StreamContent(pdfFile.OpenReadStream()), "file", pdfFile.FileName } });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Test Writeup submission - writeup not required
+    /// </summary>
+    [Fact]
+    public async Task SubmitWriteup_WhenNotRequired_ShouldReturnBadRequest()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game No Writeup Required",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Ensure writeup is NOT required (default)
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = false;
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@NoWriteup123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"No Writeup Team");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@NoWriteup123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        var pdfFile = CreateMockPdfFile();
+        var response = await userClient.PostAsync(
+            $"/api/Game/{game.Id}/Writeup",
+            new MultipartFormDataContent { { new StreamContent(pdfFile.OpenReadStream()), "file", pdfFile.FileName } });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Test Admin listing all Writeup submissions
+    /// </summary>
+    [Fact]
+    public async Task AdminListWriteups_ShouldReturnAllTeamSubmissions()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game Admin Writeups",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(2);
+            await setupDb.SaveChangesAsync();
+        }
+
+        // Create admin user
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "Admin@Writeups123", role: Role.Admin);
+
+        // Create multiple teams and have them submit writeups
+        var submittedCount = 0;
+        var totalTeams = 3;
+        for (int i = 0; i < totalTeams; i++)
+        {
+            var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+                TestDataSeeder.RandomName(), $"User@Team{i}");
+            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Admin Writeup Team {i + 1}");
+
+            using var teamClient = factory.CreateClient();
+            await teamClient.PostAsJsonAsync("/api/Account/LogIn",
+                new LoginModel { UserName = user.UserName, Password = $"User@Team{i}" });
+            await teamClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+            // Only first two teams submit writeups
+            if (i < 2)
+            {
+                using var formContent = CreateWriteupFormContent($"writeup_{i}.pdf");
+                var submitResponse = await teamClient.PostAsync(
+                    $"/api/Game/{game.Id}/Writeup", formContent);
+
+                if (submitResponse.IsSuccessStatusCode)
+                    submittedCount++;
+            }
+        }
+
+        // Admin logs in and retrieves all writeups
+        using var adminClient = factory.CreateClient();
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = admin.UserName, Password = "Admin@Writeups123" });
+
+        // Test: Non-existent game returns 404
+        var notFoundResponse = await adminClient.GetAsync("/api/admin/Writeups/99999");
+        Assert.Equal(HttpStatusCode.NotFound, notFoundResponse.StatusCode);
+
+        // Test: Non-admin user returns Forbidden
+        var normalUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@Normal123", role: Role.User);
+        using var normalClient = factory.CreateClient();
+        await normalClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = normalUser.UserName, Password = "User@Normal123" });
+        var forbiddenResponse = await normalClient.GetAsync($"/api/admin/Writeups/{game.Id}");
+        Assert.Equal(HttpStatusCode.Forbidden, forbiddenResponse.StatusCode);
+
+        // Main test: Admin retrieves all writeups
+        var listResponse = await adminClient.GetAsync($"/api/admin/Writeups/{game.Id}");
+        listResponse.EnsureSuccessStatusCode();
+
+        var writeupsList = await listResponse.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(JsonValueKind.Array, writeupsList.ValueKind);
+
+        // Verify correct number of writeups returned (only submitted ones)
+        var count = writeupsList.GetArrayLength();
+        Assert.Equal(submittedCount, count);
+        Assert.True(count >= 1, "Should have at least one submitted writeup");
+
+        // Verify each writeup has required fields
+        for (int i = 0; i < count; i++)
+        {
+            var writeup = writeupsList[i];
+            Assert.True(writeup.TryGetProperty("id", out _) || writeup.TryGetProperty("Id", out _),
+                "Writeup should contain ID");
+            Assert.True(writeup.TryGetProperty("team", out _) || writeup.TryGetProperty("Team", out _),
+                "Writeup should contain team information");
+            Assert.True(writeup.TryGetProperty("url", out _) || writeup.TryGetProperty("Url", out _),
+                "Writeup should contain file URL");
+        }
+    }
+
+    /// <summary>
+    /// Test Get Writeup information
+    /// </summary>
+    [Fact]
+    public async Task GetWriteup_ShouldReturnWriteupInfo()
+    {
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game Get Writeup Info",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using var setupScope = factory.Services.CreateScope();
+        var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+        if (gameEntity != null)
+        {
+            gameEntity.WriteupRequired = true;
+            gameEntity.WriteupDeadline = now.AddHours(2);
+            await setupDb.SaveChangesAsync();
+        }
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), "User@GetWriteup123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Get Writeup Team");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = "User@GetWriteup123" });
+        await userClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+        // Get writeup info before submission
+        var getResponse1 = await userClient.GetAsync($"/api/Game/{game.Id}/Writeup");
+        getResponse1.EnsureSuccessStatusCode();
+        var info1 = await getResponse1.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(JsonValueKind.Object, info1.ValueKind);
+
+        // Before submission, 'submitted' should be false
+        Assert.True(info1.TryGetProperty("submitted", out var submitted1), "Should have 'submitted' field");
+        Assert.False(submitted1.GetBoolean(), "Before submission, 'submitted' should be false");
+
+        // Submit writeup
+        using var formContent = CreateWriteupFormContent();
+        var submitResponse = await userClient.PostAsync(
+            $"/api/Game/{game.Id}/Writeup", formContent);
+        submitResponse.EnsureSuccessStatusCode();
+
+        // Get writeup info after submission
+        var getResponse2 = await userClient.GetAsync($"/api/Game/{game.Id}/Writeup");
+        getResponse2.EnsureSuccessStatusCode();
+        var info2 = await getResponse2.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(JsonValueKind.Object, info2.ValueKind);
+
+        // After submission, 'submitted' should be true and 'name' should be set
+        Assert.True(info2.TryGetProperty("submitted", out var submitted2), "Should have 'submitted' field");
+        Assert.True(submitted2.GetBoolean(), "After submission, 'submitted' should be true");
+        Assert.True(info2.TryGetProperty("name", out var name), "Should have 'name' field after submission");
+        var fileName = name.GetString();
+        Assert.NotNull(fileName);
+        Assert.NotEqual("#", fileName);
     }
 }

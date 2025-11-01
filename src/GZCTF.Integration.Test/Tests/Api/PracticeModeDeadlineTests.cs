@@ -138,7 +138,8 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
         await Task.Delay(300);
 
         // Verify submission status
-        var statusResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{submissionId}");
+        var statusResponse =
+            await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{submissionId}");
         statusResponse.EnsureSuccessStatusCode();
         var status = await statusResponse.Content.ReadFromJsonAsync<AnswerResult>();
         Assert.Equal(AnswerResult.Accepted, status);
@@ -162,7 +163,8 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
         var submissionId2 = await submitResponse3.Content.ReadFromJsonAsync<int>();
         await Task.Delay(300);
 
-        var statusResponse2 = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}/Status/{submissionId2}");
+        var statusResponse2 =
+            await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}/Status/{submissionId2}");
         statusResponse2.EnsureSuccessStatusCode();
         var status2 = await statusResponse2.Content.ReadFromJsonAsync<AnswerResult>();
         Assert.Equal(AnswerResult.Accepted, status2);
@@ -226,12 +228,14 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
         await Task.Delay(300);
 
         // Verify both submissions are accepted
-        var status1Response = await client1.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{submissionId1}");
+        var status1Response =
+            await client1.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{submissionId1}");
         status1Response.EnsureSuccessStatusCode();
         var status1 = await status1Response.Content.ReadFromJsonAsync<AnswerResult>();
         Assert.Equal(AnswerResult.Accepted, status1);
 
-        var status2Response = await client2.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{submissionId2}");
+        var status2Response =
+            await client2.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}/Status/{submissionId2}");
         status2Response.EnsureSuccessStatusCode();
         var status2 = await status2Response.Content.ReadFromJsonAsync<AnswerResult>();
         Assert.Equal(AnswerResult.Accepted, status2);
@@ -267,7 +271,8 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
         await Task.Delay(300);
 
         // Verify submission is accepted
-        var status3Response = await client3.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}/Status/{submissionId3}");
+        var status3Response =
+            await client3.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}/Status/{submissionId3}");
         status3Response.EnsureSuccessStatusCode();
         var status3 = await status3Response.Content.ReadFromJsonAsync<AnswerResult>();
         Assert.Equal(AnswerResult.Accepted, status3);
