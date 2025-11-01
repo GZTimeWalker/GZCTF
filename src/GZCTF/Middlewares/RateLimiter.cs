@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Net.Mime;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ namespace GZCTF.Middlewares;
 /// <summary>
 /// The rate limiter middleware
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class RateLimiter
 {
     public enum LimitPolicy

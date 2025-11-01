@@ -1,9 +1,11 @@
-﻿using GZCTF.Hubs.Clients;
+﻿using System.Diagnostics.CodeAnalysis;
+using GZCTF.Hubs.Clients;
 using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 
 namespace GZCTF.Hubs;
 
+[ExcludeFromCodeCoverage]
 public class MonitorHub : Hub<IMonitorClient>
 {
     public override async Task OnConnectedAsync()

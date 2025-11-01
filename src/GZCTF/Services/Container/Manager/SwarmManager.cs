@@ -3,6 +3,7 @@
 // Restricted Component - NOT under AGPLv3.
 // See licenses/LicenseRef-GZCTF-Restricted.txt
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -11,6 +12,7 @@ using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
 namespace GZCTF.Services.Container.Manager;
 
+[ExcludeFromCodeCoverage(Justification = "Docker Swarm container not being used in CI/CD tests")]
 public class SwarmManager : IContainerManager
 {
     readonly DockerClient _client;

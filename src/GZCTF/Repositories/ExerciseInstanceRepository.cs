@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace GZCTF.Repositories;
 
+[ExcludeFromCodeCoverage(Justification = "Exercise feature not yet implemented")]
 public class ExerciseInstanceRepository(
     AppDbContext context,
     CacheHelper cacheHelper,

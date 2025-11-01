@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
+[ExcludeFromCodeCoverage(Justification = "Exercise feature not yet implemented")]
 public class ExerciseChallengeRepository(AppDbContext context, IBlobRepository blobRepository)
     : RepositoryBase(context),
         IExerciseChallengeRepository

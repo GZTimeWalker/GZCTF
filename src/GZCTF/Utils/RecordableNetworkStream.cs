@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using GZCTF.Storage;
@@ -36,6 +37,7 @@ public class RecordableNetworkStreamOptions
 /// <summary>
 /// The network stream that can record the traffic
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Network stream recording requires platform proxy support")]
 public sealed class RecordableNetworkStream : NetworkStream
 {
     static readonly PhysicalAddress DummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
