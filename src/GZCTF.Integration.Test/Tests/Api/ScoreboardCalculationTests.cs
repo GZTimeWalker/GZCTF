@@ -736,8 +736,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
 
     /// <summary>
-    /// Test ScoreboardSheet download - verify Excel contains team rankings and scores with division permissions
-    /// Tests that teams with RankOverall=false show "-" for rank while teams with RankOverall=true show numeric rank
+    /// Test ScoreboardSheet download
     /// </summary>
     [Fact]
     public async Task ScoreboardSheet_ShouldContainTeamRankingsAndScores()
@@ -998,6 +997,48 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         // Verify Team 3's total score is 0
         Assert.Equal(0, team3Data.totalScore);
         output.WriteLine("  ✓ Team 3 total score is 0");
+
+        // Test: Download all submissions
+        output.WriteLine("\n=== Testing Submission Sheet Download ===");
+
+        // Test: Non-existent game returns 404
+        var submissionNotFoundResponse = await monitorClient.GetAsync("/api/Game/99999/SubmissionSheet");
+        Assert.Equal(HttpStatusCode.NotFound, submissionNotFoundResponse.StatusCode);
+        output.WriteLine("  ✓ Non-existent game returns 404");
+
+        // Test: Non-started game returns BadRequest
+        var submissionFutureResponse = await monitorClient.GetAsync($"/api/Game/{futureGame.Id}/SubmissionSheet");
+        Assert.Equal(HttpStatusCode.BadRequest, submissionFutureResponse.StatusCode);
+        output.WriteLine("  ✓ Non-started game returns BadRequest");
+
+        // Test: Non-monitor user returns Forbidden
+        var submissionForbiddenResponse = await userClient.GetAsync($"/api/Game/{game.Id}/SubmissionSheet");
+        Assert.Equal(HttpStatusCode.Forbidden, submissionForbiddenResponse.StatusCode);
+        output.WriteLine("  ✓ Non-monitor user returns Forbidden");
+
+        // Main test: Download and verify submission Excel content
+        var submissionResponse = await monitorClient.GetAsync($"/api/Game/{game.Id}/SubmissionSheet");
+        submissionResponse.EnsureSuccessStatusCode();
+
+        // Verify Excel file format
+        Assert.Equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            submissionResponse.Content.Headers.ContentType?.MediaType);
+        output.WriteLine("  ✓ Submission file has correct content type");
+
+        // Parse and validate Excel structure
+        await using var submissionStream = await submissionResponse.Content.ReadAsStreamAsync();
+        Assert.True(submissionStream.Length > 0, "Submission Excel file should not be empty");
+        output.WriteLine($"  ✓ Submission file size: {submissionStream.Length} bytes");
+
+        using var submissionWorkbook = new NPOI.XSSF.UserModel.XSSFWorkbook(submissionStream);
+        var submissionSheet = submissionWorkbook.GetSheetAt(0);
+
+        // Verify submission sheet has proper row count
+        // Expected: 1 header row + 3 submissions (Team 1: 2, Team 2: 1)
+        int expectedMinRows = 1 + 3; // header + 3 submissions
+        Assert.True(submissionSheet.PhysicalNumberOfRows >= expectedMinRows,
+            $"Submission sheet should contain at least {expectedMinRows} rows (header + submissions), got {submissionSheet.PhysicalNumberOfRows}");
+        output.WriteLine($"  ✓ Submission sheet has {submissionSheet.PhysicalNumberOfRows} rows (expected >= {expectedMinRows})");
     }
 
     /// <summary>

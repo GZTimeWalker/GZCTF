@@ -1,3 +1,4 @@
+using System.Formats.Tar;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -1314,5 +1315,121 @@ startxref
         var fileName = name.GetString();
         Assert.NotNull(fileName);
         Assert.NotEqual("#", fileName);
+    }
+
+    /// <summary>
+    /// Test TarHelper: Admin downloads all writeups as tar.gz file
+    /// </summary>
+    [Fact]
+    public async Task AdminDownloadAllWriteups_ShouldReturnValidTarGzArchive()
+    {
+        using var adminClient = factory.CreateClient();
+
+        // Setup: Create admin user
+        var adminPassword = "Admin@Download123";
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var now = DateTimeOffset.UtcNow;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Writeup Download Test",
+            start: now.AddHours(-1),
+            end: now.AddHours(1));
+
+        // Enable writeup requirement
+        using (var setupScope = factory.Services.CreateScope())
+        {
+            var setupDb = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var gameEntity = await setupDb.Games.FirstOrDefaultAsync(g => g.Id == game.Id);
+            if (gameEntity != null)
+            {
+                gameEntity.WriteupRequired = true;
+                gameEntity.WriteupDeadline = now.AddHours(2);
+                await setupDb.SaveChangesAsync();
+            }
+        }
+
+        // Create multiple teams with writeups
+        var teamWriteupCount = 3;
+
+        for (int i = 0; i < teamWriteupCount; i++)
+        {
+            var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+                TestDataSeeder.RandomName(), $"User@Team{i}");
+            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Writeup Team {i + 1}");
+
+            using var teamClient = factory.CreateClient();
+            await teamClient.PostAsJsonAsync("/api/Account/LogIn",
+                new LoginModel { UserName = user.UserName, Password = $"User@Team{i}" });
+            await teamClient.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
+
+            // Submit writeup (PDF only)
+            using var formContent = CreateWriteupFormContent($"writeup_team_{i + 1}.pdf");
+            var submitResponse = await teamClient.PostAsync(
+                $"/api/Game/{game.Id}/Writeup", formContent);
+            Assert.True(submitResponse.IsSuccessStatusCode, $"Team {i + 1} writeup submission failed");
+        }
+
+        // Admin logs in
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Act: Download all writeups
+        var downloadResponse = await adminClient.GetAsync($"/api/Admin/Writeups/{game.Id}/All");
+
+        // Assert: Response status and headers
+        Assert.Equal(System.Net.HttpStatusCode.OK, downloadResponse.StatusCode);
+        Assert.Equal("application/gzip", downloadResponse.Content.Headers.ContentType?.MediaType);
+
+        var contentDisposition = downloadResponse.Content.Headers.ContentDisposition;
+        Assert.NotNull(contentDisposition);
+        Assert.Contains("attachment", contentDisposition.DispositionType);
+        Assert.NotNull(contentDisposition.FileName);
+        Assert.Contains("Writeups-", contentDisposition.FileName);
+        // Note: filename may be URL encoded, so check for tar.gz pattern
+        Assert.True(contentDisposition.FileName.Contains("tar.gz") || contentDisposition.FileName.Contains("tar%2Egz"),
+            $"Filename should contain tar.gz or tar%2Egz, got: {contentDisposition.FileName}");
+
+        // Assert: Tar archive structure
+        var tarContent = await downloadResponse.Content.ReadAsStreamAsync();
+        var entries = await ExtractTarEntriesFromStream(tarContent);
+
+        Assert.NotEmpty(entries);
+        Assert.Equal(teamWriteupCount, entries.Count);
+
+        // Verify all writeup files are in the archive
+        // Writeup files are force rename to $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf"
+        foreach (var entry in entries)
+        {
+            Assert.EndsWith(".pdf", entry.Name);
+            var fileName = entry.Name.Split('/').Last();
+            Assert.StartsWith($"Writeup-{game.Id}-", fileName);
+        }
+    }
+
+    /// <summary>
+    /// Helper method to extract tar entries from a gzip-compressed tar stream
+    /// </summary>
+    private static async Task<List<TarEntry>> ExtractTarEntriesFromStream(Stream tarStream)
+    {
+        var entries = new List<TarEntry>();
+
+        tarStream.Position = 0;
+        await using var gzip = new System.IO.Compression.GZipStream(tarStream, System.IO.Compression.CompressionMode.Decompress);
+        await using var reader = new TarReader(gzip);
+
+        try
+        {
+            while (await reader.GetNextEntryAsync() is { } entry)
+            {
+                entries.Add(entry);
+            }
+        }
+        catch (EndOfStreamException)
+        {
+            // Empty tar file is valid, just return empty list
+        }
+
+        return entries;
     }
 }
