@@ -47,6 +47,8 @@
       },
       "copy_public_key": "複製公鑰",
       "delete": "刪除比賽",
+      "export": "匯出比賽",
+      "import": "匯入比賽",
       "new": "新建比賽"
     },
     "notices": {
@@ -482,6 +484,14 @@
         "deleted": "分組已刪除",
         "invite_copied": "邀請碼已複製到剪貼板",
         "updated": "分組已更新"
+      },
+      "export": {
+        "exported": "比賽匯出成功",
+        "exporting": "正在匯出比賽..."
+      },
+      "import": {
+        "imported": "比賽匯入成功",
+        "importing": "正在匯入比賽..."
       },
       "info": {
         "deleted": "比賽已刪除",
