@@ -47,6 +47,8 @@
       },
       "copy_public_key": "Öffentlichen Schlüssel kopieren",
       "delete": "Löschen",
+      "export": "Spiel exportieren",
+      "import": "Spiel importieren",
       "new": "Neues Spiel"
     },
     "notices": {
@@ -482,6 +484,14 @@
         "deleted": "Division gelöscht",
         "invite_copied": "Einladungscode in die Zwischenablage kopiert",
         "updated": "Division aktualisiert"
+      },
+      "export": {
+        "exported": "Spiel erfolgreich exportiert",
+        "exporting": "Spiel wird exportiert..."
+      },
+      "import": {
+        "imported": "Spiel erfolgreich importiert",
+        "importing": "Spiel wird importiert..."
       },
       "info": {
         "deleted": "Spiel gelöscht",
