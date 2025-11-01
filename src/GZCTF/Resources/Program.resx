@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>Invalid file</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>File type not supported</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] Team [{0}] submitted the answer [{2}] for challenge [{1}]</value>
   </data>
@@ -481,6 +484,21 @@
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>Failed to delete game, related files may have been corrupted, please try again</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Game "{0}" exported as {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Failed to export game "{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Game imported successfully (ID: {0}) from file {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Failed to import game from file {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Invalid game package format</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Cleaning up {1} team files for game {0}...</value>
