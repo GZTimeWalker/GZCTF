@@ -323,17 +323,15 @@ public class GameImportService(
 
             // Build challenge configs with mapped IDs
             var challengeConfigs = new HashSet<DivisionChallengeConfigModel>();
-            foreach (var config in transferDivision.ChallengeConfig)
+            foreach (var config in transferDivision.ChallengeConfig
+                .Where(cfg => context.ChallengeIdMap.ContainsKey(cfg.ChallengeId)))
             {
-                // Map original challenge ID to new database ID
-                if (context.ChallengeIdMap.TryGetValue(config.ChallengeId, out var newChallengeId))
+                var newChallengeId = context.ChallengeIdMap[config.ChallengeId];
+                challengeConfigs.Add(new DivisionChallengeConfigModel
                 {
-                    challengeConfigs.Add(new DivisionChallengeConfigModel
-                    {
-                        ChallengeId = newChallengeId,
-                        Permissions = TransferExtensions.StringsToPermissions(config.Permissions)
-                    });
-                }
+                    ChallengeId = newChallengeId,
+                    Permissions = TransferExtensions.StringsToPermissions(config.Permissions)
+                });
             }
 
             // Update division with full configuration

@@ -191,9 +191,9 @@ const Submissions: FC = () => {
   const onDownloadSubmissionSheet = () =>
     downloadBlob(
       api.game.gameSubmissionSheet(numId, { format: 'blob' }),
-      `Submission_${numId}_${Date.now()}.xlsx`,
       setDisabled,
-      t
+      t,
+      `Submission_${numId}_${Date.now()}.xlsx`
     )
 
   return (

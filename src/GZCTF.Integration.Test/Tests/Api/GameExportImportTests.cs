@@ -617,18 +617,19 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         Assert.True(transferGame.Writeup.Required);
 
         // Validate individual challenge files
-        var transferChallenges = new List<TransferChallenge>();
-        foreach (var challengeEntry in challengeEntries)
-        {
-            await using var challengeStream = challengeEntry.Open();
-            using var challengeReader = new StreamReader(challengeStream);
-            var challengeJson = await challengeReader.ReadToEndAsync();
-            var transferChallenge = TransferHelper.FromJson<TransferChallenge>(challengeJson);
-            Assert.NotNull(transferChallenge);
-            transferChallenges.Add(transferChallenge);
-        }
+        var transferChallenges = await Task.WhenAll(
+            challengeEntries.Select(async challengeEntry =>
+            {
+                await using var challengeStream = challengeEntry.Open();
+                using var challengeReader = new StreamReader(challengeStream);
+                var challengeJson = await challengeReader.ReadToEndAsync();
+                var transferChallenge = TransferHelper.FromJson<TransferChallenge>(challengeJson);
+                Assert.NotNull(transferChallenge);
+                return transferChallenge;
+            })
+        );
 
-        Assert.True(transferChallenges.Count >= 4);
+        Assert.True(transferChallenges.Length >= 4);
 
         // Validate specific challenge details
         var cryptoChallenge = transferChallenges.FirstOrDefault(c => c.Title == "Crypto Mystery");
@@ -651,7 +652,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         Assert.NotNull(multiStage.Flags.Static);
         Assert.Equal(3, multiStage.Flags.Static.Count); // 3 flags
 
-        output.WriteLine($"Validated {transferChallenges.Count} challenges in exported ZIP");
+        output.WriteLine($"Validated {transferChallenges.Length} challenges in exported ZIP");
     }
 
     /// <summary>

@@ -115,7 +115,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         Directory.CreateDirectory(challengesDir);
         foreach (var challenge in transferChallenges)
         {
-            var challengePath = Path.Combine(challengesDir, $"challenge-{challenge.Id}.json");
+            var challengePath = Path.Combine(challengesDir, $"challenge-{challenge.Id:D}.json");
             var challengeToml = TransferHelper.ToJson(challenge);
             await File.WriteAllTextAsync(challengePath, challengeToml, ct);
         }

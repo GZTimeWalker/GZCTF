@@ -978,7 +978,6 @@ public class EditController(
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.Game_Exported), result.Game.Title, fileName]);
 
-            // Open file stream that will be disposed after download completes
             var fileStream = new FileStream(
                 result.ZipFilePath,
                 FileMode.Open,
@@ -1065,10 +1064,10 @@ public class EditController(
 
             return Ok(gameId);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
             logger.SystemLog(
-                StaticLocalizer[nameof(Resources.Program.Game_ImportInvalidPackage), file.FileName, ex.Message],
+                StaticLocalizer[nameof(Resources.Program.Game_ImportInvalidPackage), file.FileName],
                 TaskStatus.Failed,
                 LogLevel.Warning);
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ImportInvalidPackage)]));
@@ -1079,7 +1078,7 @@ public class EditController(
                 StaticLocalizer[nameof(Resources.Program.Game_ImportFailed), file.FileName],
                 TaskStatus.Failed,
                 LogLevel.Error);
-            logger.LogError(ex, "Failed to import game from file {FileName}", file.FileName);
+            logger.LogError(ex, "Failed to import game from file {FileName}: {ErrorMessage}", file.FileName, ex.Message);
             return RequestResponse.Result(localizer[nameof(Resources.Program.Error_InternalServerError)],
                 StatusCodes.Status500InternalServerError);
         }

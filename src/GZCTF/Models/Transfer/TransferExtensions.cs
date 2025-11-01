@@ -321,12 +321,14 @@ public static class TransferExtensions
             return 0;
 
         // Combine individual flags
+        var validPermissions = permissionStrings
+            .Select(str => Enum.TryParse<GamePermission>(str, out var value) ? value : (GamePermission?)null)
+            .Where(value => value.HasValue)
+            .Select(value => value!.Value);
+
         GamePermission result = 0;
-        foreach (var str in permissionStrings)
-        {
-            if (Enum.TryParse<GamePermission>(str, out var value))
-                result |= value;
-        }
+        foreach (var value in validPermissions)
+            result |= value;
 
         return result;
     }
