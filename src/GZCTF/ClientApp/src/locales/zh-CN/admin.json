@@ -47,6 +47,8 @@
       },
       "copy_public_key": "复制公钥",
       "delete": "删除比赛",
+      "export": "导出比赛",
+      "import": "导入比赛",
       "new": "新建比赛"
     },
     "notices": {
@@ -255,7 +257,7 @@
         "content": "比赛详情",
         "delete": "你确定要删除比赛 {{name}} 吗？",
         "divisions": {
-          "description": "添加参赛分组以开启分组榜单，留空则不分组",
+          "description": "添加参赛分组以开启分组榜单,留空则不分组",
           "label": "参赛可选分组列表"
         },
         "end_date": "结束日期",
@@ -482,6 +484,14 @@
         "deleted": "分组已删除",
         "invite_copied": "邀请码已复制到剪贴板",
         "updated": "分组已更新"
+      },
+      "export": {
+        "exported": "比赛导出成功",
+        "exporting": "正在导出比赛..."
+      },
+      "import": {
+        "imported": "比赛导入成功",
+        "importing": "正在导入比赛..."
       },
       "info": {
         "deleted": "比赛已删除",
