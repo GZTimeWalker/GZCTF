@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>文件非法</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>不支持的文件类型</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[提交正确] 队伍 [{0}] 提交题目 [{1}] 的答案 [{2}]</value>
   </data>
@@ -481,6 +484,21 @@
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>删除比赛失败，相关文件可能已受损，请重新删除</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>比赛 "{0}" 已导出为 {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>导出比赛 "{0}" 失败</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>成功导入比赛（ID：{0}），来源文件 {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>从文件 {0} 导入比赛失败</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>比赛导入包格式无效</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>正在清理比赛 {0} 的 {1} 个队伍相关文件……</value>
