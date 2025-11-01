@@ -500,6 +500,21 @@
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>Gagal menghapus game, file terkait mungkin telah korup, silakan coba lagi</value>
   </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Game "{0}" diekspor sebagai {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Gagal mengekspor game "{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Game berhasil diimpor (ID: {0}) dari file {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Gagal mengimpor game dari file {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Format paket game tidak valid</value>
+  </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Membersihkan file tim {1} untuk game {0}...</value>
   </data>
