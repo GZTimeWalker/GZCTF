@@ -15,10 +15,23 @@ public static class TransferValidator
     /// <exception cref="InvalidOperationException">Thrown when validation fails</exception>
     public static void Validate(object obj, string objectName = "Object")
     {
-        var results = new List<ValidationResult>();
-        var context = new ValidationContext(obj);
+        if (!TryValidate(obj, out var results, validateRecursive: false))
+        {
+            var errors = results.Select(r => r.ErrorMessage).ToList();
+            throw new InvalidOperationException(
+                $"{objectName} validation failed:\n- {string.Join("\n- ", errors)}");
+        }
+    }
 
-        if (!Validator.TryValidateObject(obj, context, results, validateAllProperties: true))
+    /// <summary>
+    /// Validate an object recursively
+    /// </summary>
+    /// <param name="obj">Object to validate</param>
+    /// <param name="objectName">Name of the object for error messages</param>
+    /// <exception cref="InvalidOperationException">Thrown when validation fails</exception>
+    public static void ValidateRecursive(object obj, string objectName = "Object")
+    {
+        if (!TryValidate(obj, out var results, validateRecursive: true))
         {
             var errors = results.Select(r => r.ErrorMessage).ToList();
             throw new InvalidOperationException(
@@ -89,21 +102,5 @@ public static class TransferValidator
         }
 
         return isValid;
-    }
-
-    /// <summary>
-    /// Validate an object recursively and throw if invalid
-    /// </summary>
-    /// <param name="obj">Object to validate</param>
-    /// <param name="objectName">Name of the object for error messages</param>
-    /// <exception cref="InvalidOperationException">Thrown when validation fails</exception>
-    public static void ValidateRecursive(object obj, string objectName = "Object")
-    {
-        if (!TryValidate(obj, out var results, validateRecursive: true))
-        {
-            var errors = results.Select(r => r.ErrorMessage).ToList();
-            throw new InvalidOperationException(
-                $"{objectName} validation failed:\n- {string.Join("\n- ", errors)}");
-        }
     }
 }
