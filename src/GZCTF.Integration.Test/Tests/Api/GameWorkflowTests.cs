@@ -473,13 +473,13 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var itemsArray = items.EnumerateArray().ToArray();
 
         // Verify both teams are present
-        var team1Item = itemsArray.FirstOrDefault(item =>
+        var team1Item = itemsArray.Any(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team1.Id);
-        var team2Item = itemsArray.FirstOrDefault(item =>
+        Assert.True(team1Item);
+        
+        var team2Item = itemsArray.Any(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team2.Id);
-
-        Assert.NotEqual(default, team1Item);
-        Assert.NotEqual(default, team2Item);
+        Assert.True(team2Item);
     }
 
     /// <summary>
@@ -1378,7 +1378,7 @@ startxref
         var downloadResponse = await adminClient.GetAsync($"/api/Admin/Writeups/{game.Id}/All");
 
         // Assert: Response status and headers
-        Assert.Equal(System.Net.HttpStatusCode.OK, downloadResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, downloadResponse.StatusCode);
         Assert.Equal("application/gzip", downloadResponse.Content.Headers.ContentType?.MediaType);
 
         var contentDisposition = downloadResponse.Content.Headers.ContentDisposition;
