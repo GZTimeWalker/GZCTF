@@ -3,6 +3,98 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.7.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.6.2..v1.7.0) - 2025-11-01
+
+### ⛰️ Features
+
+- **(api)** Implement Division Management in Game Controller - ([96dc27](https://github.com/GZTimeWalker/GZCTF/commit/96dc27)) by **GZTime**
+- **(aspire)** auto create bucket - ([8e3450](https://github.com/GZTimeWalker/GZCTF/commit/8e3450)) by **Steven He**
+- **(aspire)** configure minio service discovery and default bucket - ([92c5b3](https://github.com/GZTimeWalker/GZCTF/commit/92c5b3)) by **Steven He**
+- **(aspire)** add minio support - ([de0c11](https://github.com/GZTimeWalker/GZCTF/commit/de0c11)) by **Steven He**
+- **(challenge)** add deadline feature to challenges modal - ([dbbb98](https://github.com/GZTimeWalker/GZCTF/commit/dbbb98)) by **GZTime**
+- **(countdown)** improve timeout handling in Countdown component - ([e19679](https://github.com/GZTimeWalker/GZCTF/commit/e19679)) by **GZTime**
+- **(deadline)** add logic for challenge deadline - ([c13a91](https://github.com/GZTimeWalker/GZCTF/commit/c13a91)) by **GZTime**
+- **(division)** update division logic - ([430b78](https://github.com/GZTimeWalker/GZCTF/commit/430b78)) by **GZTime**
+- **(division)** add challenge configs to division create and edit models - ([52472d](https://github.com/GZTimeWalker/GZCTF/commit/52472d)) by **GZTime**
+- **(division)** update participation model to use divisionId - ([8ad697](https://github.com/GZTimeWalker/GZCTF/commit/8ad697)) by **GZTime**
+- **(docs)** update images in README - ([8e8d9f](https://github.com/GZTimeWalker/GZCTF/commit/8e8d9f)) by **GZTime**
+- **(frontend)** adjust the behavior of components - ([f5ab77](https://github.com/GZTimeWalker/GZCTF/commit/f5ab77)) by **GZTime**
+- **(frontend)** add division management functionality - ([836e49](https://github.com/GZTimeWalker/GZCTF/commit/836e49)) by **GZTime**
+- **(game)** flush scoreboard cache - ([192c9c](https://github.com/GZTimeWalker/GZCTF/commit/192c9c)) by **GZTime**
+- **(game)** add game join check info model and API endpoint - ([3388ce](https://github.com/GZTimeWalker/GZCTF/commit/3388ce)) by **GZTime**
+- **(integration)** enhance logging and initialization for K3s and MinIO containers - ([ec4e1b](https://github.com/GZTimeWalker/GZCTF/commit/ec4e1b)) by **GZTime**
+- **(migrations)** migrate divisions from JSON to new Divisions table - ([c2597c](https://github.com/GZTimeWalker/GZCTF/commit/c2597c)) by **GZTime**
+- **(model)** update model and division card design - ([bc843a](https://github.com/GZTimeWalker/GZCTF/commit/bc843a)) by **GZTime**
+- **(model)** Enhance division permissions and challenge visibility in game logic - ([039c7c](https://github.com/GZTimeWalker/GZCTF/commit/039c7c)) by **GZTime**
+- **(permission)** add RequireReview permission - ([d9a0e5](https://github.com/GZTimeWalker/GZCTF/commit/d9a0e5)) by **GZTime**
+- **(permission)** add AffectDynamicScore - ([7e27ea](https://github.com/GZTimeWalker/GZCTF/commit/7e27ea)) by **GZTime**
+- **(practice)** update practice mode functionality - ([9ee56c](https://github.com/GZTimeWalker/GZCTF/commit/9ee56c)) by **GZTime**
+- **(scoreboard)** replace Input component with ScrollingText for title display - ([cbca52](https://github.com/GZTimeWalker/GZCTF/commit/cbca52)) by **GZTime**
+- **(scoreboard)** update division mapping and improve rank display - ([5d2572](https://github.com/GZTimeWalker/GZCTF/commit/5d2572)) by **GZTime**
+- **(scoreboard)** refactor scoreboard components to use divisionId and improve data handling - ([2d0e4e](https://github.com/GZTimeWalker/GZCTF/commit/2d0e4e)) by **GZTime**
+- **(storage)** update package versions and improve S3BlobStorage implementation - ([79642b](https://github.com/GZTimeWalker/GZCTF/commit/79642b)) by **GZTime**
+- **(storage)** switch to self-maintenance underlying storage implementation - ([731f08](https://github.com/GZTimeWalker/GZCTF/commit/731f08)) by **GZTime**
+- **(task-status)** add 'Unhealthy' status to TaskStatus enum - ([28b3a2](https://github.com/GZTimeWalker/GZCTF/commit/28b3a2)) by **GZTime**
+- **(task-status)** add 'Degraded' status to TaskStatus enum and update color mapping - ([adf4e6](https://github.com/GZTimeWalker/GZCTF/commit/adf4e6)) by **GZTime**
+- **(test)** add [ExcludeFromCodeCoverage] attributes to some classes - ([33cde7](https://github.com/GZTimeWalker/GZCTF/commit/33cde7)) by **GZTime**
+- **(tests)** add tests for admin download of writeups and submission sheet validation - ([045523](https://github.com/GZTimeWalker/GZCTF/commit/045523)) by **GZTime**
+- **(tests)** add dynamic container challenge test with flag retrieval - ([37af4d](https://github.com/GZTimeWalker/GZCTF/commit/37af4d)) by **GZTime**
+- **(tests)** enhance integration tests with K3s and MinIO support - ([a581ac](https://github.com/GZTimeWalker/GZCTF/commit/a581ac)) by **GZTime**
+- **(tests)** update EditControllerTests to include TCP flag retrieval - ([488431](https://github.com/GZTimeWalker/GZCTF/commit/488431)) by **GZTime**
+- **(tests)** add comprehensive CI integration and unit tests with Testcontainers (#501) - ([a5d52e](https://github.com/GZTimeWalker/GZCTF/commit/a5d52e)) by **Copilot**
+- add pingfall settings - ([8d0cff](https://github.com/GZTimeWalker/GZCTF/commit/8d0cff)) by **Reverier-Xu**
+- always flush scoreboard cache after submission processing - ([30514a](https://github.com/GZTimeWalker/GZCTF/commit/30514a)) by **GZTime**
+- improved cache handling and detailed game info retrieval - ([2f30c4](https://github.com/GZTimeWalker/GZCTF/commit/2f30c4)) by **GZTime**
+- Add .NET Aspire support for automatic deployment and enhanced observability (#503) - ([c4fd0f](https://github.com/GZTimeWalker/GZCTF/commit/c4fd0f)) by **Copilot**
+- add FirstSolves table and refactor challenge submission logic (#500) - ([53c6b0](https://github.com/GZTimeWalker/GZCTF/commit/53c6b0)) by **GZTime**
+- add FirstSolves table and refactor challenge submission logic - ([9f8212](https://github.com/GZTimeWalker/GZCTF/commit/9f8212)) by **GZTime**
+- Add new Divisions and DivisionChallengeConfig entities with migration - ([434f6d](https://github.com/GZTimeWalker/GZCTF/commit/434f6d)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(aspire)** workaround localhost service discovery - ([095fd5](https://github.com/GZTimeWalker/GZCTF/commit/095fd5)) by **Steven He**
+- **(aspire)** set default bucket - ([960c3a](https://github.com/GZTimeWalker/GZCTF/commit/960c3a)) by **Steven He**
+- **(aspire)** correct minio connection string - ([50b5be](https://github.com/GZTimeWalker/GZCTF/commit/50b5be)) by **Steven He**
+- **(aspire)** ensure initialization order - ([bd5ce2](https://github.com/GZTimeWalker/GZCTF/commit/bd5ce2)) by **Steven He**
+- **(cache)** type mismatch for recent games - ([3c959c](https://github.com/GZTimeWalker/GZCTF/commit/3c959c)) by **GZTime**
+- **(challenge)** update isEnabled will change deadline - ([0f789e](https://github.com/GZTimeWalker/GZCTF/commit/0f789e)) by **GZTime**
+- **(controller)** participation retrieval in GameController - ([385adf](https://github.com/GZTimeWalker/GZCTF/commit/385adf)) by **GZTime**
+- **(edit)** get challenge solve count from scoreboard cache - ([7a61d8](https://github.com/GZTimeWalker/GZCTF/commit/7a61d8)) by **GZTime**
+- **(excel)** handle unranked / no division case - ([d4288d](https://github.com/GZTimeWalker/GZCTF/commit/d4288d)) by **GZTime**
+- **(frontend)** GameJoinModal and GameDivisionManagement components - ([f4137e](https://github.com/GZTimeWalker/GZCTF/commit/f4137e)) by **GZTime**
+- **(game)** division permissions handling for auto-acceptance - ([57b985](https://github.com/GZTimeWalker/GZCTF/commit/57b985)) by **GZTime**
+- **(game)** streamline challenge score calculation - ([12603e](https://github.com/GZTimeWalker/GZCTF/commit/12603e)) by **GZTime**
+- **(game)** deadline check - ([36acef](https://github.com/GZTimeWalker/GZCTF/commit/36acef)) by **GZTime**
+- **(kubernetes)** correct service port configuration - ([a85ab5](https://github.com/GZTimeWalker/GZCTF/commit/a85ab5)) by **GZTime**
+- **(migration)** IP address column handling - ([633c0c](https://github.com/GZTimeWalker/GZCTF/commit/633c0c)) by **GZTime**
+- **(number)** add getInputNumber utility for input handling - ([837d3a](https://github.com/GZTimeWalker/GZCTF/commit/837d3a)) by **GZTime**
+- **(participation)** update status will clear division - ([dc88b3](https://github.com/GZTimeWalker/GZCTF/commit/dc88b3)) by **GZTime**
+- **(participation)** always flush scoreboard when update division - ([dafc81](https://github.com/GZTimeWalker/GZCTF/commit/dafc81)) by **GZTime**
+- **(signalr)** add custom serializer options for IPAddress - ([7f2051](https://github.com/GZTimeWalker/GZCTF/commit/7f2051)) by **GZTime**
+- **(typescript)** tsc not run as expected - ([4193bb](https://github.com/GZTimeWalker/GZCTF/commit/4193bb)) by **GZTime**
+- typos and missing challenge ID - ([85900b](https://github.com/GZTimeWalker/GZCTF/commit/85900b)) by **GZTime**
+
+### 🎨 Styling
+
+- **(permission)** refactor permission rendering - ([5861cc](https://github.com/GZTimeWalker/GZCTF/commit/5861cc)) by **GZTime**
+
+### 🚀 Performances
+
+- **(instance)** optimize instance creation for game challenges and participations - ([a82f10](https://github.com/GZTimeWalker/GZCTF/commit/a82f10)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(game)** update challenge metadata handling and improve data structure - ([96979f](https://github.com/GZTimeWalker/GZCTF/commit/96979f)) by **GZTime**
+- **(participation)** simplify status update logic and ensure scoreboard flush - ([064062](https://github.com/GZTimeWalker/GZCTF/commit/064062)) by **GZTime**
+
+### 🧪 Tests
+
+- **(storage)** add IBlobStorage tests - ([df3473](https://github.com/GZTimeWalker/GZCTF/commit/df3473)) by **GZTime**
+- add integration tests for repository data operations (#507) - ([7a9a52](https://github.com/GZTimeWalker/GZCTF/commit/7a9a52)) by **Copilot**
+- tidy up integration test - ([84a85f](https://github.com/GZTimeWalker/GZCTF/commit/84a85f)) by **GZTime**
+- add comprehensive integration tests (#505) - ([1a77e3](https://github.com/GZTimeWalker/GZCTF/commit/1a77e3)) by **Copilot**
+
+---
 ## [1.6.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.6.1..v1.6.2) - 2025-10-04
 
 ### ⛰️ Features
