@@ -47,6 +47,8 @@
       },
       "copy_public_key": "Copiar Clave Pública",
       "delete": "Eliminar",
+      "export": "Exportar Juego",
+      "import": "Importar Juego",
       "new": "Nuevo Juego"
     },
     "notices": {
@@ -482,6 +484,14 @@
         "deleted": "División eliminada",
         "invite_copied": "Código de invitación copiado al portapapeles",
         "updated": "División actualizada"
+      },
+      "export": {
+        "exported": "Juego exportado con éxito",
+        "exporting": "Exportando juego..."
+      },
+      "import": {
+        "imported": "Juego importado con éxito",
+        "importing": "Importando juego..."
       },
       "info": {
         "deleted": "Juego eliminado",
