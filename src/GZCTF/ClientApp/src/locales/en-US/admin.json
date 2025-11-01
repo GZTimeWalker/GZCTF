@@ -47,6 +47,8 @@
       },
       "copy_public_key": "Copy Public Key",
       "delete": "Delete",
+      "export": "Export Game",
+      "import": "Import Game",
       "new": "New Game"
     },
     "notices": {
@@ -260,6 +262,9 @@
         },
         "end_date": "End Date",
         "end_time": "End Time",
+        "import": {
+          "description": "Upload game package (.zip) to import game configuration, challenges, and attachments"
+        },
         "invite_code": {
           "description": "Leave empty for no invitation code",
           "label": "Invitation Code"
@@ -482,6 +487,14 @@
         "deleted": "Division deleted",
         "invite_copied": "Invite code copied to clipboard",
         "updated": "Division updated"
+      },
+      "export": {
+        "exported": "Game exported successfully",
+        "exporting": "Exporting game..."
+      },
+      "import": {
+        "imported": "Game imported successfully",
+        "importing": "Importing game..."
       },
       "info": {
         "deleted": "Game deleted",

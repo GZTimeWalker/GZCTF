@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace GZCTF.Services.Transfer;
 
 /// <summary>
-/// Game import and export service
+/// Game export service
 /// </summary>
 public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
 {

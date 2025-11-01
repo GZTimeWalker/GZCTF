@@ -1,5 +1,28 @@
-import { ActionIcon, Avatar, Badge, Button, Code, Group, Paper, ScrollArea, Switch, Table, Text } from '@mantine/core'
-import { mdiArrowLeftBold, mdiArrowRightBold, mdiChevronTripleRight, mdiPencilOutline, mdiPlus } from '@mdi/js'
+import {
+  ActionIcon,
+  Avatar,
+  Badge,
+  Button,
+  Code,
+  FileButton,
+  Group,
+  Paper,
+  Progress,
+  ScrollArea,
+  Switch,
+  Table,
+  Text,
+  alpha,
+  useMantineTheme,
+} from '@mantine/core'
+import {
+  mdiArrowLeftBold,
+  mdiArrowRightBold,
+  mdiChevronTripleRight,
+  mdiPencilOutline,
+  mdiPlus,
+  mdiUpload,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useEffect, useState } from 'react'
@@ -14,6 +37,7 @@ import { getGameStatus } from '@Hooks/useGame'
 import api, { GameInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
+import uploadClasses from '@Styles/Upload.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -21,11 +45,13 @@ const Games: FC = () => {
   const [page, setPage] = useState(1)
   const [createOpened, setCreateOpened] = useState(false)
   const [disabled, setDisabled] = useState(false)
+  const [progress, setProgress] = useState(0)
   const { data: games, total, setData: setGames, updateData: updateGames } = useArrayResponse<GameInfoModel>()
   const [current, setCurrent] = useState(0)
 
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const theme = useMantineTheme()
 
   const onToggleHidden = async (game: GameInfoModel) => {
     if (!game.id) return
@@ -53,6 +79,44 @@ const Games: FC = () => {
     }
   }
 
+  const onImportGame = async (file: File | null) => {
+    if (!file) return
+
+    setProgress(0)
+    setDisabled(true)
+
+    try {
+      const res = await api.edit.editImportGame(
+        { file },
+        {
+          onUploadProgress: (e) => {
+            setProgress((e.loaded / (e.total ?? 1)) * 100)
+          },
+        }
+      )
+
+      setProgress(0)
+      setDisabled(false)
+
+      if (res.data) {
+        // Refresh the games list
+        const gamesRes = await api.edit.editGetGames({
+          count: ITEM_COUNT_PER_PAGE,
+          skip: (page - 1) * ITEM_COUNT_PER_PAGE,
+        })
+        setGames(gamesRes.data)
+        setCurrent((page - 1) * ITEM_COUNT_PER_PAGE + gamesRes.data.length)
+
+        // Navigate to the imported game
+        navigate(`/admin/games/${res.data}/info`)
+      }
+    } catch (err) {
+      showErrorMsg(err, t)
+      setProgress(0)
+      setDisabled(false)
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,9 +140,35 @@ const Games: FC = () => {
       headProps={{ justify: 'apart' }}
       head={
         <>
-          <Button leftSection={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
-            {t('admin.button.games.new')}
-          </Button>
+          <Group gap="md" wrap="nowrap">
+            <Button leftSection={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
+              {t('admin.button.games.new')}
+            </Button>
+            <FileButton onChange={onImportGame} accept="application/zip">
+              {(props) => (
+                <Button
+                  {...props}
+                  leftSection={<Icon path={mdiUpload} size={1} />}
+                  className={uploadClasses.button}
+                  disabled={disabled}
+                  color={progress !== 0 ? 'cyan' : theme.primaryColor}
+                  variant="outline"
+                >
+                  <div className={uploadClasses.label}>
+                    {progress !== 0 ? t('admin.notification.games.import.importing') : t('admin.button.games.import')}
+                  </div>
+                  {progress !== 0 && (
+                    <Progress
+                      value={progress}
+                      className={uploadClasses.progress}
+                      color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
+                      radius="sm"
+                    />
+                  )}
+                </Button>
+              )}
+            </FileButton>
+          </Group>
           <Group w="calc(100% - 9rem)" justify="right">
             <Text fw="bold" size="sm">
               <Trans

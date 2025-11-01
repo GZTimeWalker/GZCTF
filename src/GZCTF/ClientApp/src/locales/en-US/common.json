@@ -50,6 +50,7 @@
       "limit": "Please select an image less than 3MB",
       "type": {
         "avatar": "avatar",
+        "game_package": "game package",
         "poster": "poster"
       }
     },

@@ -281,41 +281,7 @@ public static class TransferExtensions
             Flag = transfer.Value,
             IsOccupied = false
         };
-
-    /// <summary>
-    /// Convert TransferDivision to Division
-    /// </summary>
-    public static Division ToDivision(this TransferDivision transfer) =>
-        new()
-        {
-            Name = transfer.Name,
-            InviteCode = transfer.InviteCode,
-            DefaultPermissions = StringsToPermissions(transfer.DefaultPermissions)
-        };
-
-    /// <summary>
-    /// Create DivisionChallengeConfig from transfer
-    /// </summary>
-    public static DivisionChallengeConfig ToChallengeConfig(
-        this ChallengeConfigSection transfer,
-        int divisionId,
-        Dictionary<int, int> challengeIdMap)
-    {
-        // Map original challenge ID to new challenge ID
-        if (!challengeIdMap.TryGetValue(transfer.ChallengeId, out var newChallengeId))
-        {
-            throw new InvalidOperationException(
-                $"Challenge ID {transfer.ChallengeId} not found in mapping");
-        }
-
-        return new DivisionChallengeConfig
-        {
-            DivisionId = divisionId,
-            ChallengeId = newChallengeId,
-            Permissions = StringsToPermissions(transfer.Permissions)
-        };
-    }
-
+    
     /// <summary>
     /// Convert GamePermission enum to string array
     /// </summary>

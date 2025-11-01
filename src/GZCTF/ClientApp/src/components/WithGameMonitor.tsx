@@ -48,9 +48,9 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
   const onDownloadScoreboardSheet = () =>
     downloadBlob(
       api.game.gameScoreboardSheet(numId, { format: 'blob' }),
-      `Scoreboard_${numId}_${Date.now()}.xlsx`,
       setDisabled,
-      t
+      t,
+      `Scoreboard_${numId}_${Date.now()}.xlsx`
     )
 
   return (

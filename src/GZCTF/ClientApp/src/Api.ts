@@ -1234,7 +1234,7 @@ export interface FlagInfoModel {
 /** Basic challenge information (Edit) */
 export interface ChallengeInfoModel {
   /**
-   * Challenge Id
+   * Challenge ID
    * @format int32
    */
   id?: number;
@@ -3842,6 +3842,21 @@ export class Api<
       }),
 
     /**
+     * @description Export game with all challenges, divisions, and attachments as a ZIP file; requires Admin permission
+     *
+     * @tags Edit
+     * @name EditExportGame
+     * @summary Export game package
+     * @request POST:/api/edit/games/{id}/export
+     */
+    editExportGame: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/export`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
      * No description
      *
      * @tags Edit
@@ -4191,6 +4206,30 @@ export class Api<
         data,
         options,
       ),
+
+    /**
+     * @description Import game from a ZIP package; requires Admin permission
+     *
+     * @tags Edit
+     * @name EditImportGame
+     * @summary Import game package
+     * @request POST:/api/edit/games/import
+     */
+    editImportGame: (
+      data: {
+        /** @format binary */
+        file?: File | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<number, RequestResponse>({
+        path: `/api/edit/games/import`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
 
     /**
      * @description Deleting a game challenge flag requires administrator privileges

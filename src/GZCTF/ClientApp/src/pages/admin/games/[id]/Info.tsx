@@ -19,7 +19,15 @@ import { Dropzone } from '@mantine/dropzone'
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClipboard, mdiClose, mdiContentSaveOutline, mdiDeleteOutline, mdiDiceMultiple } from '@mdi/js'
+import {
+  mdiCheck,
+  mdiClipboard,
+  mdiClose,
+  mdiContentSaveOutline,
+  mdiDeleteOutline,
+  mdiDiceMultiple,
+  mdiDownload,
+} from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
@@ -28,6 +36,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
+import { downloadBlob } from '@Utils/ApiHelper'
 import { getInputNumber, randomInviteCode, showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
@@ -164,6 +173,12 @@ const GameInfoEdit: FC = () => {
     })
   }
 
+  const onExportGame = async () => {
+    if (!game?.id) return
+
+    await downloadBlob(api.edit.editExportGame(game.id), setDisabled, t)
+  }
+
   return (
     <WithGameEditTab
       headProps={{ justify: 'apart' }}
@@ -186,6 +201,14 @@ const GameInfoEdit: FC = () => {
             }
           >
             {t('admin.button.games.delete')}
+          </Button>
+          <Button
+            leftSection={<Icon path={mdiDownload} size={1} />}
+            disabled={disabled}
+            onClick={onExportGame}
+            variant="outline"
+          >
+            {t('admin.button.games.export')}
           </Button>
           <Button leftSection={<Icon path={mdiClipboard} size={1} />} disabled={disabled} onClick={onCopyPublicKey}>
             {t('admin.button.games.copy_public_key')}
