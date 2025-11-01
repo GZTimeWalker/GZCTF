@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>Недопустимый файл</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>Тип файла не поддерживается</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] Команда [{0}] предоставила верный ответ [{2}] на задание [{1}]</value>
   </data>
@@ -481,6 +484,21 @@
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>Не удалось удалить игру, связанные файлы могли быть повреждены. Пожалуйста, попробуйте снова</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Игра "{0}" экспортирована как {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Не удалось экспортировать игру "{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Игра успешно импортирована (ID: {0}) из файла {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Не удалось импортировать игру из файла {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Неверный формат пакета игры</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Очистка файлов команд ({1}) для игры {0}...</value>

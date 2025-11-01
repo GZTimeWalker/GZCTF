@@ -10,6 +10,7 @@ using GZCTF.Services.Container;
 using GZCTF.Services.CronJob;
 using GZCTF.Services.Mail;
 using GZCTF.Services.Token;
+using GZCTF.Services.Transfer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -79,6 +80,8 @@ static class ServicesExtension
         builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
 
         builder.Services.AddScoped<ExcelHelper>();
+        builder.Services.AddScoped<GameExportService>();
+        builder.Services.AddScoped<GameImportService>();
 
         builder.Services.AddChannel<Submission>();
         builder.Services.AddChannel<CacheRequest>();

@@ -13,6 +13,24 @@ public interface IBlobRepository : IRepository
         CancellationToken token = default);
 
     /// <summary>
+    /// Create or update a blob file from a stream
+    /// </summary>
+    /// <param name="fileName">The name to save the file as</param>
+    /// <param name="stream">The file content stream</param>
+    /// <param name="token"></param>
+    /// <returns>The file object</returns>
+    public Task<LocalFile> CreateOrUpdateBlobFromStream(string fileName, Stream stream,
+        CancellationToken token = default);
+
+    /// <summary>
+    /// Increment reference count for an existing blob file
+    /// </summary>
+    /// <param name="fileHash">The file hash</param>
+    /// <param name="token"></param>
+    /// <returns>The updated file object, or null if file not found</returns>
+    public Task<LocalFile?> IncrementBlobReference(string fileHash, CancellationToken token = default);
+
+    /// <summary>
     /// Create or update an image file, optionally resizing it
     /// </summary>
     /// <param name="file">The form file</param>

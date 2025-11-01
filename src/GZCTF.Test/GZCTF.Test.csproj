@@ -15,10 +15,10 @@
         <PackageReference Include="Microsoft.AspNetCore.TestHost" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="xunit" />
-        <PackageReference Include="xunit.runner.visualstudio"/>
-        <PackageReference Include="xunit.runner.console"/>
-        <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="coverlet.msbuild"/>
+        <PackageReference Include="xunit.runner.visualstudio" />
+        <PackageReference Include="xunit.runner.console" />
+        <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="coverlet.msbuild" />
     </ItemGroup>
 
     <ItemGroup>

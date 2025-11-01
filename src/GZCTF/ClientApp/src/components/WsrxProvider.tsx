@@ -83,8 +83,8 @@ const getWsrxConfig = (options: CustomWsrxOptions) => {
       pingfall: {
         status: [400, 404],
         drop_unknown: false,
-      }
-    }
+      },
+    },
   }
 
   return config

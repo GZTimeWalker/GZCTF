@@ -22,19 +22,27 @@ export const handleAxiosError = async (err: unknown) => {
     }
     return err.message
   } else {
-    return err
+    return String(err)
   }
 }
 
 const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) => {
   if (res.data instanceof Blob) {
     const blobURL = window.URL.createObjectURL(res.data)
+    const downloadFilenameHeader = res.headers['content-disposition']?.match(/filename="?([^"]+)"?/)
+
+    if (!downloadFilename && downloadFilenameHeader && downloadFilenameHeader.length > 1) {
+      downloadFilename = decodeURIComponent(downloadFilenameHeader[1])
+    }
+
     const anchor = document.createElement('a')
     anchor.style.display = 'none'
     anchor.href = blobURL
+
     if (downloadFilename) {
       anchor.download = downloadFilename
     }
+
     document.body.appendChild(anchor)
     anchor.click()
     window.setTimeout(() => {
@@ -48,9 +56,9 @@ const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) =>
 
 export const downloadBlob = async (
   promise: Promise<AxiosResponse>,
-  filename: string | undefined,
   setDisabled: (value: React.SetStateAction<boolean>) => void,
-  t: (key: string) => string
+  t: (key: string) => string,
+  filename?: string
 ) => {
   setDisabled(true)
 

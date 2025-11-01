@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>無効なファイルです</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>サポートされていないファイル形式です</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[正しい回答] チーム [{0}] はチャレンジ [{1}] の回答 [{2}] を提出しました</value>
   </data>
@@ -481,6 +484,21 @@
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>ゲームを削除できませんでした。関連ファイルが破損している可能性があります。再試行してください。</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>ゲーム「{0}」を {1} としてエクスポートしました</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>ゲーム「{0}」のエクスポートに失敗しました</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>ゲームのインポートに成功しました（ID: {0}）、ファイル {1} より</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>ファイル {0} からゲームをインポートできませんでした</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>無効なゲームパッケージ形式です</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>ゲーム {0} での {1} 個のチームに関するファイルを削除しています...</value>

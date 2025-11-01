@@ -19,7 +19,7 @@ public class FlagContext
     /// <summary>
     /// Whether it is occupied
     /// </summary>
-    public bool IsOccupied { get; set; } = false;
+    public bool IsOccupied { get; set; }
 
     #region Db Relationship
 
