@@ -10,7 +10,6 @@ namespace GZCTF.Services.Transfer;
 /// </summary>
 public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
 {
-
     public record GameExportResult(Game Game, string ZipFilePath);
 
     /// <summary>
@@ -77,24 +76,73 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
     }
 
     /// <summary>
-    /// Load game data required for export
+    /// Load game data required for export (sliced queries to avoid cartesian explosion)
+    /// 1. Load Game
+    /// 2. Load Divisions with their ChallengeConfigs
+    /// 3. Load Challenges with Attachment.LocalFile
+    ///    - For static challenges: additionally load Flags.Attachment.LocalFile
+    ///    - For dynamic challenges: do not load Flags
     /// </summary>
-    private Task<Game?> LoadGameDataAsync(int gameId, CancellationToken ct)
-        => dbContext.Games
+    private async Task<Game?> LoadGameDataAsync(int gameId, CancellationToken ct)
+    {
+        // 1) Basic Game (without any navigations)
+        var game = await dbContext.Games
             .AsNoTracking()
             .IgnoreAutoIncludes()
-            .AsSplitQuery() // Use split query to avoid cartesian product
-            .Include(g => g.Divisions!)
-            .ThenInclude(d => d.ChallengeConfigs)
-            .Include(g => g.Challenges)
-            .ThenInclude(c => c.Flags)
-            .ThenInclude(f => f.Attachment)
-            .ThenInclude(a => a!.LocalFile)
-            .Include(g => g.Challenges)
-            .ThenInclude(c => c.Attachment)
-            .ThenInclude(a => a!.LocalFile)
             .Where(g => g.Id == gameId)
             .SingleOrDefaultAsync(ct);
+
+        if (game is null)
+            return null;
+
+        // 2) Divisions with their ChallengeConfigs
+        var divisions = await dbContext.Divisions
+            .AsNoTracking()
+            .IgnoreAutoIncludes()
+            .Where(d => d.GameId == gameId)
+            .Include(d => d.ChallengeConfigs)
+            .ToHashSetAsync(ct);
+
+        // 3) Challenges (including Challenge.Attachment.LocalFile)
+        var challenges = await dbContext.GameChallenges
+            .AsNoTracking()
+            .IgnoreAutoIncludes()
+            .Where(c => c.GameId == gameId)
+            .Include(c => c.Attachment)
+            .ThenInclude(a => a!.LocalFile)
+            .ToHashSetAsync(ct);
+
+        // 3.1) Load Flags and their Attachment.LocalFile only for static challenges
+        var staticIds = challenges
+            .Where(c => c.Type.IsStatic())
+            .Select(c => c.Id)
+            .ToList();
+
+        if (staticIds.Count > 0)
+        {
+            var flags = await dbContext.FlagContexts
+                .AsNoTracking()
+                .IgnoreAutoIncludes()
+                .Where(f => f.ChallengeId != null && staticIds.Contains(f.ChallengeId.Value))
+                .Include(f => f.Attachment)
+                .ThenInclude(a => a!.LocalFile)
+                .ToListAsync(ct);
+
+            var flagsByChallenge = flags
+                .GroupBy(f => f.ChallengeId!.Value)
+                .ToDictionary(gp => gp.Key, gp => gp.ToList());
+
+            foreach (var ch in challenges)
+                if (flagsByChallenge.TryGetValue(ch.Id, out var list))
+                    ch.Flags = list;
+        }
+
+        // Assemble sliced data back into Game
+        game.Divisions = divisions;
+        game.Challenges = challenges;
+
+        return game;
+    }
 
     /// <summary>
     /// Write transfer format files to working directory
