@@ -10,13 +10,16 @@ namespace GZCTF.Services.Transfer;
 /// </summary>
 public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
 {
+
+    public record GameExportResult(Game Game, string ZipFilePath);
+
     /// <summary>
     /// Export game to ZIP file
     /// </summary>
     /// <param name="gameId">Game ID</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns>Exported ZIP file path</returns>
-    public async Task<string?> ExportGameAsync(int gameId, CancellationToken ct = default)
+    public async Task<GameExportResult?> ExportGameAsync(int gameId, CancellationToken ct = default)
     {
         // Load game data
         var game = await LoadGameDataAsync(gameId, ct);
@@ -63,7 +66,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
                 $"game-{gameId}-export-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.zip");
 
             ZipFile.CreateFromDirectory(workDir, zipPath);
-            return zipPath;
+            return new(game, zipPath);
         }
         finally
         {
@@ -222,7 +225,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
 
             // Verify file integrity using streaming hash computation
             var expectedHash = Path.GetFileName(file);
-            var computedHash = await ComputeFileHashAsync(file, ct);
+            var computedHash = await TransferHelper.ComputeFileHashAsync(file, ct);
 
             if (!computedHash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
             {
@@ -233,17 +236,5 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         }
 
         return statistics;
-    }
-
-    /// <summary>
-    /// Compute SHA256 hash of file using streaming for memory efficiency
-    /// </summary>
-    private static async Task<string> ComputeFileHashAsync(string filePath, CancellationToken ct)
-    {
-        await using var file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
-            bufferSize: 4096, FileOptions.SequentialScan | FileOptions.Asynchronous);
-        using var hasher = System.Security.Cryptography.SHA256.Create();
-        var hash = await hasher.ComputeHashAsync(file, ct);
-        return Convert.ToHexStringLower(hash);
     }
 }

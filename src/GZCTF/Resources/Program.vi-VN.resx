@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>Tệp không hợp lệ.</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>Loại tệp không được hỗ trợ</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] Đội [{0}] đã nộp câu trả lời [{2}] cho thử thách [{1}].</value>
   </data>
@@ -475,6 +478,21 @@
   </data>
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>Worker #{0} đã dừng.</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Trò chơi "{0}" đã được xuất dưới dạng {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Không thể xuất trò chơi "{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Trò chơi đã được nhập thành công (ID: {0}) từ tệp {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Không thể nhập trò chơi từ tệp {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Định dạng gói trò chơi không hợp lệ</value>
   </data>
   <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
     <value>Đang xóa {1} tệp đính kèm thử thách cho trò chơi {0}...</value>

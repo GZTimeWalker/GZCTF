@@ -81,6 +81,7 @@ static class ServicesExtension
 
         builder.Services.AddScoped<ExcelHelper>();
         builder.Services.AddScoped<GameExportService>();
+        builder.Services.AddScoped<GameImportService>();
 
         builder.Services.AddChannel<Submission>();
         builder.Services.AddChannel<CacheRequest>();

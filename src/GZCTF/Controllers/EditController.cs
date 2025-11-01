@@ -38,6 +38,7 @@ public class EditController(
     IContainerManager containerService,
     IBlobRepository blobService,
     GameExportService exportService,
+    GameImportService importService,
     IDivisionRepository divisionRepository,
     IStringLocalizer<Program> localizer) : Controller
 {
@@ -958,34 +959,127 @@ public class EditController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ExportGame([FromRoute] int id, CancellationToken token = default)
     {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
-
         try
         {
-            var exportPath = await exportService.ExportGameAsync(id, token);
+            var result = await exportService.ExportGameAsync(id, token);
 
-            if (exportPath is null)
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)]));
+            if (result is null)
+            {
+                logger.SystemLog(
+                    StaticLocalizer[nameof(Resources.Program.Game_NotFound)],
+                    TaskStatus.NotFound,
+                    LogLevel.Warning);
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                    StatusCodes.Status404NotFound));
+            }
 
-            var fileName = $"{game.Title}-export-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.zip";
+            var fileName = $"{result.Game.Title}-export-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.zip";
+
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.Game_Exported), result.Game.Title, fileName]);
 
             // Open file stream that will be disposed after download completes
             var fileStream = new FileStream(
-                exportPath,
+                result.ZipFilePath,
                 FileMode.Open,
                 FileAccess.Read,
                 FileShare.None,
                 bufferSize: 4096,
                 FileOptions.DeleteOnClose | FileOptions.SequentialScan | FileOptions.Asynchronous);
-            
+
             return File(fileStream, "application/zip", fileName, enableRangeProcessing: true);
         }
         catch (Exception ex)
         {
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.Game_ExportFailed), id],
+                TaskStatus.Failed,
+                LogLevel.Error);
             logger.LogError(ex, "Failed to export game {GameId}", id);
+            return RequestResponse.Result(localizer[nameof(Resources.Program.Error_InternalServerError)],
+                StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    /// <summary>
+    /// Import game package
+    /// </summary>
+    /// <remarks>
+    /// Import game from a ZIP package; requires Admin permission
+    /// </remarks>
+    /// <param name="file">Game package ZIP file</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully imported game, returns game ID</response>
+    /// <response code="400">Invalid package or import failed</response>
+    /// <response code="500">Internal server error during import</response>
+    [HttpPost("Games/Import")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ImportGame(IFormFile file, CancellationToken token = default)
+    {
+        switch (file.Length)
+        {
+            case 0:
+                logger.SystemLog(
+                    StaticLocalizer[nameof(Resources.Program.File_SizeZero)],
+                    TaskStatus.Failed,
+                    LogLevel.Warning);
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+            case > 128 * 1024 * 1024:
+                // 128MB limit
+                logger.SystemLog(
+                    StaticLocalizer[nameof(Resources.Program.File_SizeTooLarge), file.FileName],
+                    TaskStatus.Failed,
+                    LogLevel.Warning);
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+        }
+
+        if (!file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) || file.ContentType != "application/zip")
+        {
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.File_TypeNotSupported), file.FileName],
+                TaskStatus.Failed,
+                LogLevel.Warning);
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_TypeNotSupported)]));
+        }
+
+        try
+        {
+            await using var stream = file.OpenReadStream();
+            var gameId = await importService.ImportGameAsync(stream, token);
+
+            if (gameId is null)
+            {
+                logger.SystemLog(
+                    StaticLocalizer[nameof(Resources.Program.Game_ImportFailed), file.FileName],
+                    TaskStatus.Failed,
+                    LogLevel.Warning);
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ImportFailed)]));
+            }
+
+            await cacheHelper.FlushRecentGamesCache(token);
+
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.Game_Imported), gameId, file.FileName]);
+
+            return Ok(gameId);
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.Game_ImportInvalidPackage), file.FileName, ex.Message],
+                TaskStatus.Failed,
+                LogLevel.Warning);
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ImportInvalidPackage)]));
+        }
+        catch (Exception ex)
+        {
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.Game_ImportFailed), file.FileName],
+                TaskStatus.Failed,
+                LogLevel.Error);
+            logger.LogError(ex, "Failed to import game from file {FileName}", file.FileName);
             return RequestResponse.Result(localizer[nameof(Resources.Program.Error_InternalServerError)],
                 StatusCodes.Status500InternalServerError);
         }

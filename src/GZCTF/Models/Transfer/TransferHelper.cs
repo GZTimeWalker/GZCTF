@@ -29,4 +29,16 @@ public static class TransferHelper
         var version = assembly.GetName().Version;
         return version?.ToString() ?? "unknown";
     }
+
+    /// <summary>
+    /// Compute SHA256 hash of file using streaming for memory efficiency
+    /// </summary>
+    public static async Task<string> ComputeFileHashAsync(string filePath, CancellationToken ct = default)
+    {
+        await using var file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
+            bufferSize: 4096, FileOptions.SequentialScan | FileOptions.Asynchronous);
+        using var hasher = System.Security.Cryptography.SHA256.Create();
+        var hash = await hasher.ComputeHashAsync(file, ct);
+        return Convert.ToHexStringLower(hash);
+    }
 }

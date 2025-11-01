@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>유효하지 않은 파일</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>지원되지 않는 파일 형식</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] [{0}] 팀이 [{1}] 문제 답으로 [{2}] 를 제출했습니다</value>
   </data>
@@ -481,6 +484,21 @@
   </data>
   <data name="Game_DeletionFailed" xml:space="preserve">
     <value>게임 삭제 실패. 관련 파일이 손상되었습니다.</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>게임 "{0}"을(를) {1}(으)로 내보냈습니다</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>게임 "{0}" 내보내기 실패</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>게임을 성공적으로 가져왔습니다 (ID: {0}), 파일: {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>파일 {0}에서 게임 가져오기 실패</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>유효하지 않은 게임 패키지 형식</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>{1} 팀의 {0} 게임 정보 삭제 중...</value>

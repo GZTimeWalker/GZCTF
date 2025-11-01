@@ -437,6 +437,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>File tidak valid</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>Tipe file tidak didukung</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] Tim [{0}] mengirim jawaban [{2}] untuk challenge [{1}]</value>
   </data>
@@ -475,6 +478,21 @@
   </data>
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>Worker pemeriksa #{0} telah dihentikan</value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Game "{0}" diekspor sebagai {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Gagal mengekspor game "{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Game berhasil diimpor (ID: {0}) dari file {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Gagal mengimpor game dari file {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Format paket game tidak valid</value>
   </data>
   <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
     <value>Membersihkan {1} lampiran challenge untuk game {0}...</value>

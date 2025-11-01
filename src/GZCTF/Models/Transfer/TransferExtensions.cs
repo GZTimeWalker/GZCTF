@@ -66,8 +66,8 @@ public static class TransferExtensions
             Id = challenge.Id,
             Title = challenge.Title,
             Content = challenge.Content,
-            Category = challenge.Category.ToString(),
-            Type = challenge.Type.ToString(),
+            Category = challenge.Category,
+            Type = challenge.Type,
             Enabled = challenge.IsEnabled,
             Scoring = new ScoringSection
             {
@@ -134,7 +134,7 @@ public static class TransferExtensions
 
         var transfer = new AttachmentSection
         {
-            Type = attachment.Type.ToString()
+            Type = attachment.Type
         };
 
         switch (attachment.Type)
@@ -241,8 +241,8 @@ public static class TransferExtensions
         {
             Title = transfer.Title,
             Content = transfer.Content,
-            Category = Enum.Parse<ChallengeCategory>(transfer.Category),
-            Type = Enum.Parse<ChallengeType>(transfer.Type),
+            Category = transfer.Category,
+            Type = transfer.Type,
             IsEnabled = transfer.Enabled,
             OriginalScore = transfer.Scoring.Original,
             MinScoreRate = transfer.Scoring.MinRate,
@@ -329,10 +329,10 @@ public static class TransferExtensions
 
         // Extract individual flags
         var result = from value in Enum.GetValues<GamePermission>()
-            where value is not (0 or GamePermission.All)
-            where permissions.HasFlag(value)
-            select value.ToString();
-            
+                     where value is not (0 or GamePermission.All)
+                     where permissions.HasFlag(value)
+                     select value.ToString();
+
         return result.ToList();
     }
 

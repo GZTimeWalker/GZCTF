@@ -448,6 +448,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>Ungültige Datei</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>Dateityp nicht unterstützt</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] Team [{0}] hat die Antwort [{2}] für die Herausforderung [{1}] eingereicht</value>
   </data>
@@ -497,6 +500,21 @@
       Fehler beim Löschen des Spiels, verwandte Dateien könnten beschädigt sein, bitte versuchen Sie
       es erneut
     </value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Spiel „{0}" als {1} exportiert</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Fehler beim Exportieren des Spiels „{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Spiel erfolgreich importiert (ID: {0}) aus Datei {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Fehler beim Importieren des Spiels aus Datei {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Ungültiges Spielpaket-Format</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Bereinige {1} Teamdateien für Spiel {0}...</value>

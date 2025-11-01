@@ -39,8 +39,8 @@ public class TransferChallengeTests
         Assert.Equal(1, transfer.Id);
         Assert.Equal("Web Challenge", transfer.Title);
         Assert.Equal("# Find the flag", transfer.Content);
-        Assert.Equal("Web", transfer.Category);
-        Assert.Equal("StaticAttachment", transfer.Type);
+        Assert.Equal(ChallengeCategory.Web, transfer.Category);
+        Assert.Equal(ChallengeType.StaticAttachment, transfer.Type);
         Assert.True(transfer.Enabled);
         Assert.Equal(1000, transfer.Scoring.Original);
         Assert.Equal(0.25, transfer.Scoring.MinRate);
@@ -84,8 +84,8 @@ public class TransferChallengeTests
         var transfer = challenge.ToTransfer();
 
         // Assert
-        Assert.Equal("Pwn", transfer.Category);
-        Assert.Equal("DynamicContainer", transfer.Type);
+        Assert.Equal(ChallengeCategory.Pwn, transfer.Category);
+        Assert.Equal(ChallengeType.DynamicContainer, transfer.Type);
         Assert.Equal("flag{[TEAM_HASH]_pwn}", transfer.Flags.Template);
 
         Assert.NotNull(transfer.Container);
@@ -102,8 +102,8 @@ public class TransferChallengeTests
         Id = 3,
         Title = "Crypto Challenge",
         Content = "Decrypt this",
-        Category = "Crypto",
-        Type = "StaticAttachment",
+        Category = ChallengeCategory.Crypto,
+        Type = ChallengeType.StaticAttachment,
         Enabled = true,
         Scoring = new ScoringSection
         {
