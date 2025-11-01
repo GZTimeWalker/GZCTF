@@ -444,6 +444,9 @@
   <data name="File_SizeZero" xml:space="preserve">
     <value>Archivo inválido</value>
   </data>
+  <data name="File_TypeNotSupported" xml:space="preserve">
+    <value>Tipo de archivo no compatible</value>
+  </data>
   <data name="FlagChecker_AnswerAccepted" xml:space="preserve">
     <value>[AC] El equipo [{0}] presentó la respuesta [{2}] para el desafío [{1}]</value>
   </data>
@@ -494,6 +497,21 @@
       No se pudo eliminar el juego, los archivos relacionados pueden haberse dañado, por favor
       intente de nuevo
     </value>
+  </data>
+  <data name="Game_Exported" xml:space="preserve">
+    <value>Juego "{0}" exportado como {1}</value>
+  </data>
+  <data name="Game_ExportFailed" xml:space="preserve">
+    <value>Error al exportar el juego "{0}"</value>
+  </data>
+  <data name="Game_Imported" xml:space="preserve">
+    <value>Juego importado exitosamente (ID: {0}) desde archivo {1}</value>
+  </data>
+  <data name="Game_ImportFailed" xml:space="preserve">
+    <value>Error al importar el juego desde archivo {0}</value>
+  </data>
+  <data name="Game_ImportInvalidPackage" xml:space="preserve">
+    <value>Formato de paquete de juego inválido</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Limpiando {1} archivos de equipos para el juego {0}...</value>
