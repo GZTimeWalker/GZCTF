@@ -281,7 +281,7 @@ public static class TransferExtensions
             Flag = transfer.Value,
             IsOccupied = false
         };
-    
+
     /// <summary>
     /// Convert GamePermission enum to string array
     /// </summary>

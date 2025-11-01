@@ -2,11 +2,11 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
-using GZCTF.Models.Request.Game;
 using GZCTF.Models.Transfer;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
@@ -75,7 +75,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
 
             // Act 2: Import the game back
             output.WriteLine("Importing game from ZIP...");
-            using var fileStream = File.OpenRead(tempZipPath);
+            await using var fileStream = File.OpenRead(tempZipPath);
             using var content = new MultipartFormDataContent();
             var streamContent = new StreamContent(fileStream);
             streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
@@ -236,6 +236,137 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         Assert.Equal(HttpStatusCode.Forbidden, exportResponse.StatusCode);
     }
 
+    /// <summary>
+    /// Test blob reference counting during export/import cycle
+    /// Verifies that:
+    /// - Attachments are correctly tracked in blob repository
+    /// - Reference counts increase when importing the same file
+    /// - Files are properly shared between original and imported games
+    /// </summary>
+    [Fact]
+    public async Task ExportImport_BlobReferenceCount_ShouldBeTrackedCorrectly()
+    {
+        // Arrange: Create admin user
+        var adminPassword = "Admin@BlobTest123";
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        using var adminClient = factory.CreateClient();
+
+        // Admin login
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Create a game with attachments
+        var gameWithBlobs = await CreateGameWithAttachmentsAsync();
+        output.WriteLine($"Created game {gameWithBlobs.Id} with attachments");
+
+        // Get initial blob reference counts
+        var initialBlobCounts = await GetBlobReferenceCounts();
+        output.WriteLine($"Initial blob count: {initialBlobCounts.Count} files");
+
+        foreach (var (hash, refCount) in initialBlobCounts)
+        {
+            output.WriteLine($"  Blob {hash[..8]}: RefCount={refCount}");
+        }
+
+        // Count how many times each blob is used in the game (for verification after import)
+        var blobUsageCount = await CountBlobUsageInGame(gameWithBlobs.Id);
+        foreach (var (hash, usageCount) in blobUsageCount)
+        {
+            output.WriteLine($"  Blob {hash[..8]} used {usageCount} time(s) in game");
+        }
+
+        // Act 1: Export the game
+        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{gameWithBlobs.Id}/Export", null);
+        exportResponse.EnsureSuccessStatusCode();
+
+        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync();
+        output.WriteLine($"Exported game to ZIP ({exportedZipBytes.Length} bytes)");
+
+        // Verify reference counts haven't changed after export
+        var afterExportBlobCounts = await GetBlobReferenceCounts();
+        Assert.Equal(initialBlobCounts.Count, afterExportBlobCounts.Count);
+
+        foreach (var (hash, initialCount) in initialBlobCounts)
+        {
+            Assert.True(afterExportBlobCounts.ContainsKey(hash), $"Blob {hash[..8]} should still exist");
+            Assert.Equal(initialCount, afterExportBlobCounts[hash]);
+        }
+
+        output.WriteLine("Blob reference counts unchanged after export ✓");
+
+        // Act 2: Import the game
+        var tempZipPath = Path.Combine(Path.GetTempPath(), $"blob-test-{Guid.NewGuid()}.zip");
+        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes);
+
+        try
+        {
+            await using var fileStream = File.OpenRead(tempZipPath);
+            using var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
+            content.Add(streamContent, "file", "game-import.zip");
+
+            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+            importResponse.EnsureSuccessStatusCode();
+
+            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>();
+            output.WriteLine($"Imported game with ID {importedGameId}");
+
+            // Assert: Verify reference counts increased for shared files
+            var afterImportBlobCounts = await GetBlobReferenceCounts();
+
+            // Same number of unique files (no duplicates created)
+            Assert.Equal(initialBlobCounts.Count, afterImportBlobCounts.Count);
+
+            // Each file should have reference count increased by its usage count in the game
+            foreach (var (hash, initialCount) in initialBlobCounts)
+            {
+                Assert.True(afterImportBlobCounts.ContainsKey(hash), $"Blob {hash[..8]} should exist after import");
+                var newCount = afterImportBlobCounts[hash];
+                var expectedIncrement = blobUsageCount.TryGetValue(hash, out var count) ? count : 0u;
+                var expectedCount = initialCount + expectedIncrement;
+                Assert.Equal(expectedCount, newCount);
+                output.WriteLine($"  Blob {hash[..8]}: RefCount {initialCount} → {newCount} (used {expectedIncrement}x) ✓");
+            }
+
+            output.WriteLine("All blob reference counts correctly incremented ✓");
+
+            // Verify both games use the same physical files
+            var originalGame = await GetGameWithChallenges(gameWithBlobs.Id);
+            var importedGame = await GetGameWithChallenges(importedGameId);
+
+            Assert.NotNull(originalGame);
+            Assert.NotNull(importedGame);
+
+            // Compare attachment hashes
+            foreach (var originalChallenge in originalGame.Challenges)
+            {
+                if (originalChallenge.Attachment is null)
+                    continue;
+
+                var importedChallenge = importedGame.Challenges.FirstOrDefault(c => c.Title == originalChallenge.Title);
+                Assert.NotNull(importedChallenge);
+                Assert.NotNull(importedChallenge.Attachment);
+
+                // Should reference the same blob file
+                Assert.Equal(originalChallenge.Attachment.LocalFile?.Hash,
+                    importedChallenge.Attachment.LocalFile?.Hash);
+
+                output.WriteLine($"Challenge '{originalChallenge.Title}' shares blob {originalChallenge.Attachment.LocalFile?.Hash[..8]} ✓");
+            }
+
+            output.WriteLine("Blob sharing verified between original and imported games ✓");
+        }
+        finally
+        {
+            if (File.Exists(tempZipPath))
+                File.Delete(tempZipPath);
+        }
+    }
+
     #region Helper Methods
 
     /// <summary>
@@ -245,7 +376,6 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         using var scope = factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
         var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
 
         // Create game with full configuration
@@ -264,7 +394,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             EndTimeUtc = DateTimeOffset.UtcNow.AddDays(7),
             WriteupRequired = true,
             WriteupDeadline = DateTimeOffset.UtcNow.AddDays(14),
-            BloodBonus = new Utils.BloodBonus((50L << 20) + (30L << 10) + 10L) // First=50, Second=30, Third=10
+            BloodBonus = new BloodBonus((50L << 20) + (30L << 10) + 10L) // First=50, Second=30, Third=10
         };
 
         await context.Games.AddAsync(game);
@@ -313,7 +443,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         };
         staticChallenge.Flags.Add(staticFlag);
 
-        await challengeRepo.CreateChallenge(game, staticChallenge, default);
+        await challengeRepo.CreateChallenge(game, staticChallenge, CancellationToken.None);
 
         // 2. Static container challenge
         var staticContainerChallenge = new GameChallenge
@@ -343,7 +473,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         };
         staticContainerChallenge.Flags.Add(staticContainerFlag);
 
-        await challengeRepo.CreateChallenge(game, staticContainerChallenge, default);
+        await challengeRepo.CreateChallenge(game, staticContainerChallenge, CancellationToken.None);
 
         // 3. Dynamic container challenge
         var dynamicChallenge = new GameChallenge
@@ -375,7 +505,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         };
         dynamicChallenge.Flags.Add(dynamicFlag);
 
-        await challengeRepo.CreateChallenge(game, dynamicChallenge, default);
+        await challengeRepo.CreateChallenge(game, dynamicChallenge);
 
         // 4. Static attachment challenge with multiple flags
         var multiFlag = new GameChallenge
@@ -397,7 +527,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         multiFlag.Flags.Add(new FlagContext { Flag = "flag{stage_2_d0ne}", Challenge = multiFlag });
         multiFlag.Flags.Add(new FlagContext { Flag = "flag{final_st4g3_w1n}", Challenge = multiFlag });
 
-        await challengeRepo.CreateChallenge(game, multiFlag, default);
+        await challengeRepo.CreateChallenge(game, multiFlag);
 
         // Add division-specific challenge configurations
         var div1Config1 = new DivisionChallengeConfig
@@ -610,6 +740,227 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
                 Assert.Equal(originalChallenge.ContainerExposePort, importedChallenge.ContainerExposePort);
             }
         }
+    }
+
+    /// <summary>
+    /// Create a game with multiple challenges containing blob attachments
+    /// </summary>
+    private async Task<Game> CreateGameWithAttachmentsAsync()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
+        var blobRepo = scope.ServiceProvider.GetRequiredService<IBlobRepository>();
+
+        // Create game
+        var game = new Game
+        {
+            Title = $"Blob Test Game {Guid.NewGuid().ToString("N")[..8]}",
+            Summary = "Game with blob attachments for testing reference counting",
+            Content = "# Blob Reference Test\n\nThis game tests blob reference counting during export/import.",
+            Hidden = false,
+            AcceptWithoutReview = true,
+            TeamMemberCountLimit = 4,
+            ContainerCountLimit = 2,
+            StartTimeUtc = DateTimeOffset.UtcNow.AddDays(-1),
+            EndTimeUtc = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        await context.Games.AddAsync(game);
+        await context.SaveChangesAsync();
+
+        // Create test blob files with different content
+        var testFiles = new[]
+        {
+            ("crypto-data.txt", "This is a crypto challenge file with sensitive data."),
+            ("web-exploit.zip", "PK\x03\x04 fake zip content for testing"),
+            ("misc-flag.pdf", "%PDF-1.4 fake PDF header for testing")
+        };
+
+        var createdBlobs = new List<LocalFile>();
+
+        foreach (var (fileName, content) in testFiles)
+        {
+            await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var blob = await blobRepo.CreateOrUpdateBlobFromStream(fileName, stream);
+            createdBlobs.Add(blob);
+            output.WriteLine($"Created blob: {blob.Hash[..8]} ({fileName})");
+        }
+
+        // Create challenges with these attachments
+
+        // Challenge 1: Crypto with attachment
+        var cryptoChallenge = new GameChallenge
+        {
+            GameId = game.Id,
+            Title = "Crypto Challenge with Blob",
+            Content = "Decrypt the file to find the flag.",
+            Category = ChallengeCategory.Crypto,
+            Type = ChallengeType.StaticAttachment,
+            IsEnabled = true,
+            OriginalScore = 500,
+            MinScoreRate = 0.5,
+            Difficulty = 3
+        };
+
+        var cryptoFlag = new FlagContext
+        {
+            Flag = "flag{crypt0_bl0b_t3st}",
+            Challenge = cryptoChallenge
+        };
+        cryptoChallenge.Flags.Add(cryptoFlag);
+
+        cryptoChallenge = await challengeRepo.CreateChallenge(game, cryptoChallenge);
+
+        // Add attachment
+        cryptoChallenge.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = createdBlobs[0]
+        };
+        await context.SaveChangesAsync();
+
+        // Challenge 2: Web with attachment
+        var webChallenge = new GameChallenge
+        {
+            GameId = game.Id,
+            Title = "Web Challenge with Blob",
+            Content = "Exploit the web application source code.",
+            Category = ChallengeCategory.Web,
+            Type = ChallengeType.StaticAttachment,
+            IsEnabled = true,
+            OriginalScore = 800,
+            MinScoreRate = 0.6,
+            Difficulty = 5
+        };
+
+        var webFlag = new FlagContext
+        {
+            Flag = "flag{w3b_bl0b_t3st}",
+            Challenge = webChallenge
+        };
+        webChallenge.Flags.Add(webFlag);
+
+        webChallenge = await challengeRepo.CreateChallenge(game, webChallenge);
+
+        // Add attachment
+        webChallenge.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = createdBlobs[1]
+        };
+        await context.SaveChangesAsync();
+
+        // Challenge 3: Misc with shared attachment (reuse first blob)
+        var miscChallenge = new GameChallenge
+        {
+            GameId = game.Id,
+            Title = "Misc Challenge with Shared Blob",
+            Content = "This challenge shares the same file as the crypto challenge.",
+            Category = ChallengeCategory.Misc,
+            Type = ChallengeType.StaticAttachment,
+            IsEnabled = true,
+            OriginalScore = 300,
+            MinScoreRate = 0.5,
+            Difficulty = 2
+        };
+
+        var miscFlag = new FlagContext
+        {
+            Flag = "flag{m1sc_shar3d_bl0b}",
+            Challenge = miscChallenge
+        };
+        miscChallenge.Flags.Add(miscFlag);
+
+        miscChallenge = await challengeRepo.CreateChallenge(game, miscChallenge);
+
+        // Add attachment (shared blob - should increment ref count)
+        await blobRepo.IncrementBlobReference(createdBlobs[0].Hash);
+        miscChallenge.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = createdBlobs[0]
+        };
+        await context.SaveChangesAsync();
+
+        // Challenge 4: Forensics with third blob
+        var forensicsChallenge = new GameChallenge
+        {
+            GameId = game.Id,
+            Title = "Forensics PDF Analysis",
+            Content = "Analyze the PDF file to find hidden data.",
+            Category = ChallengeCategory.Forensics,
+            Type = ChallengeType.StaticAttachment,
+            IsEnabled = true,
+            OriginalScore = 600,
+            MinScoreRate = 0.5,
+            Difficulty = 4
+        };
+
+        var forensicsFlag = new FlagContext
+        {
+            Flag = "flag{f0r3ns1cs_pdf_bl0b}",
+            Challenge = forensicsChallenge
+        };
+        forensicsChallenge.Flags.Add(forensicsFlag);
+
+        forensicsChallenge = await challengeRepo.CreateChallenge(game, forensicsChallenge);
+
+        // Add attachment using third blob
+        forensicsChallenge.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = createdBlobs[2]
+        };
+        await context.SaveChangesAsync();
+
+        output.WriteLine($"Created game with {game.Challenges.Count} challenges and blob attachments");
+
+        return game;
+    }
+
+    /// <summary>
+    /// Get current blob reference counts for all files
+    /// </summary>
+    private async Task<Dictionary<string, uint>> GetBlobReferenceCounts()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var blobs = await context.Files.ToDictionaryAsync(f => f.Hash, f => f.ReferenceCount);
+        return blobs;
+    }
+
+    /// <summary>
+    /// Count how many times each blob is used in a specific game
+    /// </summary>
+    private async Task<Dictionary<string, uint>> CountBlobUsageInGame(int gameId)
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var usageCounts = await context.GameChallenges
+            .Where(c => c.GameId == gameId && c.Attachment != null && c.Attachment.LocalFile != null)
+            .GroupBy(c => c.Attachment!.LocalFile!.Hash)
+            .Select(g => new { Hash = g.Key, Count = (uint)g.Count() })
+            .ToDictionaryAsync(x => x.Hash, x => x.Count);
+
+        return usageCounts;
+    }
+
+    /// <summary>
+    /// Get a game with all challenges and attachments loaded
+    /// </summary>
+    private async Task<Game?> GetGameWithChallenges(int gameId)
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        return await context.Games
+            .Include(g => g.Challenges)
+            .ThenInclude(c => c.Attachment)
+            .ThenInclude(a => a!.LocalFile)
+            .FirstOrDefaultAsync(g => g.Id == gameId);
     }
 
     #endregion

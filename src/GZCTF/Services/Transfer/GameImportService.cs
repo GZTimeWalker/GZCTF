@@ -16,6 +16,7 @@ public class GameImportService(
     IGameRepository gameRepository,
     IGameChallengeRepository challengeRepository,
     IDivisionRepository divisionRepository,
+    IBlobRepository blobRepository,
     IBlobStorage blobStorage,
     ILogger<GameImportService> logger)
 {
@@ -346,15 +347,24 @@ public class GameImportService(
     }
 
     /// <summary>
-    /// Clean up uploaded files in case of import failure
+    /// Clean up newly uploaded files in case of import failure
     /// </summary>
+    /// <remarks>
+    /// Only files in UploadedFiles (newly uploaded, not previously existing) are cleaned up.
+    /// For files that already existed before import, database rollback will decrease their reference count automatically.
+    /// Since database rollback removes the LocalFile records for newly uploaded files, we must manually delete the physical files.
+    /// </remarks>
     private async Task CleanupUploadedFilesAsync(ImportContext context, CancellationToken ct)
     {
         foreach (var hash in context.UploadedFiles)
         {
             try
             {
-                await blobStorage.DeleteAsync(hash, ct);
+                // After database rollback, LocalFile records for newly uploaded files are gone
+                // We need to delete the physical files directly from storage
+                var path = StoragePath.Combine(PathHelper.Uploads, hash[..2], hash);
+
+                await blobStorage.DeleteAsync(path, ct);
             }
             catch (Exception ex)
             {
@@ -572,15 +582,25 @@ public class GameImportService(
         if (!File.Exists(filePath))
             throw new InvalidOperationException($"Missing file in package: {hash}");
 
-        // Check if file already exists in storage
-        if (await blobStorage.ExistsAsync(hash, ct))
-            return;
+        // Check if file already exists in database
+        var existingFile = await blobRepository.GetBlobByHash(hash, ct);
 
-        // Upload to blob storage
-        await using var fileStream = File.OpenRead(filePath);
-        await blobStorage.WriteAsync(hash, fileStream, cancellationToken: ct);
+        if (existingFile is not null)
+        {
+            // File already exists, only increment reference count
+            // If import fails, database rollback will handle the ref count decrease
+            await blobRepository.IncrementBlobReference(hash, ct);
+        }
+        else
+        {
+            // File doesn't exist, upload new file
+            // These newly uploaded files need to be tracked for cleanup on failure
+            await using var fileStream = File.OpenRead(filePath);
+            var localFile = await blobRepository.CreateOrUpdateBlobFromStream(hash, fileStream, ct);
 
-        // Track uploaded file for potential cleanup on failure
-        context.UploadedFiles.Add(hash);
+            // Track newly uploaded file hash for cleanup on failure
+            // Database rollback will remove the LocalFile record, but physical file needs manual deletion
+            context.UploadedFiles.Add(localFile.Hash);
+        }
     }
 }

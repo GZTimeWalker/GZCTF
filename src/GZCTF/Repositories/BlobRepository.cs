@@ -29,6 +29,31 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         return await StoreBlob(fileName ?? file.FileName, tmp, token);
     }
 
+    public Task<LocalFile> CreateOrUpdateBlobFromStream(string fileName, Stream stream,
+        CancellationToken token = default) =>
+        StoreBlob(fileName, stream, token);
+
+    public async Task<LocalFile?> IncrementBlobReference(string fileHash, CancellationToken token = default)
+    {
+        var localFile = await GetBlobByHash(fileHash, token);
+
+        if (localFile is null)
+            return null;
+
+        localFile.ReferenceCount++;
+        localFile.UploadTimeUtc = DateTimeOffset.UtcNow; // update upload time
+
+        logger.SystemLog(
+            StaticLocalizer[nameof(Resources.Program.FileRepository_ReferenceCounting),
+                localFile.Hash[..8], localFile.Name, localFile.ReferenceCount],
+            TaskStatus.Success, LogLevel.Debug);
+
+        Context.Update(localFile);
+        await SaveAsync(token);
+
+        return localFile;
+    }
+
     public async Task<LocalFile?> CreateOrUpdateImage(IFormFile file, string fileName,
         int resize = 300,
         CancellationToken token = default)
