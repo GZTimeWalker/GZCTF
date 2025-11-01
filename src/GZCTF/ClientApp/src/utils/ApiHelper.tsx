@@ -29,9 +29,16 @@ export const handleAxiosError = async (err: unknown) => {
 const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) => {
   if (res.data instanceof Blob) {
     const blobURL = window.URL.createObjectURL(res.data)
+    const downloadFilenameHeader = res.headers['content-disposition']?.match(/filename="?([^"]+)"?/)
+
+    if (!downloadFilename && downloadFilenameHeader && downloadFilenameHeader.length > 1) {
+      downloadFilename = decodeURIComponent(downloadFilenameHeader[1])
+    }
+
     const anchor = document.createElement('a')
     anchor.style.display = 'none'
     anchor.href = blobURL
+
     if (downloadFilename) {
       anchor.download = downloadFilename
     }

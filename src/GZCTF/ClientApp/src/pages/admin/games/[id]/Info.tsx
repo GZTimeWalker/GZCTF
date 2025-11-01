@@ -176,7 +176,7 @@ const GameInfoEdit: FC = () => {
   const onExportGame = async () => {
     if (!game?.id) return
 
-    await downloadBlob(api.edit.editExportGame(game.id), setDisabled, t)
+    await downloadBlob(api.edit.editExportGame(game.id, { format: 'blob' }), setDisabled, t)
   }
 
   return (

@@ -186,7 +186,7 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
     }
   }
 
-  const willGenerate = ' ' + t('admin.content.games.challenges.flag.instructions.will_generate') + ' '
+  const willGenerate = <>&nbsp;{t('admin.content.games.challenges.flag.instructions.will_generate')}&nbsp;</>
 
   return (
     <Stack>
