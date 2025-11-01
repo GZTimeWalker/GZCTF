@@ -85,7 +85,10 @@ public static class TransferExtensions
                 Template = challenge.FlagTemplate,
                 DisableBloodBonus = challenge.DisableBloodBonus,
                 EnableTrafficCapture = challenge.EnableTrafficCapture,
+                // For dynamic challenges with FlagTemplate, don't export the template flag to Static list
+                // to avoid duplication during import
                 Static = challenge.Flags
+                    .Where(f => string.IsNullOrWhiteSpace(challenge.FlagTemplate) || f.Flag != challenge.FlagTemplate)
                     .Select(f => new StaticFlagSection
                     {
                         Value = f.Flag,
@@ -293,7 +296,7 @@ public static class TransferExtensions
     /// <summary>
     /// Create DivisionChallengeConfig from transfer
     /// </summary>
-    public static DivisionChallengeConfig ToConfig(
+    public static DivisionChallengeConfig ToChallengeConfig(
         this ChallengeConfigSection transfer,
         int divisionId,
         Dictionary<int, int> challengeIdMap)

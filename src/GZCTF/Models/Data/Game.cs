@@ -220,16 +220,16 @@ public partial class Game
     public List<GameNotice> GameNotices { get; set; } = [];
 
     /// <summary>
-    /// Game challenges
-    /// </summary>
-    [JsonIgnore]
-    public List<GameChallenge> Challenges { get; set; } = [];
-
-    /// <summary>
     /// Game submissions
     /// </summary>
     [JsonIgnore]
     public List<Submission> Submissions { get; set; } = [];
+
+    /// <summary>
+    /// Game challenges
+    /// </summary>
+    [JsonIgnore]
+    public HashSet<GameChallenge> Challenges { get; set; } = [];
 
     /// <summary>
     /// Game participations
@@ -241,7 +241,7 @@ public partial class Game
     /// Game teams
     /// </summary>
     [JsonIgnore]
-    public List<Team>? Teams { get; set; }
+    public HashSet<Team>? Teams { get; set; }
 
     /// <summary>
     /// List of divisions for the game

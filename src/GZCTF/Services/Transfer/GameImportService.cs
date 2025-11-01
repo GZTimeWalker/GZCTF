@@ -96,11 +96,21 @@ public class GameImportService(
             await zipStream.CopyToAsync(fileStream, ct);
         }
 
-        // Extract ZIP
-        ZipFile.ExtractToDirectory(tempZipPath, workDir);
-
-        // Delete temporary ZIP file
-        File.Delete(tempZipPath);
+        try
+        {
+            // Extract ZIP
+            ZipFile.ExtractToDirectory(tempZipPath, workDir);
+        }
+        catch (InvalidDataException ex)
+        {
+            throw new InvalidOperationException("Invalid or corrupted ZIP file", ex);
+        }
+        finally
+        {
+            // Always delete temporary ZIP file
+            if (File.Exists(tempZipPath))
+                File.Delete(tempZipPath);
+        }
     }
 
     /// <summary>

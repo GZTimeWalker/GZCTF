@@ -80,7 +80,10 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
     /// Load game data required for export
     /// </summary>
     private Task<Game?> LoadGameDataAsync(int gameId, CancellationToken ct)
-        => dbContext.Games.AsNoTracking().IgnoreAutoIncludes()
+        => dbContext.Games
+            .AsNoTracking()
+            .IgnoreAutoIncludes()
+            .AsSplitQuery() // Use split query to avoid cartesian product
             .Include(g => g.Divisions!)
             .ThenInclude(d => d.ChallengeConfigs)
             .Include(g => g.Challenges)
