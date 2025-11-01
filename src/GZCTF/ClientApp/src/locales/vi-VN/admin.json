@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Chấp nhận ngay sau khi đăng ký đội.",
+          "description": "Bị ghi đè bởi các bộ phận",
           "label": "Tự động duyệt đội"
         },
         "container_limit": {

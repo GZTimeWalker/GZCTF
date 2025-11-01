@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Terima langsung setelah pendaftaran tim",
+          "description": "Ditimpa oleh divisi",
           "label": "Terima tanpa ditinjau"
         },
         "container_limit": {

@@ -204,7 +204,7 @@ public class GameController(
         // =============== Validate invitation code ===============
 
         // Determine which invite code to check:
-        // - If joining a division with an invite code, use division's invite code
+        // - If joining a division with an invitation code, use division's invite code
         // - Otherwise, use game's invite code (if any)
         var requiredInviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
             ? div.InviteCode
@@ -256,8 +256,8 @@ public class GameController(
 
         await participationRepository.SaveAsync(token);
 
-        var divWithoutReview = div is null || !div.DefaultPermissions.HasFlag(GamePermission.RequireReview);
-        if (divWithoutReview && game.AcceptWithoutReview)
+        var shouldAcceptWithoutReview = div is null ? game.AcceptWithoutReview : !div.DefaultPermissions.HasFlag(GamePermission.RequireReview);
+        if (shouldAcceptWithoutReview)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
         await transaction.CommitAsync(token);

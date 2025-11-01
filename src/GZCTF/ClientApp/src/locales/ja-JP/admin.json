@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "チームの参加申込があったら自動的に受け入れます",
+          "description": "部門によって上書きされます",
           "label": "参加承認不要"
         },
         "container_limit": {

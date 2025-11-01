@@ -719,4 +719,61 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         // Assert
         Assert.Equal(HttpStatusCode.OK, joinDivCodeResponse.StatusCode);
     }
+
+    /// <summary>
+    /// Test: Division permissions take precedence over game settings for auto-acceptance
+    /// When division requires review, participation should be pending even if game allows auto-accept
+    /// </summary>
+    [Fact]
+    public async Task JoinGame_DivisionRequiresReview_ShouldNotAutoAccept()
+    {
+        // Arrange - Create game that allows auto-accept
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Division Review Test Game",
+            acceptWithoutReview: true); // Game allows auto-accept
+
+        // Create division that requires review
+        using var adminClient = factory.CreateClient();
+        await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = admin.UserName, Password = adminPassword });
+
+        var divisionResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
+            new DivisionCreateModel
+            {
+                Name = "ReviewRequiredDiv",
+                InviteCode = "REVIEW_DIV",
+                DefaultPermissions = GamePermission.All // Includes RequireReview by default
+            });
+        divisionResponse.EnsureSuccessStatusCode();
+        var division = await divisionResponse.Content.ReadFromJsonAsync<Division>();
+        Assert.NotNull(division);
+
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        using var userClient = factory.CreateClient();
+        await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+
+        // Act - Join division that requires review
+        var joinResponse = await userClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division.Id, InviteCode = "REVIEW_DIV" });
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, joinResponse.StatusCode);
+
+        // Verify participation is pending (not auto-accepted)
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id, default);
+        Assert.NotNull(participation);
+        Assert.Equal(division.Id, participation.DivisionId);
+        Assert.Equal(ParticipationStatus.Pending, participation.Status); // Should be pending due to division requiring review
+    }
 }

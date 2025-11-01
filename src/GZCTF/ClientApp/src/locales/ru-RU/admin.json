@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Принимать команды сразу после регистрации",
+          "description": "Переопределяется подразделениями",
           "label": "Принимать без проверки"
         },
         "container_limit": {

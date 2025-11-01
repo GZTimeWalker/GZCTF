@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "팀 가입 이후 승인됩니다.",
+          "description": "부서에 의해 재정의됨",
           "label": "검토 없이 수락"
         },
         "container_limit": {

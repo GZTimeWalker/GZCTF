@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "隊伍報名後直接設置為 Accept 狀態",
+          "description": "會被分組配置覆蓋",
           "label": "隊伍報名免審核"
         },
         "container_limit": {

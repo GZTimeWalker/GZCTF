@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Direkt nach der Teamregistrierung akzeptieren",
+          "description": "Wird von Divisionen überschrieben",
           "label": "Akzeptieren ohne Prüfung"
         },
         "container_limit": {

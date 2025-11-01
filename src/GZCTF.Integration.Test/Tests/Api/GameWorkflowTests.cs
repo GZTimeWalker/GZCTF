@@ -712,13 +712,13 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
                                  GamePermission.RequireReview
         }, CancellationToken.None);
 
-        // Division 3: GameDefault - No explicit permission, should follow game setting (auto-accepts)
+        // Division 3: GameDefault - No explicit permission
         var gameDefaultDiv = await divisionRepo.CreateDivision(fullGame, new DivisionCreateModel
         {
             Name = "GameDefault",
             DefaultPermissions = GamePermission.JoinGame | GamePermission.ViewChallenge |
                                  GamePermission.SubmitFlags | GamePermission.GetScore
-            // No RequireReview, follows game setting
+            // No RequireReview, should accept without review (override game config)
         }, CancellationToken.None);
 
         // Create three teams with different users
@@ -799,10 +799,10 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
             new GameJoinModel { TeamId = newTeam.Id, DivisionId = gameDefaultDiv.Id });
         newJoinResponse.EnsureSuccessStatusCode();
 
-        // Verify new participation follows game's AcceptWithoutReview = false (requires review)
+        // Verify new participation follows division's permission
         var newPart = await context.Participations
             .FirstOrDefaultAsync(p => p.TeamId == newTeam.Id && p.GameId == game.Id);
         Assert.NotNull(newPart);
-        Assert.Equal(ParticipationStatus.Pending, newPart.Status);
+        Assert.Equal(ParticipationStatus.Accepted, newPart.Status);
     }
 }

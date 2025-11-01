@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "队伍报名后直接设置为 Accept 状态",
+          "description": "会被分组配置覆盖",
           "label": "队伍报名免审核"
         },
         "container_limit": {

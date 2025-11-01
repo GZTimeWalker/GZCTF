@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Accept team after registration",
+          "description": "Overridden by divisions",
           "label": "Accept Without Review"
         },
         "container_limit": {

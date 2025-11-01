@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Aceptar directamente después de la inscripción del equipo",
+          "description": "Anulado por divisiones",
           "label": "Aceptar Sin Revisión"
         },
         "container_limit": {

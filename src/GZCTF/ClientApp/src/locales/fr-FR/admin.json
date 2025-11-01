@@ -245,7 +245,7 @@
       },
       "info": {
         "accept_without_review": {
-          "description": "Accepter directement après l'inscription de l'équipe",
+          "description": "Remplacé par les divisions",
           "label": "Accepter sans révision"
         },
         "container_limit": {
