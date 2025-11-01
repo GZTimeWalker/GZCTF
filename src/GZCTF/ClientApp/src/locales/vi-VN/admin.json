@@ -47,6 +47,8 @@
       },
       "copy_public_key": "Sao chép Khóa Công khai",
       "delete": "Xóa",
+      "export": "Xuất Trò chơi",
+      "import": "Nhập Trò chơi",
       "new": "Trò chơi Mới"
     },
     "notices": {
@@ -482,6 +484,14 @@
         "deleted": "Bảng đã bị xóa.",
         "invite_copied": "Mã mời đã được sao chép vào bộ nhớ tạm.",
         "updated": "Bảng đã được cập nhật."
+      },
+      "export": {
+        "exported": "Trò chơi đã được xuất thành công",
+        "exporting": "Đang xuất trò chơi..."
+      },
+      "import": {
+        "imported": "Trò chơi đã được nhập thành công",
+        "importing": "Đang nhập trò chơi..."
       },
       "info": {
         "deleted": "Trò chơi đã bị xóa.",

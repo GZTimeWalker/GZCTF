@@ -262,9 +262,6 @@
         },
         "end_date": "End Date",
         "end_time": "End Time",
-        "import": {
-          "description": "Upload game package (.zip) to import game configuration, challenges, and attachments"
-        },
         "invite_code": {
           "description": "Leave empty for no invitation code",
           "label": "Invitation Code"

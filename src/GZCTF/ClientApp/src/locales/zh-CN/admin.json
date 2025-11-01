@@ -262,9 +262,6 @@
         },
         "end_date": "结束日期",
         "end_time": "结束时间",
-        "import": {
-          "description": "上传比赛数据包(.zip)以导入比赛配置、题目和附件"
-        },
         "invite_code": {
           "description": "留空表示不使用邀请码",
           "label": "邀请码"

@@ -47,6 +47,8 @@
       },
       "copy_public_key": "Salin public key",
       "delete": "Hapus",
+      "export": "Ekspor Game",
+      "import": "Impor Game",
       "new": "Game baru"
     },
     "notices": {
@@ -482,6 +484,14 @@
         "deleted": "Divisi dihapus",
         "invite_copied": "Kode undangan disalin ke clipboard",
         "updated": "Divisi diperbarui"
+      },
+      "export": {
+        "exported": "Game berhasil diekspor",
+        "exporting": "Mengekspor game..."
+      },
+      "import": {
+        "imported": "Game berhasil diimpor",
+        "importing": "Mengimpor game..."
       },
       "info": {
         "deleted": "Game dihapus",

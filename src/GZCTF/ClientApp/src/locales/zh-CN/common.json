@@ -50,7 +50,6 @@
       "limit": "请选择小于 3MB 的图片",
       "type": {
         "avatar": "头像",
-        "game_package": "比赛数据包",
         "poster": "海报"
       }
     },
