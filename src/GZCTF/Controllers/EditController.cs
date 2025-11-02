@@ -1024,6 +1024,7 @@ public class EditController(
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status500InternalServerError)]
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
     public async Task<IActionResult> ImportGame(IFormFile file, CancellationToken token = default)
     {
         switch (file.Length)
@@ -1034,8 +1035,8 @@ public class EditController(
                     TaskStatus.Failed,
                     LogLevel.Warning);
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
-            case > 128 * 1024 * 1024:
-                // 128MB limit
+            case > 512 * 1024 * 1024:
+                // 512MB limit
                 logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.File_SizeTooLarge), file.FileName],
                     TaskStatus.Failed,
@@ -1043,7 +1044,8 @@ public class EditController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
         }
 
-        if (!file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) || file.ContentType != "application/zip")
+        if (!file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) ||
+            file.ContentType != "application/zip")
         {
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.File_TypeNotSupported), file.FileName],
@@ -1087,10 +1089,10 @@ public class EditController(
                 StaticLocalizer[nameof(Resources.Program.Game_ImportFailed), file.FileName],
                 TaskStatus.Failed,
                 LogLevel.Error);
-            logger.LogError(ex, "Failed to import game from file {FileName}: {ErrorMessage}", file.FileName, ex.Message);
+            logger.LogError(ex, "Failed to import game from file {FileName}: {ErrorMessage}", file.FileName,
+                ex.Message);
             return RequestResponse.Result(localizer[nameof(Resources.Program.Error_InternalServerError)],
                 StatusCodes.Status500InternalServerError);
         }
     }
-
 }

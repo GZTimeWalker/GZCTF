@@ -476,7 +476,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var team1Item = itemsArray.Any(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team1.Id);
         Assert.True(team1Item);
-        
+
         var team2Item = itemsArray.Any(item =>
             item.TryGetProperty("id", out var id) && id.GetInt32() == team2.Id);
         Assert.True(team2Item);

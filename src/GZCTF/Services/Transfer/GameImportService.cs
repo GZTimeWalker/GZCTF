@@ -195,8 +195,6 @@ public class GameImportService(
     /// </summary>
     private async Task<int> ImportToDatabaseAsync(ImportContext context, CancellationToken ct)
     {
-        // Validate all data recursively before import
-        logger.SystemLog("Validating import data...", TaskStatus.Pending, LogLevel.Information);
         TransferValidator.ValidateRecursive(context.Game, "Game");
         foreach (var challenge in context.Challenges)
         {
