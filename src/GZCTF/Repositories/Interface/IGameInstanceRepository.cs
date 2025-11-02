@@ -52,10 +52,10 @@ public interface IGameInstanceRepository : IRepository
         Game game, CancellationToken token = default);
 
     /// <summary>
-    /// Destroy all instances of a challenge
+    /// Destroy all containers of a challenge
     /// </summary>
     /// <param name="challenge">Challenge</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task DestroyAllInstances(GameChallenge challenge, CancellationToken token = default);
+    public Task DestroyAllContainers(GameChallenge challenge, CancellationToken token = default);
 }
