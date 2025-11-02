@@ -669,6 +669,8 @@ public class EditController(
     public async Task<IActionResult> UpdateGameChallenge([FromRoute] int id, [FromRoute] int cId,
         [FromBody] ChallengeUpdateModel model, CancellationToken token)
     {
+        await using var transaction = await challengeRepository.BeginTransactionAsync(token);
+
         var game = await gameRepository.GetGameById(id, token);
 
         if (game is null)
@@ -705,27 +707,34 @@ public class EditController(
 
         res.Update(model);
 
-        if (model.IsEnabled == true)
+        switch (model.IsEnabled)
         {
-            // Will also update IsEnabled
-            await challengeRepository.EnsureInstances(res, game, token);
+            case true:
+                {
+                    // Will also update IsEnabled
+                    await challengeRepository.EnsureInstances(res, game, token);
 
-            if (game.IsActive)
-                await gameNoticeRepository.AddNotice(
-                    new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, token);
-        }
-        else
-        {
-            if (!res.Type.IsContainer())
-                await instanceRepository.DestroyAllInstances(res, token);
-
-            await challengeRepository.SaveAsync(token);
+                    if (game.IsActive)
+                        await gameNoticeRepository.AddNotice(
+                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, token);
+                    break;
+                }
+            case false when res.Type.IsContainer():
+                await instanceRepository.DestroyAllContainers(res, token);
+                break;
+            case null:
+                // do nothing
+                break;
         }
 
         if (game.IsActive && res.IsEnabled && hintUpdated)
             await gameNoticeRepository.AddNotice(
                 new() { Game = game, Type = NoticeType.NewHint, Values = [res.Title] },
                 token);
+
+        await challengeRepository.SaveAsync(token);
+
+        await transaction.CommitAsync(token);
 
         // Always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);

@@ -212,7 +212,7 @@ public class GameInstanceRepository(
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
     }
 
-    public async Task DestroyAllInstances(GameChallenge challenge, CancellationToken token = default)
+    public async Task DestroyAllContainers(GameChallenge challenge, CancellationToken token = default)
     {
         foreach (var container in await Context.GameInstances
                      .Include(i => i.Container)
