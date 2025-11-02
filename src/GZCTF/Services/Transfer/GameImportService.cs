@@ -337,6 +337,7 @@ public class GameImportService(
             // Update division with full configuration
             await divisionRepository.UpdateDivision(division, new DivisionEditModel
             {
+                Name = transferDivision.Name,
                 InviteCode = transferDivision.InviteCode,
                 DefaultPermissions = defaultPermissions,
                 ChallengeConfigs = challengeConfigs

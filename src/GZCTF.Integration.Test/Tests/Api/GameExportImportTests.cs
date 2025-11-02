@@ -702,6 +702,15 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         Assert.NotNull(importedGame.Divisions);
         Assert.Equal(originalGame.Divisions!.Count, importedGame.Divisions.Count);
 
+        // Validate division names are preserved
+        foreach (var originalDivision in originalGame.Divisions!)
+        {
+            var importedDivision = importedGame.Divisions!.FirstOrDefault(d => d.Name == originalDivision.Name);
+            Assert.NotNull(importedDivision);
+            Assert.Equal(originalDivision.Name, importedDivision.Name);
+            output.WriteLine($"Division '{originalDivision.Name}' preserved correctly ✓");
+        }
+
         // Validate challenges count and basic properties
         Assert.NotNull(importedGame.Challenges);
         Assert.Equal(originalGame.Challenges.Count, importedGame.Challenges.Count);
