@@ -29,10 +29,22 @@ export const handleAxiosError = async (err: unknown) => {
 const openAxiosBlobResponse = (res: AxiosResponse, downloadFilename?: string) => {
   if (res.data instanceof Blob) {
     const blobURL = window.URL.createObjectURL(res.data)
-    const downloadFilenameHeader = res.headers['content-disposition']?.match(/filename="?([^"]+)"?/)
+    const contentDisposition = res.headers['content-disposition']
 
-    if (!downloadFilename && downloadFilenameHeader && downloadFilenameHeader.length > 1) {
-      downloadFilename = decodeURIComponent(downloadFilenameHeader[1])
+    const extractFilename = (header: string): string | undefined => {
+      const filenameStarMatch = header.match(/filename\*=UTF-8''([^;]+)/i)
+      if (filenameStarMatch) {
+        return decodeURIComponent(filenameStarMatch[1])
+      }
+      const filenameMatch = header.match(/filename="?([^";]+)"?/)
+      if (filenameMatch) {
+        return filenameMatch[1]
+      }
+      return undefined
+    }
+
+    if (!downloadFilename && contentDisposition) {
+      downloadFilename = extractFilename(contentDisposition)
     }
 
     const anchor = document.createElement('a')
