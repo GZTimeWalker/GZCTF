@@ -28,7 +28,6 @@ import { useLanguage } from '@Utils/I18n'
 import { showErrorMsg } from '@Utils/Shared'
 import { HunamizeSize } from '@Utils/Shared'
 import api, { FileRecord } from '@Api'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const SWROptions = {
   refreshInterval: 0,
@@ -194,7 +193,7 @@ const Traffic: FC = () => {
                   </Text>
                 </Text>
                 <Group justify="right" gap="sm" wrap="nowrap">
-                  <Tooltip label={t('game.button.delete.all_traffic')} position="left" classNames={tooltipClasses}>
+                  <Tooltip label={t('game.button.delete.all_traffic')} position="left">
                     <ActionIcon
                       size="md"
                       onClick={() =>
@@ -209,7 +208,7 @@ const Traffic: FC = () => {
                       <Icon path={mdiDeleteForeverOutline} size={1} />
                     </ActionIcon>
                   </Tooltip>
-                  <Tooltip label={t('game.button.download.all_traffic')} position="left" classNames={tooltipClasses}>
+                  <Tooltip label={t('game.button.download.all_traffic')} position="left">
                     <ActionIcon size="md" onClick={onDownloadAll}>
                       <Icon path={mdiDownloadMultiple} size={1} />
                     </ActionIcon>

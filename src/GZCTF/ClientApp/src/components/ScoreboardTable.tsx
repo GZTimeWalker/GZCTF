@@ -39,7 +39,6 @@ import { useGameScoreboard } from '@Hooks/useGame'
 import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import classes from '@Styles/ScoreboardTable.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const Widths = [60, 60, 175, 60, 70, 60]
 const Lefts = Widths.reduce(
@@ -211,7 +210,6 @@ const TableRow: FC<{
             return (
               <Table.Td key={item.id} className={classes.mono}>
                 <Tooltip
-                  classNames={tooltipClasses}
                   transitionProps={{ transition: 'pop' }}
                   label={
                     <Stack align="flex-start" gap={0} maw="20rem">

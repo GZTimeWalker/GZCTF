@@ -7,7 +7,6 @@ import { useIsMobile } from '@Utils/ThemeOverride'
 import { TeamInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import teamCardClasses from '@Styles/TeamCard.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface TeamCardProps {
   team: TeamInfoModel
@@ -49,7 +48,7 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
             </Text>
             <Avatar.Group className={teamCardClasses.avatarGroup}>
               {team.members?.slice(0, 6).map((m) => (
-                <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
+                <Tooltip key={m.id} label={m.userName} withArrow>
                   <Avatar alt="avatar" radius="xl" size="md" src={m.avatar}>
                     {m.userName?.slice(0, 1) ?? 'U'}
                   </Avatar>

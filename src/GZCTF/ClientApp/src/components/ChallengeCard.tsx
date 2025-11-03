@@ -24,7 +24,6 @@ import { BloodsTypes, PartialIconProps, useChallengeCategoryLabelMap } from '@Ut
 import { ChallengeInfo, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengeCard.module.css'
 import misc from '@Styles/Misc.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface ChallengeCardProps {
   challenge: ChallengeInfo
@@ -90,7 +89,6 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
                       key={idx}
                       position="bottom"
                       multiline
-                      classNames={tooltipClasses}
                       label={
                         <Stack gap={0}>
                           <Text fw={500} size="sm">

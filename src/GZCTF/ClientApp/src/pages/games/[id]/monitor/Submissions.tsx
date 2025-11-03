@@ -38,7 +38,6 @@ import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useGame } from '@Hooks/useGame'
 import api, { AnswerResult, Submission } from '@Api'
 import tableClasses from '@Styles/Table.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const ITEM_COUNT_PER_PAGE = 50
 
@@ -221,7 +220,7 @@ const Submissions: FC = () => {
           ]}
         />
         <Group justify="right">
-          <Tooltip label={t('game.button.download.submissionsheet')} position="left" classNames={tooltipClasses}>
+          <Tooltip label={t('game.button.download.submissionsheet')} position="left">
             <ActionIcon disabled={disabled} size="lg" onClick={onDownloadSubmissionSheet}>
               <Icon path={mdiDownload} size={1} />
             </ActionIcon>

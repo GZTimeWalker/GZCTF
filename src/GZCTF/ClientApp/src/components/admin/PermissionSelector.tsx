@@ -10,7 +10,6 @@ import {
 } from '@Utils/Permission'
 import { GamePermission } from '@Api'
 import classes from '@Styles/PermissionDot.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 interface PermissionSelectorProps extends Omit<StackProps, 'onChange' | 'children'> {
   value?: number | null
@@ -106,7 +105,6 @@ export const PermissionDot: FC<PermissionDotProps> = ({ granted = true, ...defin
       label={t(getPermissionI18nKey(definition.i18nKey, 'label'))}
       withArrow
       position="top"
-      classNames={tooltipClasses}
     >
       <Box
         component="span"

@@ -22,7 +22,6 @@ import { useConfig } from '@Hooks/useConfig'
 import { ClientFlagContext, ContainerPortMappingType } from '@Api'
 import classes from '@Styles/InstanceEntry.module.css'
 import misc from '@Styles/Misc.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 dayjs.extend(duration)
 
@@ -244,19 +243,18 @@ export const InstanceEntry: FC<InstanceEntryProps> = (props) => {
                     : t('challenge.button.instance.show.original')
                 }
                 withArrow
-                classNames={tooltipClasses}
               >
                 <ActionIcon onClick={() => setForceShowOriginal((prev) => !prev)}>
                   <Icon path={mdiTransitConnectionVariant} size={1} />
                 </ActionIcon>
               </Tooltip>
             )}
-            <Tooltip label={t('common.button.copy')} withArrow classNames={tooltipClasses}>
+            <Tooltip label={t('common.button.copy')} withArrow>
               <ActionIcon onClick={onCopyEntry}>
                 <Icon path={mdiContentCopy} size={1} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip label={t('challenge.content.instance.open.web')} withArrow classNames={tooltipClasses}>
+            <Tooltip label={t('challenge.content.instance.open.web')} withArrow>
               <ActionIcon
                 disabled={entryIsWss}
                 component="a"

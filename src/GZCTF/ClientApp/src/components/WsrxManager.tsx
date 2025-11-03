@@ -7,7 +7,6 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DefaultWsrxOptions, useWsrx } from '@Components/WsrxProvider'
 import misc from '@Styles/Misc.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 /**
  * WsrxManager component
@@ -52,12 +51,12 @@ export const WsrxManager: FC = () => {
             </Text>
           )}
         </Stack>
-        <Tooltip label={t('common.button.retry')} withArrow classNames={tooltipClasses}>
+        <Tooltip label={t('common.button.retry')} withArrow>
           <ActionIcon variant="subtle" onClick={doWsrxConnect} loading={wsrxState === WsrxState.Pending}>
             <Icon path={mdiRefresh} size={1} />
           </ActionIcon>
         </Tooltip>
-        <Tooltip label={t('wsrx.button.config')} withArrow classNames={tooltipClasses}>
+        <Tooltip label={t('wsrx.button.config')} withArrow>
           <ActionIcon variant="subtle" onClick={() => setShowConfig((prev) => !prev)}>
             <Icon path={mdiTuneVertical} size={1} />
           </ActionIcon>

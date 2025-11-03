@@ -11,6 +11,7 @@ import {
   Popover,
   Switch,
   Tabs,
+  Tooltip,
   createTheme,
   useMantineTheme,
 } from '@mantine/core'
@@ -18,6 +19,7 @@ import { createStyles } from '@mantine/emotion'
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks'
 import { useEffect, useState } from 'react'
 import { useConfig } from '@Hooks/useConfig'
+import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const CustomTheme: MantineThemeOverride = {
   colors: {
@@ -170,6 +172,9 @@ const CustomTheme: MantineThemeOverride = {
           fontWeight: 500,
         },
       },
+    }),
+    Tooltip: Tooltip.extend({
+      classNames: tooltipClasses,
     }),
   },
 }

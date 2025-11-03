@@ -2,6 +2,7 @@
   box-sizing: border-box;
   max-width: max-content;
   min-width: 100%;
+  --typo-line-gap: calc(var(--mantine-spacing-xs) / 2);
 
   & :global(.shiki),
   & :global(.shiki) span {
@@ -37,13 +38,23 @@
     padding-inline-start: var(--mantine-font-size-lg);
   }
 
-  & :where(ul, ol):last-child {
+  & :where(ul, ol):not([data-type='taskList']) {
+    margin-bottom: var(--typo-line-gap);
+  }
+
+  & :where(ul, ol):last-child,
+  :where(li):last-child {
     margin-bottom: 0;
   }
 
   & :where(li)::marker {
     color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-1));
     font-weight: 500;
+  }
+
+  & :where(li) {
+    line-height: var(--mantine-line-height);
+    margin-bottom: var(--typo-line-gap);
   }
 
   & :where(table) :where(th) {
@@ -60,8 +71,8 @@
   }
 
   & :where(blockquote) {
-    padding: calc(var(--mantine-spacing-xs) / 2) var(--mantine-spacing-md);
-    margin-bottom: var(--mantine-spacing-md);
+    padding: var(--typo-line-gap) var(--mantine-spacing-xs);
+    margin: var(--typo-line-gap) 0;
     font-size: var(--mantine-font-size-md);
     color: light-dark(alpha(var(--mantine-color-gray-7), 0.9), alpha(var(--mantine-color-dark-0), 0.9));
     background-color: light-dark(alpha(var(--mantine-color-dark-1), 0.1), alpha(var(--mantine-color-light-2), 0.03));
@@ -82,7 +93,7 @@
   & :not(pre) > code {
     white-space: normal;
     font-size: calc(var(--mantine-font-size-md) * 0.9375);
-    padding: 1px calc(var(--mantine-spacing-xs) / 2);
+    padding: 1px var(--typo-line-gap);
     border: none;
     background-color: light-dark(alpha(var(--mantine-white), 0.05), alpha(var(--mantine-black), 0.1));
   }

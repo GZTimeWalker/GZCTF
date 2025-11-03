@@ -37,7 +37,6 @@ import { useArrayResponse } from '@Hooks/useArrayResponse'
 import api, { TeamInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const ITEM_COUNT_PER_PAGE = 30
 
@@ -240,7 +239,7 @@ const Teams: FC = () => {
                           <Avatar.Group spacing="md">
                             {members &&
                               members.slice(0, 8).map((m) => (
-                                <Tooltip key={m.id} label={m.userName} withArrow classNames={tooltipClasses}>
+                                <Tooltip key={m.id} label={m.userName} withArrow>
                                   <Avatar alt="avatar" radius="xl" src={m.avatar}>
                                     {m.userName?.slice(0, 1) ?? 'U'}
                                   </Avatar>

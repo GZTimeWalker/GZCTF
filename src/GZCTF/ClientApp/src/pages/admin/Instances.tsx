@@ -36,7 +36,6 @@ import api, { ChallengeModel, ChallengeCategory, TeamModel } from '@Api'
 import classes from '@Styles/Instances.module.css'
 import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
-import tooltipClasses from '@Styles/Tooltip.module.css'
 
 type SelectTeamItemProps = TeamModel & ComboboxItem
 type SelectChallengeItemProps = ChallengeModel & ComboboxItem
@@ -247,12 +246,7 @@ const Instances: FC = () => {
                       </Table.Td>
                       <Table.Td>
                         <Text size="sm" ff="monospace" lineClamp={1}>
-                          <Tooltip
-                            label={t('common.button.copy')}
-                            withArrow
-                            position="left"
-                            classNames={tooltipClasses}
-                          >
+                          <Tooltip label={t('common.button.copy')} withArrow position="left">
                             <Text
                               size="sm"
                               ff="monospace"
@@ -275,7 +269,7 @@ const Instances: FC = () => {
                         </Text>
                       </Table.Td>
                       <Table.Td>
-                        <Tooltip label={t('common.button.copy')} withArrow position="left" classNames={tooltipClasses}>
+                        <Tooltip label={t('common.button.copy')} withArrow position="left">
                           <Text
                             size="sm"
                             c="dimmed"
