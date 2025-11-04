@@ -94,4 +94,24 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Fallback_CONNECT_Method_Returns405()
+    {
+        var request = new HttpRequestMessage(new HttpMethod("CONNECT"), "/nonexistent");
+        var response = await _client.SendAsync(request);
+        output.WriteLine($"CONNECT Status: {response.StatusCode}");
+
+        Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Fallback_GET_Method_ReturnsIndex()
+    {
+        var response = await _client.GetAsync("/nonexistent");
+        output.WriteLine($"GET Status: {response.StatusCode}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("text/html", response.Content.Headers.ContentType?.MediaType);
+    }
 }

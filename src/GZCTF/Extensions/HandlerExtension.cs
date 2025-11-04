@@ -5,14 +5,12 @@ using System.Text.Encodings.Web;
 using GZCTF.Models.Internal;
 using GZCTF.Providers;
 using GZCTF.Services.Cache;
-using GZCTF.Storage;
 using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
-using Serilog;
 
 namespace GZCTF.Extensions;
 
@@ -142,6 +140,9 @@ public static class HandlerExtension
         IOptionsSnapshot<GlobalConfig> globalConfig,
         CancellationToken token = default)
     {
+        if (context.Request.Method != HttpMethods.Get && context.Request.Method != HttpMethods.Head)
+            return Results.StatusCode(StatusCodes.Status405MethodNotAllowed);
+
         var content = await cacheHelper.GetStringAsync(CacheKey.Index, token);
 
         if (content is null)

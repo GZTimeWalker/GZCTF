@@ -368,7 +368,7 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         loginResponse.EnsureSuccessStatusCode();
 
         // Act: Try to update attachment for non-existent challenge
-        var updateResponse = await adminClient.PutAsJsonAsync(
+        var updateResponse = await adminClient.PostAsJsonAsync(
             $"/api/Edit/Games/{game.Id}/Challenges/99999/Attachment",
             new AttachmentCreateModel { AttachmentType = FileType.Local, FileHash = "test-hash" });
 
@@ -602,7 +602,7 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         Assert.Equal(HttpStatusCode.NotFound, deleteChallengeResponse.StatusCode);
 
         // UpdateAttachment with non-existent challenge
-        var updateAttachmentResponse = await adminClient.PutAsJsonAsync(
+        var updateAttachmentResponse = await adminClient.PostAsJsonAsync(
             $"/api/Edit/Games/{nonExistentGameId}/Challenges/{nonExistentChallengeId}/Attachment",
             new AttachmentCreateModel { AttachmentType = FileType.Local, FileHash = "test-hash" });
         Assert.Equal(HttpStatusCode.NotFound, updateAttachmentResponse.StatusCode);
