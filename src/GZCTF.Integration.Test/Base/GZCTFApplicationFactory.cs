@@ -1,4 +1,3 @@
-using Docker.DotNet.Models;
 using GZCTF.Models;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
@@ -96,6 +95,13 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         // Set content root to a unique test directory to avoid file conflicts
         var testProjectDir = Path.Combine(Directory.GetCurrentDirectory(), $"test-{_testId}");
         Directory.CreateDirectory(testProjectDir);
+
+        // Copy index.html to test wwwroot so fallback works
+        var wwwrootDir = Path.Combine(testProjectDir, "wwwroot");
+        Directory.CreateDirectory(wwwrootDir);
+        var indexPath = Path.Combine(wwwrootDir, "index.html");
+        // Create a dummy index.html for testing
+        File.WriteAllText(indexPath, "<!DOCTYPE html><html><head><title>Test</title></head><body>Test</body></html>");
 
         builder.UseContentRoot(testProjectDir);
 
