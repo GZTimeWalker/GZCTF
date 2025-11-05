@@ -1,11 +1,8 @@
 using System.IO.Compression;
 using GZCTF.Models.Request.Edit;
-using GZCTF.Models.Request.Game;
 using GZCTF.Models.Transfer;
 using GZCTF.Repositories.Interface;
 using GZCTF.Storage.Interface;
-using GZCTF.Utils;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GZCTF.Services.Transfer;
 
@@ -164,7 +161,7 @@ public class GameImportService(
             WorkDir: workDir,
             ChallengeIdMap: new Dictionary<int, int>(),
             DivisionIdMap: new Dictionary<int, int>(),
-            UploadedFiles: new HashSet<string>());
+            UploadedFiles: []);
     }
 
     /// <summary>

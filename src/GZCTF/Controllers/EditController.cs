@@ -1009,6 +1009,8 @@ public class EditController(
         }
     }
 
+    static readonly string[] AllowedImportContentTypes = ["application/zip", "application/x-zip-compressed"];
+
     /// <summary>
     /// Import game package
     /// </summary>
@@ -1045,7 +1047,7 @@ public class EditController(
         }
 
         if (!file.FileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) ||
-            file.ContentType != "application/zip")
+            !AllowedImportContentTypes.Contains(file.ContentType))
         {
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.File_TypeNotSupported), file.FileName],
