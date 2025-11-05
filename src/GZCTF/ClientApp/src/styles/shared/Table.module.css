@@ -36,22 +36,15 @@
   }
 }
 
+.fixed {
+  table-layout: fixed;
+}
+
 .clickable {
   cursor: pointer;
 }
 
-.nopadding {
-  padding: 0;
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%;
-
-  & th {
-    padding-left: 0;
-  }
-
-  & tbody tr td {
-    white-space: nowrap;
-    padding: 0 1rem 0 0;
-  }
+.overflow {
+  scrollbar-width: none;
+  overflow-x: scroll;
 }

@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Badge,
   Group,
-  Input,
   Paper,
   ScrollArea,
   SegmentedControl,
@@ -47,7 +46,6 @@ const Logs: FC = () => {
   const { t } = useTranslation()
   const { locale } = useLanguage()
   const viewport = useRef<HTMLDivElement>(null)
-  const { classes: inputClasses } = useDisplayInputStyles({ fw: 500, ff: 'monospace' })
 
   useEffect(() => {
     viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -138,7 +136,9 @@ const Logs: FC = () => {
           </Badge>
         </Table.Td>
         <Table.Td>
-          <Input variant="unstyled" value={item.ip || ''} readOnly size="sm" classNames={inputClasses} />
+          <Text ff="monospace" size="sm" className={tableClasses.overflow}>
+            {item.ip || ''}
+          </Text>
         </Table.Td>
         <Table.Td>
           <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
@@ -146,7 +146,9 @@ const Logs: FC = () => {
           </Text>
         </Table.Td>
         <Table.Td>
-          <Input variant="unstyled" value={item.msg || ''} readOnly size="sm" />
+          <Text size="sm" className={tableClasses.overflow}>
+            {item.msg || ''}
+          </Text>
         </Table.Td>
         <Table.Td ff="monospace">
           {item.status && (
@@ -193,13 +195,13 @@ const Logs: FC = () => {
     >
       <Paper shadow="md" p="md" w="100%">
         <ScrollArea viewportRef={viewport} offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
-          <Table className={cx(tableClasses.table, tableClasses.nopadding)}>
+          <Table className={cx(tableClasses.table, tableClasses.fixed)}>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th w="7rem">{t('common.label.time')}</Table.Th>
-                <Table.Th w="12%">{t('common.label.ip')}</Table.Th>
+                <Table.Th w="7.2rem">{t('common.label.time')}</Table.Th>
+                <Table.Th w="10rem">{t('common.label.ip')}</Table.Th>
                 <Table.Th w="6rem">{t('common.label.user')}</Table.Th>
-                <Table.Th>{t('admin.label.logs.message')}</Table.Th>
+                <Table.Th w="100%">{t('admin.label.logs.message')}</Table.Th>
                 <Table.Th w="6rem">{t('admin.label.logs.status')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
