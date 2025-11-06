@@ -286,7 +286,7 @@ const GameDetail: FC = () => {
             >
               <Trans i18nKey="game.participation.alert.team_required.content">
                 _
-                <Anchor component={Link} to="/teams">
+                <Anchor component={Link} size="sm" to="/teams">
                   _
                 </Anchor>
                 _
