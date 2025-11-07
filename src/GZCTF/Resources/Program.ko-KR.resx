@@ -728,6 +728,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>Welcome to GZ::CTF!</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>XorKey 필드가 구성되지 않았습니다. 플랫폼 시작 구성을 확인하세요</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>문제 {1}의 {0} 컨테이너 [{2}]가 자동으로 삭제되었습니다</value>
   </data>

@@ -728,6 +728,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>Selamat datang di GZ::CTF!</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>Bidang XorKey belum dikonfigurasi, silakan periksa konfigurasi startup platform</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} secara otomatis menghapus container [{2}] dari challenge {1}</value>
   </data>

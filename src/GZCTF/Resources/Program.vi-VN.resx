@@ -728,6 +728,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>Chào mừng bạn đến với GZ::CTF!</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>Trường XorKey chưa được cấu hình, vui lòng kiểm tra cấu hình khởi động nền tảng</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} đã tự động xóa container [{2}] của thử thách {1}</value>
   </data>

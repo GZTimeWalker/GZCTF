@@ -746,6 +746,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>Willkommen bei GZ::CTF!</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>XorKey-Feld ist nicht konfiguriert, bitte überprüfen Sie die Plattformstart-Konfiguration</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} hat den Container [{2}] der Herausforderung {1} automatisch zerstört</value>
   </data>

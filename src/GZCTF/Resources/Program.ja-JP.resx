@@ -728,6 +728,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>GZ::CTF へようこそ！</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>XorKey フィールドが設定されていません。プラットフォームの起動設定を確認してください</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} はチャレンジ {1} のコンテナインスタンス [{2}] を自動的に破棄しました</value>
   </data>

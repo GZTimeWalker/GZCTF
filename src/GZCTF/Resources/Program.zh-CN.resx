@@ -728,6 +728,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>欢迎使用 GZ::CTF</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>XorKey 字段没有被设定，请检查平台启动配置</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>{0} 自动销毁题目 {1} 的容器实例 [{2}]</value>
   </data>

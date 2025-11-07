@@ -8,7 +8,7 @@ namespace GZCTF.Controllers;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorController(IStringLocalizer<Program> localizer) : ControllerBase
 {
-    [HttpGet("500")]
+    [Route("500")]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status500InternalServerError)]
     public Task<IActionResult> InternalServerError(CancellationToken cancellationToken) =>
         Task.FromResult<IActionResult>(StatusCode(500,

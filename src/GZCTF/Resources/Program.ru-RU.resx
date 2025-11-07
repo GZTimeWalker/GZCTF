@@ -728,6 +728,9 @@
   <data name="Init_PostTitle" xml:space="preserve">
     <value>Добро пожаловать в GZ::CTF!</value>
   </data>
+  <data name="Init_XorKeyNotSet" xml:space="preserve">
+    <value>Поле XorKey не сконфигурировано, пожалуйста проверьте конфигурацию запуска платформы</value>
+  </data>
   <data name="InstanceRepository_ContainerAutoDestroy" xml:space="preserve">
     <value>Контейнер [{2}] команды {0} из задания {1} автоматически уничтожен</value>
   </data>
