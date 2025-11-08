@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Badge,
   Group,
-  Input,
   Paper,
   ScrollArea,
   SegmentedControl,
@@ -16,13 +15,12 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import cx from 'clsx'
 import dayjs from 'dayjs'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { handleAxiosError } from '@Utils/ApiHelper'
 import { useLanguage } from '@Utils/I18n'
 import { TaskStatusColorMap } from '@Utils/Shared'
-import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import api, { LogMessageModel, TaskStatus } from '@Api'
 import tableClasses from '@Styles/Table.module.css'
 
@@ -47,7 +45,6 @@ const Logs: FC = () => {
   const { t } = useTranslation()
   const { locale } = useLanguage()
   const viewport = useRef<HTMLDivElement>(null)
-  const { classes: inputClasses } = useDisplayInputStyles({ fw: 500, ff: 'monospace' })
 
   useEffect(() => {
     viewport.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -132,21 +129,25 @@ const Logs: FC = () => {
             : undefined
         }
       >
-        <Table.Td>
+        <Table.Td className={tableClasses.time}>
           <Badge size="sm" color="indigo" fullWidth>
             {dayjs(item.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
         </Table.Td>
         <Table.Td>
-          <Input variant="unstyled" value={item.ip || ''} readOnly size="sm" classNames={inputClasses} />
-        </Table.Td>
-        <Table.Td>
-          <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
-            {item.name}
+          <Text ff="monospace" size="sm" fw={500} className={tableClasses.overflow}>
+            {item.ip || ''}
           </Text>
         </Table.Td>
         <Table.Td>
-          <Input variant="unstyled" value={item.msg || ''} readOnly size="sm" />
+          <Text ff="monospace" size="sm" fw="bold" className={tableClasses.overflow}>
+            {item.name || ''}
+          </Text>
+        </Table.Td>
+        <Table.Td>
+          <Text size="sm" className={tableClasses.overflow}>
+            {item.msg || ''}
+          </Text>
         </Table.Td>
         <Table.Td ff="monospace">
           {item.status && (
@@ -193,13 +194,13 @@ const Logs: FC = () => {
     >
       <Paper shadow="md" p="md" w="100%">
         <ScrollArea viewportRef={viewport} offsetScrollbars scrollbarSize={4} h="calc(100vh - 190px)">
-          <Table className={cx(tableClasses.table, tableClasses.nopadding)}>
+          <Table className={cx(tableClasses.table, tableClasses.fixed)}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th w="7rem">{t('common.label.time')}</Table.Th>
-                <Table.Th w="12%">{t('common.label.ip')}</Table.Th>
-                <Table.Th w="6rem">{t('common.label.user')}</Table.Th>
-                <Table.Th>{t('admin.label.logs.message')}</Table.Th>
+                <Table.Th w="9rem">{t('common.label.ip')}</Table.Th>
+                <Table.Th w="7rem">{t('common.label.user')}</Table.Th>
+                <Table.Th w="100%">{t('admin.label.logs.message')}</Table.Th>
                 <Table.Th w="6rem">{t('admin.label.logs.status')}</Table.Th>
               </Table.Tr>
             </Table.Thead>
