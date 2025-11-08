@@ -95,7 +95,7 @@ public class Container
         if (GameInstance is null)
             return string.Empty;
 
-        var shortId = Id.ToString("N")[..8];
+        var shortId = Id.ToString("N")[..12];
 
         return StoragePath.Combine(PathHelper.Capture,
             GameInstance.ChallengeId.ToString(),

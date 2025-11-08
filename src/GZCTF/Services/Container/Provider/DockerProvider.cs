@@ -9,17 +9,17 @@ namespace GZCTF.Services.Container.Provider;
 public class DockerMetadata : ContainerProviderMetadata
 {
     /// <summary>
-    /// Docker 配置
+    /// Docker Configuration
     /// </summary>
     public DockerConfig Config { get; set; } = new();
 
     /// <summary>
-    /// Docker 鉴权用配置
+    /// Docker Registry Authentication Configurations
     /// </summary>
     public RegistrySet<AuthConfig> AuthConfigs { get; set; } = new();
 
     /// <summary>
-    /// 根据配置获取容器名称
+    /// Generate a unique container name based on the container configuration
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>

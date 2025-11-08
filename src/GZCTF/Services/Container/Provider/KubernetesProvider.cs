@@ -10,17 +10,17 @@ namespace GZCTF.Services.Container.Provider;
 public class KubernetesMetadata : ContainerProviderMetadata
 {
     /// <summary>
-    /// 容器注册表鉴权 Secret 名称
+    /// The secret names for registry authentication
     /// </summary>
     public RegistrySet<string> AuthSecretNames { get; set; } = new();
 
     /// <summary>
-    /// K8s 集群 Host IP
+    /// Host IP address
     /// </summary>
     public string HostIp { get; set; } = string.Empty;
 
     /// <summary>
-    /// K8s 配置
+    /// Kubernetes Configuration
     /// </summary>
     public KubernetesConfig Config { get; set; } = new();
 }

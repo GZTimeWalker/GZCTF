@@ -52,7 +52,7 @@ public class Challenge
     /// <summary>
     /// The deadline of the challenge, null means no deadline
     /// </summary>
-    public DateTimeOffset? DeadlineUtc { get; set; } = null;
+    public DateTimeOffset? DeadlineUtc { get; set; }
 
     /// <summary>
     /// Maximum number of submissions allowed per team (0 = no limit)
