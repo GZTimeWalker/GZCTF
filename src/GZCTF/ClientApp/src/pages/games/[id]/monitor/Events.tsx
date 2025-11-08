@@ -5,6 +5,7 @@ import {
   Input,
   ScrollArea,
   Stack,
+  Space,
   Switch,
   Text,
   useMantineColorScheme,
@@ -13,6 +14,8 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountOutline,
+  mdiAccountGroupOutline,
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
@@ -117,6 +120,7 @@ const Events: FC = () => {
     getInitialValueInEffect: false,
   })
 
+  const theme = useMantineTheme()
   const { locale } = useLanguage()
 
   const [activePage, setPage] = useState(1)
@@ -253,11 +257,17 @@ const Events: FC = () => {
                     size="md"
                     classNames={inputClasses}
                   />
-                  <Group wrap="nowrap" justify="space-between">
-                    <Text size="sm" fw={500} c="dimmed">
-                      {event.team}, {event.user}
+                  <Group wrap="nowrap" gap="xs" c="dimmed">
+                    <Icon path={mdiAccountGroupOutline} size={0.8} color={theme.colors.gray[5]} />
+                    <Text size="sm" fw={500}>
+                      {event.team}
                     </Text>
-                    <Text size="xs" fw={500} c="dimmed">
+                    <Space w="xs" />
+                    <Icon path={mdiAccountOutline} size={0.8} color={theme.colors.gray[5]} />
+                    <Text size="sm" fw={500}>
+                      {event.user}
+                    </Text>
+                    <Text size="xs" fw={500} ml="auto">
                       {dayjs(event.time).locale(locale).format('SL LTS')}
                     </Text>
                   </Group>
