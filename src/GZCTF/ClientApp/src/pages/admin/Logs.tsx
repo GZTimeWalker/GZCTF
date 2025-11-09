@@ -123,11 +123,10 @@ const Logs: FC = () => {
     .map((item, i) => (
       <Table.Tr
         key={`${item.time}@${i}`}
-        className={
-          i === 0 && activePage === 1 && newLogs.current.length > 0 && newLogs.current[0].level === level
-            ? tableClasses.fade
-            : undefined
-        }
+        className={cx({
+          [tableClasses.fade]:
+            i === 0 && activePage === 1 && newLogs.current.length > 0 && newLogs.current[0].level === level,
+        })}
       >
         <Table.Td className={tableClasses.time}>
           <Badge size="sm" color="indigo" fullWidth>

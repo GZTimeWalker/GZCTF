@@ -13,6 +13,8 @@ import {
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import {
+  mdiAccountGroupOutline,
+  mdiAccountOutline,
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiCheck,
@@ -26,6 +28,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { TFunction } from 'i18next'
 import { FC, useEffect, useMemo, useRef, useState } from 'react'
@@ -105,6 +108,22 @@ const formatEvent = (t: TFunction, event: GameEvent) => {
     default:
       return event.values.at(-1) || ''
   }
+}
+
+interface IconBadgeProps {
+  path: string
+  content?: string
+}
+
+const IconBadge: FC<IconBadgeProps> = ({ path, content }) => {
+  return (
+    <Group gap={3} wrap="nowrap">
+      <Icon path={path} size={0.75} color="var(--mantine-color-dimmed)" />
+      <Text size="sm" fw={500} c="dimmed">
+        {content}
+      </Text>
+    </Group>
+  )
 }
 
 const Events: FC = () => {
@@ -241,7 +260,7 @@ const Events: FC = () => {
               radius="sm"
               p="xs"
               key={`${event.time}@${i}`}
-              className={i === 0 && activePage === 1 && filteredEvents.length > 0 ? tableClasses.fade : undefined}
+              className={cx({ [tableClasses.fade]: i === 0 && activePage === 1 && filteredEvents.length > 0 })}
             >
               <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
                 <Icon {...iconMap.get(event.type)!} />
@@ -254,9 +273,10 @@ const Events: FC = () => {
                     classNames={inputClasses}
                   />
                   <Group wrap="nowrap" justify="space-between">
-                    <Text size="sm" fw={500} c="dimmed">
-                      {event.team}, {event.user}
-                    </Text>
+                    <Group gap="sm" wrap="nowrap">
+                      <IconBadge path={mdiAccountOutline} content={event.user} />
+                      <IconBadge path={mdiAccountGroupOutline} content={event.team} />
+                    </Group>
                     <Text size="xs" fw={500} c="dimmed">
                       {dayjs(event.time).locale(locale).format('SL LTS')}
                     </Text>

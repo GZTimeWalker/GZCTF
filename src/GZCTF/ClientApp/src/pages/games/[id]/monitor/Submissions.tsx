@@ -27,6 +27,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
+import cx from 'clsx'
 import dayjs from 'dayjs'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -160,7 +161,7 @@ const Submissions: FC = () => {
   const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map((item, i) => (
     <Table.Tr
       key={`${item.time}@${i}`}
-      className={i === 0 && activePage === 1 && filteredSubs.length > 0 ? tableClasses.fade : undefined}
+      className={cx({ [tableClasses.fade]: i === 0 && activePage === 1 && filteredSubs.length > 0 })}
     >
       <Table.Td>
         <Icon {...iconMap.get(item.status ?? AnswerResult.FlagSubmitted)!} />
