@@ -40,7 +40,7 @@ public class SwarmManager : IContainerManager
         {
             _logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
-                    container.ContainerId],
+                    container.LogId],
                 TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
@@ -49,7 +49,7 @@ public class SwarmManager : IContainerManager
             {
                 _logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
-                        container.ContainerId],
+                        container.LogId],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
@@ -62,7 +62,7 @@ public class SwarmManager : IContainerManager
         {
             _logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
-                    container.ContainerId]);
+                    container.LogId]);
             return;
         }
 
@@ -137,7 +137,7 @@ public class SwarmManager : IContainerManager
             {
                 _logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerPortNotExposed),
-                        container.ContainerId],
+                        container.LogId],
                     TaskStatus.Failed,
                     LogLevel.Warning);
                 return null;

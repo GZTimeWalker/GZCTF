@@ -39,7 +39,7 @@ public class DockerManager : IContainerManager
         {
             _logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
-                    container.ContainerId],
+                    container.LogId],
                 TaskStatus.Success, LogLevel.Debug);
         }
         catch (DockerApiException e)
@@ -48,12 +48,12 @@ public class DockerManager : IContainerManager
             {
                 _logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDestroyed),
-                        container.ContainerId],
+                        container.LogId],
                     TaskStatus.Success, LogLevel.Debug);
             }
             else
             {
-                _logger.LogDeletionFailedWithHttpContext(container.ContainerId, e.StatusCode, e.ResponseBody);
+                _logger.LogDeletionFailedWithHttpContext(container.LogId, e.StatusCode, e.ResponseBody);
                 return;
             }
         }
@@ -61,7 +61,7 @@ public class DockerManager : IContainerManager
         {
             _logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
-                    container.ContainerId]);
+                    container.LogId]);
             return;
         }
 
@@ -180,7 +180,7 @@ public class DockerManager : IContainerManager
                 _logger.SystemLog(
                     StaticLocalizer[
                         nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
-                        container.ContainerId[..12],
+                        container.LogId,
                         config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
 

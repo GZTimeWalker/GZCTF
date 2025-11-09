@@ -142,7 +142,7 @@ public class ExerciseInstanceRepository(
                 logger.Log(
                     StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
                         user.UserName!, first.Exercise.Title,
-                        first.Container!.ContainerId],
+                        first.Container!.LogId],
                     user, TaskStatus.Success);
                 await containerRepository.DestroyContainer(running.First().Container!, token);
             }
@@ -184,7 +184,7 @@ public class ExerciseInstanceRepository(
         logger.Log(
             StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), user.UserName!,
                 instance.Exercise.Title,
-                container.ContainerId], user,
+                container.LogId], user,
             TaskStatus.Success);
 
         await SaveAsync(token);

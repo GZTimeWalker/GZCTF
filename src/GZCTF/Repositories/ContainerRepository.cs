@@ -65,7 +65,7 @@ public class ContainerRepository(
         {
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.ContainerRepository_ContainerDestroyFailed),
-                    container.ContainerId[..12],
+                    container.LogId,
                     container.Image.Split("/").LastOrDefault() ?? "", ex.Message],
                 TaskStatus.Failed, LogLevel.Warning);
             return false;

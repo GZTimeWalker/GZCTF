@@ -11,11 +11,18 @@ namespace GZCTF.Models.Data;
 [Index(nameof(ExerciseInstanceId))]
 public class Container
 {
+    /// <summary>
+    /// Container GUID
+    /// </summary>
+    /// <remarks>
+    /// Used as the unique identifier for the container instance,
+    /// corresponding to the database primary key
+    /// </remarks>
     [Key]
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Image name
+    /// The Image used to create the container
     /// </summary>
     [Required]
     public string Image { get; set; } = string.Empty;
@@ -23,6 +30,10 @@ public class Container
     /// <summary>
     /// Container ID
     /// </summary>
+    /// <remarks>
+    /// The container ID returned by the container management system (e.g., Docker),
+    /// used for managing the container instance
+    /// </remarks>
     [Required]
     public string ContainerId { get; set; } = string.Empty;
 
@@ -42,7 +53,8 @@ public class Container
     /// Expected container stop time
     /// </summary>
     /// <remarks>
-    /// Set to 2 hours to avoid immediate destruction after creation, actual destruction time is determined by the container manager
+    /// Set to 2 hours to avoid immediate destruction after creation,
+    /// actual destruction time is determined by the container manager
     /// </remarks>
     [Required]
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
@@ -86,6 +98,18 @@ public class Container
     /// </summary>
     [NotMapped]
     public bool EnableTrafficCapture => GameInstance?.Challenge.EnableTrafficCapture ?? false;
+
+    /// <summary>
+    /// Shortened container GUID for logging purposes
+    /// </summary>
+    [NotMapped]
+    private string ShortId => Id.ToString("N")[..12];
+
+    /// <summary>
+    /// The container ID for logging purposes
+    /// </summary>
+    [NotMapped]
+    public string LogId => $"{ContainerId}#{ShortId}";
 
     /// <summary>
     /// Container instance traffic capture storage path

@@ -20,7 +20,7 @@ public static class RuntimeCronJobs
             await containerRepo.DestroyContainer(container);
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
-                    container.ContainerId],
+                    container.LogId],
                 TaskStatus.Success, LogLevel.Debug);
         }
     }

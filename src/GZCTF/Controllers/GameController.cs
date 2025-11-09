@@ -256,7 +256,9 @@ public class GameController(
 
         await participationRepository.SaveAsync(token);
 
-        var shouldAcceptWithoutReview = div is null ? game.AcceptWithoutReview : !div.DefaultPermissions.HasFlag(GamePermission.RequireReview);
+        var shouldAcceptWithoutReview = div is null
+            ? game.AcceptWithoutReview
+            : !div.DefaultPermissions.HasFlag(GamePermission.RequireReview);
         if (shouldAcceptWithoutReview)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
@@ -1335,7 +1337,7 @@ public class GameController(
             return RequestResponse.Result(localizer[nameof(Resources.Program.Game_OperationTooFrequent)],
                 StatusCodes.Status429TooManyRequests);
 
-        var destroyId = instance.Container.ContainerId;
+        var destroyId = instance.Container.LogId;
 
         if (!await containerRepository.DestroyContainer(instance.Container, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerDeletionFailed)]));

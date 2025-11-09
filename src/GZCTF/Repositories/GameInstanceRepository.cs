@@ -141,7 +141,7 @@ public class GameInstanceRepository(
                     logger.Log(
                         StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerAutoDestroy),
                             team.Name, first.Challenge.Title,
-                            first.Container!.ContainerId],
+                            first.Container!.LogId],
                         user, TaskStatus.Success);
                     await containerRepository.DestroyContainer(running.First().Container!, token);
                 }
@@ -195,7 +195,7 @@ public class GameInstanceRepository(
         logger.Log(
             StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,
                 gameInstance.Challenge.Title,
-                container.ContainerId], user,
+                container.LogId], user,
             TaskStatus.Success);
 
         // will save instance together

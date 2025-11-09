@@ -10,18 +10,18 @@ namespace GZCTF.Extensions;
 public interface ICaptchaExtension
 {
     /// <summary>
-    /// 异步校验 token
+    /// Verify the captcha response
     /// </summary>
-    /// <param name="model">客户端请求</param>
+    /// <param name="model">Captcha model</param>
     /// <param name="context">HttpContext</param>
     /// <param name="token"></param>
-    /// <returns>校验结果</returns>
+    /// <returns>Whether the captcha is valid</returns>
     Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context, CancellationToken token = default);
 
     /// <summary>
-    /// 获取客户端配置
+    /// Get client captcha configuration
     /// </summary>
-    /// <returns>客户端配置</returns>
+    /// <returns>Client configuration</returns>
     ClientCaptchaInfoModel ClientInfo();
 }
 

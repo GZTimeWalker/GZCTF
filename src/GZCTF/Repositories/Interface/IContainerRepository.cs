@@ -7,7 +7,7 @@ public interface IContainerRepository : IRepository
     /// <summary>
     /// Get container by database ID
     /// </summary>
-    /// <param name="guid">容器数据库 ID</param>
+    /// <param name="guid">container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Container?> GetContainerById(Guid guid, CancellationToken token = default);
@@ -15,7 +15,7 @@ public interface IContainerRepository : IRepository
     /// <summary>
     /// Get container with instance info by database ID
     /// </summary>
-    /// <param name="guid">容器数据库 ID</param>
+    /// <param name="guid">container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Container?> GetContainerWithInstanceById(Guid guid, CancellationToken token = default);
@@ -23,7 +23,7 @@ public interface IContainerRepository : IRepository
     /// <summary>
     /// Check if the container exists by database ID
     /// </summary>
-    /// <param name="guid">容器数据库 ID</param>
+    /// <param name="guid">container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> ValidateContainer(Guid guid, CancellationToken token = default);
@@ -45,8 +45,8 @@ public interface IContainerRepository : IRepository
     /// <summary>
     /// Extend container lifetime
     /// </summary>
-    /// <param name="container">容器实例对象</param>
-    /// <param name="time">延长时间</param>
+    /// <param name="container">container</param>
+    /// <param name="time">extension period</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task ExtendLifetime(Container container, TimeSpan time, CancellationToken token = default);

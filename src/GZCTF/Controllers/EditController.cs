@@ -795,7 +795,7 @@ public class EditController(
         await challengeRepository.SaveAsync(token);
 
         logger.Log(
-            StaticLocalizer[nameof(Resources.Program.Container_TestContainerCreated), container.ContainerId],
+            StaticLocalizer[nameof(Resources.Program.Container_TestContainerCreated), container.LogId],
             user,
             TaskStatus.Success);
 

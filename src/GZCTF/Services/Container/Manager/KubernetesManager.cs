@@ -240,13 +240,13 @@ public class KubernetesManager : IContainerManager
                 return;
             }
 
-            _logger.LogDeletionFailedWithHttpContext(container.ContainerId, e.Response.StatusCode, e.Response.Content);
+            _logger.LogDeletionFailedWithHttpContext(container.LogId, e.Response.StatusCode, e.Response.Content);
         }
         catch (Exception e)
         {
             _logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
-                    container.ContainerId]);
+                    container.LogId]);
             return;
         }
 
