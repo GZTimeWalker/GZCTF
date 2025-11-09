@@ -979,7 +979,7 @@
     <value>Le conteneur n'existe pas</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>Conteneur de test {0} créé avec succès</value>
+    <value>Conteneur de test [{0}] créé avec succès</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>Échec de la création du fichier</value>

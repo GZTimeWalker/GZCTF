@@ -966,7 +966,7 @@
     <value>コンテナが存在しません</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>テストコンテナ {0} を正常に作成しました</value>
+    <value>テストコンテナ [{0}] を正常に作成しました</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>ファイルを作成できませんでした</value>

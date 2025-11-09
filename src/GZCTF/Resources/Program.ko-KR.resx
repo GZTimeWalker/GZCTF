@@ -966,7 +966,7 @@
     <value>컨테이너가 존재하지 않습니다.</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>테스트 컨테이너 {0} 생성 성공</value>
+    <value>테스트 컨테이너 [{0}] 생성 성공</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>파일 생성 실패</value>

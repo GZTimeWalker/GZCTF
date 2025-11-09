@@ -966,7 +966,7 @@
     <value>Container tidak ditemukan</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>Container percobaan {0} berhasil dibuat</value>
+    <value>Container percobaan [{0}] berhasil dibuat</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>Gagal membuat file</value>

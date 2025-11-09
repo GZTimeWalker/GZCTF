@@ -966,7 +966,7 @@
     <value>不存在的容器</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>成功创建测试容器 {0}</value>
+    <value>成功创建测试容器 [{0}]</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>文件创建失败</value>

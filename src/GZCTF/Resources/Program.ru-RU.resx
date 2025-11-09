@@ -966,7 +966,7 @@
     <value>Контейнер не существует</value>
   </data>
   <data name="Container_TestContainerCreated" xml:space="preserve">
-    <value>Тестовый контейнер {0} успешно создан</value>
+    <value>Тестовый контейнер [{0}] успешно создан</value>
   </data>
   <data name="File_CreationFailed" xml:space="preserve">
     <value>Не удалось создать файл</value>

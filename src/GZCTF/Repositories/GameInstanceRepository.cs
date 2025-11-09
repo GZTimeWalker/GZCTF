@@ -192,13 +192,6 @@ public class GameInstanceRepository(
         gameInstance.Container = container;
         gameInstance.LastContainerOperation = DateTimeOffset.UtcNow;
 
-        logger.Log(
-            StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,
-                gameInstance.Challenge.Title,
-                container.LogId], user,
-            TaskStatus.Success);
-
-        // will save instance together
         await gameEventRepository.AddEvent(
             new()
             {
@@ -208,6 +201,12 @@ public class GameInstanceRepository(
                 UserId = user.Id,
                 Values = [gameInstance.Challenge.Id.ToString(), gameInstance.Challenge.Title]
             }, token);
+
+        logger.Log(
+            StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreated), team.Name,
+                gameInstance.Challenge.Title,
+                container.LogId], user,
+            TaskStatus.Success);
 
         return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
     }

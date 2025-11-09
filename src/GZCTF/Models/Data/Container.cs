@@ -103,13 +103,13 @@ public class Container
     /// Shortened container GUID for logging purposes
     /// </summary>
     [NotMapped]
-    private string ShortId => Id.ToString("N")[..12];
+    internal string ShortId => Id.ToString("N")[..12];
 
     /// <summary>
     /// The container ID for logging purposes
     /// </summary>
     [NotMapped]
-    public string LogId => $"{ContainerId}#{ShortId}";
+    internal string LogId => $"<{ShortId}> {ContainerId}";
 
     /// <summary>
     /// Container instance traffic capture storage path
