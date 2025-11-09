@@ -848,18 +848,17 @@ export interface ProblemDetails {
 export interface PostEditModel {
   /**
    * Post title
-   * @minLength 1
    * @maxLength 50
    */
-  title: string;
+  title?: string | null;
   /** Post summary */
-  summary?: string;
+  summary?: string | null;
   /** Post content */
-  content?: string;
+  content?: string | null;
   /** Post tags */
   tags?: string[] | null;
   /** Is pinned */
-  isPinned?: boolean;
+  isPinned?: boolean | null;
 }
 
 /** Post details */

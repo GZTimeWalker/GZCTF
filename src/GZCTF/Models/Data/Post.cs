@@ -39,7 +39,7 @@ public partial class Post
     /// <summary>
     /// Post tags
     /// </summary>
-    public List<string>? Tags { get; set; } = [];
+    public List<string>? Tags { get; set; }
 
     /// <summary>
     /// Author information
@@ -59,18 +59,18 @@ public partial class Post
 
     internal Post Update(PostEditModel model, UserInfo user)
     {
-        // update IsPinned should not change other fields
-        if (model.IsPinned != IsPinned)
+        // update IsPinned should not change other fields, so handle it separately
+        if (model.IsPinned is { } pinned)
         {
-            IsPinned = model.IsPinned;
+            IsPinned = pinned;
             return this;
         }
 
-        Title = model.Title;
-        Summary = model.Summary;
-        Content = model.Content;
-        IsPinned = model.IsPinned;
-        Tags = model.Tags;
+        Title = model.Title ?? Title;
+        Summary = model.Summary ?? Summary;
+        Content = model.Content ?? Content;
+        Tags = model.Tags ?? Tags;
+
         Author = user;
         AuthorId = user.Id;
         UpdateTimeUtc = DateTimeOffset.UtcNow;

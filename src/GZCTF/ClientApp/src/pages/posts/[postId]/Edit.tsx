@@ -53,7 +53,6 @@ const PostEdit: FC = () => {
     title: curPost?.title ?? '',
     content: curPost?.content ?? '',
     summary: curPost?.summary ?? '',
-    isPinned: curPost?.isPinned ?? false,
     tags: curPost?.tags ?? [],
   })
 
@@ -152,7 +151,7 @@ const PostEdit: FC = () => {
     <>
       <TextInput
         label={t('post.label.title')}
-        value={post.title}
+        value={post.title ?? ''}
         onChange={(e) => setPost({ ...post, title: e.currentTarget.value })}
       />
       <TagsInput
@@ -243,7 +242,7 @@ const PostEdit: FC = () => {
               </Group>
             }
             autosize
-            value={post.summary}
+            value={post.summary ?? ''}
             onChange={(e) => setPost({ ...post, summary: e.currentTarget.value })}
             minRows={5}
             maxRows={5}
@@ -258,7 +257,7 @@ const PostEdit: FC = () => {
               </Group>
             }
             autosize
-            value={post.content}
+            value={post.content ?? ''}
             onChange={(e) => setPost({ ...post, content: e.currentTarget.value })}
             minRows={isMobile ? 14 : 16}
             maxRows={isMobile ? 14 : 16}

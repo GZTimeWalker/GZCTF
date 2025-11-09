@@ -31,7 +31,6 @@ const Posts: FC = () => {
 
     try {
       const res = await api.edit.editUpdatePost(post.id, {
-        title: post.title,
         isPinned: !post.isPinned,
       })
       if (post.isPinned) {

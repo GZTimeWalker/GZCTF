@@ -101,6 +101,7 @@ public class InfoController(
         var eTag = $"\"{post.Id}-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
+
         return Ok(PostDetailModel.FromPost(post));
     }
 
