@@ -12,6 +12,7 @@ import {
   Switch,
   Tabs,
   Tooltip,
+  TooltipFloating,
   createTheme,
   useMantineTheme,
 } from '@mantine/core'
@@ -174,6 +175,9 @@ const CustomTheme: MantineThemeOverride = {
       },
     }),
     Tooltip: Tooltip.extend({
+      classNames: tooltipClasses,
+    }),
+    TooltipFloating: TooltipFloating.extend({
       classNames: tooltipClasses,
     }),
   },
