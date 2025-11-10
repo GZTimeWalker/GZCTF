@@ -145,7 +145,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
 
     try {
       const res = await api.game.gameSubmit(gameId, challengeId, {
-        flag: await encryptApiData(t, flag.trim(), config.apiPublicKey),
+        flag: await encryptApiData(t, flag, config.apiPublicKey),
       })
       setSubmitId(res.data)
       notifications.clean()
