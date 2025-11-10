@@ -962,7 +962,6 @@ public class GameController(
         if (string.IsNullOrWhiteSpace(answer))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagRequired)]));
 
-        answer = answer.Trim();
         if (answer.Length > Limits.MaxFlagLength)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FlagTooLong)]));
 
