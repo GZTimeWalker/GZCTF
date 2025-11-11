@@ -35,30 +35,35 @@ public static class HandlerExtension
 
     static string IndexTemplate = string.Empty;
 
-    public static void AddEntityConfiguration(this IConfigurationBuilder builder,
-        Action<DbContextOptionsBuilder> optionsAction) =>
-        builder.Add(new EntityConfigurationSource(optionsAction));
-
-    public static void UseCustomFavicon(this WebApplication app) =>
-        app.MapGet("/favicon.webp", FaviconHandler);
-
-    public static void UseIndexAsync(this WebApplication app)
+    extension(IConfigurationBuilder builder)
     {
-        var index = app.Environment.WebRootFileProvider.GetFileInfo("index.html");
+        public void AddEntityConfiguration(Action<DbContextOptionsBuilder> optionsAction) =>
+            builder.Add(new EntityConfigurationSource(optionsAction));
+    }
 
-        if (!index.Exists || index.PhysicalPath is null)
+    extension(WebApplication app)
+    {
+        public void UseCustomFavicon() =>
+            app.MapGet("/favicon.webp", FaviconHandler);
+
+        public void UseIndexAsync()
         {
-            app.MapFallback(context =>
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                context.Response.ContentType = MediaTypeNames.Text.Html;
-                return Task.CompletedTask;
-            });
-            return;
-        }
+            var index = app.Environment.WebRootFileProvider.GetFileInfo("index.html");
 
-        IndexTemplate = File.ReadAllText(index.PhysicalPath);
-        app.MapFallback(IndexHandler);
+            if (!index.Exists || index.PhysicalPath is null)
+            {
+                app.MapFallback(context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    context.Response.ContentType = MediaTypeNames.Text.Html;
+                    return Task.CompletedTask;
+                });
+                return;
+            }
+
+            IndexTemplate = File.ReadAllText(index.PhysicalPath);
+            app.MapFallback(IndexHandler);
+        }
     }
 
     static string GetETag(StringSegment hash) => $"\"favicon-{hash}\"";

@@ -5,74 +5,77 @@ namespace GZCTF.Extensions.Startup;
 
 static class AppBuilderExtensions
 {
-    internal static void ConfigureWebHost(this WebApplicationBuilder builder)
+    extension(WebApplicationBuilder builder)
     {
-        builder.Services.ConfigureHttpJsonOptions(options =>
+        internal void ConfigureWebHost()
         {
-            options.SerializerOptions.ConfigCustomSerializerOptions();
-        });
-
-        builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
-            .Configure<RequestLocalizationOptions>(options =>
+            builder.Services.ConfigureHttpJsonOptions(options =>
             {
-                options
-                    .AddSupportedCultures(SupportedCultures)
-                    .AddSupportedUICultures(SupportedCultures);
-
-                options.ApplyCurrentCultureToResponseHeaders = true;
+                options.SerializerOptions.ConfigCustomSerializerOptions();
             });
 
-        builder.WebHost.ConfigureKestrel(options =>
-        {
-            var kestrelSection = builder.Configuration.GetSection("Kestrel");
-            options.Configure(kestrelSection);
-            kestrelSection.Bind(options);
-        }).UseKestrel(options =>
-        {
-            options.ListenAnyIP(ServerPort);
-            options.ListenAnyIP(MetricPort);
-        });
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
+                .Configure<RequestLocalizationOptions>(options =>
+                {
+                    options
+                        .AddSupportedCultures(SupportedCultures)
+                        .AddSupportedUICultures(SupportedCultures);
 
-        builder.Logging.ClearProviders();
-        builder.Logging.SetMinimumLevel(LogLevel.Trace);
-        builder.Logging.AddSerilog(dispose: true);
-        builder.Host.UseSerilog(dispose: true);
-        builder.Configuration.AddEnvironmentVariables("GZCTF_");
+                    options.ApplyCurrentCultureToResponseHeaders = true;
+                });
 
-        builder.Services.AddServiceDiscovery();
-        builder.Services.ConfigureHttpClientDefaults(http =>
-        {
-            http.AddStandardResilienceHandler();
-            http.AddServiceDiscovery();
-        });
-    }
-
-    internal static void ConfigureCacheAndSignalR(this WebApplicationBuilder builder)
-    {
-        var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol(options =>
-        {
-            options.PayloadSerializerOptions.ConfigCustomSerializerOptions();
-        });
-
-        var connectionString = builder.Configuration.GetConnectionString("RedisCache");
-
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            builder.Services.AddDistributedMemoryCache();
-        }
-        else
-        {
-            builder.Services.AddStackExchangeRedisCache(options =>
+            builder.WebHost.ConfigureKestrel(options =>
             {
-                options.Configuration = connectionString;
+                var kestrelSection = builder.Configuration.GetSection("Kestrel");
+                options.Configure(kestrelSection);
+                kestrelSection.Bind(options);
+            }).UseKestrel(options =>
+            {
+                options.ListenAnyIP(ServerPort);
+                options.ListenAnyIP(MetricPort);
             });
 
-            signalrBuilder.AddStackExchangeRedis(connectionString, options =>
+            builder.Logging.ClearProviders();
+            builder.Logging.SetMinimumLevel(LogLevel.Trace);
+            builder.Logging.AddSerilog(dispose: true);
+            builder.Host.UseSerilog(dispose: true);
+            builder.Configuration.AddEnvironmentVariables("GZCTF_");
+
+            builder.Services.AddServiceDiscovery();
+            builder.Services.ConfigureHttpClientDefaults(http =>
             {
-                options.Configuration.ChannelPrefix = new RedisChannel("GZCTF", RedisChannel.PatternMode.Literal);
+                http.AddStandardResilienceHandler();
+                http.AddServiceDiscovery();
             });
         }
 
-        builder.Services.AddMemoryCache();
+        internal void ConfigureCacheAndSignalR()
+        {
+            var signalrBuilder = builder.Services.AddSignalR().AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.ConfigCustomSerializerOptions();
+            });
+
+            var connectionString = builder.Configuration.GetConnectionString("RedisCache");
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                builder.Services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                builder.Services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = connectionString;
+                });
+
+                signalrBuilder.AddStackExchangeRedis(connectionString, options =>
+                {
+                    options.Configuration.ChannelPrefix = new RedisChannel("GZCTF", RedisChannel.PatternMode.Literal);
+                });
+            }
+
+            builder.Services.AddMemoryCache();
+        }
     }
 }

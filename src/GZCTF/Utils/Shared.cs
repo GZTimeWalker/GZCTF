@@ -10,12 +10,15 @@ namespace GZCTF.Utils;
 
 public static class ChannelService
 {
-    internal static void AddChannel<T>(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        var channel = Channel.CreateUnbounded<T>();
-        services.AddSingleton(channel);
-        services.AddSingleton(channel.Reader);
-        services.AddSingleton(channel.Writer);
+        internal void AddChannel<T>()
+        {
+            var channel = Channel.CreateUnbounded<T>();
+            services.AddSingleton(channel);
+            services.AddSingleton(channel.Reader);
+            services.AddSingleton(channel.Writer);
+        }
     }
 }
 
