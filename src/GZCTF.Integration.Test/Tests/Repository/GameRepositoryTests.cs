@@ -199,12 +199,12 @@ public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         Assert.Equal(division1.Id, checkInfo.JoinedTeams[0].DivisionId);
 
         // Should have 2 joinable divisions (division1 and division2)
-        Assert.Equal(2, checkInfo.JoinableDivisions.Length);
+        Assert.Equal(2, checkInfo.JoinableDivisions.Count);
         Assert.Contains(division1.Id, checkInfo.JoinableDivisions);
         Assert.Contains(division2.Id, checkInfo.JoinableDivisions);
 
         output.WriteLine(
-            $"Check info test passed - Joined teams: {checkInfo.JoinedTeams.Length}, Joinable divisions: {checkInfo.JoinableDivisions.Length}");
+            $"Check info test passed - Joined teams: {checkInfo.JoinedTeams.Length}, Joinable divisions: {checkInfo.JoinableDivisions.Count}");
     }
 
     [Fact]

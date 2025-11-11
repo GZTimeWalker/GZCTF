@@ -13,7 +13,7 @@ public class GameJoinCheckInfoModel
     /// <summary>
     /// IDs of divisions that can be joined
     /// </summary>
-    public int[] JoinableDivisions { get; set; } = [];
+    public HashSet<int> JoinableDivisions { get; set; } = [];
 }
 
 public record JoinedTeam

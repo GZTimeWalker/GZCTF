@@ -179,12 +179,12 @@ public class DivisionRepositoryTests(GZCTFApplicationFactory factory, ITestOutpu
         // Get joinable divisions
         var joinableIds = await divisionRepo.GetJoinableDivisionIds(game.Id, CancellationToken.None);
 
-        Assert.Equal(2, joinableIds.Length);
+        Assert.Equal(2, joinableIds.Count);
         Assert.Contains(joinable1.Id, joinableIds);
         Assert.Contains(joinable2.Id, joinableIds);
         Assert.DoesNotContain(notJoinable.Id, joinableIds);
 
-        output.WriteLine($"Joinable divisions test passed - Found {joinableIds.Length} joinable divisions");
+        output.WriteLine($"Joinable divisions test passed - Found {joinableIds.Count} joinable divisions");
     }
 
     [Fact]

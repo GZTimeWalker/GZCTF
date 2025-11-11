@@ -189,20 +189,24 @@ public class GameController(
 
         // =============== Validate division and permissions ===============
 
-        bool hasDivisions = await divisionRepository.HasDivisions(id, token);
+        var joinableDivisionIds = await divisionRepository.GetJoinableDivisionIds(id, token);
 
         Division? div = null;
-        if (hasDivisions)
+        if (joinableDivisionIds is { Count: > 0 })
         {
-            // We don't allow joining a game with divisions without specifying a division
+            // We don't allow joining a game with joinable divisions without specifying a division
             if (model.DivisionId is null)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_DivisionRequired)]));
+
+            // Division must allow joining
+            if (!joinableDivisionIds.Contains(model.DivisionId.Value))
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
 
             div = await divisionRepository.GetDivision(id, model.DivisionId.Value, token);
             if (div is null)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
 
-            // Division must allow joining
+            // just redundant check, it takes little cost
             if (!div.DefaultPermissions.HasFlag(GamePermission.JoinGame))
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
         }
@@ -210,7 +214,7 @@ public class GameController(
         // =============== Validate invitation code ===============
 
         string? requiredInviteCode;
-        if (hasDivisions && div is not null) // div should not be null here
+        if (div is not null)
             requiredInviteCode = string.IsNullOrEmpty(div.InviteCode) ? null : div.InviteCode;
         else
             requiredInviteCode = string.IsNullOrEmpty(game.InviteCode) ? null : game.InviteCode;
