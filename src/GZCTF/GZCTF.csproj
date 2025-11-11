@@ -21,7 +21,9 @@
         <ReleaseVersion>1.7.1</ReleaseVersion>
         <WarningLevel>4</WarningLevel>
         <ServerGarbageCollection>true</ServerGarbageCollection>
-        <EFOptimizeContext>true</EFOptimizeContext>
+        <!-- Temporarily disabled due to EF Core 10.0.0 compiled model generation bug with Dependency<T> pattern -->
+        <!-- Re-enable when EF Core 10.0.0 stable is released with the fix -->
+        <EFOptimizeContext>false</EFOptimizeContext>
         <EFPrecompileQueriesStage>none</EFPrecompileQueriesStage>
         <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
         <CETCompat>false</CETCompat>
