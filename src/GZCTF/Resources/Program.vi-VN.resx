@@ -479,6 +479,12 @@
   <data name="FlagsChecker_WorkerStopped" xml:space="preserve">
     <value>Worker #{0} đã dừng.</value>
   </data>
+  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
+    <value>Đang xóa {1} tệp đính kèm thử thách cho trò chơi {0}...</value>
+  </data>
+  <data name="Game_DeletionFailed" xml:space="preserve">
+    <value>Không thể xóa trò chơi, tệp liên quan có thể đã bị lỗi.</value>
+  </data>
   <data name="Game_Exported" xml:space="preserve">
     <value>Trò chơi "{0}" đã được xuất dưới dạng {1}</value>
   </data>
@@ -493,12 +499,6 @@
   </data>
   <data name="Game_ImportInvalidPackage" xml:space="preserve">
     <value>Định dạng gói trò chơi không hợp lệ</value>
-  </data>
-  <data name="GameRepository_GameDeletionChallenges" xml:space="preserve">
-    <value>Đang xóa {1} tệp đính kèm thử thách cho trò chơi {0}...</value>
-  </data>
-  <data name="Game_DeletionFailed" xml:space="preserve">
-    <value>Không thể xóa trò chơi, tệp liên quan có thể đã bị lỗi.</value>
   </data>
   <data name="GameRepository_GameDeletionTeams" xml:space="preserve">
     <value>Đang xóa {1} tệp của đội trong trò chơi {0}...</value>
