@@ -3,6 +3,43 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.7.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.0..v1.7.1) - 2025-11-11
+
+### ⛰️ Features
+
+- **(game)** add division validation and required message for game joining - ([a02324](https://github.com/GZTimeWalker/GZCTF/commit/a02324)) by **GZTime**
+- **(game)** do not trim flags - ([2b0c0f](https://github.com/GZTimeWalker/GZCTF/commit/2b0c0f)) by **GZTime**
+- **(model)** add transfer models and game export / import support (#512) - ([d30b15](https://github.com/GZTimeWalker/GZCTF/commit/d30b15)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(blob)** filename extraction from content-disposition header - ([84a69b](https://github.com/GZTimeWalker/GZCTF/commit/84a69b)) by **GZTime**
+- **(challenge)** can not save update when there is no new instances - ([e69d02](https://github.com/GZTimeWalker/GZCTF/commit/e69d02)) by **GZTime**
+- **(divisions)** update joinable divisions handling - ([e2c2b5](https://github.com/GZTimeWalker/GZCTF/commit/e2c2b5)) by **GZTime**
+- **(export)** do not load flags for dynamic challenges - ([9371f0](https://github.com/GZTimeWalker/GZCTF/commit/9371f0)) by **GZTime**
+- **(handler)** return 405 for unsupported HTTP methods - ([4e4dbf](https://github.com/GZTimeWalker/GZCTF/commit/4e4dbf)) by **GZTime**
+- **(import)** increase file size limit for game import and clean up validation logging - ([51ba6a](https://github.com/GZTimeWalker/GZCTF/commit/51ba6a)) by **GZTime**
+- **(import)** division names lost during game import (#514) - ([a64061](https://github.com/GZTimeWalker/GZCTF/commit/a64061)) by **Copilot**
+- **(invite_code)** fix game join modal and admin division management - ([56bcd9](https://github.com/GZTimeWalker/GZCTF/commit/56bcd9)) by **GZTime**
+- **(posts)** update PostEditModel to an universal and clear logic - ([695ff2](https://github.com/GZTimeWalker/GZCTF/commit/695ff2)) by **GZTime**
+- **(prelaunch)** add error message for unconfigured XorKey - ([6d7077](https://github.com/GZTimeWalker/GZCTF/commit/6d7077)) by **GZTime**
+- **(style)** Tooltip.Floating class name is not configured - ([d1b0e8](https://github.com/GZTimeWalker/GZCTF/commit/d1b0e8)) by **GZTime**
+- **(style)** adjust the font size of anchors in the game page - ([f27ad3](https://github.com/GZTimeWalker/GZCTF/commit/f27ad3)) by **GZTime**
+
+### 🎨 Styling
+
+- **(events)** create IconBadge for user and team display - ([45a7e1](https://github.com/GZTimeWalker/GZCTF/commit/45a7e1)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(admin)** use fixed layout table to manage column widths - ([981adb](https://github.com/GZTimeWalker/GZCTF/commit/981adb)) by **GZTime**
+
+### 🧪 Tests
+
+- **(game)** add leave game tests - ([55bfba](https://github.com/GZTimeWalker/GZCTF/commit/55bfba)) by **GZTime**
+- **(join)** add division invitation code integration tests - ([71419d](https://github.com/GZTimeWalker/GZCTF/commit/71419d)) by **GZTime**
+
+---
 ## [1.7.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.6.2..v1.7.0) - 2025-11-01
 
 ### ⛰️ Features

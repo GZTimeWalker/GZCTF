@@ -19,6 +19,6 @@
   <Project Path="GZCTF.Test/GZCTF.Test.csproj" />
   <Project Path="GZCTF/GZCTF.csproj" />
   <Properties Name="MonoDevelopProperties">
-    <Property Name="version" Value="1.7.0" />
+    <Property Name="version" Value="1.7.1" />
   </Properties>
 </Solution>
