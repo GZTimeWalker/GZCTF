@@ -776,4 +776,211 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(ParticipationStatus.Pending,
             participation.Status); // Should be pending due to division requiring review
     }
+
+    /// <summary>
+    /// Test: Join game with divisions but none has JoinGame flag
+    /// When no division has JoinGame permission, invitation code check should fallback to game level,
+    /// and user should be able to join without specifying a division.
+    /// </summary>
+    [Fact]
+    public async Task JoinGame_NoDivisionsHaveJoinGameFlag_ShouldFallbackToGameLevel()
+    {
+        // Arrange
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "No Joinable Divisions Game");
+
+        // Create divisions without JoinGame permission
+        using var adminClient = factory.CreateClient();
+        var adminLoginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = admin.UserName, Password = adminPassword });
+        adminLoginResponse.EnsureSuccessStatusCode();
+
+        var division1Response = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
+            new DivisionCreateModel
+            {
+                Name = "Closed Division 1",
+                InviteCode = "CLOSED1",
+                DefaultPermissions = GamePermission.All & ~GamePermission.JoinGame & ~GamePermission.RequireReview
+            });
+        division1Response.EnsureSuccessStatusCode();
+
+        var division2Response = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
+            new DivisionCreateModel
+            {
+                Name = "Closed Division 2",
+                InviteCode = "CLOSED2",
+                DefaultPermissions = GamePermission.All & ~GamePermission.JoinGame & ~GamePermission.RequireReview
+            });
+        division2Response.EnsureSuccessStatusCode();
+
+        // Set game level invite code
+        using var scope0 = factory.Services.CreateScope();
+        var gameRepo0 = scope0.ServiceProvider.GetRequiredService<IGameRepository>();
+        var gameEntity = await gameRepo0.GetGameById(game.Id);
+        Assert.NotNull(gameEntity);
+        gameEntity.InviteCode = "GAME_LEVEL_CODE";
+        await gameRepo0.SaveAsync();
+
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        // Setup user client for testing
+        using var userClient = factory.CreateClient();
+        var userLoginResponse = await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        userLoginResponse.EnsureSuccessStatusCode();
+
+        // Test 1 - Try to join a non-joinable division with code (should fail)
+        var division1 = await division1Response.Content.ReadFromJsonAsync<Division>();
+        Assert.NotNull(division1);
+        var joinClosedDivisionResponse = await userClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division1.Id, InviteCode = "CLOSED1" });
+        Assert.Equal(HttpStatusCode.BadRequest, joinClosedDivisionResponse.StatusCode);
+
+        // Test 2 - Try to join a non-existent division (should fail)
+        var joinNonExistentDivisionResponse = await userClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = 99999, InviteCode = "ANYTHING" });
+        Assert.Equal(HttpStatusCode.BadRequest, joinNonExistentDivisionResponse.StatusCode);
+
+        // Act - Join without division, using game level invite code
+        var joinResponse = await userClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = "GAME_LEVEL_CODE" });
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, joinResponse.StatusCode);
+
+        // Verify participation was created without division
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
+        Assert.NotNull(participation);
+        Assert.Null(participation.DivisionId);
+        Assert.Equal(ParticipationStatus.Accepted, participation.Status);
+
+        // Check GetGameJoinCheckInfo API - should show no joined teams (since joined without division) and no joinable divisions
+        var checkInfoResponse = await userClient.GetAsync($"/api/Game/{game.Id}/Check");
+        checkInfoResponse.EnsureSuccessStatusCode();
+        var checkInfo = await checkInfoResponse.Content.ReadFromJsonAsync<GameJoinCheckInfoModel>();
+        Assert.NotNull(checkInfo);
+        // Should show no joined teams (because JoinedTeams only shows teams with specific divisions, this user joined without division)
+        Assert.Empty(checkInfo.JoinedTeams);
+        // Should show no joinable divisions (since none have JoinGame permission)
+        Assert.Empty(checkInfo.JoinableDivisions);
+    }
+
+    /// <summary>
+    /// Test: User joins game with specific division that has no invitation code
+    /// When game has joinable divisions, division-level invite code takes precedence.
+    /// If division has no code, no code is required to join that division (even if game has code).
+    /// </summary>
+    [Fact]
+    public async Task JoinGame_DivisionWithoutInviteCode_NoCodeRequired()
+    {
+        // Arrange
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Division Without Code Game");
+
+        // Set game level invite code
+        using var scope0 = factory.Services.CreateScope();
+        var gameRepo0 = scope0.ServiceProvider.GetRequiredService<IGameRepository>();
+        var gameEntity0 = await gameRepo0.GetGameById(game.Id);
+        Assert.NotNull(gameEntity0);
+        gameEntity0.InviteCode = "GAME_LEVEL_CODE";
+        await gameRepo0.SaveAsync();
+
+        // Create a division WITHOUT invite code
+        using var adminClient = factory.CreateClient();
+        var adminLoginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = admin.UserName, Password = adminPassword });
+        adminLoginResponse.EnsureSuccessStatusCode();
+
+        var divisionResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
+            new DivisionCreateModel
+            {
+                Name = "Division No Code",
+                InviteCode = null, // Division has no code - no code required to join this division
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
+            });
+        divisionResponse.EnsureSuccessStatusCode();
+        var division = await divisionResponse.Content.ReadFromJsonAsync<Division>();
+        Assert.NotNull(division);
+
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        using var userClient = factory.CreateClient();
+        var userLoginResponse = await userClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        userLoginResponse.EnsureSuccessStatusCode();
+
+        // Act 1 - Join without code (should succeed since division has no code requirement)
+        var joinWithoutCodeResponse = await userClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division.Id, InviteCode = null });
+
+        // Assert 1
+        Assert.Equal(HttpStatusCode.OK, joinWithoutCodeResponse.StatusCode);
+
+        // Verify participation was created with the division
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
+        Assert.NotNull(participation);
+        Assert.Equal(division.Id, participation.DivisionId);
+        Assert.Equal(ParticipationStatus.Accepted, participation.Status);
+
+        // Act 2 - Create a new user and team to test joining with any code (should also succeed)
+        var user2Password = "User2@Pass123";
+        var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), user2Password);
+        var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id,
+            $"Team {user2.UserName}");
+
+        using var user2Client = factory.CreateClient();
+        var user2LoginResponse = await user2Client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user2.UserName, Password = user2Password });
+        user2LoginResponse.EnsureSuccessStatusCode();
+
+        // Join with any code (since division requires no code, it should be ignored)
+        var joinWithAnyCodeResponse = await user2Client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team2.Id, DivisionId = division.Id, InviteCode = "ANY_CODE" });
+
+        // Assert 2 - Should succeed because division has no code requirement
+        Assert.Equal(HttpStatusCode.OK, joinWithAnyCodeResponse.StatusCode);
+
+        // Check GetGameJoinCheckInfo API for first user - should show 1 team joined and 1 joinable division
+        var checkInfoResponse1 = await userClient.GetAsync($"/api/Game/{game.Id}/Check");
+        checkInfoResponse1.EnsureSuccessStatusCode();
+        var checkInfo1 = await checkInfoResponse1.Content.ReadFromJsonAsync<GameJoinCheckInfoModel>();
+        Assert.NotNull(checkInfo1);
+        // Should show 1 joined team
+        Assert.Single(checkInfo1.JoinedTeams);
+        Assert.Equal(team.Id, checkInfo1.JoinedTeams[0].TeamId);
+        // Should show 1 joinable division (the one we created with no code)
+        Assert.Single(checkInfo1.JoinableDivisions);
+        Assert.Contains(division.Id, checkInfo1.JoinableDivisions);
+
+        // Check GetGameJoinCheckInfo API for second user - should show 1 team joined and 1 joinable division
+        var checkInfoResponse2 = await user2Client.GetAsync($"/api/Game/{game.Id}/Check");
+        checkInfoResponse2.EnsureSuccessStatusCode();
+        var checkInfo2 = await checkInfoResponse2.Content.ReadFromJsonAsync<GameJoinCheckInfoModel>();
+        Assert.NotNull(checkInfo2);
+        // Should show 1 joined team
+        Assert.Single(checkInfo2.JoinedTeams);
+        Assert.Equal(team2.Id, checkInfo2.JoinedTeams[0].TeamId);
+        // Should show 1 joinable division
+        Assert.Single(checkInfo2.JoinableDivisions);
+        Assert.Contains(division.Id, checkInfo2.JoinableDivisions);
+    }
 }
