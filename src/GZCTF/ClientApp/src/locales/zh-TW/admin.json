@@ -263,8 +263,9 @@
         "end_date": "結束日期",
         "end_time": "結束時間",
         "invite_code": {
-          "description": "留空表示不使用邀請碼",
-          "label": "邀請碼"
+          "description": "可被組織覆蓋",
+          "label": "邀請碼",
+          "placeholder": "留空以禁用"
         },
         "member_limit": {
           "description": "0 表示不限制隊伍人數",

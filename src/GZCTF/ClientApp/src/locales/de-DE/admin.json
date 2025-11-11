@@ -263,8 +263,9 @@
         "end_date": "Enddatum",
         "end_time": "Endzeit",
         "invite_code": {
-          "description": "Leer lassen für keinen Einladungscode",
-          "label": "Einladungscode"
+          "description": "Können von Abteilungen überschrieben werden",
+          "label": "Einladungscode",
+          "placeholder": "Leer lassen zum Deaktivieren"
         },
         "member_limit": {
           "description": "0 bedeutet unbegrenzte Teammitglieder",

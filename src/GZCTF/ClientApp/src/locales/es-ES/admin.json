@@ -263,8 +263,9 @@
         "end_date": "Fecha de Finalización",
         "end_time": "Hora de Finalización",
         "invite_code": {
-          "description": "Deja en blanco para no tener código de invitación",
-          "label": "Código de Invitación"
+          "description": "Pueden ser sobrescritos por las divisiones",
+          "label": "Código de Invitación",
+          "placeholder": "Deja en blanco para deshabilitar"
         },
         "member_limit": {
           "description": "0 significa miembros ilimitados del equipo",

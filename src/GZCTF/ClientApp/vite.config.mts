@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       chunkSizeWarningLimit: 2400,
       reportCompressedSize: true,
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           hashCharacters: 'base36',
           chunkFileNames: 'static/[hash].js',

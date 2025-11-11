@@ -45,13 +45,19 @@ export const toLimitTag = (t: TFunction, limit?: number) => {
 }
 
 export const useAdminGame = (numId: number) => {
-  const { data: game, mutate, error } = api.edit.useEditGetGame(numId, OnceSWRConfig)
+  const { data: game, mutate, error } = api.edit.useEditGetGame(numId, OnceSWRConfig, numId > 0)
 
   return { game, error, mutate }
 }
 
+export const useAdminDivisions = (numId: number) => {
+  const { data: divisions, mutate, error } = api.edit.useEditGetDivisions(numId, OnceSWRConfig, numId > 0)
+
+  return { divisions, error, mutate, hasDivisions: (divisions?.length ?? 0) > 0 }
+}
+
 export const useGame = (numId: number) => {
-  const { data: game, error, mutate } = api.game.useGameGame(numId, OnceSWRConfig)
+  const { data: game, error, mutate } = api.game.useGameGame(numId, OnceSWRConfig, numId > 0)
 
   return { game, error, mutate, status: game?.status ?? ParticipationStatus.Unsubmitted }
 }

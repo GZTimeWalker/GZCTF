@@ -10,8 +10,8 @@ import { DivisionCard } from '@Components/admin/DivisionCard'
 import { DivisionEditDrawer } from '@Components/admin/DivisionEditDrawer'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
-import { OnceSWRConfig } from '@Hooks/useConfig'
 import { useEditChallenges } from '@Hooks/useEdit'
+import { useAdminDivisions } from '@Hooks/useGame'
 import api, { Division } from '@Api'
 import classes from '@Styles/Divisions.module.css'
 
@@ -23,7 +23,7 @@ const GameDivisionManagement: FC = () => {
   const navigate = useNavigate()
   const clipboard = useClipboard({ timeout: 1500 })
 
-  const { data: divisions, mutate: mutateDivisions } = api.edit.useEditGetDivisions(numId, OnceSWRConfig, numId > 0)
+  const { divisions, mutate: mutateDivisions } = useAdminDivisions(numId)
   const { challenges } = useEditChallenges(numId)
 
   const [modalOpened, setModalOpened] = useState(false)

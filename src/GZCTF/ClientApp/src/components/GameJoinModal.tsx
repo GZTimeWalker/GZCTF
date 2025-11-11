@@ -80,7 +80,9 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const hasDivision = divisionOptions.length > 0 || joinedTeam?.div
   const canSelectDivision = !joinedTeam
 
-  const shouldRequireInviteCode = Boolean(game?.inviteCodeRequired) || Boolean(selectedDivision?.inviteCodeRequired)
+  const shouldRequireInviteCode = hasDivision
+    ? Boolean(selectedDivision?.inviteCodeRequired)
+    : Boolean(game?.inviteCodeRequired)
 
   useEffect(() => {
     if (!shouldRequireInviteCode) {

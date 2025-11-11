@@ -263,8 +263,9 @@
         "end_date": "終了日",
         "end_time": "終了時間",
         "invite_code": {
-          "description": "空にする場合、招待コードは使用されません",
-          "label": "招待コード"
+          "description": "区分によって上書き可能",
+          "label": "招待コード",
+          "placeholder": "空欄で無効化"
         },
         "member_limit": {
           "description": "無制限の場合は 0 を記入してください",

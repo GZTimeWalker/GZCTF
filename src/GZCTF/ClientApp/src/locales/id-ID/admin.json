@@ -263,8 +263,9 @@
         "end_date": "Tanggal Berakhir",
         "end_time": "Waktu Selesai",
         "invite_code": {
-          "description": "Biarkan kosong jika tidak ada kode undangan",
-          "label": "Kode Undangan"
+          "description": "Dapat ditimpa oleh divisi",
+          "label": "Kode Undangan",
+          "placeholder": "Biarkan kosong untuk menonaktifkan"
         },
         "member_limit": {
           "description": "0 berarti anggota tim tidak terbatas",

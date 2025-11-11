@@ -39,6 +39,7 @@ export const App: FC = () => {
               <SWRConfig
                 value={{
                   refreshInterval: 10000,
+                  keepPreviousData: true,
                   provider: localCacheProvider,
                   fetcher,
                 }}

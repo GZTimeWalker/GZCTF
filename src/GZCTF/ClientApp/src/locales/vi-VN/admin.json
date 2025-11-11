@@ -263,8 +263,9 @@
         "end_date": "Ngày kết thúc.",
         "end_time": "Thời gian kết thúc.",
         "invite_code": {
-          "description": "Để trống nếu không có mã mời.",
-          "label": "Mã mời."
+          "description": "Có thể bị ghi đè bởi các bảng",
+          "label": "Mã mời.",
+          "placeholder": "Để trống để tắt"
         },
         "member_limit": {
           "description": "Đặt 0 để không giới hạn số thành viên",

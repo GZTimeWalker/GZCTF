@@ -263,8 +263,9 @@
         "end_date": "종료 날짜",
         "end_time": "종료 시간",
         "invite_code": {
-          "description": "초대 코드가 없을 경우 빈 칸으로 두세요.",
-          "label": "초대 코드"
+          "description": "부문에 의해 덮어씌워질 수 있습니다",
+          "label": "초대 코드",
+          "placeholder": "비활성화하려면 빈 칸으로 두세요"
         },
         "member_limit": {
           "description": "0은 팀 멤버 수 제한이 없음을 의미합니다.",

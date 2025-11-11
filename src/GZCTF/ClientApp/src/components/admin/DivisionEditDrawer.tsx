@@ -247,7 +247,7 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
           <TextInput
             label={t('admin.content.games.divisions.form.invite_code.label')}
             description={t('admin.content.games.divisions.form.invite_code.description')}
-            placeholder={t('admin.content.games.info.invite_code.description')}
+            placeholder={t('admin.content.games.info.invite_code.placeholder')}
             value={inviteCode}
             disabled={loading}
             onChange={(event) => setInviteCode(event.currentTarget.value)}

@@ -261,11 +261,15 @@ const GameInfoEdit: FC = () => {
         <TextInput
           label={t('admin.content.games.info.invite_code.label')}
           description={t('admin.content.games.info.invite_code.description')}
+          placeholder={t('admin.content.games.info.invite_code.placeholder')}
           value={game?.inviteCode || ''}
           disabled={disabled}
           onChange={(e) => game && setGame({ ...game, inviteCode: e.target.value })}
           rightSection={
-            <ActionIcon onClick={() => game && setGame({ ...game, inviteCode: randomInviteCode() })}>
+            <ActionIcon
+              disabled={disabled}
+              onClick={() => game && setGame({ ...game, inviteCode: randomInviteCode() })}
+            >
               <Icon path={mdiDiceMultiple} size={0.9} />
             </ActionIcon>
           }
