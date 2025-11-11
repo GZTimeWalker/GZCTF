@@ -554,7 +554,8 @@ public class GrafanaLokiOptions
 
 public class ForwardedOptions : ForwardedHeadersOptions
 {
-    public List<string>? TrustedNetworks { get; set; }
+    public new List<string>? KnownNetworks { get; set; }
+    public new List<string>? KnownIPNetworks { get; set; }
     public List<string>? TrustedProxies { get; set; }
 
     public void ToForwardedHeadersOptions(ForwardedHeadersOptions options)
@@ -565,21 +566,27 @@ public class ForwardedOptions : ForwardedHeadersOptions
         foreach (var property in properties)
         {
             // skip the properties that are not being set directly
-            if (property.Name is nameof(KnownNetworks) or nameof(KnownProxies))
+            // .NET 10 update: `KnownNetworks` is obsolete, needs to be skipped
+            if (property.Name is nameof(KnownIPNetworks) or nameof(KnownProxies) or "KnownNetworks")
                 continue;
 
             property.SetValue(options, property.GetValue(this));
         }
 
-        TrustedNetworks?.ForEach(network =>
+        Action<string> addNetwork = networkString =>
         {
             // split the network into address and prefix length
-            var parts = network.Split('/');
+            var parts = networkString.Split('/');
             if (parts.Length == 2 &&
                 IPAddress.TryParse(parts[0], out var prefix) &&
                 int.TryParse(parts[1], out var prefixLength))
-                options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(prefix, prefixLength));
-        });
+                options.KnownIPNetworks.Add(new IPNetwork(prefix, prefixLength));
+        };
+
+        KnownIPNetworks?.ForEach(addNetwork);
+
+        // For historical configuration compatibility as we accept string instead of IPNetwork
+        KnownNetworks?.ForEach(addNetwork);
 
         TrustedProxies?.ForEach(proxy => proxy.ResolveIP().ToList().ForEach(ip => options.KnownProxies.Add(ip)));
     }
