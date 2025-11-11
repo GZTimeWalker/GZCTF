@@ -263,9 +263,8 @@
         "end_date": "End Date",
         "end_time": "End Time",
         "invite_code": {
-          "description": "Can be overwritten by divisions",
-          "label": "Invitation Code",
-          "placeholder": "Leave empty to disable"
+          "description": "Leave empty for no invitation code",
+          "label": "Invitation Code"
         },
         "member_limit": {
           "description": "0 means unlimited members of team",
