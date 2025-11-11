@@ -5,50 +5,65 @@ namespace GZCTF.Extensions;
 
 public static class ListExtensions
 {
-    public static int GetSetHashCode<T>(this IList<T> list) =>
-        list.Count + list.Distinct().Aggregate(0, (x, y) => x.GetHashCode() ^ y?.GetHashCode() ?? 0xdead);
+    extension<T>(IList<T> list)
+    {
+        public int GetSetHashCode() =>
+            list.Count + list.Distinct().Aggregate(0, (x, y) => x.GetHashCode() ^ y?.GetHashCode() ?? 0xdead);
+    }
 }
 
 public static class QueryableExtensions
 {
-    /// <summary>
-    /// Take part of the data if count is greater than 0, otherwise take all data
-    /// Warn: Injections may occur if the count is not validated
-    /// </summary>
-    /// <returns></returns>
-    public static IQueryable<T> TakeAllIfZero<T>(this IQueryable<T> items, int count = 100, int skip = 0) =>
-        count switch
-        {
-            > 0 => items.Skip(skip).Take(count),
-            _ => items
-        };
+    extension<T>(IQueryable<T> items)
+    {
+        /// <summary>
+        /// Take part of the data if count is greater than 0, otherwise take all data
+        /// Warn: Injections may occur if the count is not validated
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<T> TakeAllIfZero(int count = 100, int skip = 0) =>
+            count switch
+            {
+                > 0 => items.Skip(skip).Take(count),
+                _ => items
+            };
+    }
 }
 
 public static class ArrayExtensions
 {
-    public static ArrayResponse<T> ToResponse<T>(this IEnumerable<T> array, int? tot = null) where T : class =>
-        array switch
-        {
-            null => new([]),
-            T[] arr => new(arr, tot),
-            _ => new(array.ToArray(), tot)
-        };
+    extension<T>(IEnumerable<T> array) where T : class
+    {
+        public ArrayResponse<T> ToResponse(int? tot = null) =>
+            array switch
+            {
+                null => new([]),
+                T[] arr => new(arr, tot),
+                _ => new(array.ToArray(), tot)
+            };
+    }
 }
 
 public static class IPAddressExtensions
 {
-    public static IEnumerable<IPAddress> ResolveIP(this string? host) =>
-        !string.IsNullOrWhiteSpace(host)
-            ? Dns.GetHostAddresses(host)
-            : [];
+    extension(string? host)
+    {
+        public IEnumerable<IPAddress> ResolveIP() =>
+            !string.IsNullOrWhiteSpace(host)
+                ? Dns.GetHostAddresses(host)
+                : [];
+    }
 }
 
 internal static class JsonSerializerOptionsExtensions
 {
-    public static void ConfigCustomSerializerOptions(this JsonSerializerOptions options)
+    extension(JsonSerializerOptions options)
     {
-        options.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-        options.Converters.Add(new DateTimeOffsetJsonConverter());
-        options.Converters.Add(new IPAddressJsonConverter());
+        public void ConfigCustomSerializerOptions()
+        {
+            options.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+            options.Converters.Add(new DateTimeOffsetJsonConverter());
+            options.Converters.Add(new IPAddressJsonConverter());
+        }
     }
 }

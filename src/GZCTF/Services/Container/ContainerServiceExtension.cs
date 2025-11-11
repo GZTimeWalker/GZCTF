@@ -26,34 +26,36 @@ public class ContainerProviderMetadata
 
 public static class ContainerServiceExtension
 {
-    internal static IServiceCollection AddContainerService(this IServiceCollection services,
-        IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        var config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ??
-                     new();
-
-        // FIXME: custom IPortMapper
-        return services.AddProvider(config).AddManager(config);
-    }
-
-    static IServiceCollection AddProvider(this IServiceCollection services, ContainerProvider config) =>
-        config.Type switch
+        internal IServiceCollection AddContainerService(IConfiguration configuration)
         {
-            ContainerProviderType.Docker => services
-                .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
-            ContainerProviderType.Kubernetes => services
-                .AddSingleton<IContainerProvider<Kubernetes, KubernetesMetadata>, KubernetesProvider>(),
-            _ => services
-        };
+            var config = configuration.GetSection(nameof(ContainerProvider)).Get<ContainerProvider>() ??
+                         new();
 
-    static IServiceCollection AddManager(this IServiceCollection services, ContainerProvider config)
-    {
-        if (config.Type == ContainerProviderType.Kubernetes)
-            return services.AddSingleton<IContainerManager, KubernetesManager>();
+            // FIXME: custom IPortMapper
+            return services.AddProvider(config).AddManager(config);
+        }
 
-        if (config.DockerConfig?.SwarmMode is true)
-            return services.AddSingleton<IContainerManager, SwarmManager>();
+        IServiceCollection AddProvider(ContainerProvider config) =>
+            config.Type switch
+            {
+                ContainerProviderType.Docker => services
+                    .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
+                ContainerProviderType.Kubernetes => services
+                    .AddSingleton<IContainerProvider<Kubernetes, KubernetesMetadata>, KubernetesProvider>(),
+                _ => services
+            };
 
-        return services.AddSingleton<IContainerManager, DockerManager>();
+        IServiceCollection AddManager(ContainerProvider config)
+        {
+            if (config.Type == ContainerProviderType.Kubernetes)
+                return services.AddSingleton<IContainerManager, KubernetesManager>();
+
+            if (config.DockerConfig?.SwarmMode is true)
+                return services.AddSingleton<IContainerManager, SwarmManager>();
+
+            return services.AddSingleton<IContainerManager, DockerManager>();
+        }
     }
 }

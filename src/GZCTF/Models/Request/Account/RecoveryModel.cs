@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Extensions;
+using GZCTF.Services;
 
 namespace GZCTF.Models.Request.Account;
 
