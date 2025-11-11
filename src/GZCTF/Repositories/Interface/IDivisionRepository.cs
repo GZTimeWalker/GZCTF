@@ -31,6 +31,14 @@ public interface IDivisionRepository : IRepository
     Task<Division?> GetDivision(int gameId, int divisionId, CancellationToken token = default);
 
     /// <summary>
+    /// Check if a game has divisions
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<bool> HasDivisions(int gameId, CancellationToken token = default);
+
+    /// <summary>
     /// Get joinable division IDs for a game
     /// </summary>
     /// <param name="gameId"></param>

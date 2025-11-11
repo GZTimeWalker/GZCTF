@@ -590,6 +590,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} đã gửi thành công {1} Write-Up</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>Cần phải chọn phòng ban để tham gia trò chơi này</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>Đội trưởng</value>
   </data>

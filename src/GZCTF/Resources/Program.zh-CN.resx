@@ -590,6 +590,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} 成功提交 {1} 的 Writeup</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>参加此比赛需要选择分组</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>队长</value>
   </data>

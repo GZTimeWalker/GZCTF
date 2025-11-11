@@ -590,6 +590,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>Команда {0} отправила отчет на {1}</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>Выбор подразделения требуется для участия в этой игре</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>Капитан</value>
   </data>

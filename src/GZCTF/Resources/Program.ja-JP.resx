@@ -590,6 +590,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} は {1} の記事を正常に提出しました</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>このゲームに参加するには部門の選択が必要です</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>リーダー</value>
   </data>

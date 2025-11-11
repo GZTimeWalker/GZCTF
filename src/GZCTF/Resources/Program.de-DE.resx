@@ -606,6 +606,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} hat erfolgreich {1} Write-Up eingereicht</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>Die Auswahl einer Abteilung ist erforderlich, um an diesem Spiel teilzunehmen</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>Kapitän</value>
   </data>

@@ -590,6 +590,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} 팀 {1} 풀이 제출 완료.</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>이 게임에 참가하려면 부서 선택이 필요합니다</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>팀장</value>
   </data>

@@ -46,6 +46,9 @@ public class DivisionRepository(AppDbContext context, CacheHelper cacheHelper)
             .Include(d => d.ChallengeConfigs)
             .FirstOrDefaultAsync(d => d.Id == divisionId && d.GameId == gameId, token);
 
+    public Task<bool> HasDivisions(int gameId, CancellationToken token = default) =>
+        Context.Divisions.AnyAsync(d => d.GameId == gameId, token);
+
     public Task<int[]> GetJoinableDivisionIds(int gameId, CancellationToken token = default) =>
         Context.Divisions
             .Where(d => d.GameId == gameId && d.DefaultPermissions.HasFlag(GamePermission.JoinGame))

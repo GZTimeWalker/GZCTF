@@ -189,10 +189,16 @@ public class GameController(
 
         // =============== Validate division and permissions ===============
 
+        bool hasDivisions = await divisionRepository.HasDivisions(id, token);
+
         Division? div = null;
-        if (model.DivisionId is { } divId)
+        if (hasDivisions)
         {
-            div = await divisionRepository.GetDivision(id, divId, token);
+            // We don't allow joining a game with divisions without specifying a division
+            if (model.DivisionId is null)
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_DivisionRequired)]));
+
+            div = await divisionRepository.GetDivision(id, model.DivisionId.Value, token);
             if (div is null)
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidDivision)]));
 
@@ -203,14 +209,11 @@ public class GameController(
 
         // =============== Validate invitation code ===============
 
-        // Determine which invite code to check:
-        // - If joining a division with an invitation code, use division's invite code
-        // - Otherwise, use game's invite code (if any)
-        var requiredInviteCode = div is not null && !string.IsNullOrEmpty(div.InviteCode)
-            ? div.InviteCode
-            : !string.IsNullOrEmpty(game.InviteCode)
-                ? game.InviteCode
-                : null;
+        string? requiredInviteCode;
+        if (hasDivisions && div is not null) // div should not be null here
+            requiredInviteCode = string.IsNullOrEmpty(div.InviteCode) ? null : div.InviteCode;
+        else
+            requiredInviteCode = string.IsNullOrEmpty(game.InviteCode) ? null : game.InviteCode;
 
         if (requiredInviteCode is not null && requiredInviteCode != model.InviteCode)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InvalidInvitationCode)]));

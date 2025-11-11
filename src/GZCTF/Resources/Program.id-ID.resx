@@ -590,6 +590,9 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} berhasil mengirim Write-Up {1}</value>
   </data>
+  <data name="Game_DivisionRequired" xml:space="preserve">
+    <value>Pemilihan divisi diperlukan untuk bergabung dengan permainan ini</value>
+  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>Kapten</value>
   </data>
