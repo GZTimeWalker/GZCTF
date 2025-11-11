@@ -590,9 +590,6 @@
   <data name="Game_WriteupSubmitted" xml:space="preserve">
     <value>{0} successfully submitted {1} Write-Up</value>
   </data>
-  <data name="Game_DivisionRequired" xml:space="preserve">
-    <value>Division is required for joining this game</value>
-  </data>
   <data name="Header_Captain" xml:space="preserve">
     <value>Captain</value>
   </data>
