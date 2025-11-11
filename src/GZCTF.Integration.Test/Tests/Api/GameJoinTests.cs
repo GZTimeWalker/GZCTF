@@ -1016,4 +1016,415 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Single(checkInfo2.JoinableDivisions);
         Assert.Contains(division.Id, checkInfo2.JoinableDivisions);
     }
+
+    /// <summary>
+    /// Test: User can leave game with Pending status
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_WithPendingStatus_ShouldSucceed()
+    {
+        // Arrange
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        // Create game with review requirement
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services,
+            "Leave Game Test - Pending", acceptWithoutReview: false);
+
+        using var client = factory.CreateClient();
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Join the game (participation should be pending due to review requirement)
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Verify participation is pending
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
+        Assert.NotNull(participation);
+        Assert.Equal(ParticipationStatus.Pending, participation.Status);
+
+        // Act - Leave the game
+        var leaveResponse = await client.DeleteAsync($"/api/Game/{game.Id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, leaveResponse.StatusCode);
+
+        // Verify participation was removed - create new scope to get fresh data
+        using var scopeAfter = factory.Services.CreateScope();
+        var participationRepoAfter = scopeAfter.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var removedParticipation = await participationRepoAfter.GetParticipation(user.Id, game.Id);
+        Assert.Null(removedParticipation);
+    }
+
+    /// <summary>
+    /// Test: User can leave game with Rejected status
+    /// Covers multiple participation status paths in LeaveGame
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_WithRejectedStatus_ShouldSucceed()
+    {
+        // Arrange
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services,
+            "Leave Game Test - Rejected", acceptWithoutReview: false);
+
+        using var client = factory.CreateClient();
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Join the game
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Reject the participation via admin action
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
+        Assert.NotNull(participation);
+
+        await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Rejected);
+
+        // Verify status is rejected
+        Assert.Equal(ParticipationStatus.Rejected, participation.Status);
+
+        // Act - Leave the game
+        var leaveResponse = await client.DeleteAsync($"/api/Game/{game.Id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, leaveResponse.StatusCode);
+
+        // Verify participation was removed - create new scope to get fresh data from DB after HTTP operation
+        using var scopeAfter = factory.Services.CreateScope();
+        var participationRepoAfter = scopeAfter.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var removedParticipation = await participationRepoAfter.GetParticipation(user.Id, game.Id);
+        Assert.Null(removedParticipation);
+    }
+
+    /// <summary>
+    /// Test: Comprehensive Leave Game error scenarios
+    /// Tests multiple failure cases without requiring separate games:
+    /// - GameNotFound (non-existent game ID)
+    /// - NotJoined (user not in game)
+    /// - AfterAccepted (cannot leave accepted participation)
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_ErrorScenarios_ShouldFail()
+    {
+        // Arrange - Setup single user and shared game for reuse
+        var gameId = await TestDataSeeder.GetOrCreateBasicGameAsync(factory.Services);
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        using var client = factory.CreateClient();
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Scenario 1: Try to leave non-existent game
+        var leaveNonExistentResponse = await client.DeleteAsync("/api/Game/99999");
+        Assert.Equal(HttpStatusCode.NotFound, leaveNonExistentResponse.StatusCode);
+        var nonExistentError = await leaveNonExistentResponse.Content.ReadFromJsonAsync<RequestResponse>();
+        Assert.NotNull(nonExistentError);
+        Assert.Contains("not found", nonExistentError.Title, StringComparison.OrdinalIgnoreCase);
+
+        // Scenario 2: Try to leave without joining first
+        var leaveNotJoinedResponse = await client.DeleteAsync($"/api/Game/{gameId}");
+        Assert.Equal(HttpStatusCode.BadRequest, leaveNotJoinedResponse.StatusCode);
+        var notJoinedError = await leaveNotJoinedResponse.Content.ReadFromJsonAsync<RequestResponse>();
+        Assert.NotNull(notJoinedError);
+        Assert.Contains("not joining", notJoinedError.Title, StringComparison.OrdinalIgnoreCase);
+
+        // Scenario 3: Join game (auto-accepted) and try to leave after acceptance
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{gameId}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Verify accepted status
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, gameId);
+        Assert.NotNull(participation);
+        Assert.Equal(ParticipationStatus.Accepted, participation.Status);
+
+        // Try to leave after acceptance
+        var leaveAcceptedResponse = await client.DeleteAsync($"/api/Game/{gameId}");
+        Assert.Equal(HttpStatusCode.BadRequest, leaveAcceptedResponse.StatusCode);
+        var acceptedError = await leaveAcceptedResponse.Content.ReadFromJsonAsync<RequestResponse>();
+        Assert.NotNull(acceptedError);
+        Assert.Contains("entrance approval", acceptedError.Title, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Test: User cannot leave game with Suspended status
+    /// Another status variant that should prevent leaving
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_AfterSuspended_ShouldFail()
+    {
+        // Arrange
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services,
+            "Leave Game Test - Suspended", acceptWithoutReview: false);
+
+        using var client = factory.CreateClient();
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Join the game
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Suspend the participation
+        using var scope = factory.Services.CreateScope();
+        var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
+        Assert.NotNull(participation);
+
+        await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Suspended);
+
+        // Verify status is suspended
+        Assert.Equal(ParticipationStatus.Suspended, participation.Status);
+
+        // Act - Try to leave after suspension
+        var leaveResponse = await client.DeleteAsync($"/api/Game/{game.Id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, leaveResponse.StatusCode);
+        var error = await leaveResponse.Content.ReadFromJsonAsync<RequestResponse>();
+        Assert.NotNull(error);
+        Assert.Contains("entrance approval", error.Title, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Test: Team participation is removed when last member leaves
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_LastMemberLeaves_RemovesParticipation()
+    {
+        // Arrange
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services,
+            "Leave Game Test - Single Member", acceptWithoutReview: false);
+
+        using var client = factory.CreateClient();
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Join the game
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Verify participation exists with 1 member
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var existingParticipation = await context.Participations
+            .Include(p => p.Members)
+            .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+        Assert.NotNull(existingParticipation);
+        Assert.Single(existingParticipation.Members);
+
+        // Act - Leave the game
+        var leaveResponse = await client.DeleteAsync($"/api/Game/{game.Id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, leaveResponse.StatusCode);
+
+        // Verify participation was completely removed - create new scope to get fresh data
+        using var scopeAfter = factory.Services.CreateScope();
+        var contextAfter = scopeAfter.ServiceProvider.GetRequiredService<AppDbContext>();
+        var removedParticipation = await contextAfter.Participations
+            .FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+        Assert.Null(removedParticipation);
+    }
+
+    /// <summary>
+    /// Test: Other team members remain after one member leaves
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_PartialMemberLeaves_PreservesOtherMembers()
+    {
+        // Arrange
+        var user1Password = "User1@Pass123";
+        var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), user1Password);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id,
+            $"Team {user1.UserName}");
+
+        var user2Password = "User2@Pass123";
+        var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), user2Password);
+
+        // Add user2 to team
+        using var scopeSetup = factory.Services.CreateScope();
+        var context = scopeSetup.ServiceProvider.GetRequiredService<AppDbContext>();
+        var teamEntity = await context.Teams.Include(t => t.Members)
+            .FirstAsync(t => t.Id == team.Id);
+        var user2Entity = await context.Users.FirstAsync(u => u.Id == user2.Id);
+        teamEntity.Members.Add(user2Entity);
+        await context.SaveChangesAsync();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services,
+            "Leave Game Test - Multiple Members", acceptWithoutReview: false);
+
+        // Both users join the game
+        using var client1 = factory.CreateClient();
+        var login1Response = await client1.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user1.UserName, Password = user1Password });
+        login1Response.EnsureSuccessStatusCode();
+
+        var join1Response = await client1.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        join1Response.EnsureSuccessStatusCode();
+
+        using var client2 = factory.CreateClient();
+        var login2Response = await client2.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user2.UserName, Password = user2Password });
+        login2Response.EnsureSuccessStatusCode();
+
+        var join2Response = await client2.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null });
+        join2Response.EnsureSuccessStatusCode();
+
+        // Verify both members are in the participation
+        using var scope = factory.Services.CreateScope();
+        var context2 = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var participation = await context2.Participations
+            .Include(p => p.Members)
+            .FirstAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+        Assert.Equal(2, participation.Members.Count);
+
+        // Act - User1 leaves the game
+        var leaveResponse = await client1.DeleteAsync($"/api/Game/{game.Id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, leaveResponse.StatusCode);
+
+        // Verify participation still exists with only user2 - create new scope to get fresh data from DB after HTTP operation
+        using var scopeAfter = factory.Services.CreateScope();
+        var contextAfter = scopeAfter.ServiceProvider.GetRequiredService<AppDbContext>();
+        var remainingParticipation = await contextAfter.Participations
+            .Include(p => p.Members)
+            .FirstAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+        Assert.Single(remainingParticipation.Members);
+        Assert.Equal(user2.Id, remainingParticipation.Members.First().UserId);
+    }
+
+    /// <summary>
+    /// Test: Leave game with division
+    /// Verifies that division context doesn't prevent leaving in Pending status
+    /// </summary>
+    [Fact]
+    public async Task LeaveGame_WithDivision_ShouldSucceed()
+    {
+        // Arrange
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var userPassword = "User@Pass123";
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), userPassword);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id,
+            $"Team {user.UserName}");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services,
+            "Leave Game Test - With Division", acceptWithoutReview: false);
+
+        // Create division
+        using var adminClient = factory.CreateClient();
+        var adminLoginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = admin.UserName, Password = adminPassword });
+        adminLoginResponse.EnsureSuccessStatusCode();
+
+        var divisionResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
+            new DivisionCreateModel
+            {
+                Name = "Leave Division",
+                InviteCode = "LEAVE_DIV",
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
+            });
+        divisionResponse.EnsureSuccessStatusCode();
+        var division = await divisionResponse.Content.ReadFromJsonAsync<Division>();
+        Assert.NotNull(division);
+
+        using var client = factory.CreateClient();
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user.UserName, Password = userPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Join with division
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division.Id, InviteCode = "LEAVE_DIV" });
+        joinResponse.EnsureSuccessStatusCode();
+
+        // Change division to require review so participation stays pending
+        using var scope = factory.Services.CreateScope();
+        var divisionRepo = scope.ServiceProvider.GetRequiredService<IDivisionRepository>();
+        var divEntity = await divisionRepo.GetDivision(game.Id, division.Id);
+        Assert.NotNull(divEntity);
+        divEntity.DefaultPermissions = GamePermission.All; // Add RequireReview
+        await divisionRepo.SaveAsync();
+
+        // Verify participation is accepted
+        using var scope2 = factory.Services.CreateScope();
+        var participationRepo = scope2.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var participation = await participationRepo.GetParticipation(user.Id, game.Id);
+        Assert.NotNull(participation);
+        Assert.Equal(ParticipationStatus.Accepted, participation.Status);
+
+        // Manually set to pending to test leaving pending division participation
+        await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Pending);
+
+        // Act - Leave the game
+        var leaveResponse = await client.DeleteAsync($"/api/Game/{game.Id}");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, leaveResponse.StatusCode);
+
+        // Verify participation was removed - create new scope to get fresh data
+        using var scopeAfter = factory.Services.CreateScope();
+        var participationRepoAfter = scopeAfter.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var removedParticipation = await participationRepoAfter.GetParticipation(user.Id, game.Id);
+        Assert.Null(removedParticipation);
+    }
 }
