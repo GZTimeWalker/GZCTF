@@ -79,43 +79,13 @@ public class CodecTests
     public void LeetEntropy_CalculatesCorrectly(string flag, bool expectedZero, bool expectedPositive)
     {
         // Act
-        var entropy = Codec.Leet.LeetEntropy(flag);
+        var entropy = new GZCTF.Utils.DynamicFlagGenerator(flag).CalculateEntropy();
 
         // Assert
         if (expectedZero)
             Assert.Equal(0, entropy);
         else if (expectedPositive)
             Assert.True(entropy > 0);
-    }
-
-    [Fact]
-    public void LeetFlag_TransformsFlag()
-    {
-        // Arrange
-        var original = "flag{TEST_123}";
-
-        // Act
-        var leeted = Codec.Leet.LeetFlag(original, false);
-
-        // Assert
-        Assert.NotNull(leeted);
-        Assert.StartsWith("flag{", leeted);
-        Assert.EndsWith("}", leeted);
-        Assert.DoesNotContain(" ", leeted); // Spaces should be replaced with underscores
-    }
-
-    [Fact]
-    public void LeetFlag_ReplacesSpacesWithUnderscores()
-    {
-        // Arrange
-        var original = "flag{TEST WITH SPACES}";
-
-        // Act
-        var leeted = Codec.Leet.LeetFlag(original, false);
-
-        // Assert
-        Assert.DoesNotContain(" ", leeted);
-        Assert.Contains("_", leeted);
     }
 
     [Theory]

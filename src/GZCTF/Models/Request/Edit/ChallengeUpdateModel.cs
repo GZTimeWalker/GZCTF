@@ -128,13 +128,6 @@ public class ChallengeUpdateModel
     /// Check if the Flag template is valid
     /// </summary>
     /// <returns></returns>
-    internal bool IsValidFlagTemplate()
-    {
-        if (string.IsNullOrWhiteSpace(FlagTemplate))
-            return false;
-
-        return FlagTemplate.Contains("[GUID]") ||
-               FlagTemplate.Contains("[TEAM_HASH]") ||
-               Codec.Leet.LeetEntropy(FlagTemplate) >= 32.0;
-    }
+    internal bool IsValidFlagTemplate() =>
+        !string.IsNullOrWhiteSpace(FlagTemplate) && new DynamicFlagGenerator(FlagTemplate).IsValid();
 }

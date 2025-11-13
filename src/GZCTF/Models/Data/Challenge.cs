@@ -113,32 +113,13 @@ public class Challenge
         if (string.IsNullOrEmpty(FlagTemplate))
             return $"flag{Guid.NewGuid():B}";
 
-        if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
-
-        if (!FlagTemplate.Contains("[TEAM_HASH]"))
-            return Codec.Leet.LeetFlag(FlagTemplate);
-
-        var flag = FlagTemplate;
-        if (FlagTemplate.StartsWith("[LEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
-
-        if (FlagTemplate.StartsWith("[CLEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[7..], true);
-
-        //   Using the signature private key of the game to generate a hash for the
-        // team is not a wise and sufficiently secure choice. Moreover, this private
-        // key should not exist outside any backend systems, even if it is encrypted
-        // with an XOR key in a configuration file or provided to the organizers (admin)
-        // for third-party flag calculation and external distribution.
-        //   To address this issue, one possible solution is to use a salted hash of
-        // the private key as the salt for the team's hash.
-        //   To prevent specific challenges from leaking hash salts, leading to the
-        // risk of being able to compute other challenges' flags, the salt is hashed
-        // with the challenge ID to generate a unique salt for each challenge.
-        var salt = $"{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
-        var hash = $"{salt}::{part.Token}".ToSHA256String();
-        return flag.Replace("[TEAM_HASH]", hash[12..24]);
+        var generator = new DynamicFlagGenerator(FlagTemplate);
+        return generator.GenerateWithTeamHash(() =>
+        {
+            var salt = $"{part.Game.TeamHashSalt}::{Id}".ToSHA256String();
+            var hash = $"{salt}::{part.Token}".ToSHA256String();
+            return hash[12..24];
+        });
     }
 
     /// <summary>
@@ -149,21 +130,10 @@ public class Challenge
         if (string.IsNullOrEmpty(FlagTemplate))
             return $"flag{Guid.NewGuid():B}";
 
-        var guid = Guid.NewGuid();
-        if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", guid.ToString("D"));
+        var generator = new DynamicFlagGenerator(FlagTemplate);
 
-        if (!FlagTemplate.Contains("[TEAM_HASH]"))
-            return Codec.Leet.LeetFlag(FlagTemplate);
-
-        var flag = FlagTemplate;
-        if (FlagTemplate.StartsWith("[LEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
-
-        if (FlagTemplate.StartsWith("[CLEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[7..], true);
-
-        return flag.Replace("[TEAM_HASH]", guid.ToString("N")[..12]);
+        // Always use TestTeamHash for [TEAM_HASH] in parameterless version
+        return generator.GenerateWithTeamHash(() => "TestTeamHash");
     }
 
     /// <summary>
@@ -174,20 +144,8 @@ public class Challenge
         if (string.IsNullOrEmpty(FlagTemplate))
             return "flag{GZCTF_dynamic_flag_test}";
 
-        if (FlagTemplate.Contains("[GUID]"))
-            return FlagTemplate.Replace("[GUID]", Guid.NewGuid().ToString("D"));
-
-        if (!FlagTemplate.Contains("[TEAM_HASH]"))
-            return Codec.Leet.LeetFlag(FlagTemplate);
-
-        var flag = FlagTemplate;
-        if (FlagTemplate.StartsWith("[LEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[6..]);
-
-        if (FlagTemplate.StartsWith("[CLEET]"))
-            flag = Codec.Leet.LeetFlag(FlagTemplate[7..], true);
-
-        return flag.Replace("[TEAM_HASH]", "TestTeamHash");
+        var generator = new DynamicFlagGenerator(FlagTemplate);
+        return generator.GenerateTestFlag();
     }
 
     #region Db Relationship
