@@ -12,7 +12,7 @@ import 'dayjs/locale/vi'
 import 'dayjs/locale/zh'
 import 'dayjs/locale/zh-tw'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { useEffect } from 'react'
+import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 dayjs.extend(localizedFormat)
@@ -72,12 +72,23 @@ export const defaultLanguage = 'en-US'
 export let apiLanguage: string = defaultLanguage
 export type SupportedLanguages = keyof typeof LanguageMap
 
-export const useLanguage = () => {
+const supportedLanguages = Object.keys(LanguageMap) as SupportedLanguages[]
+
+interface LanguageContextValue {
+  language: SupportedLanguages
+  locale: string
+  setLanguage: (lang: SupportedLanguages) => void
+  supportedLanguages: SupportedLanguages[]
+}
+
+const LanguageContext = createContext<LanguageContextValue | undefined>(undefined)
+
+export const LanguageProvider = ({ children }: PropsWithChildren) => {
   const { i18n } = useTranslation()
 
-  const [language, setLanguageInner] = useLocalStorage({
+  const [language, setLanguageInner] = useLocalStorage<SupportedLanguages>({
     key: 'language',
-    defaultValue: i18n.language,
+    defaultValue: i18n.language as SupportedLanguages,
     getInitialValueInEffect: false,
   })
 
@@ -87,70 +98,82 @@ export const useLanguage = () => {
     const pageLang = language.toLowerCase()
     dayjs.locale(pageLang)
     document.documentElement.setAttribute('lang', pageLang)
-  }, [i18n, language])
+  }, [language])
 
-  const supportedLanguages = Object.keys(LanguageMap) as SupportedLanguages[]
+  const setLanguage = useCallback(
+    (lang: SupportedLanguages) => {
+      // check if language is supported
+      if (supportedLanguages.includes(lang)) {
+        setLanguageInner(lang)
 
-  const setLanguage = (lang: SupportedLanguages) => {
-    // check if language is supported
-    if (supportedLanguages.includes(lang)) {
-      setLanguageInner(lang)
+        const isMT = LanguageMap[lang].includes('(MT)')
+        const isWIP = LanguageMap[lang].includes('(WIP)')
 
-      const isMT = LanguageMap[lang].includes('(MT)')
-      const isWIP = LanguageMap[lang].includes('(WIP)')
+        if (!isMT && !isWIP) return
 
-      if (!isMT && !isWIP) return
-
-      modals.openConfirmModal({
-        w: '30vw',
-        maw: '30rem',
-        title: <Text fw="bold">{isMT ? '🤖 Machine Translation' : '🚀 Incompleted Translation'}</Text>,
-        children: (
-          <>
-            <Text>
-              {isMT
-                ? 'This translation is done by machine and AIs, it may not be accurate.'
-                : 'This language is still in progress, some parts may not be translated.'}
-            </Text>
-            <Divider my={10} />
-            <Text>If you want to help with the translation:</Text>
-            <List>
-              <List.Item>
-                <Text>
-                  Current Language: <Code>{lang}</Code>{' '}
-                  <Text span size="sm">
-                    {LanguageMap[lang]}
+        modals.openConfirmModal({
+          w: '30vw',
+          maw: '30rem',
+          title: <Text fw="bold">{isMT ? '🤖 Machine Translation' : '🚀 Incompleted Translation'}</Text>,
+          children: (
+            <>
+              <Text>
+                {isMT
+                  ? 'This translation is done by machine and AIs, it may not be accurate.'
+                  : 'This language is still in progress, some parts may not be translated.'}
+              </Text>
+              <Divider my={10} />
+              <Text>If you want to help with the translation:</Text>
+              <List>
+                <List.Item>
+                  <Text>
+                    Current Language: <Code>{lang}</Code>{' '}
+                    <Text span size="sm">
+                      {LanguageMap[lang]}
+                    </Text>
                   </Text>
-                </Text>
-              </List.Item>
-              <List.Item>
-                Contact us on{' '}
-                <Anchor href="https://github.com/GZTimeWalker/GZCTF" target="_blank" rel="noreferrer">
-                  GitHub
-                </Anchor>
-              </List.Item>
-              <List.Item>
-                Track the progress on{' '}
-                <Anchor href="https://crowdin.com/project/gzctf" target="_blank" rel="noreferrer">
-                  Crowdin
-                </Anchor>
-              </List.Item>
-            </List>
-          </>
-        ),
-        confirmProps: { color: undefined },
-        labels: { confirm: 'Confirm', cancel: 'Switch to English' },
-        onCancel: () => setLanguage('en-US'),
-      })
-    } else {
-      console.warn(`Language ${lang} is not supported, fallback to ${defaultLanguage}`)
-      setLanguageInner(defaultLanguage)
-    }
+                </List.Item>
+                <List.Item>
+                  Contact us on{' '}
+                  <Anchor href="https://github.com/GZTimeWalker/GZCTF" target="_blank" rel="noreferrer">
+                    GitHub
+                  </Anchor>
+                </List.Item>
+                <List.Item>
+                  Track the progress on{' '}
+                  <Anchor href="https://crowdin.com/project/gzctf" target="_blank" rel="noreferrer">
+                    Crowdin
+                  </Anchor>
+                </List.Item>
+              </List>
+            </>
+          ),
+          confirmProps: { color: undefined },
+          labels: { confirm: 'Confirm', cancel: 'Switch to English' },
+          onCancel: () => setLanguage('en-US'),
+        })
+      } else {
+        console.warn(`Language ${lang} is not supported, fallback to ${defaultLanguage}`)
+        setLanguageInner(defaultLanguage)
+      }
+    },
+    [setLanguageInner]
+  )
+
+  const contextValue = useMemo(
+    () => ({ language, locale: language.split('-')[0], setLanguage, supportedLanguages }),
+    [language, setLanguage]
+  )
+
+  return <LanguageContext.Provider value={contextValue}>{children}</LanguageContext.Provider>
+}
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext)
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider')
   }
-
-  const locale = language.split('-')[0]
-
-  return { language, locale, setLanguage, supportedLanguages }
+  return context
 }
 
 export const normalizeLanguage = (language: string) => language.toUpperCase().replace(/[_-].*/, '')

@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom/client'
 import { initReactI18next } from 'react-i18next'
 import { BrowserRouter } from 'react-router'
 import manifest from 'virtual:i18n-manifest'
-import { convertLanguage } from '@Utils/I18n'
+import { convertLanguage, LanguageProvider } from '@Utils/I18n'
 
 i18n
   .use(LanguageDetector)
@@ -34,6 +34,8 @@ const app = ReactDOM.createRoot(document.getElementById('root')!)
 
 app.render(
   <BrowserRouter>
-    <App />
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
   </BrowserRouter>
 )
