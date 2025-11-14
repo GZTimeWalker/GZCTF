@@ -37,14 +37,11 @@ class MinIOResource(string name, string? accessKey = null, string? secretKey = n
     internal const int DefaultApiPort = 9000;
     internal const int DefaultConsolePort = 9001;
 
-    private EndpointReference? _apiReference;
-    private EndpointReference? _consoleReference;
-
     private EndpointReference ApiEndpoint =>
-        _apiReference ??= new EndpointReference(this, ApiEndpointName);
+        field ??= new EndpointReference(this, ApiEndpointName);
 
     private EndpointReference ConsoleEndpoint =>
-        _consoleReference ??= new EndpointReference(this, ConsoleEndpointName);
+        field ??= new EndpointReference(this, ConsoleEndpointName);
 
     public ReferenceExpression ConnectionStringExpression =>
         ReferenceExpression.Create(
@@ -85,18 +82,17 @@ static class MinIOResourceBuilderExtensions
             .WithArgs("server", "/data", "--console-address", $":{MinIOResource.DefaultConsolePort}");
     }
 
-    private static IResourceBuilder<MinIOResource> ConfigureCredentials(
-        this IResourceBuilder<MinIOResource> builder,
-        MinIOBuilder options) => builder
-        .WithEnvironment("MINIO_ROOT_USER", options.AccessKey ?? "minioadmin")
-        .WithEnvironment("MINIO_ROOT_PASSWORD", options.SecretKey ?? "minioadmin");
-
-    private static IResourceBuilder<MinIOResource> ConfigureVolume(
-        this IResourceBuilder<MinIOResource> builder,
-        MinIOBuilder options)
+    extension(IResourceBuilder<MinIOResource> builder)
     {
-        if (!string.IsNullOrEmpty(options.DataVolumePath))
-            builder = builder.WithVolume(options.DataVolumePath, "/data");
-        return builder;
+        private IResourceBuilder<MinIOResource> ConfigureCredentials(MinIOBuilder options) => builder
+            .WithEnvironment("MINIO_ROOT_USER", options.AccessKey ?? "minioadmin")
+            .WithEnvironment("MINIO_ROOT_PASSWORD", options.SecretKey ?? "minioadmin");
+
+        IResourceBuilder<MinIOResource> ConfigureVolume(MinIOBuilder options)
+        {
+            if (!string.IsNullOrEmpty(options.DataVolumePath))
+                builder = builder.WithVolume(options.DataVolumePath, "/data");
+            return builder;
+        }
     }
 }

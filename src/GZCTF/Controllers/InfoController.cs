@@ -1,10 +1,10 @@
 ﻿using System.Security.Cryptography;
-using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -22,7 +22,7 @@ namespace GZCTF.Controllers;
 public class InfoController(
     CacheHelper cacheHelper,
     IDistributedCache cache,
-    ICaptchaExtension captcha,
+    ICaptchaService captcha,
     IPostRepository postRepository,
     IServiceProvider serviceProvider,
     ILogger<InfoController> logger,

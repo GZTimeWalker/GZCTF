@@ -9,9 +9,11 @@ namespace GZCTF.Extensions;
 
 public static class DatabaseSinkExtension
 {
-    public static LoggerConfiguration Database(this LoggerSinkConfiguration loggerConfiguration,
-        IServiceProvider serviceProvider) =>
-        loggerConfiguration.Sink(new DatabaseSink(serviceProvider), LogEventLevel.Information);
+    extension(LoggerSinkConfiguration loggerConfiguration)
+    {
+        public LoggerConfiguration Database(IServiceProvider serviceProvider) =>
+            loggerConfiguration.Sink(new DatabaseSink(serviceProvider), LogEventLevel.Information);
+    }
 }
 
 public class DatabaseSink : ILogEventSink, IDisposable

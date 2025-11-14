@@ -12,9 +12,11 @@ namespace GZCTF.Extensions;
 
 public static class SignalRSinkExtension
 {
-    public static LoggerConfiguration SignalR(this LoggerSinkConfiguration loggerConfiguration,
-        IServiceProvider serviceProvider) =>
-        loggerConfiguration.Sink(new SignalRSink(serviceProvider), LogEventLevel.Information);
+    extension(LoggerSinkConfiguration loggerConfiguration)
+    {
+        public LoggerConfiguration SignalR(IServiceProvider serviceProvider) =>
+            loggerConfiguration.Sink(new SignalRSink(serviceProvider), LogEventLevel.Information);
+    }
 }
 
 public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink

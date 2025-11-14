@@ -5,9 +5,9 @@ using GZCTF.Services.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
-namespace GZCTF.Extensions;
+namespace GZCTF.Services;
 
-public interface ICaptchaExtension
+public interface ICaptchaService
 {
     /// <summary>
     /// Verify the captcha response
@@ -25,7 +25,7 @@ public interface ICaptchaExtension
     ClientCaptchaInfoModel ClientInfo();
 }
 
-public class ModelWithCaptcha
+public abstract class ModelWithCaptcha
 {
     /// <summary>
     /// Captcha Challenge
@@ -33,7 +33,7 @@ public class ModelWithCaptcha
     public string? Challenge { get; set; }
 }
 
-public class CaptchaExtensionBase(IOptions<CaptchaConfig>? options) : ICaptchaExtension
+public class CaptchaServiceBase(IOptions<CaptchaConfig>? options) : ICaptchaService
 {
     protected readonly CaptchaConfig? Config = options?.Value;
 
@@ -44,7 +44,7 @@ public class CaptchaExtensionBase(IOptions<CaptchaConfig>? options) : ICaptchaEx
         Task.FromResult(true);
 }
 
-public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : CaptchaExtensionBase(options)
+public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : CaptchaServiceBase(options)
 {
     readonly HttpClient _httpClient = new();
 
@@ -76,7 +76,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 }
 
 public sealed class HashPow(IOptions<CaptchaConfig>? options, IDistributedCache cache) :
-    CaptchaExtensionBase(options)
+    CaptchaServiceBase(options)
 {
     const int AnswerLength = 8;
 
@@ -119,18 +119,20 @@ public sealed class HashPow(IOptions<CaptchaConfig>? options, IDistributedCache 
 
 public static class CaptchaServiceExtension
 {
-    internal static IServiceCollection AddCaptchaService(this IServiceCollection services,
-        IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        var config = configuration.GetSection(nameof(CaptchaConfig)).Get<CaptchaConfig>() ?? new();
-
-        services.Configure<CaptchaConfig>(configuration.GetSection(nameof(CaptchaConfig)));
-
-        return config.Provider switch
+        internal IServiceCollection AddCaptchaService(IConfiguration configuration)
         {
-            CaptchaProvider.HashPow => services.AddSingleton<ICaptchaExtension, HashPow>(),
-            CaptchaProvider.CloudflareTurnstile => services.AddSingleton<ICaptchaExtension, CloudflareTurnstile>(),
-            _ => services.AddSingleton<ICaptchaExtension, CaptchaExtensionBase>()
-        };
+            var config = configuration.GetSection(nameof(CaptchaConfig)).Get<CaptchaConfig>() ?? new();
+
+            services.Configure<CaptchaConfig>(configuration.GetSection(nameof(CaptchaConfig)));
+
+            return config.Provider switch
+            {
+                CaptchaProvider.HashPow => services.AddSingleton<ICaptchaService, HashPow>(),
+                CaptchaProvider.CloudflareTurnstile => services.AddSingleton<ICaptchaService, CloudflareTurnstile>(),
+                _ => services.AddSingleton<ICaptchaService, CaptchaServiceBase>()
+            };
+        }
     }
 }

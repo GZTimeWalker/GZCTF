@@ -1,5 +1,4 @@
-﻿using System.Buffers.Binary;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,9 +14,9 @@ public static partial class Codec
     private static partial Regex PasswordRegex();
 
     /// <summary>
-    /// 生成随机密码
+    /// Generate a random strong password
     /// </summary>
-    /// <param name="length">密码长度</param>
+    /// <param name="length">The length of the password</param>
     /// <returns></returns>
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public static string RandomPassword(int length)
@@ -36,19 +35,19 @@ public static partial class Codec
     }
 
     /// <summary>
-    /// 转换为对应进制
+    /// Convert integers to target base strings
     /// </summary>
-    /// <param name="source">源数据</param>
-    /// <param name="toBase">进制支持2,8,10,16</param>
+    /// <param name="source">Source integers</param>
+    /// <param name="toBase">Target base</param>
     /// <returns></returns>
     public static List<string> ToBase(List<int> source, int toBase) =>
         [.. source.ConvertAll(a => Convert.ToString(a, toBase))];
 
     /// <summary>
-    /// 字节数组转换为16进制字符串
+    /// Convert bytes to hex string
     /// </summary>
-    /// <param name="bytes">原始字节数组</param>
-    /// <param name="useLower">是否使用小写</param>
+    /// <param name="bytes">The byte array</param>
+    /// <param name="useLower">Whether to use lower case</param>
     /// <returns></returns>
     public static string BytesToHex(byte[] bytes, bool useLower = true)
     {
@@ -57,13 +56,17 @@ public static partial class Codec
     }
 
     /// <summary>
-    /// 根据xor进行byte数异或
+    /// Xor bytes
     /// </summary>
-    /// <param name="data">原始数据</param>
-    /// <param name="xor">xor密钥</param>
-    /// <returns>异或结果</returns>
+    /// <param name="data">Original data</param>
+    /// <param name="xor">Xor data</param>
+    /// <returns></returns>
     public static byte[] Xor(byte[] data, byte[] xor)
     {
+        // if no xor data, return original data
+        if (xor.Length == 0)
+            return data;
+
         var res = new byte[data.Length];
         for (var i = 0; i < data.Length; ++i)
             res[i] = (byte)(data[i] ^ xor[i % xor.Length]);
@@ -71,7 +74,7 @@ public static partial class Codec
     }
 
     /// <summary>
-    /// Base64编解码
+    /// Base64 encode/decode
     /// </summary>
     public static class Base64
     {
@@ -145,100 +148,99 @@ public static partial class CodecExtensions
     [GeneratedRegex("[^a-zA-Z0-9]+")]
     private static partial Regex RFC1123ReplacePattern();
 
-    /// <summary>
-    /// 将字符串转换为符合 RFC1123 要求的字符串
-    /// </summary>
     /// <param name="str"></param>
-    /// <param name="leading">若开头为数字则添加的字符串</param>
-    /// <returns></returns>
-    public static string ToValidRFC1123String(this string str, string leading = "name")
+    extension(string str)
     {
-        var ret = RFC1123ReplacePattern().Replace(str, "-").Trim('-').ToLowerInvariant();
-        if (ret.Length > 0 && char.IsDigit(ret[0]))
-            return $"{leading}-{ret}";
-        return ret;
-    }
-
-    /// <summary>
-    /// 获取字符串ASCII数组
-    /// </summary>
-    /// <param name="str">原字符串</param>
-    /// <returns></returns>
-    public static byte[] Ascii(this string str) => Encoding.ASCII.GetBytes(str);
-
-    /// <summary>
-    /// 反转字符串
-    /// </summary>
-    /// <param name="s">原字符串</param>
-    /// <returns></returns>
-    public static string Reverse(this string s)
-    {
-        var charArray = s.ToCharArray();
-        Array.Reverse(charArray);
-        return new string(charArray);
-    }
-
-    /// <summary>
-    /// 获取字符串MD5哈希摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <param name="useBase64">是否使用Base64编码</param>
-    /// <returns></returns>
-    public static string ToMD5String(this string str, bool useBase64 = false)
-    {
-        var output = MD5.HashData(str.ToUTF8Bytes());
-        return useBase64
-            ? Convert.ToBase64String(output)
-            : Convert.ToHexStringLower(output);
-    }
-
-    /// <summary>
-    /// 获取SHA256哈希摘要
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <param name="useBase64">是否使用Base64编码</param>
-    /// <returns></returns>
-    public static string ToSHA256String(this string str, bool useBase64 = false)
-    {
-        var output = SHA256.HashData(str.ToUTF8Bytes());
-        return useBase64
-            ? Convert.ToBase64String(output)
-            : Convert.ToHexStringLower(output);
-    }
-
-
-    /// <summary>
-    /// 获取字符串 UTF-8 编码字节
-    /// </summary>
-    /// <param name="str">原始字符串</param>
-    /// <returns></returns>
-    public static byte[] ToUTF8Bytes(this string str) => Encoding.UTF8.GetBytes(str);
-
-    /// <summary>
-    /// Get leading zeros in bits
-    /// </summary>
-    public static int LeadingZeros(this byte[] hash)
-    {
-        var leadingZeros = 0;
-        foreach (var t in hash)
+        /// <summary>
+        /// Convert to a valid RFC 1123 string
+        /// </summary>
+        /// <param name="leading">Leading string if the result starts with a digit</param>
+        /// <returns></returns>
+        public string ToValidRFC1123String(string leading = "name")
         {
-            if (t == 0)
-            {
-                leadingZeros += 8;
-            }
-            else
-            {
-                var b = t;
-                while ((b & 0x80) == 0)
-                {
-                    b <<= 1;
-                    leadingZeros++;
-                }
-
-                break;
-            }
+            var ret = RFC1123ReplacePattern().Replace(str, "-").Trim('-').ToLowerInvariant();
+            if (ret.Length > 0 && char.IsDigit(ret[0]))
+                return $"{leading}-{ret}";
+            return ret;
         }
 
-        return leadingZeros;
+        /// <summary>
+        /// Get ASCII bytes
+        /// </summary>
+        /// <returns></returns>
+        public byte[] Ascii() => Encoding.ASCII.GetBytes(str);
+
+        /// <summary>
+        /// Reverse string
+        /// </summary>
+        /// <returns></returns>
+        public string Reverse()
+        {
+            var charArray = str.ToCharArray();
+            Array.Reverse((Array)charArray);
+            return new string(charArray);
+        }
+
+        /// <summary>
+        /// Get MD5 hash string
+        /// </summary>
+        /// <param name="useBase64">Whether to use Base64 encoding</param>
+        /// <returns></returns>
+        public string ToMD5String(bool useBase64 = false)
+        {
+            var output = MD5.HashData(str.ToUTF8Bytes());
+            return useBase64
+                ? Convert.ToBase64String(output)
+                : Convert.ToHexStringLower(output);
+        }
+
+        /// <summary>
+        /// Get SHA256 hash string
+        /// </summary>
+        /// <param name="useBase64">Whether to use Base64 encoding</param>
+        /// <returns></returns>
+        public string ToSHA256String(bool useBase64 = false)
+        {
+            var output = SHA256.HashData(str.ToUTF8Bytes());
+            return useBase64
+                ? Convert.ToBase64String(output)
+                : Convert.ToHexStringLower(output);
+        }
+
+        /// <summary>
+        /// Get UTF8 bytes
+        /// </summary>
+        /// <returns></returns>
+        public byte[] ToUTF8Bytes() => Encoding.UTF8.GetBytes(str);
+    }
+
+
+    extension(byte[] hash)
+    {
+        /// <summary>
+        /// Get leading zeros in bits
+        /// </summary>
+        public int LeadingZeros()
+        {
+            var leadingZeros = 0;
+            foreach (var t in hash)
+            {
+                if (t == 0)
+                    leadingZeros += 8;
+                else
+                {
+                    var b = t;
+                    while ((b & 0x80) == 0)
+                    {
+                        b <<= 1;
+                        leadingZeros++;
+                    }
+
+                    break;
+                }
+            }
+
+            return leadingZeros;
+        }
     }
 }
