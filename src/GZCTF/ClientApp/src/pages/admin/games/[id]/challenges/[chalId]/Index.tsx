@@ -553,13 +553,13 @@ const GameChallengeEdit: FC = () => {
               <NumberInput
                 label={t('admin.content.games.challenges.storage_limit.label')}
                 description={t('admin.content.games.challenges.storage_limit.description')}
-                min={128}
+                min={0}
                 max={1048576}
                 required
                 disabled={disabled}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                value={challengeInfo.storageLimit ?? 128}
+                value={challengeInfo.storageLimit ?? 32}
                 onChange={(e) => {
                   const number = getInputNumber(e)
                   if (isNaN(number)) return

@@ -81,7 +81,7 @@ public class ChallengeUpdateModel
     /// <summary>
     /// Storage limit (MB)
     /// </summary>
-    [Range(128, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+    [Range(0, 1048576, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int? StorageLimit { get; set; }
 
