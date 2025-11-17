@@ -59,11 +59,12 @@ public class ParticipationRepository(
             .Select(p => new JoinedTeam { TeamId = p.TeamId, DivisionId = p.DivisionId })
             .ToArrayAsync(token);
 
-    public async Task<WriteupInfoModel> GetWriteups(Game game, CancellationToken token = default) {
+    public async Task<WriteupInfoModel> GetWriteups(Game game, CancellationToken token = default)
+    {
         var divisions = await Context.Divisions
             .Where(d => d.GameId == game.Id)
             .ToDictionaryAsync(d => d.Id, d => d.Name, token);
-        
+
         var writeups = await Context.Participations.AsNoTracking()
             .Where(p => p.Game == game && p.Writeup != null)
             .OrderByDescending(p => p.Writeup!.UploadTimeUtc)
@@ -81,7 +82,7 @@ public class ParticipationRepository(
 
         return new WriteupInfoModel { Divisions = divisions, Writeups = writeups };
     }
-       
+
 
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default) =>
         Context.UserParticipations.Include(p => p.Participation)

@@ -504,9 +504,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var createResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "Test Division",
-                InviteCode = "TEST123",
-                DefaultPermissions = GamePermission.All
+                Name = "Test Division", InviteCode = "TEST123", DefaultPermissions = GamePermission.All
             });
         createResponse.EnsureSuccessStatusCode();
         var division = await createResponse.Content.ReadFromJsonAsync<Division>();
@@ -820,8 +818,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
 
         return new FormFile(stream, 0, pdfContent.Length, "file", fileName)
         {
-            Headers = new HeaderDictionary(),
-            ContentType = "application/pdf"
+            Headers = new HeaderDictionary(), ContentType = "application/pdf"
         };
     }
 
@@ -1231,10 +1228,13 @@ startxref
         Assert.Equal(HttpStatusCode.Forbidden, forbiddenResponse.StatusCode);
 
         // Main test: Admin retrieves all writeups
-        var listResponse = await adminClient.GetAsync($"/api/admin/Writeups/{game.Id}");
-        listResponse.EnsureSuccessStatusCode();
+        var response = await adminClient.GetAsync($"/api/admin/Writeups/{game.Id}");
+        response.EnsureSuccessStatusCode();
 
-        var writeupsList = await listResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var item = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal(JsonValueKind.Object, item.ValueKind);
+
+        var writeupsList = item.GetProperty("writeups");
         Assert.Equal(JsonValueKind.Array, writeupsList.ValueKind);
 
         // Verify correct number of writeups returned (only submitted ones)
@@ -1415,7 +1415,8 @@ startxref
         var entries = new List<TarEntry>();
 
         tarStream.Position = 0;
-        await using var gzip = new System.IO.Compression.GZipStream(tarStream, System.IO.Compression.CompressionMode.Decompress);
+        await using var gzip =
+            new System.IO.Compression.GZipStream(tarStream, System.IO.Compression.CompressionMode.Decompress);
         await using var reader = new TarReader(gzip);
 
         try

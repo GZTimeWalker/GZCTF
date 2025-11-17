@@ -12,7 +12,7 @@ public record WriteupInfoModel
     /// Division ID to Division Name mapping
     /// </summary>
     public Dictionary<int, string> Divisions { get; set; } = [];
-    
+
     /// <summary>
     /// Writeups list
     /// </summary>
@@ -40,7 +40,7 @@ public record WriteupInfo
     /// File upload time
     /// </summary>
     public DateTimeOffset UploadTimeUtc { get; set; } = DateTimeOffset.UtcNow;
-    
+
     /// <summary>
     /// The division the team belongs to
     /// </summary>
