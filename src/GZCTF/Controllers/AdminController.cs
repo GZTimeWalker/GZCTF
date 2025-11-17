@@ -591,7 +591,7 @@ public class AdminController(
     /// <response code="403">Forbidden</response>
     /// <response code="404">Game not found</response>
     [HttpGet("Writeups/{id:int}")]
-    [ProducesResponseType(typeof(WriteupInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WriteupInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
     {
@@ -625,10 +625,10 @@ public class AdminController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        var wps = await participationRepository.GetWriteups(game, token);
-        var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ssZ}";
+        var into = await participationRepository.GetWriteups(game, token);
+        var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ss}Z";
 
-        return new TarFilesResult(storage, wps.Select(p => p.File), PathHelper.Uploads, filename, token);
+        return new TarFilesResult(storage, into.Writeups.Select(p => p.File), PathHelper.Uploads, filename, token);
     }
 
     /// <summary>

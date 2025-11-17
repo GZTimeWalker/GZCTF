@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Info;
+﻿using System.Text.Json.Serialization;
+
+namespace GZCTF.Models.Request.Info;
 
 /// <summary>
 /// Team information
@@ -33,7 +35,8 @@ public class TeamInfoModel
     /// <summary>
     /// Team members
     /// </summary>
-    public List<TeamUserInfoModel>? Members { get; set; } = new();
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<TeamUserInfoModel>? Members { get; set; }
 
     internal static TeamInfoModel FromTeam(Team team, bool includeMembers = true) =>
         new()

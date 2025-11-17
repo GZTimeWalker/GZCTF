@@ -653,6 +653,13 @@ export interface ParticipationEditModel {
 
 /** Game writeup information */
 export interface WriteupInfoModel {
+  /** Division ID to Division Name mapping */
+  divisions?: Record<string, string>;
+  /** Writeups list */
+  writeups?: WriteupInfo[];
+}
+
+export interface WriteupInfo {
   /**
    * Participation ID
    * @format int32
@@ -667,6 +674,11 @@ export interface WriteupInfoModel {
    * @format uint64
    */
   uploadTimeUtc?: number;
+  /**
+   * The division the team belongs to
+   * @format int32
+   */
+  divisionId?: number | null;
 }
 
 /** List response */
@@ -1323,7 +1335,7 @@ export interface ChallengeUpdateModel {
   /**
    * Storage limit (MB)
    * @format int32
-   * @min 128
+   * @min 0
    * @max 1048576
    */
   storageLimit?: number | null;
@@ -3382,7 +3394,7 @@ export class Api<
      * @request GET:/api/admin/writeups/{id}
      */
     adminWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<WriteupInfoModel[], RequestResponse>({
+      this.request<WriteupInfoModel, RequestResponse>({
         path: `/api/admin/writeups/${id}`,
         method: "GET",
         format: "json",
@@ -3401,7 +3413,7 @@ export class Api<
       options?: SWRConfiguration,
       doFetch: boolean = true,
     ) =>
-      useSWR<WriteupInfoModel[], RequestResponse>(
+      useSWR<WriteupInfoModel, RequestResponse>(
         doFetch ? `/api/admin/writeups/${id}` : null,
         options,
       ),
@@ -3416,9 +3428,9 @@ export class Api<
      */
     mutateAdminWriteups: (
       id: number,
-      data?: WriteupInfoModel[] | Promise<WriteupInfoModel[]>,
+      data?: WriteupInfoModel | Promise<WriteupInfoModel>,
       options?: MutatorOptions,
-    ) => mutate<WriteupInfoModel[]>(`/api/admin/writeups/${id}`, data, options),
+    ) => mutate<WriteupInfoModel>(`/api/admin/writeups/${id}`, data, options),
   };
   apiToken = {
     /**

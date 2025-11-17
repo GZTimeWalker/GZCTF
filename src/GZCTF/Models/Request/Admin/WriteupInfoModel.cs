@@ -6,7 +6,20 @@ namespace GZCTF.Models.Request.Admin;
 /// <summary>
 /// Game writeup information
 /// </summary>
-public class WriteupInfoModel
+public record WriteupInfoModel
+{
+    /// <summary>
+    /// Division ID to Division Name mapping
+    /// </summary>
+    public Dictionary<int, string> Divisions { get; set; } = [];
+    
+    /// <summary>
+    /// Writeups list
+    /// </summary>
+    public List<WriteupInfo> Writeups { get; set; } = [];
+}
+
+public record WriteupInfo
 {
     /// <summary>
     /// Participation ID
@@ -27,22 +40,15 @@ public class WriteupInfoModel
     /// File upload time
     /// </summary>
     public DateTimeOffset UploadTimeUtc { get; set; } = DateTimeOffset.UtcNow;
+    
+    /// <summary>
+    /// The division the team belongs to
+    /// </summary>
+    public int? DivisionId { get; set; }
 
     /// <summary>
     /// Writeup file object
     /// </summary>
     [JsonIgnore]
     public LocalFile File { get; set; } = null!;
-
-    internal static WriteupInfoModel? FromParticipation(Participation part) =>
-        part.Writeup is null
-            ? null
-            : new()
-            {
-                Id = part.Id,
-                Team = TeamInfoModel.FromTeam(part.Team, false),
-                File = part.Writeup,
-                Url = part.Writeup.Url(),
-                UploadTimeUtc = part.Writeup.UploadTimeUtc
-            };
 }

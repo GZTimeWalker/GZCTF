@@ -1,5 +1,6 @@
 ﻿using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
+using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -58,11 +59,29 @@ public class ParticipationRepository(
             .Select(p => new JoinedTeam { TeamId = p.TeamId, DivisionId = p.DivisionId })
             .ToArrayAsync(token);
 
-    public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default) =>
-        Context.Participations.Where(p => p.Game == game && p.Writeup != null)
+    public async Task<WriteupInfoModel> GetWriteups(Game game, CancellationToken token = default) {
+        var divisions = await Context.Divisions
+            .Where(d => d.GameId == game.Id)
+            .ToDictionaryAsync(d => d.Id, d => d.Name, token);
+        
+        var writeups = await Context.Participations.AsNoTracking()
+            .Where(p => p.Game == game && p.Writeup != null)
             .OrderByDescending(p => p.Writeup!.UploadTimeUtc)
-            .Select(p => WriteupInfoModel.FromParticipation(p)!)
-            .ToArrayAsync(token);
+            .AsSplitQuery()
+            .Select(part => new WriteupInfo
+            {
+                Id = part.Id,
+                Team = TeamInfoModel.FromTeam(part.Team, false),
+                File = part.Writeup!,
+                Url = part.Writeup!.Url(null),
+                DivisionId = part.DivisionId,
+                UploadTimeUtc = part.Writeup.UploadTimeUtc
+            })
+            .ToListAsync(token);
+
+        return new WriteupInfoModel { Divisions = divisions, Writeups = writeups };
+    }
+       
 
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default) =>
         Context.UserParticipations.Include(p => p.Participation)

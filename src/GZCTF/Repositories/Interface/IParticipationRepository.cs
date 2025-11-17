@@ -44,7 +44,7 @@ public interface IParticipationRepository : IRepository
     /// <param name="game"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<WriteupInfoModel[]> GetWriteups(Game game, CancellationToken token = default);
+    public Task<WriteupInfoModel> GetWriteups(Game game, CancellationToken token = default);
 
     /// <summary>
     /// Make sure that the instances for a participation are created

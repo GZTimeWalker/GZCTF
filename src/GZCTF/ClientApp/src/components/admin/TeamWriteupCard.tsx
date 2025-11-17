@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Avatar,
+  Badge,
   Card,
   Group,
   CardProps,
@@ -16,16 +17,17 @@ import { FC } from 'react'
 import { Link } from 'react-router'
 import { ScrollingText } from '@Components/ScrollingText'
 import { useLanguage } from '@Utils/I18n'
-import { WriteupInfoModel } from '@Api'
+import { WriteupInfo } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
 interface TeamWriteupCardProps extends CardProps {
-  writeup: WriteupInfoModel
+  writeup: WriteupInfo
   selected?: boolean
   onClick: () => void
+  divisionName?: string
 }
 
-export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, ...props }) => {
+export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, divisionName, ...props }) => {
   const { colorScheme } = useMantineColorScheme()
   const { locale } = useLanguage()
   const theme = useMantineTheme()
@@ -46,9 +48,16 @@ export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, .
             {writeup.team?.name?.slice(0, 1)}
           </Avatar>
           <Stack gap={0} justify="space-between" maw="calc(100% - 3rem)">
-            <Text size="0.8rem" lineClamp={1} c="dimmed">
-              #{writeup.team?.id}
-            </Text>
+            <Group gap="xs">
+              <Text size="0.8rem" lineClamp={1} c="dimmed">
+                #{writeup.team?.id}
+              </Text>
+              {divisionName && (
+                <Badge size="xs" variant="light">
+                  {divisionName}
+                </Badge>
+              )}
+            </Group>
             <ScrollingText size="md" fw={600} text={writeup.team?.name ?? ''} />
             <Text size="xs" lineClamp={1} c="dimmed">
               {dayjs(writeup.uploadTimeUtc).locale(locale).format('SLL LT')}
