@@ -233,7 +233,7 @@ public class GameImportService(
             // Import poster if exists
             if (!string.IsNullOrWhiteSpace(context.Game.PosterHash))
             {
-                await ImportFileAsync(context.Game.PosterHash, context, ct);
+                await ImportFileAsync(context.Game.PosterHash, context, ct, "poster");
                 game.PosterHash = context.Game.PosterHash;
             }
 
@@ -447,7 +447,7 @@ public class GameImportService(
                     throw new InvalidOperationException("Local attachment missing file hash");
 
                 // Import file to blob storage
-                await ImportFileAsync(attachment.Hash, context, ct);
+                await ImportFileAsync(attachment.Hash, context, ct, attachment.FileName);
 
                 // Create attachment record with local file
                 await challengeRepository.UpdateAttachment(challenge,
@@ -508,7 +508,7 @@ public class GameImportService(
                                 throw new InvalidOperationException("Local flag attachment missing file hash");
 
                             // Import file to blob storage
-                            await ImportFileAsync(staticFlag.Attachment.Hash, context, ct);
+                            await ImportFileAsync(staticFlag.Attachment.Hash, context, ct, staticFlag.Attachment.FileName);
 
                             flagModels.Add(new FlagCreateModel
                             {
@@ -563,7 +563,7 @@ public class GameImportService(
     /// <summary>
     /// Import a file to blob storage and track it for potential cleanup
     /// </summary>
-    private async Task ImportFileAsync(string hash, ImportContext context, CancellationToken ct)
+    private async Task ImportFileAsync(string hash, ImportContext context, CancellationToken ct, string? fileName = null)
     {
         var filePath = Path.Combine(context.WorkDir, "files", hash);
         if (!File.Exists(filePath))
@@ -583,7 +583,7 @@ public class GameImportService(
             // File doesn't exist, upload new file
             // These newly uploaded files need to be tracked for cleanup on failure
             await using var fileStream = File.OpenRead(filePath);
-            var localFile = await blobRepository.CreateOrUpdateBlobFromStream(hash, fileStream, ct);
+            var localFile = await blobRepository.CreateOrUpdateBlobFromStream(fileName ?? hash, fileStream, ct);
 
             // Track newly uploaded file hash for cleanup on failure
             // Database rollback will remove the LocalFile record, but physical file needs manual deletion

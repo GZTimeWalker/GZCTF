@@ -7,6 +7,7 @@ using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
+using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Transfer;
 using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
@@ -949,6 +950,169 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             .ToDictionaryAsync(x => x.Hash, x => x.Count);
 
         return usageCounts;
+    }
+
+    /// <summary>
+    /// Test that attachment file names are correctly preserved during export/import
+    /// </summary>
+    [Fact]
+    public async Task ExportImport_AttachmentFileNames_ShouldBePreserved()
+    {
+        // Arrange: Create admin user
+        var adminPassword = "Admin@Pass123";
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        using var adminClient = factory.CreateClient();
+
+        // Admin login
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        // Create a game with challenges that have attachments
+        var originalGame = await CreateGameWithNamedAttachmentsAsync();
+        output.WriteLine($"Created game with attachments: {originalGame.Id}");
+
+        // Act 1: Export the game
+        output.WriteLine("Exporting game with attachments...");
+        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{originalGame.Id}/Export", null);
+        exportResponse.EnsureSuccessStatusCode();
+
+        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync();
+        var tempZipPath = Path.Combine(Path.GetTempPath(), $"test-attachment-export-{Guid.NewGuid()}.zip");
+        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes);
+
+        try
+        {
+            // Act 2: Import the game back
+            output.WriteLine("Importing game with attachments...");
+            await using var fileStream = File.OpenRead(tempZipPath);
+            using var content = new MultipartFormDataContent();
+            var streamContent = new StreamContent(fileStream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
+            content.Add(streamContent, "file", "game-import.zip");
+
+            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+            importResponse.EnsureSuccessStatusCode();
+
+            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>();
+            output.WriteLine($"Imported game with new ID: {importedGameId}");
+
+            // Assert: Verify attachment file names are preserved
+            await ValidateImportedAttachmentFileNames(originalGame, importedGameId);
+        }
+        finally
+        {
+            // Cleanup
+            if (File.Exists(tempZipPath))
+                File.Delete(tempZipPath);
+        }
+    }
+
+    /// <summary>
+    /// Create a game with challenges that have attachments with specific file names
+    /// </summary>
+    private async Task<Game> CreateGameWithNamedAttachmentsAsync()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var challengeRepo = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
+        var blobRepo = scope.ServiceProvider.GetRequiredService<IBlobRepository>();
+
+        // Create game
+        var game = new Game
+        {
+            Title = $"Attachment Test Game {Guid.NewGuid().ToString("N")[..8]}",
+            Summary = "Test game for attachment file names",
+            Content = "Testing attachment file name preservation",
+            Hidden = false,
+            PracticeMode = true,
+            AcceptWithoutReview = true,
+            StartTimeUtc = DateTimeOffset.UtcNow.AddDays(-1),
+            EndTimeUtc = DateTimeOffset.UtcNow.AddDays(7)
+        };
+
+        await context.Games.AddAsync(game);
+        await context.SaveChangesAsync();
+
+        // Create challenge with attachment
+        var challenge = new GameChallenge
+        {
+            GameId = game.Id,
+            Title = "Attachment Challenge",
+            Content = "Find the flag in the attachment",
+            Category = ChallengeCategory.Misc,
+            Type = ChallengeType.StaticAttachment,
+            IsEnabled = true,
+            OriginalScore = 100,
+            MinScoreRate = 0.5,
+            Difficulty = 1
+        };
+
+        var flag = new FlagContext
+        {
+            Flag = "flag{attachment_test}",
+            Challenge = challenge
+        };
+        challenge.Flags.Add(flag);
+
+        await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
+
+        // Create a test file and upload it as attachment
+        var testFileName = "test_attachment.txt";
+        var testFileContent = "This is a test attachment file content.";
+        await using var testFileStream = new MemoryStream(Encoding.UTF8.GetBytes(testFileContent));
+        var localFile = await blobRepo.CreateOrUpdateBlobFromStream(testFileName, testFileStream);
+
+        // Update challenge with attachment
+        await challengeRepo.UpdateAttachment(challenge,
+            new AttachmentCreateModel
+            {
+                AttachmentType = FileType.Local,
+                FileHash = localFile.Hash
+            }, CancellationToken.None);
+
+        // Reload game with attachments
+        var reloadedGame = await context.Games
+            .Include(g => g.Challenges)
+            .ThenInclude(c => c.Attachment)
+            .ThenInclude(a => a!.LocalFile)
+            .FirstOrDefaultAsync(g => g.Id == game.Id);
+
+        return reloadedGame!;
+    }
+
+    /// <summary>
+    /// Validate that imported attachment file names match the original
+    /// </summary>
+    private async Task ValidateImportedAttachmentFileNames(Game originalGame, int importedGameId)
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var importedGame = await context.Games
+            .Include(g => g.Challenges)
+            .ThenInclude(c => c.Attachment)
+            .ThenInclude(a => a!.LocalFile)
+            .FirstOrDefaultAsync(g => g.Id == importedGameId);
+
+        Assert.NotNull(importedGame);
+
+        // Validate each challenge's attachment file name
+        foreach (var originalChallenge in originalGame.Challenges.Where(c => c.Attachment is not null))
+        {
+            var importedChallenge = importedGame.Challenges.FirstOrDefault(c => c.Title == originalChallenge.Title);
+            Assert.NotNull(importedChallenge);
+            Assert.NotNull(importedChallenge.Attachment);
+            Assert.NotNull(importedChallenge.Attachment.LocalFile);
+
+            var originalFileName = originalChallenge.Attachment!.LocalFile!.Name;
+            var importedFileName = importedChallenge.Attachment.LocalFile!.Name;
+
+            Assert.Equal(originalFileName, importedFileName);
+            output.WriteLine($"Attachment file name preserved: '{originalFileName}' ✓");
+        }
     }
 
     /// <summary>
