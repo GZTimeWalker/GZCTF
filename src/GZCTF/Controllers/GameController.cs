@@ -1136,6 +1136,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> SubmitWriteup([FromRoute] int id, IFormFile file, CancellationToken token)
     {
+        var current = DateTimeOffset.UtcNow;
         switch (file.Length)
         {
             case 0:
@@ -1160,7 +1161,7 @@ public class GameController(
         var part = context.Participation!;
         var team = part.Team;
 
-        if (DateTimeOffset.UtcNow > game.WriteupDeadline)
+        if (current > game.WriteupDeadline)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_DeadlineExpired)]));
 
         var wp = context.Participation!.Writeup;
@@ -1169,7 +1170,7 @@ public class GameController(
             await blobService.DeleteBlob(wp, token);
 
         part.Writeup = await blobService.CreateOrUpdateBlob(file,
-            $"Writeup-{game.Id}-{team.Id}-{DateTimeOffset.Now:yyyyMMdd-HH.mm.ssZ}.pdf", token);
+            $"Writeup-{game.Id}-{team.Id}-{current:yyyyMMdd-HH.mm.ss}Z.pdf", token);
 
         await participationRepository.SaveAsync(token);
 
