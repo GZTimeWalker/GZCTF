@@ -504,7 +504,9 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var createResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
             new DivisionCreateModel
             {
-                Name = "Test Division", InviteCode = "TEST123", DefaultPermissions = GamePermission.All
+                Name = "Test Division",
+                InviteCode = "TEST123",
+                DefaultPermissions = GamePermission.All
             });
         createResponse.EnsureSuccessStatusCode();
         var division = await createResponse.Content.ReadFromJsonAsync<Division>();
@@ -818,7 +820,8 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
 
         return new FormFile(stream, 0, pdfContent.Length, "file", fileName)
         {
-            Headers = new HeaderDictionary(), ContentType = "application/pdf"
+            Headers = new HeaderDictionary(),
+            ContentType = "application/pdf"
         };
     }
 

@@ -398,6 +398,7 @@ public class GameImportService(
             DeadlineUtc = transferChallenge.Limits.Deadline,
 
             // Flags configuration
+            FlagTemplate = transferChallenge.Flags.Template,
             DisableBloodBonus = transferChallenge.Flags.DisableBloodBonus,
             EnableTrafficCapture = transferChallenge.Flags.EnableTrafficCapture,
 
@@ -490,15 +491,7 @@ public class GameImportService(
     {
         var flagModels = new List<FlagCreateModel>();
 
-        // Import template flag (dynamic)
-        if (!string.IsNullOrWhiteSpace(flags.Template))
-        {
-            flagModels.Add(new FlagCreateModel
-            {
-                Flag = flags.Template,
-                AttachmentType = FileType.None
-            });
-        }
+        // Note: Template is already set in ImportChallengeAsync, don't add it as a static flag
 
         // Import static flags
         if (flags.Static is not null)

@@ -495,17 +495,9 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             StorageLimit = 256,
             ContainerExposePort = 9999,
             FlagTemplate = "flag{dyn4m1c_[GUID]}",
-            FileName = "pwn" // This is the download filename for dynamic attachments
         };
 
-        var dynamicFlag = new FlagContext
-        {
-            Flag = "flag{dyn4m1c_[GUID]}", // Template flag
-            Challenge = dynamicChallenge
-        };
-        dynamicChallenge.Flags.Add(dynamicFlag);
-
-        await challengeRepo.CreateChallenge(game, dynamicChallenge);
+        await challengeRepo.CreateChallenge(game, dynamicChallenge, CancellationToken.None);
 
         // 4. Static attachment challenge with multiple flags
         var multiFlag = new GameChallenge
@@ -730,6 +722,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             Assert.Equal(originalChallenge.OriginalScore, importedChallenge.OriginalScore);
             Assert.Equal(originalChallenge.MinScoreRate, importedChallenge.MinScoreRate);
             Assert.Equal(originalChallenge.Difficulty, importedChallenge.Difficulty);
+            Assert.Equal(originalChallenge.FlagTemplate, importedChallenge.FlagTemplate);
 
             // Validate hints
             if (originalChallenge.Hints is not null)
