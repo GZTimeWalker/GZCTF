@@ -9,6 +9,7 @@ using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 
@@ -567,7 +568,7 @@ public class AccountController(
     /// Use this API to get configured user metadata fields.
     /// </remarks>
     /// <response code="200">User metadata fields configuration retrieved successfully</response>
-    [HttpGet]
+    [HttpGet("MetadataFields")]
     [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
     public async Task<IActionResult> MetadataFields(
         [FromServices] IOAuthProviderManager oauthManager,
@@ -575,6 +576,143 @@ public class AccountController(
     {
         var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
         return Ok(fields);
+    }
+
+    /// <summary>
+    /// Get available OAuth providers
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get available OAuth providers for login.
+    /// </remarks>
+    /// <response code="200">Available OAuth providers</response>
+    [HttpGet("OAuth/Providers")]
+    [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOAuthProviders(
+        [FromServices] IOAuthProviderManager oauthManager,
+        CancellationToken token = default)
+    {
+        var providers = await oauthManager.GetOAuthProvidersAsync(token);
+        var availableProviders = providers
+            .Where(p => p.Value.Enabled)
+            .ToDictionary(p => p.Key, p => p.Value.DisplayName ?? p.Key);
+        
+        return Ok(availableProviders);
+    }
+
+    /// <summary>
+    /// Initiate OAuth login
+    /// </summary>
+    /// <remarks>
+    /// Use this API to initiate OAuth login with a provider. Returns the authorization URL.
+    /// </remarks>
+    /// <param name="provider">Provider key (e.g., google, github)</param>
+    /// <param name="oauthManager">OAuth provider manager</param>
+    /// <param name="cache">Distributed cache</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Authorization URL returned</response>
+    /// <response code="400">Invalid provider or provider not enabled</response>
+    [HttpGet("OAuth/Login/{provider}")]
+    [ProducesResponseType(typeof(RequestResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> OAuthLogin(
+        string provider,
+        [FromServices] IOAuthProviderManager oauthManager,
+        [FromServices] IDistributedCache cache,
+        CancellationToken token = default)
+    {
+        var providerConfig = await oauthManager.GetOAuthProviderAsync(provider, token);
+        
+        if (providerConfig is null || !providerConfig.Enabled)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)]));
+
+        // Generate state for CSRF protection
+        var state = Guid.NewGuid().ToString("N");
+        
+        // Store state in cache for validation (10 minutes expiry)
+        await cache.SetStringAsync(
+            $"oauth_state_{state}",
+            provider,
+            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) },
+            token);
+        
+        var redirectUri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{provider}";
+        var scopes = string.Join(" ", providerConfig.Scopes);
+        
+        var authUrl = $"{providerConfig.AuthorizationEndpoint}?" +
+                      $"client_id={Uri.EscapeDataString(providerConfig.ClientId)}&" +
+                      $"redirect_uri={Uri.EscapeDataString(redirectUri)}&" +
+                      $"response_type=code&" +
+                      $"scope={Uri.EscapeDataString(scopes)}&" +
+                      $"state={state}";
+
+        return Ok(new RequestResponse<string>(
+            "OAuth authorization URL",
+            authUrl,
+            StatusCodes.Status200OK));
+    }
+
+    /// <summary>
+    /// OAuth callback endpoint
+    /// </summary>
+    /// <remarks>
+    /// This endpoint handles OAuth callbacks from providers. Do not call directly.
+    /// </remarks>
+    /// <param name="provider">Provider key</param>
+    /// <param name="code">Authorization code</param>
+    /// <param name="state">State parameter</param>
+    /// <param name="error">Error from provider</param>
+    /// <param name="oauthManager">OAuth provider manager</param>
+    /// <param name="cache">Distributed cache</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="302">Redirects to frontend with result</response>
+    [HttpGet("OAuth/Callback/{provider}")]
+    public async Task<IActionResult> OAuthCallback(
+        string provider,
+        [FromQuery] string? code,
+        [FromQuery] string? state,
+        [FromQuery] string? error,
+        [FromServices] IOAuthProviderManager oauthManager,
+        [FromServices] IDistributedCache cache,
+        CancellationToken token = default)
+    {
+        // Validate state
+        var storedProvider = await cache.GetStringAsync($"oauth_state_{state}", token);
+        if (string.IsNullOrEmpty(storedProvider) || storedProvider != provider)
+        {
+            logger.SystemLog(
+                $"OAuth callback state mismatch for provider {provider}",
+                TaskStatus.Failed,
+                LogLevel.Warning);
+            
+            return Redirect($"/account/login?error=oauth_state_mismatch");
+        }
+
+        // Clear state
+        await cache.RemoveAsync($"oauth_state_{state}", token);
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            logger.SystemLog(
+                $"OAuth error from provider {provider}: {error}",
+                TaskStatus.Failed,
+                LogLevel.Warning);
+            
+            return Redirect($"/account/login?error=oauth_error");
+        }
+
+        if (string.IsNullOrEmpty(code))
+            return Redirect($"/account/login?error=oauth_no_code");
+
+        // TODO: Exchange code for access token and get user info
+        // This will be implemented in the next step with proper token exchange
+        // and user creation/login logic
+
+        logger.SystemLog(
+            $"OAuth callback received for provider {provider} (implementation pending)",
+            TaskStatus.Pending,
+            LogLevel.Information);
+
+        return Redirect($"/account/login?success=oauth_pending");
     }
 
     string GetEmailLink(string action, string token, string? email)
