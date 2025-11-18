@@ -798,6 +798,67 @@ namespace GZCTF.Migrations
                     b.ToTable("Logs");
                 });
 
+            modelBuilder.Entity("GZCTF.Models.Data.OAuthProvider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorizationEndpoint")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ClientSecret")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("DisplayName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("FieldMapping")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Scopes")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("TokenEndpoint")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("UserInformationEndpoint")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.ToTable("OAuthProviders", (string)null);
+                });
+
             modelBuilder.Entity("GZCTF.Models.Data.Participation", b =>
                 {
                     b.Property<int>("Id")
@@ -968,6 +1029,57 @@ namespace GZCTF.Migrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("GZCTF.Models.Data.UserMetadataFieldConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int?>("MaxLength")
+                        .HasColumnType("integer");
+
+                    b.Property<double?>("MaxValue")
+                        .HasColumnType("double precision");
+
+                    b.Property<int?>("MinValue")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Options")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Pattern")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("Required")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Visible")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.ToTable("UserMetadataFields", (string)null);
+                });
+
             modelBuilder.Entity("GZCTF.Models.Data.UserInfo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1056,6 +1168,10 @@ namespace GZCTF.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("UserMetadata")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(16)

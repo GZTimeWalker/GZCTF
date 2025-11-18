@@ -33,8 +33,7 @@ namespace GZCTF.Migrations
                     UserInformationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Scopes = table.Column<string>(type: "jsonb", nullable: false),
-                    FieldMapping = table.Column<string>(type: "jsonb", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    FieldMapping = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,18 +46,16 @@ namespace GZCTF.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Key = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Key = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Required = table.Column<bool>(type: "boolean", nullable: false),
                     Visible = table.Column<bool>(type: "boolean", nullable: false),
-                    Placeholder = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     MaxLength = table.Column<int>(type: "integer", nullable: true),
-                    MinValue = table.Column<int>(type: "integer", nullable: true),
-                    MaxValue = table.Column<int>(type: "integer", nullable: true),
-                    Pattern = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    Options = table.Column<string>(type: "jsonb", nullable: true),
-                    Order = table.Column<int>(type: "integer", nullable: false)
+                    MinValue = table.Column<double>(type: "double precision", nullable: true),
+                    MaxValue = table.Column<double>(type: "double precision", nullable: true),
+                    Pattern = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    Options = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {
