@@ -144,17 +144,17 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
       <Box className={misc.alignCenter} display="flex">
         <Accordion.Control>
           <Group justify="space-between" wrap="nowrap">
-            <Group wrap="nowrap">
+            <Group wrap="nowrap" miw={0}>
               <Avatar alt="avatar" src={participation.team?.avatar}>
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
               </Avatar>
               <Box>
-                <Text truncate fw={500}>
+                <Text fw={500}>
                   {!participation.team?.name
                     ? t('admin.placeholder.games.participation.team')
                     : participation.team.name}
                 </Text>
-                <Text truncate size="sm" c="dimmed">
+                <Text lineClamp={1} size="sm" c="dimmed">
                   {!participation.team?.bio ? t('admin.placeholder.games.participation.bio') : participation.team.bio}
                 </Text>
               </Box>
