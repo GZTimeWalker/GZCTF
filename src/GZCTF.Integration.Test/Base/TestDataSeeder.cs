@@ -398,6 +398,23 @@ public static class TestDataSeeder
         return trimmed;
     }
 
+    /// <summary>
+    /// Create a user with specific role
+    /// </summary>
+    public static async Task<(SeededUser user, string password)> CreateUserWithRoleAsync(
+        IServiceProvider services, 
+        Role role = Role.User,
+        CancellationToken token = default)
+    {
+        var password = $"Test{role}Pass123!";
+        var userName = RandomName();
+        var email = $"{userName}@test.com";
+        
+        var user = await CreateUserAsync(services, userName, password, email, role, token);
+        
+        return (user, password);
+    }
+
     public record SeededUser(Guid Id, string UserName, string Email, string Password, Role Role);
 
     public record SeededTeam(int Id, string Name, Guid OwnerId);

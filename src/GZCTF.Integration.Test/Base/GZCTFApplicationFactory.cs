@@ -1,4 +1,5 @@
 using GZCTF.Models;
+using GZCTF.Models.Request.Account;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Storage;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Net.Http.Json;
 using Testcontainers.K3s;
 using Testcontainers.Minio;
 using Testcontainers.PostgreSql;
@@ -260,6 +262,25 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
 
         await using var context = new AppDbContext(optionsBuilder.Options);
         await context.Database.MigrateAsync();
+    }
+
+    /// <summary>
+    /// Create an authenticated HTTP client for the given user
+    /// </summary>
+    public HttpClient CreateAuthenticatedClient(TestDataSeeder.SeededUser user)
+    {
+        var client = CreateClient();
+        
+        // Login the user
+        var loginResponse = client.PostAsJsonAsync("/api/Account/LogIn", new
+        {
+            UserName = user.UserName,
+            Password = user.Password
+        }).Result;
+
+        loginResponse.EnsureSuccessStatusCode();
+        
+        return client;
     }
 
     public new async Task DisposeAsync()
