@@ -6,6 +6,7 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services;
 using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
+using GZCTF.Services.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -662,6 +663,8 @@ public class AccountController(
     /// <param name="state">State parameter</param>
     /// <param name="error">Error from provider</param>
     /// <param name="oauthManager">OAuth provider manager</param>
+    /// <param name="oauthService">OAuth service</param>
+    /// <param name="signInManager">Sign in manager</param>
     /// <param name="cache">Distributed cache</param>
     /// <param name="token">Cancellation token</param>
     /// <response code="302">Redirects to frontend with result</response>
@@ -672,6 +675,8 @@ public class AccountController(
         [FromQuery] string? state,
         [FromQuery] string? error,
         [FromServices] IOAuthProviderManager oauthManager,
+        [FromServices] IOAuthService oauthService,
+        [FromServices] SignInManager<UserInfo> signInManager,
         [FromServices] IDistributedCache cache,
         CancellationToken token = default)
     {
@@ -703,16 +708,41 @@ public class AccountController(
         if (string.IsNullOrEmpty(code))
             return Redirect($"/account/login?error=oauth_no_code");
 
-        // TODO: Exchange code for access token and get user info
-        // This will be implemented in the next step with proper token exchange
-        // and user creation/login logic
+        try
+        {
+            // Exchange code for user info
+            var redirectUri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{provider}";
+            var oauthUser = await oauthService.ExchangeCodeForUserInfoAsync(provider, code, redirectUri, token);
 
-        logger.SystemLog(
-            $"OAuth callback received for provider {provider} (implementation pending)",
-            TaskStatus.Pending,
-            LogLevel.Information);
+            if (oauthUser is null)
+            {
+                logger.SystemLog(
+                    $"Failed to exchange OAuth code for provider {provider}",
+                    TaskStatus.Failed,
+                    LogLevel.Warning);
+                
+                return Redirect($"/account/login?error=oauth_exchange_failed");
+            }
 
-        return Redirect($"/account/login?success=oauth_pending");
+            // Get or create user
+            var (user, isNewUser) = await oauthService.GetOrCreateUserFromOAuthAsync(provider, oauthUser, token);
+
+            // Sign in the user
+            await signInManager.SignInAsync(user, isPersistent: true);
+
+            logger.SystemLog(
+                $"User {user.Email} {(isNewUser ? "registered and" : "")} logged in via OAuth provider {provider}",
+                TaskStatus.Success,
+                LogLevel.Information);
+
+            // Redirect to appropriate page
+            return Redirect(isNewUser ? "/account/profile?firstLogin=true" : "/");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing OAuth callback for provider {Provider}", provider);
+            return Redirect($"/account/login?error=oauth_processing_error");
+        }
     }
 
     string GetEmailLink(string action, string token, string? email)

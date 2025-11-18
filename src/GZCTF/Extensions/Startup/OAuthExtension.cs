@@ -1,4 +1,5 @@
 using GZCTF.Models.Internal;
+using GZCTF.Services.OAuth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,7 @@ static class OAuthExtension
     {
         // OAuth will be dynamically configured from database at runtime
         builder.Services.AddScoped<IOAuthProviderManager, OAuthProviderManager>();
+        builder.Services.AddScoped<IOAuthService, OAuthService>();
     }
 }
 
