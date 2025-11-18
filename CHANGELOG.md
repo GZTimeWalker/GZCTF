@@ -3,6 +3,26 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.7.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.1..v1.7.2) - 2025-11-18
+
+### ⛰️ Features
+
+- **(import)** preserve attachment file names - ([bafc70](https://github.com/GZTimeWalker/GZCTF/commit/bafc70)) by **GZTime**
+- **(writeups)** enhance writeup management with division support and filtering - ([da9c07](https://github.com/GZTimeWalker/GZCTF/commit/da9c07)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(challenge)** remove the minimum value of the storage limit - ([5335a7](https://github.com/GZTimeWalker/GZCTF/commit/5335a7)) by **GZTime**
+- **(game)** use a consistent timestamp for writeup deadline and file naming - ([73fded](https://github.com/GZTimeWalker/GZCTF/commit/73fded)) by **GZTime**
+- **(i18n)** enhance language context management - ([69a85e](https://github.com/GZTimeWalker/GZCTF/commit/69a85e)) by **GZTime**
+- **(import)** add flag template handling in game import service and tests - ([2ccc7e](https://github.com/GZTimeWalker/GZCTF/commit/2ccc7e)) by **GZTime**
+- **(style)** ParticipationItem may overflow when bio too ling - ([b37c4d](https://github.com/GZTimeWalker/GZCTF/commit/b37c4d)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(flag)** dynamic generation and validation logic - ([9c8fdc](https://github.com/GZTimeWalker/GZCTF/commit/9c8fdc)) by **GZTime**
+
+---
 ## [1.7.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.0..v1.7.1) - 2025-11-11
 
 ### ⛰️ Features
