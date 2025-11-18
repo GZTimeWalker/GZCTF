@@ -454,14 +454,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
         builder.Entity<OAuthProvider>(entity =>
         {
-            entity.Property(e => e.Type)
-                .HasConversion<int>();
-
             entity.Property(e => e.Scopes)
                 .HasColumnType("jsonb")
                 .HasConversion(listConverter)
                 .Metadata
                 .SetValueComparer(listComparer);
+
+            entity.Property(e => e.FieldMapping)
+                .HasColumnType("jsonb")
+                .HasConversion(metadataConverter)
+                .Metadata
+                .SetValueComparer(metadataComparer);
 
             entity.HasIndex(e => e.Key)
                 .IsUnique();

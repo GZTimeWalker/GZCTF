@@ -693,69 +693,102 @@ public class AdminController(
         Ok(new ArrayResponse<LocalFile>(await blobService.GetBlobs(count, skip, token)));
 
     /// <summary>
-    /// Get OAuth configuration
+    /// Get user metadata fields configuration
     /// </summary>
     /// <remarks>
-    /// Use this API to get OAuth configuration, requires Admin permission
+    /// Use this API to get user metadata fields configuration, requires Admin permission
     /// </remarks>
-    /// <response code="200">OAuth configuration</response>
+    /// <response code="200">User metadata fields configuration</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Forbidden</response>
+    [HttpGet("UserMetadata")]
+    [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserMetadataFields(
+        [FromServices] IOAuthProviderManager oauthManager,
+        CancellationToken token = default)
+    {
+        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        return Ok(fields);
+    }
+
+    /// <summary>
+    /// Update user metadata fields configuration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to update user metadata fields configuration, requires Admin permission
+    /// </remarks>
+    /// <param name="fields">User metadata fields</param>
+    /// <param name="oauthManager">OAuth provider manager</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">User metadata fields updated successfully</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Forbidden</response>
+    [HttpPut("UserMetadata")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUserMetadataFields(
+        [FromBody] List<UserMetadataField> fields,
+        [FromServices] IOAuthProviderManager oauthManager,
+        CancellationToken token = default)
+    {
+        await oauthManager.UpdateUserMetadataFieldsAsync(fields, token);
+        
+        logger.SystemLog(
+            "User metadata fields updated",
+            TaskStatus.Success,
+            LogLevel.Information);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Get OAuth providers configuration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get OAuth providers configuration, requires Admin permission
+    /// </remarks>
+    /// <response code="200">OAuth providers configuration</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     [HttpGet("OAuth")]
-    [ProducesResponseType(typeof(OAuthConfig), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetOAuthConfig(
+    [ProducesResponseType(typeof(Dictionary<string, OAuthProviderConfig>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOAuthProviders(
         [FromServices] IOAuthProviderManager oauthManager,
         CancellationToken token = default)
     {
         var providers = await oauthManager.GetOAuthProvidersAsync(token);
-        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
-        
-        var config = new OAuthConfig
-        {
-            Providers = providers,
-            UserMetadataFields = fields,
-            AllowMultipleProviders = true
-        };
-        
-        return Ok(config);
+        return Ok(providers);
     }
 
     /// <summary>
-    /// Update OAuth configuration
+    /// Update OAuth providers configuration
     /// </summary>
     /// <remarks>
-    /// Use this API to update OAuth configuration, requires Admin permission
+    /// Use this API to update OAuth providers configuration, requires Admin permission
     /// </remarks>
-    /// <param name="model">OAuth configuration model</param>
+    /// <param name="providers">OAuth providers configuration</param>
     /// <param name="oauthManager">OAuth provider manager</param>
     /// <param name="token">Cancellation token</param>
-    /// <response code="200">OAuth configuration updated successfully</response>
+    /// <response code="200">OAuth providers updated successfully</response>
     /// <response code="400">Invalid request</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     [HttpPut("OAuth")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateOAuthConfig(
-        [FromBody] OAuthConfigEditModel model,
+    public async Task<IActionResult> UpdateOAuthProviders(
+        [FromBody] Dictionary<string, OAuthProviderConfig> providers,
         [FromServices] IOAuthProviderManager oauthManager,
         CancellationToken token = default)
     {
-        if (model.Providers is not null)
+        foreach (var (key, config) in providers)
         {
-            foreach (var (key, config) in model.Providers)
-            {
-                await oauthManager.UpdateOAuthProviderAsync(key, config, token);
-            }
-        }
-
-        if (model.UserMetadataFields is not null)
-        {
-            await oauthManager.UpdateUserMetadataFieldsAsync(model.UserMetadataFields, token);
+            await oauthManager.UpdateOAuthProviderAsync(key, config, token);
         }
 
         logger.SystemLog(
-            "OAuth configuration updated",
+            "OAuth providers updated",
             TaskStatus.Success,
             LogLevel.Information);
 

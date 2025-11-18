@@ -4,20 +4,6 @@ using System.Text.Json.Serialization;
 namespace GZCTF.Models.Internal;
 
 /// <summary>
-/// OAuth provider type
-/// </summary>
-[JsonConverter(typeof(JsonStringEnumConverter<OAuthProviderType>))]
-public enum OAuthProviderType
-{
-    Google,
-    GitHub,
-    Microsoft,
-    Discord,
-    GitLab,
-    Generic
-}
-
-/// <summary>
 /// User metadata field type
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<UserMetadataFieldType>))]
@@ -122,7 +108,7 @@ public class UserMetadataField
     public string? Pattern { get; set; }
 
     /// <summary>
-    /// Options for select fields (comma-separated)
+    /// Options for select fields
     /// </summary>
     public List<string>? Options { get; set; }
 }
@@ -132,11 +118,6 @@ public class UserMetadataField
 /// </summary>
 public class OAuthProviderConfig
 {
-    /// <summary>
-    /// Provider type
-    /// </summary>
-    public OAuthProviderType Type { get; set; }
-
     /// <summary>
     /// Whether this provider is enabled
     /// </summary>
@@ -153,19 +134,22 @@ public class OAuthProviderConfig
     public string ClientSecret { get; set; } = string.Empty;
 
     /// <summary>
-    /// Authorization endpoint (for Generic provider)
+    /// Authorization endpoint
     /// </summary>
-    public string? AuthorizationEndpoint { get; set; }
+    [Required]
+    public string AuthorizationEndpoint { get; set; } = string.Empty;
 
     /// <summary>
-    /// Token endpoint (for Generic provider)
+    /// Token endpoint
     /// </summary>
-    public string? TokenEndpoint { get; set; }
+    [Required]
+    public string TokenEndpoint { get; set; } = string.Empty;
 
     /// <summary>
-    /// User information endpoint (for Generic provider)
+    /// User information endpoint
     /// </summary>
-    public string? UserInformationEndpoint { get; set; }
+    [Required]
+    public string UserInformationEndpoint { get; set; } = string.Empty;
 
     /// <summary>
     /// Display name for the provider
@@ -176,25 +160,11 @@ public class OAuthProviderConfig
     /// Scopes to request
     /// </summary>
     public List<string> Scopes { get; set; } = [];
-}
-
-/// <summary>
-/// OAuth and user metadata configuration
-/// </summary>
-public class OAuthConfig
-{
-    /// <summary>
-    /// OAuth providers configuration
-    /// </summary>
-    public Dictionary<string, OAuthProviderConfig> Providers { get; set; } = new();
 
     /// <summary>
-    /// User metadata fields configuration
+    /// Field mapping from OAuth provider fields to user metadata fields
+    /// Key: OAuth provider field name (e.g., "email", "name", "avatar_url")
+    /// Value: User metadata field key
     /// </summary>
-    public List<UserMetadataField> UserMetadataFields { get; set; } = [];
-
-    /// <summary>
-    /// Whether to allow users to link multiple OAuth accounts
-    /// </summary>
-    public bool AllowMultipleProviders { get; set; } = true;
+    public Dictionary<string, string> FieldMapping { get; set; } = new();
 }

@@ -25,15 +25,15 @@ namespace GZCTF.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Key = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false),
                     Enabled = table.Column<bool>(type: "boolean", nullable: false),
                     ClientId = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     ClientSecret = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    AuthorizationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    TokenEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    UserInformationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    AuthorizationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    TokenEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    UserInformationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Scopes = table.Column<string>(type: "jsonb", nullable: false),
+                    FieldMapping = table.Column<string>(type: "jsonb", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

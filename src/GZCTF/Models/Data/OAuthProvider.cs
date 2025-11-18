@@ -23,11 +23,6 @@ public class OAuthProvider
     public string Key { get; set; } = string.Empty;
 
     /// <summary>
-    /// Provider type
-    /// </summary>
-    public OAuthProviderType Type { get; set; }
-
-    /// <summary>
     /// Whether this provider is enabled
     /// </summary>
     public bool Enabled { get; set; }
@@ -45,22 +40,25 @@ public class OAuthProvider
     public string ClientSecret { get; set; } = string.Empty;
 
     /// <summary>
-    /// Authorization endpoint (for Generic provider)
+    /// Authorization endpoint
     /// </summary>
+    [Required]
     [MaxLength(500)]
-    public string? AuthorizationEndpoint { get; set; }
+    public string AuthorizationEndpoint { get; set; } = string.Empty;
 
     /// <summary>
-    /// Token endpoint (for Generic provider)
+    /// Token endpoint
     /// </summary>
+    [Required]
     [MaxLength(500)]
-    public string? TokenEndpoint { get; set; }
+    public string TokenEndpoint { get; set; } = string.Empty;
 
     /// <summary>
-    /// User information endpoint (for Generic provider)
+    /// User information endpoint
     /// </summary>
+    [Required]
     [MaxLength(500)]
-    public string? UserInformationEndpoint { get; set; }
+    public string UserInformationEndpoint { get; set; } = string.Empty;
 
     /// <summary>
     /// Display name for the provider
@@ -75,13 +73,19 @@ public class OAuthProvider
     public List<string> Scopes { get; set; } = [];
 
     /// <summary>
+    /// Field mapping from OAuth provider fields to user metadata fields (stored as JSON)
+    /// Key: OAuth provider field name, Value: User metadata field key
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public Dictionary<string, string> FieldMapping { get; set; } = new();
+
+    /// <summary>
     /// Last updated time
     /// </summary>
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     internal OAuthProviderConfig ToConfig() => new()
     {
-        Type = Type,
         Enabled = Enabled,
         ClientId = ClientId,
         ClientSecret = ClientSecret,
@@ -89,12 +93,12 @@ public class OAuthProvider
         TokenEndpoint = TokenEndpoint,
         UserInformationEndpoint = UserInformationEndpoint,
         DisplayName = DisplayName,
-        Scopes = Scopes
+        Scopes = Scopes,
+        FieldMapping = FieldMapping
     };
 
     internal void UpdateFromConfig(OAuthProviderConfig config)
     {
-        Type = config.Type;
         Enabled = config.Enabled;
         ClientId = config.ClientId;
         ClientSecret = config.ClientSecret;
@@ -103,6 +107,7 @@ public class OAuthProvider
         UserInformationEndpoint = config.UserInformationEndpoint;
         DisplayName = config.DisplayName;
         Scopes = config.Scopes;
+        FieldMapping = config.FieldMapping;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
 }
