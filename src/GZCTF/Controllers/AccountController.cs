@@ -560,6 +560,23 @@ public class AccountController(
         return Ok(avatar.Url());
     }
 
+    /// <summary>
+    /// Get user metadata field configuration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get configured user metadata fields.
+    /// </remarks>
+    /// <response code="200">User metadata fields configuration retrieved successfully</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> MetadataFields(
+        [FromServices] IOAuthProviderManager oauthManager,
+        CancellationToken token = default)
+    {
+        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        return Ok(fields);
+    }
+
     string GetEmailLink(string action, string token, string? email)
         => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/account/{action}?" +
            $"token={token}&email={Codec.Base64.Encode(email)}";

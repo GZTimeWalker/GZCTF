@@ -41,6 +41,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+    public DbSet<OAuthProvider> OAuthProviders { get; set; } = null!;
+    public DbSet<UserMetadataFieldConfig> UserMetadataFields { get; set; } = null!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -63,6 +65,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         var setConverter = GetJsonConverter<HashSet<string>>();
         var listComparer = GetEnumerableComparer<List<string>, string>();
         var setComparer = GetEnumerableComparer<HashSet<string>, string>();
+        var metadataConverter = GetJsonConverter<Dictionary<string, string>>();
+        var metadataComparer = new ValueComparer<Dictionary<string, string>>(
+            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -74,6 +80,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.Property(e => e.ExerciseVisible)
                 .HasDefaultValue(true);
+
+            entity.Property(e => e.UserMetadata)
+                .HasColumnType("jsonb")
+                .HasConversion(metadataConverter)
+                .Metadata
+                .SetValueComparer(metadataComparer);
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
@@ -438,6 +450,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Property(e => e.Status)
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
+        });
+
+        builder.Entity<OAuthProvider>(entity =>
+        {
+            entity.Property(e => e.Type)
+                .HasConversion<int>();
+
+            entity.Property(e => e.Scopes)
+                .HasColumnType("jsonb")
+                .HasConversion(listConverter)
+                .Metadata
+                .SetValueComparer(listComparer);
+        });
+
+        builder.Entity<UserMetadataFieldConfig>(entity =>
+        {
+            entity.HasIndex(e => e.Key)
+                .IsUnique();
         });
     }
 }

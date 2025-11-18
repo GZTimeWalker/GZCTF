@@ -52,6 +52,11 @@ public class ProfileUserInfoModel
     /// </summary>
     public string? Avatar { get; set; }
 
+    /// <summary>
+    /// User metadata (dynamic fields)
+    /// </summary>
+    public Dictionary<string, string>? Metadata { get; set; }
+
     internal static ProfileUserInfoModel FromUserInfo(UserInfo user) =>
         new()
         {
@@ -63,6 +68,7 @@ public class ProfileUserInfoModel
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
             StdNumber = user.StdNumber,
-            Role = user.Role
+            Role = user.Role,
+            Metadata = user.UserMetadata
         };
 }

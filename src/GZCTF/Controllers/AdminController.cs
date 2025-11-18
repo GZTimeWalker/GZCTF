@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using GZCTF.Extensions;
+using GZCTF.Extensions.Startup;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -690,6 +691,76 @@ public class AdminController(
     public async Task<IActionResult> Files([FromQuery][Range(0, 500)] int count = 50, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
         Ok(new ArrayResponse<LocalFile>(await blobService.GetBlobs(count, skip, token)));
+
+    /// <summary>
+    /// Get OAuth configuration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get OAuth configuration, requires Admin permission
+    /// </remarks>
+    /// <response code="200">OAuth configuration</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Forbidden</response>
+    [HttpGet("OAuth")]
+    [ProducesResponseType(typeof(OAuthConfig), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOAuthConfig(
+        [FromServices] IOAuthProviderManager oauthManager,
+        CancellationToken token = default)
+    {
+        var providers = await oauthManager.GetOAuthProvidersAsync(token);
+        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        
+        var config = new OAuthConfig
+        {
+            Providers = providers,
+            UserMetadataFields = fields,
+            AllowMultipleProviders = true
+        };
+        
+        return Ok(config);
+    }
+
+    /// <summary>
+    /// Update OAuth configuration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to update OAuth configuration, requires Admin permission
+    /// </remarks>
+    /// <param name="model">OAuth configuration model</param>
+    /// <param name="oauthManager">OAuth provider manager</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">OAuth configuration updated successfully</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Forbidden</response>
+    [HttpPut("OAuth")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateOAuthConfig(
+        [FromBody] OAuthConfigEditModel model,
+        [FromServices] IOAuthProviderManager oauthManager,
+        CancellationToken token = default)
+    {
+        if (model.Providers is not null)
+        {
+            foreach (var (key, config) in model.Providers)
+            {
+                await oauthManager.UpdateOAuthProviderAsync(key, config, token);
+            }
+        }
+
+        if (model.UserMetadataFields is not null)
+        {
+            await oauthManager.UpdateUserMetadataFieldsAsync(model.UserMetadataFields, token);
+        }
+
+        logger.SystemLog(
+            "OAuth configuration updated",
+            TaskStatus.Success,
+            LogLevel.Information);
+
+        return Ok();
+    }
 
     IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??

@@ -43,4 +43,9 @@ public class ProfileUpdateModel
     [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? StdNumber { get; set; }
+
+    /// <summary>
+    /// User metadata (dynamic fields)
+    /// </summary>
+    public Dictionary<string, string>? Metadata { get; set; }
 }

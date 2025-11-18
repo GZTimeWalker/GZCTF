@@ -70,6 +70,13 @@ public partial class UserInfo : IdentityUser<Guid>
     /// </summary>
     public bool ExerciseVisible { get; set; } = true;
 
+    /// <summary>
+    /// User metadata stored as JSON (flexible user fields)
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    [MemoryPackIgnore]
+    public Dictionary<string, string> UserMetadata { get; set; } = new();
+
     [NotMapped]
     [MemoryPackIgnore]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
@@ -122,6 +129,17 @@ public partial class UserInfo : IdentityUser<Guid>
         PhoneNumber = model.Phone ?? PhoneNumber;
         RealName = model.RealName ?? RealName;
         StdNumber = model.StdNumber ?? StdNumber;
+        
+        if (model.Metadata is not null)
+        {
+            foreach (var (key, value) in model.Metadata)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    UserMetadata.Remove(key);
+                else
+                    UserMetadata[key] = value;
+            }
+        }
     }
 
     #region Db Relationship
