@@ -10,9 +10,15 @@ namespace GZCTF.Models.Data;
 public class OAuthProvider
 {
     /// <summary>
-    /// Provider key (google, github, microsoft, etc.)
+    /// Unique ID
     /// </summary>
     [Key]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Provider key (google, github, microsoft, etc.)
+    /// </summary>
+    [Required]
     [MaxLength(50)]
     public string Key { get; set; } = string.Empty;
 
@@ -127,10 +133,9 @@ public class UserMetadataFieldConfig
     public string DisplayName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Field type (text, number, email, etc.)
+    /// Field type
     /// </summary>
-    [MaxLength(50)]
-    public string Type { get; set; } = "text";
+    public UserMetadataFieldType Type { get; set; } = UserMetadataFieldType.Text;
 
     /// <summary>
     /// Whether this field is required
@@ -170,6 +175,12 @@ public class UserMetadataFieldConfig
     public string? Pattern { get; set; }
 
     /// <summary>
+    /// Options for select fields (stored as JSON)
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public List<string>? Options { get; set; }
+
+    /// <summary>
     /// Display order
     /// </summary>
     public int Order { get; set; }
@@ -185,7 +196,8 @@ public class UserMetadataFieldConfig
         MaxLength = MaxLength,
         MinValue = MinValue,
         MaxValue = MaxValue,
-        Pattern = Pattern
+        Pattern = Pattern,
+        Options = Options
     };
 
     internal void UpdateFromField(UserMetadataField field)
@@ -200,5 +212,6 @@ public class UserMetadataFieldConfig
         MinValue = field.MinValue;
         MaxValue = field.MaxValue;
         Pattern = field.Pattern;
+        Options = field.Options;
     }
 }

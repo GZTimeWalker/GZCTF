@@ -22,6 +22,8 @@ namespace GZCTF.Migrations
                 name: "OAuthProviders",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Key = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Enabled = table.Column<bool>(type: "boolean", nullable: false),
@@ -36,7 +38,7 @@ namespace GZCTF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OAuthProviders", x => x.Key);
+                    table.PrimaryKey("PK_OAuthProviders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,7 +49,7 @@ namespace GZCTF.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Key = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
                     Required = table.Column<bool>(type: "boolean", nullable: false),
                     Visible = table.Column<bool>(type: "boolean", nullable: false),
                     Placeholder = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
@@ -55,12 +57,19 @@ namespace GZCTF.Migrations
                     MinValue = table.Column<int>(type: "integer", nullable: true),
                     MaxValue = table.Column<int>(type: "integer", nullable: true),
                     Pattern = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Options = table.Column<string>(type: "jsonb", nullable: true),
                     Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserMetadataFields", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OAuthProviders_Key",
+                table: "OAuthProviders",
+                column: "Key",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserMetadataFields_Key",

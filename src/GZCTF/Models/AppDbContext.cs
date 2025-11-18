@@ -462,10 +462,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion(listConverter)
                 .Metadata
                 .SetValueComparer(listComparer);
+
+            entity.HasIndex(e => e.Key)
+                .IsUnique();
         });
 
         builder.Entity<UserMetadataFieldConfig>(entity =>
         {
+            entity.Property(e => e.Type)
+                .HasConversion<int>();
+
+            entity.Property(e => e.Options)
+                .HasColumnType("jsonb")
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v ?? new List<string>(), JsonOptions),
+                    v => JsonSerializer.Deserialize<List<string>>(v, JsonOptions));
+
             entity.HasIndex(e => e.Key)
                 .IsUnique();
         });

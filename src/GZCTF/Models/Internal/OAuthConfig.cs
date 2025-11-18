@@ -18,6 +18,53 @@ public enum OAuthProviderType
 }
 
 /// <summary>
+/// User metadata field type
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<UserMetadataFieldType>))]
+public enum UserMetadataFieldType
+{
+    /// <summary>
+    /// Single-line text input
+    /// </summary>
+    Text,
+    
+    /// <summary>
+    /// Multi-line text input
+    /// </summary>
+    TextArea,
+    
+    /// <summary>
+    /// Number input
+    /// </summary>
+    Number,
+    
+    /// <summary>
+    /// Email input
+    /// </summary>
+    Email,
+    
+    /// <summary>
+    /// URL input
+    /// </summary>
+    Url,
+    
+    /// <summary>
+    /// Phone number input
+    /// </summary>
+    Phone,
+    
+    /// <summary>
+    /// Date input
+    /// </summary>
+    Date,
+    
+    /// <summary>
+    /// Dropdown select
+    /// </summary>
+    Select
+}
+
+/// <summary>
 /// User metadata field configuration
 /// </summary>
 public class UserMetadataField
@@ -35,9 +82,9 @@ public class UserMetadataField
     public string DisplayName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Field type (text, number, email, etc.)
+    /// Field type
     /// </summary>
-    public string Type { get; set; } = "text";
+    public UserMetadataFieldType Type { get; set; } = UserMetadataFieldType.Text;
 
     /// <summary>
     /// Whether this field is required
@@ -73,6 +120,11 @@ public class UserMetadataField
     /// Validation pattern (regex) for the field
     /// </summary>
     public string? Pattern { get; set; }
+
+    /// <summary>
+    /// Options for select fields (comma-separated)
+    /// </summary>
+    public List<string>? Options { get; set; }
 }
 
 /// <summary>

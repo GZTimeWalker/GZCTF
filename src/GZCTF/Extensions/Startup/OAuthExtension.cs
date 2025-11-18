@@ -64,13 +64,15 @@ public class OAuthProviderManager(
 
     public async Task<OAuthProviderConfig?> GetOAuthProviderAsync(string key, CancellationToken token = default)
     {
-        var provider = await context.OAuthProviders.FindAsync([key], token);
+        var provider = await context.OAuthProviders
+            .FirstOrDefaultAsync(p => p.Key == key, token);
         return provider?.ToConfig();
     }
 
     public async Task UpdateOAuthProviderAsync(string key, OAuthProviderConfig config, CancellationToken token = default)
     {
-        var provider = await context.OAuthProviders.FindAsync([key], token);
+        var provider = await context.OAuthProviders
+            .FirstOrDefaultAsync(p => p.Key == key, token);
         
         if (provider is null)
         {
@@ -89,7 +91,9 @@ public class OAuthProviderManager(
 
     public async Task DeleteOAuthProviderAsync(string key, CancellationToken token = default)
     {
-        var provider = await context.OAuthProviders.FindAsync([key], token);
+        var provider = await context.OAuthProviders
+            .FirstOrDefaultAsync(p => p.Key == key, token);
+        
         if (provider is not null)
         {
             context.OAuthProviders.Remove(provider);
