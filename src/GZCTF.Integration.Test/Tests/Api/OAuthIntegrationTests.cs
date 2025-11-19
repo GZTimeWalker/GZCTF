@@ -294,7 +294,9 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
         // Assert
         Assert.True(isNewUser);
         Assert.NotEqual(userName, user.UserName); // Should have different username
-        Assert.StartsWith(userName, user.UserName); // Should start with original username
+        // Username should be truncated if needed and have a conflict resolution suffix
+        Assert.True(user.UserName!.Length <= 16, $"Username '{user.UserName}' exceeds 16 characters");
+        Assert.Matches(@"^testuser_[a-f0-9]+$", user.UserName); // Pattern: testuser_<hex or counter>
         output.WriteLine($"Resolved username conflict: {userName} -> {user.UserName}");
     }
 

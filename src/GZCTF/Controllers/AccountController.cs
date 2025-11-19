@@ -570,7 +570,8 @@ public class AccountController(
     /// Use this API to get configured user metadata fields.
     /// </remarks>
     /// <response code="200">User metadata fields configuration retrieved successfully</response>
-    [HttpGet("MetadataFields")]
+    [HttpGet]
+    [Route("/api/Account/MetadataFields")]
     [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
     public async Task<IActionResult> MetadataFields(
         [FromServices] IOAuthProviderManager oauthManager,
@@ -587,7 +588,8 @@ public class AccountController(
     /// Use this API to get available OAuth providers for login.
     /// </remarks>
     /// <response code="200">Available OAuth providers</response>
-    [HttpGet("OAuth/Providers")]
+    [HttpGet]
+    [Route("/api/Account/OAuth/Providers")]
     [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOAuthProviders(
         [FromServices] IOAuthProviderManager oauthManager,
@@ -613,7 +615,8 @@ public class AccountController(
     /// <param name="token">Cancellation token</param>
     /// <response code="200">Authorization URL returned</response>
     /// <response code="400">Invalid provider or provider not enabled</response>
-    [HttpGet("OAuth/Login/{provider}")]
+    [HttpGet]
+    [Route("/api/Account/OAuth/Login/{provider}")]
     [ProducesResponseType(typeof(RequestResponse<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> OAuthLogin(
@@ -669,7 +672,8 @@ public class AccountController(
     /// <param name="cache">Distributed cache</param>
     /// <param name="token">Cancellation token</param>
     /// <response code="302">Redirects to frontend with result</response>
-    [HttpGet("OAuth/Callback/{provider}")]
+    [HttpGet]
+    [Route("/api/Account/OAuth/Callback/{provider}")]
     public async Task<IActionResult> OAuthCallback(
         string provider,
         [FromQuery] string? code,
