@@ -154,12 +154,23 @@ public class OAuthService(
         // Create new user
         var userName = oauthUser.UserName ?? oauthUser.Email.Split('@')[0];
         
+        // Truncate username if too long (max 16 characters, leave room for counter)
+        const int maxUsernameLength = 16;
+        if (userName.Length > maxUsernameLength - 3) // Reserve 3 chars for potential counter (e.g., "123")
+        {
+            userName = userName[..(maxUsernameLength - 3)];
+        }
+        
         // Ensure username is unique
         var baseUserName = userName;
         var counter = 1;
         while (await userManager.FindByNameAsync(userName) is not null)
         {
-            userName = $"{baseUserName}{counter}";
+            var suffix = counter.ToString();
+            var maxBaseLength = maxUsernameLength - suffix.Length;
+            userName = baseUserName.Length > maxBaseLength 
+                ? $"{baseUserName[..maxBaseLength]}{suffix}"
+                : $"{baseUserName}{suffix}";
             counter++;
         }
 

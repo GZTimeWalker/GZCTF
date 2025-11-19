@@ -252,7 +252,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
             }
         };
 
-        var response = await userClient.PutAsJsonAsync("/api/Account/Profile", updateModel);
+        var response = await userClient.PutAsJsonAsync("/api/Account/Update", updateModel);
         output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
@@ -285,7 +285,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
                 { "testField", "testValue" }
             }
         };
-        await client.PutAsJsonAsync("/api/Account/Profile", addModel);
+        await client.PutAsJsonAsync("/api/Account/Update", addModel);
 
         // Act - remove metadata by setting to empty string
         var removeModel = new ProfileUpdateModel
@@ -295,7 +295,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
                 { "testField", "" }
             }
         };
-        var response = await client.PutAsJsonAsync("/api/Account/Profile", removeModel);
+        var response = await client.PutAsJsonAsync("/api/Account/Update", removeModel);
 
         // Assert
         response.EnsureSuccessStatusCode();

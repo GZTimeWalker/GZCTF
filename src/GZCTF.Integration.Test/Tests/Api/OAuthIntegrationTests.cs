@@ -104,6 +104,12 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
         using var publicClient = factory.CreateClient();
         var response = await publicClient.GetAsync("/api/Account/OAuth/Providers");
 
+        // Debug output
+        output.WriteLine($"Response status: {response.StatusCode}");
+        output.WriteLine($"Response content type: {response.Content.Headers.ContentType}");
+        var content = await response.Content.ReadAsStringAsync();
+        output.WriteLine($"Response content (first 500 chars): {content[..Math.Min(500, content.Length)]}");
+
         // Assert
         response.EnsureSuccessStatusCode();
         var availableProviders = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();

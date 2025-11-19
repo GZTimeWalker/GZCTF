@@ -38,6 +38,7 @@ builder.ConfigureDatabase();
 builder.ConfigureStorage();
 builder.ConfigureCacheAndSignalR();
 builder.ConfigureIdentity();
+builder.ConfigureOAuth();
 builder.ConfigureTelemetry();
 
 builder.AddServiceConfigurations();
