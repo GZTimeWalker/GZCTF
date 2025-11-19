@@ -1,3 +1,4 @@
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -6,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUserMetadataAndOAuthSupport : Migration
+    public partial class AddOAuthSupport : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +17,7 @@ namespace GZCTF.Migrations
                 table: "AspNetUsers",
                 type: "jsonb",
                 nullable: false,
-                defaultValue: "{}");
+                defaultValue: "");
 
             migrationBuilder.CreateTable(
                 name: "OAuthProviders",
@@ -24,16 +25,17 @@ namespace GZCTF.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Key = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Key = table.Column<string>(type: "character varying(31)", maxLength: 31, nullable: false),
                     Enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    ClientId = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    ClientSecret = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    AuthorizationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    TokenEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    UserInformationEndpoint = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ClientId = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    ClientSecret = table.Column<string>(type: "character varying(800)", maxLength: 800, nullable: false),
+                    AuthorizationEndpoint = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    TokenEndpoint = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    UserInformationEndpoint = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: true),
                     Scopes = table.Column<string>(type: "jsonb", nullable: false),
-                    FieldMapping = table.Column<string>(type: "jsonb", nullable: false)
+                    FieldMapping = table.Column<string>(type: "jsonb", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,16 +48,18 @@ namespace GZCTF.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Key = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Key = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Required = table.Column<bool>(type: "boolean", nullable: false),
                     Visible = table.Column<bool>(type: "boolean", nullable: false),
+                    Placeholder = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     MaxLength = table.Column<int>(type: "integer", nullable: true),
-                    MinValue = table.Column<double>(type: "double precision", nullable: true),
-                    MaxValue = table.Column<double>(type: "double precision", nullable: true),
-                    Pattern = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    Options = table.Column<string>(type: "jsonb", nullable: true)
+                    MinValue = table.Column<int>(type: "integer", nullable: true),
+                    MaxValue = table.Column<int>(type: "integer", nullable: true),
+                    Pattern = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: true),
+                    Options = table.Column<string>(type: "jsonb", nullable: true),
+                    Order = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

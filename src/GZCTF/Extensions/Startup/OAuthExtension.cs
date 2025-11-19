@@ -2,6 +2,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Services.OAuth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using UserMetadataField = GZCTF.Models.Data.UserMetadataField;
 
 namespace GZCTF.Extensions.Startup;
 
@@ -17,8 +18,8 @@ static class OAuthExtension
 
 public interface IOAuthProviderManager
 {
-    Task<List<UserMetadataField>> GetUserMetadataFieldsAsync(CancellationToken token = default);
-    Task UpdateUserMetadataFieldsAsync(List<UserMetadataField> fields, CancellationToken token = default);
+    Task<List<Models.Internal.UserMetadataField>> GetUserMetadataFieldsAsync(CancellationToken token = default);
+    Task UpdateUserMetadataFieldsAsync(List<Models.Internal.UserMetadataField> fields, CancellationToken token = default);
     Task<Dictionary<string, OAuthProviderConfig>> GetOAuthProvidersAsync(CancellationToken token = default);
     Task<OAuthProviderConfig?> GetOAuthProviderAsync(string key, CancellationToken token = default);
     Task UpdateOAuthProviderAsync(string key, OAuthProviderConfig config, CancellationToken token = default);
@@ -31,7 +32,7 @@ public class OAuthProviderManager(
     IAuthenticationSchemeProvider schemeProvider,
     ILogger<OAuthProviderManager> logger) : IOAuthProviderManager
 {
-    public async Task<List<UserMetadataField>> GetUserMetadataFieldsAsync(CancellationToken token = default)
+    public async Task<List<Models.Internal.UserMetadataField>> GetUserMetadataFieldsAsync(CancellationToken token = default)
     {
         var fields = await context.UserMetadataFields
             .OrderBy(f => f.Order)
@@ -40,7 +41,7 @@ public class OAuthProviderManager(
         return fields.Select(f => f.ToField()).ToList();
     }
 
-    public async Task UpdateUserMetadataFieldsAsync(List<UserMetadataField> fields, CancellationToken token = default)
+    public async Task UpdateUserMetadataFieldsAsync(List<Models.Internal.UserMetadataField> fields, CancellationToken token = default)
     {
         // Remove all existing fields
         var existingFields = await context.UserMetadataFields.ToListAsync(token);
@@ -49,7 +50,7 @@ public class OAuthProviderManager(
         // Add new fields
         for (int i = 0; i < fields.Count; i++)
         {
-            var field = new UserMetadataFieldConfig { Order = i };
+            var field = new UserMetadataField { Order = i };
             field.UpdateFromField(fields[i]);
             await context.UserMetadataFields.AddAsync(field, token);
         }

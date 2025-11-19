@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using UserMetadataField = GZCTF.Models.Internal.UserMetadataField;
 
 namespace GZCTF.Controllers;
 

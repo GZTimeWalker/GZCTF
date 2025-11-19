@@ -42,12 +42,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
     public DbSet<OAuthProvider> OAuthProviders { get; set; } = null!;
-    public DbSet<UserMetadataFieldConfig> UserMetadataFields { get; set; } = null!;
+    public DbSet<UserMetadataField> UserMetadataFields { get; set; } = null!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
             v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
             v => JsonSerializer.Deserialize<T>(v, JsonOptions)
+        );
+    
+    static ValueConverter<T, string> GetJsonConverterNonNull<T>() where T : class, new() =>
+        new(
+            v => JsonSerializer.Serialize(v, JsonOptions),
+            v => JsonSerializer.Deserialize<T>(v, JsonOptions) ?? new()
         );
 
     static ValueComparer<TList> GetEnumerableComparer<TList, T>()
@@ -62,13 +68,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         base.OnModelCreating(builder);
 
         var listConverter = GetJsonConverter<List<string>>();
-        var setConverter = GetJsonConverter<HashSet<string>>();
+        var listConverterNonNull = GetJsonConverterNonNull<List<string>>();
         var listComparer = GetEnumerableComparer<List<string>, string>();
-        var setComparer = GetEnumerableComparer<HashSet<string>, string>();
-        var metadataConverter = GetJsonConverter<Dictionary<string, string>>();
-        var metadataComparer = new ValueComparer<Dictionary<string, string>>(
-            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
-            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
+        var metadataConverter = GetJsonConverterNonNull<Dictionary<string, string>>();
+        var metadataComparer = GetEnumerableComparer<Dictionary<string, string>, KeyValuePair<string, string>>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -456,7 +459,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         {
             entity.Property(e => e.Scopes)
                 .HasColumnType("jsonb")
-                .HasConversion(listConverter)
+                .HasConversion(listConverterNonNull)
                 .Metadata
                 .SetValueComparer(listComparer);
 
@@ -470,7 +473,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .IsUnique();
         });
 
-        builder.Entity<UserMetadataFieldConfig>(entity =>
+        builder.Entity<UserMetadataField>(entity =>
         {
             entity.Property(e => e.Type)
                 .HasConversion<int>();

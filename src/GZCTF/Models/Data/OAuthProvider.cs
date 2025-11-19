@@ -19,7 +19,7 @@ public class OAuthProvider
     /// Provider key (google, github, microsoft, etc.)
     /// </summary>
     [Required]
-    [MaxLength(50)]
+    [MaxLength(Limits.MaxShortIdLength)]
     public string Key { get; set; } = string.Empty;
 
     /// <summary>
@@ -30,40 +30,40 @@ public class OAuthProvider
     /// <summary>
     /// Client ID
     /// </summary>
-    [MaxLength(500)]
+    [MaxLength(Limits.MaxOAuthClientIdLength)]
     public string ClientId { get; set; } = string.Empty;
 
     /// <summary>
     /// Client Secret (encrypted)
     /// </summary>
-    [MaxLength(1000)]
+    [MaxLength(Limits.MaxOAuthClientSecretLength)]
     public string ClientSecret { get; set; } = string.Empty;
 
     /// <summary>
     /// Authorization endpoint
     /// </summary>
     [Required]
-    [MaxLength(500)]
+    [MaxLength(Limits.MaxUrlLength)]
     public string AuthorizationEndpoint { get; set; } = string.Empty;
 
     /// <summary>
     /// Token endpoint
     /// </summary>
     [Required]
-    [MaxLength(500)]
+    [MaxLength(Limits.MaxUrlLength)]
     public string TokenEndpoint { get; set; } = string.Empty;
 
     /// <summary>
     /// User information endpoint
     /// </summary>
     [Required]
-    [MaxLength(500)]
+    [MaxLength(Limits.MaxUrlLength)]
     public string UserInformationEndpoint { get; set; } = string.Empty;
 
     /// <summary>
     /// Display name for the provider
     /// </summary>
-    [MaxLength(100)]
+    [MaxLength(Limits.MaxDisplayNameLength)]
     public string? DisplayName { get; set; }
 
     /// <summary>
@@ -109,114 +109,5 @@ public class OAuthProvider
         Scopes = config.Scopes;
         FieldMapping = config.FieldMapping;
         UpdatedAt = DateTimeOffset.UtcNow;
-    }
-}
-
-/// <summary>
-/// User metadata field configuration
-/// </summary>
-public class UserMetadataFieldConfig
-{
-    /// <summary>
-    /// Unique ID
-    /// </summary>
-    [Key]
-    public int Id { get; set; }
-
-    /// <summary>
-    /// Field key (e.g., "department", "studentId", "organization")
-    /// </summary>
-    [Required]
-    [MaxLength(100)]
-    public string Key { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Display name for the field
-    /// </summary>
-    [Required]
-    [MaxLength(200)]
-    public string DisplayName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Field type
-    /// </summary>
-    public UserMetadataFieldType Type { get; set; } = UserMetadataFieldType.Text;
-
-    /// <summary>
-    /// Whether this field is required
-    /// </summary>
-    public bool Required { get; set; }
-
-    /// <summary>
-    /// Whether this field is visible to users
-    /// </summary>
-    public bool Visible { get; set; } = true;
-
-    /// <summary>
-    /// Placeholder text for the field
-    /// </summary>
-    [MaxLength(200)]
-    public string? Placeholder { get; set; }
-
-    /// <summary>
-    /// Maximum length for text fields
-    /// </summary>
-    public int? MaxLength { get; set; }
-
-    /// <summary>
-    /// Minimum value for number fields
-    /// </summary>
-    public int? MinValue { get; set; }
-
-    /// <summary>
-    /// Maximum value for number fields
-    /// </summary>
-    public int? MaxValue { get; set; }
-
-    /// <summary>
-    /// Validation pattern (regex) for the field
-    /// </summary>
-    [MaxLength(500)]
-    public string? Pattern { get; set; }
-
-    /// <summary>
-    /// Options for select fields (stored as JSON)
-    /// </summary>
-    [Column(TypeName = "jsonb")]
-    public List<string>? Options { get; set; }
-
-    /// <summary>
-    /// Display order
-    /// </summary>
-    public int Order { get; set; }
-
-    internal UserMetadataField ToField() => new()
-    {
-        Key = Key,
-        DisplayName = DisplayName,
-        Type = Type,
-        Required = Required,
-        Visible = Visible,
-        Placeholder = Placeholder,
-        MaxLength = MaxLength,
-        MinValue = MinValue,
-        MaxValue = MaxValue,
-        Pattern = Pattern,
-        Options = Options
-    };
-
-    internal void UpdateFromField(UserMetadataField field)
-    {
-        Key = field.Key;
-        DisplayName = field.DisplayName;
-        Type = field.Type;
-        Required = field.Required;
-        Visible = field.Visible;
-        Placeholder = field.Placeholder;
-        MaxLength = field.MaxLength;
-        MinValue = field.MinValue;
-        MaxValue = field.MaxValue;
-        Pattern = field.Pattern;
-        Options = field.Options;
     }
 }

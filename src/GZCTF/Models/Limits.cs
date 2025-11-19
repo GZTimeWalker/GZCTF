@@ -3,92 +3,127 @@ namespace GZCTF.Models;
 public static class Limits
 {
     /// <summary>
-    /// Flag 最大长度
+    /// Max length of flag
     /// </summary>
     public const int MaxFlagLength = 127;
 
     /// <summary>
-    /// Flag 模板最大长度, 为替换操作预留空间
+    /// Max length of flag template, reserved for replacement
     /// </summary>
     public const int MaxFlagTemplateLength = 120;
 
     /// <summary>
-    /// 队伍名称最大长度
+    /// Max length of team name
     /// </summary>
     public const int MaxTeamNameLength = 20;
 
     /// <summary>
-    /// 队伍签名最大长度（前端展示原因）
+    /// Max length of team bio (for frontend display)
     /// </summary>
     public const int MaxTeamBioLength = 72;
 
     /// <summary>
-    /// 个人数据存储最大长度（签名与真实姓名）
+    /// Max length of user data (bio and real name)
     /// </summary>
     public const int MaxUserDataLength = 128;
 
     /// <summary>
-    /// 学工号最大长度
+    /// Max length of student number
     /// </summary>
     public const int MaxStdNumberLength = 64;
 
     /// <summary>
-    /// 用户名最小长度
+    /// Min length of username
     /// </summary>
     public const int MinUserNameLength = 3;
 
     /// <summary>
-    /// 用户名最大长度
+    /// Max length of username
     /// </summary>
     public const int MaxUserNameLength = 15;
 
     /// <summary>
-    /// 密码最小长度
+    /// Min length of password
     /// </summary>
     public const int MinPasswordLength = 6;
 
     /// <summary>
-    /// 文件哈希长度
+    /// Length of file hash
     /// </summary>
     public const int FileHashLength = 64;
 
     /// <summary>
-    /// 比赛公私钥长度
+    /// Length of game public/private key
     /// </summary>
     public const int GameKeyLength = 63;
 
     /// <summary>
-    /// 邀请 Token 长度
+    /// Length of invite token
     /// </summary>
     public const int InviteTokenLength = 32;
 
     /// <summary>
-    /// 最大 IP 长度
+    /// Max length of IP address
     /// </summary>
     public const int MaxIPLength = 40;
 
     /// <summary>
-    /// 最大标题长度
+    /// Max length of post title
     /// </summary>
     public const int MaxPostTitleLength = 50;
 
     /// <summary>
-    /// 最大日志等级长度
+    /// Max length of log level
     /// </summary>
     public const int MaxLogLevelLength = 15;
 
     /// <summary>
-    /// 最大日志记录源长度
+    /// Max length of logger source
     /// </summary>
     public const int MaxLoggerLength = 250;
 
     /// <summary>
-    /// 最大日志状态长度
+    /// Max length of log status
     /// </summary>
     public const int MaxLogStatusLength = 10;
 
     /// <summary>
-    /// 分组名称最大长度
+    /// Max length of short identifier (e.g. OAuth provider key, Division name)
     /// </summary>
-    public const int MaxDivisionNameLength = 31;
+    public const int MaxShortIdLength = 31;
+
+    /// <summary>
+    /// Max length of URL
+    /// </summary>
+    public const int MaxUrlLength = 400;
+
+    /// <summary>
+    /// Max length of OAuth client ID
+    /// </summary>
+    public const int MaxOAuthClientIdLength = 400;
+
+    /// <summary>
+    /// Max length of OAuth client secret
+    /// </summary>
+    public const int MaxOAuthClientSecretLength = 800;
+
+    /// <summary>
+    /// Max length of display name
+    /// </summary>
+    public const int MaxDisplayNameLength = 80;
+
+    /// <summary>
+    /// Max length of user metadata key
+    /// </summary>
+    public const int MaxUserMetadataKeyLength = 40;
+
+    /// <summary>
+    /// Max length of user metadata placeholder
+    /// </summary>
+    public const int MaxUserMetadataPlaceholderLength = 200;
+
+    /// <summary>
+    /// Max length of regex pattern
+    /// </summary>
+    public const int MaxRegexPatternLength = 400;
 }
