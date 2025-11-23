@@ -38,7 +38,6 @@
         <PackageReference Include="Docker.DotNet.Enhanced.BasicAuth"/>
         <PackageReference Include="KubernetesClient"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json"/>
         <PackageReference Include="Microsoft.AspNetCore.SpaProxy"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks"/>
@@ -75,8 +74,6 @@
         <PackageReference Include="Microsoft.Extensions.Http.Resilience"/>
         <PackageReference Include="Microsoft.Extensions.ServiceDiscovery"/>
         <PackageReference Include="MemoryPack"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
-        <PackageReference Include="Microsoft.Extensions.Options"/>
         <PackageReference Include="Serilog.Sinks.Grafana.Loki"/>
         <PackageReference Include="Serilog.Sinks.OpenTelemetry"/>
         <PackageReference Include="SixLabors.ImageSharp"/>
