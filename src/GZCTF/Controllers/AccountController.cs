@@ -1,9 +1,9 @@
 ﻿using System.Net.Mime;
-using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services;
 using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +24,7 @@ public class AccountController(
     IMailSender mailSender,
     IBlobRepository blobService,
     IHostEnvironment environment,
-    ICaptchaExtension captcha,
+    ICaptchaService captcha,
     IConfigService configService,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IOptionsSnapshot<GlobalConfig> globalConfig,

@@ -183,18 +183,6 @@ public enum NoticeType : byte
     NewChallenge = 5
 }
 
-public static class SubmissionTypeExtensions
-{
-    public static string ToBloodString(this SubmissionType type, IStringLocalizer<Program> localizer) =>
-        type switch
-        {
-            SubmissionType.FirstBlood => localizer[nameof(Resources.Program.Submission_FirstBlood)],
-            SubmissionType.SecondBlood => localizer[nameof(Resources.Program.Submission_SecondBlood)],
-            SubmissionType.ThirdBlood => localizer[nameof(Resources.Program.Submission_ThirdBlood)],
-            _ => throw new ArgumentException(type.ToString(), nameof(type))
-        };
-}
-
 /// <summary>
 /// Game event type
 /// </summary>
@@ -318,25 +306,28 @@ public enum ChallengeType : byte
 
 public static class ChallengeTypeExtensions
 {
-    /// <summary>
-    /// Is it a static challenge
-    /// </summary>
-    public static bool IsStatic(this ChallengeType type) => ((byte)type & 0b10) == 0;
+    extension(ChallengeType type)
+    {
+        /// <summary>
+        /// Is it a static challenge
+        /// </summary>
+        public bool IsStatic() => ((byte)type & 0b10) == 0;
 
-    /// <summary>
-    /// Is it a dynamic challenge
-    /// </summary>
-    public static bool IsDynamic(this ChallengeType type) => ((byte)type & 0b10) != 0;
+        /// <summary>
+        /// Is it a dynamic challenge
+        /// </summary>
+        public bool IsDynamic() => ((byte)type & 0b10) != 0;
 
-    /// <summary>
-    /// Is it an attachment challenge
-    /// </summary>
-    public static bool IsAttachment(this ChallengeType type) => ((byte)type & 0b01) == 0;
+        /// <summary>
+        /// Is it an attachment challenge
+        /// </summary>
+        public bool IsAttachment() => ((byte)type & 0b01) == 0;
 
-    /// <summary>
-    /// Is it a container challenge
-    /// </summary>
-    public static bool IsContainer(this ChallengeType type) => ((byte)type & 0b01) != 0;
+        /// <summary>
+        /// Is it a container challenge
+        /// </summary>
+        public bool IsContainer() => ((byte)type & 0b01) != 0;
+    }
 }
 
 /// <summary>
@@ -511,16 +502,19 @@ public enum AnswerResult : sbyte
 
 public static class AnswerResultExtensions
 {
-    public static string ToShortString(this AnswerResult result, IStringLocalizer<Program> localizer) =>
-        result switch
-        {
-            AnswerResult.FlagSubmitted => localizer[nameof(Resources.Program.Submission_FlagSubmitted)],
-            AnswerResult.Accepted => localizer[nameof(Resources.Program.Submission_Accepted)],
-            AnswerResult.WrongAnswer => localizer[nameof(Resources.Program.Submission_WrongAnswer)],
-            AnswerResult.CheatDetected => localizer[nameof(Resources.Program.Submission_CheatDetected)],
-            AnswerResult.NotFound => localizer[nameof(Resources.Program.Submission_UnknownInstance)],
-            _ => "??"
-        };
+    extension(AnswerResult result)
+    {
+        public string ToShortString(IStringLocalizer<Program> localizer) =>
+            result switch
+            {
+                AnswerResult.FlagSubmitted => localizer[nameof(Resources.Program.Submission_FlagSubmitted)],
+                AnswerResult.Accepted => localizer[nameof(Resources.Program.Submission_Accepted)],
+                AnswerResult.WrongAnswer => localizer[nameof(Resources.Program.Submission_WrongAnswer)],
+                AnswerResult.CheatDetected => localizer[nameof(Resources.Program.Submission_CheatDetected)],
+                AnswerResult.NotFound => localizer[nameof(Resources.Program.Submission_UnknownInstance)],
+                _ => "??"
+            };
+    }
 }
 
 /// <summary>
