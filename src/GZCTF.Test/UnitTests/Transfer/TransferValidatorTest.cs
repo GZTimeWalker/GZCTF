@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using GZCTF.Models.Transfer;
 using GZCTF.Utils;
 using Xunit;

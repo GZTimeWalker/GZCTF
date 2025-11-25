@@ -43,6 +43,8 @@ public class AdminController(
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
     IParticipationRepository participationRepository,
+    IOAuthProviderManager oauthManager,
+    IUserMetadataService metadataService,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
@@ -706,7 +708,6 @@ public class AdminController(
     [HttpGet("UserMetadata")]
     [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserMetadataFields(
-        [FromServices] IOAuthProviderManager oauthManager,
         CancellationToken token = default)
     {
         var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
@@ -720,7 +721,6 @@ public class AdminController(
     /// Use this API to update user metadata fields configuration, requires Admin permission
     /// </remarks>
     /// <param name="fields">User metadata fields</param>
-    /// <param name="oauthManager">OAuth provider manager</param>
     /// <param name="token">Cancellation token</param>
     /// <response code="200">User metadata fields updated successfully</response>
     /// <response code="400">Invalid request</response>
@@ -731,7 +731,6 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateUserMetadataFields(
         [FromBody] List<UserMetadataField> fields,
-        [FromServices] IOAuthProviderManager oauthManager,
         CancellationToken token = default)
     {
         await oauthManager.UpdateUserMetadataFieldsAsync(fields, token);
@@ -754,7 +753,6 @@ public class AdminController(
     public async Task<IActionResult> UpdateUserMetadata(
         Guid userId,
         [FromBody] UserMetadataUpdateModel model,
-        [FromServices] IUserMetadataService metadataService,
         CancellationToken token = default)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());
@@ -797,7 +795,6 @@ public class AdminController(
     [HttpGet("OAuth")]
     [ProducesResponseType(typeof(Dictionary<string, OAuthProviderConfig>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOAuthProviders(
-        [FromServices] IOAuthProviderManager oauthManager,
         CancellationToken token = default)
     {
         var providers = await oauthManager.GetOAuthProvidersAsync(token);
@@ -811,7 +808,6 @@ public class AdminController(
     /// Use this API to update OAuth providers configuration, requires Admin permission
     /// </remarks>
     /// <param name="providers">OAuth providers configuration</param>
-    /// <param name="oauthManager">OAuth provider manager</param>
     /// <param name="token">Cancellation token</param>
     /// <response code="200">OAuth providers updated successfully</response>
     /// <response code="400">Invalid request</response>
@@ -822,7 +818,6 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateOAuthProviders(
         [FromBody] Dictionary<string, OAuthProviderConfig> providers,
-        [FromServices] IOAuthProviderManager oauthManager,
         CancellationToken token = default)
     {
         foreach (var (key, config) in providers)

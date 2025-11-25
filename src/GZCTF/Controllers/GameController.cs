@@ -814,7 +814,7 @@ public class GameController(
     /// Downloads the game scoreboard; requires Monitor permission
     /// </remarks>
     /// <param name="id">Game ID</param>
-    /// <param name="excelHelper"></param>
+    /// <param name="excelHelper">Generates scoreboard spreadsheets.</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully downloaded game scoreboard</response>
     /// <response code="400">Invalid operation</response>
@@ -862,7 +862,7 @@ public class GameController(
     /// Downloads all submissions of the game; requires Monitor permission
     /// </remarks>
     /// <param name="id">Game ID</param>
-    /// <param name="excelHelper"></param>
+    /// <param name="excelHelper">Generates submission spreadsheets.</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully downloaded all game submissions</response>
     /// <response code="400">Invalid operation</response>

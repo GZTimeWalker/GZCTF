@@ -5,9 +5,29 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Services.OAuth;
 
+/// <summary>
+/// Defines the contract for exchanging OAuth authorization codes and provisioning application users from the
+/// resulting identity payloads.
+/// </summary>
 public interface IOAuthService
 {
+    /// <summary>
+    /// Exchanges an authorization code for the upstream user's profile data using the supplied provider configuration.
+    /// </summary>
+    /// <param name="provider">Persisted provider metadata (client credentials, endpoints, etc.).</param>
+    /// <param name="code">Authorization code received from the OAuth callback.</param>
+    /// <param name="redirectUri">The exact redirect URI registered with the provider for validation.</param>
+    /// <param name="token">Cancellation token for the outbound HTTP work.</param>
+    /// <returns>The normalized user information payload, or <c>null</c> when the exchange fails.</returns>
     Task<OAuthUserInfo?> ExchangeCodeForUserInfoAsync(OAuthProvider provider, string code, string redirectUri, CancellationToken token = default);
+
+    /// <summary>
+    /// Finds or creates a local <see cref="UserInfo"/> based on the OAuth user payload, enforcing metadata rules.
+    /// </summary>
+    /// <param name="provider">Provider responsible for the sign-in attempt.</param>
+    /// <param name="oauthUser">Normalized user information retrieved from the provider.</param>
+    /// <param name="token">Cancellation token for repository operations.</param>
+    /// <returns>The resolved user and a flag indicating whether the user was newly created.</returns>
     Task<(UserInfo user, bool isNewUser)> GetOrCreateUserFromOAuthAsync(OAuthProvider provider, OAuthUserInfo oauthUser, CancellationToken token = default);
 }
 

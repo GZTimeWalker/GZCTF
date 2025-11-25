@@ -16,14 +16,44 @@ static class OAuthExtension
     }
 }
 
+/// <summary>
+/// Provides read/write access to OAuth provider configurations and user metadata field definitions persisted in the database.
+/// </summary>
 public interface IOAuthProviderManager
 {
+    /// <summary>
+    /// Retrieves the ordered user metadata field definitions exposed to both admins and end users.
+    /// </summary>
     Task<List<Models.Internal.UserMetadataField>> GetUserMetadataFieldsAsync(CancellationToken token = default);
+
+    /// <summary>
+    /// Replaces the stored user metadata field definitions with the supplied set, preserving order.
+    /// </summary>
     Task UpdateUserMetadataFieldsAsync(List<Models.Internal.UserMetadataField> fields, CancellationToken token = default);
+
+    /// <summary>
+    /// Returns the complete map of configured OAuth providers keyed by provider identifier.
+    /// </summary>
     Task<Dictionary<string, OAuthProviderConfig>> GetOAuthProvidersAsync(CancellationToken token = default);
+
+    /// <summary>
+    /// Retrieves a single provider configuration by key, or <c>null</c> when it does not exist.
+    /// </summary>
     Task<OAuthProviderConfig?> GetOAuthProviderAsync(string key, CancellationToken token = default);
+
+    /// <summary>
+    /// Creates or updates the provider associated with the specified key using the supplied configuration values.
+    /// </summary>
     Task UpdateOAuthProviderAsync(string key, OAuthProviderConfig config, CancellationToken token = default);
+
+    /// <summary>
+    /// Deletes the provider identified by the given key if it exists.
+    /// </summary>
     Task DeleteOAuthProviderAsync(string key, CancellationToken token = default);
+
+    /// <summary>
+    /// Produces the list of authentication schemes that are currently enabled and resolvable via ASP.NET Core authentication.
+    /// </summary>
     Task<Dictionary<string, AuthenticationScheme>> GetAvailableProvidersAsync(CancellationToken token = default);
 }
 
