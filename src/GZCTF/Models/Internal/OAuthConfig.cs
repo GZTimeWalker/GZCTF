@@ -83,6 +83,11 @@ public class UserMetadataField
     public bool Visible { get; set; } = true;
 
     /// <summary>
+    /// Whether the field is locked for direct user edits
+    /// </summary>
+    public bool Locked { get; set; }
+
+    /// <summary>
     /// Placeholder text for the field
     /// </summary>
     public string? Placeholder { get; set; }

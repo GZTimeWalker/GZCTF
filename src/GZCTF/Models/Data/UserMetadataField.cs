@@ -45,6 +45,11 @@ public class UserMetadataField
     public bool Visible { get; set; } = true;
 
     /// <summary>
+    /// Whether this field can only be edited by privileged flows (admin/provider)
+    /// </summary>
+    public bool Locked { get; set; }
+
+    /// <summary>
     /// Placeholder text for the field
     /// </summary>
     [MaxLength(Limits.MaxUserMetadataPlaceholderLength)]
@@ -89,6 +94,7 @@ public class UserMetadataField
         Type = Type,
         Required = Required,
         Visible = Visible,
+        Locked = Locked,
         Placeholder = Placeholder,
         MaxLength = MaxLength,
         MinValue = MinValue,
@@ -104,6 +110,7 @@ public class UserMetadataField
         Type = field.Type;
         Required = field.Required;
         Visible = field.Visible;
+        Locked = field.Locked;
         Placeholder = field.Placeholder;
         MaxLength = field.MaxLength;
         MinValue = field.MinValue;

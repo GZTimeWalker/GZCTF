@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GZCTF.Models.Request.Account;
 
@@ -47,5 +48,5 @@ public class ProfileUpdateModel
     /// <summary>
     /// User metadata (dynamic fields)
     /// </summary>
-    public Dictionary<string, string>? Metadata { get; set; }
+    public Dictionary<string, string?>? Metadata { get; set; }
 }

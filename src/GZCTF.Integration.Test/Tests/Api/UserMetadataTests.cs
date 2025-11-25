@@ -134,7 +134,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
         var retrievedFields = await getResponse.Content.ReadFromJsonAsync<List<UserMetadataField>>();
         Assert.NotNull(retrievedFields);
         Assert.Equal(2, retrievedFields.Count);
-        
+
         var orgField = retrievedFields.FirstOrDefault(f => f.Key == "organization");
         Assert.NotNull(orgField);
         Assert.Equal("Organization Name", orgField.DisplayName);
@@ -243,27 +243,27 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
 
         // Act - update profile with metadata
         using var userClient = factory.CreateAuthenticatedClient(user);
-        var updateModel = new ProfileUpdateModel
+        var metadataResponse = await userClient.PutAsJsonAsync("/api/Account/Metadata", new UserMetadataUpdateModel
         {
-            Bio = "Test bio",
-            Metadata = new Dictionary<string, string>
+            Metadata = new Dictionary<string, string?>
             {
                 { "department", "IT" },
                 { "employeeId", "EMP001" }
             }
-        };
+        });
+        metadataResponse.EnsureSuccessStatusCode();
 
-        var response = await userClient.PutAsJsonAsync("/api/Account/Update", updateModel);
+        var profileUpdate = new ProfileUpdateModel { Bio = "Test bio" };
+        var response = await userClient.PutAsJsonAsync("/api/Account/Update", profileUpdate);
         output.WriteLine($"Status: {response.StatusCode}");
 
-        // Assert
         response.EnsureSuccessStatusCode();
 
         // Verify profile update
         var profileResponse = await userClient.GetAsync("/api/Account/Profile");
         profileResponse.EnsureSuccessStatusCode();
         var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
-        
+
         Assert.NotNull(profile);
         Assert.Equal("Test bio", profile.Bio);
         Assert.NotNull(profile.Metadata);
@@ -279,24 +279,22 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
         using var client = factory.CreateAuthenticatedClient(user);
 
         // Add metadata first
-        var addModel = new ProfileUpdateModel
+        await client.PutAsJsonAsync("/api/Account/Metadata", new UserMetadataUpdateModel
         {
-            Metadata = new Dictionary<string, string>
+            Metadata = new Dictionary<string, string?>
             {
                 { "testField", "testValue" }
             }
-        };
-        await client.PutAsJsonAsync("/api/Account/Update", addModel);
+        });
 
         // Act - remove metadata by setting to empty string
-        var removeModel = new ProfileUpdateModel
+        var response = await client.PutAsJsonAsync("/api/Account/Metadata", new UserMetadataUpdateModel
         {
-            Metadata = new Dictionary<string, string>
+            Metadata = new Dictionary<string, string?>
             {
                 { "testField", "" }
             }
-        };
-        var response = await client.PutAsJsonAsync("/api/Account/Update", removeModel);
+        });
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -304,7 +302,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
         // Verify removal
         var profileResponse = await client.GetAsync("/api/Account/Profile");
         var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
-        
+
         Assert.NotNull(profile);
         Assert.NotNull(profile.Metadata);
         Assert.DoesNotContain("testField", profile.Metadata.Keys);

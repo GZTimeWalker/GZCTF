@@ -1,11 +1,12 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Linq;
 using GZCTF.Extensions.Startup;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Distributed;
+using GZCTF.Services;
 
 namespace GZCTF.Services.OAuth;
 
@@ -17,6 +18,7 @@ public interface IOAuthService
 
 public class OAuthService(
     IOAuthProviderManager providerManager,
+    IUserMetadataService metadataService,
     UserManager<UserInfo> userManager,
     IHttpClientFactory httpClientFactory,
     ILogger<OAuthService> logger) : IOAuthService
@@ -103,7 +105,7 @@ public class OAuthService(
             };
 
             // Apply field mapping
-            oauthUser.MappedFields = new Dictionary<string, string>();
+            oauthUser.MappedFields = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
             foreach (var (sourceField, targetField) in providerConfig.FieldMapping)
             {
                 var value = GetFieldValue(userInfoData, sourceField);
@@ -137,15 +139,24 @@ public class OAuthService(
 
         if (existingUser is not null)
         {
-            // Update user metadata from OAuth if configured
-            if (oauthUser.MappedFields.Count > 0)
-            {
-                foreach (var (key, value) in oauthUser.MappedFields)
-                {
-                    existingUser.UserMetadata[key] = value;
-                }
-                await userManager.UpdateAsync(existingUser);
-            }
+            if (string.IsNullOrEmpty(existingUser.OAuthProviderId))
+                throw new OAuthLoginException("oauth_email_in_use", "Email already registered by another method");
+
+            if (!string.Equals(existingUser.OAuthProviderId, provider, StringComparison.OrdinalIgnoreCase))
+                throw new OAuthLoginException("oauth_provider_mismatch", "Email already linked to another OAuth provider");
+
+            var validation = await metadataService.ValidateAsync(
+                oauthUser.MappedFields,
+                existingUser.UserMetadata,
+                allowLockedWrites: true,
+                enforceLockedRequirements: true,
+                token);
+
+            if (!validation.IsValid)
+                throw new OAuthLoginException("oauth_metadata_invalid", validation.Errors.First());
+
+            existingUser.UserMetadata = validation.Values;
+            await userManager.UpdateAsync(existingUser);
 
             logger.LogInformation("User {Email} logged in via OAuth provider {Provider}", oauthUser.Email, provider);
             return (existingUser, false);
@@ -174,23 +185,25 @@ public class OAuthService(
             counter++;
         }
 
+        var newMetadata = await metadataService.ValidateAsync(
+            oauthUser.MappedFields,
+            null,
+            allowLockedWrites: true,
+            enforceLockedRequirements: true,
+            token);
+
+        if (!newMetadata.IsValid)
+            throw new OAuthLoginException("oauth_metadata_invalid", newMetadata.Errors.First());
+
         var newUser = new UserInfo
         {
             UserName = userName,
             Email = oauthUser.Email,
             EmailConfirmed = true, // OAuth providers verify emails
             RegisterTimeUtc = DateTimeOffset.UtcNow,
-            UserMetadata = new Dictionary<string, string>()
+            OAuthProviderId = provider,
+            UserMetadata = newMetadata.Values
         };
-
-        // Apply mapped fields
-        if (oauthUser.MappedFields.Count > 0)
-        {
-            foreach (var (key, value) in oauthUser.MappedFields)
-            {
-                newUser.UserMetadata[key] = value;
-            }
-        }
 
         var result = await userManager.CreateAsync(newUser);
 
@@ -220,6 +233,6 @@ public class OAuthUserInfo
     public string? ProviderUserId { get; set; }
     public string? Email { get; set; }
     public string? UserName { get; set; }
-    public Dictionary<string, string> MappedFields { get; set; } = new();
+    public Dictionary<string, string?> MappedFields { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public JsonElement RawData { get; set; }
 }

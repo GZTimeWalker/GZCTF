@@ -71,6 +71,12 @@ public partial class UserInfo : IdentityUser<Guid>
     public bool ExerciseVisible { get; set; } = true;
 
     /// <summary>
+    /// Associated OAuth provider identifier if account created via OAuth
+    /// </summary>
+    [MaxLength(Limits.MaxShortIdLength)]
+    public string? OAuthProviderId { get; set; }
+    
+    /// <summary>
     /// User metadata stored as JSON (flexible user fields)
     /// </summary>
     [Column(TypeName = "jsonb")]
@@ -130,16 +136,6 @@ public partial class UserInfo : IdentityUser<Guid>
         RealName = model.RealName ?? RealName;
         StdNumber = model.StdNumber ?? StdNumber;
 
-        if (model.Metadata is not null)
-        {
-            foreach (var (key, value) in model.Metadata)
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                    UserMetadata.Remove(key);
-                else
-                    UserMetadata[key] = value;
-            }
-        }
     }
 
     #region Db Relationship
@@ -149,6 +145,13 @@ public partial class UserInfo : IdentityUser<Guid>
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
     public string? AvatarHash { get; set; }
+    
+    /// <summary>
+    /// Navigation reference to the OAuth provider linked with this user
+    /// </summary>
+    [MemoryPackIgnore]
+    public OAuthProvider? OAuthProvider { get; set; }
+
 
     /// <summary>
     /// Personal submission records

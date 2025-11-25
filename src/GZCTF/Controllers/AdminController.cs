@@ -9,6 +9,7 @@ using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Storage.Interface;
@@ -737,6 +738,47 @@ public class AdminController(
 
         logger.SystemLog(
             "User metadata fields updated",
+            TaskStatus.Success,
+            LogLevel.Information);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Update metadata for a specific user
+    /// </summary>
+    [HttpPut("Users/{userId:guid}/Metadata")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateUserMetadata(
+        Guid userId,
+        [FromBody] UserMetadataUpdateModel model,
+        [FromServices] IUserMetadataService metadataService,
+        CancellationToken token = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)]));
+
+        var validation = await metadataService.ValidateAsync(
+            model.Metadata,
+            user.UserMetadata,
+            allowLockedWrites: true,
+            enforceLockedRequirements: true,
+            token);
+
+        if (!validation.IsValid)
+            return BadRequest(new RequestResponse(validation.Errors.First()));
+
+        user.UserMetadata = validation.Values;
+        var result = await userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+            return HandleIdentityError(result.Errors);
+
+        logger.SystemLog(
+            $"User metadata updated for {user.Email}",
             TaskStatus.Success,
             LogLevel.Information);
 

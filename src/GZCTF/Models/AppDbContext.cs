@@ -90,6 +90,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .Metadata
                 .SetValueComparer(metadataComparer);
 
+            entity.Property(e => e.OAuthProviderId)
+                .HasMaxLength(Limits.MaxShortIdLength);
+
+            entity.HasOne(e => e.OAuthProvider)
+                .WithMany()
+                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(e => e.OAuthProviderId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
