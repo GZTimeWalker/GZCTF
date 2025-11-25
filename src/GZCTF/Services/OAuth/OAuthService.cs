@@ -1,19 +1,19 @@
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Linq;
 using GZCTF.Extensions.Startup;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
-using Microsoft.AspNetCore.Identity;
 using GZCTF.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Services.OAuth;
 
 public interface IOAuthService
 {
-    Task<OAuthUserInfo?> ExchangeCodeForUserInfoAsync(string provider, string code, string redirectUri, CancellationToken token = default);
-    Task<(UserInfo user, bool isNewUser)> GetOrCreateUserFromOAuthAsync(string provider, OAuthUserInfo oauthUser, CancellationToken token = default);
+    Task<OAuthUserInfo?> ExchangeCodeForUserInfoAsync(OAuthProvider provider, string code, string redirectUri, CancellationToken token = default);
+    Task<(UserInfo user, bool isNewUser)> GetOrCreateUserFromOAuthAsync(OAuthProvider provider, OAuthUserInfo oauthUser, CancellationToken token = default);
 }
 
 public class OAuthService(
@@ -24,15 +24,15 @@ public class OAuthService(
     ILogger<OAuthService> logger) : IOAuthService
 {
     public async Task<OAuthUserInfo?> ExchangeCodeForUserInfoAsync(
-        string provider,
+        OAuthProvider provider,
         string code,
         string redirectUri,
         CancellationToken token = default)
     {
-        var providerConfig = await providerManager.GetOAuthProviderAsync(provider, token);
+        var providerConfig = await providerManager.GetOAuthProviderAsync(provider.Key, token);
         if (providerConfig is null || !providerConfig.Enabled)
         {
-            logger.LogWarning("OAuth provider {Provider} not found or not enabled", provider);
+            logger.LogWarning("OAuth provider {Provider} not found or not enabled", provider.Key);
             return null;
         }
 
@@ -91,7 +91,7 @@ public class OAuthService(
             // Map fields based on provider configuration
             var oauthUser = new OAuthUserInfo
             {
-                ProviderId = provider,
+                ProviderId = provider.Key,
                 ProviderUserId = userInfoData.TryGetProperty("id", out var id)
                     ? id.ToString()
                     : userInfoData.TryGetProperty("sub", out var sub)
@@ -119,13 +119,13 @@ public class OAuthService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error during OAuth code exchange for provider {Provider}", provider);
+            logger.LogError(ex, "Error during OAuth code exchange for provider {Provider}", provider.Key);
             return null;
         }
     }
 
     public async Task<(UserInfo user, bool isNewUser)> GetOrCreateUserFromOAuthAsync(
-        string provider,
+        OAuthProvider provider,
         OAuthUserInfo oauthUser,
         CancellationToken token = default)
     {
@@ -139,11 +139,13 @@ public class OAuthService(
 
         if (existingUser is not null)
         {
-            if (string.IsNullOrEmpty(existingUser.OAuthProviderId))
-                throw new OAuthLoginException("oauth_email_in_use", "Email already registered by another method");
+            if (existingUser.OAuthProviderId is null)
+                throw new OAuthLoginException(OAuthLoginError.EmailInUse,
+                    "Email already registered by another method");
 
-            if (!string.Equals(existingUser.OAuthProviderId, provider, StringComparison.OrdinalIgnoreCase))
-                throw new OAuthLoginException("oauth_provider_mismatch", "Email already linked to another OAuth provider");
+            if (existingUser.OAuthProviderId != provider.Id)
+                throw new OAuthLoginException(OAuthLoginError.ProviderMismatch,
+                    "Email already linked to another OAuth provider");
 
             var validation = await metadataService.ValidateAsync(
                 oauthUser.MappedFields,
@@ -153,7 +155,7 @@ public class OAuthService(
                 token);
 
             if (!validation.IsValid)
-                throw new OAuthLoginException("oauth_metadata_invalid", validation.Errors.First());
+                throw new OAuthLoginException(OAuthLoginError.MetadataInvalid, validation.Errors.First());
 
             existingUser.UserMetadata = validation.Values;
             await userManager.UpdateAsync(existingUser);
@@ -193,7 +195,7 @@ public class OAuthService(
             token);
 
         if (!newMetadata.IsValid)
-            throw new OAuthLoginException("oauth_metadata_invalid", newMetadata.Errors.First());
+            throw new OAuthLoginException(OAuthLoginError.MetadataInvalid, newMetadata.Errors.First());
 
         var newUser = new UserInfo
         {
@@ -201,7 +203,7 @@ public class OAuthService(
             Email = oauthUser.Email,
             EmailConfirmed = true, // OAuth providers verify emails
             RegisterTimeUtc = DateTimeOffset.UtcNow,
-            OAuthProviderId = provider,
+            OAuthProviderId = provider.Id,
             UserMetadata = newMetadata.Values
         };
 
@@ -213,7 +215,7 @@ public class OAuthService(
             throw new InvalidOperationException($"Failed to create user from OAuth: {errors}");
         }
 
-        logger.LogInformation("Created new user {Email} from OAuth provider {Provider}", oauthUser.Email, provider);
+        logger.LogInformation("Created new user {Email} from OAuth provider {Provider}", oauthUser.Email, provider.Key);
         return (newUser, true);
     }
 
@@ -229,10 +231,33 @@ public class OAuthService(
 
 public class OAuthUserInfo
 {
+    /// <summary>
+    /// Provider key (matching <see cref="OAuthProvider.Key"/>) the user originates from.
+    /// </summary>
     public required string ProviderId { get; set; }
+
+    /// <summary>
+    /// Identifier issued by the upstream provider for this user, if provided.
+    /// </summary>
     public string? ProviderUserId { get; set; }
+
+    /// <summary>
+    /// Email reported by the provider; required for linking/creating accounts.
+    /// </summary>
     public string? Email { get; set; }
+
+    /// <summary>
+    /// Preferred username or handle supplied by the provider.
+    /// </summary>
     public string? UserName { get; set; }
+
+    /// <summary>
+    /// Normalized field mapping results keyed by target metadata field names.
+    /// </summary>
     public Dictionary<string, string?> MappedFields { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Raw JSON response from the provider for downstream auditing or debugging.
+    /// </summary>
     public JsonElement RawData { get; set; }
 }

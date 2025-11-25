@@ -90,9 +90,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .Metadata
                 .SetValueComparer(metadataComparer);
 
-            entity.Property(e => e.OAuthProviderId)
-                .HasMaxLength(Limits.MaxShortIdLength);
-
             entity.HasOne(e => e.OAuthProvider)
                 .WithMany()
                 .HasPrincipalKey(p => p.Id)

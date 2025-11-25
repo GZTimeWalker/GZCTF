@@ -18,7 +18,7 @@ namespace GZCTF.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.11")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -462,7 +462,7 @@ namespace GZCTF.Migrations
 
                     b.Property<DateTimeOffset>("EndTimeUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "end");
+                        .HasJsonPropertyName("end");
 
                     b.Property<bool>("Hidden")
                         .HasColumnType("boolean");
@@ -490,7 +490,7 @@ namespace GZCTF.Migrations
 
                     b.Property<DateTimeOffset>("StartTimeUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "start");
+                        .HasJsonPropertyName("start");
 
                     b.Property<string>("Summary")
                         .IsRequired()
@@ -628,7 +628,7 @@ namespace GZCTF.Migrations
 
                     b.Property<DateTimeOffset>("PublishTimeUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "time");
+                        .HasJsonPropertyName("time");
 
                     b.Property<int>("TeamId")
                         .HasColumnType("integer");
@@ -705,7 +705,7 @@ namespace GZCTF.Migrations
 
                     b.Property<DateTimeOffset>("PublishTimeUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "time");
+                        .HasJsonPropertyName("time");
 
                     b.Property<byte>("Type")
                         .HasColumnType("smallint");
@@ -970,7 +970,7 @@ namespace GZCTF.Migrations
 
                     b.Property<DateTimeOffset>("SubmitTimeUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasAnnotation("Relational:JsonPropertyName", "time");
+                        .HasJsonPropertyName("time");
 
                     b.Property<int>("TeamId")
                         .HasColumnType("integer");
@@ -1090,6 +1090,9 @@ namespace GZCTF.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<int?>("OAuthProviderId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -1138,6 +1141,8 @@ namespace GZCTF.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("OAuthProviderId");
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -1158,6 +1163,9 @@ namespace GZCTF.Migrations
                         .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
+
+                    b.Property<bool>("Locked")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("MaxLength")
                         .HasColumnType("integer");
@@ -1780,6 +1788,16 @@ namespace GZCTF.Migrations
                         .IsRequired();
 
                     b.Navigation("Captain");
+                });
+
+            modelBuilder.Entity("GZCTF.Models.Data.UserInfo", b =>
+                {
+                    b.HasOne("GZCTF.Models.Data.OAuthProvider", "OAuthProvider")
+                        .WithMany()
+                        .HasForeignKey("OAuthProviderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("OAuthProvider");
                 });
 
             modelBuilder.Entity("GZCTF.Models.Data.UserParticipation", b =>

@@ -12,6 +12,12 @@ namespace GZCTF.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "OAuthProviderId",
+                table: "AspNetUsers",
+                type: "integer",
+                nullable: true);
+
             migrationBuilder.AddColumn<string>(
                 name: "UserMetadata",
                 table: "AspNetUsers",
@@ -53,6 +59,7 @@ namespace GZCTF.Migrations
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Required = table.Column<bool>(type: "boolean", nullable: false),
                     Visible = table.Column<bool>(type: "boolean", nullable: false),
+                    Locked = table.Column<bool>(type: "boolean", nullable: false),
                     Placeholder = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     MaxLength = table.Column<int>(type: "integer", nullable: true),
                     MinValue = table.Column<int>(type: "integer", nullable: true),
@@ -67,6 +74,11 @@ namespace GZCTF.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_OAuthProviderId",
+                table: "AspNetUsers",
+                column: "OAuthProviderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OAuthProviders_Key",
                 table: "OAuthProviders",
                 column: "Key",
@@ -77,16 +89,36 @@ namespace GZCTF.Migrations
                 table: "UserMetadataFields",
                 column: "Key",
                 unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_OAuthProviders_OAuthProviderId",
+                table: "AspNetUsers",
+                column: "OAuthProviderId",
+                principalTable: "OAuthProviders",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_OAuthProviders_OAuthProviderId",
+                table: "AspNetUsers");
+
             migrationBuilder.DropTable(
                 name: "OAuthProviders");
 
             migrationBuilder.DropTable(
                 name: "UserMetadataFields");
+
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_OAuthProviderId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "OAuthProviderId",
+                table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
                 name: "UserMetadata",

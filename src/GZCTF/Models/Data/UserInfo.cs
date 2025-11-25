@@ -73,9 +73,8 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// Associated OAuth provider identifier if account created via OAuth
     /// </summary>
-    [MaxLength(Limits.MaxShortIdLength)]
-    public string? OAuthProviderId { get; set; }
-    
+    public int? OAuthProviderId { get; set; }
+
     /// <summary>
     /// User metadata stored as JSON (flexible user fields)
     /// </summary>
@@ -145,7 +144,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
     public string? AvatarHash { get; set; }
-    
+
     /// <summary>
     /// Navigation reference to the OAuth provider linked with this user
     /// </summary>
