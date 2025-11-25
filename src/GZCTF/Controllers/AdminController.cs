@@ -734,7 +734,7 @@ public class AdminController(
         CancellationToken token = default)
     {
         await oauthManager.UpdateUserMetadataFieldsAsync(fields, token);
-        
+
         logger.SystemLog(
             "User metadata fields updated",
             TaskStatus.Success,

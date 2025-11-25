@@ -13,37 +13,37 @@ public enum UserMetadataFieldType
     /// Single-line text input
     /// </summary>
     Text,
-    
+
     /// <summary>
     /// Multi-line text input
     /// </summary>
     TextArea,
-    
+
     /// <summary>
     /// Number input
     /// </summary>
     Number,
-    
+
     /// <summary>
     /// Email input
     /// </summary>
     Email,
-    
+
     /// <summary>
     /// URL input
     /// </summary>
     Url,
-    
+
     /// <summary>
     /// Phone number input
     /// </summary>
     Phone,
-    
+
     /// <summary>
     /// Date input
     /// </summary>
     Date,
-    
+
     /// <summary>
     /// Dropdown select
     /// </summary>

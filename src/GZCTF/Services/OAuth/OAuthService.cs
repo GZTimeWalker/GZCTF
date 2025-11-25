@@ -38,7 +38,7 @@ public class OAuthService(
         {
             // Exchange code for access token
             using var httpClient = httpClientFactory.CreateClient();
-            
+
             var tokenRequest = new Dictionary<string, string>
             {
                 { "grant_type", "authorization_code" },
@@ -75,7 +75,7 @@ public class OAuthService(
             userInfoRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             var userInfoResponse = await httpClient.SendAsync(userInfoRequest, token);
-            
+
             if (!userInfoResponse.IsSuccessStatusCode)
             {
                 var errorContent = await userInfoResponse.Content.ReadAsStringAsync(token);
@@ -90,14 +90,14 @@ public class OAuthService(
             var oauthUser = new OAuthUserInfo
             {
                 ProviderId = provider,
-                ProviderUserId = userInfoData.TryGetProperty("id", out var id) 
-                    ? id.ToString() 
-                    : userInfoData.TryGetProperty("sub", out var sub) 
-                        ? sub.ToString() 
+                ProviderUserId = userInfoData.TryGetProperty("id", out var id)
+                    ? id.ToString()
+                    : userInfoData.TryGetProperty("sub", out var sub)
+                        ? sub.ToString()
                         : null,
                 Email = GetFieldValue(userInfoData, "email"),
-                UserName = GetFieldValue(userInfoData, "login") 
-                          ?? GetFieldValue(userInfoData, "username") 
+                UserName = GetFieldValue(userInfoData, "login")
+                          ?? GetFieldValue(userInfoData, "username")
                           ?? GetFieldValue(userInfoData, "preferred_username"),
                 RawData = userInfoData
             };
@@ -134,7 +134,7 @@ public class OAuthService(
 
         // Try to find existing user by email
         var existingUser = await userManager.FindByEmailAsync(oauthUser.Email);
-        
+
         if (existingUser is not null)
         {
             // Update user metadata from OAuth if configured
@@ -153,14 +153,14 @@ public class OAuthService(
 
         // Create new user
         var userName = oauthUser.UserName ?? oauthUser.Email.Split('@')[0];
-        
+
         // Truncate username if too long (max 16 characters, leave room for counter)
         const int maxUsernameLength = 16;
         if (userName.Length > maxUsernameLength - 3) // Reserve 3 chars for potential counter (e.g., "123")
         {
             userName = userName[..(maxUsernameLength - 3)];
         }
-        
+
         // Ensure username is unique
         var baseUserName = userName;
         var counter = 1;
@@ -168,7 +168,7 @@ public class OAuthService(
         {
             var suffix = counter.ToString();
             var maxBaseLength = maxUsernameLength - suffix.Length;
-            userName = baseUserName.Length > maxBaseLength 
+            userName = baseUserName.Length > maxBaseLength
                 ? $"{baseUserName[..maxBaseLength]}{suffix}"
                 : $"{baseUserName}{suffix}";
             counter++;
@@ -193,7 +193,7 @@ public class OAuthService(
         }
 
         var result = await userManager.CreateAsync(newUser);
-        
+
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));

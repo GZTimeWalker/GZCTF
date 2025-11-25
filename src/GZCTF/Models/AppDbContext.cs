@@ -49,7 +49,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
             v => JsonSerializer.Deserialize<T>(v, JsonOptions)
         );
-    
+
     static ValueConverter<T, string> GetJsonConverterNonNull<T>() where T : class, new() =>
         new(
             v => JsonSerializer.Serialize(v, JsonOptions),

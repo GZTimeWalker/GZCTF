@@ -37,7 +37,7 @@ public class OAuthProviderManager(
         var fields = await context.UserMetadataFields
             .OrderBy(f => f.Order)
             .ToListAsync(token);
-        
+
         return fields.Select(f => f.ToField()).ToList();
     }
 
@@ -76,7 +76,7 @@ public class OAuthProviderManager(
     {
         var provider = await context.OAuthProviders
             .FirstOrDefaultAsync(p => p.Key == key, token);
-        
+
         if (provider is null)
         {
             provider = new OAuthProvider { Key = key };
@@ -96,7 +96,7 @@ public class OAuthProviderManager(
     {
         var provider = await context.OAuthProviders
             .FirstOrDefaultAsync(p => p.Key == key, token);
-        
+
         if (provider is not null)
         {
             context.OAuthProviders.Remove(provider);
@@ -116,7 +116,7 @@ public class OAuthProviderManager(
 
         foreach (var provider in providers)
         {
-            var scheme = schemes.FirstOrDefault(s => 
+            var scheme = schemes.FirstOrDefault(s =>
                 s.Name.Equals(provider.Key, StringComparison.OrdinalIgnoreCase) ||
                 s.DisplayName?.Equals(provider.Key, StringComparison.OrdinalIgnoreCase) == true);
 

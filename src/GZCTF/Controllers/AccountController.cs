@@ -599,7 +599,7 @@ public class AccountController(
         var availableProviders = providers
             .Where(p => p.Value.Enabled)
             .ToDictionary(p => p.Key, p => p.Value.DisplayName ?? p.Key);
-        
+
         return Ok(availableProviders);
     }
 
@@ -626,23 +626,23 @@ public class AccountController(
         CancellationToken token = default)
     {
         var providerConfig = await oauthManager.GetOAuthProviderAsync(provider, token);
-        
+
         if (providerConfig is null || !providerConfig.Enabled)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)]));
 
         // Generate state for CSRF protection
         var state = Guid.NewGuid().ToString("N");
-        
+
         // Store state in cache for validation (10 minutes expiry)
         await cache.SetStringAsync(
             $"oauth_state_{state}",
             provider,
             new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) },
             token);
-        
+
         var redirectUri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{provider}";
         var scopes = string.Join(" ", providerConfig.Scopes);
-        
+
         var authUrl = $"{providerConfig.AuthorizationEndpoint}?" +
                       $"client_id={Uri.EscapeDataString(providerConfig.ClientId)}&" +
                       $"redirect_uri={Uri.EscapeDataString(redirectUri)}&" +
@@ -693,7 +693,7 @@ public class AccountController(
                 $"OAuth callback state mismatch for provider {provider}",
                 TaskStatus.Failed,
                 LogLevel.Warning);
-            
+
             return Redirect($"/account/login?error=oauth_state_mismatch");
         }
 
@@ -706,7 +706,7 @@ public class AccountController(
                 $"OAuth error from provider {provider}: {error}",
                 TaskStatus.Failed,
                 LogLevel.Warning);
-            
+
             return Redirect($"/account/login?error=oauth_error");
         }
 
@@ -725,7 +725,7 @@ public class AccountController(
                     $"Failed to exchange OAuth code for provider {provider}",
                     TaskStatus.Failed,
                     LogLevel.Warning);
-                
+
                 return Redirect($"/account/login?error=oauth_exchange_failed");
             }
 

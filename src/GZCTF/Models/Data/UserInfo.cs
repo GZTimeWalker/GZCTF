@@ -129,7 +129,7 @@ public partial class UserInfo : IdentityUser<Guid>
         PhoneNumber = model.Phone ?? PhoneNumber;
         RealName = model.RealName ?? RealName;
         StdNumber = model.StdNumber ?? StdNumber;
-        
+
         if (model.Metadata is not null)
         {
             foreach (var (key, value) in model.Metadata)
