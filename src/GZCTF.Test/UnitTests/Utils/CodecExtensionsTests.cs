@@ -30,7 +30,7 @@ public class CodecExtensionsTests
     public void ToMD5String_CalculatesCorrectHash(string input, string expectedHash)
     {
         // Act
-        var hash = input.ToMD5String(false);
+        var hash = input.ToMD5String();
 
         // Assert
         Assert.Equal(expectedHash, hash);

@@ -1,11 +1,6 @@
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text.Json;
 using GZCTF.Extensions.Startup;
-using GZCTF.Models.Data;
-using GZCTF.Models.Internal;
-using GZCTF.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Services.OAuth;

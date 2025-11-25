@@ -1,5 +1,5 @@
+using System.Net.Http.Json;
 using GZCTF.Models;
-using GZCTF.Models.Request.Account;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Storage;
@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Net.Http.Json;
 using Testcontainers.K3s;
 using Testcontainers.Minio;
 using Testcontainers.PostgreSql;
@@ -270,7 +269,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
     public HttpClient CreateAuthenticatedClient(TestDataSeeder.SeededUser user)
     {
         var client = CreateClient();
-        
+
         // Login the user
         var loginResponse = client.PostAsJsonAsync("/api/Account/LogIn", new
         {
@@ -279,7 +278,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         }).Result;
 
         loginResponse.EnsureSuccessStatusCode();
-        
+
         return client;
     }
 

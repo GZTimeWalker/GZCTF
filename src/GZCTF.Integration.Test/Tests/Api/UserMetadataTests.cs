@@ -49,7 +49,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
                 Type = UserMetadataFieldType.Select,
                 Required = true,
                 Visible = true,
-                Options = new List<string> { "Engineering", "Marketing", "Sales" }
+                Options = ["Engineering", "Marketing", "Sales"]
             },
             new()
             {
@@ -119,7 +119,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
                 Type = UserMetadataFieldType.Select,
                 Required = true,
                 Visible = true,
-                Options = new List<string> { "Developer", "Manager", "Analyst" }
+                Options = ["Developer", "Manager", "Analyst"]
             }
         };
 
@@ -181,7 +181,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
     {
         // Arrange
         var (admin, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.Admin);
-        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.User);
+        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services);
 
         // Create fields as admin
         using var adminClient = factory.CreateAuthenticatedClient(admin);
@@ -215,7 +215,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
     {
         // Arrange
         var (admin, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.Admin);
-        var (user, password) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.User);
+        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services);
 
         // Create metadata fields as admin
         using var adminClient = factory.CreateAuthenticatedClient(admin);
@@ -228,7 +228,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
                 Type = UserMetadataFieldType.Select,
                 Required = false,
                 Visible = true,
-                Options = new List<string> { "IT", "HR", "Finance" }
+                Options = ["IT", "HR", "Finance"]
             },
             new()
             {
@@ -275,7 +275,21 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
     public async Task User_UpdateProfile_RemoveMetadata_Succeeds()
     {
         // Arrange
-        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.User);
+        var (admin, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.Admin);
+        using var adminClient = factory.CreateAuthenticatedClient(admin);
+        await adminClient.PutAsJsonAsync("/api/Admin/UserMetadata", new List<UserMetadataField>
+        {
+            new()
+            {
+                Key = "testField",
+                DisplayName = "Test Field",
+                Type = UserMetadataFieldType.Text,
+                Required = false,
+                Visible = true
+            }
+        });
+
+        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services);
         using var client = factory.CreateAuthenticatedClient(user);
 
         // Add metadata first
@@ -312,7 +326,7 @@ public class UserMetadataTests(GZCTFApplicationFactory factory, ITestOutputHelpe
     public async Task NonAdmin_CannotAccessAdminMetadataEndpoints()
     {
         // Arrange
-        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services, Role.User);
+        var (user, _) = await TestDataSeeder.CreateUserWithRoleAsync(factory.Services);
         using var client = factory.CreateAuthenticatedClient(user);
 
         // Act

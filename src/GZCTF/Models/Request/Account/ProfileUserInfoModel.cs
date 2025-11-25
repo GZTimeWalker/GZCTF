@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GZCTF.Models.Request.Account;
+﻿namespace GZCTF.Models.Request.Account;
 
 /// <summary>
 /// Basic account information

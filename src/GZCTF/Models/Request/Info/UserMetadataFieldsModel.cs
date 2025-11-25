@@ -1,4 +1,3 @@
-using GZCTF.Models.Internal;
 using UserMetadataField = GZCTF.Models.Internal.UserMetadataField;
 
 namespace GZCTF.Models.Request.Info;

@@ -1,4 +1,3 @@
-using GZCTF.Models.Data;
 using GZCTF.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 

@@ -42,7 +42,7 @@ public class ExerciseDetailModel
     /// <summary>
     /// Additional tags for the exercise
     /// </summary>
-    public List<string>? Tags { get; set; } = new();
+    public List<string>? Tags { get; set; } = [];
 
     /// <summary>
     /// Exercise type

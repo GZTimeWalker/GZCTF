@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.RegularExpressions;
 using GZCTF.Extensions.Startup;
 using GZCTF.Models.Internal;

@@ -68,11 +68,11 @@ public static class TestDataSeeder
             // Set game invite code
             using var scope = services.CreateScope();
             var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-            var gameEntity = await gameRepo.GetGameById(game.Id, default);
+            var gameEntity = await gameRepo.GetGameById(game.Id);
             if (gameEntity != null)
             {
                 gameEntity.InviteCode = "SHARED_INVITE_2025";
-                await gameRepo.SaveAsync(default);
+                await gameRepo.SaveAsync();
             }
 
             _sharedInviteGameId = game.Id;
@@ -402,16 +402,16 @@ public static class TestDataSeeder
     /// Create a user with specific role
     /// </summary>
     public static async Task<(SeededUser user, string password)> CreateUserWithRoleAsync(
-        IServiceProvider services, 
+        IServiceProvider services,
         Role role = Role.User,
         CancellationToken token = default)
     {
         var password = $"Test{role}Pass123!";
         var userName = RandomName();
         var email = $"{userName}@test.com";
-        
+
         var user = await CreateUserAsync(services, userName, password, email, role, token);
-        
+
         return (user, password);
     }
 

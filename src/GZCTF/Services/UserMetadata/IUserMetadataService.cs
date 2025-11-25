@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using InternalUserMetadataField = GZCTF.Models.Internal.UserMetadataField;
 
 namespace GZCTF.Services;

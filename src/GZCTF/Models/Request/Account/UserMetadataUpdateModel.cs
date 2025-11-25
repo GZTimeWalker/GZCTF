@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace GZCTF.Models.Request.Account;
 
 /// <summary>

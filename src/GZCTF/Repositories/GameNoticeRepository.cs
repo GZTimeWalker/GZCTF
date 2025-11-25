@@ -1,6 +1,5 @@
 ﻿using GZCTF.Hubs;
 using GZCTF.Hubs.Clients;
-using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.AspNetCore.SignalR;
