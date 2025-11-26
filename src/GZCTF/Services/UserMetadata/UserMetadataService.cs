@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using GZCTF.Extensions.Startup;
 using GZCTF.Models.Internal;
+using GZCTF.Repositories.Interface;
 using InternalUserMetadataField = GZCTF.Models.Internal.UserMetadataField;
 
 namespace GZCTF.Services;
@@ -14,7 +14,7 @@ public sealed class UserMetadataValidationResult
 }
 
 public class UserMetadataService(
-    IOAuthProviderManager oauthManager) : IUserMetadataService
+    IOAuthProviderRepository oauthProviderRepository) : IUserMetadataService
 {
     static readonly EmailAddressAttribute EmailAttribute = new();
     static readonly PhoneAttribute PhoneAttribute = new();
@@ -26,7 +26,7 @@ public class UserMetadataService(
         bool enforceLockedRequirements,
         CancellationToken token = default)
     {
-        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        var fields = await oauthProviderRepository.GetMetadataFieldsAsync(token);
         var result = new UserMetadataValidationResult();
         var source = incoming ?? new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
         var current = existing is null
@@ -82,7 +82,7 @@ public class UserMetadataService(
 
     public async Task<IReadOnlyList<InternalUserMetadataField>> GetFieldsAsync(CancellationToken token = default)
     {
-        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        var fields = await oauthProviderRepository.GetMetadataFieldsAsync(token);
         return fields;
     }
 

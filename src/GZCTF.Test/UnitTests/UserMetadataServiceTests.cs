@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using GZCTF.Extensions.Startup;
-using GZCTF.Models.Internal;
+using GZCTF.Models.Data;
+using GZCTF.Repositories.Interface;
 using GZCTF.Services;
+using Microsoft.EntityFrameworkCore.Storage;
 using Xunit;
+using InternalUserMetadataField = GZCTF.Models.Internal.UserMetadataField;
+using OAuthProviderConfig = GZCTF.Models.Internal.OAuthProviderConfig;
 
 namespace GZCTF.Test.UnitTests;
 
@@ -15,7 +19,7 @@ public class UserMetadataServiceTests
     public async Task ValidateAsync_AllowsUnlockedUpdates()
     {
         var service = CreateService([
-            new UserMetadataField { Key = "department", DisplayName = "Department", Required = true }
+            new InternalUserMetadataField { Key = "department", DisplayName = "Department", Required = true }
         ]);
 
         var result = await service.ValidateAsync(
@@ -32,7 +36,10 @@ public class UserMetadataServiceTests
     public async Task ValidateAsync_IgnoresLockedWhenNotPermitted()
     {
         var service = CreateService([
-            new UserMetadataField { Key = "studentId", DisplayName = "Student Id", Required = true, Locked = true }
+            new InternalUserMetadataField
+            {
+                Key = "studentId", DisplayName = "Student Id", Required = true, Locked = true
+            }
         ]);
 
         var result = await service.ValidateAsync(
@@ -49,7 +56,7 @@ public class UserMetadataServiceTests
     public async Task ValidateAsync_FailsWhenRequiredMissing()
     {
         var service = CreateService([
-            new UserMetadataField { Key = "role", DisplayName = "Role", Required = true }
+            new InternalUserMetadataField { Key = "role", DisplayName = "Role", Required = true }
         ]);
 
         var result = await service.ValidateAsync(
@@ -62,30 +69,44 @@ public class UserMetadataServiceTests
         Assert.Single(result.Errors);
     }
 
-    static IUserMetadataService CreateService(IReadOnlyList<UserMetadataField> fields)
-        => new UserMetadataService(new TestOAuthProviderManager(fields));
+    static IUserMetadataService CreateService(IReadOnlyList<InternalUserMetadataField> fields)
+        => new UserMetadataService(new TestOAuthProviderRepository(fields));
 
-    sealed class TestOAuthProviderManager(IReadOnlyList<UserMetadataField> fields) : IOAuthProviderManager
+    sealed class TestOAuthProviderRepository(IReadOnlyList<InternalUserMetadataField> fields) : IOAuthProviderRepository
     {
-        public Task<List<UserMetadataField>> GetUserMetadataFieldsAsync(CancellationToken token = default)
-            => Task.FromResult(fields.ToList());
+        public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default)
+            => throw new NotSupportedException();
 
-        public Task UpdateUserMetadataFieldsAsync(List<UserMetadataField> fields, CancellationToken token = default)
+        public void Add(object item) => throw new NotSupportedException();
+
+        public Task<int> CountAsync(CancellationToken token = default)
+            => Task.FromResult(0);
+
+        public Task SaveAsync(CancellationToken token = default)
             => Task.CompletedTask;
 
-        public Task<Dictionary<string, OAuthProviderConfig>> GetOAuthProvidersAsync(CancellationToken token = default)
+        public Task<OAuthProvider?> FindByKeyAsync(string key, CancellationToken token = default)
+            => Task.FromResult<OAuthProvider?>(null);
+
+        public Task<List<OAuthProvider>> ListAsync(CancellationToken token = default)
+            => Task.FromResult(new List<OAuthProvider>());
+
+        public Task<Dictionary<string, OAuthProviderConfig>> GetConfigMapAsync(CancellationToken token = default)
             => Task.FromResult(new Dictionary<string, OAuthProviderConfig>());
 
-        public Task<OAuthProviderConfig?> GetOAuthProviderAsync(string key, CancellationToken token = default)
+        public Task<OAuthProviderConfig?> GetConfigAsync(string key, CancellationToken token = default)
             => Task.FromResult<OAuthProviderConfig?>(null);
 
-        public Task UpdateOAuthProviderAsync(string key, OAuthProviderConfig config, CancellationToken token = default)
+        public Task UpsertAsync(string key, OAuthProviderConfig config, CancellationToken token = default)
             => Task.CompletedTask;
 
-        public Task DeleteOAuthProviderAsync(string key, CancellationToken token = default)
+        public Task DeleteAsync(string key, CancellationToken token = default)
             => Task.CompletedTask;
 
-        public Task<Dictionary<string, Microsoft.AspNetCore.Authentication.AuthenticationScheme>> GetAvailableProvidersAsync(CancellationToken token = default)
-            => Task.FromResult(new Dictionary<string, Microsoft.AspNetCore.Authentication.AuthenticationScheme>());
+        public Task<List<InternalUserMetadataField>> GetMetadataFieldsAsync(CancellationToken token = default)
+            => Task.FromResult(fields.ToList());
+
+        public Task UpdateMetadataFieldsAsync(List<InternalUserMetadataField> fields, CancellationToken token = default)
+            => Task.CompletedTask;
     }
 }

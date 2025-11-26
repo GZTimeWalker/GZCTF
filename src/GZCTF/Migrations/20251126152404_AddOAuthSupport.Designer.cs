@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251125164110_AddOAuthSupport")]
+    [Migration("20251126152404_AddOAuthSupport")]
     partial class AddOAuthSupport
     {
         /// <inheritdoc />

@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
 using GZCTF.Extensions;
-using GZCTF.Extensions.Startup;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -43,7 +42,7 @@ public class AdminController(
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
     IParticipationRepository participationRepository,
-    IOAuthProviderManager oauthManager,
+    IOAuthProviderRepository oauthProviderRepository,
     IUserMetadataService metadataService,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
@@ -710,7 +709,7 @@ public class AdminController(
     public async Task<IActionResult> GetUserMetadataFields(
         CancellationToken token = default)
     {
-        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        var fields = await oauthProviderRepository.GetMetadataFieldsAsync(token);
         return Ok(fields);
     }
 
@@ -733,7 +732,7 @@ public class AdminController(
         [FromBody] List<UserMetadataField> fields,
         CancellationToken token = default)
     {
-        await oauthManager.UpdateUserMetadataFieldsAsync(fields, token);
+        await oauthProviderRepository.UpdateMetadataFieldsAsync(fields, token);
 
         logger.SystemLog(
             "User metadata fields updated",
@@ -797,7 +796,7 @@ public class AdminController(
     public async Task<IActionResult> GetOAuthProviders(
         CancellationToken token = default)
     {
-        var providers = await oauthManager.GetOAuthProvidersAsync(token);
+        var providers = await oauthProviderRepository.GetConfigMapAsync(token);
         return Ok(providers);
     }
 
@@ -822,7 +821,20 @@ public class AdminController(
     {
         foreach (var (key, config) in providers)
         {
-            await oauthManager.UpdateOAuthProviderAsync(key, config, token);
+            try
+            {
+                await oauthProviderRepository.UpsertAsync(key, config, token);
+            }
+            catch (ValidationException ex)
+            {
+                logger.LogWarning(ex, "Invalid OAuth provider configuration supplied: {Key}", key);
+                return BadRequest(new RequestResponse(ex.Message, StatusCodes.Status400BadRequest));
+            }
+            catch (ArgumentException ex)
+            {
+                logger.LogWarning(ex, "Invalid OAuth provider key supplied: {Key}", key);
+                return BadRequest(new RequestResponse(ex.Message, StatusCodes.Status400BadRequest));
+            }
         }
 
         logger.SystemLog(

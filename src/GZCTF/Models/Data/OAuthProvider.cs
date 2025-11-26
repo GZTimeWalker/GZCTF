@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GZCTF.Models.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
 /// <summary>
 /// OAuth provider configuration stored in database
 /// </summary>
+[Index(nameof(Key), IsUnique = true)]
 public class OAuthProvider
 {
     /// <summary>
@@ -20,6 +22,7 @@ public class OAuthProvider
     /// </summary>
     [Required]
     [MaxLength(Limits.MaxShortIdLength)]
+    [RegularExpression("^[a-zA-Z0-9_-]+$")]
     public string Key { get; set; } = string.Empty;
 
     /// <summary>
@@ -86,6 +89,7 @@ public class OAuthProvider
 
     internal OAuthProviderConfig ToConfig() => new()
     {
+        Id = Id,
         Enabled = Enabled,
         ClientId = ClientId,
         ClientSecret = ClientSecret,
@@ -110,4 +114,9 @@ public class OAuthProvider
         FieldMapping = config.FieldMapping;
         UpdatedAt = DateTimeOffset.UtcNow;
     }
+
+    private static readonly ValidationContext KeyValidationContext =
+        new(new OAuthProvider()) { MemberName = nameof(Key) };
+
+    public static void ValidateKey(string key) => Validator.ValidateProperty(key, KeyValidationContext);
 }

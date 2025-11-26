@@ -124,6 +124,11 @@ public class UserMetadataField
 public class OAuthProviderConfig
 {
     /// <summary>
+    /// OAuth provider ID
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
     /// Whether this provider is enabled
     /// </summary>
     public bool Enabled { get; set; }

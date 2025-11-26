@@ -1,11 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using GZCTF.Extensions.Startup;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
+using GZCTF.Repositories.Interface;
 using GZCTF.Services.OAuth;
 using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
@@ -44,9 +44,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
                 Scopes = ["openid", "profile", "email"],
                 FieldMapping = new Dictionary<string, string>
                 {
-                    { "sub", "userId" },
-                    { "email", "email" },
-                    { "name", "displayName" }
+                    { "sub", "userId" }, { "email", "email" }, { "name", "displayName" }
                 }
             }
         };
@@ -79,17 +77,18 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
         // Create OAuth providers
         var providers = new Dictionary<string, OAuthProviderConfig>
         {
-            ["enabled"] = new()
-            {
-                Enabled = true,
-                ClientId = "test",
-                ClientSecret = "secret",
-                AuthorizationEndpoint = "https://test.com/auth",
-                TokenEndpoint = "https://test.com/token",
-                UserInformationEndpoint = "https://test.com/user",
-                DisplayName = "Enabled Provider",
-                Scopes = ["email"]
-            },
+            ["enabled"] =
+                new()
+                {
+                    Enabled = true,
+                    ClientId = "test",
+                    ClientSecret = "secret",
+                    AuthorizationEndpoint = "https://test.com/auth",
+                    TokenEndpoint = "https://test.com/token",
+                    UserInformationEndpoint = "https://test.com/user",
+                    DisplayName = "Enabled Provider",
+                    Scopes = ["email"]
+                },
             ["disabled"] = new()
             {
                 Enabled = false,
@@ -116,14 +115,12 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
 
         // Assert
         response.EnsureSuccessStatusCode();
-        var availableProviders = await response.Content.ReadFromJsonAsync<Dictionary<int, string>>();
+        var availableProviders = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
 
         Assert.NotNull(availableProviders);
-        var enabledProvider = await GetProviderEntityAsync("enabled");
-        var disabledProvider = await GetProviderEntityAsync("disabled");
-        Assert.Contains(enabledProvider.Id, availableProviders.Keys);
-        Assert.DoesNotContain(disabledProvider.Id, availableProviders.Keys);
-        Assert.Equal("Enabled Provider", availableProviders[enabledProvider.Id]);
+        Assert.Contains("enabled", availableProviders.Keys);
+        Assert.DoesNotContain("disabled", availableProviders.Keys);
+        Assert.Equal("Enabled Provider", availableProviders["enabled"]);
     }
 
     [Fact]
@@ -153,8 +150,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
 
         // Act
         using var publicClient = factory.CreateClient();
-        var providerEntity = await GetProviderEntityAsync("github");
-        var response = await publicClient.GetAsync($"/api/Account/OAuth/Login/{providerEntity.Id}");
+        var response = await publicClient.GetAsync($"/api/Account/OAuth/Login/github");
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -191,10 +187,8 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
         };
         await adminClient.PutAsJsonAsync("/api/Admin/OAuth", providers);
 
-        // Act
         using var publicClient = factory.CreateClient();
-        var disabledProvider = await GetProviderEntityAsync("disabled");
-        var response = await publicClient.GetAsync($"/api/Account/OAuth/Login/{disabledProvider.Id}");
+        var response = await publicClient.GetAsync("/api/Account/OAuth/Login/disabled");
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -233,8 +227,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
             UserName = "oauthuser",
             MappedFields = new Dictionary<string, string?>
             {
-                { "department", "Engineering" },
-                { "role", "Developer" }
+                { "department", "Engineering" }, { "role", "Developer" }
             }
         };
 
@@ -296,11 +289,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
             ProviderUserId = "67890",
             Email = email,
             UserName = "oauthuser2",
-            MappedFields = new Dictionary<string, string?>
-            {
-                { "company", "TestCorp" },
-                { "location", "Remote" }
-            }
+            MappedFields = new Dictionary<string, string?> { { "company", "TestCorp" }, { "location", "Remote" } }
         };
 
         // Act
@@ -392,8 +381,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
                 Scopes = ["user:email"],
                 FieldMapping = new Dictionary<string, string>
                 {
-                    { "login", "githubUsername" },
-                    { "name", "fullName" }
+                    { "login", "githubUsername" }, { "name", "fullName" }
                 }
             }
         };
@@ -411,8 +399,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
             UserName = "octocat",
             MappedFields = new Dictionary<string, string?>
             {
-                { "githubUsername", "octocat" },
-                { "fullName", "The Octocat" }
+                { "githubUsername", "octocat" }, { "fullName", "The Octocat" }
             }
         };
 
@@ -429,8 +416,8 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
     private async Task ConfigureMetadataFieldsAsync(params UserMetadataField[] fields)
     {
         using var scope = factory.Services.CreateScope();
-        var manager = scope.ServiceProvider.GetRequiredService<IOAuthProviderManager>();
-        await manager.UpdateUserMetadataFieldsAsync(fields.ToList(), CancellationToken.None);
+        var repository = scope.ServiceProvider.GetRequiredService<IOAuthProviderRepository>();
+        await repository.UpdateMetadataFieldsAsync(fields.ToList(), CancellationToken.None);
     }
 
     private async Task<OAuthProvider> GetProviderEntityAsync(string key, bool createIfMissing = false)
@@ -439,6 +426,7 @@ public class OAuthIntegrationTests(GZCTFApplicationFactory factory, ITestOutputH
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         var query = createIfMissing ? context.OAuthProviders : context.OAuthProviders.AsNoTracking();
+        OAuthProvider.ValidateKey(key);
         var provider = await query.FirstOrDefaultAsync(p => p.Key == key);
 
         if (provider is not null)

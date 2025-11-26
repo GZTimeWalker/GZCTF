@@ -129,6 +129,18 @@ export enum TaskStatus {
   Pending = "Pending",
 }
 
+/** User metadata field type */
+export enum UserMetadataFieldType {
+  Text = "Text",
+  TextArea = "TextArea",
+  Number = "Number",
+  Email = "Email",
+  Url = "Url",
+  Phone = "Phone",
+  Date = "Date",
+  Select = "Select",
+}
+
 /** User role enumeration */
 export enum Role {
   Banned = "Banned",
@@ -187,6 +199,8 @@ export type RegisterModel = ModelWithCaptcha & {
    * @minLength 1
    */
   email: string;
+  /** Optional metadata values for dynamic fields */
+  metadata?: Record<string, string | null>;
 };
 
 export interface ModelWithCaptcha {
@@ -279,6 +293,8 @@ export interface ProfileUpdateModel {
    * @maxLength 64
    */
   stdNumber?: string | null;
+  /** User metadata (dynamic fields) */
+  metadata?: Record<string, string | null>;
 }
 
 /** Password change */
@@ -318,6 +334,12 @@ export interface MailChangeModel {
   newMail: string;
 }
 
+/** Request payload for updating user metadata */
+export interface UserMetadataUpdateModel {
+  /** Metadata values keyed by configured field key */
+  metadata?: Record<string, string | null>;
+}
+
 /** Basic account information */
 export interface ProfileUserInfoModel {
   /**
@@ -341,6 +363,64 @@ export interface ProfileUserInfoModel {
   stdNumber?: string | null;
   /** Avatar URL */
   avatar?: string | null;
+  /** User metadata (dynamic fields) */
+  metadata?: Record<string, string>;
+}
+
+/** User metadata field configuration */
+export interface UserMetadataField {
+  /**
+   * Field key (e.g., "department", "studentId", "organization")
+   * @minLength 1
+   */
+  key: string;
+  /**
+   * Display name for the field
+   * @minLength 1
+   */
+  displayName: string;
+  /** Field type */
+  type?: UserMetadataFieldType;
+  /** Whether this field is required */
+  required?: boolean;
+  /** Whether this field is visible to users */
+  visible?: boolean;
+  /** Whether the field is locked for direct user edits */
+  locked?: boolean;
+  /** Placeholder text for the field */
+  placeholder?: string | null;
+  /**
+   * Maximum length for text fields
+   * @format int32
+   */
+  maxLength?: number | null;
+  /**
+   * Minimum value for number fields
+   * @format int32
+   */
+  minValue?: number | null;
+  /**
+   * Maximum value for number fields
+   * @format int32
+   */
+  maxValue?: number | null;
+  /** Validation pattern (regex) for the field */
+  pattern?: string | null;
+  /** Options for select fields */
+  options?: string[] | null;
+}
+
+/** Request response */
+export interface RequestResponseOfString {
+  /** Response message */
+  title?: string;
+  /** Data */
+  data?: string | null;
+  /**
+   * Status code
+   * @format int32
+   */
+  status?: number;
 }
 
 /** Global configuration update */
@@ -784,6 +864,46 @@ export interface LocalFile {
    * @minLength 1
    */
   name: string;
+}
+
+/** OAuth provider configuration */
+export interface OAuthProviderConfig {
+  /**
+   * OAuth provider ID
+   * @format int32
+   */
+  id?: number;
+  /** Whether this provider is enabled */
+  enabled?: boolean;
+  /** Client ID */
+  clientId?: string;
+  /** Client Secret */
+  clientSecret?: string;
+  /**
+   * Authorization endpoint
+   * @minLength 1
+   */
+  authorizationEndpoint: string;
+  /**
+   * Token endpoint
+   * @minLength 1
+   */
+  tokenEndpoint: string;
+  /**
+   * User information endpoint
+   * @minLength 1
+   */
+  userInformationEndpoint: string;
+  /** Display name for the provider */
+  displayName?: string | null;
+  /** Scopes to request */
+  scopes?: string[];
+  /**
+   * Field mapping from OAuth provider fields to user metadata fields
+   * Key: OAuth provider field name (e.g., "email", "name", "avatar_url")
+   * Value: User metadata field key
+   */
+  fieldMapping?: Record<string, string>;
 }
 
 /** This record represents the response for an API token request. */
@@ -2420,6 +2540,56 @@ export class Api<
       }),
 
     /**
+     * @description Use this API to get available OAuth providers for login.
+     *
+     * @tags Account
+     * @name AccountGetOAuthProviders
+     * @summary Get available OAuth providers
+     * @request GET:/api/account/oauth/providers
+     */
+    accountGetOAuthProviders: (params: RequestParams = {}) =>
+      this.request<Record<string, string>, any>({
+        path: `/api/account/oauth/providers`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Use this API to get available OAuth providers for login.
+     *
+     * @tags Account
+     * @name AccountGetOAuthProviders
+     * @summary Get available OAuth providers
+     * @request GET:/api/account/oauth/providers
+     */
+    useAccountGetOAuthProviders: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<Record<string, string>, any>(
+        doFetch ? `/api/account/oauth/providers` : null,
+        options,
+      ),
+
+    /**
+     * @description Use this API to get available OAuth providers for login.
+     *
+     * @tags Account
+     * @name AccountGetOAuthProviders
+     * @summary Get available OAuth providers
+     * @request GET:/api/account/oauth/providers
+     */
+    mutateAccountGetOAuthProviders: (
+      data?: Record<string, string> | Promise<Record<string, string>>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<Record<string, string>>(
+        `/api/account/oauth/providers`,
+        data,
+        options,
+      ),
+
+    /**
      * @description Use this API to log in to the account.
      *
      * @tags Account
@@ -2470,6 +2640,183 @@ export class Api<
         type: ContentType.Json,
         ...params,
       }),
+
+    /**
+     * @description Use this API to get configured user metadata fields.
+     *
+     * @tags Account
+     * @name AccountMetadataFields
+     * @summary Get user metadata field configuration
+     * @request GET:/api/account/metadatafields
+     */
+    accountMetadataFields: (params: RequestParams = {}) =>
+      this.request<UserMetadataField[], any>({
+        path: `/api/account/metadatafields`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Use this API to get configured user metadata fields.
+     *
+     * @tags Account
+     * @name AccountMetadataFields
+     * @summary Get user metadata field configuration
+     * @request GET:/api/account/metadatafields
+     */
+    useAccountMetadataFields: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<UserMetadataField[], any>(
+        doFetch ? `/api/account/metadatafields` : null,
+        options,
+      ),
+
+    /**
+     * @description Use this API to get configured user metadata fields.
+     *
+     * @tags Account
+     * @name AccountMetadataFields
+     * @summary Get user metadata field configuration
+     * @request GET:/api/account/metadatafields
+     */
+    mutateAccountMetadataFields: (
+      data?: UserMetadataField[] | Promise<UserMetadataField[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<UserMetadataField[]>(`/api/account/metadatafields`, data, options),
+
+    /**
+     * @description This endpoint handles OAuth callbacks from providers. Do not call directly.
+     *
+     * @tags Account
+     * @name AccountOAuthCallback
+     * @summary OAuth callback endpoint
+     * @request GET:/api/account/oauth/callback/{providerKey}
+     */
+    accountOAuthCallback: (
+      providerKey: string,
+      query?: {
+        /** Authorization code */
+        code?: string | null;
+        /** State parameter */
+        state?: string | null;
+        /** Error returned by provider */
+        error?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<File, any>({
+        path: `/api/account/oauth/callback/${providerKey}`,
+        method: "GET",
+        query: query,
+        ...params,
+      }),
+    /**
+     * @description This endpoint handles OAuth callbacks from providers. Do not call directly.
+     *
+     * @tags Account
+     * @name AccountOAuthCallback
+     * @summary OAuth callback endpoint
+     * @request GET:/api/account/oauth/callback/{providerKey}
+     */
+    useAccountOAuthCallback: (
+      providerKey: string,
+      query?: {
+        /** Authorization code */
+        code?: string | null;
+        /** State parameter */
+        state?: string | null;
+        /** Error returned by provider */
+        error?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<File, any>(
+        doFetch ? [`/api/account/oauth/callback/${providerKey}`, query] : null,
+        options,
+      ),
+
+    /**
+     * @description This endpoint handles OAuth callbacks from providers. Do not call directly.
+     *
+     * @tags Account
+     * @name AccountOAuthCallback
+     * @summary OAuth callback endpoint
+     * @request GET:/api/account/oauth/callback/{providerKey}
+     */
+    mutateAccountOAuthCallback: (
+      providerKey: string,
+      query?: {
+        /** Authorization code */
+        code?: string | null;
+        /** State parameter */
+        state?: string | null;
+        /** Error returned by provider */
+        error?: string | null;
+      },
+      data?: File | Promise<File>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<File>(
+        [`/api/account/oauth/callback/${providerKey}`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * @description Use this API to initiate OAuth login with a provider. Returns the authorization URL.
+     *
+     * @tags Account
+     * @name AccountOAuthLogin
+     * @summary Initiate OAuth login
+     * @request GET:/api/account/oauth/login/{providerKey}
+     */
+    accountOAuthLogin: (providerKey: string, params: RequestParams = {}) =>
+      this.request<RequestResponseOfString, RequestResponse>({
+        path: `/api/account/oauth/login/${providerKey}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Use this API to initiate OAuth login with a provider. Returns the authorization URL.
+     *
+     * @tags Account
+     * @name AccountOAuthLogin
+     * @summary Initiate OAuth login
+     * @request GET:/api/account/oauth/login/{providerKey}
+     */
+    useAccountOAuthLogin: (
+      providerKey: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<RequestResponseOfString, RequestResponse>(
+        doFetch ? `/api/account/oauth/login/${providerKey}` : null,
+        options,
+      ),
+
+    /**
+     * @description Use this API to initiate OAuth login with a provider. Returns the authorization URL.
+     *
+     * @tags Account
+     * @name AccountOAuthLogin
+     * @summary Initiate OAuth login
+     * @request GET:/api/account/oauth/login/{providerKey}
+     */
+    mutateAccountOAuthLogin: (
+      providerKey: string,
+      data?: RequestResponseOfString | Promise<RequestResponseOfString>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<RequestResponseOfString>(
+        `/api/account/oauth/login/${providerKey}`,
+        data,
+        options,
+      ),
 
     /**
      * @description Use this API to reset the password. Email verification code is required.
@@ -2580,6 +2927,26 @@ export class Api<
     accountUpdate: (data: ProfileUpdateModel, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/account/update`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Allows user to edit unlocked metadata fields.
+     *
+     * @tags Account
+     * @name AccountUpdateMetadata
+     * @summary Update user metadata
+     * @request PUT:/api/account/metadata
+     */
+    accountUpdateMetadata: (
+      data: UserMetadataUpdateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/metadata`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
@@ -2819,6 +3186,103 @@ export class Api<
       data?: ConfigEditModel | Promise<ConfigEditModel>,
       options?: MutatorOptions,
     ) => mutate<ConfigEditModel>(`/api/admin/config`, data, options),
+
+    /**
+     * @description Use this API to get OAuth providers configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminGetOAuthProviders
+     * @summary Get OAuth providers configuration
+     * @request GET:/api/admin/oauth
+     */
+    adminGetOAuthProviders: (params: RequestParams = {}) =>
+      this.request<Record<string, OAuthProviderConfig>, RequestResponse>({
+        path: `/api/admin/oauth`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Use this API to get OAuth providers configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminGetOAuthProviders
+     * @summary Get OAuth providers configuration
+     * @request GET:/api/admin/oauth
+     */
+    useAdminGetOAuthProviders: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<Record<string, OAuthProviderConfig>, RequestResponse>(
+        doFetch ? `/api/admin/oauth` : null,
+        options,
+      ),
+
+    /**
+     * @description Use this API to get OAuth providers configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminGetOAuthProviders
+     * @summary Get OAuth providers configuration
+     * @request GET:/api/admin/oauth
+     */
+    mutateAdminGetOAuthProviders: (
+      data?:
+        | Record<string, OAuthProviderConfig>
+        | Promise<Record<string, OAuthProviderConfig>>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<Record<string, OAuthProviderConfig>>(
+        `/api/admin/oauth`,
+        data,
+        options,
+      ),
+
+    /**
+     * @description Use this API to get user metadata fields configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminGetUserMetadataFields
+     * @summary Get user metadata fields configuration
+     * @request GET:/api/admin/usermetadata
+     */
+    adminGetUserMetadataFields: (params: RequestParams = {}) =>
+      this.request<UserMetadataField[], RequestResponse>({
+        path: `/api/admin/usermetadata`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * @description Use this API to get user metadata fields configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminGetUserMetadataFields
+     * @summary Get user metadata fields configuration
+     * @request GET:/api/admin/usermetadata
+     */
+    useAdminGetUserMetadataFields: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<UserMetadataField[], RequestResponse>(
+        doFetch ? `/api/admin/usermetadata` : null,
+        options,
+      ),
+
+    /**
+     * @description Use this API to get user metadata fields configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminGetUserMetadataFields
+     * @summary Get user metadata fields configuration
+     * @request GET:/api/admin/usermetadata
+     */
+    mutateAdminGetUserMetadataFields: (
+      data?: UserMetadataField[] | Promise<UserMetadataField[]>,
+      options?: MutatorOptions,
+    ) => mutate<UserMetadataField[]>(`/api/admin/usermetadata`, data, options),
 
     /**
      * @description Use this API to get all container instances, requires Admin permission
@@ -3199,6 +3663,26 @@ export class Api<
       }),
 
     /**
+     * @description Use this API to update OAuth providers configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminUpdateOAuthProviders
+     * @summary Update OAuth providers configuration
+     * @request PUT:/api/admin/oauth
+     */
+    adminUpdateOAuthProviders: (
+      data: Record<string, OAuthProviderConfig>,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/oauth`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
      * @description Use this API to modify team information, requires Admin permission
      *
      * @tags Admin
@@ -3234,6 +3718,47 @@ export class Api<
     ) =>
       this.request<void, RequestResponse>({
         path: `/api/admin/users/${userid}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name AdminUpdateUserMetadata
+     * @summary Update metadata for a specific user
+     * @request PUT:/api/admin/users/{userId}/metadata
+     */
+    adminUpdateUserMetadata: (
+      userId: string,
+      data: UserMetadataUpdateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/users/${userId}/metadata`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to update user metadata fields configuration, requires Admin permission
+     *
+     * @tags Admin
+     * @name AdminUpdateUserMetadataFields
+     * @summary Update user metadata fields configuration
+     * @request PUT:/api/admin/usermetadata
+     */
+    adminUpdateUserMetadataFields: (
+      data: UserMetadataField[],
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/usermetadata`,
         method: "PUT",
         body: data,
         type: ContentType.Json,

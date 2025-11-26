@@ -1,6 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
-using GZCTF.Extensions.Startup;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -37,7 +36,6 @@ public class AccountController(
     IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
-    IOAuthProviderManager oauthManager,
     IOAuthProviderRepository oauthProviderRepository,
     IOAuthService oauthService,
     CacheHelper cacheHelper,
@@ -654,7 +652,7 @@ public class AccountController(
     [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
     public async Task<IActionResult> MetadataFields(CancellationToken token = default)
     {
-        var fields = await oauthManager.GetUserMetadataFieldsAsync(token);
+        var fields = await oauthProviderRepository.GetMetadataFieldsAsync(token);
         return Ok(fields);
     }
 
@@ -673,7 +671,7 @@ public class AccountController(
 
         var available = providers
             .Where(p => p.Enabled)
-            .ToDictionary(p => p.Id, p => p.DisplayName ?? p.Key);
+            .ToDictionary(p => p.Key, p => p.DisplayName ?? p.Key);
 
         return Ok(available);
     }
@@ -684,24 +682,20 @@ public class AccountController(
     /// <remarks>
     /// Use this API to initiate OAuth login with a provider. Returns the authorization URL.
     /// </remarks>
-    /// <param name="providerId">Provider identifier</param>
+    /// <param name="providerKey">Provider identifier</param>
     /// <param name="token">Cancellation token</param>
     /// <response code="200">Authorization URL returned</response>
     /// <response code="400">Invalid provider or provider not enabled</response>
-    [HttpGet("/api/Account/OAuth/Login/{providerId:int}")]
+    [HttpGet("/api/Account/OAuth/Login/{providerKey}")]
     [ProducesResponseType(typeof(RequestResponse<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> OAuthLogin(
-        int providerId,
+        [RegularExpression("^[a-zA-Z0-9_-]+$")]
+        string providerKey,
         CancellationToken token = default)
     {
-        var providerEntity = await oauthProviderRepository.FindByIdAsync(providerId, token);
-        if (providerEntity is null)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)]));
-
-        var providerConfig = await oauthManager.GetOAuthProviderAsync(providerEntity.Key, token);
-
-        if (providerConfig is null || !providerConfig.Enabled)
+        var providerEntity = await oauthProviderRepository.FindByKeyAsync(providerKey, token);
+        if (providerEntity is null || !providerEntity.Enabled)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)]));
 
         // Generate state for CSRF protection
@@ -711,24 +705,25 @@ public class AccountController(
         // Store state in cache for validation (10 minutes expiry)
         await cacheHelper.SetStringAsync(
             cacheKey,
-            providerId.ToString(CultureInfo.InvariantCulture),
+            providerKey,
             new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) },
             token);
 
-        var redirectUri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{providerId}";
+        var redirectUri =
+            $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{providerKey}";
         var queryParameters = new Dictionary<string, string?>
         {
-            ["client_id"] = providerConfig.ClientId,
+            ["client_id"] = providerEntity.ClientId,
             ["redirect_uri"] = redirectUri,
             ["response_type"] = "code",
             ["state"] = state
         };
 
-        var scopes = providerConfig.Scopes?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+        var scopes = providerEntity.Scopes?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
         if (scopes is { Length: > 0 })
             queryParameters["scope"] = string.Join(" ", scopes);
 
-        var authUrl = QueryHelpers.AddQueryString(providerConfig.AuthorizationEndpoint, queryParameters);
+        var authUrl = QueryHelpers.AddQueryString(providerEntity.AuthorizationEndpoint, queryParameters);
 
         return Ok(new RequestResponse<string>(
             "OAuth authorization URL",
@@ -742,21 +737,22 @@ public class AccountController(
     /// <remarks>
     /// This endpoint handles OAuth callbacks from providers. Do not call directly.
     /// </remarks>
-    /// <param name="providerId">Provider identifier</param>
+    /// <param name="providerKey">Provider identifier</param>
     /// <param name="code">Authorization code</param>
     /// <param name="state">State parameter</param>
     /// <param name="error">Error returned by provider</param>
     /// <param name="token">Cancellation token</param>
     /// <response code="302">Redirects to frontend with result</response>
-    [HttpGet("/api/Account/OAuth/Callback/{providerId:int}")]
+    [HttpGet("/api/Account/OAuth/Callback/{providerKey}")]
     public async Task<IActionResult> OAuthCallback(
-        int providerId,
+        [RegularExpression("^[a-zA-Z0-9_-]+$")]
+        string providerKey,
         [FromQuery] string? code,
         [FromQuery] string? state,
         [FromQuery] string? error,
         CancellationToken token = default)
     {
-        var providerEntity = await oauthProviderRepository.FindByIdAsync(providerId, token);
+        var providerEntity = await oauthProviderRepository.FindByKeyAsync(providerKey, token);
         if (providerEntity is null)
             return Redirect("/account/login?error=oauth_provider_missing");
 
@@ -773,10 +769,11 @@ public class AccountController(
         // Validate state
         var cacheKey = CacheKey.OAuthState(state);
         var storedProvider = await cacheHelper.GetStringAsync(cacheKey, token);
-        if (string.IsNullOrEmpty(storedProvider) || storedProvider != providerId.ToString(CultureInfo.InvariantCulture))
+        if (string.IsNullOrEmpty(storedProvider) ||
+            !string.Equals(storedProvider, providerKey, StringComparison.Ordinal))
         {
             logger.SystemLog(
-            $"OAuth callback state mismatch for provider {providerEntity.Key}",
+                $"OAuth callback state mismatch for provider {providerEntity.Key}",
                 TaskStatus.Failed,
                 LogLevel.Warning);
 
@@ -802,7 +799,8 @@ public class AccountController(
         try
         {
             // Exchange code for user info
-            var redirectUri = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{providerId}";
+            var redirectUri =
+                $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{providerKey}";
             var oauthUser = await oauthService.ExchangeCodeForUserInfoAsync(providerEntity, code, redirectUri, token);
 
             if (oauthUser is null)

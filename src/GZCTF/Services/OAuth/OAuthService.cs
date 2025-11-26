@@ -1,6 +1,5 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
-using GZCTF.Extensions.Startup;
 using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Services.OAuth;
@@ -19,7 +18,8 @@ public interface IOAuthService
     /// <param name="redirectUri">The exact redirect URI registered with the provider for validation.</param>
     /// <param name="token">Cancellation token for the outbound HTTP work.</param>
     /// <returns>The normalized user information payload, or <c>null</c> when the exchange fails.</returns>
-    Task<OAuthUserInfo?> ExchangeCodeForUserInfoAsync(OAuthProvider provider, string code, string redirectUri, CancellationToken token = default);
+    Task<OAuthUserInfo?> ExchangeCodeForUserInfoAsync(OAuthProvider provider, string code, string redirectUri,
+        CancellationToken token = default);
 
     /// <summary>
     /// Finds or creates a local <see cref="UserInfo"/> based on the OAuth user payload, enforcing metadata rules.
@@ -28,11 +28,11 @@ public interface IOAuthService
     /// <param name="oauthUser">Normalized user information retrieved from the provider.</param>
     /// <param name="token">Cancellation token for repository operations.</param>
     /// <returns>The resolved user and a flag indicating whether the user was newly created.</returns>
-    Task<(UserInfo user, bool isNewUser)> GetOrCreateUserFromOAuthAsync(OAuthProvider provider, OAuthUserInfo oauthUser, CancellationToken token = default);
+    Task<(UserInfo user, bool isNewUser)> GetOrCreateUserFromOAuthAsync(OAuthProvider provider, OAuthUserInfo oauthUser,
+        CancellationToken token = default);
 }
 
 public class OAuthService(
-    IOAuthProviderManager providerManager,
     IUserMetadataService metadataService,
     UserManager<UserInfo> userManager,
     IHttpClientFactory httpClientFactory,
@@ -44,12 +44,13 @@ public class OAuthService(
         string redirectUri,
         CancellationToken token = default)
     {
-        var providerConfig = await providerManager.GetOAuthProviderAsync(provider.Key, token);
-        if (providerConfig is null || !providerConfig.Enabled)
+        if (!provider.Enabled)
         {
             logger.LogWarning("OAuth provider {Provider} not found or not enabled", provider.Key);
             return null;
         }
+
+        var providerConfig = provider.ToConfig();
 
         try
         {
@@ -114,13 +115,12 @@ public class OAuthService(
                         : null,
                 Email = GetFieldValue(userInfoData, "email"),
                 UserName = GetFieldValue(userInfoData, "login")
-                          ?? GetFieldValue(userInfoData, "username")
-                          ?? GetFieldValue(userInfoData, "preferred_username"),
-                RawData = userInfoData
+                           ?? GetFieldValue(userInfoData, "username")
+                           ?? GetFieldValue(userInfoData, "preferred_username"),
+                RawData = userInfoData,
+                MappedFields = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
             };
 
-            // Apply field mapping
-            oauthUser.MappedFields = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
             foreach (var (sourceField, targetField) in providerConfig.FieldMapping)
             {
                 var value = GetFieldValue(userInfoData, sourceField);
@@ -240,6 +240,7 @@ public class OAuthService(
         {
             return value.ValueKind == JsonValueKind.String ? value.GetString() : value.ToString();
         }
+
         return null;
     }
 }
