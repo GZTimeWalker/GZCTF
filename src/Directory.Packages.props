@@ -4,9 +4,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Aigamo.ResXGenerator" Version="4.3.0" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.0.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="13.0.1" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.13.1" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.2" />
@@ -41,14 +41,14 @@
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AWS" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.14.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.14.0-beta.2" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.14.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.14.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.14.0-beta.2" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.14.0-beta.1" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.11.0" />
-    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
     <PackageVersion Include="Serilog.Sinks.Async" Version="2.1.0" />
@@ -61,9 +61,9 @@
     <PackageVersion Include="SharpPcap" Version="6.3.1" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <PackageVersion Include="PacketDotNet" Version="1.4.8" />
-    <PackageVersion Include="Testcontainers.K3s" Version="4.8.1" />
-    <PackageVersion Include="Testcontainers.Minio" Version="4.8.1" />
-    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.8.1" />
+    <PackageVersion Include="Testcontainers.K3s" Version="4.9.0" />
+    <PackageVersion Include="Testcontainers.Minio" Version="4.9.0" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="xunit.runner.console" Version="2.9.3" />

@@ -91,8 +91,8 @@ const PostEdit: FC = () => {
       try {
         // Temporary workaround for an issue where posts could not be updated.
         // Ideally, the pin/unpin functionality should be handled by a separate API endpoint.
-        const { isPinned, ...postWithoutPin } = post
-        
+        const { isPinned: _, ...postWithoutPin } = post
+
         const res = await api.edit.editUpdatePost(postId, postWithoutPin)
         api.info.mutateInfoGetPost(postId, res.data)
         api.info.mutateInfoGetLatestPosts()

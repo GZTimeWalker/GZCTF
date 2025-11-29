@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-dotnet@v5
         with:
@@ -99,7 +99,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-dotnet@v5
         with:
@@ -157,7 +157,7 @@ jobs:
     if: always()
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download coverage artifacts (local)
         uses: actions/download-artifact@v6
