@@ -22,6 +22,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { PasskeyManager } from '@Components/PasskeyManager'
 import { PasswordChangeModal } from '@Components/PasswordChangeModal'
 import { WithNavBar } from '@Components/WithNavbar'
 import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
@@ -49,6 +50,7 @@ const Profile: FC = () => {
 
   const [mailEditOpened, setMailEditOpened] = useState(false)
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false)
+  const [passkeyOpened, setPasskeyOpened] = useState(false)
 
   const [email, setEmail] = useState('')
 
@@ -224,6 +226,11 @@ const Profile: FC = () => {
               </Button>
             </Grid.Col>
             <Grid.Col span={4}>
+              <Button fullWidth variant="outline" disabled={disabled} onClick={() => setPasskeyOpened(true)}>
+                {t('account.button.manage_passkeys')}
+              </Button>
+            </Grid.Col>
+            <Grid.Col span={12}>
               <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
                 {t('account.button.save_profile')}
               </Button>
@@ -323,6 +330,8 @@ const Profile: FC = () => {
           {t('common.avatar.save')}
         </Button>
       </Modal>
+
+      <PasskeyManager opened={passkeyOpened} onClose={() => setPasskeyOpened(false)} />
     </WithNavBar>
   )
 }

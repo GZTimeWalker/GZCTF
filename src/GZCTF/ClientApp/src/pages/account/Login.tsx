@@ -1,7 +1,7 @@
-import { Anchor, Button, Grid, PasswordInput, TextInput } from '@mantine/core'
+import { Anchor, Button, Divider, Grid, PasswordInput, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +16,28 @@ import { useUser } from '@Hooks/useUser'
 import api from '@Api'
 import misc from '@Styles/Misc.module.css'
 
+// Helper functions for base64url encoding/decoding
+function base64urlToBuffer(base64url: string): ArrayBuffer {
+  const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/')
+  const paddedBase64 = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
+  const binary = atob(paddedBase64)
+  const buffer = new ArrayBuffer(binary.length)
+  const view = new Uint8Array(buffer)
+  for (let i = 0; i < binary.length; i++) {
+    view[i] = binary.charCodeAt(i)
+  }
+  return buffer
+}
+
+function bufferToBase64url(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer)
+  let binary = ''
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+}
+
 const Login: FC = () => {
   const params = useSearchParams()[0]
   const navigate = useNavigate()
@@ -24,6 +46,7 @@ const Login: FC = () => {
   const [uname, setUname] = useInputState('')
   const [disabled, setDisabled] = useState(false)
   const [needRedirect, setNeedRedirect] = useState(false)
+  const [passkeySupported, setPasskeySupported] = useState(false)
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
@@ -32,6 +55,14 @@ const Login: FC = () => {
   const { t } = useTranslation()
 
   usePageTitle(t('account.title.login'))
+
+  useEffect(() => {
+    // Check if passkeys are supported
+    setPasskeySupported(
+      window.PublicKeyCredential !== undefined &&
+        typeof window.PublicKeyCredential === 'function'
+    )
+  }, [])
 
   useEffect(() => {
     if (needRedirect && user) {
@@ -115,6 +146,86 @@ const Login: FC = () => {
     }
   }
 
+  const onPasskeyLogin = async () => {
+    if (!passkeySupported) {
+      showNotification({
+        color: 'red',
+        title: t('account.passkey.not_supported'),
+        message: '',
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      return
+    }
+
+    setDisabled(true)
+
+    try {
+      // Step 1: Get assertion options from server
+      const optionsRes = await api.account.accountPasskeyAssertionOptions({
+        userName: uname || undefined,
+      })
+      const options = optionsRes.data as PublicKeyCredentialRequestOptions
+
+      // Convert base64url strings to ArrayBuffers for WebAuthn API
+      const publicKeyOptions: PublicKeyCredentialRequestOptions = {
+        ...options,
+        challenge: base64urlToBuffer(options.challenge as unknown as string),
+        allowCredentials: options.allowCredentials?.map((cred) => ({
+          ...cred,
+          id: base64urlToBuffer(cred.id as unknown as string),
+        })),
+      }
+
+      // Step 2: Get credential using WebAuthn API
+      const credential = (await navigator.credentials.get({
+        publicKey: publicKeyOptions,
+      })) as PublicKeyCredential
+
+      if (!credential) {
+        throw new Error('Failed to get credential')
+      }
+
+      // Step 3: Send credential to server
+      const response = credential.response as AuthenticatorAssertionResponse
+      const credentialJson = JSON.stringify({
+        id: credential.id,
+        rawId: bufferToBase64url(credential.rawId),
+        type: credential.type,
+        response: {
+          clientDataJSON: bufferToBase64url(response.clientDataJSON),
+          authenticatorData: bufferToBase64url(response.authenticatorData),
+          signature: bufferToBase64url(response.signature),
+          userHandle: response.userHandle ? bufferToBase64url(response.userHandle) : null,
+        },
+        clientExtensionResults: credential.getClientExtensionResults(),
+      })
+
+      await api.account.accountPasskeyAssertion({ credentialJson })
+
+      showNotification({
+        color: 'teal',
+        title: t('account.notification.login.success.title'),
+        message: t('account.notification.login.success.message'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+
+      setNeedRedirect(true)
+      mutate()
+    } catch (err: any) {
+      if (err.name !== 'NotAllowedError') {
+        const { title, message } = tryGetClientError(err, t)
+        showNotification({
+          color: 'red',
+          title: title || t('account.passkey.login_failed'),
+          message,
+          icon: <Icon path={mdiClose} size={1} />,
+        })
+      }
+    } finally {
+      setDisabled(false)
+    }
+  }
+
   return (
     <AccountView onSubmit={onLogin}>
       <TextInput
@@ -153,6 +264,20 @@ const Login: FC = () => {
           </Button>
         </Grid.Col>
       </Grid>
+      {passkeySupported && (
+        <>
+          <Divider w="100%" my="xs" label="or" labelPosition="center" />
+          <Button
+            fullWidth
+            variant="light"
+            leftSection={<Icon path={mdiKey} size={0.9} />}
+            disabled={disabled}
+            onClick={onPasskeyLogin}
+          >
+            {t('account.button.login_with_passkey')}
+          </Button>
+        </>
+      )}
     </AccountView>
   )
 }
