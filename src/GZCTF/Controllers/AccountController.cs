@@ -591,11 +591,13 @@ public class AccountController(
             return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)],
                 StatusCodes.Status401Unauthorized));
 
+        // Use username or email for passkey user entity, with anonymous placeholder as fallback
+        var displayName = user.UserName ?? user.Email ?? "User";
         var userEntity = new PasskeyUserEntity
         {
             Id = user.Id.ToString(),
-            Name = user.UserName ?? user.Email ?? user.Id.ToString(),
-            DisplayName = user.UserName ?? user.Email ?? user.Id.ToString()
+            Name = displayName,
+            DisplayName = displayName
         };
 
         var optionsJson = await signInManager.MakePasskeyCreationOptionsAsync(userEntity);
