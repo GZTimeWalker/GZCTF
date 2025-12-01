@@ -1088,4 +1088,25 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>该题目的截止时间已过</value>
   </data>
+  <data name="Passkey_RegistrationFailed" xml:space="preserve">
+    <value>通行密钥注册失败</value>
+  </data>
+  <data name="Passkey_Registered" xml:space="preserve">
+    <value>通行密钥注册成功</value>
+  </data>
+  <data name="Passkey_LoginFailed" xml:space="preserve">
+    <value>通行密钥验证失败</value>
+  </data>
+  <data name="Passkey_LoginSuccess" xml:space="preserve">
+    <value>使用通行密钥登录成功</value>
+  </data>
+  <data name="Passkey_InvalidCredentialId" xml:space="preserve">
+    <value>无效的凭证 ID 格式</value>
+  </data>
+  <data name="Passkey_NotFound" xml:space="preserve">
+    <value>未找到通行密钥</value>
+  </data>
+  <data name="Passkey_Deleted" xml:space="preserve">
+    <value>通行密钥删除成功</value>
+  </data>
 </root>

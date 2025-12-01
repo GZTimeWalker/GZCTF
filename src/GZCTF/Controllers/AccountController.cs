@@ -567,4 +567,254 @@ public class AccountController(
     BadRequestObjectResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                        localizer[nameof(Resources.Program.Identity_UnknownError)]));
+
+    #region Passkey
+
+    /// <summary>
+    /// Get passkey attestation options for registration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get options for creating a new passkey. User permissions required.
+    /// The response should be passed to navigator.credentials.create() in the browser.
+    /// </remarks>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Passkey attestation options (JSON)</response>
+    /// <response code="401">Unauthorized</response>
+    [HttpPost]
+    [RequireUser]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> PasskeyAttestationOptions(CancellationToken token = default)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null)
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)],
+                StatusCodes.Status401Unauthorized));
+
+        var userEntity = new PasskeyUserEntity
+        {
+            Id = user.Id.ToString(),
+            Name = user.UserName ?? user.Email ?? user.Id.ToString(),
+            DisplayName = user.UserName ?? user.Email ?? user.Id.ToString()
+        };
+
+        var optionsJson = await signInManager.MakePasskeyCreationOptionsAsync(userEntity);
+
+        return Content(optionsJson, "application/json");
+    }
+
+    /// <summary>
+    /// Complete passkey registration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to complete passkey registration with the credential from navigator.credentials.create().
+    /// User permissions required.
+    /// </remarks>
+    /// <param name="model">Passkey attestation data</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Passkey registered successfully</response>
+    /// <response code="400">Invalid passkey data</response>
+    /// <response code="401">Unauthorized</response>
+    [HttpPost]
+    [RequireUser]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> PasskeyAttestation(
+        [FromBody] PasskeyAttestationRequest model,
+        CancellationToken token = default)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null)
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)],
+                StatusCodes.Status401Unauthorized));
+
+        var result = await signInManager.PerformPasskeyAttestationAsync(model.CredentialJson);
+
+        if (!result.Succeeded)
+        {
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Passkey_RegistrationFailed)], user,
+                TaskStatus.Failed);
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Passkey_RegistrationFailed)]));
+        }
+
+        // Set passkey name if provided
+        if (!string.IsNullOrEmpty(model.Name))
+            result.Passkey.Name = model.Name;
+
+        // Store the passkey
+        var storeResult = await userManager.AddOrUpdatePasskeyAsync(user, result.Passkey);
+        if (!storeResult.Succeeded)
+        {
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Passkey_RegistrationFailed)], user,
+                TaskStatus.Failed);
+            return HandleIdentityError(storeResult.Errors);
+        }
+
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Passkey_Registered)], user, TaskStatus.Success);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Get passkey assertion options for login
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get options for authenticating with a passkey.
+    /// The response should be passed to navigator.credentials.get() in the browser.
+    /// </remarks>
+    /// <param name="model">Optional username to scope allowed credentials</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Passkey assertion options (JSON)</response>
+    [HttpPost]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    public async Task<IActionResult> PasskeyAssertionOptions(
+        [FromBody] PasskeyAssertionOptionsRequest model,
+        CancellationToken token = default)
+    {
+        UserInfo? user = null;
+        if (!string.IsNullOrEmpty(model.UserName))
+        {
+            user = await userManager.FindByNameAsync(model.UserName);
+            user ??= await userManager.FindByEmailAsync(model.UserName);
+        }
+
+        var optionsJson = await signInManager.MakePasskeyRequestOptionsAsync(user);
+        return Content(optionsJson, "application/json");
+    }
+
+    /// <summary>
+    /// Complete passkey authentication
+    /// </summary>
+    /// <remarks>
+    /// Use this API to complete passkey authentication with the credential from navigator.credentials.get().
+    /// </remarks>
+    /// <param name="model">Passkey assertion data</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Login successful</response>
+    /// <response code="400">Invalid passkey data</response>
+    /// <response code="401">Authentication failed</response>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> PasskeyAssertion(
+        [FromBody] PasskeyAssertionRequest model,
+        CancellationToken token = default)
+    {
+        var result = await signInManager.PasskeySignInAsync(model.CredentialJson);
+
+        if (!result.Succeeded)
+        {
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Passkey_LoginFailed)], HttpContext,
+                TaskStatus.Failed);
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Passkey_LoginFailed)],
+                StatusCodes.Status401Unauthorized));
+        }
+
+        // Get the signed-in user for logging
+        var user = await userManager.GetUserAsync(User);
+        if (user is not null)
+        {
+            // Check if user is banned
+            if (user.Role == Role.Banned)
+            {
+                await signInManager.SignOutAsync();
+                return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)],
+                    StatusCodes.Status401Unauthorized));
+            }
+
+            user.LastSignedInUtc = DateTimeOffset.UtcNow;
+            user.UpdateByHttpContext(HttpContext);
+            await userManager.UpdateAsync(user);
+
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Passkey_LoginSuccess)], user, TaskStatus.Success);
+        }
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Get user's registered passkeys
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get list of user's registered passkeys. User permissions required.
+    /// </remarks>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">List of passkeys</response>
+    /// <response code="401">Unauthorized</response>
+    [HttpGet]
+    [RequireUser]
+    [ProducesResponseType(typeof(PasskeyInfoModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Passkeys(CancellationToken token = default)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null)
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)],
+                StatusCodes.Status401Unauthorized));
+
+        var passkeys = await userManager.GetPasskeysAsync(user);
+        var result = passkeys.Select(p => new PasskeyInfoModel
+        {
+            CredentialId = Convert.ToBase64String(p.CredentialId),
+            Name = p.Name,
+            CreatedAt = p.CreatedAt,
+            IsBackedUp = p.IsBackedUp,
+            Transports = p.Transports
+        }).ToArray();
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete a passkey
+    /// </summary>
+    /// <remarks>
+    /// Use this API to delete a passkey. User permissions required.
+    /// </remarks>
+    /// <param name="credentialId">Base64-encoded credential ID to delete</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Passkey deleted successfully</response>
+    /// <response code="400">Invalid credential ID</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="404">Passkey not found</response>
+    [HttpDelete("{credentialId}")]
+    [RequireUser]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeletePasskey(string credentialId, CancellationToken token = default)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null)
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)],
+                StatusCodes.Status401Unauthorized));
+
+        byte[] credentialIdBytes;
+        try
+        {
+            credentialIdBytes = Convert.FromBase64String(credentialId);
+        }
+        catch (FormatException)
+        {
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Passkey_InvalidCredentialId)]));
+        }
+
+        var passkey = await userManager.GetPasskeyAsync(user, credentialIdBytes);
+        if (passkey is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Passkey_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var result = await userManager.RemovePasskeyAsync(user, credentialIdBytes);
+        if (!result.Succeeded)
+            return HandleIdentityError(result.Errors);
+
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Passkey_Deleted)], user, TaskStatus.Success);
+
+        return Ok();
+    }
+
+    #endregion
 }
