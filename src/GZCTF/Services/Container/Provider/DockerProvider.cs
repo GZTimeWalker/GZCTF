@@ -38,17 +38,19 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
     readonly DockerClient _dockerClient;
     readonly DockerMetadata _dockerMeta;
 
-    string NetworkName(NetworkMode mode) =>
-        $"{_dockerMeta.Config.ChallengeNetwork ?? "gzctf"}-{mode.ToString().ToLowerInvariant()}";
-
     public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistrySet<RegistryConfig>> registriesOptions,
         ILogger<DockerProvider> logger)
     {
+        var config = options.Value.DockerConfig ?? new();
+
         _dockerMeta = new()
         {
-            Config = options.Value.DockerConfig ?? new(),
+            Config = config,
             PortMappingType = options.Value.PortMappingType,
-            NetworkNames = Enum.GetValues<NetworkMode>().ToDictionary(n => n, NetworkName),
+            NetworkNames =
+                Enum.GetValues<NetworkMode>()
+                    .ToDictionary(n => n,
+                        m => $"{config.ChallengeNetwork ?? "gzctf"}-{m.ToString().ToLowerInvariant()}"),
             PublicEntry = options.Value.PublicEntry
         };
 

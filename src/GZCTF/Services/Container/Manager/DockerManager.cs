@@ -276,7 +276,7 @@ public class DockerManager : IContainerManager
             {
                 Memory = config.MemoryLimit * 1024 * 1024,
                 CPUPercent = config.CPUCount * 10,
-                NetworkMode = _meta.Config.ChallengeNetwork
+                NetworkMode = _meta.NetworkNames[config.NetworkMode]
             }
         };
 }
