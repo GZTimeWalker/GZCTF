@@ -44,30 +44,27 @@ static class ContainerManagerLogHelper
             TaskStatus.Failed, LogLevel.Error);
     }
 
-    internal static void LogCreationFailedWithHttpContext<T>(
-        this ILogger<T> logger,
-        string container,
-        HttpStatusCode status,
-        string body
-    ) => LogWithHttpContext(logger, container, status, body,
-        nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
-        nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse));
+    extension<T>(ILogger<T> logger)
+    {
+        internal void LogCreationFailedWithHttpContext(string container,
+            HttpStatusCode status,
+            string body
+        ) => LogWithHttpContext(logger, container, status, body,
+            nameof(Resources.Program.ContainerManager_ContainerCreationFailedStatus),
+            nameof(Resources.Program.ContainerManager_ContainerCreationFailedResponse));
 
-    internal static void LogDeletionFailedWithHttpContext<T>(
-        this ILogger<T> logger,
-        string container,
-        HttpStatusCode status,
-        string body
-    ) => LogWithHttpContext(logger, container, status, body,
-        nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
-        nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse));
+        internal void LogDeletionFailedWithHttpContext(string container,
+            HttpStatusCode status,
+            string body
+        ) => LogWithHttpContext(logger, container, status, body,
+            nameof(Resources.Program.ContainerManager_ContainerDeletionFailedStatus),
+            nameof(Resources.Program.ContainerManager_ContainerDeletionFailedResponse));
 
-    internal static void LogServiceCreationFailedWithHttpContext<T>(
-        this ILogger<T> logger,
-        string container,
-        HttpStatusCode status,
-        string body
-    ) => LogWithHttpContext(logger, container, status, body,
-        nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus),
-        nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse));
+        internal void LogServiceCreationFailedWithHttpContext(string container,
+            HttpStatusCode status,
+            string body
+        ) => LogWithHttpContext(logger, container, status, body,
+            nameof(Resources.Program.ContainerManager_ServiceCreationFailedStatus),
+            nameof(Resources.Program.ContainerManager_ServiceCreationFailedResponse));
+    }
 }
