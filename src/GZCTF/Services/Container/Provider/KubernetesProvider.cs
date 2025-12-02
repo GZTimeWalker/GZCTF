@@ -27,8 +27,6 @@ public class KubernetesMetadata : ContainerProviderMetadata
 
 public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetadata>
 {
-    const string NetworkPolicy = "gzctf-policy";
-
     readonly Kubernetes _kubernetesClient;
     readonly KubernetesMetadata _kubernetesMetadata;
 
@@ -44,7 +42,8 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
         KubernetesClientConfiguration config;
 
-        if (File.Exists(_kubernetesMetadata.Config.KubeConfig))
+        if (!string.IsNullOrWhiteSpace(_kubernetesMetadata.Config.KubeConfig) &&
+            File.Exists(_kubernetesMetadata.Config.KubeConfig))
         {
             config = KubernetesClientConfiguration.BuildConfigFromConfigFile(_kubernetesMetadata.Config.KubeConfig);
         }
@@ -61,7 +60,6 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         }
 
         _kubernetesMetadata.HostIp = new Uri(config.Host).Host;
-
         _kubernetesClient = new Kubernetes(config);
 
         try
@@ -92,40 +90,94 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             _kubernetesClient.CoreV1.CreateNamespace(
                 new() { Metadata = new() { Name = _kubernetesMetadata.Config.Namespace } });
 
-        // skip if policy exists, which can be configured by admin outside GZCTF
-        if (_kubernetesClient.NetworkingV1.ListNamespacedNetworkPolicy(_kubernetesMetadata.Config.Namespace).Items
-            .All(np => np.Metadata.Name != NetworkPolicy))
-            _kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(new()
-            {
-                Metadata = new() { Name = NetworkPolicy },
-                Spec = new()
-                {
-                    PodSelector = new(),
-                    PolicyTypes = ["Egress"],
-                    Egress =
-                    [
-                        new V1NetworkPolicyEgressRule
-                        {
-                            To =
-                            [
-                                new V1NetworkPolicyPeer
-                                {
-                                    IpBlock = new()
-                                    {
-                                        Cidr = "0.0.0.0/0",
-                                        Except = _kubernetesMetadata.Config.AllowCidr ?? ["10.0.0.0/8"]
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }, _kubernetesMetadata.Config.Namespace);
+        // create network policies (replace if exists)
+        EnsureNetworkPolicy(OpenNetworkPolicy);
+        EnsureNetworkPolicy(IsolatedNetworkPolicy);
 
         // create auth secrets for registries
         foreach (KeyValuePair<string, RegistryConfig> registry in registries.Where(registry => registry.Value.Valid))
             InsertRegistrySecret(registry.Key, registry.Value);
     }
+
+    void EnsureNetworkPolicy(V1NetworkPolicy policy)
+    {
+        var policyName = policy.Metadata.Name;
+        try
+        {
+            _kubernetesClient.NetworkingV1.ReplaceNamespacedNetworkPolicy(policy, policyName,
+                _kubernetesMetadata.Config.Namespace);
+        }
+        catch
+        {
+            _kubernetesClient.NetworkingV1.CreateNamespacedNetworkPolicy(policy, _kubernetesMetadata.Config.Namespace);
+        }
+    }
+
+    const string IsolatedNetworkPolicyName = "gzctf-network-isolated";
+    const string OpenNetworkPolicyName = "gzctf-network-open";
+
+    /// <summary>
+    /// Isolated Network Policy
+    /// </summary>
+    /// <remarks>
+    ///  Blocks all outbound traffic.
+    /// </remarks>
+    static readonly V1NetworkPolicy IsolatedNetworkPolicy = new()
+    {
+        Metadata = new V1ObjectMeta { Name = IsolatedNetworkPolicyName, },
+        Spec = new V1NetworkPolicySpec
+        {
+            PodSelector = new V1LabelSelector
+            {
+                MatchLabels = new Dictionary<string, string>
+                {
+                    ["gzctf.gzti.me/NetworkMode"] = nameof(NetworkMode.Isolated).ToLowerInvariant()
+                }
+            },
+            PolicyTypes = ["Egress"],
+            Egress = []
+        }
+    };
+
+    /// <summary>
+    ///  Open Network Policy
+    /// </summary>
+    /// <remarks>
+    ///  Allows all outbound traffic except to the specified CIDR blocks in the Kubernetes configuration.
+    /// </remarks>
+    V1NetworkPolicy OpenNetworkPolicy =>
+        new()
+        {
+            Metadata = new() { Name = OpenNetworkPolicyName },
+            Spec = new()
+            {
+                PodSelector = new V1LabelSelector
+                {
+                    MatchLabels = new Dictionary<string, string>
+                    {
+                        ["gzctf.gzti.me/NetworkMode"] = nameof(NetworkMode.Open).ToLowerInvariant()
+                    }
+                },
+                PolicyTypes = ["Egress"],
+                Egress =
+                [
+                    new V1NetworkPolicyEgressRule
+                    {
+                        To =
+                        [
+                            new V1NetworkPolicyPeer
+                            {
+                                IpBlock = new()
+                                {
+                                    Cidr = "0.0.0.0/0",
+                                    Except = _kubernetesMetadata.Config.AllowCidr ?? ["10.0.0.0/8"]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
 
     void InsertRegistrySecret(string address, RegistryConfig registry)
     {

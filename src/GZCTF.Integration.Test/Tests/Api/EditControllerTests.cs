@@ -495,7 +495,7 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
                 GameId = game.Id,
                 IsEnabled = true,
                 ContainerImage = "ghcr.io/gzctf/challenge-base/echo:latest",
-                ContainerExposePort = 70,
+                ExposePort = 70,
                 MemoryLimit = 64,
                 CPUCount = 1,
                 StorageLimit = 256

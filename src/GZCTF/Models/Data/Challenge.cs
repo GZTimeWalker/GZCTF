@@ -83,7 +83,12 @@ public class Challenge
     /// <summary>
     /// Container exposed port
     /// </summary>
-    public int? ContainerExposePort { get; set; } = 80;
+    public int? ExposePort { get; set; } = 80;
+
+    /// <summary>
+    /// Container network mode
+    /// </summary>
+    public NetworkMode? NetworkMode { get; set; } = Utils.NetworkMode.Open;
 
     /// <summary>
     /// Download file name, used only for dynamic attachment unified file name

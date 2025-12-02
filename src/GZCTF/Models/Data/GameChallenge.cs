@@ -67,7 +67,8 @@ public class GameChallenge : Challenge
         MemoryLimit = model.MemoryLimit ?? MemoryLimit;
         StorageLimit = model.StorageLimit ?? StorageLimit;
         ContainerImage = model.ContainerImage?.Trim() ?? ContainerImage;
-        ContainerExposePort = model.ContainerExposePort ?? ContainerExposePort;
+        ExposePort = model.ExposePort ?? ExposePort;
+        NetworkMode = model.NetworkMode ?? NetworkMode;
         OriginalScore = model.OriginalScore ?? OriginalScore;
         MinScoreRate = model.MinScoreRate ?? MinScoreRate;
         Difficulty = model.Difficulty ?? Difficulty;

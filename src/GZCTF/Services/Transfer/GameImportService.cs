@@ -404,7 +404,7 @@ public class GameImportService(
 
             // Container settings
             ContainerImage = transferChallenge.Container?.Image,
-            ContainerExposePort = transferChallenge.Container?.ExposePort,
+            ExposePort = transferChallenge.Container?.ExposePort,
             MemoryLimit = transferChallenge.Container?.MemoryLimit,
             CPUCount = transferChallenge.Container?.CpuCount,
             StorageLimit = transferChallenge.Container?.StorageLimit,

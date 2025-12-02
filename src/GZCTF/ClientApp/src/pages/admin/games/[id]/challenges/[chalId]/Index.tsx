@@ -505,11 +505,11 @@ const GameChallengeEdit: FC = () => {
                 disabled={disabled}
                 stepHoldDelay={500}
                 stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                value={challengeInfo.containerExposePort ?? 1}
+                value={challengeInfo.exposePort ?? 80}
                 onChange={(e) => {
                   const number = getInputNumber(e)
                   if (isNaN(number)) return
-                  setChallengeInfo({ ...challengeInfo, containerExposePort: number })
+                  setChallengeInfo({ ...challengeInfo, exposePort: number })
                 }}
               />
             </Grid.Col>

@@ -88,15 +88,20 @@ public class ChallengeUpdateModel
     /// <summary>
     /// Container exposed port
     /// </summary>
-    public int? ContainerExposePort { get; set; }
+    public int? ExposePort { get; set; }
 
     /// <summary>
-    /// Is traffic capture enabled
+    /// Container network mode
+    /// </summary>
+    public NetworkMode? NetworkMode { get; set; }
+
+    /// <summary>
+    /// Is traffic capture enabled (disabled by default)
     /// </summary>
     public bool? EnableTrafficCapture { get; set; }
 
     /// <summary>
-    /// Is blood bonus disabled
+    /// Is blood bonus disabled (enable by default)
     /// </summary>
     public bool? DisableBloodBonus { get; set; }
 

@@ -1,16 +1,16 @@
 ﻿namespace GZCTF.Services.Container.Provider;
 
-public interface IContainerProvider<T, M>
+public interface IContainerProvider<out TProvider, out TMetadata>
 {
     /// <summary>
-    /// 获取容器服务提供者
+    /// Get container service provider client
     /// </summary>
     /// <returns></returns>
-    public T GetProvider();
+    public TProvider GetProvider();
 
     /// <summary>
-    /// 获取容器服务信息
+    /// Get container service metadata
     /// </summary>
     /// <returns></returns>
-    public M GetMetadata();
+    public TMetadata GetMetadata();
 }

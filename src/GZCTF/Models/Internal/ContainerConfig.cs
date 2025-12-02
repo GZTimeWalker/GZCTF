@@ -51,4 +51,9 @@ public class ContainerConfig
     /// Storage write limit
     /// </summary>
     public int StorageLimit { get; set; } = 256;
+
+    /// <summary>
+    /// Container network mode
+    /// </summary>
+    public NetworkMode NetworkMode { get; set; } = NetworkMode.Open;
 }

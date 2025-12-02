@@ -118,7 +118,7 @@ public class ExerciseInstanceRepository(
     public async Task<TaskResult<Container>> CreateContainer(ExerciseInstance instance, UserInfo user,
         CancellationToken token = default)
     {
-        if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ContainerExposePort is null)
+        if (string.IsNullOrEmpty(instance.Exercise.ContainerImage) || instance.Exercise.ExposePort is null)
         {
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
@@ -163,8 +163,9 @@ public class ExerciseInstanceRepository(
             CPUCount = instance.Exercise.CPUCount ?? 1,
             MemoryLimit = instance.Exercise.MemoryLimit ?? 64,
             StorageLimit = instance.Exercise.StorageLimit ?? 256,
+            NetworkMode = instance.Exercise.NetworkMode ?? NetworkMode.Open,
             EnableTrafficCapture = false,
-            ExposedPort = instance.Exercise.ContainerExposePort ??
+            ExposedPort = instance.Exercise.ExposePort ??
                           throw new ArgumentException(
                               localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);

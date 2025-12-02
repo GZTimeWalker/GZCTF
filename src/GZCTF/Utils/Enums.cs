@@ -372,6 +372,46 @@ public enum Difficulty : byte
 }
 
 /// <summary>
+/// Container network mode
+/// </summary>
+[JsonConverter(typeof(JsonNumberEnumConverter<NetworkMode>))]
+public enum NetworkMode : byte
+{
+    /// <summary>
+    /// Open network
+    /// </summary>
+    /// <remarks>
+    /// Allows the container to access external networks, including the internet.
+    /// Suitable for challenges that require external connectivity.
+    /// </remarks>
+    Open = 0,
+
+    /// <summary>
+    /// Isolated network
+    /// </summary>
+    /// <remarks>
+    /// Restricts the container from accessing any external networks.
+    /// The container can only communicate within container internal network.
+    /// </remarks>
+    Isolated = 32,
+
+    /// <summary>
+    /// Custom network
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    ///  For kubernetes provider<br/>
+    ///  this mode will add a label to the pod: <c>gzctf.gzti.me/NetworkMode: custom</c>
+    /// </para>
+    /// <para>
+    ///  For Docker provider<br/>
+    ///  this mode will create the container in a user-defined docker network specified in the config.
+    /// </para>
+    /// </remarks>
+    Custom = 255,
+}
+
+/// <summary>
 /// Game participant permission
 /// </summary>
 [Flags]
