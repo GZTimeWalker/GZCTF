@@ -518,7 +518,6 @@ const GameChallengeEdit: FC = () => {
                 required
                 label={t('admin.content.games.challenges.network_mode.label')}
                 description={t('admin.content.games.challenges.network_mode.description')}
-                placeholder="Category"
                 value={networkMode ?? NetworkMode.Open}
                 disabled={disabled}
                 onChange={(e) => {

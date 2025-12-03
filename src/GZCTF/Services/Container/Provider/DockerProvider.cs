@@ -19,7 +19,7 @@ public class DockerMetadata : ContainerProviderMetadata
     public RegistrySet<AuthConfig> AuthConfigs { get; set; } = new();
 
     /// <summary>
-    /// 
+    /// Network names for different modes
     /// </summary>
     public Dictionary<NetworkMode, string> NetworkNames { get; set; } = new();
 

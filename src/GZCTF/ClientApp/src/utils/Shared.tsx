@@ -343,23 +343,19 @@ export const NoticTypeIconMap = (size: number) => {
   const theme = useMantineTheme()
   const { iconMap } = SubmissionTypeIconMap(size)
   const { colorScheme } = useMantineColorScheme()
-  const colorIdx = colorScheme === 'dark' ? 4 : 7
 
-  const map = useMemo(
-    () =>
-      new Map([
-        [
-          NoticeType.Normal,
-          { path: mdiBullhornOutline, size: size, color: theme.colors[theme.primaryColor][colorIdx] },
-        ],
-        [NoticeType.NewHint, { path: mdiLightbulbOnOutline, size: size, color: theme.colors.yellow[colorIdx] }],
-        [NoticeType.NewChallenge, { path: mdiPlus, size: size, color: theme.colors.green[colorIdx] }],
-        [NoticeType.FirstBlood, iconMap.get(SubmissionType.FirstBlood)],
-        [NoticeType.SecondBlood, iconMap.get(SubmissionType.SecondBlood)],
-        [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
-      ]),
-    [theme, colorScheme, size, iconMap]
-  )
+  const map = useMemo(() => {
+    const colorIdx = colorScheme === 'dark' ? 4 : 7
+
+    return new Map([
+      [NoticeType.Normal, { path: mdiBullhornOutline, size: size, color: theme.colors[theme.primaryColor][colorIdx] }],
+      [NoticeType.NewHint, { path: mdiLightbulbOnOutline, size: size, color: theme.colors.yellow[colorIdx] }],
+      [NoticeType.NewChallenge, { path: mdiPlus, size: size, color: theme.colors.green[colorIdx] }],
+      [NoticeType.FirstBlood, iconMap.get(SubmissionType.FirstBlood)],
+      [NoticeType.SecondBlood, iconMap.get(SubmissionType.SecondBlood)],
+      [NoticeType.ThirdBlood, iconMap.get(SubmissionType.ThirdBlood)],
+    ])
+  }, [theme, colorScheme, size, iconMap])
 
   return map
 }

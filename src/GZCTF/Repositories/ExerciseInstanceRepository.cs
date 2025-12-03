@@ -165,9 +165,7 @@ public class ExerciseInstanceRepository(
             StorageLimit = instance.Exercise.StorageLimit ?? 256,
             NetworkMode = instance.Exercise.NetworkMode ?? NetworkMode.Open,
             EnableTrafficCapture = false,
-            ExposedPort = instance.Exercise.ExposePort ??
-                          throw new ArgumentException(
-                              localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
+            ExposedPort = instance.Exercise.ExposePort.Value
         }, token);
 
         if (container is null)

@@ -785,8 +785,7 @@ public class EditController(
                 MemoryLimit = challenge.MemoryLimit ?? 64,
                 StorageLimit = challenge.StorageLimit ?? 256,
                 NetworkMode = challenge.NetworkMode ?? NetworkMode.Open,
-                ExposedPort = challenge.ExposePort ??
-                              throw new ArgumentException(localizer[nameof(Resources.Program.Container_InvalidPort)])
+                ExposedPort = challenge.ExposePort.Value,
             }, token);
 
         if (container is null)
