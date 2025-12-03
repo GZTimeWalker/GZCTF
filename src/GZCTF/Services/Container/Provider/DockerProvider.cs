@@ -97,37 +97,68 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 
         EnsureOpenNetwork(networks);
         EnsureIsolatedNetwork(networks);
+
+        // always try to attach to custom network if exists
+        var customNetworkName = _dockerMeta.NetworkNames[NetworkMode.Custom];
+        if (networks.Any(n => n.Name == customNetworkName))
+            AttachSelfToNetwork(customNetworkName);
     }
 
     void EnsureOpenNetwork(IList<NetworkResponse> networks)
     {
         var openNetworkName = _dockerMeta.NetworkNames[NetworkMode.Open];
-        if (networks.Any(n => n.Name == openNetworkName))
-            return;
-
-        _dockerClient.Networks.CreateNetworkAsync(new NetworksCreateParameters
+        if (networks.All(n => n.Name != openNetworkName))
         {
-            Name = openNetworkName,
-            Driver = "bridge",
-            CheckDuplicate = true,
-            Attachable = true
-        }).GetAwaiter().GetResult();
+            _dockerClient.Networks.CreateNetworkAsync(new NetworksCreateParameters
+            {
+                Name = openNetworkName,
+                Driver = "bridge",
+                CheckDuplicate = true,
+                Attachable = true
+            }).GetAwaiter().GetResult();
+        }
+
+        AttachSelfToNetwork(openNetworkName);
     }
 
     void EnsureIsolatedNetwork(IList<NetworkResponse> networks)
     {
         var isolatedNetworkName = _dockerMeta.NetworkNames[NetworkMode.Isolated];
-        if (networks.Any(n => n.Name == isolatedNetworkName))
+        if (networks.All(n => n.Name != isolatedNetworkName))
+        {
+            // Do not use internal network, it will disable the port mapping feature of docker
+            // reference: https://github.com/moby/moby/issues/36174#issuecomment-2527195596
+            _dockerClient.Networks.CreateNetworkAsync(new NetworksCreateParameters
+            {
+                Name = isolatedNetworkName,
+                Driver = "bridge",
+                CheckDuplicate = true,
+                Attachable = true,
+                Options = new Dictionary<string, string>
+                {
+                    ["com.docker.network.bridge.enable_ip_masquerade"] = "false"
+                }
+            }).GetAwaiter().GetResult();
+        }
+
+        AttachSelfToNetwork(isolatedNetworkName);
+    }
+
+    void AttachSelfToNetwork(string networkName)
+    {
+        var selfContainerId = Environment.GetEnvironmentVariable("HOSTNAME");
+        if (string.IsNullOrEmpty(selfContainerId))
             return;
 
-        _dockerClient.Networks.CreateNetworkAsync(new NetworksCreateParameters
+        try
         {
-            Name = isolatedNetworkName,
-            Driver = "bridge",
-            CheckDuplicate = true,
-            Attachable = true,
-            Internal = true
-        }).GetAwaiter().GetResult();
+            _dockerClient.Networks.ConnectNetworkAsync(networkName,
+                new NetworkConnectParameters { Container = selfContainerId }).GetAwaiter().GetResult();
+        }
+        catch
+        {
+            // ignore errors
+        }
     }
 
     public DockerMetadata GetMetadata() => _dockerMeta;

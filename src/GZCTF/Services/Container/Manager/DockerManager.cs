@@ -226,10 +226,23 @@ public class DockerManager : IContainerManager
         if (!_meta.ExposePort)
             return container;
 
-        var port = info.NetworkSettings.Ports
-            .FirstOrDefault(p =>
-                p.Key.StartsWith(config.ExposedPort.ToString())
-            ).Value.First().HostPort;
+        var portString = config.ExposedPort.ToString();
+        var bindings = info.NetworkSettings.Ports.Where(kv => kv.Key.StartsWith(portString)).Select(kv => kv.Value)
+            .SingleOrDefault();
+
+        if (bindings is not { Count: > 0 })
+        {
+            _logger.SystemLog(
+                StaticLocalizer[
+                    nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+                    config.Image.Split("/").LastOrDefault() ?? ""],
+                TaskStatus.Failed, LogLevel.Warning);
+
+            await DestroyContainerAsync(container, token);
+            return null;
+        }
+
+        var port = bindings.First().HostPort;
 
         if (int.TryParse(port, out var numPort))
             container.PublicPort = numPort;
