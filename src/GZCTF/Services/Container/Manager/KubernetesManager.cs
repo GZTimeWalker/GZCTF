@@ -81,7 +81,8 @@ public class KubernetesManager : IContainerManager
                     ["gzctf.gzti.me/Image"] = chalImage,
                     ["gzctf.gzti.me/TeamId"] = config.TeamId,
                     ["gzctf.gzti.me/UserId"] = config.UserId.ToString(),
-                    ["gzctf.gzti.me/ChallengeId"] = config.ChallengeId.ToString()
+                    ["gzctf.gzti.me/ChallengeId"] = config.ChallengeId.ToString(),
+                    ["gzctf.gzti.me/NetworkMode"] = config.NetworkMode.ToString().ToLowerInvariant()
                 }
             },
             Spec = new V1PodSpec

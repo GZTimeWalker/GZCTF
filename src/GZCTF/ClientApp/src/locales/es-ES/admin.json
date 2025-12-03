@@ -155,6 +155,15 @@
           "description": "Puntuación mínima: {{min_score}}pts",
           "label": "Proporción de puntuación mínima"
         },
+        "network_mode": {
+          "description": "Acceso a red pública",
+          "label": "Modo de red",
+          "modes": {
+            "custom": "Personalizado",
+            "isolated": "Aislado",
+            "open": "Abierto"
+          }
+        },
         "score": "Puntuación",
         "service_port": {
           "description": "Puerto de servicios de contenedor",

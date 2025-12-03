@@ -768,7 +768,7 @@ public class EditController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Game_ContainerCreationNotAllowed)]));
 
-        if (challenge.ContainerImage is null || challenge.ContainerExposePort is null)
+        if (challenge.ContainerImage is null || challenge.ExposePort is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_ConfigError)]));
 
         var user = await userManager.GetUserAsync(User);
@@ -784,8 +784,8 @@ public class EditController(
                 CPUCount = challenge.CPUCount ?? 1,
                 MemoryLimit = challenge.MemoryLimit ?? 64,
                 StorageLimit = challenge.StorageLimit ?? 256,
-                ExposedPort = challenge.ContainerExposePort ??
-                              throw new ArgumentException(localizer[nameof(Resources.Program.Container_InvalidPort)])
+                NetworkMode = challenge.NetworkMode ?? NetworkMode.Open,
+                ExposedPort = challenge.ExposePort.Value,
             }, token);
 
         if (container is null)

@@ -652,7 +652,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 Category = ChallengeCategory.Misc,
                 Type = ChallengeType.DynamicContainer,
                 ContainerImage = "ghcr.io/gzctf/challenge-base/echo:latest",
-                ContainerExposePort = 70,
+                ExposePort = 70,
                 FlagTemplate = "flag{The quick brown fox jumps over the lazy dog}",
                 Hints = [],
                 IsEnabled = true,

@@ -75,7 +75,7 @@ public class TransferChallengeTests
             MemoryLimit = 128,
             CPUCount = 2,
             StorageLimit = 512,
-            ContainerExposePort = 9999,
+            ExposePort = 9999,
             FileName = "exploit",
             Flags = []
         };

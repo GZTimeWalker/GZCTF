@@ -117,7 +117,7 @@ public static class TransferExtensions
                     MemoryLimit = challenge.MemoryLimit ?? 64,
                     CpuCount = challenge.CPUCount ?? 1,
                     StorageLimit = challenge.StorageLimit ?? 256,
-                    ExposePort = challenge.ContainerExposePort ?? 80,
+                    ExposePort = challenge.ExposePort ?? 80,
                     FileName = challenge.FileName
                 };
             }
@@ -273,7 +273,7 @@ public static class TransferExtensions
             challenge.MemoryLimit = transfer.Container.MemoryLimit;
             challenge.CPUCount = transfer.Container.CpuCount;
             challenge.StorageLimit = transfer.Container.StorageLimit;
-            challenge.ContainerExposePort = transfer.Container.ExposePort;
+            challenge.ExposePort = transfer.Container.ExposePort;
             challenge.FileName = transfer.Container.FileName;
 
             return challenge;

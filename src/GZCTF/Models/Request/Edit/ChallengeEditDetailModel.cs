@@ -94,26 +94,27 @@ public class ChallengeEditDetailModel
     /// <summary>
     /// Memory limit (MB)
     /// </summary>
-    [Required]
     public int? MemoryLimit { get; set; } = 64;
 
     /// <summary>
     /// CPU limit (0.1 CPUs)
     /// </summary>
-    [Required]
     public int? CPUCount { get; set; } = 1;
 
     /// <summary>
     /// Storage limit (MB)
     /// </summary>
-    [Required]
     public int? StorageLimit { get; set; } = 256;
 
     /// <summary>
     /// Container exposed port
     /// </summary>
-    [Required]
-    public int? ContainerExposePort { get; set; } = 80;
+    public int? ExposePort { get; set; } = 80;
+
+    /// <summary>
+    /// Container network mode
+    /// </summary>
+    public NetworkMode? NetworkMode { get; set; }
 
     /// <summary>
     /// Whether to record traffic
@@ -170,7 +171,8 @@ public class ChallengeEditDetailModel
             MemoryLimit = chal.MemoryLimit,
             CPUCount = chal.CPUCount,
             StorageLimit = chal.StorageLimit,
-            ContainerExposePort = chal.ContainerExposePort,
+            ExposePort = chal.ExposePort,
+            NetworkMode = chal.NetworkMode,
             EnableTrafficCapture = chal.EnableTrafficCapture,
             DisableBloodBonus = chal.DisableBloodBonus,
             OriginalScore = chal.OriginalScore,

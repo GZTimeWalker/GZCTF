@@ -48,6 +48,13 @@ export enum SubmissionType {
   Normal = "Normal",
 }
 
+/** Container network mode */
+export enum NetworkMode {
+  Open = "Open",
+  Isolated = "Isolated",
+  Custom = "Custom",
+}
+
 /** Container status */
 export enum ContainerStatus {
   Pending = "Pending",
@@ -1149,22 +1156,24 @@ export interface ChallengeEditDetailModel {
    * Memory limit (MB)
    * @format int32
    */
-  memoryLimit: number;
+  memoryLimit?: number | null;
   /**
    * CPU limit (0.1 CPUs)
    * @format int32
    */
-  cpuCount: number;
+  cpuCount?: number | null;
   /**
    * Storage limit (MB)
    * @format int32
    */
-  storageLimit: number;
+  storageLimit?: number | null;
   /**
    * Container exposed port
    * @format int32
    */
-  containerExposePort: number;
+  exposePort?: number | null;
+  /** Container network mode */
+  networkMode?: NetworkMode | null;
   /** Whether to record traffic */
   enableTrafficCapture?: boolean | null;
   /** Whether to disable blood bonus */
@@ -1343,10 +1352,12 @@ export interface ChallengeUpdateModel {
    * Container exposed port
    * @format int32
    */
-  containerExposePort?: number | null;
-  /** Is traffic capture enabled */
+  exposePort?: number | null;
+  /** Container network mode */
+  networkMode?: NetworkMode | null;
+  /** Is traffic capture enabled (disabled by default) */
   enableTrafficCapture?: boolean | null;
-  /** Is blood bonus disabled */
+  /** Is blood bonus disabled (enable by default) */
   disableBloodBonus?: boolean | null;
   /**
    * Initial score

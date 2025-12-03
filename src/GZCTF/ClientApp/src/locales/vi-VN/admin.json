@@ -155,6 +155,15 @@
           "description": "Điểm tối thiểu: {{min_score}} pts",
           "label": "Tỉ lệ Điểm Tối thiểu"
         },
+        "network_mode": {
+          "description": "Truy cập mạng công khai",
+          "label": "Chế độ mạng",
+          "modes": {
+            "custom": "Tùy chỉnh",
+            "isolated": "Cách ly",
+            "open": "Mở"
+          }
+        },
         "score": "Điểm",
         "service_port": {
           "description": "Cổng dịch vụ của container.",

@@ -155,6 +155,15 @@
           "description": "Score min: {{min_score}} pts",
           "label": "Ratio du score minimum"
         },
+        "network_mode": {
+          "description": "Accès réseau public",
+          "label": "Mode réseau",
+          "modes": {
+            "custom": "Personnalisé",
+            "isolated": "Isolé",
+            "open": "Ouvert"
+          }
+        },
         "score": "Score",
         "service_port": {
           "description": "Port des services de conteneur",

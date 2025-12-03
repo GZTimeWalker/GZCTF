@@ -155,6 +155,15 @@
           "description": "最低点数：{{min_score}}pts",
           "label": "最低点比率"
         },
+        "network_mode": {
+          "description": "パブリックネットワークアクセス",
+          "label": "ネットワークモード",
+          "modes": {
+            "custom": "カスタム",
+            "isolated": "アイソレート",
+            "open": "オープン"
+          }
+        },
         "score": "チャレンジの点数",
         "service_port": {
           "description": "コンテナ内サービスのポート",

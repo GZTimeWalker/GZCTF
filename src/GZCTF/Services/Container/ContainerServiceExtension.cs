@@ -9,17 +9,17 @@ namespace GZCTF.Services.Container;
 public class ContainerProviderMetadata
 {
     /// <summary>
-    /// 公共访问入口
+    /// The public entry address for accessing the containers
     /// </summary>
     public string PublicEntry { get; set; } = string.Empty;
 
     /// <summary>
-    /// 端口映射类型
+    /// Port mapping type
     /// </summary>
     public ContainerPortMappingType PortMappingType { get; set; } = ContainerPortMappingType.Default;
 
     /// <summary>
-    /// 是否直接暴露端口
+    /// Whether to expose ports directly
     /// </summary>
     public bool ExposePort => PortMappingType == ContainerPortMappingType.Default;
 }
@@ -48,14 +48,10 @@ public static class ContainerServiceExtension
             };
 
         IServiceCollection AddManager(ContainerProvider config)
-        {
-            if (config.Type == ContainerProviderType.Kubernetes)
-                return services.AddSingleton<IContainerManager, KubernetesManager>();
-
-            if (config.DockerConfig?.SwarmMode is true)
-                return services.AddSingleton<IContainerManager, SwarmManager>();
-
-            return services.AddSingleton<IContainerManager, DockerManager>();
-        }
+            => config.Type switch
+            {
+                ContainerProviderType.Kubernetes => services.AddSingleton<IContainerManager, KubernetesManager>(),
+                _ => services.AddSingleton<IContainerManager, DockerManager>()
+            };
     }
 }

@@ -464,7 +464,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             CPUCount = 1,
             MemoryLimit = 256,
             StorageLimit = 128,
-            ContainerExposePort = 80
+            ExposePort = 80
         };
 
         var staticContainerFlag = new FlagContext
@@ -494,7 +494,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             CPUCount = 1,
             MemoryLimit = 512,
             StorageLimit = 256,
-            ContainerExposePort = 9999,
+            ExposePort = 9999,
             FlagTemplate = "flag{dyn4m1c_[GUID]}",
         };
 
@@ -741,7 +741,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
                 Assert.Equal(originalChallenge.ContainerImage, importedChallenge.ContainerImage);
                 Assert.Equal(originalChallenge.CPUCount, importedChallenge.CPUCount);
                 Assert.Equal(originalChallenge.MemoryLimit, importedChallenge.MemoryLimit);
-                Assert.Equal(originalChallenge.ContainerExposePort, importedChallenge.ContainerExposePort);
+                Assert.Equal(originalChallenge.ExposePort, importedChallenge.ExposePort);
             }
         }
     }

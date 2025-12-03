@@ -117,7 +117,7 @@ public class GameInstanceRepository(
         Game game, CancellationToken token = default)
     {
         if (string.IsNullOrEmpty(gameInstance.Challenge.ContainerImage) ||
-            gameInstance.Challenge.ContainerExposePort is null)
+            gameInstance.Challenge.ExposePort is null)
         {
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.InstanceRepository_ContainerCreationFailed),
@@ -161,18 +161,21 @@ public class GameInstanceRepository(
             return new TaskResult<Container>(TaskStatus.Success, gameInstance.Container);
 
         await Context.Entry(gameInstance).Reference(e => e.FlagContext).LoadAsync(token);
+
+        var challenge = gameInstance.Challenge;
         var container = await service.CreateContainerAsync(new ContainerConfig
         {
             TeamId = team.Id.ToString(),
             UserId = user.Id,
             ChallengeId = gameInstance.ChallengeId,
             Flag = gameInstance.FlagContext?.Flag, // static challenge has no specific flag
-            Image = gameInstance.Challenge.ContainerImage,
-            CPUCount = gameInstance.Challenge.CPUCount ?? 1,
-            MemoryLimit = gameInstance.Challenge.MemoryLimit ?? 64,
-            StorageLimit = gameInstance.Challenge.StorageLimit ?? 256,
-            EnableTrafficCapture = gameInstance.Challenge.EnableTrafficCapture && game.IsActive,
-            ExposedPort = gameInstance.Challenge.ContainerExposePort ??
+            Image = challenge.ContainerImage,
+            CPUCount = challenge.CPUCount ?? 1,
+            MemoryLimit = challenge.MemoryLimit ?? 64,
+            StorageLimit = challenge.StorageLimit ?? 256,
+            NetworkMode = challenge.NetworkMode ?? NetworkMode.Open,
+            EnableTrafficCapture = challenge.EnableTrafficCapture && game.IsActive,
+            ExposedPort = challenge.ExposePort ??
                           throw new ArgumentException(
                               localizer[nameof(Resources.Program.InstanceRepository_InvalidPort)])
         }, token);
