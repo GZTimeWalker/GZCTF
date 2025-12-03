@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using GZCTF.Models;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
@@ -260,6 +261,25 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
 
         await using var context = new AppDbContext(optionsBuilder.Options);
         await context.Database.MigrateAsync();
+    }
+
+    /// <summary>
+    /// Create an authenticated HTTP client for the given user
+    /// </summary>
+    public HttpClient CreateAuthenticatedClient(TestDataSeeder.SeededUser user)
+    {
+        var client = CreateClient();
+
+        // Login the user
+        var loginResponse = client.PostAsJsonAsync("/api/Account/LogIn", new
+        {
+            UserName = user.UserName,
+            Password = user.Password
+        }).Result;
+
+        loginResponse.EnsureSuccessStatusCode();
+
+        return client;
     }
 
     public new async Task DisposeAsync()

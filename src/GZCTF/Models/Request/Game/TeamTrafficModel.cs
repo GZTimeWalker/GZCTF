@@ -1,4 +1,3 @@
-using GZCTF.Storage;
 using GZCTF.Storage.Interface;
 
 namespace GZCTF.Models.Request.Game;

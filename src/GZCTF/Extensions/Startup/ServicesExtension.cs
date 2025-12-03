@@ -80,6 +80,8 @@ static class ServicesExtension
             builder.Services.AddScoped<IExerciseInstanceRepository, ExerciseInstanceRepository>();
             builder.Services.AddScoped<IExerciseChallengeRepository, ExerciseChallengeRepository>();
             builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
+            builder.Services.AddScoped<IOAuthProviderRepository, OAuthProviderRepository>();
+            builder.Services.AddScoped<IUserMetadataService, UserMetadataService>();
 
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();

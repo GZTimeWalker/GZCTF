@@ -1,5 +1,4 @@
-﻿using GZCTF.Storage;
-using GZCTF.Storage.Interface;
+﻿using GZCTF.Storage.Interface;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace GZCTF.Services.HealthCheck;

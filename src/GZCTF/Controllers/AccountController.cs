@@ -1,16 +1,22 @@
-﻿using System.Net.Mime;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
+using GZCTF.Services.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using UserMetadataField = GZCTF.Models.Internal.UserMetadataField;
 
 namespace GZCTF.Controllers;
 
@@ -30,6 +36,10 @@ public class AccountController(
     IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
+    IOAuthProviderRepository oauthProviderRepository,
+    IOAuthService oauthService,
+    CacheHelper cacheHelper,
+    IUserMetadataService userMetadataService,
     ILogger<AccountController> logger,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
@@ -63,7 +73,23 @@ public class AccountController(
         if (string.IsNullOrWhiteSpace(password))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_PasswordRequired)]));
 
-        var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
+        var metadataValidation = await userMetadataService.ValidateAsync(
+            model.Metadata,
+            null,
+            allowLockedWrites: false,
+            enforceLockedRequirements: false,
+            token);
+
+        if (!metadataValidation.IsValid)
+            return BadRequest(new RequestResponse(metadataValidation.Errors.First()));
+
+        var user = new UserInfo
+        {
+            UserName = model.UserName,
+            Email = model.Email,
+            Role = Role.User,
+            UserMetadata = metadataValidation.Values
+        };
 
         user.UpdateByHttpContext(HttpContext);
 
@@ -343,6 +369,7 @@ public class AccountController(
     /// Use this API to update username and description. User permissions required.
     /// </remarks>
     /// <param name="model"></param>
+    /// <param name="token"></param>
     /// <response code="200">User data updated successfully</response>
     /// <response code="400">Validation failed or user data update failed</response>
     /// <response code="401">Unauthorized</response>
@@ -350,7 +377,7 @@ public class AccountController(
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
+    public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model, CancellationToken token = default)
     {
         var user = await userManager.GetUserAsync(User);
 
@@ -365,6 +392,21 @@ public class AccountController(
 
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
                 user, TaskStatus.Success);
+        }
+
+        if (model.Metadata is not null)
+        {
+            var metadataResult = await userMetadataService.ValidateAsync(
+                model.Metadata,
+                user!.UserMetadata,
+                allowLockedWrites: false,
+                enforceLockedRequirements: true,
+                token);
+
+            if (!metadataResult.IsValid)
+                return BadRequest(new RequestResponse(metadataResult.Errors.First()));
+
+            user.UserMetadata = metadataResult.Values;
         }
 
         user!.UpdateUserInfo(model);
@@ -495,6 +537,45 @@ public class AccountController(
     }
 
     /// <summary>
+    /// Update user metadata
+    /// </summary>
+    /// <remarks>
+    /// Allows user to edit unlocked metadata fields.
+    /// </remarks>
+    /// <response code="200">Metadata updated successfully</response>
+    /// <response code="400">Validation failed</response>
+    /// <response code="401">Unauthorized</response>
+    [HttpPut("/api/Account/Metadata")]
+    [RequireUser]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdateMetadata(
+        [FromBody] UserMetadataUpdateModel model,
+        CancellationToken token = default)
+    {
+        var user = await userManager.GetUserAsync(User);
+
+        var validation = await userMetadataService.ValidateAsync(
+            model.Metadata,
+            user!.UserMetadata,
+            allowLockedWrites: false,
+            enforceLockedRequirements: true,
+            token);
+
+        if (!validation.IsValid)
+            return BadRequest(new RequestResponse(validation.Errors.First()));
+
+        user.UserMetadata = validation.Values;
+        var result = await userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+            return HandleIdentityError(result.Errors);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// Get user information
     /// </summary>
     /// <remarks>
@@ -558,6 +639,204 @@ public class AccountController(
             TaskStatus.Success);
 
         return Ok(avatar.Url());
+    }
+
+    /// <summary>
+    /// Get user metadata field configuration
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get configured user metadata fields.
+    /// </remarks>
+    /// <response code="200">User metadata fields configuration retrieved successfully</response>
+    [HttpGet("/api/Account/MetadataFields")]
+    [ProducesResponseType(typeof(List<UserMetadataField>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> MetadataFields(CancellationToken token = default)
+    {
+        var fields = await oauthProviderRepository.GetMetadataFieldsAsync(token);
+        return Ok(fields);
+    }
+
+    /// <summary>
+    /// Get available OAuth providers
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get available OAuth providers for login.
+    /// </remarks>
+    /// <response code="200">Available OAuth providers</response>
+    [HttpGet("/api/Account/OAuth/Providers")]
+    [ProducesResponseType(typeof(Dictionary<string, string>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOAuthProviders(CancellationToken token = default)
+    {
+        var providers = await oauthProviderRepository.ListAsync(token);
+
+        var available = providers
+            .Where(p => p.Enabled)
+            .ToDictionary(p => p.Key, p => p.DisplayName ?? p.Key);
+
+        return Ok(available);
+    }
+
+    /// <summary>
+    /// Initiate OAuth login
+    /// </summary>
+    /// <remarks>
+    /// Use this API to initiate OAuth login with a provider. Returns the authorization URL.
+    /// </remarks>
+    /// <param name="providerKey">Provider identifier</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="200">Authorization URL returned</response>
+    /// <response code="400">Invalid provider or provider not enabled</response>
+    [HttpGet("/api/Account/OAuth/Login/{providerKey}")]
+    [ProducesResponseType(typeof(RequestResponse<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> OAuthLogin(
+        [RegularExpression("^[a-zA-Z0-9_-]+$")]
+        string providerKey,
+        CancellationToken token = default)
+    {
+        var providerEntity = await oauthProviderRepository.FindByKeyAsync(providerKey, token);
+        if (providerEntity is null || !providerEntity.Enabled)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserNotExist)]));
+
+        // Generate state for CSRF protection
+        var state = Guid.NewGuid().ToString("N");
+        var cacheKey = CacheKey.OAuthState(state);
+
+        // Store state in cache for validation (10 minutes expiry)
+        await cacheHelper.SetStringAsync(
+            cacheKey,
+            providerKey,
+            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) },
+            token);
+
+        var redirectUri =
+            $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{providerKey}";
+        var queryParameters = new Dictionary<string, string?>
+        {
+            ["client_id"] = providerEntity.ClientId,
+            ["redirect_uri"] = redirectUri,
+            ["response_type"] = "code",
+            ["state"] = state
+        };
+
+        var scopes = providerEntity.Scopes?.Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+        if (scopes is { Length: > 0 })
+            queryParameters["scope"] = string.Join(" ", scopes);
+
+        var authUrl = QueryHelpers.AddQueryString(providerEntity.AuthorizationEndpoint, queryParameters);
+
+        return Ok(new RequestResponse<string>(
+            "OAuth authorization URL",
+            authUrl,
+            StatusCodes.Status200OK));
+    }
+
+    /// <summary>
+    /// OAuth callback endpoint
+    /// </summary>
+    /// <remarks>
+    /// This endpoint handles OAuth callbacks from providers. Do not call directly.
+    /// </remarks>
+    /// <param name="providerKey">Provider identifier</param>
+    /// <param name="code">Authorization code</param>
+    /// <param name="state">State parameter</param>
+    /// <param name="error">Error returned by provider</param>
+    /// <param name="token">Cancellation token</param>
+    /// <response code="302">Redirects to frontend with result</response>
+    [HttpGet("/api/Account/OAuth/Callback/{providerKey}")]
+    public async Task<IActionResult> OAuthCallback(
+        [RegularExpression("^[a-zA-Z0-9_-]+$")]
+        string providerKey,
+        [FromQuery] string? code,
+        [FromQuery] string? state,
+        [FromQuery] string? error,
+        CancellationToken token = default)
+    {
+        var providerEntity = await oauthProviderRepository.FindByKeyAsync(providerKey, token);
+        if (providerEntity is null)
+            return Redirect("/account/login?error=oauth_provider_missing");
+
+        if (string.IsNullOrWhiteSpace(state))
+        {
+            logger.SystemLog(
+                $"OAuth callback missing state for provider {providerEntity.Key}",
+                TaskStatus.Failed,
+                LogLevel.Warning);
+
+            return Redirect("/account/login?error=oauth_state_missing");
+        }
+
+        // Validate state
+        var cacheKey = CacheKey.OAuthState(state);
+        var storedProvider = await cacheHelper.GetStringAsync(cacheKey, token);
+        if (string.IsNullOrEmpty(storedProvider) ||
+            !string.Equals(storedProvider, providerKey, StringComparison.Ordinal))
+        {
+            logger.SystemLog(
+                $"OAuth callback state mismatch for provider {providerEntity.Key}",
+                TaskStatus.Failed,
+                LogLevel.Warning);
+
+            return Redirect("/account/login?error=oauth_state_mismatch");
+        }
+
+        // Clear state
+        await cacheHelper.RemoveAsync(cacheKey, token);
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            logger.SystemLog(
+                $"OAuth error from provider {providerEntity.Key}: {error}",
+                TaskStatus.Failed,
+                LogLevel.Warning);
+
+            return Redirect("/account/login?error=oauth_error");
+        }
+
+        if (string.IsNullOrEmpty(code))
+            return Redirect("/account/login?error=oauth_no_code");
+
+        try
+        {
+            // Exchange code for user info
+            var redirectUri =
+                $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/api/Account/OAuth/Callback/{providerKey}";
+            var oauthUser = await oauthService.ExchangeCodeForUserInfoAsync(providerEntity, code, redirectUri, token);
+
+            if (oauthUser is null)
+            {
+                logger.SystemLog(
+                    $"Failed to exchange OAuth code for provider {providerEntity.Key}",
+                    TaskStatus.Failed,
+                    LogLevel.Warning);
+
+                return Redirect("/account/login?error=oauth_exchange_failed");
+            }
+
+            // Get or create user
+            var (user, isNewUser) = await oauthService.GetOrCreateUserFromOAuthAsync(providerEntity, oauthUser, token);
+
+            // Sign in the user
+            await signInManager.SignInAsync(user, isPersistent: true);
+
+            logger.SystemLog(
+                $"User {user.Email} {(isNewUser ? "registered and" : "")} logged in via OAuth provider {providerEntity.Key}",
+                TaskStatus.Success,
+                LogLevel.Information);
+
+            // Redirect to appropriate page
+            return Redirect(isNewUser ? "/account/profile?firstLogin=true" : "/");
+        }
+        catch (OAuthLoginException ex)
+        {
+            logger.LogWarning(ex, "OAuth login failed for provider {Provider}", providerEntity.Key);
+            return Redirect($"/account/login?error={ex.QueryCode}");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing OAuth callback for provider {Provider}", providerEntity.Key);
+            return Redirect($"/account/login?error=oauth_processing_error");
+        }
     }
 
     string GetEmailLink(string action, string token, string? email)

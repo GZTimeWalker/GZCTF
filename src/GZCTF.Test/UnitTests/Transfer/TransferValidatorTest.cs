@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using GZCTF.Models.Transfer;
 using GZCTF.Utils;
 using Xunit;
@@ -113,10 +111,7 @@ public class TransferValidatorTest
             },
             Flags = new FlagsSection
             {
-                Static = new List<StaticFlagSection>
-                {
-                    new() { Value = "flag{test}" }
-                }
+                Static = [new() { Value = "flag{test}" }]
             }
         };
 
@@ -157,7 +152,7 @@ public class TransferValidatorTest
             },
             Flags = new FlagsSection
             {
-                Static = new List<StaticFlagSection> { new() { Value = "flag{test}" } }
+                Static = [new() { Value = "flag{test}" }]
             }
         };
 
@@ -182,7 +177,7 @@ public class TransferValidatorTest
             },
             Flags = new FlagsSection
             {
-                Static = new List<StaticFlagSection> { new() { Value = "flag{test}" } }
+                Static = [new() { Value = "flag{test}" }]
             }
         };
 
@@ -514,10 +509,7 @@ public class TransferValidatorTest
             Type = ChallengeType.StaticAttachment,
             Flags = new FlagsSection
             {
-                Static = new List<StaticFlagSection>
-                {
-                    new() { Value = "" } // Empty flag value
-                }
+                Static = [new() { Value = "" }]
             }
         };
 
@@ -536,10 +528,7 @@ public class TransferValidatorTest
             Type = ChallengeType.StaticAttachment,
             Flags = new FlagsSection
             {
-                Static = new List<StaticFlagSection>
-                {
-                    new() { Value = new string('a', 150) } // Exceeds 127 chars
-                }
+                Static = [new() { Value = new string('a', 150) }]
             }
         };
 

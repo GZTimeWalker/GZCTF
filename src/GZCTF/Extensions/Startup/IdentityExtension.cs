@@ -24,6 +24,12 @@ static class IdentityExtension
                         auth.SlidingExpiration = true;
                         auth.ExpireTimeSpan = TimeSpan.FromDays(7);
                     });
+
+                    options.ExternalCookie?.Configure(auth =>
+                    {
+                        auth.Cookie.Name = "GZCTF_External";
+                        auth.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                    });
                 });
 
             builder.Services.AddIdentityCore<UserInfo>(options =>
@@ -44,6 +50,9 @@ static class IdentityExtension
             builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
                 o.TokenLifespan = TimeSpan.FromHours(3)
             );
+
+            // Configure OAuth support
+            builder.ConfigureOAuth();
         }
     }
 }

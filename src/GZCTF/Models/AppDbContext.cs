@@ -41,11 +41,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+    public DbSet<OAuthProvider> OAuthProviders { get; set; } = null!;
+    public DbSet<UserMetadataField> UserMetadataFields { get; set; } = null!;
 
     static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
             v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
             v => JsonSerializer.Deserialize<T>(v, JsonOptions)
+        );
+
+    static ValueConverter<T, string> GetJsonConverterNonNull<T>() where T : class, new() =>
+        new(
+            v => JsonSerializer.Serialize(v, JsonOptions),
+            v => JsonSerializer.Deserialize<T>(v, JsonOptions) ?? new()
         );
 
     static ValueComparer<TList> GetEnumerableComparer<TList, T>()
@@ -60,9 +68,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         base.OnModelCreating(builder);
 
         var listConverter = GetJsonConverter<List<string>>();
-        var setConverter = GetJsonConverter<HashSet<string>>();
+        var listConverterNonNull = GetJsonConverterNonNull<List<string>>();
         var listComparer = GetEnumerableComparer<List<string>, string>();
-        var setComparer = GetEnumerableComparer<HashSet<string>, string>();
+        var metadataConverter = GetJsonConverterNonNull<Dictionary<string, string>>();
+        var metadataComparer = GetEnumerableComparer<Dictionary<string, string>, KeyValuePair<string, string>>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -74,6 +83,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.Property(e => e.ExerciseVisible)
                 .HasDefaultValue(true);
+
+            entity.Property(e => e.UserMetadata)
+                .HasColumnType("jsonb")
+                .HasConversion(metadataConverter)
+                .Metadata
+                .SetValueComparer(metadataComparer);
+
+            entity.HasOne(e => e.OAuthProvider)
+                .WithMany()
+                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(e => e.OAuthProviderId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
@@ -438,6 +459,39 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Property(e => e.Status)
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
+        });
+
+        builder.Entity<OAuthProvider>(entity =>
+        {
+            entity.Property(e => e.Scopes)
+                .HasColumnType("jsonb")
+                .HasConversion(listConverterNonNull)
+                .Metadata
+                .SetValueComparer(listComparer);
+
+            entity.Property(e => e.FieldMapping)
+                .HasColumnType("jsonb")
+                .HasConversion(metadataConverter)
+                .Metadata
+                .SetValueComparer(metadataComparer);
+
+            entity.HasIndex(e => e.Key)
+                .IsUnique();
+        });
+
+        builder.Entity<UserMetadataField>(entity =>
+        {
+            entity.Property(e => e.Type)
+                .HasConversion<int>();
+
+            entity.Property(e => e.Options)
+                .HasColumnType("jsonb")
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v ?? new List<string>(), JsonOptions),
+                    v => JsonSerializer.Deserialize<List<string>>(v, JsonOptions));
+
+            entity.HasIndex(e => e.Key)
+                .IsUnique();
         });
     }
 }

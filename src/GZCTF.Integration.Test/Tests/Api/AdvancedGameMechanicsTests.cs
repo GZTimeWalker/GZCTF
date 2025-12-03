@@ -50,7 +50,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 Content = "Challenge with submission limit",
                 Category = ChallengeCategory.Misc,
                 Type = ChallengeType.StaticAttachment,
-                Hints = new List<string>(),
+                Hints = [],
                 IsEnabled = true,
                 SubmissionLimit = 3, // Limit to 3 submissions
                 OriginalScore = 100,
@@ -131,7 +131,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 Content = "Challenge with past deadline",
                 Category = ChallengeCategory.Misc,
                 Type = ChallengeType.StaticAttachment,
-                Hints = new List<string>(),
+                Hints = [],
                 IsEnabled = true,
                 SubmissionLimit = 0, // No submission limit
                 DeadlineUtc = DateTimeOffset.UtcNow.AddMinutes(-5), // Deadline 5 minutes ago
@@ -375,7 +375,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 Content = "Challenge to toggle",
                 Category = ChallengeCategory.Misc,
                 Type = ChallengeType.StaticAttachment,
-                Hints = new List<string>(),
+                Hints = [],
                 IsEnabled = true,
                 SubmissionLimit = 0,
                 OriginalScore = 200,
@@ -565,7 +565,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 Content = "Challenge to re-enable",
                 Category = ChallengeCategory.Misc,
                 Type = ChallengeType.StaticAttachment,
-                Hints = new List<string>(),
+                Hints = [],
                 IsEnabled = true,
                 SubmissionLimit = 0,
                 OriginalScore = 150,

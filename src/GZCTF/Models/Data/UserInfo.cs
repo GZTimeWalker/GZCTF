@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
-using System.Text.Json.Serialization;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using MemoryPack;
@@ -70,6 +69,18 @@ public partial class UserInfo : IdentityUser<Guid>
     /// </summary>
     public bool ExerciseVisible { get; set; } = true;
 
+    /// <summary>
+    /// Associated OAuth provider identifier if account created via OAuth
+    /// </summary>
+    public int? OAuthProviderId { get; set; }
+
+    /// <summary>
+    /// User metadata stored as JSON (flexible user fields)
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    [MemoryPackIgnore]
+    public Dictionary<string, string> UserMetadata { get; set; } = new();
+
     [NotMapped]
     [MemoryPackIgnore]
     public string? AvatarUrl => AvatarHash is null ? null : $"/assets/{AvatarHash}/avatar";
@@ -122,6 +133,7 @@ public partial class UserInfo : IdentityUser<Guid>
         PhoneNumber = model.Phone ?? PhoneNumber;
         RealName = model.RealName ?? RealName;
         StdNumber = model.StdNumber ?? StdNumber;
+
     }
 
     #region Db Relationship
@@ -131,6 +143,13 @@ public partial class UserInfo : IdentityUser<Guid>
     /// </summary>
     [MaxLength(Limits.FileHashLength)]
     public string? AvatarHash { get; set; }
+
+    /// <summary>
+    /// Navigation reference to the OAuth provider linked with this user
+    /// </summary>
+    [MemoryPackIgnore]
+    public OAuthProvider? OAuthProvider { get; set; }
+
 
     /// <summary>
     /// Personal submission records

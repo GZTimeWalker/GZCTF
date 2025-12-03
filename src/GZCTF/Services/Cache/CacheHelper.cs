@@ -270,4 +270,9 @@ public static class CacheKey
     /// HashPow cache
     /// </summary>
     public static string HashPow(string key) => $"_HP_{key}";
+
+    /// <summary>
+    /// OAuth state cache
+    /// </summary>
+    public static string OAuthState(string state) => $"_OAuthState_{state}";
 }

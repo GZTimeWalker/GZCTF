@@ -1,6 +1,4 @@
-﻿using GZCTF.Models.Request.Game;
-
-namespace GZCTF.Repositories.Interface;
+﻿namespace GZCTF.Repositories.Interface;
 
 public interface IGameNoticeRepository : IRepository
 {

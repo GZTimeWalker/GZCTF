@@ -3,13 +3,10 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
-using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Info;
-using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
@@ -54,7 +51,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Test Post Title",
             Summary = "This is a test post summary",
             Content = "# Test Content\n\nThis is the full content of the test post.",
-            Tags = new List<string> { "test", "integration" }
+            Tags = ["test", "integration"]
             // Do NOT include IsPinned during creation - it would trigger pin-only mode
         };
 
@@ -197,7 +194,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Original Title",
             Summary = "Original Summary",
             Content = "Original Content",
-            Tags = new List<string> { "original" }
+            Tags = ["original"]
         };
 
         var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
@@ -216,7 +213,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Updated Title",
             Summary = "Updated Summary",
             Content = "Updated Content",
-            Tags = new List<string> { "updated", "modified" }
+            Tags = ["updated", "modified"]
             // IsPinned is null - pin status should be preserved automatically
         };
 
@@ -262,7 +259,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Important Post",
             Summary = "This is an important announcement",
             Content = "# Important\n\nThis content should not be lost when pinning.",
-            Tags = new List<string> { "important", "announcement" }
+            Tags = ["important", "announcement"]
         };
 
         var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
@@ -339,7 +336,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Original Title",
             Summary = "Original Summary",
             Content = "Original Content",
-            Tags = new List<string> { "original" }
+            Tags = ["original"]
         };
 
         var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
@@ -353,7 +350,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "This Should Be Ignored",
             Summary = "This Should Be Ignored",
             Content = "This Should Be Ignored",
-            Tags = new List<string> { "ignored" },
+            Tags = ["ignored"],
             IsPinned = true // When IsPinned is present, only pin status is updated
         };
 
@@ -397,7 +394,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Original Title",
             Summary = "Original Summary",
             Content = "Original Content",
-            Tags = new List<string> { "tag1", "tag2" }
+            Tags = ["tag1", "tag2"]
         };
 
         var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
@@ -456,7 +453,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Tagged Post",
             Summary = "Summary",
             Content = "Content",
-            Tags = new List<string> { "old-tag" }
+            Tags = ["old-tag"]
         };
 
         var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
@@ -472,7 +469,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         // Act: Update only tags
         var updateModel = new PostEditModel
         {
-            Tags = new List<string> { "new-tag", "another-tag" }
+            Tags = ["new-tag", "another-tag"]
         };
 
         var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel);
@@ -517,7 +514,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Pinned Announcement",
             Summary = "Important announcement summary",
             Content = "# Important\n\nThis is a pinned announcement with important content.",
-            Tags = new List<string> { "announcement", "pinned" }
+            Tags = ["announcement", "pinned"]
         };
 
         var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
@@ -539,7 +536,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Title = "Updated Pinned Announcement",
             Summary = "Updated summary",
             Content = "# Updated\n\nThis is the updated content that should not be lost.",
-            Tags = new List<string> { "announcement", "pinned", "updated" }
+            Tags = ["announcement", "pinned", "updated"]
             // IsPinned is null - this tells the backend to preserve the current pin status
         };
 

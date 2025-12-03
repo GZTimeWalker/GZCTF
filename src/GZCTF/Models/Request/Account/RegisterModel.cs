@@ -34,4 +34,9 @@ public class RegisterModel : ModelWithCaptcha
     [EmailAddress(ErrorMessageResourceName = nameof(Resources.Program.Model_EmailMalformed),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Optional metadata values for dynamic fields
+    /// </summary>
+    public Dictionary<string, string?>? Metadata { get; set; }
 }

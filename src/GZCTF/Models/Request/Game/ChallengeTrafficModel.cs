@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Storage;
 using GZCTF.Storage.Interface;
 
 namespace GZCTF.Models.Request.Game;
