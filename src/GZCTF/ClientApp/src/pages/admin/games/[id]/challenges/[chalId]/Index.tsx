@@ -29,7 +29,7 @@ import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { ScoreFunc } from '@Components/charts/ScoreFunc'
-import { getInputNumber, showErrorMsg } from '@Utils/Shared'
+import { getInputNumber, NetworkModeItem, NetworkModeList, showErrorMsg, useNetworkModeMap } from '@Utils/Shared'
 import {
   ChallengeCategoryItem,
   useChallengeCategoryLabelMap,
@@ -39,7 +39,7 @@ import {
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Hooks/useEdit'
 import { useGame } from '@Hooks/useGame'
-import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel } from '@Api'
+import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel, NetworkMode } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
 const GameChallengeEdit: FC = () => {
@@ -60,6 +60,7 @@ const GameChallengeEdit: FC = () => {
 
   const [minRate, setMinRate] = useState((challenge?.minScoreRate ?? 0.25) * 100)
   const [category, setCategory] = useState<string | null>(challenge?.category ?? ChallengeCategory.Misc)
+  const [networkMode, setNetworkMode] = useState<string | null>(challenge?.networkMode ?? NetworkMode.Open)
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
   const [previewOpened, setPreviewOpened] = useState(false)
@@ -67,6 +68,7 @@ const GameChallengeEdit: FC = () => {
   const modals = useModals()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
+  const networkModeLabelMap = useNetworkModeMap()
 
   const { t } = useTranslation()
 
@@ -472,6 +474,22 @@ const GameChallengeEdit: FC = () => {
                   onChange={(e) => setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })}
                   classNames={{ root: misc.flexGrow }}
                 />
+                <NumberInput
+                  label={t('admin.content.games.challenges.service_port.label')}
+                  min={1}
+                  max={65535}
+                  w="8rem"
+                  required
+                  disabled={disabled}
+                  stepHoldDelay={500}
+                  stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+                  value={challengeInfo.exposePort ?? 80}
+                  onChange={(e) => {
+                    const number = getInputNumber(e)
+                    if (isNaN(number)) return
+                    setChallengeInfo({ ...challengeInfo, exposePort: number })
+                  }}
+                />
                 <Button
                   miw="8rem"
                   color={challenge?.testContainer ? 'orange' : 'green'}
@@ -496,21 +514,22 @@ const GameChallengeEdit: FC = () => {
               />
             </Grid.Col>
             <Grid.Col span={2}>
-              <NumberInput
-                label={t('admin.content.games.challenges.service_port.label')}
-                description={t('admin.content.games.challenges.service_port.description')}
-                min={1}
-                max={65535}
+              <Select
                 required
+                label={t('admin.content.games.challenges.network_mode.label')}
+                description={t('admin.content.games.challenges.network_mode.description')}
+                placeholder="Category"
+                value={networkMode ?? NetworkMode.Open}
                 disabled={disabled}
-                stepHoldDelay={500}
-                stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-                value={challengeInfo.exposePort ?? 80}
                 onChange={(e) => {
-                  const number = getInputNumber(e)
-                  if (isNaN(number)) return
-                  setChallengeInfo({ ...challengeInfo, exposePort: number })
+                  setNetworkMode(e)
+                  setChallengeInfo({ ...challengeInfo, networkMode: e as NetworkMode })
                 }}
+                renderOption={NetworkModeItem}
+                data={NetworkModeList.map((mode) => {
+                  const data = networkModeLabelMap.get(mode)
+                  return { value: mode, ...data } as ComboboxItem
+                })}
               />
             </Grid.Col>
             <Grid.Col span={2}>

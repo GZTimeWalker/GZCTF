@@ -155,6 +155,15 @@
           "description": "최소 점수: {{min_score}} 점",
           "label": "최소 점수 비율"
         },
+        "network_mode": {
+          "description": "공용 네트워크 액세스",
+          "label": "네트워크 모드",
+          "modes": {
+            "custom": "사용자 지정",
+            "isolated": "격리됨",
+            "open": "공개"
+          }
+        },
         "score": "점수",
         "service_port": {
           "description": "컨테이너 포트 정보",

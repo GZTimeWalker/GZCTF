@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251202124631_AddNetworkMode")]
+    [Migration("20251203143253_AddNetworkMode")]
     partial class AddNetworkMode
     {
         /// <inheritdoc />
@@ -297,7 +297,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte?>("NetworkMode")
-                        .HasColumnType("smallint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((byte)0);
 
                     b.Property<int?>("StorageLimit")
                         .HasColumnType("integer");
@@ -592,7 +594,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<byte?>("NetworkMode")
-                        .HasColumnType("smallint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((byte)0);
 
                     b.Property<int>("OriginalScore")
                         .HasColumnType("integer");

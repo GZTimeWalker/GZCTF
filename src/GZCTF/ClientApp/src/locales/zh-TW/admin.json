@@ -155,6 +155,15 @@
           "description": "最低分值：{{min_score}}pts",
           "label": "最低分比例"
         },
+        "network_mode": {
+          "description": "公共網路存取",
+          "label": "網路模式",
+          "modes": {
+            "custom": "自訂",
+            "isolated": "隔離",
+            "open": "開放"
+          }
+        },
         "score": "題目分值",
         "service_port": {
           "description": "容器內服務的埠號",

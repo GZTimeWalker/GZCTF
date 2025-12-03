@@ -59,10 +59,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     {
         base.OnModelCreating(builder);
 
+        // var setConverter = GetJsonConverter<HashSet<string>>();
+        // var setComparer = GetEnumerableComparer<HashSet<string>, string>();
         var listConverter = GetJsonConverter<List<string>>();
-        var setConverter = GetJsonConverter<HashSet<string>>();
         var listComparer = GetEnumerableComparer<List<string>, string>();
-        var setComparer = GetEnumerableComparer<HashSet<string>, string>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -244,6 +244,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .Metadata
                 .SetValueComparer(listComparer);
 
+            entity.Property(e => e.NetworkMode)
+                .HasConversion<byte>()
+                .HasDefaultValue(NetworkMode.Open);
+
             entity.HasMany(e => e.Flags)
                 .WithOne(e => e.Challenge)
                 .HasForeignKey(e => e.ChallengeId);
@@ -290,6 +294,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion(listConverter)
                 .Metadata
                 .SetValueComparer(listComparer);
+
+            entity.Property(e => e.NetworkMode)
+                .HasConversion<byte>()
+                .HasDefaultValue(NetworkMode.Open);
 
             entity.HasOne(e => e.Attachment)
                 .WithMany()

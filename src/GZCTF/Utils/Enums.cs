@@ -374,7 +374,7 @@ public enum Difficulty : byte
 /// <summary>
 /// Container network mode
 /// </summary>
-[JsonConverter(typeof(JsonNumberEnumConverter<NetworkMode>))]
+[JsonConverter(typeof(JsonStringEnumConverter<NetworkMode>))]
 public enum NetworkMode : byte
 {
     /// <summary>

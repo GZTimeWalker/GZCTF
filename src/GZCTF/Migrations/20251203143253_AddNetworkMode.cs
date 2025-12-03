@@ -24,13 +24,15 @@ namespace GZCTF.Migrations
                 name: "NetworkMode",
                 table: "GameChallenges",
                 type: "smallint",
-                nullable: true);
+                nullable: true,
+                defaultValue: (byte)0);
 
             migrationBuilder.AddColumn<byte>(
                 name: "NetworkMode",
                 table: "ExerciseChallenges",
                 type: "smallint",
-                nullable: true);
+                nullable: true,
+                defaultValue: (byte)0);
         }
 
         /// <inheritdoc />

@@ -155,6 +155,15 @@
           "description": "最低分值：{{min_score}}pts",
           "label": "最低分比例"
         },
+        "network_mode": {
+          "description": "公共网络访问",
+          "label": "网络模式",
+          "modes": {
+            "custom": "自定义",
+            "isolated": "隔离",
+            "open": "开放"
+          }
+        },
         "score": "题目分值",
         "service_port": {
           "description": "容器内服务的端口号",

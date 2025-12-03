@@ -155,6 +155,15 @@
           "description": "Min. Punktzahl: {{min_score}} Punkte",
           "label": "Minimales Punktzahlverhältnis"
         },
+        "network_mode": {
+          "description": "Öffentlicher Netzwerkzugriff",
+          "label": "Netzwerkmodus",
+          "modes": {
+            "custom": "Benutzerdef.",
+            "isolated": "Isoliert",
+            "open": "Offen"
+          }
+        },
         "score": "Punkte",
         "service_port": {
           "description": "Port der Containerdienste",

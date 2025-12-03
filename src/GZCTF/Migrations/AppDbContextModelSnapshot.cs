@@ -294,7 +294,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte?>("NetworkMode")
-                        .HasColumnType("smallint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((byte)0);
 
                     b.Property<int?>("StorageLimit")
                         .HasColumnType("integer");
@@ -589,7 +591,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<byte?>("NetworkMode")
-                        .HasColumnType("smallint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((byte)0);
 
                     b.Property<int>("OriginalScore")
                         .HasColumnType("integer");

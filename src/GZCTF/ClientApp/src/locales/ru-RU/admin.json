@@ -155,6 +155,15 @@
           "description": "Мин. счет: {{min_score}}",
           "label": "Минимальные очки"
         },
+        "network_mode": {
+          "description": "Доступ к публичной сети",
+          "label": "Режим сети",
+          "modes": {
+            "custom": "Кастомный",
+            "isolated": "Изолированный",
+            "open": "Открытый"
+          }
+        },
         "score": "Очки",
         "service_port": {
           "description": "Внутр. порт контейнера",

@@ -50,9 +50,9 @@ export enum SubmissionType {
 
 /** Container network mode */
 export enum NetworkMode {
-  Open = 0,
-  Isolated = 32,
-  Custom = 255,
+  Open = "Open",
+  Isolated = "Isolated",
+  Custom = "Custom",
 }
 
 /** Container status */

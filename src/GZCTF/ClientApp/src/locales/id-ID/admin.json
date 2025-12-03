@@ -155,6 +155,15 @@
           "description": "Skor minimum: {{min_score}}pts",
           "label": "Rasio skor minimum"
         },
+        "network_mode": {
+          "description": "Akses jaringan publik",
+          "label": "Mode jaringan",
+          "modes": {
+            "custom": "Kustom",
+            "isolated": "Terisolasi",
+            "open": "Terbuka"
+          }
+        },
         "score": "Skor",
         "service_port": {
           "description": "Port servis container",
