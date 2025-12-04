@@ -126,7 +126,7 @@ public class DockerManager : IContainerManager
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, auth,
                 new Progress<JSONMessage>(msg =>
                 {
-                    Console.WriteLine($@"{msg.Status}|{msg.ProgressMessage}|{msg.ErrorMessage}");
+                    Console.WriteLine($@"{msg.Status}|{msg.Progress}|{msg.Error}");
                 }), token);
 
             goto CreateDockerContainer;

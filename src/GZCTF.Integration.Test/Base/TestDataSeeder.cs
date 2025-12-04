@@ -13,15 +13,15 @@ namespace GZCTF.Integration.Test.Base;
 public static class TestDataSeeder
 {
     // Shared game instances for test reuse
-    private static int _sharedBasicGameId;
-    private static int _sharedInviteGameId;
-    private static int _sharedPracticeModeGameId;
-    private static int _sharedWithReviewGameId;
+    private static int SharedBasicGameId;
+    private static int SharedInviteGameId;
+    private static int SharedPracticeModeGameId;
+    private static int SharedWithReviewGameId;
 
-    private static readonly SemaphoreSlim _basicGameLock = new(1, 1);
-    private static readonly SemaphoreSlim _inviteGameLock = new(1, 1);
-    private static readonly SemaphoreSlim _practiceModeGameLock = new(1, 1);
-    private static readonly SemaphoreSlim _withReviewGameLock = new(1, 1);
+    private static readonly SemaphoreSlim BasicGameLock = new(1, 1);
+    private static readonly SemaphoreSlim InviteGameLock = new(1, 1);
+    private static readonly SemaphoreSlim PracticeModeGameLock = new(1, 1);
+    private static readonly SemaphoreSlim WithReviewGameLock = new(1, 1);
 
     /// <summary>
     /// Get or create a shared basic game (no special configuration)
@@ -29,22 +29,22 @@ public static class TestDataSeeder
     /// </summary>
     public static async Task<int> GetOrCreateBasicGameAsync(IServiceProvider services)
     {
-        if (_sharedBasicGameId > 0)
-            return _sharedBasicGameId;
+        if (SharedBasicGameId > 0)
+            return SharedBasicGameId;
 
-        await _basicGameLock.WaitAsync();
+        await BasicGameLock.WaitAsync();
         try
         {
-            if (_sharedBasicGameId > 0)
-                return _sharedBasicGameId;
+            if (SharedBasicGameId > 0)
+                return SharedBasicGameId;
 
             var game = await CreateGameAsync(services, "Shared Basic Game");
-            _sharedBasicGameId = game.Id;
-            return _sharedBasicGameId;
+            SharedBasicGameId = game.Id;
+            return SharedBasicGameId;
         }
         finally
         {
-            _basicGameLock.Release();
+            BasicGameLock.Release();
         }
     }
 
@@ -54,33 +54,33 @@ public static class TestDataSeeder
     /// </summary>
     public static async Task<int> GetOrCreateInviteGameAsync(IServiceProvider services)
     {
-        if (_sharedInviteGameId > 0)
-            return _sharedInviteGameId;
+        if (SharedInviteGameId > 0)
+            return SharedInviteGameId;
 
-        await _inviteGameLock.WaitAsync();
+        await InviteGameLock.WaitAsync();
         try
         {
-            if (_sharedInviteGameId > 0)
-                return _sharedInviteGameId;
+            if (SharedInviteGameId > 0)
+                return SharedInviteGameId;
 
             var game = await CreateGameAsync(services, "Shared Invite Game");
 
             // Set game invite code
             using var scope = services.CreateScope();
             var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
-            var gameEntity = await gameRepo.GetGameById(game.Id, default);
+            var gameEntity = await gameRepo.GetGameById(game.Id, CancellationToken.None);
             if (gameEntity != null)
             {
                 gameEntity.InviteCode = "SHARED_INVITE_2025";
-                await gameRepo.SaveAsync(default);
+                await gameRepo.SaveAsync(CancellationToken.None);
             }
 
-            _sharedInviteGameId = game.Id;
-            return _sharedInviteGameId;
+            SharedInviteGameId = game.Id;
+            return SharedInviteGameId;
         }
         finally
         {
-            _inviteGameLock.Release();
+            InviteGameLock.Release();
         }
     }
 
@@ -90,23 +90,23 @@ public static class TestDataSeeder
     /// </summary>
     public static async Task<int> GetOrCreatePracticeModeGameAsync(IServiceProvider services)
     {
-        if (_sharedPracticeModeGameId > 0)
-            return _sharedPracticeModeGameId;
+        if (SharedPracticeModeGameId > 0)
+            return SharedPracticeModeGameId;
 
-        await _practiceModeGameLock.WaitAsync();
+        await PracticeModeGameLock.WaitAsync();
         try
         {
-            if (_sharedPracticeModeGameId > 0)
-                return _sharedPracticeModeGameId;
+            if (SharedPracticeModeGameId > 0)
+                return SharedPracticeModeGameId;
 
             var game = await CreateGameAsync(services, "Shared Practice Mode Game",
                 practiceMode: true);
-            _sharedPracticeModeGameId = game.Id;
-            return _sharedPracticeModeGameId;
+            SharedPracticeModeGameId = game.Id;
+            return SharedPracticeModeGameId;
         }
         finally
         {
-            _practiceModeGameLock.Release();
+            PracticeModeGameLock.Release();
         }
     }
 
@@ -116,23 +116,23 @@ public static class TestDataSeeder
     /// </summary>
     public static async Task<int> GetOrCreateWithReviewGameAsync(IServiceProvider services)
     {
-        if (_sharedWithReviewGameId > 0)
-            return _sharedWithReviewGameId;
+        if (SharedWithReviewGameId > 0)
+            return SharedWithReviewGameId;
 
-        await _withReviewGameLock.WaitAsync();
+        await WithReviewGameLock.WaitAsync();
         try
         {
-            if (_sharedWithReviewGameId > 0)
-                return _sharedWithReviewGameId;
+            if (SharedWithReviewGameId > 0)
+                return SharedWithReviewGameId;
 
             var game = await CreateGameAsync(services, "Shared With Review Game",
                 acceptWithoutReview: false);
-            _sharedWithReviewGameId = game.Id;
-            return _sharedWithReviewGameId;
+            SharedWithReviewGameId = game.Id;
+            return SharedWithReviewGameId;
         }
         finally
         {
-            _withReviewGameLock.Release();
+            WithReviewGameLock.Release();
         }
     }
 
@@ -297,7 +297,7 @@ public static class TestDataSeeder
         if (existingPart is not null)
         {
             // Add user to participation if not already a member
-            if (!existingPart.Members.Any(m => m.UserId == userId))
+            if (existingPart.Members.All(m => m.UserId != userId))
             {
                 existingPart.Members.Add(new UserParticipation
                 {

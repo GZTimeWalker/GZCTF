@@ -113,7 +113,6 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             {
                 Name = openNetworkName,
                 Driver = "bridge",
-                CheckDuplicate = true,
                 Attachable = true
             }).GetAwaiter().GetResult();
         }
@@ -132,7 +131,6 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             {
                 Name = isolatedNetworkName,
                 Driver = "bridge",
-                CheckDuplicate = true,
                 Attachable = true,
                 Options = new Dictionary<string, string>
                 {

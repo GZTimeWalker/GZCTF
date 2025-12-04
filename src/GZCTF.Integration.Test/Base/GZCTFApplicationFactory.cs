@@ -28,7 +28,7 @@ namespace GZCTF.Integration.Test.Base;
 public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:17-alpine")
+        .WithImage("postgres:alpine")
         .WithDatabase("gzctf_test")
         .WithUsername("postgres")
         .WithPassword("postgres")
@@ -73,7 +73,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
             Console.WriteLine(@"[GZCTFApplicationFactory] Creating K3s container...");
 
             var builder = new K3sBuilder()
-                .WithImage("rancher/k3s:v1.34.1-k3s1")
+                .WithImage("rancher/k3s:v1.33.6-k3s1")
                 .WithCleanUp(true);
 
             _k3sContainer = builder.Build();
