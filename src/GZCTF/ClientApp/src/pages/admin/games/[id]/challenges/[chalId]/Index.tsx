@@ -604,7 +604,7 @@ const GameChallengeEdit: FC = () => {
           title: tryDefault([challengeInfo?.title, challenge?.title], ''),
           content: tryDefault([challengeInfo?.content, challenge?.content]),
           hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
-          score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 500),
+          score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 0),
           limit: tryDefault([challengeInfo?.submissionLimit, challenge?.submissionLimit], 0),
           category: category as ChallengeCategory,
           deadline: deadline ? deadline.valueOf() : undefined,
