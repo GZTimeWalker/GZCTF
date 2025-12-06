@@ -48,7 +48,7 @@ public static class IPAddressExtensions
 {
     extension(string? host)
     {
-        public IEnumerable<IPAddress> ResolveIP() =>
+        public IPAddress[] ResolveIP() =>
             !string.IsNullOrWhiteSpace(host)
                 ? Dns.GetHostAddresses(host)
                 : [];

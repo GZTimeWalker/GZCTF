@@ -553,8 +553,13 @@ public class GrafanaLokiOptions
 
 public class ForwardedOptions : ForwardedHeadersOptions
 {
-    public new List<string>? KnownNetworks { get; set; }
+    // For historical configuration compatibility as we accept string
     public new List<string>? KnownIPNetworks { get; set; }
+    public new List<string>? KnownProxies { get; set; }
+
+    // Old properties for compatibility
+    public new List<string>? KnownNetworks { get; set; }
+    public List<string>? TrustedNetworks { get; set; }
     public List<string>? TrustedProxies { get; set; }
 
     public void ToForwardedHeadersOptions(ForwardedHeadersOptions options)
@@ -572,6 +577,7 @@ public class ForwardedOptions : ForwardedHeadersOptions
             property.SetValue(options, property.GetValue(this));
         }
 
+        // Handle KnownIPNetworks
         Action<string> addNetwork = networkString =>
         {
             // split the network into address and prefix length
@@ -581,12 +587,16 @@ public class ForwardedOptions : ForwardedHeadersOptions
                 int.TryParse(parts[1], out var prefixLength))
                 options.KnownIPNetworks.Add(new IPNetwork(prefix, prefixLength));
         };
-
+        
         KnownIPNetworks?.ForEach(addNetwork);
-
-        // For historical configuration compatibility as we accept string instead of IPNetwork
         KnownNetworks?.ForEach(addNetwork);
+        TrustedNetworks?.ForEach(addNetwork);
 
-        TrustedProxies?.ForEach(proxy => proxy.ResolveIP().ToList().ForEach(ip => options.KnownProxies.Add(ip)));
+        // Handle KnownProxies
+        Action<string> addProxies = proxy =>
+            Array.ForEach(proxy.ResolveIP(), ip => options.KnownProxies.Add(ip));
+
+        KnownProxies?.ForEach(addProxies);
+        TrustedProxies?.ForEach(addProxies);
     }
 }
