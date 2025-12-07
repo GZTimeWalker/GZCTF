@@ -64,7 +64,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
             var zipPath = Path.Combine(Path.GetTempPath(),
                 $"game-{gameId}-export-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.zip");
 
-            ZipFile.CreateFromDirectory(workDir, zipPath);
+            await ZipFile.CreateFromDirectoryAsync(workDir, zipPath, ct);
             return new(game, zipPath);
         }
         finally

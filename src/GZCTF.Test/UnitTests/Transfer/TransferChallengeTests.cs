@@ -77,6 +77,7 @@ public class TransferChallengeTests
             StorageLimit = 512,
             ExposePort = 9999,
             FileName = "exploit",
+            NetworkMode = NetworkMode.Custom,
             Flags = []
         };
 
@@ -95,6 +96,7 @@ public class TransferChallengeTests
         Assert.Equal(512, transfer.Container.StorageLimit);
         Assert.Equal(9999, transfer.Container.ExposePort);
         Assert.Equal("exploit", transfer.Container.FileName);
+        Assert.Equal(NetworkMode.Custom, transfer.Container.NetworkMode);
     }
 
     static readonly TransferChallenge TransferChallenge = new()
@@ -105,17 +107,8 @@ public class TransferChallengeTests
         Category = ChallengeCategory.Crypto,
         Type = ChallengeType.StaticAttachment,
         Enabled = true,
-        Scoring = new ScoringSection
-        {
-            Original = 800,
-            MinRate = 0.3,
-            Difficulty = 4.0
-        },
-        Limits = new LimitsSection
-        {
-            Submission = 10,
-            Deadline = DateTimeOffset.UtcNow.AddDays(5)
-        },
+        Scoring = new ScoringSection { Original = 800, MinRate = 0.3, Difficulty = 4.0 },
+        Limits = new LimitsSection { Submission = 10, Deadline = DateTimeOffset.UtcNow.AddDays(5) },
         Flags = new FlagsSection
         {
             Template = null,
@@ -170,10 +163,7 @@ public class TransferChallengeTests
     public void ToFlagContext_ConvertStaticFlag_Success()
     {
         // Arrange
-        var staticFlag = new StaticFlagSection
-        {
-            Value = "flag{test_value}"
-        };
+        var staticFlag = new StaticFlagSection { Value = "flag{test_value}" };
 
         // Act
         var flagContext = staticFlag.ToFlagContext();

@@ -118,7 +118,8 @@ public static class TransferExtensions
                     CpuCount = challenge.CPUCount ?? 1,
                     StorageLimit = challenge.StorageLimit ?? 256,
                     ExposePort = challenge.ExposePort ?? 80,
-                    FileName = challenge.FileName
+                    FileName = challenge.FileName,
+                    NetworkMode = challenge.NetworkMode ?? NetworkMode.Open
                 };
             }
 
@@ -275,6 +276,7 @@ public static class TransferExtensions
             challenge.StorageLimit = transfer.Container.StorageLimit;
             challenge.ExposePort = transfer.Container.ExposePort;
             challenge.FileName = transfer.Container.FileName;
+            challenge.NetworkMode = transfer.Container.NetworkMode;
 
             return challenge;
         }
@@ -333,10 +335,7 @@ public static class TransferExtensions
             .Where(value => value.HasValue)
             .Select(value => value!.Value);
 
-        GamePermission result = 0;
-        foreach (var value in validPermissions)
-            result |= value;
-
-        return result;
+        return validPermissions.Aggregate<GamePermission, GamePermission>(0,
+            (current, value) => current | value);
     }
 }

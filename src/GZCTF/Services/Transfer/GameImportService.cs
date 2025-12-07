@@ -97,7 +97,7 @@ public class GameImportService(
         try
         {
             // Extract ZIP
-            ZipFile.ExtractToDirectory(tempZipPath, workDir);
+            await ZipFile.ExtractToDirectoryAsync(tempZipPath, workDir, ct);
         }
         catch (InvalidDataException ex)
         {
@@ -319,7 +319,7 @@ public class GameImportService(
             // Build challenge configs with mapped IDs
             var challengeConfigs = new HashSet<DivisionChallengeConfigModel>();
             foreach (var config in transferDivision.ChallengeConfig
-                .Where(cfg => context.ChallengeIdMap.ContainsKey(cfg.ChallengeId)))
+                         .Where(cfg => context.ChallengeIdMap.ContainsKey(cfg.ChallengeId)))
             {
                 var newChallengeId = context.ChallengeIdMap[config.ChallengeId];
                 challengeConfigs.Add(new DivisionChallengeConfigModel
@@ -330,13 +330,14 @@ public class GameImportService(
             }
 
             // Update division with full configuration
-            await divisionRepository.UpdateDivision(division, new DivisionEditModel
-            {
-                Name = transferDivision.Name,
-                InviteCode = transferDivision.InviteCode,
-                DefaultPermissions = defaultPermissions,
-                ChallengeConfigs = challengeConfigs
-            }, ct);
+            await divisionRepository.UpdateDivision(division,
+                new DivisionEditModel
+                {
+                    Name = transferDivision.Name,
+                    InviteCode = transferDivision.InviteCode,
+                    DefaultPermissions = defaultPermissions,
+                    ChallengeConfigs = challengeConfigs
+                }, ct);
         }
     }
 
@@ -408,6 +409,7 @@ public class GameImportService(
             MemoryLimit = transferChallenge.Container?.MemoryLimit,
             CPUCount = transferChallenge.Container?.CpuCount,
             StorageLimit = transferChallenge.Container?.StorageLimit,
+            NetworkMode = transferChallenge.Container?.NetworkMode,
 
             // File settings
             FileName = transferChallenge.Container?.FileName,
@@ -451,11 +453,7 @@ public class GameImportService(
 
                 // Create attachment record with local file
                 await challengeRepository.UpdateAttachment(challenge,
-                    new AttachmentCreateModel
-                    {
-                        AttachmentType = FileType.Local,
-                        FileHash = attachment.Hash
-                    }, ct);
+                    new AttachmentCreateModel { AttachmentType = FileType.Local, FileHash = attachment.Hash }, ct);
                 break;
 
             case FileType.Remote:
@@ -464,11 +462,8 @@ public class GameImportService(
 
                 // Create attachment record with remote URL (no file import needed)
                 await challengeRepository.UpdateAttachment(challenge,
-                    new AttachmentCreateModel
-                    {
-                        AttachmentType = FileType.Remote,
-                        RemoteUrl = attachment.RemoteUrl
-                    }, ct);
+                    new AttachmentCreateModel { AttachmentType = FileType.Remote, RemoteUrl = attachment.RemoteUrl },
+                    ct);
                 break;
 
             case FileType.None:
@@ -508,7 +503,8 @@ public class GameImportService(
                                 throw new InvalidOperationException("Local flag attachment missing file hash");
 
                             // Import file to blob storage
-                            await ImportFileAsync(staticFlag.Attachment.Hash, context, ct, staticFlag.Attachment.FileName);
+                            await ImportFileAsync(staticFlag.Attachment.Hash, context, ct,
+                                staticFlag.Attachment.FileName);
 
                             flagModels.Add(new FlagCreateModel
                             {
@@ -545,11 +541,7 @@ public class GameImportService(
                 }
                 else
                 {
-                    flagModels.Add(new FlagCreateModel
-                    {
-                        Flag = staticFlag.Value,
-                        AttachmentType = FileType.None
-                    });
+                    flagModels.Add(new FlagCreateModel { Flag = staticFlag.Value, AttachmentType = FileType.None });
                 }
             }
         }
@@ -563,7 +555,8 @@ public class GameImportService(
     /// <summary>
     /// Import a file to blob storage and track it for potential cleanup
     /// </summary>
-    private async Task ImportFileAsync(string hash, ImportContext context, CancellationToken ct, string? fileName = null)
+    private async Task ImportFileAsync(string hash, ImportContext context, CancellationToken ct,
+        string? fileName = null)
     {
         var filePath = Path.Combine(context.WorkDir, "files", hash);
         if (!File.Exists(filePath))

@@ -79,13 +79,13 @@ public class TransferChallenge : IValidatableObject
         // Note: Flags may be completely unset for imported challenges.
         // This is acceptable since imported challenges are disabled by default
         // and require manual enablement after proper flag configuration.
-
         if (Type.IsAttachment())
             yield break;
 
         // Validate container challenges have container config
         if (Container is null)
-            yield return new ValidationResult("Container challenges must have container configuration", [nameof(Container)]);
+            yield return new ValidationResult("Container challenges must have container configuration",
+                [nameof(Container)]);
     }
 }
 
@@ -168,7 +168,6 @@ public class StaticFlagSection
     public AttachmentSection? Attachment { get; set; }
 }
 
-
 public class AttachmentSection : IValidatableObject
 {
     /// <summary>
@@ -203,24 +202,31 @@ public class AttachmentSection : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (Type == FileType.Local)
+        switch (Type)
         {
-            if (string.IsNullOrWhiteSpace(Hash))
-                yield return new ValidationResult("Local attachment must have a file hash", [nameof(Hash)]);
+            case FileType.Local:
+                {
+                    if (string.IsNullOrWhiteSpace(Hash))
+                        yield return new ValidationResult("Local attachment must have a file hash", [nameof(Hash)]);
 
-            if (string.IsNullOrWhiteSpace(FileName))
-                yield return new ValidationResult("Local attachment must have a file name", [nameof(FileName)]);
+                    if (string.IsNullOrWhiteSpace(FileName))
+                        yield return new ValidationResult("Local attachment must have a file name", [nameof(FileName)]);
 
-            if (FileSize is null or <= 0)
-                yield return new ValidationResult("Local attachment must have a valid file size", [nameof(FileSize)]);
-        }
-        else if (Type == FileType.Remote)
-        {
-            if (string.IsNullOrWhiteSpace(RemoteUrl))
-                yield return new ValidationResult("Remote attachment must have a URL", [nameof(RemoteUrl)]);
+                    if (FileSize is null or <= 0)
+                        yield return new ValidationResult("Local attachment must have a valid file size",
+                            [nameof(FileSize)]);
+                    break;
+                }
 
-            if (string.IsNullOrWhiteSpace(FileName))
-                yield return new ValidationResult("Remote attachment must have a file name", [nameof(FileName)]);
+            case FileType.Remote:
+                {
+                    if (string.IsNullOrWhiteSpace(RemoteUrl))
+                        yield return new ValidationResult("Remote attachment must have a URL", [nameof(RemoteUrl)]);
+
+                    if (string.IsNullOrWhiteSpace(FileName))
+                        yield return new ValidationResult("Remote attachment must have a file name", [nameof(FileName)]);
+                    break;
+                }
         }
         // Note: Type == FileType.None is valid (represents no attachment)
         // FileType is an enum, so no other values are possible
@@ -259,6 +265,11 @@ public class ContainerSection
     /// </summary>
     [Range(1, 65535, ErrorMessage = "Exposed port must be 1-65535")]
     public int ExposePort { get; set; } = 80;
+
+    /// <summary>
+    /// Container network mode
+    /// </summary>
+    public NetworkMode? NetworkMode { get; set; } = Utils.NetworkMode.Open;
 
     /// <summary>
     /// Download file name (for dynamic attachments)

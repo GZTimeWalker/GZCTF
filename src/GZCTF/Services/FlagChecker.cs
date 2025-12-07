@@ -96,7 +96,7 @@ public class FlagChecker(
 
                 try
                 {
-                    (var type, var ans) = await instanceRepository.VerifyAnswer(item, token);
+                    var (type, ans) = await instanceRepository.VerifyAnswer(item, token);
 
                     switch (ans)
                     {
