@@ -1,4 +1,3 @@
-using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using MemoryPack;
 
@@ -22,7 +21,7 @@ public class GameListCacheHandler : ICacheRequestHandler
             var logger =
                 scope.ServiceProvider.GetRequiredService<ILogger<GameListCacheHandler>>();
             logger.LogErrorMessage(e,
-                StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)!]);
+                StaticLocalizer[nameof(Resources.Program.Cache_GenerationFailed), CacheKey(request)]);
             return [];
         }
     }

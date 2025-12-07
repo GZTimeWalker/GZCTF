@@ -14,9 +14,9 @@ public abstract class RepositoryBase(AppDbContext context) : IRepository
     public string ChangeTrackerView => Context.ChangeTracker.DebugView.LongView;
 
     /// <summary>
-    /// 调用此方法保存更改，如果发生并发冲突则重试
+    /// Save changes with concurrency handling
     /// </summary>
-    /// <param name="token"></param>
+    /// <param name="token">Cancellation token</param>
     public async Task SaveAsync(CancellationToken token = default)
     {
         var saved = false;

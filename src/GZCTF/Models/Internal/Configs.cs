@@ -587,7 +587,7 @@ public class ForwardedOptions : ForwardedHeadersOptions
                 int.TryParse(parts[1], out var prefixLength))
                 options.KnownIPNetworks.Add(new IPNetwork(prefix, prefixLength));
         };
-        
+
         KnownIPNetworks?.ForEach(addNetwork);
         KnownNetworks?.ForEach(addNetwork);
         TrustedNetworks?.ForEach(addNetwork);

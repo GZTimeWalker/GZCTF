@@ -46,9 +46,9 @@ public class GameRepository(
         await SaveAsync(token);
 
         await cacheHelper.RemoveAsync(CacheKey.GameCache(game.Id), token);
-        await cacheHelper.FlushGameListCache(token);
-        await cacheHelper.FlushRecentGamesCache(token);
         await cacheHelper.FlushScoreboardCache(game.Id, token);
+        await cacheHelper.FlushRecentGamesCache(token);
+        await cacheHelper.FlushGameListCache(token);
     }
 
     public string GetToken(Game game, Team team) => $"{team.Id}:{game.Sign($"GZCTF_TEAM_{team.Id}", _xorKey)}";
