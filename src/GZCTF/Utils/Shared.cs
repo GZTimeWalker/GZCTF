@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Channels;
 using MemoryPack;
 using Microsoft.AspNetCore.Mvc;
@@ -195,6 +196,45 @@ public class IPAddressFormatter : MemoryPackCustomFormatterAttribute<IPAddress>,
     }
 
     public override IMemoryPackFormatter<IPAddress> GetFormatter() => this;
+}
+
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class JsonDocumentFormatter : MemoryPackCustomFormatterAttribute<JsonDocument>, IMemoryPackFormatter<JsonDocument>
+{
+    public void Serialize<TBufferWriter>(ref MemoryPackWriter<TBufferWriter> writer, scoped ref JsonDocument? value)
+        where TBufferWriter : IBufferWriter<byte>
+    {
+        if (value is null)
+        {
+            writer.WriteNullObjectHeader();
+            return;
+        }
+
+        // Write JsonDocument as string
+        var jsonString = value.RootElement.GetRawText();
+        writer.WriteString(jsonString);
+    }
+
+    public void Deserialize(ref MemoryPackReader reader, scoped ref JsonDocument? value)
+    {
+        var s = reader.ReadString();
+        if (string.IsNullOrWhiteSpace(s))
+        {
+            value = null;
+            return;
+        }
+
+        try
+        {
+            value = JsonDocument.Parse(s);
+        }
+        catch (JsonException)
+        {
+            value = null;
+        }
+    }
+
+    public override IMemoryPackFormatter<JsonDocument> GetFormatter() => this;
 }
 
 /// <summary>

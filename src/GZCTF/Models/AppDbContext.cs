@@ -35,17 +35,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<GameInstance> GameInstances { get; set; } = null!;
     public DbSet<GameChallenge> GameChallenges { get; set; } = null!;
     public DbSet<FirstSolve> FirstSolves { get; set; } = null!;
+    public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
+    public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+    public DbSet<UserMetadataField> UserMetadataFields { get; set; } = null!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+
+    // Exercise related DbSets - not implemented
     public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = null!;
     public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = null!;
-    public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
-    public DbSet<ApiToken> ApiTokens { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
             v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
             v => JsonSerializer.Deserialize<T>(v, JsonOptions)
+        );
+
+    private static ValueConverter<T, string> GetJsonConverterNonNull<T>() where T : class, new() =>
+        new(
+            v => JsonSerializer.Serialize(v, JsonOptions),
+            v => JsonSerializer.Deserialize<T>(v, JsonOptions) ?? new()
         );
 
     private static ValueComparer<TList> GetEnumerableComparer<TList, T>()

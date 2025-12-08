@@ -540,6 +540,80 @@ public enum AnswerResult : sbyte
     NotFound = -1
 }
 
+/// <summary>
+/// User metadata field type
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<UserMetadataFieldType>))]
+public enum UserMetadataFieldType
+{
+    /// <summary>
+    /// Single-line text input
+    /// </summary>
+    Text,
+
+    /// <summary>
+    /// Boolean input
+    /// </summary>
+    Boolean,
+
+    /// <summary>
+    /// Multi-line text input
+    /// </summary>
+    TextArea,
+
+    /// <summary>
+    /// Number input
+    /// </summary>
+    Number,
+
+    /// <summary>
+    /// Email input
+    /// </summary>
+    Email,
+
+    /// <summary>
+    /// URL input
+    /// </summary>
+    Url,
+
+    /// <summary>
+    /// Phone number input
+    /// </summary>
+    Phone,
+
+    /// <summary>
+    /// Date input
+    /// </summary>
+    Date,
+
+    /// <summary>
+    /// Datetime input
+    /// </summary>
+    DateTime,
+
+    /// <summary>
+    /// Dropdown select
+    /// </summary>
+    Select,
+
+    /// <summary>
+    /// Dropdown multi-select
+    /// </summary>
+    MultiSelect
+}
+
+/// <summary>
+/// User metadata field value type
+/// </summary>
+internal enum UserMetadataFieldValueType : byte
+{
+    Boolean,
+    String,
+    Number,
+    DateTime,
+    StringArray
+}
+
 public static class AnswerResultExtensions
 {
     extension(AnswerResult result)
