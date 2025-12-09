@@ -16,13 +16,22 @@ namespace GZCTF.Extensions;
 
 public static class HandlerExtension
 {
-    const string CspTemplate = "default-src 'strict-dynamic' 'nonce-{0}' 'unsafe-inline' http: https:; " +
-                               "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
-                               "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
-                               "connect-src 'self' http://127.0.0.1:*; base-uri 'none';";
+    const string CspTemplatePrefix = "default-src 'strict-dynamic' 'nonce-";
+    const string CspTemplateSuffix = "' 'unsafe-inline' http: https:; " +
+                                     "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
+                                     "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
+                                     "connect-src 'self' http://127.0.0.1:*; base-uri 'none';";
 
-    const StringSplitOptions DefaultSplitOptions =
-        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+    static readonly int CspHeaderLength = CspTemplatePrefix.Length + 12 + CspTemplateSuffix.Length;
+
+    static string GetContentSecurityPolicy(ReadOnlySpan<char> nonce)
+    {
+        StringBuilder builder = new StringBuilder(CspHeaderLength);
+        builder.Append(CspTemplatePrefix);
+        builder.Append(nonce);
+        builder.Append(CspTemplateSuffix);
+        return builder.ToString();
+    }
 
     static readonly DistributedCacheEntryOptions
         StaticCacheOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
@@ -32,6 +41,14 @@ public static class HandlerExtension
 
     static readonly HashSet<string> ShortSupportedCultures = SupportedCultures
         .Select(c => c.Split('-')[0]).ToHashSet();
+
+    static readonly string NoCacheHeaderValue = new CacheControlHeaderValue
+    {
+        NoCache = true,
+        NoStore = true,
+        MustRevalidate = true,
+        MaxAge = TimeSpan.Zero
+    }.ToString();
 
     static string IndexTemplate = string.Empty;
 
@@ -117,21 +134,43 @@ public static class HandlerExtension
             entityTag: EntityTagHeaderValue.Parse(eTag));
     }
 
-    static string ExtractLanguage(string? acceptLanguage)
+    static string ExtractLanguage(StringValues acceptLanguage)
     {
-        if (string.IsNullOrWhiteSpace(acceptLanguage) || acceptLanguage.Length > 100)
+        if (StringValues.IsNullOrEmpty(acceptLanguage))
             return "en-us";
 
-        foreach (var language in acceptLanguage.Split(',', DefaultSplitOptions))
+        var input = acceptLanguage.ToString();
+        if (input.Length > 100)
+            return "en-us";
+
+        var tokenizer = new StringTokenizer(input, [',']);
+        foreach (var segment in tokenizer)
         {
-            var culture = language.Split(';', DefaultSplitOptions).First().ToLower();
+            var entry = segment;
+            if (!entry.HasValue)
+                continue;
+
+            var semiIndex = entry.IndexOf(';');
+            if (semiIndex >= 0)
+                entry = entry.Subsegment(0, semiIndex);
+
+            entry = entry.Trim();
+            if (!entry.HasValue)
+                continue;
+
+            var culture = entry.ToString().ToLowerInvariant();
+
             if (SupportedCultures.Contains(culture))
                 return culture;
 
-            if (culture is "*")
+            if (culture == "*")
                 return "en-us";
 
-            var shortCulture = culture.Split('-', DefaultSplitOptions).First();
+            var dashIndex = culture.IndexOf('-');
+            if (dashIndex <= 0)
+                continue;
+
+            var shortCulture = culture[..dashIndex];
             if (ShortSupportedCultures.Contains(shortCulture))
                 return shortCulture;
         }
@@ -160,13 +199,19 @@ public static class HandlerExtension
             await cacheHelper.SetStringAsync(CacheKey.Index, content, StaticCacheOptions, token);
         }
 
-        var builder = new StringBuilder(content);
+        var builder = new StringBuilder(content, content.Length + 200);
 
         var acceptLanguage = context.Request.Headers.AcceptLanguage;
         builder.Replace("%lang%", ExtractLanguage(acceptLanguage));
 
-        var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(12));
-        context.Response.Headers.ContentSecurityPolicy = string.Format(CspTemplate, nonce);
+        // ReSharper disable once StringLiteralTypo
+        const string charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        Span<char> nonce = stackalloc char[12];
+        RandomNumberGenerator.GetItems(charSet, nonce);
+
+        context.Response.Headers.ContentSecurityPolicy = GetContentSecurityPolicy(nonce);
+        context.Response.Headers.CacheControl = NoCacheHeaderValue;
         builder.Replace("%nonce%", nonce);
 
         return Results.Text(builder.ToString(), MediaTypeNames.Text.Html);
