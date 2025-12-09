@@ -544,69 +544,70 @@ public enum AnswerResult : sbyte
 /// User metadata field type
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<UserMetadataFieldType>))]
-public enum UserMetadataFieldType
+public enum UserMetadataFieldType : byte
 {
     /// <summary>
     /// Single-line text input
     /// </summary>
-    Text,
-
-    /// <summary>
-    /// Boolean input
-    /// </summary>
-    Boolean,
+    Text = 0,
 
     /// <summary>
     /// Multi-line text input
     /// </summary>
-    TextArea,
+    TextArea = 1,
 
     /// <summary>
     /// Number input
     /// </summary>
-    Number,
+    Number = 2,
 
     /// <summary>
-    /// Email input
+    /// Boolean input
     /// </summary>
-    Email,
-
-    /// <summary>
-    /// URL input
-    /// </summary>
-    Url,
-
-    /// <summary>
-    /// Phone number input
-    /// </summary>
-    Phone,
-
-    /// <summary>
-    /// Date input
-    /// </summary>
-    Date,
+    Boolean = 3,
 
     /// <summary>
     /// Datetime input
     /// </summary>
-    DateTime,
+    DateTime = 10,
+
+    /// <summary>
+    /// Date input
+    /// </summary>
+    Date = 11,
 
     /// <summary>
     /// Dropdown select
     /// </summary>
-    Select,
+    Select = 30,
 
     /// <summary>
     /// Dropdown multi-select
     /// </summary>
-    MultiSelect
+    MultiSelect = 31,
+
+    /// <summary>
+    /// Email input
+    /// </summary>
+    Email = 100,
+
+    /// <summary>
+    /// URL input
+    /// </summary>
+    Url = 101,
+
+    /// <summary>
+    /// Phone number input
+    /// </summary>
+    Phone = 102
 }
 
 /// <summary>
 /// User metadata field value type
 /// </summary>
-internal enum UserMetadataFieldValueType : byte
+public enum UserMetadataFieldValueType : byte
 {
+    Null,
     Boolean,
     String,
     Number,

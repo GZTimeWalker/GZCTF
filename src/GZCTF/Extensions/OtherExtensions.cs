@@ -67,26 +67,3 @@ internal static class JsonSerializerOptionsExtensions
         }
     }
 }
-
-internal static class UserMetadataFieldTypeExtensions
-{
-    extension(UserMetadataFieldType type)
-    {
-        internal UserMetadataFieldValueType GetFieldValueType() =>
-            type switch
-            {
-                UserMetadataFieldType.Number => UserMetadataFieldValueType.Number,
-                UserMetadataFieldType.Boolean => UserMetadataFieldValueType.Boolean,
-                UserMetadataFieldType.Text => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.TextArea => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.Email => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.Url => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.Phone => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.Select => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.Date => UserMetadataFieldValueType.DateTime,
-                UserMetadataFieldType.MultiSelect => UserMetadataFieldValueType.String,
-                UserMetadataFieldType.DateTime => UserMetadataFieldValueType.DateTime,
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-            };
-    }
-}

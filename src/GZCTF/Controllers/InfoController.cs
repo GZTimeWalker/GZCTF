@@ -24,6 +24,7 @@ public class InfoController(
     IDistributedCache cache,
     ICaptchaService captcha,
     IPostRepository postRepository,
+    IUserMetadataFieldRepository metadataRepository,
     IServiceProvider serviceProvider,
     ILogger<InfoController> logger,
     IOptionsSnapshot<CaptchaConfig> captchaConfig,
@@ -185,4 +186,14 @@ public class InfoController(
             Difficulty = captchaConfig.Value.HashPow.Difficulty
         });
     }
+
+    /// <summary>
+    /// Get user metadata fields
+    /// </summary>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved metadata fields</response>
+    [HttpGet("Metadata")]
+    [ProducesResponseType(typeof(UserMetadataField[]), StatusCodes.Status200OK)]
+    public Task<UserMetadataField[]> GetMetadataFields(CancellationToken token) =>
+        metadataRepository.GetAllAsync(token);
 }

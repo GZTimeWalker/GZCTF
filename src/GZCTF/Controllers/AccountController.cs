@@ -1,4 +1,6 @@
 ﻿using System.Net.Mime;
+using System.Text.Json;
+using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -26,6 +28,7 @@ public class AccountController(
     IHostEnvironment environment,
     ICaptchaService captcha,
     IConfigService configService,
+    IUserMetadataFieldRepository metadataRepository,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
@@ -343,6 +346,7 @@ public class AccountController(
     /// Use this API to update username and description. User permissions required.
     /// </remarks>
     /// <param name="model"></param>
+    /// <param name="token"></param>
     /// <response code="200">User data updated successfully</response>
     /// <response code="400">Validation failed or user data update failed</response>
     /// <response code="401">Unauthorized</response>
@@ -350,7 +354,7 @@ public class AccountController(
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
+    public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model, CancellationToken token = default)
     {
         var user = await userManager.GetUserAsync(User);
 
@@ -365,6 +369,27 @@ public class AccountController(
 
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
                 user, TaskStatus.Success);
+        }
+
+        if (model.Metadata is not null)
+        {
+            var fields = await metadataRepository.GetAllAsync(token);
+            var fieldMap = fields.ToDictionary(f => f.Key);
+
+            foreach ((string key, JsonDocument? value) in model.Metadata)
+            {
+                if (!fieldMap.TryGetValue(key, out var field))
+                    return BadRequest(
+                        new RequestResponse(localizer[nameof(Resources.Program.Model_UnknownMetadataField), key]));
+
+                if (field.Locked)
+                    return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FieldIsLocked),
+                        field.DisplayName]));
+
+                if (!field.Validate(value, localizer, out var error))
+                    return BadRequest(new RequestResponse(
+                        localizer[nameof(Resources.Program.Model_FieldValidationFailed), field.DisplayName, error]));
+            }
         }
 
         user!.UpdateUserInfo(model);

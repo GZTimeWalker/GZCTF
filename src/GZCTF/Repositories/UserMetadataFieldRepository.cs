@@ -1,3 +1,4 @@
+using System.Text.Json;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ public class UserMetadataFieldRepository(
 
     public async Task CreateAsync(UserMetadataField field, CancellationToken token = default)
     {
+        field.DefaultValue = NormalizeDefaultValue(field.DefaultValue);
         await Context.UserMetadataFields.AddAsync(field, token);
         await SaveAsync(token);
         await ClearCacheAsync(token);
@@ -30,6 +32,7 @@ public class UserMetadataFieldRepository(
 
     public async Task UpdateAsync(UserMetadataField field, CancellationToken token = default)
     {
+        field.DefaultValue = NormalizeDefaultValue(field.DefaultValue);
         Context.UserMetadataFields.Update(field);
         await SaveAsync(token);
         await ClearCacheAsync(token);
@@ -48,4 +51,9 @@ public class UserMetadataFieldRepository(
 
     private Task ClearCacheAsync(CancellationToken token = default) =>
         cacheHelper.RemoveAsync(CacheKey.UserMetadataFields, token);
+
+    private static JsonDocument? NormalizeDefaultValue(JsonDocument? element) =>
+        element is null or { RootElement.ValueKind: JsonValueKind.Null or JsonValueKind.Undefined }
+            ? null
+            : element;
 }

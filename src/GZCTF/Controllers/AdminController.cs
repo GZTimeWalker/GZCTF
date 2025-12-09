@@ -310,11 +310,9 @@ public class AdminController(
         var loweredHint = hint.ToLower();
         var data = await userManager.Users.Where(item =>
             item.UserName!.ToLower().Contains(loweredHint) ||
-            item.StdNumber.ToLower().Contains(loweredHint) ||
             item.Email!.ToLower().Contains(loweredHint) ||
             item.PhoneNumber!.ToLower().Contains(loweredHint) ||
-            item.Id.ToString().ToLower().Contains(loweredHint) ||
-            item.RealName.ToLower().Contains(loweredHint)
+            item.Id.ToString().ToLower().Contains(loweredHint)
         ).OrderBy(e => e.Id).Take(30).ToArrayAsync(token);
 
         return Ok(data.Select(UserInfoModel.FromUserInfo).ToResponse());

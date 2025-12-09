@@ -1,5 +1,3 @@
-using GZCTF.Models.Data;
-
 namespace GZCTF.Repositories.Interface;
 
 public interface IUserMetadataFieldRepository : IRepository

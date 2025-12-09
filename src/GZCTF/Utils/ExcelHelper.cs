@@ -11,16 +11,18 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     private const string Split = " / ";
     private const string Ignore = "-";
 
-    private readonly string[] _commonScoreboardHeader =
+    private readonly string[] _commonScoreboardUserHeader =
     [
         localizer[nameof(Resources.Program.Header_Ranking)],
         localizer[nameof(Resources.Program.Header_Team)],
         localizer[nameof(Resources.Program.Header_Captain)],
         localizer[nameof(Resources.Program.Header_Member)],
-        localizer[nameof(Resources.Program.Header_RealName)],
         localizer[nameof(Resources.Program.Header_Email)],
-        localizer[nameof(Resources.Program.Header_StdNumber)],
         localizer[nameof(Resources.Program.Header_PhoneNumber)],
+    ];
+
+    readonly string[] _commonScoreboardHeader =
+    [
         localizer[nameof(Resources.Program.Header_SolvedNumber)],
         localizer[nameof(Resources.Program.Header_ScoringTime)],
         localizer[nameof(Resources.Program.Header_TotalScore)]
@@ -37,7 +39,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_Email)]
     ];
 
-    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard)
+    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, UserMetadataField[] metadataFields)
     {
         if (scoreboard.Items.Values.FirstOrDefault()?.TeamInfo is null)
             throw new ArgumentException(localizer[nameof(Resources.Program.Scoreboard_TeamNotLoaded)]);
@@ -45,8 +47,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         var workbook = new XSSFWorkbook();
         var boardSheet = workbook.CreateSheet(localizer[nameof(Resources.Program.Scoreboard_Title)]);
         var headerStyle = GetHeaderStyle(workbook);
-        var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard);
-        WriteBoardContent(boardSheet, scoreboard, challIds);
+        var challIds = WriteBoardHeader(boardSheet, headerStyle, scoreboard, metadataFields);
+        WriteBoardContent(boardSheet, scoreboard, challIds, metadataFields);
 
         var stream = new MemoryStream();
         workbook.Write(stream, true);
@@ -113,14 +115,15 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
     }
 
-    private int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard)
+    private int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard,
+        UserMetadataField[] metadataFields)
     {
         var row = sheet.CreateRow(0);
         var colIndex = 0;
         var challIds = new List<int>();
         var withDiv = scoreboard.Divisions.Count > 0;
 
-        foreach (var col in _commonScoreboardHeader)
+        foreach (var col in _commonScoreboardUserHeader)
         {
             var cell = row.CreateCell(colIndex++);
             cell.SetCellValue(col);
@@ -131,6 +134,20 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
 
             cell = row.CreateCell(colIndex++);
             cell.SetCellValue(localizer[nameof(Resources.Program.Scoreboard_BelongingDivision)]);
+            cell.CellStyle = style;
+        }
+
+        foreach (var item in metadataFields)
+        {
+            var cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(item.DisplayName);
+            cell.CellStyle = style;
+        }
+
+        foreach (var col in _commonScoreboardHeader)
+        {
+            var cell = row.CreateCell(colIndex++);
+            cell.SetCellValue(col);
             cell.CellStyle = style;
         }
 
@@ -146,7 +163,8 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return challIds.ToArray();
     }
 
-    private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds)
+    private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds,
+        UserMetadataField[] metadataFields)
     {
         var rowIndex = 1;
         var withDiv = scoreboard.Divisions.Count > 0;
@@ -179,13 +197,16 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
             row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.UserName))));
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.RealName))));
-            row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.Email))));
             row.CreateCell(colIndex++)
-                .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.StdNumber))));
-            row.CreateCell(colIndex++)
                 .SetCellValue(string.Join(Split, members.Select(m => TakeIfNotEmpty(m.PhoneNumber))));
+
+            // User custom metadata fields
+            foreach (var field in metadataFields)
+            {
+                var values = string.Join(Split, members.Select(m => field.GetFieldValue(m.Metadata)));
+                row.CreateCell(colIndex++).SetCellValue(values);
+            }
 
             row.CreateCell(colIndex++).SetCellValue(item.SolvedCount);
             row.CreateCell(colIndex++).SetCellValue(item.LastSubmissionTime.ToString("u"));

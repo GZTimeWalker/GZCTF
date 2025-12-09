@@ -199,20 +199,20 @@ public class IPAddressFormatter : MemoryPackCustomFormatterAttribute<IPAddress>,
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-public class JsonDocumentFormatter : MemoryPackCustomFormatterAttribute<JsonDocument>, IMemoryPackFormatter<JsonDocument>
+public class JsonDocumentFormatter : MemoryPackCustomFormatterAttribute<JsonDocument?>,
+    IMemoryPackFormatter<JsonDocument?>
 {
     public void Serialize<TBufferWriter>(ref MemoryPackWriter<TBufferWriter> writer, scoped ref JsonDocument? value)
         where TBufferWriter : IBufferWriter<byte>
     {
-        if (value is null)
+        if (value is null or { RootElement.ValueKind: JsonValueKind.Null or JsonValueKind.Undefined })
         {
             writer.WriteNullObjectHeader();
             return;
         }
 
         // Write JsonDocument as string
-        var jsonString = value.RootElement.GetRawText();
-        writer.WriteString(jsonString);
+        writer.WriteString(value.RootElement.GetRawText());
     }
 
     public void Deserialize(ref MemoryPackReader reader, scoped ref JsonDocument? value)
@@ -234,7 +234,7 @@ public class JsonDocumentFormatter : MemoryPackCustomFormatterAttribute<JsonDocu
         }
     }
 
-    public override IMemoryPackFormatter<JsonDocument> GetFormatter() => this;
+    public override IMemoryPackFormatter<JsonDocument?> GetFormatter() => this;
 }
 
 /// <summary>

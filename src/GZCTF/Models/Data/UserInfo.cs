@@ -51,23 +51,15 @@ public partial class UserInfo : IdentityUser<Guid>
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
-    /// Real name
-    /// </summary>
-    [MaxLength(Limits.MaxUserDataLength)]
-    [ProtectedPersonalData]
-    public string RealName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Student ID
-    /// </summary>
-    [MaxLength(Limits.MaxStdNumberLength)]
-    [ProtectedPersonalData]
-    public string StdNumber { get; set; } = string.Empty;
-
-    /// <summary>
     /// Hide in exercise scoreboard
     /// </summary>
     public bool ExerciseVisible { get; set; } = true;
+
+    /// <summary>
+    /// User metadata stored as JSON (flexible user fields)
+    /// </summary>
+    [ProtectedPersonalData]
+    public MetadataStore? Metadata { get; set; }
 
     [NotMapped]
     [MemoryPackIgnore]
@@ -94,10 +86,9 @@ public partial class UserInfo : IdentityUser<Guid>
         // use SetUserNameAsync and SetEmailAsync to update UserName and Email
         Bio = model.Bio ?? Bio;
         Role = model.Role ?? Role;
-        StdNumber = model.StdNumber ?? StdNumber;
-        RealName = model.RealName ?? RealName;
         PhoneNumber = model.Phone ?? PhoneNumber;
         EmailConfirmed = model.EmailConfirmed ?? EmailConfirmed;
+        Metadata = model.Metadata ?? Metadata;
     }
 
     /// <summary>
@@ -109,9 +100,8 @@ public partial class UserInfo : IdentityUser<Guid>
     {
         UserName = model.UserName;
         Email = model.Email;
-        StdNumber = model.StdNumber ?? StdNumber;
-        RealName = model.RealName ?? RealName;
         PhoneNumber = model.Phone ?? PhoneNumber;
+        Metadata = model.Metadata ?? Metadata;
     }
 
     internal void UpdateUserInfo(ProfileUpdateModel model)
@@ -119,8 +109,7 @@ public partial class UserInfo : IdentityUser<Guid>
         // use SetUserNameAsync to update UserName
         Bio = model.Bio ?? Bio;
         PhoneNumber = model.Phone ?? PhoneNumber;
-        RealName = model.RealName ?? RealName;
-        StdNumber = model.StdNumber ?? StdNumber;
+        Metadata = model.Metadata ?? Metadata;
     }
 
     #region Db Relationship

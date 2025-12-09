@@ -147,7 +147,7 @@ public class TransferValidatorTest
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(challenge, "Challenge"));
-        Assert.Contains("Original score must be positive", ex.Message);
+        Assert.Contains("Original score must be non-negative", ex.Message);
     }
 
     [Fact]
@@ -192,9 +192,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Local,
-            FileName = "test.zip",
-            FileSize = 1024
+            Type = FileType.Local, FileName = "test.zip", FileSize = 1024
             // Missing Hash
         };
 
@@ -208,8 +206,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Remote,
-            FileName = "test.zip"
+            Type = FileType.Remote, FileName = "test.zip"
             // Missing RemoteUrl
         };
 
@@ -239,8 +236,7 @@ public class TransferValidatorTest
     {
         var container = new ContainerSection
         {
-            Image = "nginx:latest",
-            ExposePort = 99999 // Exceeds max 65535
+            Image = "nginx:latest", ExposePort = 99999 // Exceeds max 65535
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -335,8 +331,7 @@ public class TransferValidatorTest
             ContainerCountLimit = 3,
             Writeup = new WriteupSection
             {
-                Required = true,
-                Deadline = endTime.AddHours(-1) // Before end time
+                Required = true, Deadline = endTime.AddHours(-1) // Before end time
             }
         };
 
@@ -378,9 +373,7 @@ public class TransferValidatorTest
             ContainerCountLimit = 3,
             BloodBonus = new BloodBonusSection
             {
-                First = 500,
-                Second = 300,
-                Third = -1 // Negative value
+                First = 500, Second = 300, Third = -1 // Negative value
             }
         };
 
@@ -415,9 +408,7 @@ public class TransferValidatorTest
     {
         var challenge = new TransferChallenge
         {
-            Title = "",
-            Category = ChallengeCategory.Web,
-            Type = ChallengeType.StaticAttachment
+            Title = "", Category = ChallengeCategory.Web, Type = ChallengeType.StaticAttachment
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -435,9 +426,7 @@ public class TransferValidatorTest
             Type = ChallengeType.StaticAttachment,
             Scoring = new ScoringSection
             {
-                Original = 500,
-                MinRate = 0.25,
-                Difficulty = -1.0 // Negative
+                Original = 500, MinRate = 0.25, Difficulty = -1.0 // Negative
             }
         };
 
@@ -541,9 +530,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Local,
-            Hash = "a".PadRight(64, '0'),
-            FileSize = 1024
+            Type = FileType.Local, Hash = "a".PadRight(64, '0'), FileSize = 1024
             // Missing FileName
         };
 
@@ -557,10 +544,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Local,
-            Hash = "a".PadRight(64, '0'),
-            FileName = "test.zip",
-            FileSize = 0 // Invalid
+            Type = FileType.Local, Hash = "a".PadRight(64, '0'), FileName = "test.zip", FileSize = 0 // Invalid
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -573,10 +557,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Local,
-            Hash = "a".PadRight(64, '0'),
-            FileName = "test.zip",
-            FileSize = -100 // Negative
+            Type = FileType.Local, Hash = "a".PadRight(64, '0'), FileName = "test.zip", FileSize = -100 // Negative
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -605,8 +586,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Remote,
-            RemoteUrl = "https://example.com/file.zip"
+            Type = FileType.Remote, RemoteUrl = "https://example.com/file.zip"
             // Missing FileName
         };
 
@@ -620,9 +600,7 @@ public class TransferValidatorTest
     {
         var attachment = new AttachmentSection
         {
-            Type = FileType.Remote,
-            RemoteUrl = "not-a-valid-url",
-            FileName = "test.zip"
+            Type = FileType.Remote, RemoteUrl = "not-a-valid-url", FileName = "test.zip"
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -713,8 +691,7 @@ public class TransferValidatorTest
     {
         var division = new TransferDivision
         {
-            Name = "Test Division",
-            InviteCode = new string('a', 40) // Exceeds 32 chars
+            Name = "Test Division", InviteCode = new string('a', 40) // Exceeds 32 chars
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -727,8 +704,7 @@ public class TransferValidatorTest
     {
         var division = new TransferDivision
         {
-            Name = "Test Division",
-            InviteCode = "test@code!" // Invalid chars
+            Name = "Test Division", InviteCode = "test@code!" // Invalid chars
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
