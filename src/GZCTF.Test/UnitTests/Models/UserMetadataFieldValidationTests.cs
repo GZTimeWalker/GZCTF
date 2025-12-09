@@ -100,7 +100,9 @@ public class UserMetadataFieldValidationTests
     {
         var field = new UserMetadataField
         {
-            Key = "test", Type = UserMetadataFieldType.MultiSelect, Options = ["A", "B"]
+            Key = "test",
+            Type = UserMetadataFieldType.MultiSelect,
+            Options = ["A", "B"]
         };
         var value = JsonSerializer.Deserialize<JsonDocument>("[\"A\", \"C\"]");
 

@@ -27,7 +27,8 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     // Configured JSON options matching the application's settings
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNameCaseInsensitive = true, Converters = { new DateTimeOffsetJsonConverter() }
+        PropertyNameCaseInsensitive = true,
+        Converters = { new DateTimeOffsetJsonConverter() }
     };
 
     /// <summary>
@@ -651,7 +652,9 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         var model = new PostEditModel
         {
-            Title = title, Summary = $"Summary for {title}", Content = $"Content for {title}"
+            Title = title,
+            Summary = $"Summary for {title}",
+            Content = $"Content for {title}"
             // Do not include IsPinned during creation
         };
 

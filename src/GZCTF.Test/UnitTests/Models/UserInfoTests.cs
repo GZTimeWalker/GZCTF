@@ -51,7 +51,10 @@ public class UserInfoTests
         };
         var model = new UserCreateModel
         {
-            UserName = "test", Password = "password", Email = "test@example.com", Metadata = metadata
+            UserName = "test",
+            Password = "password",
+            Email = "test@example.com",
+            Metadata = metadata
         };
 
         user.UpdateUserInfo(model);

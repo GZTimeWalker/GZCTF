@@ -1139,7 +1139,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
     private static readonly JsonSerializerOptions ScoreboardJsonOptions = new(JsonSerializerDefaults.Web)
     {
-        PropertyNameCaseInsensitive = true, NumberHandling = JsonNumberHandling.AllowReadingFromString
+        PropertyNameCaseInsensitive = true,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString
     };
 
     private static DateTimeOffset ConvertToDateTime(long milliseconds)

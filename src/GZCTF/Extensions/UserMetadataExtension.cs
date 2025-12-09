@@ -158,7 +158,7 @@ public static class UserMetadataExtension
 
                 case UserMetadataFieldType.DateTime:
                 case UserMetadataFieldType.Date:
-                    if (root.ValueKind != JsonValueKind.String || !DateTimeOffset.TryParse(root.GetString(), out _))
+                    if (root.ValueKind != JsonValueKind.Number || !root.TryGetInt64(out long _))
                     {
                         error = localizer[nameof(Resources.Program.Model_ValueMustBeDateTime)];
                         return false;

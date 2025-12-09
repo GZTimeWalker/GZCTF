@@ -109,8 +109,8 @@ public sealed partial class UserMetadataField : IDisposable
         var valueKind = value.RootElement.ValueKind;
         var isValidType = expectedType switch
         {
-            UserMetadataFieldValueType.String or
-                UserMetadataFieldValueType.DateTime => valueKind == JsonValueKind.String,
+            UserMetadataFieldValueType.String => valueKind == JsonValueKind.String,
+            UserMetadataFieldValueType.DateTime => valueKind == JsonValueKind.Number,
             UserMetadataFieldValueType.Number => valueKind == JsonValueKind.Number,
             UserMetadataFieldValueType.Boolean => valueKind is JsonValueKind.True or JsonValueKind.False,
             UserMetadataFieldValueType.StringArray => valueKind == JsonValueKind.Array,
