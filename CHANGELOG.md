@@ -3,6 +3,25 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.2..v1.8.0) - 2025-12-10
+
+### ⛰️ Features
+
+- **(container)** custom network mode for challenges (#534) - ([e9300a](https://github.com/GZTimeWalker/GZCTF/commit/e9300a)) by **GZTime**
+- **(transfer)** add NetworkMode to TransferChallenge - ([939819](https://github.com/GZTimeWalker/GZCTF/commit/939819)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(cache)** reorder cache flushing calls in GameRepository - ([4d3e23](https://github.com/GZTimeWalker/GZCTF/commit/4d3e23)) by **GZTime**
+- **(challenge)** set default score to 0 in challenge preview - ([f20f35](https://github.com/GZTimeWalker/GZCTF/commit/f20f35)) by **GZTime**
+- **(configs)** update ForwardedOptions to support new proxy and network properties - ([58f66a](https://github.com/GZTimeWalker/GZCTF/commit/58f66a)) by **GZTime**
+- **(frontend)** exclude isPinned from post update payload - ([6ffaab](https://github.com/GZTimeWalker/GZCTF/commit/6ffaab)) by **FazaN CyberSec**
+
+### 🔨 Refactor
+
+- Index cache control, CSP generation and improve language extraction logic - ([377cf4](https://github.com/GZTimeWalker/GZCTF/commit/377cf4)) by **GZTime**
+
+---
 ## [1.7.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.1..v1.7.2) - 2025-11-18
 
 ### ⛰️ Features
