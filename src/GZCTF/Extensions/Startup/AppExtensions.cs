@@ -5,9 +5,9 @@ using Serilog;
 
 namespace GZCTF.Extensions.Startup;
 
-static class AppExtensions
+internal static class AppExtensions
 {
-    static readonly StaticFileOptions DefaultStaticFileOptions = new()
+    private static readonly StaticFileOptions DefaultStaticFileOptions = new()
     {
         OnPrepareResponse = ctx =>
         {
@@ -19,7 +19,8 @@ static class AppExtensions
         }
     };
 
-    static readonly WebSocketOptions DefaultWebSocketOptions = new() { KeepAliveInterval = TimeSpan.FromMinutes(30) };
+    private static readonly WebSocketOptions DefaultWebSocketOptions =
+        new() { KeepAliveInterval = TimeSpan.FromMinutes(30) };
 
     extension(WebApplication app)
     {

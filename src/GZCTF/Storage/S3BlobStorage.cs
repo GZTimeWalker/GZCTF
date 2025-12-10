@@ -11,8 +11,8 @@ namespace GZCTF.Storage;
 /// </summary>
 public sealed class S3BlobStorage : IBlobStorage, IDisposable
 {
-    readonly IAmazonS3 _client;
-    readonly string _bucket;
+    private readonly IAmazonS3 _client;
+    private readonly string _bucket;
 
     public S3BlobStorage(IAmazonS3 client, string bucket)
     {
@@ -288,7 +288,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
 
     public void Dispose() => _client.Dispose();
 
-    async Task<GetObjectMetadataResponse?> TryGetObjectMetadataAsync(string key,
+    private async Task<GetObjectMetadataResponse?> TryGetObjectMetadataAsync(string key,
         CancellationToken cancellationToken)
     {
         try
@@ -301,7 +301,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         }
     }
 
-    async IAsyncEnumerable<string> EnumerateKeysAsync(string prefix,
+    private async IAsyncEnumerable<string> EnumerateKeysAsync(string prefix,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(prefix))
@@ -323,9 +323,9 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         } while (!string.IsNullOrEmpty(request.ContinuationToken));
     }
 
-    static string NormalizeKey(string path) => StoragePath.Normalize(path);
+    private static string NormalizeKey(string path) => StoragePath.Normalize(path);
 
-    static string EnsureDirectoryPrefix(string key)
+    private static string EnsureDirectoryPrefix(string key)
     {
         if (string.IsNullOrEmpty(key))
             return string.Empty;
@@ -333,15 +333,15 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         return key.EndsWith('/') ? key : key + '/';
     }
 
-    static string GetLeafName(string key)
+    private static string GetLeafName(string key)
     {
         var segments = StoragePath.Split(key).ToArray();
         return segments.Length == 0 ? string.Empty : segments[^1];
     }
 
-    sealed class S3ObjectReadStream(GetObjectResponse? response) : Stream
+    private sealed class S3ObjectReadStream(GetObjectResponse? response) : Stream
     {
-        Stream Inner => response?.ResponseStream ?? Null;
+        private Stream Inner => response?.ResponseStream ?? Null;
 
         public override bool CanRead => Inner.CanRead;
         public override bool CanSeek => Inner.CanSeek;

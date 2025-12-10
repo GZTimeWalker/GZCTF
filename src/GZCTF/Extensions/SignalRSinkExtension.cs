@@ -21,7 +21,7 @@ public static class SignalRSinkExtension
 
 public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
 {
-    IHubContext<AdminHub, IAdminClient>? _hubContext;
+    private IHubContext<AdminHub, IAdminClient>? _hubContext;
 
     public void Emit(LogEvent logEvent)
     {

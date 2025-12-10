@@ -18,12 +18,12 @@ public static class DatabaseSinkExtension
 
 public class DatabaseSink : ILogEventSink, IDisposable
 {
-    readonly ConcurrentQueue<LogModel> _logBuffer = [];
-    readonly AsyncManualResetEvent _resetEvent = new();
-    readonly IServiceProvider _serviceProvider;
-    readonly CancellationTokenSource _tokenSource = new();
+    private readonly ConcurrentQueue<LogModel> _logBuffer = [];
+    private readonly AsyncManualResetEvent _resetEvent = new();
+    private readonly IServiceProvider _serviceProvider;
+    private readonly CancellationTokenSource _tokenSource = new();
 
-    DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
+    private DateTimeOffset _lastFlushTime = DateTimeOffset.FromUnixTimeSeconds(0);
 
     public DatabaseSink(IServiceProvider serviceProvider)
     {
@@ -45,7 +45,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
         _resetEvent.Set();
     }
 
-    static LogModel ToLogModel(LogEvent logEvent)
+    private static LogModel ToLogModel(LogEvent logEvent)
     {
         logEvent.Properties.TryGetValue("UserName", out var userName);
         logEvent.Properties.TryGetValue("SourceContext", out var sourceContext);
@@ -67,7 +67,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
         };
     }
 
-    async Task WriteToDatabase(CancellationToken token = default)
+    private async Task WriteToDatabase(CancellationToken token = default)
     {
         List<LogModel> lockedLogBuffer = [];
 

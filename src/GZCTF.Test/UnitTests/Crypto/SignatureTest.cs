@@ -15,14 +15,14 @@ public class SignatureTest(ITestOutputHelper output)
     [Fact]
     public void Ed25519Test()
     {
-        SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
+        var sAlgorithm = SignAlgorithm.Ed25519;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
         SecureRandom sr = new();
         Ed25519KeyPairGenerator kpg = new();
         kpg.Init(new Ed25519KeyGenerationParameters(sr));
 
-        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var kp = kpg.GenerateKeyPair();
         var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         var publicKey = (Ed25519PublicKeyParameters)kp.Public;
 
@@ -44,7 +44,7 @@ public class SignatureTest(ITestOutputHelper output)
     [Fact]
     public void Ed25519WithXorTest()
     {
-        SignAlgorithm sAlgorithm = SignAlgorithm.Ed25519;
+        var sAlgorithm = SignAlgorithm.Ed25519;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
 
@@ -90,7 +90,7 @@ public class SignatureTest(ITestOutputHelper output)
         Ed25519KeyPairGenerator kpg = new();
         kpg.Init(new Ed25519KeyGenerationParameters(sr));
 
-        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var kp = kpg.GenerateKeyPair();
         var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         var publicKey = (Ed25519PublicKeyParameters)kp.Public;
 
@@ -112,14 +112,14 @@ public class SignatureTest(ITestOutputHelper output)
     [Fact]
     public void Ed448Test()
     {
-        SignAlgorithm sAlgorithm = SignAlgorithm.Ed448;
+        var sAlgorithm = SignAlgorithm.Ed448;
         var s = "Hello " + sAlgorithm;
         output.WriteLine(s);
         SecureRandom sr = new();
         Ed448KeyPairGenerator kpg = new();
         kpg.Init(new Ed448KeyGenerationParameters(sr));
 
-        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var kp = kpg.GenerateKeyPair();
         var privateKey = (Ed448PrivateKeyParameters)kp.Private;
         var publicKey = (Ed448PublicKeyParameters)kp.Public;
 
@@ -148,7 +148,7 @@ public class SignatureTest(ITestOutputHelper output)
         RsaKeyPairGenerator kpg = new();
         kpg.Init(new KeyGenerationParameters(sr, 2048));
 
-        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var kp = kpg.GenerateKeyPair();
         var privateKey = (RsaKeyParameters)kp.Private;
         var publicKey = (RsaKeyParameters)kp.Public;
 
@@ -174,7 +174,7 @@ public class SignatureTest(ITestOutputHelper output)
         X25519KeyPairGenerator kpg = new();
         kpg.Init(new X25519KeyGenerationParameters(sr));
 
-        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var kp = kpg.GenerateKeyPair();
         var privateKey = (X25519PrivateKeyParameters)kp.Private;
         var publicKey = (X25519PublicKeyParameters)kp.Public;
 
@@ -207,8 +207,8 @@ public class SignatureTest(ITestOutputHelper output)
         kpg.Init(new Ed25519KeyGenerationParameters(sr));
 
         // Generate two different key pairs
-        AsymmetricCipherKeyPair kp1 = kpg.GenerateKeyPair();
-        AsymmetricCipherKeyPair kp2 = kpg.GenerateKeyPair();
+        var kp1 = kpg.GenerateKeyPair();
+        var kp2 = kpg.GenerateKeyPair();
 
         var privateKey1 = (Ed25519PrivateKeyParameters)kp1.Private;
         var publicKey2 = (Ed25519PublicKeyParameters)kp2.Public;
@@ -233,7 +233,7 @@ public class SignatureTest(ITestOutputHelper output)
         Ed25519KeyPairGenerator kpg = new();
         kpg.Init(new Ed25519KeyGenerationParameters(sr));
 
-        AsymmetricCipherKeyPair kp = kpg.GenerateKeyPair();
+        var kp = kpg.GenerateKeyPair();
         var privateKey = (Ed25519PrivateKeyParameters)kp.Private;
         var publicKey = (Ed25519PublicKeyParameters)kp.Public;
 

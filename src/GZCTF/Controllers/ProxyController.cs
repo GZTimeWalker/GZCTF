@@ -30,10 +30,10 @@ public class ProxyController(
     IContainerRepository containerRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
-    const int BufferSize = 4096;
-    const uint ConnectionLimit = 32;
+    private const int BufferSize = 4096;
+    private const uint ConnectionLimit = 32;
 
-    static readonly JsonSerializerOptions JsonOptions =
+    private static readonly JsonSerializerOptions JsonOptions =
         new()
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -41,14 +41,16 @@ public class ProxyController(
             TypeInfoResolver = new AppJsonSerializerContext()
         };
 
-    static readonly DistributedCacheEntryOptions StoreOption =
+    private static readonly DistributedCacheEntryOptions StoreOption =
         new() { SlidingExpiration = TimeSpan.FromHours(10) };
 
-    static readonly DistributedCacheEntryOptions ValidOption =
+    private static readonly DistributedCacheEntryOptions ValidOption =
         new() { SlidingExpiration = TimeSpan.FromMinutes(10) };
 
-    readonly bool _enablePlatformProxy = provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
-    readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
+    private readonly bool _enablePlatformProxy =
+        provider.Value.PortMappingType == ContainerPortMappingType.PlatformProxy;
+
+    private readonly bool _enableTrafficCapture = provider.Value.EnableTrafficCapture;
 
     /// <summary>
     /// Proxy TCP over websocket
@@ -160,7 +162,7 @@ public class ProxyController(
         return await DoContainerProxy(id, client, target, null, new(), token);
     }
 
-    async Task<IActionResult> DoContainerProxy(Guid id, IPEndPoint client, IPEndPoint target,
+    private async Task<IActionResult> DoContainerProxy(Guid id, IPEndPoint client, IPEndPoint target,
         byte[]? metadata, RecordableNetworkStreamOptions options, CancellationToken token = default)
     {
         using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -191,7 +193,7 @@ public class ProxyController(
                     StatusCodes.Status418ImATeapot);
             }
 
-            using WebSocket ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            using var ws = await HttpContext.WebSockets.AcceptWebSocketAsync();
 
             try
             {
@@ -214,11 +216,11 @@ public class ProxyController(
         return new EmptyResult();
     }
 
-    void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
+    private void LogProxyResult(Guid id, IPEndPoint client, IPEndPoint target, ulong tx, ulong rx)
     {
         var shortId = id.ToString("N")[..12];
-        IPAddress clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
-        IPAddress targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
+        var clientAddress = client.Address.IsIPv4MappedToIPv6 ? client.Address.MapToIPv4() : client.Address;
+        var targetAddress = target.Address.IsIPv4MappedToIPv6 ? target.Address.MapToIPv4() : target.Address;
 
         logger.SystemLog($"[{shortId}] {clientAddress} -> {targetAddress}:{target.Port}, tx {tx}, rx {rx}",
             TaskStatus.Success, LogLevel.Debug);
@@ -231,14 +233,14 @@ public class ProxyController(
     /// <param name="ws"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws,
+    private static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws,
         CancellationToken token = default)
     {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
         cts.CancelAfter(TimeSpan.FromMinutes(30));
 
-        CancellationToken ct = cts.Token;
+        var ct = cts.Token;
         ulong tx = 0, rx = 0;
 
         var sender = Task.Run(async () =>
@@ -248,14 +250,14 @@ public class ProxyController(
             {
                 while (true)
                 {
-                    WebSocketReceiveResult status = await ws.ReceiveAsync(buffer, ct);
+                    var status = await ws.ReceiveAsync(buffer, ct);
                     if (status.CloseStatus.HasValue)
                         break;
                     if (status.Count <= 0)
                         continue;
 
                     tx += (ulong)status.Count;
-                    Memory<byte> memory = buffer.AsMemory(0, status.Count);
+                    var memory = buffer.AsMemory(0, status.Count);
                     await stream.WriteAsync(memory, ct);
                 }
             }
@@ -284,7 +286,7 @@ public class ProxyController(
                     }
 
                     rx += (ulong)count;
-                    Memory<byte> memory = buffer.AsMemory(0, count);
+                    var memory = buffer.AsMemory(0, count);
                     await ws.SendAsync(memory, WebSocketMessageType.Binary, true, ct);
                 }
             }
@@ -311,7 +313,7 @@ public class ProxyController(
     /// <param name="id">Container ID</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    async Task<bool> ValidateContainer(Guid id, CancellationToken token = default)
+    private async Task<bool> ValidateContainer(Guid id, CancellationToken token = default)
     {
         var key = CacheKey.ConnectionCount(id);
         var bytes = await cache.GetAsync(key, token);
@@ -332,7 +334,7 @@ public class ProxyController(
     /// </summary>
     /// <param name="key">Cache key</param>
     /// <returns></returns>
-    async Task<bool> IncreaseConnectionCount(string key)
+    private async Task<bool> IncreaseConnectionCount(string key)
     {
         var bytes = await cache.GetAsync(key);
 
@@ -354,7 +356,7 @@ public class ProxyController(
     /// </summary>
     /// <param name="key">Cache key</param>
     /// <returns></returns>
-    async Task DecreaseConnectionCount(string key)
+    private async Task DecreaseConnectionCount(string key)
     {
         var bytes = await cache.GetAsync(key);
 

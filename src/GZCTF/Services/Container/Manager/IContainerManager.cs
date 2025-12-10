@@ -27,9 +27,9 @@ public interface IContainerManager
     public Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default);
 }
 
-static class ContainerManagerLogHelper
+internal static class ContainerManagerLogHelper
 {
-    static void LogWithHttpContext<T>(
+    private static void LogWithHttpContext<T>(
         ILogger<T> logger,
         string container,
         HttpStatusCode status,

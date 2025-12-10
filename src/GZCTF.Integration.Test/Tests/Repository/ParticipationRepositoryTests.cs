@@ -171,7 +171,7 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Create multiple participations
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
                 TestDataSeeder.RandomName(), "Test@123");

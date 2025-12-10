@@ -25,7 +25,7 @@ public class Server
         "vi-VN"
     ];
 
-    static readonly string LanguageWarning =
+    private static readonly string LanguageWarning =
         $"Warning: Current language {CultureInfo.CurrentCulture.DisplayName} is machine translated and may not be accurate.\n";
 
     internal static IStringLocalizer<Program> StaticLocalizer { get; } =

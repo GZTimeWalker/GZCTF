@@ -14,9 +14,9 @@ namespace GZCTF.Services.Container.Manager;
 
 public class KubernetesManager : IContainerManager
 {
-    readonly Kubernetes _client;
-    readonly ILogger<KubernetesManager> _logger;
-    readonly KubernetesMetadata _meta;
+    private readonly Kubernetes _client;
+    private readonly ILogger<KubernetesManager> _logger;
+    private readonly KubernetesMetadata _meta;
 
     public KubernetesManager(IContainerProvider<Kubernetes, KubernetesMetadata> provider,
         ILogger<KubernetesManager> logger)
@@ -44,7 +44,7 @@ public class KubernetesManager : IContainerManager
         }
 
         var authSecretName = _meta.AuthSecretNames.GetForImage(config.Image);
-        KubernetesConfig options = _meta.Config;
+        var options = _meta.Config;
 
         var chalImage = imageName.ToValidRFC1123String("chal");
 

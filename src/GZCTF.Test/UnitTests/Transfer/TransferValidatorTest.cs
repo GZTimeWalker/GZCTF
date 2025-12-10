@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using GZCTF.Models.Transfer;
 using GZCTF.Utils;
 using Xunit;
 
-namespace GZCTF.Test.UnitTests;
+namespace GZCTF.Test.UnitTests.Transfer;
 
 public class TransferValidatorTest
 {
@@ -105,19 +103,8 @@ public class TransferValidatorTest
             Title = "Test Challenge",
             Category = ChallengeCategory.Web,
             Type = ChallengeType.StaticAttachment,
-            Scoring = new ScoringSection
-            {
-                Original = 500,
-                MinRate = 0.25,
-                Difficulty = 5.0
-            },
-            Flags = new FlagsSection
-            {
-                Static = new List<StaticFlagSection>
-                {
-                    new() { Value = "flag{test}" }
-                }
-            }
+            Scoring = new ScoringSection { Original = 500, MinRate = 0.25, Difficulty = 5.0 },
+            Flags = new FlagsSection { Static = [new() { Value = "flag{test}" }] }
         };
 
         // Should not throw
@@ -155,10 +142,7 @@ public class TransferValidatorTest
                 MinRate = 0.25,
                 Difficulty = 5.0
             },
-            Flags = new FlagsSection
-            {
-                Static = new List<StaticFlagSection> { new() { Value = "flag{test}" } }
-            }
+            Flags = new FlagsSection { Static = [new() { Value = "flag{test}" }] }
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -180,10 +164,7 @@ public class TransferValidatorTest
                 MinRate = 1.5, // Exceeds max 1.0
                 Difficulty = 5.0
             },
-            Flags = new FlagsSection
-            {
-                Static = new List<StaticFlagSection> { new() { Value = "flag{test}" } }
-            }
+            Flags = new FlagsSection { Static = [new() { Value = "flag{test}" }] }
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -270,11 +251,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateDivision_ValidDivision_ShouldPass()
     {
-        var division = new TransferDivision
-        {
-            Name = "Test Division",
-            InviteCode = "test-code"
-        };
+        var division = new TransferDivision { Name = "Test Division", InviteCode = "test-code" };
 
         // Should not throw
         TransferValidator.ValidateRecursive(division, "Division");
@@ -512,13 +489,7 @@ public class TransferValidatorTest
             Title = "Test Challenge",
             Category = ChallengeCategory.Web,
             Type = ChallengeType.StaticAttachment,
-            Flags = new FlagsSection
-            {
-                Static = new List<StaticFlagSection>
-                {
-                    new() { Value = "" } // Empty flag value
-                }
-            }
+            Flags = new FlagsSection { Static = [new() { Value = "" }] }
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -534,13 +505,7 @@ public class TransferValidatorTest
             Title = "Test Challenge",
             Category = ChallengeCategory.Web,
             Type = ChallengeType.StaticAttachment,
-            Flags = new FlagsSection
-            {
-                Static = new List<StaticFlagSection>
-                {
-                    new() { Value = new string('a', 150) } // Exceeds 127 chars
-                }
-            }
+            Flags = new FlagsSection { Static = [new() { Value = new string('a', 150) }] }
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
@@ -672,10 +637,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateContainer_EmptyImage_ShouldThrow()
     {
-        var container = new ContainerSection
-        {
-            Image = ""
-        };
+        var container = new ContainerSection { Image = "" };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(container, "Container"));
@@ -685,11 +647,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateContainer_ZeroMemoryLimit_ShouldThrow()
     {
-        var container = new ContainerSection
-        {
-            Image = "nginx:latest",
-            MemoryLimit = 0
-        };
+        var container = new ContainerSection { Image = "nginx:latest", MemoryLimit = 0 };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(container, "Container"));
@@ -699,11 +657,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateContainer_NegativeCpuCount_ShouldThrow()
     {
-        var container = new ContainerSection
-        {
-            Image = "nginx:latest",
-            CpuCount = -1
-        };
+        var container = new ContainerSection { Image = "nginx:latest", CpuCount = -1 };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(container, "Container"));
@@ -713,11 +667,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateContainer_ZeroStorageLimit_ShouldThrow()
     {
-        var container = new ContainerSection
-        {
-            Image = "nginx:latest",
-            StorageLimit = 0
-        };
+        var container = new ContainerSection { Image = "nginx:latest", StorageLimit = 0 };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(container, "Container"));
@@ -727,11 +677,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateContainer_PortZero_ShouldThrow()
     {
-        var container = new ContainerSection
-        {
-            Image = "nginx:latest",
-            ExposePort = 0
-        };
+        var container = new ContainerSection { Image = "nginx:latest", ExposePort = 0 };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(container, "Container"));
@@ -741,11 +687,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateContainer_PortTooHigh_ShouldThrow()
     {
-        var container = new ContainerSection
-        {
-            Image = "nginx:latest",
-            ExposePort = 70000
-        };
+        var container = new ContainerSection { Image = "nginx:latest", ExposePort = 70000 };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(container, "Container"));
@@ -759,10 +701,7 @@ public class TransferValidatorTest
     [Fact]
     public void ValidateDivision_EmptyName_ShouldThrow()
     {
-        var division = new TransferDivision
-        {
-            Name = ""
-        };
+        var division = new TransferDivision { Name = "" };
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(division, "Division"));

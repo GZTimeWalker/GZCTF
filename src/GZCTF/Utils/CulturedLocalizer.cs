@@ -3,7 +3,7 @@ using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Utils;
 
-class CulturedLocalizer<T>(CultureInfo cultureInfo) : IStringLocalizer<T>
+internal class CulturedLocalizer<T>(CultureInfo cultureInfo) : IStringLocalizer<T>
 {
     public LocalizedString this[string name]
     {

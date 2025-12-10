@@ -13,9 +13,9 @@ namespace GZCTF.Services.Container.Manager;
 
 public class DockerManager : IContainerManager
 {
-    readonly DockerClient _client;
-    readonly ILogger<DockerManager> _logger;
-    readonly DockerMetadata _meta;
+    private readonly DockerClient _client;
+    private readonly ILogger<DockerManager> _logger;
+    private readonly DockerMetadata _meta;
 
     public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
@@ -120,7 +120,7 @@ public class DockerManager : IContainerManager
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
                 TaskStatus.Pending, LogLevel.Information);
 
-            AuthConfig? auth = _meta.AuthConfigs.GetForImage(config.Image);
+            var auth = _meta.AuthConfigs.GetForImage(config.Image);
 
             // pull the image and retry
             await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, auth,
@@ -258,7 +258,7 @@ public class DockerManager : IContainerManager
         return container;
     }
 
-    CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
+    private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
         new()
         {
             Image = config.Image,

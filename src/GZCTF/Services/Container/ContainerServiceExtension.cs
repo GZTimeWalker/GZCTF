@@ -37,7 +37,7 @@ public static class ContainerServiceExtension
             return services.AddProvider(config).AddManager(config);
         }
 
-        IServiceCollection AddProvider(ContainerProvider config) =>
+        private IServiceCollection AddProvider(ContainerProvider config) =>
             config.Type switch
             {
                 ContainerProviderType.Docker => services
@@ -47,7 +47,7 @@ public static class ContainerServiceExtension
                 _ => services
             };
 
-        IServiceCollection AddManager(ContainerProvider config)
+        private IServiceCollection AddManager(ContainerProvider config)
             => config.Type switch
             {
                 ContainerProviderType.Kubernetes => services.AddSingleton<IContainerManager, KubernetesManager>(),

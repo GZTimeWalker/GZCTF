@@ -35,8 +35,8 @@ public class DockerMetadata : ContainerProviderMetadata
 
 public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
 {
-    readonly DockerClient _dockerClient;
-    readonly DockerMetadata _dockerMeta;
+    private readonly DockerClient _dockerClient;
+    private readonly DockerMetadata _dockerMeta;
 
     public DockerProvider(IOptions<ContainerProvider> options, IOptions<RegistrySet<RegistryConfig>> registriesOptions,
         ILogger<DockerProvider> logger)
@@ -84,7 +84,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             TaskStatus.Success, LogLevel.Debug);
     }
 
-    void EnsureNetworkCreated()
+    private void EnsureNetworkCreated()
     {
         // create two network and attach self container to them (if in container)
         var networks = _dockerClient.Networks.ListNetworksAsync(new NetworksListParameters
@@ -104,7 +104,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             AttachSelfToNetwork(customNetworkName);
     }
 
-    void EnsureOpenNetwork(IList<NetworkResponse> networks)
+    private void EnsureOpenNetwork(IList<NetworkResponse> networks)
     {
         var openNetworkName = _dockerMeta.NetworkNames[NetworkMode.Open];
         if (networks.All(n => n.Name != openNetworkName))
@@ -120,7 +120,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
         AttachSelfToNetwork(openNetworkName);
     }
 
-    void EnsureIsolatedNetwork(IList<NetworkResponse> networks)
+    private void EnsureIsolatedNetwork(IList<NetworkResponse> networks)
     {
         var isolatedNetworkName = _dockerMeta.NetworkNames[NetworkMode.Isolated];
         if (networks.All(n => n.Name != isolatedNetworkName))
@@ -142,7 +142,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
         AttachSelfToNetwork(isolatedNetworkName);
     }
 
-    void AttachSelfToNetwork(string networkName)
+    private void AttachSelfToNetwork(string networkName)
     {
         var selfContainerId = Environment.GetEnvironmentVariable("HOSTNAME");
         if (string.IsNullOrEmpty(selfContainerId))

@@ -76,14 +76,14 @@ public class CacheHelper(
     public async Task FlushGameListCache(CancellationToken token) =>
         await channelWriter.WriteAsync(GameListCacheHandler.MakeCacheRequest(), token);
 
-    static readonly MemoryCacheEntryOptions CommonMemoryCacheOptions = new()
+    private static readonly MemoryCacheEntryOptions CommonMemoryCacheOptions = new()
     {
         // The pulling frequency of the scoreboard is 10s from the client side,
         // so we use memory cache to reduce the pressure on distributed cache.
         AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5),
     };
 
-    async Task<TResult> GetOrCreateFromDistributedCacheAsync<TResult, TLogger>(
+    private async Task<TResult> GetOrCreateFromDistributedCacheAsync<TResult, TLogger>(
         ILogger<TLogger> logger,
         string key,
         Func<DistributedCacheEntryOptions, Task<TResult>> func,
@@ -132,7 +132,7 @@ public class CacheHelper(
         return result;
     }
 
-    static bool TryDeserialize<TResult>(byte[]? value, [NotNullWhen(true)] ref TResult? result)
+    private static bool TryDeserialize<TResult>(byte[]? value, [NotNullWhen(true)] ref TResult? result)
     {
         if (value is null)
             return false;
@@ -150,7 +150,7 @@ public class CacheHelper(
         }
     }
 
-    async Task<byte[]?> WaitLockAsync(string key, CancellationToken token = default)
+    private async Task<byte[]?> WaitLockAsync(string key, CancellationToken token = default)
     {
         var lockKey = CacheKey.UpdateLock(key);
         var lockValue = await distributedCache.GetAsync(lockKey, token);
@@ -168,11 +168,11 @@ public class CacheHelper(
         return await distributedCache.GetAsync(key, token);
     }
 
-    Task SetLockAsync(string lockKey, CancellationToken token = default)
+    private Task SetLockAsync(string lockKey, CancellationToken token = default)
         => distributedCache.SetAsync(lockKey, [],
             new DistributedCacheEntryOptions { SlidingExpiration = TimeSpan.FromMinutes(1) }, token);
 
-    Task ReleaseLockAsync(string lockKey, CancellationToken token = default) =>
+    private Task ReleaseLockAsync(string lockKey, CancellationToken token = default) =>
         distributedCache.RemoveAsync(lockKey, token);
 }
 

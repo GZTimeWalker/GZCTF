@@ -2,7 +2,6 @@
 using System.Net.Mime;
 using GZCTF.Middlewares;
 using GZCTF.Repositories.Interface;
-using GZCTF.Storage;
 using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -23,7 +22,7 @@ public class AssetsController(
     ILogger<AssetsController> logger,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
-    readonly FileExtensionContentTypeProvider _extProvider = new();
+    private readonly FileExtensionContentTypeProvider _extProvider = new();
 
     /// <summary>
     /// File retrieval interface

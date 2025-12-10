@@ -99,7 +99,7 @@ public class TransferChallengeTests
         Assert.Equal(NetworkMode.Custom, transfer.Container.NetworkMode);
     }
 
-    static readonly TransferChallenge TransferChallenge = new()
+    private static readonly TransferChallenge TransferChallenge = new()
     {
         Id = 3,
         Title = "Crypto Challenge",

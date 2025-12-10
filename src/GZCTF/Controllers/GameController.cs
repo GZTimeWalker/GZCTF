@@ -67,7 +67,7 @@ public class GameController(
         [FromQuery][Range(0, 50)] int limit,
         CancellationToken token)
     {
-        (BasicGameInfoModel[] games, DateTimeOffset lastModified) = await gameRepository.GetRecentGames(token);
+        (var games, var lastModified) = await gameRepository.GetRecentGames(token);
         var eTag = $"\"{lastModified.ToUnixTimeSeconds():X}-{limit}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -392,7 +392,7 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        (GameNotice[] data, DateTimeOffset lastModified) = await noticeRepository.GetLatestNotices(game.Id, token);
+        (var data, var lastModified) = await noticeRepository.GetLatestNotices(game.Id, token);
         var eTag = $"\"{game.Id}-{lastModified.ToUnixTimeSeconds():X}-{skip}-{count}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -936,7 +936,7 @@ public class GameController(
                 StatusCodes.Status404NotFound));
 
         var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
-        ChallengeInfo? scoreboardChallenge =
+        var scoreboardChallenge =
             scoreboard.ChallengeMap.TryGetValue(challengeId, out var challenge) ? challenge : null;
 
         var attempts = await submissionRepository.CountSubmissions(context.Participation!.Id, challengeId, token);
@@ -980,7 +980,7 @@ public class GameController(
             return context.Result;
 
         const int maxRetries = 3;
-        for (int retry = 0; retry < maxRetries; retry++)
+        for (var retry = 0; retry < maxRetries; retry++)
         {
             await using var transaction = await gameInstanceRepository.BeginTransactionAsync(token);
 
@@ -1370,7 +1370,8 @@ public class GameController(
         return Ok();
     }
 
-    async Task<ContextInfo> GetContextInfo(int id, bool denyAfterEnded = true, CancellationToken token = default)
+    private async Task<ContextInfo> GetContextInfo(int id, bool denyAfterEnded = true,
+        CancellationToken token = default)
     {
         ContextInfo res = new()
         {
@@ -1406,16 +1407,16 @@ public class GameController(
         return res;
     }
 
-    static string GameETag(int gameId, DateTimeOffset lastModified) =>
+    private static string GameETag(int gameId, DateTimeOffset lastModified) =>
         $"\"{gameId}-{lastModified.ToUnixTimeSeconds():X}\"";
 
-    static Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> FilterChallengesByPermission(
+    private static Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> FilterChallengesByPermission(
         Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> challenges,
         DivisionItem division)
     {
         var res = new Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>>();
 
-        foreach ((ChallengeCategory cat, IEnumerable<ChallengeInfo> chs) in challenges)
+        foreach ((var cat, var chs) in challenges)
         {
             var infos = chs.Where(chal =>
                 division.ChallengeConfigs.TryGetValue(chal.Id, out var config)
@@ -1430,7 +1431,7 @@ public class GameController(
         return res;
     }
 
-    class ContextInfo
+    private class ContextInfo
     {
         public Game? Game;
         public Participation? Participation;

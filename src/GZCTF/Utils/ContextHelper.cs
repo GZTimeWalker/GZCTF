@@ -8,9 +8,9 @@ namespace GZCTF.Utils;
 
 public static class ContextHelper
 {
-    static readonly CacheControlHeaderValue NoCacheHeader = new() { NoCache = true, MustRevalidate = true };
+    private static readonly CacheControlHeaderValue NoCacheHeader = new() { NoCache = true, MustRevalidate = true };
 
-    static readonly CacheControlHeaderValue PrivateNoCacheHeader =
+    private static readonly CacheControlHeaderValue PrivateNoCacheHeader =
         new() { NoCache = true, Private = true, MustRevalidate = true };
 
     public static EntityTagHeaderValue SetCacheHeaders(HttpResponse response, StringSegment eTag,
@@ -52,7 +52,7 @@ public static class ContextHelper
     /// <param name="context">The request context.</param>
     /// <param name="privilege">The privilege to check against.</param>
     /// <returns></returns>
-    static async Task<bool> HasPrivilege(HttpContext context, Role privilege)
+    private static async Task<bool> HasPrivilege(HttpContext context, Role privilege)
     {
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 

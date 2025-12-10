@@ -73,7 +73,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         Assert.Equal(0, initialCount);
 
         // Add submissions
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             var submission = new Submission
             {
@@ -246,7 +246,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         await context.SaveChangesAsync();
 
         // Add 10 submissions
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             var submission = new Submission
             {

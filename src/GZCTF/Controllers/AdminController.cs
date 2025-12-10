@@ -170,7 +170,7 @@ public class AdminController(
         return Ok();
     }
 
-    async Task<bool> DeleteCurrentLogo(CancellationToken token)
+    private async Task<bool> DeleteCurrentLogo(CancellationToken token)
     {
         var globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
 
@@ -178,7 +178,7 @@ public class AdminController(
                await DeleteByHash(globalConfig.FaviconHash, token);
     }
 
-    async Task<bool> DeleteByHash(string? hash, CancellationToken token)
+    private async Task<bool> DeleteByHash(string? hash, CancellationToken token)
     {
         if (hash is not null && Codec.FileHashRegex().IsMatch(hash))
             return await blobService.DeleteBlobByHash(hash, token) switch
@@ -691,7 +691,7 @@ public class AdminController(
         CancellationToken token = default) =>
         Ok(new ArrayResponse<LocalFile>(await blobService.GetBlobs(count, skip, token)));
 
-    IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
+    private IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                        localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }

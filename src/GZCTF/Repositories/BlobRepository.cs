@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using GZCTF.Repositories.Interface;
-using GZCTF.Storage;
 using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
@@ -18,7 +17,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     public async Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
         CancellationToken token = default)
     {
-        await using Stream tmp = BufferHelper.GetTempStream(file.Length);
+        await using var tmp = BufferHelper.GetTempStream(file.Length);
 
         logger.SystemLog(
             StaticLocalizer[nameof(Resources.Program.FileRepository_CacheLocation),
@@ -64,8 +63,8 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
 
         try
         {
-            await using Stream webpStream = BufferHelper.GetTempStream(8192, "image");
-            await using (Stream tmp = BufferHelper.GetTempStream(file.Length))
+            await using var webpStream = BufferHelper.GetTempStream(8192, "image");
+            await using (var tmp = BufferHelper.GetTempStream(file.Length))
             {
                 await file.CopyToAsync(tmp, token);
                 tmp.Position = 0;
@@ -183,7 +182,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         Context.Remove(attachment);
     }
 
-    async Task<LocalFile> StoreBlob(string fileName, Stream contentStream,
+    private async Task<LocalFile> StoreBlob(string fileName, Stream contentStream,
         CancellationToken token = default)
     {
         contentStream.Position = 0;

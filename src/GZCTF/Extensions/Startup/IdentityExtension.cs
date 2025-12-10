@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace GZCTF.Extensions.Startup;
 
-static class IdentityExtension
+internal static class IdentityExtension
 {
     extension(WebApplicationBuilder builder)
     {

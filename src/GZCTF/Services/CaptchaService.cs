@@ -46,7 +46,7 @@ public class CaptchaServiceBase(IOptions<CaptchaConfig>? options) : ICaptchaServ
 
 public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : CaptchaServiceBase(options)
 {
-    readonly HttpClient _httpClient = new();
+    private readonly HttpClient _httpClient = new();
 
     public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context,
         CancellationToken token = default)
@@ -78,7 +78,7 @@ public sealed class CloudflareTurnstile(IOptions<CaptchaConfig>? options) : Capt
 public sealed class HashPow(IOptions<CaptchaConfig>? options, IDistributedCache cache) :
     CaptchaServiceBase(options)
 {
-    const int AnswerLength = 8;
+    private const int AnswerLength = 8;
 
     public override async Task<bool> VerifyAsync(ModelWithCaptcha model, HttpContext context,
         CancellationToken token = default)

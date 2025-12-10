@@ -26,7 +26,7 @@ public partial class TeamController(
     IParticipationRepository participationRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
-    const int MaxTeamsAllowed = 3;
+    private const int MaxTeamsAllowed = 3;
 
     /// <summary>
     /// Get team information

@@ -11,7 +11,7 @@ namespace GZCTF.Storage;
 /// </summary>
 public static class StorageProviderFactory
 {
-    const string DefaultDiskPath = "./files";
+    private const string DefaultDiskPath = "./files";
 
     public static IBlobStorage Create(string connectionString)
     {
@@ -28,7 +28,7 @@ public static class StorageProviderFactory
         return storage;
     }
 
-    static LocalBlobStorage CreateDiskStorage(IReadOnlyDictionary<string, string> parameters)
+    private static LocalBlobStorage CreateDiskStorage(IReadOnlyDictionary<string, string> parameters)
     {
         var path = parameters.TryGetValue("path", out var configuredPath) && !string.IsNullOrWhiteSpace(configuredPath)
             ? configuredPath
@@ -37,7 +37,7 @@ public static class StorageProviderFactory
         return new LocalBlobStorage(path);
     }
 
-    static S3BlobStorage CreateS3Storage(IReadOnlyDictionary<string, string> parameters, string scheme)
+    private static S3BlobStorage CreateS3Storage(IReadOnlyDictionary<string, string> parameters, string scheme)
     {
         if (!parameters.TryGetValue("bucket", out var bucket) || string.IsNullOrWhiteSpace(bucket))
             throw new InvalidOperationException("S3 storage requires the 'bucket' parameter.");
@@ -73,7 +73,7 @@ public static class StorageProviderFactory
         return new S3BlobStorage(client, bucket);
     }
 
-    static AWSCredentials ResolveCredentials(IReadOnlyDictionary<string, string> parameters)
+    private static AWSCredentials ResolveCredentials(IReadOnlyDictionary<string, string> parameters)
     {
         if (parameters.TryGetValue("accessKey", out var accessKey) &&
             parameters.TryGetValue("secretKey", out var secretKey) &&

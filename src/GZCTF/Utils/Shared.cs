@@ -24,7 +24,7 @@ public static class ChannelService
 
 internal static class BufferHelper
 {
-    const int DefaultBufferSize = 4096;
+    private const int DefaultBufferSize = 4096;
     private static readonly RecyclableMemoryStreamManager MemoryStreamManager = new();
 
     internal static Stream GetTempStream(long? bufferSize, string? tag = null) =>
@@ -163,7 +163,7 @@ public class IPAddressFormatter : MemoryPackCustomFormatterAttribute<IPAddress>,
         // IPv4: 4 bytes, IPv6: 16 bytes
         Span<byte> addressBytes = stackalloc byte[16];
         // false: only if the destination is not long enough
-        value.TryWriteBytes(addressBytes, out int bytesWritten);
+        value.TryWriteBytes(addressBytes, out var bytesWritten);
         writer.WriteSpan(addressBytes[..bytesWritten]);
     }
 
@@ -231,8 +231,8 @@ public class FileRecord
 public readonly struct BloodBonus(long init = BloodBonus.DefaultValue)
 {
     public const long DefaultValue = (50 << 20) + (30 << 10) + 10;
-    const int Mask = 0x3ff;
-    const int Base = 1000;
+    private const int Mask = 0x3ff;
+    private const int Base = 1000;
 
     public long Val { get; } = init;
 

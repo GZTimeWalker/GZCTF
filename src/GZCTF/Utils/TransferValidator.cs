@@ -15,12 +15,12 @@ public static class TransferValidator
     /// <exception cref="InvalidOperationException">Thrown when validation fails</exception>
     public static void Validate(object obj, string objectName = "Object")
     {
-        if (!TryValidate(obj, out var results, validateRecursive: false))
-        {
-            var errors = results.Select(r => r.ErrorMessage).ToList();
-            throw new InvalidOperationException(
-                $"{objectName} validation failed:\n- {string.Join("\n- ", errors)}");
-        }
+        if (TryValidate(obj, out var results, validateRecursive: false))
+            return;
+
+        var errors = results.Select(r => r.ErrorMessage).ToList();
+        throw new InvalidOperationException(
+            $"{objectName} validation failed:\n- {string.Join("\n- ", errors)}");
     }
 
     /// <summary>
@@ -76,6 +76,7 @@ public static class TransferValidator
                                     r.MemberNames.Select(m => $"{property.Name}[{index}].{m}"))));
                             isValid = false;
                         }
+
                         index++;
                     }
                 }

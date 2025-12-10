@@ -11,8 +11,8 @@ public class FlagChecker(
     ILogger<FlagChecker> logger,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
-    const int MaxWorkerCount = 4;
-    CancellationTokenSource TokenSource { get; set; } = new();
+    private const int MaxWorkerCount = 4;
+    private CancellationTokenSource TokenSource { get; set; } = new();
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -67,7 +67,7 @@ public class FlagChecker(
         return MaxWorkerCount;
     }
 
-    async Task Checker(int id, CancellationToken token = default)
+    private async Task Checker(int id, CancellationToken token = default)
     {
         logger.SystemLog(StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerStarted), id],
             TaskStatus.Pending,

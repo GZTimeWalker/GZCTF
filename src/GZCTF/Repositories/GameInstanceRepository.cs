@@ -388,7 +388,7 @@ public class GameInstanceRepository(
         }
     }
 
-    Task<int> CountBloodEligibleSolves(int challengeId, DateTimeOffset start, DateTimeOffset end,
+    private Task<int> CountBloodEligibleSolves(int challengeId, DateTimeOffset start, DateTimeOffset end,
         CancellationToken token)
     {
         // First, get blood-eligible participation IDs for the challenge
@@ -420,7 +420,7 @@ public class GameInstanceRepository(
         ).Take(4).CountAsync(token);
     }
 
-    static bool HasPermission(Division? division, GamePermission permission, int challengeId)
+    private static bool HasPermission(Division? division, GamePermission permission, int challengeId)
     {
         if (division is null)
             return true;

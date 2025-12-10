@@ -27,8 +27,8 @@ public class KubernetesMetadata : ContainerProviderMetadata
 
 public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetadata>
 {
-    readonly Kubernetes _kubernetesClient;
-    readonly KubernetesMetadata _kubernetesMetadata;
+    private readonly Kubernetes _kubernetesClient;
+    private readonly KubernetesMetadata _kubernetesMetadata;
 
     public KubernetesProvider(IOptions<RegistrySet<RegistryConfig>> registries, IOptions<ContainerProvider> options,
         ILogger<KubernetesProvider> logger)
@@ -83,7 +83,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
 
     public KubernetesMetadata GetMetadata() => _kubernetesMetadata;
 
-    void InitKubernetes(RegistrySet<RegistryConfig> registries)
+    private void InitKubernetes(RegistrySet<RegistryConfig> registries)
     {
         if (_kubernetesClient.CoreV1.ListNamespace().Items
             .All(ns => ns.Metadata.Name != _kubernetesMetadata.Config.Namespace))
@@ -95,11 +95,11 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         EnsureNetworkPolicy(IsolatedNetworkPolicy);
 
         // create auth secrets for registries
-        foreach (KeyValuePair<string, RegistryConfig> registry in registries.Where(registry => registry.Value.Valid))
+        foreach (var registry in registries.Where(registry => registry.Value.Valid))
             InsertRegistrySecret(registry.Key, registry.Value);
     }
 
-    void EnsureNetworkPolicy(V1NetworkPolicy policy)
+    private void EnsureNetworkPolicy(V1NetworkPolicy policy)
     {
         var policyName = policy.Metadata.Name;
         try
@@ -113,8 +113,8 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
         }
     }
 
-    const string IsolatedNetworkPolicyName = "gzctf-network-isolated";
-    const string OpenNetworkPolicyName = "gzctf-network-open";
+    private const string IsolatedNetworkPolicyName = "gzctf-network-isolated";
+    private const string OpenNetworkPolicyName = "gzctf-network-open";
 
     /// <summary>
     /// Isolated Network Policy
@@ -122,7 +122,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
     /// <remarks>
     ///  Blocks all outbound traffic.
     /// </remarks>
-    static readonly V1NetworkPolicy IsolatedNetworkPolicy = new()
+    private static readonly V1NetworkPolicy IsolatedNetworkPolicy = new()
     {
         Metadata = new V1ObjectMeta { Name = IsolatedNetworkPolicyName, },
         Spec = new V1NetworkPolicySpec
@@ -145,7 +145,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
     /// <remarks>
     ///  Allows all outbound traffic except to the specified CIDR blocks in the Kubernetes configuration.
     /// </remarks>
-    V1NetworkPolicy OpenNetworkPolicy =>
+    private V1NetworkPolicy OpenNetworkPolicy =>
         new()
         {
             Metadata = new() { Name = OpenNetworkPolicyName },
@@ -179,7 +179,7 @@ public class KubernetesProvider : IContainerProvider<Kubernetes, KubernetesMetad
             }
         };
 
-    void InsertRegistrySecret(string address, RegistryConfig registry)
+    private void InsertRegistrySecret(string address, RegistryConfig registry)
     {
         var padding = $"GZCTF@{registry.UserName}@{address}".ToMD5String();
         var secretName = $"{registry.UserName}-{padding}".ToValidRFC1123String("secret");

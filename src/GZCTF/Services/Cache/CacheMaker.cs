@@ -36,8 +36,8 @@ public class CacheMaker(
     ChannelReader<CacheRequest> channelReader,
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
-    readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
-    CancellationTokenSource TokenSource { get; set; } = new();
+    private readonly Dictionary<string, ICacheRequestHandler> _cacheHandlers = new();
+    private CancellationTokenSource TokenSource { get; set; } = new();
 
     public async Task StartAsync(CancellationToken token)
     {
@@ -68,7 +68,7 @@ public class CacheMaker(
     public void AddCacheRequestHandler<T>(string key) where T : ICacheRequestHandler, new() =>
         _cacheHandlers.Add(key, new T());
 
-    async Task Maker(CancellationToken token = default)
+    private async Task Maker(CancellationToken token = default)
     {
         logger.SystemLog(StaticLocalizer[nameof(Resources.Program.Cache_WorkerStarted)], TaskStatus.Pending,
             LogLevel.Debug);

@@ -6,7 +6,7 @@
 /// </summary>
 public sealed class AsyncManualResetEvent
 {
-    volatile TaskCompletionSource<bool> _tcs = new();
+    private volatile TaskCompletionSource<bool> _tcs = new();
 
     /// <summary>
     /// Wait for the event to be signaled
@@ -23,7 +23,7 @@ public sealed class AsyncManualResetEvent
         await await Task.WhenAny(tcs.Task, cancelTcs.Task);
     }
 
-    static async Task<bool> Delay(int milliseconds)
+    private static async Task<bool> Delay(int milliseconds)
     {
         await Task.Delay(milliseconds);
         return false;

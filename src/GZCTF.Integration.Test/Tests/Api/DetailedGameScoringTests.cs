@@ -33,7 +33,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         var password = "Multi@Team123";
         var teams = new List<(TestDataSeeder.SeededUser user, TestDataSeeder.SeededTeam team)>();
 
-        for (int i = 1; i <= 3; i++)
+        for (var i = 1; i <= 3; i++)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
@@ -211,7 +211,7 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         var teams = new List<TestDataSeeder.SeededTeam>();
 
         // Create 5 teams
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,

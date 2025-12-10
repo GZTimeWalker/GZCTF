@@ -16,33 +16,34 @@ namespace GZCTF.Extensions;
 
 public static class HandlerExtension
 {
-    const string CspTemplatePrefix = "default-src 'strict-dynamic' 'nonce-";
-    const string CspTemplateSuffix = "' 'unsafe-inline' http: https:; " +
-                                     "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
-                                     "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
-                                     "connect-src 'self' http://127.0.0.1:*; base-uri 'none';";
+    private const string CspTemplatePrefix = "default-src 'strict-dynamic' 'nonce-";
 
-    static readonly int CspHeaderLength = CspTemplatePrefix.Length + 12 + CspTemplateSuffix.Length;
+    private const string CspTemplateSuffix = "' 'unsafe-inline' http: https:; " +
+                                             "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
+                                             "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
+                                             "connect-src 'self' http://127.0.0.1:*; base-uri 'none';";
 
-    static string GetContentSecurityPolicy(ReadOnlySpan<char> nonce)
+    private static readonly int CspHeaderLength = CspTemplatePrefix.Length + 12 + CspTemplateSuffix.Length;
+
+    private static string GetContentSecurityPolicy(ReadOnlySpan<char> nonce)
     {
-        StringBuilder builder = new StringBuilder(CspHeaderLength);
+        var builder = new StringBuilder(CspHeaderLength);
         builder.Append(CspTemplatePrefix);
         builder.Append(nonce);
         builder.Append(CspTemplateSuffix);
         return builder.ToString();
     }
 
-    static readonly DistributedCacheEntryOptions
+    private static readonly DistributedCacheEntryOptions
         StaticCacheOptions = new() { SlidingExpiration = TimeSpan.FromDays(7) };
 
-    static readonly HashSet<string> SupportedCultures = Server.SupportedCultures
+    private static readonly HashSet<string> SupportedCultures = Server.SupportedCultures
         .Select(c => c.ToLower()).ToHashSet();
 
-    static readonly HashSet<string> ShortSupportedCultures = SupportedCultures
+    private static readonly HashSet<string> ShortSupportedCultures = SupportedCultures
         .Select(c => c.Split('-')[0]).ToHashSet();
 
-    static readonly string NoCacheHeaderValue = new CacheControlHeaderValue
+    private static readonly string NoCacheHeaderValue = new CacheControlHeaderValue
     {
         NoCache = true,
         NoStore = true,
@@ -50,7 +51,7 @@ public static class HandlerExtension
         MaxAge = TimeSpan.Zero
     }.ToString();
 
-    static string IndexTemplate = string.Empty;
+    private static string _indexTemplate = string.Empty;
 
     extension(IConfigurationBuilder builder)
     {
@@ -78,14 +79,14 @@ public static class HandlerExtension
                 return;
             }
 
-            IndexTemplate = File.ReadAllText(index.PhysicalPath);
+            _indexTemplate = File.ReadAllText(index.PhysicalPath);
             app.MapFallback(IndexHandler);
         }
     }
 
-    static string GetETag(StringSegment hash) => $"\"favicon-{hash}\"";
+    private static string GetETag(StringSegment hash) => $"\"favicon-{hash}\"";
 
-    static async Task<IResult> FaviconHandler(
+    private static async Task<IResult> FaviconHandler(
         CacheHelper cache,
         HttpContext context,
         IBlobStorage storage,
@@ -134,7 +135,7 @@ public static class HandlerExtension
             entityTag: EntityTagHeaderValue.Parse(eTag));
     }
 
-    static string ExtractLanguage(StringValues acceptLanguage)
+    private static string ExtractLanguage(StringValues acceptLanguage)
     {
         if (StringValues.IsNullOrEmpty(acceptLanguage))
             return "en-us";
@@ -178,7 +179,7 @@ public static class HandlerExtension
         return "en-us";
     }
 
-    static async Task<IResult> IndexHandler(
+    private static async Task<IResult> IndexHandler(
         CacheHelper cacheHelper,
         HttpContext context,
         IOptionsSnapshot<GlobalConfig> globalConfig,
@@ -194,7 +195,7 @@ public static class HandlerExtension
             var config = globalConfig.Value;
             var title = HtmlEncoder.Default.Encode(config.Platform);
             var description = HtmlEncoder.Default.Encode(config.Description ?? GlobalConfig.DefaultDescription);
-            content = IndexTemplate.Replace("%title%", title).Replace("%description%", description);
+            content = _indexTemplate.Replace("%title%", title).Replace("%description%", description);
 
             await cacheHelper.SetStringAsync(CacheKey.Index, content, StaticCacheOptions, token);
         }

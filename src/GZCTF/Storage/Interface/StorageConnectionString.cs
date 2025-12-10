@@ -1,6 +1,6 @@
 namespace GZCTF.Storage.Interface;
 
-static class StorageConnectionString
+internal static class StorageConnectionString
 {
     public static (string Scheme, Dictionary<string, string> Parameters) Parse(string connectionString)
     {

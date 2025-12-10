@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GZCTF.Integration.Test.Base;
@@ -374,7 +373,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         // Teams solve sequentially
         ScoreboardSnapshot? previousScoreboard = null;
 
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
         {
             await JoinGameAndSolve(teams[i], game.Id, [(challenge.Id, "flag{dynamic}")]);
 
@@ -852,11 +851,11 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         // Find the index where challenge columns start and where total score is
         // Based on ExcelHelper: Rank, Team, [Division], Captain, Members, RealName, Email, StdNumber, Phone, SolvedCount, ScoringTime, TotalScore, [Challenges...]
-        int totalScoreColumnIndex = -1;
-        int challengeStartColumnIndex = -1;
+        var totalScoreColumnIndex = -1;
+        var challengeStartColumnIndex = -1;
 
         // Count header cells to find structure
-        for (int i = 0; i < headerRow.LastCellNum; i++)
+        for (var i = 0; i < headerRow.LastCellNum; i++)
         {
             var headerCell = headerRow.GetCell(i);
             var headerValue = GetCellStringValue(headerCell);
@@ -871,7 +870,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             challengeStartColumnIndex = totalScoreColumnIndex + 1;
 
         // Process data rows (starting from row 1)
-        for (int row = 1; row < sheet.PhysicalNumberOfRows; row++)
+        for (var row = 1; row < sheet.PhysicalNumberOfRows; row++)
         {
             var dataRow = sheet.GetRow(row);
             if (dataRow == null)
@@ -879,14 +878,14 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
             // Column 0: Rank (or "-" for unranked)
             var rankCell = dataRow.GetCell(0);
-            string rankValue = GetCellStringValue(rankCell);
+            var rankValue = GetCellStringValue(rankCell);
 
             // Column 1: Team Name
             var teamNameCell = dataRow.GetCell(1);
-            string teamName = GetCellStringValue(teamNameCell);
+            var teamName = GetCellStringValue(teamNameCell);
 
             // Get total score from the expected column (usually around column 10-12)
-            int totalScore = 0;
+            var totalScore = 0;
             if (totalScoreColumnIndex >= 0 && totalScoreColumnIndex < dataRow.LastCellNum)
             {
                 var scoreCell = dataRow.GetCell(totalScoreColumnIndex);
@@ -898,7 +897,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             var challengeScores = new List<int>();
             if (challengeStartColumnIndex >= 0)
             {
-                for (int col = challengeStartColumnIndex; col < dataRow.LastCellNum; col++)
+                for (var col = challengeStartColumnIndex; col < dataRow.LastCellNum; col++)
                 {
                     var cell = dataRow.GetCell(col);
                     if (cell is { CellType: CellType.Numeric })
@@ -919,14 +918,14 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         // Debug: Print raw Excel content for inspection
         output.WriteLine("\n=== Raw Excel Row Data ===");
-        for (int row = 0; row < Math.Min(5, sheet.PhysicalNumberOfRows); row++)
+        for (var row = 0; row < Math.Min(5, sheet.PhysicalNumberOfRows); row++)
         {
             var dataRow = sheet.GetRow(row);
             if (dataRow == null)
                 continue;
 
             var rowData = new List<string>();
-            for (int col = 0; col < dataRow.LastCellNum; col++)
+            for (var col = 0; col < dataRow.LastCellNum; col++)
             {
                 rowData.Add($"[{col}]={GetCellStringValue(dataRow.GetCell(col))}");
             }
@@ -952,7 +951,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             $"  ✓ Team 1 solved both challenges with scores {team1Data.challengeScores[0]} and {team1Data.challengeScores[1]}");
 
         // Total score should be sum of challenge scores
-        int team1ExpectedMin = team1Data.challengeScores[0] + team1Data.challengeScores[1];
+        var team1ExpectedMin = team1Data.challengeScores[0] + team1Data.challengeScores[1];
         Assert.True(team1Data.totalScore == team1ExpectedMin,
             $"Team 1 total score {team1Data.totalScore} should be at least sum of challenges {team1ExpectedMin}");
         output.WriteLine($"  ✓ Team 1 total score {team1Data.totalScore} >= {team1ExpectedMin}");
@@ -1035,10 +1034,11 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         // Verify submission sheet has proper row count
         // Expected: 1 header row + 3 submissions (Team 1: 2, Team 2: 1)
-        int expectedMinRows = 1 + 3; // header + 3 submissions
+        var expectedMinRows = 1 + 3; // header + 3 submissions
         Assert.True(submissionSheet.PhysicalNumberOfRows >= expectedMinRows,
             $"Submission sheet should contain at least {expectedMinRows} rows (header + submissions), got {submissionSheet.PhysicalNumberOfRows}");
-        output.WriteLine($"  ✓ Submission sheet has {submissionSheet.PhysicalNumberOfRows} rows (expected >= {expectedMinRows})");
+        output.WriteLine(
+            $"  ✓ Submission sheet has {submissionSheet.PhysicalNumberOfRows} rows (expected >= {expectedMinRows})");
     }
 
     /// <summary>
@@ -1127,7 +1127,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     // Convert blood bonus factors to packed
     // Format: (first << 20) + (second << 10) + third
     // Factors are stored as (factor - 1.0) * 1000
-    static long PackBloodFactor(float factor) =>
+    private static long PackBloodFactor(float factor) =>
         (long)MathF.Round((factor - 1.0f) * 1000f, MidpointRounding.AwayFromZero);
 
     private long packBloods(float first, float second, float third) =>
@@ -1232,7 +1232,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var teams = new List<(TestDataSeeder.SeededUser, TestDataSeeder.SeededTeam, HttpClient)>();
         var password = $"{namePrefix}@Pass123";
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(
@@ -1392,10 +1392,10 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
     private sealed class ScoreboardSnapshot
     {
-        readonly IReadOnlyDictionary<int, ScoreboardTeam> _teamMap;
-        readonly IReadOnlyDictionary<int, ChallengeSnapshot> _challengeMap;
+        private readonly IReadOnlyDictionary<int, ScoreboardTeam> _teamMap;
+        private readonly IReadOnlyDictionary<int, ChallengeSnapshot> _challengeMap;
 
-        ScoreboardSnapshot(
+        private ScoreboardSnapshot(
             DateTimeOffset updateTimeUtc,
             long bloodBonusValue,
             int challengeCount,
@@ -1439,7 +1439,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         public static ScoreboardSnapshot FromResponse(ScoreboardResponse payload)
         {
-            var teams = (payload.Items ?? new List<ScoreboardItemResponse>()).Select(ScoreboardTeam.FromResponse)
+            var teams = (payload.Items ?? []).Select(ScoreboardTeam.FromResponse)
                 .ToList();
             var teamMap = teams.ToDictionary(team => team.Id);
 
@@ -1460,11 +1460,11 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
                 }
             }
 
-            var divisions = (payload.Divisions ?? new List<DivisionItemResponse>()).ToDictionary(
+            var divisions = (payload.Divisions ?? []).ToDictionary(
                 division => division.Id,
                 DivisionSnapshot.FromResponse);
 
-            var timelines = (payload.Timelines ?? new List<TimeLineItemResponse>())
+            var timelines = (payload.Timelines ?? [])
                 .Select(TimeLineItemSnapshot.FromResponse).ToList();
 
             return new ScoreboardSnapshot(
@@ -1543,7 +1543,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     {
         public static ChallengeSnapshot FromResponse(ChallengeInfoResponse response, ChallengeCategory category)
         {
-            var bloods = (response.Bloods ?? new List<BloodResponse>()).Select(BloodSnapshot.FromResponse).ToList();
+            var bloods = (response.Bloods ?? []).Select(BloodSnapshot.FromResponse).ToList();
             return new ChallengeSnapshot(
                 response.Id,
                 category,
@@ -1600,7 +1600,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     {
         public static TimeLineItemSnapshot FromResponse(TimeLineItemResponse response)
         {
-            var teams = (response.Teams ?? new List<TopTimeLineResponse>()).Select(TopTimeLineSnapshot.FromResponse)
+            var teams = (response.Teams ?? []).Select(TopTimeLineSnapshot.FromResponse)
                 .ToList();
             return new TimeLineItemSnapshot(response.DivisionId ?? 0, teams);
         }
@@ -1610,7 +1610,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     {
         public static TopTimeLineSnapshot FromResponse(TopTimeLineResponse response)
         {
-            var items = (response.Items ?? new List<TimeLineResponse>()).Select(TimeLineSnapshot.FromResponse).ToList();
+            var items = (response.Items ?? []).Select(TimeLineSnapshot.FromResponse).ToList();
             return new TopTimeLineSnapshot(response.Id, response.Name, items);
         }
     }

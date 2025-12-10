@@ -2,9 +2,9 @@ using GZCTF.Storage;
 
 namespace GZCTF.Extensions.Startup;
 
-static class StorageExtension
+internal static class StorageExtension
 {
-    const string DefaultConnectionString = "disk://path=./files";
+    private const string DefaultConnectionString = "disk://path=./files";
 
     extension(WebApplicationBuilder builder)
     {

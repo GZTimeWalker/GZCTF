@@ -9,10 +9,10 @@ namespace GZCTF.Providers;
 
 public class EntityConfigurationProvider(EntityConfigurationSource source) : ConfigurationProvider, IDisposable
 {
-    readonly CancellationTokenSource _cancellationTokenSource = new();
-    Task? _databaseWatcher;
-    bool _disposed;
-    byte[] _lastHash = [];
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private Task? _databaseWatcher;
+    private bool _disposed;
+    private byte[] _lastHash = [];
 
     public void Dispose()
     {
@@ -25,7 +25,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         GC.SuppressFinalize(this);
     }
 
-    static HashSet<Config> DefaultConfigs()
+    private static HashSet<Config> DefaultConfigs()
     {
         HashSet<Config> configs = [];
 
@@ -37,7 +37,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         return configs;
     }
 
-    async Task WatchDatabase(CancellationToken token)
+    private async Task WatchDatabase(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
@@ -67,7 +67,7 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         }
     }
 
-    AppDbContext CreateAppDbContext()
+    private AppDbContext CreateAppDbContext()
     {
         var builder = new DbContextOptionsBuilder<AppDbContext>();
         source.OptionsAction(builder);
@@ -75,14 +75,14 @@ public class EntityConfigurationProvider(EntityConfigurationSource source) : Con
         return new AppDbContext(builder.Options);
     }
 
-    async Task<Dictionary<string, string?>> GetDataAsync(CancellationToken token = default)
+    private async Task<Dictionary<string, string?>> GetDataAsync(CancellationToken token = default)
     {
         var context = CreateAppDbContext();
         return await context.Configs.ToDictionaryAsync(c => c.ConfigKey, c => c.Value,
             StringComparer.OrdinalIgnoreCase, token);
     }
 
-    static byte[] ConfigHash(IDictionary<string, string?> configs) =>
+    private static byte[] ConfigHash(IDictionary<string, string?> configs) =>
         SHA256.HashData(Encoding.UTF8.GetBytes(
             string.Join(";", configs.Select(c => $"{c.Key}={c.Value}"))
         ));

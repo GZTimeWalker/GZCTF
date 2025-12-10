@@ -3,7 +3,7 @@ using Serilog;
 
 namespace GZCTF.Extensions.Startup;
 
-static class DatabaseExtension
+internal static class DatabaseExtension
 {
     extension(WebApplicationBuilder builder)
     {

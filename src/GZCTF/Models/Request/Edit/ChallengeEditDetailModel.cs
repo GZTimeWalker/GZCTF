@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Models.Request.Edit;

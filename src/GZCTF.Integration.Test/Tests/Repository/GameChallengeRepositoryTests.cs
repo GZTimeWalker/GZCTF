@@ -486,7 +486,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
         await gameRepo.CreateGame(game, CancellationToken.None);
 
         // Create multiple challenges
-        for (int i = 1; i <= 3; i++)
+        for (var i = 1; i <= 3; i++)
         {
             var challenge = new GameChallenge
             {
@@ -513,7 +513,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
         Assert.Contains(challenges, c => c.Title == "Challenge 3");
 
         // Verify ordering by ID
-        for (int i = 0; i < challenges.Length - 1; i++)
+        for (var i = 0; i < challenges.Length - 1; i++)
         {
             Assert.True(challenges[i].Id < challenges[i + 1].Id);
         }

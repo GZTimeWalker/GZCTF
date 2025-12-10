@@ -557,7 +557,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
         // Submit multiple wrong flags
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
             var wrongSubmitResponse = await client.PostAsJsonAsync(
                 $"/api/Game/{game.Id}/Challenges/{challenge.Id}",
@@ -728,7 +728,7 @@ public class GameWorkflowTests(GZCTFApplicationFactory factory)
         var password = "Team@Pass123";
         var teams = new List<(Guid userId, int teamId, HttpClient client)>();
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             var userName = TestDataSeeder.RandomName();
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
@@ -1189,7 +1189,7 @@ startxref
         // Create multiple teams and have them submit writeups
         var submittedCount = 0;
         var totalTeams = 3;
-        for (int i = 0; i < totalTeams; i++)
+        for (var i = 0; i < totalTeams; i++)
         {
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
                 TestDataSeeder.RandomName(), $"User@Team{i}");
@@ -1246,7 +1246,7 @@ startxref
         Assert.True(count >= 1, "Should have at least one submitted writeup");
 
         // Verify each writeup has required fields
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var writeup = writeupsList[i];
             Assert.True(writeup.TryGetProperty("id", out _) || writeup.TryGetProperty("Id", out _),
@@ -1354,7 +1354,7 @@ startxref
         // Create multiple teams with writeups
         var teamWriteupCount = 3;
 
-        for (int i = 0; i < teamWriteupCount; i++)
+        for (var i = 0; i < teamWriteupCount; i++)
         {
             var user = await TestDataSeeder.CreateUserAsync(factory.Services,
                 TestDataSeeder.RandomName(), $"User@Team{i}");

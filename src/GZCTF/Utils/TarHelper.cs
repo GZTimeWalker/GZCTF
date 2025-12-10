@@ -1,7 +1,6 @@
 using System.Formats.Tar;
 using System.IO.Compression;
 using System.Web;
-using GZCTF.Storage;
 using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +8,7 @@ namespace GZCTF.Utils;
 
 public static class TarHelper
 {
-    static void SetHeaders(HttpContext context, string fileName)
+    private static void SetHeaders(HttpContext context, string fileName)
     {
         var downloadFilename = fileName.EndsWith(".tar.gz") ? fileName : $"{fileName}.tar.gz";
 
@@ -39,7 +38,7 @@ public static class TarHelper
         await using var compress = new GZipStream(context.Response.Body, CompressionMode.Compress);
         await using var writer = new TarWriter(compress);
 
-        foreach (LocalFile file in files)
+        foreach (var file in files)
         {
             var filePath = StoragePath.Combine(basePath, file.Location, file.Hash);
             var entryPath = $"{fileName}/{file.Name}";
@@ -96,7 +95,7 @@ public static class TarHelper
     /// <param name="fileBlob">File blob</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    static async Task<Stream> GetFileStream(IBlobStorage storage, StorageItem fileBlob,
+    private static async Task<Stream> GetFileStream(IBlobStorage storage, StorageItem fileBlob,
         CancellationToken token)
     {
         var sourceStream = await storage.OpenReadAsync(fileBlob.FullPath, token);
@@ -104,7 +103,7 @@ public static class TarHelper
         if (sourceStream.CanSeek)
             return sourceStream;
 
-        Stream stream = BufferHelper.GetTempStream(fileBlob.Size);
+        var stream = BufferHelper.GetTempStream(fileBlob.Size);
         try
         {
             await sourceStream.CopyToAsync(stream, token);

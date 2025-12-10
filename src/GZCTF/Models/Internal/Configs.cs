@@ -357,7 +357,7 @@ public partial class ClientConfig
             serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerProvider>>().Value,
             serviceProvider.GetRequiredService<IOptionsSnapshot<ManagedConfig>>().Value);
 
-    static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy,
+    private static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy,
         ContainerProvider containerProvider, ManagedConfig managedConfig) =>
         new()
         {

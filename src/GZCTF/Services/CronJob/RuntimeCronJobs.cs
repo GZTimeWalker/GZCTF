@@ -4,8 +4,6 @@ using GZCTF.Services.Cache;
 using GZCTF.Services.Cache.Handlers;
 using Microsoft.Extensions.Caching.Distributed;
 
-// ReSharper disable UnusedMember.Global
-
 namespace GZCTF.Services.CronJob;
 
 public static class RuntimeCronJobs

@@ -7,11 +7,11 @@ namespace GZCTF.Utils;
 
 public class ExcelHelper(IStringLocalizer<Program> localizer)
 {
-    const string Empty = "<empty>";
-    const string Split = " / ";
-    const string Ignore = "-";
+    private const string Empty = "<empty>";
+    private const string Split = " / ";
+    private const string Ignore = "-";
 
-    readonly string[] _commonScoreboardHeader =
+    private readonly string[] _commonScoreboardHeader =
     [
         localizer[nameof(Resources.Program.Header_Ranking)],
         localizer[nameof(Resources.Program.Header_Team)],
@@ -26,7 +26,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_TotalScore)]
     ];
 
-    readonly string[] _commonSubmissionHeader =
+    private readonly string[] _commonSubmissionHeader =
     [
         localizer[nameof(Resources.Program.Header_SubmitStatus)],
         localizer[nameof(Resources.Program.Header_SubmitTime)],
@@ -66,7 +66,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return stream;
     }
 
-    static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
+    private static ICellStyle GetHeaderStyle(XSSFWorkbook workbook)
     {
         var style = workbook.CreateCellStyle();
         var boldFontStyle = workbook.CreateFont();
@@ -80,7 +80,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return style;
     }
 
-    void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
+    private void WriteSubmissionHeader(ISheet sheet, ICellStyle style)
     {
         var row = sheet.CreateRow(0);
         var colIndex = 0;
@@ -93,7 +93,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
     }
 
-    void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
+    private void WriteSubmissionContent(ISheet sheet, IEnumerable<Submission> submissions)
     {
         var rowIndex = 1;
 
@@ -113,7 +113,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
     }
 
-    int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard)
+    private int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard)
     {
         var row = sheet.CreateRow(0);
         var colIndex = 0;
@@ -146,7 +146,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         return challIds.ToArray();
     }
 
-    static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds)
+    private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds)
     {
         var rowIndex = 1;
         var withDiv = scoreboard.Divisions.Count > 0;
@@ -201,5 +201,5 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         }
     }
 
-    static string TakeIfNotEmpty(string? str) => string.IsNullOrWhiteSpace(str) ? Empty : str;
+    private static string TakeIfNotEmpty(string? str) => string.IsNullOrWhiteSpace(str) ? Empty : str;
 }

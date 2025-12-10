@@ -51,7 +51,7 @@ public class SubmissionRepository(
         => hub.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
 
 
-    IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
+    private IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)
     {
         var subs = type is not null
             ? Context.Submissions.Where(s => s.Status == type.Value)

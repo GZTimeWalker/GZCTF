@@ -16,7 +16,7 @@ public class GameRepository(
     IConfigService configService,
     AppDbContext context) : RepositoryBase(context), IGameRepository
 {
-    readonly byte[] _xorKey = configService.GetXorKey();
+    private readonly byte[] _xorKey = configService.GetXorKey();
 
     public override Task<int> CountAsync(CancellationToken token = default) => Context.Games.CountAsync(token);
 
@@ -538,7 +538,7 @@ public class GameRepository(
 
         foreach (var item in items.Values)
         {
-            DivisionItem? division = item.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
+            var division = item.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
 
             if (CheckDivisionPermission(division, GamePermission.RankOverall))
             {
@@ -605,23 +605,23 @@ public class GameRepository(
         };
     }
 
-    readonly record struct ChallengeRecord(
+    private readonly record struct ChallengeRecord(
         int Id,
         ChallengeScoreMeta Meta,
         ChallengeInfo Info);
 
-    readonly record struct ChallengeScoreMeta(
+    private readonly record struct ChallengeScoreMeta(
         int OriginalScore,
         double MinScoreRate,
         double Difficulty);
 
-    readonly record struct SolveSnapshot(
+    private readonly record struct SolveSnapshot(
         int ChallengeId,
         int ParticipantId,
         DateTimeOffset SubmitTimeUtc,
         string? UserName);
 
-    readonly record struct ScoreboardSolve(
+    private readonly record struct ScoreboardSolve(
         int ChallengeId,
         int ParticipantId,
         DateTimeOffset SubmitTimeUtc,
@@ -629,7 +629,8 @@ public class GameRepository(
         bool ScoreEligible,
         bool BloodEligible);
 
-    static bool CheckDivisionPermission(DivisionItem? division, GamePermission permission, int? challengeId = null)
+    private static bool CheckDivisionPermission(DivisionItem? division, GamePermission permission,
+        int? challengeId = null)
     {
         if (division is null)
             return true;

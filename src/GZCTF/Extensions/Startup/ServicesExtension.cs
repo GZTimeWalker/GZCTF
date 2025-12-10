@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 
 namespace GZCTF.Extensions.Startup;
 
-static class ServicesExtension
+internal static class ServicesExtension
 {
     extension(WebApplicationBuilder builder)
     {
@@ -35,7 +35,7 @@ static class ServicesExtension
 
             builder.Services.Configure<RegistrySet<RegistryConfig>>(builder.Configuration.GetSection("Registries"));
 
-            RegistryConfig? oldConfig = builder.Configuration.GetSection(nameof(RegistryConfig)).Get<RegistryConfig>();
+            var oldConfig = builder.Configuration.GetSection(nameof(RegistryConfig)).Get<RegistryConfig>();
             if (!string.IsNullOrWhiteSpace(oldConfig?.ServerAddress))
                 // Add old config to new config set
                 builder.Services.Configure<RegistrySet<RegistryConfig>>(set =>
@@ -44,7 +44,7 @@ static class ServicesExtension
                         set[oldConfig.ServerAddress] = oldConfig;
                 });
 
-            ForwardedOptions? forwardedOptions =
+            var forwardedOptions =
                 builder.Configuration.GetSection(nameof(ForwardedOptions)).Get<ForwardedOptions>();
             if (forwardedOptions is null)
                 builder.Services.Configure<ForwardedHeadersOptions>(options =>

@@ -11,7 +11,7 @@ namespace GZCTF.Services.Token;
 /// </summary>
 public class TokenService(IConfigService configService, IApiTokenRepository apiTokenRepository) : ITokenService
 {
-    static readonly JsonSerializerOptions Options = new() { WriteIndented = false };
+    private static readonly JsonSerializerOptions Options = new() { WriteIndented = false };
 
     public async Task<string> GenerateToken(ApiToken apiToken, CancellationToken cancellationToken = default)
     {

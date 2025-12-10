@@ -1,13 +1,13 @@
 namespace GZCTF.Utils;
 
-enum DirType : byte
+internal enum DirType : byte
 {
     Logs,
     Uploads,
     Capture
 }
 
-static class PathHelper
+internal static class PathHelper
 {
     internal const string Base = "files";
 
@@ -52,5 +52,5 @@ static class PathHelper
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    static string GetDir(DirType type) => type.ToString().ToLower();
+    private static string GetDir(DirType type) => type.ToString().ToLower();
 }

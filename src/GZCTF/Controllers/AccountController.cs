@@ -125,7 +125,7 @@ public class AccountController(
             RegisterStatus.EmailConfirmationRequired, StatusCodes.Status200OK));
     }
 
-    bool VerifyEmailDomain(string email)
+    private bool VerifyEmailDomain(string email)
     {
         var mailDomain = email.Split('@')[1];
 
@@ -560,11 +560,11 @@ public class AccountController(
         return Ok(avatar.Url());
     }
 
-    string GetEmailLink(string action, string token, string? email)
+    private string GetEmailLink(string action, string token, string? email)
         => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/account/{action}?" +
            $"token={token}&email={Codec.Base64.Encode(email)}";
 
-    BadRequestObjectResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
+    private BadRequestObjectResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                        localizer[nameof(Resources.Program.Identity_UnknownError)]));
 }

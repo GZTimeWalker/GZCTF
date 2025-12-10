@@ -30,7 +30,7 @@ public class InfoController(
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
-    static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
+    private static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
     {
         SlidingExpiration = TimeSpan.FromMinutes(5)
     };
@@ -48,7 +48,7 @@ public class InfoController(
     public async Task<IActionResult> GetLatestPosts(CancellationToken token)
     {
         var posts = await postRepository.GetPosts(token);
-        (Post[] data, DateTimeOffset lastModified) = posts;
+        (var data, var lastModified) = posts;
         var eTag = $"\"latest-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -69,7 +69,7 @@ public class InfoController(
     public async Task<IActionResult> GetPosts(CancellationToken token)
     {
         var posts = await postRepository.GetPosts(token);
-        (Post[] data, DateTimeOffset lastModified) = posts;
+        (var data, var lastModified) = posts;
         var eTag = $"\"all-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);

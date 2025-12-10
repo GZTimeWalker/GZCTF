@@ -12,10 +12,10 @@ public record CronJobEntry(CronJob Job, CronExpression Expression);
 public class CronJobService(IDistributedCache cache, IServiceScopeFactory provider, ILogger<CronJobService> logger)
     : IHostedService, IDisposable
 {
-    readonly Dictionary<string, CronJobEntry> _jobs = [];
-    bool _disposed;
-    bool _holdLock;
-    Timer? _timer;
+    private readonly Dictionary<string, CronJobEntry> _jobs = [];
+    private bool _disposed;
+    private bool _holdLock;
+    private Timer? _timer;
 
     public void Dispose()
     {
@@ -76,7 +76,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         return true;
     }
 
-    void LaunchCronJob()
+    private void LaunchCronJob()
     {
         var methods = typeof(RuntimeCronJobs).GetMethods(BindingFlags.Static | BindingFlags.Public);
         foreach (var method in methods)
@@ -95,7 +95,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
             TaskStatus.Success, LogLevel.Debug);
     }
 
-    void StopCronJob()
+    private void StopCronJob()
     {
         _timer?.Change(Timeout.Infinite, 0);
         lock (_jobs)
@@ -107,7 +107,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
             LogLevel.Debug);
     }
 
-    async Task<bool> TryHoldLock()
+    private async Task<bool> TryHoldLock()
     {
         if (_holdLock)
             return true;
@@ -122,7 +122,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         return true;
     }
 
-    async Task DropLock()
+    private async Task DropLock()
     {
         if (!_holdLock)
             return;
@@ -131,7 +131,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
         _holdLock = false;
     }
 
-    void LaunchWatchDog()
+    private void LaunchWatchDog()
     {
         var delay = Random.Shared.Next(30, 120);
 
@@ -157,7 +157,7 @@ public class CronJobService(IDistributedCache cache, IServiceScopeFactory provid
             TaskStatus.Pending, LogLevel.Debug);
     }
 
-    async Task Execute()
+    private async Task Execute()
     {
         var now = DateTime.UtcNow;
         var last = now - TimeSpan.FromSeconds(30);

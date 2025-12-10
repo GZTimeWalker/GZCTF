@@ -125,7 +125,7 @@ public class ParticipationRepository(
         await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
-    async Task UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
+    private async Task UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
     {
         if (part.DivisionId == divisionId)
             return;

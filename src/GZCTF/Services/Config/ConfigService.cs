@@ -17,8 +17,8 @@ public class ConfigService(
     IOptionsSnapshot<ManagedConfig> managedConfig,
     IConfiguration configuration) : IConfigService
 {
-    readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
-    readonly byte[] _xorKey = configuration["XorKey"]?.ToUTF8Bytes() ?? [];
+    private readonly IConfigurationRoot? _configuration = configuration as IConfigurationRoot;
+    private readonly byte[] _xorKey = configuration["XorKey"]?.ToUTF8Bytes() ?? [];
 
     public Task SaveConfig([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type type,
         object? value, CancellationToken token = default) =>
@@ -63,7 +63,7 @@ public class ConfigService(
 
                 await context.Configs.AddAsync(conf, token);
 
-                string configValue = IsSensitiveConfig(conf.ConfigKey)
+                var configValue = IsSensitiveConfig(conf.ConfigKey)
                     ? MaskSensitiveData(conf.Value)
                     : conf.Value ?? "Null";
 
@@ -82,10 +82,10 @@ public class ConfigService(
             await cache.RemoveAsync(key, token);
     }
 
-    static bool IsSensitiveConfig(string key) =>
+    private static bool IsSensitiveConfig(string key) =>
         key.EndsWith("PrivateKey", StringComparison.Ordinal);
 
-    static string MaskSensitiveData(string? value)
+    private static string MaskSensitiveData(string? value)
     {
         var length = value?.Length ?? 6;
         if (string.IsNullOrEmpty(value) || length <= 8)
@@ -125,7 +125,7 @@ public class ConfigService(
             ? managedConfig.Value.ApiEncryption.Decrypt(cipherText, _xorKey)
             : cipherText;
 
-    static void MapConfigsInternal(string key, HashSet<ConfigModel> configs, PropertyInfo info, object? value)
+    private static void MapConfigsInternal(string key, HashSet<ConfigModel> configs, PropertyInfo info, object? value)
     {
         // ignore when value with `AutoSaveIgnoreAttribute`
         if (value is null || info.GetCustomAttribute<AutoSaveIgnoreAttribute>() != null)
@@ -151,7 +151,7 @@ public class ConfigService(
         }
     }
 
-    static HashSet<ConfigModel> GetConfigs(
+    private static HashSet<ConfigModel> GetConfigs(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
         Type type, object? value)
     {
@@ -176,7 +176,7 @@ public class ConfigService(
         return configs;
     }
 
-    static bool IsArrayLikeInterface(Type type)
+    private static bool IsArrayLikeInterface(Type type)
     {
         if (!type.IsInterface || !type.IsConstructedGenericType)
             return false;

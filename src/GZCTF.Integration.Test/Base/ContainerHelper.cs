@@ -109,7 +109,7 @@ public static class ContainerHelper
 
         // Try to connect to the container and retrieve the flag
         string? flag = null;
-        for (int attempt = 0; attempt < 10; attempt++)
+        for (var attempt = 0; attempt < 10; attempt++)
         {
             try
             {
@@ -117,8 +117,8 @@ public static class ContainerHelper
                 await client.ConnectAsync(host, port);
                 await using var stream = client.GetStream();
                 // Read the flag from the echo container
-                byte[] buffer = new byte[256];
-                int bytesRead = await stream.ReadAsync(buffer);
+                var buffer = new byte[256];
+                var bytesRead = await stream.ReadAsync(buffer);
                 flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 break;
             }
@@ -175,7 +175,7 @@ public static class ContainerHelper
 
         output.WriteLine($"🔍 Waiting for Kubernetes pod '{podName}' (Image: {container.Image}) to be ready...");
 
-        for (int attempt = 0; attempt < MaxAttempts; attempt++)
+        for (var attempt = 0; attempt < MaxAttempts; attempt++)
         {
             try
             {
@@ -236,7 +236,7 @@ public static class ContainerHelper
 
         output.WriteLine($"🔍 Waiting for Docker container '{containerId}' (Image: {container.Image}) to be ready...");
 
-        for (int attempt = 0; attempt < MaxAttempts; attempt++)
+        for (var attempt = 0; attempt < MaxAttempts; attempt++)
         {
             try
             {

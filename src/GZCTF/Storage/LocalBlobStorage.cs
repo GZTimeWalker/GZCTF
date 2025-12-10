@@ -8,11 +8,11 @@ namespace GZCTF.Storage;
 /// </summary>
 public sealed class LocalBlobStorage : IBlobStorage
 {
-    readonly string _root;
-    readonly string _rootWithSeparator;
+    private readonly string _root;
+    private readonly string _rootWithSeparator;
 
-    const int ReadBufferSize = 4096;
-    const int WriteBufferSize = 8192;
+    private const int ReadBufferSize = 4096;
+    private const int WriteBufferSize = 8192;
 
     public LocalBlobStorage(string rootPath)
     {
@@ -182,10 +182,10 @@ public sealed class LocalBlobStorage : IBlobStorage
         return Task.FromResult<IReadOnlyList<StorageItem>>(results);
     }
 
-    static StorageItem CreateFileItem(string relativePath, FileInfo info) =>
+    private static StorageItem CreateFileItem(string relativePath, FileInfo info) =>
         new(relativePath, info.Name, false, info.Length, info.LastWriteTimeUtc);
 
-    string ResolvePhysicalPath(string path, bool ensureDirectory = false)
+    private string ResolvePhysicalPath(string path, bool ensureDirectory = false)
     {
         var normalized = StoragePath.Normalize(path);
         var segments = StoragePath.Split(normalized).ToArray();
@@ -207,7 +207,7 @@ public sealed class LocalBlobStorage : IBlobStorage
         return physicalPath;
     }
 
-    bool IsSubPathOfRoot(string path)
+    private bool IsSubPathOfRoot(string path)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return path.StartsWith(_rootWithSeparator, StringComparison.OrdinalIgnoreCase) ||

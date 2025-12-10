@@ -42,13 +42,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
 
-    static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
+    private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
             v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
             v => JsonSerializer.Deserialize<T>(v, JsonOptions)
         );
 
-    static ValueComparer<TList> GetEnumerableComparer<TList, T>()
+    private static ValueComparer<TList> GetEnumerableComparer<TList, T>()
         where T : notnull
         where TList : IEnumerable<T>, new() =>
         new(

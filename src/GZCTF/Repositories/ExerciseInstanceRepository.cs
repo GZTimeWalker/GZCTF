@@ -218,7 +218,7 @@ public class ExerciseInstanceRepository(
         return AnswerResult.WrongAnswer;
     }
 
-    Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
+    private Task<bool> IsExerciseAvailable(CancellationToken token = default) =>
         cacheHelper.GetOrCreateAsync(logger, CacheKey.ExerciseAvailable, entry =>
         {
             entry.SlidingExpiration = TimeSpan.FromHours(24);

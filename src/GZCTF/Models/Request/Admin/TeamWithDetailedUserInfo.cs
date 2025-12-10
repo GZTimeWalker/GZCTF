@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Models.Request.Account;
+﻿using GZCTF.Models.Request.Account;
 
 namespace GZCTF.Models.Request.Admin;
 

@@ -1,6 +1,6 @@
 ﻿namespace GZCTF.AppHost.MinIO;
 
-class MinIOBuilder
+internal class MinIOBuilder
 {
     public int? ApiPort { get; set; }
     public int? ConsolePort { get; set; }
@@ -29,7 +29,7 @@ class MinIOBuilder
     }
 }
 
-class MinIOResource(string name, string? accessKey = null, string? secretKey = null)
+internal class MinIOResource(string name, string? accessKey = null, string? secretKey = null)
     : ContainerResource(name), IResourceWithConnectionString
 {
     internal const string ApiEndpointName = "api";
@@ -54,7 +54,7 @@ class MinIOResource(string name, string? accessKey = null, string? secretKey = n
     public string ConnectionStringEnvironmentVariable => "ConnectionStrings__Storage";
 }
 
-static class MinIOResourceBuilderExtensions
+internal static class MinIOResourceBuilderExtensions
 {
     internal static IResourceBuilder<MinIOResource> AddMinIO(
         this IDistributedApplicationBuilder builder,
@@ -88,7 +88,7 @@ static class MinIOResourceBuilderExtensions
             .WithEnvironment("MINIO_ROOT_USER", options.AccessKey ?? "minioadmin")
             .WithEnvironment("MINIO_ROOT_PASSWORD", options.SecretKey ?? "minioadmin");
 
-        IResourceBuilder<MinIOResource> ConfigureVolume(MinIOBuilder options)
+        private IResourceBuilder<MinIOResource> ConfigureVolume(MinIOBuilder options)
         {
             if (!string.IsNullOrEmpty(options.DataVolumePath))
                 builder = builder.WithVolume(options.DataVolumePath, "/data");

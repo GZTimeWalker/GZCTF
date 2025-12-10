@@ -1009,7 +1009,7 @@ public class EditController(
         }
     }
 
-    static readonly string[] AllowedImportContentTypes = ["application/zip", "application/x-zip-compressed"];
+    private static readonly string[] AllowedImportContentTypes = ["application/zip", "application/x-zip-compressed"];
 
     /// <summary>
     /// Import game package

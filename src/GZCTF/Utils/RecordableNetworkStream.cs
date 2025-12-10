@@ -39,16 +39,16 @@ public class RecordableNetworkStreamOptions
 [ExcludeFromCodeCoverage(Justification = "Network stream recording requires platform proxy support")]
 public sealed class RecordableNetworkStream : NetworkStream
 {
-    static readonly PhysicalAddress DummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
-    static readonly IPEndPoint Host = new(0, 65535);
+    private static readonly PhysicalAddress DummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
+    private static readonly IPEndPoint Host = new(0, 65535);
 
-    readonly CaptureFileWriterDevice? _device;
-    readonly RecordableNetworkStreamOptions _options;
-    readonly IBlobStorage? _storage;
-    readonly string _tempFile = string.Empty;
+    private readonly CaptureFileWriterDevice? _device;
+    private readonly RecordableNetworkStreamOptions _options;
+    private readonly IBlobStorage? _storage;
+    private readonly string _tempFile = string.Empty;
 
-    bool _disposed;
-    bool _hasRecord;
+    private bool _disposed;
+    private bool _hasRecord;
 
     public RecordableNetworkStream(Socket socket, byte[]? metadata, IBlobStorage storage,
         RecordableNetworkStreamOptions options) :
@@ -97,7 +97,7 @@ public sealed class RecordableNetworkStream : NetworkStream
     /// <param name="source">Source address</param>
     /// <param name="dest">Destination address</param>
     /// <param name="buffer">Data buffer</param>
-    void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
+    private void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
     {
         var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
         {

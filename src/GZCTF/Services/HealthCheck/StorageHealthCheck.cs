@@ -1,12 +1,11 @@
-﻿using GZCTF.Storage;
-using GZCTF.Storage.Interface;
+﻿using GZCTF.Storage.Interface;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace GZCTF.Services.HealthCheck;
 
 public class StorageHealthCheck(IBlobStorage blobStorage) : IHealthCheck
 {
-    static readonly string FileName = $"{nameof(StorageHealthCheck)}_{Guid.CreateVersion7():N}";
+    private static readonly string FileName = $"{nameof(StorageHealthCheck)}_{Guid.CreateVersion7():N}";
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
         CancellationToken cancellationToken = default)

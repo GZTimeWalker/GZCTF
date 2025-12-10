@@ -43,7 +43,7 @@ public static class CryptoUtils
         ArgumentNullException.ThrowIfNull(privateKey);
 
         var byteData = Encoding.UTF8.GetBytes(data);
-        ISigner signer = SignerUtilities.GetSigner(signAlgorithm.ToString());
+        var signer = SignerUtilities.GetSigner(signAlgorithm.ToString());
         signer.Init(true, privateKey);
         signer.BlockUpdate(byteData, 0, data.Length);
         var result = signer.GenerateSignature();
@@ -73,7 +73,7 @@ public static class CryptoUtils
 
         var signBytes = useUrlSafeBase64 ? Base64UrlEncoder.DecodeBytes(sign) : Convert.FromBase64String(sign);
         var plainBytes = Encoding.UTF8.GetBytes(data);
-        ISigner? verifier = SignerUtilities.GetSigner(signAlgorithm.ToString());
+        var verifier = SignerUtilities.GetSigner(signAlgorithm.ToString());
         verifier.Init(false, publicKey);
         verifier.BlockUpdate(plainBytes, 0, plainBytes.Length);
 
@@ -116,7 +116,7 @@ public static class CryptoUtils
         var sr = new SecureRandom();
         var keyGen = new X25519KeyPairGenerator();
         keyGen.Init(new X25519KeyGenerationParameters(sr));
-        AsymmetricCipherKeyPair? ephemeralKeyPair = keyGen.GenerateKeyPair();
+        var ephemeralKeyPair = keyGen.GenerateKeyPair();
 
         var agreement = new X25519Agreement();
         agreement.Init(ephemeralKeyPair.Private);
@@ -141,7 +141,7 @@ public static class CryptoUtils
         var ephemeralPublicKeyBytes = ((X25519PublicKeyParameters)ephemeralKeyPair.Public).GetEncoded();
         var result = new byte[32 + 12 + cipherText.Length];
 
-        Span<byte> resultSpan = result.AsSpan();
+        var resultSpan = result.AsSpan();
         ephemeralPublicKeyBytes.CopyTo(resultSpan);
         nonce.CopyTo(resultSpan[32..]);
         cipherText.CopyTo(resultSpan[44..]);
@@ -163,10 +163,10 @@ public static class CryptoUtils
         if (data.Length < 44)
             throw new ArgumentException("Invalid encrypted data length");
 
-        Span<byte> dataSpan = data.AsSpan();
-        Span<byte> ephemeralPublicKeyBytes = dataSpan[..32];
-        Span<byte> nonce = dataSpan[32..44];
-        Span<byte> cipherText = dataSpan[44..];
+        var dataSpan = data.AsSpan();
+        var ephemeralPublicKeyBytes = dataSpan[..32];
+        var nonce = dataSpan[32..44];
+        var cipherText = dataSpan[44..];
 
         var ephemeralPublicKey = new X25519PublicKeyParameters(ephemeralPublicKeyBytes);
 

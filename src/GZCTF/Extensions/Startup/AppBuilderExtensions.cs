@@ -3,7 +3,7 @@ using StackExchange.Redis;
 
 namespace GZCTF.Extensions.Startup;
 
-static class AppBuilderExtensions
+internal static class AppBuilderExtensions
 {
     extension(WebApplicationBuilder builder)
     {

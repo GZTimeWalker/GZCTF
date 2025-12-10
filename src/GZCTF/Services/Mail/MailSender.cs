@@ -12,14 +12,14 @@ namespace GZCTF.Services.Mail;
 
 public sealed class MailSender : IMailSender, IDisposable
 {
-    readonly CancellationToken _cancellationToken;
-    readonly CancellationTokenSource _cancellationTokenSource = new();
-    readonly ILogger<MailSender> _logger;
-    readonly ConcurrentQueue<MailContent> _mailQueue = new();
-    readonly EmailConfig? _options;
-    readonly AsyncManualResetEvent _resetEvent = new();
-    readonly SmtpClient? _smtpClient;
-    bool _disposed;
+    private readonly CancellationToken _cancellationToken;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private readonly ILogger<MailSender> _logger;
+    private readonly ConcurrentQueue<MailContent> _mailQueue = new();
+    private readonly EmailConfig? _options;
+    private readonly AsyncManualResetEvent _resetEvent = new();
+    private readonly SmtpClient? _smtpClient;
+    private bool _disposed;
 
     public MailSender(
         IOptions<AccountPolicy> accountPolicy,
@@ -120,7 +120,7 @@ public sealed class MailSender : IMailSender, IDisposable
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
         EnqueueMailTask(userName, email, resetLink, MailType.ResetPassword, localizer, options);
 
-    async Task<bool> SendEmailAsync(string subject, string content, MailboxAddress from, MailboxAddress to)
+    private async Task<bool> SendEmailAsync(string subject, string content, MailboxAddress from, MailboxAddress to)
     {
         if (_smtpClient is null)
             return false;
@@ -146,7 +146,7 @@ public sealed class MailSender : IMailSender, IDisposable
         }
     }
 
-    async Task MailSenderWorker()
+    private async Task MailSenderWorker()
     {
         if (_smtpClient is null)
             return;
@@ -183,7 +183,7 @@ public sealed class MailSender : IMailSender, IDisposable
         }
     }
 
-    bool EnqueueMailTask(string? userName, string? email, string? resetLink, MailType type,
+    private bool EnqueueMailTask(string? userName, string? email, string? resetLink, MailType type,
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options)
     {
         if (_smtpClient is null)
@@ -204,7 +204,7 @@ public sealed class MailSender : IMailSender, IDisposable
         return true;
     }
 
-    bool TestSmtpClient(CancellationToken token = default)
+    private bool TestSmtpClient(CancellationToken token = default)
     {
         if (_smtpClient is null)
             return false;

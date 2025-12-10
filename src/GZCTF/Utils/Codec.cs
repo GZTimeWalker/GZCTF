@@ -123,7 +123,7 @@ public static partial class Codec
                 return [];
             }
 
-            char[] buffer = new char[encoded.Length * 4 / 3 + 8];
+            var buffer = new char[encoded.Length * 4 / 3 + 8];
             return Convert.TryToBase64Chars(encoded, buffer, out var charsWritten)
                 ? Encoding.GetEncoding(type).GetBytes(buffer[..charsWritten])
                 : [];

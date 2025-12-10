@@ -85,7 +85,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id });
 
         // Submit 3 wrong flags (at limit)
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             var submitResponse = await client.PostAsJsonAsync(
                 $"/api/Game/{game.Id}/Challenges/{challengeId}",
@@ -695,8 +695,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         Assert.NotEqual(JsonValueKind.Null, containerInfo.ValueKind);
 
         // 3. Re-get the detailed challenge to find the container entry
-        string entry = string.Empty;
-        for (int i = 0; i < 5; i++)
+        var entry = string.Empty;
+        for (var i = 0; i < 5; i++)
         {
             await Task.Delay(500);
             var detailResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challengeId}");
@@ -737,8 +737,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         Assert.True(submissionId > 0);
 
         // Poll submission status until it's accepted or timeout
-        AnswerResult status = AnswerResult.FlagSubmitted;
-        for (int attempt = 0; attempt < 10; attempt++)
+        var status = AnswerResult.FlagSubmitted;
+        for (var attempt = 0; attempt < 10; attempt++)
         {
             await Task.Delay(500);
             var statusResponse =
@@ -760,9 +760,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var instance = await context.GameInstances
                 .Include(i => i.Participation)
-                .FirstOrDefaultAsync(
-                    i => i.ChallengeId == challengeId &&
-                         i.ParticipationId == participationId);
+                .FirstOrDefaultAsync(i => i.ChallengeId == challengeId &&
+                                          i.ParticipationId == participationId);
 
             if (instance != null)
             {

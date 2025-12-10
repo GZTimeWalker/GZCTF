@@ -196,7 +196,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         });
     }
 
-    async Task InitializeK3sAsync()
+    private async Task InitializeK3sAsync()
     {
         if (_k3sContainer is null)
             throw new InvalidOperationException("K3s container is not initialized");
@@ -213,13 +213,13 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         await File.WriteAllTextAsync(_kubeConfigPath, kubeConfigContent);
     }
 
-    async Task InitializePostgresAsync()
+    private async Task InitializePostgresAsync()
     {
         await _postgresContainer.StartAsync();
         _connectionString = _postgresContainer.GetConnectionString();
     }
 
-    async Task InitializeMinioAsync()
+    private async Task InitializeMinioAsync()
     {
         if (_minioContainer is null)
             throw new InvalidOperationException("MinIO container is not initialized");

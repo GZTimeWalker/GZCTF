@@ -19,12 +19,12 @@ namespace GZCTF.Utils;
 
 public static class LogHelper
 {
-    const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
-                               "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
-                               "{@m} {#if Status <> null}#{Status} <{UserName}> " +
-                               "{#if IP <> null} @ {IP}{#end}{#end}\n{@x}";
+    private const string LogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] " +
+                                       "{Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)}: " +
+                                       "{@m} {#if Status <> null}#{Status} <{UserName}> " +
+                                       "{#if IP <> null} @ {IP}{#end}{#end}\n{@x}";
 
-    const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
+    private const string InitLogTemplate = "[{@t:yy-MM-dd HH:mm:ss.fff} {@l:u3}] {@m}\n{@x}";
 
     /// <param name="logger">the logger</param>
     /// <typeparam name="T"></typeparam>
@@ -222,7 +222,7 @@ public static class LogHelper
             ))
             .CreateBootstrapLogger();
 
-    const string EFCoreQuerySource = "Microsoft.EntityFrameworkCore.Database.Command";
+    private const string EFCoreQuerySource = "Microsoft.EntityFrameworkCore.Database.Command";
 
     public static T? GetLogPropertyValue<T>(LogEventPropertyValue? value, T? defaultValue) =>
         value is ScalarValue { Value: T rawValue } ? rawValue : defaultValue;
