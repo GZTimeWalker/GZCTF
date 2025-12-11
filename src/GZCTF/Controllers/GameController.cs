@@ -69,7 +69,7 @@ public class GameController(
         [FromQuery][Range(0, 50)] int limit,
         CancellationToken token)
     {
-        (var games, var lastModified) = await gameRepository.GetRecentGames(token);
+        var (games, lastModified) = await gameRepository.GetRecentGames(token);
         var eTag = $"\"{lastModified.ToUnixTimeSeconds():X}-{limit}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -395,7 +395,7 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        (var data, var lastModified) = await noticeRepository.GetLatestNotices(game.Id, token);
+        var (data, lastModified) = await noticeRepository.GetLatestNotices(game.Id, token);
         var eTag = $"\"{game.Id}-{lastModified.ToUnixTimeSeconds():X}-{skip}-{count}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -1424,7 +1424,7 @@ public class GameController(
     {
         var res = new Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>>();
 
-        foreach ((var cat, var chs) in challenges)
+        foreach (var (cat, chs) in challenges)
         {
             var infos = chs.Where(chal =>
                 division.ChallengeConfigs.TryGetValue(chal.Id, out var config)

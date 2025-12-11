@@ -49,7 +49,7 @@ public class InfoController(
     public async Task<IActionResult> GetLatestPosts(CancellationToken token)
     {
         var posts = await postRepository.GetPosts(token);
-        (var data, var lastModified) = posts;
+        var (data, lastModified) = posts;
         var eTag = $"\"latest-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -70,7 +70,7 @@ public class InfoController(
     public async Task<IActionResult> GetPosts(CancellationToken token)
     {
         var posts = await postRepository.GetPosts(token);
-        (var data, var lastModified) = posts;
+        var (data, lastModified) = posts;
         var eTag = $"\"all-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);

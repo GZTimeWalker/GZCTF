@@ -68,7 +68,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// Update user's last visit time and IP address via HTTP request
     /// </summary>
-    /// <param name="context"></param>
+    /// <param name="context">The HTTP context</param>
     public void UpdateByHttpContext(HttpContext context)
     {
         LastVisitedUtc = DateTimeOffset.UtcNow;
