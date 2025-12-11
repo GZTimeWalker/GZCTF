@@ -42,6 +42,9 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
         ILogger<DockerProvider> logger)
     {
         var config = options.Value.DockerConfig ?? new();
+        var networkPrefix = string.IsNullOrWhiteSpace(config.ChallengeNetwork)
+            ? "gzctf"
+            : config.ChallengeNetwork.Trim();
 
         _dockerMeta = new()
         {
@@ -50,7 +53,7 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
             NetworkNames =
                 Enum.GetValues<NetworkMode>()
                     .ToDictionary(n => n,
-                        m => $"{config.ChallengeNetwork ?? "gzctf"}-{m.ToString().ToLowerInvariant()}"),
+                        m => $"{networkPrefix}-{m.ToString().ToLowerInvariant()}"),
             PublicEntry = options.Value.PublicEntry
         };
 
