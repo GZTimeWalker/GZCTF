@@ -84,11 +84,11 @@ public partial class UserInfo : IdentityUser<Guid>
     internal void UpdateUserInfo(AdminUserInfoModel model)
     {
         // use SetUserNameAsync and SetEmailAsync to update UserName and Email
+        // use UpdateUserMetadataByAdmin to update Metadata
         Bio = model.Bio ?? Bio;
         Role = model.Role ?? Role;
         PhoneNumber = model.Phone ?? PhoneNumber;
         EmailConfirmed = model.EmailConfirmed ?? EmailConfirmed;
-        Metadata = model.Metadata ?? Metadata;
     }
 
     /// <summary>
@@ -107,9 +107,9 @@ public partial class UserInfo : IdentityUser<Guid>
     internal void UpdateUserInfo(ProfileUpdateModel model)
     {
         // use SetUserNameAsync to update UserName
+        // use UpdateUserMetadataByUser to update Metadata
         Bio = model.Bio ?? Bio;
         PhoneNumber = model.Phone ?? PhoneNumber;
-        Metadata = model.Metadata ?? Metadata;
     }
 
     #region Db Relationship

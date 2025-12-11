@@ -15,7 +15,7 @@ public interface IUserMetadataFieldRepository : IRepository
     /// </summary>
     /// <param name="token">Cancellation token</param>
     /// <returns>Array of fields</returns>
-    Task<UserMetadataField[]> GetAllAsync(CancellationToken token = default);
+    Task<Dictionary<string, UserMetadataField>> GetAllAsync(CancellationToken token = default);
 
     /// <summary>
     /// Create a new user metadata field

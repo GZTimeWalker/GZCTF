@@ -10,19 +10,23 @@ namespace GZCTF.Test.UnitTests.Models;
 public class UserInfoTests
 {
     [Fact]
-    public void UpdateUserInfo_ProfileUpdateModel_UpdatesMetadata()
+    public void UpdateUserInfo_ProfileUpdateModel_UpdatesBioAndPhone()
     {
         var user = new UserInfo();
-        var metadata = new SortedDictionary<string, JsonDocument?>
+        var model = new ProfileUpdateModel
         {
-            ["key1"] = JsonSerializer.Deserialize<JsonDocument>("\"value1\"")
+            Bio = "new bio",
+            Phone = "new phone",
+            Metadata = new SortedDictionary<string, JsonDocument?>
+            {
+                ["key1"] = JsonSerializer.Deserialize<JsonDocument>("\"value1\"")
+            }
         };
-        var model = new ProfileUpdateModel { Metadata = metadata };
 
         user.UpdateUserInfo(model);
 
-        Assert.NotNull(user.Metadata);
-        Assert.Equal("value1", user.Metadata["key1"]?.RootElement.GetString());
+        Assert.Equal("new bio", user.Bio);
+        Assert.Equal("new phone", user.PhoneNumber);
     }
 
     [Fact]

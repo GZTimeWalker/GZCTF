@@ -13,12 +13,13 @@ public class UserMetadataFieldRepository(
     public Task<UserMetadataField?> GetByKeyAsync(string key, CancellationToken token = default)
         => Context.UserMetadataFields.FirstOrDefaultAsync(f => f.Key == key, token);
 
-    public Task<UserMetadataField[]> GetAllAsync(CancellationToken token = default) =>
+    public Task<Dictionary<string, UserMetadataField>> GetAllAsync(CancellationToken token = default) =>
         cacheHelper.GetOrCreateAsync(logger, CacheKey.UserMetadataFields,
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(1);
-                return Context.UserMetadataFields.OrderBy(f => f.Order).ToArrayAsync(token);
+                return Context.UserMetadataFields.OrderBy(f => f.Order)
+                    .ToDictionaryAsync(f => f.Key, token);
             },
             token: token);
 

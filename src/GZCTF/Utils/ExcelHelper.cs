@@ -39,7 +39,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
         localizer[nameof(Resources.Program.Header_Email)]
     ];
 
-    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, UserMetadataField[] metadataFields)
+    public MemoryStream GetScoreboardExcel(ScoreboardModel scoreboard, IEnumerable<UserMetadataField> metadataFields)
     {
         if (scoreboard.Items.Values.FirstOrDefault()?.TeamInfo is null)
             throw new ArgumentException(localizer[nameof(Resources.Program.Scoreboard_TeamNotLoaded)]);
@@ -116,7 +116,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     }
 
     private int[] WriteBoardHeader(ISheet sheet, ICellStyle style, ScoreboardModel scoreboard,
-        UserMetadataField[] metadataFields)
+        IEnumerable<UserMetadataField> metadataFields)
     {
         var row = sheet.CreateRow(0);
         var colIndex = 0;
@@ -164,7 +164,7 @@ public class ExcelHelper(IStringLocalizer<Program> localizer)
     }
 
     private static void WriteBoardContent(ISheet sheet, ScoreboardModel scoreboard, int[] challIds,
-        UserMetadataField[] metadataFields)
+        IEnumerable<UserMetadataField> metadataFields)
     {
         var rowIndex = 1;
         var withDiv = scoreboard.Divisions.Count > 0;

@@ -21,7 +21,11 @@ public class MetadataController(IUserMetadataFieldRepository metadataRepository,
     /// <returns></returns>
     [HttpGet]
     [ProducesResponseType(typeof(UserMetadataField[]), StatusCodes.Status200OK)]
-    public Task<UserMetadataField[]> Get(CancellationToken token) => metadataRepository.GetAllAsync(token);
+    public async Task<IEnumerable<UserMetadataField>> Get(CancellationToken token)
+    {
+        var fields = await metadataRepository.GetAllAsync(token);
+        return fields.Values;
+    }
 
     /// <summary>
     /// Create a new metadata field

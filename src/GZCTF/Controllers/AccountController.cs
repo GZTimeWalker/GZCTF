@@ -1,5 +1,4 @@
 ﻿using System.Net.Mime;
-using System.Text.Json;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
@@ -356,7 +355,7 @@ public class AccountController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model, CancellationToken token = default)
     {
-        var user = await userManager.GetUserAsync(User);
+        var user = (await userManager.GetUserAsync(User))!;
 
         if (model.UserName is not null && model.UserName != user!.UserName)
         {
@@ -371,25 +370,12 @@ public class AccountController(
                 user, TaskStatus.Success);
         }
 
-        if (model.Metadata is not null)
+        if (model.Metadata is { Count: > 0 })
         {
-            var fields = await metadataRepository.GetAllAsync(token);
-            var fieldMap = fields.ToDictionary(f => f.Key);
-
-            foreach ((string key, JsonDocument? value) in model.Metadata)
-            {
-                if (!fieldMap.TryGetValue(key, out var field))
-                    return BadRequest(
-                        new RequestResponse(localizer[nameof(Resources.Program.Model_UnknownMetadataField), key]));
-
-                if (field.Locked)
-                    return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_FieldIsLocked),
-                        field.DisplayName]));
-
-                if (!field.Validate(value, localizer, out var error))
-                    return BadRequest(new RequestResponse(
-                        localizer[nameof(Resources.Program.Model_FieldValidationFailed), field.DisplayName, error]));
-            }
+            var fieldDefs = await metadataRepository.GetAllAsync(token);
+            if (fieldDefs.Count > 0)
+                if (!user.UpdateUserMetadataByUser(model.Metadata, localizer, fieldDefs, out var errorResponse))
+                    return BadRequest(new RequestResponse(errorResponse));
         }
 
         user!.UpdateUserInfo(model);

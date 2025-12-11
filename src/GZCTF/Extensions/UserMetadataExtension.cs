@@ -173,6 +173,103 @@ public static class UserMetadataExtension
             return true;
         }
     }
+
+    extension(UserInfo user)
+    {
+        /// <summary>
+        /// Update user metadata by user input
+        /// </summary>
+        /// <param name="metadata">The new metadata from user</param>
+        /// <param name="localizer">String localizer for error messages</param>
+        /// <param name="fieldDefs">Field definitions</param>
+        /// <param name="errorResponse">Error response if validation fails</param>
+        /// <returns>>True if update is successful, false otherwise</returns>
+        internal bool UpdateUserMetadataByUser(MetadataStore metadata,
+            IStringLocalizer<Program> localizer,
+            Dictionary<string, UserMetadataField> fieldDefs,
+            [MaybeNullWhen(true)] out string errorResponse)
+        {
+            var newMetadata = new MetadataStore();
+
+            foreach ((var key, JsonDocument? value) in metadata)
+            {
+                // Skip fields that are locked or not defined
+                if (!fieldDefs.TryGetValue(key, out var field) || field.Locked)
+                    continue;
+
+                // Validate field value
+                if (!field.Validate(value, localizer, out var error))
+                {
+                    errorResponse = localizer[nameof(Resources.Program.Model_FieldValidationFailed),
+                        field.DisplayName, error];
+                    return false;
+                }
+
+                newMetadata[key] = value;
+            }
+
+            if (user.Metadata is not null)
+            {
+                foreach ((var key, JsonDocument? value) in user.Metadata)
+                {
+                    // Preserve locked fields
+                    if (fieldDefs.TryGetValue(key, out var field) && field.Locked)
+                        newMetadata[key] = value;
+                }
+            }
+
+            user.Metadata = newMetadata;
+            errorResponse = null;
+            return true;
+        }
+
+        /// <summary>
+        /// Update user metadata by admin input
+        /// </summary>
+        /// <param name="metadata">The new metadata from user</param>
+        /// <param name="localizer">String localizer for error messages</param>
+        /// <param name="fieldDefs">Field definitions</param>
+        /// <param name="errorResponse">Error response if validation fails</param>
+        /// <returns>>True if update is successful, false otherwise</returns>
+        internal bool UpdateUserMetadataByAdmin(MetadataStore metadata,
+            IStringLocalizer<Program> localizer,
+            Dictionary<string, UserMetadataField> fieldDefs,
+            [MaybeNullWhen(true)] out string errorResponse)
+        {
+            var newMetadata = new MetadataStore();
+
+            foreach ((var key, JsonDocument? value) in metadata)
+            {
+                // Skip fields that are locked or not defined
+                if (!fieldDefs.TryGetValue(key, out var field))
+                    continue;
+
+                // Validate field value
+                if (!field.Validate(value, localizer, out var error))
+                {
+                    errorResponse = localizer[nameof(Resources.Program.Model_FieldValidationFailed),
+                        field.DisplayName, error];
+                    return false;
+                }
+
+                newMetadata[key] = value;
+            }
+
+            if (user.Metadata is not null)
+            {
+                foreach ((var key, JsonDocument? value) in user.Metadata)
+                {
+                    // Preserve old fields that are not being updated
+                    if (!newMetadata.ContainsKey(key) && fieldDefs.ContainsKey(key))
+                        newMetadata[key] = value;
+                }
+            }
+
+            user.Metadata = newMetadata;
+            errorResponse = null;
+            return true;
+        }
+    }
 }
 
 public sealed record UserMetadataFieldValue(UserMetadataFieldValueType Type, JsonDocument? Value) : IDisposable

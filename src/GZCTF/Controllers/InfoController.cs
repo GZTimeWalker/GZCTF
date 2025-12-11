@@ -194,6 +194,9 @@ public class InfoController(
     /// <response code="200">Successfully retrieved metadata fields</response>
     [HttpGet("Metadata")]
     [ProducesResponseType(typeof(UserMetadataField[]), StatusCodes.Status200OK)]
-    public Task<UserMetadataField[]> GetMetadataFields(CancellationToken token) =>
-        metadataRepository.GetAllAsync(token);
+    public async Task<IEnumerable<UserMetadataField>> GetMetadataFields(CancellationToken token)
+    {
+        var metadataFields = await metadataRepository.GetAllAsync(token);
+        return metadataFields.Values;
+    }
 }
