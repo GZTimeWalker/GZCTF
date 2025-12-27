@@ -18,6 +18,11 @@
     "confirm": {
       "message": "Por favor, haz clic en el botón de abajo para verificar tu correo electrónico."
     },
+    "email_confirmation_pending": {
+      "check_spam": "Si no ves el correo, es posible que necesites revisar tu carpeta de spam.",
+      "message": "¡Ya casi está listo! Hemos enviado un correo electrónico a:",
+      "title": "Por favor, verifica tu correo electrónico"
+    },
     "link_check": "Por favor, verifica tu enlace de activación y vuelve a intentarlo",
     "link_invalid": "¡Vaya! Hay algo mal con tu enlace de activación",
     "profile": {
@@ -100,6 +105,7 @@
   },
   "title": {
     "confirm": "Verificación de correo electrónico",
+    "email_confirmation_pending": "Verificación de correo pendiente",
     "login": "Iniciar sesión",
     "profile": "Perfil",
     "recovery": "Recuperar cuenta",

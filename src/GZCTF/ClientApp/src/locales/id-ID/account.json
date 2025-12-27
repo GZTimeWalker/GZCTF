@@ -18,6 +18,11 @@
     "confirm": {
       "message": "Silakan klik tombol di bawah ini untuk memverifikasi email kamu."
     },
+    "email_confirmation_pending": {
+      "check_spam": "Jika tidak melihatnya, kamu mungkin perlu memeriksa folder spam kamu.",
+      "message": "Hampir selesai! Kami telah mengirim email ke:",
+      "title": "Silakan verifikasi email kamu"
+    },
     "link_check": "Silakan periksa tautan aktivasi kamu dan coba lagi",
     "link_invalid": "Waduh! Ada yang tidak beres dengan tautan aktivasi kamu",
     "profile": {
@@ -100,6 +105,7 @@
   },
   "title": {
     "confirm": "Verifikasi Email",
+    "email_confirmation_pending": "Menunggu Verifikasi Email",
     "login": "Masuk",
     "profile": "Profil",
     "recovery": "Pulihkan akun",

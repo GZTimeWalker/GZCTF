@@ -18,6 +18,11 @@
     "confirm": {
       "message": "Veuillez cliquer sur le bouton ci-dessous pour vérifier votre email."
     },
+    "email_confirmation_pending": {
+      "check_spam": "Si vous ne le voyez pas, vérifiez votre dossier spam.",
+      "message": "Vous y êtes presque ! Nous avons envoyé un email à :",
+      "title": "Veuillez vérifier votre email"
+    },
     "link_check": "Veuillez vérifier votre lien d'activation et réessayer",
     "link_invalid": "Aïe ! Il y a un problème avec votre lien d'activation",
     "profile": {
@@ -100,6 +105,7 @@
   },
   "title": {
     "confirm": "Vérification de l'email",
+    "email_confirmation_pending": "Vérification d'email en attente",
     "login": "Connexion",
     "profile": "Profil",
     "recovery": "Récupérer le compte",
