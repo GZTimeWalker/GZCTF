@@ -18,12 +18,6 @@
     "confirm": {
       "message": "Nhấn vào nút bên dưới để xác nhận email."
     },
-    "verify_email": {
-      "check_spam": "Nếu bạn không thấy email, hãy kiểm tra thư mục thư rác.",
-      "message": "Gần hoàn tất rồi!<br/>Chúng tôi đã gửi email tới:",
-      "reregister_note": "Chưa nhận được email?<br/>Bạn có thể đăng ký lại bằng cùng địa chỉ email.<br/>Thông tin đăng ký mới nhất của bạn sẽ được sử dụng sau khi xác minh.",
-      "title": "Vui lòng xác minh email của bạn"
-    },
     "link_check": "Vui lòng kiểm tra link kích hoạt và thử lại",
     "link_invalid": "Ouch! Link kích hoạt của bạn có vấn đề",
     "profile": {
@@ -31,6 +25,14 @@
     },
     "verify": {
       "message": "Vui lòng nhấp vào nút phía dưới để xác minh tài khoản."
+    },
+    "verify_email": {
+      "message": "Gần hoàn tất rồi!<br/>Chúng tôi đã gửi email tới:",
+      "not_received": {
+        "list": "<0>Kiểm tra thư mục spam hoặc thư rác.</0><1>Bạn có thể đăng ký lại bằng cùng email; thông tin đăng ký mới nhất sẽ được dùng sau khi xác minh.</1>",
+        "title": "Không nhận được email?"
+      },
+      "title": "Xác minh email"
     },
     "welcome": "Xin chào, {{decodeEmail}} 👋"
   },

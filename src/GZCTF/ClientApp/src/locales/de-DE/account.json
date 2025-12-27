@@ -18,12 +18,6 @@
     "confirm": {
       "message": "Bitte klicken Sie auf die Schaltfläche unten, um Ihre E-Mail zu verifizieren."
     },
-    "verify_email": {
-      "check_spam": "Falls Sie keine E-Mail erhalten, überprüfen Sie bitte Ihren Spam-Ordner.",
-      "message": "Sie sind fast fertig!<br/>Wir haben eine E-Mail gesendet an:",
-      "reregister_note": "Keine E-Mail erhalten?<br/>Sie können sich mit derselben E-Mail-Adresse erneut registrieren.<br/>Nach der Bestätigung werden Ihre neuesten Registrierungsinformationen verwendet.",
-      "title": "Bitte verifizieren Sie Ihre E-Mail"
-    },
     "link_check": "Bitte überprüfen Sie Ihren Aktivierungslink und versuchen Sie es erneut",
     "link_invalid": "Autsch! Mit Ihrem Aktivierungslink stimmt etwas nicht",
     "profile": {
@@ -31,6 +25,14 @@
     },
     "verify": {
       "message": "Bitte klicken Sie auf die Schaltfläche unten, um das Konto zu verifizieren."
+    },
+    "verify_email": {
+      "message": "Sie sind fast fertig!<br/>Wir haben eine E-Mail gesendet an:",
+      "not_received": {
+        "list": "<0>Bitte prüfen Sie Ihren Spam-Ordner.</0><1>Sie können sich mit derselben E-Mail erneut registrieren; nach der Bestätigung werden die neuesten Registrierungsinformationen verwendet.</1>",
+        "title": "E-Mail nicht erhalten?"
+      },
+      "title": "E-Mail bestätigen"
     },
     "welcome": "Hallo, {{decodeEmail}}👋"
   },

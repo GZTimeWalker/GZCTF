@@ -18,12 +18,6 @@
     "confirm": {
       "message": "Silakan klik tombol di bawah ini untuk memverifikasi email kamu."
     },
-    "verify_email": {
-      "check_spam": "Jika tidak melihatnya, kamu mungkin perlu memeriksa folder spam kamu.",
-      "message": "Hampir selesai!<br/>Kami telah mengirim email ke:",
-      "reregister_note": "Belum menerima email?<br/>Kamu dapat mendaftar ulang dengan alamat email yang sama.<br/>Informasi pendaftaran terbaru akan digunakan setelah verifikasi.",
-      "title": "Silakan verifikasi email kamu"
-    },
     "link_check": "Silakan periksa tautan aktivasi kamu dan coba lagi",
     "link_invalid": "Waduh! Ada yang tidak beres dengan tautan aktivasi kamu",
     "profile": {
@@ -31,6 +25,14 @@
     },
     "verify": {
       "message": "Silakan klik tombol di bawah ini untuk memverifikasi akun."
+    },
+    "verify_email": {
+      "message": "Hampir selesai!<br/>Kami telah mengirim email ke:",
+      "not_received": {
+        "list": "<0>Periksa folder spam atau junk kamu.</0><1>Kamu dapat mendaftar ulang dengan email yang sama; informasi pendaftaran terbaru akan digunakan setelah verifikasi.</1>",
+        "title": "Belum menerima email?"
+      },
+      "title": "Verifikasi Email"
     },
     "welcome": "Halo, {{decodeEmail}}👋"
   },

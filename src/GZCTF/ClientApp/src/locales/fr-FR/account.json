@@ -18,12 +18,6 @@
     "confirm": {
       "message": "Veuillez cliquer sur le bouton ci-dessous pour vérifier votre email."
     },
-    "verify_email": {
-      "check_spam": "Si vous ne le voyez pas, vérifiez votre dossier spam.",
-      "message": "Vous y êtes presque !<br/>Nous avons envoyé un email à :",
-      "reregister_note": "Vous n'avez pas reçu l'email ?<br/>Vous pouvez vous réinscrire avec la même adresse email.<br/>Vos informations d'inscription les plus récentes seront utilisées une fois vérifiées.",
-      "title": "Veuillez vérifier votre email"
-    },
     "link_check": "Veuillez vérifier votre lien d'activation et réessayer",
     "link_invalid": "Aïe ! Il y a un problème avec votre lien d'activation",
     "profile": {
@@ -31,6 +25,14 @@
     },
     "verify": {
       "message": "Veuillez cliquer sur le bouton ci-dessous pour vérifier le compte."
+    },
+    "verify_email": {
+      "message": "Vous y êtes presque !<br/>Nous avons envoyé un email à :",
+      "not_received": {
+        "list": "<0>Vérifiez votre dossier spam ou courriers indésirables.</0><1>Vous pouvez vous réinscrire avec la même adresse ; vos informations d'inscription les plus récentes seront utilisées une fois vérifiées.</1>",
+        "title": "Vous n'avez rien reçu ?"
+      },
+      "title": "Vérifier l'email"
     },
     "welcome": "Bonjour, {{decodeEmail}}👋"
   },

@@ -126,7 +126,7 @@
         },
         "enable": "¿Está seguro de que desea habilitar el desafío {{name}}?",
         "flag": {
-          "create": "Crea banderas. Varias banderas deben estar separadas por líneas, una bandera por línea.<br /> Cada desafío puede tener múltiples banderas. Cualquier bandera configurada puede ser aceptada.",
+          "create": "Crea banderas. Varias banderas deben estar separadas por líneas, una bandera por línea.<br/> Cada desafío puede tener múltiples banderas. Cualquier bandera configurada puede ser aceptada.",
           "delete": "¿Estás seguro de que deseas eliminar esta bandera?",
           "empty": {
             "description": "Por favor, añade la bandera desde la esquina superior derecha",

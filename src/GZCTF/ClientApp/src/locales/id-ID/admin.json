@@ -126,7 +126,7 @@
         },
         "enable": "Apakah kamu yakin ingin mengaktifkan challenge {{name}}?",
         "flag": {
-          "create": "Buat flag. Beberapa flag harus dipisahkan dengan baris, satu bendera per baris.<br /> Setiap tantangan dapat memiliki beberapa flag. Semua flag yang dikonfigurasi dapat diterima.",
+          "create": "Buat flag. Beberapa flag harus dipisahkan dengan baris, satu bendera per baris.<br/> Setiap tantangan dapat memiliki beberapa flag. Semua flag yang dikonfigurasi dapat diterima.",
           "delete": "Apakah kamu yakin ingin menghapus flag ini?",
           "empty": {
             "description": "Silakan tambahkan flag melalui pojok kanan atas",

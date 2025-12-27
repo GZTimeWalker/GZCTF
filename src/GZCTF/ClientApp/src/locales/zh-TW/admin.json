@@ -126,7 +126,7 @@
         },
         "enable": "你確定要啟用題目 {{name}} 嗎？",
         "flag": {
-          "create": "創建 flag，多個 flag 按行分割，每行一個。<br />每道題目可以擁有多個 flag，獲取任意 flag 均可得分。",
+          "create": "創建 flag，多個 flag 按行分割，每行一個。<br/>每道題目可以擁有多個 flag，獲取任意 flag 均可得分。",
           "delete": "確定刪除此 flag 嗎？",
           "empty": {
             "description": "請通過右上角添加 flag",

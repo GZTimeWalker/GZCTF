@@ -126,7 +126,7 @@
         },
         "enable": "Êtes-vous sûr de vouloir activer le défi {{name}} ?",
         "flag": {
-          "create": "Créez des drapeaux. Plusieurs drapeaux doivent être séparés par des lignes, un drapeau par ligne.<br /> Chaque défi peut avoir plusieurs drapeaux. Tous les drapeaux configurés peuvent être acceptés.",
+          "create": "Créez des drapeaux. Plusieurs drapeaux doivent être séparés par des lignes, un drapeau par ligne.<br/> Chaque défi peut avoir plusieurs drapeaux. Tous les drapeaux configurés peuvent être acceptés.",
           "delete": "Êtes-vous sûr de vouloir supprimer ce drapeau ?",
           "empty": {
             "description": "Veuillez ajouter un drapeau via le coin supérieur droit",

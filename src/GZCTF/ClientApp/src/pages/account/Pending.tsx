@@ -1,21 +1,14 @@
-import { Anchor, Center, Stack, Text, Title } from '@mantine/core'
-import { FC, useMemo } from 'react'
+import { Anchor, Center, List, Stack, Text, Title } from '@mantine/core'
+import { FC } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { LogoHeader } from '@Components/LogoHeader'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import misc from '@Styles/Misc.module.css'
 
-// Email validation regex
-const isValidEmail = (email: string): boolean => {
-  return typeof email === 'string' && email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-}
-
 const EmailConfirmationPending: FC = () => {
   const location = useLocation()
-  const emailFromState = location.state?.email || ''
-
-  const email = useMemo(() => (isValidEmail(emailFromState) ? emailFromState.trim() : ''), [emailFromState])
+  const email = location.state?.email || 'ctf@example.com'
 
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -24,26 +17,29 @@ const EmailConfirmationPending: FC = () => {
 
   return (
     <Center h="100vh">
-      <Stack align="center" justify="center" maw={500} px="md">
+      <Stack align="center" justify="center" maw={400} px="md">
         <LogoHeader onClick={() => navigate('/')} />
         <Stack gap="xs" align="center" justify="center">
-          <Title order={3} fw={600} ta="center">
+          <Title order={3} ta="center">
             {t('account.content.verify_email.title')}
           </Title>
-          <Text size="md" fw={500} ta="center">
+          <Text size="md" fw="bold" ta="center">
             <Trans i18nKey="account.content.verify_email.message" />
           </Text>
-          {email && (
-            <Text size="md" fw={600} c="brand" ta="center">
-              {email}
+          <Text size="md" fw="bold" ff="monospace" c="brand" ta="center">
+            {email}
+          </Text>
+          <Stack gap={4} mt="sm" align="stretch" w="100%">
+            <Text size="xs" fw="bold" ta="center">
+              {t('account.content.verify_email.not_received.title')}
             </Text>
-          )}
-          <Text size="sm" c="dimmed" ta="center" mt="sm">
-            {t('account.content.verify_email.check_spam')}
-          </Text>
-          <Text size="xs" c="dimmed" ta="center" mt="sm" maw={420}>
-            <Trans i18nKey="account.content.verify_email.reregister_note" />
-          </Text>
+            <List spacing={4} size="xs" c="dimmed" withPadding>
+              <Trans i18nKey="account.content.verify_email.not_received.list">
+                <List.Item />
+                <List.Item />
+              </Trans>
+            </List>
+          </Stack>
           <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login" mt="sm">
             {t('account.anchor.login')}
           </Anchor>

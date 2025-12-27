@@ -18,12 +18,6 @@
     "confirm": {
       "message": "Por favor, haz clic en el botón de abajo para verificar tu correo electrónico."
     },
-    "verify_email": {
-      "check_spam": "Si no ves el correo, es posible que necesites revisar tu carpeta de spam.",
-      "message": "¡Ya casi está listo!<br/>Hemos enviado un correo electrónico a:",
-      "reregister_note": "¿No has recibido el correo?<br/>Puedes volver a registrarte con la misma dirección de correo.<br/>Se utilizará tu información de registro más reciente una vez verificada.",
-      "title": "Por favor, verifica tu correo electrónico"
-    },
     "link_check": "Por favor, verifica tu enlace de activación y vuelve a intentarlo",
     "link_invalid": "¡Vaya! Hay algo mal con tu enlace de activación",
     "profile": {
@@ -31,6 +25,14 @@
     },
     "verify": {
       "message": "Por favor haz clic en el botón de abajo para verificar la cuenta."
+    },
+    "verify_email": {
+      "message": "¡Ya casi está listo!<br/>Hemos enviado un correo electrónico a:",
+      "not_received": {
+        "list": "<0>Revisa tu carpeta de spam o correo no deseado.</0><1>Puedes volver a registrarte con el mismo correo; se usará tu información de registro más reciente una vez verificada.</1>",
+        "title": "¿No recibiste el correo?"
+      },
+      "title": "Verifica tu correo"
     },
     "welcome": "Hola, {{decodeEmail}}👋"
   },

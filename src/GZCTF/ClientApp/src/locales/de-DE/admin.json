@@ -126,7 +126,7 @@
         },
         "enable": "Sind Sie sicher, dass Sie die Herausforderung {{name}} aktivieren möchten?",
         "flag": {
-          "create": "Erstellen Sie Flags. Mehrere Flags sollten durch Zeilen getrennt werden, ein Flag pro Zeile.<br /> Jede Herausforderung kann mehrere Flags haben. Alle konfigurierten Flags können akzeptiert werden.",
+          "create": "Erstellen Sie Flags. Mehrere Flags sollten durch Zeilen getrennt werden, ein Flag pro Zeile.<br/> Jede Herausforderung kann mehrere Flags haben. Alle konfigurierten Flags können akzeptiert werden.",
           "delete": "Sind Sie sicher, dass Sie dieses Flag löschen möchten?",
           "empty": {
             "description": "Bitte Flag über die obere rechte Ecke hinzufügen",
