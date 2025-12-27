@@ -1,23 +1,28 @@
-import { Anchor, Stack, Text, Title } from '@mantine/core'
-import { FC } from 'react'
+import { Anchor, Stack, Text } from '@mantine/core'
+import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import misc from '@Styles/Misc.module.css'
 
+// Email validation regex
+const isValidEmail = (email: string): boolean => {
+  return (
+    typeof email === 'string' &&
+    email.trim().length > 0 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  )
+}
+
 const EmailConfirmationPending: FC = () => {
   const location = useLocation()
   const emailFromState = location.state?.email || ''
-  
-  // Basic email format validation
-  const isValidEmail = (email: string): boolean => {
-    return typeof email === 'string' && 
-           email.trim().length > 0 && 
-           /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-  }
-  
-  const email = isValidEmail(emailFromState) ? emailFromState.trim() : ''
+
+  const email = useMemo(
+    () => (isValidEmail(emailFromState) ? emailFromState.trim() : ''),
+    [emailFromState]
+  )
 
   const { t } = useTranslation()
 
@@ -25,25 +30,23 @@ const EmailConfirmationPending: FC = () => {
 
   return (
     <AccountView>
-      <Stack gap="md" align="center" justify="center" maw={500}>
-        <Title order={2} ta="center">
-          {t('account.content.email_confirmation_pending.title')}
-        </Title>
-        <Text size="md" fw={500} ta="center">
-          {t('account.content.email_confirmation_pending.message')}
+      <Text size="lg" fw={600} ta="center">
+        {t('account.content.email_confirmation_pending.title')}
+      </Text>
+      <Text size="md" fw={500} ta="center">
+        {t('account.content.email_confirmation_pending.message')}
+      </Text>
+      {email && (
+        <Text size="md" fw={600} c="brand" ta="center">
+          {email}
         </Text>
-        {email && (
-          <Text size="md" fw={700} c="blue" ta="center">
-            {email}
-          </Text>
-        )}
-        <Text size="sm" c="dimmed" ta="center">
-          {t('account.content.email_confirmation_pending.check_spam')}
-        </Text>
-        <Anchor fz="sm" className={misc.alignSelfEnd} component={Link} to="/account/login" mt="md">
-          {t('account.anchor.login')}
-        </Anchor>
-      </Stack>
+      )}
+      <Text size="sm" c="dimmed" ta="center">
+        {t('account.content.email_confirmation_pending.check_spam')}
+      </Text>
+      <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">
+        {t('account.anchor.login')}
+      </Anchor>
     </AccountView>
   )
 }
