@@ -23,9 +23,9 @@ const EmailConfirmationPending: FC = () => {
         <Text size="md" fw={500} ta="center">
           {t('account.content.email_confirmation_pending.message')}
         </Text>
-        {email && (
+        {email && typeof email === 'string' && email.trim() && (
           <Text size="md" fw={700} c="blue" ta="center">
-            {email}
+            {email.trim()}
           </Text>
         )}
         <Text size="sm" c="dimmed" ta="center">
