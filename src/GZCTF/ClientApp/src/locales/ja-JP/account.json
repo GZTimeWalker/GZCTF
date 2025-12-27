@@ -18,7 +18,7 @@
     "confirm": {
       "message": "次のボタンをクリックしてメールの変更を確認してください。"
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "メールが届かない場合は、迷惑メールフォルダをご確認ください。",
       "message": "もう少しで完了です！次のメールアドレスに確認メールを送信しました：",
       "title": "メールアドレスの確認をお願いします"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "メールによる認証",
-    "email_confirmation_pending": "メール確認待ち",
     "login": "ログイン",
     "profile": "個人情報",
     "recovery": "アカウント回復",
     "register": "新規登録",
     "reset": "パスワードリセット",
-    "verify": "アカウント認証"
+    "verify": "アカウント認証",
+    "verify_email": "メール確認待ち"
   }
 }

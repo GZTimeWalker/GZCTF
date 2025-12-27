@@ -26,15 +26,15 @@ const EmailConfirmationPending: FC = () => {
 
   const { t } = useTranslation()
 
-  usePageTitle(t('account.title.email_confirmation_pending'))
+  usePageTitle(t('account.title.verify_email'))
 
   return (
     <AccountView>
       <Text size="lg" fw={600} ta="center">
-        {t('account.content.email_confirmation_pending.title')}
+        {t('account.content.verify_email.title')}
       </Text>
       <Text size="md" fw={500} ta="center">
-        {t('account.content.email_confirmation_pending.message')}
+        {t('account.content.verify_email.message')}
       </Text>
       {email && (
         <Text size="md" fw={600} c="brand" ta="center">
@@ -42,7 +42,7 @@ const EmailConfirmationPending: FC = () => {
         </Text>
       )}
       <Text size="sm" c="dimmed" ta="center">
-        {t('account.content.email_confirmation_pending.check_spam')}
+        {t('account.content.verify_email.check_spam')}
       </Text>
       <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">
         {t('account.anchor.login')}

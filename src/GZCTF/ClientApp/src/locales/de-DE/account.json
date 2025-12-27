@@ -18,7 +18,7 @@
     "confirm": {
       "message": "Bitte klicken Sie auf die Schaltfläche unten, um Ihre E-Mail zu verifizieren."
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "Falls Sie keine E-Mail erhalten, überprüfen Sie bitte Ihren Spam-Ordner.",
       "message": "Sie sind fast fertig! Wir haben eine E-Mail gesendet an:",
       "title": "Bitte verifizieren Sie Ihre E-Mail"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "E-Mail-Verifizierung",
-    "email_confirmation_pending": "E-Mail-Verifizierung ausstehend",
     "login": "Einloggen",
     "profile": "Profil",
     "recovery": "Konto wiederherstellen",
     "register": "Registrieren",
     "reset": "Passwort zurücksetzen",
-    "verify": "Kontoverifizierung"
+    "verify": "Kontoverifizierung",
+    "verify_email": "E-Mail-Verifizierung ausstehend"
   }
 }

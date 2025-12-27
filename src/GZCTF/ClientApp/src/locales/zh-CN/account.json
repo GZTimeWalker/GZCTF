@@ -18,7 +18,7 @@
     "confirm": {
       "message": "请点击下方按钮确认更改邮箱。"
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "如果没有收到邮件，请检查垃圾邮件文件夹。",
       "message": "快要完成了！我们已经向以下邮箱发送了一封邮件：",
       "title": "请验证您的邮箱"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "邮箱验证",
-    "email_confirmation_pending": "等待邮箱验证",
     "login": "登录",
     "profile": "个人资料",
     "recovery": "找回帐号",
     "register": "注册",
     "reset": "重置密码",
-    "verify": "账户验证"
+    "verify": "账户验证",
+    "verify_email": "等待邮箱验证"
   }
 }

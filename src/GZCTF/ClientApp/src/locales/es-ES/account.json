@@ -18,7 +18,7 @@
     "confirm": {
       "message": "Por favor, haz clic en el botón de abajo para verificar tu correo electrónico."
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "Si no ves el correo, es posible que necesites revisar tu carpeta de spam.",
       "message": "¡Ya casi está listo! Hemos enviado un correo electrónico a:",
       "title": "Por favor, verifica tu correo electrónico"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "Verificación de correo electrónico",
-    "email_confirmation_pending": "Verificación de correo pendiente",
     "login": "Iniciar sesión",
     "profile": "Perfil",
     "recovery": "Recuperar cuenta",
     "register": "Registrar",
     "reset": "Restablecer contraseña",
-    "verify": "Verificación de cuenta"
+    "verify": "Verificación de cuenta",
+    "verify_email": "Verificación de correo pendiente"
   }
 }

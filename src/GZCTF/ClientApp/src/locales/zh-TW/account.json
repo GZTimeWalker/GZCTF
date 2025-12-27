@@ -18,7 +18,7 @@
     "confirm": {
       "message": "請點擊下方按鈕確認更改郵箱。"
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "如果沒有收到郵件，請檢查垃圾郵件資料夾。",
       "message": "快要完成了！我們已經向以下郵箱發送了一封郵件：",
       "title": "請驗證您的郵箱"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "郵箱驗證",
-    "email_confirmation_pending": "等待郵箱驗證",
     "login": "登錄",
     "profile": "個人資料",
     "recovery": "找回帳號",
     "register": "註冊",
     "reset": "重置密碼",
-    "verify": "帳戶驗證"
+    "verify": "帳戶驗證",
+    "verify_email": "等待郵箱驗證"
   }
 }

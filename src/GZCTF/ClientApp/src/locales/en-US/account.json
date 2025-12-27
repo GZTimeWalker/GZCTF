@@ -18,11 +18,6 @@
     "confirm": {
       "message": "Please click the button below to verify your email."
     },
-    "email_confirmation_pending": {
-      "check_spam": "If you don't see it, you may need to check your spam folder.",
-      "message": "You're almost there! We sent an email to:",
-      "title": "Please verify your email"
-    },
     "link_check": "Please check your activation link and try again",
     "link_invalid": "Ouch! There's something wrong with your activation link",
     "profile": {
@@ -30,6 +25,11 @@
     },
     "verify": {
       "message": "Please click the button below to verify the account."
+    },
+    "verify_email": {
+      "check_spam": "If you don't see it, you may need to check your spam folder.",
+      "message": "You're almost there! We sent an email to:",
+      "title": "Please verify your email"
     },
     "welcome": "Hello, {{decodeEmail}}👋"
   },
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "Email Verification",
-    "email_confirmation_pending": "Email Verification Pending",
     "login": "Login",
     "profile": "Profile",
     "recovery": "Recover account",
     "register": "Register",
     "reset": "Reset password",
-    "verify": "Account Verification"
+    "verify": "Account Verification",
+    "verify_email": "Email Verification Pending"
   }
 }

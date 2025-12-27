@@ -18,7 +18,7 @@
     "confirm": {
       "message": "Nhấn vào nút bên dưới để xác nhận email."
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "Nếu bạn không thấy email, hãy kiểm tra thư mục thư rác.",
       "message": "Gần hoàn tất rồi! Chúng tôi đã gửi email tới:",
       "title": "Vui lòng xác minh email của bạn"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "Xác Minh Email",
-    "email_confirmation_pending": "Đang Chờ Xác Minh Email",
     "login": "Đăng nhập",
     "profile": "Hồ sơ người dùng",
     "recovery": "Khôi phục tài khoản",
     "register": "Đăng ký",
     "reset": "Đặt lại mật khẩu",
-    "verify": "Xác Minh Tài Khoản"
+    "verify": "Xác Minh Tài Khoản",
+    "verify_email": "Đang Chờ Xác Minh Email"
   }
 }

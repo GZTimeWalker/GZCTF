@@ -18,7 +18,7 @@
     "confirm": {
       "message": "이메일 인증을 위해 아래에 버튼을 클릭해주세요."
     },
-    "email_confirmation_pending": {
+    "verify_email": {
       "check_spam": "이메일을 받지 못한 경우 스팸 폴더를 확인해주세요.",
       "message": "거의 다 됐습니다! 다음 이메일 주소로 인증 이메일을 보냈습니다:",
       "title": "이메일을 인증해주세요"
@@ -105,12 +105,12 @@
   },
   "title": {
     "confirm": "이메일 인증",
-    "email_confirmation_pending": "이메일 인증 대기 중",
     "login": "로그인",
     "profile": "프로필",
     "recovery": "계정 복구",
     "register": "회원가입",
     "reset": "비밀번호 재설정",
-    "verify": "계정 인증"
+    "verify": "계정 인증",
+    "verify_email": "이메일 인증 대기 중"
   }
 }
