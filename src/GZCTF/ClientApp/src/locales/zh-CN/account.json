@@ -18,6 +18,11 @@
     "confirm": {
       "message": "请点击下方按钮确认更改邮箱。"
     },
+    "email_confirmation_pending": {
+      "check_spam": "如果没有收到邮件，请检查垃圾邮件文件夹。",
+      "message": "快要完成了！我们已经向以下邮箱发送了一封邮件：",
+      "title": "请验证您的邮箱"
+    },
     "link_check": "请检查链接是否正确后再次访问",
     "link_invalid": "Ouch! 你的链接好像有问题",
     "profile": {
@@ -100,6 +105,7 @@
   },
   "title": {
     "confirm": "邮箱验证",
+    "email_confirmation_pending": "等待邮箱验证",
     "login": "登录",
     "profile": "个人资料",
     "recovery": "找回帐号",

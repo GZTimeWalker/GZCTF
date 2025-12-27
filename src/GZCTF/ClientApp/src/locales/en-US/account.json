@@ -18,6 +18,11 @@
     "confirm": {
       "message": "Please click the button below to verify your email."
     },
+    "email_confirmation_pending": {
+      "check_spam": "If you don't see it, you may need to check your spam folder.",
+      "message": "You're almost there! We sent an email to",
+      "title": "Please verify your email"
+    },
     "link_check": "Please check your activation link and try again",
     "link_invalid": "Ouch! There's something wrong with your activation link",
     "profile": {
@@ -100,6 +105,7 @@
   },
   "title": {
     "confirm": "Email Verification",
+    "email_confirmation_pending": "Email Verification Pending",
     "login": "Login",
     "profile": "Profile",
     "recovery": "Recover account",
