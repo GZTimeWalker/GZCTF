@@ -21,7 +21,7 @@
     "verify_email": {
       "check_spam": "Falls Sie keine E-Mail erhalten, überprüfen Sie bitte Ihren Spam-Ordner.",
       "message": "Sie sind fast fertig!<br/>Wir haben eine E-Mail gesendet an:",
-      "reregister_note": "Keine E-Mail erhalten? Sie können sich mit derselben E-Mail-Adresse erneut registrieren. Nach der Bestätigung werden Ihre neuesten Registrierungsinformationen verwendet.",
+      "reregister_note": "Keine E-Mail erhalten?<br/>Sie können sich mit derselben E-Mail-Adresse erneut registrieren.<br/>Nach der Bestätigung werden Ihre neuesten Registrierungsinformationen verwendet.",
       "title": "Bitte verifizieren Sie Ihre E-Mail"
     },
     "link_check": "Bitte überprüfen Sie Ihren Aktivierungslink und versuchen Sie es erneut",

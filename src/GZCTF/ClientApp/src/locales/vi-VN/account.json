@@ -21,7 +21,7 @@
     "verify_email": {
       "check_spam": "Nếu bạn không thấy email, hãy kiểm tra thư mục thư rác.",
       "message": "Gần hoàn tất rồi!<br/>Chúng tôi đã gửi email tới:",
-      "reregister_note": "Chưa nhận được email? Bạn có thể đăng ký lại bằng cùng địa chỉ email. Thông tin đăng ký mới nhất của bạn sẽ được sử dụng sau khi xác minh.",
+      "reregister_note": "Chưa nhận được email?<br/>Bạn có thể đăng ký lại bằng cùng địa chỉ email.<br/>Thông tin đăng ký mới nhất của bạn sẽ được sử dụng sau khi xác minh.",
       "title": "Vui lòng xác minh email của bạn"
     },
     "link_check": "Vui lòng kiểm tra link kích hoạt và thử lại",

@@ -38,13 +38,13 @@ const EmailConfirmationPending: FC = () => {
               {email}
             </Text>
           )}
-          <Text size="sm" c="dimmed" ta="center" mt="xs">
+          <Text size="sm" c="dimmed" ta="center" mt="sm">
             {t('account.content.verify_email.check_spam')}
           </Text>
-          <Text size="sm" c="dimmed" ta="center" mt="md" maw={400}>
-            {t('account.content.verify_email.reregister_note')}
+          <Text size="xs" c="dimmed" ta="center" mt="sm" maw={420}>
+            <Trans i18nKey="account.content.verify_email.reregister_note" />
           </Text>
-          <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login" mt="md">
+          <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login" mt="sm">
             {t('account.anchor.login')}
           </Anchor>
         </Stack>

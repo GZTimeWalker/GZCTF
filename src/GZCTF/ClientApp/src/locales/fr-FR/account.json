@@ -21,7 +21,7 @@
     "verify_email": {
       "check_spam": "Si vous ne le voyez pas, vérifiez votre dossier spam.",
       "message": "Vous y êtes presque !<br/>Nous avons envoyé un email à :",
-      "reregister_note": "Vous n'avez pas reçu l'email ? Vous pouvez vous réinscrire avec la même adresse email. Vos informations d'inscription les plus récentes seront utilisées une fois vérifiées.",
+      "reregister_note": "Vous n'avez pas reçu l'email ?<br/>Vous pouvez vous réinscrire avec la même adresse email.<br/>Vos informations d'inscription les plus récentes seront utilisées une fois vérifiées.",
       "title": "Veuillez vérifier votre email"
     },
     "link_check": "Veuillez vérifier votre lien d'activation et réessayer",
