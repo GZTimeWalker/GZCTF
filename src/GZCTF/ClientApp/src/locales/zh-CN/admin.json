@@ -126,7 +126,7 @@
         },
         "enable": "你确定要启用题目 {{name}} 吗？",
         "flag": {
-          "create": "创建 flag，多个 flag 按行分割，每行一个。<br />每道题目可以拥有多个 flag，获取任意 flag 均可得分。",
+          "create": "创建 flag，多个 flag 按行分割，每行一个。<br/>每道题目可以拥有多个 flag，获取任意 flag 均可得分。",
           "delete": "确定删除此 flag 吗？",
           "empty": {
             "description": "请通过右上角添加 flag",

@@ -26,6 +26,14 @@
     "verify": {
       "message": "Bitte klicken Sie auf die Schaltfläche unten, um das Konto zu verifizieren."
     },
+    "verify_email": {
+      "message": "Sie sind fast fertig!<br/>Wir haben eine E-Mail gesendet an:",
+      "not_received": {
+        "list": "<0>Bitte prüfen Sie Ihren Spam-Ordner.</0><1>Sie können sich mit derselben E-Mail erneut registrieren; nach der Bestätigung werden die neuesten Registrierungsinformationen verwendet.</1>",
+        "title": "E-Mail nicht erhalten?"
+      },
+      "title": "E-Mail bestätigen"
+    },
     "welcome": "Hallo, {{decodeEmail}}👋"
   },
   "label": {
@@ -105,6 +113,7 @@
     "recovery": "Konto wiederherstellen",
     "register": "Registrieren",
     "reset": "Passwort zurücksetzen",
-    "verify": "Kontoverifizierung"
+    "verify": "Kontoverifizierung",
+    "verify_email": "E-Mail-Verifizierung ausstehend"
   }
 }

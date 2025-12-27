@@ -26,6 +26,14 @@
     "verify": {
       "message": "Please click the button below to verify the account."
     },
+    "verify_email": {
+      "message": "You're almost there!<br/>We sent an email to:",
+      "not_received": {
+        "list": "<0>Check your spam or junk folder.</0><1>You can re-register with the same email; your most recent registration information will be used once verified.</1>",
+        "title": "Didn't get the email?"
+      },
+      "title": "Verify Email"
+    },
     "welcome": "Hello, {{decodeEmail}}👋"
   },
   "label": {
@@ -105,6 +113,7 @@
     "recovery": "Recover account",
     "register": "Register",
     "reset": "Reset password",
-    "verify": "Account Verification"
+    "verify": "Account Verification",
+    "verify_email": "Email Verification Pending"
   }
 }

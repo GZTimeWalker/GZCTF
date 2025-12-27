@@ -126,7 +126,7 @@
         },
         "enable": "Are you sure you want to enable challenge {{name}}?",
         "flag": {
-          "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br /> Each challenge can have multiple flags. Any configured flags can be accepted.",
+          "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br/> Each challenge can have multiple flags. Any configured flags can be accepted.",
           "delete": "Are you sure you want to delete this flag?",
           "empty": {
             "description": "Please add flag via top right corner",

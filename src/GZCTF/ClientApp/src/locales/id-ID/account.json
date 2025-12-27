@@ -26,6 +26,14 @@
     "verify": {
       "message": "Silakan klik tombol di bawah ini untuk memverifikasi akun."
     },
+    "verify_email": {
+      "message": "Hampir selesai!<br/>Kami telah mengirim email ke:",
+      "not_received": {
+        "list": "<0>Periksa folder spam atau junk kamu.</0><1>Kamu dapat mendaftar ulang dengan email yang sama; informasi pendaftaran terbaru akan digunakan setelah verifikasi.</1>",
+        "title": "Belum menerima email?"
+      },
+      "title": "Verifikasi Email"
+    },
     "welcome": "Halo, {{decodeEmail}}👋"
   },
   "label": {
@@ -105,6 +113,7 @@
     "recovery": "Pulihkan akun",
     "register": "Daftar",
     "reset": "Atur ulang kata sandi",
-    "verify": "Verifikasi Akun"
+    "verify": "Verifikasi Akun",
+    "verify_email": "Menunggu Verifikasi Email"
   }
 }

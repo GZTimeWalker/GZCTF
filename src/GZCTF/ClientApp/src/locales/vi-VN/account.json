@@ -26,6 +26,14 @@
     "verify": {
       "message": "Vui lòng nhấp vào nút phía dưới để xác minh tài khoản."
     },
+    "verify_email": {
+      "message": "Gần hoàn tất rồi!<br/>Chúng tôi đã gửi email tới:",
+      "not_received": {
+        "list": "<0>Kiểm tra thư mục spam hoặc thư rác.</0><1>Bạn có thể đăng ký lại bằng cùng email; thông tin đăng ký mới nhất sẽ được dùng sau khi xác minh.</1>",
+        "title": "Không nhận được email?"
+      },
+      "title": "Xác minh email"
+    },
     "welcome": "Xin chào, {{decodeEmail}} 👋"
   },
   "label": {
@@ -105,6 +113,7 @@
     "recovery": "Khôi phục tài khoản",
     "register": "Đăng ký",
     "reset": "Đặt lại mật khẩu",
-    "verify": "Xác Minh Tài Khoản"
+    "verify": "Xác Minh Tài Khoản",
+    "verify_email": "Đang Chờ Xác Minh Email"
   }
 }

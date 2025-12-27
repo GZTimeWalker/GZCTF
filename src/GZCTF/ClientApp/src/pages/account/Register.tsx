@@ -112,6 +112,8 @@ const Register: FC = () => {
         cleanUp(true)
 
         if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
+        else if (res.data.data === RegisterStatus.EmailConfirmationRequired)
+          navigate('/account/pending', { state: { email } })
         else navigate('/account/login')
       }
     } catch (err: any) {

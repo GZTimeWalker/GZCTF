@@ -26,6 +26,14 @@
     "verify": {
       "message": "Por favor haz clic en el botón de abajo para verificar la cuenta."
     },
+    "verify_email": {
+      "message": "¡Ya casi está listo!<br/>Hemos enviado un correo electrónico a:",
+      "not_received": {
+        "list": "<0>Revisa tu carpeta de spam o correo no deseado.</0><1>Puedes volver a registrarte con el mismo correo; se usará tu información de registro más reciente una vez verificada.</1>",
+        "title": "¿No recibiste el correo?"
+      },
+      "title": "Verifica tu correo"
+    },
     "welcome": "Hola, {{decodeEmail}}👋"
   },
   "label": {
@@ -105,6 +113,7 @@
     "recovery": "Recuperar cuenta",
     "register": "Registrar",
     "reset": "Restablecer contraseña",
-    "verify": "Verificación de cuenta"
+    "verify": "Verificación de cuenta",
+    "verify_email": "Verificación de correo pendiente"
   }
 }

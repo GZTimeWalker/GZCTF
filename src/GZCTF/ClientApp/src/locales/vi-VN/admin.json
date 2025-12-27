@@ -126,7 +126,7 @@
         },
         "enable": "Bạn có chắc chắn muốn kích hoạt thử thách {{name}} không?",
         "flag": {
-          "create": "Tạo flag. Nhiều flag ngăn cách với nhau bằng dấu xuống dòng, mỗi flag một dòng.<br /> Mỗi thử thách có thể có nhiều flag, miễn là flag đó đã được cấu hình.",
+          "create": "Tạo flag. Nhiều flag ngăn cách với nhau bằng dấu xuống dòng, mỗi flag một dòng.<br/> Mỗi thử thách có thể có nhiều flag, miễn là flag đó đã được cấu hình.",
           "delete": "Bạn có chắc chắn muốn xóa flag này?",
           "empty": {
             "description": "Xin hãy thêm flag thông qua góc phía trên bên phải",
