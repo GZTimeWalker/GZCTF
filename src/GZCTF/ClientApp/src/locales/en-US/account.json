@@ -20,7 +20,7 @@
     },
     "email_confirmation_pending": {
       "check_spam": "If you don't see it, you may need to check your spam folder.",
-      "message": "You're almost there! We sent an email to",
+      "message": "You're almost there! We sent an email to:",
       "title": "Please verify your email"
     },
     "link_check": "Please check your activation link and try again",
