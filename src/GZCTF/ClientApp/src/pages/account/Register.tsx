@@ -113,7 +113,7 @@ const Register: FC = () => {
 
         if (res.data.data === RegisterStatus.LoggedIn) navigate('/')
         else if (res.data.data === RegisterStatus.EmailConfirmationRequired)
-          navigate('/account/email-confirmation-pending', { state: { email } })
+          navigate('/account/EmailConfirmationPending', { state: { email } })
         else navigate('/account/login')
       }
     } catch (err: any) {
