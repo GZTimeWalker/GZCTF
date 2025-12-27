@@ -8,7 +8,16 @@ import misc from '@Styles/Misc.module.css'
 
 const EmailConfirmationPending: FC = () => {
   const location = useLocation()
-  const email = location.state?.email || ''
+  const emailFromState = location.state?.email || ''
+  
+  // Basic email format validation
+  const isValidEmail = (email: string): boolean => {
+    return typeof email === 'string' && 
+           email.trim().length > 0 && 
+           /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  }
+  
+  const email = isValidEmail(emailFromState) ? emailFromState.trim() : ''
 
   const { t } = useTranslation()
 
@@ -23,9 +32,9 @@ const EmailConfirmationPending: FC = () => {
         <Text size="md" fw={500} ta="center">
           {t('account.content.email_confirmation_pending.message')}
         </Text>
-        {email && typeof email === 'string' && email.trim() && (
+        {email && (
           <Text size="md" fw={700} c="blue" ta="center">
-            {email.trim()}
+            {email}
           </Text>
         )}
         <Text size="sm" c="dimmed" ta="center">
