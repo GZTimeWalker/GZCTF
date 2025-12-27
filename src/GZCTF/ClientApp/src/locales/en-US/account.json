@@ -28,7 +28,8 @@
     },
     "verify_email": {
       "check_spam": "If you don't see it, you may need to check your spam folder.",
-      "message": "You're almost there! We sent an email to:",
+      "message": "You're almost there!<br />We sent an email to:",
+      "reregister_note": "Haven't received the email? You can re-register with the same email address. Your most recent registration information will be used once verified.",
       "title": "Please verify your email"
     },
     "welcome": "Hello, {{decodeEmail}}👋"

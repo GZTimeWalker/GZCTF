@@ -20,7 +20,8 @@
     },
     "verify_email": {
       "check_spam": "Jika tidak melihatnya, kamu mungkin perlu memeriksa folder spam kamu.",
-      "message": "Hampir selesai! Kami telah mengirim email ke:",
+      "message": "Hampir selesai!<br/>Kami telah mengirim email ke:",
+      "reregister_note": "Belum menerima email? Kamu dapat mendaftar ulang dengan alamat email yang sama. Informasi pendaftaran terbaru akan digunakan setelah verifikasi.",
       "title": "Silakan verifikasi email kamu"
     },
     "link_check": "Silakan periksa tautan aktivasi kamu dan coba lagi",

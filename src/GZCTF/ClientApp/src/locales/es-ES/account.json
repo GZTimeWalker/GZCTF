@@ -20,7 +20,8 @@
     },
     "verify_email": {
       "check_spam": "Si no ves el correo, es posible que necesites revisar tu carpeta de spam.",
-      "message": "¡Ya casi está listo! Hemos enviado un correo electrónico a:",
+      "message": "¡Ya casi está listo!<br/>Hemos enviado un correo electrónico a:",
+      "reregister_note": "¿No has recibido el correo? Puedes volver a registrarte con la misma dirección de correo. Se utilizará tu información de registro más reciente una vez verificada.",
       "title": "Por favor, verifica tu correo electrónico"
     },
     "link_check": "Por favor, verifica tu enlace de activación y vuelve a intentarlo",
