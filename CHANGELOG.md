@@ -3,11 +3,19 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
-## [1.8.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.2..v1.8.0) - 2025-12-10
+## [1.8.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.0..v1.8.1) - 2026-01-05
+
+### ⛰️ Features
+
+- Update to Docker Engine v29 - ([0f39be](https://github.com/GZTimeWalker/GZCTF/commit/0f39be)) by **GZTime**
+
+---
+## [1.8.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.7.2..v1.8.0) - 2025-12-11
 
 ### ⛰️ Features
 
 - **(container)** custom network mode for challenges (#534) - ([e9300a](https://github.com/GZTimeWalker/GZCTF/commit/e9300a)) by **GZTime**
+- **(docker-provider)** update network naming to use configurable challenge network prefix - ([b7b5cd](https://github.com/GZTimeWalker/GZCTF/commit/b7b5cd)) by **GZTime**
 - **(transfer)** add NetworkMode to TransferChallenge - ([939819](https://github.com/GZTimeWalker/GZCTF/commit/939819)) by **GZTime**
 
 ### 🐛 Bug Fixes
