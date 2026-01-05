@@ -27,8 +27,7 @@ namespace GZCTF.Integration.Test.Base;
 // ReSharper disable once InconsistentNaming
 public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:alpine")
+    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder("postgres:alpine")
         .WithDatabase("gzctf_test")
         .WithUsername("postgres")
         .WithPassword("postgres")
@@ -60,8 +59,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         if (_useMinioStorage)
         {
             Console.WriteLine(@"[GZCTFApplicationFactory] Creating MinIO container...");
-            _minioContainer = new MinioBuilder()
-                .WithImage("minio/minio:latest")
+            _minioContainer = new MinioBuilder("minio/minio:latest")
                 .WithUsername("minioadmin")
                 .WithPassword("minioadmin")
                 .WithCleanUp(true)
@@ -72,8 +70,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         {
             Console.WriteLine(@"[GZCTFApplicationFactory] Creating K3s container...");
 
-            var builder = new K3sBuilder()
-                .WithImage("rancher/k3s:v1.33.6-k3s1")
+            var builder = new K3sBuilder("rancher/k3s:v1.35.0-k3s1")
                 .WithCleanUp(true);
 
             _k3sContainer = builder.Build();
