@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   Title,
+  Tooltip,
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
@@ -87,16 +88,18 @@ export const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
             </Group>
           )}
           <Group pt="xs" w="100%" justify="space-between" m="auto" fs="normal">
-            <Group gap={5} justify="right">
+            <Group gap={5} justify="right" w="100%" px={0} align="center" wrap="nowrap">
               <Avatar alt="avatar" src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
-              <Text size="sm" fw="bold" c="dimmed">
-                {t('post.content.metadata', {
-                  author: post.authorName ?? 'Anonym',
-                  date: dayjs(post.time).locale(locale).format('LLL'),
-                })}
-              </Text>
+              <Tooltip label={post.authorName}>
+                <Text size="sm" fw="bold" c="dimmed" truncate>
+                  {t('post.content.metadata', {
+                    author: post.authorName ?? 'Anonym',
+                    date: dayjs(post.time).locale(locale).format('LLL'),
+                  })}
+                </Text>
+              </Tooltip>
             </Group>
             <Text ta="right">
               <Anchor component={Link} to={`/posts/${post.id}`}>

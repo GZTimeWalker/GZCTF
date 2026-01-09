@@ -1,4 +1,4 @@
-import { Badge, Card, Center, Group, Image, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import { Badge, Card, Center, Group, Image, Stack, Text, Title, Tooltip, useMantineTheme } from '@mantine/core'
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -60,9 +60,11 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
         p="0 16px"
         className={misc.alignCenter}
       >
-        <Title lineClamp={1} order={4} ta="left" c={titleColor}>
-          &gt; {title}
-        </Title>
+        <Tooltip label={title} withArrow>
+          <Title lineClamp={1} order={4} ta="left" c={titleColor}>
+            &gt; {title}
+          </Title>
+        </Tooltip>
       </Card.Section>
 
       <Stack gap={0} mt={16}>

@@ -15,12 +15,12 @@ public static class Limits
     /// <summary>
     /// 队伍名称最大长度
     /// </summary>
-    public const int MaxTeamNameLength = 20;
+    public const int MaxTeamNameLength = 255;
 
     /// <summary>
     /// 队伍签名最大长度（前端展示原因）
     /// </summary>
-    public const int MaxTeamBioLength = 72;
+    public const int MaxTeamBioLength = 255;
 
     /// <summary>
     /// 个人数据存储最大长度（签名与真实姓名）
@@ -40,7 +40,7 @@ public static class Limits
     /// <summary>
     /// 用户名最大长度
     /// </summary>
-    public const int MaxUserNameLength = 15;
+    public const int MaxUserNameLength = 255;
 
     /// <summary>
     /// 密码最小长度

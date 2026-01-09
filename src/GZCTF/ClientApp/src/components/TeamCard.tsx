@@ -34,9 +34,11 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
         </Avatar>
         <Stack gap={4} className={misc.flexGrow}>
           <Group justify="space-between" align="center">
-            <Title order={2} lineClamp={1}>
-              {team.name}
-            </Title>
+            <Tooltip label={team.name} withArrow>
+              <Title order={2} lineClamp={1}>
+                {team.name}
+              </Title>
+            </Tooltip>
             {isCaptain && <Icon path={mdiCrown} size={1} className={teamCardClasses.captainIcon} />}
           </Group>
           <Text size="sm" c="dimmed" lineClamp={1}>
