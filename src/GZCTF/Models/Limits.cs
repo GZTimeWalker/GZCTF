@@ -91,4 +91,9 @@ public static class Limits
     /// 分组名称最大长度
     /// </summary>
     public const int MaxDivisionNameLength = 31;
+
+    /// <summary>
+    /// URL 最大长度
+    /// </summary>
+    public const int UrlLength = 255;
 }

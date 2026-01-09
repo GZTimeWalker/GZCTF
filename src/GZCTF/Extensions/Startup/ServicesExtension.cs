@@ -11,6 +11,7 @@ using GZCTF.Services.CronJob;
 using GZCTF.Services.Mail;
 using GZCTF.Services.Token;
 using GZCTF.Services.Transfer;
+using GZCTF.Services.Webhook;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -60,6 +61,8 @@ internal static class ServicesExtension
         {
             builder.Services.AddCaptchaService(builder.Configuration);
             builder.Services.AddContainerService(builder.Configuration);
+            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<ISendWebhookService, SendWebhookService>();
 
             builder.Services.AddScoped<IConfigService, ConfigService>();
             builder.Services.AddScoped<ITokenService, TokenService>();

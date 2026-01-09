@@ -274,6 +274,14 @@ const GameInfoEdit: FC = () => {
             </ActionIcon>
           }
         />
+        <TextInput
+          label={t('admin.content.games.info.discord_webhook.label')}
+          description={t('admin.content.games.info.discord_webhook.description')}
+          placeholder={t('admin.content.games.info.discord_webhook.placeholder')}
+          value={game?.discordWebhook || ''}
+          disabled={disabled}
+          onChange={(e) => game && setGame({ ...game, discordWebhook: e.target.value })}
+        />
         <DateTimePicker
           label={t('admin.content.games.info.start_time')}
           size="sm"

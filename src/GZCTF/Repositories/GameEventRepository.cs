@@ -4,10 +4,13 @@ using GZCTF.Repositories.Interface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
+using GZCTF.Services.Webhook;
+
 namespace GZCTF.Repositories;
 
 public class GameEventRepository(
     IHubContext<MonitorHub, IMonitorClient> hub,
+    ISendWebhookService webhookService,
     AppDbContext context) : RepositoryBase(context), IGameEventRepository
 {
     public async Task<GameEvent> AddEvent(GameEvent gameEvent, CancellationToken token = default)
@@ -15,9 +18,18 @@ public class GameEventRepository(
         await Context.AddAsync(gameEvent, token);
         await SaveAsync(token);
 
-        gameEvent = await Context.GameEvents.SingleAsync(s => s.Id == gameEvent.Id, token);
+        gameEvent = await Context.GameEvents
+            .Include(e => e.User)
+            .Include(e => e.Team)
+            .Include(e => e.Game)
+            .SingleAsync(s => s.Id == gameEvent.Id, token);
 
         await hub.Clients.Group($"Game_{gameEvent.GameId}").ReceivedGameEvent(gameEvent);
+
+        if (gameEvent.Game?.DiscordWebhook is { Length: > 0 } webhookUrl)
+        {
+            _ = webhookService.SendGameEventAsync(gameEvent, webhookUrl);
+        }
 
         return gameEvent;
     }

@@ -86,6 +86,12 @@ public partial class Game
     public int TeamMemberCountLimit { get; set; }
 
     /// <summary>
+    /// Discord webhook URL
+    /// </summary>
+    [MaxLength(Limits.UrlLength)]
+    public string? DiscordWebhook { get; set; }
+
+    /// <summary>
     /// Limit on the number of containers a team can have simultaneously
     /// </summary>
     public int ContainerCountLimit { get; set; } = 3;
@@ -201,6 +207,7 @@ public partial class Game
         WriteupRequired = model.WriteupRequired;
         WriteupDeadline = model.WriteupDeadline;
         BloodBonus = BloodBonus.FromValue(model.BloodBonusValue);
+        DiscordWebhook = model.DiscordWebhook;
 
         return this;
     }

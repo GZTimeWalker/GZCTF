@@ -63,6 +63,13 @@ public class GameInfoModel
     public int ContainerCountLimit { get; set; } = 3;
 
     /// <summary>
+    /// Discord webhook URL
+    /// </summary>
+    [MaxLength(Limits.UrlLength)]
+    [JsonPropertyName("discordWebhook")]
+    public string? DiscordWebhook { get; set; }
+
+    /// <summary>
     /// Game poster URL
     /// </summary>
     [JsonPropertyName("poster")]
@@ -123,6 +130,7 @@ public class GameInfoModel
             AcceptWithoutReview = game.AcceptWithoutReview,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
+            DiscordWebhook = game.DiscordWebhook,
             StartTimeUtc = game.StartTimeUtc,
             EndTimeUtc = game.EndTimeUtc,
             WriteupDeadline = game.WriteupDeadline,

@@ -946,6 +946,10 @@ export interface GameInfoModel {
    */
   inviteCode?: string | null;
   /**
+   * Discord Webhook URL
+   */
+  discordWebhook?: string | null;
+  /**
    * Team member count limit, 0 means no limit
    * @format int32
    */
@@ -2270,7 +2274,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(method &&
           this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
+          method.toLowerCase() as keyof HeadersDefaults
           ]),
         ...params1.headers,
         ...(params2 && params2.headers),
