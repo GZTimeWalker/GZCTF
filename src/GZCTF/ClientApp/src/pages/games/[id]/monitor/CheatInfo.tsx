@@ -17,6 +17,7 @@ import {
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
+import { ScrollingText } from '@Components/ScrollingText'
 import { mdiCheck, mdiKeyAlert, mdiTarget } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
@@ -158,13 +159,9 @@ const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
           <Badge size="sm" color="indigo">
             {dayjs(submissionInfo.time).locale(locale).format('SL HH:mm:ss')}
           </Badge>
-          <Text lineClamp={1} fw="bold">
-            {submissionInfo.relatedTeam}
-          </Text>
+          <ScrollingText text={submissionInfo.relatedTeam ?? ''} fw="bold" maw={150} />
         </Group>
-        <Text size="sm" lineClamp={1} fw="bold">
-          {submissionInfo.user}
-        </Text>
+        <ScrollingText text={submissionInfo.user ?? ''} size="sm" fw="bold" maw={120} />
       </Group>
       <Stack gap={0} w="40%">
         <Text fw="bold" size="xs" lineClamp={1}>
@@ -311,9 +308,7 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
           </Badge>
         </Table.Td>
         <Table.Td>
-          <Text size="sm" fw="bold">
-            {item.ownedTeam?.team?.name ?? 'Team'}
-          </Text>
+          <ScrollingText text={item.ownedTeam?.team?.name ?? 'Team'} size="sm" fw="bold" maw={150} />
         </Table.Td>
         <Table.Td>
           <Badge size="sm" color="orange">
@@ -321,14 +316,10 @@ const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
           </Badge>
         </Table.Td>
         <Table.Td>
-          <Text size="sm" fw="bold">
-            {item.submitTeam?.team?.name ?? 'Team'}
-          </Text>
+          <ScrollingText text={item.submitTeam?.team?.name ?? 'Team'} size="sm" fw="bold" maw={150} />
         </Table.Td>
         <Table.Td>
-          <Text ff="monospace" size="sm" fw="bold">
-            {item.submission?.user ?? 'User'}
-          </Text>
+          <ScrollingText text={item.submission?.user ?? 'User'} ff="monospace" size="sm" fw="bold" maw={120} />
         </Table.Td>
         <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
         <Table.Td p="0" w="24vw">

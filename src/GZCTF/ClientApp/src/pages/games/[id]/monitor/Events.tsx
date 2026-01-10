@@ -12,6 +12,7 @@ import {
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
+import { ScrollingText } from '@Components/ScrollingText'
 import {
   mdiAccountGroupOutline,
   mdiAccountOutline,
@@ -119,9 +120,7 @@ const IconBadge: FC<IconBadgeProps> = ({ path, content }) => {
   return (
     <Group gap={3} wrap="nowrap">
       <Icon path={path} size={0.75} color="var(--mantine-color-dimmed)" />
-      <Text size="sm" fw={500} c="dimmed">
-        {content}
-      </Text>
+      <ScrollingText text={content ?? ''} size="sm" fw={500} c="dimmed" maw={180} />
     </Group>
   )
 }
@@ -265,12 +264,11 @@ const Events: FC = () => {
               <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
                 <Icon {...iconMap.get(event.type)!} />
                 <Stack gap={2} w="100%">
-                  <Input
-                    variant="unstyled"
-                    value={formatEvent(t, event)}
-                    readOnly
+                  <ScrollingText
+                    text={formatEvent(t, event)}
                     size="md"
-                    classNames={inputClasses}
+                    fw={500}
+                    maw={800}
                   />
                   <Group wrap="nowrap" justify="space-between">
                     <Group gap="sm" wrap="nowrap">

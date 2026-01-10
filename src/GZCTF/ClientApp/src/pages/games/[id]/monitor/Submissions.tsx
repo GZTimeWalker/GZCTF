@@ -13,6 +13,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
+import { ScrollingText } from '@Components/ScrollingText'
 import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
@@ -172,14 +173,10 @@ const Submissions: FC = () => {
         </Badge>
       </Table.Td>
       <Table.Td>
-        <Text size="sm" fw="bold">
-          {item.team ?? 'Team'}
-        </Text>
+        <ScrollingText text={item.team ?? 'Team'} size="sm" fw="bold" maw={150} />
       </Table.Td>
       <Table.Td>
-        <Text ff="monospace" size="sm" fw="bold">
-          {item.user ?? 'User'}
-        </Text>
+        <ScrollingText text={item.user ?? 'User'} ff="monospace" size="sm" fw="bold" maw={150} />
       </Table.Td>
       <Table.Td>{item.challenge ?? 'Challenge'}</Table.Td>
       <Table.Td w="36vw" maw="100%" p="0">
