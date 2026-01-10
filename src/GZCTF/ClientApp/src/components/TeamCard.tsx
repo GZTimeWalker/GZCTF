@@ -1,4 +1,5 @@
-import { Avatar, Card, Center, Group, Stack, Text, Title, Tooltip } from '@mantine/core'
+import { Avatar, Card, Center, Group, Stack, Text, Tooltip } from '@mantine/core'
+import { ScrollingText } from '@Components/ScrollingText'
 import { mdiLockOutline, mdiCrown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC } from 'react'
@@ -33,17 +34,11 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
           {team.name?.slice(0, 1) ?? 'T'}
         </Avatar>
         <Stack gap={4} className={misc.flexGrow}>
-          <Group justify="space-between" align="center">
-            <Tooltip label={team.name} withArrow>
-              <Title order={2} lineClamp={1}>
-                {team.name}
-              </Title>
-            </Tooltip>
+          <Group justify="space-between" align="center" wrap="nowrap">
+            <ScrollingText text={team.name ?? ''} size="xl" fw="bold" maw={480} />
             {isCaptain && <Icon path={mdiCrown} size={1} className={teamCardClasses.captainIcon} />}
           </Group>
-          <Text size="sm" c="dimmed" lineClamp={1}>
-            {team.bio || t('team.placeholder.bio')}
-          </Text>
+          <ScrollingText text={team.bio || t('team.placeholder.bio')} size="sm" c="dimmed" maw={520} />
           <Group justify="space-between" align="center">
             <Text size="sm" c="dimmed" tt="uppercase" fw="bold">
               {t('team.label.members')} ({team.members?.length || 0})

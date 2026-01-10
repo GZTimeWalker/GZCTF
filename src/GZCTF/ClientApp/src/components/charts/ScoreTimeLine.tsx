@@ -83,24 +83,24 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ divisionId }) => {
           dayjs(game.end).diff(dayjs(), 's') < 0
             ? undefined
             : {
-                symbol: 'none',
-                // https://echarts.apache.org/en/option.html#series-line.markLine.data
-                data: [
-                  {
-                    // xAxis?: string | number, but we need to use a Date object
-                    xAxis: last.toDate(),
-                    lineStyle: {
-                      color: colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6],
-                      wight: 2,
-                    },
-                    label: {
-                      textBorderWidth: 0,
-                      fontWeight: 500,
-                      formatter: (time: any) => dayjs(time.value).format('YYYY-MM-DD HH:mm'),
-                    },
+              symbol: 'none',
+              // https://echarts.apache.org/en/option.html#series-line.markLine.data
+              data: [
+                {
+                  // xAxis?: string | number, but we need to use a Date object
+                  xAxis: last.toDate(),
+                  lineStyle: {
+                    color: colorScheme === 'dark' ? theme.colors.gray[3] : theme.colors.gray[6],
+                    wight: 2,
                   },
-                ],
-              },
+                  label: {
+                    textBorderWidth: 0,
+                    fontWeight: 500,
+                    formatter: (time: any) => dayjs(time.value).format('YYYY-MM-DD HH:mm'),
+                  },
+                },
+              ],
+            },
       } as SeriesOption,
       ...(timeLine?.map(
         (team) =>
@@ -172,14 +172,42 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ divisionId }) => {
           color: labelColor,
         },
         backgroundColor: backgroundColor,
+        formatter: (params: any) => {
+          if (!Array.isArray(params)) return ''
+
+          // HTML escape helper to prevent XSS
+          const escapeHtml = (str: string) => {
+            const div = document.createElement('div')
+            div.textContent = str
+            return div.innerHTML
+          }
+
+          let res = `<div><p>${escapeHtml(dayjs(params[0].axisValue).format('YYYY-MM-DD HH:mm'))}</p>`
+          params.sort((a, b) => (b.value?.[1] ?? 0) - (a.value?.[1] ?? 0))
+          for (const item of params) {
+            const rawName = item.seriesName ?? ''
+            const name = rawName.length > 20 ? rawName.slice(0, 17) + '...' : rawName
+            const escapedName = escapeHtml(name)
+            const escapedValue = escapeHtml(String(item.value?.[1] ?? 0))
+            res += `<div style="display:flex;justify-content:space-between;gap:1rem">
+              <span>${item.marker} ${escapedName}</span>
+              <span style="font-weight:bold">${escapedValue}</span>
+            </div>`
+          }
+          res += '</div>'
+          return res
+        },
+        extraCssText: 'max-width: 300px; white-space: normal; word-break: break-all',
       },
       legend: {
+        type: 'scroll',
         orient: 'horizontal',
         top: 420,
         textStyle: {
           fontSize: 12,
           color: labelColor,
         },
+        formatter: (name: string) => (name.length > 20 ? name.slice(0, 17) + '...' : name),
       },
       grid: {
         top: 50,

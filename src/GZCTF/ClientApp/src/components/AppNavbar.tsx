@@ -32,6 +32,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { LogoBox } from '@Components/LogoBox'
+import { ScrollingText } from '@Components/ScrollingText'
 import { AppControlProps } from '@Components/WithNavbar'
 import { WsrxManager } from '@Components/WsrxManager'
 import { clearLocalCache } from '@Utils/Cache'
@@ -195,7 +196,9 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
             <Menu.Dropdown>
               {loggedIn && (
                 <>
-                  <Menu.Label>{user?.userName}</Menu.Label>
+                  <Menu.Label>
+                    <ScrollingText text={user?.userName ?? ''} size="xs" maw={220} />
+                  </Menu.Label>
                   <Menu.Item
                     component={Link}
                     to="/account/profile"

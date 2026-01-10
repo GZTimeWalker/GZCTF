@@ -14,6 +14,7 @@ import {
 } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
+import { ScrollingText } from '@Components/ScrollingText'
 import {
   mdiAccountGroupOutline,
   mdiArrowLeftBold,
@@ -219,14 +220,10 @@ const Teams: FC = () => {
                             <Avatar alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
-                            <Input
-                              variant="unstyled"
-                              value={team.name ?? 'team'}
-                              readOnly
-                              classNames={{
-                                wrapper: misc.teamNameWrapper,
-                                input: cx(misc.w100, misc.fwBold, misc.noUserSelect, misc.ellipsis),
-                              }}
+                            <ScrollingText
+                              text={team.name ?? 'team'}
+                              fw="bold"
+                              maw={180}
                             />
                           </Group>
                           <Badge size="md" color={team.locked ? 'yellow' : 'gray'}>
@@ -266,9 +263,7 @@ const Teams: FC = () => {
                         </Tooltip.Group>
                       </Table.Td>
                       <Table.Td>
-                        <Text lineClamp={1} truncate size="sm">
-                          {team.bio ?? t('team.placeholder.bio')}
-                        </Text>
+                        <ScrollingText text={team.bio ?? t('team.placeholder.bio')} size="sm" maw={140} />
                       </Table.Td>
                       <Table.Td align="right">
                         <Group wrap="nowrap" gap="sm" justify="right">

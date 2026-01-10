@@ -22,6 +22,7 @@ import { Dropzone } from '@mantine/dropzone'
 import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
+import { ScrollingText } from '@Components/ScrollingText'
 import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
@@ -64,9 +65,7 @@ const TeamMemberInfo: FC<TeamMemberInfoProps> = (props) => {
         <Avatar alt="avatar" src={user.avatar} radius="xl" size="md">
           {user.userName?.slice(0, 1) ?? 'U'}
         </Avatar>
-        <Text fw={500} size="sm">
-          {user.userName}
-        </Text>
+        <ScrollingText text={user.userName ?? ''} fw={500} size="sm" maw={220} />
       </Group>
       {isCaptain && showBtns && (
         <Group gap="xs" justify="right">
@@ -325,15 +324,29 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
         {/* Team Info */}
         <Grid grow>
           <Grid.Col span={8}>
-            <TextInput
-              label={t('team.label.name')}
-              type="text"
-              placeholder={team?.name ?? 'ctfteam'}
-              w="100%"
-              value={teamInfo?.name ?? 'team'}
-              disabled={!isCaptain}
-              onChange={(event) => setTeamInfo({ ...teamInfo, name: event.target.value })}
-            />
+            {!isCaptain ? (
+              <Stack gap={0} justify="center" h="100%">
+                <Text size="sm" fw={500}>
+                  {t('team.label.name')}
+                </Text>
+                <ScrollingText
+                  text={teamInfo?.name ?? 'team'}
+                  size="sm"
+                  maw={350}
+                  className={styles.readOnlyText}
+                />
+              </Stack>
+            ) : (
+              <TextInput
+                label={t('team.label.name')}
+                type="text"
+                placeholder={team?.name ?? 'ctfteam'}
+                w="100%"
+                value={teamInfo?.name ?? 'team'}
+                disabled={!isCaptain}
+                onChange={(event) => setTeamInfo({ ...teamInfo, name: event.target.value })}
+              />
+            )}
           </Grid.Col>
           <Grid.Col span={4}>
             <Center>
@@ -396,9 +409,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   <Avatar alt="avatar" src={captain.avatar} radius="xl" size="md">
                     {captain.userName?.slice(0, 1) ?? 'C'}
                   </Avatar>
-                  <Text fw={500} size="sm">
-                    {captain.userName}
-                  </Text>
+                  <ScrollingText text={captain.userName ?? ''} fw={500} size="sm" maw={220} />
                 </Group>
                 <Badge color="orange" leftSection={<Icon path={mdiStar} size={0.6} />}>
                   {t('team.content.role.captain')}
@@ -459,11 +470,11 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
                   <Text size="sm">
                     {isCaptain
                       ? t('team.content.disband.confirm.message', {
-                          team: teamInfo?.name,
-                        })
+                        team: teamInfo?.name,
+                      })
                       : t('team.content.leave.confirm.message', {
-                          team: teamInfo?.name,
-                        })}
+                        team: teamInfo?.name,
+                      })}
                   </Text>
                 ),
                 onConfirm: isCaptain ? onConfirmDisbandTeam : onConfirmLeaveTeam,

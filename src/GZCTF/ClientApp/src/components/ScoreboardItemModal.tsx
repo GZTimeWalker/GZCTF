@@ -10,7 +10,6 @@ import {
   Stack,
   Table,
   Text,
-  Title,
 } from '@mantine/core'
 import dayjs from 'dayjs'
 import { FC, useMemo } from 'react'
@@ -112,23 +111,24 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
           </Avatar>
           <Stack gap={0} className={modalClasses.infoWrap}>
             <Group gap={4} wrap="nowrap" className={modalClasses.nameRow}>
-              <Title order={4} lineClamp={1} className={modalClasses.teamName} title={item?.name ?? 'Team'}>
-                {item?.name ?? 'Team'}
-              </Title>
+              <ScrollingText
+                text={item?.name ?? 'Team'}
+                size="lg"
+                fw="bold"
+                className={modalClasses.teamName}
+                miw="5rem"
+              />
               {item?.divisionId && (
                 <Badge size="sm" variant="outline" className={modalClasses.divisionBadge}>
                   {divisionMap.get(item.divisionId) ?? 'Unknown'}
                 </Badge>
               )}
             </Group>
-            <Text
+            <ScrollingText
+              text={item?.bio || t('team.placeholder.bio')}
               size="sm"
-              lineClamp={1}
               className={modalClasses.bioText}
-              title={item?.bio || t('team.placeholder.bio')}
-            >
-              {item?.bio || t('team.placeholder.bio')}
-            </Text>
+            />
           </Stack>
         </Group>
       }
@@ -203,9 +203,7 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                       return (
                         <Table.Tr key={chal.id}>
                           <Table.Td fw="bold">
-                            <Text fz="sm" truncate>
-                              {chal.userName}
-                            </Text>
+                            <ScrollingText text={chal.userName ?? ''} size="sm" maw="8rem" />
                           </Table.Td>
                           <Table.Td>
                             <ScrollingText text={info.title} miw="14rem" maw="20rem" />

@@ -16,6 +16,7 @@ import {
 import { useClipboard, useInputState } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
+import { ScrollingText } from '@Components/ScrollingText'
 import {
   mdiAccountOutline,
   mdiArrowLeftBold,
@@ -140,9 +141,10 @@ const Users: FC = () => {
             <Text>
               <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
-            <Text fw="bold" ff="monospace">
-              {res.data}
+            <Text>
+              <Trans i18nKey="admin.content.users.reset.content" />
             </Text>
+            <ScrollingText text={res.data} fw="bold" maw="25rem" />
             <Button
               onClick={() => {
                 clipboard.copy(res.data)
@@ -262,9 +264,7 @@ const Users: FC = () => {
                           <Avatar alt="avatar" src={user.avatar} radius="xl">
                             {user.userName?.slice(0, 1) ?? 'U'}
                           </Avatar>
-                          <Text ff="monospace" size="sm" fw="bold" lineClamp={1}>
-                            {user.userName}
-                          </Text>
+                          <ScrollingText text={user.userName ?? ''} ff="monospace" size="sm" fw="bold" maw="8rem" />
                         </Group>
                         <Badge size="sm" color={RoleColorMap.get(user.role ?? Role.User)}>
                           {user.role}
@@ -272,9 +272,7 @@ const Users: FC = () => {
                       </Group>
                     </Table.Td>
                     <Table.Td>
-                      <Text size="sm" lineClamp={1}>
-                        {user.email}
-                      </Text>
+                      <ScrollingText text={user.email ?? ''} size="sm" maw="12rem" />
                     </Table.Td>
                     <Table.Td>
                       <Text lineClamp={1} size="sm" ff="monospace">
@@ -282,14 +280,19 @@ const Users: FC = () => {
                       </Text>
                     </Table.Td>
                     <Table.Td>
-                      <Text size="sm" lineClamp={1}>
-                        {user.realName ?? t('admin.placeholder.users.real_name')}
-                      </Text>
+                      <ScrollingText
+                        text={user.realName ?? t('admin.placeholder.users.real_name')}
+                        size="sm"
+                        maw="6rem"
+                      />
                     </Table.Td>
                     <Table.Td>
-                      <Text size="sm" ff="monospace" lineClamp={1}>
-                        {user.stdNumber ?? t('admin.placeholder.users.student_id')}
-                      </Text>
+                      <ScrollingText
+                        text={user.stdNumber ?? t('admin.placeholder.users.student_id')}
+                        size="sm"
+                        ff="monospace"
+                        maw="8rem"
+                      />
                     </Table.Td>
                     <Table.Td align="right">
                       <Group wrap="nowrap" gap="sm" justify="right">

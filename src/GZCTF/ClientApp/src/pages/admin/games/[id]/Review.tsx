@@ -33,6 +33,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
+import { ScrollingText } from '@Components/ScrollingText'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
@@ -148,15 +149,26 @@ const ParticipationItem: FC<ParticipationItemProps> = (props) => {
               <Avatar alt="avatar" src={participation.team?.avatar}>
                 {!participation.team?.name ? 'T' : participation.team.name.slice(0, 1)}
               </Avatar>
-              <Box>
-                <Text fw={500}>
-                  {!participation.team?.name
-                    ? t('admin.placeholder.games.participation.team')
-                    : participation.team.name}
-                </Text>
-                <Text lineClamp={1} size="sm" c="dimmed">
-                  {!participation.team?.bio ? t('admin.placeholder.games.participation.bio') : participation.team.bio}
-                </Text>
+              <Box miw={0} style={{ flex: 1, minWidth: 0 }}>
+                <ScrollingText
+                  text={
+                    !participation.team?.name
+                      ? t('admin.placeholder.games.participation.team')
+                      : participation.team.name
+                  }
+                  fw={500}
+                  maw={320}
+                />
+                <ScrollingText
+                  text={
+                    !participation.team?.bio
+                      ? t('admin.placeholder.games.participation.bio')
+                      : participation.team.bio
+                  }
+                  size="sm"
+                  c="dimmed"
+                  maw={320}
+                />
               </Box>
             </Group>
             <Group wrap="nowrap" justify="space-between" w="35%" miw="370px">
