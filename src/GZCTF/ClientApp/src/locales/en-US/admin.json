@@ -265,6 +265,11 @@
         },
         "content": "Game Details",
         "delete": "Are you sure you want to delete game {{name}}?",
+        "discord_webhook": {
+          "description": "Send notifications to this webhook",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "Add divisions to enable grouped scoreboard, leave empty to disable",
           "label": "List of Participating Divisions"

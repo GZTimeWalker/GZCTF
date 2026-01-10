@@ -225,7 +225,7 @@ const Teams: FC = () => {
                               readOnly
                               classNames={{
                                 wrapper: misc.teamNameWrapper,
-                                input: cx(misc.w100, misc.fwBold, misc.noUserSelect),
+                                input: cx(misc.w100, misc.fwBold, misc.noUserSelect, misc.ellipsis),
                               }}
                             />
                           </Group>

@@ -117,6 +117,11 @@
           "placeholder": "Không có hạn chót"
         },
         "delete": "Bạn có chắc chắn muốn xóa thử thách {{name}} không?",
+        "discord_webhook": {
+          "description": "Gửi thông báo đến webhook này",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "description": "Mô tả",
         "difficulty": "Độ khó",
         "disable": "Bạn có chắc chắn muốn vô hiệu hóa thử thách {{name}} không?",

@@ -264,7 +264,12 @@
           "label": "Límite de Contenedores del Equipo"
         },
         "content": "Detalles del Juego",
-        "delete": "¿Estás seguro de que deseas eliminar el juego {{name}}?",
+        "delete": "¿Estás seguro de que quieres eliminar el juego {{name}}?",
+        "discord_webhook": {
+          "description": "Enviar notificaciones a este webhook",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "Agrega divisiones para habilitar el marcador agrupado, deja en blanco para deshabilitar",
           "label": "Lista de Divisiones Participantes"

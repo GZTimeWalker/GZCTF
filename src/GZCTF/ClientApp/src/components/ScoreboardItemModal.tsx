@@ -202,7 +202,11 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                       const info = challengeIdMap.get(chal.id!)!
                       return (
                         <Table.Tr key={chal.id}>
-                          <Table.Td fw="bold">{chal.userName}</Table.Td>
+                          <Table.Td fw="bold">
+                            <Text fz="sm" truncate>
+                              {chal.userName}
+                            </Text>
+                          </Table.Td>
                           <Table.Td>
                             <ScrollingText text={info.title} miw="14rem" maw="20rem" />
                           </Table.Td>

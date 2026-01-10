@@ -265,6 +265,11 @@
         },
         "content": "Spieldetails",
         "delete": "Sind Sie sicher, dass Sie das Spiel {{name}} löschen möchten?",
+        "discord_webhook": {
+          "description": "Benachrichtigungen an diesen Webhook senden",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "Divisionen hinzufügen, um die Ergebnisliste zu gruppieren; leer lassen, um sie zu deaktivieren",
           "label": "Liste der teilnehmenden Abteilungen"

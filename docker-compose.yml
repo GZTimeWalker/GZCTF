@@ -1,0 +1,38 @@
+name: "testing-gzctf"
+services:
+  gzctf:
+    build:
+      context: ./src
+      dockerfile: GZCTF/Dockerfile.local
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Database=Host=postgres;Database=gzctf;Username=gzctf;Password=gzctf
+      - ConnectionStrings__Redis=redis:6379,password=gzctf
+      - XorKey=gzctf-xor-key
+      - ContainerProvider__DockerConfig__ChallengeNetwork=z-test-challenges
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=gzctf
+      - POSTGRES_USER=gzctf
+      - POSTGRES_PASSWORD=gzctf
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass gzctf
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

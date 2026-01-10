@@ -63,7 +63,14 @@ public class AccountController(
         if (string.IsNullOrWhiteSpace(password))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_PasswordRequired)]));
 
-        var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
+
+        var user = new UserInfo 
+        { 
+            UserName = model.UserName, 
+            Email = model.Email, 
+            // Auto-assign Admin role in development for testing
+            Role = environment.IsDevelopment() ? Role.Admin : Role.User 
+        };
 
         user.UpdateByHttpContext(HttpContext);
 

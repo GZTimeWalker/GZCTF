@@ -2,9 +2,9 @@
 using GZCTF.Hubs.Clients;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Webhook;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace GZCTF.Repositories;
 
@@ -12,6 +12,7 @@ public class GameNoticeRepository(
     CacheHelper cacheHelper,
     ILogger<GameNoticeRepository> logger,
     IHubContext<UserHub, IUserClient> hub,
+    ISendWebhookService webhookService,
     AppDbContext context) : RepositoryBase(context), IGameNoticeRepository
 {
     public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
@@ -22,6 +23,13 @@ public class GameNoticeRepository(
         await cacheHelper.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
 
         await hub.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
+
+        // Send webhook notification
+        var game = await Context.Games.FindAsync([notice.GameId], token);
+        if (game?.DiscordWebhook is { Length: > 0 } webhookUrl)
+        {
+            _ = webhookService.SendNoticeAsync(notice, webhookUrl);
+        }
 
         return notice;
     }

@@ -107,6 +107,12 @@
   white-space: pre-wrap;
 }
 
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 /* components specific */
 
 .accountForm {

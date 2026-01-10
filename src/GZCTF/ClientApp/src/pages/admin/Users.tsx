@@ -111,9 +111,9 @@ const Users: FC = () => {
           users.map((u) =>
             u.id === user.id
               ? {
-                  ...u,
-                  emailConfirmed: !u.emailConfirmed,
-                }
+                ...u,
+                emailConfirmed: !u.emailConfirmed,
+              }
               : u
           )
         )
@@ -281,9 +281,13 @@ const Users: FC = () => {
                         {user.ip}
                       </Text>
                     </Table.Td>
-                    <Table.Td>{user.realName ?? t('admin.placeholder.users.real_name')}</Table.Td>
                     <Table.Td>
-                      <Text size="sm" ff="monospace">
+                      <Text size="sm" lineClamp={1}>
+                        {user.realName ?? t('admin.placeholder.users.real_name')}
+                      </Text>
+                    </Table.Td>
+                    <Table.Td>
+                      <Text size="sm" ff="monospace" lineClamp={1}>
                         {user.stdNumber ?? t('admin.placeholder.users.student_id')}
                       </Text>
                     </Table.Td>

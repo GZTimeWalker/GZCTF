@@ -1,0 +1,51 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+ARG TARGETPLATFORM
+WORKDIR /src
+
+# Install Node.js 22 and pnpm
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g pnpm
+
+# Copy solution and configuration files
+COPY global.json Directory.Packages.props GZCTF.slnx ./
+
+# Copy project files (retaining directory structure)
+COPY GZCTF/GZCTF.csproj ./GZCTF/
+COPY GZCTF.AppHost/GZCTF.AppHost.csproj ./GZCTF.AppHost/
+COPY GZCTF.Test/GZCTF.Test.csproj ./GZCTF.Test/
+COPY GZCTF.Integration.Test/GZCTF.Integration.Test.csproj ./GZCTF.Integration.Test/
+
+# Restore .NET dependencies
+RUN dotnet restore
+
+# Copy frontend configuration
+COPY GZCTF/ClientApp/package.json GZCTF/ClientApp/pnpm-lock.yaml ./GZCTF/ClientApp/
+
+# Install frontend dependencies (cached layer)
+WORKDIR /src/GZCTF/ClientApp
+RUN pnpm install
+
+# Copy the rest of the source code
+WORKDIR /src
+COPY . .
+
+# Publish (will use cached frontend node_modules)
+WORKDIR /src/GZCTF
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
+WORKDIR /app
+EXPOSE 8080
+
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    LC_ALL=en_US.UTF-8
+
+RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs \
+    ca-certificates libgdiplus tzdata krb5-libs && \
+    update-ca-certificates
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "GZCTF.dll"]

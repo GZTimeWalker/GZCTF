@@ -67,14 +67,39 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
         }
     }
 
+    public async Task SendNoticeAsync(GameNotice notice, string webhookUrl)
+    {
+        try
+        {
+            using var client = httpClientFactory.CreateClient();
+            var message = CreateNoticeMessage(notice);
+            if (message == null) return;
+
+            var json = JsonSerializer.Serialize(message, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            });
+
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(webhookUrl, content);
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogError("Failed to send webhook notice: {StatusCode}, {Reason}", response.StatusCode, response.ReasonPhrase);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error sending webhook notice");
+        }
+    }
+
     private Models.DiscordWebhookMessage? CreateMessage(GameEvent gameEvent)
     {
         // Only handle specific events to avoid noise
         if (gameEvent.Type != EventType.FlagSubmit && 
-            gameEvent.Type != EventType.CheatDetected &&
-            gameEvent.Type != EventType.FirstBlood &&
-            gameEvent.Type != EventType.SecondBlood &&
-            gameEvent.Type != EventType.ThirdBlood)
+            gameEvent.Type != EventType.CheatDetected)
         {
             return null; 
         }
@@ -87,52 +112,83 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
         switch (gameEvent.Type)
         {
             case EventType.FlagSubmit:
-                // Assuming Values: [Result, Answer, ChallengeName, ChallengeId]
-                // We typically only want to notify on Accepted for solves, but GameEvent logs all submissions?
-                // Wait, typically Scoreboard events are separate or filtered.
-                // If it's just a log, we might want to filter for success.
-                // Let's check Values[0] which is AnswerResult.
-                if (gameEvent.Values.Count > 0 && gameEvent.Values[0] == AnswerResult.Accepted.ToString())
-                {
-                    embed.Title = "Challenge Solved! 🚩";
-                    embed.Color = 0x00FF00; // Green
-                    embed.Description = $"**{gameEvent.Team?.Name ?? "Unknown Team"}** solved **{gameEvent.Values.ElementAtOrDefault(2) ?? "Unknown Challenge"}**";
-                    if (gameEvent.User != null)
-                    {
-                        embed.Fields = new List<Models.DiscordEmbedField>
-                        {
-                            new() { Name = "User", Value = gameEvent.User.UserName ?? "Unknown", Inline = true }
-                        };
-                    }
-                }
-                else
-                {
-                    return null; // Don't notify on wrong answers
-                }
-                break;
+                // User requested to ONLY notify for First/Second/Third Blood.
+                // Bloods are handled via GameNotice (CreateNoticeMessage), so we disable
+                // the generic "Challenge Solved!" notification here entirely.
+                return null;
             case EventType.CheatDetected:
                 embed.Title = "Cheat Detected! 🚨";
                 embed.Color = 0xFF0000; // Red
                 embed.Description = $"Cheat detected for team **{gameEvent.Team?.Name}**.\nDetails: {string.Join(", ", gameEvent.Values)}";
                 break;
-            // FirstBlood, SecondBlood, ThirdBlood are usually handled as submissions with special type? 
-            // Or maybe separate EventType if I look at the Enum.
-            // Let's check EventType enum.
-            // GameEvent.cs: public class GameEvent : FormattableData<EventType>
-            // Checking EventType enum in Api.ts or elsewhere.
             default:
-                // Check if it is a Blood event
-                 if (gameEvent.Type.ToString().Contains("Blood"))
-                 {
-                     embed.Title = $"{gameEvent.Type} 🩸";
-                     embed.Color = 0xFFD700; // Gold
-                     embed.Description = $"**{gameEvent.Team?.Name}** achieved {gameEvent.Type} on **{gameEvent.Values.ElementAtOrDefault(2)}**!";
-                 }
-                 else 
-                 {
-                     return null;
-                 }
-                 break;
+                 return null;
+        }
+
+        return new Models.DiscordWebhookMessage
+        {
+            Embeds = new List<Models.DiscordEmbed> { embed }
+        };
+    }
+
+    private Models.DiscordWebhookMessage? CreateNoticeMessage(GameNotice notice)
+    {
+        var embed = new Models.DiscordEmbed
+        {
+            Timestamp = notice.PublishTimeUtc.ToString("o")
+        };
+
+        // Custom formatting for Blood notices
+        if (notice.Type is NoticeType.FirstBlood or NoticeType.SecondBlood or NoticeType.ThirdBlood)
+        {
+            switch (notice.Type)
+            {
+                case NoticeType.FirstBlood:
+                    embed.Title = "First Blood! 🥇";
+                    embed.Color = 0xFFD700; // Gold
+                    break;
+                case NoticeType.SecondBlood:
+                    embed.Title = "Second Blood! 🥈";
+                    embed.Color = 0xC0C0C0; // Silver
+                    break;
+                case NoticeType.ThirdBlood:
+                    embed.Title = "Third Blood! 🥉";
+                    embed.Color = 0xCD7F32; // Bronze
+                    break;
+            }
+            
+            // Values: [TeamName, ChallengeName]
+            var teamName = notice.Values?.ElementAtOrDefault(0) ?? "Unknown Team";
+            var challengeName = notice.Values?.ElementAtOrDefault(1) ?? "Unknown Challenge";
+            
+            string prefix = notice.Type switch
+            {
+                NoticeType.FirstBlood => "First Blood! ",
+                NoticeType.SecondBlood => "Second Blood! ",
+                NoticeType.ThirdBlood => "Third Blood! ",
+                _ => ""
+            };
+
+            embed.Description = $"{prefix}**{teamName}** solved **{challengeName}**";
+        }
+        else
+        {
+             // Standard notices
+             embed.Title = $"{notice.Type} 🎯";
+             embed.Color = notice.Type switch
+             {
+                 NoticeType.NewHint => 0x3498DB,      // Blue
+                 NoticeType.NewChallenge => 0x2ECC71, // Green
+                 _ => 0x95A5A6                        // Gray for others
+             };
+             
+             embed.Description = notice.Type switch
+             {
+                 NoticeType.NewChallenge => $"New challenge released: **{notice.Values?.FirstOrDefault()}**",
+                 NoticeType.NewHint => $"New hint released for challenge **{notice.Values?.FirstOrDefault()}**",
+                 NoticeType.Normal => notice.Values?.FirstOrDefault() ?? "New announcement",
+                 _ => notice.Values?.Count > 0 ? string.Join(", ", notice.Values) : notice.Type.ToString()
+             };
         }
 
         return new Models.DiscordWebhookMessage

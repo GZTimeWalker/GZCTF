@@ -265,6 +265,11 @@
         },
         "content": "比賽詳情",
         "delete": "你確定要刪除比賽 {{name}} 嗎？",
+        "discord_webhook": {
+          "description": "用於接收通知的 Discord Webhook 地址",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "添加參賽組織以開啟分組榜單，留空則不分組",
           "label": "參賽可選組織列表"

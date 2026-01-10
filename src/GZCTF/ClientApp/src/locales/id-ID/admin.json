@@ -265,6 +265,11 @@
         },
         "content": "Detil game",
         "delete": "Apakah kamu yakin ingin menghapus game {{name}}?",
+        "discord_webhook": {
+          "description": "Kirim notifikasi ke webhook ini",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "Tambah divisi untuk pengelompokan scoreboard, kosongkan untuk menonaktifkan",
           "label": "Daftar Divisi yang Berpartisipasi"

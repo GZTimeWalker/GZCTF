@@ -265,6 +265,11 @@
         },
         "content": "詳細",
         "delete": "ゲーム {{name}} を削除してもよろしいですか？",
+        "discord_webhook": {
+          "description": "このWebhookに通知を送信します",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "参加区分が追加されると、グループランキングが有効化されます。",
           "label": "参加区分"

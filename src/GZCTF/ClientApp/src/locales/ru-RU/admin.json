@@ -265,6 +265,11 @@
         },
         "content": "Детали игры",
         "delete": "Вы уверены, что хотите удалить игру {{name}}?",
+        "discord_webhook": {
+          "description": "Отправлять уведомления на этот вебхук",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "Дивизионы для разделения рейтинга, оставьте пустым для отключения",
           "label": "Список участвующих дивизионов"

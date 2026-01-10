@@ -265,6 +265,11 @@
         },
         "content": "게임 정보",
         "delete": "정말로 {{name}} 게임을 삭제하시겠습니까?",
+        "discord_webhook": {
+          "description": "이 웹훅으로 알림 전송",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "스코어보드를 그룹으로 나누려면 부문을 추가하고, 아니면 빈 칸으로 두세요.",
           "label": "부문 별 참가 목록"

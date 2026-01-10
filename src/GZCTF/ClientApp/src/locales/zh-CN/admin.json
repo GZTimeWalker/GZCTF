@@ -265,6 +265,11 @@
         },
         "content": "比赛详情",
         "delete": "你确定要删除比赛 {{name}} 吗？",
+        "discord_webhook": {
+          "description": "用于接收通知的 Discord Webhook 地址",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "添加参赛分组以开启分组榜单,留空则不分组",
           "label": "参赛可选分组列表"
