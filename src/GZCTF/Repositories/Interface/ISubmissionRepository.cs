@@ -9,10 +9,11 @@ public interface ISubmissionRepository : IRepository
     /// <param name="type">Type of submission</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
+    /// <param name="search">Search query to filter submissions</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<Submission[]> GetSubmissions(Game game, AnswerResult? type = null, int count = 100, int skip = 0,
-        CancellationToken token = default);
+        string? search = null, CancellationToken token = default);
 
     /// <summary>
     /// Get submissions for a specific challenge, ordered by time descending

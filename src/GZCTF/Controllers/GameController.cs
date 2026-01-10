@@ -409,6 +409,7 @@ public class GameController(
     /// <param name="count"></param>
     /// <param name="hideContainer">Hide container events</param>
     /// <param name="skip"></param>
+    /// <param name="search">Search query</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game events</response>
     /// <response code="400">Game not found</response>
@@ -417,7 +418,8 @@ public class GameController(
     [ProducesResponseType(typeof(GameEvent[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Events([FromRoute] int id, [FromQuery] bool hideContainer = false,
-        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, [FromQuery] string? search = null,
+        CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -428,7 +430,7 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        return Ok(await eventRepository.GetEvents(game.Id, hideContainer, count, skip, token));
+        return Ok(await eventRepository.GetEvents(game.Id, hideContainer, count, skip, search, token));
     }
 
     /// <summary>
@@ -441,6 +443,7 @@ public class GameController(
     /// <param name="type">Submission type</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
+    /// <param name="search">Search query</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game submissions</response>
     /// <response code="400">Game not found</response>
@@ -449,7 +452,8 @@ public class GameController(
     [ProducesResponseType(typeof(Submission[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Submissions([FromRoute] int id, [FromQuery] AnswerResult? type = null,
-        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, CancellationToken token = default)
+        [FromQuery][Range(0, 100)] int count = 100, [FromQuery] int skip = 0, [FromQuery] string? search = null,
+        CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
@@ -460,7 +464,7 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, token));
+        return Ok(await submissionRepository.GetSubmissions(game, type, count, skip, search, token));
     }
 
     /// <summary>

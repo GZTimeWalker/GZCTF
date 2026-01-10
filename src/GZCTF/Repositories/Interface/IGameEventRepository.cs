@@ -17,8 +17,9 @@ public interface IGameEventRepository : IRepository
     /// <param name="hideContainer">Set to true to hide container events</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
+    /// <param name="search">Search query to filter events</param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
-        CancellationToken token = default);
+        string? search = null, CancellationToken token = default);
 }

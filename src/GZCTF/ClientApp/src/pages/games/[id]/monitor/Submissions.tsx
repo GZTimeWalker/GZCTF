@@ -8,10 +8,12 @@ import {
   SegmentedControl,
   Table,
   Text,
+  TextInput,
   Tooltip,
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
 import {
@@ -24,6 +26,7 @@ import {
   mdiDownload,
   mdiExclamationThick,
   mdiFlag,
+  mdiMagnify,
   mdiReplay,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -70,6 +73,8 @@ const Submissions: FC = () => {
   const numId = parseInt(id ?? '-1')
 
   const [activePage, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [debouncedSearch] = useDebouncedValue(search, 500)
 
   const [, update] = useState(new Date())
   const newSubmissions = useRef<Submission[]>([])
@@ -98,6 +103,7 @@ const Submissions: FC = () => {
           type: type === 'All' ? undefined : type,
           count: ITEM_COUNT_PER_PAGE,
           skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
+          search: debouncedSearch || undefined,
         })
         setSubmissions(res.data)
       } catch (err) {
@@ -115,7 +121,7 @@ const Submissions: FC = () => {
     if (activePage === 1) {
       newSubmissions.current = []
     }
-  }, [activePage, type, numId, t])
+  }, [activePage, type, debouncedSearch, numId, t])
 
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
@@ -195,7 +201,7 @@ const Submissions: FC = () => {
 
   return (
     <WithGameMonitor isLoading={!submissions}>
-      <Group justify="space-between" w="100%">
+      <Group justify="space-between" w="100%" mb="sm">
         <SegmentedControl
           color={theme.primaryColor}
           value={type}
@@ -216,6 +222,16 @@ const Submissions: FC = () => {
               }))
               .filter((role) => role.value !== AnswerResult.FlagSubmitted),
           ]}
+        />
+        <TextInput
+          placeholder="Search..."
+          leftSection={<Icon path={mdiMagnify} size={0.8} />}
+          value={search}
+          onChange={(e) => {
+            setSearch(e.currentTarget.value)
+            setPage(1)
+          }}
+          style={{ width: 250 }}
         />
         <Group justify="right">
           <Tooltip label={t('game.button.download.submissionsheet')} position="left">

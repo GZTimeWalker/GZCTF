@@ -180,7 +180,7 @@ export type RegisterModel = ModelWithCaptcha & {
   /**
    * Username
    * @minLength 3
-   * @maxLength 15
+   * @maxLength 255
    */
   userName: string;
   /**
@@ -263,7 +263,7 @@ export interface ProfileUpdateModel {
   /**
    * Username
    * @minLength 3
-   * @maxLength 15
+   * @maxLength 255
    */
   userName?: string | null;
   /**
@@ -486,7 +486,7 @@ export interface UserCreateModel {
   /**
    * Username
    * @minLength 3
-   * @maxLength 15
+   * @maxLength 255
    */
   userName: string;
   /**
@@ -517,7 +517,7 @@ export interface UserCreateModel {
   phone?: string | null;
   /**
    * Team the user joins
-   * @maxLength 20
+   * @maxLength 255
    */
   teamName?: string | null;
 }
@@ -578,12 +578,12 @@ export interface TeamUserInfoModel {
 export interface AdminTeamModel {
   /**
    * Team name
-   * @maxLength 20
+   * @maxLength 255
    */
   name?: string | null;
   /**
    * Team bio
-   * @maxLength 72
+   * @maxLength 255
    */
   bio?: string | null;
   /** Is locked */
@@ -595,7 +595,7 @@ export interface AdminUserInfoModel {
   /**
    * Username
    * @minLength 3
-   * @maxLength 15
+   * @maxLength 255
    */
   userName?: string | null;
   /**
@@ -946,10 +946,6 @@ export interface GameInfoModel {
    */
   inviteCode?: string | null;
   /**
-   * Discord Webhook URL
-   */
-  discordWebhook?: string | null;
-  /**
    * Team member count limit, 0 means no limit
    * @format int32
    */
@@ -959,6 +955,11 @@ export interface GameInfoModel {
    * @format int32
    */
   containerCountLimit?: number;
+  /**
+   * Discord webhook URL
+   * @maxLength 255
+   */
+  discordWebhook?: string | null;
   /** Game poster URL */
   poster?: string | null;
   /** Game public key */
@@ -2153,12 +2154,12 @@ export interface HashPowChallenge {
 export interface TeamUpdateModel {
   /**
    * Team name
-   * @maxLength 20
+   * @maxLength 255
    */
   name?: string | null;
   /**
    * Team bio
-   * @maxLength 72
+   * @maxLength 255
    */
   bio?: string | null;
 }
@@ -2274,7 +2275,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(method &&
           this.instance.defaults.headers[
-          method.toLowerCase() as keyof HeadersDefaults
+            method.toLowerCase() as keyof HeadersDefaults
           ]),
         ...params1.headers,
         ...(params2 && params2.headers),
@@ -4659,6 +4660,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       params: RequestParams = {},
     ) =>
@@ -4697,6 +4700,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -4734,6 +4739,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       data?: GameEvent[] | Promise<GameEvent[]>,
       options?: MutatorOptions,
@@ -5677,6 +5684,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       params: RequestParams = {},
     ) =>
@@ -5712,6 +5721,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -5746,6 +5757,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       data?: Submission[] | Promise<Submission[]>,
       options?: MutatorOptions,

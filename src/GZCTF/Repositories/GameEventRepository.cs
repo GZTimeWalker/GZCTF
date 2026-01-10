@@ -35,12 +35,20 @@ public class GameEventRepository(
     }
 
     public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
-        CancellationToken token = default)
+        string? search = null, CancellationToken token = default)
     {
         var data = Context.GameEvents.Where(e => e.GameId == gameId);
 
         if (hideContainer)
             data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            data = data.Where(e =>
+                (e.Team != null && EF.Functions.Like(e.Team.Name, $"%{search}%")) ||
+                (e.User != null && EF.Functions.Like(e.User.UserName, $"%{search}%")) ||
+                (e.Values != null && e.Values.Any(v => v != null && EF.Functions.Like(v, $"%{search}%"))));
+        }
 
         return data.OrderByDescending(e => e.PublishTimeUtc).Skip(skip).Take(count).ToArrayAsync(token);
     }

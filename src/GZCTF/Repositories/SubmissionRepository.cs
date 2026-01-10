@@ -34,8 +34,21 @@ public class SubmissionRepository(
             .AsNoTracking().Include(e => e.Game).ToArrayAsync(token);
 
     public Task<Submission[]> GetSubmissions(Game game, AnswerResult? type = null, int count = 100, int skip = 0,
-        CancellationToken token = default) =>
-        GetSubmissionsByType(type).Where(s => s.Game == game).TakeAllIfZero(count, skip).ToArrayAsync(token);
+        string? search = null, CancellationToken token = default)
+    {
+        var query = GetSubmissionsByType(type).Where(s => s.Game == game);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(s =>
+                (s.Team != null && EF.Functions.Like(s.Team.Name, $"%{search}%")) ||
+                (s.User != null && EF.Functions.Like(s.User.UserName, $"%{search}%")) ||
+                (s.GameChallenge != null && EF.Functions.Like(s.GameChallenge.Title, $"%{search}%")) ||
+                EF.Functions.Like(s.Answer, $"%{search}%"));
+        }
+
+        return query.TakeAllIfZero(count, skip).ToArrayAsync(token);
+    }
 
     public Task<Submission[]> GetSubmissions(GameChallenge challenge, AnswerResult? type = null, int count = 100,
         int skip = 0, CancellationToken token = default) =>
