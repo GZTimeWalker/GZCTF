@@ -7,10 +7,12 @@ import {
   SegmentedControl,
   Table,
   Text,
+  TextInput,
   useMantineTheme,
 } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
-import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiArrowLeftBold, mdiArrowRightBold, mdiCheck, mdiClose, mdiMagnify } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import cx from 'clsx'
@@ -36,6 +38,8 @@ enum LogLevel {
 const Logs: FC = () => {
   const [level, setLevel] = useState(LogLevel.Info)
   const [activePage, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [debouncedSearch] = useDebouncedValue(search, 500)
   const theme = useMantineTheme()
 
   const [, update] = useState(new Date())
@@ -57,6 +61,7 @@ const Logs: FC = () => {
           level,
           count: ITEM_COUNT_PER_PAGE,
           skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
+          search: debouncedSearch || undefined,
         })
         setLogs(res.data)
       } catch (err) {
@@ -74,11 +79,11 @@ const Logs: FC = () => {
     if (activePage === 1) {
       newLogs.current = []
     }
-  }, [activePage, level])
+  }, [activePage, level, debouncedSearch])
 
   useEffect(() => {
     setPage(1)
-  }, [level])
+  }, [level, debouncedSearch])
 
   useEffect(() => {
     const connection = new signalR.HubConnectionBuilder()
@@ -172,6 +177,16 @@ const Logs: FC = () => {
               value: role[1],
               label: role[0],
             }))}
+          />
+          <TextInput
+            placeholder="Search..."
+            leftSection={<Icon path={mdiMagnify} size={0.8} />}
+            value={search}
+            onChange={(e) => {
+              setSearch(e.currentTarget.value)
+              setPage(1)
+            }}
+            style={{ width: 250 }}
           />
           <Group justify="right">
             <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(activePage - 1)}>

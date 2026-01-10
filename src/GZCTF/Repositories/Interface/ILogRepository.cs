@@ -10,7 +10,8 @@ public interface ILogRepository : IRepository
     /// <param name="skip"></param>
     /// <param name="count"></param>
     /// <param name="level"></param>
+    /// <param name="search">Search query to filter logs</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, CancellationToken token);
+    public Task<LogMessageModel[]> GetLogs(int skip, int count, string? level, string? search = null, CancellationToken token = default);
 }

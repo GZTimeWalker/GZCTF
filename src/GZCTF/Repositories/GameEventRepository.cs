@@ -37,19 +37,54 @@ public class GameEventRepository(
     public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
         string? search = null, CancellationToken token = default)
     {
-        var data = Context.GameEvents.Where(e => e.GameId == gameId);
+        IQueryable<GameEvent> data;
 
-        if (hideContainer)
-            data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);
-
+        // Use raw SQL for search to handle array searching
         if (!string.IsNullOrWhiteSpace(search))
         {
-            data = data.Where(e =>
-                (e.Team != null && EF.Functions.Like(e.Team.Name, $"%{search}%")) ||
-                (e.User != null && EF.Functions.Like(e.User.UserName, $"%{search}%")) ||
-                (e.Values != null && e.Values.Any(v => v != null && EF.Functions.Like(v, $"%{search}%"))));
+            if (hideContainer)
+            {
+                data = Context.GameEvents.FromSqlInterpolated($@"
+                    SELECT ge.* FROM ""GameEvents"" ge
+                    LEFT JOIN ""Participations"" p ON ge.""TeamId"" = p.""Id""
+                    LEFT JOIN ""Teams"" t ON p.""TeamId"" = t.""Id""
+                    LEFT JOIN ""AspNetUsers"" u ON ge.""UserId"" = u.""Id""
+                    WHERE ge.""GameId"" = {gameId}
+                    AND ge.""Type"" != {(int)EventType.ContainerStart}
+                    AND ge.""Type"" != {(int)EventType.ContainerDestroy}
+                    AND (
+                        t.""Name"" ILIKE {"%" + search + "%"}
+                        OR u.""UserName"" ILIKE {"%" + search + "%"}
+                        OR ge.""Values"" ILIKE {"%" + search + "%"}
+                    )
+                    ORDER BY ge.""PublishTimeUtc"" DESC");
+            }
+            else
+            {
+                data = Context.GameEvents.FromSqlInterpolated($@"
+                    SELECT ge.* FROM ""GameEvents"" ge
+                    LEFT JOIN ""Participations"" p ON ge.""TeamId"" = p.""Id""
+                    LEFT JOIN ""Teams"" t ON p.""TeamId"" = t.""Id""
+                    LEFT JOIN ""AspNetUsers"" u ON ge.""UserId"" = u.""Id""
+                    WHERE ge.""GameId"" = {gameId}
+                    AND (
+                        t.""Name"" ILIKE {"%" + search + "%"}
+                        OR u.""UserName"" ILIKE {"%" + search + "%"}
+                        OR ge.""Values"" ILIKE {"%" + search + "%"}
+                    )
+                    ORDER BY ge.""PublishTimeUtc"" DESC");
+            }
+        }
+        else
+        {
+            data = Context.GameEvents.Where(e => e.GameId == gameId);
+
+            if (hideContainer)
+                data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);
+
+            data = data.OrderByDescending(e => e.PublishTimeUtc);
         }
 
-        return data.OrderByDescending(e => e.PublishTimeUtc).Skip(skip).Take(count).ToArrayAsync(token);
+        return data.Skip(skip).Take(count).ToArrayAsync(token);
     }
 }

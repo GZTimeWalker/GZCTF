@@ -539,6 +539,11 @@ public class AdminController(
     /// <remarks>
     /// Use this API to get all logs, requires Admin permission
     /// </remarks>
+    /// <param name="level"></param>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="search">Search query</param>
+    /// <param name="token"></param>
     /// <response code="200">Log list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
@@ -546,8 +551,8 @@ public class AdminController(
     [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromQuery] string? level = "All",
         [FromQuery][Range(0, 1000)] int count = 50,
-        [FromQuery] int skip = 0, CancellationToken token = default) =>
-        Ok(await logRepository.GetLogs(skip, count, level, token));
+        [FromQuery] int skip = 0, [FromQuery] string? search = null, CancellationToken token = default) =>
+        Ok(await logRepository.GetLogs(skip, count, level, search, token));
 
     /// <summary>
     /// Update participation status

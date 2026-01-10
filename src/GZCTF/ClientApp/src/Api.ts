@@ -2909,6 +2909,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       params: RequestParams = {},
     ) =>
@@ -2943,6 +2945,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -2976,6 +2980,8 @@ export class Api<
          * @default 0
          */
         skip?: number;
+        /** Search query */
+        search?: string | null;
       },
       data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions,

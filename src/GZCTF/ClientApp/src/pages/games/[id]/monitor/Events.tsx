@@ -11,6 +11,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useLocalStorage } from '@mantine/hooks'
+import { useDebouncedValue } from '@mantine/hooks'
 import { showNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
 import {
@@ -23,6 +24,7 @@ import {
   mdiExclamationThick,
   mdiFlag,
   mdiLightningBolt,
+  mdiMagnify,
   mdiReplay,
   mdiToggleSwitchOffOutline,
   mdiToggleSwitchOutline,
@@ -138,6 +140,8 @@ const Events: FC = () => {
   const { locale } = useLanguage()
 
   const [activePage, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [debouncedSearch] = useDebouncedValue(search, 500)
 
   const [, update] = useState(new Date())
   const newEvents = useRef<GameEvent[]>([])
@@ -161,6 +165,7 @@ const Events: FC = () => {
           hideContainer: hideContainerEvents,
           count: ITEM_COUNT_PER_PAGE,
           skip: (activePage - 1) * ITEM_COUNT_PER_PAGE,
+          search: debouncedSearch || undefined,
         })
         setEvents(res.data)
       } catch (err) {
@@ -178,7 +183,7 @@ const Events: FC = () => {
     if (activePage === 1) {
       newEvents.current = []
     }
-  }, [activePage, hideContainerEvents, numId, t])
+  }, [activePage, hideContainerEvents, debouncedSearch, numId, t])
 
   useEffect(() => {
     if (game?.end && new Date() < new Date(game.end)) {
@@ -234,6 +239,16 @@ const Events: FC = () => {
           )}
           checked={hideContainerEvents}
           onChange={(e) => setHideContainerEvents(e.currentTarget.checked)}
+        />
+        <Input
+          placeholder="Search..."
+          leftSection={<Icon path={mdiMagnify} size={0.8} />}
+          value={search}
+          onChange={(e) => {
+            setSearch(e.currentTarget.value)
+            setPage(1)
+          }}
+          style={{ width: 250 }}
         />
         <Group justify="right">
           <ActionIcon size="lg" disabled={activePage <= 1} onClick={() => setPage(1)}>
