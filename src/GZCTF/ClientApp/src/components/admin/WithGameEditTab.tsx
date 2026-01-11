@@ -7,6 +7,7 @@ import {
   mdiKeyboardBackspace,
   mdiTagOutline,
   mdiTextBoxOutline,
+  mdiCommentTextOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
@@ -43,6 +44,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
     { icon: mdiFlagOutline, title: t('admin.tab.games.challenges'), path: 'challenges' },
     { icon: mdiTagOutline, title: t('admin.tab.games.divisions'), path: 'divisions' },
     { icon: mdiAccountGroupOutline, title: t('admin.tab.games.review'), path: 'review' },
+    { icon: mdiCommentTextOutline, title: t('admin.title.challenge_reviews', "Reviews"), path: 'challengereviews' },
     { icon: mdiFileDocumentCheckOutline, title: t('admin.tab.games.writeups'), path: 'writeups' },
   ]
 

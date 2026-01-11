@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using NSwag.Annotations;
+using GZCTF.Models.Response.Admin;
 
 namespace GZCTF.Controllers;
 
@@ -1096,5 +1097,59 @@ public class EditController(
             return RequestResponse.Result(localizer[nameof(Resources.Program.Error_InternalServerError)],
                 StatusCodes.Status500InternalServerError);
         }
+    }
+
+    /// <summary>
+    /// Get Challenge Reviews
+    /// </summary>
+    /// <remarks>
+    /// Retrieving challenge reviews requires administrator privileges
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="repository"></param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved challenge reviews</response>
+    [HttpGet("Games/{id:int}/Reviews")]
+    [ProducesResponseType(typeof(ArrayResponse<ChallengeReviewDetailModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetReviews([FromRoute] int id, [FromQuery][Range(0, 100)] int count, [FromQuery] int skip,
+        [FromQuery] string? search, [FromQuery] ReviewRating? rating, [FromServices] IChallengeReviewRepository repository, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var reviews = await repository.GetReviewsAsync(id, skip, count, search, rating, token);
+        var total = await repository.GetReviewCountAsync(id, search, rating, token);
+
+        return Ok(reviews.Select(ChallengeReviewDetailModel.FromReview).ToResponse(total));
+    }
+
+    /// <summary>
+    /// Get Challenge Review Analytics
+    /// </summary>
+    /// <param name="id">Game ID</param>
+    /// <param name="repository"></param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved analytics</response>
+    [HttpGet("Games/{id:int}/Reviews/Analytics")]
+    [ProducesResponseType(typeof(ReviewAnalyticsModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetReviewAnalytics([FromRoute] int id,
+        [FromServices] IChallengeReviewRepository repository, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var analytics = await repository.GetAnalyticsAsync(id, token);
+
+        return Ok(analytics);
     }
 }

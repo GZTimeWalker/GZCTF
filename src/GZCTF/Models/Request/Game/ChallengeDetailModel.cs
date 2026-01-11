@@ -62,6 +62,16 @@ public class ChallengeDetailModel
     /// </summary>
     public DateTimeOffset? Deadline { get; set; }
 
+    /// <summary>
+    /// User's rating
+    /// </summary>
+    public ReviewRating UserRating { get; set; } = ReviewRating.None;
+
+    /// <summary>
+    /// User's comment
+    /// </summary>
+    public string? UserComment { get; set; }
+
     internal static ChallengeDetailModel FromInstance(GameInstance gameInstance, int attemptCount,
         ChallengeInfo? scoreboardChallenge = null) =>
         new()

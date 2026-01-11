@@ -165,6 +165,27 @@ export interface RequestResponseOfRegisterStatus {
 }
 
 /** Request response */
+// ... custom types
+export interface ArrayResponse<T> {
+  data: T[];
+  length: number;
+  total: number;
+}
+
+export interface ReviewAnalyticsModel {
+  total: number;
+  likes: number;
+  dislikes: number;
+  topLiked: TopChallengeModel[];
+  topDisliked: TopChallengeModel[];
+}
+
+export interface TopChallengeModel {
+  id: number;
+  title: string;
+  count: number;
+}
+
 export interface RequestResponse {
   /** Response message */
   title?: string;
@@ -2020,6 +2041,32 @@ export interface ChallengeDetailModel {
    * @format uint64
    */
   deadline?: number | null;
+  /** User's rating */
+  userRating?: ReviewRating;
+  /** User's comment */
+  userComment?: string | null;
+}
+
+export enum ReviewRating {
+  None = 0,
+  Dislike = 1,
+  Like = 2,
+}
+
+export interface ChallengeReviewModel {
+  rating: ReviewRating;
+  comment?: string | null;
+}
+
+export interface ChallengeReviewDetailModel {
+  id: number;
+  challengeId: number;
+  challengeName: string;
+  userId: string;
+  userName: string;
+  rating: ReviewRating;
+  comment?: string | null;
+  submitTimeUtc: string;
 }
 
 export interface ClientFlagContext {
@@ -2275,7 +2322,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(method &&
           this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
+          method.toLowerCase() as keyof HeadersDefaults
           ]),
         ...params1.headers,
         ...(params2 && params2.headers),
@@ -4241,6 +4288,43 @@ export class Api<
       ),
 
     /**
+     * @description Use this API to get challenge reviews, requires administrator permission
+     *
+     * @tags Edit
+     * @name EditGetReviews
+     * @summary Get challenge reviews
+     * @request GET:/api/edit/games/{id}/reviews
+     */
+    editGetReviews: (
+      id: number,
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeReviewDetailModel[], any>({
+        path: `/api/edit/games/${id}/reviews`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    useEditGetReviews: (
+      id: number,
+      query: { count?: number; skip?: number; search?: string; rating?: ReviewRating },
+      options?: SWRConfiguration,
+    ) =>
+      useSWR<ArrayResponse<ChallengeReviewDetailModel>, any>(
+        [`/api/edit/games/${id}/reviews`, query],
+        options,
+      ),
+
+    useEditGetReviewAnalytics: (id: number, options?: SWRConfiguration) =>
+      useSWR<ReviewAnalyticsModel, any>(
+        `/api/edit/games/${id}/reviews/analytics`,
+        options,
+      ),
+
+    /**
      * @description Import game from a ZIP package; requires Admin permission
      *
      * @tags Edit
@@ -4972,6 +5056,29 @@ export class Api<
         doFetch ? `/api/game/${id}/challenges/${challengeId}` : null,
         options,
       ),
+
+    /**
+     * @description Submits a review (rating/comment) for a solved challenge
+     *
+     * @tags Game
+     * @name GameReviewChallenge
+     * @summary Submit challenge review
+     * @request POST:/api/game/{id}/challenges/{challengeId}/review
+     */
+    gameReviewChallenge: (
+      id: number,
+      challengeId: number,
+      data: ChallengeReviewModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<RequestResponse, any>({
+        path: `/api/game/${id}/challenges/${challengeId}/review`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
 
     /**
      * @description Retrieves challenge information; requires User permission and active team participation

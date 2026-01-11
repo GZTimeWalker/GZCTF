@@ -906,6 +906,7 @@ public class GameController(
     /// </remarks>
     /// <param name="id">Game ID</param>
     /// <param name="challengeId">Challenge ID</param>
+    /// <param name="reviewRepository"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game challenge information</response>
     /// <response code="400">Invalid operation</response>
@@ -916,6 +917,7 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetChallenge([FromRoute] int id, [FromRoute] int challengeId,
+        [FromServices] IChallengeReviewRepository reviewRepository,
         CancellationToken token)
     {
         if (id <= 0 || challengeId <= 0)
@@ -945,7 +947,67 @@ public class GameController(
 
         var attempts = await submissionRepository.CountSubmissions(context.Participation!.Id, challengeId, token);
 
-        return Ok(ChallengeDetailModel.FromInstance(instance, attempts, scoreboardChallenge));
+        var model = ChallengeDetailModel.FromInstance(instance, attempts, scoreboardChallenge);
+
+        if (context.User != null)
+        {
+            var review = await reviewRepository.GetReviewAsync(context.User.Id, challengeId, token);
+            if (review != null)
+            {
+                model.UserRating = review.Rating;
+                model.UserComment = review.Comment;
+            }
+        }
+
+        return Ok(model);
+    }
+
+    /// <summary>
+    /// Submit challenge review
+    /// </summary>
+    /// <remarks>
+    /// Submits a review (rating/comment) for a solved challenge
+    /// </remarks>
+    [RequireUser]
+    [HttpPost("{id:int}/Challenges/{challengeId:int}/Review")]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ReviewChallenge(
+        [FromRoute] int id,
+        [FromRoute] int challengeId,
+        [FromBody] ChallengeReviewModel model,
+        [FromServices] IChallengeReviewRepository reviewRepository,
+        CancellationToken token)
+    {
+        var context = await GetContextInfo(id, token: token);
+        if (context.Result is not null)
+            return context.Result;
+
+        var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
+
+        if (instance is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_ChallengeNotFound)],
+                StatusCodes.Status404NotFound));
+
+        var submissions = await submissionRepository.GetSubmissions(context.Participation!, AnswerResult.Accepted, count: 0,
+            token: token);
+
+        if (submissions.All(s => s.ChallengeId != challengeId))
+            return BadRequest(new RequestResponse("You must solve the challenge first."));
+
+        var review = new ChallengeReview
+        {
+            GameId = id,
+            ChallengeId = challengeId,
+            UserId = context.User!.Id,
+            Rating = model.Rating,
+            Comment = model.Comment
+        };
+
+        await reviewRepository.AddOrUpdateReviewAsync(review, token);
+
+        return Ok(new RequestResponse("Review submitted."));
     }
 
     /// <summary>

@@ -41,6 +41,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+    public DbSet<ChallengeReview> ChallengeReviews { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(

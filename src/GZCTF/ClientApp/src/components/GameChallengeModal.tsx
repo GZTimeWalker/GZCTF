@@ -10,7 +10,7 @@ import { encryptApiData } from '@Utils/Crypto'
 import { showErrorMsg } from '@Utils/Shared'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
-import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
+import api, { AnswerResult, ChallengeType, SubmissionType, ReviewRating } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
   gameId: number
@@ -173,6 +173,19 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     }
   }
 
+  const onReviewSubmit = async (rating: ReviewRating, comment: string) => {
+    try {
+      await api.game.gameReviewChallenge(gameId, challengeId, { rating, comment })
+      showNotification({
+        color: 'teal',
+        message: t('challenge.review.submitted', 'Review submitted'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (e) {
+      showErrorMsg(e, t)
+    }
+  }
+
   useEffect(() => {
     if (!submitId) return
 
@@ -220,7 +233,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
         loading: false,
       })
       if (isDynamic && challenge.context?.instanceEntry) await requestDestroy()
-      props.onClose()
+      // props.onClose()  <-- Disable auto-close to allow user to review
     } else if (data === AnswerResult.WrongAnswer) {
       updateNotification({
         id: 'flag-submitted',
@@ -258,6 +271,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       onCreate={onCreate}
       onDestroy={onDestroy}
       onSubmitFlag={onSubmit}
+      onReviewSubmit={onReviewSubmit}
       disabled={disabled || isLimitReached}
       onExtend={onExtend}
       gameEnded={gameEnded}

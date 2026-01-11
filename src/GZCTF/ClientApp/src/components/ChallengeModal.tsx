@@ -11,8 +11,10 @@ import {
   useMantineTheme,
   ScrollAreaAutosize,
   Input,
+  ActionIcon,
+  Textarea,
 } from '@mantine/core'
-import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed } from '@mdi/js'
+import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -22,7 +24,7 @@ import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
-import { ChallengeDetailModel, ChallengeType } from '@Api'
+import { ChallengeDetailModel, ChallengeType, ReviewRating } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
 import misc from '@Styles/Misc.module.css'
 
@@ -91,6 +93,7 @@ export interface ChallengeModalProps extends ModalProps {
   onDestroy: () => void
   onSubmitFlag: () => void
   onDownload?: () => void
+  onReviewSubmit?: (rating: ReviewRating, comment: string) => Promise<void>
 }
 
 export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
@@ -109,6 +112,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     onDestroy,
     onDownload,
     onSubmitFlag,
+    onReviewSubmit,
     ...modalProps
   } = props
   const { t } = useTranslation()
@@ -122,6 +126,17 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const [placeholder, setPlaceholder] = useState('')
   useEffect(() => {
     setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
+  }, [challenge])
+
+  const [rating, setRating] = useState<ReviewRating>(ReviewRating.None)
+  const [comment, setComment] = useState('')
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+
+  useEffect(() => {
+    if (challenge) {
+      setRating((challenge as any).userRating ?? ReviewRating.None)
+      setComment((challenge as any).userComment ?? '')
+    }
   }, [challenge])
 
   const deadlineTime = useMemo(() => (challenge?.deadline ? dayjs(challenge.deadline) : null), [challenge?.deadline])
@@ -257,6 +272,52 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const canSubmitDespiteDeadline = !isDeadlinePassed || (gameEnded && practiceMode)
   const inputDisabled = disabled || solved || isLimitReached || !canSubmitDespiteDeadline
 
+  const reviewSection = solved && (
+    <Stack gap="xs">
+      <Divider label={t('challenge.review.label', 'Rate this challenge')} />
+      <Group justify="space-between" align="center">
+        <Group>
+          <ActionIcon
+            variant={rating === ReviewRating.Like ? 'filled' : 'light'}
+            color="teal"
+            size="lg"
+            onClick={() => setRating(ReviewRating.Like)}
+          >
+            <Icon path={mdiThumbUp} size="1.2rem" />
+          </ActionIcon>
+          <ActionIcon
+            variant={rating === ReviewRating.Dislike ? 'filled' : 'light'}
+            color="red"
+            size="lg"
+            onClick={() => setRating(ReviewRating.Dislike)}
+          >
+            <Icon path={mdiThumbDown} size="1.2rem" />
+          </ActionIcon>
+        </Group>
+        <Button
+          loading={isSubmittingReview}
+          size="compact-sm"
+          onClick={async () => {
+            if (onReviewSubmit) {
+              setIsSubmittingReview(true)
+              await onReviewSubmit(rating, comment)
+              setIsSubmittingReview(false)
+            }
+          }}
+        >
+          {t('common.button.submit', 'Submit')}
+        </Button>
+      </Group>
+      <Textarea
+        placeholder={t('challenge.review.placeholder', 'Leave a comment...')}
+        value={comment}
+        autosize
+        minRows={2}
+        onChange={(e) => setComment(e.currentTarget.value)}
+      />
+    </Stack>
+  )
+
   const footer = (
     <Stack gap="xs" className={classes.footer}>
       {(withAttachment || withInstance || withDeadline) && (
@@ -289,6 +350,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           </Button>
         </Group>
       </form>
+      {reviewSection}
     </Stack>
   )
 
