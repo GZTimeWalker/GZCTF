@@ -57,7 +57,7 @@ public class GameEventRepository(
                         OR u.""UserName"" ILIKE {"%" + search + "%"}
                         OR ge.""Values"" ILIKE {"%" + search + "%"}
                     )
-                    ORDER BY ge.""PublishTimeUtc"" DESC");
+                    )");
             }
             else
             {
@@ -72,7 +72,7 @@ public class GameEventRepository(
                         OR u.""UserName"" ILIKE {"%" + search + "%"}
                         OR ge.""Values"" ILIKE {"%" + search + "%"}
                     )
-                    ORDER BY ge.""PublishTimeUtc"" DESC");
+                    )");
             }
         }
         else
@@ -82,9 +82,9 @@ public class GameEventRepository(
             if (hideContainer)
                 data = data.Where(e => e.Type != EventType.ContainerStart && e.Type != EventType.ContainerDestroy);
 
-            data = data.OrderByDescending(e => e.PublishTimeUtc);
+            // data = data.OrderByDescending(e => e.PublishTimeUtc);
         }
 
-        return data.Skip(skip).Take(count).ToArrayAsync(token);
+        return data.OrderByDescending(e => e.PublishTimeUtc).Skip(skip).Take(count).ToArrayAsync(token);
     }
 }

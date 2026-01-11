@@ -19,7 +19,7 @@ public class LogRepository(AppDbContext context) : RepositoryBase(context), ILog
                 AND (""UserName"" ILIKE {"%"+ search + "%"} 
                      OR ""Message"" ILIKE {"%" + search + "%"}
                      OR CAST(""RemoteIP"" AS text) ILIKE {"%" + search + "%"})
-                ORDER BY ""TimeUtc"" DESC");
+                ");
         }
         else if (!string.IsNullOrWhiteSpace(search))
         {
@@ -28,17 +28,17 @@ public class LogRepository(AppDbContext context) : RepositoryBase(context), ILog
                 WHERE ""UserName"" ILIKE {"%" + search + "%"} 
                    OR ""Message"" ILIKE {"%" + search + "%"}
                    OR CAST(""RemoteIP"" AS text) ILIKE {"%" + search + "%"}
-                ORDER BY ""TimeUtc"" DESC");
+                ");
         }
         else if (level != "All")
         {
-            data = Context.Logs.Where(e => e.Level == level).OrderByDescending(e => e.TimeUtc);
+            data = Context.Logs.Where(e => e.Level == level);
         }
         else
         {
-            data = Context.Logs.OrderByDescending(e => e.TimeUtc);
+            data = Context.Logs;
         }
 
-        return (from log in data.Skip(skip).Take(count) select LogMessageModel.FromLogModel(log)).ToArrayAsync(token);
+        return (from log in data.OrderByDescending(e => e.TimeUtc).Skip(skip).Take(count) select LogMessageModel.FromLogModel(log)).ToArrayAsync(token);
     }
 }
