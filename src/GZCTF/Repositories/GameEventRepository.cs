@@ -55,7 +55,7 @@ public class GameEventRepository(
                     AND (
                         t.""Name"" ILIKE {"%" + search + "%"}
                         OR u.""UserName"" ILIKE {"%" + search + "%"}
-                        OR ge.""Values"" ILIKE {"%" + search + "%"}
+                        OR array_to_string(ge.""Values"", ' ') ILIKE {"%" + search + "%"}
                     )
                     )");
             }
@@ -71,7 +71,6 @@ public class GameEventRepository(
                         t.""Name"" ILIKE {"%" + search + "%"}
                         OR u.""UserName"" ILIKE {"%" + search + "%"}
                         OR ge.""Values"" ILIKE {"%" + search + "%"}
-                    )
                     )");
             }
         }
