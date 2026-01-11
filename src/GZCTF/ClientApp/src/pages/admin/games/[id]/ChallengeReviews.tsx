@@ -159,7 +159,7 @@ const ChallengeReviews: FC = () => {
 
     const analyticsSection = analytics && (
         <Grid mb="md">
-            <Grid.Col span={3}>
+            <Grid.Col span={4}>
                 <Card withBorder padding="xs" radius="md">
                     <Group>
                         <RingProgress
