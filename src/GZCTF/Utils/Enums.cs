@@ -212,7 +212,12 @@ public enum EventType : byte
     /// <summary>
     /// Cheating information
     /// </summary>
-    CheatDetected = 4
+    CheatDetected = 4,
+
+    /// <summary>
+    /// Attachment download
+    /// </summary>
+    Download = 5
 }
 
 /// <summary>

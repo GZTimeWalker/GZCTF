@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 
 namespace GZCTF.Controllers;
 
@@ -50,8 +53,10 @@ public class GameController(
     IGameInstanceRepository gameInstanceRepository,
     IParticipationRepository participationRepository,
     IOptionsSnapshot<ContainerPolicy> containerPolicy,
+    IDataProtectionProvider dataProtectionProvider,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
+    private readonly IDataProtector _protector = dataProtectionProvider.CreateProtector("GZCTF.Assets.Download");
     /// <summary>
     /// Get the recent games
     /// </summary>
@@ -956,6 +961,28 @@ public class GameController(
             {
                 model.UserRating = review.Rating;
                 model.UserComment = review.Comment;
+            }
+        }
+        
+        // Generate secure download link if attachment exists
+        if (model.Context.Url is { } url && url.StartsWith("/assets/") && context.User != null)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(url, "/assets/([0-9a-f]{64})");
+            if (match.Success)
+            {
+                var hash = match.Groups[1].Value;
+                var userId = context.User.Id;
+                var expiration = DateTimeOffset.UtcNow.AddHours(1);
+                var expiry = expiration.Ticks;
+                var payload = $"v1|{hash}|{userId}|{expiry}";
+                var cipher = _protector.Protect(Encoding.UTF8.GetBytes(payload));
+                var secureToken = WebEncoders.Base64UrlEncode(cipher);
+                
+                // Construct new path-based secure URL: /assets/{hash}/s/{token}/{filename}
+                // We need the filename, but match only gets hash. 
+                // However, the original URL is /assets/{hash}/{filename}
+                // so we can just replace /assets/{hash}/ with /assets/{hash}/s/{token}/
+                model.Context.Url = url.Replace($"/assets/{hash}/", $"/assets/{hash}/s/{secureToken}/");
             }
         }
 

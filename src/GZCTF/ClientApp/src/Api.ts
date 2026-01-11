@@ -37,6 +37,7 @@ export enum EventType {
   ContainerDestroy = "ContainerDestroy",
   FlagSubmit = "FlagSubmit",
   CheatDetected = "CheatDetected",
+  Download = "Download",
 }
 
 /** Submission type */
@@ -3622,6 +3623,22 @@ export class Api<
       this.request<void, RequestResponse | ProblemDetails>({
         path: `/api/assets/${hash}`,
         method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * @description Get a secure download token for a file
+     *
+     * @tags Assets
+     * @name AssetsGetDownloadToken
+     * @summary Get secure download token
+     * @request GET:/api/assets/{hash}/token
+     */
+    assetsGetDownloadToken: (hash: string, params: RequestParams = {}) =>
+      this.request<RequestResponse<string>, RequestResponse>({
+        path: `/assets/${hash}/token`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
 

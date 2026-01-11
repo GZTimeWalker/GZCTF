@@ -119,7 +119,7 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
             case EventType.CheatDetected:
                 embed.Title = "Cheat Detected! 🚨";
                 embed.Color = 0xFF0000; // Red
-                embed.Description = $"Cheat detected for team **{gameEvent.Team?.Name}**.\nDetails: {string.Join(", ", gameEvent.Values)}";
+                embed.Description = $"Cheat detected for team **{gameEvent.Team?.Name}**.\nDetails: {string.Join(", ", gameEvent.Values ?? [])}";
                 break;
             default:
                  return null;

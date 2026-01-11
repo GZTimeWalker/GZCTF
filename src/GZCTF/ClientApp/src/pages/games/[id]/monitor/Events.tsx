@@ -21,6 +21,7 @@ import {
   mdiArrowRightBold,
   mdiCheck,
   mdiClose,
+  mdiDownload,
   mdiExclamationThick,
   mdiFlag,
   mdiLightningBolt,
@@ -59,6 +60,7 @@ const EventTypeIconMap = (size: number) => {
       [EventType.ContainerStart, { path: mdiToggleSwitchOutline, size, color: theme.colors.green[colorIdx] }],
       [EventType.ContainerDestroy, { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] }],
       [EventType.CheatDetected, { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] }],
+      [EventType.Download, { path: mdiDownload, size, color: theme.colors.cyan[colorIdx] }],
       [EventType.Normal, { path: mdiLightningBolt, size, color: theme.colors.light[colorIdx] }],
     ])
   }, [size, colorScheme, theme.colors])
@@ -103,6 +105,8 @@ const formatEvent = (t: TFunction, event: GameEvent) => {
         id: event.values.at(0),
         chal: event.values.at(1),
       })
+    case EventType.Download:
+      return event.values.at(-1) || ''
     case EventType.ContainerDestroy:
       return t('game.event.container.destroy', {
         id: event.values.at(0),
