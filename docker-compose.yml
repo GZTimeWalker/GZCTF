@@ -14,6 +14,7 @@ services:
       - ContainerProvider__DockerConfig__ChallengeNetwork=z-test-challenges
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - "gzctf-files:/app/files"
     depends_on:
       - postgres
       - redis
@@ -36,3 +37,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  gzctf-files:
