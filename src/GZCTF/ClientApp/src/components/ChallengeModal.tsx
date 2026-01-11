@@ -13,6 +13,7 @@ import {
   Input,
   ActionIcon,
   Textarea,
+  SegmentedControl,
 } from '@mantine/core'
 import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -273,30 +274,69 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const inputDisabled = disabled || solved || isLimitReached || !canSubmitDespiteDeadline
 
   const reviewSection = solved && (
-    <Stack gap="xs">
-      <Divider label={t('challenge.review.label', 'Rate this challenge')} />
-      <Group justify="space-between" align="center">
-        <Group>
-          <ActionIcon
-            variant={rating === ReviewRating.Like ? 'filled' : 'light'}
-            color="teal"
-            size="lg"
-            onClick={() => setRating(ReviewRating.Like)}
-          >
-            <Icon path={mdiThumbUp} size="1.2rem" />
-          </ActionIcon>
-          <ActionIcon
-            variant={rating === ReviewRating.Dislike ? 'filled' : 'light'}
-            color="red"
-            size="lg"
-            onClick={() => setRating(ReviewRating.Dislike)}
-          >
-            <Icon path={mdiThumbDown} size="1.2rem" />
-          </ActionIcon>
+    <Stack gap="sm">
+      <Divider label={t('challenge.review.label', 'Rate this challenge')} labelPosition="center" />
+      <Group grow>
+        <Button
+          variant={rating === ReviewRating.Like ? 'filled' : 'default'}
+          color="teal"
+          radius="md"
+          size="md"
+          leftSection={<Icon path={mdiThumbUp} size="1.2rem" />}
+          onClick={() => setRating(ReviewRating.Like)}
+          styles={(theme) => ({
+            root: {
+              borderColor: rating === ReviewRating.Like ? undefined : theme.colors.teal[6],
+              color: rating === ReviewRating.Like ? undefined : theme.colors.teal[6],
+              borderWidth: rating === ReviewRating.Like ? undefined : '1px',
+            },
+          })}
+        >
+          {t('common.label.like', 'Recommended')}
+        </Button>
+        <Button
+          variant={rating === ReviewRating.Dislike ? 'filled' : 'default'}
+          color="red"
+          radius="md"
+          size="md"
+          leftSection={<Icon path={mdiThumbDown} size="1.2rem" />}
+          onClick={() => setRating(ReviewRating.Dislike)}
+          styles={(theme) => ({
+            root: {
+              borderColor: rating === ReviewRating.Dislike ? undefined : theme.colors.red[6],
+              color: rating === ReviewRating.Dislike ? undefined : theme.colors.red[6],
+              borderWidth: rating === ReviewRating.Dislike ? undefined : '1px',
+            },
+          })}
+        >
+          {t('common.label.dislike', 'Not Recommended')}
+        </Button>
+      </Group>
+
+      <Stack gap={4}>
+        <Textarea
+          placeholder={t('challenge.review.placeholder', 'Leave a comment...')}
+          value={comment}
+          autosize
+          minRows={3}
+          maxRows={6}
+          maxLength={1000}
+          onChange={(e) => setComment(e.currentTarget.value)}
+        />
+        <Group justify="space-between">
+          <Text size="xs" c="dimmed">
+            {/* Spacer or additional info if needed */}
+          </Text>
+          <Text size="xs" c={comment.length >= 1000 ? 'red' : 'dimmed'}>
+            {comment.length} / 1000
+          </Text>
         </Group>
+      </Stack>
+
+      <Group justify="flex-end">
         <Button
           loading={isSubmittingReview}
-          size="compact-sm"
+          disabled={rating === ReviewRating.None}
           onClick={async () => {
             if (onReviewSubmit) {
               setIsSubmittingReview(true)
@@ -308,13 +348,6 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           {t('common.button.submit', 'Submit')}
         </Button>
       </Group>
-      <Textarea
-        placeholder={t('challenge.review.placeholder', 'Leave a comment...')}
-        value={comment}
-        autosize
-        minRows={2}
-        onChange={(e) => setComment(e.currentTarget.value)}
-      />
     </Stack>
   )
 
