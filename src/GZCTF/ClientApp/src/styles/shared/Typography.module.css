@@ -112,6 +112,20 @@
     tab-size: 4;
     hyphens: none;
   }
+
+  & :global(.mermaid) {
+    overflow-x: auto;
+    padding: var(--mantine-spacing-sm);
+    background-color: light-dark(var(--mantine-color-light-1), var(--mantine-color-dark-6));
+    border-radius: var(--mantine-radius-sm);
+    margin-bottom: var(--mantine-spacing-xs);
+  }
+
+  & :global(.mermaid svg) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
 }
 
 .inline {

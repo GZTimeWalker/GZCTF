@@ -3,7 +3,7 @@ import { DatesProvider } from '@mantine/dates'
 import { emotionTransform, MantineEmotionProvider } from '@mantine/emotion'
 import { ModalsProvider } from '@mantine/modals'
 import { Notifications } from '@mantine/notifications'
-import { FC, Suspense } from 'react'
+import { FC, Suspense, useEffect } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { useRoutes } from 'react-router'
@@ -14,6 +14,7 @@ import { WsrxProvider } from '@Components/WsrxProvider'
 import { localCacheProvider } from '@Utils/Cache'
 import { useLanguage } from '@Utils/I18n'
 import { useCustomTheme } from '@Utils/ThemeOverride'
+import { requestIdle } from '@Utils/requestIdle'
 import { useBanner } from '@Hooks/useConfig'
 import { fetcher } from '@Api'
 import '@mantine/core/styles.css'
@@ -28,6 +29,17 @@ export const App: FC = () => {
   const { t } = useTranslation()
   const { locale } = useLanguage()
   const { theme } = useCustomTheme()
+
+  useEffect(() => {
+    const preload = () => {
+      console.debug('[Mermaid] idle preload start')
+      import('mermaid').catch(() => {
+        // ignore
+      })
+    }
+
+    return requestIdle(preload, { timeout: 2000, fallbackDelayMs: 1200 })
+  }, [])
 
   return (
     <MantineProvider defaultColorScheme="dark" theme={theme} stylesTransform={emotionTransform}>

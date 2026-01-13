@@ -103,7 +103,11 @@ export function ShikiExtension(): MarkedExtension {
     walkTokens: (token: Token) => {
       if (token.type !== 'code') return
 
-      const { lang = 'text', text } = token
+      const info = (token.lang ?? 'text').trim().toLowerCase()
+      const lang = info.split(/\s+/)[0] || 'text'
+      if (lang === 'mermaid') return
+
+      const { text } = token
       Object.assign(token, { type: 'html', block: true, text: highlight(text, lang) })
     },
   }
