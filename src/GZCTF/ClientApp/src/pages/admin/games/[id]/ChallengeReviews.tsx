@@ -132,13 +132,13 @@ const ChallengeReviews: FC = () => {
                                 <Group gap={4} wrap="nowrap" w="100%">
                                     <Icon path={mdiAccount} size={0.7} color="dimmed" />
                                     <Box w="calc(100% - 20px)">
-                                        <ScrollingText text={review.userName} size="sm" />
+                                        <ScrollingText text={review.userName || ''} size="sm" />
                                     </Box>
                                 </Group>
                                 <Group gap={4} wrap="nowrap" c="dimmed">
                                     <Icon path={mdiClockOutline} size={0.7} />
                                     <Text size="xs">
-                                        {new Date(review.submitTimeUtc).toLocaleString()}
+                                        {new Date(review.submitTimeUtc ?? 0).toLocaleString()}
                                     </Text>
                                 </Group>
                             </Stack>
@@ -167,8 +167,8 @@ const ChallengeReviews: FC = () => {
                             roundCaps
                             thickness={6}
                             sections={[
-                                { value: (analytics.likes / (analytics.total || 1)) * 100, color: 'teal' },
-                                { value: (analytics.dislikes / (analytics.total || 1)) * 100, color: 'red' },
+                                { value: ((analytics.likes ?? 0) / (analytics.total || 1)) * 100, color: 'teal' },
+                                { value: ((analytics.dislikes ?? 0) / (analytics.total || 1)) * 100, color: 'red' },
                             ]}
                             label={
                                 <Center>
@@ -183,11 +183,11 @@ const ChallengeReviews: FC = () => {
                             <Group gap="xs">
                                 <Group gap={2} c="teal">
                                     <Icon path={mdiThumbUp} size={0.6} />
-                                    <Text size="xs">{analytics.likes}</Text>
+                                    <Text size="xs">{analytics.likes ?? 0}</Text>
                                 </Group>
                                 <Group gap={2} c="red">
                                     <Icon path={mdiThumbDown} size={0.6} />
-                                    <Text size="xs">{analytics.dislikes}</Text>
+                                    <Text size="xs">{analytics.dislikes ?? 0}</Text>
                                 </Group>
                             </Group>
                         </Stack>
@@ -200,8 +200,8 @@ const ChallengeReviews: FC = () => {
                         <Text size="xs" fw={700} c="teal">
                             {t('admin.analytics.top_liked', 'Top Liked')}
                         </Text>
-                        {analytics.topLiked.length > 0 ? (
-                            analytics.topLiked.slice(0, 2).map((c) => (
+                        {(analytics.topLiked ?? []).length > 0 ? (
+                            (analytics.topLiked ?? []).slice(0, 2).map((c) => (
                                 <Group key={c.id} justify="space-between" wrap="nowrap">
                                     <Text size="xs" truncate maw={150}>
                                         {c.title}
@@ -225,8 +225,8 @@ const ChallengeReviews: FC = () => {
                         <Text size="xs" fw={700} c="red">
                             {t('admin.analytics.top_disliked', 'Top Disliked')}
                         </Text>
-                        {analytics.topDisliked.length > 0 ? (
-                            analytics.topDisliked.slice(0, 2).map((c) => (
+                        {(analytics.topDisliked ?? []).length > 0 ? (
+                            (analytics.topDisliked ?? []).slice(0, 2).map((c) => (
                                 <Group key={c.id} justify="space-between" wrap="nowrap">
                                     <Text size="xs" truncate maw={150}>
                                         {c.title}
