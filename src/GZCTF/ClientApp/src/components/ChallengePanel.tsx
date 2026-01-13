@@ -17,7 +17,7 @@ import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useParams } from 'react-router'
 import { ChallengeCard } from '@Components/ChallengeCard'
@@ -39,22 +39,78 @@ export const ChallengePanel: FC = () => {
 
   const { game } = useGame(numId)
 
-  const categories = Object.keys(challenges ?? {})
+  const categories = Object.keys(challenges ?? {}).sort()
   const [activeTab, setActiveTab] = useState<ChallengeCategory | 'All'>('All')
+
+  // Sync state if activeTab becomes invalid (e.g. after data load updates categories)
+  useEffect(() => {
+    if (activeTab !== 'All' && !categories.includes(activeTab)) {
+      setActiveTab('All')
+    }
+  }, [categories, activeTab])
+
   const [hideSolved, setHideSolved] = useLocalStorage({
     key: 'hide-solved',
     defaultValue: false,
     getInitialValueInEffect: false,
   })
 
-  const allChallenges = Object.values(challenges ?? {}).flat()
+  const allChallenges = useMemo(() => {
+    const all = Object.values(challenges ?? {}).flat()
+    // Stable sort by ID first
+    return all.sort((a, b) => a.id - b.id)
+  }, [challenges])
 
-  const currentChallenges =
-    challenges &&
-    (activeTab !== 'All' ? (challenges[activeTab] ?? []) : allChallenges).filter(
-      (chal) =>
-        !hideSolved || (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
-    )
+  const currentChallenges = useMemo(() => {
+    if (!challenges) return []
+
+    // Seeded RNG (Linear Congruential Generator)
+    const seed = teamInfo?.rank?.id ?? 0
+    const seededRandom = (s: number) => {
+      let t = (s + 0x6D2B79F5)
+      t = Math.imul(t ^ (t >>> 15), t | 1)
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
+
+    // Create a deterministic shuffle for this team
+    const shuffle = (array: ChallengeInfo[]) => {
+      const shuffled = [...array] // Copy to match original array length
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        // Generate a random index based on seed + current index + challenge ID to vary variance
+        // using a combination of teamID and index ensures order is fixed for this team
+        const r = seededRandom(seed + i * 997 + (shuffled[i].id * 13))
+        const j = Math.floor(r * (i + 1))
+        const temp = shuffled[i]
+        shuffled[i] = shuffled[j]
+        shuffled[j] = temp
+      }
+      return shuffled
+    }
+
+    const processList = (list: ChallengeInfo[]) => {
+      const filtered = list.filter(
+        (chal) =>
+          !hideSolved || (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
+      )
+      // Ensure base order is stable (by ID) before shuffling
+      filtered.sort((a, b) => a.id - b.id)
+      return shuffle(filtered)
+    }
+
+    if (activeTab !== 'All') {
+      return processList(challenges[activeTab] ?? [])
+    }
+
+    // Iterate over sorted categories and process each list separately
+    const result: ChallengeInfo[] = []
+    categories.forEach((cat) => {
+      if (challenges[cat]) {
+        result.push(...processList(challenges[cat]))
+      }
+    })
+    return result
+  }, [challenges, activeTab, allChallenges, hideSolved, teamInfo, categories])
 
   const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
   const [detailOpened, setDetailOpened] = useState(false)
