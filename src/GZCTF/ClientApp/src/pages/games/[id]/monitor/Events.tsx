@@ -106,6 +106,9 @@ const formatEvent = (t: TFunction, event: GameEvent) => {
         chal: event.values.at(1),
       })
     case EventType.Download:
+      if (event.values.length >= 4) {
+        return `${event.values[2]} (IP: ${event.values[3]})`
+      }
       return event.values.at(-1) || ''
     case EventType.ContainerDestroy:
       return t('game.event.container.destroy', {
