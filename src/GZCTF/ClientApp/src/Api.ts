@@ -886,6 +886,8 @@ export interface IpAnalysisResult {
   details?: string;
   relatedTeams?: string[];
   ip?: string;
+  /** @format uint64 */
+  time?: number;
 }
 
 export interface AbnormalSolveResult {
@@ -896,6 +898,7 @@ export interface AbnormalSolveResult {
   challengeId?: number;
   challengeName?: string;
   type?: string;
+  details?: string;
   /** @format uint64 */
   solveTime?: number;
 }
@@ -907,6 +910,7 @@ export interface SequenceSuspectResult {
   similarity?: number;
   /** @format int32 */
   commonSolves?: number;
+  details?: string;
 }
 
 /** Post item (Edit) */
@@ -2381,7 +2385,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(method &&
           this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
+          method.toLowerCase() as keyof HeadersDefaults
           ]),
         ...params1.headers,
         ...(params2 && params2.headers),

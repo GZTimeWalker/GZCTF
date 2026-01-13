@@ -1,0 +1,224 @@
+import {
+    Badge,
+    Group,
+    Paper,
+    ScrollArea,
+    Table,
+    Text,
+    Title,
+    Alert,
+    SimpleGrid,
+    Card,
+    ThemeIcon,
+} from '@mantine/core'
+import { FC } from 'react'
+import { Icon } from '@mdi/react'
+import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant } from '@mdi/js'
+import { useTranslation } from 'react-i18next'
+import dayjs from 'dayjs'
+import { useLanguage } from '@Utils/I18n'
+import { ScrollingText } from '@Components/ScrollingText'
+import tableClasses from '@Styles/Table.module.css'
+import type { CheatReport } from '@Api'
+
+interface CheatInfoProps {
+    report: CheatReport | null
+}
+
+export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
+    const { t } = useTranslation()
+    const { locale } = useLanguage()
+
+    return (
+        <>
+            {/* Summary Cards */}
+            <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
+                <Card shadow="sm" padding="md" radius="md" withBorder>
+                    <Group justify="space-between" mb="xs">
+                        <Text fw={500}>IP Anomalies</Text>
+                        <ThemeIcon color="red" variant="light">
+                            <Icon path={mdiIpNetwork} size={0.8} />
+                        </ThemeIcon>
+                    </Group>
+                    <Title order={3}>{report?.ipAnalysis?.length ?? 0}</Title>
+                    <Text size="sm" c="dimmed">
+                        Suspicious IP activities
+                    </Text>
+                </Card>
+
+                <Card shadow="sm" padding="md" radius="md" withBorder>
+                    <Group justify="space-between" mb="xs">
+                        <Text fw={500}>Abnormal Solves</Text>
+                        <ThemeIcon color="orange" variant="light">
+                            <Icon path={mdiGhost} size={0.8} />
+                        </ThemeIcon>
+                    </Group>
+                    <Title order={3}>{report?.abnormalSolves?.length ?? 0}</Title>
+                    <Text size="sm" c="dimmed">
+                        Solves without prerequisites
+                    </Text>
+                </Card>
+
+                <Card shadow="sm" padding="md" radius="md" withBorder>
+                    <Group justify="space-between" mb="xs">
+                        <Text fw={500}>Sequence Suspects</Text>
+                        <ThemeIcon color="yellow" variant="light">
+                            <Icon path={mdiShuffleVariant} size={0.8} />
+                        </ThemeIcon>
+                    </Group>
+                    <Title order={3}>{report?.sequenceSuspects?.length ?? 0}</Title>
+                    <Text size="sm" c="dimmed">
+                        High similarity detected
+                    </Text>
+                </Card>
+            </SimpleGrid>
+
+            {/* IP Analysis */}
+            <Paper shadow="md" p="md">
+                <Title order={4} mb="md">IP Analysis</Title>
+                {report?.ipAnalysis && report.ipAnalysis.length > 0 ? (
+                    <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
+                        <Table className={tableClasses.table}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th w="10rem">{t('common.label.team', 'Team')}</Table.Th>
+                                    <Table.Th w="12rem">Type</Table.Th>
+                                    <Table.Th w="10rem">IP</Table.Th>
+                                    <Table.Th w="10rem">Time</Table.Th>
+                                    <Table.Th>Details</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {report.ipAnalysis.map((item: any, index: number) => (
+                                    <Table.Tr key={index}>
+                                        <Table.Td>
+                                            <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw="bold" maw={150} />
+                                        </Table.Td>
+                                        <Table.Td w="12rem">
+                                            <Badge
+                                                color={
+                                                    item.type === 'SharedIP' ? 'orange' :
+                                                        item.type === 'CrossTeamIP' ? 'red' :
+                                                            'grape'
+                                                }
+                                                size="xs"
+                                                fullWidth
+                                            >
+                                                {item.type === 'SharedIP' ? 'Shared IP' :
+                                                    item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
+                                                        'Unknown IP'}
+                                            </Badge>
+                                        </Table.Td>
+                                        <Table.Td ff="monospace">{item.ip}</Table.Td>
+                                        <Table.Td ff="monospace" fz="xs">
+                                            {item.time ? dayjs(item.time).locale(locale).format('MM-DD HH:mm:ss') : '-'}
+                                        </Table.Td>
+                                        <Table.Td>{item.details}</Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </ScrollArea>
+                ) : (
+                    <Alert color="green" icon={<Icon path={mdiCheckCircle} size={1} />}>
+                        {t('game.content.no_cheat.title', 'No IP anomalies detected')}
+                    </Alert>
+                )}
+            </Paper>
+
+            {/* Abnormal Solves */}
+            <Paper shadow="md" p="md">
+                <Title order={4} mb="md">Abnormal Solves</Title>
+                {report?.abnormalSolves && report.abnormalSolves.length > 0 ? (
+                    <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
+                        <Table className={tableClasses.table}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th w="10rem">{t('common.label.team', 'Team')}</Table.Th>
+                                    <Table.Th w="12rem">{t('common.label.challenge', 'Challenge')}</Table.Th>
+                                    <Table.Th w="10rem">Type</Table.Th>
+                                    <Table.Th>Details</Table.Th>
+                                    <Table.Th w="12rem">{t('common.label.time', 'Time')}</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {report.abnormalSolves.map((item: any, index: number) => (
+                                    <Table.Tr key={index}>
+                                        <Table.Td>
+                                            <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw="bold" maw={150} />
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <ScrollingText text={item.challengeName || 'Unknown'} size="sm" maw={180} />
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Badge color={item.type === 'Hoarding' ? 'cyan' : 'orange'} size="sm">
+                                                {item.type === 'NoDownload' ? 'No Download' : item.type === 'NoContainer' ? 'No Container' : item.type}
+                                            </Badge>
+                                        </Table.Td>
+                                        <Table.Td fz="sm">
+                                            {item.details}
+                                        </Table.Td>
+                                        <Table.Td ff="monospace">
+                                            <Badge size="sm" color="indigo">
+                                                {dayjs(item.solveTime).locale(locale).format('MM-DD HH:mm:ss')}
+                                            </Badge>
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </ScrollArea>
+                ) : (
+                    <Alert color="green" icon={<Icon path={mdiCheckCircle} size={1} />}>
+                        {t('game.content.no_cheat.comment', 'No abnormal solves detected')}
+                    </Alert>
+                )}
+            </Paper>
+
+            {/* Sequence Similarity */}
+            <Paper shadow="md" p="md">
+                <Title order={4} mb="md">Sequence Similarity</Title>
+                {report?.sequenceSuspects && report.sequenceSuspects.length > 0 ? (
+                    <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
+                        <Table className={tableClasses.table}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th w="12rem">Team A</Table.Th>
+                                    <Table.Th w="12rem">Team B</Table.Th>
+                                    <Table.Th w="8rem">Similarity</Table.Th>
+                                    <Table.Th w="8rem">Common Solves</Table.Th>
+                                    <Table.Th>Evidence</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {report.sequenceSuspects.map((item: any, index: number) => (
+                                    <Table.Tr key={index}>
+                                        <Table.Td>
+                                            <ScrollingText text={item.teamA || 'Unknown'} size="sm" fw="bold" maw={150} />
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <ScrollingText text={item.teamB || 'Unknown'} size="sm" fw="bold" maw={150} />
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Badge color={(item.similarity ?? 0) > 0.9 ? 'red' : 'yellow'} size="sm">
+                                                {((item.similarity ?? 0) * 100).toFixed(1)}%
+                                            </Badge>
+                                        </Table.Td>
+                                        <Table.Td>{item.commonSolves ?? 0}</Table.Td>
+                                        <Table.Td>
+                                            <ScrollingText text={item.details || '-'} size="xs" maw={250} />
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </ScrollArea>
+                ) : (
+                    <Alert color="green" icon={<Icon path={mdiCheckCircle} size={1} />}>
+                        No suspicious sequence similarities detected
+                    </Alert>
+                )}
+            </Paper>
+        </>
+    )
+}

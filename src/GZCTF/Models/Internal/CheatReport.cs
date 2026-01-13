@@ -36,6 +36,9 @@ public class IpAnalysisResult
 
     [JsonPropertyName("ip")]
     public string Ip { get; set; } = string.Empty;
+
+    [JsonPropertyName("time")]
+    public DateTimeOffset? Time { get; set; }
 }
 
 public class AbnormalSolveResult
@@ -55,6 +58,9 @@ public class AbnormalSolveResult
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty; // "NoDownload", "NoContainer"
 
+    [JsonPropertyName("details")]
+    public string Details { get; set; } = string.Empty;
+
     [JsonPropertyName("solveTime")]
     public DateTimeOffset SolveTime { get; set; }
 }
@@ -72,4 +78,7 @@ public class SequenceSuspectResult
 
     [JsonPropertyName("commonSolves")]
     public int CommonSolves { get; set; }
+
+    [JsonPropertyName("details")]
+    public string Details { get; set; } = string.Empty;
 }

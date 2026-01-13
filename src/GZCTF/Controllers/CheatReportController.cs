@@ -11,7 +11,7 @@ using GZCTF.Middlewares;
 namespace GZCTF.Controllers;
 
 [ApiController]
-[Route("api/game/{id}/[controller]")]
+[Route("api/game/{id}/cheatreport")]
 public class CheatReportController(
     AppDbContext dbContext,
     ILogger<CheatReportController> logger) : ControllerBase
@@ -146,7 +146,8 @@ public class CheatReportController(
                             Type = "CrossTeamIP",
                             Ip = ipStr,
                             Details = $"Downloaded '{challengeTitle}' from IP {ipStr} which belongs to team(s): {string.Join(", ", otherTeamNames)}",
-                            RelatedTeams = otherTeamNames
+                            RelatedTeams = otherTeamNames,
+                            Time = evt.PublishTimeUtc
                         });
                     }
                 }
@@ -159,7 +160,8 @@ public class CheatReportController(
                         TeamName = evt.TeamName,
                         Type = "UnknownIP",
                         Ip = ipStr,
-                        Details = $"Downloaded '{challengeTitle}' from unknown IP {ipStr} (not in team's login history or any other team's)"
+                        Details = $"Downloaded '{challengeTitle}' from unknown IP {ipStr} (not in team's login history or any other team's)",
+                        Time = evt.PublishTimeUtc
                     });
                 }
             }
@@ -191,10 +193,29 @@ public class CheatReportController(
         }
         
         // Check 4: Solve Before Download
+        // Check 4 & 5: Abnormal Solves
+        
+        // Prepare Container Start Logs
+        var containerEvents = events.Where(e => e.Type == EventType.ContainerStart).ToList();
+        var teamContainerStarts = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        
+        foreach (var evt in containerEvents)
+        {
+            if (evt.Values == null || evt.Values.Count < 1) continue;
+            if (int.TryParse(evt.Values[0], out int cid))
+            {
+                var dictKey = (evt.TeamId, cid);
+                if (!teamContainerStarts.ContainsKey(dictKey))
+                    teamContainerStarts[dictKey] = [];
+                teamContainerStarts[dictKey].Add(evt.PublishTimeUtc);
+            }
+        }
+
         foreach (var sub in submissions)
         {
             if (!challengeMap.TryGetValue(sub.ChallengeId, out var chal)) continue;
 
+            // Check 4: Solve Before Download
             if (chal.Type.IsAttachment() && chal.AttachmentId != null)
             {
                 var key = (sub.TeamId, sub.ChallengeId);
@@ -209,8 +230,72 @@ public class CheatReportController(
                          ChallengeId = sub.ChallengeId,
                          ChallengeName = sub.ChallengeName,
                          Type = "NoDownload",
-                         SolveTime = sub.SubmitTimeUtc
+                         SolveTime = sub.SubmitTimeUtc,
+                         Details = $"Solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without prior attachment download log."
                     });
+                }
+            }
+            
+            // Check 5: Solve Before Container (All)
+            if (chal.Type.IsContainer())
+            {
+                var key = (sub.TeamId, sub.ChallengeId);
+                var hasStart = teamContainerStarts.TryGetValue(key, out var starts) && starts.Any(d => d < sub.SubmitTimeUtc);
+                
+                if (!hasStart)
+                {
+                    string details;
+                    if (starts != null && starts.Count != 0)
+                    {
+                        // Found starts, but all are later than solve time
+                        var firstStart = starts.Min();
+                        var delay = firstStart - sub.SubmitTimeUtc;
+                        details = $"Solved {delay.TotalSeconds:F0}s before container start (Start at {firstStart:MM/dd HH:mm:ss}).";
+                    }
+                    else
+                    {
+                        details = $"Solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without prior container start log.";
+                    }
+
+                    report.AbnormalSolves.Add(new AbnormalSolveResult
+                    {
+                         TeamId = sub.TeamId,
+                         TeamName = sub.TeamName,
+                         ChallengeId = sub.ChallengeId,
+                         ChallengeName = sub.ChallengeName,
+                         Type = "NoContainer",
+                         SolveTime = sub.SubmitTimeUtc,
+                         Details = details
+                    });
+                }
+            }
+
+            // Check 6: Flag Hoarding (Long Duration)
+            // Identify if a team started/downloaded a challenge long before solving it
+            // Threshold: 4 hours (configurable-ish)
+            var interactionKey = (sub.TeamId, sub.ChallengeId);
+            var interactions = new List<DateTimeOffset>();
+            
+            if (teamDownloads.TryGetValue(interactionKey, out var dlTimes)) interactions.AddRange(dlTimes);
+            if (teamContainerStarts.TryGetValue(interactionKey, out var stTimes)) interactions.AddRange(stTimes);
+
+            if (interactions.Any())
+            {
+                var firstInteraction = interactions.Min();
+                var duration = sub.SubmitTimeUtc - firstInteraction;
+                // Threshold: 4 hours. User example: "morning ... night" -> ~8 hours. 4 is a safe lower bound for "hoarding".
+                if (duration > TimeSpan.FromHours(4)) 
+                {
+                     report.AbnormalSolves.Add(new AbnormalSolveResult
+                     {
+                         TeamId = sub.TeamId,
+                         TeamName = sub.TeamName,
+                         ChallengeId = sub.ChallengeId,
+                         ChallengeName = sub.ChallengeName,
+                         Type = "Hoarding",
+                         SolveTime = sub.SubmitTimeUtc,
+                         Details = $"Solved {duration.TotalHours:F1}h after first interaction (Started at {firstInteraction:MM/dd HH:mm})."
+                     });
                 }
             }
         }
@@ -241,10 +326,10 @@ public class CheatReportController(
                 {
                     report.SequenceSuspects.Add(new SequenceSuspectResult
                     {
-                        TeamA = teamMap[t1.TeamId].Name,
                         TeamB = teamMap[t2.TeamId].Name,
                         Similarity = similarity,
-                        CommonSolves = t1.Sequence.Intersect(t2.Sequence).Count()
+                        CommonSolves = t1.Sequence.Intersect(t2.Sequence).Count(),
+                        Details = $"Common Solves: {string.Join(", ", t1.Sequence.Intersect(t2.Sequence).Take(10))}{(t1.Sequence.Intersect(t2.Sequence).Count() > 10 ? "..." : "")}"
                     });
                 }
             }

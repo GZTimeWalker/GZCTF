@@ -27,8 +27,7 @@ export const WithGameMonitor: FC<WithGameMonitorProps> = ({ children, isLoading 
   const pages = [
     { icon: mdiLightningBolt, title: t('game.tab.monitor.events'), path: 'events' },
     { icon: mdiFlag, title: t('game.tab.monitor.submissions'), path: 'submissions' },
-    { icon: mdiGhost, title: t('game.tab.monitor.cheat'), path: 'cheat-check' },
-    { icon: mdiExclamationThick, title: t('game.tab.monitor.cheatinfo'), path: 'cheatinfo' },
+    { icon: mdiGhost, title: t('game.tab.monitor.cheat'), path: 'CheatCheck' },
     { icon: mdiPackageVariant, title: t('game.tab.monitor.traffic'), path: 'traffic' },
   ]
 
