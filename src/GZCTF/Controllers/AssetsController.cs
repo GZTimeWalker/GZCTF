@@ -309,7 +309,8 @@ public class AssetsController(
                     {
                         challenge.Id.ToString(),
                         "Attachment Download",
-                        $"{downloadSource} from team {participation.Team?.Name ?? "Unknown"} downloaded attachment for challenge {challenge.Title} from IP: {ipAddress}."
+                        $"{downloadSource} from team {participation.Team?.Name ?? "Unknown"} downloaded attachment for challenge {challenge.Title}.",
+                        ipAddress
                     }
                 };
 

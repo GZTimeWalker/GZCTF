@@ -1,0 +1,278 @@
+using System.Net;
+using System.Text.RegularExpressions;
+using GZCTF.Models;
+using GZCTF.Models.Data;
+using GZCTF.Models.Internal;
+using GZCTF.Utils;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using GZCTF.Middlewares;
+
+namespace GZCTF.Controllers;
+
+[ApiController]
+[Route("api/game/{id}/[controller]")]
+public class CheatReportController(
+    AppDbContext dbContext,
+    ILogger<CheatReportController> logger) : ControllerBase
+{
+    [HttpGet]
+    [RequireMonitor]
+    [ProducesResponseType(typeof(CheatReport), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get(int id, CancellationToken token)
+    {
+        var game = await dbContext.Games.FindAsync([id], token);
+        if (game == null)
+            return NotFound();
+
+        var report = new CheatReport();
+
+        // Data Gathering
+        var teams = await dbContext.Teams
+            .Where(t => t.Participations.Any(p => p.GameId == id))
+            .Include(t => t.Members)
+            .OrderBy(t => t.Id)
+            .ToListAsync(token);
+
+        var teamMap = teams.ToDictionary(t => t.Id);
+        var userTeamMap = teams.SelectMany(t => t.Members.Select(u => new { u.UserName, TeamId = t.Id }))
+            .ToDictionary(x => x.UserName ?? string.Empty, x => x.TeamId);
+
+        // Fetch Logs for IP Analysis
+        var logs = await dbContext.Logs
+            .Where(l => l.TimeUtc >= game.StartTimeUtc && 
+                        l.Logger.Contains("AccountController") && 
+                        l.RemoteIP != null && 
+                        l.UserName != null)
+            .Select(l => new { l.UserName, l.RemoteIP })
+            .ToListAsync(token);
+
+        // Map Team -> Set<IP>
+        var teamIps = new Dictionary<int, HashSet<string>>();
+        
+        foreach (var log in logs)
+        {
+            if (log.UserName != null && userTeamMap.TryGetValue(log.UserName, out var teamId))
+            {
+                if (!teamIps.ContainsKey(teamId))
+                    teamIps[teamId] = [];
+                
+                if (log.RemoteIP != null)
+                    teamIps[teamId].Add(log.RemoteIP.ToString());
+            }
+        }
+        
+        foreach (var team in teams)
+        {
+            foreach (var member in team.Members)
+            {
+                if (!teamIps.ContainsKey(team.Id))
+                    teamIps[team.Id] = [];
+                
+                 if (member.IP != null && !IPAddress.Any.Equals(member.IP) && !IPAddress.IPv6Any.Equals(member.IP))
+                     teamIps[team.Id].Add(member.IP.ToString());
+            }
+        }
+
+        // Create reverse mapping: IP -> List<TeamId>
+        var ipToTeams = new Dictionary<string, List<int>>();
+        foreach (var kvp in teamIps)
+        {
+            foreach (var ip in kvp.Value)
+            {
+                if (!ipToTeams.ContainsKey(ip))
+                    ipToTeams[ip] = [];
+                ipToTeams[ip].Add(kvp.Key);
+            }
+        }
+
+        // Fetch Game Events
+        var events = await dbContext.GameEvents
+            .Where(e => e.GameId == id && (e.Type == EventType.Download || e.Type == EventType.ContainerStart))
+            .ToListAsync(token);
+        
+        // Fetch Challenges
+        var challenges = await dbContext.GameChallenges
+            .Where(c => c.GameId == id)
+            .Include(c => c.Attachment)
+            .ToListAsync(token);
+        var challengeMap = challenges.ToDictionary(c => c.Id);
+
+        // Fetch Submissions
+        var submissions = await dbContext.Submissions
+            .Where(s => s.GameId == id && s.Status == AnswerResult.Accepted)
+            .ToListAsync(token);
+
+        // Check 1: Attachment IP Cross-Check & Check 4: Solve Before Download
+        var downloadEvents = events.Where(e => e.Type == EventType.Download).ToList();
+        
+        var teamDownloads = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+
+        foreach (var evt in downloadEvents)
+        {
+            if (evt.Values == null || evt.Values.Count < 4) continue;
+
+            // Values[0] = challengeId, Values[1] = "Attachment Download", Values[2] = description, Values[3] = IP
+            if (int.TryParse(evt.Values[0], out int cid))
+            {
+                var dictKey = (evt.TeamId, cid);
+                if (!teamDownloads.ContainsKey(dictKey))
+                    teamDownloads[dictKey] = [];
+                teamDownloads[dictKey].Add(evt.PublishTimeUtc);
+            }
+
+            var dlIp = evt.Values[3];
+            if (dlIp != "Unknown" && IPAddress.TryParse(dlIp, out var ipAddr)) 
+            {
+                var ipStr = ipAddr.ToString();
+                
+                // Extract challenge title from description for reporting (Values[2])
+                // Format: "{Source} from team {Team} downloaded attachment for challenge {Title}."
+                var description = evt.Values[2];
+                var match = Regex.Match(description, @"for challenge (.+?)\.$");
+                var challengeTitle = match.Success ? match.Groups[1].Value : "Unknown";
+
+                // Check if this IP belongs to another team
+                if (ipToTeams.TryGetValue(ipStr, out var teamsWithThisIp))
+                {
+                    var otherTeams = teamsWithThisIp.Where(tid => tid != evt.TeamId).ToList();
+                    if (otherTeams.Any())
+                    {
+                        var otherTeamNames = otherTeams.Select(tid => teamMap[tid].Name).ToList();
+                        report.IpAnalysis.Add(new IpAnalysisResult
+                        {
+                            TeamId = evt.TeamId,
+                            TeamName = evt.TeamName,
+                            Type = "CrossTeamIP",
+                            Ip = ipStr,
+                            Details = $"Downloaded '{challengeTitle}' from IP {ipStr} which belongs to team(s): {string.Join(", ", otherTeamNames)}",
+                            RelatedTeams = otherTeamNames
+                        });
+                    }
+                }
+                // Also check if IP is not in team's login history at all
+                else if (teamIps.TryGetValue(evt.TeamId, out var teamKnownIps) && !teamKnownIps.Contains(ipStr))
+                {
+                    report.IpAnalysis.Add(new IpAnalysisResult
+                    {
+                        TeamId = evt.TeamId,
+                        TeamName = evt.TeamName,
+                        Type = "UnknownIP",
+                        Ip = ipStr,
+                        Details = $"Downloaded '{challengeTitle}' from unknown IP {ipStr} (not in team's login history or any other team's)"
+                    });
+                }
+            }
+        }
+
+        // Check 2: Team IP Overlap
+        var allIps = teamIps.SelectMany(x => x.Value.Select(ip => new { TeamId = x.Key, Ip = ip })).ToList();
+        var sharedIps = allIps.GroupBy(x => x.Ip)
+            .Where(g => g.Select(x => x.TeamId).Distinct().Count() > 1)
+            .ToList();
+
+        foreach (var group in sharedIps)
+        {
+            var teamsSharing = group.Select(x => x.TeamId).Distinct().ToList();
+            var teamNames = teamsSharing.Select(tid => teamMap[tid].Name).ToList();
+            
+            foreach (var tid in teamsSharing)
+            {
+                report.IpAnalysis.Add(new IpAnalysisResult
+                {
+                    TeamId = tid,
+                    TeamName = teamMap[tid].Name,
+                    Type = "SharedIP",
+                    Ip = group.Key,
+                    Details = $"IP {group.Key} is shared with teams: {string.Join(", ", teamNames.Where(n => n != teamMap[tid].Name))}",
+                    RelatedTeams = teamNames
+                });
+            }
+        }
+        
+        // Check 4: Solve Before Download
+        foreach (var sub in submissions)
+        {
+            if (!challengeMap.TryGetValue(sub.ChallengeId, out var chal)) continue;
+
+            if (chal.Type.IsAttachment() && chal.AttachmentId != null)
+            {
+                var key = (sub.TeamId, sub.ChallengeId);
+                var hasDownload = teamDownloads.TryGetValue(key, out var dls) && dls.Any(d => d < sub.SubmitTimeUtc);
+                
+                if (!hasDownload)
+                {
+                    report.AbnormalSolves.Add(new AbnormalSolveResult
+                    {
+                         TeamId = sub.TeamId,
+                         TeamName = sub.TeamName,
+                         ChallengeId = sub.ChallengeId,
+                         ChallengeName = sub.ChallengeName,
+                         Type = "NoDownload",
+                         SolveTime = sub.SubmitTimeUtc
+                    });
+                }
+            }
+        }
+        
+        // Check 3: Sequence Similarity
+        var teamSequences = submissions
+            .GroupBy(s => s.TeamId)
+            .Select(g => new 
+            { 
+                TeamId = g.Key, 
+                Sequence = g.OrderBy(x => x.SubmitTimeUtc).Select(x => x.ChallengeId).ToList() 
+            })
+            .Where(x => x.Sequence.Count >= 3)
+            .ToList();
+
+        var topTeams = teamSequences.OrderByDescending(x => x.Sequence.Count).Take(50).ToList();
+        
+        for (int i = 0; i < topTeams.Count; i++)
+        {
+            for (int j = i + 1; j < topTeams.Count; j++)
+            {
+                var t1 = topTeams[i];
+                var t2 = topTeams[j];
+                
+                var similarity = CalculateSequenceSimilarity(t1.Sequence, t2.Sequence);
+                
+                if (similarity > 0.7)
+                {
+                    report.SequenceSuspects.Add(new SequenceSuspectResult
+                    {
+                        TeamA = teamMap[t1.TeamId].Name,
+                        TeamB = teamMap[t2.TeamId].Name,
+                        Similarity = similarity,
+                        CommonSolves = t1.Sequence.Intersect(t2.Sequence).Count()
+                    });
+                }
+            }
+        }
+
+        return Ok(report);
+    }
+
+    private static double CalculateSequenceSimilarity(List<int> seq1, List<int> seq2)
+    {
+        int n = seq1.Count;
+        int m = seq2.Count;
+        int[,] dp = new int[n + 1, m + 1];
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                if (seq1[i - 1] == seq2[j - 1])
+                    dp[i, j] = dp[i - 1, j - 1] + 1;
+                else
+                    dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+            }
+        }
+        
+        int lcs = dp[n, m];
+        int minLen = Math.Min(n, m);
+        
+        return minLen == 0 ? 0 : (double)lcs / minLen;
+    }
+}

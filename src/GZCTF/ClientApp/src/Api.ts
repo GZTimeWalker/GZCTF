@@ -49,6 +49,12 @@ export enum SubmissionType {
   Normal = "Normal",
 }
 
+export enum ReviewRating {
+  None = 0,
+  Dislike = 1,
+  Like = 2,
+}
+
 /** Container network mode */
 export enum NetworkMode {
   Open = "Open",
@@ -166,27 +172,6 @@ export interface RequestResponseOfRegisterStatus {
 }
 
 /** Request response */
-// ... custom types
-export interface ArrayResponse<T> {
-  data: T[];
-  length: number;
-  total: number;
-}
-
-export interface ReviewAnalyticsModel {
-  total: number;
-  likes: number;
-  dislikes: number;
-  topLiked: TopChallengeModel[];
-  topDisliked: TopChallengeModel[];
-}
-
-export interface TopChallengeModel {
-  id: number;
-  title: string;
-  count: number;
-}
-
 export interface RequestResponse {
   /** Response message */
   title?: string;
@@ -885,6 +870,45 @@ export interface ProblemDetails {
   [key: string]: any;
 }
 
+export interface CheatReport {
+  /** @format uint64 */
+  generatedAt?: number;
+  ipAnalysis?: IpAnalysisResult[];
+  abnormalSolves?: AbnormalSolveResult[];
+  sequenceSuspects?: SequenceSuspectResult[];
+}
+
+export interface IpAnalysisResult {
+  /** @format int32 */
+  teamId?: number;
+  teamName?: string;
+  type?: string;
+  details?: string;
+  relatedTeams?: string[];
+  ip?: string;
+}
+
+export interface AbnormalSolveResult {
+  /** @format int32 */
+  teamId?: number;
+  teamName?: string;
+  /** @format int32 */
+  challengeId?: number;
+  challengeName?: string;
+  type?: string;
+  /** @format uint64 */
+  solveTime?: number;
+}
+
+export interface SequenceSuspectResult {
+  teamA?: string;
+  teamB?: string;
+  /** @format double */
+  similarity?: number;
+  /** @format int32 */
+  commonSolves?: number;
+}
+
 /** Post item (Edit) */
 export interface PostEditModel {
   /**
@@ -1429,6 +1453,56 @@ export interface FlagCreateModel {
   fileHash?: string | null;
   /** File URL (remote file) */
   remoteUrl?: string | null;
+}
+
+/** List response */
+export interface ArrayResponseOfChallengeReviewDetailModel {
+  /** Data */
+  data: ChallengeReviewDetailModel[];
+  /**
+   * Data length
+   * @format int32
+   */
+  length: number;
+  /**
+   * Total length
+   * @format int32
+   */
+  total?: number;
+}
+
+export interface ChallengeReviewDetailModel {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  challengeId?: number;
+  challengeName?: string;
+  /** @format guid */
+  userId?: string;
+  userName?: string;
+  rating?: ReviewRating;
+  comment?: string | null;
+  /** @format uint64 */
+  submitTimeUtc?: number;
+}
+
+export interface ReviewAnalyticsModel {
+  /** @format int32 */
+  total?: number;
+  /** @format int32 */
+  likes?: number;
+  /** @format int32 */
+  dislikes?: number;
+  topLiked?: TopChallengeModel[];
+  topDisliked?: TopChallengeModel[];
+}
+
+export interface TopChallengeModel {
+  /** @format int32 */
+  id?: number;
+  title?: string;
+  /** @format int32 */
+  count?: number;
 }
 
 /** Basic game information, excluding detailed description and current team registration status */
@@ -2048,28 +2122,6 @@ export interface ChallengeDetailModel {
   userComment?: string | null;
 }
 
-export enum ReviewRating {
-  None = 0,
-  Dislike = 1,
-  Like = 2,
-}
-
-export interface ChallengeReviewModel {
-  rating: ReviewRating;
-  comment?: string | null;
-}
-
-export interface ChallengeReviewDetailModel {
-  id: number;
-  challengeId: number;
-  challengeName: string;
-  userId: string;
-  userName: string;
-  rating: ReviewRating;
-  comment?: string | null;
-  submitTimeUtc: string;
-}
-
 export interface ClientFlagContext {
   /**
    * Close time of the challenge instance
@@ -2085,6 +2137,12 @@ export interface ClientFlagContext {
    * @format int64
    */
   fileSize?: number | null;
+}
+
+export interface ChallengeReviewModel {
+  rating: ReviewRating;
+  /** @maxLength 1000 */
+  comment?: string | null;
 }
 
 /** Flag submission */
@@ -2323,7 +2381,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(method &&
           this.instance.defaults.headers[
-          method.toLowerCase() as keyof HeadersDefaults
+            method.toLowerCase() as keyof HeadersDefaults
           ]),
         ...params1.headers,
         ...(params2 && params2.headers),
@@ -3627,22 +3685,6 @@ export class Api<
       }),
 
     /**
-     * @description Get a secure download token for a file
-     *
-     * @tags Assets
-     * @name AssetsGetDownloadToken
-     * @summary Get secure download token
-     * @request GET:/api/assets/{hash}/token
-     */
-    assetsGetDownloadToken: (hash: string, params: RequestParams = {}) =>
-      this.request<RequestResponse<string>, RequestResponse>({
-        path: `/assets/${hash}/token`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Retrieve a file by hash, filename is not matched
      *
      * @tags Assets
@@ -3653,10 +3695,34 @@ export class Api<
     assetsGetFile: (
       hash: string,
       filename: string,
+      query?: {
+        token?: string | null;
+      },
       params: RequestParams = {},
     ) =>
       this.request<void, RequestResponse>({
         path: `/assets/${hash}/${filename}`,
+        method: "GET",
+        query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Assets
+     * @name AssetsGetFileWithToken
+     * @summary File retrieval interface with secure path token
+     * @request GET:/assets/{hash}/s/{token}/{filename}
+     */
+    assetsGetFileWithToken: (
+      hash: string,
+      token: string,
+      filename: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/assets/${hash}/s/${token}/${filename}`,
         method: "GET",
         ...params,
       }),
@@ -3688,6 +3754,51 @@ export class Api<
         format: "json",
         ...params,
       }),
+  };
+  cheatReport = {
+    /**
+     * No description
+     *
+     * @tags CheatReport
+     * @name CheatReportGet
+     * @request GET:/api/game/{id}/cheatreport
+     */
+    cheatReportGet: (id: number, params: RequestParams = {}) =>
+      this.request<CheatReport, any>({
+        path: `/api/game/${id}/cheatreport`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags CheatReport
+     * @name CheatReportGet
+     * @request GET:/api/game/{id}/cheatreport
+     */
+    useCheatReportGet: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<CheatReport, any>(
+        doFetch ? `/api/game/${id}/cheatreport` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags CheatReport
+     * @name CheatReportGet
+     * @request GET:/api/game/{id}/cheatreport
+     */
+    mutateCheatReportGet: (
+      id: number,
+      data?: CheatReport | Promise<CheatReport>,
+      options?: MutatorOptions,
+    ) => mutate<CheatReport>(`/api/game/${id}/cheatreport`, data, options),
   };
   edit = {
     /**
@@ -4305,39 +4416,148 @@ export class Api<
       ),
 
     /**
-     * @description Use this API to get challenge reviews, requires administrator permission
+     * No description
+     *
+     * @tags Edit
+     * @name EditGetReviewAnalytics
+     * @summary Get Challenge Review Analytics
+     * @request GET:/api/edit/games/{id}/reviews/analytics
+     */
+    editGetReviewAnalytics: (id: number, params: RequestParams = {}) =>
+      this.request<ReviewAnalyticsModel, RequestResponse>({
+        path: `/api/edit/games/${id}/reviews/analytics`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Edit
+     * @name EditGetReviewAnalytics
+     * @summary Get Challenge Review Analytics
+     * @request GET:/api/edit/games/{id}/reviews/analytics
+     */
+    useEditGetReviewAnalytics: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ReviewAnalyticsModel, RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/reviews/analytics` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Edit
+     * @name EditGetReviewAnalytics
+     * @summary Get Challenge Review Analytics
+     * @request GET:/api/edit/games/{id}/reviews/analytics
+     */
+    mutateEditGetReviewAnalytics: (
+      id: number,
+      data?: ReviewAnalyticsModel | Promise<ReviewAnalyticsModel>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ReviewAnalyticsModel>(
+        `/api/edit/games/${id}/reviews/analytics`,
+        data,
+        options,
+      ),
+
+    /**
+     * @description Retrieving challenge reviews requires administrator privileges
      *
      * @tags Edit
      * @name EditGetReviews
-     * @summary Get challenge reviews
+     * @summary Get Challenge Reviews
      * @request GET:/api/edit/games/{id}/reviews
      */
     editGetReviews: (
       id: number,
-      query?: { count?: number; skip?: number },
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 100
+         */
+        count?: number;
+        /** @format int32 */
+        skip?: number;
+        search?: string | null;
+        rating?: ReviewRating | null;
+      },
       params: RequestParams = {},
     ) =>
-      this.request<ChallengeReviewDetailModel[], any>({
+      this.request<ArrayResponseOfChallengeReviewDetailModel, RequestResponse>({
         path: `/api/edit/games/${id}/reviews`,
         method: "GET",
         query: query,
         format: "json",
         ...params,
       }),
-
+    /**
+     * @description Retrieving challenge reviews requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditGetReviews
+     * @summary Get Challenge Reviews
+     * @request GET:/api/edit/games/{id}/reviews
+     */
     useEditGetReviews: (
       id: number,
-      query: { count?: number; skip?: number; search?: string; rating?: ReviewRating },
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 100
+         */
+        count?: number;
+        /** @format int32 */
+        skip?: number;
+        search?: string | null;
+        rating?: ReviewRating | null;
+      },
       options?: SWRConfiguration,
+      doFetch: boolean = true,
     ) =>
-      useSWR<ArrayResponse<ChallengeReviewDetailModel>, any>(
-        [`/api/edit/games/${id}/reviews`, query],
+      useSWR<ArrayResponseOfChallengeReviewDetailModel, RequestResponse>(
+        doFetch ? [`/api/edit/games/${id}/reviews`, query] : null,
         options,
       ),
 
-    useEditGetReviewAnalytics: (id: number, options?: SWRConfiguration) =>
-      useSWR<ReviewAnalyticsModel, any>(
-        `/api/edit/games/${id}/reviews/analytics`,
+    /**
+     * @description Retrieving challenge reviews requires administrator privileges
+     *
+     * @tags Edit
+     * @name EditGetReviews
+     * @summary Get Challenge Reviews
+     * @request GET:/api/edit/games/{id}/reviews
+     */
+    mutateEditGetReviews: (
+      id: number,
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 100
+         */
+        count?: number;
+        /** @format int32 */
+        skip?: number;
+        search?: string | null;
+        rating?: ReviewRating | null;
+      },
+      data?:
+        | ArrayResponseOfChallengeReviewDetailModel
+        | Promise<ArrayResponseOfChallengeReviewDetailModel>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ArrayResponseOfChallengeReviewDetailModel>(
+        [`/api/edit/games/${id}/reviews`, query],
+        data,
         options,
       ),
 
@@ -5075,29 +5295,6 @@ export class Api<
       ),
 
     /**
-     * @description Submits a review (rating/comment) for a solved challenge
-     *
-     * @tags Game
-     * @name GameReviewChallenge
-     * @summary Submit challenge review
-     * @request POST:/api/game/{id}/challenges/{challengeId}/review
-     */
-    gameReviewChallenge: (
-      id: number,
-      challengeId: number,
-      data: ChallengeReviewModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<RequestResponse, any>({
-        path: `/api/game/${id}/challenges/${challengeId}/review`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Retrieves challenge information; requires User permission and active team participation
      *
      * @tags Game
@@ -5663,6 +5860,29 @@ export class Api<
       options?: MutatorOptions,
     ) =>
       mutate<BasicGameInfoModel[]>([`/api/game/recent`, query], data, options),
+
+    /**
+     * @description Submits a review (rating/comment) for a solved challenge
+     *
+     * @tags Game
+     * @name GameReviewChallenge
+     * @summary Submit challenge review
+     * @request POST:/api/game/{id}/challenges/{challengeId}/review
+     */
+    gameReviewChallenge: (
+      id: number,
+      challengeId: number,
+      data: ChallengeReviewModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<RequestResponse, RequestResponse>({
+        path: `/api/game/${id}/challenges/${challengeId}/review`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
 
     /**
      * @description Retrieves the scoreboard data

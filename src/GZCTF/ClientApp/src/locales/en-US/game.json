@@ -227,6 +227,7 @@
   "tab": {
     "challenge": "Challenges",
     "monitor": {
+      "cheat": "Cheat Detection",
       "cheatinfo": "Cheats",
       "events": "Events",
       "index": "Monitoring",
