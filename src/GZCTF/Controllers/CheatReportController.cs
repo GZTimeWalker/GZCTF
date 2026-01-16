@@ -479,6 +479,55 @@ public class CheatReportController(
             }
         }
 
+        // Check 8: Burst Solving
+        // Detects if a team solves multiple challenges in an extremely short timeframe (e.g., >= 3 solves in < 60 seconds).
+        // This indicates automated submission scripts or flag sharing entry.
+        foreach (var teamSeq in teamSequences)
+        {
+             var subs = teamSeq.Raw;
+             if (subs.Count < 3) continue;
+
+             for (int i = 0; i < subs.Count; i++)
+             {
+                 int burstCount = 1;
+                 double totalSeconds = 0;
+                 var burstNames = new List<string> { subs[i].ChallengeName };
+                 
+                 // Look ahead
+                 for (int j = i + 1; j < subs.Count; j++)
+                 {
+                     var diff = (subs[j].SubmitTimeUtc - subs[i].SubmitTimeUtc).TotalSeconds;
+                     if (diff <= 60)
+                     {
+                         burstCount++;
+                         totalSeconds = diff;
+                         burstNames.Add(subs[j].ChallengeName);
+                     }
+                     else
+                     {
+                         break;
+                     }
+                 }
+                 
+                 if (burstCount >= 3)
+                 {
+                     report.AbnormalSolves.Add(new AbnormalSolveResult
+                     {
+                         TeamId = teamSeq.TeamId,
+                         TeamName = teamMap[teamSeq.TeamId].Name,
+                         ChallengeId = subs[i].ChallengeId, // Cite the first challenge in the burst
+                         ChallengeName = subs[i].ChallengeName,
+                         Type = "Burst",
+                         SolveTime = subs[i].SubmitTimeUtc,
+                         Details = $"Burst: Solved {burstCount} challenges in {totalSeconds:F0}s: {string.Join(", ", burstNames)}."
+                     });
+                     
+                     // Skip the challenges we just grouped into this burst
+                     i += burstCount - 1;
+                 }
+             }
+        }
+
         report.IpAnalysis = report.IpAnalysis.OrderBy(x => x.TeamId).ThenBy(x => x.Time).ToList();
         report.AbnormalSolves = report.AbnormalSolves.OrderBy(x => x.TeamId).ThenBy(x => x.SolveTime).ToList();
         report.SequenceSuspects = report.SequenceSuspects.OrderByDescending(x => x.Similarity).ThenBy(x => x.TeamA).ToList();
