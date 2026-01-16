@@ -89,23 +89,23 @@ jobs:
           platforms: linux/amd64
           push: true
 
-  prune:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Prune old work images
-        uses: dataaxiom/ghcr-cleanup-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          package: gzctf/gzctf
-          use-regex: true
-          exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}|^work$"
-          validate: true
-          dry-run: false
-          delete-untagged: true
-          delete-ghost-images: true
-          delete-partial-images: true
+  # prune:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #   steps:
+  #     - name: Prune old work images
+  #       uses: dataaxiom/ghcr-cleanup-action@v1
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         package: gzctf/gzctf
+  #         use-regex: true
+  #         exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}|^work$"
+  #         validate: true
+  #         dry-run: false
+  #         delete-untagged: true
+  #         delete-ghost-images: true
+  #         delete-partial-images: true
