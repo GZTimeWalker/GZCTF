@@ -1,10 +1,11 @@
-import { useMantineTheme } from '@mantine/core'
+import { ActionIcon, useMantineTheme } from '@mantine/core'
 import { EchartsContainer } from '@Components/charts/EchartsContainer'
 import type { CheatReport, IpAnalysisResult, SequenceSuspectResult } from '@Api'
 import { FC, useMemo, useCallback } from 'react'
 import { notifications } from '@mantine/notifications'
+import { useFullscreen } from '@mantine/hooks'
 import Icon from '@mdi/react'
-import { mdiCheck } from '@mdi/js'
+import { mdiCheck, mdiFullscreen, mdiFullscreenExit } from '@mdi/js'
 import copy from 'copy-to-clipboard'
 
 interface CheatGraphProps {
@@ -13,6 +14,7 @@ interface CheatGraphProps {
 
 export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
     const theme = useMantineTheme()
+    const { ref, toggle, fullscreen } = useFullscreen()
 
     const onChartClick = useCallback((params: any) => {
         if (params.dataType === 'node' && params.name) {
@@ -37,7 +39,6 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
     const option = useMemo(() => {
         if (!report) return {}
 
-        // ... (Construct nodes and links logic same as before) ...
         const nodes: any[] = []
         const links: any[] = []
         const teamIds = new Set<number>()
@@ -140,7 +141,7 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
                     data: nodes,
                     links: links,
                     categories: [{ name: 'Team' }, { name: 'IP' }],
-                    roam: false,
+                    roam: true,
                     draggable: true,
                     label: {
                         show: true,
@@ -177,13 +178,24 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
     }
 
     return (
-        <EchartsContainer
-            option={option}
-            style={{ height: '500px', width: '100%' }}
-            onEvents={{ click: onChartClick }}
-            opts={{
-                renderer: 'canvas',
-            }}
-        />
+        <div ref={ref} style={{ position: 'relative', width: '100%', height: fullscreen ? '100vh' : 'auto', backgroundColor: fullscreen ? theme.colors.dark[7] : undefined }}>
+            <ActionIcon
+                onClick={toggle}
+                style={{ position: 'absolute', top: 10, right: 10, zIndex: 100 }}
+                variant="filled"
+                color={fullscreen ? 'gray' : 'blue'}
+                size="lg"
+            >
+                <Icon path={fullscreen ? mdiFullscreenExit : mdiFullscreen} size={1} />
+            </ActionIcon>
+            <EchartsContainer
+                option={option}
+                style={{ height: fullscreen ? '100%' : '500px', width: '100%' }}
+                onEvents={{ click: onChartClick }}
+                opts={{
+                    renderer: 'canvas',
+                }}
+            />
+        </div>
     )
 }
