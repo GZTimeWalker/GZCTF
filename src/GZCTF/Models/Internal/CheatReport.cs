@@ -76,6 +76,9 @@ public class SequenceSuspectResult
     [JsonPropertyName("similarity")]
     public double Similarity { get; set; }
 
+    [JsonPropertyName("timeCorrelation")]
+    public double TimeCorrelation { get; set; }
+
     [JsonPropertyName("commonSolves")]
     public int CommonSolves { get; set; }
 

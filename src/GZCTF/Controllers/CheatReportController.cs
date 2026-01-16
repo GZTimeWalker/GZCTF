@@ -338,7 +338,8 @@ public class CheatReportController(
             .Select(g => new 
             { 
                 TeamId = g.Key, 
-                Sequence = g.OrderBy(x => x.SubmitTimeUtc).Select(x => x.ChallengeId).ToList() 
+                Sequence = g.OrderBy(x => x.SubmitTimeUtc).Select(x => x.ChallengeId).ToList(),
+                Raw = g.OrderBy(x => x.SubmitTimeUtc).ToList()
             })
             .Where(x => x.Sequence.Count >= 3)
             .ToList();
@@ -352,17 +353,36 @@ public class CheatReportController(
                 var t1 = topTeams[i];
                 var t2 = topTeams[j];
                 
-                var similarity = CalculateSequenceSimilarity(t1.Sequence, t2.Sequence);
+                // Get LCS (Common Sequence)
+                var commonSeq = GetLongestCommonSubsequence(t1.Sequence, t2.Sequence);
+                
+                int minLen = Math.Min(t1.Sequence.Count, t2.Sequence.Count);
+                double similarity = minLen == 0 ? 0 : (double)commonSeq.Count / minLen;
                 
                 if (similarity > 0.7)
                 {
+                   double timeCorrelation = 0;
+                   if (commonSeq.Count >= 3)
+                   {
+                       var t1Times = t1.Raw.Where(x => commonSeq.Contains(x.ChallengeId))
+                                       .OrderBy(x => x.SubmitTimeUtc)
+                                       .Select(x => x.SubmitTimeUtc)
+                                       .ToList();
+                       var t2Times = t2.Raw.Where(x => commonSeq.Contains(x.ChallengeId))
+                                       .OrderBy(x => x.SubmitTimeUtc)
+                                       .Select(x => x.SubmitTimeUtc)
+                                       .ToList();
+                       timeCorrelation = CalculateTimeCorrelation(t1Times, t2Times);
+                   }
+
                     report.SequenceSuspects.Add(new SequenceSuspectResult
                     {
                         TeamA = teamMap[t1.TeamId].Name,
                         TeamB = teamMap[t2.TeamId].Name,
                         Similarity = similarity,
-                        CommonSolves = t1.Sequence.Intersect(t2.Sequence).Count(),
-                        Details = $"Common Solves: {string.Join(", ", t1.Sequence.Intersect(t2.Sequence).Take(10))}{(t1.Sequence.Intersect(t2.Sequence).Count() > 10 ? "..." : "")}"
+                        TimeCorrelation = timeCorrelation,
+                        CommonSolves = commonSeq.Count,
+                        Details = $"Common Solves: {string.Join(", ", commonSeq.Take(10))}{(commonSeq.Count > 10 ? "..." : "")}"
                     });
                 }
             }
@@ -375,7 +395,7 @@ public class CheatReportController(
         return Ok(report);
     }
 
-    private static double CalculateSequenceSimilarity(List<int> seq1, List<int> seq2)
+    private static List<int> GetLongestCommonSubsequence(List<int> seq1, List<int> seq2)
     {
         int n = seq1.Count;
         int m = seq2.Count;
@@ -391,10 +411,55 @@ public class CheatReportController(
                     dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
             }
         }
-        
-        int lcs = dp[n, m];
-        int minLen = Math.Min(n, m);
-        
-        return minLen == 0 ? 0 : (double)lcs / minLen;
+
+        // Reconstruct LCS
+        var lcs = new List<int>();
+        int r = n, c = m;
+        while (r > 0 && c > 0)
+        {
+            if (seq1[r - 1] == seq2[c - 1])
+            {
+                lcs.Add(seq1[r - 1]);
+                r--;
+                c--;
+            }
+            else if (dp[r - 1, c] > dp[r, c - 1])
+                r--;
+            else
+                c--;
+        }
+        lcs.Reverse();
+        return lcs;
+    }
+
+    private static double CalculateTimeCorrelation(List<DateTimeOffset> t1, List<DateTimeOffset> t2)
+    {
+        if (t1.Count < 3 || t2.Count < 3 || t1.Count != t2.Count) return 0;
+
+        // Calculate intervals (seconds)
+        var d1 = new List<double>();
+        var d2 = new List<double>();
+
+        for (int i = 1; i < t1.Count; i++)
+        {
+            d1.Add((t1[i] - t1[i-1]).TotalSeconds);
+            d2.Add((t2[i] - t2[i-1]).TotalSeconds);
+        }
+
+        // Cosine Similarity of intervals
+        double dotProduct = 0;
+        double normA = 0;
+        double normB = 0;
+
+        for (int i = 0; i < d1.Count; i++)
+        {
+            dotProduct += d1[i] * d2[i];
+            normA += d1[i] * d1[i];
+            normB += d2[i] * d2[i];
+        }
+
+         if (normA == 0 || normB == 0) return 0;
+
+        return dotProduct / (Math.Sqrt(normA) * Math.Sqrt(normB));
     }
 }
