@@ -131,17 +131,17 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
                 confine: true,
                 extraCssText: 'user-select: text; pointer-events: auto;'
             },
-            legend: [{
-                data: ['Team', 'IP']
-            }],
+            legend: [{}],
             series: [
                 {
                     type: 'graph' as const,
                     layout: 'force' as const,
+                    clip: true,
                     data: nodes,
                     links: links,
                     categories: [{ name: 'Team' }, { name: 'IP' }],
-                    roam: true,
+                    roam: false,
+                    draggable: true,
                     label: {
                         show: true,
                         position: 'right' as const,
@@ -155,7 +155,20 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
                         curveness: 0.3
                     }
                 }
-            ]
+            ],
+            emphasis: {
+                focus: 'adjacency',
+                itemStyle: {
+                    // Keep the invisible border on hover so it doesn't "shrink"
+                    borderColor: 'transparent',
+                    borderWidth: 10
+                }
+            },
+            itemStyle: {
+                color: theme.colors.gray[6],
+                borderColor: 'transparent',
+                borderWidth: 10
+            },
         }
     }, [report, theme])
 
@@ -168,6 +181,9 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
             option={option}
             style={{ height: '500px', width: '100%' }}
             onEvents={{ click: onChartClick }}
+            opts={{
+                renderer: 'canvas',
+            }}
         />
     )
 }
