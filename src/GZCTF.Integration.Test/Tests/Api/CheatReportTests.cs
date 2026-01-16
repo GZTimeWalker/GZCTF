@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Xunit.Abstractions;
 
+using System.Text.Json;
+using GZCTF.Extensions;
+
 namespace GZCTF.Integration.Test.Tests.Api;
 
 [Collection(nameof(IntegrationTestCollection))]
@@ -64,7 +67,10 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         }
 
         response.EnsureSuccessStatusCode();
-        var report = await response.Content.ReadFromJsonAsync<CheatReport>();
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new DateTimeOffsetJsonConverter());
+        options.Converters.Add(new IPAddressJsonConverter());
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(options);
         
         Assert.NotNull(report);
         // Ensure request completed without "ArgumentException: Key already added"
@@ -128,7 +134,10 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         // 7. Get Report
         var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
         response.EnsureSuccessStatusCode();
-        var report = await response.Content.ReadFromJsonAsync<CheatReport>();
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new DateTimeOffsetJsonConverter());
+        options.Converters.Add(new IPAddressJsonConverter());
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(options);
 
         Assert.NotNull(report);
         Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "FastSolve");
