@@ -347,7 +347,7 @@ public class CheatReportController(
                         // If LastStart > LastDestroy, the container is currently running (or was running at submit time), so it's fine.
 
                         var starts = teamContainerStarts.GetValueOrDefault(key) ?? new List<DateTimeOffset>();
-                        var lastStart = starts.Where(s => s < sub.SubmitTimeUtc).MaxBy(s => s); // Default(DateTimeOffset) is MinValue
+                        var lastStart = starts.Where(s => s < sub.SubmitTimeUtc).DefaultIfEmpty(DateTimeOffset.MinValue).Max();
                         
                         var relevantDestroys = destroys.Where(d => d < sub.SubmitTimeUtc).ToList();
                         

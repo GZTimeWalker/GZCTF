@@ -15,10 +15,11 @@ import {
     Modal,
     Button,
     Stack,
+    TextInput,
 } from '@mantine/core'
 import { FC, useState, useMemo } from 'react'
 import { Icon } from '@mdi/react'
-import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation } from '@mdi/js'
+import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { useLanguage } from '@Utils/I18n'
@@ -95,6 +96,11 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
     const [opened, { open, close }] = useDisclosure(false)
     const [selectedSuspect, setSelectedSuspect] = useState<SequenceSuspectResult | null>(null)
 
+    // Search states
+    const [ipSearch, setIpSearch] = useState('')
+    const [solveSearch, setSolveSearch] = useState('')
+    const [seqSearch, setSeqSearch] = useState('')
+
     const handleViewDetails = (item: SequenceSuspectResult) => {
         setSelectedSuspect(item)
         open()
@@ -102,18 +108,48 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
 
     const sortedIpAnalysis = useMemo(() => {
         if (!report?.ipAnalysis) return []
-        return sortData(report.ipAnalysis, ipSort)
-    }, [report?.ipAnalysis, ipSort])
+        let data = report.ipAnalysis
+        if (ipSearch) {
+            const q = ipSearch.toLowerCase()
+            data = data.filter((item: any) =>
+                item.teamName?.toLowerCase().includes(q) ||
+                item.type?.toLowerCase().includes(q) ||
+                item.ip?.toLowerCase().includes(q) ||
+                item.details?.toLowerCase().includes(q) ||
+                item.relatedTeams?.some((t: string) => t.toLowerCase().includes(q))
+            )
+        }
+        return sortData(data, ipSort)
+    }, [report?.ipAnalysis, ipSort, ipSearch])
 
     const sortedAbnormalSolves = useMemo(() => {
         if (!report?.abnormalSolves) return []
-        return sortData(report.abnormalSolves, solveSort)
-    }, [report?.abnormalSolves, solveSort])
+        let data = report.abnormalSolves
+        if (solveSearch) {
+            const q = solveSearch.toLowerCase()
+            data = data.filter((item: any) =>
+                item.teamName?.toLowerCase().includes(q) ||
+                item.challengeName?.toLowerCase().includes(q) ||
+                item.type?.toLowerCase().includes(q) ||
+                item.details?.toLowerCase().includes(q)
+            )
+        }
+        return sortData(data, solveSort)
+    }, [report?.abnormalSolves, solveSort, solveSearch])
 
     const sortedSequenceSuspects = useMemo(() => {
         if (!report?.sequenceSuspects) return []
-        return sortData(report.sequenceSuspects, seqSort)
-    }, [report?.sequenceSuspects, seqSort])
+        let data = report.sequenceSuspects
+        if (seqSearch) {
+            const q = seqSearch.toLowerCase()
+            data = data.filter((item: any) =>
+                item.teamA?.toLowerCase().includes(q) ||
+                item.teamB?.toLowerCase().includes(q) ||
+                item.details?.toLowerCase().includes(q)
+            )
+        }
+        return sortData(data, seqSort)
+    }, [report?.sequenceSuspects, seqSort, seqSearch])
 
     const handleSort = (setSort: any, currentSort: any, key: string) => {
         const direction = currentSort.key === key && currentSort.direction === 'asc' ? 'desc' : 'asc'
@@ -229,7 +265,17 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
 
             {/* IP Analysis */}
             <Paper shadow="md" p="md">
-                <Title order={4} mb="md">IP Analysis</Title>
+                <Group justify="space-between" mb="md">
+                    <Title order={4}>IP Analysis</Title>
+                    <TextInput
+                        placeholder="Search team, IP, or details..."
+                        leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                        value={ipSearch}
+                        onChange={(e) => setIpSearch(e.currentTarget.value)}
+                        size="xs"
+                        w={250}
+                    />
+                </Group>
                 {report?.ipAnalysis && report.ipAnalysis.length > 0 ? (
                     <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
                         <Table className={tableClasses.table}>
@@ -310,7 +356,17 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
 
             {/* Abnormal Solves */}
             <Paper shadow="md" p="md">
-                <Title order={4} mb="md">Abnormal Solves</Title>
+                <Group justify="space-between" mb="md">
+                    <Title order={4}>Abnormal Solves</Title>
+                    <TextInput
+                        placeholder="Search team, challenge, or type..."
+                        leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                        value={solveSearch}
+                        onChange={(e) => setSolveSearch(e.currentTarget.value)}
+                        size="xs"
+                        w={250}
+                    />
+                </Group>
                 {report?.abnormalSolves && report.abnormalSolves.length > 0 ? (
                     <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
                         <Table className={tableClasses.table}>
@@ -387,7 +443,17 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
 
             {/* Sequence Similarity */}
             <Paper shadow="md" p="md">
-                <Title order={4} mb="md">Sequence Similarity</Title>
+                <Group justify="space-between" mb="md">
+                    <Title order={4}>Sequence Similarity</Title>
+                    <TextInput
+                        placeholder="Search team name..."
+                        leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                        value={seqSearch}
+                        onChange={(e) => setSeqSearch(e.currentTarget.value)}
+                        size="xs"
+                        w={250}
+                    />
+                </Group>
                 {report?.sequenceSuspects && report.sequenceSuspects.length > 0 ? (
                     <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
                         <Table className={tableClasses.table}>
@@ -413,7 +479,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                                         sorted={seqSort.key === 'similarity'}
                                         reversed={seqSort.direction === 'desc'}
                                         onSort={() => handleSort(setSeqSort, seqSort, 'similarity')}
-                                        w="8rem"
+                                        w="10rem"
                                     >
                                         Similarity
                                     </ThSort>
@@ -421,7 +487,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                                         sorted={seqSort.key === 'commonSolves'}
                                         reversed={seqSort.direction === 'desc'}
                                         onSort={() => handleSort(setSeqSort, seqSort, 'commonSolves')}
-                                        w="8rem"
+                                        w="12rem"
                                     >
                                         Common Solves
                                     </ThSort>
