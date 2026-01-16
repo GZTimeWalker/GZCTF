@@ -28,6 +28,7 @@ public class CheatReportController(
 
         // Data Gathering
         var teams = await dbContext.Teams
+            .AsNoTracking()
             .Where(t => t.Participations.Any(p => p.GameId == id))
             .Include(t => t.Members)
             .OrderBy(t => t.Id)
@@ -41,11 +42,34 @@ public class CheatReportController(
 
         // Fetch Logs for IP Analysis
         var logs = await dbContext.Logs
+            .AsNoTracking()
             .Where(l => l.TimeUtc >= game.StartTimeUtc && 
                         l.Logger.Contains("AccountController") && 
                         l.RemoteIP != null && 
                         l.UserName != null)
             .Select(l => new { l.UserName, l.RemoteIP })
+            .ToListAsync(token);
+
+        // ... (IP Analysis Logic) ...
+
+        // Fetch Game Events
+        var events = await dbContext.GameEvents
+            .AsNoTracking()
+            .Where(e => e.GameId == id && (e.Type == EventType.Download || e.Type == EventType.ContainerStart || e.Type == EventType.ChallengeOpened || e.Type == EventType.ContainerDestroy))
+            .ToListAsync(token);
+        
+        // Fetch Challenges
+        var challenges = await dbContext.GameChallenges
+            .AsNoTracking()
+            .Where(c => c.GameId == id)
+            .Include(c => c.Attachment)
+            .ToListAsync(token);
+        var challengeMap = challenges.ToDictionary(c => c.Id);
+
+        // Fetch Submissions
+        var submissions = await dbContext.Submissions
+            .AsNoTracking()
+            .Where(s => s.GameId == id && s.Status == AnswerResult.Accepted)
             .ToListAsync(token);
 
         // Map Team -> Set<IP>
@@ -87,48 +111,71 @@ public class CheatReportController(
             }
         }
 
-        // Fetch Game Events
-        var events = await dbContext.GameEvents
-            .Where(e => e.GameId == id && (e.Type == EventType.Download || e.Type == EventType.ContainerStart || e.Type == EventType.ChallengeOpened))
-            .ToListAsync(token);
-        
-        // Fetch Challenges
-        var challenges = await dbContext.GameChallenges
-            .Where(c => c.GameId == id)
-            .Include(c => c.Attachment)
-            .ToListAsync(token);
-        var challengeMap = challenges.ToDictionary(c => c.Id);
 
-        // Fetch Submissions
-        var submissions = await dbContext.Submissions
-            .Where(s => s.GameId == id && s.Status == AnswerResult.Accepted)
-            .ToListAsync(token);
-
-        // Check 1: Attachment IP Cross-Check & Check 4: Solve Before Download
-        var downloadEvents = events.Where(e => e.Type == EventType.Download).ToList();
-        
+        // Pre-process events into lookups
         var teamDownloads = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        var teamContainerStarts = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        var teamContainerDestroys = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        var teamChallengeOpens = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        
+        // Use a single list for IP cross-check iteration logic to avoid re-looping full list
+        var downloadEvents = new List<GameEvent>();
 
+        foreach (var evt in events)
+        {
+            if (evt.Values == null) continue;
+
+            switch (evt.Type)
+            {
+                case EventType.Download:
+                    if (evt.Values.Count >= 4 && int.TryParse(evt.Values[0], out int dlCid))
+                    {
+                        var key = (evt.TeamId, dlCid);
+                        if (!teamDownloads.ContainsKey(key)) teamDownloads[key] = [];
+                        teamDownloads[key].Add(evt.PublishTimeUtc);
+                        downloadEvents.Add(evt);
+                    }
+                    break;
+                case EventType.ContainerStart:
+                    if (evt.Values.Count >= 1 && int.TryParse(evt.Values[0], out int startCid))
+                    {
+                        var key = (evt.TeamId, startCid);
+                        if (!teamContainerStarts.ContainsKey(key)) teamContainerStarts[key] = [];
+                        teamContainerStarts[key].Add(evt.PublishTimeUtc);
+                    }
+                    break;
+                case EventType.ContainerDestroy:
+                    if (evt.Values.Count >= 1 && int.TryParse(evt.Values[0], out int destCid))
+                    {
+                        var key = (evt.TeamId, destCid);
+                        if (!teamContainerDestroys.ContainsKey(key)) teamContainerDestroys[key] = [];
+                        teamContainerDestroys[key].Add(evt.PublishTimeUtc);
+                    }
+                    break;
+                case EventType.ChallengeOpened:
+                    if (evt.Values.Count >= 1 && int.TryParse(evt.Values[0], out int openCid))
+                    {
+                        var key = (evt.TeamId, openCid);
+                        if (!teamChallengeOpens.ContainsKey(key)) teamChallengeOpens[key] = [];
+                        teamChallengeOpens[key].Add(evt.PublishTimeUtc);
+                    }
+                    break;
+            }
+        }
+
+        // Check 1: Attachment IP Cross-Check
+        // Detects if a team downloaded an attachment from an IP address associated with another team (Red Flag)
+        // or from an IP address not seen in their own login history (Purple/Unknown Flag).
         foreach (var evt in downloadEvents)
         {
             if (evt.Values == null || evt.Values.Count < 4) continue;
-
-            // Values[0] = challengeId, Values[1] = "Attachment Download", Values[2] = description, Values[3] = IP
-            if (int.TryParse(evt.Values[0], out int cid))
-            {
-                var dictKey = (evt.TeamId, cid);
-                if (!teamDownloads.ContainsKey(dictKey))
-                    teamDownloads[dictKey] = [];
-                teamDownloads[dictKey].Add(evt.PublishTimeUtc);
-            }
-
             var dlIp = evt.Values[3];
+            
             if (dlIp != "Unknown" && IPAddress.TryParse(dlIp, out var ipAddr)) 
             {
                 var ipStr = ipAddr.ToString();
                 
                 // Extract challenge title from description for reporting (Values[2])
-                // Format: "{Source} from team {Team} downloaded attachment for challenge {Title}."
                 var description = evt.Values[2];
                 var match = Regex.Match(description, @"for challenge (.+?)\.$");
                 var challengeTitle = match.Success ? match.Groups[1].Value : "Unknown";
@@ -167,8 +214,10 @@ public class CheatReportController(
                 }
             }
         }
-
+ 
         // Check 2: Team IP Overlap
+        // Identifies IP addresses that have been used by multiple teams for login or interaction.
+        // This suggests potential collusion or multi-accounting (Orange Flag).
         var allIps = teamIps.SelectMany(x => x.Value.Select(ip => new { TeamId = x.Key, Ip = ip })).ToList();
         var sharedIps = allIps.GroupBy(x => x.Ip)
             .Where(g => g.Select(x => x.TeamId).Distinct().Count() > 1)
@@ -193,60 +242,14 @@ public class CheatReportController(
             }
         }
         
-        // Check 4: Solve Before Download
-        // Check 4 & 5: Abnormal Solves
-        
-        // Prepare Container Start Logs
-        var containerEvents = events.Where(e => e.Type == EventType.ContainerStart).ToList();
-        var teamContainerStarts = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
-        
-        foreach (var evt in containerEvents)
-        {
-            if (evt.Values == null || evt.Values.Count < 1) continue;
-            if (int.TryParse(evt.Values[0], out int cid))
-            {
-                var dictKey = (evt.TeamId, cid);
-                if (!teamContainerStarts.ContainsKey(dictKey))
-                    teamContainerStarts[dictKey] = [];
-                teamContainerStarts[dictKey].Add(evt.PublishTimeUtc);
-            }
-        }
-
-        var containerDestroys = events.Where(e => e.Type == EventType.ContainerDestroy).ToList();
-        var teamContainerDestroys = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
-        
-        foreach (var evt in containerDestroys)
-        {
-            if (evt.Values == null || evt.Values.Count < 1) continue;
-            if (int.TryParse(evt.Values[0], out int cid))
-            {
-                var dictKey = (evt.TeamId, cid);
-                if (!teamContainerDestroys.ContainsKey(dictKey))
-                    teamContainerDestroys[dictKey] = [];
-                teamContainerDestroys[dictKey].Add(evt.PublishTimeUtc);
-            }
-        }
-
-        var openEvents = events.Where(e => e.Type == EventType.ChallengeOpened).ToList();
-        var teamChallengeOpens = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
-        
-        foreach (var evt in openEvents)
-        {
-            if (evt.Values == null || evt.Values.Count < 1) continue;
-            if (int.TryParse(evt.Values[0], out int cid))
-            {
-                var dictKey = (evt.TeamId, cid);
-                if (!teamChallengeOpens.ContainsKey(dictKey))
-                    teamChallengeOpens[dictKey] = [];
-                teamChallengeOpens[dictKey].Add(evt.PublishTimeUtc);
-            }
-        }
-
+        // Loop over submissions for Check 4, 5, 6
         foreach (var sub in submissions)
         {
             if (!challengeMap.TryGetValue(sub.ChallengeId, out var chal)) continue;
 
             // Check 4: Solve Before Download
+            // Flags attempts to solve an attachment-based challenge without ever downloading the file.
+            // This suggests the answer was shared or obtained externally.
             if (chal.Type.IsAttachment() && chal.AttachmentId != null)
             {
                 var key = (sub.TeamId, sub.ChallengeId);
@@ -267,7 +270,9 @@ public class CheatReportController(
                 }
             }
             
-            // Check 5: Solve Before Container (All)
+            // Check 5: Solve Before Container Start
+            // Flags attempts to solve a dynamic container challenge without starting a container instance.
+            // Also detects if the solve happened BEFORE the container was started (impossible logic).
             if (chal.Type.IsContainer())
             {
                 var key = (sub.TeamId, sub.ChallengeId);
@@ -301,9 +306,9 @@ public class CheatReportController(
                 }
             }
 
-            // Check 6: Flag Hoarding (Long Duration)
-            // Identify if a team started/downloaded a challenge long before solving it
-            // Threshold: 4 hours (configurable-ish)
+            // Check 6: Flag Hoarding & Fast Solve (Time Analysis)
+            // Identify if a team started/downloaded a challenge long before solving it (Hoarding)
+            // or solved it almost instantly after opening (Fast Solve)
             var interactionKey = (sub.TeamId, sub.ChallengeId);
             var interactions = new List<DateTimeOffset>();
             
@@ -316,7 +321,10 @@ public class CheatReportController(
                 var firstInteraction = interactions.Min();
                 var duration = sub.SubmitTimeUtc - firstInteraction;
                 
-                // Check 6: Flag Hoarding (Refined)
+                // Check 6: Flag Hoarding
+                // Detects if a team held onto a flag and submitted it significantly later than when the environment was destroyed.
+                // Specifically: Submission Time > Last Container Destroy Time + 3 Minutes.
+                // This tracks "clean up then submit" behavior common in flag hoarding (Cyan Flag).
                 // Only for Container challenges: If submission is AFTER container destroy by a margin.
                 if (chal.Type.IsContainer())
                 {
@@ -371,7 +379,9 @@ public class CheatReportController(
                 }
                 // REMOVED: Old "Long Duration" hoarding check.
                 
-                // Check 7: Fast Solve (< 20s)
+                // Check 7: Fast Solve
+                // Flags submissions that occurred within 20 seconds of the very first interaction (Download/Start/Open).
+                // Extremely unrealistic for most challenges (Cyan Flag).
                 if (duration < TimeSpan.FromSeconds(20))
                 {
                      report.AbnormalSolves.Add(new AbnormalSolveResult
@@ -388,7 +398,10 @@ public class CheatReportController(
             }
         }
         
-        // Check 3: Sequence Similarity
+        // Check 3: Sequence Similarity Analysis
+        // Compares the order and timing of solves between teams to detect copying.
+        // Uses Longest Common Subsequence (LCS) to find teams solving the same challenges in the same order.
+        // Also calculates Time Correlation (Cosine Similarity of solve intervals) for high-confidence matches.
         var teamSequences = submissions
             .GroupBy(s => s.TeamId)
             .Select(g => new 
@@ -514,26 +527,19 @@ public class CheatReportController(
     {
         if (t1.Count < 3 || t2.Count < 3 || t1.Count != t2.Count) return 0;
 
-        // Calculate intervals (seconds)
-        var d1 = new List<double>();
-        var d2 = new List<double>();
-
-        for (int i = 1; i < t1.Count; i++)
-        {
-            d1.Add((t1[i] - t1[i-1]).TotalSeconds);
-            d2.Add((t2[i] - t2[i-1]).TotalSeconds);
-        }
-
         // Cosine Similarity of intervals
         double dotProduct = 0;
         double normA = 0;
         double normB = 0;
 
-        for (int i = 0; i < d1.Count; i++)
+        for (int i = 1; i < t1.Count; i++)
         {
-            dotProduct += d1[i] * d2[i];
-            normA += d1[i] * d1[i];
-            normB += d2[i] * d2[i];
+            var d1 = (t1[i] - t1[i-1]).TotalSeconds;
+            var d2 = (t2[i] - t2[i-1]).TotalSeconds;
+            
+            dotProduct += d1 * d2;
+            normA += d1 * d1;
+            normB += d2 * d2;
         }
 
          if (normA == 0 || normB == 0) return 0;
