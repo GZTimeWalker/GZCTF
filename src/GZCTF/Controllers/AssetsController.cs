@@ -48,6 +48,7 @@ public class AssetsController(
     /// <param name="hash">File hash</param>
     /// <param name="filename">Download filename</param>
     /// <param name="token"></param>
+    /// <param name="cancellationToken"></param>
     /// <response code="200">File retrieved successfully</response>
     /// <response code="404">File not found</response>
     /// <response code="400">Failed to retrieve file</response>
@@ -68,6 +69,7 @@ public class AssetsController(
     /// <param name="hash">File hash</param>
     /// <param name="token">Secure Token</param>
     /// <param name="filename">Download filename</param>
+    /// <param name="cancellationToken"></param>
     [HttpGet("[controller]/{hash:length(64)}/s/{token}/{filename:minlength(1)}")]
     [ResponseCache(Duration = 60 * 60 * 24 * 7)]
     [ProducesResponseType(StatusCodes.Status200OK)]

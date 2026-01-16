@@ -13,8 +13,7 @@ namespace GZCTF.Controllers;
 [ApiController]
 [Route("api/game/{id}/cheatreport")]
 public class CheatReportController(
-    AppDbContext dbContext,
-    ILogger<CheatReportController> logger) : ControllerBase
+    AppDbContext dbContext) : ControllerBase
 {
     [HttpGet]
     [RequireMonitor]

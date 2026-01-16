@@ -1108,6 +1108,8 @@ public class EditController(
     /// <param name="id">Game ID</param>
     /// <param name="count"></param>
     /// <param name="skip"></param>
+    /// <param name="search"></param>
+    /// <param name="rating"></param>
     /// <param name="repository"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved challenge reviews</response>
