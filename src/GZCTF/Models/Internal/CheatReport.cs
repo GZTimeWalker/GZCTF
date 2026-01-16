@@ -84,4 +84,22 @@ public class SequenceSuspectResult
 
     [JsonPropertyName("details")]
     public string Details { get; set; } = string.Empty;
+
+    [JsonPropertyName("detailedSolves")]
+    public List<SequenceSuspectDetail> DetailedSolves { get; set; } = new();
+}
+
+public class SequenceSuspectDetail
+{
+    [JsonPropertyName("challengeName")]
+    public string ChallengeName { get; set; } = string.Empty;
+
+    [JsonPropertyName("timeA")]
+    public DateTimeOffset TimeA { get; set; }
+
+    [JsonPropertyName("timeB")]
+    public DateTimeOffset TimeB { get; set; }
+
+    [JsonPropertyName("timeDiff")]
+    public double TimeDiff { get; set; }
 }

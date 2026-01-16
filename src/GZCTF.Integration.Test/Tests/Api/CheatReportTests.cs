@@ -142,4 +142,88 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.NotNull(report);
         Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "FastSolve");
     }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldPopulateDetailedSolves_ForSuspiciousSequence()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // 1. Setup Game
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Sequence Game " + TestDataSeeder.RandomName());
+
+        // 2. Setup Challenges
+        var c1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Chal 1", "flag{1}");
+        var c2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Chal 2", "flag{2}");
+        var c3 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Chal 3", "flag{3}");
+
+        // 3. Setup Teams
+        var u1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t1 = await TestDataSeeder.CreateTeamAsync(factory.Services, u1.Id, "Team A " + TestDataSeeder.RandomName());
+        var p1 = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t1.Id, u1.Id);
+
+        var u2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t2 = await TestDataSeeder.CreateTeamAsync(factory.Services, u2.Id, "Team B " + TestDataSeeder.RandomName());
+        var p2 = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t2.Id, u2.Id);
+
+        // 4. Add Submissions (Same Sequence)
+        var timeBase = DateTimeOffset.UtcNow.AddHours(-1);
+
+        // Team A Solves
+        await context.Submissions.AddRangeAsync(
+            CreateSub(game.Id, c1.Id, t1.Id, p1.Id, u1.Id, timeBase),
+            CreateSub(game.Id, c2.Id, t1.Id, p1.Id, u1.Id, timeBase.AddMinutes(5)),
+            CreateSub(game.Id, c3.Id, t1.Id, p1.Id, u1.Id, timeBase.AddMinutes(10))
+        );
+
+        // Team B Solves (Same order, slightly different times)
+        await context.Submissions.AddRangeAsync(
+            CreateSub(game.Id, c1.Id, t2.Id, p2.Id, u2.Id, timeBase.AddSeconds(30)),
+            CreateSub(game.Id, c2.Id, t2.Id, p2.Id, u2.Id, timeBase.AddMinutes(5).AddSeconds(30)),
+            CreateSub(game.Id, c3.Id, t2.Id, p2.Id, u2.Id, timeBase.AddMinutes(10).AddSeconds(30))
+        );
+
+        await context.SaveChangesAsync();
+
+        // 5. Monitor Login
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        // 6. Get Report
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new DateTimeOffsetJsonConverter());
+        options.Converters.Add(new IPAddressJsonConverter());
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(options);
+
+        // 7. Verify
+        Assert.NotNull(report);
+        Assert.NotEmpty(report.SequenceSuspects);
+        var suspect = report.SequenceSuspects.FirstOrDefault();
+        Assert.NotNull(suspect);
+        Assert.Equal(3, suspect.CommonSolves);
+        Assert.NotNull(suspect.DetailedSolves);
+        Assert.Equal(3, suspect.DetailedSolves.Count);
+        
+        var detail = suspect.DetailedSolves.FirstOrDefault(d => d.ChallengeName == "Chal 1");
+        Assert.NotNull(detail);
+        Assert.True(detail.TimeDiff >= 29 && detail.TimeDiff <= 31); // expects ~30s
+    }
+
+    private Submission CreateSub(int gid, int cid, int tid, int pid, Guid uid, DateTimeOffset time)
+    {
+        return new Submission
+        {
+            GameId = gid,
+            ChallengeId = cid,
+            TeamId = tid,
+            ParticipationId = pid,
+            UserId = uid,
+            Answer = "flag",
+            Status = AnswerResult.Accepted,
+            SubmitTimeUtc = time
+        };
+    }
 }

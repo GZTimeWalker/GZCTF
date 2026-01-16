@@ -912,6 +912,16 @@ export interface SequenceSuspectResult {
   /** @format int32 */
   commonSolves?: number;
   details?: string;
+  /** Detailed Solves */
+  detailedSolves?: SequenceSuspectDetail[];
+}
+
+export interface SequenceSuspectDetail {
+  challengeName?: string;
+  timeA?: string;
+  timeB?: string;
+  /** @format double */
+  timeDiff?: number;
 }
 
 /** Post item (Edit) */

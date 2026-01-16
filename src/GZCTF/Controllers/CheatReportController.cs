@@ -375,6 +375,27 @@ public class CheatReportController(
                        timeCorrelation = CalculateTimeCorrelation(t1Times, t2Times);
                    }
 
+                    var detailedSolves = new List<SequenceSuspectDetail>();
+                    foreach (var cid in commonSeq)
+                    {
+                        var subA = t1.Raw.FirstOrDefault(x => x.ChallengeId == cid);
+                        var subB = t2.Raw.FirstOrDefault(x => x.ChallengeId == cid);
+                        
+                        if (subA != null && subB != null)
+                        {
+                            var cName = challengeMap.TryGetValue(cid, out var ch) ? ch.Title : "Unknown";
+                            var diff = Math.Abs((subA.SubmitTimeUtc - subB.SubmitTimeUtc).TotalSeconds);
+                            
+                            detailedSolves.Add(new SequenceSuspectDetail
+                            {
+                                ChallengeName = cName,
+                                TimeA = subA.SubmitTimeUtc,
+                                TimeB = subB.SubmitTimeUtc,
+                                TimeDiff = diff
+                            });
+                        }
+                    }
+
                     report.SequenceSuspects.Add(new SequenceSuspectResult
                     {
                         TeamA = teamMap[t1.TeamId].Name,
@@ -382,7 +403,8 @@ public class CheatReportController(
                         Similarity = similarity,
                         TimeCorrelation = timeCorrelation,
                         CommonSolves = commonSeq.Count,
-                        Details = $"Common Solves: {string.Join(", ", commonSeq.Take(10))}{(commonSeq.Count > 10 ? "..." : "")}"
+                        Details = $"Common Solves: {string.Join(", ", commonSeq.Take(10))}{(commonSeq.Count > 10 ? "..." : "")}",
+                        DetailedSolves = detailedSolves
                     });
                 }
             }
