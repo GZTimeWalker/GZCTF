@@ -212,6 +212,21 @@ public class CheatReportController(
             }
         }
 
+        var containerDestroys = events.Where(e => e.Type == EventType.ContainerDestroy).ToList();
+        var teamContainerDestroys = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        
+        foreach (var evt in containerDestroys)
+        {
+            if (evt.Values == null || evt.Values.Count < 1) continue;
+            if (int.TryParse(evt.Values[0], out int cid))
+            {
+                var dictKey = (evt.TeamId, cid);
+                if (!teamContainerDestroys.ContainsKey(dictKey))
+                    teamContainerDestroys[dictKey] = [];
+                teamContainerDestroys[dictKey].Add(evt.PublishTimeUtc);
+            }
+        }
+
         var openEvents = events.Where(e => e.Type == EventType.ChallengeOpened).ToList();
         var teamChallengeOpens = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
         
@@ -300,20 +315,61 @@ public class CheatReportController(
             {
                 var firstInteraction = interactions.Min();
                 var duration = sub.SubmitTimeUtc - firstInteraction;
-                // Threshold: 4 hours. User example: "morning ... night" -> ~8 hours. 4 is a safe lower bound for "hoarding".
-                if (duration > TimeSpan.FromHours(4)) 
+                
+                // Check 6: Flag Hoarding (Refined)
+                // Only for Container challenges: If submission is AFTER container destroy by a margin.
+                if (chal.Type.IsContainer())
                 {
-                     report.AbnormalSolves.Add(new AbnormalSolveResult
-                     {
-                         TeamId = sub.TeamId,
-                         TeamName = sub.TeamName,
-                         ChallengeId = sub.ChallengeId,
-                         ChallengeName = sub.ChallengeName,
-                         Type = "Hoarding",
-                         SolveTime = sub.SubmitTimeUtc,
-                         Details = $"Solved {duration.TotalHours:F1}h after first interaction (Started at {firstInteraction:MM/dd HH:mm})."
-                     });
+                    var key = (sub.TeamId, sub.ChallengeId);
+                    if (teamContainerDestroys.TryGetValue(key, out var destroys))
+                    {
+                        // Get the latest destroy time that happened BEFORE the submission (or just take max?)
+                        // User Logic: "apply this to last container destroy time"
+                        // If I destroy, then submit 10 mins later -> Hoarding.
+                        // Filter destroys relative to submission?
+                        // If I destroy at 10:00, Submit at 10:10.
+                        // If I destroy at 10:00, Start at 10:05, Submit at 10:10. Valid.
+                        // So checking "Last Destroy < Submission" isn't enough if there's a subsequent Start.
+                        
+                        // Refined Logic:
+                        // Find the LAST Start time before Submission.
+                        // Find the LAST Destroy time before Submission.
+                        // If LastDestroy > LastStart AND (Submission - LastDestroy) > Threshold -> Hoarding.
+                        // Meaning: The current "session" ended with a destroy, and THEN they submitted.
+                        // If LastStart > LastDestroy, the container is currently running (or was running at submit time), so it's fine.
+
+                        var starts = teamContainerStarts.GetValueOrDefault(key) ?? new List<DateTimeOffset>();
+                        var lastStart = starts.Where(s => s < sub.SubmitTimeUtc).MaxBy(s => s); // Default(DateTimeOffset) is MinValue
+                        
+                        var relevantDestroys = destroys.Where(d => d < sub.SubmitTimeUtc).ToList();
+                        
+                        if (relevantDestroys.Any())
+                        {
+                            var lastDestroy = relevantDestroys.Max();
+                            
+                            // If the last action was a Destroy (no start after it)
+                            if (lastDestroy > lastStart)
+                            {
+                                var diff = sub.SubmitTimeUtc - lastDestroy;
+                                // Threshold: 3 minutes.
+                                if (diff > TimeSpan.FromMinutes(3))
+                                {
+                                     report.AbnormalSolves.Add(new AbnormalSolveResult
+                                     {
+                                         TeamId = sub.TeamId,
+                                         TeamName = sub.TeamName,
+                                         ChallengeId = sub.ChallengeId,
+                                         ChallengeName = sub.ChallengeName,
+                                         Type = "Hoarding",
+                                         SolveTime = sub.SubmitTimeUtc,
+                                         Details = $"Solved {diff.TotalMinutes:F0}m after container destroy (Destroyed at {lastDestroy:MM/dd HH:mm})."
+                                     });                                    
+                                }
+                            }
+                        }
+                    }
                 }
+                // REMOVED: Old "Long Duration" hoarding check.
                 
                 // Check 7: Fast Solve (< 20s)
                 if (duration < TimeSpan.FromSeconds(20))
