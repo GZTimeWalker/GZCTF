@@ -36,7 +36,9 @@ public class CheatReportController(
 
         var teamMap = teams.ToDictionary(t => t.Id);
         var userTeamMap = teams.SelectMany(t => t.Members.Select(u => new { u.UserName, TeamId = t.Id }))
-            .ToDictionary(x => x.UserName ?? string.Empty, x => x.TeamId);
+            .Where(x => !string.IsNullOrEmpty(x.UserName))
+            .GroupBy(x => x.UserName!)
+            .ToDictionary(g => g.Key, g => g.First().TeamId);
 
         // Fetch Logs for IP Analysis
         var logs = await dbContext.Logs
