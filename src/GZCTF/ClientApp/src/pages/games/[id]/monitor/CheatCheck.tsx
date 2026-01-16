@@ -15,7 +15,11 @@ const CheatCheck: FC = () => {
     const { locale } = useLanguage()
 
     // Api call
-    const { data: report, isLoading, error } = api.cheatReport.useCheatReportGet(numId)
+    const { data: report, isLoading, error } = api.cheatReport.useCheatReportGet(numId, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        refreshInterval: 0
+    })
 
     if (isLoading) return <WithGameMonitor><Loader /></WithGameMonitor>
     if (error) return <WithGameMonitor><Alert color="red">{error.message}</Alert></WithGameMonitor>

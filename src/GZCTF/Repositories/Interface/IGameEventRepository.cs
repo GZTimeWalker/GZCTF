@@ -22,4 +22,14 @@ public interface IGameEventRepository : IRepository
     /// <returns></returns>
     public Task<GameEvent[]> GetEvents(int gameId, bool hideContainer = false, int count = 50, int skip = 0,
         string? search = null, CancellationToken token = default);
+
+    /// <summary>
+    /// Check if a challenge has been opened by a team
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <param name="teamId"></param>
+    /// <param name="challengeId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<bool> IsChallengeOpened(int gameId, int teamId, int challengeId, CancellationToken token = default);
 }

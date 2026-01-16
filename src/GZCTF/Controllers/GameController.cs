@@ -986,6 +986,24 @@ public class GameController(
             }
         }
 
+        // Log Challenge Open (First time only)
+        if (context.Participation != null)
+        {
+            if (!await gameEventRepository.IsChallengeOpened(id, context.Participation.TeamId, challengeId, token))
+            {
+                var evt = new GameEvent
+                {
+                    GameId = id,
+                    TeamId = context.Participation.TeamId,
+                    UserId = context.User?.Id,
+                    Type = EventType.ChallengeOpened,
+                    PublishTimeUtc = DateTimeOffset.UtcNow,
+                    Values = [challengeId.ToString(), instance.Challenge.Title]
+                };
+                await gameEventRepository.AddEvent(evt, token);
+            }
+        }
+
         return Ok(model);
     }
 

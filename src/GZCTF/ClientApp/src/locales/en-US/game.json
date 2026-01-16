@@ -117,6 +117,7 @@
       "submitted": "Successfully submitted",
       "wrong": "Incorrect flag"
     },
+    "challenge_opened": "Opened challenge {{chal}}",
     "cheat_detected": "Cheat detected in challenge {{chal}}, team {{team}} used {{steam}}'s flag.",
     "container": {
       "destroy": "Destroyed challenge instance for {{chal}}#{{id}}",

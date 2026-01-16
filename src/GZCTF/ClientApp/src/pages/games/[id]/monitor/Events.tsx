@@ -29,6 +29,7 @@ import {
   mdiReplay,
   mdiToggleSwitchOffOutline,
   mdiToggleSwitchOutline,
+  mdiEyeOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
@@ -61,6 +62,7 @@ const EventTypeIconMap = (size: number) => {
       [EventType.ContainerDestroy, { path: mdiToggleSwitchOffOutline, size, color: theme.colors.red[colorIdx] }],
       [EventType.CheatDetected, { path: mdiExclamationThick, size, color: theme.colors.orange[colorIdx] }],
       [EventType.Download, { path: mdiDownload, size, color: theme.colors.cyan[colorIdx] }],
+      [EventType.ChallengeOpened, { path: mdiEyeOutline, size, color: theme.colors.violet[colorIdx] }],
       [EventType.Normal, { path: mdiLightningBolt, size, color: theme.colors.light[colorIdx] }],
     ])
   }, [size, colorScheme, theme.colors])
@@ -115,6 +117,10 @@ const formatEvent = (t: TFunction, event: GameEvent) => {
         id: event.values.at(0),
         chal: event.values.at(1),
       })
+    case EventType.ChallengeOpened:
+      return t('game.event.challenge_opened', {
+        chal: event.values.at(1),
+      }) || `Opened challenge ${event.values.at(1)}`
     default:
       return event.values.at(-1) || ''
   }
@@ -285,7 +291,7 @@ const Events: FC = () => {
             >
               <Group wrap="nowrap" align="flex-start" justify="right" gap="sm" w="100%">
                 <Icon {...iconMap.get(event.type)!} />
-                <Stack gap={2} w="100%">
+                <Stack gap={2} w="100%" style={{ minWidth: 0 }}>
                   <ScrollingText
                     text={formatEvent(t, event)}
                     size="md"

@@ -88,7 +88,7 @@ public class CheatReportController(
 
         // Fetch Game Events
         var events = await dbContext.GameEvents
-            .Where(e => e.GameId == id && (e.Type == EventType.Download || e.Type == EventType.ContainerStart))
+            .Where(e => e.GameId == id && (e.Type == EventType.Download || e.Type == EventType.ContainerStart || e.Type == EventType.ChallengeOpened))
             .ToListAsync(token);
         
         // Fetch Challenges
@@ -211,6 +211,21 @@ public class CheatReportController(
             }
         }
 
+        var openEvents = events.Where(e => e.Type == EventType.ChallengeOpened).ToList();
+        var teamChallengeOpens = new Dictionary<(int TeamId, int ChallengeId), List<DateTimeOffset>>();
+        
+        foreach (var evt in openEvents)
+        {
+            if (evt.Values == null || evt.Values.Count < 1) continue;
+            if (int.TryParse(evt.Values[0], out int cid))
+            {
+                var dictKey = (evt.TeamId, cid);
+                if (!teamChallengeOpens.ContainsKey(dictKey))
+                    teamChallengeOpens[dictKey] = [];
+                teamChallengeOpens[dictKey].Add(evt.PublishTimeUtc);
+            }
+        }
+
         foreach (var sub in submissions)
         {
             if (!challengeMap.TryGetValue(sub.ChallengeId, out var chal)) continue;
@@ -278,6 +293,7 @@ public class CheatReportController(
             
             if (teamDownloads.TryGetValue(interactionKey, out var dlTimes)) interactions.AddRange(dlTimes);
             if (teamContainerStarts.TryGetValue(interactionKey, out var stTimes)) interactions.AddRange(stTimes);
+            if (teamChallengeOpens.TryGetValue(interactionKey, out var opTimes)) interactions.AddRange(opTimes);
 
             if (interactions.Any())
             {
@@ -295,6 +311,21 @@ public class CheatReportController(
                          Type = "Hoarding",
                          SolveTime = sub.SubmitTimeUtc,
                          Details = $"Solved {duration.TotalHours:F1}h after first interaction (Started at {firstInteraction:MM/dd HH:mm})."
+                     });
+                }
+                
+                // Check 7: Fast Solve (< 20s)
+                if (duration < TimeSpan.FromSeconds(20))
+                {
+                     report.AbnormalSolves.Add(new AbnormalSolveResult
+                     {
+                         TeamId = sub.TeamId,
+                         TeamName = sub.TeamName,
+                         ChallengeId = sub.ChallengeId,
+                         ChallengeName = sub.ChallengeName,
+                         Type = "FastSolve",
+                         SolveTime = sub.SubmitTimeUtc,
+                         Details = $"Solved in {duration.TotalSeconds:F1}s after first interaction (First touch at {firstInteraction:MM/dd HH:mm:ss})."
                      });
                 }
             }
@@ -326,6 +357,7 @@ public class CheatReportController(
                 {
                     report.SequenceSuspects.Add(new SequenceSuspectResult
                     {
+                        TeamA = teamMap[t1.TeamId].Name,
                         TeamB = teamMap[t2.TeamId].Name,
                         Similarity = similarity,
                         CommonSolves = t1.Sequence.Intersect(t2.Sequence).Count(),
@@ -334,6 +366,10 @@ public class CheatReportController(
                 }
             }
         }
+
+        report.IpAnalysis = report.IpAnalysis.OrderBy(x => x.TeamId).ThenBy(x => x.Time).ToList();
+        report.AbnormalSolves = report.AbnormalSolves.OrderBy(x => x.TeamId).ThenBy(x => x.SolveTime).ToList();
+        report.SequenceSuspects = report.SequenceSuspects.OrderByDescending(x => x.Similarity).ThenBy(x => x.TeamA).ToList();
 
         return Ok(report);
     }

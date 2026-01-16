@@ -86,4 +86,15 @@ public class GameEventRepository(
 
         return data.OrderByDescending(e => e.PublishTimeUtc).Skip(skip).Take(count).ToArrayAsync(token);
     }
+
+    public async Task<bool> IsChallengeOpened(int gameId, int teamId, int challengeId, CancellationToken token = default)
+    {
+        var cidStr = challengeId.ToString();
+        var events = await Context.GameEvents
+            .Where(e => e.GameId == gameId && e.TeamId == teamId && e.Type == EventType.ChallengeOpened)
+            .Select(e => new { e.Values })
+            .ToListAsync(token);
+
+        return events.Any(e => e.Values != null && e.Values.Count > 0 && e.Values[0] == cidStr);
+    }
 }

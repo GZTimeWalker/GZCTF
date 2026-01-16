@@ -38,6 +38,7 @@ export enum EventType {
   FlagSubmit = "FlagSubmit",
   CheatDetected = "CheatDetected",
   Download = "Download",
+  ChallengeOpened = "ChallengeOpened",
 }
 
 /** Submission type */
@@ -5110,6 +5111,20 @@ export class Api<
         path: `/api/game/${id}`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+    /**
+     * @description Log challenge open event
+     *
+     * @tags Game
+     * @name GameLogChallengeOpen
+     * @summary Log challenge open
+     * @request POST:/api/game/{id}/challenge/{challengeId}/open
+     */
+    gameLogChallengeOpen: (id: number, challengeId: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/game/${id}/challenge/${challengeId}/open`,
+        method: "POST",
         ...params,
       }),
     /**

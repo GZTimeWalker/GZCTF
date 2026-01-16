@@ -217,7 +217,12 @@ public enum EventType : byte
     /// <summary>
     /// Attachment download
     /// </summary>
-    Download = 5
+    Download = 5,
+
+    /// <summary>
+    /// Challenge opened
+    /// </summary>
+    ChallengeOpened = 6
 }
 
 /// <summary>
