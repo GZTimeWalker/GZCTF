@@ -1,7 +1,10 @@
 import { useMantineTheme } from '@mantine/core'
 import { EchartsContainer } from '@Components/charts/EchartsContainer'
 import type { CheatReport, IpAnalysisResult, SequenceSuspectResult } from '@Api'
-import { FC, useMemo } from 'react'
+import { FC, useMemo, useCallback } from 'react'
+import { notifications } from '@mantine/notifications'
+import Icon from '@mdi/react'
+import { mdiCheck } from '@mdi/js'
 
 interface CheatGraphProps {
     report: CheatReport | null
@@ -10,9 +13,30 @@ interface CheatGraphProps {
 export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
     const theme = useMantineTheme()
 
+    const onChartClick = useCallback((params: any) => {
+        if (params.dataType === 'node' && params.name) {
+            navigator.clipboard.writeText(params.name)
+            notifications.show({
+                title: 'Copied',
+                message: `Copied ${params.name} to clipboard`,
+                color: 'green',
+                icon: <Icon path={mdiCheck} size={0.7} />
+            })
+        } else if (params.dataType === 'edge' && params.value) {
+            navigator.clipboard.writeText(params.value.toString())
+            notifications.show({
+                title: 'Copied',
+                message: `Copied relation info to clipboard`,
+                color: 'green',
+                icon: <Icon path={mdiCheck} size={0.7} />
+            })
+        }
+    }, [])
+
     const option = useMemo(() => {
         if (!report) return {}
 
+        // ... (Construct nodes and links logic same as before) ...
         const nodes: any[] = []
         const links: any[] = []
         const teamIds = new Set<number>()
@@ -62,27 +86,12 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
             })
         })
 
-        // Ensure teams discussed in Sequence Suspects are nodes too (if not already via IP Issue)
-        // Note: mapping TeamName to ID is hard if we only have names in SequenceSuspects
-        // Check Api.ts: SequenceSuspectResult now has teamA (string), teamB (string). Not IDs.
-        // Ideally we match by Name.
-        // Let's iterate sequence suspects.
+        // Ensure teams discussed in Sequence Suspects are nodes too
         report.sequenceSuspects?.forEach(item => {
-            // We can't easily link to 'team:ID' nodes if we only have names.
-            // But IpAnalysis has teamName. We can try to finding existing nodes by name.
-            // Or create new nodes by name if not found.
-
-            // Simpler: Just link nodes by NAME if we use Name as ID? 
-            // No, IDs are safer. 
-            // Let's assume SequenceSuspects usually involves teams already in IP Analysis (often correlated).
-            // If not, we might miss them or create duplicate nodes. 
-            // But for visualization, let's try to match by Name if ID unknown.
-
             ['A', 'B'].forEach(suffix => {
                 const tName = suffix === 'A' ? item.teamA : item.teamB;
                 if (!tName) return;
 
-                // Check if node exists by checking if any node.name == tName
                 if (!nodes.find(n => n.name === tName)) {
                     nodes.push({
                         id: `team:name:${tName}`,
@@ -114,7 +123,13 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
 
 
         return {
-            tooltip: {},
+            tooltip: {
+                trigger: 'item' as const,
+                enterable: true,
+                appendToBody: true,
+                confine: true,
+                extraCssText: 'user-select: text; pointer-events: auto;'
+            },
             legend: [{
                 data: ['Team', 'IP']
             }],
@@ -144,13 +159,14 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
     }, [report, theme])
 
     if (!report || (!report.ipAnalysis?.length && !report.sequenceSuspects?.length)) {
-        return null; // Or show "No Graph Data"
+        return null;
     }
 
     return (
         <EchartsContainer
             option={option}
             style={{ height: '500px', width: '100%' }}
+            onEvents={{ click: onChartClick }}
         />
     )
 }
