@@ -174,18 +174,18 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         }
 
         // Get all submissions
-        var allSubmissions = await submissionRepo.GetSubmissions(game, null, 100, 0, CancellationToken.None);
+        var allSubmissions = await submissionRepo.GetSubmissions(game, null, 100, 0, null, CancellationToken.None);
         Assert.Equal(4, allSubmissions.Length);
 
         // Get only accepted submissions
         var acceptedSubmissions = await submissionRepo.GetSubmissions(game, AnswerResult.Accepted, 100, 0,
-            CancellationToken.None);
+            null, CancellationToken.None);
         Assert.Equal(2, acceptedSubmissions.Length);
         Assert.All(acceptedSubmissions, s => Assert.Equal(AnswerResult.Accepted, s.Status));
 
         // Get only wrong submissions
         var wrongSubmissions = await submissionRepo.GetSubmissions(game, AnswerResult.WrongAnswer, 100, 0,
-            CancellationToken.None);
+            null, CancellationToken.None);
         Assert.Equal(2, wrongSubmissions.Length);
         Assert.All(wrongSubmissions, s => Assert.Equal(AnswerResult.WrongAnswer, s.Status));
 
@@ -264,11 +264,11 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         }
 
         // Get first 5
-        var firstPage = await submissionRepo.GetSubmissions(game, null, 5, 0, CancellationToken.None);
+        var firstPage = await submissionRepo.GetSubmissions(game, null, 5, 0, null, CancellationToken.None);
         Assert.Equal(5, firstPage.Length);
 
         // Get next 5
-        var secondPage = await submissionRepo.GetSubmissions(game, null, 5, 5, CancellationToken.None);
+        var secondPage = await submissionRepo.GetSubmissions(game, null, 5, 5, null, CancellationToken.None);
         Assert.Equal(5, secondPage.Length);
 
         // Verify no overlap
