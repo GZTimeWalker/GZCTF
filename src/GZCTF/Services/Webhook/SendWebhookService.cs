@@ -120,6 +120,7 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
                 embed.Title = "Cheat Detected! 🚨";
                 embed.Color = 0xFF0000; // Red
                 embed.Description = $"Cheat detected for team **{gameEvent.Team?.Name}**.\nDetails: {string.Join(", ", gameEvent.Values ?? [])}";
+                embed.Footer = new Models.DiscordEmbedFooter { Text = gameEvent.Game?.Title ?? "Unknown Game" };
                 break;
             default:
                  return null;
@@ -170,6 +171,7 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
             };
 
             embed.Description = $"{prefix}**{teamName}** solved **{challengeName}**";
+            embed.Footer = new Models.DiscordEmbedFooter { Text = notice.Game?.Title ?? "Unknown Game" };
         }
         else
         {
@@ -189,6 +191,7 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
                  NoticeType.Normal => notice.Values?.FirstOrDefault() ?? "New announcement",
                  _ => notice.Values?.Count > 0 ? string.Join(", ", notice.Values) : notice.Type.ToString()
              };
+             embed.Footer = new Models.DiscordEmbedFooter { Text = notice.Game?.Title ?? "Unknown Game" };
         }
 
         return new Models.DiscordWebhookMessage
