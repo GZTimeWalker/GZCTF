@@ -10,24 +10,101 @@ import {
     SimpleGrid,
     Card,
     ThemeIcon,
+    UnstyledButton,
+    Center,
 } from '@mantine/core'
-import { FC } from 'react'
+import { FC, useState, useMemo } from 'react'
 import { Icon } from '@mdi/react'
-import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant } from '@mdi/js'
+import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { useLanguage } from '@Utils/I18n'
 import { ScrollingText } from '@Components/ScrollingText'
 import tableClasses from '@Styles/Table.module.css'
 import type { CheatReport } from '@Api'
+import classes from './CheatInfo.module.css'
 
 interface CheatInfoProps {
     report: CheatReport | null
 }
 
+interface SortConfig<T> {
+    key: keyof T | null
+    direction: 'asc' | 'desc'
+}
+
+function sortData<T>(data: T[], { key, direction }: SortConfig<T>) {
+    if (!key) return data
+
+    return [...data].sort((a, b) => {
+        const valueA = a[key]
+        const valueB = b[key]
+
+        if (valueA === valueB) return 0
+
+        const compare = valueA < valueB ? -1 : 1
+        return direction === 'asc' ? compare : -compare
+    })
+}
+
+interface ThSortProps {
+    children: React.ReactNode
+    reversed: boolean
+    sorted: boolean
+    onSort(): void
+    w?: string | number
+}
+
+function ThSort({ children, reversed, sorted, onSort, w }: ThSortProps) {
+    const IconPath = sorted ? (reversed ? mdiArrowUp : mdiArrowDown) : mdiUnfoldMoreHorizontal
+    return (
+        <Table.Th w={w}>
+            <UnstyledButton onClick={onSort} className={classes.control}>
+                <Group justify="space-between">
+                    <Text fw={700} fz="sm">
+                        {children}
+                    </Text>
+                    <Center className={classes.icon}>
+                        <Icon path={IconPath} size={0.7} />
+                    </Center>
+                </Group>
+            </UnstyledButton>
+        </Table.Th>
+    )
+}
+
 export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
     const { t } = useTranslation()
     const { locale } = useLanguage()
+
+    // 1. IP Analysis Sort State
+    const [ipSort, setIpSort] = useState<SortConfig<any>>({ key: null, direction: 'asc' })
+
+    // 2. Abnormal Solves Sort State
+    const [solveSort, setSolveSort] = useState<SortConfig<any>>({ key: null, direction: 'asc' })
+
+    // 3. Sequence Similarity Sort State
+    const [seqSort, setSeqSort] = useState<SortConfig<any>>({ key: 'similarity', direction: 'desc' })
+
+    const sortedIpAnalysis = useMemo(() => {
+        if (!report?.ipAnalysis) return []
+        return sortData(report.ipAnalysis, ipSort)
+    }, [report?.ipAnalysis, ipSort])
+
+    const sortedAbnormalSolves = useMemo(() => {
+        if (!report?.abnormalSolves) return []
+        return sortData(report.abnormalSolves, solveSort)
+    }, [report?.abnormalSolves, solveSort])
+
+    const sortedSequenceSuspects = useMemo(() => {
+        if (!report?.sequenceSuspects) return []
+        return sortData(report.sequenceSuspects, seqSort)
+    }, [report?.sequenceSuspects, seqSort])
+
+    const handleSort = (setSort: any, currentSort: any, key: string) => {
+        const direction = currentSort.key === key && currentSort.direction === 'asc' ? 'desc' : 'asc'
+        setSort({ key, direction })
+    }
 
     return (
         <>
@@ -81,15 +158,43 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                         <Table className={tableClasses.table}>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th w="10rem">{t('common.label.team', 'Team')}</Table.Th>
-                                    <Table.Th w="12rem">Type</Table.Th>
-                                    <Table.Th w="10rem">IP</Table.Th>
-                                    <Table.Th w="10rem">Time</Table.Th>
+                                    <ThSort
+                                        sorted={ipSort.key === 'teamName'}
+                                        reversed={ipSort.direction === 'desc'}
+                                        onSort={() => handleSort(setIpSort, ipSort, 'teamName')}
+                                        w="10rem"
+                                    >
+                                        {t('common.label.team', 'Team')}
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={ipSort.key === 'type'}
+                                        reversed={ipSort.direction === 'desc'}
+                                        onSort={() => handleSort(setIpSort, ipSort, 'type')}
+                                        w="12rem"
+                                    >
+                                        Type
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={ipSort.key === 'ip'}
+                                        reversed={ipSort.direction === 'desc'}
+                                        onSort={() => handleSort(setIpSort, ipSort, 'ip')}
+                                        w="10rem"
+                                    >
+                                        IP
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={ipSort.key === 'time'}
+                                        reversed={ipSort.direction === 'desc'}
+                                        onSort={() => handleSort(setIpSort, ipSort, 'time')}
+                                        w="10rem"
+                                    >
+                                        Time
+                                    </ThSort>
                                     <Table.Th>Details</Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
-                                {report.ipAnalysis.map((item: any, index: number) => (
+                                {sortedIpAnalysis.map((item: any, index: number) => (
                                     <Table.Tr key={index}>
                                         <Table.Td>
                                             <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw="bold" maw={150} />
@@ -134,15 +239,43 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                         <Table className={tableClasses.table}>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th w="10rem">{t('common.label.team', 'Team')}</Table.Th>
-                                    <Table.Th w="12rem">{t('common.label.challenge', 'Challenge')}</Table.Th>
-                                    <Table.Th w="10rem">Type</Table.Th>
+                                    <ThSort
+                                        sorted={solveSort.key === 'teamName'}
+                                        reversed={solveSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSolveSort, solveSort, 'teamName')}
+                                        w="10rem"
+                                    >
+                                        {t('common.label.team', 'Team')}
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={solveSort.key === 'challengeName'}
+                                        reversed={solveSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSolveSort, solveSort, 'challengeName')}
+                                        w="12rem"
+                                    >
+                                        {t('common.label.challenge', 'Challenge')}
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={solveSort.key === 'type'}
+                                        reversed={solveSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSolveSort, solveSort, 'type')}
+                                        w="10rem"
+                                    >
+                                        Type
+                                    </ThSort>
                                     <Table.Th>Details</Table.Th>
-                                    <Table.Th w="12rem">{t('common.label.time', 'Time')}</Table.Th>
+                                    <ThSort
+                                        sorted={solveSort.key === 'solveTime'}
+                                        reversed={solveSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSolveSort, solveSort, 'solveTime')}
+                                        w="12rem"
+                                    >
+                                        {t('common.label.time', 'Time')}
+                                    </ThSort>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
-                                {report.abnormalSolves.map((item: any, index: number) => (
+                                {sortedAbnormalSolves.map((item: any, index: number) => (
                                     <Table.Tr key={index}>
                                         <Table.Td>
                                             <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw="bold" maw={150} />
@@ -183,15 +316,43 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                         <Table className={tableClasses.table}>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th w="12rem">Team A</Table.Th>
-                                    <Table.Th w="12rem">Team B</Table.Th>
-                                    <Table.Th w="8rem">Similarity</Table.Th>
-                                    <Table.Th w="8rem">Common Solves</Table.Th>
+                                    <ThSort
+                                        sorted={seqSort.key === 'teamA'}
+                                        reversed={seqSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSeqSort, seqSort, 'teamA')}
+                                        w="12rem"
+                                    >
+                                        Team A
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={seqSort.key === 'teamB'}
+                                        reversed={seqSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSeqSort, seqSort, 'teamB')}
+                                        w="12rem"
+                                    >
+                                        Team B
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={seqSort.key === 'similarity'}
+                                        reversed={seqSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSeqSort, seqSort, 'similarity')}
+                                        w="8rem"
+                                    >
+                                        Similarity
+                                    </ThSort>
+                                    <ThSort
+                                        sorted={seqSort.key === 'commonSolves'}
+                                        reversed={seqSort.direction === 'desc'}
+                                        onSort={() => handleSort(setSeqSort, seqSort, 'commonSolves')}
+                                        w="8rem"
+                                    >
+                                        Common Solves
+                                    </ThSort>
                                     <Table.Th>Evidence</Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
-                                {report.sequenceSuspects.map((item: any, index: number) => (
+                                {sortedSequenceSuspects.map((item: any, index: number) => (
                                     <Table.Tr key={index}>
                                         <Table.Td>
                                             <ScrollingText text={item.teamA || 'Unknown'} size="sm" fw="bold" maw={150} />
