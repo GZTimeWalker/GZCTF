@@ -37,6 +37,7 @@
     "axios": "^1.13.2",
     "chroma-js": "^3.2.0",
     "clsx": "^2.1.1",
+    "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.19",
     "echarts": "^6.0.0",
     "embla-carousel": "^8.6.0",

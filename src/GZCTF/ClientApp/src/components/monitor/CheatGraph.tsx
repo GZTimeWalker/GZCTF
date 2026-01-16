@@ -5,6 +5,7 @@ import { FC, useMemo, useCallback } from 'react'
 import { notifications } from '@mantine/notifications'
 import Icon from '@mdi/react'
 import { mdiCheck } from '@mdi/js'
+import copy from 'copy-to-clipboard'
 
 interface CheatGraphProps {
     report: CheatReport | null
@@ -15,7 +16,7 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
 
     const onChartClick = useCallback((params: any) => {
         if (params.dataType === 'node' && params.name) {
-            navigator.clipboard.writeText(params.name)
+            copy(params.name)
             notifications.show({
                 title: 'Copied',
                 message: `Copied ${params.name} to clipboard`,
@@ -23,7 +24,7 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
                 icon: <Icon path={mdiCheck} size={0.7} />
             })
         } else if (params.dataType === 'edge' && params.value) {
-            navigator.clipboard.writeText(params.value.toString())
+            copy(params.value.toString())
             notifications.show({
                 title: 'Copied',
                 message: `Copied relation info to clipboard`,
