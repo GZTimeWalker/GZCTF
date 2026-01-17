@@ -60,16 +60,16 @@ export const EchartsContainer: FC<EchartsContainerProps> = (props) => {
   }, [option, onEvents])
 
   useEffect(() => {
-    const handleResize = () => {
-      if (chartInstance.current) {
-        chartInstance.current.resize()
-      }
-    }
+    if (!chartRef.current) return
 
-    window.addEventListener('resize', handleResize)
+    const resizeObserver = new ResizeObserver(() => {
+      chartInstance.current?.resize()
+    })
+
+    resizeObserver.observe(chartRef.current)
 
     return () => {
-      window.removeEventListener('resize', handleResize)
+      resizeObserver.disconnect()
     }
   }, [])
 
