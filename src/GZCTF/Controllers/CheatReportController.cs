@@ -359,8 +359,8 @@ public class CheatReportController(
                             if (lastDestroy > lastStart)
                             {
                                 var diff = sub.SubmitTimeUtc - lastDestroy;
-                                // Threshold: 3 minutes.
-                                if (diff > TimeSpan.FromMinutes(3))
+                                // Threshold: 60 minutes.
+                                if (diff > TimeSpan.FromMinutes(60))
                                 {
                                      report.AbnormalSolves.Add(new AbnormalSolveResult
                                      {
@@ -379,21 +379,72 @@ public class CheatReportController(
                 }
                 // REMOVED: Old "Long Duration" hoarding check.
                 
-                // Check 7: Fast Solve
-                // Flags submissions that occurred within 20 seconds of the very first interaction (Download/Start/Open).
-                // Extremely unrealistic for most challenges (Cyan Flag).
-                if (duration < TimeSpan.FromSeconds(20))
+                // Check 7: Fast Solve - Refined Logic
+                
+                // 7a. Fast Solve (Open): Solved immediately after opening challenge
+                // This applies to ALL challenges.
+                if (teamChallengeOpens.TryGetValue(interactionKey, out var opTimesCheck) && opTimesCheck.Any())
                 {
-                     report.AbnormalSolves.Add(new AbnormalSolveResult
+                    var firstOpen = opTimesCheck.Min();
+                    var durationOpen = sub.SubmitTimeUtc - firstOpen;
+                    if (durationOpen < TimeSpan.FromMinutes(2))
+                    {
+                         report.AbnormalSolves.Add(new AbnormalSolveResult
+                         {
+                             TeamId = sub.TeamId,
+                             TeamName = sub.TeamName,
+                             ChallengeId = sub.ChallengeId,
+                             ChallengeName = sub.ChallengeName,
+                             Type = "FastSolve-Open",
+                             SolveTime = sub.SubmitTimeUtc,
+                             Details = $"Solved in {durationOpen.TotalSeconds:F1}s after opening challenge (Opened at {firstOpen:MM/dd HH:mm:ss})."
+                         }); 
+                    }
+                }
+
+                // 7b. Fast Solve (Download): Solved immediately after downloading attachment
+                // Applies only if challenge has an attachment.
+                if ((chal.Type.IsAttachment() || chal.AttachmentId != null) && 
+                    teamDownloads.TryGetValue(interactionKey, out var dlTimesCheck) && dlTimesCheck.Any())
+                {
+                     var firstDl = dlTimesCheck.Min();
+                     var durationDl = sub.SubmitTimeUtc - firstDl;
+                     if (durationDl < TimeSpan.FromMinutes(2))
                      {
-                         TeamId = sub.TeamId,
-                         TeamName = sub.TeamName,
-                         ChallengeId = sub.ChallengeId,
-                         ChallengeName = sub.ChallengeName,
-                         Type = "FastSolve",
-                         SolveTime = sub.SubmitTimeUtc,
-                         Details = $"Solved in {duration.TotalSeconds:F1}s after first interaction (First touch at {firstInteraction:MM/dd HH:mm:ss})."
-                     });
+                          report.AbnormalSolves.Add(new AbnormalSolveResult
+                          {
+                              TeamId = sub.TeamId,
+                              TeamName = sub.TeamName,
+                              ChallengeId = sub.ChallengeId,
+                              ChallengeName = sub.ChallengeName,
+                              Type = "FastSolve-Download",
+                              SolveTime = sub.SubmitTimeUtc,
+                              Details = $"Solved in {durationDl.TotalSeconds:F1}s after downloading attachment (Downloaded at {firstDl:MM/dd HH:mm:ss})."
+                          });
+                     }
+                }
+
+                // 7c. Fast Solve (Container): Solved immediately after container start
+                // Applies if challenge is a container type AND has NO attachment (Blackbox).
+                // If it has both, we generally prioritize Download check, but checking container for blackbox is key.
+                if (chal.Type.IsContainer() && chal.AttachmentId == null &&
+                    teamContainerStarts.TryGetValue(interactionKey, out var stTimesCheck) && stTimesCheck.Any())
+                {
+                     var firstStart = stTimesCheck.Min();
+                     var durationStart = sub.SubmitTimeUtc - firstStart;
+                     if (durationStart < TimeSpan.FromMinutes(2))
+                     {
+                          report.AbnormalSolves.Add(new AbnormalSolveResult
+                          {
+                              TeamId = sub.TeamId,
+                              TeamName = sub.TeamName,
+                              ChallengeId = sub.ChallengeId,
+                              ChallengeName = sub.ChallengeName,
+                              Type = "FastSolve-Container",
+                              SolveTime = sub.SubmitTimeUtc,
+                              Details = $"Solved in {durationStart.TotalSeconds:F1}s after starting container (Started at {firstStart:MM/dd HH:mm:ss})."
+                          });
+                     }
                 }
             }
         }

@@ -259,3 +259,5 @@ _Pvt_Extensions
 
 # Node package lock files (npm)
 **/package-lock.json
+
+/CHEAT_DETECTION.md
