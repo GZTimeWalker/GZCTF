@@ -140,7 +140,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         var report = await response.Content.ReadFromJsonAsync<CheatReport>(options);
 
         Assert.NotNull(report);
-        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "FastSolve");
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "FastSolve-Open");
     }
 
     [Fact]
