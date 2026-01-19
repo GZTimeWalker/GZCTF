@@ -273,6 +273,38 @@ public static class TestDataSeeder
         return new SeededChallenge(challenge.Id, challenge.Title, flag);
     }
 
+    public static async Task<SeededChallenge> CreateDynamicChallengeAsync(IServiceProvider services, int gameId,
+        string title, int originalScore = 1000, CancellationToken token = default)
+    {
+        using var scope = services.CreateScope();
+        var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+        var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
+
+        var game = await gameRepository.GetGameById(gameId, token)
+                   ?? throw new InvalidOperationException($"Game {gameId} not found");
+
+        GameChallenge challenge = new()
+        {
+            Title = title,
+            Content = "Dynamic challenge content",
+            Category = ChallengeCategory.Misc,
+            Type = ChallengeType.DynamicContainer,
+            Hints = [],
+            IsEnabled = true,
+            SubmissionLimit = 0,
+            OriginalScore = originalScore,
+            MinScoreRate = 0.8,
+            Difficulty = 5,
+            Game = game,
+            GameId = game.Id,
+            FlagTemplate = "flag{[TEAM_HASH]}"
+        };
+
+        await challengeRepository.CreateChallenge(game, challenge, token);
+
+        return new SeededChallenge(challenge.Id, challenge.Title, string.Empty);
+    }
+
     public static async Task<SeededParticipation> JoinGameAsync(IServiceProvider services, int gameId, int teamId,
         Guid userId, int? divisionId = null, CancellationToken token = default)
     {

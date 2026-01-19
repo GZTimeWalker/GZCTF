@@ -212,6 +212,269 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.True(detail.TimeDiff >= 29 && detail.TimeDiff <= 31); // expects ~30s
     }
 
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectFastSolve_Download()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "FS Download " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Att Chal", "flag{dl}");
+        
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        // Mock attachment
+        var attachment = new Attachment 
+        { 
+            Type = FileType.Local, 
+            LocalFile = new LocalFile 
+            { 
+               Name = "file.txt",
+               FileSize = 100,
+               Hash = "dummyhash"
+            }
+        };
+        chal!.Attachment = attachment;
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Downloaders");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var timeBase = DateTimeOffset.UtcNow.AddMinutes(-10);
+        
+        // Log Download at T
+        await context.GameEvents.AddAsync(new GameEvent
+        {
+            GameId = game.Id,
+            Type = EventType.Download,
+            TeamId = team.Id,
+            UserId = user.Id,
+            PublishTimeUtc = timeBase,
+            Values = [chal.Id.ToString(), chal.Type.ToString(), $"Download {chal.Title}.", "127.0.0.1"]
+        });
+
+        // Solve at T + 5s
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, timeBase.AddSeconds(5)));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "FastSolve-Download");
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectFastSolve_Container()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "FS Container " + TestDataSeeder.RandomName());
+        // Create container challenge (Standard type usually implies container if configured, or DynamicContainer)
+        var chalSeeded = await TestDataSeeder.CreateDynamicChallengeAsync(factory.Services, game.Id, "Cont Chal");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "ContainerRunners");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var timeBase = DateTimeOffset.UtcNow.AddMinutes(-10);
+        
+        // Log Container Start at T
+        await context.GameEvents.AddAsync(new GameEvent
+        {
+            GameId = game.Id,
+            Type = EventType.ContainerStart,
+            TeamId = team.Id,
+            UserId = user.Id,
+            PublishTimeUtc = timeBase,
+            Values = [chal.Id.ToString()]
+        });
+
+        // Solve at T + 5s
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, timeBase.AddSeconds(5)));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "FastSolve-Container");
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectHoarding()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Hoarding Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateDynamicChallengeAsync(factory.Services, game.Id, "Hoard Chal");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Hoarders");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var start = DateTimeOffset.UtcNow.AddHours(-3);
+        var destroy = start.AddMinutes(30);
+        var solve = destroy.AddMinutes(61); // > 60 mins after destroy
+
+        await context.GameEvents.AddRangeAsync(
+            new GameEvent { GameId = game.Id, Type = EventType.ContainerStart, TeamId = team.Id, UserId = user.Id, PublishTimeUtc = start, Values = [chal.Id.ToString()] },
+            new GameEvent { GameId = game.Id, Type = EventType.ContainerDestroy, TeamId = team.Id, UserId = user.Id, PublishTimeUtc = destroy, Values = [chal.Id.ToString()] }
+        );
+
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, solve));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "Hoarding");
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectNoDownload()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "NoDL Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Att Chal 2", "flag{nodl}");
+        
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        chal!.Attachment = new Attachment 
+        { 
+            Type = FileType.Local, 
+            LocalFile = new LocalFile 
+            { 
+               Name = "file.txt",
+               FileSize = 100,
+               Hash = "dummyhash"
+            }
+        };
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Psychics");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        // Solve without download event
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, DateTimeOffset.UtcNow));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "NoDownload");
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectBurst()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Burst Game " + TestDataSeeder.RandomName());
+        var c1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Burst 1", "flag{1}");
+        var c2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Burst 2", "flag{2}");
+        var c3 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Burst 3", "flag{3}");
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Bursters");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var timeBase = DateTimeOffset.UtcNow;
+        // 3 solves in 10 seconds
+        await context.Submissions.AddRangeAsync(
+            CreateSub(game.Id, c1.Id, team.Id, participation.Id, user.Id, timeBase),
+            CreateSub(game.Id, c2.Id, team.Id, participation.Id, user.Id, timeBase.AddSeconds(5)),
+            CreateSub(game.Id, c3.Id, team.Id, participation.Id, user.Id, timeBase.AddSeconds(10))
+        );
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "Burst");
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectSharedIP()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "SharedIP Game " + TestDataSeeder.RandomName());
+        
+        var u1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t1 = await TestDataSeeder.CreateTeamAsync(factory.Services, u1.Id, "Team A");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t1.Id, u1.Id);
+
+        var u2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t2 = await TestDataSeeder.CreateTeamAsync(factory.Services, u2.Id, "Team B");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t2.Id, u2.Id);
+
+        // Simulate logs with same IP
+        var ip = "192.168.1.100";
+        var time = DateTimeOffset.UtcNow;
+        
+        await context.Logs.AddRangeAsync(
+            new LogModel { Level = "Info", Logger = "AccountController", Message = "Login", TimeUtc = time, UserName = u1.UserName, RemoteIP = System.Net.IPAddress.Parse(ip) },
+            new LogModel { Level = "Info", Logger = "AccountController", Message = "Login", TimeUtc = time.AddMinutes(1), UserName = u2.UserName, RemoteIP = System.Net.IPAddress.Parse(ip) }
+        );
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.IpAnalysis, i => i.Type == "SharedIP" && i.Ip == ip);
+    }
+
+    private JsonSerializerOptions GetJsonOptions()
+    {
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new DateTimeOffsetJsonConverter());
+        options.Converters.Add(new IPAddressJsonConverter());
+        return options;
+    }
+
     private Submission CreateSub(int gid, int cid, int tid, int pid, Guid uid, DateTimeOffset time)
     {
         return new Submission
