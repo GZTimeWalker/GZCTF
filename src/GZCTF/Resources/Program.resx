@@ -1088,4 +1088,7 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>The deadline for this challenge has passed</value>
   </data>
+  <data name="CronJob_RemoveUnactivatedUsers" xml:space="preserve">
+    <value>Removed {0} unactivated users.</value>
+  </data>
 </root>
