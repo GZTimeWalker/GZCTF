@@ -570,7 +570,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
             Values = [
                 chal.Id.ToString(), 
                 "Attachment Download", 
-                $"User {uAttacker.UserName} from team {tAttacker.Name} downloaded attachment for challenge {chal.Title}. [Token Abuse: {tVictim.Name}]", 
+                $"User {uAttacker.UserName} from team {tAttacker.Name} downloaded attachment for challenge {chal.Title}. [Token Source: Team {tVictim.Name}]", 
                 "10.0.0.99"
             ]
         });
@@ -689,7 +689,9 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.NotNull(evt);
         Assert.Equal(tAttacker.Id, evt.TeamId); // SHOULD be Attacker
         Assert.Equal(uAttacker.Id, evt.UserId); // SHOULD be Attacker (Not Victim!)
-        Assert.Contains($"[Token Abuse: {tVictim.Name}]", evt.Values[2]);
+        Assert.Contains("Token Source:", evt.Values[2]);
+        Assert.Contains(uVictim.UserName, evt.Values[2]);
+        Assert.Contains(tVictim.Name, evt.Values[2]);
 
         // Verify Cheat Report
         var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);

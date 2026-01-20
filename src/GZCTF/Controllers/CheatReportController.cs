@@ -180,15 +180,33 @@ public class CheatReportController(
                 var match = Regex.Match(description, @"for challenge (.+?)\.");
                 var challengeTitle = match.Success ? match.Groups[1].Value : "Unknown";
 
-                if (description.Contains("[Token Abuse:")) 
+                if (description.Contains("[Token Source:")) 
                 {
+                     // Parse readable details
+                     // Log format: "User {Attacker} from team {AttackerTeam} downloaded ... [Token Source: {Source}]"
+                     var attackerMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
+                     var sourceMatch = Regex.Match(description, @"\[Token Source: (.+?)\]");
+                     
+                     var detailedMsg = "Used stolen token.";
+                     if (attackerMatch.Success && sourceMatch.Success) 
+                     {
+                         var attackerName = attackerMatch.Groups[1].Value;
+                         var attackerTeam = attackerMatch.Groups[2].Value;
+                         var sourceInfo = sourceMatch.Groups[1].Value;
+                         detailedMsg = $"{attackerName} (Team: {attackerTeam}) used a token belonging to {sourceInfo}.";
+                     }
+                     else
+                     {
+                         detailedMsg = $"Token Abuse Detected. {description}";
+                     }
+
                      report.IpAnalysis.Add(new IpAnalysisResult
                      {
                          TeamId = evt.TeamId,
                          TeamName = evt.TeamName,
                          Type = "TokenAbuse",
                          Ip = ipStr,
-                         Details = $"Used stolen token. {description}",
+                         Details = detailedMsg,
                          Time = evt.PublishTimeUtc
                      });
                 }

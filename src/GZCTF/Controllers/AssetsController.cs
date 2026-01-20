@@ -313,7 +313,15 @@ public class AssetsController(
                         // Detect Token Abuse: Authenticated user using another team's token
                         if (tokenParticipation != null && tokenParticipation.Id != participation.Id)
                         {
-                            abuseTag = $" [Token Abuse: {tokenParticipation.Team?.Name ?? "Unknown"}]";
+                            if (tokenUserId != null)
+                            {
+                                 var tokenUser = await context.Users.FindAsync(new object[] { tokenUserId }, cancellationToken);
+                                 abuseTag = $" [Token Source: {tokenUser?.UserName ?? "Unknown"} (Team {tokenParticipation.Team?.Name ?? "Unknown"})]";
+                            }
+                            else
+                            {
+                                 abuseTag = $" [Token Source: Team {tokenParticipation.Team?.Name ?? "Unknown"}]";
+                            }
                         }
                 }
                 else if (secureTokenHash != null && userId != null) // It was a secure token
@@ -343,6 +351,7 @@ public class AssetsController(
                 };
 
                 await eventRepository.AddEvent(evt, cancellationToken);
+                return;
             }
         }
         catch (Exception ex)
