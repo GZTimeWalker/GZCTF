@@ -723,24 +723,18 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
 
         // Upload File
-        using var ms = new MemoryStream([1, 2, 3]);
-        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, 3, "file", "legit.txt");
+        // Upload File
+        using var ms = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, ms.Length, "file", "legit.txt");
         var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
         var blobRes = await blobService.CreateOrUpdateBlob(formFile, "legit.txt", CancellationToken.None);
         var fileHash = blobRes.Hash;
-
-        var localFile = new LocalFile 
-        { 
-            Hash = fileHash, 
-            Name = "legit.txt",
-            FileSize = 3
-        };
-        context.Files.Add(localFile);
         
         var attachment = new Attachment 
         { 
-            LocalFile = localFile, 
-            Type = FileType.Local, // GZCTF.Models.Data.FileType.Local
+            LocalFile = blobRes, 
+            LocalFileId = blobRes.Id,
+            Type = FileType.Local,
             RemoteUrl = null
         };
         context.Attachments.Add(attachment);

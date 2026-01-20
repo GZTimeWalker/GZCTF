@@ -327,14 +327,16 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                                                 color={
                                                     item.type === 'SharedIP' ? 'orange' :
                                                         item.type === 'CrossTeamIP' ? 'red' :
-                                                            'grape'
+                                                            item.type === 'TokenAbuse' ? 'red' :
+                                                                'grape'
                                                 }
                                                 size="xs"
                                                 fullWidth
                                             >
                                                 {item.type === 'SharedIP' ? 'Shared IP' :
                                                     item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
-                                                        'Unknown IP'}
+                                                        item.type === 'TokenAbuse' ? 'Token Abuse' :
+                                                            'Unknown IP'}
                                             </Badge>
                                         </Table.Td>
                                         <Table.Td ff="monospace">{item.ip}</Table.Td>
