@@ -765,6 +765,10 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         var res3 = await client.GetAsync($"/Assets/{fileHash}/s/{secureToken}/legit.txt");
         Assert.Equal(HttpStatusCode.OK, res3.StatusCode);
 
+        // Login as Admin to view Cheat Report
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = admin.UserName, Password = "Test@123" });
+
         // Verify NO Abuse Logs
         var reportResponse = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
         reportResponse.EnsureSuccessStatusCode();
