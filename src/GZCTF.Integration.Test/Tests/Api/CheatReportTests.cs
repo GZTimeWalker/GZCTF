@@ -13,6 +13,8 @@ using Xunit.Abstractions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using GZCTF.Extensions;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
@@ -593,6 +595,113 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         // 2. Verify NO "NoDownload" flag for Attacker (Logic Correctness Check)
         // Since the download was attributed to Attacker (despite using stolen token), they shouldn't be flagged for NoDownload.
         Assert.DoesNotContain(report.AbnormalSolves, s => s.TeamId == tAttacker.Id && s.Type == "NoDownload");
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectTokenAbuse_SecureToken()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dpProvider = scope.ServiceProvider.GetRequiredService<IDataProtectionProvider>();
+        var protector = dpProvider.CreateProtector("GZCTF.Assets.Download");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "SecureToken Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Secure Chal", "flag{secure}");
+        
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        // Ensure file hash exists in storage or mock, but for AssetsController logic we mainly need DB entry
+        // To actuall call the API, the file must exist in IBlobStorage or we get 404.
+        // We can mock blob storage or just create the file on disk if using LocalStorage.
+        // For this test, verifying the LOGIC via DB insertion might be easier, but AssetsController is what writes to DB.
+        // We will try to call the API but ensure IBlobStorage check passes? 
+        // Actually, if file assumes missing, it returns NotFound, BUT does it log?
+        // AssetsController: LogDownloadAsync is called AFTER storage.ExistsAsync check.
+        // So we MUST ensure file "exists".
+        // Integration tests use "LocalStorage" usually? Check appsettings or Startup.
+        // Assuming we can just create the file.
+        
+        var fileHash = "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"; 
+        chal!.Attachment = new Attachment 
+        { 
+            Type = FileType.Local, 
+            LocalFile = new LocalFile 
+            { 
+               Name = "secure.txt", 
+               FileSize = 10, 
+               Hash = fileHash 
+            }
+        };
+        await context.SaveChangesAsync();
+
+        // Create dummy file on disk to pass ExistsAsync check
+        // Storage path: Uploads/{hash[..2]}/{hash[2..4]}/{hash}
+        // We need to know where PathHelper.Uploads points. usually ./uploads
+        // Test environment might differ.
+        // Alternate strategy: We can't easily mock storage in this full integration test without replacing service.
+        // We can skip the API call and invoke LogDownloadAsync via reflection? No, too hacky.
+        // We can just rely on the fact that if we use a REAL hash from a previous test helper (or CreateBlob), it works.
+        // Let's use `blobService.CreateOrUpdateBlob` to create a real file.
+        
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+        // Need a dummy file stream
+        using var ms = new MemoryStream([1, 2, 3]);
+        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, 3, "file", "secure.txt");
+        var blobRes = await blobService.CreateOrUpdateBlob(formFile, "secure.txt", CancellationToken.None);
+        fileHash = blobRes.Hash;
+
+        // Update challenge attachment with REAL hash
+        chal.Attachment.LocalFile.Hash = fileHash;
+        await context.SaveChangesAsync();
+
+        // Victim Team
+        var uVictim = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tVictim = await TestDataSeeder.CreateTeamAsync(factory.Services, uVictim.Id, "Victims");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tVictim.Id, uVictim.Id);
+
+        // Attacker Team
+        var uAttacker = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tAttacker = await TestDataSeeder.CreateTeamAsync(factory.Services, uAttacker.Id, "Attackers");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tAttacker.Id, uAttacker.Id);
+
+        // Generate Secure Token for VICTIM
+        var expiry = DateTimeOffset.UtcNow.AddHours(1).Ticks;
+        var payload = $"v1|{fileHash}|{uVictim.Id}|{expiry}";
+        var tokenBytes = protector.Protect(System.Text.Encoding.UTF8.GetBytes(payload));
+        var secureToken = WebEncoders.Base64UrlEncode(tokenBytes);
+
+        // Attacker Login
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = uAttacker.UserName, Password = "Test@123" });
+
+        // Attacker accesses file with VICTIM'S token
+        var url = $"/Assets/{fileHash}/s/{secureToken}/secure.txt";
+        var fileResponse = await client.GetAsync(url);
+        
+        // Assert File Download Success (200)
+        Assert.Equal(HttpStatusCode.OK, fileResponse.StatusCode);
+
+        // Verify Event Log
+        var evt = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
+            .OrderByDescending(e => e.PublishTimeUtc)
+            .FirstOrDefaultAsync();
+
+        Assert.NotNull(evt);
+        Assert.Equal(tAttacker.Id, evt.TeamId); // SHOULD be Attacker
+        Assert.Equal(uAttacker.Id, evt.UserId); // SHOULD be Attacker (Not Victim!)
+        Assert.Contains($"[Token Abuse: {tVictim.Name}]", evt.Values[2]);
+
+        // Verify Cheat Report
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        // Relogin as admin
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+        
+        var reportResponse = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        reportResponse.EnsureSuccessStatusCode();
+        var report = await reportResponse.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.IpAnalysis, i => i.TeamId == tAttacker.Id && i.Type == "TokenAbuse" && i.Details.Contains(tVictim.Name));
     }
 
     private JsonSerializerOptions GetJsonOptions()

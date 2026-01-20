@@ -194,33 +194,39 @@ public class AssetsController(
             {
                 userId = parsedId;
             }
+            else if (!string.IsNullOrEmpty(user.Identity.Name))
+            {
+                // Fallback: Lookup by UserName
+                var dbUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == user.Identity.Name, cancellationToken);
+                if (dbUser != null) 
+                    userId = dbUser.Id;
+            }
         }
 
         string? secureTokenHash = null;
+        Guid? tokenUserId = null;
 
         // Try to parse secure token if provided
         if (!string.IsNullOrEmpty(token))
         {
             try
             {
-                // Try Unprotect
                 string payload;
-                if (token.Length > 100 && !token.Contains('|')) // Assume Base64Url Encoded path token
+                if (token.Length > 100 && !token.Contains('|')) 
                 {
-                    try
-                    {
-                        var cipher = WebEncoders.Base64UrlDecode(token);
-                        payload = Encoding.UTF8.GetString(_protector.Unprotect(cipher));
-                    }
-                    catch
-                    {
-                        // Fallback to old format or team token attempt
-                        payload = _protector.Unprotect(token);
-                    }
+                     try 
+                     { 
+                        var cipher = WebEncoders.Base64UrlDecode(token); 
+                        payload = Encoding.UTF8.GetString(_protector.Unprotect(cipher)); 
+                     }
+                     catch 
+                     { 
+                        payload = _protector.Unprotect(token); 
+                     }
                 }
-                else
-                {
-                    payload = _protector.Unprotect(token);
+                else 
+                { 
+                    payload = _protector.Unprotect(token); 
                 }
                 
                 var parts = payload.Split('|');
@@ -230,30 +236,30 @@ public class AssetsController(
                     var tokenUserIdString = parts[2];
                     var tokenExpiryTicks = long.Parse(parts[3]);
 
-                    // Verify Expired
                     if (DateTimeOffset.UtcNow.Ticks <= tokenExpiryTicks && tokenHash == hash)
                     {
                         if (Guid.TryParse(tokenUserIdString, out var parsedTokenUserId))
                         {
-                            userId = parsedTokenUserId; // Use the user ID from the token
-                            secureTokenHash = tokenHash; // Mark as secure token used
+                            tokenUserId = parsedTokenUserId;
+                            secureTokenHash = tokenHash; 
+                            
+                            if (userId == null)
+                            {
+                                userId = parsedTokenUserId; 
+                            }
                         }
                     }
                 }
             }
-            catch
-            {
-                // Not a valid secure token, fall back to check as static team token
-            }
+            catch { }
         }
 
-        // If neither authenticated nor has valid token (secure or team), we can't track
         if (userId == null && string.IsNullOrEmpty(token))
             return;
 
         try
         {
-            // Find games where this file is an attachment for a challenge
+             // ... (Challenge Lookup Unchanged) ...
             var challenges = await context.GameChallenges
                 .Include(c => c.Attachment)
                 .ThenInclude(a => a!.LocalFile)
@@ -261,8 +267,7 @@ public class AssetsController(
                 .Select(c => new { c.Id, c.Title, c.GameId })
                 .ToArrayAsync(cancellationToken);
 
-            if (challenges.Length == 0)
-                return;
+            if (challenges.Length == 0) return;
 
             foreach (var challenge in challenges)
             {
@@ -270,19 +275,25 @@ public class AssetsController(
 
                 if (userId != null)
                 {
-                    // Check by User ID
                     participation = await context.Participations
                         .Include(p => p.Team)
                         .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Members.Any(m => m.UserId == userId), cancellationToken);
                 }
                 
-                // Check token owner if token is present
                 Participation? tokenParticipation = null;
                 if (!string.IsNullOrEmpty(token))
                 {
                      tokenParticipation = await context.Participations
                         .Include(p => p.Team)
                         .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Token == token, cancellationToken);
+                     
+                     if (tokenParticipation == null && tokenUserId != null)
+                     {
+                          // Secure Token: Find participation for the token owner
+                          tokenParticipation = await context.Participations
+                            .Include(p => p.Team)
+                            .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Members.Any(m => m.UserId == tokenUserId), cancellationToken);
+                     }
                 }
 
                 // If not logged in, fallback to token participation
