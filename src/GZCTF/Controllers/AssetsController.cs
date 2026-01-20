@@ -275,21 +275,38 @@ public class AssetsController(
                         .Include(p => p.Team)
                         .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Members.Any(m => m.UserId == userId), cancellationToken);
                 }
-                else if (!string.IsNullOrEmpty(token))
+                
+                // Check token owner if token is present
+                Participation? tokenParticipation = null;
+                if (!string.IsNullOrEmpty(token))
                 {
-                    // Check by Team Token
-                    participation = await context.Participations
+                     tokenParticipation = await context.Participations
                         .Include(p => p.Team)
                         .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Token == token, cancellationToken);
+                }
+
+                // If not logged in, fallback to token participation
+                if (participation == null && tokenParticipation != null)
+                {
+                    participation = tokenParticipation;
                 }
 
                 if (participation == null)
                     continue;
 
                 string downloadSource = "Unknown";
+                string abuseTag = "";
                 
                 if (user?.Identity?.IsAuthenticated == true)
+                {
                         downloadSource = $"User {user.Identity.Name}";
+                        
+                        // Detect Token Abuse: Authenticated user using another team's token
+                        if (tokenParticipation != null && tokenParticipation.Id != participation.Id)
+                        {
+                            abuseTag = $" [Token Abuse: {tokenParticipation.Team?.Name ?? "Unknown"}]";
+                        }
+                }
                 else if (secureTokenHash != null && userId != null) // It was a secure token
                 {
                         var userInfo = await context.Users.FindAsync(new object[] { userId }, cancellationToken);
@@ -311,7 +328,7 @@ public class AssetsController(
                     {
                         challenge.Id.ToString(),
                         "Attachment Download",
-                        $"{downloadSource} from team {participation.Team?.Name ?? "Unknown"} downloaded attachment for challenge {challenge.Title}.",
+                        $"{downloadSource} from team {participation.Team?.Name ?? "Unknown"} downloaded attachment for challenge {challenge.Title}.{abuseTag}",
                         ipAddress
                     }
                 };

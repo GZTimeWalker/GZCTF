@@ -527,6 +527,74 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.Contains(report.IpAnalysis, i => i.Type == "SharedIP" && i.Ip == ip);
     }
 
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectTokenAbuse()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "TokenAbuse Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Victim Chal", "flag{token}");
+        
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        chal!.Attachment = new Attachment 
+        { 
+            Type = FileType.Local, 
+            LocalFile = new LocalFile { Name = "secret.txt", FileSize = 10, Hash = "secrethash" }
+        };
+        await context.SaveChangesAsync();
+        
+        // Victim Team
+        var uVictim = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tVictim = await TestDataSeeder.CreateTeamAsync(factory.Services, uVictim.Id, "Victims");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tVictim.Id, uVictim.Id);
+
+        // Attacker Team
+        var uAttacker = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tAttacker = await TestDataSeeder.CreateTeamAsync(factory.Services, uAttacker.Id, "Attackers");
+        var pAttacker = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tAttacker.Id, uAttacker.Id);
+
+        var timeBase = DateTimeOffset.UtcNow.AddMinutes(-10);
+
+        // Simulate Download by Attacker using Victim's token
+        // AssetsController would log this with the abuse tag
+        await context.GameEvents.AddAsync(new GameEvent
+        {
+            GameId = game.Id,
+            Type = EventType.Download,
+            TeamId = tAttacker.Id, // Attributed to Attacker
+            UserId = uAttacker.Id,
+            PublishTimeUtc = timeBase,
+            Values = [
+                chal.Id.ToString(), 
+                "Attachment Download", 
+                $"User {uAttacker.UserName} from team {tAttacker.Name} downloaded attachment for challenge {chal.Title}. [Token Abuse: {tVictim.Name}]", 
+                "10.0.0.99"
+            ]
+        });
+
+        // Attacker Solves
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, tAttacker.Id, pAttacker.Id, uAttacker.Id, timeBase.AddMinutes(5)));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        
+        // 1. Verify Token Abuse is detected
+        Assert.Contains(report.IpAnalysis, i => i.TeamId == tAttacker.Id && i.Type == "TokenAbuse" && i.Details.Contains(tVictim.Name));
+        
+        // 2. Verify NO "NoDownload" flag for Attacker (Logic Correctness Check)
+        // Since the download was attributed to Attacker (despite using stolen token), they shouldn't be flagged for NoDownload.
+        Assert.DoesNotContain(report.AbnormalSolves, s => s.TeamId == tAttacker.Id && s.Type == "NoDownload");
+    }
+
     private JsonSerializerOptions GetJsonOptions()
     {
         var options = new JsonSerializerOptions();

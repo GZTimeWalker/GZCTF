@@ -177,8 +177,21 @@ public class CheatReportController(
                 
                 // Extract challenge title from description for reporting (Values[2])
                 var description = evt.Values[2];
-                var match = Regex.Match(description, @"for challenge (.+?)\.$");
+                var match = Regex.Match(description, @"for challenge (.+?)\.");
                 var challengeTitle = match.Success ? match.Groups[1].Value : "Unknown";
+
+                if (description.Contains("[Token Abuse:")) 
+                {
+                     report.IpAnalysis.Add(new IpAnalysisResult
+                     {
+                         TeamId = evt.TeamId,
+                         TeamName = evt.TeamName,
+                         Type = "TokenAbuse",
+                         Ip = ipStr,
+                         Details = $"Used stolen token. {description}",
+                         Time = evt.PublishTimeUtc
+                     });
+                }
 
                 // Check if this IP belongs to another team
                 if (ipToTeams.TryGetValue(ipStr, out var teamsWithThisIp))
