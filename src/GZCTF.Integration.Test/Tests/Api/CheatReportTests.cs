@@ -706,6 +706,81 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.Contains(report.IpAnalysis, i => i.TeamId == tAttacker.Id && i.Type == "TokenAbuse" && i.Details.Contains(tVictim.Name));
     }
 
+    [Fact]
+    public async Task GetCheatReport_ShouldNotFlagLegitimateDownloads()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dpProvider = scope.ServiceProvider.GetRequiredService<IDataProtectionProvider>();
+        var protector = dpProvider.CreateProtector("GZCTF.Assets.Download");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "LegitDownload Game " + TestDataSeeder.RandomName());
+        var chal = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Legit Chal", "flag{legit}");
+        
+        // Setup Team and User
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "LegitTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        // Upload File
+        using var ms = new MemoryStream([1, 2, 3]);
+        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, 3, "file", "legit.txt");
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+        var blobRes = await blobService.CreateOrUpdateBlob(formFile, "legit.txt", CancellationToken.None);
+        var fileHash = blobRes.Hash;
+
+        var localFile = new LocalFile 
+        { 
+            Hash = fileHash, 
+            Name = "legit.txt",
+            FileSize = 3
+        };
+        context.Files.Add(localFile);
+        
+        var attachment = new Attachment 
+        { 
+            LocalFile = localFile, 
+            Type = FileType.Local, // GZCTF.Models.Data.FileType.Local
+            RemoteUrl = null
+        };
+        context.Attachments.Add(attachment);
+        await context.SaveChangesAsync();
+        
+        var dbChal = await context.GameChallenges.FindAsync(chal.Id);
+        dbChal.AttachmentId = attachment.Id;
+        await context.SaveChangesAsync();
+
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
+
+        // Scenario 1: Normal Download (No Token, Cookie Auth)
+        var res1 = await client.GetAsync($"/Assets/{fileHash}/legit.txt");
+        Assert.Equal(HttpStatusCode.OK, res1.StatusCode);
+
+        // Scenario 2: Static Team Token
+        var participation = await context.Participations.FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
+        var res2 = await client.GetAsync($"/Assets/{fileHash}/legit.txt?token={participation.Token}");
+        Assert.Equal(HttpStatusCode.OK, res2.StatusCode);
+
+        // Scenario 3: Secure Owner Token
+        var expiry = DateTimeOffset.UtcNow.AddHours(1).Ticks;
+        var payload = $"v1|{fileHash}|{user.Id}|{expiry}";
+        var tokenBytes = protector.Protect(System.Text.Encoding.UTF8.GetBytes(payload));
+        var secureToken = WebEncoders.Base64UrlEncode(tokenBytes);
+        
+        var res3 = await client.GetAsync($"/Assets/{fileHash}/s/{secureToken}/legit.txt");
+        Assert.Equal(HttpStatusCode.OK, res3.StatusCode);
+
+        // Verify NO Abuse Logs
+        var reportResponse = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        reportResponse.EnsureSuccessStatusCode();
+        var report = await reportResponse.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        // Should be no TokenAbuse entries for this team
+        Assert.DoesNotContain(report.IpAnalysis, i => i.TeamId == team.Id && i.Type == "TokenAbuse");
+    }
+
     private JsonSerializerOptions GetJsonOptions()
     {
         var options = new JsonSerializerOptions();
