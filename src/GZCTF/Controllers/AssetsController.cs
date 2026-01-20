@@ -351,7 +351,6 @@ public class AssetsController(
                 };
 
                 await eventRepository.AddEvent(evt, cancellationToken);
-                return;
             }
         }
         catch (Exception ex)

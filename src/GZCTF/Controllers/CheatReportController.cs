@@ -170,46 +170,49 @@ public class CheatReportController(
         {
             if (evt.Values == null || evt.Values.Count < 4) continue;
             var dlIp = evt.Values[3];
+            var description = evt.Values[2];
+            var ipStr = dlIp; // Default to raw string
+
+            // Token Abuse Detection (Independent of IP Validity)
+            if (description.Contains("[Token Source:")) 
+            {
+                 // Parse readable details
+                 // Log format: "User {Attacker} from team {AttackerTeam} downloaded ... [Token Source: {Source}]"
+                 var attackerMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
+                 var sourceMatch = Regex.Match(description, @"\[Token Source: (.+?)\]");
+                 
+                 var detailedMsg = "Used stolen token.";
+                 if (attackerMatch.Success && sourceMatch.Success) 
+                 {
+                     var attackerName = attackerMatch.Groups[1].Value;
+                     var attackerTeam = attackerMatch.Groups[2].Value;
+                     var sourceInfo = sourceMatch.Groups[1].Value;
+                     detailedMsg = $"{attackerName} (Team: {attackerTeam}) used a token belonging to {sourceInfo}.";
+                 }
+                 else
+                 {
+                     detailedMsg = $"Token Abuse Detected. {description}";
+                 }
+
+                 report.IpAnalysis.Add(new IpAnalysisResult
+                 {
+                     TeamId = evt.TeamId,
+                     TeamName = evt.TeamName,
+                     Type = "TokenAbuse",
+                     Ip = dlIp,
+                     Details = detailedMsg,
+                     Time = evt.PublishTimeUtc
+                 });
+            }
             
             if (dlIp != "Unknown" && IPAddress.TryParse(dlIp, out var ipAddr)) 
             {
-                var ipStr = ipAddr.ToString();
+                ipStr = ipAddr.ToString();
                 
                 // Extract challenge title from description for reporting (Values[2])
-                var description = evt.Values[2];
+                // description already extracted above
                 var match = Regex.Match(description, @"for challenge (.+?)\.");
                 var challengeTitle = match.Success ? match.Groups[1].Value : "Unknown";
-
-                if (description.Contains("[Token Source:")) 
-                {
-                     // Parse readable details
-                     // Log format: "User {Attacker} from team {AttackerTeam} downloaded ... [Token Source: {Source}]"
-                     var attackerMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
-                     var sourceMatch = Regex.Match(description, @"\[Token Source: (.+?)\]");
-                     
-                     var detailedMsg = "Used stolen token.";
-                     if (attackerMatch.Success && sourceMatch.Success) 
-                     {
-                         var attackerName = attackerMatch.Groups[1].Value;
-                         var attackerTeam = attackerMatch.Groups[2].Value;
-                         var sourceInfo = sourceMatch.Groups[1].Value;
-                         detailedMsg = $"{attackerName} (Team: {attackerTeam}) used a token belonging to {sourceInfo}.";
-                     }
-                     else
-                     {
-                         detailedMsg = $"Token Abuse Detected. {description}";
-                     }
-
-                     report.IpAnalysis.Add(new IpAnalysisResult
-                     {
-                         TeamId = evt.TeamId,
-                         TeamName = evt.TeamName,
-                         Type = "TokenAbuse",
-                         Ip = ipStr,
-                         Details = detailedMsg,
-                         Time = evt.PublishTimeUtc
-                     });
-                }
 
                 // Check if this IP belongs to another team
                 if (ipToTeams.TryGetValue(ipStr, out var teamsWithThisIp))
