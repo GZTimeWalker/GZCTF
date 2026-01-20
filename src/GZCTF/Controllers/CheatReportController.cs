@@ -250,7 +250,7 @@ public class CheatReportController(
             // Check 4: Solve Before Download
             // Flags attempts to solve an attachment-based challenge without ever downloading the file.
             // This suggests the answer was shared or obtained externally.
-            if (chal.Type.IsAttachment() && chal.AttachmentId != null)
+            if (chal.AttachmentId != null)
             {
                 var key = (sub.TeamId, sub.ChallengeId);
                 var hasDownload = teamDownloads.TryGetValue(key, out var dls) && dls.Any(d => d < sub.SubmitTimeUtc);

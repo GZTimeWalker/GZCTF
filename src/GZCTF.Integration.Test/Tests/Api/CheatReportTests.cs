@@ -11,6 +11,7 @@ using Xunit;
 using Xunit.Abstractions;
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using GZCTF.Extensions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
@@ -430,6 +431,65 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task GetCheatReport_ShouldDetectNoDownload_Container()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "NoDL Container " + TestDataSeeder.RandomName());
+        
+        // Dynamic Challenge usually means Container
+        var chalSeeded = await TestDataSeeder.CreateDynamicChallengeAsync(factory.Services, game.Id, "Mix Chal");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        
+        // Add attachment to Container challenge
+        chal!.Attachment = new Attachment 
+        { 
+            Type = FileType.Local, 
+            LocalFile = new LocalFile 
+            { 
+               Name = "source.zip",
+               FileSize = 200,
+               Hash = "sourcehash"
+            }
+        };
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "MixSolvers");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var timeBase = DateTimeOffset.UtcNow;
+
+        // Container Start Logged
+        await context.GameEvents.AddAsync(new GameEvent
+        {
+            GameId = game.Id,
+            Type = EventType.ContainerStart,
+            TeamId = team.Id,
+            UserId = user.Id,
+            PublishTimeUtc = timeBase.AddMinutes(-5),
+            Values = [chal.Id.ToString()]
+        });
+
+        // Solve WITHOUT Download Log
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, timeBase));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        // This is expected to FAIL before the fix
+        Assert.Contains(report.AbnormalSolves, s => s.TeamId == team.Id && s.Type == "NoDownload");
+    }
+
+    [Fact]
     public async Task GetCheatReport_ShouldDetectSharedIP()
     {
         using var scope = factory.Services.CreateScope();
@@ -472,6 +532,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         var options = new JsonSerializerOptions();
         options.Converters.Add(new DateTimeOffsetJsonConverter());
         options.Converters.Add(new IPAddressJsonConverter());
+        options.Converters.Add(new JsonStringEnumConverter());
         return options;
     }
 
