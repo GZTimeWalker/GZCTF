@@ -46,8 +46,7 @@ public class GameEventRepository(
             {
                 data = Context.GameEvents.FromSqlInterpolated($@"
                     SELECT ge.* FROM ""GameEvents"" ge
-                    LEFT JOIN ""Participations"" p ON ge.""TeamId"" = p.""Id""
-                    LEFT JOIN ""Teams"" t ON p.""TeamId"" = t.""Id""
+                    LEFT JOIN ""Teams"" t ON ge.""TeamId"" = t.""Id""
                     LEFT JOIN ""AspNetUsers"" u ON ge.""UserId"" = u.""Id""
                     WHERE ge.""GameId"" = {gameId}
                     AND ge.""Type"" != {(int)EventType.ContainerStart}
@@ -57,14 +56,13 @@ public class GameEventRepository(
                         OR u.""UserName"" ILIKE {"%" + search + "%"}
                         OR array_to_string(ge.""Values"", ' ') ILIKE {"%" + search + "%"}
                     )
-                    )");
+                    ");
             }
             else
             {
                 data = Context.GameEvents.FromSqlInterpolated($@"
                     SELECT ge.* FROM ""GameEvents"" ge
-                    LEFT JOIN ""Participations"" p ON ge.""TeamId"" = p.""Id""
-                    LEFT JOIN ""Teams"" t ON p.""TeamId"" = t.""Id""
+                    LEFT JOIN ""Teams"" t ON ge.""TeamId"" = t.""Id""
                     LEFT JOIN ""AspNetUsers"" u ON ge.""UserId"" = u.""Id""
                     WHERE ge.""GameId"" = {gameId}
                     AND (

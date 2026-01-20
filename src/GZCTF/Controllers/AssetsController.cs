@@ -303,7 +303,7 @@ public class AssetsController(
                 var evt = new GameEvent
                 {
                     GameId = challenge.GameId,
-                    TeamId = participation.Id,
+                    TeamId = participation.TeamId,
                     UserId = userId, // Can be null if using static token
                     Type = EventType.Download,
                     PublishTimeUtc = DateTimeOffset.UtcNow,
