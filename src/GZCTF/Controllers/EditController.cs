@@ -160,8 +160,8 @@ public class EditController(
     [RequireUser]
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGames([FromQuery][Range(0, 100)] int count, [FromQuery] int skip,
-        [FromServices] AppDbContext dbContext, CancellationToken token)
+    public async Task<IActionResult> GetGames([FromQuery][Range(0, 100)] int count = 20, [FromQuery] int skip = 0,
+        [FromServices] AppDbContext dbContext = null!, CancellationToken token = default)
     {
         var user = await userManager.GetUserAsync(User);
         if (user is null)
@@ -1183,8 +1183,8 @@ public class EditController(
     [HttpGet("Games/{id:int}/Reviews")]
     [ProducesResponseType(typeof(ArrayResponse<ChallengeReviewDetailModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetReviews([FromRoute] int id, [FromQuery][Range(0, 100)] int count, [FromQuery] int skip,
-        [FromQuery] string? search, [FromQuery] ReviewRating? rating, [FromServices] IChallengeReviewRepository repository, CancellationToken token)
+    public async Task<IActionResult> GetReviews([FromRoute] int id, [FromQuery][Range(0, 100)] int count = 20, [FromQuery] int skip = 0,
+        [FromQuery] string? search = null, [FromQuery] ReviewRating? rating = null, [FromServices] IChallengeReviewRepository repository = null!, CancellationToken token = default)
     {
         var game = await gameRepository.GetGameById(id, token);
 
