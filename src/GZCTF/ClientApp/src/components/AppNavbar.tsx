@@ -115,7 +115,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
   }, [location.pathname])
 
   const links = items
-    .filter((m) => !m.admin || user?.role === Role.Admin)
+    .filter((m) => !m.admin || user?.role === Role.Admin || user?.hasManagedGames)
     .map((link) => <NavbarLink key={link.label} {...link} isActive={link.label === active} />)
 
   const loggedIn = user && !error

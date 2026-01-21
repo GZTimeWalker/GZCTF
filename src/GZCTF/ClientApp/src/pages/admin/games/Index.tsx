@@ -34,7 +34,8 @@ import { GameCreateModal } from '@Components/admin/GameCreateModal'
 import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import { getGameStatus } from '@Hooks/useGame'
-import api, { GameInfoModel } from '@Api'
+import { useUser } from '@Hooks/useUser'
+import api, { GameInfoModel, Role } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import tableClasses from '@Styles/Table.module.css'
 import uploadClasses from '@Styles/Upload.module.css'
@@ -48,6 +49,7 @@ const Games: FC = () => {
   const [progress, setProgress] = useState(0)
   const { data: games, total, setData: setGames, updateData: updateGames } = useArrayResponse<GameInfoModel>()
   const [current, setCurrent] = useState(0)
+  const { user } = useUser()
 
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -141,33 +143,37 @@ const Games: FC = () => {
       head={
         <>
           <Group gap="md" wrap="nowrap">
-            <Button leftSection={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
-              {t('admin.button.games.new')}
-            </Button>
-            <FileButton onChange={onImportGame} accept="application/zip">
-              {(props) => (
-                <Button
-                  {...props}
-                  leftSection={<Icon path={mdiUpload} size={1} />}
-                  className={uploadClasses.button}
-                  disabled={disabled}
-                  color={progress !== 0 ? 'cyan' : theme.primaryColor}
-                  variant="outline"
-                >
-                  <div className={uploadClasses.label}>
-                    {progress !== 0 ? t('admin.notification.games.import.importing') : t('admin.button.games.import')}
-                  </div>
-                  {progress !== 0 && (
-                    <Progress
-                      value={progress}
-                      className={uploadClasses.progress}
-                      color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
-                      radius="sm"
-                    />
-                  )}
+            {user?.role === Role.Admin && (
+              <>
+                <Button leftSection={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
+                  {t('admin.button.games.new')}
                 </Button>
-              )}
-            </FileButton>
+                <FileButton onChange={onImportGame} accept="application/zip">
+                  {(props) => (
+                    <Button
+                      {...props}
+                      leftSection={<Icon path={mdiUpload} size={1} />}
+                      className={uploadClasses.button}
+                      disabled={disabled}
+                      color={progress !== 0 ? 'cyan' : theme.primaryColor}
+                      variant="outline"
+                    >
+                      <div className={uploadClasses.label}>
+                        {progress !== 0 ? t('admin.notification.games.import.importing') : t('admin.button.games.import')}
+                      </div>
+                      {progress !== 0 && (
+                        <Progress
+                          value={progress}
+                          className={uploadClasses.progress}
+                          color={alpha(theme.colors[theme.primaryColor][2], 0.35)}
+                          radius="sm"
+                        />
+                      )}
+                    </Button>
+                  )}
+                </FileButton>
+              </>
+            )}
           </Group>
           <Group w="calc(100% - 9rem)" justify="right">
             <Text fw="bold" size="sm">

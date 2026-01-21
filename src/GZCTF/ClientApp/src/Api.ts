@@ -356,6 +356,8 @@ export interface ProfileUserInfoModel {
   stdNumber?: string | null;
   /** Avatar URL */
   avatar?: string | null;
+  /** Has managed games */
+  hasManagedGames?: boolean;
 }
 
 /** Global configuration update */
@@ -2742,6 +2744,41 @@ export class Api<
   };
   admin = {
     /**
+     * @description Get all users
+     *
+     * @tags Admin
+     * @name AdminGetUsers
+     * @summary Get all users
+     * @request GET:/api/admin/users
+     */
+    adminGetUsers: (
+      query?: {
+        /**
+         * @format int32
+         * @min 0
+         * @max 500
+         * @default 100
+         */
+        count?: number;
+        /**
+         * @format int32
+         * @default 0
+         */
+        skip?: number;
+        /** Search query */
+        search?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<UserInfoModel[], any>({
+        path: `/api/admin/users`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Use this API to add users in batch, requires Admin permission
      *
      * @tags Admin
@@ -3816,6 +3853,56 @@ export class Api<
     ) => mutate<CheatReport>(`/api/game/${id}/cheatreport`, data, options),
   };
   edit = {
+    /**
+     * @description Get game admins
+     *
+     * @tags Edit
+     * @name EditGetGameAdmins
+     * @summary Get game admins
+     * @request GET:/api/edit/games/{id}/admins
+     */
+    editGetGameAdmins: (id: number, params: RequestParams = {}) =>
+      this.request<ProfileUserInfoModel[], any>({
+        path: `/api/edit/games/${id}/admins`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Add game admin
+     *
+     * @tags Edit
+     * @name EditAddGameAdmin
+     * @summary Add game admin
+     * @request POST:/api/edit/games/{id}/admins/{userId}
+     */
+    editAddGameAdmin: (id: number, userId: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/edit/games/${id}/admins/${userId}`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * @description Remove game admin
+     *
+     * @tags Edit
+     * @name EditRemoveGameAdmin
+     * @summary Remove game admin
+     * @request DELETE:/api/edit/games/{id}/admins/{userId}
+     */
+    editRemoveGameAdmin: (
+      id: number,
+      userId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/edit/games/${id}/admins/${userId}`,
+        method: "DELETE",
+        ...params,
+      }),
+
     /**
      * @description Adding a game challenge flag requires administrator privileges
      *

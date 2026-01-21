@@ -11,8 +11,10 @@ using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Transfer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using NSwag.Annotations;
+using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Response.Admin;
 
 namespace GZCTF.Controllers;
@@ -20,7 +22,7 @@ namespace GZCTF.Controllers;
 /// <summary>
 /// Data Modification APIs
 /// </summary>
-[RequireAdmin]
+
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
@@ -52,6 +54,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully added post</response>
+    [RequireAdmin]
     [HttpPost("Posts")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     public async Task<IActionResult> AddPost([FromBody] PostEditModel model, CancellationToken token)
@@ -72,6 +75,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <response code="200">Successfully updated post</response>
     /// <response code="404">Post not found</response>
+    [RequireAdmin]
     [HttpPut("Posts/{id}")]
     [ProducesResponseType(typeof(PostDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -100,6 +104,7 @@ public class EditController(
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted post</response>
     /// <response code="404">Post not found</response>
+    [RequireAdmin]
     [HttpDelete("Posts/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -125,6 +130,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully added game</response>
+    [RequireAdmin]
     [HttpPost("Games")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -144,19 +150,52 @@ public class EditController(
     /// Get Game List
     /// </summary>
     /// <remarks>
-    /// Retrieving the game list requires administrator privileges
+    /// Retrieving the game list requires administrator privileges or event admin privileges
     /// </remarks>
     /// <param name="count"></param>
     /// <param name="skip"></param>
+    /// <param name="dbContext"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game list</response>
+    [RequireUser]
     [HttpGet("Games")]
     [ProducesResponseType(typeof(ArrayResponse<GameInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames([FromQuery][Range(0, 100)] int count, [FromQuery] int skip,
-        CancellationToken token) =>
-        Ok((await gameRepository.GetGames(count, skip, token))
-            .Select(GameInfoModel.FromGame)
-            .ToResponse(await gameRepository.CountAsync(token)));
+        [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user is null)
+            return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Auth_LoginRequired)],
+                StatusCodes.Status401Unauthorized));
+
+        if (user.Role == Role.Admin)
+        {
+            var games = await gameRepository.GetGames(count, skip, token);
+            var total = await gameRepository.CountAsync(token);
+            return Ok(games.Select(GameInfoModel.FromGame).ToResponse(total));
+        }
+        else
+        {
+            var managerGameIds = await dbContext.EventManagers
+                .Where(e => e.UserId == user.Id)
+                .Select(e => e.GameId)
+                .ToArrayAsync(token);
+            
+            if (managerGameIds.Length == 0)
+                 return Forbid();
+
+            var games = await dbContext.Games
+                .Where(g => managerGameIds.Contains(g.Id))
+                .OrderByDescending(g => g.StartTimeUtc)
+                .Skip(skip)
+                .Take(count)
+                .ToArrayAsync(token);
+            
+            var total = managerGameIds.Length;
+
+            return Ok(games.Select(GameInfoModel.FromGame).ToResponse(total));
+        }
+    }
 
     /// <summary>
     /// Get Game
@@ -167,6 +206,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -191,6 +231,7 @@ public class EditController(
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game hash salt</response>
     [OpenApiIgnore]
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/HashSalt")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -215,6 +256,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully updated game</response>
+    [RequireGameAdmin]
     [HttpPut("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -242,6 +284,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted game</response>
+    [RequireAdmin]
     [HttpDelete("Games/{id:int}")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -271,6 +314,7 @@ public class EditController(
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted game WriteUps</response>
+    [RequireAdmin]
     [HttpDelete("Games/{id:int}/WriteUps")]
     [ProducesResponseType(typeof(GameInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -296,6 +340,7 @@ public class EditController(
     /// <response code="200">Game poster URL</response>
     /// <response code="400">Invalid request</response>
     /// <response code="401">Unauthorized user</response>
+    [RequireGameAdmin]
     [HttpPut("Games/{id:int}/Poster")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -337,6 +382,7 @@ public class EditController(
     /// <param name="model">Notice content</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully added game notice</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -370,6 +416,7 @@ public class EditController(
     /// <param name="id">Game ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game notices</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/Notices")]
     [ProducesResponseType(typeof(GameNotice[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -395,6 +442,7 @@ public class EditController(
     /// <param name="model">Notice content</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully updated notice</response>
+    [RequireGameAdmin]
     [HttpPut("Games/{id:int}/Notices/{noticeId:int}")]
     [ProducesResponseType(typeof(GameNotice), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -425,6 +473,7 @@ public class EditController(
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted post</response>
     /// <response code="404">Post not found</response>
+    [RequireGameAdmin]
     [HttpDelete("Games/{id:int}/Notices/{noticeId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -457,6 +506,7 @@ public class EditController(
     /// <param name="model">Division information</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully created division</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Divisions")]
     [ProducesResponseType(typeof(Division), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -482,6 +532,7 @@ public class EditController(
     /// <param name="id">Game ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved divisions</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/Divisions")]
     [ProducesResponseType(typeof(Division[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -507,6 +558,7 @@ public class EditController(
     /// <param name="model">Division information</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully updated division</response>
+    [RequireGameAdmin]
     [HttpPut("Games/{id:int}/Divisions/{divisionId:int}")]
     [ProducesResponseType(typeof(Division), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -533,6 +585,7 @@ public class EditController(
     /// <param name="divisionId">Division ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted division</response>
+    [RequireGameAdmin]
     [HttpDelete("Games/{id:int}/Divisions/{divisionId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -559,6 +612,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully added game challenge</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -586,6 +640,7 @@ public class EditController(
     /// <param name="id">Game ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game challenges</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/Challenges")]
     [ProducesResponseType(typeof(ChallengeInfoModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGameChallenges([FromRoute] int id, CancellationToken token)
@@ -611,6 +666,7 @@ public class EditController(
     /// <param name="id">Game ID</param>
     /// <param name="token"></param>
     /// <response code="200"></response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Scoreboard/Flush")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> FlushScoreboardCache([FromRoute] int id, CancellationToken token)
@@ -629,6 +685,7 @@ public class EditController(
     /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved game challenge</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -664,6 +721,7 @@ public class EditController(
     /// <param name="model">Challenge information</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully updated game challenge</response>
+    [RequireGameAdmin]
     [HttpPut("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(typeof(ChallengeEditDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -753,6 +811,7 @@ public class EditController(
     /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully started game challenge container</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Challenges/{cId:int}/Container")]
     [ProducesResponseType(typeof(ContainerInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -813,6 +872,7 @@ public class EditController(
     /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully destroyed game challenge container</response>
+    [RequireGameAdmin]
     [HttpDelete("Games/{id:int}/Challenges/{cId:int}/Container")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -843,6 +903,7 @@ public class EditController(
     /// <param name="cId">Challenge ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted game challenge</response>
+    [RequireGameAdmin]
     [HttpDelete("Games/{id:int}/Challenges/{cId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -874,6 +935,7 @@ public class EditController(
     /// <param name="model"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully updated game challenge</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Challenges/{cId:int}/Attachment")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -906,6 +968,7 @@ public class EditController(
     /// <param name="models"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully added game challenge flags</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Challenges/{cId:int}/Flags")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -934,6 +997,7 @@ public class EditController(
     /// <param name="fId">Flag ID</param>
     /// <param name="token"></param>
     /// <response code="200">Successfully deleted game challenge flag</response>
+    [RequireGameAdmin]
     [HttpDelete("Games/{id:int}/Challenges/{cId:int}/Flags/{fId:int}")]
     [ProducesResponseType(typeof(TaskStatus), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -962,6 +1026,7 @@ public class EditController(
     /// <response code="400">Invalid operation</response>
     /// <response code="404">Game not found</response>
     /// <response code="500">Internal server error during export</response>
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Export")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -1023,6 +1088,7 @@ public class EditController(
     /// <response code="200">Successfully imported game, returns game ID</response>
     /// <response code="400">Invalid package or import failed</response>
     /// <response code="500">Internal server error during import</response>
+    [RequireAdmin]
     [HttpPost("Games/Import")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -1113,6 +1179,7 @@ public class EditController(
     /// <param name="repository"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved challenge reviews</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/Reviews")]
     [ProducesResponseType(typeof(ArrayResponse<ChallengeReviewDetailModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -1138,6 +1205,7 @@ public class EditController(
     /// <param name="repository"></param>
     /// <param name="token"></param>
     /// <response code="200">Successfully retrieved analytics</response>
+    [RequireGameAdmin]
     [HttpGet("Games/{id:int}/Reviews/Analytics")]
     [ProducesResponseType(typeof(ReviewAnalyticsModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -1153,5 +1221,103 @@ public class EditController(
         var analytics = await repository.GetAnalyticsAsync(id, token);
 
         return Ok(analytics);
+    }
+
+    /// <summary>
+    /// Get Event Admins
+    /// </summary>
+    /// <remarks>
+    /// Get all event admins for a game; requires Admin permission
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="dbContext"></param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved event admins</response>
+    [HttpGet("Games/{id:int}/Admins")]
+    [RequireAdmin]
+    [ProducesResponseType(typeof(UserInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEventAdmins([FromRoute] int id, [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var admins = await dbContext.EventManagers
+            .Where(e => e.GameId == id)
+            .Include(e => e.User)
+            .Select(e => e.User)
+            .ToArrayAsync(token);
+
+        return Ok(admins.Select(UserInfoModel.FromUserInfo));
+    }
+
+    /// <summary>
+    /// Add Event Admin
+    /// </summary>
+    /// <remarks>
+    /// Add an event admin for a game; requires Admin permission
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="userId">User ID</param>
+    /// <param name="dbContext"></param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully added event admin</response>
+    [HttpPost("Games/{id:int}/Admins/{userId:guid}")]
+    [RequireAdmin]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddEventAdmin([FromRoute] int id, [FromRoute] Guid userId, [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
+                StatusCodes.Status404NotFound));
+        
+        if (await dbContext.EventManagers.AnyAsync(e => e.GameId == id && e.UserId == userId, token))
+            return Ok();
+
+        dbContext.EventManagers.Add(new EventManager { GameId = id, UserId = userId });
+        await dbContext.SaveChangesAsync(token);
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Remove Event Admin
+    /// </summary>
+    /// <remarks>
+    /// Remove an event admin from a game; requires Admin permission
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="userId">User ID</param>
+    /// <param name="dbContext"></param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully removed event admin</response>
+    [HttpDelete("Games/{id:int}/Admins/{userId:guid}")]
+    [RequireAdmin]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveEventAdmin([FromRoute] int id, [FromRoute] Guid userId, [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var manager = await dbContext.EventManagers.FirstOrDefaultAsync(e => e.GameId == id && e.UserId == userId, token);
+        if (manager is null)
+             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
+                StatusCodes.Status404NotFound));
+
+        dbContext.EventManagers.Remove(manager);
+        await dbContext.SaveChangesAsync(token);
+
+        return Ok();
     }
 }

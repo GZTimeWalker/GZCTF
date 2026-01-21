@@ -7,7 +7,7 @@ import { Role } from '@Api'
 export const AdminPage: FC<AdminTabProps> = (props) => {
   return (
     <WithNavBar width="90%" minWidth={1080}>
-      <WithRole requiredRole={Role.Admin}>
+      <WithRole requiredRole={Role.Admin} allowEventAdmin>
         <WithAdminTab {...props} />
       </WithRole>
     </WithNavBar>

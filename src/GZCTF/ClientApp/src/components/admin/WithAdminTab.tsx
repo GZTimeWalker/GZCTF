@@ -12,6 +12,8 @@ import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router'
 import { IconTabs } from '@Components/IconTabs'
+import { useUser } from '@Hooks/useUser'
+import { Role } from '@Api'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { usePageTitle } from '@Hooks/usePageTitle'
 
@@ -39,7 +41,13 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
     { icon: mdiFileDocumentOutline, title: t('admin.tab.logs'), path: 'logs' },
     { icon: mdiSitemapOutline, title: t('admin.tab.settings'), path: 'settings' },
   ]
-  const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
+
+  const { user } = useUser()
+  const filteredPages = pages.filter(
+    (page) => user?.role === Role.Admin || (user?.hasManagedGames && page.path === 'games')
+  )
+
+  const getTab = (path: string) => filteredPages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
   const tabIndex = getTab(location.pathname)
   const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
 
@@ -53,11 +61,11 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
     if (tab >= 0) {
       setActiveTab(tab)
     } else {
-      navigate(pages[0].path)
+      navigate(filteredPages[0]?.path ?? '/')
     }
   }, [location])
 
-  usePageTitle(pages[tabIndex].title)
+  usePageTitle(filteredPages[tabIndex]?.title)
 
   return (
     <Stack gap="xs" align="center" pt="md">
@@ -65,7 +73,7 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
         withIcon
         active={activeTab}
         onTabChange={onChange}
-        tabs={pages.map((p) => ({
+        tabs={filteredPages.map((p) => ({
           tabKey: p.path,
           label: p.title,
           icon: <Icon path={p.icon} size={1} />,

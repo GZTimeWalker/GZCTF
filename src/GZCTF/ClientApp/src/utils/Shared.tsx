@@ -590,7 +590,7 @@ export class ClientError {
   constructor(
     public title: string,
     public message: string
-  ) {}
+  ) { }
 }
 
 /** 系统错误信息 */
@@ -648,6 +648,15 @@ export const showErrorMsg = (err: any, t: (key: string) => string) => {
   console.warn(err)
   const clientError = tryGetClientError(err, t)
   showErrorNotification(clientError.title, clientError.message)
+}
+
+export const showSuccessMsg = (message: string, title?: string) => {
+  showNotification({
+    color: 'teal',
+    title,
+    message,
+    icon: <Icon path={mdiCheck} size={1} />,
+  })
 }
 
 export const getInputNumber = (value: string | number, float?: boolean): number => {

@@ -800,7 +800,7 @@ public class GameController(
     /// <response code="200">Successfully retrieved game participation information</response>
     /// <response code="400">Invalid operation</response>
     /// <response code="404">Game not found</response>
-    [RequireAdmin]
+    [RequireGameAdmin]
     [HttpGet("{id:int}/Participations")]
     [ProducesResponseType(typeof(ParticipationInfoModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]

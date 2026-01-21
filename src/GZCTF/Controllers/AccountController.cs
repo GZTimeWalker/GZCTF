@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Controllers;
 
@@ -514,11 +515,13 @@ public class AccountController(
     [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Profile([FromServices] AppDbContext dbContext)
     {
         var user = await userManager.GetUserAsync(User);
+        var model = ProfileUserInfoModel.FromUserInfo(user!);
+        model.HasManagedGames = await dbContext.EventManagers.AnyAsync(e => e.UserId == user!.Id);
 
-        return Ok(ProfileUserInfoModel.FromUserInfo(user!));
+        return Ok(model);
     }
 
     /// <summary>

@@ -42,6 +42,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
     public DbSet<ChallengeReview> ChallengeReviews { get; set; } = null!;
+    public DbSet<EventManager> EventManagers { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -80,6 +81,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<EventManager>(entity =>
+        {
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<Game>(entity =>

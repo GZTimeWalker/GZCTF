@@ -61,6 +61,12 @@ public class ProfileUserInfoModel
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
             StdNumber = user.StdNumber,
-            Role = user.Role
+            Role = user.Role,
+            HasManagedGames = false // Placeholder, logic needs to be in Controller
         };
+
+    /// <summary>
+    /// Whether the user has managed games
+    /// </summary>
+    public bool HasManagedGames { get; set; }
 }

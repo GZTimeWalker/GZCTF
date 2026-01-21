@@ -8,11 +8,14 @@ import {
   mdiTagOutline,
   mdiTextBoxOutline,
   mdiCommentTextOutline,
+  mdiAccountKey,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, Link, useNavigate, useParams } from 'react-router'
+import { useUser } from '@Hooks/useUser'
+import { Role } from '@Api'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import misc from '@Styles/Misc.module.css'
@@ -37,16 +40,19 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
   const location = useLocation()
   const { id } = useParams()
   const { t } = useTranslation()
+  const { user } = useUser()
+  const isAdmin = user?.role === Role.Admin
 
   const pages = [
+    { icon: mdiAccountKey, title: t('admin.tab.games.managers', 'Managers'), path: 'managers', adminOnly: true },
     { icon: mdiTextBoxOutline, title: t('admin.tab.games.info'), path: 'info' },
     { icon: mdiBullhornOutline, title: t('admin.tab.games.notices'), path: 'notices' },
     { icon: mdiFlagOutline, title: t('admin.tab.games.challenges'), path: 'challenges' },
     { icon: mdiTagOutline, title: t('admin.tab.games.divisions'), path: 'divisions' },
     { icon: mdiAccountGroupOutline, title: t('admin.tab.games.review'), path: 'review' },
-    { icon: mdiCommentTextOutline, title: t('admin.title.challenge_reviews', "Reviews"), path: 'challengereviews' },
+    { icon: mdiCommentTextOutline, title: t('admin.title.challenge_reviews', 'Reviews'), path: 'challengereviews' },
     { icon: mdiFileDocumentCheckOutline, title: t('admin.tab.games.writeups'), path: 'writeups' },
-  ]
+  ].filter((p) => isAdmin || !p.adminOnly)
 
   const getTab = (path: string) => pages.find((page) => path.includes(page.path))
 
@@ -56,10 +62,10 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
     const tab = getTab(location.pathname)
     if (tab) {
       setActiveTab(tab.path ?? '')
-    } else {
-      navigate(pages[0].path)
+    } else if (pages.length > 0) {
+      navigate(`/admin/games/${id}/${pages[0].path}`)
     }
-  }, [location])
+  }, [location, pages, id, navigate])
 
   return (
     <AdminPage

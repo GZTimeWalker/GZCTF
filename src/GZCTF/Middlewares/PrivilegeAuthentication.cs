@@ -88,3 +88,55 @@ public class RequireAdminAttribute() : RequirePrivilegeAttribute(Role.Admin);
 /// Admin privilege required, but allow token authentication
 /// </summary>
 public class RequireAdminOrTokenAttribute() : RequirePrivilegeAttribute(Role.Admin, true);
+
+/// <summary>
+/// Event Admin privilege required
+/// </summary>
+public class RequireGameAdminAttribute : Attribute, IAsyncAuthorizationFilter
+{
+    public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+    {
+        var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+        var localizer = context.HttpContext.RequestServices.GetRequiredService<IStringLocalizer<Program>>();
+        var diagnosticContext = context.HttpContext.RequestServices.GetRequiredService<IDiagnosticContext>();
+
+        var id = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        UserInfo? user = null;
+
+        if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true &&
+            Guid.TryParse(id, out var guid))
+            user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == guid);
+
+        if (user is null)
+        {
+            context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_LoginRequired)],
+                StatusCodes.Status401Unauthorized);
+            return;
+        }
+
+        diagnosticContext.Set("UserId", user.Id);
+        diagnosticContext.Set("UserName", user.UserName ?? "Anonymous");
+
+        if (context.HttpContext.Connection.RemoteIpAddress is { } ip)
+            diagnosticContext.Set("IP", ip);
+
+        if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
+        {
+            user.UpdateByHttpContext(context.HttpContext);
+            await dbContext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
+        }
+
+        if (user.Role == Role.Admin)
+            return;
+
+        if (context.RouteData.Values.TryGetValue("id", out var gameIdObj) &&
+            int.TryParse(gameIdObj?.ToString(), out var gameId))
+        {
+            if (await dbContext.EventManagers.AnyAsync(em => em.UserId == user.Id && em.GameId == gameId))
+                return;
+        }
+
+        context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
+            StatusCodes.Status403Forbidden);
+    }
+}

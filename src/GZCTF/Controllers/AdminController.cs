@@ -22,7 +22,6 @@ namespace GZCTF.Controllers;
 /// <summary>
 /// Administration APIs
 /// </summary>
-[RequireAdmin]
 [ApiController]
 [Route("api/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
@@ -51,6 +50,7 @@ public class AdminController(
     /// <response code="200">Global configuration</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Config")]
     [ProducesResponseType(typeof(ConfigEditModel), StatusCodes.Status200OK)]
     public IActionResult GetConfigs()
@@ -77,6 +77,7 @@ public class AdminController(
     /// <response code="200">Update successful</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpPut("Config")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateConfigs([FromBody] ConfigEditModel model, CancellationToken token)
@@ -109,6 +110,7 @@ public class AdminController(
     /// <response code="200">Update successful</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpPost("Config/Logo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateLogo(IFormFile file, CancellationToken token)
@@ -152,6 +154,7 @@ public class AdminController(
     /// <response code="200">Updated successfully</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpDelete("Config/Logo")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ResetLogo(CancellationToken token)
@@ -199,14 +202,22 @@ public class AdminController(
     /// <response code="200">User list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Users")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Users([FromQuery][Range(0, 500)] int count = 100, [FromQuery] int skip = 0,
-        CancellationToken token = default) =>
-        Ok((await userManager.Users.OrderBy(e => e.Id).Skip(skip).Take(count)
+        [FromQuery] string? search = null, CancellationToken token = default)
+    {
+        var query = userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+            query = query.Where(u => u.UserName!.Contains(search) || u.Email!.Contains(search));
+
+        return Ok((await query.OrderBy(e => e.Id).Skip(skip).Take(count)
                 .Select(u => UserInfoModel.FromUserInfo(u))
                 .ToArrayAsync(token))
-            .ToResponse(await userManager.Users.CountAsync(token)));
+            .ToResponse(await query.CountAsync(token)));
+    }
 
     /// <summary>
     /// Add users in batch
@@ -218,6 +229,7 @@ public class AdminController(
     /// <response code="400">User validation failed</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpPost("Users")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -302,6 +314,7 @@ public class AdminController(
     /// <response code="200">User list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpPost("Users/Search")]
     [ProducesResponseType(typeof(ArrayResponse<UserInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchUsers([FromQuery] string hint, CancellationToken token = default)
@@ -328,6 +341,7 @@ public class AdminController(
     /// <response code="200">User list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Teams")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Teams([FromQuery][Range(0, 500)] int count = 100, [FromQuery] int skip = 0,
@@ -344,6 +358,7 @@ public class AdminController(
     /// <response code="200">User list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpPost("Teams/Search")]
     [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default) =>
@@ -361,6 +376,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Team not found</response>
+    [RequireAdmin]
     [HttpPut("Teams/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -388,6 +404,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">User not found</response>
+    [RequireAdmin]
     [HttpPut("Users/{userid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -431,6 +448,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">User not found</response>
+    [RequireAdmin]
     [HttpDelete("Users/{userid:guid}/Password")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -459,6 +477,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">User not found</response>
+    [RequireAdmin]
     [HttpDelete("Users/{userid:guid}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -494,6 +513,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">User not found</response>
+    [RequireAdmin]
     [HttpDelete("Teams/{id:int}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -519,6 +539,7 @@ public class AdminController(
     /// <response code="200">User object</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Users/{userid:guid}")]
     [ProducesResponseType(typeof(ProfileUserInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -547,6 +568,7 @@ public class AdminController(
     /// <response code="200">Log list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Logs")]
     [ProducesResponseType(typeof(LogMessageModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> Logs([FromQuery] string? level = "All",
@@ -564,6 +586,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Participation object not found</response>
+    [RequireUser]
     [HttpPut("Participation/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -577,6 +600,12 @@ public class AdminController(
         if (participation is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
                 StatusCodes.Status404NotFound));
+
+        var currentUser = await userManager.GetUserAsync(User);
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        if (currentUser?.Role != Role.Admin &&
+            !await dbContext.EventManagers.AnyAsync(em => em.UserId == currentUser!.Id && em.GameId == participation.GameId, token))
+            return Forbid();
 
         await participationRepository.UpdateParticipation(participation, model, token);
 
@@ -595,6 +624,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Game not found</response>
+    [RequireGameAdmin]
     [HttpGet("Writeups/{id:int}")]
     [ProducesResponseType(typeof(WriteupInfoModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -619,6 +649,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Game not found</response>
+    [RequireGameAdmin]
     [HttpGet("Writeups/{id:int}/All")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
@@ -645,6 +676,7 @@ public class AdminController(
     /// <response code="200">Instance list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Instances")]
     [ProducesResponseType(typeof(ArrayResponse<ContainerInstanceModel>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Instances(CancellationToken token = default) =>
@@ -661,6 +693,7 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Container instance not found</response>
+    [RequireAdmin]
     [HttpDelete("Instances/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -690,6 +723,7 @@ public class AdminController(
     /// <response code="200">File list</response>
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
+    [RequireAdmin]
     [HttpGet("Files")]
     [ProducesResponseType(typeof(ArrayResponse<LocalFile>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Files([FromQuery][Range(0, 500)] int count = 50, [FromQuery] int skip = 0,

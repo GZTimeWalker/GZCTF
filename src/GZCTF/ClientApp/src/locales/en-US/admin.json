@@ -310,6 +310,13 @@
           "label": "Writeup Required"
         }
       },
+      "managers": {
+        "delete_confirm": "Are you sure you want to remove {{name}}?",
+        "delete_title": "Remove Manager",
+        "empty": "No managers assigned to this game yet",
+        "search_placeholder": "Search by username or email",
+        "select_user": "Select User"
+      },
       "notices": {
         "delete": "Are you sure you want to delete this notice?",
         "empty": {
@@ -523,6 +530,10 @@
         "created": "Instance created",
         "deleted": "Instances destroyed"
       },
+      "managers": {
+        "added": "Manager added successfully",
+        "removed": "Manager removed successfully"
+      },
       "no_title_time": "Please enter title and time of the game",
       "notices": {
         "created": "Notice created",
@@ -604,6 +615,7 @@
       "divisions": "Divisions",
       "index": "Games",
       "info": "Information",
+      "managers": "Managers",
       "notices": "Notices",
       "review": "Teams",
       "writeups": "Writeups"

@@ -1,11 +1,12 @@
 import { Center, Loader } from '@mantine/core'
 import React, { FC, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
-import { useUserRole } from '@Hooks/useUser'
+import { useUser } from '@Hooks/useUser'
 import { Role } from '@Api'
 
 interface WithRoleProps {
   requiredRole: Role
+  allowEventAdmin?: boolean
   children?: React.ReactNode
 }
 
@@ -19,12 +20,13 @@ export const RoleMap = new Map<Role, number>([
 export const RequireRole = (requiredRole: Role, role?: Role | null) =>
   RoleMap.get(role ?? Role.User)! >= RoleMap.get(requiredRole)!
 
-export const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
-  const { role, error } = useUserRole()
+export const WithRole: FC<WithRoleProps> = ({ requiredRole, allowEventAdmin, children }) => {
+  const { user, error } = useUser()
   const navigate = useNavigate()
   const location = useLocation()
 
   const required = RoleMap.get(requiredRole)!
+  const role = user?.role
 
   useEffect(() => {
     if (error && error.status === 401) {
@@ -35,10 +37,16 @@ export const WithRole: FC<WithRoleProps> = ({ requiredRole, children }) => {
 
     const current = RoleMap.get(role)!
 
-    if (current < required) navigate('/404')
-  }, [role, error, required, navigate])
+    if (current < required) {
+      if (allowEventAdmin && user?.hasManagedGames) {
+        return
+      }
+      navigate('/404')
+    }
+  }, [role, error, required, navigate, allowEventAdmin, user?.hasManagedGames])
 
-  if (role && RoleMap.get(role)! < required /* show loader before redirect */) {
+  const current = role ? RoleMap.get(role)! : -1
+  if (role && current < required && !(allowEventAdmin && user?.hasManagedGames)) {
     return (
       <Center h="calc(100vh - 32px)">
         <Loader />

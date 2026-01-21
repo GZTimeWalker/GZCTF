@@ -6,6 +6,7 @@
     "uploading": "Uploading avatar"
   },
   "button": {
+    "add": "Add",
     "copy": "Copy to Clipboard",
     "reset": "Reset",
     "retry": "Retry",
@@ -99,6 +100,7 @@
     "unknown": "Unknown error"
   },
   "label": {
+    "action": "Action",
     "challenge": "Challenge",
     "flag": "flag",
     "game": "Game",
