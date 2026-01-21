@@ -108,7 +108,7 @@ public class EventAdminTests(GZCTFApplicationFactory factory, ITestOutputHelper 
         var response = await client.GetAsync("/api/Edit/Games");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var games = await response.Content.ReadFromJsonAsync<ArrayResponse<GameInfoModel>>();
+        var games = await response.Content.ReadFromJsonAsync<ArrayResponseDto<GameInfoModel>>();
         Assert.NotNull(games);
         
         // 5. Verify Only G1 is present
@@ -116,4 +116,6 @@ public class EventAdminTests(GZCTFApplicationFactory factory, ITestOutputHelper 
         Assert.DoesNotContain(games.Data, g => g.Id == g2.Id);
         Assert.Equal(1, games.Total);
     }
+
+    private record ArrayResponseDto<T>(T[] Data, int Total);
 }
