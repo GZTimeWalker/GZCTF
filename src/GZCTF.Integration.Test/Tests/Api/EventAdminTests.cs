@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace GZCTF.Integration.Test.Tests.Api;
 
 [Collection(nameof(IntegrationTestCollection))]
-public class EventAdminTests(GZCTFApplicationFactory factory, ITestOutputHelper output)
+public class EventAdminTests(GZCTFApplicationFactory factory)
 {
     [Fact]
     public async Task EventAdmin_ShouldBeAbleTo_ManageOwnGame()

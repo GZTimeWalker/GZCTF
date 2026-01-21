@@ -80,12 +80,12 @@ public class CronJobTest
         public FakeUserManager(List<UserInfo> users, ILogger<UserManager<UserInfo>> logger)
             : base(new FakeUserStore(),
                   Microsoft.Extensions.Options.Options.Create(new IdentityOptions()), // options
-                  null, // passwordHasher
-                  null, // userValidators
-                  null, // passwordValidators
-                  null, // keyNormalizer
-                  null, // errors
-                  null, // services
+                  null!, // passwordHasher
+                  null!, // userValidators
+                  null!, // passwordValidators
+                  null!, // keyNormalizer
+                  null!, // errors
+                  null!, // services
                   logger)
         {
             _users = users;

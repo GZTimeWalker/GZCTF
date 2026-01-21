@@ -297,7 +297,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
             TeamId = team.Id,
             UserId = user.Id,
             PublishTimeUtc = timeBase,
-            Values = [chal.Id.ToString()]
+            Values = [chal!.Id.ToString()]
         });
 
         // Solve at T + 5s
@@ -335,8 +335,8 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         var solve = destroy.AddMinutes(61); // > 60 mins after destroy
 
         await context.GameEvents.AddRangeAsync(
-            new GameEvent { GameId = game.Id, Type = EventType.ContainerStart, TeamId = team.Id, UserId = user.Id, PublishTimeUtc = start, Values = [chal.Id.ToString()] },
-            new GameEvent { GameId = game.Id, Type = EventType.ContainerDestroy, TeamId = team.Id, UserId = user.Id, PublishTimeUtc = destroy, Values = [chal.Id.ToString()] }
+            new GameEvent { GameId = game.Id, Type = EventType.ContainerStart, TeamId = team.Id, UserId = user.Id, PublishTimeUtc = start, Values = [chal!.Id.ToString()] },
+            new GameEvent { GameId = game.Id, Type = EventType.ContainerDestroy, TeamId = team.Id, UserId = user.Id, PublishTimeUtc = destroy, Values = [chal!.Id.ToString()] }
         );
 
         await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, solve));
@@ -689,6 +689,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.NotNull(evt);
         Assert.Equal(tAttacker.Id, evt.TeamId); // SHOULD be Attacker
         Assert.Equal(uAttacker.Id, evt.UserId); // SHOULD be Attacker (Not Victim!)
+        Assert.NotNull(evt.Values);
         Assert.Contains("Token Source:", evt.Values[2]);
         Assert.Contains(uVictim.UserName, evt.Values[2]);
         Assert.Contains(tVictim.Name, evt.Values[2]);
@@ -741,7 +742,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         await context.SaveChangesAsync();
         
         var dbChal = await context.GameChallenges.FindAsync(chal.Id);
-        dbChal.AttachmentId = attachment.Id;
+        dbChal!.AttachmentId = attachment.Id;
         await context.SaveChangesAsync();
 
         using var client = factory.CreateClient();
@@ -753,7 +754,7 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
 
         // Scenario 2: Static Team Token
         var participation = await context.Participations.FirstOrDefaultAsync(p => p.TeamId == team.Id && p.GameId == game.Id);
-        var res2 = await client.GetAsync($"/Assets/{fileHash}/legit.txt?token={participation.Token}");
+        var res2 = await client.GetAsync($"/Assets/{fileHash}/legit.txt?token={participation!.Token}");
         Assert.Equal(HttpStatusCode.OK, res2.StatusCode);
 
         // Scenario 3: Secure Owner Token
