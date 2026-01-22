@@ -800,18 +800,6 @@ public class AdminController(
              AverageRating = reviewStats.GetValueOrDefault(g.Id)?.AverageRating
         }).ToList();
 
-        var since = DateTimeOffset.UtcNow.AddHours(-24);
-        var trends = await dbContext.Submissions
-            .Where(s => s.SubmitTimeUtc >= since)
-            .GroupBy(s => new { s.SubmitTimeUtc.Year, s.SubmitTimeUtc.Month, s.SubmitTimeUtc.Day, s.SubmitTimeUtc.Hour })
-            .Select(g => new SubmissionTrendModel
-            {
-                Time = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day, g.Key.Hour, 0, 0, DateTimeKind.Utc),
-                Count = g.Count()
-            })
-            .OrderBy(t => t.Time)
-            .ToListAsync(token);
-
         return Ok(new AdminDashboardModel
         {
             SystemStats = new()
@@ -820,8 +808,7 @@ public class AdminController(
                 TeamCount = teams,
                 ActiveContainerCount = containers
             },
-            TopGames = popularGames,
-            SubmissionTrend = trends
+            TopGames = popularGames
         });
     }
 
@@ -835,6 +822,78 @@ public class AdminController(
     {
         var reviews = await challengeReviewRepository.GetAllReviewsAsync(count, skip, token);
         return Ok(reviews.Select(ChallengeReviewDetailModel.FromReview)); 
+    }
+
+    /// <summary>
+    /// Get submission trend
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("SubmissionTrend")]
+    [ProducesResponseType(typeof(IEnumerable<SubmissionTrendModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSubmissionTrend([FromQuery] string range = "Day", CancellationToken token = default)
+    {
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset since;
+        
+        switch (range.ToLower())
+        {
+            case "week":
+                since = now.AddDays(-7);
+                break;
+            case "month":
+                since = now.AddDays(-30);
+                break;
+            case "year":
+                since = now.AddYears(-1);
+                break;
+            case "day":
+            default:
+                since = now.AddHours(-24);
+                break;
+        }
+
+        var query = dbContext.Submissions.Where(s => s.SubmitTimeUtc >= since);
+
+        if (range.ToLower() == "year")
+        {
+            // Group by Month
+            return Ok(await query
+                .GroupBy(s => new { s.SubmitTimeUtc.Year, s.SubmitTimeUtc.Month })
+                .Select(g => new SubmissionTrendModel
+                {
+                    Time = new DateTime(g.Key.Year, g.Key.Month, 1, 0, 0, 0, DateTimeKind.Utc),
+                    Count = g.Count()
+                })
+                .OrderBy(t => t.Time)
+                .ToListAsync(token));
+        }
+        else if (range.ToLower() == "week" || range.ToLower() == "month")
+        {
+            // Group by Day
+            return Ok(await query
+                .GroupBy(s => new { s.SubmitTimeUtc.Year, s.SubmitTimeUtc.Month, s.SubmitTimeUtc.Day })
+                .Select(g => new SubmissionTrendModel
+                {
+                    Time = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day, 0, 0, 0, DateTimeKind.Utc),
+                    Count = g.Count()
+                })
+                .OrderBy(t => t.Time)
+                .ToListAsync(token));
+        }
+        else
+        {
+            // Group by Hour (Default/Day)
+            return Ok(await query
+                .GroupBy(s => new { s.SubmitTimeUtc.Year, s.SubmitTimeUtc.Month, s.SubmitTimeUtc.Day, s.SubmitTimeUtc.Hour })
+                .Select(g => new SubmissionTrendModel
+                {
+                    Time = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day, g.Key.Hour, 0, 0, DateTimeKind.Utc),
+                    Count = g.Count()
+                })
+                .OrderBy(t => t.Time)
+                .ToListAsync(token));
+        }
     }
 
     /// <summary>

@@ -1539,7 +1539,6 @@ export interface SubmissionTrendModel {
 
 export interface AdminDashboardModel {
   systemStats: SystemStatsModel;
-  submissionTrend: SubmissionTrendModel[];
   topGames: BasicGameInfoModel[];
 }
 
@@ -2783,6 +2782,23 @@ export class Api<
       this.request<AdminDashboardModel, RequestResponse>({
         path: `/api/admin/dashboard`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get submission trend
+     *
+     * @tags Admin
+     * @name AdminGetSubmissionTrend
+     * @summary Get submission trend
+     * @request GET:/api/admin/submissiontrend
+     */
+    adminGetSubmissionTrend: (query: { range?: string }, params: RequestParams = {}) =>
+      this.request<SubmissionTrendModel[], RequestResponse>({
+        path: `/api/admin/submissiontrend`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),

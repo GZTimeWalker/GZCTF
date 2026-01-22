@@ -15,6 +15,7 @@ import {
     Badge,
     ActionIcon,
     Avatar,
+    SegmentedControl,
 } from '@mantine/core'
 import {
     mdiAccountGroup,
@@ -37,7 +38,7 @@ import { AdminPage } from '@Components/admin/AdminPage'
 import { EchartsContainer } from '@Components/charts/EchartsContainer'
 import { ScrollingText } from '@Components/ScrollingText'
 import { showErrorMsg } from '@Utils/Shared'
-import api, { AdminDashboardModel, ChallengeReviewDetailModel, CheatInfoModel, WriteupInfo } from '@Api'
+import api, { AdminDashboardModel, ChallengeReviewDetailModel, CheatInfoModel, WriteupInfo, SubmissionTrendModel } from '@Api'
 import type { EChartsOption } from 'echarts'
 
 const STATS_ICON_SIZE = 1.5
@@ -78,9 +79,16 @@ const StatCard: FC<{
 
 const Dashboard: FC = () => {
     const { t } = useTranslation()
+    const [trendRange, setTrendRange] = useState<string>('Day')
+
     const { data: dashboard, error, isLoading } = useSWR<AdminDashboardModel>(
         '/api/admin/dashboard',
         () => api.admin.adminGetDashboard().then((r) => r.data)
+    )
+
+    const { data: trends, isLoading: isTrendLoading } = useSWR<SubmissionTrendModel[]>(
+        `/api/admin/submissiontrend?range=${trendRange}`,
+        () => api.admin.adminGetSubmissionTrend({ range: trendRange }).then((r) => r.data)
     )
 
     if (error) showErrorMsg(error, t)
@@ -92,16 +100,23 @@ const Dashboard: FC = () => {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: dashboard?.submissionTrend.map((d) => new Date(d.time).toLocaleTimeString()) ?? [],
+            data: trends?.map((d) =>
+                trendRange === 'Day'
+                    ? new Date(d.time).toLocaleTimeString()
+                    : new Date(d.time).toLocaleDateString()
+            ) ?? [],
         },
         yAxis: { type: 'value' },
         series: [
             {
                 name: t('admin.dashboard.submissions', 'Submissions'),
                 type: 'line',
-                data: dashboard?.submissionTrend.map((d) => d.count) ?? [],
+                stack: 'Total',
                 areaStyle: {},
+                data: trends?.map((d) => d.count) ?? [],
                 smooth: true,
+                showSymbol: false,
+                color: '#228be6'
             },
         ],
     }
@@ -187,8 +202,23 @@ const Dashboard: FC = () => {
                     {/* Trend Chart */}
                     <Grid.Col span={{ base: 12, md: 8 }}>
                         <Card withBorder radius="md" p="md">
-                            <Title order={4} mb="md">{t('admin.dashboard.submission_trend', 'Submission Trend (24h)')}</Title>
-                            <EchartsContainer option={trendOption} style={{ height: 300, width: '100%' }} />
+                            <Group justify="space-between" mb="md">
+                                <Title order={4}>{t('admin.dashboard.submission_trend', 'Submission Trend')}</Title>
+                                <SegmentedControl
+                                    size="xs"
+                                    value={trendRange}
+                                    onChange={setTrendRange}
+                                    data={[
+                                        { label: t('common.range.day', 'Day'), value: 'Day' },
+                                        { label: t('common.range.week', 'Week'), value: 'Week' },
+                                        { label: t('common.range.month', 'Month'), value: 'Month' },
+                                        { label: t('common.range.year', 'Year'), value: 'Year' },
+                                    ]}
+                                />
+                            </Group>
+                            <Skeleton visible={isTrendLoading} h={300}>
+                                <EchartsContainer option={trendOption} style={{ height: 300, width: '100%' }} />
+                            </Skeleton>
                         </Card>
                     </Grid.Col>
 

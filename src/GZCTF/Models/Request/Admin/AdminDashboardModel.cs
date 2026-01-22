@@ -7,7 +7,6 @@ namespace GZCTF.Models.Request.Admin;
 public class AdminDashboardModel
 {
     public SystemStatsModel SystemStats { get; set; } = new();
-    public List<SubmissionTrendModel> SubmissionTrend { get; set; } = [];
     public List<BasicGameInfoModel> TopGames { get; set; } = [];
 }
 
