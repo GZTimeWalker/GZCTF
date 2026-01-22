@@ -25,6 +25,7 @@ import {
   mdiWeatherSunny,
   mdiWrenchOutline,
   mdiTransitConnectionVariant,
+  mdiViewDashboard,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'

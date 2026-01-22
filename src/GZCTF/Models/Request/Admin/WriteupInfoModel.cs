@@ -47,6 +47,11 @@ public record WriteupInfo
     public int? DivisionId { get; set; }
 
     /// <summary>
+    /// Game title
+    /// </summary>
+    public string GameTitle { get; set; } = string.Empty;
+
+    /// <summary>
     /// Writeup file object
     /// </summary>
     [JsonIgnore]

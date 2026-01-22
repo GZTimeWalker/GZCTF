@@ -7,6 +7,7 @@ public class ChallengeReviewDetailModel
     public int Id { get; set; }
     public int ChallengeId { get; set; }
     public string ChallengeName { get; set; } = string.Empty;
+    public string GameTitle { get; set; } = string.Empty;
     public Guid UserId { get; set; }
     public string UserName { get; set; } = string.Empty;
     public ReviewRating Rating { get; set; }
@@ -19,6 +20,7 @@ public class ChallengeReviewDetailModel
             Id = review.Id,
             ChallengeId = review.ChallengeId,
             ChallengeName = review.Challenge?.Title ?? string.Empty,
+            GameTitle = review.Challenge?.Game?.Title ?? string.Empty,
             UserId = review.UserId,
             UserName = review.User?.UserName ?? string.Empty,
             Rating = review.Rating,

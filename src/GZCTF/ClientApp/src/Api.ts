@@ -684,6 +684,8 @@ export interface WriteupInfo {
   id?: number;
   /** Team information */
   team?: TeamInfoModel;
+  /** Game title */
+  gameTitle?: string;
   /** File URL */
   url?: string;
   /**
@@ -1494,6 +1496,7 @@ export interface ChallengeReviewDetailModel {
   /** @format int32 */
   challengeId?: number;
   challengeName?: string;
+  gameTitle?: string;
   /** @format guid */
   userId?: string;
   userName?: string;
@@ -1523,6 +1526,23 @@ export interface TopChallengeModel {
 }
 
 /** Basic game information, excluding detailed description and current team registration status */
+export interface SystemStatsModel {
+  userCount: number;
+  teamCount: number;
+  activeContainerCount: number;
+}
+
+export interface SubmissionTrendModel {
+  time: string;
+  count: number;
+}
+
+export interface AdminDashboardModel {
+  systemStats: SystemStatsModel;
+  submissionTrend: SubmissionTrendModel[];
+  topGames: BasicGameInfoModel[];
+}
+
 export interface BasicGameInfoModel {
   /** @format int32 */
   id: number;
@@ -1537,6 +1557,14 @@ export interface BasicGameInfoModel {
    * @format int32
    */
   limit?: number;
+  /** @format int32 */
+  teamCount?: number;
+  /** @format int32 */
+  userCount?: number;
+  /** @format double */
+  averageRating?: number;
+  /** @format int32 */
+  reviewCount?: number;
   /**
    * Start time
    * @format uint64
@@ -2743,6 +2771,81 @@ export class Api<
       }),
   };
   admin = {
+    /**
+     * @description Get admin dashboard stats
+     *
+     * @tags Admin
+     * @name AdminGetDashboard
+     * @summary Get dashboard
+     * @request GET:/api/admin/dashboard
+     */
+    adminGetDashboard: (params: RequestParams = {}) =>
+      this.request<AdminDashboardModel, RequestResponse>({
+        path: `/api/admin/dashboard`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get recent reviews
+     *
+     * @tags Admin
+     * @name AdminGetReviews
+     * @summary Get reviews
+     * @request GET:/api/admin/reviews
+     */
+    adminGetReviews: (
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeReview[], RequestResponse>({
+        path: `/api/admin/reviews`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get recent cheat reports
+     *
+     * @tags Admin
+     * @name AdminGetCheatReports
+     * @summary Get cheat reports
+     * @request GET:/api/admin/cheat-reports
+     */
+    adminGetCheatReports: (
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<CheatInfo[], RequestResponse>({
+        path: `/api/admin/cheat-reports`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get all writeups
+     *
+     * @tags Admin
+     * @name AdminGetAllWriteups
+     * @summary Get all writeups
+     * @request GET:/api/admin/writeups
+     */
+    adminGetAllWriteups: (
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<WriteupInfo[], RequestResponse>({
+        path: `/api/admin/writeups`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
     /**
      * @description Get all users
      *

@@ -37,6 +37,18 @@ public class ChallengeReviewRepository(AppDbContext context) : IChallengeReviewR
             .ToArrayAsync(token);
     }
 
+    public Task<ChallengeReview[]> GetAllReviewsAsync(int count, int skip, CancellationToken token = default)
+    {
+        return context.ChallengeReviews
+            .Include(r => r.User)
+            .Include(r => r.Challenge)
+                .ThenInclude(c => c.Game)
+            .OrderByDescending(r => r.SubmitTimeUtc)
+            .Skip(skip)
+            .Take(count)
+            .ToArrayAsync(token);
+    }
+
     public Task<int> GetReviewCountAsync(int gameId, string? search = null, ReviewRating? rating = null, CancellationToken token = default)
     {
         var query = context.ChallengeReviews.Where(r => r.GameId == gameId);

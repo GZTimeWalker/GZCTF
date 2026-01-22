@@ -83,6 +83,28 @@ public class ParticipationRepository(
         return new WriteupInfoModel { Divisions = divisions, Writeups = writeups };
     }
 
+    public Task<WriteupInfo[]> GetAllWriteupsAsync(int count, int skip, CancellationToken token = default) =>
+        Context.Participations.AsNoTracking()
+            .Where(p => p.Writeup != null)
+            .OrderByDescending(p => p.Writeup!.UploadTimeUtc)
+            .Skip(skip)
+            .Take(count)
+            .AsSplitQuery()
+            .Select(part => new WriteupInfo
+            {
+                Id = part.Id,
+                Team = TeamInfoModel.FromTeam(part.Team, false),
+                File = part.Writeup!,
+                Url = part.Writeup!.Url(null),
+                DivisionId = part.DivisionId,
+                UploadTimeUtc = part.Writeup!.UploadTimeUtc,
+                GameTitle = part.Game.Title // Assuming WriteupInfo can hold GameTitle or we treat it separately
+            })
+            .ToArrayAsync(token);
+
+    public Task<int> CountPendingWriteupsAsync(CancellationToken token = default) =>
+        Context.Participations.CountAsync(p => p.Status == ParticipationStatus.Pending, token);
+
 
     public Task<bool> CheckRepeatParticipation(UserInfo user, Game game, CancellationToken token = default) =>
         Context.UserParticipations.Include(p => p.Participation)

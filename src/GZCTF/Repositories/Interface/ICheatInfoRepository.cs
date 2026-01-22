@@ -19,4 +19,13 @@ public interface ICheatInfoRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<CheatInfo[]> GetCheatInfoByGameId(int gameId, CancellationToken token = default);
+
+    /// <summary>
+    /// Get all cheat info records
+    /// </summary>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<CheatInfo[]> GetAllCheatInfosAsync(int count, int skip, CancellationToken token = default);
 }

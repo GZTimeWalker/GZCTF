@@ -67,4 +67,24 @@ public partial class BasicGameInfoModel
             EndTimeUtc = game.EndTimeUtc,
             TeamMemberCountLimit = game.TeamMemberCountLimit
         };
+
+    /// <summary>
+    /// Number of teams participating
+    /// </summary>
+    public int TeamCount { get; set; }
+
+    /// <summary>
+    /// Number of users participating
+    /// </summary>
+    public int UserCount { get; set; }
+    
+    /// <summary>
+    /// Average rating from reviews
+    /// </summary>
+    public double? AverageRating { get; set; }
+
+    /// <summary>
+    /// Number of reviews
+    /// </summary>
+    public int ReviewCount { get; set; }
 }

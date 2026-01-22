@@ -17,6 +17,8 @@ public class GameInstanceRepository(
     ILogger<GameInstanceRepository> logger,
     IStringLocalizer<Program> localizer) : RepositoryBase(context), IGameInstanceRepository
 {
+    public override Task<int> CountAsync(CancellationToken token = default) => Context.GameInstances.CountAsync(token);
+
     public async Task<GameInstance?> GetInstance(Participation part, int challengeId, CancellationToken token = default)
     {
         await using var transaction = await Context.Database.BeginTransactionAsync(token);

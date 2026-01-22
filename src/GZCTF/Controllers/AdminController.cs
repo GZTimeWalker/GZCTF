@@ -7,6 +7,8 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Info;
+using GZCTF.Models.Request.Game;
+using GZCTF.Models.Response.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
@@ -39,6 +41,9 @@ public class AdminController(
     IContainerRepository containerRepository,
     IServiceProvider serviceProvider,
     IParticipationRepository participationRepository,
+
+    IChallengeReviewRepository challengeReviewRepository,
+    ICheatInfoRepository cheatInfoRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
@@ -729,6 +734,132 @@ public class AdminController(
     public async Task<IActionResult> Files([FromQuery][Range(0, 500)] int count = 50, [FromQuery] int skip = 0,
         CancellationToken token = default) =>
         Ok(new ArrayResponse<LocalFile>(await blobService.GetBlobs(count, skip, token)));
+
+    /// <summary>
+    /// Get dashboard statistics
+    /// </summary>
+    /// <remarks>
+    /// Use this API to get dashboard statistics, requires Admin permission
+    /// </remarks>
+    /// <response code="200">Dashboard statistics</response>
+    /// <response code="401">Unauthorized user</response>
+    /// <response code="403">Forbidden</response>
+    [RequireAdmin]
+    [HttpGet("Dashboard")]
+    [ProducesResponseType(typeof(AdminDashboardModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDashboard(CancellationToken token = default)
+    {
+        var users = await userManager.Users.CountAsync(token);
+        var teams = await teamRepository.CountAsync(token);
+        var containers = await containerRepository.CountAsync(token);
+
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        
+        var topGames = await dbContext.Games
+             .AsNoTracking()
+             .OrderByDescending(g => g.Participations.Count)
+             .Take(5)
+             .Select(g => new 
+             {
+                 g.Id,
+                 g.Title,
+                 g.StartTimeUtc,
+                 g.EndTimeUtc,
+                 g.PosterHash,
+                 g.TeamMemberCountLimit,
+                 TeamCount = g.Teams!.Count,
+                 UserCount = g.Participations.Count,
+             })
+             .ToListAsync(token);
+
+        var gameIds = topGames.Select(x => x.Id).ToList();
+        
+        var reviewStats = await dbContext.ChallengeReviews
+            .Where(r => gameIds.Contains(r.GameId))
+            .GroupBy(r => r.GameId)
+            .Select(g => new 
+            {
+                GameId = g.Key,
+                ReviewCount = g.Count(),
+                AverageRating = g.Where(r => r.Rating == ReviewRating.Like || r.Rating == ReviewRating.Dislike)
+                    .Average(r => (double?)(r.Rating == ReviewRating.Like ? 1.0 : 0.0))
+            })
+            .ToDictionaryAsync(x => x.GameId, token);
+
+        var popularGames = topGames.Select(g => new BasicGameInfoModel
+        {
+             Id = g.Id,
+             Title = g.Title,
+             StartTimeUtc = g.StartTimeUtc,
+             EndTimeUtc = g.EndTimeUtc,
+             PosterHash = g.PosterHash,
+             TeamMemberCountLimit = g.TeamMemberCountLimit,
+             TeamCount = g.TeamCount,
+             UserCount = g.UserCount,
+             ReviewCount = reviewStats.GetValueOrDefault(g.Id)?.ReviewCount ?? 0,
+             AverageRating = reviewStats.GetValueOrDefault(g.Id)?.AverageRating
+        }).ToList();
+
+        var since = DateTimeOffset.UtcNow.AddHours(-24);
+        var trends = await dbContext.Submissions
+            .Where(s => s.SubmitTimeUtc >= since)
+            .GroupBy(s => new { s.SubmitTimeUtc.Year, s.SubmitTimeUtc.Month, s.SubmitTimeUtc.Day, s.SubmitTimeUtc.Hour })
+            .Select(g => new SubmissionTrendModel
+            {
+                Time = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day, g.Key.Hour, 0, 0, DateTimeKind.Utc),
+                Count = g.Count()
+            })
+            .OrderBy(t => t.Time)
+            .ToListAsync(token);
+
+        return Ok(new AdminDashboardModel
+        {
+            SystemStats = new()
+            {
+                UserCount = users,
+                TeamCount = teams,
+                ActiveContainerCount = containers
+            },
+            TopGames = popularGames,
+            SubmissionTrend = trends
+        });
+    }
+
+    /// <summary>
+    /// Get all reviews
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("Reviews")]
+    [ProducesResponseType(typeof(IEnumerable<ChallengeReviewDetailModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetReviews([FromQuery][Range(1, 1000)] int count = 20, [FromQuery] int skip = 0, CancellationToken token = default)
+    {
+        var reviews = await challengeReviewRepository.GetAllReviewsAsync(count, skip, token);
+        return Ok(reviews.Select(ChallengeReviewDetailModel.FromReview)); 
+    }
+
+    /// <summary>
+    /// Get all cheat reports
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("CheatReports")]
+    [ProducesResponseType(typeof(IEnumerable<CheatInfo>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCheatReports([FromQuery][Range(1, 1000)] int count = 20, [FromQuery] int skip = 0, CancellationToken token = default)
+    {
+        var cheats = await cheatInfoRepository.GetAllCheatInfosAsync(count, skip, token);
+        return Ok(cheats);
+    }
+
+    /// <summary>
+    /// Get all writeups
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("AllWriteups")]
+    [ProducesResponseType(typeof(IEnumerable<WriteupInfo>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllWriteups([FromQuery][Range(1, 1000)] int count = 20, [FromQuery] int skip = 0, CancellationToken token = default)
+    {
+        var writeups = await participationRepository.GetAllWriteupsAsync(count, skip, token);
+        return Ok(writeups);
+    }
 
     private IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??

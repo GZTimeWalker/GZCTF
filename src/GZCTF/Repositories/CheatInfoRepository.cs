@@ -36,4 +36,15 @@ public class CheatInfoRepository(
             .Include(i => i.Submission).ThenInclude(s => s.User)
             .Include(i => i.Submission).ThenInclude(s => s.GameChallenge)
             .AsSplitQuery().ToArrayAsync(token);
+
+    public Task<CheatInfo[]> GetAllCheatInfosAsync(int count, int skip, CancellationToken token = default) =>
+        Context.CheatInfo.IgnoreAutoIncludes()
+            .OrderByDescending(i => i.Submission.SubmitTimeUtc)
+            .Skip(skip)
+            .Take(count)
+            .Include(i => i.SourceTeam).ThenInclude(t => t.Team)
+            .Include(i => i.SubmitTeam).ThenInclude(t => t.Team)
+            .Include(i => i.Submission).ThenInclude(s => s.User)
+            .Include(i => i.Submission).ThenInclude(s => s.GameChallenge)
+            .AsSplitQuery().ToArrayAsync(token);
 }

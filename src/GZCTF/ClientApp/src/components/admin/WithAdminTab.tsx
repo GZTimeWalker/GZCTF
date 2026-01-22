@@ -6,6 +6,7 @@ import {
   mdiFlagOutline,
   mdiPackageVariantClosed,
   mdiSitemapOutline,
+  mdiViewDashboard,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import React, { FC, useEffect, useState } from 'react'
@@ -30,6 +31,7 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
   const { t } = useTranslation()
 
   const pages = [
+    { icon: mdiViewDashboard, title: t('admin.title.dashboard', 'Dashboard'), path: 'dashboard' },
     { icon: mdiFlagOutline, title: t('admin.tab.games.index'), path: 'games' },
     { icon: mdiAccountGroupOutline, title: t('admin.tab.teams'), path: 'teams' },
     { icon: mdiAccountCogOutline, title: t('admin.tab.users'), path: 'users' },
@@ -68,7 +70,7 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
   usePageTitle(filteredPages[tabIndex]?.title)
 
   return (
-    <Stack gap="xs" align="center" pt="md">
+    <Stack gap="xs" pt="md">
       <IconTabs
         withIcon
         active={activeTab}

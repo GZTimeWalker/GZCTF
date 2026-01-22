@@ -47,6 +47,22 @@ public interface IParticipationRepository : IRepository
     public Task<WriteupInfoModel> GetWriteups(Game game, CancellationToken token = default);
 
     /// <summary>
+    /// Get all write-ups with pagination
+    /// </summary>
+    /// <param name="count"></param>
+    /// <param name="skip"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<WriteupInfo[]> GetAllWriteupsAsync(int count, int skip, CancellationToken token = default);
+
+    /// <summary>
+    /// Count participations with pending status
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<int> CountPendingWriteupsAsync(CancellationToken token = default);
+
+    /// <summary>
     /// Make sure that the instances for a participation are created
     /// </summary>
     /// <param name="part"></param>

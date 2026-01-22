@@ -102,9 +102,12 @@
   "label": {
     "action": "Action",
     "challenge": "Challenge",
+    "comment": "Comment",
+    "download": "Download",
     "flag": "flag",
     "game": "Game",
     "ip": "IP",
+    "rating": "Rating",
     "team": "Team",
     "time": "Time",
     "user": "User"
