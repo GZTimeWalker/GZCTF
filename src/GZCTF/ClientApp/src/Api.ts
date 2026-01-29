@@ -876,12 +876,24 @@ export interface ProblemDetails {
 }
 
 export interface CollusionGroupResult {
-  teams?: string[];
+  teams?: CollusionTeamInfo[];
   /** @format double */
   averageRsi?: number;
   commonSolves?: string[];
   details?: string | null;
   detailedSolves?: SequenceSuspectDetail[];
+}
+
+export interface CollusionTeamInfo {
+  /** @format int32 */
+  id: number;
+  name: string;
+}
+
+export interface CollusionCompareResult {
+  /** @format double */
+  rsi: number;
+  details: SequenceSuspectDetail[];
 }
 
 export interface CheatReport {
@@ -3964,6 +3976,40 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * @request GET:/api/game/{id}/cheatreport/compare
+     */
+    cheatReportCompare: (
+      id: number,
+      participationA: number,
+      participationB: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<CollusionCompareResult, any>({
+        path: `/api/game/${id}/cheatreport/compare`,
+        method: "GET",
+        query: { participationA, participationB },
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @request GET:/api/game/{id}/cheatreport/compare
+     */
+    useCheatReportCompare: (
+      id: number,
+      participationA: number | null,
+      participationB: number | null,
+      options?: SWRConfiguration,
+    ) =>
+      useSWR<CollusionCompareResult, any>(
+        participationA !== null && participationB !== null
+          ? `/api/game/${id}/cheatreport/compare?participationA=${participationA}&participationB=${participationB}`
+          : null,
+        options,
+      ),
+
     /**
      * No description
      *

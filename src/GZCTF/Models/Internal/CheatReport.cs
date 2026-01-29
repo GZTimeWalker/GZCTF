@@ -109,7 +109,7 @@ public class SuspicionEventResult
 public class CollusionGroupResult
 {
     [JsonPropertyName("teams")]
-    public List<string> Teams { get; set; } = new();
+    public List<CollusionTeamInfo> Teams { get; set; } = new();
 
     [JsonPropertyName("averageRsi")]
     public double AverageRSI { get; set; }
@@ -137,4 +137,22 @@ public class SequenceSuspectDetail
 
     [JsonPropertyName("timeDiff")]
     public double TimeDiff { get; set; }
+}
+
+public class CollusionCompareResult
+{
+    [JsonPropertyName("rsi")]
+    public double RSI { get; set; }
+
+    [JsonPropertyName("details")]
+    public List<SequenceSuspectDetail> Details { get; set; } = new();
+}
+
+public class CollusionTeamInfo
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
 }

@@ -18,6 +18,8 @@ import {
     TextInput,
     Menu,
     ActionIcon,
+    Select,
+    Loader,
 } from '@mantine/core'
 import { FC, useState, useMemo } from 'react'
 import { Icon } from '@mdi/react'
@@ -29,8 +31,9 @@ import { useParticipationStatusMap, showErrorMsg } from '@Utils/Shared'
 import { showNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
 import tableClasses from '@Styles/Table.module.css'
-import type { CheatReport, SequenceSuspectDetail, SuspicionRecordResult, CollusionGroupResult } from '@Api'
+import type { CheatReport, SequenceSuspectDetail, SuspicionRecordResult, CollusionGroupResult, CollusionTeamInfo } from '@Api'
 import api, { ParticipationStatus } from '@Api'
+import { useParams } from 'react-router'
 import classes from './CheatInfo.module.css'
 import { useDisclosure } from '@mantine/hooks'
 
@@ -89,6 +92,8 @@ function ThSort({ children, reversed, sorted, onSort, w }: ThSortProps) {
 export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const { t } = useTranslation()
     const { locale } = useLanguage()
+    const params = useParams()
+    const gameId = parseInt(params.id || '0')
 
     // 1. IP Analysis Sort State
     const [ipSort, setIpSort] = useState<SortConfig<any>>({ key: null, direction: 'asc' })
@@ -111,11 +116,28 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const [solveSearch, setSolveSearch] = useState('')
     const [collusionSearch, setCollusionSearch] = useState('')
 
+    // Pair selection for drill-down
+    const [teamAId, setTeamAId] = useState<number | null>(null)
+    const [teamBId, setTeamBId] = useState<number | null>(null)
+
+    const { data: drilledSolves, isLoading: isDrilling } = api.cheatReport.useCheatReportCompare(
+        gameId,
+        teamAId,
+        teamBId
+    )
+
     // 5. Collusion Group Sort State
     const [collusionSort, setCollusionSort] = useState<SortConfig<any>>({ key: 'averageRsi', direction: 'desc' })
 
     const handleViewDetails = (item: CollusionGroupResult) => {
         setSelectedGroup(item)
+        if (item.teams && item.teams.length >= 2) {
+            setTeamAId(item.teams[0].id)
+            setTeamBId(item.teams[1].id)
+        } else {
+            setTeamAId(null)
+            setTeamBId(null)
+        }
         open()
     }
 
@@ -163,7 +185,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
         if (collusionSearch) {
             const q = collusionSearch.toLowerCase()
             data = data.filter((item: any) =>
-                item.teams?.some((t: string) => t.toLowerCase().includes(q)) ||
+                item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(q)) ||
                 item.details?.toLowerCase().includes(q)
             )
         }
@@ -185,32 +207,38 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
             <Modal opened={opened} onClose={close} title="Collusion Details" size="xl" centered>
                 {selectedGroup && (
                     <Stack>
-                        <Group grow>
-                            <Card withBorder padding="xs">
-                                <Text size="xs" c="dimmed">Team A</Text>
-                                <ScrollingText text={selectedGroup.teams?.[0] || 'Unknown'} size="lg" fw={700} />
-                            </Card>
-                            <Center>
+                        <Group grow align="flex-end">
+                            <Select
+                                label="Team A"
+                                data={selectedGroup.teams
+                                    ?.filter(t => t.id !== teamBId)
+                                    .map(t => ({ value: t.id.toString(), label: t.name }))}
+                                value={teamAId?.toString()}
+                                onChange={(val) => setTeamAId(val ? parseInt(val) : null)}
+                                searchable
+                            />
+                            <Center h={60}>
                                 <Stack align="center" gap={0}>
-                                    <Text size="xl" fw={900} c={((selectedGroup.averageRsi ?? 0) > 0.9) ? 'red' : 'yellow'}>
-                                        {((selectedGroup.averageRsi ?? 0) * 100).toFixed(1)}%
+                                    <Text size="xl" fw={900} c={((drilledSolves?.rsi ?? selectedGroup.averageRsi ?? 0) > 0.9) ? 'red' : 'yellow'}>
+                                        {((drilledSolves?.rsi ?? selectedGroup.averageRsi ?? 0) * 100).toFixed(1)}%
                                     </Text>
                                     <Text size="xs" c="dimmed">Similarity</Text>
                                 </Stack>
                             </Center>
-                            <Card withBorder padding="xs" style={{ textAlign: 'right' }}>
-                                <Text size="xs" c="dimmed" ta="right">{selectedGroup.teams && selectedGroup.teams.length > 2 ? 'Other Teams' : 'Team B'}</Text>
-                                {selectedGroup.teams && selectedGroup.teams.length > 2 ? (
-                                    <Text size="lg" fw={700} style={{ textAlign: 'right' }}>
-                                        +{selectedGroup.teams.length - 1} others
-                                    </Text>
-                                ) : (
-                                    <ScrollingText text={selectedGroup.teams?.[1] || 'Unknown'} size="lg" fw={700} style={{ justifyContent: 'flex-end' }} />
-                                )}
-                            </Card>
+                            <Select
+                                label="Team B"
+                                data={selectedGroup.teams
+                                    ?.filter(t => t.id !== teamAId)
+                                    .map(t => ({ value: t.id.toString(), label: t.name }))}
+                                value={teamBId?.toString()}
+                                onChange={(val) => setTeamBId(val ? parseInt(val) : null)}
+                                searchable
+                            />
                         </Group>
 
-                        {selectedGroup.detailedSolves && selectedGroup.detailedSolves.length > 0 ? (
+                        {isDrilling ? (
+                            <Center h={400}><Loader /></Center>
+                        ) : drilledSolves?.details && drilledSolves.details.length > 0 ? (
                             <ScrollArea h={400}>
                                 <Table striped highlightOnHover>
                                     <Table.Thead>
@@ -222,7 +250,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
-                                        {selectedGroup.detailedSolves.map((solve: SequenceSuspectDetail, idx: number) => (
+                                        {drilledSolves.details.map((solve: SequenceSuspectDetail, idx: number) => (
                                             <Table.Tr key={idx}>
                                                 <Table.Td fw={500}>
                                                     <ScrollingText text={solve.challengeName || 'Unknown'} size="sm" maw={200} />
@@ -682,8 +710,8 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                     <Table.Tr key={index}>
                                         <Table.Td>
                                             <Stack gap={2}>
-                                                {item.teams?.map((team: string, idx: number) => (
-                                                    <ScrollingText key={idx} text={team} size="sm" fw="bold" maw={250} />
+                                                {item.teams?.map((team: CollusionTeamInfo, idx: number) => (
+                                                    <ScrollingText key={idx} text={team.name} size="sm" fw="bold" maw={250} />
                                                 ))}
                                             </Stack>
                                         </Table.Td>

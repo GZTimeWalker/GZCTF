@@ -596,9 +596,9 @@ public class CheatReportController(
         
         foreach (var group in report.CollusionGroups)
         {
-            foreach (var teamName in group.Teams)
+            foreach (var teamInfo in group.Teams)
             {
-                var team = teams.FirstOrDefault(t => t.Name == teamName);
+                var team = teams.FirstOrDefault(t => t.Id == teamInfo.Id);
                 if (team != null)
                 {
                      var part = team.Participations.FirstOrDefault(p => p.GameId == id);
@@ -639,6 +639,84 @@ public class CheatReportController(
         }
 
         return Ok(report);
+    }
+
+    [HttpGet("compare")]
+    [RequireMonitor]
+    [ProducesResponseType(typeof(CollusionCompareResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Compare(int id, int participationA, int participationB, CancellationToken token)
+    {
+        var game = await dbContext.Games.FindAsync([id], token);
+        if (game == null) return NotFound();
+
+        var participations = await dbContext.Participations
+            .Where(p => (p.Id == participationA || p.Id == participationB) && p.GameId == id)
+            .Include(p => p.Team)
+            .ToListAsync(token);
+
+        if (participations.Count != 2) return BadRequest("Invalid participations");
+
+        var pA = participations.First(p => p.Id == participationA);
+        var pB = participations.First(p => p.Id == participationB);
+
+        var subA = await dbContext.Submissions
+            .Where(s => s.ParticipationId == participationA && s.GameId == id && s.Status == AnswerResult.Accepted)
+            .OrderBy(s => s.SubmitTimeUtc)
+            .ToListAsync(token);
+
+        var subB = await dbContext.Submissions
+            .Where(s => s.ParticipationId == participationB && s.GameId == id && s.Status == AnswerResult.Accepted)
+            .OrderBy(s => s.SubmitTimeUtc)
+            .ToListAsync(token);
+
+        var challenges = await dbContext.GameChallenges
+            .AsNoTracking()
+            .Where(c => c.GameId == id)
+            .ToListAsync(token);
+        var challengeMap = challenges.ToDictionary(c => c.Id);
+
+        var commonChallenges = subA.Select(s => s.ChallengeId)
+            .Intersect(subB.Select(s => s.ChallengeId))
+            .ToList();
+
+        var detailedSolves = new List<SequenceSuspectDetail>();
+
+        foreach (var cid in commonChallenges)
+        {
+            var sA = subA.First(s => s.ChallengeId == cid);
+            var sB = subB.First(s => s.ChallengeId == cid);
+            var chTitle = challengeMap.TryGetValue(cid, out var ch) ? ch.Title : "Unknown";
+            var diff = Math.Abs((sA.SubmitTimeUtc - sB.SubmitTimeUtc).TotalSeconds);
+
+            detailedSolves.Add(new SequenceSuspectDetail
+            {
+                ChallengeName = chTitle,
+                TimeA = sA.SubmitTimeUtc,
+                TimeB = sB.SubmitTimeUtc,
+                TimeDiff = diff
+            });
+        }
+
+        // Calculate RSI
+        var solvesA = subA.Select(s => s.ChallengeId).ToHashSet();
+        var solvesB = subB.Select(s => s.ChallengeId).ToHashSet();
+        var intersection = solvesA.Intersect(solvesB).Count();
+        var union = solvesA.Union(solvesB).Count();
+        var jaccard = union == 0 ? 0 : (double)intersection / union;
+
+        var seqA = subA.Select(s => s.ChallengeId).ToList();
+        var seqB = subB.Select(s => s.ChallengeId).ToList();
+        var lcs = GetLongestCommonSubsequence(seqA, seqB);
+        var minLen = Math.Min(seqA.Count, seqB.Count);
+        var lcsScore = minLen == 0 ? 0 : (double)lcs.Count / minLen;
+
+        var rsi = (jaccard * 0.7) + (lcsScore * 0.3);
+
+        return Ok(new CollusionCompareResult
+        {
+            RSI = rsi,
+            Details = detailedSolves.OrderBy(d => d.TimeDiff).Take(50).OrderBy(d => d.TimeA).ToList()
+        });
     }
 
     private static List<int> GetLongestCommonSubsequence(List<int> seq1, List<int> seq2)
@@ -824,14 +902,15 @@ public class CheatReportController(
             if (groupIndices.Count >= 2)
             {
                 // Calculate final metrics
-                var teamNames = new List<string>();
+                var groupTeams = new List<CollusionTeamInfo>();
                 var solvesList = new List<HashSet<int>>();
 
                 foreach (var idx in groupIndices)
                 {
                     visited[idx] = true;
-                    teamNames.Add(activeTeams[idx].TeamName);
-                    solvesList.Add(activeTeams[idx].Solves);
+                    var team = activeTeams[idx];
+                    groupTeams.Add(new CollusionTeamInfo { Id = team.TeamId, Name = team.TeamName });
+                    solvesList.Add(team.Solves);
                 }
 
                 // Finds common solves across ALL members
@@ -865,7 +944,7 @@ public class CheatReportController(
                 if (commonSolves.Count > 10) commonTitles.Add("...");
 
                 var detailedSolves = new List<SequenceSuspectDetail>();
-                string detailsBody = $"Group of {teamNames.Count} teams with {avgRsi:P1} similarity on {commonSolves.Count} common challenges.";
+                var detailsBody = $"Group of {groupTeams.Count} teams with {avgRsi:P1} similarity on {commonSolves.Count} common challenges.";
 
                 // If it's a group of 2+, find the most suspicious pair for detailed view
                 if (groupIndices.Count >= 2)
@@ -914,13 +993,13 @@ public class CheatReportController(
                     
                     if (groupIndices.Count > 2)
                     {
-                         detailsBody = $"Group of {teamNames.Count} teams. Timeline compares {t1.TeamName} and {t2.TeamName} (most similar pair).";
+                         detailsBody = $"Group of {groupTeams.Count} teams. Timeline compares {t1.TeamName} and {t2.TeamName} (most similar pair).";
                     }
                 }
 
                 report.CollusionGroups.Add(new CollusionGroupResult
                 {
-                    Teams = teamNames,
+                    Teams = groupTeams,
                     AverageRSI = avgRsi,
                     CommonSolves = commonTitles,
                     Details = detailsBody,
