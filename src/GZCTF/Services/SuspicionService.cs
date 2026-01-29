@@ -11,7 +11,7 @@ public class SuspicionService(
     ILogger<SuspicionService> logger,
     IStringLocalizer<Program> localizer) : ISuspicionService
 {
-    public async Task AddSuspicion(Participation participation, string ruleCode, string details, CancellationToken token = default)
+    public async Task AddSuspicion(Participation participation, string ruleCode, string details, int? relatedParticipationId = null, CancellationToken token = default)
     {
         using var scope = scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -21,28 +21,24 @@ public class SuspicionService(
 
         int weight = rule?.Weight ?? GetDefaultWeight(ruleCode);
         
-        // If rule not found, maybe log it or use default? 
-        // For now, let's assume we might seed rules later or they are dynamic.
         if (rule == null)
         {
              logger.LogInformation("Suspicion rule {RuleCode} not found, using default weight {Weight}.", ruleCode, weight);
         }
 
+        // Optimization: Use AnyAsync directly on the DbSet instead of loading the entity with includes
+        var exists = await dbContext.SuspicionEvents
+            .AnyAsync(e => e.ParticipationId == participation.Id && 
+                           e.Type == ruleCode && 
+                           e.Details == details, token);
+
+        if (exists) return;
+
+        // We need to fetch the participation to update the score, but we don't need to load all events
         var participationEntry = await dbContext.Participations
-            .Include(p => p.SuspicionEvents)
-            .Include(p => p.Team)
             .SingleOrDefaultAsync(p => p.Id == participation.Id, token);
 
         if (participationEntry == null) return;
-
-        // Check for duplicate event (Idempotency)
-        // We consider an event duplicate if it has the same Type and Details
-        // within a short time window (e.g., 5 minutes for dynamic events) or just strictly same details.
-        // For static analysis (CheatReportController recalculations), strict equality on Details is best.
-        var existingEvent = participationEntry.SuspicionEvents
-            .FirstOrDefault(e => e.Type == ruleCode && e.Details == details);
-
-        if (existingEvent != null) return;
         
         var evt = new SuspicionEvent
         {
@@ -50,16 +46,13 @@ public class SuspicionService(
             Type = ruleCode,
             ScoreDelta = weight,
             Details = details,
-            TimeUtc = DateTimeOffset.UtcNow
+            TimeUtc = DateTimeOffset.UtcNow,
+            GameId = participation.GameId,
+            RelatedParticipationId = relatedParticipationId
         };
         
         dbContext.SuspicionEvents.Add(evt);
-        participationEntry.SuspicionEvents.Add(evt);
         participationEntry.SuspicionScore += weight;
-
-
-
-
 
         await dbContext.SaveChangesAsync(token);
     }

@@ -58,7 +58,7 @@ const CheatCheck: FC = () => {
                             {/* Graph Visualization */}
                             <Paper shadow="md" p="md">
                                 <Title order={4} mb="md">Relationship Graph</Title>
-                                {report && (report.ipAnalysis?.length || report.sequenceSuspects?.length) ? (
+                                {report && report.ipAnalysis?.length ? (
                                     <CheatGraph report={report} />
                                 ) : (
                                     <Alert color="gray">No relationship data to visualize</Alert>

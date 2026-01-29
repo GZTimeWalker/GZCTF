@@ -501,69 +501,7 @@ public class CheatReportController(
 
         var topTeams = teamSequences.OrderByDescending(x => x.Sequence.Count).Take(50).ToList();
         
-        for (int i = 0; i < topTeams.Count; i++)
-        {
-            for (int j = i + 1; j < topTeams.Count; j++)
-            {
-                var t1 = topTeams[i];
-                var t2 = topTeams[j];
-                
-                // Get LCS (Common Sequence)
-                var commonSeq = GetLongestCommonSubsequence(t1.Sequence, t2.Sequence);
-                
-                int minLen = Math.Min(t1.Sequence.Count, t2.Sequence.Count);
-                double similarity = minLen == 0 ? 0 : (double)commonSeq.Count / minLen;
-                
-                if (similarity > 0.7)
-                {
-                   double timeCorrelation = 0;
-                   if (commonSeq.Count >= 3)
-                   {
-                       var t1Times = t1.Raw.Where(x => commonSeq.Contains(x.ChallengeId))
-                                       .OrderBy(x => x.SubmitTimeUtc)
-                                       .Select(x => x.SubmitTimeUtc)
-                                       .ToList();
-                       var t2Times = t2.Raw.Where(x => commonSeq.Contains(x.ChallengeId))
-                                       .OrderBy(x => x.SubmitTimeUtc)
-                                       .Select(x => x.SubmitTimeUtc)
-                                       .ToList();
-                       timeCorrelation = CalculateTimeCorrelation(t1Times, t2Times);
-                   }
 
-                    var detailedSolves = new List<SequenceSuspectDetail>();
-                    foreach (var cid in commonSeq)
-                    {
-                        var subA = t1.Raw.FirstOrDefault(x => x.ChallengeId == cid);
-                        var subB = t2.Raw.FirstOrDefault(x => x.ChallengeId == cid);
-                        
-                        if (subA != null && subB != null)
-                        {
-                            var cName = challengeMap.TryGetValue(cid, out var ch) ? ch.Title : "Unknown";
-                            var diff = Math.Abs((subA.SubmitTimeUtc - subB.SubmitTimeUtc).TotalSeconds);
-                            
-                            detailedSolves.Add(new SequenceSuspectDetail
-                            {
-                                ChallengeName = cName,
-                                TimeA = subA.SubmitTimeUtc,
-                                TimeB = subB.SubmitTimeUtc,
-                                TimeDiff = diff
-                            });
-                        }
-                    }
-
-                    report.SequenceSuspects.Add(new SequenceSuspectResult
-                    {
-                        TeamA = teamMap[t1.TeamId].Name,
-                        TeamB = teamMap[t2.TeamId].Name,
-                        Similarity = similarity,
-                        TimeCorrelation = timeCorrelation,
-                        CommonSolves = commonSeq.Count,
-                        Details = $"Common Solves: {string.Join(", ", commonSeq.Take(10))}{(commonSeq.Count > 10 ? "..." : "")}",
-                        DetailedSolves = detailedSolves
-                    });
-                }
-            }
-        }
 
         // Check 8: Burst Solving
         // Detects if a team solves multiple challenges in an extremely short timeframe (e.g., >= 3 solves in < 60 seconds).
@@ -616,7 +554,18 @@ public class CheatReportController(
 
         report.IpAnalysis = report.IpAnalysis.OrderBy(x => x.TeamId).ThenBy(x => x.Time).ToList();
         report.AbnormalSolves = report.AbnormalSolves.OrderBy(x => x.TeamId).ThenBy(x => x.SolveTime).ToList();
-        report.SequenceSuspects = report.SequenceSuspects.OrderByDescending(x => x.Similarity).ThenBy(x => x.TeamA).ToList();
+
+        // Check 9: Collusion Group Analysis (Hybrid CSD)
+        var teamDataList = teamSequences.Select(ts => new TeamData
+        {
+            TeamId = ts.TeamId,
+            TeamName = teamMap[ts.TeamId].Name,
+            Solves = ts.Raw.Select(x => x.ChallengeId).ToHashSet(),
+            Sequence = ts.Sequence,
+            Raw = ts.Raw
+        }).ToList(); // Used the existing teamSequences which has Sequence and Raw solves
+
+        AnalyzeCollusionGroups(report, teamDataList, challengeMap);
 
         // Process Suspicion Scores
         foreach (var item in report.IpAnalysis)
@@ -626,7 +575,7 @@ public class CheatReportController(
                 var part = team.Participations.FirstOrDefault(p => p.GameId == id);
                 if (part != null)
                 {
-                    await suspicionService.AddSuspicion(part, item.Type, item.Details, token);
+                    await suspicionService.AddSuspicion(part, item.Type, item.Details, token: token);
                 }
             }
         }
@@ -638,28 +587,25 @@ public class CheatReportController(
                 var part = team.Participations.FirstOrDefault(p => p.GameId == id);
                 if (part != null)
                 {
-                    await suspicionService.AddSuspicion(part, item.Type, item.Details, token);
+                    await suspicionService.AddSuspicion(part, item.Type, item.Details, token: token);
                 }
             }
         }
         
-        foreach (var item in report.SequenceSuspects)
+
+        
+        foreach (var group in report.CollusionGroups)
         {
-            if (item.Similarity > 0.8)
+            foreach (var teamName in group.Teams)
             {
-                // Find teams
-                var tA = teams.FirstOrDefault(t => t.Name == item.TeamA);
-                var tB = teams.FirstOrDefault(t => t.Name == item.TeamB);
-                
-                if (tA != null)
+                var team = teams.FirstOrDefault(t => t.Name == teamName);
+                if (team != null)
                 {
-                     var pA = tA.Participations.FirstOrDefault(p => p.GameId == id);
-                     if (pA != null) await suspicionService.AddSuspicion(pA, SuspicionType.SequenceSimilarity, $"Similarity {item.Similarity:P1} with {item.TeamB}", token);
-                }
-                if (tB != null)
-                {
-                     var pB = tB.Participations.FirstOrDefault(p => p.GameId == id);
-                     if (pB != null) await suspicionService.AddSuspicion(pB, SuspicionType.SequenceSimilarity, $"Similarity {item.Similarity:P1} with {item.TeamA}", token);
+                     var part = team.Participations.FirstOrDefault(p => p.GameId == id);
+                     if (part != null) 
+                     {
+                         await suspicionService.AddSuspicion(part, SuspicionType.CollusionGroup, group.Details, token: token);
+                     }
                 }
             }
         }
@@ -754,5 +700,233 @@ public class CheatReportController(
          if (normA == 0 || normB == 0) return 0;
 
         return dotProduct / (Math.Sqrt(normA) * Math.Sqrt(normB));
+    }
+
+    private class TeamData
+    {
+        public int TeamId { get; set; }
+        public string TeamName { get; set; } = string.Empty;
+        public HashSet<int> Solves { get; set; } = new();
+        public List<int> Sequence { get; set; } = new();
+        public List<GZCTF.Models.Data.Submission> Raw { get; set; } = new();
+    }
+
+    private void AnalyzeCollusionGroups(
+        CheatReport report,
+        List<TeamData> teamDataList,
+        Dictionary<int, GameChallenge> challengeMap)
+    {
+        var activeTeams = teamDataList.Where(t => t.Solves.Count > 0).ToList();
+        var n = activeTeams.Count;
+        if (n < 2) return;
+
+        // 1. Calculate Hybrid RSI Matrix
+        // RSI[i, j] stored in a dictionary? or just iterate?
+        // We need to sort by RSI, so let's compute all pulses.
+        var rsiList = new List<(int IndexA, int IndexB, double Score)>();
+
+        var rsiMatrix = new double[n, n];
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                var tA = activeTeams[i];
+                var tB = activeTeams[j];
+
+                // Jaccard Similarity (Set)
+                var intersection = tA.Solves.Intersect(tB.Solves).Count();
+                var union = tA.Solves.Union(tB.Solves).Count();
+                var jaccard = union == 0 ? 0 : (double)intersection / union;
+
+                // LCS Score (Sequence)
+                // Use existing helper
+                var lcs = GetLongestCommonSubsequence(tA.Sequence, tB.Sequence);
+                var minLen = Math.Min(tA.Sequence.Count, tB.Sequence.Count);
+                var lcsScore = minLen == 0 ? 0 : (double)lcs.Count / minLen;
+
+                // Hybrid RSI
+                // Weight: 70% Set, 30% Sequence
+                var rsi = (jaccard * 0.7) + (lcsScore * 0.3);
+
+                rsiMatrix[i, j] = rsi;
+                rsiMatrix[j, i] = rsi; // Symmetric
+
+                if (rsi > 0.5) // Filter out low noise
+                {
+                    rsiList.Add((i, j, rsi));
+                }
+            }
+        }
+
+        // Sort pairs by RSI descending
+        rsiList.Sort((a, b) => b.Score.CompareTo(a.Score));
+
+        var visited = new bool[n];
+        var groups = new List<CollusionGroupResult>();
+
+        // 2. CSD Screening Algorithm
+        foreach (var pair in rsiList)
+        {
+            if (visited[pair.IndexA] || visited[pair.IndexB]) continue;
+
+            // Start a new candidate group S with this pair
+            var groupIndices = new List<int> { pair.IndexA, pair.IndexB };
+            
+            // "Doubt" tracking (Average RSI of the group)
+            // Ideally, we want to maintain High Internal Consistency.
+            
+            bool added;
+            do
+            {
+                added = false;
+                int bestCandidate = -1;
+                double bestMeanRsi = -1;
+
+                // Find best candidate k outside S
+                for (int k = 0; k < n; k++)
+                {
+                    if (visited[k] || groupIndices.Contains(k)) continue;
+
+                    // Calculate mean RSI with current group members
+                    double sumRsi = 0;
+                    foreach (var memberIdx in groupIndices)
+                    {
+                        sumRsi += rsiMatrix[k, memberIdx];
+                    }
+                    double meanRsi = sumRsi / groupIndices.Count;
+
+                    if (meanRsi > bestMeanRsi)
+                    {
+                        bestMeanRsi = meanRsi;
+                        bestCandidate = k;
+                    }
+                }
+
+                // Check Cutoff / Mutation Point
+                // Threshold: e.g., 0.8 or within 10% of the initial pair's score?
+                // Or "Doubet" logic: If adding k drops the group average significantly.
+                // Simple heuristic: If bestMeanRsi > 0.8 (High confidence they belong)
+                
+                if (bestCandidate != -1 && bestMeanRsi > 0.75) 
+                {
+                    groupIndices.Add(bestCandidate);
+                    added = true;
+                }
+
+            } while (added);
+
+            // Final Hypothesis Check
+            // A group must have at least 2 members (we started with 2)
+            // But usually collusion groups are interesting if > 2, or just the pair.
+            // Let's verify the group average RSI is still high.
+            
+            if (groupIndices.Count >= 2)
+            {
+                // Calculate final metrics
+                var teamNames = new List<string>();
+                var solvesList = new List<HashSet<int>>();
+
+                foreach (var idx in groupIndices)
+                {
+                    visited[idx] = true;
+                    teamNames.Add(activeTeams[idx].TeamName);
+                    solvesList.Add(activeTeams[idx].Solves);
+                }
+
+                // Finds common solves across ALL members
+                IEnumerable<int> intersection = solvesList[0];
+                for(int i=1; i<solvesList.Count; i++)
+                {
+                    intersection = intersection.Intersect(solvesList[i]);
+                }
+                var commonSolves = intersection.ToList();
+                
+                // Calculate exact group Average RSI
+                double totalRsi = 0;
+                int count = 0;
+                for(int i=0; i<groupIndices.Count; i++)
+                {
+                    for(int j=i+1; j<groupIndices.Count; j++)
+                    {
+                        totalRsi += rsiMatrix[groupIndices[i], groupIndices[j]];
+                        count++;
+                    }
+                }
+                var avgRsi = count == 0 ? 0 : totalRsi / count;
+
+                // Generate result
+                // Fetch challenge titles
+                var commonTitles = commonSolves
+                    .Select(cid => challengeMap.TryGetValue(cid, out var c) ? c.Title : cid.ToString())
+                    .Take(10)
+                    .ToList();
+                
+                if (commonSolves.Count > 10) commonTitles.Add("...");
+
+                var detailedSolves = new List<SequenceSuspectDetail>();
+                string detailsBody = $"Group of {teamNames.Count} teams with {avgRsi:P1} similarity on {commonSolves.Count} common challenges.";
+
+                // If it's a group of 2+, find the most suspicious pair for detailed view
+                if (groupIndices.Count >= 2)
+                {
+                    var bestPair = (0, 1);
+                    double maxRsi = -1;
+                    
+                    // Find pair with highest RSI in this group
+                    for (int i = 0; i < groupIndices.Count; i++)
+                    {
+                        for (int j = i + 1; j < groupIndices.Count; j++)
+                        {
+                            if (rsiMatrix[groupIndices[i], groupIndices[j]] > maxRsi)
+                            {
+                                maxRsi = rsiMatrix[groupIndices[i], groupIndices[j]];
+                                bestPair = (i, j);
+                            }
+                        }
+                    }
+
+                    var t1 = activeTeams[groupIndices[bestPair.Item1]];
+                    var t2 = activeTeams[groupIndices[bestPair.Item2]];
+                    
+                    foreach (var cid in commonSolves)
+                    {
+                        var subA = t1.Raw.FirstOrDefault(x => x.ChallengeId == cid);
+                        var subB = t2.Raw.FirstOrDefault(x => x.ChallengeId == cid);
+                        
+                        if (subA != null && subB != null)
+                        {
+                            var chTitle = challengeMap.TryGetValue(cid, out var ch) ? ch.Title : "Unknown";
+                            var diff = Math.Abs((subA.SubmitTimeUtc - subB.SubmitTimeUtc).TotalSeconds);
+                            
+                            detailedSolves.Add(new SequenceSuspectDetail
+                            {
+                                ChallengeName = chTitle,
+                                TimeA = subA.SubmitTimeUtc,
+                                TimeB = subB.SubmitTimeUtc,
+                                TimeDiff = diff
+                            });
+                        }
+                    }
+                    
+                    // Sort by suspicion (low diff) and take top 25 to save bandwidth, then sort by time
+                    detailedSolves = detailedSolves.OrderBy(d => d.TimeDiff).Take(25).OrderBy(d => d.TimeA).ToList();
+                    
+                    if (groupIndices.Count > 2)
+                    {
+                         detailsBody = $"Group of {teamNames.Count} teams. Timeline compares {t1.TeamName} and {t2.TeamName} (most similar pair).";
+                    }
+                }
+
+                report.CollusionGroups.Add(new CollusionGroupResult
+                {
+                    Teams = teamNames,
+                    AverageRSI = avgRsi,
+                    CommonSolves = commonTitles,
+                    Details = detailsBody,
+                    DetailedSolves = detailedSolves
+                });
+            }
+        }
     }
 }

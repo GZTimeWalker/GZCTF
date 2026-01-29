@@ -15,4 +15,5 @@ public static class SuspicionType
     public const string FastSolveDownload = "FastSolve-Download";
     public const string FastSolveContainer = "FastSolve-Container";
     public const string SequenceSimilarity = "SequenceSimilarity";
+    public const string CollusionGroup = "CollusionGroup";
 }

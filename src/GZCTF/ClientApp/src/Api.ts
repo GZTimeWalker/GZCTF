@@ -875,12 +875,22 @@ export interface ProblemDetails {
   [key: string]: any;
 }
 
+export interface CollusionGroupResult {
+  teams?: string[];
+  /** @format double */
+  averageRsi?: number;
+  commonSolves?: string[];
+  details?: string | null;
+  detailedSolves?: SequenceSuspectDetail[];
+}
+
 export interface CheatReport {
   /** @format uint64 */
   generatedAt?: number;
   ipAnalysis?: IpAnalysisResult[];
   abnormalSolves?: AbnormalSolveResult[];
-  sequenceSuspects?: SequenceSuspectResult[];
+
+  collusionGroups?: CollusionGroupResult[];
   suspicionList?: SuspicionRecordResult[];
 }
 
@@ -930,25 +940,16 @@ export interface AbnormalSolveResult {
   solveTime?: number;
 }
 
-export interface SequenceSuspectResult {
-  teamA?: string;
-  teamB?: string;
-  /** @format double */
-  similarity?: number;
-  /** @format int32 */
-  commonSolves?: number;
-  details?: string;
-  /** Detailed Solves */
-  detailedSolves?: SequenceSuspectDetail[];
-}
-
 export interface SequenceSuspectDetail {
-  challengeName?: string;
+  challengeName?: string | null;
+  /** @format date-time */
   timeA?: string;
+  /** @format date-time */
   timeB?: string;
   /** @format double */
   timeDiff?: number;
 }
+
 
 /** Post item (Edit) */
 export interface PostEditModel {

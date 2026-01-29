@@ -1,6 +1,6 @@
 import { ActionIcon, useMantineTheme } from '@mantine/core'
 import { EchartsContainer } from '@Components/charts/EchartsContainer'
-import type { CheatReport, IpAnalysisResult, SequenceSuspectResult } from '@Api'
+import type { CheatReport, IpAnalysisResult } from '@Api'
 import { FC, useMemo, useCallback } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useFullscreen } from '@mantine/hooks'
@@ -88,40 +88,7 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
             })
         })
 
-        // Ensure teams discussed in Sequence Suspects are nodes too
-        report.sequenceSuspects?.forEach(item => {
-            ['A', 'B'].forEach(suffix => {
-                const tName = suffix === 'A' ? item.teamA : item.teamB;
-                if (!tName) return;
 
-                if (!nodes.find(n => n.name === tName)) {
-                    nodes.push({
-                        id: `team:name:${tName}`,
-                        name: tName,
-                        value: tName,
-                        symbolSize: 20,
-                        category: 0,
-                        itemStyle: { color: theme.colors.blue[6] }
-                    });
-                }
-            });
-
-            const sourceId = nodes.find(n => n.name === item.teamA)?.id;
-            const targetId = nodes.find(n => n.name === item.teamB)?.id;
-
-            if (sourceId && targetId) {
-                links.push({
-                    source: sourceId,
-                    target: targetId,
-                    value: `Similarity: ${(item.similarity! * 100).toFixed(0)}%`,
-                    lineStyle: {
-                        type: 'dashed',
-                        color: theme.colors.orange[6],
-                        width: 2
-                    }
-                })
-            }
-        });
 
 
         return {
@@ -173,7 +140,7 @@ export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
         }
     }, [report, theme])
 
-    if (!report || (!report.ipAnalysis?.length && !report.sequenceSuspects?.length)) {
+    if (!report || !report.ipAnalysis?.length) {
         return null;
     }
 

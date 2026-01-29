@@ -21,7 +21,7 @@ import {
 } from '@mantine/core'
 import { FC, useState, useMemo } from 'react'
 import { Icon } from '@mdi/react'
-import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify, mdiShieldAlert, mdiCog, mdiCancel, mdiCheck, mdiPencil, mdiChevronDown } from '@mdi/js'
+import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify, mdiShieldAlert, mdiCog, mdiCancel, mdiCheck, mdiPencil, mdiChevronDown, mdiAccountGroup } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { useLanguage } from '@Utils/I18n'
@@ -29,7 +29,7 @@ import { useParticipationStatusMap, showErrorMsg } from '@Utils/Shared'
 import { showNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
 import tableClasses from '@Styles/Table.module.css'
-import type { CheatReport, SequenceSuspectResult, SequenceSuspectDetail, SuspicionRecordResult } from '@Api'
+import type { CheatReport, SequenceSuspectDetail, SuspicionRecordResult, CollusionGroupResult } from '@Api'
 import api, { ParticipationStatus } from '@Api'
 import classes from './CheatInfo.module.css'
 import { useDisclosure } from '@mantine/hooks'
@@ -96,14 +96,11 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     // 2. Abnormal Solves Sort State
     const [solveSort, setSolveSort] = useState<SortConfig<any>>({ key: null, direction: 'asc' })
 
-    // 3. Sequence Similarity Sort State
-    const [seqSort, setSeqSort] = useState<SortConfig<any>>({ key: 'similarity', direction: 'desc' })
-
-    // 4. Suspicion Sort State
+    // 3. Suspicion Sort State
     const [suspSort, setSuspSort] = useState<SortConfig<any>>({ key: 'score', direction: 'desc' })
 
     const [opened, { open, close }] = useDisclosure(false)
-    const [selectedSuspect, setSelectedSuspect] = useState<SequenceSuspectResult | null>(null)
+    const [selectedGroup, setSelectedGroup] = useState<CollusionGroupResult | null>(null)
 
     // Suspicion Modal
     const [susOpened, { open: openSus, close: closeSus }] = useDisclosure(false)
@@ -112,10 +109,13 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     // Search states
     const [ipSearch, setIpSearch] = useState('')
     const [solveSearch, setSolveSearch] = useState('')
-    const [seqSearch, setSeqSearch] = useState('')
+    const [collusionSearch, setCollusionSearch] = useState('')
 
-    const handleViewDetails = (item: SequenceSuspectResult) => {
-        setSelectedSuspect(item)
+    // 5. Collusion Group Sort State
+    const [collusionSort, setCollusionSort] = useState<SortConfig<any>>({ key: 'averageRsi', direction: 'desc' })
+
+    const handleViewDetails = (item: CollusionGroupResult) => {
+        setSelectedGroup(item)
         open()
     }
 
@@ -155,19 +155,20 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
         return sortData(data, solveSort)
     }, [report?.abnormalSolves, solveSort, solveSearch])
 
-    const sortedSequenceSuspects = useMemo(() => {
-        if (!report?.sequenceSuspects) return []
-        let data = report.sequenceSuspects
-        if (seqSearch) {
-            const q = seqSearch.toLowerCase()
+
+
+    const sortedCollusionGroups = useMemo(() => {
+        if (!report?.collusionGroups) return []
+        let data = report.collusionGroups
+        if (collusionSearch) {
+            const q = collusionSearch.toLowerCase()
             data = data.filter((item: any) =>
-                item.teamA?.toLowerCase().includes(q) ||
-                item.teamB?.toLowerCase().includes(q) ||
+                item.teams?.some((t: string) => t.toLowerCase().includes(q)) ||
                 item.details?.toLowerCase().includes(q)
             )
         }
-        return sortData(data, seqSort)
-    }, [report?.sequenceSuspects, seqSort, seqSearch])
+        return sortData(data, collusionSort)
+    }, [report?.collusionGroups, collusionSort, collusionSearch])
 
     const sortedSuspicionList = useMemo(() => {
         if (!report?.suspicionList) return []
@@ -181,60 +182,77 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
     return (
         <>
-            <Modal opened={opened} onClose={close} title="Sequence Similarity Details" size="xl" centered>
-                {selectedSuspect && (
+            <Modal opened={opened} onClose={close} title="Collusion Details" size="xl" centered>
+                {selectedGroup && (
                     <Stack>
                         <Group grow>
                             <Card withBorder padding="xs">
                                 <Text size="xs" c="dimmed">Team A</Text>
-                                <ScrollingText text={selectedSuspect.teamA || 'Unknown'} size="lg" fw={700} />
+                                <ScrollingText text={selectedGroup.teams?.[0] || 'Unknown'} size="lg" fw={700} />
                             </Card>
                             <Center>
                                 <Stack align="center" gap={0}>
-                                    <Text size="xl" fw={900} c={((selectedSuspect.similarity ?? 0) > 0.9) ? 'red' : 'yellow'}>
-                                        {((selectedSuspect.similarity ?? 0) * 100).toFixed(1)}%
+                                    <Text size="xl" fw={900} c={((selectedGroup.averageRsi ?? 0) > 0.9) ? 'red' : 'yellow'}>
+                                        {((selectedGroup.averageRsi ?? 0) * 100).toFixed(1)}%
                                     </Text>
                                     <Text size="xs" c="dimmed">Similarity</Text>
                                 </Stack>
                             </Center>
                             <Card withBorder padding="xs" style={{ textAlign: 'right' }}>
-                                <Text size="xs" c="dimmed" ta="right">Team B</Text>
-                                <ScrollingText text={selectedSuspect.teamB || 'Unknown'} size="lg" fw={700} style={{ justifyContent: 'flex-end' }} />
+                                <Text size="xs" c="dimmed" ta="right">{selectedGroup.teams && selectedGroup.teams.length > 2 ? 'Other Teams' : 'Team B'}</Text>
+                                {selectedGroup.teams && selectedGroup.teams.length > 2 ? (
+                                    <Text size="lg" fw={700} style={{ textAlign: 'right' }}>
+                                        +{selectedGroup.teams.length - 1} others
+                                    </Text>
+                                ) : (
+                                    <ScrollingText text={selectedGroup.teams?.[1] || 'Unknown'} size="lg" fw={700} style={{ justifyContent: 'flex-end' }} />
+                                )}
                             </Card>
                         </Group>
 
-                        <ScrollArea h={400}>
-                            <Table striped highlightOnHover>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th>Challenge</Table.Th>
-                                        <Table.Th>Time A</Table.Th>
-                                        <Table.Th>Time B</Table.Th>
-                                        <Table.Th>Diff</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {selectedSuspect.detailedSolves?.map((solve: SequenceSuspectDetail, idx: number) => (
-                                        <Table.Tr key={idx}>
-                                            <Table.Td fw={500}>
-                                                <ScrollingText text={solve.challengeName || 'Unknown'} size="sm" maw={200} />
-                                            </Table.Td>
-                                            <Table.Td ff="monospace" fz="sm">
-                                                {solve.timeA ? dayjs(solve.timeA).locale(locale).format('MM-DD HH:mm:ss') : '-'}
-                                            </Table.Td>
-                                            <Table.Td ff="monospace" fz="sm">
-                                                {solve.timeB ? dayjs(solve.timeB).locale(locale).format('MM-DD HH:mm:ss') : '-'}
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <Badge color={(solve.timeDiff ?? 0) < 60 ? 'red' : (solve.timeDiff ?? 0) < 300 ? 'yellow' : 'gray'}>
-                                                    {(solve.timeDiff ?? 0).toFixed(0)}s
-                                                </Badge>
-                                            </Table.Td>
+                        {selectedGroup.detailedSolves && selectedGroup.detailedSolves.length > 0 ? (
+                            <ScrollArea h={400}>
+                                <Table striped highlightOnHover>
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th>Challenge</Table.Th>
+                                            <Table.Th>Time A</Table.Th>
+                                            <Table.Th>Time B</Table.Th>
+                                            <Table.Th>Diff</Table.Th>
                                         </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        </ScrollArea>
+                                    </Table.Thead>
+                                    <Table.Tbody>
+                                        {selectedGroup.detailedSolves.map((solve: SequenceSuspectDetail, idx: number) => (
+                                            <Table.Tr key={idx}>
+                                                <Table.Td fw={500}>
+                                                    <ScrollingText text={solve.challengeName || 'Unknown'} size="sm" maw={200} />
+                                                </Table.Td>
+                                                <Table.Td ff="monospace" fz="sm">
+                                                    {solve.timeA ? dayjs(solve.timeA).locale(locale).format('MM-DD HH:mm:ss') : '-'}
+                                                </Table.Td>
+                                                <Table.Td ff="monospace" fz="sm">
+                                                    {solve.timeB ? dayjs(solve.timeB).locale(locale).format('MM-DD HH:mm:ss') : '-'}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Badge color={(solve.timeDiff ?? 0) < 60 ? 'red' : (solve.timeDiff ?? 0) < 300 ? 'yellow' : 'gray'}>
+                                                        {(solve.timeDiff ?? 0).toFixed(0)}s
+                                                    </Badge>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ))}
+                                    </Table.Tbody>
+                                </Table>
+                            </ScrollArea>
+                        ) : (
+                            <Card withBorder padding="sm">
+                                <Text size="sm">
+                                    {selectedGroup.details}
+                                </Text>
+                                <Text size="xs" c="dimmed" mt="xs">
+                                    Common Solves: {selectedGroup.commonSolves?.join(', ')}
+                                </Text>
+                            </Card>
+                        )}
                     </Stack>
                 )}
             </Modal>
@@ -325,16 +343,17 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                     </Text>
                 </Card>
 
+
                 <Card shadow="sm" padding="md" radius="md" withBorder>
                     <Group justify="space-between" mb="xs">
-                        <Text fw={500}>Sequence Suspects</Text>
-                        <ThemeIcon color="yellow" variant="light">
-                            <Icon path={mdiShuffleVariant} size={0.8} />
+                        <Text fw={500}>Collusion Groups</Text>
+                        <ThemeIcon color="red" variant="light">
+                            <Icon path={mdiAccountGroup} size={0.8} />
                         </ThemeIcon>
                     </Group>
-                    <Title order={3}>{report?.sequenceSuspects?.length ?? 0}</Title>
+                    <Title order={3}>{report?.collusionGroups?.length ?? 0}</Title>
                     <Text size="sm" c="dimmed">
-                        High similarity detected
+                        High confidence rings
                     </Text>
                 </Card>
             </SimpleGrid>
@@ -624,77 +643,64 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                 )}
             </Paper>
 
-            {/* Sequence Similarity */}
+
+
+            {/* Collusion Groups */}
             <Paper shadow="md" p="md">
                 <Group justify="space-between" mb="md">
-                    <Title order={4}>Sequence Similarity</Title>
+                    <Title order={4}>Collusion Groups</Title>
                     <TextInput
                         placeholder="Search team name..."
                         leftSection={<Icon path={mdiMagnify} size={0.8} />}
-                        value={seqSearch}
-                        onChange={(e) => setSeqSearch(e.currentTarget.value)}
+                        value={collusionSearch}
+                        onChange={(e) => setCollusionSearch(e.currentTarget.value)}
                         size="xs"
                         w={250}
                     />
                 </Group>
-                {report?.sequenceSuspects && report.sequenceSuspects.length > 0 ? (
+                {report?.collusionGroups && report.collusionGroups.length > 0 ? (
                     <ScrollArea offsetScrollbars h="calc(33vh - 100px)">
                         <Table className={tableClasses.table}>
                             <Table.Thead>
                                 <Table.Tr>
+                                    <Table.Th w="20rem">Teams</Table.Th>
                                     <ThSort
-                                        sorted={seqSort.key === 'teamA'}
-                                        reversed={seqSort.direction === 'desc'}
-                                        onSort={() => handleSort(setSeqSort, seqSort, 'teamA')}
-                                        w="12rem"
-                                    >
-                                        Team A
-                                    </ThSort>
-                                    <ThSort
-                                        sorted={seqSort.key === 'teamB'}
-                                        reversed={seqSort.direction === 'desc'}
-                                        onSort={() => handleSort(setSeqSort, seqSort, 'teamB')}
-                                        w="12rem"
-                                    >
-                                        Team B
-                                    </ThSort>
-                                    <ThSort
-                                        sorted={seqSort.key === 'similarity'}
-                                        reversed={seqSort.direction === 'desc'}
-                                        onSort={() => handleSort(setSeqSort, seqSort, 'similarity')}
+                                        sorted={collusionSort.key === 'averageRsi'}
+                                        reversed={collusionSort.direction === 'desc'}
+                                        onSort={() => handleSort(setCollusionSort, collusionSort, 'averageRsi')}
                                         w="10rem"
                                     >
-                                        Similarity
+                                        Avg RSI
                                     </ThSort>
-                                    <ThSort
-                                        sorted={seqSort.key === 'commonSolves'}
-                                        reversed={seqSort.direction === 'desc'}
-                                        onSort={() => handleSort(setSeqSort, seqSort, 'commonSolves')}
-                                        w="12rem"
-                                    >
-                                        Common Solves
-                                    </ThSort>
-                                    <Table.Th>Evidence</Table.Th>
+                                    <Table.Th>Common Solves</Table.Th>
+                                    <Table.Th>Details</Table.Th>
                                     <Table.Th>Action</Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
-                                {sortedSequenceSuspects.map((item: any, index: number) => (
+                                {sortedCollusionGroups.map((item: any, index: number) => (
                                     <Table.Tr key={index}>
                                         <Table.Td>
-                                            <ScrollingText text={item.teamA || 'Unknown'} size="sm" fw="bold" maw={150} />
+                                            <Stack gap={2}>
+                                                {item.teams?.map((team: string, idx: number) => (
+                                                    <ScrollingText key={idx} text={team} size="sm" fw="bold" maw={250} />
+                                                ))}
+                                            </Stack>
                                         </Table.Td>
                                         <Table.Td>
-                                            <ScrollingText text={item.teamB || 'Unknown'} size="sm" fw="bold" maw={150} />
-                                        </Table.Td>
-                                        <Table.Td>
-                                            <Badge color={(item.similarity ?? 0) > 0.9 ? 'red' : 'yellow'} size="sm">
-                                                {((item.similarity ?? 0) * 100).toFixed(1)}%
+                                            <Badge color={(item.averageRsi ?? 0) > 0.8 ? 'red' : 'yellow'} size="sm">
+                                                {((item.averageRsi ?? 0) * 100).toFixed(1)}%
                                             </Badge>
                                         </Table.Td>
-                                        <Table.Td>{item.commonSolves ?? 0}</Table.Td>
                                         <Table.Td>
-                                            <ScrollingText text={item.details || '-'} size="xs" maw={250} />
+                                            <Text size="xs" maw={300} lineClamp={2} title={item.commonSolves?.join(', ')}>
+                                                {item.commonSolves?.join(', ') || '-'}
+                                            </Text>
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <Text size="xs" c="dimmed">
+                                                {item.details}
+                                            </Text>
                                         </Table.Td>
                                         <Table.Td>
                                             <Button size="xs" variant="light" leftSection={<Icon path={mdiInformation} size={0.7} />} onClick={() => handleViewDetails(item)}>
@@ -708,7 +714,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                     </ScrollArea>
                 ) : (
                     <Alert color="green" icon={<Icon path={mdiCheckCircle} size={1} />}>
-                        No suspicious sequence similarities detected
+                        No collusion groups detected
                     </Alert>
                 )}
             </Paper>
