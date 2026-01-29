@@ -195,15 +195,15 @@ public class CheatReportController(
                      detailedMsg = $"Token Abuse Detected. {description}";
                  }
 
-                 report.IpAnalysis.Add(new IpAnalysisResult
-                 {
-                     TeamId = evt.TeamId,
-                     TeamName = evt.TeamName,
-                     Type = "TokenAbuse",
-                     Ip = dlIp,
-                     Details = detailedMsg,
-                     Time = evt.PublishTimeUtc
-                 });
+                     report.IpAnalysis.Add(new IpAnalysisResult
+                     {
+                         TeamId = evt.TeamId,
+                         TeamName = evt.TeamName,
+                         Type = SuspicionType.TokenAbuse,
+                         Ip = dlIp,
+                         Details = detailedMsg,
+                         Time = evt.PublishTimeUtc
+                     });
             }
             
             if (dlIp != "Unknown" && IPAddress.TryParse(dlIp, out var ipAddr)) 
@@ -226,7 +226,7 @@ public class CheatReportController(
                         {
                             TeamId = evt.TeamId,
                             TeamName = evt.TeamName,
-                            Type = "CrossTeamIP",
+                            Type = SuspicionType.CrossTeamIP,
                             Ip = ipStr,
                             Details = $"Downloaded '{challengeTitle}' from IP {ipStr} which belongs to team(s): {string.Join(", ", otherTeamNames)}",
                             RelatedTeams = otherTeamNames,
@@ -241,7 +241,7 @@ public class CheatReportController(
                     {
                         TeamId = evt.TeamId,
                         TeamName = evt.TeamName,
-                        Type = "UnknownIP",
+                        Type = SuspicionType.UnknownIP,
                         Ip = ipStr,
                         Details = $"Downloaded '{challengeTitle}' from unknown IP {ipStr} (not in team's login history or any other team's)",
                         Time = evt.PublishTimeUtc
@@ -269,7 +269,7 @@ public class CheatReportController(
                 {
                     TeamId = tid,
                     TeamName = teamMap[tid].Name,
-                    Type = "SharedIP",
+                    Type = SuspicionType.SharedIP,
                     Ip = group.Key,
                     Details = $"IP {group.Key} is shared with teams: {string.Join(", ", teamNames.Where(n => n != teamMap[tid].Name))}",
                     RelatedTeams = teamNames
@@ -298,7 +298,7 @@ public class CheatReportController(
                          TeamName = sub.TeamName,
                          ChallengeId = sub.ChallengeId,
                          ChallengeName = sub.ChallengeName,
-                         Type = "NoDownload",
+                         Type = SuspicionType.NoDownload,
                          SolveTime = sub.SubmitTimeUtc,
                          Details = $"Solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without prior attachment download log."
                     });
@@ -334,7 +334,7 @@ public class CheatReportController(
                          TeamName = sub.TeamName,
                          ChallengeId = sub.ChallengeId,
                          ChallengeName = sub.ChallengeName,
-                         Type = "NoContainer",
+                         Type = SuspicionType.NoContainer,
                          SolveTime = sub.SubmitTimeUtc,
                          Details = details
                     });
@@ -403,7 +403,7 @@ public class CheatReportController(
                                          TeamName = sub.TeamName,
                                          ChallengeId = sub.ChallengeId,
                                          ChallengeName = sub.ChallengeName,
-                                         Type = "Hoarding",
+                                         Type = SuspicionType.Hoarding,
                                          SolveTime = sub.SubmitTimeUtc,
                                          Details = $"Solved {diff.TotalMinutes:F0}m after container destroy (Destroyed at {lastDestroy:MM/dd HH:mm})."
                                      });                                    
@@ -430,7 +430,7 @@ public class CheatReportController(
                              TeamName = sub.TeamName,
                              ChallengeId = sub.ChallengeId,
                              ChallengeName = sub.ChallengeName,
-                             Type = "FastSolve-Open",
+                             Type = SuspicionType.FastSolveOpen,
                              SolveTime = sub.SubmitTimeUtc,
                              Details = $"Solved in {durationOpen.TotalSeconds:F1}s after opening challenge (Opened at {firstOpen:MM/dd HH:mm:ss})."
                          }); 
@@ -452,7 +452,7 @@ public class CheatReportController(
                               TeamName = sub.TeamName,
                               ChallengeId = sub.ChallengeId,
                               ChallengeName = sub.ChallengeName,
-                              Type = "FastSolve-Download",
+                              Type = SuspicionType.FastSolveDownload,
                               SolveTime = sub.SubmitTimeUtc,
                               Details = $"Solved in {durationDl.TotalSeconds:F1}s after downloading attachment (Downloaded at {firstDl:MM/dd HH:mm:ss})."
                           });
@@ -475,7 +475,7 @@ public class CheatReportController(
                               TeamName = sub.TeamName,
                               ChallengeId = sub.ChallengeId,
                               ChallengeName = sub.ChallengeName,
-                              Type = "FastSolve-Container",
+                              Type = SuspicionType.FastSolveContainer,
                               SolveTime = sub.SubmitTimeUtc,
                               Details = $"Solved in {durationStart.TotalSeconds:F1}s after starting container (Started at {firstStart:MM/dd HH:mm:ss})."
                           });
@@ -603,7 +603,7 @@ public class CheatReportController(
                          TeamName = teamMap[teamSeq.TeamId].Name,
                          ChallengeId = subs[i].ChallengeId, // Cite the first challenge in the burst
                          ChallengeName = subs[i].ChallengeName,
-                         Type = "Burst",
+                         Type = SuspicionType.Burst,
                          SolveTime = subs[i].SubmitTimeUtc,
                          Details = $"Burst: Solved {burstCount} challenges in {totalSeconds:F0}s: {string.Join(", ", burstNames)}."
                      });
@@ -654,12 +654,12 @@ public class CheatReportController(
                 if (tA != null)
                 {
                      var pA = tA.Participations.FirstOrDefault(p => p.GameId == id);
-                     if (pA != null) await suspicionService.AddSuspicion(pA, "SequenceSimilarity", $"Similarity {item.Similarity:P1} with {item.TeamB}", token);
+                     if (pA != null) await suspicionService.AddSuspicion(pA, SuspicionType.SequenceSimilarity, $"Similarity {item.Similarity:P1} with {item.TeamB}", token);
                 }
                 if (tB != null)
                 {
                      var pB = tB.Participations.FirstOrDefault(p => p.GameId == id);
-                     if (pB != null) await suspicionService.AddSuspicion(pB, "SequenceSimilarity", $"Similarity {item.Similarity:P1} with {item.TeamA}", token);
+                     if (pB != null) await suspicionService.AddSuspicion(pB, SuspicionType.SequenceSimilarity, $"Similarity {item.Similarity:P1} with {item.TeamA}", token);
                 }
             }
         }

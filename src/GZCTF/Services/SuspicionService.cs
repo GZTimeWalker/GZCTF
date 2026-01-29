@@ -1,6 +1,7 @@
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using Microsoft.EntityFrameworkCore;
+using GZCTF.Models.Internal;
 using Microsoft.Extensions.Localization;
 
 namespace GZCTF.Services;
@@ -76,19 +77,19 @@ public class SuspicionService(
     {
         return ruleCode switch
         {
-            "StolenFlag" => 100,
-            "SharedIP" => 10,
-            "UnknownIP" => 10,
-            "CrossTeamIP" => 40,
-            "TokenAbuse" => 60,
-            "Hoarding" => 30,
-            "Burst" => 40,
-            "NoDownload" => 60,
-            "NoContainer" => 60,
-            "FastSolve-Open" => 50,
-            "FastSolve-Download" => 50,
-            "FastSolve-Container" => 50,
-            "SequenceSimilarity" => 40,
+            SuspicionType.StolenFlag => 100,
+            SuspicionType.SharedIP => 10,
+            SuspicionType.UnknownIP => 10,
+            SuspicionType.CrossTeamIP => 40,
+            SuspicionType.TokenAbuse => 60,
+            SuspicionType.Hoarding => 30,
+            SuspicionType.Burst => 40,
+            SuspicionType.NoDownload => 60,
+            SuspicionType.NoContainer => 60,
+            SuspicionType.FastSolveOpen => 50,
+            SuspicionType.FastSolveDownload => 50,
+            SuspicionType.FastSolveContainer => 50,
+            SuspicionType.SequenceSimilarity => 40,
             _ => 10
         };
     }

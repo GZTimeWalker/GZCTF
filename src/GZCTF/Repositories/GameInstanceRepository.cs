@@ -261,7 +261,7 @@ public class GameInstanceRepository(
         updateSub.Status = AnswerResult.CheatDetected;
         
         // Trigger Suspicion Score
-        await suspicionService.AddSuspicion(updateSub.Participation, "StolenFlag", $"Submitted flag stolen from team {instance.Participation?.Team?.Name ?? "Unknown"}", token);
+        await suspicionService.AddSuspicion(updateSub.Participation, SuspicionType.StolenFlag, $"Submitted flag stolen from team {instance.Participation?.Team?.Name ?? "Unknown"}", token);
 
         await SaveAsync(token);
 
