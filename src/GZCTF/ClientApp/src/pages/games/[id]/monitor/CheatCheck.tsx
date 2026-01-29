@@ -29,7 +29,7 @@ const CheatCheck: FC = () => {
     }
 
     // Api call (for Analysis view)
-    const { data: report, isLoading, error } = api.cheatReport.useCheatReportGet(numId, {
+    const { data: report, isLoading, error, mutate } = api.cheatReport.useCheatReportGet(numId, {
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         refreshInterval: 0
@@ -65,7 +65,7 @@ const CheatCheck: FC = () => {
                                 )}
                             </Paper>
 
-                            <CheatInfo report={report || null} />
+                            <CheatInfo report={report || null} mutate={mutate} />
                         </Stack>
                     </Tabs.Panel>
 

@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using System.Text;
 using GZCTF.Extensions.Startup;
 using GZCTF.Models;
+using GZCTF.Services;
 using Serilog;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -41,6 +42,7 @@ builder.ConfigureIdentity();
 builder.ConfigureTelemetry();
 
 builder.AddServiceConfigurations();
+builder.Services.AddScoped<ISuspicionService, GZCTF.Services.SuspicionService>();
 builder.AddCustomServices();
 builder.AddWebServices();
 builder.AddDevelopmentServices();

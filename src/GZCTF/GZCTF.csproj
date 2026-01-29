@@ -9,8 +9,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp\</SpaRoot>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+    <SpaRoot>ClientApp/</SpaRoot>
     <UserSecretsId>291cc810-6142-49a5-8134-1175254665a9</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -27,6 +26,7 @@
     <EFPrecompileQueriesStage>none</EFPrecompileQueriesStage>
     <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
     <CETCompat>false</CETCompat>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -99,8 +99,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\favicon.webp"/>
-    <EmbeddedResource Update="Resources\Program.resx" PublicClass="true"/>
+    <EmbeddedResource Include="Resources/favicon.webp"/>
+    <EmbeddedResource Include="Resources/Program.resx" PublicClass="true"/>
+    <EmbeddedResource Include="Resources/Program.*.resx" />
   </ItemGroup>
 
   <ItemGroup>

@@ -108,6 +108,7 @@
     "game": "Game",
     "ip": "IP",
     "rating": "Rating",
+    "status": "Status",
     "team": "Team",
     "time": "Time",
     "user": "User"
@@ -118,6 +119,10 @@
     "confirm_delete": "Confirm delete",
     "confirm_update": "Confirm Update",
     "delete": "Delete"
+  },
+  "notify": {
+    "success": "Success",
+    "updated": "Updated successfully"
   },
   "tab": {
     "about": "About",

@@ -15,6 +15,45 @@ public class CheatReport
 
     [JsonPropertyName("sequenceSuspects")]
     public List<SequenceSuspectResult> SequenceSuspects { get; set; } = new();
+
+    [JsonPropertyName("suspicionList")]
+    public List<SuspicionRecordResult> SuspicionList { get; set; } = new();
+}
+
+public class SuspicionRecordResult
+{
+    [JsonPropertyName("teamId")]
+    public int TeamId { get; set; }
+
+    [JsonPropertyName("participationId")]
+    public int ParticipationId { get; set; }
+
+    [JsonPropertyName("status")]
+    public ParticipationStatus Status { get; set; }
+
+    [JsonPropertyName("teamName")]
+    public string TeamName { get; set; } = string.Empty;
+
+    [JsonPropertyName("score")]
+    public int Score { get; set; }
+
+    [JsonPropertyName("events")]
+    public List<SuspicionEventResult> Events { get; set; } = new();
+}
+
+public class SuspicionEventResult
+{
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
+
+    [JsonPropertyName("scoreDelta")]
+    public int ScoreDelta { get; set; }
+
+    [JsonPropertyName("details")]
+    public string Details { get; set; } = string.Empty;
+
+    [JsonPropertyName("time")]
+    public DateTimeOffset Time { get; set; }
 }
 
 public class IpAnalysisResult

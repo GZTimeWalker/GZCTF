@@ -881,6 +881,28 @@ export interface CheatReport {
   ipAnalysis?: IpAnalysisResult[];
   abnormalSolves?: AbnormalSolveResult[];
   sequenceSuspects?: SequenceSuspectResult[];
+  suspicionList?: SuspicionRecordResult[];
+}
+
+export interface SuspicionRecordResult {
+  /** @format int32 */
+  teamId?: number;
+  /** @format int32 */
+  participationId?: number;
+  status?: ParticipationStatus;
+  teamName?: string;
+  /** @format int32 */
+  score?: number;
+  events?: SuspicionEventResult[];
+}
+
+export interface SuspicionEventResult {
+  type?: string;
+  /** @format int32 */
+  scoreDelta?: number;
+  details?: string;
+  /** @format uint64 */
+  time?: number;
 }
 
 export interface IpAnalysisResult {

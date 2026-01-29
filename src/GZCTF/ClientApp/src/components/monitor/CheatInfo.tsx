@@ -16,21 +16,27 @@ import {
     Button,
     Stack,
     TextInput,
+    Menu,
+    ActionIcon,
 } from '@mantine/core'
 import { FC, useState, useMemo } from 'react'
 import { Icon } from '@mdi/react'
-import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify } from '@mdi/js'
+import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify, mdiShieldAlert, mdiCog, mdiCancel, mdiCheck, mdiPencil, mdiChevronDown } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { useLanguage } from '@Utils/I18n'
+import { useParticipationStatusMap, showErrorMsg } from '@Utils/Shared'
+import { showNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
 import tableClasses from '@Styles/Table.module.css'
-import type { CheatReport, SequenceSuspectResult, SequenceSuspectDetail } from '@Api'
+import type { CheatReport, SequenceSuspectResult, SequenceSuspectDetail, SuspicionRecordResult } from '@Api'
+import api, { ParticipationStatus } from '@Api'
 import classes from './CheatInfo.module.css'
 import { useDisclosure } from '@mantine/hooks'
 
 interface CheatInfoProps {
     report: CheatReport | null
+    mutate?: () => void
 }
 
 interface SortConfig<T> {
@@ -80,7 +86,7 @@ function ThSort({ children, reversed, sorted, onSort, w }: ThSortProps) {
     )
 }
 
-export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
+export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const { t } = useTranslation()
     const { locale } = useLanguage()
 
@@ -93,8 +99,15 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
     // 3. Sequence Similarity Sort State
     const [seqSort, setSeqSort] = useState<SortConfig<any>>({ key: 'similarity', direction: 'desc' })
 
+    // 4. Suspicion Sort State
+    const [suspSort, setSuspSort] = useState<SortConfig<any>>({ key: 'score', direction: 'desc' })
+
     const [opened, { open, close }] = useDisclosure(false)
     const [selectedSuspect, setSelectedSuspect] = useState<SequenceSuspectResult | null>(null)
+
+    // Suspicion Modal
+    const [susOpened, { open: openSus, close: closeSus }] = useDisclosure(false)
+    const [selectedSuspicion, setSelectedSuspicion] = useState<SuspicionRecordResult | null>(null)
 
     // Search states
     const [ipSearch, setIpSearch] = useState('')
@@ -104,6 +117,11 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
     const handleViewDetails = (item: SequenceSuspectResult) => {
         setSelectedSuspect(item)
         open()
+    }
+
+    const handleViewSuspicion = (item: SuspicionRecordResult) => {
+        setSelectedSuspicion(item)
+        openSus()
     }
 
     const sortedIpAnalysis = useMemo(() => {
@@ -150,6 +168,11 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
         }
         return sortData(data, seqSort)
     }, [report?.sequenceSuspects, seqSort, seqSearch])
+
+    const sortedSuspicionList = useMemo(() => {
+        if (!report?.suspicionList) return []
+        return sortData(report.suspicionList, suspSort)
+    }, [report?.suspicionList, suspSort])
 
     const handleSort = (setSort: any, currentSort: any, key: string) => {
         const direction = currentSort.key === key && currentSort.direction === 'asc' ? 'desc' : 'asc'
@@ -216,13 +239,66 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                 )}
             </Modal>
 
+            <Modal opened={susOpened} onClose={closeSus} title="Suspicion Details" size="lg" centered>
+                {selectedSuspicion && (
+                    <Stack>
+                        <Group justify="space-between">
+                            <Text fw={700} size="xl">{selectedSuspicion.teamName}</Text>
+                            <Badge size="lg" color={(selectedSuspicion.score ?? 0) >= 100 ? 'gray' : (selectedSuspicion.score ?? 0) >= 70 ? 'red' : 'yellow'}>
+                                Score: {selectedSuspicion.score}
+                            </Badge>
+                        </Group>
+                        <ScrollArea h={400}>
+                            <Table striped>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th>Type</Table.Th>
+                                        <Table.Th>Score Delta</Table.Th>
+                                        <Table.Th>Time</Table.Th>
+                                        <Table.Th>Details</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {selectedSuspicion.events?.map((evt, idx) => (
+                                        <Table.Tr key={idx}>
+                                            <Table.Td>
+                                                <Badge color={evt.type === 'Corroboration' ? 'grape' : 'blue'}>{evt.type}</Badge>
+                                            </Table.Td>
+                                            <Table.Td>+{evt.scoreDelta}</Table.Td>
+                                            <Table.Td fz="xs" ff="monospace">
+                                                {evt.time ? dayjs(evt.time).locale(locale).format('MM-DD HH:mm:ss') : '-'}
+                                            </Table.Td>
+                                            <Table.Td fz="sm">{evt.details}</Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+                    </Stack>
+                )}
+            </Modal>
+
             {/* Summary Cards */}
             {/* ... Only replacing imports and upper logic, wait, I need to be careful with multi-defined blocks if I paste the whole file again ... */}
             {/* I will use TARGETED replacement for imports and specific logic blocks */}
             {/* ... Actually, the user asked for this, I will just overwrite the file since I have the whole content in mind and it's cleaner than partial patches that fail often ... */}
             {/* But I need to be sure about the middle content. */}
 
-            <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
+            <SimpleGrid cols={{ base: 1, md: 4 }} spacing="md">
+                <Card shadow="sm" padding="md" radius="md" withBorder>
+                    <Group justify="space-between" mb="xs">
+                        <Text fw={500} c="red">High Risk Teams</Text>
+                        <ThemeIcon color="red" variant="light">
+                            <Icon path={mdiShieldAlert} size={0.8} />
+                        </ThemeIcon>
+                    </Group>
+                    <Title order={3} c="red">
+                        {report?.suspicionList?.filter((x: any) => (x.score ?? 0) >= 70).length ?? 0}
+                    </Title>
+                    <Text size="sm" c="dimmed">
+                        Score {'>'}= 70
+                    </Text>
+                </Card>
                 <Card shadow="sm" padding="md" radius="md" withBorder>
                     <Group justify="space-between" mb="xs">
                         <Text fw={500}>IP Anomalies</Text>
@@ -263,7 +339,112 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report }) => {
                 </Card>
             </SimpleGrid>
 
-            {/* IP Analysis */}
+            {/* Suspicion Analysis */}
+            <Paper shadow="md" p="md">
+                <Group justify="space-between" mb="md">
+                    <Title order={4}>Suspicion Rankings</Title>
+                </Group>
+                {
+                    report?.suspicionList && report.suspicionList.length > 0 ? (
+                        <ScrollArea offsetScrollbars h="300px">
+                            <Table className={tableClasses.table}>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <ThSort
+                                            sorted={suspSort.key === 'teamName'}
+                                            reversed={suspSort.direction === 'desc'}
+                                            onSort={() => handleSort(setSuspSort, suspSort, 'teamName')}
+                                            w="12rem"
+                                        >
+                                            Team
+                                        </ThSort>
+                                        <ThSort
+                                            sorted={suspSort.key === 'score'}
+                                            reversed={suspSort.direction === 'desc'}
+                                            onSort={() => handleSort(setSuspSort, suspSort, 'score')}
+                                            w="8rem"
+                                        >
+                                            Score
+                                        </ThSort>
+                                        <Table.Th>Status</Table.Th>
+                                        <Table.Th>Actions</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {sortedSuspicionList.map((item: any, index: number) => {
+                                        const score = item.score ?? 0;
+                                        const statusMap = useParticipationStatusMap()
+                                        const currentStatus = item.status ?? ParticipationStatus.Pending
+                                        const statusMeta = statusMap.get(currentStatus)
+
+                                        const handleStatusChange = async (status: ParticipationStatus) => {
+                                            try {
+                                                await api.admin.adminParticipation(item.participationId!, { status })
+                                                showNotification({
+                                                    title: t('common.notify.success'),
+                                                    message: t('common.notify.updated'),
+                                                    color: 'green',
+                                                })
+                                                mutate?.()
+                                            } catch (e: any) {
+                                                showErrorMsg(e, t)
+                                            }
+                                        }
+
+                                        return (
+                                            <Table.Tr key={index}>
+                                                <Table.Td fw={700}>
+                                                    <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw="bold" maw={200} />
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Badge color={score >= 70 ? 'red' : 'yellow'} size="lg" variant="light">{score}</Badge>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Menu shadow="md" width={200}>
+                                                        <Menu.Target>
+                                                            <UnstyledButton style={{ cursor: 'pointer' }}>
+                                                                <Badge
+                                                                    color={statusMeta?.color || 'gray'}
+                                                                    rightSection={<Icon path={mdiChevronDown} size={0.6} />}
+                                                                >
+                                                                    {statusMeta?.title || 'Unknown'}
+                                                                </Badge>
+                                                            </UnstyledButton>
+                                                        </Menu.Target>
+
+                                                        <Menu.Dropdown>
+                                                            <Menu.Label>{t('common.label.status')}</Menu.Label>
+                                                            {Array.from(statusMap.entries())
+                                                                .filter(([status]) => status === ParticipationStatus.Accepted || status === ParticipationStatus.Suspended)
+                                                                .map(([status, meta]) => (
+                                                                    <Menu.Item
+                                                                        key={status}
+                                                                        leftSection={<Icon path={meta.iconPath} size={0.8} color={meta.color === 'alert' ? 'red' : meta.color} />}
+                                                                        onClick={() => handleStatusChange(status)}
+                                                                        disabled={currentStatus === status}
+                                                                    >
+                                                                        {meta.title}
+                                                                    </Menu.Item>
+                                                                ))}
+                                                        </Menu.Dropdown>
+                                                    </Menu>
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Button size="xs" variant="default" onClick={() => handleViewSuspicion(item)}>
+                                                        View Details
+                                                    </Button>
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        )
+                                    })}
+                                </Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+                    ) : (
+                        <Alert color="green">No suspicion scores recorded</Alert>
+                    )
+                }
+            </Paper >
             <Paper shadow="md" p="md">
                 <Group justify="space-between" mb="md">
                     <Title order={4}>IP Analysis</Title>

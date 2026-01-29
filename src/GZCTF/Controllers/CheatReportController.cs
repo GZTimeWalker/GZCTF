@@ -13,7 +13,8 @@ namespace GZCTF.Controllers;
 [ApiController]
 [Route("api/game/{id}/cheatreport")]
 public class CheatReportController(
-    AppDbContext dbContext) : ControllerBase
+    AppDbContext dbContext,
+    GZCTF.Services.ISuspicionService suspicionService) : ControllerBase
 {
     [HttpGet]
     [RequireMonitor]
@@ -28,9 +29,9 @@ public class CheatReportController(
 
         // Data Gathering
         var teams = await dbContext.Teams
-            .AsNoTracking()
             .Where(t => t.Participations.Any(p => p.GameId == id))
             .Include(t => t.Members)
+            .Include(t => t.Participations.Where(p => p.GameId == id))
             .OrderBy(t => t.Id)
             .ToListAsync(token);
 
@@ -616,6 +617,80 @@ public class CheatReportController(
         report.IpAnalysis = report.IpAnalysis.OrderBy(x => x.TeamId).ThenBy(x => x.Time).ToList();
         report.AbnormalSolves = report.AbnormalSolves.OrderBy(x => x.TeamId).ThenBy(x => x.SolveTime).ToList();
         report.SequenceSuspects = report.SequenceSuspects.OrderByDescending(x => x.Similarity).ThenBy(x => x.TeamA).ToList();
+
+        // Process Suspicion Scores
+        foreach (var item in report.IpAnalysis)
+        {
+            if (teamMap.TryGetValue(item.TeamId, out var team))
+            {
+                var part = team.Participations.FirstOrDefault(p => p.GameId == id);
+                if (part != null)
+                {
+                    await suspicionService.AddSuspicion(part, item.Type, item.Details, token);
+                }
+            }
+        }
+
+        foreach (var item in report.AbnormalSolves)
+        {
+            if (teamMap.TryGetValue(item.TeamId, out var team))
+            {
+                var part = team.Participations.FirstOrDefault(p => p.GameId == id);
+                if (part != null)
+                {
+                    await suspicionService.AddSuspicion(part, item.Type, item.Details, token);
+                }
+            }
+        }
+        
+        foreach (var item in report.SequenceSuspects)
+        {
+            if (item.Similarity > 0.8)
+            {
+                // Find teams
+                var tA = teams.FirstOrDefault(t => t.Name == item.TeamA);
+                var tB = teams.FirstOrDefault(t => t.Name == item.TeamB);
+                
+                if (tA != null)
+                {
+                     var pA = tA.Participations.FirstOrDefault(p => p.GameId == id);
+                     if (pA != null) await suspicionService.AddSuspicion(pA, "SequenceSimilarity", $"Similarity {item.Similarity:P1} with {item.TeamB}", token);
+                }
+                if (tB != null)
+                {
+                     var pB = tB.Participations.FirstOrDefault(p => p.GameId == id);
+                     if (pB != null) await suspicionService.AddSuspicion(pB, "SequenceSimilarity", $"Similarity {item.Similarity:P1} with {item.TeamA}", token);
+                }
+            }
+        }
+
+        // Populate Suspicion List in Report
+        var participations = await dbContext.Participations
+            .AsNoTracking()
+            .Where(p => p.GameId == id && p.SuspicionScore > 0)
+            .Include(p => p.Team)
+            .Include(p => p.SuspicionEvents)
+            .OrderByDescending(p => p.SuspicionScore)
+            .ToListAsync(token);
+
+        foreach (var p in participations)
+        {
+            report.SuspicionList.Add(new SuspicionRecordResult
+            {
+                TeamId = p.TeamId,
+                ParticipationId = p.Id,
+                Status = p.Status,
+                TeamName = p.Team?.Name ?? "Unknown",
+                Score = p.SuspicionScore,
+                Events = p.SuspicionEvents.Select(e => new SuspicionEventResult
+                {
+                    Type = e.Type,
+                    ScoreDelta = e.ScoreDelta,
+                    Details = e.Details,
+                    Time = e.TimeUtc
+                }).OrderByDescending(e => e.Time).ToList()
+            });
+        }
 
         return Ok(report);
     }

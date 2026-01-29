@@ -92,5 +92,15 @@ public class Participation
     /// </summary>
     public Division? Division { get; set; }
 
+    /// <summary>
+    /// Suspicion Score
+    /// </summary>
+    public int SuspicionScore { get; set; } = 0;
+
+    /// <summary>
+    /// Suspicion Events
+    /// </summary>
+    public List<SuspicionEvent> SuspicionEvents { get; set; } = [];
+
     #endregion Db Relationship
 }

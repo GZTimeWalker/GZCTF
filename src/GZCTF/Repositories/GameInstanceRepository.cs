@@ -15,6 +15,7 @@ public class GameInstanceRepository(
     IGameEventRepository gameEventRepository,
     IOptionsSnapshot<ContainerPolicy> containerPolicy,
     ILogger<GameInstanceRepository> logger,
+    GZCTF.Services.ISuspicionService suspicionService,
     IStringLocalizer<Program> localizer) : RepositoryBase(context), IGameInstanceRepository
 {
     public override Task<int> CountAsync(CancellationToken token = default) => Context.GameInstances.CountAsync(token);
@@ -247,13 +248,20 @@ public class GameInstanceRepository(
         if (instance is null)
             return checkInfo;
 
-        var updateSub = await Context.Submissions.Where(s => s.Id == submission.Id).SingleAsync(token);
+        var updateSub = await Context.Submissions
+            .Include(s => s.Participation)
+            .ThenInclude(p => p.Team)
+            .Where(s => s.Id == submission.Id)
+            .SingleAsync(token);
 
         var cheatInfo = await cheatInfoRepository.CreateCheatInfo(updateSub, instance, token);
 
         checkInfo = CheatCheckInfo.FromCheatInfo(cheatInfo);
 
         updateSub.Status = AnswerResult.CheatDetected;
+        
+        // Trigger Suspicion Score
+        await suspicionService.AddSuspicion(updateSub.Participation, "StolenFlag", $"Submitted flag stolen from team {instance.Participation?.Team?.Name ?? "Unknown"}", token);
 
         await SaveAsync(token);
 

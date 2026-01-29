@@ -43,6 +43,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
     public DbSet<ChallengeReview> ChallengeReviews { get; set; } = null!;
     public DbSet<EventManager> EventManagers { get; set; } = null!;
+    public DbSet<SuspicionEvent> SuspicionEvents { get; set; } = null!;
+    public DbSet<SuspicionRule> SuspicionRules { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(

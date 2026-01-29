@@ -283,7 +283,8 @@ public enum ParticipationStatus : byte
     /// <summary>
     /// Not submitted
     /// </summary>
-    Unsubmitted = 4
+    Unsubmitted = 4,
+
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<ChallengeType>))]
