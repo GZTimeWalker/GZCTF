@@ -1,5 +1,7 @@
 import react from '@vitejs/plugin-react'
-import process from 'process'
+import path from 'node:path'
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import banner from 'vite-plugin-banner'
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
@@ -11,6 +13,7 @@ import { i18nVirtualManifest } from './plugins/vite-i18n-virtual-manifest'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
+  const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
   const TARGET = env.VITE_BACKEND_URL ?? 'http://localhost:8080'
   const current = new Date()
@@ -28,7 +31,7 @@ export default defineConfig(({ mode }) => {
   return {
     resolve: {
       alias: {
-        '@creepjs': '/src/lib/creepjs/src',
+        '@creepjs': path.resolve(__dirname, 'src/lib/creepjs/src'),
       },
     },
     server: {
