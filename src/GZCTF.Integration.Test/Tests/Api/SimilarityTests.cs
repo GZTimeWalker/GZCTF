@@ -75,18 +75,17 @@ public class SimilarityTests(GZCTFApplicationFactory factory, ITestOutputHelper 
         Assert.NotNull(report);
         
         // Debug output
-        foreach (var seq in report.SequenceSuspects)
+        foreach (var group in report.CollusionGroups)
         {
-            output.WriteLine($"A: {seq.TeamA}, B: {seq.TeamB}, Sim: {seq.Similarity}, TimeCorr: {seq.TimeCorrelation}");
+            output.WriteLine($"Teams: {string.Join(", ", group.Teams.Select(t => t.Name))}, RSI: {group.AverageRSI}");
         }
 
-        var suspect = report.SequenceSuspects.FirstOrDefault(s => 
-            (s.TeamA == t1.Name && s.TeamB == t2.Name) || 
-            (s.TeamA == t2.Name && s.TeamB == t1.Name));
+        var suspect = report.CollusionGroups.FirstOrDefault(g => 
+            g.Teams.Any(t => t.Name == t1.Name) && g.Teams.Any(t => t.Name == t2.Name));
 
         Assert.NotNull(suspect);
-        Assert.Equal(1.0, suspect.Similarity, 3); // Exact sequence match
-        Assert.True(suspect.TimeCorrelation > 0.99); // Highly correlated time intervals
+        Assert.Equal(1.0, suspect.AverageRSI, 3); // Exact sequence match
+        Assert.NotEmpty(suspect.DetailedSolves);
     }
 
     private async Task AddSubmission(AppDbContext context, int gameId, int chalId, int teamId, Guid userId, int partId, DateTimeOffset time)

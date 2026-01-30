@@ -203,10 +203,10 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
 
         // 7. Verify
         Assert.NotNull(report);
-        Assert.NotEmpty(report.SequenceSuspects);
-        var suspect = report.SequenceSuspects.FirstOrDefault();
+        Assert.NotEmpty(report.CollusionGroups);
+        var suspect = report.CollusionGroups.FirstOrDefault();
         Assert.NotNull(suspect);
-        Assert.Equal(3, suspect.CommonSolves);
+        Assert.Equal(3, suspect.CommonSolves.Count);
         Assert.NotNull(suspect.DetailedSolves);
         Assert.Equal(3, suspect.DetailedSolves.Count);
         
