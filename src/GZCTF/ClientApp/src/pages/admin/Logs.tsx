@@ -149,6 +149,11 @@ const Logs: FC = () => {
           </Text>
         </Table.Td>
         <Table.Td>
+          <Text ff="monospace" size="sm" color="dimmed" className={tableClasses.overflow}>
+            {item.fingerprint || ''}
+          </Text>
+        </Table.Td>
+        <Table.Td>
           <Text size="sm" className={tableClasses.overflow}>
             {item.msg || ''}
           </Text>
@@ -214,6 +219,7 @@ const Logs: FC = () => {
                 <Table.Th w="7rem">{t('common.label.time')}</Table.Th>
                 <Table.Th w="9rem">{t('common.label.ip')}</Table.Th>
                 <Table.Th w="7rem">{t('common.label.user')}</Table.Th>
+                <Table.Th w="7rem">{t('common.label.fingerprint')}</Table.Th>
                 <Table.Th w="100%">{t('admin.label.logs.message')}</Table.Th>
                 <Table.Th w="6rem">{t('admin.label.logs.status')}</Table.Th>
               </Table.Tr>

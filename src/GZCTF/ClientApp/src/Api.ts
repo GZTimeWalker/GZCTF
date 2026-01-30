@@ -202,6 +202,8 @@ export type RegisterModel = ModelWithCaptcha & {
    * @minLength 1
    */
   email: string;
+  /** Browser fingerprint */
+  fingerprint?: string | null;
 };
 
 export interface ModelWithCaptcha {
@@ -264,6 +266,8 @@ export type LoginModel = ModelWithCaptcha & {
    * @minLength 1
    */
   password: string;
+  /** Browser fingerprint */
+  fingerprint?: string | null;
 };
 
 /** Basic account information update */
@@ -382,6 +386,8 @@ export interface AccountPolicy {
   emailConfirmationRequired?: boolean;
   /** Email domain list, separated by commas */
   emailDomainList?: string;
+  /** Enable browser fingerprinting in Login/Register */
+  enableBrowserFingerprint?: boolean;
 }
 
 /** Global settings */
@@ -655,6 +661,8 @@ export interface LogMessageModel {
   msg?: string | null;
   /** Task status */
   status?: TaskStatus | null;
+  /** Browser fingerprint */
+  fingerprint?: string | null;
 }
 
 /** Modify the participation information */
@@ -2312,6 +2320,8 @@ export interface ClientConfig {
    * @format int32
    */
   renewalWindow?: number;
+  /** Enable browser fingerprinting in Login/Register */
+  enableBrowserFingerprint?: boolean;
 }
 
 /** Client CAPTCHA information */

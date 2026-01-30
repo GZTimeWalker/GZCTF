@@ -17,8 +17,9 @@ import {
   useMantineTheme,
   ActionIcon,
   Tooltip,
+  Alert,
 } from '@mantine/core'
-import { mdiCheck, mdiContentSaveOutline, mdiRestore } from '@mdi/js'
+import { mdiCheck, mdiContentSaveOutline, mdiRestore, mdiAlert } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -318,7 +319,26 @@ const Configs: FC = () => {
                 })
               }
             />
+            <Switch
+              checked={accountPolicy?.enableBrowserFingerprint ?? false}
+              disabled={disabled}
+              label={SwitchLabel(
+                t('admin.content.settings.account.browser_fingerprint.label'),
+                t('admin.content.settings.account.browser_fingerprint.description')
+              )}
+              onChange={(e) =>
+                setAccountPolicy({
+                  ...accountPolicy,
+                  enableBrowserFingerprint: e.currentTarget.checked,
+                })
+              }
+            />
           </SimpleGrid>
+          {accountPolicy?.enableBrowserFingerprint && (
+            <Alert color="yellow" icon={<Icon path={mdiAlert} size={1} />}>
+              {t('admin.content.settings.account.browser_fingerprint.warning')}
+            </Alert>
+          )}
           <TextInput
             label={t('admin.content.settings.account.email_domain_list.label')}
             description={t('admin.content.settings.account.email_domain_list.description')}

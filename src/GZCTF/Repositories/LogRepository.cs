@@ -18,6 +18,7 @@ public class LogRepository(AppDbContext context) : RepositoryBase(context), ILog
                 WHERE ""Level"" = {level}
                 AND (""UserName"" ILIKE {"%"+ search + "%"} 
                      OR ""Message"" ILIKE {"%" + search + "%"}
+                     OR ""BrowserFingerprint"" ILIKE {"%" + search + "%"}
                      OR CAST(""RemoteIP"" AS text) ILIKE {"%" + search + "%"})
                 ");
         }
@@ -27,6 +28,7 @@ public class LogRepository(AppDbContext context) : RepositoryBase(context), ILog
                 SELECT * FROM ""Logs""
                 WHERE ""UserName"" ILIKE {"%" + search + "%"} 
                    OR ""Message"" ILIKE {"%" + search + "%"}
+                   OR ""BrowserFingerprint"" ILIKE {"%" + search + "%"}
                    OR CAST(""RemoteIP"" AS text) ILIKE {"%" + search + "%"}
                 ");
         }

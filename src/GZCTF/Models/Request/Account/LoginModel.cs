@@ -19,4 +19,9 @@ public class LoginModel : ModelWithCaptcha
     /// </summary>
     [Required]
     public string Password { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Browser fingerprint
+    /// </summary>
+    public string? Fingerprint { get; set; }
 }

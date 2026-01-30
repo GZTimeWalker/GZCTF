@@ -46,6 +46,7 @@ export const useConfig = () => {
       defaultLifetime: 120,
       extensionDuration: 120,
       renewalWindow: 10,
+      enableBrowserFingerprint: false,
     },
   })
 

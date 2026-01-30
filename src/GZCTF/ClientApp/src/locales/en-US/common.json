@@ -111,7 +111,8 @@
     "status": "Status",
     "team": "Team",
     "time": "Time",
-    "user": "User"
+    "user": "User",
+    "fingerprint": "Fingerprint"
   },
   "modal": {
     "cancel": "Cancel",

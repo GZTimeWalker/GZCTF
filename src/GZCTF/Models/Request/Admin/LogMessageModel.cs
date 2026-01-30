@@ -41,6 +41,12 @@ public class LogMessageModel
     [JsonPropertyName("status")]
     public TaskStatus? Status { get; set; }
 
+    /// <summary>
+    /// Browser fingerprint
+    /// </summary>
+    [JsonPropertyName("fingerprint")]
+    public string? Fingerprint { get; set; }
+
     public static LogMessageModel FromLogModel(LogModel logInfo) =>
         new()
         {
@@ -49,6 +55,7 @@ public class LogMessageModel
             UserName = logInfo.UserName,
             IP = logInfo.RemoteIP,
             Msg = logInfo.Message,
-            Status = logInfo.Status
+            Status = logInfo.Status,
+            Fingerprint = logInfo.BrowserFingerprint
         };
 }

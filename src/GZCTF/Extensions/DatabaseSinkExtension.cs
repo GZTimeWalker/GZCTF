@@ -51,6 +51,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
         logEvent.Properties.TryGetValue("SourceContext", out var sourceContext);
         logEvent.Properties.TryGetValue("IP", out var ip);
         logEvent.Properties.TryGetValue("Status", out var status);
+        logEvent.Properties.TryGetValue("BrowserFingerprint", out var fingerprint);
 
         return new LogModel
         {
@@ -63,6 +64,7 @@ public class DatabaseSink : ILogEventSink, IDisposable
             Status = logEvent.Exception is null
                 ? LogHelper.GetLogPropertyValue(status, TaskStatus.Failed)
                 : TaskStatus.Failed,
+            BrowserFingerprint = LogHelper.GetLogPropertyValue<string>(fingerprint, null),
             Exception = logEvent.Exception?.ToString()
         };
     }

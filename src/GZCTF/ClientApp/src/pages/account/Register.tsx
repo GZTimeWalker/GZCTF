@@ -13,8 +13,10 @@ import { encryptApiData } from '@Utils/Crypto'
 import { tryGetClientError } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
+import { TermsOfService } from '@Components/TermsOfService'
 import api, { RegisterStatus } from '@Api'
 import misc from '@Styles/Misc.module.css'
+import { getFingerprint } from '@Utils/BrowserFingerprint'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -22,6 +24,7 @@ const Register: FC = () => {
   const [uname, setUname] = useInputState('')
   const [email, setEmail] = useInputState('')
   const [disabled, setDisabled] = useState(false)
+  const [accepted, setAccepted] = useInputState(false)
   const { config } = useConfig()
 
   const navigate = useNavigate()
@@ -57,6 +60,16 @@ const Register: FC = () => {
 
   const onRegister = async (event: React.FormEvent) => {
     event.preventDefault()
+
+    if (config.enableBrowserFingerprint && !accepted) {
+      showNotification({
+        color: 'red',
+        title: t('common.error.check_input'),
+        message: t('common.error.check_input'),
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      return
+    }
 
     if (pwd !== retypedPwd) {
       showNotification({
@@ -97,6 +110,7 @@ const Register: FC = () => {
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         email: email,
         challenge: token,
+        fingerprint: config.enableBrowserFingerprint ? await getFingerprint() : undefined,
       })
       const data = RegisterStatusMap.get(res.data.data)
       if (data) {
@@ -167,6 +181,7 @@ const Register: FC = () => {
         error={pwd !== retypedPwd}
       />
       <Captcha action="register" ref={captchaRef} />
+      <TermsOfService checked={accepted} onChange={setAccepted} />
       <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">
         {t('account.anchor.login')}
       </Anchor>

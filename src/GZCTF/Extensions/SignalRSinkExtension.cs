@@ -30,6 +30,7 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
         logEvent.Properties.TryGetValue("UserName", out var userName);
         logEvent.Properties.TryGetValue("IP", out var ip);
         logEvent.Properties.TryGetValue("Status", out var status);
+        logEvent.Properties.TryGetValue("BrowserFingerprint", out var fingerprint);
 
         try
         {
@@ -44,6 +45,7 @@ public class SignalRSink(IServiceProvider serviceProvider) : ILogEventSink
                     Status = logEvent.Exception is null
                         ? LogHelper.GetLogPropertyValue(status, TaskStatus.Failed)
                         : TaskStatus.Failed,
+                    Fingerprint = LogHelper.GetLogPropertyValue<string>(fingerprint, null),
                 }).Wait();
         }
         catch

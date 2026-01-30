@@ -13,8 +13,10 @@ import { tryGetClientError } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import { useUser } from '@Hooks/useUser'
+import { TermsOfService } from '@Components/TermsOfService'
 import api from '@Api'
 import misc from '@Styles/Misc.module.css'
+import { getFingerprint } from '@Utils/BrowserFingerprint'
 
 const Login: FC = () => {
   const params = useSearchParams()[0]
@@ -24,6 +26,7 @@ const Login: FC = () => {
   const [uname, setUname] = useInputState('')
   const [disabled, setDisabled] = useState(false)
   const [needRedirect, setNeedRedirect] = useState(false)
+  const [accepted, setAccepted] = useInputState(false)
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
@@ -46,6 +49,17 @@ const Login: FC = () => {
     event.preventDefault()
 
     if (uname.length === 0 || pwd.length < 6) {
+      showNotification({
+        color: 'red',
+        title: t('account.notification.login.invalid'),
+        message: t('common.error.check_input'),
+        icon: <Icon path={mdiClose} size={1} />,
+      })
+      setDisabled(false)
+      return
+    }
+
+    if (config.enableBrowserFingerprint && !accepted) {
       showNotification({
         color: 'red',
         title: t('account.notification.login.invalid'),
@@ -84,6 +98,7 @@ const Login: FC = () => {
         userName: uname,
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         challenge: token,
+        fingerprint: config.enableBrowserFingerprint ? await getFingerprint() : undefined,
       })
 
       updateNotification({
@@ -138,6 +153,7 @@ const Login: FC = () => {
         onChange={(event) => setPwd(event.currentTarget.value)}
       />
       <Captcha action="login" ref={captchaRef} />
+      <TermsOfService checked={accepted} onChange={setAccepted} />
       <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/recovery">
         {t('account.anchor.recovery')}
       </Anchor>

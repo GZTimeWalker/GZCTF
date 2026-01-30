@@ -59,6 +59,12 @@ public class AccountPolicy
     /// Email domain list, separated by commas
     /// </summary>
     public string EmailDomainList { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Enable browser fingerprinting in Login/Register
+    /// </summary>
+    [CacheFlush(CacheKey.ClientConfig)]
+    public bool EnableBrowserFingerprint { get; set; }
 }
 
 /// <summary>
@@ -347,6 +353,11 @@ public partial class ClientConfig
     /// </summary>
     public int RenewalWindow { get; set; } = 10;
 
+    /// <summary>
+    /// Enable browser fingerprinting in Login/Register
+    /// </summary>
+    public bool EnableBrowserFingerprint { get; set; }
+
     [JsonIgnore]
     public DateTimeOffset UpdateTimeUtc { get; set; } = DateTimeOffset.UtcNow;
 
@@ -355,10 +366,11 @@ public partial class ClientConfig
             serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
             serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerPolicy>>().Value,
             serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerProvider>>().Value,
-            serviceProvider.GetRequiredService<IOptionsSnapshot<ManagedConfig>>().Value);
+            serviceProvider.GetRequiredService<IOptionsSnapshot<ManagedConfig>>().Value,
+            serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value);
 
     private static ClientConfig FromConfigs(GlobalConfig globalConfig, ContainerPolicy containerPolicy,
-        ContainerProvider containerProvider, ManagedConfig managedConfig) =>
+        ContainerProvider containerProvider, ManagedConfig managedConfig, AccountPolicy accountPolicy) =>
         new()
         {
             Title = globalConfig.Title,
@@ -370,7 +382,8 @@ public partial class ClientConfig
             PortMapping = containerProvider.PortMappingType,
             DefaultLifetime = containerPolicy.DefaultLifetime,
             ExtensionDuration = containerPolicy.ExtensionDuration,
-            RenewalWindow = containerPolicy.RenewalWindow
+            RenewalWindow = containerPolicy.RenewalWindow,
+            EnableBrowserFingerprint = accountPolicy.EnableBrowserFingerprint
         };
 }
 

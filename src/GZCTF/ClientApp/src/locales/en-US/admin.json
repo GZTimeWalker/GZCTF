@@ -373,6 +373,11 @@
           "description": "List of allowed email domains to register. Separate multiple domains with commas, leave empty to disable.",
           "label": "Email Domain Whitelist"
         },
+        "browser_fingerprint": {
+          "label": "Browser Fingerprinting",
+          "description": "Collect browser fingerprint during login/registration for risk analysis.",
+          "warning": "Enabling this feature collects additional user device information. Please ensure this complies with your local privacy regulations and update your privacy policy accordingly."
+        },
         "title": "Account Policy",
         "use_captcha": {
           "description": "Verify on login, registration and recovery",

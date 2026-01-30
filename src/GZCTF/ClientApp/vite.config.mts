@@ -26,6 +26,11 @@ export default defineConfig(({ mode }) => {
   console.log(`Using backend URL: ${TARGET}`)
 
   return {
+    resolve: {
+      alias: {
+        '@creepjs': '/src/lib/creepjs/src',
+      },
+    },
     server: {
       port: 63000,
       proxy: {
@@ -37,6 +42,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     preview: { port: 64000 },
+    worker: {
+      format: 'es',
+    },
     build: {
       outDir: 'build',
       assetsDir: 'static',

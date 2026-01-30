@@ -1,4 +1,8 @@
 {
+  "tos": {
+    "title": "Terms of Service",
+    "content": "By accessing or using this platform, you agree to be bound by these Terms of Service. We utilize technical telemetry data, including device fingerprints, specifically to ensure the integrity of the competitive environment and detect automated interference. Unauthorized use of multiple accounts, automated scripting, or any attempt to circumvent our security measures is strictly prohibited and may result in immediate suspension."
+  },
   "anchor": {
     "login": "Already have account?",
     "recovery": "Forgot password?"
@@ -38,6 +42,7 @@
   },
   "label": {
     "bio": "Description",
+    "accept_tos": "I agree to the <1>Terms of Service</1>",
     "captcha": "Captcha",
     "email": "Email",
     "email_new": "New Email",

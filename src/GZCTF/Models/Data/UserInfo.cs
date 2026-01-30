@@ -30,6 +30,12 @@ public partial class UserInfo : IdentityUser<Guid>
     public IPAddress IP { get; set; } = IPAddress.Any;
 
     /// <summary>
+    /// Browser fingerprint
+    /// </summary>
+    [MaxLength(Limits.FileHashLength)]
+    public string? BrowserFingerprint { get; set; }
+
+    /// <summary>
     /// User's last sign-in time
     /// </summary>
     public DateTimeOffset LastSignedInUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);

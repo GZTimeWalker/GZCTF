@@ -28,5 +28,7 @@ public class LogModel
 
     public string Message { get; set; } = string.Empty;
 
+    public string? BrowserFingerprint { get; set; }
+
     public string? Exception { get; set; }
 }

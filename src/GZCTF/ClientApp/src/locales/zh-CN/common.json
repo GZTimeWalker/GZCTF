@@ -106,7 +106,8 @@
     "status": "状态",
     "team": "队伍",
     "time": "时间",
-    "user": "用户"
+    "user": "用户",
+    "fingerprint": "浏览器指纹"
   },
   "modal": {
     "cancel": "取消",

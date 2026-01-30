@@ -74,6 +74,7 @@ public class AccountController(
         };
 
         user.UpdateByHttpContext(HttpContext);
+        user.BrowserFingerprint = model.Fingerprint;
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -312,6 +313,8 @@ public class AccountController(
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
+        user.BrowserFingerprint = model.Fingerprint;
+        await userManager.UpdateAsync(user);
 
         await signInManager.SignOutAsync();
         var result = await signInManager.PasswordSignInAsync(user, password, true, false);
