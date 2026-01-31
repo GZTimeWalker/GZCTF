@@ -896,6 +896,8 @@ export interface CollusionTeamInfo {
   /** @format int32 */
   id: number;
   name: string;
+  /** @format int32 */
+  participationId?: number;
 }
 
 export interface CollusionCompareResult {

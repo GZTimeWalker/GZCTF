@@ -132,8 +132,8 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const handleViewDetails = (item: CollusionGroupResult) => {
         setSelectedGroup(item)
         if (item.teams && item.teams.length >= 2) {
-            setTeamAId(item.teams[0].id)
-            setTeamBId(item.teams[1].id)
+            setTeamAId(item.teams[0].participationId ?? 0)
+            setTeamBId(item.teams[1].participationId ?? 0)
         } else {
             setTeamAId(null)
             setTeamBId(null)
@@ -211,8 +211,8 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                             <Select
                                 label="Team A"
                                 data={selectedGroup.teams
-                                    ?.filter(t => t.id !== teamBId)
-                                    .map(t => ({ value: t.id.toString(), label: t.name }))}
+                                    ?.filter(t => t.participationId !== teamBId)
+                                    .map(t => ({ value: t.participationId?.toString() || '', label: t.name }))}
                                 value={teamAId?.toString()}
                                 onChange={(val) => setTeamAId(val ? parseInt(val) : null)}
                                 searchable
@@ -228,8 +228,8 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                             <Select
                                 label="Team B"
                                 data={selectedGroup.teams
-                                    ?.filter(t => t.id !== teamAId)
-                                    .map(t => ({ value: t.id.toString(), label: t.name }))}
+                                    ?.filter(t => t.participationId !== teamAId)
+                                    .map(t => ({ value: t.participationId?.toString() || '', label: t.name }))}
                                 value={teamBId?.toString()}
                                 onChange={(val) => setTeamBId(val ? parseInt(val) : null)}
                                 searchable
