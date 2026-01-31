@@ -72,6 +72,7 @@ public class SuspicionService(
         {
             SuspicionType.StolenFlag => 100,
             SuspicionType.SharedIP => 10,
+            SuspicionType.SharedFingerprint => 60,
             SuspicionType.UnknownIP => 10,
             SuspicionType.CrossTeamIP => 40,
             SuspicionType.TokenAbuse => 60,

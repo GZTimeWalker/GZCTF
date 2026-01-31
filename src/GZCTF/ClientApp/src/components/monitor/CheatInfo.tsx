@@ -554,17 +554,19 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                             <Badge
                                                 color={
                                                     item.type === 'SharedIP' ? 'orange' :
-                                                        item.type === 'CrossTeamIP' ? 'red' :
-                                                            item.type === 'TokenAbuse' ? 'red' :
-                                                                'grape'
+                                                        item.type === 'SharedFingerprint' ? 'orange' :
+                                                            item.type === 'CrossTeamIP' ? 'red' :
+                                                                item.type === 'TokenAbuse' ? 'red' :
+                                                                    'grape'
                                                 }
                                                 size="xs"
                                                 fullWidth
                                             >
                                                 {item.type === 'SharedIP' ? 'Shared IP' :
-                                                    item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
-                                                        item.type === 'TokenAbuse' ? 'Token Abuse' :
-                                                            'Unknown IP'}
+                                                    item.type === 'SharedFingerprint' ? 'Shared Fingerprint' :
+                                                        item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
+                                                            item.type === 'TokenAbuse' ? 'Token Abuse' :
+                                                                'Unknown IP'}
                                             </Badge>
                                         </Table.Td>
                                         <Table.Td ff="monospace">{item.ip}</Table.Td>

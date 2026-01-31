@@ -4,6 +4,7 @@ public static class SuspicionType
 {
     public const string StolenFlag = "StolenFlag";
     public const string SharedIP = "SharedIP";
+    public const string SharedFingerprint = "SharedFingerprint";
     public const string UnknownIP = "UnknownIP";
     public const string CrossTeamIP = "CrossTeamIP";
     public const string TokenAbuse = "TokenAbuse";

@@ -48,7 +48,7 @@ public class CheatReportController(
                         l.Logger.Contains("AccountController") && 
                         l.RemoteIP != null && 
                         l.UserName != null)
-            .Select(l => new { l.UserName, l.RemoteIP })
+            .Select(l => new { l.UserName, l.RemoteIP, l.BrowserFingerprint })
             .ToListAsync(token);
 
         // ... (IP Analysis Logic) ...
@@ -75,6 +75,7 @@ public class CheatReportController(
 
         // Map Team -> Set<IP>
         var teamIps = new Dictionary<int, HashSet<string>>();
+        var teamFingerprints = new Dictionary<int, HashSet<string>>();
         
         foreach (var log in logs)
         {
@@ -85,6 +86,13 @@ public class CheatReportController(
                 
                 if (log.RemoteIP != null)
                     teamIps[teamId].Add(log.RemoteIP.ToString());
+
+                if (!string.IsNullOrEmpty(log.BrowserFingerprint))
+                {
+                    if (!teamFingerprints.ContainsKey(teamId))
+                        teamFingerprints[teamId] = [];
+                    teamFingerprints[teamId].Add(log.BrowserFingerprint);
+                }
             }
         }
         
@@ -272,6 +280,31 @@ public class CheatReportController(
                     Type = SuspicionType.SharedIP,
                     Ip = group.Key,
                     Details = $"IP {group.Key} is shared with teams: {string.Join(", ", teamNames.Where(n => n != teamMap[tid].Name))}",
+                    RelatedTeams = teamNames
+                });
+            }
+        }
+
+        // Check 2b: Team Fingerprint Overlap
+        var allFingerprints = teamFingerprints.SelectMany(x => x.Value.Select(fp => new { TeamId = x.Key, Fingerprint = fp })).ToList();
+        var sharedFingerprints = allFingerprints.GroupBy(x => x.Fingerprint)
+            .Where(g => g.Select(x => x.TeamId).Distinct().Count() > 1)
+            .ToList();
+
+        foreach (var group in sharedFingerprints)
+        {
+            var teamsSharing = group.Select(x => x.TeamId).Distinct().ToList();
+            var teamNames = teamsSharing.Select(tid => teamMap[tid].Name).ToList();
+            
+            foreach (var tid in teamsSharing)
+            {
+                report.IpAnalysis.Add(new IpAnalysisResult
+                {
+                    TeamId = tid,
+                    TeamName = teamMap[tid].Name,
+                    Type = SuspicionType.SharedFingerprint,
+                    Ip = group.Key,
+                    Details = $"Fingerprint {group.Key} is shared with teams: {string.Join(", ", teamNames.Where(n => n != teamMap[tid].Name))}",
                     RelatedTeams = teamNames
                 });
             }
