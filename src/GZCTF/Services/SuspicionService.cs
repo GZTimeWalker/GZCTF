@@ -8,8 +8,7 @@ namespace GZCTF.Services;
 
 public class SuspicionService(
     IServiceScopeFactory scopeFactory,
-    ILogger<SuspicionService> logger,
-    IStringLocalizer<Program> localizer) : ISuspicionService
+    ILogger<SuspicionService> logger) : ISuspicionService
 {
     public async Task AddSuspicion(Participation participation, string ruleCode, string details, int? relatedParticipationId = null, CancellationToken token = default)
     {

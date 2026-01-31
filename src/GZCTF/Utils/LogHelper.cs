@@ -100,6 +100,7 @@ public static class LogHelper
         /// <param name="level">log level</param>
         /// <param name="uname">user name</param>
         /// <param name="ip">ip</param>
+        /// <param name="fingerprint">browser fingerprint</param>
         public void Log(string msg, string uname, IPAddress? ip, TaskStatus status,
             LogLevel? level = null, string? fingerprint = null)
         {
