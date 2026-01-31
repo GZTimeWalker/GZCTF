@@ -85,23 +85,7 @@ public static class PrelaunchHelper
 
             if (!await context.SuspicionRules.AnyAsync())
             {
-                var rules = new List<SuspicionRule>
-                {
-                    new() { RuleCode = "StolenFlag", Weight = 100, Description = "Flag stolen from another team" },
-                    new() { RuleCode = "SharedIP", Weight = 50, Description = "Multiple team members using same IP" },
-                    new() { RuleCode = "UnknownIP", Weight = 20, Description = "Using IP not seen in game before" },
-                    new() { RuleCode = "CrossTeamIP", Weight = 40, Description = "IP used by members from multiple teams" },
-                    new() { RuleCode = "TokenAbuse", Weight = 60, Description = "Multiple people using same submission token" },
-                    new() { RuleCode = "Hoarding", Weight = 30, Description = "Solved challenge long after container destroy" },
-                    new() { RuleCode = "Burst", Weight = 40, Description = "Multiple challenges solved in a very short time" },
-                    new() { RuleCode = "NoDownload", Weight = 30, Description = "Solved without downloading attachment" },
-                    new() { RuleCode = "NoContainer", Weight = 60, Description = "Solved without starting container" },
-                    new() { RuleCode = "FastSolve-Open", Weight = 50, Description = "Solved very quickly after opening challenge" },
-                    new() { RuleCode = "FastSolve-Download", Weight = 50, Description = "Solved very quickly after downloading attachment" },
-                    new() { RuleCode = "FastSolve-Container", Weight = 50, Description = "Solved very quickly after starting container" },
-                    new() { RuleCode = "SequenceSimilarity", Weight = 40, Description = "High similarity in solve order and timing" },
-                    new() { RuleCode = "Corroboration", Weight = 20, Description = "Multiple suspicion indicators detected" }
-                };
+                var rules = Services.SuspicionService.DefaultRules;
 
                 await context.SuspicionRules.AddRangeAsync(rules);
                 await context.SaveChangesAsync();

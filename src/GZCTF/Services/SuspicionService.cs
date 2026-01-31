@@ -66,25 +66,14 @@ public class SuspicionService(
         return p?.SuspicionScore ?? 0;
     }
 
-    private static int GetDefaultWeight(string ruleCode)
-    {
-        return ruleCode switch
+    public static List<SuspicionRule> DefaultRules =>
+        SuspicionType.Defaults.Select(kv => new SuspicionRule
         {
-            SuspicionType.StolenFlag => 100,
-            SuspicionType.SharedIP => 10,
-            SuspicionType.SharedFingerprint => 60,
-            SuspicionType.UnknownIP => 10,
-            SuspicionType.CrossTeamIP => 40,
-            SuspicionType.TokenAbuse => 60,
-            SuspicionType.Hoarding => 30,
-            SuspicionType.Burst => 40,
-            SuspicionType.NoDownload => 60,
-            SuspicionType.NoContainer => 60,
-            SuspicionType.FastSolveOpen => 50,
-            SuspicionType.FastSolveDownload => 50,
-            SuspicionType.FastSolveContainer => 50,
-            SuspicionType.SequenceSimilarity => 40,
-            _ => 10
-        };
-    }
+            RuleCode = kv.Key,
+            Weight = kv.Value.Weight,
+            Description = kv.Value.Description
+        }).ToList();
+
+    public static int GetDefaultWeight(string ruleCode) =>
+        SuspicionType.Defaults.TryGetValue(ruleCode, out var val) ? val.Weight : 10;
 }
