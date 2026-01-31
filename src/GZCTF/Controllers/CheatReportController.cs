@@ -595,7 +595,8 @@ public class CheatReportController(
             TeamName = teamMap[ts.TeamId].Name,
             Solves = ts.Raw.Select(x => x.ChallengeId).ToHashSet(),
             Sequence = ts.Sequence,
-            Raw = ts.Raw
+            Raw = ts.Raw,
+            ParticipationId = ts.Raw.FirstOrDefault()?.ParticipationId ?? 0
         }).ToList(); // Used the existing teamSequences which has Sequence and Raw solves
 
         AnalyzeCollusionGroups(report, teamDataList, challengeMap);
@@ -833,6 +834,7 @@ public class CheatReportController(
         public HashSet<int> Solves { get; set; } = new();
         public List<int> Sequence { get; set; } = new();
         public List<GZCTF.Models.Data.Submission> Raw { get; set; } = new();
+        public int ParticipationId { get; set; }
     }
 
     private void AnalyzeCollusionGroups(
@@ -955,7 +957,7 @@ public class CheatReportController(
                 {
                     visited[idx] = true;
                     var team = activeTeams[idx];
-                    groupTeams.Add(new CollusionTeamInfo { Id = team.TeamId, Name = team.TeamName });
+                    groupTeams.Add(new CollusionTeamInfo { Id = team.TeamId, Name = team.TeamName, ParticipationId = team.ParticipationId });
                     solvesList.Add(team.Solves);
                 }
 

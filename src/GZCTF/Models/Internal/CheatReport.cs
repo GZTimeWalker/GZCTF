@@ -155,4 +155,7 @@ public class CollusionTeamInfo
 
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
+
+    [JsonPropertyName("participationId")]
+    public int ParticipationId { get; set; }
 }

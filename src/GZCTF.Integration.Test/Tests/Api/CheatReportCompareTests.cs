@@ -121,4 +121,73 @@ public class CheatReportCompareTests(GZCTFApplicationFactory factory, ITestOutpu
         Assert.NotNull(d2);
         Assert.Equal(20, d2.TimeDiff, 1); // 20s diff +/- 1s precision
     }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldReturnParticipationId_InCollusionGroups()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // 1. Setup Game
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "CollusionPID Game " + TestDataSeeder.RandomName());
+
+        // 2. Setup Challenges
+        var c1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "C1", "flag{1}");
+        var c2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "C2", "flag{2}");
+
+        // 3. Setup Teams and Participations
+        // Team A (PID ?)
+        var u1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t1 = await TestDataSeeder.CreateTeamAsync(factory.Services, u1.Id, "Team X");
+        var p1 = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t1.Id, u1.Id);
+
+        // Team B (PID ?)
+        var u2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t2 = await TestDataSeeder.CreateTeamAsync(factory.Services, u2.Id, "Team Y");
+        var p2 = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t2.Id, u2.Id);
+
+        // 4. Create IDENTICAL Sequence to ensure 100% RSI and Trigger Collusion Detection
+        var timeBase = DateTimeOffset.UtcNow.AddHours(-1);
+
+        // Team A Solves
+        await context.Submissions.AddRangeAsync(
+            CreateSub(game.Id, c1.Id, t1.Id, p1.Id, u1.Id, timeBase),
+            CreateSub(game.Id, c2.Id, t1.Id, p1.Id, u1.Id, timeBase.AddMinutes(5))
+        );
+
+        // Team B Solves (Same order, very close time)
+        await context.Submissions.AddRangeAsync(
+            CreateSub(game.Id, c1.Id, t2.Id, p2.Id, u2.Id, timeBase.AddSeconds(5)),
+            CreateSub(game.Id, c2.Id, t2.Id, p2.Id, u2.Id, timeBase.AddMinutes(5).AddSeconds(5))
+        );
+
+        await context.SaveChangesAsync();
+
+        // 5. Monitor Admin Login
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        // 6. Request Cheat Report
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.NotEmpty(report.CollusionGroups);
+
+        var group = report.CollusionGroups.First();
+        Assert.Contains(group.Teams, t => t.Name == "Team X");
+        Assert.Contains(group.Teams, t => t.Name == "Team Y");
+
+        // 7. Verify ParticipationId is populated
+        var teamXInfo = group.Teams.First(t => t.Name == "Team X");
+        var teamYInfo = group.Teams.First(t => t.Name == "Team Y");
+
+        Assert.Equal(p1.Id, teamXInfo.ParticipationId);
+        Assert.Equal(p2.Id, teamYInfo.ParticipationId);
+        
+        Assert.NotEqual(0, teamXInfo.ParticipationId);
+        Assert.NotEqual(0, teamYInfo.ParticipationId);
+    }
 }
