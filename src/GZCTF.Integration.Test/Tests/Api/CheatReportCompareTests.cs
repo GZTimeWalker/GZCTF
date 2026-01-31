@@ -134,6 +134,7 @@ public class CheatReportCompareTests(GZCTFApplicationFactory factory, ITestOutpu
         // 2. Setup Challenges
         var c1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "C1", "flag{1}");
         var c2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "C2", "flag{2}");
+        var c3 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "C3", "flag{3}");
 
         // 3. Setup Teams and Participations
         // Team A (PID ?)
@@ -152,13 +153,15 @@ public class CheatReportCompareTests(GZCTFApplicationFactory factory, ITestOutpu
         // Team A Solves
         await context.Submissions.AddRangeAsync(
             CreateSub(game.Id, c1.Id, t1.Id, p1.Id, u1.Id, timeBase),
-            CreateSub(game.Id, c2.Id, t1.Id, p1.Id, u1.Id, timeBase.AddMinutes(5))
+            CreateSub(game.Id, c2.Id, t1.Id, p1.Id, u1.Id, timeBase.AddMinutes(5)),
+            CreateSub(game.Id, c3.Id, t1.Id, p1.Id, u1.Id, timeBase.AddMinutes(10))
         );
 
         // Team B Solves (Same order, very close time)
         await context.Submissions.AddRangeAsync(
             CreateSub(game.Id, c1.Id, t2.Id, p2.Id, u2.Id, timeBase.AddSeconds(5)),
-            CreateSub(game.Id, c2.Id, t2.Id, p2.Id, u2.Id, timeBase.AddMinutes(5).AddSeconds(5))
+            CreateSub(game.Id, c2.Id, t2.Id, p2.Id, u2.Id, timeBase.AddMinutes(5).AddSeconds(5)),
+            CreateSub(game.Id, c3.Id, t2.Id, p2.Id, u2.Id, timeBase.AddMinutes(10).AddSeconds(5))
         );
 
         await context.SaveChangesAsync();
