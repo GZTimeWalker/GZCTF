@@ -683,14 +683,27 @@ public class CheatReportController(
         if (game == null) return NotFound();
 
         var participations = await dbContext.Participations
-            .Where(p => (p.Id == participationA || p.Id == participationB) && p.GameId == id)
+            .Where(p => p.Id == participationA || p.Id == participationB)
             .Include(p => p.Team)
             .ToListAsync(token);
 
-        if (participations.Count != 2) return BadRequest("Invalid participations");
+        if (participations.Count != 2)
+        {
+            if (participationA == participationB)
+                return BadRequest("Cannot compare a participation with itself.");
+
+            var foundIds = participations.Select(p => p.Id).ToHashSet();
+            if (!foundIds.Contains(participationA))
+                return BadRequest($"Participation {participationA} not found.");
+
+            return BadRequest($"Participation {participationB} not found.");
+        }
 
         var pA = participations.First(p => p.Id == participationA);
         var pB = participations.First(p => p.Id == participationB);
+
+        if (pA.GameId != id || pB.GameId != id)
+            return BadRequest($"Participations must belong to Game {id}. P{participationA} is in Game {pA.GameId}, P{participationB} is in Game {pB.GameId}.");
 
         var subA = await dbContext.Submissions
             .Where(s => s.ParticipationId == participationA && s.GameId == id && s.Status == AnswerResult.Accepted)
