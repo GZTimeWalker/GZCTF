@@ -33,5 +33,6 @@ public static class SuspicionType
         { FastSolveOpen, (50, "Solved very quickly after opening challenge") },
         { FastSolveDownload, (50, "Solved very quickly after downloading attachment") },
         { FastSolveContainer, (50, "Solved very quickly after starting container") },
-        { SequenceSimilarity, (40, "High similarity in solve order and timing") }
+        { SequenceSimilarity, (40, "High similarity in solve order and timing") },
+        { CollusionGroup, (10, "Member of a detected collusion group") }
     };}
