@@ -310,6 +310,13 @@
           "label": "需要 Writeup"
         }
       },
+      "managers": {
+        "delete_confirm": "確定要移除 {{name}} 嗎？",
+        "delete_title": "移除管理員",
+        "empty": "尚未指派管理員",
+        "search_placeholder": "搜尋使用者名稱或電子郵件",
+        "select_user": "選擇使用者"
+      },
       "notices": {
         "delete": "你確定要刪除通知該通知嗎？",
         "empty": {
@@ -365,6 +372,11 @@
         "email_domain_list": {
           "description": "允許註冊的郵箱域名列表，多個域名用逗號分隔，留空則不限制",
           "label": "郵箱域名白名單"
+        },
+        "browser_fingerprint": {
+          "label": "瀏覽器指紋",
+          "description": "在登入/註冊時收集瀏覽器指紋以進行風險分析。",
+          "warning": "啟用此功能將收集額外的使用者裝置資訊。請確保這符合您當地的隱私法規，並相應地更新您的隱私權政策。"
         },
         "title": "帳戶策略",
         "use_captcha": {
@@ -523,6 +535,10 @@
         "created": "實例已創建",
         "deleted": "實例已銷毀"
       },
+      "managers": {
+        "added": "成功新增管理員",
+        "removed": "成功移除管理員"
+      },
       "no_title_time": "請輸入標題和時間信息",
       "notices": {
         "created": "公告已創建",
@@ -604,6 +620,7 @@
       "divisions": "分組管理",
       "index": "比賽管理",
       "info": "信息編輯",
+      "managers": "管理員",
       "notices": "比賽公告",
       "review": "隊伍審核",
       "writeups": "Writeups"

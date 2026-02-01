@@ -310,6 +310,13 @@
           "label": "Rédaction requise"
         }
       },
+      "managers": {
+        "delete_confirm": "Êtes-vous sûr de vouloir supprimer {{name}} ?",
+        "delete_title": "Supprimer le gestionnaire",
+        "empty": "Aucun gestionnaire assigné à ce jeu pour le moment",
+        "search_placeholder": "Rechercher par nom d'utilisateur ou email",
+        "select_user": "Sélectionner un utilisateur"
+      },
       "notices": {
         "delete": "Êtes-vous sûr de vouloir supprimer cet avis ?",
         "empty": {
@@ -365,6 +372,11 @@
         "email_domain_list": {
           "description": "Liste des domaines de messagerie autorisés à s'inscrire. Séparez plusieurs domaines par des virgules, laissez vide pour désactiver.",
           "label": "Liste blanche des domaines de messagerie"
+        },
+        "browser_fingerprint": {
+          "label": "Empreinte digitale du navigateur",
+          "description": "Collecter l'empreinte digitale du navigateur lors de la connexion/inscription pour l'analyse des risques.",
+          "warning": "L'activation de cette fonctionnalité collecte des informations supplémentaires sur l'appareil de l'utilisateur. Veuillez vous assurer que cela est conforme à vos réglementations locales en matière de confidentialité et mettre à jour votre politique de confidentialité en conséquence."
         },
         "title": "Politique de compte",
         "use_captcha": {
@@ -523,6 +535,10 @@
         "created": "Instance créée",
         "deleted": "Instances détruites"
       },
+      "managers": {
+        "added": "Gestionnaire ajouté avec succès",
+        "removed": "Gestionnaire supprimé avec succès"
+      },
       "no_title_time": "Veuillez entrer le titre et l'heure du jeu",
       "notices": {
         "created": "Avis créé",
@@ -604,6 +620,7 @@
       "divisions": "Divisions",
       "index": "Jeux",
       "info": "Informations",
+      "managers": "Gestionnaires",
       "notices": "Avis",
       "review": "Équipes",
       "writeups": "Writeups"

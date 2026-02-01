@@ -6,7 +6,8 @@
     "uploading": "Đang tải ảnh đại diện"
   },
   "button": {
-    "copy": "Sao chép vào bộ nhớ tạm",
+    "add": "Thêm",
+    "copy": "Sao chép vào khay nhớ tạm",
     "reset": "Đặt lại",
     "retry": "Thử lại",
     "select_file": "Chọn tệp",
@@ -99,13 +100,19 @@
     "unknown": "Lỗi không xác định"
   },
   "label": {
+    "action": "Hành động",
     "challenge": "Thử thách",
+    "comment": "Bình luận",
+    "download": "Tải xuống",
     "flag": "cờ",
     "game": "Trò chơi",
     "ip": "IP",
+    "rating": "Đánh giá",
+    "status": "Trạng thái",
     "team": "Đội",
     "time": "Thời gian",
-    "user": "Người dùng"
+    "user": "Người dùng",
+    "fingerprint": "Dấu vân tay"
   },
   "modal": {
     "cancel": "Hủy",
@@ -113,6 +120,10 @@
     "confirm_delete": "Xác nhận xóa",
     "confirm_update": "Xác nhận cập nhật",
     "delete": "Xóa"
+  },
+  "notify": {
+    "success": "Thành công",
+    "updated": "Cập nhật thành công"
   },
   "tab": {
     "about": "Giới thiệu",

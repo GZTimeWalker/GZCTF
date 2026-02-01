@@ -310,6 +310,13 @@
           "label": "Writeup dibutuhkan"
         }
       },
+      "managers": {
+        "delete_confirm": "Apakah Anda yakin ingin menghapus {{name}}?",
+        "delete_title": "Hapus Manajer",
+        "empty": "Belum ada manajer yang ditugaskan untuk game ini",
+        "search_placeholder": "Cari berdasarkan nama pengguna atau email",
+        "select_user": "Pilih Pengguna"
+      },
       "notices": {
         "delete": "Apakah kamu yakin ingin menghapus notice ini?",
         "empty": {
@@ -365,6 +372,11 @@
         "email_domain_list": {
           "description": "Daftar domain email yang diizinkan untuk mendaftar. Pisahkan beberapa domain dengan koma, kosongkan untuk menonaktifkan.",
           "label": "Whitelist Domain Email"
+        },
+        "browser_fingerprint": {
+          "label": "Sidik Jari Browser",
+          "description": "Kumpulkan sidik jari browser saat login/registrasi untuk analisis risiko.",
+          "warning": "Mengaktifkan fitur ini mengumpulkan informasi perangkat pengguna tambahan. Pastikan ini mematuhi peraturan privasi lokal Anda dan perbarui kebijakan privasi Anda sesuai dengan itu."
         },
         "title": "Kebijakan Akun",
         "use_captcha": {
@@ -523,6 +535,10 @@
         "created": "Instance berhasil dibuat",
         "deleted": "Instance dihapus"
       },
+      "managers": {
+        "added": "Manajer berhasil ditambahkan",
+        "removed": "Manajer berhasil dihapus"
+      },
       "no_title_time": "Harap masukkan judul dan waktu game",
       "notices": {
         "created": "Notice berhasil dibuat",
@@ -604,6 +620,7 @@
       "divisions": "Divisi",
       "index": "Game",
       "info": "Informasi",
+      "managers": "Manajer",
       "notices": "Notif",
       "review": "Tim",
       "writeups": "Writeups"

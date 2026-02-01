@@ -310,6 +310,13 @@
           "label": "Writeup erforderlich"
         }
       },
+      "managers": {
+        "delete_confirm": "Sind Sie sicher, dass Sie {{name}} entfernen möchten?",
+        "delete_title": "Manager entfernen",
+        "empty": "Diesem Spiel sind noch keine Manager zugewiesen",
+        "search_placeholder": "Nach Benutzername oder E-Mail suchen",
+        "select_user": "Benutzer auswählen"
+      },
       "notices": {
         "delete": "Sind Sie sicher, dass Sie diese Benachrichtigung löschen möchten?",
         "empty": {
@@ -365,6 +372,11 @@
         "email_domain_list": {
           "description": "Liste der erlaubten E-Mail-Domains für die Registrierung. Mehrere Domains mit Kommas trennen, leer lassen, um zu deaktivieren.",
           "label": "E-Mail-Domain-Whitelist"
+        },
+        "browser_fingerprint": {
+          "label": "Browser-Fingerabdruck",
+          "description": "Browser-Fingerabdruck bei Anmeldung/Registrierung zur Risikoanalyse erfassen.",
+          "warning": "Das Aktivieren dieser Funktion erfasst zusätzliche Geräteinformationen. Bitte stellen Sie sicher, dass dies Ihren lokalen Datenschutzbestimmungen entspricht und aktualisieren Sie Ihre Datenschutzrichtlinie entsprechend."
         },
         "title": "Kontorichtlinie",
         "use_captcha": {
@@ -523,6 +535,10 @@
         "created": "Instanz erstellt",
         "deleted": "Instanzen zerstört"
       },
+      "managers": {
+        "added": "Manager erfolgreich hinzugefügt",
+        "removed": "Manager erfolgreich entfernt"
+      },
       "no_title_time": "Bitte geben Sie Titel und Zeit des Spiels ein",
       "notices": {
         "created": "Hinweis erstellt",
@@ -604,6 +620,7 @@
       "divisions": "Divisionen",
       "index": "Spiele",
       "info": "Informationen",
+      "managers": "Manager",
       "notices": "Mitteilungen",
       "review": "Teams",
       "writeups": "Writeups"

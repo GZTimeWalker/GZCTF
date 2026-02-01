@@ -1,4 +1,8 @@
 {
+  "tos": {
+    "title": "Ketentuan Layanan",
+    "content": "Dengan mengakses atau menggunakan platform ini, Anda setuju untuk terikat oleh Ketentuan Layanan ini. Kami menggunakan data telemetri teknis, termasuk sidik jari perangkat, secara khusus untuk memastikan integritas lingkungan kompetitif dan mendeteksi gangguan otomatis. Penggunaan tidak sah dari beberapa akun, skrip otomatis, atau upaya apa pun untuk menghindari langkah-langkah keamanan kami sangat dilarang dan dapat mengakibatkan penangguhan segera."
+  },
   "anchor": {
     "login": "Sudah memiliki akun?",
     "recovery": "Lupa kata sandi?"
@@ -37,6 +41,7 @@
     "welcome": "Halo, {{decodeEmail}}👋"
   },
   "label": {
+    "accept_tos": "Saya setuju dengan <1>Ketentuan Layanan</1>",
     "bio": "Deskripsi",
     "captcha": "Captcha",
     "email": "Email",

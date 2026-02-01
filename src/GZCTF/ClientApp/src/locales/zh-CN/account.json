@@ -41,8 +41,8 @@
     "welcome": "{{decodeEmail}}, 你好👋"
   },
   "label": {
+    "accept_tos": "我同意 <1>服务条款</1>",
     "bio": "描述",
-    "accept_tos": "我同意<1>服务条款</1>",
     "captcha": "验证码",
     "email": "邮箱",
     "email_new": "新邮箱",

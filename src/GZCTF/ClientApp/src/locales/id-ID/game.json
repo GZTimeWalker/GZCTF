@@ -115,9 +115,10 @@
       "cheat": "Kecurangan",
       "not_found": "Tak diketahui",
       "submitted": "Berhasil dikirimkan",
-      "wrong": "Flagnya salah"
+      "wrong": "Salah bendera"
     },
-    "cheat_detected": "Kecurangan terdeteksi di tantangan {{chal}}, tim {{team}} menggunakan flag milik {{steam}}.",
+    "challenge_opened": "Tantangan dibuka {{chal}}",
+    "cheat_detected": "Kecurangan terdeteksi dalam tantangan {{chal}}, tim {{team}} menggunakan bendera {{steam}}.",
     "container": {
       "destroy": "Instance challenge untuk {{chal}}#{{id}} telah dihapus",
       "start": "Instance challenge telah dibuat untuk {{chal}}#{{id}}"
@@ -227,7 +228,8 @@
   "tab": {
     "challenge": "Challenges",
     "monitor": {
-      "cheatinfo": "Cheats",
+      "cheat": "Deteksi kecurangan",
+      "cheatinfo": "Kecurangan",
       "events": "Event",
       "index": "Pengawasan",
       "submissions": "Submissions",

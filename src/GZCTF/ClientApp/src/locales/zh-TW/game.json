@@ -115,9 +115,10 @@
       "cheat": "作弊行為",
       "not_found": "未知實例",
       "submitted": "成功提交",
-      "wrong": "答案錯誤"
+      "wrong": "錯誤的 Flag"
     },
-    "cheat_detected": "題目 [{{chal}}] 疑似發生違規，隊伍 [{{team}}] 使用了 [{{steam}}] 的答案",
+    "challenge_opened": "開啟了題目 {{chal}}",
+    "cheat_detected": "在題目 {{chal}} 中檢測到作弊，隊伍 {{team}} 使用了 {{steam}} 的 Flag。",
     "container": {
       "destroy": "{{chal}}#{{id}} 銷毀題目實例",
       "start": "{{chal}}#{{id}} 開啟題目實例"
@@ -227,6 +228,7 @@
   "tab": {
     "challenge": "比賽題目",
     "monitor": {
+      "cheat": "作弊偵測",
       "cheatinfo": "作弊信息",
       "events": "事件監控",
       "index": "比賽監控",

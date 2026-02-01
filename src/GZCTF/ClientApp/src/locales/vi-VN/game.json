@@ -115,9 +115,10 @@
       "cheat": "Đang gian lận",
       "not_found": "Không rõ",
       "submitted": "Submit thành công",
-      "wrong": "Flag sai"
+      "wrong": "Cờ sai"
     },
-    "cheat_detected": "Phát hiện gian lận của challenge {{chal}}, từ team {{team}} sử dụng flag của {{steam}}.",
+    "challenge_opened": "Đã mở thử thách {{chal}}",
+    "cheat_detected": "Phát hiện gian lận trong thử thách {{chal}}, đội {{team}} đã sử dụng cờ của {{steam}}.",
     "container": {
       "destroy": "Hủy challenge instance cho {{chal}}#{{id}}",
       "start": "Đã tạo challenge instance cho {{chal}}#{{id}}"
@@ -227,6 +228,7 @@
   "tab": {
     "challenge": "Challenges",
     "monitor": {
+      "cheat": "Phát hiện gian lận",
       "cheatinfo": "Gian lận",
       "events": "Các sự kiện",
       "index": "Đang theo dõi",

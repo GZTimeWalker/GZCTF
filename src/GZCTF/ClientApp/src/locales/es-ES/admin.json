@@ -310,6 +310,13 @@
           "label": "Informe requerido"
         }
       },
+      "managers": {
+        "delete_confirm": "¿Seguro que quieres eliminar a {{name}}?",
+        "delete_title": "Eliminar Gerente",
+        "empty": "No hay gerentes asignados a este juego todavía",
+        "search_placeholder": "Buscar por nombre de usuario o correo",
+        "select_user": "Seleccionar Usuario"
+      },
       "notices": {
         "delete": "¿Está seguro de que desea eliminar este aviso?",
         "empty": {
@@ -365,6 +372,11 @@
         "email_domain_list": {
           "description": "Lista de dominios de correo electrónico permitidos para registrarse. Separe múltiples dominios con comas, deje vacío para deshabilitar.",
           "label": "Lista blanca de dominios de correo electrónico"
+        },
+        "browser_fingerprint": {
+          "label": "Huella digital del navegador",
+          "description": "Recopilar huella digital del navegador durante el inicio de sesión/registro para análisis de riesgos.",
+          "warning": "Habilitar esta función recopila información adicional del dispositivo del usuario. Asegúrese de que esto cumpla con sus regulaciones de privacidad locales y actualice su política de privacidad en consecuencia."
         },
         "title": "Política de cuenta",
         "use_captcha": {
@@ -523,6 +535,10 @@
         "created": "Instancia creada",
         "deleted": "Instancias destruidas"
       },
+      "managers": {
+        "added": "Gerente añadido con éxito",
+        "removed": "Gerente eliminado con éxito"
+      },
       "no_title_time": "Por favor, ingrese el título y la hora del juego",
       "notices": {
         "created": "Aviso creado",
@@ -604,6 +620,7 @@
       "divisions": "Divisiones",
       "index": "Juegos",
       "info": "Información",
+      "managers": "Gerentes",
       "notices": "Avisos",
       "review": "Equipos",
       "writeups": "Writeups"

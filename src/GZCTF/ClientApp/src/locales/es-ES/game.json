@@ -117,7 +117,8 @@
       "submitted": "Enviado con éxito",
       "wrong": "Bandera incorrecta"
     },
-    "cheat_detected": "Cheat detectado en el desafío {{chal}}, el equipo {{team}} utilizó la bandera de {{steam}}.",
+    "challenge_opened": "Desafío abierto {{chal}}",
+    "cheat_detected": "Trampa detectada en el desafío {{chal}}, el equipo {{team}} usó la bandera de {{steam}}.",
     "container": {
       "destroy": "Instancia de desafío destruida para {{chal}}#{{id}}",
       "start": "Instancia de desafío creada para {{chal}}#{{id}}"
@@ -227,6 +228,7 @@
   "tab": {
     "challenge": "Desafíos",
     "monitor": {
+      "cheat": "Detercción de trampas",
       "cheatinfo": "Trampas",
       "events": "Eventos",
       "index": "Monitoreo",

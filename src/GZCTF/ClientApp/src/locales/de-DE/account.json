@@ -1,4 +1,8 @@
 {
+  "tos": {
+    "title": "Nutzungsbedingungen",
+    "content": "Durch den Zugriff auf oder die Nutzung dieser Plattform erklären Sie sich mit diesen Nutzungsbedingungen einverstanden. Wir verwenden technische Telemetriedaten, einschließlich Geräte-Fingerabdrücken, insbesondere um die Integrität der Wettbewerbsumgebung sicherzustellen und automatisierte Eingriffe zu erkennen. Die unbefugte Nutzung mehrerer Konten, automatisiertes Scripting oder jeder Versuch, unsere Sicherheitsmaßnahmen zu umgehen, ist strengstens untersagt und kann zur sofortigen Sperrung führen."
+  },
   "anchor": {
     "login": "Bereits ein Konto?",
     "recovery": "Passwort vergessen?"
@@ -37,6 +41,7 @@
     "welcome": "Hallo, {{decodeEmail}}👋"
   },
   "label": {
+    "accept_tos": "Ich stimme den <1>Nutzungsbedingungen</1> zu",
     "bio": "Beschreibung",
     "captcha": "Captcha",
     "email": "E-Mail",

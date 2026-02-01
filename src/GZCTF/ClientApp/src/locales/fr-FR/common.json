@@ -6,7 +6,8 @@
     "uploading": "Téléchargement de l'avatar"
   },
   "button": {
-    "copy": "Copier dans le presse-papier",
+    "add": "Ajouter",
+    "copy": "Copier dans le presse-papiers",
     "reset": "Réinitialiser",
     "retry": "Recommencer",
     "select_file": "Sélectionner un fichier",
@@ -99,13 +100,19 @@
     "unknown": "Erreur inconnue"
   },
   "label": {
+    "action": "Action",
     "challenge": "Défi",
+    "comment": "Commentaire",
+    "download": "Télécharger",
     "flag": "drapeau",
     "game": "Jeu",
     "ip": "IP",
+    "rating": "Classement",
+    "status": "Statut",
     "team": "Équipe",
     "time": "Temps",
-    "user": "Utilisateur"
+    "user": "Utilisateur",
+    "fingerprint": "Empreinte"
   },
   "modal": {
     "cancel": "Annuler",
@@ -113,6 +120,10 @@
     "confirm_delete": "Confirmer la suppression",
     "confirm_update": "Confirmer la mise à jour",
     "delete": "Supprimer"
+  },
+  "notify": {
+    "success": "Succès",
+    "updated": "Mis à jour avec succès"
   },
   "tab": {
     "about": "À propos",

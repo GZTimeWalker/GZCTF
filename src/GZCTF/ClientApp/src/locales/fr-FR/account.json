@@ -1,4 +1,8 @@
 {
+  "tos": {
+    "title": "Conditions d'utilisation",
+    "content": "En accédant ou en utilisant cette plateforme, vous acceptez d'être lié par ces Conditions d'utilisation. Nous utilisons des données de télémétrie technique, y compris les empreintes digitales des appareils, spécifiquement pour garantir l'intégrité de l'environnement concurrentiel et détecter les interférences automatisées. L'utilisation non autorisée de plusieurs comptes, de scripts automatisés ou de toute tentative de contourner nos mesures de sécurité est strictement interdite et peut entraîner une suspension immédiate."
+  },
   "anchor": {
     "login": "Vous avez déjà un compte ?",
     "recovery": "Mot de passe oublié ?"
@@ -37,6 +41,7 @@
     "welcome": "Bonjour, {{decodeEmail}}👋"
   },
   "label": {
+    "accept_tos": "J'accepte les <1>Conditions d'utilisation</1>",
     "bio": "Description",
     "captcha": "Captcha",
     "email": "Email",

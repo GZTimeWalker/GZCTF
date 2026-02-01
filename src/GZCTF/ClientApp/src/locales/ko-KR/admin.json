@@ -310,6 +310,13 @@
           "label": "풀이 필요"
         }
       },
+      "managers": {
+        "delete_confirm": "{{name}}을(를) 제거하시겠습니까?",
+        "delete_title": "관리자 제거",
+        "empty": "이 게임에 할당된 관리자가 없습니다",
+        "search_placeholder": "사용자 이름 또는 이메일로 검색",
+        "select_user": "사용자 선택"
+      },
       "notices": {
         "delete": "이 알림을 삭제하시겠습니까?",
         "empty": {
@@ -365,6 +372,11 @@
         "email_domain_list": {
           "description": "가입 시 허용할 이메일 도메인 목록입니다. 여러 도메인을 , 로 구분하고 빈칸으로 두면 모두 허용합니다.",
           "label": "이메일 도메인 화이트리스트"
+        },
+        "browser_fingerprint": {
+          "label": "브라우저 지문",
+          "description": "위험 분석을 위해 로그인/등록 중 브라우저 지문을 수집합니다.",
+          "warning": "이 기능을 활성화하면 추가 사용자 장치 정보가 수집됩니다. 이것이 현지 개인 정보 보호 규정을 준수하는지 확인하고 그에 따라 개인 정보 보호 정책을 업데이트하십시오."
         },
         "title": "계정 정책",
         "use_captcha": {
@@ -523,6 +535,10 @@
         "created": "인스턴스가 생성되었습니다.",
         "deleted": "인스턴스가 삭제되었습니다."
       },
+      "managers": {
+        "added": "관리자가 성공적으로 추가되었습니다",
+        "removed": "관리자가 성공적으로 제거되었습니다"
+      },
       "no_title_time": "게임의 제목과 시간을 설정해주세요.",
       "notices": {
         "created": "공지사항이 추가되었습니다.",
@@ -604,6 +620,7 @@
       "divisions": "디비전",
       "index": "게임",
       "info": "정보",
+      "managers": "관리자",
       "notices": "공지사항",
       "review": "팀",
       "writeups": "풀이"

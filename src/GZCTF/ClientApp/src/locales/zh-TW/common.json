@@ -6,7 +6,8 @@
     "uploading": "正在上傳頭像"
   },
   "button": {
-    "copy": "複製到剪貼板",
+    "add": "新增",
+    "copy": "複製到剪貼簿",
     "reset": "重置",
     "retry": "重試",
     "select_file": "選擇文件",
@@ -99,13 +100,19 @@
     "unknown": "未知錯誤"
   },
   "label": {
+    "action": "操作",
     "challenge": "題目",
+    "comment": "評論",
+    "download": "下載",
     "flag": "flag",
     "game": "比賽",
     "ip": "IP",
+    "rating": "評分",
+    "status": "狀態",
     "team": "隊伍",
     "time": "時間",
-    "user": "用戶"
+    "user": "使用者",
+    "fingerprint": "指紋"
   },
   "modal": {
     "cancel": "取消",
@@ -113,6 +120,10 @@
     "confirm_delete": "確認刪除",
     "confirm_update": "確認修改",
     "delete": "刪除"
+  },
+  "notify": {
+    "success": "成功",
+    "updated": "更新成功"
   },
   "tab": {
     "about": "關於",

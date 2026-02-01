@@ -1,4 +1,8 @@
 {
+  "tos": {
+    "title": "Términos de servicio",
+    "content": "Al acceder o utilizar esta plataforma, usted acepta estar sujeto a estos Términos de servicio. Utilizamos datos técnicos de telemetría, incluidos los huellas digitales del dispositivo, específicamente para garantizar la integridad del entorno competitivo y detectar interferencias automatizadas. El uso no autorizado de múltiples cuentas, secuencias de comandos automatizadas o cualquier intento de eludir nuestras medidas de seguridad está estrictamente prohibido y puede resultar en una suspensión inmediata."
+  },
   "anchor": {
     "login": "¿Ya tienes cuenta?",
     "recovery": "¿Olvidaste la contraseña?"
@@ -37,6 +41,7 @@
     "welcome": "Hola, {{decodeEmail}}👋"
   },
   "label": {
+    "accept_tos": "Estoy de acuerdo con los <1>Términos de servicio</1>",
     "bio": "Descripción",
     "captcha": "Captcha",
     "email": "Correo electrónico",

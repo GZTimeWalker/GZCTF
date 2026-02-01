@@ -1,4 +1,8 @@
 {
+  "tos": {
+    "title": "Điều khoản dịch vụ",
+    "content": "Bằng cách truy cập hoặc sử dụng nền tảng này, bạn đồng ý tuân theo các Điều khoản dịch vụ này. Chúng tôi sử dụng dữ liệu đo tele kỹ thuật, bao gồm dấu vân tay thiết bị, cụ thể để đảm bảo tính toàn vẹn của môi trường cạnh tranh tranh và phát hiện sự can thiệp tự động. Việc sử dụng trái phép nhiều tài khoản, kịch bản tự động hoặc bất kỳ nỗ lực nào nhằm phá hoại các biện pháp bảo mật của chúng tôi đều bị nghiêm cấm và có thể dẫn đến việc đình chỉ ngay lập tức."
+  },
   "anchor": {
     "login": "Đã có tài khoản?",
     "recovery": "Quên mật khẩu?"
@@ -37,6 +41,7 @@
     "welcome": "Xin chào, {{decodeEmail}} 👋"
   },
   "label": {
+    "accept_tos": "Tôi đồng ý với <1>Điều khoản dịch vụ</1>",
     "bio": "Mô tả",
     "captcha": "Captcha",
     "email": "Email",

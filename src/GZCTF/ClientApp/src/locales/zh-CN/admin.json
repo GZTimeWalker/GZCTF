@@ -310,6 +310,13 @@
           "label": "需要 Writeup"
         }
       },
+      "managers": {
+        "delete_confirm": "确定要移除 {{name}} 吗？",
+        "delete_title": "移除管理员",
+        "empty": "尚未指派管理员",
+        "search_placeholder": "搜索用户名或电子邮件",
+        "select_user": "选择用户"
+      },
       "notices": {
         "delete": "你确定要删除通知该通知吗？",
         "empty": {
@@ -528,6 +535,10 @@
         "created": "实例已创建",
         "deleted": "实例已销毁"
       },
+      "managers": {
+        "added": "成功添加管理员",
+        "removed": "成功移除管理员"
+      },
       "no_title_time": "请输入标题和时间信息",
       "notices": {
         "created": "公告已创建",
@@ -609,6 +620,7 @@
       "divisions": "分组管理",
       "index": "比赛管理",
       "info": "信息编辑",
+      "managers": "管理员",
       "notices": "比赛公告",
       "review": "队伍审核",
       "writeups": "Writeups"

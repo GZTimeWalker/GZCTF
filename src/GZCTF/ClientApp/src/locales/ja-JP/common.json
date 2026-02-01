@@ -6,6 +6,7 @@
     "uploading": "アイコンをアップロードしています"
   },
   "button": {
+    "add": "追加",
     "copy": "クリップボードにコピー",
     "reset": "リセット",
     "retry": "再試行",
@@ -99,13 +100,19 @@
     "unknown": "不明なエラー"
   },
   "label": {
+    "action": "アクション",
     "challenge": "チャレンジ",
+    "comment": "コメント",
+    "download": "ダウンロード",
     "flag": "フラッグ",
     "game": "ゲーム",
     "ip": "IP",
+    "rating": "評価",
+    "status": "ステータス",
     "team": "チーム",
     "time": "時間",
-    "user": "ユーザー"
+    "user": "ユーザー",
+    "fingerprint": "フィンガープリント"
   },
   "modal": {
     "cancel": "キャンセル",
@@ -113,6 +120,10 @@
     "confirm_delete": "削除確認",
     "confirm_update": "変更確認",
     "delete": "削除"
+  },
+  "notify": {
+    "success": "成功",
+    "updated": "正常に更新されました"
   },
   "tab": {
     "about": "プラットフォーム情報",

@@ -6,7 +6,8 @@
     "uploading": "Mengunggah avatar"
   },
   "button": {
-    "copy": "Salin ke Clipboard",
+    "add": "Tambah",
+    "copy": "Salin ke Papan Klip",
     "reset": "Reset",
     "retry": "Coba lagi",
     "select_file": "Pilih File",
@@ -99,13 +100,19 @@
     "unknown": "Kesalahan tidak diketahui"
   },
   "label": {
-    "challenge": "Challenge",
+    "action": "Aksi",
+    "challenge": "Tantangan",
+    "comment": "Komentar",
+    "download": "Unduh",
     "flag": "flag",
     "game": "Game",
     "ip": "IP",
+    "rating": "Peringkat",
+    "status": "Status",
     "team": "Tim",
     "time": "Waktu",
-    "user": "Pengguna"
+    "user": "Pengguna",
+    "fingerprint": "Sidik jari"
   },
   "modal": {
     "cancel": "Batal",
@@ -113,6 +120,10 @@
     "confirm_delete": "Konfirmasi hapus",
     "confirm_update": "Konfirmasi pembaruan",
     "delete": "Hapus"
+  },
+  "notify": {
+    "success": "Berhasil",
+    "updated": "Berhasil diperbarui"
   },
   "tab": {
     "about": "Tentang",

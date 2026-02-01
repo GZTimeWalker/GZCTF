@@ -6,7 +6,8 @@
     "uploading": "Avatar wird hochgeladen"
   },
   "button": {
-    "copy": "In die Zwischenablage kopieren",
+    "add": "Hinzufügen",
+    "copy": "In Zwischenablage kopieren",
     "reset": "Zurücksetzen",
     "retry": "Erneut versuchen",
     "select_file": "Datei auswählen",
@@ -99,13 +100,19 @@
     "unknown": "Unbekannter Fehler"
   },
   "label": {
-    "challenge": "Herausf.",
+    "action": "Aktion",
+    "challenge": "Herausforderung",
+    "comment": "Kommentar",
+    "download": "Herunterladen",
     "flag": "Flagge",
     "game": "Spiel",
     "ip": "IP",
+    "rating": "Bewertung",
+    "status": "Status",
     "team": "Team",
     "time": "Zeit",
-    "user": "Benutzer"
+    "user": "Benutzer",
+    "fingerprint": "Fingerabdruck"
   },
   "modal": {
     "cancel": "Abbrechen",
@@ -113,6 +120,10 @@
     "confirm_delete": "Löschen bestätigen",
     "confirm_update": "Aktualisierung bestätigen",
     "delete": "Löschen"
+  },
+  "notify": {
+    "success": "Erfolg",
+    "updated": "Erfolgreich aktualisiert"
   },
   "tab": {
     "about": "Über",

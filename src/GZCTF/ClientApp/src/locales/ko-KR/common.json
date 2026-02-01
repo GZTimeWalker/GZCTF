@@ -6,6 +6,7 @@
     "uploading": "프로필 사진 업로드 중"
   },
   "button": {
+    "add": "추가",
     "copy": "클립보드에 저장",
     "reset": "설정 초기화",
     "retry": "다시 시도",
@@ -99,13 +100,19 @@
     "unknown": "알 수 없는 오류"
   },
   "label": {
+    "action": "작업",
     "challenge": "문제",
+    "comment": "댓글",
+    "download": "다운로드",
     "flag": "flag",
     "game": "대회",
     "ip": "IP",
+    "rating": "평가",
+    "status": "상태",
     "team": "팀",
     "time": "시간",
-    "user": "유저"
+    "user": "유저",
+    "fingerprint": "지문"
   },
   "modal": {
     "cancel": "취소",
@@ -113,6 +120,10 @@
     "confirm_delete": "삭제 확인",
     "confirm_update": "업데이트 확인",
     "delete": "삭제"
+  },
+  "notify": {
+    "success": "성공",
+    "updated": "업데이트되었습니다"
   },
   "tab": {
     "about": "정보",

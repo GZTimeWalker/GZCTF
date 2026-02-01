@@ -117,6 +117,7 @@
       "submitted": "Erfolgreich eingereicht",
       "wrong": "Falsche Flagge"
     },
+    "challenge_opened": "Herausforderung geöffnet {{chal}}",
     "cheat_detected": "Betrug in Herausforderung {{chal}} erkannt, Team {{team}} benutzte die Flagge von {{steam}}.",
     "container": {
       "destroy": "Herausforderungsinstanz für {{chal}}#{{id}} zerstört",
@@ -227,6 +228,7 @@
   "tab": {
     "challenge": "Herausf.",
     "monitor": {
+      "cheat": "Betrugserkennung",
       "cheatinfo": "Betrug",
       "events": "Ereignisse",
       "index": "Überwachung",

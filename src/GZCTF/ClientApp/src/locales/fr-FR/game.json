@@ -115,8 +115,9 @@
       "cheat": "Tricherie",
       "not_found": "Inconnu",
       "submitted": "Soumis avec succès",
-      "wrong": "Drapeau incorrect"
+      "wrong": "Mauvais drapeau"
     },
+    "challenge_opened": "Défi ouvert {{chal}}",
     "cheat_detected": "Triche détectée dans le défi {{chal}}, l'équipe {{team}} a utilisé le drapeau de {{steam}}.",
     "container": {
       "destroy": "Instance de défi détruite pour {{chal}}#{{id}}",
@@ -227,6 +228,7 @@
   "tab": {
     "challenge": "Défis",
     "monitor": {
+      "cheat": "Détection de triche",
       "cheatinfo": "Tricheries",
       "events": "Événements",
       "index": "Surveillance",

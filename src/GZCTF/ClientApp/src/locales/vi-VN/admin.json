@@ -270,6 +270,11 @@
         },
         "content": "Chi tiết trò chơi.",
         "delete": "Bạn có chắc muốn xóa trò chơi {{name}}?",
+        "discord_webhook": {
+          "description": "Gửi thông báo đến webhook này",
+          "label": "Discord Webhook",
+          "placeholder": "https://discord.com/api/webhooks/..."
+        },
         "divisions": {
           "description": "Thêm các bảng để kích hoạt bảng điểm theo bảng, để trống để tắt.",
           "label": "Danh sách nhóm tham gia."
@@ -309,6 +314,13 @@
           "description": "Bật nộp writeup",
           "label": "Bắt buộc có Writeup"
         }
+      },
+      "managers": {
+        "delete_confirm": "Bạn có chắc chắn muốn xóa {{name}}?",
+        "delete_title": "Xóa quản lý",
+        "empty": "Chưa có quản lý nào được gán cho trò chơi này",
+        "search_placeholder": "Tìm kiếm theo tên hoặc email",
+        "select_user": "Chọn người dùng"
       },
       "notices": {
         "delete": "Bạn có chắc muốn xóa thông báo này?",
@@ -365,6 +377,11 @@
         "email_domain_list": {
           "description": "Danh sách các miền email được phép đăng ký. Ngăn cách nhiều miền bằng dấu phẩy, để trống để tắt.",
           "label": "Danh sách trắng miền email."
+        },
+        "browser_fingerprint": {
+          "label": "Dấu vân tay trình duyệt",
+          "description": "Thu thập dấu vân tay trình duyệt khi đăng nhập/đăng ký để phân tích rủi ro.",
+          "warning": "Bật tính năng này sẽ thu thập thêm thông tin thiết bị người dùng. Vui lòng đảm bảo điều này tuân thủ các quy định về quyền riêng tư tại địa phương của bạn và cập nhật chính sách quyền riêng tư của bạn cho phù hợp."
         },
         "title": "Chính sách tài khoản.",
         "use_captcha": {
@@ -523,6 +540,10 @@
         "created": "Instance đã được tạo.",
         "deleted": "Instances đã bị xóa."
       },
+      "managers": {
+        "added": "Thêm quản lý thành công",
+        "removed": "Xóa quản lý thành công"
+      },
       "no_title_time": "Vui lòng nhập title và time của game.",
       "notices": {
         "created": "Thông báo đã được tạo.",
@@ -604,6 +625,7 @@
       "divisions": "Bảng",
       "index": "Trò chơi",
       "info": "Thông tin",
+      "managers": "Quản lý",
       "notices": "Thông báo",
       "review": "Đội",
       "writeups": "Writeups"

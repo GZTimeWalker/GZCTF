@@ -115,9 +115,10 @@
       "cheat": "부정행위",
       "not_found": "알 수 없음",
       "submitted": "제출 성공",
-      "wrong": "플래그 인증 실패"
+      "wrong": "잘못된 플래그"
     },
-    "cheat_detected": "{{team}} 이 {{chal}} 문제에서 {{steam}} 의 플래그를 사용해 부정행위로 탐지되었습니다.",
+    "challenge_opened": "챌린지가 열렸습니다 {{chal}}",
+    "cheat_detected": "{{chal}} 에서 부정 행위가 감지되었습니다. {{team}} 팀이 {{steam}} 의 플래그를 사용했습니다.",
     "container": {
       "destroy": "{{chal}}#{{id}} 문제 인스턴스를 삭제했습니다.",
       "start": "{{chal}}#{{id}} 문제 인스턴스가 생성되었습니다."
@@ -227,7 +228,8 @@
   "tab": {
     "challenge": "문제",
     "monitor": {
-      "cheatinfo": "부정행위",
+      "cheat": "부정 행위 탐지",
+      "cheatinfo": "부정 행위",
       "events": "이벤트",
       "index": "모니터링",
       "submissions": "제출",
