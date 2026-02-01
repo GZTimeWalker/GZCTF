@@ -1,9 +1,17 @@
 import { Button, Center, Text, Stack, Title, useMantineTheme, Textarea, Group } from '@mantine/core'
 import { FC } from 'react'
-import { FallbackProps } from 'react-error-boundary'
+import { getErrorMessage, FallbackProps } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { clearLocalCache } from '@Utils/Cache'
 import { useIsMobile } from '@Utils/ThemeOverride'
+
+function getErrorStack(thrown: unknown): string | undefined {
+  if (typeof thrown === 'object' && thrown !== null && 'stack' in thrown && typeof thrown.stack === 'string') {
+    return thrown.stack
+  }
+
+  return getErrorMessage(thrown)
+}
 
 export const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: FallbackProps) => {
   const theme = useMantineTheme()
@@ -17,10 +25,10 @@ export const ErrorFallback: FC<FallbackProps> = ({ error, resetErrorBoundary }: 
           # {t('common.error.encountered')}
         </Title>
         <Text fz="lg" fw={500}>
-          {error.message}
+          {getErrorMessage(error)}
         </Text>
         <Textarea
-          value={error.stack}
+          value={getErrorStack(error)}
           autosize
           minRows={12}
           maxRows={20}
