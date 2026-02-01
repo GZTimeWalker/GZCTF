@@ -797,6 +797,12 @@
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>验证邮箱</value>
   </data>
+  <data name="Parameter_FingerprintInvalid" xml:space="preserve">
+    <value>浏览器指纹无效</value>
+  </data>
+  <data name="Parameter_FingerprintRequired" xml:space="preserve">
+    <value>浏览器指纹必须提供</value>
+  </data>
   <data name="Model_BioTooLong" xml:space="preserve">
     <value>描述过长</value>
   </data>

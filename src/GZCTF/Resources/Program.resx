@@ -797,6 +797,12 @@
   <data name="MailSender_VerifyEmailTitle" xml:space="preserve">
     <value>Verify Email</value>
   </data>
+  <data name="Parameter_FingerprintInvalid" xml:space="preserve">
+    <value>Invalid browser fingerprint</value>
+  </data>
+  <data name="Parameter_FingerprintRequired" xml:space="preserve">
+    <value>Browser fingerprint is required</value>
+  </data>
   <data name="Model_BioTooLong" xml:space="preserve">
     <value>Description is too long</value>
   </data>

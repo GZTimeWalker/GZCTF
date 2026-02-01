@@ -13,7 +13,13 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 
+using System.Text.RegularExpressions;
 namespace GZCTF.Controllers;
+public partial class AccountController
+{
+    [GeneratedRegex("^[a-f0-9]{64}$")]
+    private static partial Regex BrowserFingerprintRegex();
+}
 
 /// <summary>
 /// User account related APIs
@@ -21,7 +27,7 @@ namespace GZCTF.Controllers;
 [ApiController]
 [Route("api/[controller]/[action]")]
 [Produces(MediaTypeNames.Application.Json)]
-public class AccountController(
+public partial class AccountController(
     IMailSender mailSender,
     IBlobRepository blobService,
     IHostEnvironment environment,
@@ -74,7 +80,21 @@ public class AccountController(
         };
 
         user.UpdateByHttpContext(HttpContext);
-        user.BrowserFingerprint = string.IsNullOrEmpty(model.Fingerprint) ? null : configService.DecryptApiData(model.Fingerprint);
+        if (accountPolicy.Value.EnableBrowserFingerprint)
+        {
+            if (string.IsNullOrEmpty(model.Fingerprint))
+            {
+                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
+            }
+
+            var fingerprint = configService.DecryptApiData(model.Fingerprint);
+            if (fingerprint == null || !BrowserFingerprintRegex().IsMatch(fingerprint))
+            {
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
+            }
+
+            user.BrowserFingerprint = fingerprint;
+        }
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -313,7 +333,21 @@ public class AccountController(
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
-        user.BrowserFingerprint = string.IsNullOrEmpty(model.Fingerprint) ? null : configService.DecryptApiData(model.Fingerprint);
+        if (accountPolicy.Value.EnableBrowserFingerprint)
+        {
+            if (string.IsNullOrEmpty(model.Fingerprint))
+            {
+                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
+            }
+
+            var fingerprint = configService.DecryptApiData(model.Fingerprint);
+            if (fingerprint == null || !BrowserFingerprintRegex().IsMatch(fingerprint))
+            {
+                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
+            }
+
+            user.BrowserFingerprint = fingerprint;
+        }
         await userManager.UpdateAsync(user);
 
         await signInManager.SignOutAsync();
