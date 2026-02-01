@@ -110,7 +110,9 @@ const Register: FC = () => {
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         email: email,
         challenge: token,
-        fingerprint: config.enableBrowserFingerprint ? await getFingerprint() : undefined,
+        fingerprint: config.enableBrowserFingerprint
+          ? await encryptApiData(t, await getFingerprint(), config.apiPublicKey)
+          : undefined,
       })
       const data = RegisterStatusMap.get(res.data.data)
       if (data) {

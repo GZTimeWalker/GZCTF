@@ -98,7 +98,9 @@ const Login: FC = () => {
         userName: uname,
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         challenge: token,
-        fingerprint: config.enableBrowserFingerprint ? await getFingerprint() : undefined,
+        fingerprint: config.enableBrowserFingerprint
+          ? await encryptApiData(t, await getFingerprint(), config.apiPublicKey)
+          : undefined,
       })
 
       updateNotification({

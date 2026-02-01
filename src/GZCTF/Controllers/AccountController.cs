@@ -74,7 +74,7 @@ public class AccountController(
         };
 
         user.UpdateByHttpContext(HttpContext);
-        user.BrowserFingerprint = model.Fingerprint;
+        user.BrowserFingerprint = string.IsNullOrEmpty(model.Fingerprint) ? null : configService.DecryptApiData(model.Fingerprint);
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -313,7 +313,7 @@ public class AccountController(
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);
-        user.BrowserFingerprint = model.Fingerprint;
+        user.BrowserFingerprint = string.IsNullOrEmpty(model.Fingerprint) ? null : configService.DecryptApiData(model.Fingerprint);
         await userManager.UpdateAsync(user);
 
         await signInManager.SignOutAsync();
