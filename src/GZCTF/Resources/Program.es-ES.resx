@@ -1104,4 +1104,13 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>La fecha límite de este desafío ha pasado</value>
   </data>
+  <data name="Parameter_FingerprintInvalid" xml:space="preserve">
+    <value>Huella digital del navegador inválida</value>
+  </data>
+  <data name="Parameter_FingerprintRequired" xml:space="preserve">
+    <value>Se requiere huella digital del navegador</value>
+  </data>
+  <data name="CronJob_RemoveUnactivatedUsers" xml:space="preserve">
+    <value>Se han eliminado {0} usuarios no activados.</value>
+  </data>
 </root>

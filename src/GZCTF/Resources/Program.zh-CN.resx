@@ -803,6 +803,9 @@
   <data name="Parameter_FingerprintRequired" xml:space="preserve">
     <value>浏览器指纹必须提供</value>
   </data>
+  <data name="CronJob_RemoveUnactivatedUsers" xml:space="preserve">
+    <value>已移除 {0} 个未激活用户。</value>
+  </data>
   <data name="Model_BioTooLong" xml:space="preserve">
     <value>描述过长</value>
   </data>

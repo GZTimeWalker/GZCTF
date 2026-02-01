@@ -1088,4 +1088,13 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Thời hạn cho thử thách này đã hết</value>
   </data>
+  <data name="Parameter_FingerprintInvalid" xml:space="preserve">
+    <value>Dấu vân tay trình duyệt không hợp lệ</value>
+  </data>
+  <data name="Parameter_FingerprintRequired" xml:space="preserve">
+    <value>Yêu cầu dấu vân tay trình duyệt</value>
+  </data>
+  <data name="CronJob_RemoveUnactivatedUsers" xml:space="preserve">
+    <value>Đã xóa {0} người dùng chưa kích hoạt.</value>
+  </data>
 </root>
