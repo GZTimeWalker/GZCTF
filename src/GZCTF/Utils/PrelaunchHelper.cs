@@ -83,12 +83,22 @@ public static class PrelaunchHelper
             await cache.RemoveAsync(CacheKey.ClientConfig);
             await cache.RemoveAsync(CacheKey.CaptchaConfig);
 
+            var defaultRules = Services.SuspicionService.DefaultRules;
             if (!await context.SuspicionRules.AnyAsync())
             {
-                var rules = Services.SuspicionService.DefaultRules;
-
-                await context.SuspicionRules.AddRangeAsync(rules);
+                await context.SuspicionRules.AddRangeAsync(defaultRules);
                 await context.SaveChangesAsync();
+            }
+            else
+            {
+                var existingRuleCodes = await context.SuspicionRules.Select(r => r.RuleCode).ToListAsync();
+                var newRules = defaultRules.Where(r => !existingRuleCodes.Contains(r.RuleCode)).ToList();
+
+                if (newRules.Count != 0)
+                {
+                    await context.SuspicionRules.AddRangeAsync(newRules);
+                    await context.SaveChangesAsync();
+                }
             }
         }
     }
