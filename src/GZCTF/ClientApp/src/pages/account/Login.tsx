@@ -16,7 +16,6 @@ import { useUser } from '@Hooks/useUser'
 import { TermsOfService } from '@Components/TermsOfService'
 import api from '@Api'
 import misc from '@Styles/Misc.module.css'
-import { getFingerprint } from '@Utils/BrowserFingerprint'
 
 const Login: FC = () => {
   const params = useSearchParams()[0]
@@ -94,13 +93,19 @@ const Login: FC = () => {
     })
 
     try {
+      const fingerprint = config.enableBrowserFingerprint
+        ? await (async () => {
+          // Avoid loading/running fingerprinting code unless the feature is enabled.
+          const { getFingerprint } = await import('@Utils/BrowserFingerprint')
+          return encryptApiData(t, await getFingerprint(), config.apiPublicKey)
+        })()
+        : undefined
+
       await api.account.accountLogIn({
         userName: uname,
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         challenge: token,
-        fingerprint: config.enableBrowserFingerprint
-          ? await encryptApiData(t, await getFingerprint(), config.apiPublicKey)
-          : undefined,
+        fingerprint,
       })
 
       updateNotification({

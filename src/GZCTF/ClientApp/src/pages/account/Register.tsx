@@ -16,7 +16,6 @@ import { usePageTitle } from '@Hooks/usePageTitle'
 import { TermsOfService } from '@Components/TermsOfService'
 import api, { RegisterStatus } from '@Api'
 import misc from '@Styles/Misc.module.css'
-import { getFingerprint } from '@Utils/BrowserFingerprint'
 
 const Register: FC = () => {
   const [pwd, setPwd] = useInputState('')
@@ -105,14 +104,20 @@ const Register: FC = () => {
     })
 
     try {
+      const fingerprint = config.enableBrowserFingerprint
+        ? await (async () => {
+          // Avoid loading/running fingerprinting code unless the feature is enabled.
+          const { getFingerprint } = await import('@Utils/BrowserFingerprint')
+          return encryptApiData(t, await getFingerprint(), config.apiPublicKey)
+        })()
+        : undefined
+
       const res = await api.account.accountRegister({
         userName: uname,
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         email: email,
         challenge: token,
-        fingerprint: config.enableBrowserFingerprint
-          ? await encryptApiData(t, await getFingerprint(), config.apiPublicKey)
-          : undefined,
+        fingerprint,
       })
       const data = RegisterStatusMap.get(res.data.data)
       if (data) {
