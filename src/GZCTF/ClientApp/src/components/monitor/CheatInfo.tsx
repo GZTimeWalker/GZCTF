@@ -551,27 +551,28 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                             <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw="bold" maw={150} />
                                         </Table.Td>
                                         <Table.Td w="12rem">
-                                            <Badge
-                                                color={
-                                                    item.type === 'SharedIP' ? 'orange' :
-                                                        item.type === 'SharedFingerprint' ? 'orange' :
-                                                            item.type === 'FingerprintChurn' ? 'yellow' :
-                                                                item.type === 'IpChurn' ? 'yellow' :
-                                                                item.type === 'CrossTeamIP' ? 'red' :
-                                                                    item.type === 'TokenAbuse' ? 'red' :
-                                                                        'grape'
+                                            {(() => {
+                                                const metaByType: Record<string, { label: string; color: string }> = {
+                                                    SharedIP: { label: 'Shared IP', color: 'orange' },
+                                                    SharedFingerprint: { label: 'Shared Fingerprint', color: 'orange' },
+                                                    FingerprintChurn: { label: 'Fingerprint Churn', color: 'yellow' },
+                                                    IpChurn: { label: 'IP Churn', color: 'yellow' },
+                                                    CrossTeamIP: { label: 'Cross-Team IP', color: 'red' },
+                                                    TokenAbuse: { label: 'Token Abuse', color: 'red' },
                                                 }
+
+                                                const meta = metaByType[item.type] ?? { label: 'Unknown IP', color: 'grape' }
+
+                                                return (
+                                            <Badge
+                                                color={meta.color}
                                                 size="xs"
                                                 fullWidth
                                             >
-                                                {item.type === 'SharedIP' ? 'Shared IP' :
-                                                    item.type === 'SharedFingerprint' ? 'Shared Fingerprint' :
-                                                        item.type === 'FingerprintChurn' ? 'Fingerprint Churn' :
-                                                            item.type === 'IpChurn' ? 'IP Churn' :
-                                                            item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
-                                                                item.type === 'TokenAbuse' ? 'Token Abuse' :
-                                                                    'Unknown IP'}
+                                                {meta.label}
                                             </Badge>
+                                                )
+                                            })()}
                                         </Table.Td>
                                         <Table.Td ff="monospace">{item.ip}</Table.Td>
                                         <Table.Td ff="monospace" fz="xs">
