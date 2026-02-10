@@ -555,18 +555,22 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                                 color={
                                                     item.type === 'SharedIP' ? 'orange' :
                                                         item.type === 'SharedFingerprint' ? 'orange' :
-                                                            item.type === 'CrossTeamIP' ? 'red' :
-                                                                item.type === 'TokenAbuse' ? 'red' :
-                                                                    'grape'
+                                                            item.type === 'FingerprintChurn' ? 'yellow' :
+                                                                item.type === 'IpChurn' ? 'yellow' :
+                                                                item.type === 'CrossTeamIP' ? 'red' :
+                                                                    item.type === 'TokenAbuse' ? 'red' :
+                                                                        'grape'
                                                 }
                                                 size="xs"
                                                 fullWidth
                                             >
                                                 {item.type === 'SharedIP' ? 'Shared IP' :
                                                     item.type === 'SharedFingerprint' ? 'Shared Fingerprint' :
-                                                        item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
-                                                            item.type === 'TokenAbuse' ? 'Token Abuse' :
-                                                                'Unknown IP'}
+                                                        item.type === 'FingerprintChurn' ? 'Fingerprint Churn' :
+                                                            item.type === 'IpChurn' ? 'IP Churn' :
+                                                            item.type === 'CrossTeamIP' ? 'Cross-Team IP' :
+                                                                item.type === 'TokenAbuse' ? 'Token Abuse' :
+                                                                    'Unknown IP'}
                                             </Badge>
                                         </Table.Td>
                                         <Table.Td ff="monospace">{item.ip}</Table.Td>

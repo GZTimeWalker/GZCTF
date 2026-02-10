@@ -48,7 +48,7 @@ public class CheatReportController(
                         l.Logger.Contains("AccountController") && 
                         l.RemoteIP != null && 
                         l.UserName != null)
-            .Select(l => new { l.UserName, l.RemoteIP, l.BrowserFingerprint })
+            .Select(l => new { l.TimeUtc, l.UserName, l.RemoteIP, l.BrowserFingerprint })
             .ToListAsync(token);
 
         // ... (IP Analysis Logic) ...
@@ -94,6 +94,101 @@ public class CheatReportController(
                     teamFingerprints[teamId].Add(log.BrowserFingerprint);
                 }
             }
+        }
+
+        // Check 2c: Fingerprint Churn (Per User)
+        // Detects if a single user uses too many distinct fingerprints during a game.
+        // This helps prevent evasion via frequent fingerprint switching.
+        const int FingerprintChurnThreshold = 4;
+        const int FingerprintChurnSampleCount = 3;
+        var fingerprintChurnUsers = logs
+            .Where(l => !string.IsNullOrEmpty(l.UserName) && !string.IsNullOrEmpty(l.BrowserFingerprint))
+            .GroupBy(l => l.UserName!)
+            .Select(g => new
+            {
+                UserName = g.Key,
+                Fingerprints = g.Select(x => x.BrowserFingerprint!).Distinct().ToList(),
+                FirstSeen = g.Min(x => x.TimeUtc),
+                LastSeen = g.Max(x => x.TimeUtc),
+            })
+            .Where(x => x.Fingerprints.Count >= FingerprintChurnThreshold)
+            .ToList();
+
+        foreach (var item in fingerprintChurnUsers)
+        {
+            if (!userTeamMap.TryGetValue(item.UserName, out var teamId))
+                continue;
+
+            if (!teamMap.TryGetValue(teamId, out var team))
+                continue;
+
+            var samples = item.Fingerprints.Take(FingerprintChurnSampleCount).ToList();
+            var sampleStr = string.Join(", ", samples);
+            if (item.Fingerprints.Count > FingerprintChurnSampleCount)
+                sampleStr += $", ... (+{item.Fingerprints.Count - FingerprintChurnSampleCount} more)";
+
+            report.IpAnalysis.Add(new IpAnalysisResult
+            {
+                TeamId = teamId,
+                TeamName = team.Name,
+                Type = SuspicionType.FingerprintChurn,
+                // Reuse the existing "ip" column for the subject (similar to SharedFingerprint using it for fingerprints)
+                Ip = item.UserName,
+                Time = item.LastSeen,
+                Details =
+                    $"User {item.UserName} used {item.Fingerprints.Count} distinct fingerprints during the game " +
+                    $"(first: {item.FirstSeen:MM/dd HH:mm:ss}, last: {item.LastSeen:MM/dd HH:mm:ss}). " +
+                    $"Samples: {sampleStr}",
+            });
+        }
+
+        // Check 2d: IP Churn (Per User)
+        // Detects if a single user uses too many distinct IPs during a game.
+        const int IpChurnThreshold = 4;
+        const int IpChurnSampleCount = 3;
+        var ipChurnUsers = logs
+            .Where(l =>
+                !string.IsNullOrEmpty(l.UserName) &&
+                l.RemoteIP != null &&
+                !IPAddress.Any.Equals(l.RemoteIP) &&
+                !IPAddress.IPv6Any.Equals(l.RemoteIP))
+            .GroupBy(l => l.UserName!)
+            .Select(g => new
+            {
+                UserName = g.Key,
+                Ips = g.Select(x => x.RemoteIP!.ToString()).Distinct().ToList(),
+                FirstSeen = g.Min(x => x.TimeUtc),
+                LastSeen = g.Max(x => x.TimeUtc),
+            })
+            .Where(x => x.Ips.Count >= IpChurnThreshold)
+            .ToList();
+
+        foreach (var item in ipChurnUsers)
+        {
+            if (!userTeamMap.TryGetValue(item.UserName, out var teamId))
+                continue;
+
+            if (!teamMap.TryGetValue(teamId, out var team))
+                continue;
+
+            var samples = item.Ips.Take(IpChurnSampleCount).ToList();
+            var sampleStr = string.Join(", ", samples);
+            if (item.Ips.Count > IpChurnSampleCount)
+                sampleStr += $", ... (+{item.Ips.Count - IpChurnSampleCount} more)";
+
+            report.IpAnalysis.Add(new IpAnalysisResult
+            {
+                TeamId = teamId,
+                TeamName = team.Name,
+                Type = SuspicionType.IpChurn,
+                // Reuse the existing "ip" column for the subject (username)
+                Ip = item.UserName,
+                Time = item.LastSeen,
+                Details =
+                    $"User {item.UserName} used {item.Ips.Count} distinct IPs during the game " +
+                    $"(first: {item.FirstSeen:MM/dd HH:mm:ss}, last: {item.LastSeen:MM/dd HH:mm:ss}). " +
+                    $"Samples: {sampleStr}",
+            });
         }
         
         foreach (var team in teams)
