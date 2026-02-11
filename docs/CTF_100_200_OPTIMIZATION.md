@@ -23,10 +23,20 @@
   - `CacheRequest`: 4096
   - `FullMode=Wait`，高峰时提供可控背压，避免内存无限增长。
 
-### 4) Docker 题目并发调度保护
+### 4) 提交处理公平调度（按比赛维度）
+- `FlagChecker` 增加比赛级并发槽（每场默认最多并发处理 2 条）。
+- 当热点比赛占满并发槽时，提交会优先回队，让其他比赛继续推进。
+- 目标：避免“单场提交洪峰”占满全部 worker，提升跨比赛公平性。
+
+### 5) Docker 题目并发调度保护
 - 新增 `ContainerPolicy.MaxConcurrentContainerStarts`（默认 6，范围 1-64）。
 - `DockerManager.CreateContainerAsync` 增加并发信号量闸门：
   - 在题目容器创建/拉取/启动突发时限制并发，降低 Docker daemon 过载风险。
+
+### 6) Docker 镜像预热/就绪缓存
+- `DockerManager` 新增镜像就绪缓存与镜像级拉取锁。
+- 容器创建前先检查并确保镜像可用，减少“创建时报镜像不存在 -> 再拉取 -> 重试”的冷启动抖动。
+- 对同一镜像并发拉取进行串行化，避免重复拉取导致的 I/O 与网络竞争。
 
 ## 回归验证
 - `dotnet build src/GZCTF.slnx -v minimal` 通过

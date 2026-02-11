@@ -1,4 +1,5 @@
-﻿using System.Threading.Channels;
+﻿using System.Collections.Concurrent;
+using System.Threading.Channels;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public class FlagChecker(
     IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     private const int MaxWorkerCount = 4;
+    private const int MaxConcurrentPerGame = 2;
+    private readonly ConcurrentDictionary<int, SemaphoreSlim> _gameSlots = new();
     private CancellationTokenSource TokenSource { get; set; } = new();
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -77,25 +80,41 @@ public class FlagChecker(
         {
             await foreach (var item in channelReader.ReadAllAsync(token))
             {
+                var gameSlot = _gameSlots.GetOrAdd(item.GameId, _ => new SemaphoreSlim(MaxConcurrentPerGame));
+                var acquired = gameSlot.Wait(0);
+                if (!acquired)
+                {
+                    // Prefer fairness: hot games are re-queued so other games can keep progressing.
+                    // If queue is saturated, fall back to waiting to avoid dropping the submission.
+                    if (channelWriter.TryWrite(item))
+                    {
+                        await Task.Delay(1, token);
+                        continue;
+                    }
+
+                    await gameSlot.WaitAsync(token);
+                    acquired = true;
+                }
+
                 logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.FlagsChecker_WorkerStartProcessing), id,
                         item.Answer],
                     TaskStatus.Pending, LogLevel.Debug);
 
-                await using var scope = serviceScopeFactory.CreateAsyncScope();
-
-                var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
-                var eventRepository =
-                    scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
-                var instanceRepository =
-                    scope.ServiceProvider.GetRequiredService<IGameInstanceRepository>();
-                var gameNoticeRepository =
-                    scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
-                var submissionRepository =
-                    scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
-
                 try
                 {
+                    await using var scope = serviceScopeFactory.CreateAsyncScope();
+
+                    var cacheHelper = scope.ServiceProvider.GetRequiredService<CacheHelper>();
+                    var eventRepository =
+                        scope.ServiceProvider.GetRequiredService<IGameEventRepository>();
+                    var instanceRepository =
+                        scope.ServiceProvider.GetRequiredService<IGameInstanceRepository>();
+                    var gameNoticeRepository =
+                        scope.ServiceProvider.GetRequiredService<IGameNoticeRepository>();
+                    var submissionRepository =
+                        scope.ServiceProvider.GetRequiredService<ISubmissionRepository>();
+
                     var (type, ans) = await instanceRepository.VerifyAnswer(item, token);
 
                     switch (ans)
@@ -188,6 +207,11 @@ public class FlagChecker(
                         TaskStatus.Failed,
                         LogLevel.Debug);
                     logger.LogErrorMessage(e);
+                }
+                finally
+                {
+                    if (acquired)
+                        gameSlot.Release();
                 }
 
                 token.ThrowIfCancellationRequested();
