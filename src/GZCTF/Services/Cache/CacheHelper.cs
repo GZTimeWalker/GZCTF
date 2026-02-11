@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Channels;
 using GZCTF.Services.Cache.Handlers;
 using MemoryPack;
@@ -67,8 +67,13 @@ public class CacheHelper(
         memoryCache.Remove(key);
     }
 
-    public async Task FlushScoreboardCache(int gameId, CancellationToken token) =>
+    public async Task FlushScoreboardCache(int gameId, CancellationToken token)
+    {
+        // Invalidate stale cache first so readers cannot be pinned to outdated board data
+        // while the async worker regenerates the scoreboard.
+        await RemoveAsync(CacheKey.ScoreBoard(gameId), token);
         await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
+    }
 
     public async Task FlushRecentGamesCache(CancellationToken token) =>
         await channelWriter.WriteAsync(RecentGamesCacheHandler.MakeCacheRequest(), token);
@@ -244,12 +249,13 @@ public static class CacheKey
     /// <summary>
     /// Scoreboard cache
     /// </summary>
-    public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
+    public static string ScoreBoard(int id) => $"_ScoreBoard_{id}_v6";
 
     /// <summary>
     /// Scoreboard cache
     /// </summary>
-    public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
+    public static string ScoreBoard(string id) => $"_ScoreBoard_{id}_v6";
+
 
     /// <summary>
     /// Game cache

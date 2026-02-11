@@ -75,8 +75,25 @@ public class CacheMaker(
 
         try
         {
-            await foreach (var item in channelReader.ReadAllAsync(token))
+            CacheRequest? buffered = null;
+
+            while (!token.IsCancellationRequested)
             {
+                CacheRequest item;
+                if (buffered is not null)
+                {
+                    item = buffered;
+                    buffered = null;
+                }
+                else
+                {
+                    if (!await channelReader.WaitToReadAsync(token))
+                        break;
+                    if (!channelReader.TryRead(out var readItem) || readItem is null)
+                        continue;
+                    item = readItem;
+                }
+
                 if (!_cacheHandlers.TryGetValue(item.Key, out var handler))
                 {
                     logger.SystemLog(
@@ -97,6 +114,22 @@ public class CacheMaker(
                     continue;
                 }
 
+                // Coalesce queued duplicate refresh requests for the same cache key.
+                // This reduces burst pressure without dropping the latest state.
+                while (channelReader.TryRead(out var next))
+                {
+                    if (next.Key == item.Key &&
+                        next.Params.Length == item.Params.Length &&
+                        next.Params.SequenceEqual(item.Params))
+                    {
+                        item = next;
+                        continue;
+                    }
+
+                    buffered = next;
+                    break;
+                }
+
                 var updateLock = CacheKey.UpdateLock(key);
 
                 if (await cache.GetAsync(updateLock, token) is not null)
@@ -109,17 +142,7 @@ public class CacheMaker(
                 }
 
                 var lastUpdateKey = CacheKey.LastUpdateTime(key);
-                var lastUpdateBytes = await cache.GetAsync(lastUpdateKey, token);
-                if (lastUpdateBytes is not null && lastUpdateBytes.Length > 0)
-                {
-                    var lastUpdate = MemoryPackSerializer.Deserialize<DateTimeOffset>(lastUpdateBytes);
-                    // if the cache is updated after the request, skip
-                    // this will de-bounced the slow cache update request
-                    if (lastUpdate > item.Time)
-                        continue;
-                }
-
-                lastUpdateBytes = MemoryPackSerializer.Serialize(DateTimeOffset.UtcNow);
+                var lastUpdateBytes = MemoryPackSerializer.Serialize(DateTimeOffset.UtcNow);
                 await cache.SetAsync(lastUpdateKey, lastUpdateBytes, new(), token);
 
                 await using var scope = serviceScopeFactory.CreateAsyncScope();

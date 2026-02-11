@@ -6,7 +6,9 @@
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
+using Microsoft.Extensions.Options;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
 namespace GZCTF.Services.Container.Manager;
@@ -16,12 +18,18 @@ public class DockerManager : IContainerManager
     private readonly DockerClient _client;
     private readonly ILogger<DockerManager> _logger;
     private readonly DockerMetadata _meta;
+    private readonly SemaphoreSlim _createSemaphore;
 
-    public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
+    public DockerManager(
+        IContainerProvider<DockerClient, DockerMetadata> provider,
+        IOptions<ContainerPolicy> containerPolicy,
+        ILogger<DockerManager> logger)
     {
         _logger = logger;
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
+        var maxConcurrency = Math.Clamp(containerPolicy.Value.MaxConcurrentContainerStarts, 1, 64);
+        _createSemaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
 
         logger.SystemLog(StaticLocalizer[nameof(Resources.Program.ContainerManager_DockerMode)],
             TaskStatus.Success, LogLevel.Debug);
@@ -71,6 +79,9 @@ public class DockerManager : IContainerManager
     public async Task<Models.Data.Container?> CreateContainerAsync(GZCTF.Models.Internal.ContainerConfig config,
         CancellationToken token = default)
     {
+        await _createSemaphore.WaitAsync(token);
+        try
+        {
         var imageName = config.Image.Split("/").LastOrDefault()?.Split(":").FirstOrDefault();
 
         if (string.IsNullOrWhiteSpace(imageName))
@@ -256,6 +267,11 @@ public class DockerManager : IContainerManager
             container.PublicIP = _meta.PublicEntry;
 
         return container;
+        }
+        finally
+        {
+            _createSemaphore.Release();
+        }
     }
 
     private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>

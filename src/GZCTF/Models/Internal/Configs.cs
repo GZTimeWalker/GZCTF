@@ -99,6 +99,14 @@ public class ContainerPolicy
     [Range(1, 360, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public int RenewalWindow { get; set; } = 10;
+
+    /// <summary>
+    /// Global max concurrent container creation/start operations.
+    /// Helps avoid Docker daemon overload during burst traffic.
+    /// </summary>
+    [Range(1, 64, ErrorMessageResourceName = nameof(Resources.Program.Model_OutOfRange),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public int MaxConcurrentContainerStarts { get; set; } = 6;
 }
 
 public class X25519KeyPair
@@ -230,14 +238,14 @@ public class GlobalConfig
     /// <summary>
     /// Default site description
     /// </summary>
-    public const string DefaultDescription = "GZ::CTF is an open source CTF platform";
+    public const string DefaultDescription = "SRX::CTF is an open source CTF platform";
 
     /// <summary>
     /// Platform prefix name
     /// </summary>
     [CacheFlush(CacheKey.Index)]
     [CacheFlush(CacheKey.ClientConfig)]
-    public string Title { get; set; } = "GZ";
+    public string Title { get; set; } = "SRX";
 
     /// <summary>
     /// Platform slogan
@@ -288,7 +296,7 @@ public class GlobalConfig
     /// Platform name, used for email and homepage rendering
     /// </summary>
     [JsonIgnore]
-    public string Platform => string.IsNullOrEmpty(Title) ? "GZ::CTF" : $"{Title}::CTF";
+    public string Platform => string.IsNullOrEmpty(Title) ? "SRX::CTF" : $"{Title}::CTF";
 }
 
 /// <summary>
@@ -300,7 +308,7 @@ public partial class ClientConfig
     /// <summary>
     /// Platform prefix name
     /// </summary>
-    public string Title { get; set; } = "GZ";
+    public string Title { get; set; } = "SRX";
 
     /// <summary>
     /// Platform slogan
@@ -554,7 +562,7 @@ public class GrafanaLokiOptions
 public class ForwardedOptions : ForwardedHeadersOptions
 {
     // For historical configuration compatibility as we accept string
-    public new List<string>? KnownIPNetworks { get; set; }
+    public List<string>? KnownIPNetworks { get; set; }
     public new List<string>? KnownProxies { get; set; }
 
     // Old properties for compatibility
@@ -585,7 +593,7 @@ public class ForwardedOptions : ForwardedHeadersOptions
             if (parts.Length == 2 &&
                 IPAddress.TryParse(parts[0], out var prefix) &&
                 int.TryParse(parts[1], out var prefixLength))
-                options.KnownIPNetworks.Add(new IPNetwork(prefix, prefixLength));
+                options.KnownNetworks.Add(new Microsoft.AspNetCore.HttpOverrides.IPNetwork(prefix, prefixLength));
         };
 
         KnownIPNetworks?.ForEach(addNetwork);

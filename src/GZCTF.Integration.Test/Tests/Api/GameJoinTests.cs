@@ -21,6 +21,12 @@ namespace GZCTF.Integration.Test.Tests.Api;
 [Collection(nameof(IntegrationTestCollection))]
 public class GameJoinTests(GZCTFApplicationFactory factory)
 {
+    private static void AssertContainsAny(string actual, params string[] expectedParts)
+    {
+        Assert.True(expectedParts.Any(p => actual.Contains(p, StringComparison.OrdinalIgnoreCase)),
+            $"Expected error to contain one of [{string.Join(", ", expectedParts)}], but got: {actual}");
+    }
+
     /// <summary>
     /// Test 1: User can join game without division (no invite code required)
     /// </summary>
@@ -104,7 +110,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, joinResponse.StatusCode);
         var error = await joinResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("division", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "division", "分组");
     }
 
     /// <summary>
@@ -212,7 +218,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, joinResponse.StatusCode);
         var error = await joinResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("invitation", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "invitation", "邀请码");
     }
 
     /// <summary>
@@ -275,7 +281,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, joinResponse.StatusCode);
         var error = await joinResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("division", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "division", "分组");
     }
 
     /// <summary>
@@ -437,7 +443,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, join2Response.StatusCode);
         var error = await join2Response.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("joined", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "joined", "已经");
     }
 
     /// <summary>
@@ -514,7 +520,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, join2Response.StatusCode);
         var error = await join2Response.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("other team", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "other team", "其他队伍");
     }
 
     /// <summary>
@@ -641,7 +647,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, join3Response.StatusCode);
         var error = await join3Response.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("limit", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "limit", "超过", "限制");
     }
 
     /// <summary>
@@ -1151,14 +1157,14 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.NotFound, leaveNonExistentResponse.StatusCode);
         var nonExistentError = await leaveNonExistentResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(nonExistentError);
-        Assert.Contains("not found", nonExistentError.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(nonExistentError.Title, "not found", "未找到");
 
         // Scenario 2: Try to leave without joining first
         var leaveNotJoinedResponse = await client.DeleteAsync($"/api/Game/{gameId}");
         Assert.Equal(HttpStatusCode.BadRequest, leaveNotJoinedResponse.StatusCode);
         var notJoinedError = await leaveNotJoinedResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(notJoinedError);
-        Assert.Contains("not joining", notJoinedError.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(notJoinedError.Title, "not joining", "未报名");
 
         // Scenario 3: Join game (auto-accepted) and try to leave after acceptance
         var joinResponse = await client.PostAsJsonAsync($"/api/Game/{gameId}",
@@ -1177,7 +1183,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, leaveAcceptedResponse.StatusCode);
         var acceptedError = await leaveAcceptedResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(acceptedError);
-        Assert.Contains("entrance approval", acceptedError.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(acceptedError.Title, "entrance approval", "审核通过后无法退出比赛");
     }
 
     /// <summary>
@@ -1225,7 +1231,7 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         Assert.Equal(HttpStatusCode.BadRequest, leaveResponse.StatusCode);
         var error = await leaveResponse.Content.ReadFromJsonAsync<RequestResponse>();
         Assert.NotNull(error);
-        Assert.Contains("entrance approval", error.Title, StringComparison.OrdinalIgnoreCase);
+        AssertContainsAny(error.Title, "entrance approval", "审核通过后无法退出比赛");
     }
 
     /// <summary>

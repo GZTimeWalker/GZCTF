@@ -591,7 +591,8 @@ public class EditController(
     {
         var challenges = await challengeRepository.GetChallenges(id, token);
 
-        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
+        var game = await gameRepository.GetGameById(id, token);
+        var scoreboard = game is null ? null : await gameRepository.GetScoreboard(game, token);
 
         var result = challenges.Select(c =>
         {
@@ -644,7 +645,8 @@ public class EditController(
             await challengeRepository.LoadFlags(challenge, token);
 
         var result = ChallengeEditDetailModel.FromChallenge(challenge);
-        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
+        var game = await gameRepository.GetGameById(id, token);
+        var scoreboard = game is null ? null : await gameRepository.GetScoreboard(game, token);
 
         if (scoreboard is not null && scoreboard.ChallengeMap.TryGetValue(cId, out var challengeInfo))
             result.AcceptedCount = challengeInfo.SolvedCount;

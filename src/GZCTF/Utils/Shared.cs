@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Channels;
+using GZCTF.Services.Cache;
 using MemoryPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IO;
@@ -10,15 +11,26 @@ namespace GZCTF.Utils;
 
 public static class ChannelService
 {
-    extension(IServiceCollection services)
+    internal static void AddChannel<T>(this IServiceCollection services)
     {
-        internal void AddChannel<T>()
+        var capacity = typeof(T).Name switch
         {
-            var channel = Channel.CreateUnbounded<T>();
-            services.AddSingleton(channel);
-            services.AddSingleton(channel.Reader);
-            services.AddSingleton(channel.Writer);
-        }
+            nameof(Submission) => 8192,
+            nameof(CacheRequest) => 4096,
+            _ => 2048
+        };
+
+        var channel = Channel.CreateBounded<T>(new BoundedChannelOptions(capacity)
+        {
+            SingleReader = false,
+            SingleWriter = false,
+            AllowSynchronousContinuations = false,
+            FullMode = BoundedChannelFullMode.Wait
+        });
+
+        services.AddSingleton(channel);
+        services.AddSingleton(channel.Reader);
+        services.AddSingleton(channel.Writer);
     }
 }
 
