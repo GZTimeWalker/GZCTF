@@ -1409,8 +1409,8 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             BloodBonusValue = bloodBonusValue;
             ChallengeCount = challengeCount;
             Teams = teams;
-            this._teamMap = teamMap;
-            this._challengeMap = challengeMap;
+            _teamMap = teamMap;
+            _challengeMap = challengeMap;
             Divisions = divisions;
             Timelines = timelines;
         }

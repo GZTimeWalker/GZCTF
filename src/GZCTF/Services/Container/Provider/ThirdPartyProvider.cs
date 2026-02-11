@@ -22,9 +22,11 @@ public class ThirdPartyProvider : IContainerProvider<IThirdPartyClient, ThirdPar
 
         if (string.IsNullOrWhiteSpace(config.BaseUrl))
         {
-            logger.SystemLog("Third-party container provider base URL is not configured.",
+            logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.ContainerProvider_ThirdPartyBaseUrlNotConfigured)],
                 TaskStatus.Failed, LogLevel.Error);
-            throw new InvalidOperationException("Third-party container provider base URL is not configured.");
+            throw new InvalidOperationException(
+                StaticLocalizer[nameof(Resources.Program.ContainerProvider_ThirdPartyBaseUrlNotConfigured)]);
         }
 
         _meta = new ThirdPartyMetadata
@@ -49,13 +51,24 @@ public class ThirdPartyProvider : IContainerProvider<IThirdPartyClient, ThirdPar
                 new AuthenticationHeaderValue("Bearer", _meta.Config.ApiToken);
 
         var apiVersion = _meta.Config.ApiVersion;
-        _thirdPartyClient = apiVersion switch
-        {
-            ThirdPartyApiVersion.V1 => new ThirdPartyClient<ThirdPartyV1.Protocol>(_client, _meta),
-            _ => new ThirdPartyClient<ThirdPartyV1.Protocol>(_client, _meta)
-        };
 
-        logger.SystemLog("Third-party container provider initialized.", TaskStatus.Success, LogLevel.Debug);
+        try
+        {
+            _thirdPartyClient = apiVersion switch
+            {
+                ThirdPartyApiVersion.V1 => new ThirdPartyClient<ThirdPartyV1.Protocol>(_client, _meta),
+                _ => new ThirdPartyClient<ThirdPartyV1.Protocol>(_client, _meta)
+            };
+        }
+        catch (InvalidOperationException ex)
+        {
+            logger.SystemLog(ex.Message, TaskStatus.Failed, LogLevel.Error);
+            throw;
+        }
+
+        logger.SystemLog(
+            StaticLocalizer[nameof(Resources.Program.ContainerProvider_ThirdPartyInited), apiVersion],
+            TaskStatus.Success, LogLevel.Debug);
     }
 
     public IThirdPartyClient GetProvider() => _thirdPartyClient;

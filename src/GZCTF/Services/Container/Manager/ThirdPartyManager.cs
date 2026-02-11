@@ -18,7 +18,9 @@ public class ThirdPartyManager : IContainerManager
         _meta = provider.GetMetadata();
         _client = provider.GetProvider();
 
-        _logger.SystemLog("Third-party container manager enabled.", TaskStatus.Success, LogLevel.Debug);
+        _logger.SystemLog(
+            StaticLocalizer[nameof(Resources.Program.ContainerManager_ThirdPartyMode)],
+            TaskStatus.Success, LogLevel.Debug);
     }
 
     public async Task<Models.Data.Container?> CreateContainerAsync(ContainerConfig config,
