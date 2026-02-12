@@ -1,5 +1,5 @@
 import { Anchor, Button, Grid, PasswordInput, TextInput } from '@mantine/core'
-import { useInputState } from '@mantine/hooks'
+import { useDisclosure, useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -25,7 +25,8 @@ const Login: FC = () => {
   const [uname, setUname] = useInputState('')
   const [disabled, setDisabled] = useState(false)
   const [needRedirect, setNeedRedirect] = useState(false)
-  const [accepted, setAccepted] = useInputState(false)
+  const [accepted, setAccepted] = useState(false)
+  const [tosOpened, { open: openTos, close: closeTos }] = useDisclosure(false)
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
@@ -44,9 +45,7 @@ const Login: FC = () => {
     }
   }, [user, needRedirect])
 
-  const onLogin = async (event: React.FormEvent) => {
-    event.preventDefault()
-
+  const executeLogin = async () => {
     if (uname.length === 0 || pwd.length < 6) {
       showNotification({
         color: 'red',
@@ -59,13 +58,7 @@ const Login: FC = () => {
     }
 
     if (config.enableBrowserFingerprint && !accepted) {
-      showNotification({
-        color: 'red',
-        title: t('account.notification.login.invalid'),
-        message: t('common.error.check_input'),
-        icon: <Icon path={mdiClose} size={1} />,
-      })
-      setDisabled(false)
+      openTos()
       return
     }
 
@@ -137,6 +130,11 @@ const Login: FC = () => {
     }
   }
 
+  const onLogin = async (event: React.FormEvent) => {
+    event.preventDefault()
+    await executeLogin()
+  }
+
   return (
     <AccountView onSubmit={onLogin}>
       <TextInput
@@ -160,7 +158,16 @@ const Login: FC = () => {
         onChange={(event) => setPwd(event.currentTarget.value)}
       />
       <Captcha action="login" ref={captchaRef} />
-      <TermsOfService checked={accepted} onChange={setAccepted} />
+      <TermsOfService
+        confirmMode
+        opened={tosOpened}
+        onClose={closeTos}
+        onAccept={() => {
+          setAccepted(true)
+          closeTos()
+          void executeLogin()
+        }}
+      />
       <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/recovery">
         {t('account.anchor.recovery')}
       </Anchor>

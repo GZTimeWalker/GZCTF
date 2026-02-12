@@ -1,13 +1,14 @@
 {
   "tos": {
     "title": "Terms of Service",
-    "content": "By accessing or using this platform, you agree to be bound by these Terms of Service. We utilize technical telemetry data, including device fingerprints, specifically to ensure the integrity of the competitive environment and detect automated interference. Unauthorized use of multiple accounts, automated scripting, or any attempt to circumvent our security measures is strictly prohibited and may result in immediate suspension."
+    "content": "By accessing or using this platform, you agree to be bound by these Terms of Service. We utilize technical telemetry data, including device fingerprints, specifically to ensure the integrity of the competitive environment and detect automated interference. Fingerprinting data is only used during the competition for security and anti-cheat purposes, and will not be used after the competition ends. Unauthorized use of multiple accounts, automated scripting, or any attempt to circumvent our security measures is strictly prohibited and may result in immediate suspension."
   },
   "anchor": {
     "login": "Already have account?",
     "recovery": "Forgot password?"
   },
   "button": {
+    "accept_tos": "Accept & Continue",
     "change_password": "Change Password",
     "confirm_email": "Confirm Email",
     "login": "Login",

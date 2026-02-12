@@ -1,5 +1,5 @@
 import { Anchor, Button, PasswordInput, TextInput } from '@mantine/core'
-import { useInputState } from '@mantine/hooks'
+import { useDisclosure, useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -23,7 +23,8 @@ const Register: FC = () => {
   const [uname, setUname] = useInputState('')
   const [email, setEmail] = useInputState('')
   const [disabled, setDisabled] = useState(false)
-  const [accepted, setAccepted] = useInputState(false)
+  const [accepted, setAccepted] = useState(false)
+  const [tosOpened, { open: openTos, close: closeTos }] = useDisclosure(false)
   const { config } = useConfig()
 
   const navigate = useNavigate()
@@ -57,16 +58,9 @@ const Register: FC = () => {
 
   usePageTitle(t('account.title.register'))
 
-  const onRegister = async (event: React.FormEvent) => {
-    event.preventDefault()
-
+  const executeRegister = async () => {
     if (config.enableBrowserFingerprint && !accepted) {
-      showNotification({
-        color: 'red',
-        title: t('common.error.check_input'),
-        message: t('common.error.check_input'),
-        icon: <Icon path={mdiClose} size={1} />,
-      })
+      openTos()
       return
     }
 
@@ -155,6 +149,11 @@ const Register: FC = () => {
     }
   }
 
+  const onRegister = async (event: React.FormEvent) => {
+    event.preventDefault()
+    await executeRegister()
+  }
+
   return (
     <AccountView onSubmit={onRegister}>
       <TextInput
@@ -188,7 +187,16 @@ const Register: FC = () => {
         error={pwd !== retypedPwd}
       />
       <Captcha action="register" ref={captchaRef} />
-      <TermsOfService checked={accepted} onChange={setAccepted} />
+      <TermsOfService
+        confirmMode
+        opened={tosOpened}
+        onClose={closeTos}
+        onAccept={() => {
+          setAccepted(true)
+          closeTos()
+          void executeRegister()
+        }}
+      />
       <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">
         {t('account.anchor.login')}
       </Anchor>
