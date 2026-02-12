@@ -37,29 +37,30 @@ public class Models
     }
 }
 
-public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<SendWebhookService> logger) : ISendWebhookService
+public class SendWebhookService(ILogger<SendWebhookService> logger) : ISendWebhookService
 {
+    private const int ContentLimit = 2000;
+    private const int EmbedTitleLimit = 256;
+    private const int EmbedDescriptionLimit = 4096;
+    private const int EmbedFooterLimit = 2048;
+    private const int EmbedFieldNameLimit = 256;
+    private const int EmbedFieldValueLimit = 1024;
+    private const int EmbedFieldCountLimit = 25;
+    private const int EmbedTotalCharLimit = 6000;
+
+    private static readonly HttpClient WebhookClient = new()
+    {
+        Timeout = TimeSpan.FromSeconds(10)
+    };
+
     public async Task SendGameEventAsync(GameEvent gameEvent, string webhookUrl)
     {
         try
         {
-            using var client = httpClientFactory.CreateClient();
             var message = CreateMessage(gameEvent);
             if (message == null) return;
 
-            var json = JsonSerializer.Serialize(message, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-            });
-
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(webhookUrl, content);
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                logger.LogError("Failed to send webhook: {StatusCode}, {Reason}", response.StatusCode, response.ReasonPhrase);
-            }
+            await SendAsync(webhookUrl, message, "event");
         }
         catch (Exception ex)
         {
@@ -71,27 +72,96 @@ public class SendWebhookService(IHttpClientFactory httpClientFactory, ILogger<Se
     {
         try
         {
-            using var client = httpClientFactory.CreateClient();
             var message = CreateNoticeMessage(notice);
             if (message == null) return;
 
-            var json = JsonSerializer.Serialize(message, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-            });
-
-            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(webhookUrl, content);
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                logger.LogError("Failed to send webhook notice: {StatusCode}, {Reason}", response.StatusCode, response.ReasonPhrase);
-            }
+            await SendAsync(webhookUrl, message, "notice");
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error sending webhook notice");
+        }
+    }
+
+    private async Task SendAsync(string webhookUrl, Models.DiscordWebhookMessage message, string kind)
+    {
+        if (!Uri.TryCreate(webhookUrl, UriKind.Absolute, out var uri) ||
+            (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+        {
+            logger.LogWarning("Skip invalid Discord webhook URL for {Kind}", kind);
+            return;
+        }
+
+        SanitizeMessage(message);
+
+        using var content = new StringContent(
+            JsonSerializer.Serialize(message, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            }),
+            System.Text.Encoding.UTF8,
+            "application/json");
+
+        using var response = await WebhookClient.PostAsync(uri, content);
+
+        if (response.IsSuccessStatusCode)
+            return;
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        logger.LogError(
+            "Failed to send webhook {Kind}: {StatusCode}, {Reason}, Body: {Body}",
+            kind,
+            (int)response.StatusCode,
+            response.ReasonPhrase ?? "Unknown",
+            Truncate(responseBody, 400));
+    }
+
+    private static string Truncate(string? text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+            return text ?? string.Empty;
+
+        return text[..maxLength];
+    }
+
+    private static void SanitizeMessage(Models.DiscordWebhookMessage message)
+    {
+        message.Content = Truncate(message.Content, ContentLimit);
+
+        if (message.Embeds is not { Count: > 0 })
+            return;
+
+        foreach (var embed in message.Embeds)
+        {
+            embed.Title = Truncate(embed.Title, EmbedTitleLimit);
+            embed.Description = Truncate(embed.Description, EmbedDescriptionLimit);
+
+            if (embed.Footer is not null)
+                embed.Footer.Text = Truncate(embed.Footer.Text, EmbedFooterLimit);
+
+            if (embed.Fields is { Count: > 0 })
+            {
+                if (embed.Fields.Count > EmbedFieldCountLimit)
+                    embed.Fields = embed.Fields.Take(EmbedFieldCountLimit).ToList();
+
+                foreach (var field in embed.Fields)
+                {
+                    field.Name = Truncate(field.Name, EmbedFieldNameLimit);
+                    field.Value = Truncate(field.Value, EmbedFieldValueLimit);
+                }
+            }
+
+            var totalChars = (embed.Title?.Length ?? 0) +
+                             (embed.Description?.Length ?? 0) +
+                             (embed.Footer?.Text.Length ?? 0) +
+                             (embed.Fields?.Sum(f => f.Name.Length + f.Value.Length) ?? 0);
+
+            if (totalChars > EmbedTotalCharLimit && !string.IsNullOrEmpty(embed.Description))
+            {
+                var overflow = totalChars - EmbedTotalCharLimit;
+                embed.Description = Truncate(embed.Description, Math.Max(0, embed.Description.Length - overflow));
+            }
         }
     }
 
