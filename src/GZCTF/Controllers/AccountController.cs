@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Security.Claims;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -80,21 +81,12 @@ public partial class AccountController(
         };
 
         user.UpdateByHttpContext(HttpContext);
-        if (accountPolicy.Value.EnableBrowserFingerprint)
-        {
-            if (string.IsNullOrEmpty(model.Fingerprint))
-            {
-                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
-            }
+        if (accountPolicy.Value.EnableBrowserFingerprint && string.IsNullOrEmpty(model.Fingerprint))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
 
-            var fingerprint = configService.DecryptApiData(model.Fingerprint);
-            if (fingerprint == null || !BrowserFingerprintRegex().IsMatch(fingerprint))
-            {
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
-            }
-
-            user.BrowserFingerprint = fingerprint;
-        }
+        var fingerprint = ValidateBrowserFingerprint(model.Fingerprint);
+        if (accountPolicy.Value.EnableBrowserFingerprint && fingerprint is null)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -115,7 +107,9 @@ public partial class AccountController(
         {
             user.EmailConfirmed = true;
             await userManager.UpdateAsync(user);
-            await signInManager.SignInAsync(user, true);
+            await signInManager.SignInWithClaimsAsync(user, true, BuildFingerprintClaims(fingerprint));
+
+            user.BrowserFingerprint = fingerprint;
 
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user,
                 TaskStatus.Success);
@@ -162,6 +156,28 @@ public partial class AccountController(
                || accountPolicy.Value.EmailDomainList
                    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                    .Any(d => d.Equals(mailDomain, StringComparison.InvariantCulture));
+    }
+
+    private string? ValidateBrowserFingerprint(string? encryptedFingerprint)
+    {
+        if (!accountPolicy.Value.EnableBrowserFingerprint)
+            return null;
+
+        if (string.IsNullOrEmpty(encryptedFingerprint))
+            return null;
+
+        var fingerprint = configService.DecryptApiData(encryptedFingerprint);
+        return fingerprint is not null && BrowserFingerprintRegex().IsMatch(fingerprint)
+            ? fingerprint
+            : null;
+    }
+
+    private static IEnumerable<Claim> BuildFingerprintClaims(string? fingerprint)
+    {
+        if (string.IsNullOrWhiteSpace(fingerprint))
+            return [];
+
+        return [new Claim(ContextHelper.BrowserFingerprintClaimType, fingerprint)];
     }
 
     /// <summary>
@@ -331,32 +347,28 @@ public partial class AccountController(
             return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)],
                 StatusCodes.Status401Unauthorized));
 
-        user.LastSignedInUtc = DateTimeOffset.UtcNow;
-        user.UpdateByHttpContext(HttpContext);
-        if (accountPolicy.Value.EnableBrowserFingerprint)
-        {
-            if (string.IsNullOrEmpty(model.Fingerprint))
-            {
-                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
-            }
+        if (accountPolicy.Value.EnableBrowserFingerprint && string.IsNullOrEmpty(model.Fingerprint))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
 
-            var fingerprint = configService.DecryptApiData(model.Fingerprint);
-            if (fingerprint == null || !BrowserFingerprintRegex().IsMatch(fingerprint))
-            {
-                return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
-            }
-
-            user.BrowserFingerprint = fingerprint;
-        }
-        await userManager.UpdateAsync(user);
+        var fingerprint = ValidateBrowserFingerprint(model.Fingerprint);
+        if (accountPolicy.Value.EnableBrowserFingerprint && fingerprint is null)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
 
         await signInManager.SignOutAsync();
-        var result = await signInManager.PasswordSignInAsync(user, password, true, false);
+        var result = await signInManager.CheckPasswordSignInAsync(user, password, false);
 
         if (!result.Succeeded)
             return Unauthorized(new RequestResponse(
                 localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
                 StatusCodes.Status401Unauthorized));
+
+        user.LastSignedInUtc = DateTimeOffset.UtcNow;
+        user.UpdateByHttpContext(HttpContext);
+        await userManager.UpdateAsync(user);
+
+        await signInManager.SignInWithClaimsAsync(user, true, BuildFingerprintClaims(fingerprint));
+
+        user.BrowserFingerprint = fingerprint;
 
         logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
 

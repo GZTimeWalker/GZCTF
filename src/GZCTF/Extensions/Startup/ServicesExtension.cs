@@ -101,6 +101,7 @@ internal static class ServicesExtension
 
         internal void AddWebServices()
         {
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
             builder.Services.AddRateLimiter(RateLimiter.ConfigureRateLimiter);
             builder.Services.AddResponseCompression(options =>

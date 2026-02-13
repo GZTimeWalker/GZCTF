@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using GZCTF.Models;
 using GZCTF.Services.Token;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
@@ -8,6 +9,33 @@ namespace GZCTF.Utils;
 
 public static class ContextHelper
 {
+    public const string BrowserFingerprintClaimType = "gzctf:browser_fingerprint";
+
+    public static string? GetValidBrowserFingerprint(ClaimsPrincipal? user)
+    {
+        var fingerprint = user?.FindFirstValue(BrowserFingerprintClaimType);
+        return IsValidBrowserFingerprint(fingerprint) ? fingerprint : null;
+    }
+
+    public static bool IsValidBrowserFingerprint(string? fingerprint)
+    {
+        if (string.IsNullOrWhiteSpace(fingerprint) || fingerprint.Length != Limits.FileHashLength)
+            return false;
+
+        foreach (var ch in fingerprint)
+        {
+            if (ch is >= '0' and <= '9')
+                continue;
+
+            if (ch is >= 'a' and <= 'f')
+                continue;
+
+            return false;
+        }
+
+        return true;
+    }
+
     private static readonly CacheControlHeaderValue NoCacheHeader = new() { NoCache = true, MustRevalidate = true };
 
     private static readonly CacheControlHeaderValue PrivateNoCacheHeader =
