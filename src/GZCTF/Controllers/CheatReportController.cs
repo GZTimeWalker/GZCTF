@@ -40,6 +40,11 @@ public class CheatReportController(
             .Where(x => !string.IsNullOrEmpty(x.UserName))
             .GroupBy(x => x.UserName!)
             .ToDictionary(g => g.Key, g => g.First().TeamId);
+        string TeamRef(int teamId)
+        {
+            var teamName = teamMap.TryGetValue(teamId, out var teamEntry) ? teamEntry.Name : "Unknown";
+            return $"team '{teamName}'";
+        }
 
         // Fetch Logs for IP Analysis
         var logs = await dbContext.Logs
@@ -50,6 +55,33 @@ public class CheatReportController(
                         l.UserName != null)
             .Select(l => new { l.TimeUtc, l.UserName, l.RemoteIP, l.BrowserFingerprint })
             .ToListAsync(token);
+
+        var logIdentities = logs
+            .Where(l => !string.IsNullOrEmpty(l.UserName) && userTeamMap.ContainsKey(l.UserName!))
+            .Select(l =>
+            {
+                var teamId = userTeamMap[l.UserName!];
+                return new
+                {
+                    TeamId = teamId,
+                    TeamName = teamMap[teamId].Name,
+                    UserName = l.UserName!,
+                    Ip = l.RemoteIP?.ToString(),
+                    Fingerprint = l.BrowserFingerprint,
+                    Time = l.TimeUtc
+                };
+            })
+            .ToList();
+
+        var ipUserUsage = logIdentities
+            .Where(x => !string.IsNullOrWhiteSpace(x.Ip))
+            .GroupBy(x => x.Ip!)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var fingerprintUserUsage = logIdentities
+            .Where(x => !string.IsNullOrWhiteSpace(x.Fingerprint))
+            .GroupBy(x => x.Fingerprint!)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
         // ... (IP Analysis Logic) ...
 
@@ -136,7 +168,7 @@ public class CheatReportController(
                 Ip = item.UserName,
                 Time = item.LastSeen,
                 Details =
-                    $"User {item.UserName} used {item.Fingerprints.Count} distinct fingerprints during the game " +
+                    $"Target {TeamRef(teamId)} user {item.UserName} used {item.Fingerprints.Count} distinct fingerprints during the game " +
                     $"(first: {item.FirstSeen:MM/dd HH:mm:ss}, last: {item.LastSeen:MM/dd HH:mm:ss}). " +
                     $"Samples: {sampleStr}",
             });
@@ -185,7 +217,7 @@ public class CheatReportController(
                 Ip = item.UserName,
                 Time = item.LastSeen,
                 Details =
-                    $"User {item.UserName} used {item.Ips.Count} distinct IPs during the game " +
+                    $"Target {TeamRef(teamId)} user {item.UserName} used {item.Ips.Count} distinct IPs during the game " +
                     $"(first: {item.FirstSeen:MM/dd HH:mm:ss}, last: {item.LastSeen:MM/dd HH:mm:ss}). " +
                     $"Samples: {sampleStr}",
             });
@@ -291,11 +323,11 @@ public class CheatReportController(
                      var attackerName = attackerMatch.Groups[1].Value;
                      var attackerTeam = attackerMatch.Groups[2].Value;
                      var sourceInfo = sourceMatch.Groups[1].Value;
-                     detailedMsg = $"{attackerName} (Team: {attackerTeam}) used a token belonging to {sourceInfo}.";
+                     detailedMsg = $"Target {TeamRef(evt.TeamId)} actor {attackerName} (declared team: {attackerTeam}) used a token belonging to source {sourceInfo}.";
                  }
                  else
                  {
-                     detailedMsg = $"Token Abuse Detected. {description}";
+                     detailedMsg = $"Target {TeamRef(evt.TeamId)} token abuse detected. Raw event: {description}";
                  }
 
                      report.IpAnalysis.Add(new IpAnalysisResult
@@ -331,7 +363,7 @@ public class CheatReportController(
                             TeamName = evt.TeamName,
                             Type = SuspicionType.CrossTeamIP,
                             Ip = ipStr,
-                            Details = $"Downloaded '{challengeTitle}' from IP {ipStr} which belongs to team(s): {string.Join(", ", otherTeamNames)}",
+                            Details = $"Target {TeamRef(evt.TeamId)} downloaded '{challengeTitle}' from IP {ipStr}. Source teams sharing this IP: {string.Join(", ", otherTeams.Select(TeamRef))}. Source users seen on this IP: {(ipUserUsage.TryGetValue(ipStr, out var usersOnIp) ? string.Join(", ", usersOnIp.Where(u => u.TeamId != evt.TeamId).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(6)) : "none")}",
                             RelatedTeams = otherTeamNames,
                             Time = evt.PublishTimeUtc
                         });
@@ -340,13 +372,15 @@ public class CheatReportController(
                 // Also check if IP is not in team's login history at all
                 else if (teamIps.TryGetValue(evt.TeamId, out var teamKnownIps) && !teamKnownIps.Contains(ipStr))
                 {
+                    var actorMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
+                    var actor = actorMatch.Success ? actorMatch.Groups[1].Value : "Unknown";
                     report.IpAnalysis.Add(new IpAnalysisResult
                     {
                         TeamId = evt.TeamId,
                         TeamName = evt.TeamName,
                         Type = SuspicionType.UnknownIP,
                         Ip = ipStr,
-                        Details = $"Downloaded '{challengeTitle}' from unknown IP {ipStr} (not in team's login history or any other team's)",
+                        Details = $"Target {TeamRef(evt.TeamId)} actor {actor} downloaded '{challengeTitle}' from unknown IP {ipStr} (not in target team history and not mapped to any other team in this game).",
                         Time = evt.PublishTimeUtc
                     });
                 }
@@ -374,7 +408,7 @@ public class CheatReportController(
                     TeamName = teamMap[tid].Name,
                     Type = SuspicionType.SharedIP,
                     Ip = group.Key,
-                    Details = $"IP {group.Key} is shared with teams: {string.Join(", ", teamNames.Where(n => n != teamMap[tid].Name))}",
+                    Details = $"Target {TeamRef(tid)} shares IP {group.Key}. Source teams: {string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))}. Target users on this IP: {(ipUserUsage.TryGetValue(group.Key, out var targetIpUsers) ? string.Join(", ", targetIpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6)) : "none")}. Source users on this IP: {(ipUserUsage.TryGetValue(group.Key, out var sourceIpUsers) ? string.Join(", ", sourceIpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8)) : "none")}",
                     RelatedTeams = teamNames
                 });
             }
@@ -399,7 +433,7 @@ public class CheatReportController(
                     TeamName = teamMap[tid].Name,
                     Type = SuspicionType.SharedFingerprint,
                     Ip = group.Key,
-                    Details = $"Fingerprint {group.Key} is shared with teams: {string.Join(", ", teamNames.Where(n => n != teamMap[tid].Name))}",
+                    Details = $"Target {TeamRef(tid)} shares browser fingerprint {group.Key}. Source teams: {string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))}. Target users on this fingerprint: {(fingerprintUserUsage.TryGetValue(group.Key, out var targetFpUsers) ? string.Join(", ", targetFpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6)) : "none")}. Source users on this fingerprint: {(fingerprintUserUsage.TryGetValue(group.Key, out var sourceFpUsers) ? string.Join(", ", sourceFpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8)) : "none")}.",
                     RelatedTeams = teamNames
                 });
             }
@@ -428,7 +462,7 @@ public class CheatReportController(
                          ChallengeName = sub.ChallengeName,
                          Type = SuspicionType.NoDownload,
                          SolveTime = sub.SubmitTimeUtc,
-                         Details = $"Solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without prior attachment download log."
+                         Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without any prior attachment download log."
                     });
                 }
             }
@@ -449,11 +483,11 @@ public class CheatReportController(
                         // Found starts, but all are later than solve time
                         var firstStart = starts.Min();
                         var delay = firstStart - sub.SubmitTimeUtc;
-                        details = $"Solved {delay.TotalSeconds:F0}s before container start (Start at {firstStart:MM/dd HH:mm:ss}).";
+                        details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' {delay.TotalSeconds:F0}s before container start (start at {firstStart:MM/dd HH:mm:ss}, solve at {sub.SubmitTimeUtc:MM/dd HH:mm:ss}).";
                     }
                     else
                     {
-                        details = $"Solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without prior container start log.";
+                        details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' at {sub.SubmitTimeUtc:MM/dd HH:mm:ss} without any prior container start log.";
                     }
 
                     report.AbnormalSolves.Add(new AbnormalSolveResult
@@ -533,7 +567,7 @@ public class CheatReportController(
                                          ChallengeName = sub.ChallengeName,
                                          Type = SuspicionType.Hoarding,
                                          SolveTime = sub.SubmitTimeUtc,
-                                         Details = $"Solved {diff.TotalMinutes:F0}m after container destroy (Destroyed at {lastDestroy:MM/dd HH:mm})."
+                                         Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' {diff.TotalMinutes:F0}m after the last container destroy (destroyed at {lastDestroy:MM/dd HH:mm}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm})."
                                      });                                    
                                 }
                             }
@@ -560,7 +594,7 @@ public class CheatReportController(
                              ChallengeName = sub.ChallengeName,
                              Type = SuspicionType.FastSolveOpen,
                              SolveTime = sub.SubmitTimeUtc,
-                             Details = $"Solved in {durationOpen.TotalSeconds:F1}s after opening challenge (Opened at {firstOpen:MM/dd HH:mm:ss})."
+                             Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationOpen.TotalSeconds:F1}s after opening it (opened at {firstOpen:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
                          }); 
                     }
                 }
@@ -582,7 +616,7 @@ public class CheatReportController(
                               ChallengeName = sub.ChallengeName,
                               Type = SuspicionType.FastSolveDownload,
                               SolveTime = sub.SubmitTimeUtc,
-                              Details = $"Solved in {durationDl.TotalSeconds:F1}s after downloading attachment (Downloaded at {firstDl:MM/dd HH:mm:ss})."
+                              Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationDl.TotalSeconds:F1}s after downloading the attachment (downloaded at {firstDl:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
                           });
                      }
                 }
@@ -605,7 +639,7 @@ public class CheatReportController(
                               ChallengeName = sub.ChallengeName,
                               Type = SuspicionType.FastSolveContainer,
                               SolveTime = sub.SubmitTimeUtc,
-                              Details = $"Solved in {durationStart.TotalSeconds:F1}s after starting container (Started at {firstStart:MM/dd HH:mm:ss})."
+                              Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationStart.TotalSeconds:F1}s after starting the container (started at {firstStart:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
                           });
                      }
                 }
@@ -671,7 +705,7 @@ public class CheatReportController(
                          ChallengeName = subs[i].ChallengeName,
                          Type = SuspicionType.Burst,
                          SolveTime = subs[i].SubmitTimeUtc,
-                         Details = $"Burst: Solved {burstCount} challenges in {totalSeconds:F0}s: {string.Join(", ", burstNames)}."
+                         Details = $"Target {TeamRef(teamSeq.TeamId)} burst solve pattern: solved {burstCount} challenges in {totalSeconds:F0}s starting at {subs[i].SubmitTimeUtc:MM/dd HH:mm:ss}. Sequence: {string.Join(", ", burstNames)}."
                      });
                      
                      // Skip the challenges we just grouped into this burst
@@ -733,7 +767,8 @@ public class CheatReportController(
                      var part = team.Participations.FirstOrDefault(p => p.GameId == id);
                      if (part != null) 
                      {
-                         await suspicionService.AddSuspicion(part, SuspicionType.CollusionGroup, group.Details, token: token);
+                         var details = $"Target {TeamRef(team.Id)} collusion-group signal. {group.Details}";
+                         await suspicionService.AddSuspicion(part, SuspicionType.CollusionGroup, details, token: token);
                      }
                 }
             }
