@@ -79,6 +79,8 @@ const GameChallengeEdit: FC = () => {
       setType(challenge.type)
       setMinRate((challenge?.minScoreRate ?? 0.25) * 100)
       setCurrentAcceptCount(challenge.acceptedCount)
+      setDeadline(challenge.deadlineUtc ? dayjs(challenge.deadlineUtc) : null)
+      setNetworkMode(challenge.networkMode ?? NetworkMode.Open)
     }
   }, [challenge])
 
