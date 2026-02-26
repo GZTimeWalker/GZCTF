@@ -789,10 +789,13 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.Equal(HttpStatusCode.OK, downloadResponse.StatusCode);
 
         context.ChangeTracker.Clear();
-        var evt = await context.GameEvents
-            .Where(e => e.GameId == game.Id && e.Type == EventType.Download && e.Values != null && e.Values.Count > 0 && e.Values[0] == challenge.Id.ToString())
+        var downloadEvents = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
             .OrderByDescending(e => e.PublishTimeUtc)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
+
+        var evt = downloadEvents
+            .FirstOrDefault(e => e.Values is { Count: > 0 } && e.Values[0] == challenge.Id.ToString());
 
         Assert.NotNull(evt);
         Assert.Equal(tAttacker.Id, evt.TeamId);
