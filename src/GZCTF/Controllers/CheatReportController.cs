@@ -172,6 +172,7 @@ public class CheatReportController(
                 // Reuse the existing "ip" column for the subject (similar to SharedFingerprint using it for fingerprints)
                 Ip = item.UserName,
                 Time = item.LastSeen,
+                UserNames = [item.UserName],
                 Details = BuildDetail(
                     ("Summary", "Single user rotated many browser fingerprints"),
                     ("Target", TeamRef(teamId)),
@@ -225,6 +226,7 @@ public class CheatReportController(
                 // Reuse the existing "ip" column for the subject (username)
                 Ip = item.UserName,
                 Time = item.LastSeen,
+                UserNames = [item.UserName],
                 Details = BuildDetail(
                     ("Summary", "Single user rotated many IP addresses"),
                     ("Target", TeamRef(teamId)),
@@ -337,9 +339,13 @@ public class CheatReportController(
                 var detailedMsg = BuildDetail(
                     ("Summary", "A submission/download token was used by a different actor"),
                     ("Target", TeamRef(evt.TeamId)));
+                var tokenAbuseUsers = new List<string>();
 
                 if (structuredDownload is not null)
                 {
+                    if (!string.IsNullOrWhiteSpace(structuredDownload.ActorUserName))
+                        tokenAbuseUsers.Add(structuredDownload.ActorUserName);
+
                     detailedMsg = BuildDetail(
                         ("Summary", "Token abuse detected"),
                         ("Target", TeamRef(evt.TeamId)),
@@ -361,6 +367,9 @@ public class CheatReportController(
                         var attackerName = attackerMatch.Groups[1].Value;
                         var attackerTeam = attackerMatch.Groups[2].Value;
                         var sourceInfo = sourceMatch.Groups[1].Value;
+                        if (!string.IsNullOrWhiteSpace(attackerName))
+                            tokenAbuseUsers.Add(attackerName);
+
                         detailedMsg = BuildDetail(
                             ("Summary", "Token abuse detected"),
                             ("Target", TeamRef(evt.TeamId)),
@@ -384,7 +393,8 @@ public class CheatReportController(
                     Type = SuspicionType.TokenAbuse,
                     Ip = dlIp,
                     Details = detailedMsg,
-                    Time = evt.PublishTimeUtc
+                    Time = evt.PublishTimeUtc,
+                    UserNames = tokenAbuseUsers
                 });
             }
             
@@ -399,6 +409,13 @@ public class CheatReportController(
                     if (otherTeams.Any())
                     {
                         var otherTeamNames = otherTeams.Select(tid => teamMap[tid].Name).ToList();
+                        var targetUsers = ipUserUsage.TryGetValue(ipStr, out var targetIpUsers)
+                            ? targetIpUsers.Where(u => u.TeamId == evt.TeamId).Select(u => u.UserName).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().Take(6).ToList()
+                            : [];
+                        var relatedUsers = ipUserUsage.TryGetValue(ipStr, out var sourceIpUsers)
+                            ? sourceIpUsers.Where(u => u.TeamId != evt.TeamId).Select(u => u.UserName).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().Take(8).ToList()
+                            : [];
+
                         report.IpAnalysis.Add(new IpAnalysisResult
                         {
                             TeamId = evt.TeamId,
@@ -415,6 +432,8 @@ public class CheatReportController(
                                     ? string.Join(", ", usersOnIp.Where(u => u.TeamId != evt.TeamId).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(6))
                                     : "none")),
                             RelatedTeams = otherTeamNames,
+                            UserNames = targetUsers,
+                            RelatedUsers = relatedUsers,
                             Time = evt.PublishTimeUtc
                         });
                     }
@@ -441,6 +460,7 @@ public class CheatReportController(
                             ("Actor", actor),
                             ("Challenge", challengeTitle),
                             ("IP", ipStr)),
+                        UserNames = string.IsNullOrWhiteSpace(actor) || actor == "Unknown" ? [] : [actor],
                         Time = evt.PublishTimeUtc
                     });
                 }
@@ -462,6 +482,13 @@ public class CheatReportController(
             
             foreach (var tid in teamsSharing)
             {
+                var targetUsers = ipUserUsage.TryGetValue(group.Key, out var targetIpUsers)
+                    ? targetIpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().Take(6).ToList()
+                    : [];
+                var relatedUsers = ipUserUsage.TryGetValue(group.Key, out var sourceIpUsers)
+                    ? sourceIpUsers.Where(u => u.TeamId != tid).Select(u => u.UserName).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().Take(8).ToList()
+                    : [];
+
                 report.IpAnalysis.Add(new IpAnalysisResult
                 {
                     TeamId = tid,
@@ -473,13 +500,15 @@ public class CheatReportController(
                         ("Target", TeamRef(tid)),
                         ("IP", group.Key),
                         ("Source teams", string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))),
-                        ("Target users on IP", ipUserUsage.TryGetValue(group.Key, out var targetIpUsers)
-                            ? string.Join(", ", targetIpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6))
+                        ("Target users on IP", ipUserUsage.TryGetValue(group.Key, out var targetIpUsersForDetail)
+                            ? string.Join(", ", targetIpUsersForDetail.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6))
                             : "none"),
-                        ("Source users on IP", ipUserUsage.TryGetValue(group.Key, out var sourceIpUsers)
-                            ? string.Join(", ", sourceIpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8))
+                        ("Source users on IP", ipUserUsage.TryGetValue(group.Key, out var sourceIpUsersForDetail)
+                            ? string.Join(", ", sourceIpUsersForDetail.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8))
                             : "none")),
-                    RelatedTeams = teamNames
+                    RelatedTeams = teamNames,
+                    UserNames = targetUsers,
+                    RelatedUsers = relatedUsers
                 });
             }
         }
@@ -497,6 +526,13 @@ public class CheatReportController(
             
             foreach (var tid in teamsSharing)
             {
+                var targetUsers = fingerprintUserUsage.TryGetValue(group.Key, out var targetFpUsers)
+                    ? targetFpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().Take(6).ToList()
+                    : [];
+                var relatedUsers = fingerprintUserUsage.TryGetValue(group.Key, out var sourceFpUsers)
+                    ? sourceFpUsers.Where(u => u.TeamId != tid).Select(u => u.UserName).Where(u => !string.IsNullOrWhiteSpace(u)).Distinct().Take(8).ToList()
+                    : [];
+
                 report.IpAnalysis.Add(new IpAnalysisResult
                 {
                     TeamId = tid,
@@ -508,13 +544,15 @@ public class CheatReportController(
                         ("Target", TeamRef(tid)),
                         ("Fingerprint", group.Key),
                         ("Source teams", string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))),
-                        ("Target users on fingerprint", fingerprintUserUsage.TryGetValue(group.Key, out var targetFpUsers)
-                            ? string.Join(", ", targetFpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6))
+                        ("Target users on fingerprint", fingerprintUserUsage.TryGetValue(group.Key, out var targetFpUsersForDetail)
+                            ? string.Join(", ", targetFpUsersForDetail.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6))
                             : "none"),
-                        ("Source users on fingerprint", fingerprintUserUsage.TryGetValue(group.Key, out var sourceFpUsers)
-                            ? string.Join(", ", sourceFpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8))
+                        ("Source users on fingerprint", fingerprintUserUsage.TryGetValue(group.Key, out var sourceFpUsersForDetail)
+                            ? string.Join(", ", sourceFpUsersForDetail.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8))
                             : "none")),
-                    RelatedTeams = teamNames
+                    RelatedTeams = teamNames,
+                    UserNames = targetUsers,
+                    RelatedUsers = relatedUsers
                 });
             }
         }

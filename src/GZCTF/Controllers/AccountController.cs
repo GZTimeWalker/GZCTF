@@ -109,10 +109,11 @@ public partial class AccountController(
             await userManager.UpdateAsync(user);
             await signInManager.SignInWithClaimsAsync(user, true, BuildFingerprintClaims(fingerprint));
 
-            user.BrowserFingerprint = fingerprint;
-
-            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)], user,
-                TaskStatus.Success);
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)],
+                user.UserName ?? "Anonymous",
+                user.IP,
+                TaskStatus.Success,
+                fingerprint: fingerprint);
             return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)],
                 RegisterStatus.LoggedIn,
                 StatusCodes.Status200OK));
@@ -121,14 +122,20 @@ public partial class AccountController(
         if (!accountPolicy.Value.EmailConfirmationRequired)
         {
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)],
-                user, TaskStatus.Success);
+                user.UserName ?? "Anonymous",
+                user.IP,
+                TaskStatus.Success,
+                fingerprint: fingerprint);
             return Ok(new RequestResponse<RegisterStatus>(
                 localizer[nameof(Resources.Program.Account_UserRegisteredWaitingApproval)],
                 RegisterStatus.AdminConfirmationRequired, StatusCodes.Status200OK));
         }
 
-        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)], user,
-            TaskStatus.Pending);
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)],
+            user.UserName ?? "Anonymous",
+            user.IP,
+            TaskStatus.Pending,
+            fingerprint: fingerprint);
 
         var rToken = Codec.Base64.Encode(await userManager.GenerateEmailConfirmationTokenAsync(user));
         var link = GetEmailLink("verify", rToken, model.Email);
@@ -368,9 +375,11 @@ public partial class AccountController(
 
         await signInManager.SignInWithClaimsAsync(user, true, BuildFingerprintClaims(fingerprint));
 
-        user.BrowserFingerprint = fingerprint;
-
-        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserLogined)], user, TaskStatus.Success);
+        logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserLogined)],
+            user.UserName ?? "Anonymous",
+            user.IP,
+            TaskStatus.Success,
+            fingerprint: fingerprint);
 
         return Ok();
     }

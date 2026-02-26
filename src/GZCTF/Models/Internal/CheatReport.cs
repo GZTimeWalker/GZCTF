@@ -43,6 +43,12 @@ public class IpAnalysisResult
 
     [JsonPropertyName("relatedTeams")]
     public List<string> RelatedTeams { get; set; } = new();
+
+    [JsonPropertyName("userNames")]
+    public List<string> UserNames { get; set; } = new();
+
+    [JsonPropertyName("relatedUsers")]
+    public List<string> RelatedUsers { get; set; } = new();
 }
 
 public class AbnormalSolveResult

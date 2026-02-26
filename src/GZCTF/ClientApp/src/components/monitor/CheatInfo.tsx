@@ -214,6 +214,8 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                 item.type?.toLowerCase().includes(q) ||
                 item.ip?.toLowerCase().includes(q) ||
                 item.details?.toLowerCase().includes(q) ||
+                item.userNames?.some((u: string) => u.toLowerCase().includes(q)) ||
+                item.relatedUsers?.some((u: string) => u.toLowerCase().includes(q)) ||
                 item.relatedTeams?.some((t: string) => t.toLowerCase().includes(q))
             )
         }
@@ -528,7 +530,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                     <Tabs.Panel value="ip" pt="md">
                         <Group justify="space-between" mb="md">
                             <Title order={4}>IP Analysis</Title>
-                            <TextInput placeholder="Search team, IP, or details..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={ipSearch} onChange={(e) => setIpSearch(e.currentTarget.value)} size="xs" w={250} />
+                            <TextInput placeholder="Search team, user, IP, or details..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={ipSearch} onChange={(e) => setIpSearch(e.currentTarget.value)} size="xs" w={250} />
                         </Group>
                         {report?.ipAnalysis && report.ipAnalysis.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
@@ -537,6 +539,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                         <Table.Tr>
                                             <ThSort sorted={ipSort.key === 'teamName'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'teamName')} w="10rem">{t('common.label.team', 'Team')}</ThSort>
                                             <ThSort sorted={ipSort.key === 'type'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'type')} w="12rem">Type</ThSort>
+                                            <Table.Th w="14rem">Users</Table.Th>
                                             <ThSort sorted={ipSort.key === 'ip'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'ip')} w="10rem">IP</ThSort>
                                             <ThSort sorted={ipSort.key === 'time'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'time')} w="10rem">Time</ThSort>
                                             <Table.Th>Details</Table.Th>
@@ -559,6 +562,11 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                                         const meta = metaByType[item.type] ?? { label: 'Unknown IP', color: 'grape' }
                                                         return <Badge color={meta.color} size="xs" fullWidth>{meta.label}</Badge>
                                                     })()}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Text size="sm" lineClamp={2} title={item.userNames?.join(', ') || '-'}>
+                                                        {item.userNames?.length ? item.userNames.join(', ') : '-'}
+                                                    </Text>
                                                 </Table.Td>
                                                 <Table.Td ff="monospace">{item.ip}</Table.Td>
                                                 <Table.Td ff="monospace" fz="sm">{item.time ? dayjs(item.time).locale(locale).format('MM-DD HH:mm:ss') : '-'}</Table.Td>

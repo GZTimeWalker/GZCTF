@@ -944,6 +944,8 @@ export interface IpAnalysisResult {
   type?: string;
   details?: string;
   relatedTeams?: string[];
+  userNames?: string[];
+  relatedUsers?: string[];
   ip?: string;
   /** @format uint64 */
   time?: number;

@@ -64,7 +64,7 @@ public static class LogHelper
         /// <param name="user">the user</param>
         public void Log(string msg, UserInfo? user, TaskStatus status,
             LogLevel? level = null) =>
-            Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP, status, level, user?.BrowserFingerprint);
+            Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP, status, level, null);
 
         /// <summary>
         /// Record a log
@@ -77,8 +77,9 @@ public static class LogHelper
             LogLevel? level = null)
         {
             var username = context?.User.Identity?.Name ?? "Anonymous";
+            var fingerprint = ContextHelper.GetValidBrowserFingerprint(context?.User);
 
-            Log(logger, msg, username, context?.Connection.RemoteIpAddress, status, level, null);
+            Log(logger, msg, username, context?.Connection.RemoteIpAddress, status, level, fingerprint);
         }
 
         /// <summary>
@@ -107,9 +108,17 @@ public static class LogHelper
             using (LogContext.PushProperty("UserName", uname))
             using (LogContext.PushProperty("IP", ip))
             using (LogContext.PushProperty("Status", status))
-            using (LogContext.PushProperty("BrowserFingerprint", fingerprint))
             {
-                logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
+                if (string.IsNullOrWhiteSpace(fingerprint))
+                {
+                    logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
+                    return;
+                }
+
+                using (LogContext.PushProperty("BrowserFingerprint", fingerprint))
+                {
+                    logger.Log(level ?? LogLevel.Information, "{msg:l}", msg);
+                }
             }
         }
     }

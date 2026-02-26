@@ -531,6 +531,70 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task GetCheatReport_ShouldIncludeUserNames_InSharedFingerprintLog()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "SharedFingerprint Game " + TestDataSeeder.RandomName());
+
+        var u1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t1 = await TestDataSeeder.CreateTeamAsync(factory.Services, u1.Id, "Fp Team A");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t1.Id, u1.Id);
+
+        var u2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t2 = await TestDataSeeder.CreateTeamAsync(factory.Services, u2.Id, "Fp Team B");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t2.Id, u2.Id);
+
+        var fingerprint = "fp-shared-123";
+        var time = DateTimeOffset.UtcNow;
+
+        await context.Logs.AddRangeAsync(
+            new LogModel
+            {
+                Level = "Info",
+                Logger = "AccountController",
+                Message = "Login",
+                TimeUtc = time,
+                UserName = u1.UserName,
+                RemoteIP = System.Net.IPAddress.Parse("10.11.0.1"),
+                BrowserFingerprint = fingerprint
+            },
+            new LogModel
+            {
+                Level = "Info",
+                Logger = "AccountController",
+                Message = "Login",
+                TimeUtc = time.AddMinutes(1),
+                UserName = u2.UserName,
+                RemoteIP = System.Net.IPAddress.Parse("10.11.0.2"),
+                BrowserFingerprint = fingerprint
+            }
+        );
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+
+        var teamARecord = report.IpAnalysis.FirstOrDefault(i => i.Type == "SharedFingerprint" && i.TeamId == t1.Id && i.Ip == fingerprint);
+        Assert.NotNull(teamARecord);
+        Assert.Contains(u1.UserName, teamARecord.UserNames);
+        Assert.Contains(u2.UserName, teamARecord.RelatedUsers);
+
+        var teamBRecord = report.IpAnalysis.FirstOrDefault(i => i.Type == "SharedFingerprint" && i.TeamId == t2.Id && i.Ip == fingerprint);
+        Assert.NotNull(teamBRecord);
+        Assert.Contains(u2.UserName, teamBRecord.UserNames);
+        Assert.Contains(u1.UserName, teamBRecord.RelatedUsers);
+    }
+
+    [Fact]
     public async Task GetCheatReport_ShouldDetectTokenAbuse()
     {
         using var scope = factory.Services.CreateScope();

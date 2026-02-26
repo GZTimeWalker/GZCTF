@@ -43,10 +43,6 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
             return;
         }
 
-        var fingerprint = ContextHelper.GetValidBrowserFingerprint(context.HttpContext.User);
-        if (!string.IsNullOrWhiteSpace(fingerprint))
-            user.BrowserFingerprint = fingerprint;
-
         diagnosticContext.Set("UserId", user.Id);
         diagnosticContext.Set("UserName", user.UserName ?? "Anonymous");
 
@@ -117,10 +113,6 @@ public class RequireGameAdminAttribute : Attribute, IAsyncAuthorizationFilter
                 StatusCodes.Status401Unauthorized);
             return;
         }
-
-        var fingerprint = ContextHelper.GetValidBrowserFingerprint(context.HttpContext.User);
-        if (!string.IsNullOrWhiteSpace(fingerprint))
-            user.BrowserFingerprint = fingerprint;
 
         diagnosticContext.Set("UserId", user.Id);
         diagnosticContext.Set("UserName", user.UserName ?? "Anonymous");

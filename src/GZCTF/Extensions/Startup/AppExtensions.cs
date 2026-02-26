@@ -2,6 +2,7 @@ using System.Reflection;
 using GZCTF.Hubs;
 using Scalar.AspNetCore;
 using Serilog;
+using Serilog.Context;
 
 namespace GZCTF.Extensions.Startup;
 
@@ -84,6 +85,21 @@ internal static class AppExtensions
                 app.UseRateLimiter();
 
             app.UseAuthentication();
+            app.Use(async (context, next) =>
+            {
+                var fingerprint = ContextHelper.GetValidBrowserFingerprint(context.User);
+
+                if (string.IsNullOrWhiteSpace(fingerprint))
+                {
+                    await next();
+                    return;
+                }
+
+                using (LogContext.PushProperty("BrowserFingerprint", fingerprint))
+                {
+                    await next();
+                }
+            });
             app.UseAuthorization();
 
             if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("RequestLogging"))
