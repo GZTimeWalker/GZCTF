@@ -321,57 +321,76 @@ public class CheatReportController(
             var dlIp = evt.Values[3];
             var description = evt.Values[2];
             var ipStr = dlIp; // Default to raw string
+            var structuredDownload = ParseDownloadMetadata(evt.Values);
+            var challengeTitle = structuredDownload?.ChallengeTitle;
+            if (string.IsNullOrWhiteSpace(challengeTitle))
+            {
+                var challengeMatch = Regex.Match(description, @"for challenge (.+?)\.");
+                challengeTitle = challengeMatch.Success ? challengeMatch.Groups[1].Value : "Unknown";
+            }
+            challengeTitle ??= "Unknown";
 
             // Token Abuse Detection (Independent of IP Validity)
-            if (description.Contains("[Token Source:")) 
+            var hasLegacyTokenTag = description.Contains("[Token Source:", StringComparison.Ordinal);
+            if (structuredDownload?.TokenAbuse == true || hasLegacyTokenTag) 
             {
-                 // Parse readable details
-                 // Log format: "User {Attacker} from team {AttackerTeam} downloaded ... [Token Source: {Source}]"
-                 var attackerMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
-                 var sourceMatch = Regex.Match(description, @"\[Token Source: (.+?)\]");
-                 
-                 var detailedMsg = BuildDetail(
-                     ("Summary", "A submission/download token was used by a different actor"),
-                     ("Target", TeamRef(evt.TeamId)));
-                 if (attackerMatch.Success && sourceMatch.Success) 
-                 {
-                     var attackerName = attackerMatch.Groups[1].Value;
-                     var attackerTeam = attackerMatch.Groups[2].Value;
-                     var sourceInfo = sourceMatch.Groups[1].Value;
-                     detailedMsg = BuildDetail(
-                         ("Summary", "Token abuse detected"),
-                         ("Target", TeamRef(evt.TeamId)),
-                         ("Actor", attackerName),
-                         ("Actor declared team", attackerTeam),
-                         ("Token source", sourceInfo));
-                 }
-                 else
-                 {
-                     detailedMsg = BuildDetail(
-                         ("Summary", "Token abuse detected"),
-                         ("Target", TeamRef(evt.TeamId)),
-                         ("Raw event", description));
-                 }
+                var detailedMsg = BuildDetail(
+                    ("Summary", "A submission/download token was used by a different actor"),
+                    ("Target", TeamRef(evt.TeamId)));
 
-                     report.IpAnalysis.Add(new IpAnalysisResult
-                     {
-                         TeamId = evt.TeamId,
-                         TeamName = evt.TeamName,
-                         Type = SuspicionType.TokenAbuse,
-                         Ip = dlIp,
-                         Details = detailedMsg,
-                         Time = evt.PublishTimeUtc
-                     });
+                if (structuredDownload is not null)
+                {
+                    detailedMsg = BuildDetail(
+                        ("Summary", "Token abuse detected"),
+                        ("Target", TeamRef(evt.TeamId)),
+                        ("Actor", structuredDownload.ActorUserName ?? "Unknown"),
+                        ("Actor declared team", structuredDownload.ActorTeamName),
+                        ("Token type", structuredDownload.TokenType),
+                        ("Token source user", structuredDownload.TokenSourceUserName),
+                        ("Token source team", structuredDownload.TokenSourceTeamName),
+                        ("Challenge", challengeTitle));
+                }
+                else
+                {
+                    // Legacy fallback for older logs stored without structured payload.
+                    var attackerMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
+                    var sourceMatch = Regex.Match(description, @"\[Token Source: (.+?)\]");
+
+                    if (attackerMatch.Success && sourceMatch.Success)
+                    {
+                        var attackerName = attackerMatch.Groups[1].Value;
+                        var attackerTeam = attackerMatch.Groups[2].Value;
+                        var sourceInfo = sourceMatch.Groups[1].Value;
+                        detailedMsg = BuildDetail(
+                            ("Summary", "Token abuse detected"),
+                            ("Target", TeamRef(evt.TeamId)),
+                            ("Actor", attackerName),
+                            ("Actor declared team", attackerTeam),
+                            ("Token source", sourceInfo));
+                    }
+                    else
+                    {
+                        detailedMsg = BuildDetail(
+                            ("Summary", "Token abuse detected"),
+                            ("Target", TeamRef(evt.TeamId)),
+                            ("Raw event", description));
+                    }
+                }
+
+                report.IpAnalysis.Add(new IpAnalysisResult
+                {
+                    TeamId = evt.TeamId,
+                    TeamName = evt.TeamName,
+                    Type = SuspicionType.TokenAbuse,
+                    Ip = dlIp,
+                    Details = detailedMsg,
+                    Time = evt.PublishTimeUtc
+                });
             }
             
             if (dlIp != "Unknown" && IPAddress.TryParse(dlIp, out var ipAddr)) 
             {
                 ipStr = ipAddr.ToString();
-                
-                // Extract challenge title from description for reporting (Values[2])
-                // description already extracted above
-                var match = Regex.Match(description, @"for challenge (.+?)\.");
-                var challengeTitle = match.Success ? match.Groups[1].Value : "Unknown";
 
                 // Check if this IP belongs to another team
                 if (ipToTeams.TryGetValue(ipStr, out var teamsWithThisIp))
@@ -403,8 +422,13 @@ public class CheatReportController(
                 // Also check if IP is not in team's login history at all
                 else if (teamIps.TryGetValue(evt.TeamId, out var teamKnownIps) && !teamKnownIps.Contains(ipStr))
                 {
-                    var actorMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
-                    var actor = actorMatch.Success ? actorMatch.Groups[1].Value : "Unknown";
+                    var actor = structuredDownload?.ActorUserName;
+                    if (string.IsNullOrWhiteSpace(actor))
+                    {
+                        var actorMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
+                        actor = actorMatch.Success ? actorMatch.Groups[1].Value : "Unknown";
+                    }
+
                     report.IpAnalysis.Add(new IpAnalysisResult
                     {
                         TeamId = evt.TeamId,
@@ -950,6 +974,16 @@ public class CheatReportController(
             RSI = rsi,
             Details = detailedSolves.OrderBy(d => d.TimeDiff).Take(50).OrderBy(d => d.TimeA).ToList()
         });
+    }
+
+    private static DownloadEventLogMetadata? ParseDownloadMetadata(IReadOnlyList<string>? values)
+    {
+        if (values is null || values.Count <= DownloadEventLogMetadata.ValuesIndex)
+            return null;
+
+        return DownloadEventLogMetadata.TryParse(values[DownloadEventLogMetadata.ValuesIndex], out var metadata)
+            ? metadata
+            : null;
     }
 
     private static List<int> GetLongestCommonSubsequence(List<int> seq1, List<int> seq2)

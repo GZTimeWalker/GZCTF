@@ -694,6 +694,14 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.Contains("Token Source:", evt.Values[2]);
         Assert.Contains(uVictim.UserName, evt.Values[2]);
         Assert.Contains(tVictim.Name, evt.Values[2]);
+        var metadata = ParseDownloadMetadata(evt);
+        Assert.True(metadata.TokenAbuse);
+        Assert.Equal("secure", metadata.TokenType);
+        Assert.Equal(chal.Id, metadata.ChallengeId);
+        Assert.Equal(tAttacker.Id, metadata.ActorTeamId);
+        Assert.Equal(tVictim.Id, metadata.TokenSourceTeamId);
+        Assert.Equal(tVictim.Name, metadata.TokenSourceTeamName);
+        Assert.Equal(uVictim.UserName, metadata.TokenSourceUserName);
 
         // Verify Cheat Report
         var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
@@ -804,6 +812,14 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.Contains("Token Source:", evt.Values[2]);
         Assert.Contains(uVictim.UserName, evt.Values[2]);
         Assert.Contains(tVictim.Name, evt.Values[2]);
+        var metadata = ParseDownloadMetadata(evt);
+        Assert.True(metadata.TokenAbuse);
+        Assert.Equal("secure", metadata.TokenType);
+        Assert.Equal(challenge.Id, metadata.ChallengeId);
+        Assert.Equal(tAttacker.Id, metadata.ActorTeamId);
+        Assert.Equal(tVictim.Id, metadata.TokenSourceTeamId);
+        Assert.Equal(tVictim.Name, metadata.TokenSourceTeamName);
+        Assert.Equal(uVictim.UserName, metadata.TokenSourceUserName);
 
         using var monitorClient = factory.CreateClient();
         var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
@@ -946,6 +962,14 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         options.Converters.Add(new IPAddressJsonConverter());
         options.Converters.Add(new JsonStringEnumConverter());
         return options;
+    }
+
+    private static DownloadEventLogMetadata ParseDownloadMetadata(GameEvent evt)
+    {
+        Assert.NotNull(evt.Values);
+        Assert.True(evt.Values.Count > DownloadEventLogMetadata.ValuesIndex);
+        Assert.True(DownloadEventLogMetadata.TryParse(evt.Values[DownloadEventLogMetadata.ValuesIndex], out var metadata));
+        return metadata;
     }
 
     private Submission CreateSub(int gid, int cid, int tid, int pid, Guid uid, DateTimeOffset time)

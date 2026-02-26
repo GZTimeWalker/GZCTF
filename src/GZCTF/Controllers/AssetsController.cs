@@ -6,6 +6,7 @@ using System.Text;
 using GZCTF.Middlewares;
 using GZCTF.Models;
 using GZCTF.Models.Data;
+using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Storage.Interface;
 using GZCTF.Utils;
@@ -228,20 +229,48 @@ public class AssetsController(
 
                 var eventUserId = actorUserId ?? secureToken.UserId;
                 var downloadSource = BuildDownloadSource(user, actorUserId, token, secureToken);
+                var actorSource = ResolveActorSource(actorUserId, token, secureToken);
+                var tokenType = ResolveTokenType(token, secureToken);
 
                 var sourceTeamId = tokenParticipation?.TeamId ?? selectedTarget.SourceTeamId;
                 var sourceTeamName = tokenParticipation?.Team?.Name ?? selectedTarget.SourceTeamName ?? "Unknown";
                 var abuseTag = string.Empty;
+                var tokenAbuse = false;
+                var hasToken = !string.IsNullOrWhiteSpace(token);
+                var tokenSourceTeamId = hasToken ? sourceTeamId : null;
+                var tokenSourceTeamName = hasToken ? sourceTeamName : null;
+                var tokenSourceUserId = secureToken.IsValid ? secureToken.UserId : null;
+                var tokenSourceUserName = secureToken.IsValid ? secureToken.UserName : null;
 
-                if (!string.IsNullOrWhiteSpace(token) &&
+                if (hasToken &&
                     actorParticipation is not null &&
                     sourceTeamId is not null &&
                     sourceTeamId != actorParticipation.TeamId)
                 {
+                    tokenAbuse = true;
                     abuseTag = !string.IsNullOrWhiteSpace(secureToken.UserName)
                         ? $" [Token Source: {secureToken.UserName} (Team {sourceTeamName})]"
                         : $" [Token Source: Team {sourceTeamName}]";
                 }
+
+                var downloadMetadata = new DownloadEventLogMetadata
+                {
+                    ChallengeId = challengeGroup.Key.ChallengeId,
+                    ChallengeTitle = challengeGroup.Key.ChallengeTitle,
+                    ActorTeamId = teamId.Value,
+                    ActorTeamName = teamName,
+                    ActorUserId = eventUserId,
+                    ActorUserName = actorUserId is not null
+                        ? user?.Identity?.Name
+                        : secureToken.UserName,
+                    ActorSource = actorSource,
+                    TokenType = tokenType,
+                    TokenAbuse = tokenAbuse,
+                    TokenSourceTeamId = tokenSourceTeamId,
+                    TokenSourceTeamName = tokenSourceTeamName,
+                    TokenSourceUserId = tokenSourceUserId,
+                    TokenSourceUserName = tokenSourceUserName
+                };
 
                 await eventRepository.AddEvent(new GameEvent
                 {
@@ -255,7 +284,8 @@ public class AssetsController(
                         challengeGroup.Key.ChallengeId.ToString(),
                         "Attachment Download",
                         $"{downloadSource} from team {teamName} downloaded attachment for challenge {challengeGroup.Key.ChallengeTitle}.{abuseTag}",
-                        ipAddress
+                        ipAddress,
+                        downloadMetadata.Serialize()
                     ]
                 }, cancellationToken);
             }
@@ -442,5 +472,27 @@ public class AssetsController(
             return "Team Member (via Static Token)";
 
         return "Anonymous";
+    }
+
+    private static string ResolveActorSource(Guid? actorUserId, string? token, SecureTokenContext secureToken)
+    {
+        if (actorUserId is not null)
+            return "authenticated_user";
+
+        if (secureToken.IsValid && secureToken.UserId is not null)
+            return "secure_token";
+
+        if (!string.IsNullOrWhiteSpace(token))
+            return "static_token";
+
+        return "anonymous";
+    }
+
+    private static string ResolveTokenType(string? token, SecureTokenContext secureToken)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return "none";
+
+        return secureToken.IsValid ? "secure" : "static";
     }
 }
