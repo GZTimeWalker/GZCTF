@@ -46,6 +46,11 @@ public class CheatReportController(
             return $"team '{teamName}'";
         }
 
+        static string BuildDetail(params (string Key, string? Value)[] fields) =>
+            string.Join('\n', fields
+                .Where(f => !string.IsNullOrWhiteSpace(f.Value))
+                .Select(f => $"{f.Key}: {f.Value!.Trim()}"));
+
         // Fetch Logs for IP Analysis
         var logs = await dbContext.Logs
             .AsNoTracking()
@@ -167,10 +172,14 @@ public class CheatReportController(
                 // Reuse the existing "ip" column for the subject (similar to SharedFingerprint using it for fingerprints)
                 Ip = item.UserName,
                 Time = item.LastSeen,
-                Details =
-                    $"Target {TeamRef(teamId)} user {item.UserName} used {item.Fingerprints.Count} distinct fingerprints during the game " +
-                    $"(first: {item.FirstSeen:MM/dd HH:mm:ss}, last: {item.LastSeen:MM/dd HH:mm:ss}). " +
-                    $"Samples: {sampleStr}",
+                Details = BuildDetail(
+                    ("Summary", "Single user rotated many browser fingerprints"),
+                    ("Target", TeamRef(teamId)),
+                    ("User", item.UserName),
+                    ("Distinct fingerprints", item.Fingerprints.Count.ToString()),
+                    ("First seen", item.FirstSeen.ToString("MM/dd HH:mm:ss")),
+                    ("Last seen", item.LastSeen.ToString("MM/dd HH:mm:ss")),
+                    ("Samples", sampleStr)),
             });
         }
 
@@ -216,10 +225,14 @@ public class CheatReportController(
                 // Reuse the existing "ip" column for the subject (username)
                 Ip = item.UserName,
                 Time = item.LastSeen,
-                Details =
-                    $"Target {TeamRef(teamId)} user {item.UserName} used {item.Ips.Count} distinct IPs during the game " +
-                    $"(first: {item.FirstSeen:MM/dd HH:mm:ss}, last: {item.LastSeen:MM/dd HH:mm:ss}). " +
-                    $"Samples: {sampleStr}",
+                Details = BuildDetail(
+                    ("Summary", "Single user rotated many IP addresses"),
+                    ("Target", TeamRef(teamId)),
+                    ("User", item.UserName),
+                    ("Distinct IPs", item.Ips.Count.ToString()),
+                    ("First seen", item.FirstSeen.ToString("MM/dd HH:mm:ss")),
+                    ("Last seen", item.LastSeen.ToString("MM/dd HH:mm:ss")),
+                    ("Samples", sampleStr)),
             });
         }
         
@@ -317,17 +330,27 @@ public class CheatReportController(
                  var attackerMatch = Regex.Match(description, @"^User (.+?) from team (.+?) downloaded");
                  var sourceMatch = Regex.Match(description, @"\[Token Source: (.+?)\]");
                  
-                 var detailedMsg = "Used stolen token.";
+                 var detailedMsg = BuildDetail(
+                     ("Summary", "A submission/download token was used by a different actor"),
+                     ("Target", TeamRef(evt.TeamId)));
                  if (attackerMatch.Success && sourceMatch.Success) 
                  {
                      var attackerName = attackerMatch.Groups[1].Value;
                      var attackerTeam = attackerMatch.Groups[2].Value;
                      var sourceInfo = sourceMatch.Groups[1].Value;
-                     detailedMsg = $"Target {TeamRef(evt.TeamId)} actor {attackerName} (declared team: {attackerTeam}) used a token belonging to source {sourceInfo}.";
+                     detailedMsg = BuildDetail(
+                         ("Summary", "Token abuse detected"),
+                         ("Target", TeamRef(evt.TeamId)),
+                         ("Actor", attackerName),
+                         ("Actor declared team", attackerTeam),
+                         ("Token source", sourceInfo));
                  }
                  else
                  {
-                     detailedMsg = $"Target {TeamRef(evt.TeamId)} token abuse detected. Raw event: {description}";
+                     detailedMsg = BuildDetail(
+                         ("Summary", "Token abuse detected"),
+                         ("Target", TeamRef(evt.TeamId)),
+                         ("Raw event", description));
                  }
 
                      report.IpAnalysis.Add(new IpAnalysisResult
@@ -363,7 +386,15 @@ public class CheatReportController(
                             TeamName = evt.TeamName,
                             Type = SuspicionType.CrossTeamIP,
                             Ip = ipStr,
-                            Details = $"Target {TeamRef(evt.TeamId)} downloaded '{challengeTitle}' from IP {ipStr}. Source teams sharing this IP: {string.Join(", ", otherTeams.Select(TeamRef))}. Source users seen on this IP: {(ipUserUsage.TryGetValue(ipStr, out var usersOnIp) ? string.Join(", ", usersOnIp.Where(u => u.TeamId != evt.TeamId).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(6)) : "none")}",
+                            Details = BuildDetail(
+                                ("Summary", "Download came from an IP used by other teams"),
+                                ("Target", TeamRef(evt.TeamId)),
+                                ("IP", ipStr),
+                                ("Challenge", challengeTitle),
+                                ("Source teams", string.Join(", ", otherTeams.Select(TeamRef))),
+                                ("Source users", ipUserUsage.TryGetValue(ipStr, out var usersOnIp)
+                                    ? string.Join(", ", usersOnIp.Where(u => u.TeamId != evt.TeamId).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(6))
+                                    : "none")),
                             RelatedTeams = otherTeamNames,
                             Time = evt.PublishTimeUtc
                         });
@@ -380,7 +411,12 @@ public class CheatReportController(
                         TeamName = evt.TeamName,
                         Type = SuspicionType.UnknownIP,
                         Ip = ipStr,
-                        Details = $"Target {TeamRef(evt.TeamId)} actor {actor} downloaded '{challengeTitle}' from unknown IP {ipStr} (not in target team history and not mapped to any other team in this game).",
+                        Details = BuildDetail(
+                            ("Summary", "Download came from an unmapped/unknown IP"),
+                            ("Target", TeamRef(evt.TeamId)),
+                            ("Actor", actor),
+                            ("Challenge", challengeTitle),
+                            ("IP", ipStr)),
                         Time = evt.PublishTimeUtc
                     });
                 }
@@ -408,7 +444,17 @@ public class CheatReportController(
                     TeamName = teamMap[tid].Name,
                     Type = SuspicionType.SharedIP,
                     Ip = group.Key,
-                    Details = $"Target {TeamRef(tid)} shares IP {group.Key}. Source teams: {string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))}. Target users on this IP: {(ipUserUsage.TryGetValue(group.Key, out var targetIpUsers) ? string.Join(", ", targetIpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6)) : "none")}. Source users on this IP: {(ipUserUsage.TryGetValue(group.Key, out var sourceIpUsers) ? string.Join(", ", sourceIpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8)) : "none")}",
+                    Details = BuildDetail(
+                        ("Summary", "Same IP observed across multiple teams"),
+                        ("Target", TeamRef(tid)),
+                        ("IP", group.Key),
+                        ("Source teams", string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))),
+                        ("Target users on IP", ipUserUsage.TryGetValue(group.Key, out var targetIpUsers)
+                            ? string.Join(", ", targetIpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6))
+                            : "none"),
+                        ("Source users on IP", ipUserUsage.TryGetValue(group.Key, out var sourceIpUsers)
+                            ? string.Join(", ", sourceIpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8))
+                            : "none")),
                     RelatedTeams = teamNames
                 });
             }
@@ -433,7 +479,17 @@ public class CheatReportController(
                     TeamName = teamMap[tid].Name,
                     Type = SuspicionType.SharedFingerprint,
                     Ip = group.Key,
-                    Details = $"Target {TeamRef(tid)} shares browser fingerprint {group.Key}. Source teams: {string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))}. Target users on this fingerprint: {(fingerprintUserUsage.TryGetValue(group.Key, out var targetFpUsers) ? string.Join(", ", targetFpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6)) : "none")}. Source users on this fingerprint: {(fingerprintUserUsage.TryGetValue(group.Key, out var sourceFpUsers) ? string.Join(", ", sourceFpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8)) : "none")}.",
+                    Details = BuildDetail(
+                        ("Summary", "Same browser fingerprint observed across multiple teams"),
+                        ("Target", TeamRef(tid)),
+                        ("Fingerprint", group.Key),
+                        ("Source teams", string.Join(", ", teamsSharing.Where(otherTid => otherTid != tid).Select(TeamRef))),
+                        ("Target users on fingerprint", fingerprintUserUsage.TryGetValue(group.Key, out var targetFpUsers)
+                            ? string.Join(", ", targetFpUsers.Where(u => u.TeamId == tid).Select(u => u.UserName).Distinct().Take(6))
+                            : "none"),
+                        ("Source users on fingerprint", fingerprintUserUsage.TryGetValue(group.Key, out var sourceFpUsers)
+                            ? string.Join(", ", sourceFpUsers.Where(u => u.TeamId != tid).Select(u => $"{u.UserName} ({TeamRef(u.TeamId)})").Distinct().Take(8))
+                            : "none")),
                     RelatedTeams = teamNames
                 });
             }
