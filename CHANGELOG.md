@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.1..v1.8.2) - 2026-02-26
+
+### 🐛 Bug Fixes
+
+- **(game)** prevent incorrectly team ranking with ineligible submissions - ([05d04a](https://github.com/GZTimeWalker/GZCTF/commit/05d04a)) by **GZTime**
+
+---
 ## [1.8.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.0..v1.8.1) - 2026-01-05
 
 ### ⛰️ Features
