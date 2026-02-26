@@ -287,12 +287,12 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
     }
 
     /// <summary>
-    /// Demonstrates current tie-break behavior with upsolves:
-    /// an accepted post-end submission (score = 0) still updates LastSubmissionTime,
-    /// which can change rank order among equal-score teams.
+    /// Fairness check for tie-break behavior with upsolves:
+    /// an accepted post-end submission (score = 0) must not change rank order
+    /// among equal-score teams.
     /// </summary>
     [Fact]
-    public async Task Scoreboard_UpsolveAfterEnd_CanChangeTieBreakRank()
+    public async Task Scoreboard_UpsolveAfterEnd_ShouldNotAffectTieBreakRank()
     {
         var user1Password = "Upsolve1@Pass123";
         var user1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), user1Password);
@@ -386,15 +386,18 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
             var i2 = items.FirstOrDefault(i => i.Id == team2.Id);
             return i1 is not null && i2 is not null &&
                    i1.Score == i2.Score && i1.Score > 0 &&
-                   i1.LastSubmissionTime > stage1Team1.LastSubmissionTime;
+                   i1.SolvedChallenges?.Count == 2 &&
+                   i2.SolvedChallenges?.Count == 1;
         });
 
         var stage2Team1 = stage2Items.Single(i => i.Id == team1.Id);
         var stage2Team2 = stage2Items.Single(i => i.Id == team2.Id);
 
-        // Counterexample: rank flips even though contest score is unchanged.
-        Assert.True(stage2Team1.LastSubmissionTime > stage2Team2.LastSubmissionTime);
-        Assert.True(stage2Team1.Rank > stage2Team2.Rank);
+        // Fairness: rank and tie-break timestamp remain based on scoring submissions only.
+        Assert.Equal(stage1Team1.Rank, stage2Team1.Rank);
+        Assert.Equal(stage1Team2.Rank, stage2Team2.Rank);
+        Assert.Equal(stage1Team1.LastSubmissionTime, stage2Team1.LastSubmissionTime);
+        Assert.Equal(stage1Team2.LastSubmissionTime, stage2Team2.LastSubmissionTime);
     }
 
     private async Task<List<ScoreboardItemView>> GetScoreboardItems(HttpClient client, int gameId,

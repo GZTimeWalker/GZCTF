@@ -522,13 +522,16 @@ public class GameRepository(
             // 5.3. update scoreboard item
             scoreboardItem.SolvedChallenges.Add(item);
             scoreboardItem.Score += item.Score;
-            scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
+            // Fair tie-break: only scoring-eligible solves can affect last submission time.
+            if (solve.ScoreEligible)
+                scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
         }
 
-        // 6. sort scoreboard items by score and last submission time
+        // 6. sort scoreboard items by score and last scoring submission time
         items = items.Values
             .OrderByDescending(i => i.Score)
             .ThenBy(i => i.LastSubmissionTime)
+            .ThenBy(i => i.Id)
             .ToDictionary(i => i.Id); // team id -> scoreboard item
 
         // 7. update rank and organization rank

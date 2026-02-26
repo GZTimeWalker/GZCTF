@@ -231,7 +231,7 @@ public partial class ScoreboardItem
     public int? DivisionRank { get; set; }
 
     /// <summary>
-    /// Last submission time
+    /// Last scoring submission time (used as tie-breaker)
     /// </summary>
     [Required]
     public DateTimeOffset LastSubmissionTime { get; set; }
