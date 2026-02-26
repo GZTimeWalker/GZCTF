@@ -162,6 +162,61 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     }
 
     /// <summary>
+    /// Tie-break fairness: when total scores are equal, the team with an earlier
+    /// last accepted submission time should rank higher.
+    /// </summary>
+    [Fact]
+    public async Task Scoreboard_ShouldUseEarlierLastSubmissionTime_AsTieBreaker()
+    {
+        var game = await CreateGameWithBloodBonus(
+            title: "Tie Break Fairness Test",
+            packBloods(1.0f, 1.0f, 1.0f)
+        );
+
+        var challenge1 = await CreateChallenge(game.Id, "Tie Challenge 1", "flag{tie1}", 1000);
+        var challenge2 = await CreateChallenge(game.Id, "Tie Challenge 2", "flag{tie2}", 1000);
+
+        var teams = await CreateMultipleTeams(2, "TieBreak");
+        var fastTeam = teams[0];
+        var slowTeam = teams[1];
+
+        await JoinGame(fastTeam, game.Id);
+        await JoinGame(slowTeam, game.Id);
+
+        // Fast team finishes first.
+        await SubmitFlag(fastTeam.client, game.Id, challenge1.Id, "flag{tie1}");
+        await Task.Delay(200);
+        await SubmitFlag(fastTeam.client, game.Id, challenge2.Id, "flag{tie2}");
+
+        await Task.Delay(500);
+
+        // Slow team gets the same total score, but later.
+        await SubmitFlag(slowTeam.client, game.Id, challenge1.Id, "flag{tie1}");
+        await Task.Delay(200);
+        await SubmitFlag(slowTeam.client, game.Id, challenge2.Id, "flag{tie2}");
+
+        await FlushScoreboardCache(game.Id);
+
+        var expectedTeamIds = teams.Select(t => t.team.Id).ToArray();
+        var scoreboard = await GetScoreboard(
+            fastTeam.client,
+            game.Id,
+            expectedTeamIds,
+            readiness: s =>
+                s.GetTeam(fastTeam.team.Id).SolvedChallenges.Count == 2 &&
+                s.GetTeam(slowTeam.team.Id).SolvedChallenges.Count == 2);
+
+        var fastEntry = scoreboard.GetTeam(fastTeam.team.Id);
+        var slowEntry = scoreboard.GetTeam(slowTeam.team.Id);
+
+        Assert.Equal(fastEntry.Score, slowEntry.Score);
+        Assert.True(fastEntry.LastSubmissionTime < slowEntry.LastSubmissionTime,
+            $"Expected earlier finish time for fast team, got {fastEntry.LastSubmissionTime:o} vs {slowEntry.LastSubmissionTime:o}");
+        Assert.True(fastEntry.Rank < slowEntry.Rank,
+            $"Expected better rank for earlier finish, got fast={fastEntry.Rank}, slow={slowEntry.Rank}");
+    }
+
+    /// <summary>
     /// Test division permissions for scoreboard visibility and scoring
     /// Verifies that division-specific permissions correctly control:
     /// - GetScore permission

@@ -4,6 +4,7 @@ using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
+using GZCTF.Models.Request.Game;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -700,6 +701,112 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
         
         var reportResponse = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        reportResponse.EnsureSuccessStatusCode();
+        var report = await reportResponse.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.IpAnalysis, i => i.TeamId == tAttacker.Id && i.Type == "TokenAbuse" && i.Details.Contains(tVictim.Name));
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldDetectTokenAbuse_SecureToken_DynamicAttachment()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "DynamicTokenAbuse Game " + TestDataSeeder.RandomName());
+        var gameEntity = await context.Games.FirstAsync(g => g.Id == game.Id);
+
+        using var ms1 = new MemoryStream(Guid.NewGuid().ToByteArray());
+        using var ms2 = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var file1 = new Microsoft.AspNetCore.Http.FormFile(ms1, 0, ms1.Length, "file", "dyn-1.bin");
+        var file2 = new Microsoft.AspNetCore.Http.FormFile(ms2, 0, ms2.Length, "file", "dyn-2.bin");
+        var blob1 = await blobService.CreateOrUpdateBlob(file1, "dyn-1.bin", CancellationToken.None);
+        var blob2 = await blobService.CreateOrUpdateBlob(file2, "dyn-2.bin", CancellationToken.None);
+
+        var challenge = new GameChallenge
+        {
+            Title = "Dynamic Secure Attachment",
+            Content = "dynamic attachment test",
+            Category = ChallengeCategory.Misc,
+            Type = ChallengeType.DynamicAttachment,
+            Hints = [],
+            IsEnabled = true,
+            SubmissionLimit = 0,
+            OriginalScore = 1000,
+            MinScoreRate = 0.8,
+            Difficulty = 5,
+            FileName = "dynamic.zip",
+            GameId = gameEntity.Id,
+            Game = gameEntity
+        };
+
+        challenge.Flags.Add(new FlagContext
+        {
+            Flag = "flag{dyn-1}",
+            Attachment = new Attachment
+            {
+                Type = FileType.Local,
+                LocalFile = blob1,
+                LocalFileId = blob1.Id
+            }
+        });
+        challenge.Flags.Add(new FlagContext
+        {
+            Flag = "flag{dyn-2}",
+            Attachment = new Attachment
+            {
+                Type = FileType.Local,
+                LocalFile = blob2,
+                LocalFileId = blob2.Id
+            }
+        });
+
+        await context.GameChallenges.AddAsync(challenge);
+        await context.SaveChangesAsync();
+
+        var uVictim = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tVictim = await TestDataSeeder.CreateTeamAsync(factory.Services, uVictim.Id, "DynVictims");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tVictim.Id, uVictim.Id);
+
+        var uAttacker = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tAttacker = await TestDataSeeder.CreateTeamAsync(factory.Services, uAttacker.Id, "DynAttackers");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tAttacker.Id, uAttacker.Id);
+
+        using var victimClient = factory.CreateClient();
+        await victimClient.PostAsJsonAsync("/api/Account/Login", new { UserName = uVictim.UserName, Password = "Test@123" });
+        var victimDetail = await victimClient.GetFromJsonAsync<ChallengeDetailModel>($"/api/Game/{game.Id}/Challenges/{challenge.Id}");
+        var stolenUrl = victimDetail?.Context.Url;
+
+        Assert.False(string.IsNullOrWhiteSpace(stolenUrl));
+        Assert.Contains("/assets/", stolenUrl, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/s/", stolenUrl, StringComparison.OrdinalIgnoreCase);
+
+        using var attackerClient = factory.CreateClient();
+        await attackerClient.PostAsJsonAsync("/api/Account/Login", new { UserName = uAttacker.UserName, Password = "Test@123" });
+        var downloadResponse = await attackerClient.GetAsync(stolenUrl);
+        Assert.Equal(HttpStatusCode.OK, downloadResponse.StatusCode);
+
+        context.ChangeTracker.Clear();
+        var evt = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download && e.Values != null && e.Values.Count > 0 && e.Values[0] == challenge.Id.ToString())
+            .OrderByDescending(e => e.PublishTimeUtc)
+            .FirstOrDefaultAsync();
+
+        Assert.NotNull(evt);
+        Assert.Equal(tAttacker.Id, evt.TeamId);
+        Assert.Equal(uAttacker.Id, evt.UserId);
+        Assert.NotNull(evt.Values);
+        Assert.Contains("Token Source:", evt.Values[2]);
+        Assert.Contains(uVictim.UserName, evt.Values[2]);
+        Assert.Contains(tVictim.Name, evt.Values[2]);
+
+        using var monitorClient = factory.CreateClient();
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        await monitorClient.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var reportResponse = await monitorClient.GetAsync($"/api/game/{game.Id}/cheatreport");
         reportResponse.EnsureSuccessStatusCode();
         var report = await reportResponse.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
 

@@ -285,4 +285,174 @@ public class PracticeModeDeadlineTests(GZCTFApplicationFactory factory)
         // Verify that teams who submitted within deadline are in scoreboard
         Assert.Contains(team1.Name, scoreboardContent);
     }
+
+    /// <summary>
+    /// Demonstrates current tie-break behavior with upsolves:
+    /// an accepted post-end submission (score = 0) still updates LastSubmissionTime,
+    /// which can change rank order among equal-score teams.
+    /// </summary>
+    [Fact]
+    public async Task Scoreboard_UpsolveAfterEnd_CanChangeTieBreakRank()
+    {
+        var user1Password = "Upsolve1@Pass123";
+        var user1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), user1Password);
+        var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, "Upsolve Team 1");
+
+        var user2Password = "Upsolve2@Pass123";
+        var user2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), user2Password);
+        var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, "Upsolve Team 2");
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Upsolve TieBreak Test",
+            acceptWithoutReview: true, practiceMode: true);
+
+        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services,
+            game.Id, "Rank Base Challenge", "flag{upsolve_base}", originalScore: 100);
+        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services,
+            game.Id, "Upsolve Challenge", "flag{upsolve_after_end}", originalScore: 100);
+
+        // Disable blood bonus to guarantee equal score in stage 1.
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var gameInDb = await dbContext.Games.FindAsync(game.Id);
+            Assert.NotNull(gameInDb);
+            gameInDb.BloodBonusValue = 0;
+            await dbContext.SaveChangesAsync();
+        }
+
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team1.Id, user1.Id);
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team2.Id, user2.Id);
+
+        using var client1 = factory.CreateClient();
+        await client1.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user1.UserName, Password = user1Password });
+
+        using var client2 = factory.CreateClient();
+        await client2.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = user2.UserName, Password = user2Password });
+
+        // Stage 1: both teams get same score (100), team1 solves earlier.
+        var stage1Submit1 = await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
+            new FlagSubmitModel { Flag = "flag{upsolve_base}" });
+        stage1Submit1.EnsureSuccessStatusCode();
+        var stage1SubmitId1 = await stage1Submit1.Content.ReadFromJsonAsync<int>();
+
+        var stage1Submit2 = await client2.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
+            new FlagSubmitModel { Flag = "flag{upsolve_base}" });
+        stage1Submit2.EnsureSuccessStatusCode();
+        var stage1SubmitId2 = await stage1Submit2.Content.ReadFromJsonAsync<int>();
+
+        await WaitForAcceptedStatus(client1, game.Id, challenge1.Id, stage1SubmitId1);
+        await WaitForAcceptedStatus(client2, game.Id, challenge1.Id, stage1SubmitId2);
+
+        var stage1Items = await GetScoreboardItems(client1, game.Id, items =>
+        {
+            var i1 = items.FirstOrDefault(i => i.Id == team1.Id);
+            var i2 = items.FirstOrDefault(i => i.Id == team2.Id);
+            return i1 is not null && i2 is not null &&
+                   i1.Score == i2.Score && i1.Score > 0 &&
+                   i1.SolvedChallenges?.Count == 1 &&
+                   i2.SolvedChallenges?.Count == 1;
+        });
+
+        var stage1Team1 = stage1Items.Single(i => i.Id == team1.Id);
+        var stage1Team2 = stage1Items.Single(i => i.Id == team2.Id);
+        Assert.True(stage1Team1.Rank < stage1Team2.Rank);
+        Assert.True(stage1Team1.LastSubmissionTime < stage1Team2.LastSubmissionTime);
+
+        // Move game end to near-future and wait until it passes:
+        // this avoids retroactively invalidating stage-1 solves.
+        var forcedEnd = DateTimeOffset.UtcNow.AddSeconds(2);
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var gameInDb = await dbContext.Games.FindAsync(game.Id);
+            Assert.NotNull(gameInDb);
+            gameInDb.EndTimeUtc = forcedEnd;
+            await dbContext.SaveChangesAsync();
+        }
+        await Task.Delay(3000);
+
+        // Team1 performs post-end upsolve on challenge2.
+        var stage2Submit = await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}",
+            new FlagSubmitModel { Flag = "flag{upsolve_after_end}" });
+        stage2Submit.EnsureSuccessStatusCode();
+        var stage2SubmitId = await stage2Submit.Content.ReadFromJsonAsync<int>();
+        await WaitForAcceptedStatus(client1, game.Id, challenge2.Id, stage2SubmitId);
+
+        var stage2Items = await GetScoreboardItems(client1, game.Id, items =>
+        {
+            var i1 = items.FirstOrDefault(i => i.Id == team1.Id);
+            var i2 = items.FirstOrDefault(i => i.Id == team2.Id);
+            return i1 is not null && i2 is not null &&
+                   i1.Score == i2.Score && i1.Score > 0 &&
+                   i1.LastSubmissionTime > stage1Team1.LastSubmissionTime;
+        });
+
+        var stage2Team1 = stage2Items.Single(i => i.Id == team1.Id);
+        var stage2Team2 = stage2Items.Single(i => i.Id == team2.Id);
+
+        // Counterexample: rank flips even though contest score is unchanged.
+        Assert.True(stage2Team1.LastSubmissionTime > stage2Team2.LastSubmissionTime);
+        Assert.True(stage2Team1.Rank > stage2Team2.Rank);
+    }
+
+    private async Task<List<ScoreboardItemView>> GetScoreboardItems(HttpClient client, int gameId,
+        Func<List<ScoreboardItemView>, bool> readiness, int maxAttempts = 100)
+    {
+        List<ScoreboardItemView> lastItems = [];
+
+        for (var i = 0; i < maxAttempts; i++)
+        {
+            var response = await client.GetAsync($"/api/Game/{gameId}/Scoreboard");
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<ScoreboardView>();
+            var items = payload?.Items ?? [];
+            lastItems = items;
+
+            if (readiness(items))
+                return items;
+
+            await Task.Delay(150);
+        }
+
+        var debug = string.Join("; ", lastItems.Select(i =>
+            $"id={i.Id},score={i.Score},rank={i.Rank},last={i.LastSubmissionTime},solved={i.SolvedChallenges?.Count ?? 0}"));
+        Assert.Fail($"Scoreboard for game {gameId} did not reach expected state. Last items: {debug}");
+        return [];
+    }
+
+    private async Task WaitForAcceptedStatus(HttpClient client, int gameId, int challengeId, int submissionId,
+        int maxAttempts = 40)
+    {
+        for (var i = 0; i < maxAttempts; i++)
+        {
+            var statusResponse = await client.GetAsync($"/api/Game/{gameId}/Challenges/{challengeId}/Status/{submissionId}");
+            if (statusResponse.IsSuccessStatusCode)
+            {
+                var status = await statusResponse.Content.ReadFromJsonAsync<AnswerResult>();
+                if (status == AnswerResult.Accepted)
+                    return;
+            }
+
+            await Task.Delay(150);
+        }
+
+        Assert.Fail($"Submission {submissionId} was not accepted in expected time.");
+    }
+
+    private sealed class ScoreboardView
+    {
+        public List<ScoreboardItemView>? Items { get; set; }
+    }
+
+    private sealed class ScoreboardItemView
+    {
+        public int Id { get; set; }
+        public int Score { get; set; }
+        public int Rank { get; set; }
+        public long LastSubmissionTime { get; set; }
+        public List<object>? SolvedChallenges { get; set; }
+    }
 }

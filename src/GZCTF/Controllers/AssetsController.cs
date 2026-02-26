@@ -181,181 +181,266 @@ public class AssetsController(
         };
     }
 
+    private sealed record DownloadTarget(
+        int GameId,
+        int ChallengeId,
+        string ChallengeTitle,
+        int? SourceTeamId,
+        string? SourceTeamName);
+
+    private sealed record SecureTokenContext(Guid? UserId, string? UserName, bool IsValid);
+
     private async Task LogDownloadAsync(string hash, ClaimsPrincipal? user, string? token, CancellationToken cancellationToken)
     {
-        // Identify user ID if authenticated
-        Guid? userId = null;
-        if (user?.Identity?.IsAuthenticated == true)
-        {
-            var userIdString = user.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (Guid.TryParse(userIdString, out var parsedId))
-            {
-                userId = parsedId;
-            }
-            else if (!string.IsNullOrEmpty(user.Identity.Name))
-            {
-                // Fallback: Lookup by UserName
-                var dbUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == user.Identity.Name, cancellationToken);
-                if (dbUser != null) 
-                    userId = dbUser.Id;
-            }
-        }
-
-        string? secureTokenHash = null;
-        Guid? tokenUserId = null;
-
-        // Try to parse secure token if provided
-        if (!string.IsNullOrEmpty(token))
-        {
-            try
-            {
-                string payload;
-                if (token.Length > 100 && !token.Contains('|')) 
-                {
-                     try 
-                     { 
-                        var cipher = WebEncoders.Base64UrlDecode(token); 
-                        payload = Encoding.UTF8.GetString(_protector.Unprotect(cipher)); 
-                     }
-                     catch 
-                     { 
-                        payload = _protector.Unprotect(token); 
-                     }
-                }
-                else 
-                { 
-                    payload = _protector.Unprotect(token); 
-                }
-                
-                var parts = payload.Split('|');
-                if (parts.Length == 4 && parts[0] == "v1")
-                {
-                    var tokenHash = parts[1];
-                    var tokenUserIdString = parts[2];
-                    var tokenExpiryTicks = long.Parse(parts[3]);
-
-                    if (DateTimeOffset.UtcNow.Ticks <= tokenExpiryTicks && tokenHash == hash)
-                    {
-                        if (Guid.TryParse(tokenUserIdString, out var parsedTokenUserId))
-                        {
-                            tokenUserId = parsedTokenUserId;
-                            secureTokenHash = tokenHash; 
-                            
-                            if (userId == null)
-                            {
-                                userId = parsedTokenUserId; 
-                            }
-                        }
-                    }
-                }
-            }
-            catch { }
-        }
-
-        if (userId == null && string.IsNullOrEmpty(token))
-            return;
-
         try
         {
-             // ... (Challenge Lookup Unchanged) ...
-            var challenges = await context.GameChallenges
-                .Include(c => c.Attachment)
-                .ThenInclude(a => a!.LocalFile)
-                .Where(c => c.Attachment != null && c.Attachment.LocalFile!.Hash == hash)
-                .Select(c => new { c.Id, c.Title, c.GameId })
-                .ToArrayAsync(cancellationToken);
+            var actorUserId = await ResolveActorUserId(user, cancellationToken);
+            var secureToken = await ParseSecureToken(token, hash, cancellationToken);
 
-            if (challenges.Length == 0) return;
+            var targets = await ResolveDownloadTargets(hash, cancellationToken);
+            if (targets.Count == 0)
+                return;
 
-            foreach (var challenge in challenges)
+            var gameIds = targets.Select(t => t.GameId).Distinct().ToArray();
+
+            var actorParticipations = await GetParticipationsByUser(gameIds, actorUserId, cancellationToken);
+            var staticTokenParticipations = await GetParticipationsByStaticToken(gameIds, token, cancellationToken);
+            var secureTokenParticipations = await GetParticipationsByUser(gameIds, secureToken.UserId, cancellationToken);
+
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+
+            foreach (var challengeGroup in targets.GroupBy(t => new { t.GameId, t.ChallengeId, t.ChallengeTitle }))
             {
-                Participation? participation = null;
+                actorParticipations.TryGetValue(challengeGroup.Key.GameId, out var actorParticipation);
 
-                if (userId != null)
-                {
-                    participation = await context.Participations
-                        .Include(p => p.Team)
-                        .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Members.Any(m => m.UserId == userId), cancellationToken);
-                }
-                
-                Participation? tokenParticipation = null;
-                if (!string.IsNullOrEmpty(token))
-                {
-                     tokenParticipation = await context.Participations
-                        .Include(p => p.Team)
-                        .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Token == token, cancellationToken);
-                     
-                     if (tokenParticipation == null && tokenUserId != null)
-                     {
-                          // Secure Token: Find participation for the token owner
-                          tokenParticipation = await context.Participations
-                            .Include(p => p.Team)
-                            .FirstOrDefaultAsync(p => p.GameId == challenge.GameId && p.Members.Any(m => m.UserId == tokenUserId), cancellationToken);
-                     }
-                }
+                staticTokenParticipations.TryGetValue(challengeGroup.Key.GameId, out var staticTokenParticipation);
+                secureTokenParticipations.TryGetValue(challengeGroup.Key.GameId, out var secureTokenParticipation);
+                var tokenParticipation = staticTokenParticipation ?? secureTokenParticipation;
 
-                // If not logged in, fallback to token participation
-                if (participation == null && tokenParticipation != null)
-                {
-                    participation = tokenParticipation;
-                }
+                var selectedTarget = SelectRelevantTarget(challengeGroup, actorParticipation?.TeamId, tokenParticipation?.TeamId);
 
-                if (participation == null)
+                var participation = actorParticipation ?? tokenParticipation;
+                var teamId = participation?.TeamId ?? selectedTarget.SourceTeamId;
+                var teamName = participation?.Team?.Name ?? selectedTarget.SourceTeamName ?? "Unknown";
+
+                if (teamId is null)
                     continue;
 
-                string downloadSource = "Unknown";
-                string abuseTag = "";
-                
-                if (user?.Identity?.IsAuthenticated == true)
-                {
-                        downloadSource = $"User {user.Identity.Name}";
-                        
-                        // Detect Token Abuse: Authenticated user using another team's token
-                        if (tokenParticipation != null && tokenParticipation.Id != participation.Id)
-                        {
-                            if (tokenUserId != null)
-                            {
-                                 var tokenUser = await context.Users.FindAsync(new object[] { tokenUserId }, cancellationToken);
-                                 abuseTag = $" [Token Source: {tokenUser?.UserName ?? "Unknown"} (Team {tokenParticipation.Team?.Name ?? "Unknown"})]";
-                            }
-                            else
-                            {
-                                 abuseTag = $" [Token Source: Team {tokenParticipation.Team?.Name ?? "Unknown"}]";
-                            }
-                        }
-                }
-                else if (secureTokenHash != null && userId != null) // It was a secure token
-                {
-                        var userInfo = await context.Users.FindAsync(new object[] { userId }, cancellationToken);
-                        downloadSource = $"User {userInfo?.UserName ?? "Unknown"} (via Secure Token)";
-                }
-                else 
-                        downloadSource = "Team Member (via Static Token)";
+                var eventUserId = actorUserId ?? secureToken.UserId;
+                var downloadSource = BuildDownloadSource(user, actorUserId, token, secureToken);
 
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+                var sourceTeamId = tokenParticipation?.TeamId ?? selectedTarget.SourceTeamId;
+                var sourceTeamName = tokenParticipation?.Team?.Name ?? selectedTarget.SourceTeamName ?? "Unknown";
+                var abuseTag = string.Empty;
 
-                var evt = new GameEvent
+                if (!string.IsNullOrWhiteSpace(token) &&
+                    actorParticipation is not null &&
+                    sourceTeamId is not null &&
+                    sourceTeamId != actorParticipation.TeamId)
                 {
-                    GameId = challenge.GameId,
-                    TeamId = participation.TeamId,
-                    UserId = userId, // Can be null if using static token
+                    abuseTag = !string.IsNullOrWhiteSpace(secureToken.UserName)
+                        ? $" [Token Source: {secureToken.UserName} (Team {sourceTeamName})]"
+                        : $" [Token Source: Team {sourceTeamName}]";
+                }
+
+                await eventRepository.AddEvent(new GameEvent
+                {
+                    GameId = challengeGroup.Key.GameId,
+                    TeamId = teamId.Value,
+                    UserId = eventUserId,
                     Type = EventType.Download,
                     PublishTimeUtc = DateTimeOffset.UtcNow,
-                    Values = new List<string>
-                    {
-                        challenge.Id.ToString(),
+                    Values =
+                    [
+                        challengeGroup.Key.ChallengeId.ToString(),
                         "Attachment Download",
-                        $"{downloadSource} from team {participation.Team?.Name ?? "Unknown"} downloaded attachment for challenge {challenge.Title}.{abuseTag}",
+                        $"{downloadSource} from team {teamName} downloaded attachment for challenge {challengeGroup.Key.ChallengeTitle}.{abuseTag}",
                         ipAddress
-                    }
-                };
-
-                await eventRepository.AddEvent(evt, cancellationToken);
+                    ]
+                }, cancellationToken);
             }
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to log download for hash {Hash}", hash);
         }
+    }
+
+    private async Task<Guid?> ResolveActorUserId(ClaimsPrincipal? user, CancellationToken cancellationToken)
+    {
+        if (user?.Identity?.IsAuthenticated != true)
+            return null;
+
+        var claimUserId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Guid.TryParse(claimUserId, out var userId))
+            return userId;
+
+        var userName = user.Identity.Name;
+        if (string.IsNullOrWhiteSpace(userName))
+            return null;
+
+        return await context.Users
+            .Where(u => u.UserName == userName)
+            .Select(u => (Guid?)u.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    private async Task<SecureTokenContext> ParseSecureToken(string? token, string hash, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(token) || !TryUnprotectTokenPayload(token, out var payload))
+            return new(null, null, false);
+
+        var parts = payload.Split('|');
+        if (parts.Length != 4 || parts[0] != "v1")
+            return new(null, null, false);
+
+        if (!string.Equals(parts[1], hash, StringComparison.OrdinalIgnoreCase))
+            return new(null, null, false);
+
+        if (!long.TryParse(parts[3], out var expiryTicks) || DateTimeOffset.UtcNow.Ticks > expiryTicks)
+            return new(null, null, false);
+
+        if (!Guid.TryParse(parts[2], out var tokenUserId))
+            return new(null, null, false);
+
+        var tokenUserName = await context.Users
+            .Where(u => u.Id == tokenUserId)
+            .Select(u => u.UserName)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return new(tokenUserId, tokenUserName, true);
+    }
+
+    private bool TryUnprotectTokenPayload(string token, out string payload)
+    {
+        payload = string.Empty;
+
+        try
+        {
+            var cipher = WebEncoders.Base64UrlDecode(token);
+            payload = Encoding.UTF8.GetString(_protector.Unprotect(cipher));
+            return true;
+        }
+        catch
+        {
+            // ignored
+        }
+
+        try
+        {
+            payload = _protector.Unprotect(token);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task<List<DownloadTarget>> ResolveDownloadTargets(string hash, CancellationToken cancellationToken)
+    {
+        var staticTargets = await context.GameChallenges
+            .AsNoTracking()
+            .Where(c => c.Attachment != null && c.Attachment.LocalFile != null && c.Attachment.LocalFile.Hash == hash)
+            .Select(c => new DownloadTarget(c.GameId, c.Id, c.Title, null, null))
+            .ToListAsync(cancellationToken);
+
+        var dynamicTargets = await context.GameInstances
+            .AsNoTracking()
+            .Where(i => i.FlagContext != null
+                        && i.FlagContext.Attachment != null
+                        && i.FlagContext.Attachment.LocalFile != null
+                        && i.FlagContext.Attachment.LocalFile.Hash == hash)
+            .Select(i => new DownloadTarget(
+                i.Challenge.GameId,
+                i.ChallengeId,
+                i.Challenge.Title,
+                i.Participation.TeamId,
+                i.Participation.Team.Name))
+            .ToListAsync(cancellationToken);
+
+        staticTargets.AddRange(dynamicTargets);
+        return staticTargets;
+    }
+
+    private async Task<Dictionary<int, Participation>> GetParticipationsByUser(
+        int[] gameIds,
+        Guid? userId,
+        CancellationToken cancellationToken)
+    {
+        if (userId is null || gameIds.Length == 0)
+            return [];
+
+        var uid = userId.Value;
+        var participations = await context.Participations
+            .Include(p => p.Team)
+            .Where(p => gameIds.Contains(p.GameId) && p.Members.Any(m => m.UserId == uid))
+            .ToListAsync(cancellationToken);
+
+        return participations
+            .GroupBy(p => p.GameId)
+            .ToDictionary(g => g.Key, g => g.First());
+    }
+
+    private async Task<Dictionary<int, Participation>> GetParticipationsByStaticToken(
+        int[] gameIds,
+        string? token,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(token) || gameIds.Length == 0)
+            return [];
+
+        var participations = await context.Participations
+            .Include(p => p.Team)
+            .Where(p => gameIds.Contains(p.GameId) && p.Token == token)
+            .ToListAsync(cancellationToken);
+
+        return participations
+            .GroupBy(p => p.GameId)
+            .ToDictionary(g => g.Key, g => g.First());
+    }
+
+    private static DownloadTarget SelectRelevantTarget(
+        IEnumerable<DownloadTarget> targets,
+        int? actorTeamId,
+        int? tokenTeamId)
+    {
+        var targetList = targets.ToList();
+        if (targetList.Count == 1)
+            return targetList[0];
+
+        if (actorTeamId is not null)
+        {
+            var actorTarget = targetList.FirstOrDefault(t => t.SourceTeamId == actorTeamId);
+            if (actorTarget is not null)
+                return actorTarget;
+        }
+
+        if (tokenTeamId is not null)
+        {
+            var tokenTarget = targetList.FirstOrDefault(t => t.SourceTeamId == tokenTeamId);
+            if (tokenTarget is not null)
+                return tokenTarget;
+        }
+
+        return targetList[0];
+    }
+
+    private static string BuildDownloadSource(
+        ClaimsPrincipal? user,
+        Guid? actorUserId,
+        string? token,
+        SecureTokenContext secureToken)
+    {
+        if (actorUserId is not null)
+            return $"User {user?.Identity?.Name ?? "Unknown"}";
+
+        if (secureToken.IsValid && secureToken.UserId is not null)
+            return $"User {secureToken.UserName ?? "Unknown"} (via Secure Token)";
+
+        if (!string.IsNullOrWhiteSpace(token))
+            return "Team Member (via Static Token)";
+
+        return "Anonymous";
     }
 }
