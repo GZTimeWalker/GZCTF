@@ -7,6 +7,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 ### 🐛 Bug Fixes
 
+- **(game)** flush cache after transaction committed - ([7466e0](https://github.com/GZTimeWalker/GZCTF/commit/7466e0)) by **GZTime**
 - **(game)** prevent incorrectly team ranking with ineligible submissions - ([05d04a](https://github.com/GZTimeWalker/GZCTF/commit/05d04a)) by **GZTime**
 
 ---

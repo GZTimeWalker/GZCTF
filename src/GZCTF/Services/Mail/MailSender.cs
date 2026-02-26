@@ -99,7 +99,7 @@ public sealed class MailSender : IMailSender, IDisposable
         var title = $"{content.Title} - {content.Platform}";
 
         var sender = string.IsNullOrWhiteSpace(_options!.SenderName) ? content.Platform : _options.SenderName;
-        
+
         // SenderAddress is checked in constructor, so it won't be null here
         var from = new MailboxAddress(sender, _options.SenderAddress!);
 
