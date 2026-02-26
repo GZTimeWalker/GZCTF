@@ -1,8 +1,7 @@
 import { useLanguage } from '@Utils/I18n'
-import { CheatGraph } from '@Components/monitor/CheatGraph'
 import { CheatInfo } from '@Components/monitor/CheatInfo'
 import { CheatSubmissionLog } from '@Components/monitor/CheatSubmissionLog'
-import { Loader, Stack, Title, Alert, Paper, Tabs } from '@mantine/core'
+import { Loader, Stack, Title, Alert, Tabs } from '@mantine/core'
 import { FC, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
@@ -55,16 +54,6 @@ const CheatCheck: FC = () => {
 
                     <Tabs.Panel value="analysis" pt="md">
                         <Stack gap="md">
-                            {/* Graph Visualization */}
-                            <Paper shadow="md" p="md">
-                                <Title order={4} mb="md">Relationship Graph</Title>
-                                {report && report.ipAnalysis?.length ? (
-                                    <CheatGraph report={report} />
-                                ) : (
-                                    <Alert color="gray">No relationship data to visualize</Alert>
-                                )}
-                            </Paper>
-
                             <CheatInfo report={report || null} mutate={mutate} />
                         </Stack>
                     </Tabs.Panel>
