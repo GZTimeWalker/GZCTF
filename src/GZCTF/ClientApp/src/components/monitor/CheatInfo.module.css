@@ -13,3 +13,20 @@
     height: 21px;
     border-radius: 21px;
 }
+
+.summaryCard {
+    transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.summaryCard:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mantine-shadow-sm);
+}
+
+.detailsBox {
+    max-width: 46rem;
+}
+
+.userWrap {
+    max-width: 16rem;
+}

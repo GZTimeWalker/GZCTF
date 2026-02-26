@@ -17,14 +17,13 @@ import {
     Stack,
     TextInput,
     Menu,
-    ActionIcon,
     Select,
     Loader,
     Tabs,
 } from '@mantine/core'
 import { FC, useState, useMemo } from 'react'
 import { Icon } from '@mdi/react'
-import { mdiAlertCircle, mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiShuffleVariant, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify, mdiShieldAlert, mdiCog, mdiCancel, mdiCheck, mdiPencil, mdiChevronDown, mdiAccountGroup } from '@mdi/js'
+import { mdiCheckCircle, mdiGhost, mdiIpNetwork, mdiArrowUp, mdiArrowDown, mdiUnfoldMoreHorizontal, mdiInformation, mdiMagnify, mdiShieldAlert, mdiChevronDown, mdiAccountGroup } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { useLanguage } from '@Utils/I18n'
@@ -70,12 +69,13 @@ interface ThSortProps {
     sorted: boolean
     onSort(): void
     w?: string | number
+    miw?: string | number
 }
 
-function ThSort({ children, reversed, sorted, onSort, w }: ThSortProps) {
+function ThSort({ children, reversed, sorted, onSort, w, miw }: ThSortProps) {
     const IconPath = sorted ? (reversed ? mdiArrowUp : mdiArrowDown) : mdiUnfoldMoreHorizontal
     return (
-        <Table.Th w={w}>
+        <Table.Th w={w} miw={miw ?? w}>
             <UnstyledButton onClick={onSort} className={classes.control}>
                 <Group justify="space-between">
                     <Text fw={700} fz="sm">
@@ -93,6 +93,15 @@ function ThSort({ children, reversed, sorted, onSort, w }: ThSortProps) {
 interface DetailLine {
     label?: string
     value: string
+}
+
+const IP_TYPE_META: Record<string, { label: string; color: string }> = {
+    SharedIP: { label: 'Shared IP', color: 'orange' },
+    SharedFingerprint: { label: 'Shared Fingerprint', color: 'orange' },
+    FingerprintChurn: { label: 'Fingerprint Churn', color: 'yellow' },
+    IpChurn: { label: 'IP Churn', color: 'yellow' },
+    CrossTeamIP: { label: 'Cross-Team IP', color: 'red' },
+    TokenAbuse: { label: 'Token Abuse', color: 'red' },
 }
 
 const parseDetailLines = (details?: string | null): DetailLine[] => {
@@ -124,13 +133,15 @@ const parseDetailLines = (details?: string | null): DetailLine[] => {
         })
 }
 
-const ReadableDetails: FC<{ details?: string | null }> = ({ details }) => {
+const ReadableDetails: FC<{ details?: string | null; maxRows?: number }> = ({ details, maxRows }) => {
     const lines = parseDetailLines(details)
     if (lines.length === 0) return <Text size="sm">-</Text>
+    const visibleLines = maxRows ? lines.slice(0, maxRows) : lines
+    const remaining = lines.length - visibleLines.length
 
     return (
-        <Stack gap={4}>
-            {lines.map((line, idx) => (
+        <Stack gap={4} className={classes.detailsBox}>
+            {visibleLines.map((line, idx) => (
                 line.label ? (
                     <Group key={idx} gap={6} align="flex-start" wrap="nowrap">
                         <Text size="xs" fw={700} c="dimmed" style={{ minWidth: 92 }}>
@@ -142,13 +153,48 @@ const ReadableDetails: FC<{ details?: string | null }> = ({ details }) => {
                     <Text key={idx} size="sm">{line.value}</Text>
                 )
             ))}
+            {remaining > 0 && (
+                <Text size="xs" c="dimmed">
+                    +{remaining} more
+                </Text>
+            )}
         </Stack>
+    )
+}
+
+const UsersCell: FC<{ users?: string[]; relatedUsers?: string[] }> = ({ users, relatedUsers }) => {
+    const currentUsers = (users ?? []).filter(Boolean)
+    const others = (relatedUsers ?? []).filter(Boolean)
+
+    if (currentUsers.length === 0 && others.length === 0) {
+        return <Text size="sm" c="dimmed">-</Text>
+    }
+
+    return (
+        <Group gap={4} className={classes.userWrap}>
+            {currentUsers.map((user) => (
+                <Badge key={`own-${user}`} size="xs" color="blue" variant="light">
+                    {user}
+                </Badge>
+            ))}
+            {others.slice(0, 3).map((user) => (
+                <Badge key={`other-${user}`} size="xs" color="gray" variant="light">
+                    {user}
+                </Badge>
+            ))}
+            {others.length > 3 && (
+                <Badge size="xs" color="gray" variant="outline">
+                    +{others.length - 3}
+                </Badge>
+            )}
+        </Group>
     )
 }
 
 export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const { t } = useTranslation()
     const { locale } = useLanguage()
+    const statusMap = useParticipationStatusMap()
     const params = useParams()
     const gameId = parseInt(params.id || '0')
 
@@ -264,6 +310,10 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
     const compactHeight = 'clamp(320px, calc(100vh - 24rem), 72vh)'
     const roomyHeight = 'clamp(420px, calc(100vh - 20rem), 82vh)'
+    const suspicionTableMinWidth = '44rem'
+    const ipTableMinWidth = '84rem'
+    const solveTableMinWidth = '76rem'
+    const collusionTableMinWidth = '82rem'
 
     return (
         <>
@@ -303,28 +353,28 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                             <Center h={400}><Loader /></Center>
                         ) : drilledSolves?.details && drilledSolves.details.length > 0 ? (
                             <ScrollArea h={400}>
-                                <Table striped highlightOnHover>
+                                <Table striped highlightOnHover miw="46rem">
                                     <Table.Thead>
                                         <Table.Tr>
-                                            <Table.Th>Challenge</Table.Th>
-                                            <Table.Th>Time A</Table.Th>
-                                            <Table.Th>Time B</Table.Th>
-                                            <Table.Th>Diff</Table.Th>
+                                            <Table.Th w="14rem" miw="14rem">Challenge</Table.Th>
+                                            <Table.Th w="11rem" miw="11rem">Time A</Table.Th>
+                                            <Table.Th w="11rem" miw="11rem">Time B</Table.Th>
+                                            <Table.Th w="8rem" miw="8rem">Diff</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {drilledSolves.details.map((solve: SequenceSuspectDetail, idx: number) => (
                                             <Table.Tr key={idx}>
-                                                <Table.Td fw={500}>
+                                                <Table.Td fw={500} miw="14rem">
                                                     <ScrollingText text={solve.challengeName || 'Unknown'} size="sm" maw={200} />
                                                 </Table.Td>
-                                                <Table.Td ff="monospace" fz="sm">
+                                                <Table.Td ff="monospace" fz="sm" miw="11rem">
                                                     {solve.timeA ? dayjs(solve.timeA).locale(locale).format('MM-DD HH:mm:ss') : '-'}
                                                 </Table.Td>
-                                                <Table.Td ff="monospace" fz="sm">
+                                                <Table.Td ff="monospace" fz="sm" miw="11rem">
                                                     {solve.timeB ? dayjs(solve.timeB).locale(locale).format('MM-DD HH:mm:ss') : '-'}
                                                 </Table.Td>
-                                                <Table.Td>
+                                                <Table.Td miw="8rem">
                                                     <Badge color={(solve.timeDiff ?? 0) < 60 ? 'red' : (solve.timeDiff ?? 0) < 300 ? 'yellow' : 'gray'}>
                                                         {(solve.timeDiff ?? 0).toFixed(0)}s
                                                     </Badge>
@@ -356,26 +406,26 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                             </Badge>
                         </Group>
                         <ScrollArea h={400}>
-                            <Table striped>
+                            <Table striped miw="54rem">
                                 <Table.Thead>
                                     <Table.Tr>
-                                        <Table.Th>Type</Table.Th>
-                                        <Table.Th>Score Delta</Table.Th>
-                                        <Table.Th>Time</Table.Th>
-                                        <Table.Th>Details</Table.Th>
+                                        <Table.Th w="10rem" miw="10rem">Type</Table.Th>
+                                        <Table.Th w="10rem" miw="10rem">Score Delta</Table.Th>
+                                        <Table.Th w="11rem" miw="11rem">Time</Table.Th>
+                                        <Table.Th w="23rem" miw="23rem">Details</Table.Th>
                                     </Table.Tr>
                                 </Table.Thead>
                                 <Table.Tbody>
                                     {selectedSuspicion.events?.map((evt, idx) => (
                                         <Table.Tr key={idx}>
-                                            <Table.Td>
+                                            <Table.Td miw="10rem">
                                                 <Badge color={evt.type === 'Corroboration' ? 'grape' : 'blue'}>{evt.type}</Badge>
                                             </Table.Td>
-                                            <Table.Td>+{evt.scoreDelta}</Table.Td>
-                                            <Table.Td fz="xs" ff="monospace">
+                                            <Table.Td miw="10rem">+{evt.scoreDelta}</Table.Td>
+                                            <Table.Td fz="xs" ff="monospace" miw="11rem">
                                                 {evt.time ? dayjs(evt.time).locale(locale).format('MM-DD HH:mm:ss') : '-'}
                                             </Table.Td>
-                                            <Table.Td><ReadableDetails details={evt.details} /></Table.Td>
+                                            <Table.Td miw="23rem"><ReadableDetails details={evt.details} /></Table.Td>
                                         </Table.Tr>
                                     ))}
                                 </Table.Tbody>
@@ -385,15 +435,16 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                 )}
             </Modal>
 
-            {/* Summary Cards */}
-            {/* ... Only replacing imports and upper logic, wait, I need to be careful with multi-defined blocks if I paste the whole file again ... */}
-            {/* I will use TARGETED replacement for imports and specific logic blocks */}
-            {/* ... Actually, the user asked for this, I will just overwrite the file since I have the whole content in mind and it's cleaner than partial patches that fail often ... */}
-            {/* But I need to be sure about the middle content. */}
-
             <SimpleGrid cols={{ base: 1, md: 4 }} spacing="md">
                 <UnstyledButton onClick={() => setActiveTab('suspicion')}>
-                    <Card shadow="sm" padding="md" radius="md" withBorder style={{ borderColor: activeTab === 'suspicion' ? 'var(--mantine-color-red-5)' : undefined }}>
+                    <Card
+                        shadow="sm"
+                        padding="md"
+                        radius="md"
+                        withBorder
+                        className={classes.summaryCard}
+                        style={{ borderColor: activeTab === 'suspicion' ? 'var(--mantine-color-red-5)' : undefined }}
+                    >
                         <Group justify="space-between" mb="xs">
                             <Text fw={500} c="red">High Risk Teams</Text>
                             <ThemeIcon color="red" variant="light">
@@ -408,7 +459,14 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                 </UnstyledButton>
 
                 <UnstyledButton onClick={() => setActiveTab('ip')}>
-                    <Card shadow="sm" padding="md" radius="md" withBorder style={{ borderColor: activeTab === 'ip' ? 'var(--mantine-color-red-5)' : undefined }}>
+                    <Card
+                        shadow="sm"
+                        padding="md"
+                        radius="md"
+                        withBorder
+                        className={classes.summaryCard}
+                        style={{ borderColor: activeTab === 'ip' ? 'var(--mantine-color-red-5)' : undefined }}
+                    >
                         <Group justify="space-between" mb="xs">
                             <Text fw={500}>IP Anomalies</Text>
                             <ThemeIcon color="red" variant="light">
@@ -421,7 +479,14 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                 </UnstyledButton>
 
                 <UnstyledButton onClick={() => setActiveTab('solve')}>
-                    <Card shadow="sm" padding="md" radius="md" withBorder style={{ borderColor: activeTab === 'solve' ? 'var(--mantine-color-red-5)' : undefined }}>
+                    <Card
+                        shadow="sm"
+                        padding="md"
+                        radius="md"
+                        withBorder
+                        className={classes.summaryCard}
+                        style={{ borderColor: activeTab === 'solve' ? 'var(--mantine-color-red-5)' : undefined }}
+                    >
                         <Group justify="space-between" mb="xs">
                             <Text fw={500}>Abnormal Solves</Text>
                             <ThemeIcon color="orange" variant="light">
@@ -434,7 +499,14 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                 </UnstyledButton>
 
                 <UnstyledButton onClick={() => setActiveTab('collusion')}>
-                    <Card shadow="sm" padding="md" radius="md" withBorder style={{ borderColor: activeTab === 'collusion' ? 'var(--mantine-color-red-5)' : undefined }}>
+                    <Card
+                        shadow="sm"
+                        padding="md"
+                        radius="md"
+                        withBorder
+                        className={classes.summaryCard}
+                        style={{ borderColor: activeTab === 'collusion' ? 'var(--mantine-color-red-5)' : undefined }}
+                    >
                         <Group justify="space-between" mb="xs">
                             <Text fw={500}>Collusion Groups</Text>
                             <ThemeIcon color="red" variant="light">
@@ -458,23 +530,36 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
                     <Tabs.Panel value="suspicion" pt="md">
                         <Group justify="space-between" mb="md">
-                            <Title order={4}>Suspicion Rankings</Title>
+                            <Group gap="xs">
+                                <Title order={4}>Suspicion Rankings</Title>
+                                <Badge variant="light" color="red">
+                                    {report?.suspicionList?.length ?? 0}
+                                </Badge>
+                            </Group>
                         </Group>
                         {report?.suspicionList && report.suspicionList.length > 0 ? (
                             <ScrollArea offsetScrollbars h={compactHeight}>
-                                <Table className={tableClasses.table} horizontalSpacing="md" verticalSpacing="sm">
+                                <Table
+                                    className={tableClasses.table}
+                                    horizontalSpacing="md"
+                                    verticalSpacing="sm"
+                                    striped
+                                    highlightOnHover
+                                    withTableBorder
+                                    stickyHeader
+                                    miw={suspicionTableMinWidth}
+                                >
                                     <Table.Thead>
                                         <Table.Tr>
-                                            <ThSort sorted={suspSort.key === 'teamName'} reversed={suspSort.direction === 'desc'} onSort={() => handleSort(setSuspSort, suspSort, 'teamName')} w="12rem">Team</ThSort>
+                                            <ThSort sorted={suspSort.key === 'teamName'} reversed={suspSort.direction === 'desc'} onSort={() => handleSort(setSuspSort, suspSort, 'teamName')} w="14rem">Team</ThSort>
                                             <ThSort sorted={suspSort.key === 'score'} reversed={suspSort.direction === 'desc'} onSort={() => handleSort(setSuspSort, suspSort, 'score')} w="8rem">Score</ThSort>
-                                            <Table.Th>Status</Table.Th>
-                                            <Table.Th>Actions</Table.Th>
+                                            <Table.Th w="12rem" miw="12rem">Status</Table.Th>
+                                            <Table.Th w="9rem" miw="9rem">Actions</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {sortedSuspicionList.map((item: any, index: number) => {
                                             const score = item.score ?? 0
-                                            const statusMap = useParticipationStatusMap()
                                             const currentStatus = item.status ?? ParticipationStatus.Pending
                                             const statusMeta = statusMap.get(currentStatus)
 
@@ -490,9 +575,9 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
                                             return (
                                                 <Table.Tr key={index}>
-                                                    <Table.Td fw={700}><ScrollingText text={item.teamName || 'Unknown'} size="md" fw="bold" maw={260} /></Table.Td>
-                                                    <Table.Td><Badge color={score >= 70 ? 'red' : 'yellow'} size="lg" variant="light">{score}</Badge></Table.Td>
-                                                    <Table.Td>
+                                                    <Table.Td fw={700} miw="14rem"><ScrollingText text={item.teamName || 'Unknown'} size="md" fw="bold" maw={260} /></Table.Td>
+                                                    <Table.Td miw="8rem"><Badge color={score >= 70 ? 'red' : 'yellow'} size="lg" variant="light">{score}</Badge></Table.Td>
+                                                    <Table.Td miw="12rem">
                                                         <Menu shadow="md" width={200}>
                                                             <Menu.Target>
                                                                 <UnstyledButton style={{ cursor: 'pointer' }}>
@@ -513,7 +598,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                                             </Menu.Dropdown>
                                                         </Menu>
                                                     </Table.Td>
-                                                    <Table.Td>
+                                                    <Table.Td miw="9rem">
                                                         <Button size="sm" variant="default" onClick={() => handleViewSuspicion(item)}>View Details</Button>
                                                     </Table.Td>
                                                 </Table.Tr>
@@ -529,48 +614,52 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
                     <Tabs.Panel value="ip" pt="md">
                         <Group justify="space-between" mb="md">
-                            <Title order={4}>IP Analysis</Title>
+                            <Group gap="xs">
+                                <Title order={4}>IP Analysis</Title>
+                                <Badge variant="light" color="blue">
+                                    {report?.ipAnalysis?.length ?? 0}
+                                </Badge>
+                            </Group>
                             <TextInput placeholder="Search team, user, IP, or details..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={ipSearch} onChange={(e) => setIpSearch(e.currentTarget.value)} size="xs" w={250} />
                         </Group>
                         {report?.ipAnalysis && report.ipAnalysis.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
-                                <Table className={tableClasses.table} horizontalSpacing="md" verticalSpacing="sm">
+                                <Table
+                                    className={tableClasses.table}
+                                    horizontalSpacing="md"
+                                    verticalSpacing="sm"
+                                    striped
+                                    highlightOnHover
+                                    withTableBorder
+                                    stickyHeader
+                                    miw={ipTableMinWidth}
+                                >
                                     <Table.Thead>
                                         <Table.Tr>
-                                            <ThSort sorted={ipSort.key === 'teamName'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'teamName')} w="10rem">{t('common.label.team', 'Team')}</ThSort>
+                                            <ThSort sorted={ipSort.key === 'teamName'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'teamName')} w="11rem">{t('common.label.team', 'Team')}</ThSort>
                                             <ThSort sorted={ipSort.key === 'type'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'type')} w="12rem">Type</ThSort>
-                                            <Table.Th w="14rem">Users</Table.Th>
+                                            <Table.Th w="16rem" miw="16rem">Users</Table.Th>
                                             <ThSort sorted={ipSort.key === 'ip'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'ip')} w="10rem">IP</ThSort>
-                                            <ThSort sorted={ipSort.key === 'time'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'time')} w="10rem">Time</ThSort>
-                                            <Table.Th>Details</Table.Th>
+                                            <ThSort sorted={ipSort.key === 'time'} reversed={ipSort.direction === 'desc'} onSort={() => handleSort(setIpSort, ipSort, 'time')} w="11rem">Time</ThSort>
+                                            <Table.Th w="24rem" miw="24rem">Details</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {sortedIpAnalysis.map((item: any, index: number) => (
                                             <Table.Tr key={index}>
-                                                <Table.Td><ScrollingText text={item.teamName || 'Unknown'} size="md" fw="bold" maw={220} /></Table.Td>
-                                                <Table.Td w="12rem">
+                                                <Table.Td miw="11rem"><ScrollingText text={item.teamName || 'Unknown'} size="md" fw="bold" maw={220} /></Table.Td>
+                                                <Table.Td w="12rem" miw="12rem">
                                                     {(() => {
-                                                        const metaByType: Record<string, { label: string; color: string }> = {
-                                                            SharedIP: { label: 'Shared IP', color: 'orange' },
-                                                            SharedFingerprint: { label: 'Shared Fingerprint', color: 'orange' },
-                                                            FingerprintChurn: { label: 'Fingerprint Churn', color: 'yellow' },
-                                                            IpChurn: { label: 'IP Churn', color: 'yellow' },
-                                                            CrossTeamIP: { label: 'Cross-Team IP', color: 'red' },
-                                                            TokenAbuse: { label: 'Token Abuse', color: 'red' },
-                                                        }
-                                                        const meta = metaByType[item.type] ?? { label: 'Unknown IP', color: 'grape' }
+                                                        const meta = IP_TYPE_META[item.type] ?? { label: 'Unknown', color: 'grape' }
                                                         return <Badge color={meta.color} size="xs" fullWidth>{meta.label}</Badge>
                                                     })()}
                                                 </Table.Td>
-                                                <Table.Td>
-                                                    <Text size="sm" lineClamp={2} title={item.userNames?.join(', ') || '-'}>
-                                                        {item.userNames?.length ? item.userNames.join(', ') : '-'}
-                                                    </Text>
+                                                <Table.Td miw="16rem">
+                                                    <UsersCell users={item.userNames} relatedUsers={item.relatedUsers} />
                                                 </Table.Td>
-                                                <Table.Td ff="monospace">{item.ip}</Table.Td>
-                                                <Table.Td ff="monospace" fz="sm">{item.time ? dayjs(item.time).locale(locale).format('MM-DD HH:mm:ss') : '-'}</Table.Td>
-                                                <Table.Td><ReadableDetails details={item.details} /></Table.Td>
+                                                <Table.Td ff="monospace" miw="10rem">{item.ip}</Table.Td>
+                                                <Table.Td ff="monospace" fz="sm" miw="11rem">{item.time ? dayjs(item.time).locale(locale).format('MM-DD HH:mm:ss') : '-'}</Table.Td>
+                                                <Table.Td miw="24rem"><ReadableDetails details={item.details} maxRows={4} /></Table.Td>
                                             </Table.Tr>
                                         ))}
                                     </Table.Tbody>
@@ -583,33 +672,47 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
                     <Tabs.Panel value="solve" pt="md">
                         <Group justify="space-between" mb="md">
-                            <Title order={4}>Abnormal Solves</Title>
+                            <Group gap="xs">
+                                <Title order={4}>Abnormal Solves</Title>
+                                <Badge variant="light" color="orange">
+                                    {report?.abnormalSolves?.length ?? 0}
+                                </Badge>
+                            </Group>
                             <TextInput placeholder="Search team, challenge, or type..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={solveSearch} onChange={(e) => setSolveSearch(e.currentTarget.value)} size="xs" w={250} />
                         </Group>
                         {report?.abnormalSolves && report.abnormalSolves.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
-                                <Table className={tableClasses.table} horizontalSpacing="md" verticalSpacing="sm">
+                                <Table
+                                    className={tableClasses.table}
+                                    horizontalSpacing="md"
+                                    verticalSpacing="sm"
+                                    striped
+                                    highlightOnHover
+                                    withTableBorder
+                                    stickyHeader
+                                    miw={solveTableMinWidth}
+                                >
                                     <Table.Thead>
                                         <Table.Tr>
-                                            <ThSort sorted={solveSort.key === 'teamName'} reversed={solveSort.direction === 'desc'} onSort={() => handleSort(setSolveSort, solveSort, 'teamName')} w="10rem">{t('common.label.team', 'Team')}</ThSort>
-                                            <ThSort sorted={solveSort.key === 'challengeName'} reversed={solveSort.direction === 'desc'} onSort={() => handleSort(setSolveSort, solveSort, 'challengeName')} w="12rem">{t('common.label.challenge', 'Challenge')}</ThSort>
+                                            <ThSort sorted={solveSort.key === 'teamName'} reversed={solveSort.direction === 'desc'} onSort={() => handleSort(setSolveSort, solveSort, 'teamName')} w="11rem">{t('common.label.team', 'Team')}</ThSort>
+                                            <ThSort sorted={solveSort.key === 'challengeName'} reversed={solveSort.direction === 'desc'} onSort={() => handleSort(setSolveSort, solveSort, 'challengeName')} w="14rem">{t('common.label.challenge', 'Challenge')}</ThSort>
                                             <ThSort sorted={solveSort.key === 'type'} reversed={solveSort.direction === 'desc'} onSort={() => handleSort(setSolveSort, solveSort, 'type')} w="10rem">Type</ThSort>
-                                            <Table.Th>Details</Table.Th>
+                                            <Table.Th w="24rem" miw="24rem">Details</Table.Th>
                                             <ThSort sorted={solveSort.key === 'solveTime'} reversed={solveSort.direction === 'desc'} onSort={() => handleSort(setSolveSort, solveSort, 'solveTime')} w="12rem">{t('common.label.time', 'Time')}</ThSort>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {sortedAbnormalSolves.map((item: any, index: number) => (
                                             <Table.Tr key={index}>
-                                                <Table.Td><ScrollingText text={item.teamName || 'Unknown'} size="md" fw="bold" maw={220} /></Table.Td>
-                                                <Table.Td><ScrollingText text={item.challengeName || 'Unknown'} size="md" maw={260} /></Table.Td>
-                                                <Table.Td>
+                                                <Table.Td miw="11rem"><ScrollingText text={item.teamName || 'Unknown'} size="md" fw="bold" maw={220} /></Table.Td>
+                                                <Table.Td miw="14rem"><ScrollingText text={item.challengeName || 'Unknown'} size="md" maw={260} /></Table.Td>
+                                                <Table.Td miw="10rem">
                                                     <Badge color={item.type === 'Hoarding' ? 'cyan' : 'orange'} size="sm">
                                                         {item.type === 'NoDownload' ? 'No Download' : item.type === 'NoContainer' ? 'No Container' : item.type}
                                                     </Badge>
                                                 </Table.Td>
-                                                <Table.Td fz="sm"><ReadableDetails details={item.details} /></Table.Td>
-                                                <Table.Td ff="monospace"><Badge size="md" color="indigo">{dayjs(item.solveTime).locale(locale).format('MM-DD HH:mm:ss')}</Badge></Table.Td>
+                                                <Table.Td fz="sm" miw="24rem"><ReadableDetails details={item.details} maxRows={4} /></Table.Td>
+                                                <Table.Td ff="monospace" miw="12rem"><Badge size="md" color="indigo">{dayjs(item.solveTime).locale(locale).format('MM-DD HH:mm:ss')}</Badge></Table.Td>
                                             </Table.Tr>
                                         ))}
                                     </Table.Tbody>
@@ -622,35 +725,49 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
                     <Tabs.Panel value="collusion" pt="md">
                         <Group justify="space-between" mb="md">
-                            <Title order={4}>Collusion Groups</Title>
+                            <Group gap="xs">
+                                <Title order={4}>Collusion Groups</Title>
+                                <Badge variant="light" color="grape">
+                                    {report?.collusionGroups?.length ?? 0}
+                                </Badge>
+                            </Group>
                             <TextInput placeholder="Search team name..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={collusionSearch} onChange={(e) => setCollusionSearch(e.currentTarget.value)} size="xs" w={250} />
                         </Group>
                         {report?.collusionGroups && report.collusionGroups.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
-                                <Table className={tableClasses.table} horizontalSpacing="md" verticalSpacing="sm">
+                                <Table
+                                    className={tableClasses.table}
+                                    horizontalSpacing="md"
+                                    verticalSpacing="sm"
+                                    striped
+                                    highlightOnHover
+                                    withTableBorder
+                                    stickyHeader
+                                    miw={collusionTableMinWidth}
+                                >
                                     <Table.Thead>
                                         <Table.Tr>
                                             <Table.Th w="20rem">Teams</Table.Th>
                                             <ThSort sorted={collusionSort.key === 'averageRsi'} reversed={collusionSort.direction === 'desc'} onSort={() => handleSort(setCollusionSort, collusionSort, 'averageRsi')} w="10rem">Avg RSI</ThSort>
-                                            <Table.Th>Common Solves</Table.Th>
-                                            <Table.Th>Details</Table.Th>
-                                            <Table.Th>Action</Table.Th>
+                                            <Table.Th w="16rem" miw="16rem">Common Solves</Table.Th>
+                                            <Table.Th w="24rem" miw="24rem">Details</Table.Th>
+                                            <Table.Th w="9rem" miw="9rem">Action</Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
                                         {sortedCollusionGroups.map((item: any, index: number) => (
                                             <Table.Tr key={index}>
-                                                <Table.Td>
+                                                <Table.Td miw="20rem">
                                                     <Stack gap={2}>
                                                         {item.teams?.map((team: CollusionTeamInfo, idx: number) => (
                                                             <ScrollingText key={idx} text={team.name} size="md" fw="bold" maw={320} />
                                                         ))}
                                                     </Stack>
                                                 </Table.Td>
-                                                <Table.Td><Badge color={(item.averageRsi ?? 0) > 0.8 ? 'red' : 'yellow'} size="sm">{((item.averageRsi ?? 0) * 100).toFixed(1)}%</Badge></Table.Td>
-                                                <Table.Td><Text size="xs" maw={300} lineClamp={2} title={item.commonSolves?.join(', ')}>{item.commonSolves?.join(', ') || '-'}</Text></Table.Td>
-                                                <Table.Td><ReadableDetails details={item.details} /></Table.Td>
-                                                <Table.Td>
+                                                <Table.Td miw="10rem"><Badge color={(item.averageRsi ?? 0) > 0.8 ? 'red' : 'yellow'} size="sm">{((item.averageRsi ?? 0) * 100).toFixed(1)}%</Badge></Table.Td>
+                                                <Table.Td miw="16rem"><Text size="xs" maw={300} lineClamp={2} title={item.commonSolves?.join(', ')}>{item.commonSolves?.join(', ') || '-'}</Text></Table.Td>
+                                                <Table.Td miw="24rem"><ReadableDetails details={item.details} maxRows={4} /></Table.Td>
+                                                <Table.Td miw="9rem">
                                                     <Button size="sm" variant="light" leftSection={<Icon path={mdiInformation} size={0.7} />} onClick={() => handleViewDetails(item)}>Details</Button>
                                                 </Table.Td>
                                             </Table.Tr>
