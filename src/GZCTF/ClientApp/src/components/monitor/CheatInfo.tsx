@@ -349,12 +349,25 @@ const SUSPICION_FILTER_DEFS: FilterDef[] = [
     { field: 'status', description: 'Participation status', color: 'green', icon: mdiCheckCircle, example: 'approved' },
 ]
 
+const GLOBAL_FILTER_DEFS: FilterDef[] = [
+    { field: 'team', description: 'Team name (All tabs)', color: 'blue', icon: mdiAccountGroup, example: 'aaa' },
+    { field: 'user', description: 'Username (IP)', color: 'cyan', icon: mdiAccountGroup, example: 'dimas' },
+    { field: 'ip', description: 'IP address (IP)', color: 'blue', icon: mdiIpNetwork, example: '192.168' },
+    { field: 'type', description: 'Anomaly type (IP, Solves)', color: 'orange', icon: mdiShieldAlert, example: 'hoarding' },
+    { field: 'challenge', description: 'Challenge name (Solves)', color: 'teal', icon: mdiCubeOutline, example: 'web1' },
+    { field: 'score', description: 'Risk score (Suspicion)', color: 'red', icon: mdiAlertCircle, example: '>500' },
+    { field: 'status', description: 'Status (Suspicion)', color: 'green', icon: mdiCheckCircle, example: 'approved' },
+    { field: 'similarity', description: 'Similarity % (Collusion)', color: 'red', icon: mdiAlertCircle, example: '>80' },
+    { field: 'time', description: 'Date or time (IP, Solves)', color: 'violet', icon: mdiClockOutline, example: '2025' },
+    { field: 'details', description: 'Detail text (Various)', color: 'gray', icon: mdiInformation, example: 'ring' },
+]
+
 const SmartSearch: FC<{
     value: string
     onChange: (v: string) => void
     placeholder?: string
     filterDefs: FilterDef[]
-    w?: number | string
+    w?: any
 }> = ({ value, onChange, placeholder, filterDefs, w = 300 }) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -765,15 +778,19 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const [selectedSuspicion, setSelectedSuspicion] = useState<SuspicionRecordResult | null>(null)
 
     // Search states
+    const [globalSearch, setGlobalSearch] = useState('')
     const [ipSearch, setIpSearch] = useState('')
     const [solveSearch, setSolveSearch] = useState('')
     const [collusionSearch, setCollusionSearch] = useState('')
     const [suspSearch, setSuspSearch] = useState('')
 
+    const [debouncedGlobalSearch] = useDebouncedValue(globalSearch, 300)
     const [debouncedIpSearch] = useDebouncedValue(ipSearch, 300)
     const [debouncedSolveSearch] = useDebouncedValue(solveSearch, 300)
     const [debouncedCollusionSearch] = useDebouncedValue(collusionSearch, 300)
     const [debouncedSuspSearch] = useDebouncedValue(suspSearch, 300)
+
+    const globalParsed = useMemo(() => parseSearchQuery(debouncedGlobalSearch), [debouncedGlobalSearch])
 
     // Pagination states
     const [ipPage, setIpPage] = useState(1)
@@ -791,6 +808,13 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const [collusionSort, setCollusionSort] = useState<SortConfig<any>>({ key: 'averageRsi', direction: 'desc' })
 
     // Reset pagination on search or sort change
+    useEffect(() => {
+        setIpPage(1)
+        setSolvePage(1)
+        setCollusionPage(1)
+        setSuspPage(1)
+    }, [debouncedGlobalSearch])
+
     useEffect(() => { setIpPage(1) }, [debouncedIpSearch, ipSort])
     useEffect(() => { setSolvePage(1) }, [debouncedSolveSearch, solveSort])
     useEffect(() => { setCollusionPage(1) }, [debouncedCollusionSearch, collusionSort])
@@ -851,53 +875,49 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const sortedIpAnalysis = useMemo(() => {
         if (!report?.ipAnalysis) return []
         let data = report.ipAnalysis
-        if (debouncedIpSearch) {
-            const { freeText, filters } = parseSearchQuery(debouncedIpSearch)
+
+        const localParsed = debouncedIpSearch ? parseSearchQuery(debouncedIpSearch) : { freeText: '', filters: [] }
+        const combinedFilters = [...globalParsed.filters, ...localParsed.filters]
+
+        if (globalParsed.freeText || localParsed.freeText || combinedFilters.length > 0) {
             data = data.filter((item: any) => {
-                for (const f of filters) {
+                for (const f of combinedFilters) {
                     switch (f.field) {
+                        case 'team': if (!item.teamName?.toLowerCase().includes(f.value)) return false; break;
                         case 'type': {
                             const label = (IP_TYPE_META[item.type]?.label ?? '').toLowerCase()
                             if (!item.type?.toLowerCase().includes(f.value) && !label.includes(f.value)) return false
                             break
                         }
-                        case 'ip':
-                            if (!item.ip?.toLowerCase().includes(f.value)) return false
-                            break
+                        case 'ip': if (!item.ip?.toLowerCase().includes(f.value)) return false; break;
                         case 'user':
-                            if (
-                                !item.userNames?.some((u: string) => u.toLowerCase().includes(f.value)) &&
-                                !item.relatedUsers?.some((u: string) => u.toLowerCase().includes(f.value))
-                            ) return false
-                            break
-                        case 'details':
-                            if (!item.details?.toLowerCase().includes(f.value)) return false
-                            break
-                        case 'time': {
+                            if (!item.userNames?.some((u: string) => u.toLowerCase().includes(f.value)) &&
+                                !item.relatedUsers?.some((u: string) => u.toLowerCase().includes(f.value))) return false;
+                            break;
+                        case 'details': if (!item.details?.toLowerCase().includes(f.value)) return false; break;
+                        case 'time':
                             const abs = item.time ? dayjs(item.time).format('YYYY-MM-DD HH:mm:ss') : ''
                             const rel = item.time ? dayjs(item.time).fromNow() : ''
                             if (!abs.includes(f.value) && !rel.toLowerCase().includes(f.value)) return false
                             break
-                        }
-                        default: break
+                        default: return false; // Hide row if filter field is unsupported
                     }
                 }
-                if (freeText) {
-                    const q = freeText.toLowerCase()
-                    if (
-                        !item.teamName?.toLowerCase().includes(q) &&
-                        !item.type?.toLowerCase().includes(q) &&
-                        !item.ip?.toLowerCase().includes(q) &&
-                        !item.details?.toLowerCase().includes(q) &&
-                        !item.userNames?.some((u: string) => u.toLowerCase().includes(q)) &&
-                        !item.relatedUsers?.some((u: string) => u.toLowerCase().includes(q))
-                    ) return false
-                }
+
+                const checkFreeText = (q: string) => (
+                    item.teamName?.toLowerCase().includes(q) || item.type?.toLowerCase().includes(q) ||
+                    item.ip?.toLowerCase().includes(q) || item.details?.toLowerCase().includes(q) ||
+                    item.userNames?.some((u: string) => u.toLowerCase().includes(q)) ||
+                    item.relatedUsers?.some((u: string) => u.toLowerCase().includes(q))
+                )
+                if (globalParsed.freeText && !checkFreeText(globalParsed.freeText.toLowerCase())) return false
+                if (localParsed.freeText && !checkFreeText(localParsed.freeText.toLowerCase())) return false
+
                 return true
             })
         }
         return sortData(data, ipSort)
-    }, [report?.ipAnalysis, debouncedIpSearch, ipSort])
+    }, [report?.ipAnalysis, debouncedIpSearch, globalParsed, ipSort])
 
     const paginatedIpAnalysis = useMemo(() => {
         const start = (ipPage - 1) * ITEMS_PER_PAGE
@@ -907,43 +927,39 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const sortedAbnormalSolves = useMemo(() => {
         if (!report?.abnormalSolves) return []
         let data = report.abnormalSolves
-        if (debouncedSolveSearch) {
-            const { freeText, filters } = parseSearchQuery(debouncedSolveSearch)
+
+        const localParsed = debouncedSolveSearch ? parseSearchQuery(debouncedSolveSearch) : { freeText: '', filters: [] }
+        const combinedFilters = [...globalParsed.filters, ...localParsed.filters]
+
+        if (globalParsed.freeText || localParsed.freeText || combinedFilters.length > 0) {
             data = data.filter((item: any) => {
-                for (const f of filters) {
+                for (const f of combinedFilters) {
                     switch (f.field) {
-                        case 'type':
-                            if (!item.type?.toLowerCase().includes(f.value)) return false
-                            break
-                        case 'challenge':
-                            if (!item.challengeName?.toLowerCase().includes(f.value)) return false
-                            break
-                        case 'details':
-                            if (!item.details?.toLowerCase().includes(f.value)) return false
-                            break
-                        case 'time': {
+                        case 'team': if (!item.teamName?.toLowerCase().includes(f.value)) return false; break;
+                        case 'type': if (!item.type?.toLowerCase().includes(f.value)) return false; break;
+                        case 'challenge': if (!item.challengeName?.toLowerCase().includes(f.value)) return false; break;
+                        case 'details': if (!item.details?.toLowerCase().includes(f.value)) return false; break;
+                        case 'time':
                             const abs = dayjs(item.solveTime).format('YYYY-MM-DD HH:mm:ss')
                             const rel = dayjs(item.solveTime).fromNow()
                             if (!abs.includes(f.value) && !rel.toLowerCase().includes(f.value)) return false
                             break
-                        }
-                        default: break
+                        default: return false;
                     }
                 }
-                if (freeText) {
-                    const q = freeText.toLowerCase()
-                    if (
-                        !item.teamName?.toLowerCase().includes(q) &&
-                        !item.challengeName?.toLowerCase().includes(q) &&
-                        !item.type?.toLowerCase().includes(q) &&
-                        !item.details?.toLowerCase().includes(q)
-                    ) return false
-                }
+
+                const checkFreeText = (q: string) => (
+                    item.teamName?.toLowerCase().includes(q) || item.challengeName?.toLowerCase().includes(q) ||
+                    item.type?.toLowerCase().includes(q) || item.details?.toLowerCase().includes(q)
+                )
+                if (globalParsed.freeText && !checkFreeText(globalParsed.freeText.toLowerCase())) return false
+                if (localParsed.freeText && !checkFreeText(localParsed.freeText.toLowerCase())) return false
+
                 return true
             })
         }
         return sortData(data, solveSort)
-    }, [report?.abnormalSolves, debouncedSolveSearch, solveSort])
+    }, [report?.abnormalSolves, debouncedSolveSearch, globalParsed, solveSort])
 
     const paginatedAbnormalSolves = useMemo(() => {
         const start = (solvePage - 1) * ITEMS_PER_PAGE
@@ -953,37 +969,36 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const sortedCollusionGroups = useMemo(() => {
         if (!report?.collusionGroups) return []
         let data = report.collusionGroups
-        if (debouncedCollusionSearch) {
-            const { freeText, filters } = parseSearchQuery(debouncedCollusionSearch)
+
+        const localParsed = debouncedCollusionSearch ? parseSearchQuery(debouncedCollusionSearch) : { freeText: '', filters: [] }
+        const combinedFilters = [...globalParsed.filters, ...localParsed.filters]
+
+        if (globalParsed.freeText || localParsed.freeText || combinedFilters.length > 0) {
             data = data.filter((item: any) => {
-                for (const f of filters) {
+                for (const f of combinedFilters) {
                     switch (f.field) {
-                        case 'team':
-                            if (!item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(f.value))) return false
-                            break
-                        case 'similarity': {
+                        case 'team': if (!item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(f.value))) return false; break;
+                        case 'similarity':
                             const m = f.value.match(/^>?(\d+)$/)
                             if (m && (item.averageRsi ?? 0) * 100 < parseInt(m[1])) return false
                             break
-                        }
-                        case 'details':
-                            if (!item.details?.toLowerCase().includes(f.value)) return false
-                            break
-                        default: break
+                        case 'details': if (!item.details?.toLowerCase().includes(f.value)) return false; break;
+                        default: return false;
                     }
                 }
-                if (freeText) {
-                    const q = freeText.toLowerCase()
-                    if (
-                        !item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(q)) &&
-                        !item.details?.toLowerCase().includes(q)
-                    ) return false
-                }
+
+                const checkFreeText = (q: string) => (
+                    item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(q)) ||
+                    item.details?.toLowerCase().includes(q) || item.commonSolves?.some((c: string) => c.toLowerCase().includes(q))
+                )
+                if (globalParsed.freeText && !checkFreeText(globalParsed.freeText.toLowerCase())) return false
+                if (localParsed.freeText && !checkFreeText(localParsed.freeText.toLowerCase())) return false
+
                 return true
             })
         }
         return sortData(data, collusionSort)
-    }, [report?.collusionGroups, debouncedCollusionSearch, collusionSort])
+    }, [report?.collusionGroups, debouncedCollusionSearch, globalParsed, collusionSort])
 
     const paginatedCollusionGroups = useMemo(() => {
         const start = (collusionPage - 1) * ITEMS_PER_PAGE
@@ -993,34 +1008,33 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const sortedSuspicionList = useMemo(() => {
         if (!report?.suspicionList) return []
         let data = report.suspicionList
-        if (debouncedSuspSearch) {
-            const { freeText, filters } = parseSearchQuery(debouncedSuspSearch)
+
+        const localParsed = debouncedSuspSearch ? parseSearchQuery(debouncedSuspSearch) : { freeText: '', filters: [] }
+        const combinedFilters = [...globalParsed.filters, ...localParsed.filters]
+
+        if (globalParsed.freeText || localParsed.freeText || combinedFilters.length > 0) {
             data = data.filter((item: any) => {
-                for (const f of filters) {
+                for (const f of combinedFilters) {
                     switch (f.field) {
-                        case 'team':
-                            if (!item.teamName?.toLowerCase().includes(f.value)) return false
-                            break
-                        case 'score': {
+                        case 'team': if (!item.teamName?.toLowerCase().includes(f.value)) return false; break;
+                        case 'score':
                             const m = f.value.match(/^>?(\d+)$/)
                             if (m && (item.score ?? 0) < parseInt(m[1])) return false
                             break
-                        }
-                        case 'status':
-                            if (!item.status?.toLowerCase().includes(f.value)) return false
-                            break
-                        default: break
+                        case 'status': if (!item.status?.toLowerCase().includes(f.value)) return false; break;
+                        default: return false;
                     }
                 }
-                if (freeText) {
-                    const q = freeText.toLowerCase()
-                    if (!item.teamName?.toLowerCase().includes(q)) return false
-                }
+
+                const checkFreeText = (q: string) => item.teamName?.toLowerCase().includes(q)
+                if (globalParsed.freeText && !checkFreeText(globalParsed.freeText.toLowerCase())) return false
+                if (localParsed.freeText && !checkFreeText(localParsed.freeText.toLowerCase())) return false
+
                 return true
             })
         }
         return sortData(data, suspSort)
-    }, [report?.suspicionList, debouncedSuspSearch, suspSort])
+    }, [report?.suspicionList, debouncedSuspSearch, globalParsed, suspSort])
 
     const paginatedSuspicionList = useMemo(() => {
         const start = (suspPage - 1) * ITEMS_PER_PAGE
@@ -1198,6 +1212,18 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                     </Stack>
                 )}
             </Modal>
+
+            {/* Global Search Header */}
+            <Group justify="space-between" mb="lg" align="flex-start">
+                <Title order={3}>Cheat Analysis</Title>
+                <SmartSearch
+                    value={globalSearch}
+                    onChange={setGlobalSearch}
+                    placeholder="Global search across all tabs... (type @ for filters)"
+                    filterDefs={GLOBAL_FILTER_DEFS}
+                    w={{ base: '100%', sm: 400 }}
+                />
+            </Group>
 
             <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing="md">
                 {/* ── High Risk Teams card ── */}
