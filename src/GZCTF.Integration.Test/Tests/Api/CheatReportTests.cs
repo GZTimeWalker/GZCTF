@@ -1448,6 +1448,40 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task AttachmentDownload_RemoteRedirect_ShouldRejectOrphanAttachmentTarget()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "RemoteOrphanTarget Game " + TestDataSeeder.RandomName());
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "RemoteOrphanTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        // Orphan remote attachment: exists in DB but not referenced by any challenge/flag.
+        var orphan = new Attachment
+        {
+            Type = FileType.Remote,
+            RemoteUrl = "https://example.com/orphan-remote.bin"
+        };
+        await context.Attachments.AddAsync(orphan);
+        await context.SaveChangesAsync();
+
+        using var client = factory.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
+        var response = await client.GetAsync($"/Assets/remote/{orphan.Id}/orphan-remote.bin");
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        var downloadEvents = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
+            .ToListAsync();
+        Assert.Empty(downloadEvents);
+    }
+
+    [Fact]
     public async Task AttachmentDownload_ShouldRejectInvalidSecureToken()
     {
         using var scope = factory.Services.CreateScope();

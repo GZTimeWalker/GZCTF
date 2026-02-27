@@ -179,6 +179,13 @@ public class AssetsController(
         }
 
         var accessContext = await BuildDownloadAccessContextByAttachmentId(attachmentId, User, token, cancellationToken);
+        if (accessContext.Targets.Count == 0)
+        {
+            logger.LogWarning("Remote attachment {AttachmentId} has no authorized challenge target", attachmentId);
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)],
+                StatusCodes.Status404NotFound));
+        }
+
         if (!IsDownloadAllowed(accessContext, User, requireValidSecureToken))
             return Forbid();
 
