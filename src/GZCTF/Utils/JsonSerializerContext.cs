@@ -7,6 +7,7 @@ using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
+using GZCTF.Models.Response.Account;
 using GZCTF.Services.Container.Provider;
 using Namotion.Reflection;
 using NJsonSchema;
@@ -27,6 +28,7 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(RequestResponse))]
 [JsonSerializable(typeof(RequestResponse<RegisterStatus>))]
 [JsonSerializable(typeof(RequestResponse<bool>))]
+[JsonSerializable(typeof(RequestResponse<BrowserFingerprintChallengeModel>))]
 [JsonSerializable(typeof(ProfileUserInfoModel))]
 [JsonSerializable(typeof(ConfigEditModel))]
 [JsonSerializable(typeof(ArrayResponse<UserInfoModel>))]

@@ -39,4 +39,9 @@ public class RegisterModel : ModelWithCaptcha
     /// Browser fingerprint
     /// </summary>
     public string? Fingerprint { get; set; }
+
+    /// <summary>
+    /// Browser fingerprint proof
+    /// </summary>
+    public string? FingerprintProof { get; set; }
 }

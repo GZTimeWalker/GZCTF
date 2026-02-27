@@ -26,7 +26,114 @@ import getCanvasWebgl from '@creepjs/webgl'
 import getWindowFeatures from '@creepjs/window'
 import getBestWorkerScope from '@creepjs/worker'
 
-export const getFingerprint = async (): Promise<string> => {
+interface FingerprintProof {
+    version: number
+    fingerprint: string
+    nonce?: string
+    signalOrder?: string[]
+    signals?: Record<string, string>
+    lieCount: number
+    trashCount: number
+    errorCount: number
+    headlessRating: number
+    stealthRating: number
+    likeHeadlessRating: number
+    resistance?: {
+        privacy?: string
+        mode?: string
+        extension?: string
+    }
+}
+
+export interface FingerprintChallenge {
+    nonce: string
+    requiredSignals: string[]
+}
+
+export interface FingerprintPayload {
+    fingerprint: string
+    proof: string
+}
+
+const toNonNegativeInt = (value: unknown): number => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return 0
+    }
+    return Math.max(0, Math.trunc(value))
+}
+
+const toPercentage = (value: unknown): number => Math.min(100, toNonNegativeInt(value))
+
+const toOptionalString = (value: unknown): string | undefined => {
+    if (typeof value !== 'string') {
+        return undefined
+    }
+    const trimmed = value.trim()
+    return trimmed.length === 0 ? undefined : trimmed
+}
+
+const buildFingerprintProof = (fp: any, fingerprint: string, challenge?: FingerprintChallenge): FingerprintProof => {
+    const lieCount = toNonNegativeInt(fp?.lies?.totalLies)
+    const trashCount = Array.isArray(fp?.trash?.trashBin) ? fp.trash.trashBin.length : 0
+    const errorCount = Array.isArray(fp?.capturedErrors?.data) ? fp.capturedErrors.data.length : 0
+    const headlessRating = toPercentage(fp?.headless?.headlessRating)
+    const stealthRating = toPercentage(fp?.headless?.stealthRating)
+    const likeHeadlessRating = toPercentage(fp?.headless?.likeHeadlessRating)
+    const resistance = {
+        privacy: toOptionalString(fp?.resistance?.privacy),
+        mode: toOptionalString(fp?.resistance?.mode),
+        extension: toOptionalString(fp?.resistance?.extension),
+    }
+
+    const navigatorPlatform = toOptionalString(fp?.navigator?.platform)
+    const workerPlatform = toOptionalString(fp?.workerScope?.platform)
+    const navigatorSystem = toOptionalString(fp?.navigator?.system)
+    const workerSystem = toOptionalString(fp?.workerScope?.system)
+    const webglRenderer = toOptionalString(fp?.canvasWebgl?.parameters?.UNMASKED_RENDERER_WEBGL)
+    const workerWebglRenderer = toOptionalString(fp?.workerScope?.webglRenderer)
+
+    const platformConsistent = !navigatorPlatform || !workerPlatform || navigatorPlatform === workerPlatform
+    const uaConsistent = !navigatorSystem || !workerSystem || navigatorSystem === workerSystem
+    const webglConsistent = !webglRenderer || !workerWebglRenderer || webglRenderer.includes(workerWebglRenderer)
+
+    const probeValues: Record<string, string> = {
+        lie_count: `${lieCount}`,
+        trash_count: `${trashCount}`,
+        error_count: `${errorCount}`,
+        headless_rating: `${headlessRating}`,
+        stealth_rating: `${stealthRating}`,
+        like_headless_rating: `${likeHeadlessRating}`,
+        platform_consistent: platformConsistent ? '1' : '0',
+        ua_consistent: uaConsistent ? '1' : '0',
+        webgl_consistent: webglConsistent ? '1' : '0',
+        resistance_extension: resistance.extension ?? '',
+        resistance_privacy: resistance.privacy ?? '',
+    }
+
+    const requiredSignals = challenge?.requiredSignals ?? []
+    const selectedSignals: Record<string, string> = {}
+    for (const key of requiredSignals) {
+        selectedSignals[key] = probeValues[key] ?? ''
+    }
+
+    const proof: FingerprintProof = {
+        version: 1,
+        fingerprint,
+        nonce: challenge?.nonce,
+        signalOrder: requiredSignals,
+        signals: selectedSignals,
+        lieCount,
+        trashCount,
+        errorCount,
+        headlessRating,
+        stealthRating,
+        likeHeadlessRating,
+        resistance: resistance.privacy || resistance.mode || resistance.extension ? resistance : undefined,
+    }
+    return proof
+}
+
+export const getFingerprintPayload = async (challenge?: FingerprintChallenge): Promise<FingerprintPayload> => {
     const isBrave = IS_BLINK ? await braveBrowser() : false
     const braveMode: any = isBrave ? getBraveMode() : {}
     const braveFingerprintingBlocking = isBrave && (braveMode.standard || braveMode.strict)
@@ -303,6 +410,7 @@ export const getFingerprint = async (): Promise<string> => {
                 },
             }
         ),
+        consoleErrors: fp.consoleErrors,
         cssMedia: !fp.cssMedia ? undefined : {
             // @ts-ignore
             reducedMotion: caniuse(() => fp.cssMedia.mediaCSS['prefers-reduced-motion']),
@@ -348,5 +456,13 @@ export const getFingerprint = async (): Promise<string> => {
     }
 
     const creepHash = await hashify(creep)
-    return creepHash
+    const proof = buildFingerprintProof(fp, creepHash, challenge)
+
+    return {
+        fingerprint: creepHash,
+        proof: JSON.stringify(proof),
+    }
 }
+
+export const getFingerprint = async (): Promise<string> =>
+    (await getFingerprintPayload()).fingerprint

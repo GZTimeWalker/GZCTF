@@ -86,11 +86,24 @@ const Login: FC = () => {
     })
 
     try {
-      const fingerprint = config.enableBrowserFingerprint
+      const fingerprintPayload = config.enableBrowserFingerprint
         ? await (async () => {
           // Avoid loading/running fingerprinting code unless the feature is enabled.
-          const { getFingerprint } = await import('@Utils/BrowserFingerprint')
-          return encryptApiData(t, await getFingerprint(), config.apiPublicKey)
+          const challengeResponse = await api.account.accountFingerprintChallenge()
+          const challenge = challengeResponse.data.data
+          if (!challenge?.nonce || !challenge.requiredSignals) {
+            throw new Error('Invalid fingerprint challenge')
+          }
+
+          const { getFingerprintPayload } = await import('@Utils/BrowserFingerprint')
+          const payload = await getFingerprintPayload({
+            nonce: challenge.nonce,
+            requiredSignals: challenge.requiredSignals,
+          })
+          return {
+            fingerprint: await encryptApiData(t, payload.fingerprint, config.apiPublicKey),
+            fingerprintProof: await encryptApiData(t, payload.proof, config.apiPublicKey),
+          }
         })()
         : undefined
 
@@ -98,7 +111,8 @@ const Login: FC = () => {
         userName: uname,
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         challenge: token,
-        fingerprint,
+        fingerprint: fingerprintPayload?.fingerprint,
+        fingerprintProof: fingerprintPayload?.fingerprintProof,
       })
 
       updateNotification({

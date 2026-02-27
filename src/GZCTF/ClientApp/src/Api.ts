@@ -172,6 +172,32 @@ export interface RequestResponseOfRegisterStatus {
   status?: number;
 }
 
+/** Browser fingerprint challenge payload */
+export interface BrowserFingerprintChallengeModel {
+  /** Challenge nonce */
+  nonce?: string;
+  /** Required probe keys */
+  requiredSignals?: string[] | null;
+  /**
+   * Challenge expiration in seconds
+   * @format int32
+   */
+  expiresInSeconds?: number;
+}
+
+/** Request response */
+export interface RequestResponseOfBrowserFingerprintChallengeModel {
+  /** Response message */
+  title?: string;
+  /** Data */
+  data?: BrowserFingerprintChallengeModel;
+  /**
+   * Status code
+   * @format int32
+   */
+  status?: number;
+}
+
 /** Request response */
 export interface RequestResponse {
   /** Response message */
@@ -204,6 +230,8 @@ export type RegisterModel = ModelWithCaptcha & {
   email: string;
   /** Browser fingerprint */
   fingerprint?: string | null;
+  /** Browser fingerprint proof */
+  fingerprintProof?: string | null;
 };
 
 export interface ModelWithCaptcha {
@@ -268,6 +296,8 @@ export type LoginModel = ModelWithCaptcha & {
   password: string;
   /** Browser fingerprint */
   fingerprint?: string | null;
+  /** Browser fingerprint proof */
+  fingerprintProof?: string | null;
 };
 
 /** Basic account information update */
@@ -2631,6 +2661,22 @@ export class Api<
         method: "PUT",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to get one-time browser fingerprint challenge.
+     *
+     * @tags Account
+     * @name AccountFingerprintChallenge
+     * @summary Get browser fingerprint challenge
+     * @request GET:/api/account/fingerprintchallenge
+     */
+    accountFingerprintChallenge: (params: RequestParams = {}) =>
+      this.request<RequestResponseOfBrowserFingerprintChallengeModel, RequestResponse>({
+        path: `/api/account/fingerprintchallenge`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
 

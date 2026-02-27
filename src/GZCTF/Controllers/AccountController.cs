@@ -1,15 +1,20 @@
 ﻿using System.Net.Mime;
+using System.Security.Cryptography;
 using System.Security.Claims;
+using System.Text.Json;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
+using GZCTF.Models.Response.Account;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
 using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +25,13 @@ public partial class AccountController
 {
     [GeneratedRegex("^[a-f0-9]{64}$")]
     private static partial Regex BrowserFingerprintRegex();
+
+    private sealed class BrowserFingerprintChallengeState
+    {
+        public DateTimeOffset IssuedAtUtc { get; set; }
+
+        public string[] RequiredSignals { get; set; } = [];
+    }
 }
 
 /// <summary>
@@ -33,6 +45,7 @@ public partial class AccountController(
     IBlobRepository blobService,
     IHostEnvironment environment,
     ICaptchaService captcha,
+    IDistributedCache cache,
     IConfigService configService,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IOptionsSnapshot<GlobalConfig> globalConfig,
@@ -41,6 +54,69 @@ public partial class AccountController(
     ILogger<AccountController> logger,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
+    private static readonly string[] BrowserFingerprintProbeKeys =
+    [
+        "lie_count",
+        "trash_count",
+        "error_count",
+        "headless_rating",
+        "stealth_rating",
+        "like_headless_rating",
+        "platform_consistent",
+        "ua_consistent",
+        "webgl_consistent",
+        "resistance_extension",
+        "resistance_privacy"
+    ];
+
+    private static readonly DistributedCacheEntryOptions BrowserFingerprintChallengeCacheOptions = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2)
+    };
+
+    private const int BrowserFingerprintChallengeExpireSeconds = 120;
+
+    /// <summary>
+    /// Get browser fingerprint challenge
+    /// </summary>
+    /// <response code="200">Challenge generated successfully</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(RequestResponse<BrowserFingerprintChallengeModel>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> FingerprintChallenge(CancellationToken token = default)
+    {
+        if (!accountPolicy.Value.EnableBrowserFingerprint)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
+
+        if (IsDisallowedFingerprintingBrowser(Request, out var challengeRejectionReason))
+        {
+            logger.LogWarning("Rejected fingerprint challenge for {RemoteIP}: {Reason}",
+                HttpContext.Connection.RemoteIpAddress,
+                challengeRejectionReason);
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
+        }
+
+        var nonce = WebEncoders.Base64UrlEncode(RandomNumberGenerator.GetBytes(24));
+        var requiredSignals = SelectRandomFingerprintProbeKeys();
+
+        var state = new BrowserFingerprintChallengeState
+        {
+            IssuedAtUtc = DateTimeOffset.UtcNow,
+            RequiredSignals = requiredSignals
+        };
+
+        await cache.SetStringAsync(BrowserFingerprintChallengeKey(nonce), JsonSerializer.Serialize(state),
+            BrowserFingerprintChallengeCacheOptions, token);
+
+        var data = new BrowserFingerprintChallengeModel
+        {
+            Nonce = nonce,
+            RequiredSignals = requiredSignals,
+            ExpiresInSeconds = BrowserFingerprintChallengeExpireSeconds
+        };
+
+        return Ok(new RequestResponse<BrowserFingerprintChallengeModel>(string.Empty, data, StatusCodes.Status200OK));
+    }
+
     /// <summary>
     /// User registration
     /// </summary>
@@ -81,10 +157,11 @@ public partial class AccountController(
         };
 
         user.UpdateByHttpContext(HttpContext);
-        if (accountPolicy.Value.EnableBrowserFingerprint && string.IsNullOrEmpty(model.Fingerprint))
+        if (accountPolicy.Value.EnableBrowserFingerprint
+            && (string.IsNullOrEmpty(model.Fingerprint) || string.IsNullOrEmpty(model.FingerprintProof)))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
 
-        var fingerprint = ValidateBrowserFingerprint(model.Fingerprint);
+        var fingerprint = await ValidateBrowserFingerprint(model.Fingerprint, model.FingerprintProof, token);
         if (accountPolicy.Value.EnableBrowserFingerprint && fingerprint is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
 
@@ -165,19 +242,141 @@ public partial class AccountController(
                    .Any(d => d.Equals(mailDomain, StringComparison.InvariantCulture));
     }
 
-    private string? ValidateBrowserFingerprint(string? encryptedFingerprint)
+    private async Task<string?> ValidateBrowserFingerprint(string? encryptedFingerprint, string? encryptedFingerprintProof,
+        CancellationToken token = default)
     {
         if (!accountPolicy.Value.EnableBrowserFingerprint)
             return null;
 
-        if (string.IsNullOrEmpty(encryptedFingerprint))
+        if (string.IsNullOrEmpty(encryptedFingerprint) || string.IsNullOrEmpty(encryptedFingerprintProof))
             return null;
 
         var fingerprint = configService.DecryptApiData(encryptedFingerprint);
-        return fingerprint is not null && BrowserFingerprintRegex().IsMatch(fingerprint)
-            ? fingerprint
-            : null;
+        if (fingerprint is null || !BrowserFingerprintRegex().IsMatch(fingerprint))
+            return null;
+
+        var fingerprintProofRaw = configService.DecryptApiData(encryptedFingerprintProof);
+        var fingerprintProof = BrowserFingerprintProofValidator.Parse(fingerprintProofRaw);
+
+        if (fingerprintProof is null)
+            return null;
+
+        if (IsDisallowedFingerprintingBrowser(Request, out var browserRejectionReason))
+        {
+            logger.LogWarning("Rejected browser fingerprint proof from {RemoteIP}: {Reason}",
+                HttpContext.Connection.RemoteIpAddress,
+                browserRejectionReason);
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(fingerprintProof.Nonce) || !IsValidFingerprintChallengeNonce(fingerprintProof.Nonce))
+            return null;
+
+        var challenge = await TryConsumeFingerprintChallenge(fingerprintProof.Nonce, token);
+        if (challenge is null)
+            return null;
+
+        if (!BrowserFingerprintProofValidator.HasValidChallengeSignals(fingerprintProof, challenge.RequiredSignals,
+                out var signalValidationReason))
+        {
+            logger.LogWarning("Rejected browser fingerprint proof from {RemoteIP}: {Reason}",
+                HttpContext.Connection.RemoteIpAddress,
+                signalValidationReason);
+            return null;
+        }
+
+        if (!BrowserFingerprintProofValidator.IsTrusted(fingerprintProof, fingerprint, out var rejectionReason))
+        {
+            logger.LogWarning("Rejected browser fingerprint proof from {RemoteIP}: {Reason}",
+                HttpContext.Connection.RemoteIpAddress,
+                rejectionReason);
+            return null;
+        }
+
+        return fingerprint;
     }
+
+    private static bool IsValidFingerprintChallengeNonce(string nonce)
+    {
+        if (nonce.Length is < 16 or > 128)
+            return false;
+
+        return nonce.All(ch => ch is (>= 'a' and <= 'z')
+            or (>= 'A' and <= 'Z')
+            or (>= '0' and <= '9')
+            or '-'
+            or '_');
+    }
+
+    private static bool IsDisallowedFingerprintingBrowser(HttpRequest request, out string reason)
+    {
+        if (HeaderContains(request, "Sec-CH-UA", "Brave")
+            || HeaderContains(request, "Sec-CH-UA-Full-Version-List", "Brave"))
+        {
+            reason = "Brave browser client hints detected";
+            return true;
+        }
+
+        var userAgent = request.Headers.UserAgent.ToString();
+        if (!string.IsNullOrWhiteSpace(userAgent) && userAgent.Contains("Brave", StringComparison.OrdinalIgnoreCase))
+        {
+            reason = "Brave browser user agent detected";
+            return true;
+        }
+
+        reason = string.Empty;
+        return false;
+    }
+
+    private static bool HeaderContains(HttpRequest request, string headerName, string keyword)
+    {
+        if (!request.Headers.TryGetValue(headerName, out var values) || values.Count == 0)
+            return false;
+
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrEmpty(value) && value.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private async Task<BrowserFingerprintChallengeState?> TryConsumeFingerprintChallenge(string nonce,
+        CancellationToken token = default)
+    {
+        var key = BrowserFingerprintChallengeKey(nonce);
+        var json = await cache.GetStringAsync(key, token);
+        await cache.RemoveAsync(key, token);
+
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            var challenge = JsonSerializer.Deserialize<BrowserFingerprintChallengeState>(json);
+            return challenge is { RequiredSignals.Length: > 0 } ? challenge : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string[] SelectRandomFingerprintProbeKeys()
+    {
+        var keys = BrowserFingerprintProbeKeys.ToArray();
+        for (var i = keys.Length - 1; i > 0; i--)
+        {
+            var swapIndex = RandomNumberGenerator.GetInt32(i + 1);
+            (keys[i], keys[swapIndex]) = (keys[swapIndex], keys[i]);
+        }
+
+        return keys;
+    }
+
+    private static string BrowserFingerprintChallengeKey(string nonce) =>
+        $"_BrowserFingerprintChallenge_{nonce}";
 
     private static IEnumerable<Claim> BuildFingerprintClaims(string? fingerprint)
     {
@@ -354,10 +553,11 @@ public partial class AccountController(
             return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Account_UserDisabled)],
                 StatusCodes.Status401Unauthorized));
 
-        if (accountPolicy.Value.EnableBrowserFingerprint && string.IsNullOrEmpty(model.Fingerprint))
+        if (accountPolicy.Value.EnableBrowserFingerprint
+            && (string.IsNullOrEmpty(model.Fingerprint) || string.IsNullOrEmpty(model.FingerprintProof)))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintRequired)]));
 
-        var fingerprint = ValidateBrowserFingerprint(model.Fingerprint);
+        var fingerprint = await ValidateBrowserFingerprint(model.Fingerprint, model.FingerprintProof, token);
         if (accountPolicy.Value.EnableBrowserFingerprint && fingerprint is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Parameter_FingerprintInvalid)]));
 

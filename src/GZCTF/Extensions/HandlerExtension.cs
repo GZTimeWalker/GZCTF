@@ -18,7 +18,7 @@ public static class HandlerExtension
 {
     private const string CspTemplatePrefix = "default-src 'strict-dynamic' 'nonce-";
 
-    private const string CspTemplateSuffix = "' 'unsafe-inline' http: https:; " +
+    private const string CspTemplateSuffix = "' 'unsafe-inline' 'unsafe-eval' http: https:; " +
                                              "style-src 'self' 'unsafe-inline'; img-src * 'self' data: blob:; " +
                                              "font-src * 'self' data:; object-src 'none'; frame-src * https:; " +
                                              "connect-src 'self' http://127.0.0.1:*; base-uri 'none';";
