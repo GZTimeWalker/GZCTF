@@ -211,6 +211,8 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         Assert.Equal(3, suspect.CommonSolves.Count);
         Assert.NotNull(suspect.DetailedSolves);
         Assert.Equal(3, suspect.DetailedSolves.Count);
+        Assert.Contains(report.IpAnalysis, i => i.Type == SuspicionType.SequenceSimilarity && i.TeamId == t1.Id);
+        Assert.Contains(report.IpAnalysis, i => i.Type == SuspicionType.SequenceSimilarity && i.TeamId == t2.Id);
         
         var detail = suspect.DetailedSolves.FirstOrDefault(d => d.ChallengeName == "Chal 1");
         Assert.NotNull(detail);
@@ -399,6 +401,71 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task GetCheatReport_ShouldDetectNoDownload_DynamicAttachment()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "NoDL DynamicAttachment " + TestDataSeeder.RandomName());
+        var gameEntity = await context.Games.FirstAsync(g => g.Id == game.Id);
+
+        using var ms = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var file = new Microsoft.AspNetCore.Http.FormFile(ms, 0, ms.Length, "file", "dyn-nodl.bin");
+        var blob = await blobService.CreateOrUpdateBlob(file, "dyn-nodl.bin", CancellationToken.None);
+
+        var challenge = new GameChallenge
+        {
+            Title = "Dynamic NoDownload",
+            Content = "dynamic no download regression",
+            Category = ChallengeCategory.Misc,
+            Type = ChallengeType.DynamicAttachment,
+            Hints = [],
+            IsEnabled = true,
+            SubmissionLimit = 0,
+            OriginalScore = 1000,
+            MinScoreRate = 0.8,
+            Difficulty = 5,
+            FileName = "dyn-nodl.bin",
+            GameId = gameEntity.Id,
+            Game = gameEntity
+        };
+
+        challenge.Flags.Add(new FlagContext
+        {
+            Flag = "flag{dynamic-nodl}",
+            Attachment = new Attachment
+            {
+                Type = FileType.Local,
+                LocalFile = blob,
+                LocalFileId = blob.Id
+            }
+        });
+
+        await context.GameChallenges.AddAsync(challenge);
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "DynPsychics");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        await context.Submissions.AddAsync(CreateSub(game.Id, challenge.Id, team.Id, participation.Id, user.Id, DateTimeOffset.UtcNow));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves,
+            s => s.TeamId == team.Id && s.ChallengeId == challenge.Id && s.Type == SuspicionType.NoDownload);
+    }
+
+    [Fact]
     public async Task GetCheatReport_ShouldDetectBurst()
     {
         using var scope = factory.Services.CreateScope();
@@ -529,6 +596,80 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
 
         Assert.NotNull(report);
         Assert.Contains(report.IpAnalysis, i => i.Type == "SharedIP" && i.Ip == ip);
+    }
+
+    [Fact]
+    public async Task GetCheatReport_ShouldIgnoreLoginLogsAfterGameEnd()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "LateLogWindow Game " + TestDataSeeder.RandomName());
+        var gameEntity = await context.Games.FirstAsync(g => g.Id == game.Id);
+        gameEntity.PracticeMode = false;
+        gameEntity.StartTimeUtc = DateTimeOffset.UtcNow.AddHours(-4);
+        gameEntity.EndTimeUtc = DateTimeOffset.UtcNow.AddHours(-2);
+        await context.SaveChangesAsync();
+
+        var u1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t1 = await TestDataSeeder.CreateTeamAsync(factory.Services, u1.Id, "Window Team A");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t1.Id, u1.Id);
+
+        var u2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var t2 = await TestDataSeeder.CreateTeamAsync(factory.Services, u2.Id, "Window Team B");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, t2.Id, u2.Id);
+
+        var sharedLateIp = "203.0.113.88";
+        await context.Logs.AddRangeAsync(
+            new LogModel
+            {
+                Level = "Info",
+                Logger = "AccountController",
+                Message = "Login",
+                TimeUtc = gameEntity.StartTimeUtc.AddMinutes(5),
+                UserName = u1.UserName,
+                RemoteIP = IPAddress.Parse("10.31.0.1")
+            },
+            new LogModel
+            {
+                Level = "Info",
+                Logger = "AccountController",
+                Message = "Login",
+                TimeUtc = gameEntity.StartTimeUtc.AddMinutes(10),
+                UserName = u2.UserName,
+                RemoteIP = IPAddress.Parse("10.31.0.2")
+            },
+            new LogModel
+            {
+                Level = "Info",
+                Logger = "AccountController",
+                Message = "Login",
+                TimeUtc = gameEntity.EndTimeUtc.AddMinutes(5),
+                UserName = u1.UserName,
+                RemoteIP = IPAddress.Parse(sharedLateIp)
+            },
+            new LogModel
+            {
+                Level = "Info",
+                Logger = "AccountController",
+                Message = "Login",
+                TimeUtc = gameEntity.EndTimeUtc.AddMinutes(6),
+                UserName = u2.UserName,
+                RemoteIP = IPAddress.Parse(sharedLateIp)
+            }
+        );
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.DoesNotContain(report.IpAnalysis, i => i.Type == SuspicionType.SharedIP && i.Ip == sharedLateIp);
     }
 
     [Fact]

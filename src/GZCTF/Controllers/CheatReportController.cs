@@ -51,10 +51,15 @@ public class CheatReportController(
                 .Where(f => !string.IsNullOrWhiteSpace(f.Value))
                 .Select(f => $"{f.Key}: {f.Value!.Trim()}"));
 
+        var analysisEndTime = game.PracticeMode
+            ? DateTimeOffset.UtcNow
+            : game.EndTimeUtc;
+
         // Fetch Logs for IP Analysis
         var logs = await dbContext.Logs
             .AsNoTracking()
-            .Where(l => l.TimeUtc >= game.StartTimeUtc && 
+            .Where(l => l.TimeUtc >= game.StartTimeUtc &&
+                        l.TimeUtc <= analysisEndTime &&
                         l.Logger.Contains("AccountController") && 
                         l.RemoteIP != null && 
                         l.UserName != null)
@@ -565,7 +570,7 @@ public class CheatReportController(
             // Check 4: Solve Before Download
             // Flags attempts to solve an attachment-based challenge without ever downloading the file.
             // This suggests the answer was shared or obtained externally.
-            if (chal.AttachmentId != null)
+            if (chal.Type.IsAttachment() || chal.AttachmentId != null)
             {
                 var key = (sub.TeamId, sub.ChallengeId);
                 var hasDownload = teamDownloads.TryGetValue(key, out var dls) && dls.Any(d => d < sub.SubmitTimeUtc);
@@ -780,8 +785,100 @@ public class CheatReportController(
             .ToList();
 
         var topTeams = teamSequences.OrderByDescending(x => x.Sequence.Count).Take(50).ToList();
-        
 
+        const int sequenceCommonThreshold = 3;
+        const double sequenceRsiThreshold = 0.85;
+        for (var i = 0; i < topTeams.Count; i++)
+        {
+            for (var j = i + 1; j < topTeams.Count; j++)
+            {
+                var teamA = topTeams[i];
+                var teamB = topTeams[j];
+
+                var sharedChallenges = teamA.Sequence.Intersect(teamB.Sequence).Distinct().ToList();
+                if (sharedChallenges.Count < sequenceCommonThreshold)
+                    continue;
+
+                var unionCount = teamA.Sequence.Union(teamB.Sequence).Count();
+                if (unionCount == 0)
+                    continue;
+
+                var jaccard = (double)sharedChallenges.Count / unionCount;
+                var lcs = GetLongestCommonSubsequence(teamA.Sequence, teamB.Sequence);
+                var minLen = Math.Min(teamA.Sequence.Count, teamB.Sequence.Count);
+                var lcsScore = minLen == 0 ? 0 : (double)lcs.Count / minLen;
+                var rsi = (jaccard * 0.7) + (lcsScore * 0.3);
+
+                if (rsi < sequenceRsiThreshold)
+                    continue;
+
+                var teamAUsers = teamMap[teamA.TeamId].Members
+                    .Select(m => m.UserName)
+                    .Where(name => !string.IsNullOrWhiteSpace(name))
+                    .Select(name => name!)
+                    .Distinct()
+                    .Take(6)
+                    .ToList();
+                var teamBUsers = teamMap[teamB.TeamId].Members
+                    .Select(m => m.UserName)
+                    .Where(name => !string.IsNullOrWhiteSpace(name))
+                    .Select(name => name!)
+                    .Distinct()
+                    .Take(6)
+                    .ToList();
+
+                var pairTime = teamA.Raw.Last().SubmitTimeUtc > teamB.Raw.Last().SubmitTimeUtc
+                    ? teamA.Raw.Last().SubmitTimeUtc
+                    : teamB.Raw.Last().SubmitTimeUtc;
+                var lcsTitles = lcs
+                    .Select(cid => challengeMap.TryGetValue(cid, out var c) ? c.Title : cid.ToString())
+                    .Distinct()
+                    .Take(8);
+                var lcsSummary = string.Join(", ", lcsTitles);
+
+                report.IpAnalysis.Add(new IpAnalysisResult
+                {
+                    TeamId = teamA.TeamId,
+                    TeamName = teamMap[teamA.TeamId].Name,
+                    Type = SuspicionType.SequenceSimilarity,
+                    Ip = $"RSI {rsi:P1}",
+                    Time = pairTime,
+                    Details = BuildDetail(
+                        ("Summary", "Solve order is highly similar to another team"),
+                        ("Target", TeamRef(teamA.TeamId)),
+                        ("Source team", TeamRef(teamB.TeamId)),
+                        ("RSI", rsi.ToString("P1")),
+                        ("Jaccard", jaccard.ToString("P1")),
+                        ("LCS", $"{lcs.Count}/{minLen}"),
+                        ("Common solved challenges", sharedChallenges.Count.ToString()),
+                        ("Shared sequence sample", lcsSummary)),
+                    RelatedTeams = [teamMap[teamB.TeamId].Name],
+                    UserNames = teamAUsers,
+                    RelatedUsers = teamBUsers
+                });
+
+                report.IpAnalysis.Add(new IpAnalysisResult
+                {
+                    TeamId = teamB.TeamId,
+                    TeamName = teamMap[teamB.TeamId].Name,
+                    Type = SuspicionType.SequenceSimilarity,
+                    Ip = $"RSI {rsi:P1}",
+                    Time = pairTime,
+                    Details = BuildDetail(
+                        ("Summary", "Solve order is highly similar to another team"),
+                        ("Target", TeamRef(teamB.TeamId)),
+                        ("Source team", TeamRef(teamA.TeamId)),
+                        ("RSI", rsi.ToString("P1")),
+                        ("Jaccard", jaccard.ToString("P1")),
+                        ("LCS", $"{lcs.Count}/{minLen}"),
+                        ("Common solved challenges", sharedChallenges.Count.ToString()),
+                        ("Shared sequence sample", lcsSummary)),
+                    RelatedTeams = [teamMap[teamA.TeamId].Name],
+                    UserNames = teamBUsers,
+                    RelatedUsers = teamAUsers
+                });
+            }
+        }
 
         // Check 8: Burst Solving
         // Detects if a team solves multiple challenges in an extremely short timeframe (e.g., >= 3 solves in < 60 seconds).
