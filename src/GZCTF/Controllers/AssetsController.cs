@@ -60,7 +60,7 @@ public class AssetsController(
     public async Task<IActionResult> GetFile([RegularExpression("[0-9a-f]{64}")] string hash, string filename,
         [FromQuery] string? token, CancellationToken cancellationToken)
     {
-        return await ServeFile(hash, filename, token, cancellationToken);
+        return await ServeFile(hash, filename, token, requireValidSecureToken: false, cancellationToken);
     }
 
     /// <summary>
@@ -76,10 +76,15 @@ public class AssetsController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetFileWithToken([RegularExpression("[0-9a-f]{64}")] string hash, string token, string filename, CancellationToken cancellationToken)
     {
-        return await ServeFile(hash, filename, token, cancellationToken);
+        return await ServeFile(hash, filename, token, requireValidSecureToken: true, cancellationToken);
     }
 
-    private async Task<IActionResult> ServeFile(string hash, string filename, string? token, CancellationToken cancellationToken)
+    private async Task<IActionResult> ServeFile(
+        string hash,
+        string filename,
+        string? token,
+        bool requireValidSecureToken,
+        CancellationToken cancellationToken)
     {
         var path = StoragePath.Combine(PathHelper.Uploads, hash[..2], hash[2..4], hash);
 
@@ -93,11 +98,15 @@ public class AssetsController(
                 StatusCodes.Status404NotFound));
         }
 
+        var accessContext = await BuildDownloadAccessContext(hash, User, token, cancellationToken);
+        if (!IsDownloadAllowed(accessContext, User, requireValidSecureToken))
+            return Forbid();
+
         if (!_extProvider.TryGetContentType(filename, out var contentType))
             contentType = MediaTypeNames.Application.Octet;
 
         // Log download (awaited to ensure DbContext is not disposed)
-        await LogDownloadAsync(hash, User, token, cancellationToken);
+        await LogDownloadAsync(accessContext, User, token, cancellationToken);
 
         var blob = await storage.GetBlobAsync(path, cancellationToken);
 
@@ -191,34 +200,113 @@ public class AssetsController(
 
     private sealed record SecureTokenContext(Guid? UserId, string? UserName, bool IsValid);
 
-    private async Task LogDownloadAsync(string hash, ClaimsPrincipal? user, string? token, CancellationToken cancellationToken)
+    private sealed record DownloadAccessContext(
+        string Hash,
+        Guid? ActorUserId,
+        SecureTokenContext SecureToken,
+        List<DownloadTarget> Targets,
+        Dictionary<int, Participation> ActorParticipations,
+        Dictionary<int, Participation> StaticTokenParticipations,
+        Dictionary<int, Participation> SecureTokenParticipations);
+
+    private async Task<DownloadAccessContext> BuildDownloadAccessContext(
+        string hash,
+        ClaimsPrincipal? user,
+        string? token,
+        CancellationToken cancellationToken)
+    {
+        var actorUserId = await ResolveActorUserId(user, cancellationToken);
+        var secureToken = await ParseSecureToken(token, hash, cancellationToken);
+        var targets = await ResolveDownloadTargets(hash, cancellationToken);
+
+        if (targets.Count == 0)
+            return new(hash, actorUserId, secureToken, targets, [], [], []);
+
+        var gameIds = targets.Select(t => t.GameId).Distinct().ToArray();
+        var actorParticipations = await GetParticipationsByUser(gameIds, actorUserId, cancellationToken);
+        var staticTokenParticipations = await GetParticipationsByStaticToken(gameIds, token, cancellationToken);
+        var secureTokenParticipations = await GetParticipationsByUser(gameIds, secureToken.UserId, cancellationToken);
+
+        return new(
+            hash,
+            actorUserId,
+            secureToken,
+            targets,
+            actorParticipations,
+            staticTokenParticipations,
+            secureTokenParticipations);
+    }
+
+    private static bool IsDownloadAllowed(
+        DownloadAccessContext accessContext,
+        ClaimsPrincipal? user,
+        bool requireValidSecureToken)
+    {
+        if (accessContext.Targets.Count == 0)
+            return true;
+
+        if (user?.IsInRole(Role.Admin.ToString()) == true)
+            return true;
+
+        if (requireValidSecureToken && !accessContext.SecureToken.IsValid)
+            return false;
+
+        foreach (var target in accessContext.Targets)
+        {
+            accessContext.ActorParticipations.TryGetValue(target.GameId, out var actorParticipation);
+            accessContext.StaticTokenParticipations.TryGetValue(target.GameId, out var staticTokenParticipation);
+            accessContext.SecureTokenParticipations.TryGetValue(target.GameId, out var secureTokenParticipation);
+
+            if (IsTargetAuthorized(target, actorParticipation, staticTokenParticipation, secureTokenParticipation))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsTargetAuthorized(
+        DownloadTarget target,
+        Participation? actorParticipation,
+        Participation? staticTokenParticipation,
+        Participation? secureTokenParticipation)
+    {
+        if (target.SourceTeamId is null)
+            return actorParticipation is not null
+                || staticTokenParticipation is not null
+                || secureTokenParticipation is not null;
+
+        var sourceTeamId = target.SourceTeamId.Value;
+        return actorParticipation?.TeamId == sourceTeamId
+            || staticTokenParticipation?.TeamId == sourceTeamId
+            || secureTokenParticipation?.TeamId == sourceTeamId;
+    }
+
+    private async Task LogDownloadAsync(
+        DownloadAccessContext accessContext,
+        ClaimsPrincipal? user,
+        string? token,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var actorUserId = await ResolveActorUserId(user, cancellationToken);
-            var secureToken = await ParseSecureToken(token, hash, cancellationToken);
-
-            var targets = await ResolveDownloadTargets(hash, cancellationToken);
-            if (targets.Count == 0)
+            if (accessContext.Targets.Count == 0)
                 return;
 
-            var gameIds = targets.Select(t => t.GameId).Distinct().ToArray();
-
-            var actorParticipations = await GetParticipationsByUser(gameIds, actorUserId, cancellationToken);
-            var staticTokenParticipations = await GetParticipationsByStaticToken(gameIds, token, cancellationToken);
-            var secureTokenParticipations = await GetParticipationsByUser(gameIds, secureToken.UserId, cancellationToken);
-
+            var actorUserId = accessContext.ActorUserId;
+            var secureToken = accessContext.SecureToken;
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
 
-            foreach (var challengeGroup in targets.GroupBy(t => new { t.GameId, t.ChallengeId, t.ChallengeTitle }))
+            foreach (var challengeGroup in accessContext.Targets.GroupBy(t => new { t.GameId, t.ChallengeId, t.ChallengeTitle }))
             {
-                actorParticipations.TryGetValue(challengeGroup.Key.GameId, out var actorParticipation);
+                accessContext.ActorParticipations.TryGetValue(challengeGroup.Key.GameId, out var actorParticipation);
 
-                staticTokenParticipations.TryGetValue(challengeGroup.Key.GameId, out var staticTokenParticipation);
-                secureTokenParticipations.TryGetValue(challengeGroup.Key.GameId, out var secureTokenParticipation);
+                accessContext.StaticTokenParticipations.TryGetValue(challengeGroup.Key.GameId, out var staticTokenParticipation);
+                accessContext.SecureTokenParticipations.TryGetValue(challengeGroup.Key.GameId, out var secureTokenParticipation);
                 var tokenParticipation = staticTokenParticipation ?? secureTokenParticipation;
 
                 var selectedTarget = SelectRelevantTarget(challengeGroup, actorParticipation?.TeamId, tokenParticipation?.TeamId);
+                if (!IsTargetAuthorized(selectedTarget, actorParticipation, staticTokenParticipation, secureTokenParticipation))
+                    continue;
 
                 var participation = actorParticipation ?? tokenParticipation;
                 var teamId = participation?.TeamId ?? selectedTarget.SourceTeamId;
@@ -292,7 +380,7 @@ public class AssetsController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to log download for hash {Hash}", hash);
+            logger.LogError(ex, "Failed to log download for hash {Hash}", accessContext.Hash);
         }
     }
 

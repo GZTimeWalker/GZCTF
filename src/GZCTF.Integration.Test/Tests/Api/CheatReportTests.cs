@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using GZCTF.Extensions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.WebUtilities;
@@ -895,6 +896,194 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
 
         Assert.NotNull(report);
         Assert.Contains(report.IpAnalysis, i => i.TeamId == tAttacker.Id && i.Type == "TokenAbuse" && i.Details.Contains(tVictim.Name));
+    }
+
+    [Fact]
+    public async Task AttachmentDownload_ShouldRejectInvalidSecureToken()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "InvalidSecureToken Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Secure Attachment", "flag{secure-token}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        using var ms = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, ms.Length, "file", "secure-token.bin");
+        var blobRes = await blobService.CreateOrUpdateBlob(formFile, "secure-token.bin", CancellationToken.None);
+
+        chal!.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = blobRes,
+            LocalFileId = blobRes.Id
+        };
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "SecureTokenTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
+
+        var invalidToken = WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray());
+        var response = await client.GetAsync($"/Assets/{blobRes.Hash}/s/{invalidToken}/secure-token.bin");
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+
+        context.ChangeTracker.Clear();
+        var downloadEvents = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
+            .ToListAsync();
+        var hasDownloadLog = downloadEvents.Any(e => e.Values is { Count: > 0 } && e.Values[0] == chal.Id.ToString());
+        Assert.False(hasDownloadLog);
+    }
+
+    [Fact]
+    public async Task AttachmentDownload_ShouldRejectAnonymousAccess_ForChallengeAttachment()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "AnonymousAttachmentAccess Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Anon Protected", "flag{anon}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        using var ms = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, ms.Length, "file", "anon.bin");
+        var blobRes = await blobService.CreateOrUpdateBlob(formFile, "anon.bin", CancellationToken.None);
+
+        chal!.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = blobRes,
+            LocalFileId = blobRes.Id
+        };
+        await context.SaveChangesAsync();
+
+        using var client = factory.CreateClient();
+        var response = await client.GetAsync($"/Assets/{blobRes.Hash}/anon.bin");
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task AttachmentDownload_ShouldRequireOwnerIdentity_ForDynamicAttachmentWithoutToken()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "DynamicOwnerCheck Game " + TestDataSeeder.RandomName());
+        var gameEntity = await context.Games.FirstAsync(g => g.Id == game.Id);
+
+        using var ms = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var file = new Microsoft.AspNetCore.Http.FormFile(ms, 0, ms.Length, "file", "dyn-owner.bin");
+        var blob = await blobService.CreateOrUpdateBlob(file, "dyn-owner.bin", CancellationToken.None);
+
+        var challenge = new GameChallenge
+        {
+            Title = "Dynamic Owner Protected",
+            Content = "dynamic owner enforcement",
+            Category = ChallengeCategory.Misc,
+            Type = ChallengeType.DynamicAttachment,
+            Hints = [],
+            IsEnabled = true,
+            SubmissionLimit = 0,
+            OriginalScore = 1000,
+            MinScoreRate = 0.8,
+            Difficulty = 5,
+            FileName = "dynamic-owner.bin",
+            GameId = gameEntity.Id,
+            Game = gameEntity
+        };
+
+        challenge.Flags.Add(new FlagContext
+        {
+            Flag = "flag{dyn-owner}",
+            Attachment = new Attachment
+            {
+                Type = FileType.Local,
+                LocalFile = blob,
+                LocalFileId = blob.Id
+            }
+        });
+
+        await context.GameChallenges.AddAsync(challenge);
+        await context.SaveChangesAsync();
+
+        var victimUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var victimTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, victimUser.Id, "OwnerVictimTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, victimTeam.Id, victimUser.Id);
+
+        var attackerUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var attackerTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, attackerUser.Id, "OwnerAttackerTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, attackerTeam.Id, attackerUser.Id);
+
+        using var victimClient = factory.CreateClient();
+        await victimClient.PostAsJsonAsync("/api/Account/Login", new { UserName = victimUser.UserName, Password = "Test@123" });
+        var victimDetail = await victimClient.GetFromJsonAsync<ChallengeDetailModel>($"/api/Game/{game.Id}/Challenges/{challenge.Id}");
+        var secureUrl = victimDetail?.Context.Url;
+
+        Assert.False(string.IsNullOrWhiteSpace(secureUrl));
+        Assert.Contains("/s/", secureUrl, StringComparison.OrdinalIgnoreCase);
+
+        using var attackerClient = factory.CreateClient();
+        await attackerClient.PostAsJsonAsync("/api/Account/Login", new { UserName = attackerUser.UserName, Password = "Test@123" });
+
+        var plainUrl = Regex.Replace(secureUrl!, "/s/[^/]+/", "/", RegexOptions.IgnoreCase);
+        var plainResponse = await attackerClient.GetAsync(plainUrl);
+        Assert.Equal(HttpStatusCode.Forbidden, plainResponse.StatusCode);
+
+        var tamperedUrl = Regex.Replace(secureUrl!, "/s/[^/]+/", "/s/not-a-valid-token/", RegexOptions.IgnoreCase);
+        var tamperedResponse = await attackerClient.GetAsync(tamperedUrl);
+        Assert.Equal(HttpStatusCode.Forbidden, tamperedResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetChallenge_ShouldGenerateSecureUrl_ForFilenameContainingSlash()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var blobService = scope.ServiceProvider.GetRequiredService<GZCTF.Repositories.Interface.IBlobRepository>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "EscapedFilename Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Escaped Filename Chal", "flag{escaped-name}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        const string uploadName = "nested/path with spaces.txt";
+        using var ms = new MemoryStream(Guid.NewGuid().ToByteArray());
+        var formFile = new Microsoft.AspNetCore.Http.FormFile(ms, 0, ms.Length, "file", uploadName);
+        var blobRes = await blobService.CreateOrUpdateBlob(formFile, uploadName, CancellationToken.None);
+
+        chal!.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = blobRes,
+            LocalFileId = blobRes.Id
+        };
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "EscapedFilenameTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
+
+        var detail = await client.GetFromJsonAsync<ChallengeDetailModel>($"/api/Game/{game.Id}/Challenges/{chal.Id}");
+        Assert.NotNull(detail);
+        Assert.NotNull(detail!.Context);
+        Assert.NotNull(detail.Context.Url);
+        Assert.Contains("/s/", detail.Context.Url, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("%2F", detail.Context.Url, StringComparison.OrdinalIgnoreCase);
+
+        var downloadResponse = await client.GetAsync(detail.Context.Url);
+        Assert.Equal(HttpStatusCode.OK, downloadResponse.StatusCode);
     }
 
     [Fact]

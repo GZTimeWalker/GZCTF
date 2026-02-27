@@ -52,5 +52,9 @@ public class LocalFile
     /// <summary>
     /// URL for fetching the file
     /// </summary>
-    public string Url(string? filename = null) => $"/assets/{Hash}/{filename ?? Name}";
+    public string Url(string? filename = null)
+    {
+        var downloadName = filename ?? Name;
+        return $"/assets/{Hash}/{Uri.EscapeDataString(downloadName)}";
+    }
 }
