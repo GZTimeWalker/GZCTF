@@ -328,10 +328,10 @@ public class CheatReportController(
         {
             if (evt.Values == null) continue;
 
-            switch (evt.Type)
-            {
-                case EventType.Download:
-                    if (evt.Values.Count >= 4 && int.TryParse(evt.Values[0], out int dlCid))
+                switch (evt.Type)
+                {
+                    case EventType.Download:
+                    if (evt.Values.Count >= 1 && int.TryParse(evt.Values[0], out int dlCid))
                     {
                         var key = (evt.TeamId, dlCid);
                         if (!teamDownloads.ContainsKey(key)) teamDownloads[key] = [];

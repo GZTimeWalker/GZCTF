@@ -92,7 +92,7 @@ public class AssetsController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetRemoteFile(int attachmentId, string filename, [FromQuery] string? token, CancellationToken cancellationToken)
     {
-        return await ServeRemoteFile(attachmentId, filename, token, requireValidSecureToken: false, cancellationToken);
+        return await ServeRemoteFile(attachmentId, filename, token, requireValidSecureToken: true, cancellationToken);
     }
 
     /// <summary>

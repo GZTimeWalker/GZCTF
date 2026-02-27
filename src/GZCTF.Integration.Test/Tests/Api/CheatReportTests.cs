@@ -558,6 +558,61 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task GetCheatReport_ShouldTreatMinimalDownloadEvent_AsValidDownload()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "NoDL MinimalDownloadEvent " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Minimal Download Chal", "flag{minimal-download}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        chal!.Attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = new LocalFile
+            {
+                Name = "minimal.bin",
+                FileSize = 32,
+                Hash = "minimalhash"
+            }
+        };
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "MinimalDownloadTeam");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var downloadTime = DateTimeOffset.UtcNow.AddMinutes(-2);
+        await context.GameEvents.AddAsync(new GameEvent
+        {
+            GameId = game.Id,
+            Type = EventType.Download,
+            TeamId = team.Id,
+            UserId = user.Id,
+            PublishTimeUtc = downloadTime,
+            // Legacy/minimal payload: challenge id only.
+            Values = [chal.Id.ToString()]
+        });
+
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, downloadTime.AddSeconds(30)));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.DoesNotContain(report.AbnormalSolves,
+            s => s.TeamId == team.Id && s.ChallengeId == chal.Id && s.Type == SuspicionType.NoDownload);
+    }
+
+    [Fact]
     public async Task GetCheatReport_ShouldDetectNoDownload_DynamicAttachment()
     {
         using var scope = factory.Services.CreateScope();
@@ -1342,6 +1397,46 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
         });
         await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
         var response = await client.GetAsync($"/Assets/remote/{chal.AttachmentId}/s/{invalidToken}/{chal.FileName}");
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+
+        context.ChangeTracker.Clear();
+        var downloadEvents = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
+            .ToListAsync();
+        var hasDownloadLog = downloadEvents.Any(e => e.Values is { Count: > 0 } && e.Values[0] == chal.Id.ToString());
+        Assert.False(hasDownloadLog);
+    }
+
+    [Fact]
+    public async Task AttachmentDownload_RemoteRedirect_ShouldRequireSecureToken_OnPlainRemotePath()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "RemoteRequireToken Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Remote Require Token", "flag{remote-require-token}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        chal!.FileName = "remote-require-token.bin";
+        chal.Attachment = new Attachment
+        {
+            Type = FileType.Remote,
+            RemoteUrl = "https://example.com/remote-require-token.bin"
+        };
+        await context.SaveChangesAsync();
+        Assert.NotNull(chal.AttachmentId);
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "RemoteRequireTokenTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        using var client = factory.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
+        var response = await client.GetAsync($"/Assets/remote/{chal.AttachmentId}/{chal.FileName}");
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
 
         context.ChangeTracker.Clear();
