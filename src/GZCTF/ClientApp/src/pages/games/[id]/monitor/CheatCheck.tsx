@@ -1,14 +1,14 @@
 import { useLanguage } from '@Utils/I18n'
 import { CheatInfo } from '@Components/monitor/CheatInfo'
 import { CheatSubmissionLog } from '@Components/monitor/CheatSubmissionLog'
-import { Loader, Stack, Title, Alert, Tabs } from '@mantine/core'
+import { Loader, Stack, Title, Alert, Tabs, Text, Group, ThemeIcon, Box } from '@mantine/core'
 import { FC, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
 import api from '@Api'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@mdi/react'
-import { mdiChartBox, mdiFlagVariant } from '@mdi/js'
+import { mdiChartBox, mdiFlagVariant, mdiShieldSearch, mdiAlertCircle } from '@mdi/js'
 
 const CheatCheck: FC = () => {
     const { id } = useParams()
@@ -31,34 +31,88 @@ const CheatCheck: FC = () => {
     const { data: report, isLoading, error, mutate } = api.cheatReport.useCheatReportGet(numId, {
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
-        refreshInterval: 0
+        refreshInterval: 0,
     })
 
-    if (isLoading) return <WithGameMonitor><Loader /></WithGameMonitor>
-    if (error) return <WithGameMonitor><Alert color="red">{error.message}</Alert></WithGameMonitor>
+    if (isLoading)
+        return (
+            <WithGameMonitor>
+                <Stack align="center" justify="center" h="60vh" gap="md">
+                    <Loader size="lg" />
+                    <Text c="dimmed" size="sm">
+                        Loading cheat analysis…
+                    </Text>
+                </Stack>
+            </WithGameMonitor>
+        )
+
+    if (error)
+        return (
+            <WithGameMonitor>
+                <Alert
+                    color="red"
+                    title="Failed to load report"
+                    icon={<Icon path={mdiAlertCircle} size={1} />}
+                >
+                    {error.message}
+                </Alert>
+            </WithGameMonitor>
+        )
 
     return (
         <WithGameMonitor>
             <Stack gap="md" w="100%">
-                <Title order={3}>{t('game.title.cheat_check', 'Cheat Analysis')}</Title>
+                {/* ── Page header ──────────────────────── */}
+                <Group gap="sm" align="center">
+                    <ThemeIcon
+                        size="lg"
+                        radius="md"
+                        variant="gradient"
+                        gradient={{ from: 'red.7', to: 'orange.5', deg: 135 }}
+                    >
+                        <Icon path={mdiShieldSearch} size={0.9} />
+                    </ThemeIcon>
+                    <Box>
+                        <Title order={3}>{t('game.title.cheat_check', 'Cheat Analysis')}</Title>
+                        <Text size="xs" c="dimmed">
+                            Behavioral analysis, IP anomalies, and flag-sharing detection
+                        </Text>
+                    </Box>
+                </Group>
 
-                <Tabs value={activeTab} onChange={handleTabChange} variant="outline">
-                    <Tabs.List>
-                        <Tabs.Tab value="analysis" leftSection={<Icon path={mdiChartBox} size={0.8} />}>
+                {/* ── Top-level tabs ────────────────────── */}
+                <Tabs
+                    value={activeTab}
+                    onChange={handleTabChange}
+                    variant="pills"
+                    radius="md"
+                >
+                    <Tabs.List
+                        style={{
+                            borderBottom: '1px solid var(--mantine-color-dark-4)',
+                            paddingBottom: 4,
+                            marginBottom: 8,
+                        }}
+                    >
+                        <Tabs.Tab
+                            value="analysis"
+                            leftSection={<Icon path={mdiChartBox} size={0.85} />}
+                        >
                             Anomaly Analysis
                         </Tabs.Tab>
-                        <Tabs.Tab value="submissions" leftSection={<Icon path={mdiFlagVariant} size={0.8} />}>
-                            Submissions & Flags
+                        <Tabs.Tab
+                            value="submissions"
+                            leftSection={<Icon path={mdiFlagVariant} size={0.85} />}
+                        >
+                            Submissions &amp; Flags
                         </Tabs.Tab>
                     </Tabs.List>
 
-                    <Tabs.Panel value="analysis" pt="md">
-                        <Stack gap="md">
-                            <CheatInfo report={report || null} mutate={mutate} />
-                        </Stack>
+                    <Tabs.Panel value="analysis" pt="xs">
+                        <CheatInfo report={report || null} mutate={mutate} />
                     </Tabs.Panel>
 
-                    <Tabs.Panel value="submissions" pt="md">
+                    <Tabs.Panel value="submissions" pt="xs">
                         <CheatSubmissionLog gameId={numId} />
                     </Tabs.Panel>
                 </Tabs>

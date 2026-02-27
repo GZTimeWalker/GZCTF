@@ -1,3 +1,4 @@
+/* ── Sort control button ─────────────────────────────── */
 .control {
     width: 100%;
     padding: var(--mantine-spacing-xs);
@@ -14,19 +15,76 @@
     border-radius: 21px;
 }
 
+/* ── Summary stat cards ──────────────────────────────── */
 .summaryCard {
-    transition: transform 140ms ease, box-shadow 140ms ease;
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    cursor: pointer;
 }
 
 .summaryCard:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--mantine-shadow-sm);
+    transform: translateY(-3px);
+    box-shadow: var(--mantine-shadow-md);
 }
 
+.summaryCardActive {
+    outline: 2px solid var(--mantine-color-red-5);
+    outline-offset: 2px;
+}
+
+/* Score ring progress bar container */
+.scoreBar {
+    height: 6px;
+    border-radius: 3px;
+    background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.scoreBarFill {
+    height: 6px;
+    border-radius: 3px;
+    transition: width 300ms ease;
+}
+
+/* ── Details readable box ────────────────────────────── */
 .detailsBox {
-    max-width: 46rem;
+    width: 100%;
+    overflow: hidden;
 }
 
+/* ── User badge wrap ─────────────────────────────────── */
 .userWrap {
     max-width: 16rem;
+}
+
+/* ── Section header area inside tab panels ───────────── */
+.panelHeader {
+    border-bottom: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+    padding-bottom: var(--mantine-spacing-sm);
+    margin-bottom: var(--mantine-spacing-sm);
+}
+
+/* ── Modal header gradient strip ────────────────────────*/
+.modalHeaderStrip {
+    height: 4px;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(90deg,
+            var(--mantine-color-red-6),
+            var(--mantine-color-orange-5),
+            var(--mantine-color-yellow-4));
+    margin: -1rem -1rem 1rem -1rem;
+}
+
+/* ── Empty state area ────────────────────────────────── */
+.emptyState {
+    padding: 2.5rem 1rem;
+    border-radius: var(--mantine-radius-md);
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-8));
+    border: 1px dashed light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-5));
+    text-align: center;
+}
+
+/* ── Inner tab list styling ──────────────────────────── */
+.innerTabList {
+    border-bottom: 2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
