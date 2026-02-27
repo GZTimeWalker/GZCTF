@@ -115,6 +115,53 @@ public class CheatReportController(
             .Where(s => s.GameId == id && s.Status == AnswerResult.Accepted)
             .ToListAsync(token);
 
+        var dynamicAttachmentInstances = await dbContext.GameInstances
+            .AsNoTracking()
+            .Where(i => i.Challenge.GameId == id && i.FlagContext != null)
+            .Select(i => new
+            {
+                TeamId = i.Participation.TeamId,
+                i.ChallengeId,
+                AttachmentType = i.FlagContext!.Attachment != null ? (FileType?)i.FlagContext.Attachment.Type : null,
+                LocalFileId = i.FlagContext!.Attachment != null ? i.FlagContext.Attachment.LocalFileId : null
+            })
+            .ToListAsync(token);
+
+        var dynamicLocalDownloadRequirement = dynamicAttachmentInstances
+            .GroupBy(i => (i.TeamId, i.ChallengeId))
+            .ToDictionary(
+                g => g.Key,
+                g => g.Any(i => i.AttachmentType == FileType.Local && i.LocalFileId != null));
+
+        var dynamicChallengeHasLocalAttachment = await dbContext.FlagContexts
+            .AsNoTracking()
+            .Where(f => f.ChallengeId != null && f.Challenge != null && f.Challenge.GameId == id && f.Attachment != null)
+            .Select(f => new
+            {
+                ChallengeId = f.ChallengeId!.Value,
+                AttachmentType = f.Attachment!.Type,
+                f.Attachment.LocalFileId
+            })
+            .ToListAsync(token);
+        var dynamicChallengeLocalRequirement = dynamicChallengeHasLocalAttachment
+            .GroupBy(f => f.ChallengeId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Any(f => f.AttachmentType == FileType.Local && f.LocalFileId != null));
+
+        bool RequiresLocalDownload(int teamId, GameChallenge challenge)
+        {
+            if (challenge.Type == ChallengeType.DynamicAttachment)
+            {
+                if (dynamicLocalDownloadRequirement.TryGetValue((teamId, challenge.Id), out var requiresDownload))
+                    return requiresDownload;
+
+                return dynamicChallengeLocalRequirement.GetValueOrDefault(challenge.Id);
+            }
+
+            return challenge.Attachment?.Type == FileType.Local && challenge.Attachment.LocalFileId != null;
+        }
+
         // Map Team -> Set<IP>
         var teamIps = new Dictionary<int, HashSet<string>>();
         var teamFingerprints = new Dictionary<int, HashSet<string>>();
@@ -570,10 +617,10 @@ public class CheatReportController(
             // Check 4: Solve Before Download
             // Flags attempts to solve an attachment-based challenge without ever downloading the file.
             // This suggests the answer was shared or obtained externally.
-            if (chal.Type.IsAttachment() || chal.AttachmentId != null)
+            if (RequiresLocalDownload(sub.TeamId, chal))
             {
                 var key = (sub.TeamId, sub.ChallengeId);
-                var hasDownload = teamDownloads.TryGetValue(key, out var dls) && dls.Any(d => d < sub.SubmitTimeUtc);
+                var hasDownload = teamDownloads.TryGetValue(key, out var dls) && dls.Any(d => d <= sub.SubmitTimeUtc);
                 
                 if (!hasDownload)
                 {
@@ -596,7 +643,7 @@ public class CheatReportController(
             if (chal.Type.IsContainer())
             {
                 var key = (sub.TeamId, sub.ChallengeId);
-                var hasStart = teamContainerStarts.TryGetValue(key, out var starts) && starts.Any(d => d < sub.SubmitTimeUtc);
+                var hasStart = teamContainerStarts.TryGetValue(key, out var starts) && starts.Any(d => d <= sub.SubmitTimeUtc);
                 
                 if (!hasStart)
                 {
@@ -703,44 +750,52 @@ public class CheatReportController(
                 
                 // 7a. Fast Solve (Open): Solved immediately after opening challenge
                 // This applies to ALL challenges.
-                if (teamChallengeOpens.TryGetValue(interactionKey, out var opTimesCheck) && opTimesCheck.Any())
+                if (teamChallengeOpens.TryGetValue(interactionKey, out var opTimesCheck))
                 {
-                    var firstOpen = opTimesCheck.Min();
-                    var durationOpen = sub.SubmitTimeUtc - firstOpen;
-                    if (durationOpen < TimeSpan.FromMinutes(2))
+                    var opensBeforeSolve = opTimesCheck.Where(t => t <= sub.SubmitTimeUtc).ToList();
+                    if (opensBeforeSolve.Count > 0)
                     {
-                         report.AbnormalSolves.Add(new AbnormalSolveResult
-                         {
-                             TeamId = sub.TeamId,
-                             TeamName = sub.TeamName,
-                             ChallengeId = sub.ChallengeId,
-                             ChallengeName = sub.ChallengeName,
-                             Type = SuspicionType.FastSolveOpen,
-                             SolveTime = sub.SubmitTimeUtc,
-                             Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationOpen.TotalSeconds:F1}s after opening it (opened at {firstOpen:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
-                         }); 
+                        var firstOpen = opensBeforeSolve.Min();
+                        var durationOpen = sub.SubmitTimeUtc - firstOpen;
+                        if (durationOpen < TimeSpan.FromMinutes(2))
+                        {
+                             report.AbnormalSolves.Add(new AbnormalSolveResult
+                             {
+                                 TeamId = sub.TeamId,
+                                 TeamName = sub.TeamName,
+                                 ChallengeId = sub.ChallengeId,
+                                 ChallengeName = sub.ChallengeName,
+                                 Type = SuspicionType.FastSolveOpen,
+                                 SolveTime = sub.SubmitTimeUtc,
+                                 Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationOpen.TotalSeconds:F1}s after opening it (opened at {firstOpen:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
+                             }); 
+                        }
                     }
                 }
 
                 // 7b. Fast Solve (Download): Solved immediately after downloading attachment
                 // Applies only if challenge has an attachment.
-                if ((chal.Type.IsAttachment() || chal.AttachmentId != null) && 
-                    teamDownloads.TryGetValue(interactionKey, out var dlTimesCheck) && dlTimesCheck.Any())
+                if (RequiresLocalDownload(sub.TeamId, chal) &&
+                    teamDownloads.TryGetValue(interactionKey, out var dlTimesCheck))
                 {
-                     var firstDl = dlTimesCheck.Min();
-                     var durationDl = sub.SubmitTimeUtc - firstDl;
-                     if (durationDl < TimeSpan.FromMinutes(2))
+                     var downloadsBeforeSolve = dlTimesCheck.Where(t => t <= sub.SubmitTimeUtc).ToList();
+                     if (downloadsBeforeSolve.Count > 0)
                      {
-                          report.AbnormalSolves.Add(new AbnormalSolveResult
-                          {
-                              TeamId = sub.TeamId,
-                              TeamName = sub.TeamName,
-                              ChallengeId = sub.ChallengeId,
-                              ChallengeName = sub.ChallengeName,
-                              Type = SuspicionType.FastSolveDownload,
-                              SolveTime = sub.SubmitTimeUtc,
-                              Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationDl.TotalSeconds:F1}s after downloading the attachment (downloaded at {firstDl:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
-                          });
+                         var firstDl = downloadsBeforeSolve.Min();
+                         var durationDl = sub.SubmitTimeUtc - firstDl;
+                         if (durationDl < TimeSpan.FromMinutes(2))
+                         {
+                              report.AbnormalSolves.Add(new AbnormalSolveResult
+                              {
+                                  TeamId = sub.TeamId,
+                                  TeamName = sub.TeamName,
+                                  ChallengeId = sub.ChallengeId,
+                                  ChallengeName = sub.ChallengeName,
+                                  Type = SuspicionType.FastSolveDownload,
+                                  SolveTime = sub.SubmitTimeUtc,
+                                  Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationDl.TotalSeconds:F1}s after downloading the attachment (downloaded at {firstDl:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
+                              });
+                         }
                      }
                 }
 
@@ -748,22 +803,26 @@ public class CheatReportController(
                 // Applies if challenge is a container type AND has NO attachment (Blackbox).
                 // If it has both, we generally prioritize Download check, but checking container for blackbox is key.
                 if (chal.Type.IsContainer() && chal.AttachmentId == null &&
-                    teamContainerStarts.TryGetValue(interactionKey, out var stTimesCheck) && stTimesCheck.Any())
+                    teamContainerStarts.TryGetValue(interactionKey, out var stTimesCheck))
                 {
-                     var firstStart = stTimesCheck.Min();
-                     var durationStart = sub.SubmitTimeUtc - firstStart;
-                     if (durationStart < TimeSpan.FromMinutes(2))
+                     var startsBeforeSolve = stTimesCheck.Where(t => t <= sub.SubmitTimeUtc).ToList();
+                     if (startsBeforeSolve.Count > 0)
                      {
-                          report.AbnormalSolves.Add(new AbnormalSolveResult
-                          {
-                              TeamId = sub.TeamId,
-                              TeamName = sub.TeamName,
-                              ChallengeId = sub.ChallengeId,
-                              ChallengeName = sub.ChallengeName,
-                              Type = SuspicionType.FastSolveContainer,
-                              SolveTime = sub.SubmitTimeUtc,
-                              Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationStart.TotalSeconds:F1}s after starting the container (started at {firstStart:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
-                          });
+                         var firstStart = startsBeforeSolve.Min();
+                         var durationStart = sub.SubmitTimeUtc - firstStart;
+                         if (durationStart < TimeSpan.FromMinutes(2))
+                         {
+                              report.AbnormalSolves.Add(new AbnormalSolveResult
+                              {
+                                  TeamId = sub.TeamId,
+                                  TeamName = sub.TeamName,
+                                  ChallengeId = sub.ChallengeId,
+                                  ChallengeName = sub.ChallengeName,
+                                  Type = SuspicionType.FastSolveContainer,
+                                  SolveTime = sub.SubmitTimeUtc,
+                                  Details = $"Target {TeamRef(sub.TeamId)} solved challenge '{sub.ChallengeName}' in {durationStart.TotalSeconds:F1}s after starting the container (started at {firstStart:MM/dd HH:mm:ss}, solved at {sub.SubmitTimeUtc:MM/dd HH:mm:ss})."
+                              });
+                         }
                      }
                 }
             }
