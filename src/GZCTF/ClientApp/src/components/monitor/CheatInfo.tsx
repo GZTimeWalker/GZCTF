@@ -28,7 +28,8 @@ import {
     Progress,
     Popover,
 } from '@mantine/core'
-import { FC, useState, useMemo } from 'react'
+import { FC, useState, useMemo, useCallback } from 'react'
+import { useClipboard } from '@mantine/hooks'
 import { Icon } from '@mdi/react'
 import {
     mdiCheckCircle,
@@ -47,6 +48,13 @@ import {
     mdiOpenInNew,
     mdiDownload,
     mdiCubeOutline,
+    mdiContentCopy,
+    mdiCheck,
+    mdiFingerprint,
+    mdiSwapHorizontal,
+    mdiRefresh,
+    mdiLockAlert,
+    mdiChevronRight,
 } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
@@ -121,13 +129,13 @@ interface DetailLine {
     value: string
 }
 
-const IP_TYPE_META: Record<string, { label: string; color: string }> = {
-    SharedIP: { label: 'Shared IP', color: 'orange' },
-    SharedFingerprint: { label: 'Shared Fingerprint', color: 'orange' },
-    FingerprintChurn: { label: 'Fingerprint Churn', color: 'yellow' },
-    IpChurn: { label: 'IP Churn', color: 'yellow' },
-    CrossTeamIP: { label: 'Cross-Team IP', color: 'red' },
-    TokenAbuse: { label: 'Token Abuse', color: 'red' },
+const IP_TYPE_META: Record<string, { label: string; color: string; icon: string }> = {
+    SharedIP: { label: 'Shared IP', color: 'orange', icon: mdiIpNetwork },
+    SharedFingerprint: { label: 'Shared Fingerprint', color: 'violet', icon: mdiFingerprint },
+    FingerprintChurn: { label: 'FP Churn', color: 'yellow', icon: mdiRefresh },
+    IpChurn: { label: 'IP Churn', color: 'yellow', icon: mdiRefresh },
+    CrossTeamIP: { label: 'Cross-Team IP', color: 'red', icon: mdiSwapHorizontal },
+    TokenAbuse: { label: 'Token Abuse', color: 'red', icon: mdiLockAlert },
 }
 
 const parseDetailLines = (details?: string | null): DetailLine[] => {
@@ -159,50 +167,80 @@ const parseDetailLines = (details?: string | null): DetailLine[] => {
         })
 }
 
-const ReadableDetails: FC<{ details?: string | null; maxRows?: number }> = ({ details, maxRows = 4 }) => {
+const CopyButton: FC<{ value: string }> = ({ value }) => {
+    const clipboard = useClipboard({ timeout: 1500 })
+    return (
+        <Tooltip label={clipboard.copied ? 'Copied!' : 'Copy'} withArrow position="top">
+            <ActionIcon
+                size={14}
+                variant="subtle"
+                color={clipboard.copied ? 'green' : 'gray'}
+                onClick={(e) => { e.stopPropagation(); clipboard.copy(value) }}
+                style={{ flexShrink: 0 }}
+            >
+                <Icon path={clipboard.copied ? mdiCheck : mdiContentCopy} size={0.5} />
+            </ActionIcon>
+        </Tooltip>
+    )
+}
+
+const ReadableDetails: FC<{ details?: string | null; maxRows?: number }> = ({ details, maxRows = 3 }) => {
     const lines = parseDetailLines(details)
-    if (lines.length === 0) return <Text size="xs" c="dimmed">-</Text>
+    if (lines.length === 0) return <Text size="xs" c="dimmed">—</Text>
 
-    const visibleLines = lines.slice(0, maxRows)
-    const hiddenLines = lines.slice(maxRows)
-    const hasMore = hiddenLines.length > 0
+    // Find summary line (first unlabeled or label='Summary')
+    const summaryLine = lines.find(l => !l.label || l.label.toLowerCase() === 'summary')
+    const kvLines = lines.filter(l => l !== summaryLine && l.label)
+    const visibleKv = kvLines.slice(0, maxRows)
+    const hiddenKv = kvLines.slice(maxRows)
+    const hasMore = hiddenKv.length > 0
 
-    const renderLine = (line: { label?: string; value: string }, idx: number) =>
-        line.label ? (
-            <Group key={idx} gap={6} align="flex-start" wrap="nowrap">
-                <Text size="xs" fw={700} c="dimmed" style={{ minWidth: 76, flexShrink: 0 }}>
-                    {line.label}
-                </Text>
-                <Text size="xs" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+    const renderKvLine = (line: DetailLine, idx: number) => (
+        <Group key={idx} gap={4} align="flex-start" wrap="nowrap" style={{ minWidth: 0 }}>
+            <Text size="xs" fw={600} c="dimmed" style={{ minWidth: 68, flexShrink: 0, lineHeight: 1.4 }}>
+                {line.label}
+            </Text>
+            <Tooltip label={line.value} withArrow multiline maw={340} disabled={line.value.length <= 40}>
+                <Text
+                    size="xs"
+                    c="dimmed"
+                    style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, lineHeight: 1.4 }}
+                >
                     {line.value}
                 </Text>
-            </Group>
-        ) : (
-            <Text key={idx} size="xs" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
-                {line.value}
-            </Text>
-        )
+            </Tooltip>
+            {line.value.length > 20 && <CopyButton value={line.value} />}
+        </Group>
+    )
 
     return (
-        <Stack gap={3} className={classes.detailsBox} style={{ maxWidth: '100%', overflow: 'hidden' }}>
-            {visibleLines.map(renderLine)}
+        <Stack gap={2} className={classes.detailsBox} style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            {/* Summary line — prominent */}
+            {summaryLine && (
+                <Text size="xs" fw={700} c="blue.4" style={{ lineHeight: 1.4 }}>
+                    {summaryLine.value}
+                </Text>
+            )}
+            {/* Key-value lines */}
+            {visibleKv.map(renderKvLine)}
+            {/* Expand popover for hidden lines */}
             {hasMore && (
-                <Popover width={360} position="left" withArrow shadow="md">
+                <Popover width={400} position="bottom-end" withArrow shadow="lg" withinPortal>
                     <Popover.Target>
-                        <Text
-                            size="xs"
-                            c="blue"
-                            fw={600}
-                            style={{ cursor: 'pointer', userSelect: 'none' }}
-                        >
-                            +{hiddenLines.length} more — click to expand
-                        </Text>
+                        <Group gap={3} style={{ cursor: 'pointer', userSelect: 'none' }} align="center">
+                            <Icon path={mdiChevronRight} size={0.55} color="var(--mantine-color-blue-5)" />
+                            <Text size="xs" c="blue" fw={600}>
+                                +{hiddenKv.length} more fields
+                            </Text>
+                        </Group>
                     </Popover.Target>
-                    <Popover.Dropdown>
-                        <Stack gap={4}>
-                            <Text size="xs" fw={700} c="dimmed" mb={2}>All Details</Text>
-                            <Divider />
-                            {lines.map(renderLine)}
+                    <Popover.Dropdown p="sm">
+                        <Stack gap={6}>
+                            <Group justify="space-between" pb={4} mb={2} style={{ borderBottom: '1px solid var(--mantine-color-dark-4)' }}>
+                                <Text size="xs" fw={700} c="dimmed">All Fields</Text>
+                                {summaryLine && <Text size="xs" c="blue.4" fw={600}>{summaryLine.value}</Text>}
+                            </Group>
+                            {kvLines.map(renderKvLine)}
                         </Stack>
                     </Popover.Dropdown>
                 </Popover>
@@ -284,6 +322,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const [ipSearch, setIpSearch] = useState('')
     const [solveSearch, setSolveSearch] = useState('')
     const [collusionSearch, setCollusionSearch] = useState('')
+    const [suspSearch, setSuspSearch] = useState('')
 
     // Pair selection for drill-down
     const [teamAId, setTeamAId] = useState<number | null>(null)
@@ -366,8 +405,15 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
 
     const sortedSuspicionList = useMemo(() => {
         if (!report?.suspicionList) return []
-        return sortData(report.suspicionList, suspSort)
-    }, [report?.suspicionList, suspSort])
+        let data = report.suspicionList
+        if (suspSearch) {
+            const q = suspSearch.toLowerCase()
+            data = data.filter((item: any) =>
+                item.teamName?.toLowerCase().includes(q)
+            )
+        }
+        return sortData(data, suspSort)
+    }, [report?.suspicionList, suspSort, suspSearch])
 
     const handleSort = (setSort: any, currentSort: any, key: string) => {
         const direction = currentSort.key === key && currentSort.direction === 'asc' ? 'desc' : 'asc'
@@ -732,9 +778,20 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                             <Group gap="xs">
                                 <Title order={4}>Suspicion Rankings</Title>
                                 <Badge variant="light" color="red">
-                                    {report?.suspicionList?.length ?? 0}
+                                    {sortedSuspicionList.length}
+                                    {suspSearch && report?.suspicionList?.length !== sortedSuspicionList.length && (
+                                        <> / {report?.suspicionList?.length ?? 0}</>
+                                    )}
                                 </Badge>
                             </Group>
+                            <TextInput
+                                placeholder="Search team name..."
+                                leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                                value={suspSearch}
+                                onChange={(e) => setSuspSearch(e.currentTarget.value)}
+                                size="xs"
+                                w={250}
+                            />
                         </Group>
                         {report?.suspicionList && report.suspicionList.length > 0 ? (
                             <ScrollArea offsetScrollbars h={compactHeight}>
@@ -779,8 +836,12 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                                     <Table.Td style={{ textAlign: 'center' }}>
                                                         <Text size="xs" c="dimmed" fw={600}>#{index + 1}</Text>
                                                     </Table.Td>
-                                                    <Table.Td miw="16rem">
-                                                        <ScrollingText text={item.teamName || 'Unknown'} size="sm" fw={700} maw={280} />
+                                                    <Table.Td miw="14rem" style={{ maxWidth: '18rem', overflow: 'hidden' }}>
+                                                        <Tooltip label={item.teamName || 'Unknown'} withArrow disabled={(item.teamName || '').length <= 24} multiline maw={280}>
+                                                            <Text size="sm" fw={700} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                {item.teamName || 'Unknown'}
+                                                            </Text>
+                                                        </Tooltip>
                                                     </Table.Td>
                                                     <Table.Td miw="9rem">
                                                         <Tooltip label={`Risk score: ${score}`} withArrow>
@@ -881,19 +942,35 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                             const relTime = item.time ? dayjs(item.time).fromNow() : '-'
                                             return (
                                                 <Table.Tr key={index}>
-                                                    <Table.Td miw="11rem"><ScrollingText text={item.teamName || 'Unknown'} size="sm" fw={700} maw={210} /></Table.Td>
-                                                    <Table.Td w="11rem" miw="11rem">
-                                                        <Badge color={meta.color} size="xs" variant="light">{meta.label}</Badge>
+                                                    <Table.Td miw="10rem" style={{ maxWidth: '14rem', overflow: 'hidden' }}>
+                                                        <Tooltip label={item.teamName || 'Unknown'} withArrow disabled={(item.teamName || '').length <= 20} multiline maw={240}>
+                                                            <Text size="sm" fw={700} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                {item.teamName || 'Unknown'}
+                                                            </Text>
+                                                        </Tooltip>
                                                     </Table.Td>
-                                                    <Table.Td miw="14rem">
+                                                    <Table.Td w="10rem" miw="10rem">
+                                                        <Badge
+                                                            color={meta.color}
+                                                            size="xs"
+                                                            variant="light"
+                                                            leftSection={<Icon path={meta.icon} size={0.45} />}
+                                                        >
+                                                            {meta.label}
+                                                        </Badge>
+                                                    </Table.Td>
+                                                    <Table.Td miw="12rem">
                                                         <UsersCell users={item.userNames} relatedUsers={item.relatedUsers} />
                                                     </Table.Td>
                                                     <Table.Td miw="9rem" style={{ maxWidth: '14rem', overflow: 'hidden' }}>
-                                                        <Tooltip label={item.ip || '-'} withArrow disabled={!item.ip || item.ip.length <= 20} multiline maw={320}>
-                                                            <Text ff="monospace" fz="xs" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                                {item.ip || '-'}
-                                                            </Text>
-                                                        </Tooltip>
+                                                        <Group gap={4} wrap="nowrap">
+                                                            <Tooltip label={item.ip || '-'} withArrow disabled={!item.ip || item.ip.length <= 20} multiline maw={360}>
+                                                                <Text ff="monospace" fz="xs" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                                                    {item.ip || '-'}
+                                                                </Text>
+                                                            </Tooltip>
+                                                            {item.ip && <CopyButton value={item.ip} />}
+                                                        </Group>
                                                     </Table.Td>
                                                     <Table.Td miw="9rem">
                                                         <Tooltip label={absTime} withArrow>
@@ -963,8 +1040,20 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                             const relTime = dayjs(item.solveTime).fromNow()
                                             return (
                                                 <Table.Tr key={index}>
-                                                    <Table.Td miw="11rem"><ScrollingText text={item.teamName || 'Unknown'} size="sm" fw={700} maw={210} /></Table.Td>
-                                                    <Table.Td miw="13rem"><ScrollingText text={item.challengeName || 'Unknown'} size="sm" maw={240} /></Table.Td>
+                                                    <Table.Td miw="10rem" style={{ maxWidth: '14rem', overflow: 'hidden' }}>
+                                                        <Tooltip label={item.teamName || 'Unknown'} withArrow disabled={(item.teamName || '').length <= 20} multiline maw={240}>
+                                                            <Text size="sm" fw={700} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                {item.teamName || 'Unknown'}
+                                                            </Text>
+                                                        </Tooltip>
+                                                    </Table.Td>
+                                                    <Table.Td miw="12rem" style={{ maxWidth: '16rem', overflow: 'hidden' }}>
+                                                        <Tooltip label={item.challengeName || 'Unknown'} withArrow disabled={(item.challengeName || '').length <= 22} multiline maw={240}>
+                                                            <Text size="sm" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                {item.challengeName || 'Unknown'}
+                                                            </Text>
+                                                        </Tooltip>
+                                                    </Table.Td>
                                                     <Table.Td miw="9rem">
                                                         <Badge
                                                             color={typeColor}
@@ -1042,12 +1131,16 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                             const commonCount = item.commonSolves?.length ?? 0
                                             return (
                                                 <Table.Tr key={index}>
-                                                    <Table.Td miw="18rem">
-                                                        <Stack gap={2}>
+                                                    <Table.Td miw="16rem" style={{ maxWidth: '20rem', overflow: 'hidden' }}>
+                                                        <Stack gap={3}>
                                                             {item.teams?.map((team: CollusionTeamInfo, idx: number) => (
-                                                                <Group key={idx} gap={4} wrap="nowrap">
+                                                                <Group key={idx} gap={6} wrap="nowrap" style={{ minWidth: 0 }}>
                                                                     <Badge size="xs" variant="dot" color={idx === 0 ? 'blue' : 'grape'} />
-                                                                    <ScrollingText text={team.name} size="sm" fw={600} maw={280} />
+                                                                    <Tooltip label={team.name} withArrow disabled={(team.name || '').length <= 24} multiline maw={280}>
+                                                                        <Text size="sm" fw={600} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                            {team.name}
+                                                                        </Text>
+                                                                    </Tooltip>
                                                                 </Group>
                                                             ))}
                                                         </Stack>
@@ -1064,11 +1157,32 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                                         </Stack>
                                                     </Table.Td>
                                                     <Table.Td miw="14rem">
-                                                        <Tooltip label={item.commonSolves?.join(', ') || 'None'} withArrow disabled={commonCount === 0}>
-                                                            <Text fz="xs" lineClamp={2} style={{ cursor: commonCount > 0 ? 'help' : 'default' }}>
-                                                                {commonCount > 0 ? `${commonCount} solve${commonCount > 1 ? 's' : ''}: ${item.commonSolves?.slice(0, 2).join(', ')}${commonCount > 2 ? ` +${commonCount - 2} more` : ''}` : '-'}
-                                                            </Text>
-                                                        </Tooltip>
+                                                        {commonCount === 0 ? (
+                                                            <Text fz="xs" c="dimmed">—</Text>
+                                                        ) : (
+                                                            <Group gap={4} wrap="wrap">
+                                                                {item.commonSolves?.slice(0, 3).map((s: string, i: number) => (
+                                                                    <Badge key={i} size="xs" variant="light" color="grape">{s}</Badge>
+                                                                ))}
+                                                                {commonCount > 3 && (
+                                                                    <Popover width={300} position="top" withArrow shadow="md" withinPortal>
+                                                                        <Popover.Target>
+                                                                            <Badge size="xs" variant="outline" color="grape" style={{ cursor: 'pointer' }}>
+                                                                                +{commonCount - 3} more
+                                                                            </Badge>
+                                                                        </Popover.Target>
+                                                                        <Popover.Dropdown>
+                                                                            <Text size="xs" fw={700} c="dimmed" mb={6}>All {commonCount} Common Challenges</Text>
+                                                                            <Group gap={4} wrap="wrap">
+                                                                                {item.commonSolves?.map((s: string, i: number) => (
+                                                                                    <Badge key={i} size="xs" variant="light" color="grape">{s}</Badge>
+                                                                                ))}
+                                                                            </Group>
+                                                                        </Popover.Dropdown>
+                                                                    </Popover>
+                                                                )}
+                                                            </Group>
+                                                        )}
                                                     </Table.Td>
                                                     <Table.Td style={{ maxWidth: '28rem', overflow: 'hidden' }}><ReadableDetails details={item.details} maxRows={3} /></Table.Td>
                                                     <Table.Td style={{ textAlign: 'center' }}>

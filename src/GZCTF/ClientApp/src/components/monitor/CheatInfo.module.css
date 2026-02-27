@@ -50,11 +50,18 @@
 .detailsBox {
     width: 100%;
     overflow: hidden;
+    padding-left: 4px;
+    border-left: 2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-5));
+}
+
+.detailsBox:hover {
+    border-left-color: var(--mantine-color-blue-5);
+    transition: border-left-color 200ms ease;
 }
 
 /* ── User badge wrap ─────────────────────────────────── */
 .userWrap {
-    max-width: 16rem;
+    max-width: 14rem;
 }
 
 /* ── Section header area inside tab panels ───────────── */
