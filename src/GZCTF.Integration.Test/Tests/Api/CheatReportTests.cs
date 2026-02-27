@@ -1235,6 +1235,124 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task AttachmentDownload_RemoteRedirect_ShouldDetectTokenAbuse_SecureToken()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "RemoteSecureToken Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Remote Secure Chal", "flag{remote-secure}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        const string remoteUrl = "https://example.com/remote-secure.bin";
+        chal!.FileName = "remote-secure.bin";
+        chal.Attachment = new Attachment
+        {
+            Type = FileType.Remote,
+            RemoteUrl = remoteUrl
+        };
+        await context.SaveChangesAsync();
+
+        var uVictim = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tVictim = await TestDataSeeder.CreateTeamAsync(factory.Services, uVictim.Id, "RemoteVictims");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tVictim.Id, uVictim.Id);
+
+        var uAttacker = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var tAttacker = await TestDataSeeder.CreateTeamAsync(factory.Services, uAttacker.Id, "RemoteAttackers");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, tAttacker.Id, uAttacker.Id);
+
+        using var victimClient = factory.CreateClient();
+        await victimClient.PostAsJsonAsync("/api/Account/Login", new { UserName = uVictim.UserName, Password = "Test@123" });
+        var victimDetail = await victimClient.GetFromJsonAsync<ChallengeDetailModel>($"/api/Game/{game.Id}/Challenges/{chal.Id}");
+        var stolenUrl = victimDetail?.Context.Url;
+
+        Assert.False(string.IsNullOrWhiteSpace(stolenUrl));
+        Assert.Contains("/assets/remote/", stolenUrl, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/s/", stolenUrl, StringComparison.OrdinalIgnoreCase);
+
+        using var attackerClient = factory.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+        await attackerClient.PostAsJsonAsync("/api/Account/Login", new { UserName = uAttacker.UserName, Password = "Test@123" });
+        var downloadResponse = await attackerClient.GetAsync(stolenUrl);
+
+        Assert.Equal(HttpStatusCode.Found, downloadResponse.StatusCode);
+        Assert.NotNull(downloadResponse.Headers.Location);
+        Assert.Equal(remoteUrl, downloadResponse.Headers.Location!.ToString());
+
+        context.ChangeTracker.Clear();
+        var evt = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
+            .OrderByDescending(e => e.PublishTimeUtc)
+            .FirstOrDefaultAsync();
+
+        Assert.NotNull(evt);
+        Assert.Equal(tAttacker.Id, evt.TeamId);
+        Assert.Equal(uAttacker.Id, evt.UserId);
+        var metadata = ParseDownloadMetadata(evt);
+        Assert.True(metadata.TokenAbuse);
+        Assert.Equal("secure", metadata.TokenType);
+        Assert.Equal(chal.Id, metadata.ChallengeId);
+        Assert.Equal(tAttacker.Id, metadata.ActorTeamId);
+        Assert.Equal(tVictim.Id, metadata.TokenSourceTeamId);
+        Assert.Equal(tVictim.Name, metadata.TokenSourceTeamName);
+        Assert.Equal(uVictim.UserName, metadata.TokenSourceUserName);
+
+        using var monitorClient = factory.CreateClient();
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        await monitorClient.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+        var reportResponse = await monitorClient.GetAsync($"/api/game/{game.Id}/cheatreport");
+        reportResponse.EnsureSuccessStatusCode();
+        var report = await reportResponse.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.IpAnalysis, i => i.TeamId == tAttacker.Id && i.Type == SuspicionType.TokenAbuse && i.Details.Contains(tVictim.Name));
+    }
+
+    [Fact]
+    public async Task AttachmentDownload_RemoteRedirect_ShouldRejectInvalidSecureToken()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "RemoteInvalidToken Game " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Remote Invalid Token", "flag{remote-invalid}");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        chal!.FileName = "remote-invalid.bin";
+        chal.Attachment = new Attachment
+        {
+            Type = FileType.Remote,
+            RemoteUrl = "https://example.com/remote-invalid.bin"
+        };
+        await context.SaveChangesAsync();
+        Assert.NotNull(chal.AttachmentId);
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "RemoteInvalidTeam");
+        await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var invalidToken = WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray());
+        using var client = factory.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = user.UserName, Password = "Test@123" });
+        var response = await client.GetAsync($"/Assets/remote/{chal.AttachmentId}/s/{invalidToken}/{chal.FileName}");
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+
+        context.ChangeTracker.Clear();
+        var downloadEvents = await context.GameEvents
+            .Where(e => e.GameId == game.Id && e.Type == EventType.Download)
+            .ToListAsync();
+        var hasDownloadLog = downloadEvents.Any(e => e.Values is { Count: > 0 } && e.Values[0] == chal.Id.ToString());
+        Assert.False(hasDownloadLog);
+    }
+
+    [Fact]
     public async Task AttachmentDownload_ShouldRejectInvalidSecureToken()
     {
         using var scope = factory.Services.CreateScope();

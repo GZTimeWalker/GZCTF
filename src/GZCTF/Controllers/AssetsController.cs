@@ -79,6 +79,38 @@ public class AssetsController(
         return await ServeFile(hash, filename, token, requireValidSecureToken: true, cancellationToken);
     }
 
+    /// <summary>
+    /// Remote attachment retrieval interface
+    /// </summary>
+    /// <param name="attachmentId">Attachment ID</param>
+    /// <param name="filename">Download filename</param>
+    /// <param name="token"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpGet("[controller]/remote/{attachmentId:int}/{filename:minlength(1)}")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetRemoteFile(int attachmentId, string filename, [FromQuery] string? token, CancellationToken cancellationToken)
+    {
+        return await ServeRemoteFile(attachmentId, filename, token, requireValidSecureToken: false, cancellationToken);
+    }
+
+    /// <summary>
+    /// Remote attachment retrieval interface with secure path token
+    /// </summary>
+    /// <param name="attachmentId">Attachment ID</param>
+    /// <param name="token">Secure Token</param>
+    /// <param name="filename">Download filename</param>
+    /// <param name="cancellationToken"></param>
+    [HttpGet("[controller]/remote/{attachmentId:int}/s/{token}/{filename:minlength(1)}")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetRemoteFileWithToken(int attachmentId, string token, string filename, CancellationToken cancellationToken)
+    {
+        return await ServeRemoteFile(attachmentId, filename, token, requireValidSecureToken: true, cancellationToken);
+    }
+
     private async Task<IActionResult> ServeFile(
         string hash,
         string filename,
@@ -98,7 +130,7 @@ public class AssetsController(
                 StatusCodes.Status404NotFound));
         }
 
-        var accessContext = await BuildDownloadAccessContext(hash, User, token, cancellationToken);
+        var accessContext = await BuildDownloadAccessContextByHash(hash, User, token, cancellationToken);
         if (!IsDownloadAllowed(accessContext, User, requireValidSecureToken))
             return Forbid();
 
@@ -114,6 +146,45 @@ public class AssetsController(
         var etag = new EntityTagHeaderValue($"\"{hash[8..16]}\"");
 
         return File(stream, contentType, filename, blob.LastModificationTime, etag);
+    }
+
+    private async Task<IActionResult> ServeRemoteFile(
+        int attachmentId,
+        string filename,
+        string? token,
+        bool requireValidSecureToken,
+        CancellationToken cancellationToken)
+    {
+        var remoteAttachment = await context.Attachments
+            .AsNoTracking()
+            .Where(a => a.Id == attachmentId && a.Type == FileType.Remote && !string.IsNullOrWhiteSpace(a.RemoteUrl))
+            .Select(a => a.RemoteUrl)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(remoteAttachment))
+        {
+            var ip = HttpContext.Connection.RemoteIpAddress;
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Assets_FileNotFound), $"remote:{attachmentId}", filename], ip,
+                TaskStatus.NotFound,
+                LogLevel.Warning);
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.File_NotFound)],
+                StatusCodes.Status404NotFound));
+        }
+
+        if (!Uri.TryCreate(remoteAttachment, UriKind.Absolute, out var remoteUri) ||
+            (remoteUri.Scheme != Uri.UriSchemeHttp && remoteUri.Scheme != Uri.UriSchemeHttps))
+        {
+            logger.LogWarning("Invalid remote attachment URL for attachment {AttachmentId}: {RemoteUrl}", attachmentId, remoteAttachment);
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Assets_IOError)]));
+        }
+
+        var accessContext = await BuildDownloadAccessContextByAttachmentId(attachmentId, User, token, cancellationToken);
+        if (!IsDownloadAllowed(accessContext, User, requireValidSecureToken))
+            return Forbid();
+
+        await LogDownloadAsync(accessContext, User, token, cancellationToken);
+
+        return Redirect(remoteAttachment);
     }
     
     /// <summary>
@@ -201,7 +272,7 @@ public class AssetsController(
     private sealed record SecureTokenContext(Guid? UserId, string? UserName, bool IsValid);
 
     private sealed record DownloadAccessContext(
-        string Hash,
+        string TargetIdentifier,
         Guid? ActorUserId,
         SecureTokenContext SecureToken,
         List<DownloadTarget> Targets,
@@ -209,18 +280,50 @@ public class AssetsController(
         Dictionary<int, Participation> StaticTokenParticipations,
         Dictionary<int, Participation> SecureTokenParticipations);
 
-    private async Task<DownloadAccessContext> BuildDownloadAccessContext(
+    private async Task<DownloadAccessContext> BuildDownloadAccessContextByHash(
         string hash,
         ClaimsPrincipal? user,
         string? token,
         CancellationToken cancellationToken)
     {
+        return await BuildDownloadAccessContextCore(
+            DownloadTokenTarget.ForLocalHash(hash),
+            user,
+            token,
+            ResolveDownloadTargetsByHash,
+            hash,
+            cancellationToken);
+    }
+
+    private async Task<DownloadAccessContext> BuildDownloadAccessContextByAttachmentId(
+        int attachmentId,
+        ClaimsPrincipal? user,
+        string? token,
+        CancellationToken cancellationToken)
+    {
+        return await BuildDownloadAccessContextCore(
+            DownloadTokenTarget.ForRemoteAttachment(attachmentId),
+            user,
+            token,
+            ResolveDownloadTargetsByAttachmentId,
+            attachmentId,
+            cancellationToken);
+    }
+
+    private async Task<DownloadAccessContext> BuildDownloadAccessContextCore<TTarget>(
+        string targetIdentifier,
+        ClaimsPrincipal? user,
+        string? token,
+        Func<TTarget, CancellationToken, Task<List<DownloadTarget>>> targetResolver,
+        TTarget targetValue,
+        CancellationToken cancellationToken)
+    {
         var actorUserId = await ResolveActorUserId(user, cancellationToken);
-        var secureToken = await ParseSecureToken(token, hash, cancellationToken);
-        var targets = await ResolveDownloadTargets(hash, cancellationToken);
+        var secureToken = await ParseSecureToken(token, targetIdentifier, cancellationToken);
+        var targets = await targetResolver(targetValue, cancellationToken);
 
         if (targets.Count == 0)
-            return new(hash, actorUserId, secureToken, targets, [], [], []);
+            return new(targetIdentifier, actorUserId, secureToken, targets, [], [], []);
 
         var gameIds = targets.Select(t => t.GameId).Distinct().ToArray();
         var actorParticipations = await GetParticipationsByUser(gameIds, actorUserId, cancellationToken);
@@ -228,7 +331,7 @@ public class AssetsController(
         var secureTokenParticipations = await GetParticipationsByUser(gameIds, secureToken.UserId, cancellationToken);
 
         return new(
-            hash,
+            targetIdentifier,
             actorUserId,
             secureToken,
             targets,
@@ -380,7 +483,7 @@ public class AssetsController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to log download for hash {Hash}", accessContext.Hash);
+            logger.LogError(ex, "Failed to log download for target {TargetIdentifier}", accessContext.TargetIdentifier);
         }
     }
 
@@ -403,7 +506,7 @@ public class AssetsController(
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    private async Task<SecureTokenContext> ParseSecureToken(string? token, string hash, CancellationToken cancellationToken)
+    private async Task<SecureTokenContext> ParseSecureToken(string? token, string expectedTarget, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(token) || !TryUnprotectTokenPayload(token, out var payload))
             return new(null, null, false);
@@ -412,7 +515,7 @@ public class AssetsController(
         if (parts.Length != 4 || parts[0] != "v1")
             return new(null, null, false);
 
-        if (!string.Equals(parts[1], hash, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(parts[1], expectedTarget, StringComparison.OrdinalIgnoreCase))
             return new(null, null, false);
 
         if (!long.TryParse(parts[3], out var expiryTicks) || DateTimeOffset.UtcNow.Ticks > expiryTicks)
@@ -455,7 +558,7 @@ public class AssetsController(
         }
     }
 
-    private async Task<List<DownloadTarget>> ResolveDownloadTargets(string hash, CancellationToken cancellationToken)
+    private async Task<List<DownloadTarget>> ResolveDownloadTargetsByHash(string hash, CancellationToken cancellationToken)
     {
         var staticTargets = await context.GameChallenges
             .AsNoTracking()
@@ -469,6 +572,32 @@ public class AssetsController(
                         && i.FlagContext.Attachment != null
                         && i.FlagContext.Attachment.LocalFile != null
                         && i.FlagContext.Attachment.LocalFile.Hash == hash)
+            .Select(i => new DownloadTarget(
+                i.Challenge.GameId,
+                i.ChallengeId,
+                i.Challenge.Title,
+                i.Participation.TeamId,
+                i.Participation.Team.Name))
+            .ToListAsync(cancellationToken);
+
+        staticTargets.AddRange(dynamicTargets);
+        return staticTargets;
+    }
+
+    private async Task<List<DownloadTarget>> ResolveDownloadTargetsByAttachmentId(int attachmentId, CancellationToken cancellationToken)
+    {
+        var staticTargets = await context.GameChallenges
+            .AsNoTracking()
+            .Where(c => c.AttachmentId == attachmentId && c.Attachment != null && c.Attachment.Type == FileType.Remote)
+            .Select(c => new DownloadTarget(c.GameId, c.Id, c.Title, null, null))
+            .ToListAsync(cancellationToken);
+
+        var dynamicTargets = await context.GameInstances
+            .AsNoTracking()
+            .Where(i => i.FlagContext != null
+                        && i.FlagContext.AttachmentId == attachmentId
+                        && i.FlagContext.Attachment != null
+                        && i.FlagContext.Attachment.Type == FileType.Remote)
             .Select(i => new DownloadTarget(
                 i.Challenge.GameId,
                 i.ChallengeId,

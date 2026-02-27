@@ -967,28 +967,55 @@ public class GameController(
             }
         }
         
+        // Route remote attachments through internal redirect endpoint so token checks and download logs still apply.
+        if (instance.Attachment is { Type: FileType.Remote, Id: > 0 } remoteAttachment)
+        {
+            var remoteFileName = string.IsNullOrWhiteSpace(instance.Challenge.FileName)
+                ? "attachment"
+                : instance.Challenge.FileName!;
+            model.Context.Url = $"/assets/remote/{remoteAttachment.Id}/{Uri.EscapeDataString(remoteFileName)}";
+        }
+
         // Generate secure download link if attachment exists
         if (model.Context.Url is { } url &&
             url.StartsWith("/assets/", StringComparison.OrdinalIgnoreCase) &&
             context.User != null)
         {
-            var match = System.Text.RegularExpressions.Regex.Match(
+            string? tokenTarget = null;
+            string? prefix = null;
+
+            var hashMatch = System.Text.RegularExpressions.Regex.Match(
                 url,
                 "^/assets/([0-9a-f]{64})/",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
-            if (match.Success)
+            if (hashMatch.Success)
             {
-                var hash = match.Groups[1].Value;
+                tokenTarget = DownloadTokenTarget.ForLocalHash(hashMatch.Groups[1].Value);
+                prefix = hashMatch.Value;
+            }
+            else
+            {
+                var remoteMatch = System.Text.RegularExpressions.Regex.Match(
+                    url,
+                    "^/assets/remote/(\\d+)/",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+                if (remoteMatch.Success && int.TryParse(remoteMatch.Groups[1].Value, out var attachmentId))
+                {
+                    tokenTarget = DownloadTokenTarget.ForRemoteAttachment(attachmentId);
+                    prefix = remoteMatch.Value;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(tokenTarget) && !string.IsNullOrEmpty(prefix))
+            {
                 var userId = context.User.Id;
                 var expiration = DateTimeOffset.UtcNow.AddHours(1);
                 var expiry = expiration.Ticks;
-                var payload = $"v1|{hash}|{userId}|{expiry}";
+                var payload = $"v1|{tokenTarget}|{userId}|{expiry}";
                 var cipher = _protector.Protect(Encoding.UTF8.GetBytes(payload));
                 var secureToken = WebEncoders.Base64UrlEncode(cipher);
-
-                // Build secure URL from the matched prefix to avoid case/format mismatch.
-                var prefix = match.Value;
                 model.Context.Url = $"{prefix}s/{secureToken}/{url[prefix.Length..]}";
             }
         }
