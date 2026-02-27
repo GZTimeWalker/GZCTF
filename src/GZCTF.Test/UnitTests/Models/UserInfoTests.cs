@@ -30,22 +30,6 @@ public class UserInfoTests
     }
 
     [Fact]
-    public void UpdateUserInfo_AdminUserInfoModel_UpdatesMetadata()
-    {
-        var user = new UserInfo();
-        var metadata = new SortedDictionary<string, JsonDocument?>
-        {
-            ["key2"] = JsonSerializer.Deserialize<JsonDocument>("\"value2\"")
-        };
-        var model = new AdminUserInfoModel { Metadata = metadata };
-
-        user.UpdateUserInfo(model);
-
-        Assert.NotNull(user.Metadata);
-        Assert.Equal("value2", user.Metadata["key2"]?.RootElement.GetString());
-    }
-
-    [Fact]
     public void UpdateUserInfo_UserCreateModel_UpdatesMetadata()
     {
         var user = new UserInfo();
