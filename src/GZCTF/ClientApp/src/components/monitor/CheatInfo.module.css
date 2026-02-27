@@ -64,6 +64,17 @@
     max-width: 14rem;
 }
 
+/* ── SmartSearch filter option row ──────────────────────*/
+.filterOption {
+    border-radius: 4px;
+    width: 100%;
+    transition: background 120ms ease;
+}
+
+.filterOption:hover {
+    background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6));
+}
+
 /* ── Section header area inside tab panels ───────────── */
 .panelHeader {
     border-bottom: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));

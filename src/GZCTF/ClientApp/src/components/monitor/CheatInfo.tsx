@@ -28,7 +28,7 @@ import {
     Progress,
     Popover,
 } from '@mantine/core'
-import { FC, useState, useMemo, useCallback } from 'react'
+import { FC, useState, useMemo, useCallback, useRef } from 'react'
 import { useClipboard } from '@mantine/hooks'
 import { Icon } from '@mdi/react'
 import {
@@ -55,6 +55,7 @@ import {
     mdiRefresh,
     mdiLockAlert,
     mdiChevronRight,
+    mdiClose,
 } from '@mdi/js'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
@@ -295,6 +296,184 @@ const UsersCell: FC<{ users?: string[]; relatedUsers?: string[] }> = ({ users, r
     )
 }
 
+// \u2500\u2500 Discord-style smart search \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+interface FilterDef { field: string; description: string; color: string; icon: string; example: string }
+interface ParsedFilter { field: string; value: string }
+interface ParsedQuery { freeText: string; filters: ParsedFilter[] }
+
+function parseSearchQuery(q: string): ParsedQuery {
+    const filters: ParsedFilter[] = []
+    const regex = /@(\w+):"([^"]*)"|@(\w+):([^\s@]+)/g
+    const freeText = q
+        .replace(regex, (_m, f1, v1, f2, v2) => {
+            filters.push({ field: (f1 ?? f2).toLowerCase(), value: (v1 ?? v2).toLowerCase().trim() })
+            return ''
+        })
+        .replace(/\s+/g, ' ').trim()
+    return { freeText, filters }
+}
+
+const SmartSearch: FC<{
+    value: string
+    onChange: (v: string) => void
+    placeholder?: string
+    filterDefs: FilterDef[]
+    w?: number | string
+}> = ({ value, onChange, placeholder, filterDefs, w = 300 }) => {
+    const inputRef = useRef<HTMLInputElement>(null)
+    const [dropdownOpen, setDropdownOpen] = useState(false)
+    const [atQuery, setAtQuery] = useState('')
+
+    const matchingDefs = filterDefs.filter(
+        (f) => atQuery === '' || f.field.startsWith(atQuery.toLowerCase())
+    )
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const v = e.currentTarget.value
+        onChange(v)
+        const cursor = e.currentTarget.selectionStart ?? v.length
+        const atMatch = v.slice(0, cursor).match(/@(\w*)$/)
+        if (atMatch) { setAtQuery(atMatch[1]); setDropdownOpen(true) }
+        else setDropdownOpen(false)
+    }
+
+    const selectFilter = (field: string) => {
+        const cursor = inputRef.current?.selectionStart ?? value.length
+        const before = value.slice(0, cursor)
+        const after = value.slice(cursor)
+        const atIdx = before.lastIndexOf('@')
+        const newVal = before.slice(0, atIdx) + `@${field}:"` + after
+        onChange(newVal)
+        setDropdownOpen(false)
+        setTimeout(() => {
+            if (inputRef.current) {
+                const pos = atIdx + field.length + 3
+                inputRef.current.focus()
+                inputRef.current.setSelectionRange(pos, pos)
+            }
+        }, 0)
+    }
+
+    const removeFilter = (field: string, val: string) => {
+        const esc = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        const pat = new RegExp(`@${field}:"${esc}"|@${field}:${esc}`, 'gi')
+        onChange(value.replace(pat, '').replace(/\s+/g, ' ').trim())
+    }
+
+    const parsed = parseSearchQuery(value)
+
+    return (
+        <Stack gap={4} style={{ width: w }}>
+            <Popover
+                opened={dropdownOpen && matchingDefs.length > 0}
+                position="bottom-start"
+                shadow="md"
+                withinPortal
+                styles={{ dropdown: { padding: 6, minWidth: 300 } }}
+            >
+                <Popover.Target>
+                    <TextInput
+                        ref={inputRef}
+                        value={value}
+                        onChange={handleChange}
+                        placeholder={placeholder}
+                        size="xs"
+                        leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                        rightSection={
+                            value ? (
+                                <ActionIcon size={14} variant="subtle" color="gray"
+                                    onClick={() => { onChange(''); setDropdownOpen(false) }}>
+                                    <Icon path={mdiClose} size={0.6} />
+                                </ActionIcon>
+                            ) : undefined
+                        }
+                        onKeyDown={(e) => { if (e.key === 'Escape') { onChange(''); setDropdownOpen(false) } }}
+                        onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
+                        style={{ width: '100%' }}
+                    />
+                </Popover.Target>
+                <Popover.Dropdown>
+                    <Stack gap={2}>
+                        <Text size="xs" c="dimmed" px={4} pb={4} mb={2}
+                            style={{ borderBottom: '1px solid var(--mantine-color-dark-5)' }}>
+                            Type{' '}
+                            <Text span ff="monospace" c="blue.4" fw={700}>@field:"value"</Text>
+                            {' '}to filter
+                        </Text>
+                        {matchingDefs.map((f) => (
+                            <UnstyledButton key={f.field} onMouseDown={() => selectFilter(f.field)}
+                                className={classes.filterOption}>
+                                <Group gap={8} px={4} py={3}>
+                                    <Badge size="xs" color={f.color} variant="light"
+                                        leftSection={<Icon path={f.icon} size={0.4} />}
+                                        style={{ minWidth: 90, textAlign: 'center' }}>
+                                        @{f.field}
+                                    </Badge>
+                                    <Text size="xs" c="dimmed" style={{ flex: 1 }}>{f.description}</Text>
+                                    <Text size="xs" c="dark.2" ff="monospace" fs="italic">{f.example}</Text>
+                                </Group>
+                            </UnstyledButton>
+                        ))}
+                    </Stack>
+                </Popover.Dropdown>
+            </Popover>
+            {parsed.filters.length > 0 && (
+                <Group gap={4} wrap="wrap" px={2}>
+                    {parsed.filters.map((f, i) => {
+                        const def = filterDefs.find((d) => d.field === f.field)
+                        return (
+                            <Badge key={i} size="xs" color={def?.color ?? 'gray'} variant="filled"
+                                rightSection={
+                                    <ActionIcon size={10} variant="transparent" c="white"
+                                        onClick={() => removeFilter(f.field, f.value)}
+                                        style={{ marginLeft: 1 }}>
+                                        <Icon path={mdiClose} size={0.35} />
+                                    </ActionIcon>
+                                }
+                                style={{ cursor: 'default', paddingRight: 4 }}>
+                                @{f.field}:{f.value || '\u2026'}
+                            </Badge>
+                        )
+                    })}
+                    <Text size="xs" c="dimmed" style={{ cursor: 'pointer' }} onClick={() => onChange('')}>
+                        Clear all
+                    </Text>
+                </Group>
+            )}
+        </Stack>
+    )
+}
+
+// \u2500\u2500 Filter field definitions per tab \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+const IP_FILTER_DEFS: FilterDef[] = [
+    { field: 'type', description: 'Anomaly type', color: 'orange', icon: mdiShieldAlert, example: '"shared ip"' },
+    { field: 'ip', description: 'IP address / hash', color: 'blue', icon: mdiIpNetwork, example: '::ffff' },
+    { field: 'user', description: 'Username', color: 'cyan', icon: mdiAccountGroup, example: 'dimas' },
+    { field: 'time', description: 'Date or relative time', color: 'violet', icon: mdiClockOutline, example: '2025' },
+    { field: 'details', description: 'Any detail field text', color: 'gray', icon: mdiInformation, example: 'source teams' },
+]
+
+const SOLVE_FILTER_DEFS: FilterDef[] = [
+    { field: 'type', description: 'Solve anomaly type', color: 'orange', icon: mdiGhost, example: 'hoarding' },
+    { field: 'challenge', description: 'Challenge name', color: 'teal', icon: mdiCubeOutline, example: 'web1' },
+    { field: 'details', description: 'Detail field text', color: 'gray', icon: mdiInformation, example: 'seconds' },
+    { field: 'time', description: 'Solve date/time', color: 'violet', icon: mdiClockOutline, example: '2025-01' },
+]
+
+const COLLUSION_FILTER_DEFS: FilterDef[] = [
+    { field: 'team', description: 'Team name', color: 'blue', icon: mdiAccountGroup, example: 'aaa' },
+    { field: 'similarity', description: 'Min similarity % (e.g. >80)', color: 'red', icon: mdiAlertCircle, example: '>80' },
+    { field: 'details', description: 'Detail text', color: 'gray', icon: mdiInformation, example: 'ring' },
+]
+
+const SUSPICION_FILTER_DEFS: FilterDef[] = [
+    { field: 'team', description: 'Team name', color: 'blue', icon: mdiAccountGroup, example: 'ggg' },
+    { field: 'score', description: 'Min risk score (e.g. >500)', color: 'red', icon: mdiAlertCircle, example: '>500' },
+    { field: 'status', description: 'Participation status', color: 'green', icon: mdiCheckCircle, example: 'approved' },
+]
+
 export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
     const { t } = useTranslation()
     const { locale } = useLanguage()
@@ -359,16 +538,49 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
         if (!report?.ipAnalysis) return []
         let data = report.ipAnalysis
         if (ipSearch) {
-            const q = ipSearch.toLowerCase()
-            data = data.filter((item: any) =>
-                item.teamName?.toLowerCase().includes(q) ||
-                item.type?.toLowerCase().includes(q) ||
-                item.ip?.toLowerCase().includes(q) ||
-                item.details?.toLowerCase().includes(q) ||
-                item.userNames?.some((u: string) => u.toLowerCase().includes(q)) ||
-                item.relatedUsers?.some((u: string) => u.toLowerCase().includes(q)) ||
-                item.relatedTeams?.some((t: string) => t.toLowerCase().includes(q))
-            )
+            const { freeText, filters } = parseSearchQuery(ipSearch)
+            data = data.filter((item: any) => {
+                for (const f of filters) {
+                    switch (f.field) {
+                        case 'type': {
+                            const label = (IP_TYPE_META[item.type]?.label ?? '').toLowerCase()
+                            if (!item.type?.toLowerCase().includes(f.value) && !label.includes(f.value)) return false
+                            break
+                        }
+                        case 'ip':
+                            if (!item.ip?.toLowerCase().includes(f.value)) return false
+                            break
+                        case 'user':
+                            if (
+                                !item.userNames?.some((u: string) => u.toLowerCase().includes(f.value)) &&
+                                !item.relatedUsers?.some((u: string) => u.toLowerCase().includes(f.value))
+                            ) return false
+                            break
+                        case 'details':
+                            if (!item.details?.toLowerCase().includes(f.value)) return false
+                            break
+                        case 'time': {
+                            const abs = item.time ? dayjs(item.time).format('YYYY-MM-DD HH:mm:ss') : ''
+                            const rel = item.time ? dayjs(item.time).fromNow() : ''
+                            if (!abs.includes(f.value) && !rel.toLowerCase().includes(f.value)) return false
+                            break
+                        }
+                        default: break
+                    }
+                }
+                if (freeText) {
+                    const q = freeText.toLowerCase()
+                    if (
+                        !item.teamName?.toLowerCase().includes(q) &&
+                        !item.type?.toLowerCase().includes(q) &&
+                        !item.ip?.toLowerCase().includes(q) &&
+                        !item.details?.toLowerCase().includes(q) &&
+                        !item.userNames?.some((u: string) => u.toLowerCase().includes(q)) &&
+                        !item.relatedUsers?.some((u: string) => u.toLowerCase().includes(q))
+                    ) return false
+                }
+                return true
+            })
         }
         return sortData(data, ipSort)
     }, [report?.ipAnalysis, ipSort, ipSearch])
@@ -377,28 +589,74 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
         if (!report?.abnormalSolves) return []
         let data = report.abnormalSolves
         if (solveSearch) {
-            const q = solveSearch.toLowerCase()
-            data = data.filter((item: any) =>
-                item.teamName?.toLowerCase().includes(q) ||
-                item.challengeName?.toLowerCase().includes(q) ||
-                item.type?.toLowerCase().includes(q) ||
-                item.details?.toLowerCase().includes(q)
-            )
+            const { freeText, filters } = parseSearchQuery(solveSearch)
+            data = data.filter((item: any) => {
+                for (const f of filters) {
+                    switch (f.field) {
+                        case 'type':
+                            if (!item.type?.toLowerCase().includes(f.value)) return false
+                            break
+                        case 'challenge':
+                            if (!item.challengeName?.toLowerCase().includes(f.value)) return false
+                            break
+                        case 'details':
+                            if (!item.details?.toLowerCase().includes(f.value)) return false
+                            break
+                        case 'time': {
+                            const abs = dayjs(item.solveTime).format('YYYY-MM-DD HH:mm:ss')
+                            const rel = dayjs(item.solveTime).fromNow()
+                            if (!abs.includes(f.value) && !rel.toLowerCase().includes(f.value)) return false
+                            break
+                        }
+                        default: break
+                    }
+                }
+                if (freeText) {
+                    const q = freeText.toLowerCase()
+                    if (
+                        !item.teamName?.toLowerCase().includes(q) &&
+                        !item.challengeName?.toLowerCase().includes(q) &&
+                        !item.type?.toLowerCase().includes(q) &&
+                        !item.details?.toLowerCase().includes(q)
+                    ) return false
+                }
+                return true
+            })
         }
         return sortData(data, solveSort)
     }, [report?.abnormalSolves, solveSort, solveSearch])
-
-
 
     const sortedCollusionGroups = useMemo(() => {
         if (!report?.collusionGroups) return []
         let data = report.collusionGroups
         if (collusionSearch) {
-            const q = collusionSearch.toLowerCase()
-            data = data.filter((item: any) =>
-                item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(q)) ||
-                item.details?.toLowerCase().includes(q)
-            )
+            const { freeText, filters } = parseSearchQuery(collusionSearch)
+            data = data.filter((item: any) => {
+                for (const f of filters) {
+                    switch (f.field) {
+                        case 'team':
+                            if (!item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(f.value))) return false
+                            break
+                        case 'similarity': {
+                            const m = f.value.match(/^>?(\d+)$/)
+                            if (m && (item.averageRsi ?? 0) * 100 < parseInt(m[1])) return false
+                            break
+                        }
+                        case 'details':
+                            if (!item.details?.toLowerCase().includes(f.value)) return false
+                            break
+                        default: break
+                    }
+                }
+                if (freeText) {
+                    const q = freeText.toLowerCase()
+                    if (
+                        !item.teams?.some((t: CollusionTeamInfo) => t.name?.toLowerCase().includes(q)) &&
+                        !item.details?.toLowerCase().includes(q)
+                    ) return false
+                }
+                return true
+            })
         }
         return sortData(data, collusionSort)
     }, [report?.collusionGroups, collusionSort, collusionSearch])
@@ -407,10 +665,30 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
         if (!report?.suspicionList) return []
         let data = report.suspicionList
         if (suspSearch) {
-            const q = suspSearch.toLowerCase()
-            data = data.filter((item: any) =>
-                item.teamName?.toLowerCase().includes(q)
-            )
+            const { freeText, filters } = parseSearchQuery(suspSearch)
+            data = data.filter((item: any) => {
+                for (const f of filters) {
+                    switch (f.field) {
+                        case 'team':
+                            if (!item.teamName?.toLowerCase().includes(f.value)) return false
+                            break
+                        case 'score': {
+                            const m = f.value.match(/^>?(\d+)$/)
+                            if (m && (item.score ?? 0) < parseInt(m[1])) return false
+                            break
+                        }
+                        case 'status':
+                            if (!item.status?.toLowerCase().includes(f.value)) return false
+                            break
+                        default: break
+                    }
+                }
+                if (freeText) {
+                    const q = freeText.toLowerCase()
+                    if (!item.teamName?.toLowerCase().includes(q)) return false
+                }
+                return true
+            })
         }
         return sortData(data, suspSort)
     }, [report?.suspicionList, suspSort, suspSearch])
@@ -784,13 +1062,12 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                     )}
                                 </Badge>
                             </Group>
-                            <TextInput
-                                placeholder="Search team name..."
-                                leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                            <SmartSearch
                                 value={suspSearch}
-                                onChange={(e) => setSuspSearch(e.currentTarget.value)}
-                                size="xs"
-                                w={250}
+                                onChange={setSuspSearch}
+                                placeholder="Search or type @ for filters..."
+                                filterDefs={SUSPICION_FILTER_DEFS}
+                                w={320}
                             />
                         </Group>
                         {report?.suspicionList && report.suspicionList.length > 0 ? (
@@ -911,7 +1188,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                     {report?.ipAnalysis?.length ?? 0}
                                 </Badge>
                             </Group>
-                            <TextInput placeholder="Search team, user, IP, or details..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={ipSearch} onChange={(e) => setIpSearch(e.currentTarget.value)} size="xs" w={250} />
+                            <SmartSearch value={ipSearch} onChange={setIpSearch} placeholder="Search or type @ for filters..." filterDefs={IP_FILTER_DEFS} w={320} />
                         </Group>
                         {report?.ipAnalysis && report.ipAnalysis.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
@@ -1008,7 +1285,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                     {report?.abnormalSolves?.length ?? 0}
                                 </Badge>
                             </Group>
-                            <TextInput placeholder="Search team, challenge, or type..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={solveSearch} onChange={(e) => setSolveSearch(e.currentTarget.value)} size="xs" w={250} />
+                            <SmartSearch value={solveSearch} onChange={setSolveSearch} placeholder="Search or type @ for filters..." filterDefs={SOLVE_FILTER_DEFS} w={320} />
                         </Group>
                         {report?.abnormalSolves && report.abnormalSolves.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
@@ -1100,7 +1377,7 @@ export const CheatInfo: FC<CheatInfoProps> = ({ report, mutate }) => {
                                     {report?.collusionGroups?.length ?? 0}
                                 </Badge>
                             </Group>
-                            <TextInput placeholder="Search team name..." leftSection={<Icon path={mdiMagnify} size={0.8} />} value={collusionSearch} onChange={(e) => setCollusionSearch(e.currentTarget.value)} size="xs" w={250} />
+                            <SmartSearch value={collusionSearch} onChange={setCollusionSearch} placeholder="Search or type @ for filters..." filterDefs={COLLUSION_FILTER_DEFS} w={320} />
                         </Group>
                         {report?.collusionGroups && report.collusionGroups.length > 0 ? (
                             <ScrollArea offsetScrollbars h={roomyHeight}>
