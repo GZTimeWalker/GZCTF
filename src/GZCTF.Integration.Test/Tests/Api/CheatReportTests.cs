@@ -321,6 +321,55 @@ public class CheatReportTests(GZCTFApplicationFactory factory, ITestOutputHelper
     }
 
     [Fact]
+    public async Task GetCheatReport_ShouldDetectFastSolve_Container_WithRemoteAttachment()
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "FS Container RemoteAttachment " + TestDataSeeder.RandomName());
+        var chalSeeded = await TestDataSeeder.CreateDynamicChallengeAsync(factory.Services, game.Id, "Cont Remote Chal");
+        var chal = await context.GameChallenges.FindAsync(chalSeeded.Id);
+        Assert.NotNull(chal);
+
+        chal!.Attachment = new Attachment
+        {
+            Type = FileType.Remote,
+            RemoteUrl = "https://example.com/remote-container-src.zip"
+        };
+        await context.SaveChangesAsync();
+
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "ContainerRemoteTeam");
+        var participation = await TestDataSeeder.JoinGameAsync(factory.Services, game.Id, team.Id, user.Id);
+
+        var timeBase = DateTimeOffset.UtcNow.AddMinutes(-10);
+        await context.GameEvents.AddAsync(new GameEvent
+        {
+            GameId = game.Id,
+            Type = EventType.ContainerStart,
+            TeamId = team.Id,
+            UserId = user.Id,
+            PublishTimeUtc = timeBase,
+            Values = [chal.Id.ToString()]
+        });
+
+        await context.Submissions.AddAsync(CreateSub(game.Id, chal.Id, team.Id, participation.Id, user.Id, timeBase.AddSeconds(5)));
+        await context.SaveChangesAsync();
+
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", role: Role.Admin);
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/Account/Login", new { UserName = monitorUser.UserName, Password = "Test@123" });
+
+        var response = await client.GetAsync($"/api/game/{game.Id}/cheatreport");
+        response.EnsureSuccessStatusCode();
+        var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
+
+        Assert.NotNull(report);
+        Assert.Contains(report.AbnormalSolves,
+            s => s.TeamId == team.Id && s.ChallengeId == chal.Id && s.Type == SuspicionType.FastSolveContainer);
+    }
+
+    [Fact]
     public async Task GetCheatReport_ShouldNotFlagFastSolve_WhenInteractionsAreAfterSubmission()
     {
         using var scope = factory.Services.CreateScope();

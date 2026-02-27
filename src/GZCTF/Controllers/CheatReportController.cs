@@ -802,7 +802,7 @@ public class CheatReportController(
                 // 7c. Fast Solve (Container): Solved immediately after container start
                 // Applies if challenge is a container type AND has NO attachment (Blackbox).
                 // If it has both, we generally prioritize Download check, but checking container for blackbox is key.
-                if (chal.Type.IsContainer() && chal.AttachmentId == null &&
+                if (chal.Type.IsContainer() && !RequiresLocalDownload(sub.TeamId, chal) &&
                     teamContainerStarts.TryGetValue(interactionKey, out var stTimesCheck))
                 {
                      var startsBeforeSolve = stTimesCheck.Where(t => t <= sub.SubmitTimeUtc).ToList();
