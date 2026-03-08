@@ -40,6 +40,11 @@ enum CheatType {
   Owned = 'Owned',
 }
 
+const CHEAT_INFO_MISSING_VALUE = '__missing__'
+const CHEAT_SUBMISSION_SEPARATOR = '|'
+const CHEAT_SUBMISSION_AT = '@'
+const CHEAT_SUBMISSION_ARROW = '→'
+
 const CheatTypeMap = new Map([
   [
     CheatType.Submit,
@@ -151,16 +156,18 @@ const ToCheatSubmissionInfo = (info: CheatInfoModel, cheatType: CheatType = Chea
 const GetCheatSubmissionKey = (submissionInfo: CheatSubmissionInfo) =>
   [
     submissionInfo.cheatType,
-    submissionInfo.time?.unix() ?? 'time',
-    submissionInfo.submitTeam ?? 'submit-team',
-    submissionInfo.ownedTeam ?? 'owned-team',
-    submissionInfo.user ?? 'user',
-    submissionInfo.challenge ?? 'challenge',
-    submissionInfo.answer ?? 'answer',
-  ].join(':')
+    submissionInfo.time?.unix() ?? CHEAT_INFO_MISSING_VALUE,
+    submissionInfo.submitTeam ?? CHEAT_INFO_MISSING_VALUE,
+    submissionInfo.ownedTeam ?? CHEAT_INFO_MISSING_VALUE,
+    submissionInfo.user ?? CHEAT_INFO_MISSING_VALUE,
+    submissionInfo.challenge ?? CHEAT_INFO_MISSING_VALUE,
+  ].join(CHEAT_SUBMISSION_SEPARATOR)
 
 const FormatCheatTime = (time: dayjs.Dayjs | undefined, locale: string, format: string) =>
-  time ? dayjs(time).locale(locale).format(format) : '-'
+  time ? time.locale(locale).format(format) : '-'
+
+const FormatCheatSubmissionSummary = (submissionInfo: CheatSubmissionInfo, userLabel: string, teamLabel: string) =>
+  `${submissionInfo.user ?? userLabel} ${CHEAT_SUBMISSION_AT} ${submissionInfo.submitTeam ?? teamLabel} ${CHEAT_SUBMISSION_ARROW} ${submissionInfo.ownedTeam ?? teamLabel}`
 
 interface CheatDetailItemProps {
   label: string
@@ -206,7 +213,7 @@ const CheatSubmissionCard: FC<CheatSubmissionCardProps> = (props) => {
               </Badge>
             </Group>
             <Text fw="bold" className={misc.wordBreakAll}>
-              {`${submissionInfo.user ?? t('common.label.user')} @ ${submissionInfo.submitTeam ?? t('common.label.team')} → ${submissionInfo.ownedTeam ?? t('common.label.team')}`}
+              {FormatCheatSubmissionSummary(submissionInfo, t('common.label.user'), t('common.label.team'))}
             </Text>
           </Stack>
           <Text size="sm" fw="bold" ta="right" className={misc.wordBreakAll}>
@@ -358,9 +365,9 @@ interface CheatInfoTableViewProps {
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
   const rows = props.cheatInfo
     .sort((a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0))
-    .map((item, i) => {
+    .map((item) => {
       const submissionInfo = ToCheatSubmissionInfo(item)
-      return <CheatSubmissionCard key={`${GetCheatSubmissionKey(submissionInfo)}:${i}`} submissionInfo={submissionInfo} />
+      return <CheatSubmissionCard key={GetCheatSubmissionKey(submissionInfo)} submissionInfo={submissionInfo} />
     })
 
   return (
