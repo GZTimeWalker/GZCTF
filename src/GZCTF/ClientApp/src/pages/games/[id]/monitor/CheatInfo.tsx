@@ -7,7 +7,6 @@ import {
   Group,
   Paper,
   ScrollArea,
-  SimpleGrid,
   Stack,
   Switch,
   Text,
@@ -169,71 +168,42 @@ const FormatCheatTime = (time: dayjs.Dayjs | undefined, locale: string, format: 
 const FormatCheatSubmissionSummary = (submissionInfo: CheatSubmissionInfo, userLabel: string, teamLabel: string) =>
   `${submissionInfo.user ?? userLabel} ${CHEAT_SUBMISSION_AT} ${submissionInfo.submitTeam ?? teamLabel} ${CHEAT_SUBMISSION_ARROW} ${submissionInfo.ownedTeam ?? teamLabel}`
 
-interface CheatDetailItemProps {
-  label: string
-  value?: string
-}
-
-const CheatDetailItem: FC<CheatDetailItemProps> = ({ label, value }) => (
-  <Stack gap={2}>
-    <Text size="xs" fw={700} c="dimmed">
-      {label}
-    </Text>
-    <Text size="sm" fw={500} className={misc.wordBreakAll}>
-      {value ?? '-'}
-    </Text>
-  </Stack>
-)
-
 interface CheatSubmissionCardProps {
   submissionInfo: CheatSubmissionInfo
 }
 
 const CheatSubmissionCard: FC<CheatSubmissionCardProps> = (props) => {
   const { submissionInfo } = props
-  const theme = useMantineTheme()
   const type = CheatTypeMap.get(submissionInfo.cheatType)!
   const { t } = useTranslation()
   const { locale } = useLanguage()
 
   return (
-    <Paper withBorder radius="md" p="sm">
-      <Stack gap="sm">
+    <Paper withBorder radius="md" p="xs">
+      <Stack gap={6}>
         <Group justify="space-between" align="flex-start" gap="xs">
-          <Stack gap={4}>
-            <Group gap="xs">
-              <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
-              <Badge size="sm" color={type.color} variant="light">
-                {submissionInfo.cheatType === CheatType.Submit
-                  ? t('game.label.cheat_info.submit_team')
-                  : t('game.label.cheat_info.owned_team')}
-              </Badge>
-              <Badge size="sm" color="indigo">
-                {FormatCheatTime(submissionInfo.time, locale, 'SL HH:mm:ss')}
-              </Badge>
-            </Group>
-            <Text fw="bold" className={misc.wordBreakAll}>
-              {FormatCheatSubmissionSummary(submissionInfo, t('common.label.user'), t('common.label.team'))}
-            </Text>
-          </Stack>
-          <Text size="sm" fw="bold" ta="right" className={misc.wordBreakAll}>
-            {submissionInfo.challenge ?? t('common.label.challenge')}
+          <Text size="sm" fw="bold" className={misc.wordBreakAll}>
+            {FormatCheatSubmissionSummary(submissionInfo, t('common.label.user'), t('common.label.team'))}
           </Text>
+          <Group gap={6} justify="flex-end">
+            <Badge size="xs" color={type.color} variant="light" leftSection={<Icon path={type.iconPath} size={0.8} />}>
+              {submissionInfo.cheatType === CheatType.Submit
+                ? t('game.label.cheat_info.submit_team')
+                : t('game.label.cheat_info.owned_team')}
+            </Badge>
+            <Badge size="xs" color="indigo" variant="light">
+              {FormatCheatTime(submissionInfo.time, locale, 'SL HH:mm:ss')}
+            </Badge>
+          </Group>
         </Group>
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="sm">
-          <CheatDetailItem label={t('game.label.cheat_info.submit_user')} value={submissionInfo.user} />
-          <CheatDetailItem label={t('game.label.cheat_info.submit_team')} value={submissionInfo.submitTeam} />
-          <CheatDetailItem label={t('game.label.cheat_info.owned_team')} value={submissionInfo.ownedTeam} />
-          <CheatDetailItem label={t('common.label.challenge')} value={submissionInfo.challenge} />
-        </SimpleGrid>
-        <Stack gap={2}>
-          <Text size="xs" fw={700} c="dimmed">
-            {t('common.label.flag')}
-          </Text>
-          <Text size="sm" ff="monospace" className={misc.wordBreakAll}>
+        <Group wrap="wrap" justify="space-between" align="flex-start" gap="xs">
+          <Badge size="xs" variant="outline" maw="100%" className={misc.wordBreakAll}>
+            {submissionInfo.challenge ?? t('common.label.challenge')}
+          </Badge>
+          <Text size="sm" ff="monospace" className={misc.wordBreakAll} ta="right">
             {submissionInfo.answer ?? '-'}
           </Text>
-        </Stack>
+        </Group>
       </Stack>
     </Paper>
   )
