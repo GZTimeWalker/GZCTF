@@ -5,12 +5,11 @@ import {
   Box,
   Center,
   Group,
-  Input,
   Paper,
   ScrollArea,
+  SimpleGrid,
   Stack,
   Switch,
-  Table,
   Text,
   Title,
   useMantineTheme,
@@ -30,7 +29,6 @@ import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { useLanguage } from '@Utils/I18n'
 import { showErrorMsg } from '@Utils/Shared'
 import { useParticipationStatusMap } from '@Utils/Shared'
-import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import { useUserRole } from '@Hooks/useUser'
 import api, { CheatInfoModel, ParticipationEditModel, ParticipationStatus, Role } from '@Api'
@@ -64,7 +62,8 @@ interface CheatSubmissionInfo {
   answer?: string
   user?: string
   challenge?: string
-  relatedTeam?: string
+  submitTeam?: string
+  ownedTeam?: string
   cheatType: CheatType
 }
 
@@ -114,12 +113,13 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
     }
 
     const cheatSubmissionInfo: CheatSubmissionInfo = {
-      time: time,
+      time,
       answer: submission.answer,
       user: submission.user,
       challenge: submission.challenge,
+      submitTeam: submitTeam.team?.name,
+      ownedTeam: ownedTeam.team?.name,
       cheatType: CheatType.Owned,
-      relatedTeam: submitTeam.team?.name,
     }
 
     ownedTeamInfo.submissionInfo.add(cheatSubmissionInfo)
@@ -131,7 +131,6 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
     const cheatSubmissionSourceInfo: CheatSubmissionInfo = {
       ...cheatSubmissionInfo,
       cheatType: CheatType.Submit,
-      relatedTeam: ownedTeam.team?.name,
     }
 
     submitTeamInfo.submissionInfo.add(cheatSubmissionSourceInfo)
@@ -139,40 +138,97 @@ const ToCheatTeamInfo = (cheatInfo: CheatInfoModel[]) => {
   return cheatTeamInfo
 }
 
-interface CheatSubmissionInfoProps {
+const ToCheatSubmissionInfo = (info: CheatInfoModel, cheatType: CheatType = CheatType.Submit): CheatSubmissionInfo => ({
+  time: info.submission?.time ? dayjs(info.submission.time) : undefined,
+  answer: info.submission?.answer,
+  user: info.submission?.user,
+  challenge: info.submission?.challenge,
+  submitTeam: info.submitTeam?.team?.name,
+  ownedTeam: info.ownedTeam?.team?.name,
+  cheatType,
+})
+
+const GetCheatSubmissionKey = (submissionInfo: CheatSubmissionInfo) =>
+  [
+    submissionInfo.cheatType,
+    submissionInfo.time?.unix() ?? 'time',
+    submissionInfo.submitTeam ?? 'submit-team',
+    submissionInfo.ownedTeam ?? 'owned-team',
+    submissionInfo.user ?? 'user',
+    submissionInfo.challenge ?? 'challenge',
+    submissionInfo.answer ?? 'answer',
+  ].join(':')
+
+const FormatCheatTime = (time: dayjs.Dayjs | undefined, locale: string, format: string) =>
+  time ? dayjs(time).locale(locale).format(format) : '-'
+
+interface CheatDetailItemProps {
+  label: string
+  value?: string
+}
+
+const CheatDetailItem: FC<CheatDetailItemProps> = ({ label, value }) => (
+  <Stack gap={2}>
+    <Text size="xs" fw={700} c="dimmed">
+      {label}
+    </Text>
+    <Text size="sm" fw={500} className={misc.wordBreakAll}>
+      {value ?? '-'}
+    </Text>
+  </Stack>
+)
+
+interface CheatSubmissionCardProps {
   submissionInfo: CheatSubmissionInfo
 }
 
-const CheatSubmissionInfo: FC<CheatSubmissionInfoProps> = (props) => {
+const CheatSubmissionCard: FC<CheatSubmissionCardProps> = (props) => {
   const { submissionInfo } = props
   const theme = useMantineTheme()
   const type = CheatTypeMap.get(submissionInfo.cheatType)!
-  const { classes } = useDisplayInputStyles({ ff: 'monospace' })
+  const { t } = useTranslation()
   const { locale } = useLanguage()
 
   return (
-    <Group justify="space-between" w="100%" gap={0}>
-      <Group justify="space-between" w="60%" pr="2rem">
-        <Group justify="left">
-          <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
-          <Badge size="sm" color="indigo">
-            {dayjs(submissionInfo.time).locale(locale).format('SL HH:mm:ss')}
-          </Badge>
-          <Text lineClamp={1} fw="bold">
-            {submissionInfo.relatedTeam}
+    <Paper withBorder radius="md" p="sm">
+      <Stack gap="sm">
+        <Group justify="space-between" align="flex-start" gap="xs">
+          <Stack gap={4}>
+            <Group gap="xs">
+              <Icon path={type.iconPath} size={1} color={theme.colors[type.color][6]} />
+              <Badge size="sm" color={type.color} variant="light">
+                {submissionInfo.cheatType === CheatType.Submit
+                  ? t('game.label.cheat_info.submit_team')
+                  : t('game.label.cheat_info.owned_team')}
+              </Badge>
+              <Badge size="sm" color="indigo">
+                {FormatCheatTime(submissionInfo.time, locale, 'SL HH:mm:ss')}
+              </Badge>
+            </Group>
+            <Text fw="bold" className={misc.wordBreakAll}>
+              {`${submissionInfo.user ?? t('common.label.user')} @ ${submissionInfo.submitTeam ?? t('common.label.team')} → ${submissionInfo.ownedTeam ?? t('common.label.team')}`}
+            </Text>
+          </Stack>
+          <Text size="sm" fw="bold" ta="right" className={misc.wordBreakAll}>
+            {submissionInfo.challenge ?? t('common.label.challenge')}
           </Text>
         </Group>
-        <Text size="sm" lineClamp={1} fw="bold">
-          {submissionInfo.user}
-        </Text>
-      </Group>
-      <Stack gap={0} w="40%">
-        <Text fw="bold" size="xs" lineClamp={1}>
-          {submissionInfo.challenge}
-        </Text>
-        <Input variant="unstyled" value={submissionInfo.answer} readOnly size="xs" classNames={classes} />
+        <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="sm">
+          <CheatDetailItem label={t('game.label.cheat_info.submit_user')} value={submissionInfo.user} />
+          <CheatDetailItem label={t('game.label.cheat_info.submit_team')} value={submissionInfo.submitTeam} />
+          <CheatDetailItem label={t('game.label.cheat_info.owned_team')} value={submissionInfo.ownedTeam} />
+          <CheatDetailItem label={t('common.label.challenge')} value={submissionInfo.challenge} />
+        </SimpleGrid>
+        <Stack gap={2}>
+          <Text size="xs" fw={700} c="dimmed">
+            {t('common.label.flag')}
+          </Text>
+          <Text size="sm" ff="monospace" className={misc.wordBreakAll}>
+            {submissionInfo.answer ?? '-'}
+          </Text>
+        </Stack>
       </Stack>
-    </Group>
+    </Paper>
   )
 }
 
@@ -205,6 +261,9 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                   <Title order={4} lineClamp={1} fw="bold">
                     {!cheatTeamInfo.name ? t('admin.placeholder.games.participation.team') : cheatTeamInfo.name}
                   </Title>
+                  <Badge size="sm" variant="light" color="gray">
+                    {cheatTeamInfo.submissionInfo.size}
+                  </Badge>
                   {cheatTeamInfo?.division && (
                     <Badge size="sm" variant="outline">
                       {cheatTeamInfo.division}
@@ -212,7 +271,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                   )}
                 </Group>
                 <Text size="sm" lineClamp={1}>
-                  {dayjs(cheatTeamInfo.lastSubmitTime).locale(locale).format('SL LTS')}
+                  {FormatCheatTime(cheatTeamInfo.lastSubmitTime, locale, 'SL LTS')}
                 </Text>
               </Stack>
             </Group>
@@ -242,7 +301,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
           {[...cheatTeamInfo.submissionInfo]
             .sort((a, b) => (b.time?.unix() ?? 0) - (a.time?.unix() ?? 0))
             .map((submissionInfo) => (
-              <CheatSubmissionInfo key={submissionInfo.time?.unix()} submissionInfo={submissionInfo} />
+              <CheatSubmissionCard key={GetCheatSubmissionKey(submissionInfo)} submissionInfo={submissionInfo} />
             ))}
         </Stack>
       </Accordion.Panel>
@@ -297,63 +356,17 @@ interface CheatInfoTableViewProps {
 }
 
 const CheatInfoTableView: FC<CheatInfoTableViewProps> = (props) => {
-  const { classes: inputClasses } = useDisplayInputStyles({ ff: 'monospace' })
-  const { t } = useTranslation()
-  const { locale } = useLanguage()
-
   const rows = props.cheatInfo
     .sort((a, b) => (dayjs(b.submission?.time).unix() ?? 0) - (dayjs(a.submission?.time).unix() ?? 0))
-    .map((item, i) => (
-      <Table.Tr key={`${item.submission?.time}@${i}`}>
-        <Table.Td ff="monospace">
-          <Badge size="sm" color="indigo">
-            {dayjs(item.submission?.time).locale(locale).format('SL HH:mm:ss')}
-          </Badge>
-        </Table.Td>
-        <Table.Td>
-          <Text size="sm" fw="bold">
-            {item.ownedTeam?.team?.name ?? 'Team'}
-          </Text>
-        </Table.Td>
-        <Table.Td>
-          <Badge size="sm" color="orange">
-            {`>>>`}
-          </Badge>
-        </Table.Td>
-        <Table.Td>
-          <Text size="sm" fw="bold">
-            {item.submitTeam?.team?.name ?? 'Team'}
-          </Text>
-        </Table.Td>
-        <Table.Td>
-          <Text ff="monospace" size="sm" fw="bold">
-            {item.submission?.user ?? 'User'}
-          </Text>
-        </Table.Td>
-        <Table.Td>{item.submission?.challenge ?? 'Challenge'}</Table.Td>
-        <Table.Td p="0" w="24vw">
-          <Input variant="unstyled" value={item.submission?.answer} readOnly size="sm" classNames={inputClasses} />
-        </Table.Td>
-      </Table.Tr>
-    ))
+    .map((item, i) => {
+      const submissionInfo = ToCheatSubmissionInfo(item)
+      return <CheatSubmissionCard key={`${GetCheatSubmissionKey(submissionInfo)}:${i}`} submissionInfo={submissionInfo} />
+    })
 
   return (
     <Paper shadow="md" p="md">
       <ScrollArea offsetScrollbars h="calc(100vh - 200px)">
-        <Table className={classes.table}>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th w="8rem">{t('common.label.time')}</Table.Th>
-              <Table.Th miw="5rem">{t('game.label.cheat_info.owned_team')}</Table.Th>
-              <Table.Th />
-              <Table.Th miw="5rem">{t('game.label.cheat_info.submit_team')}</Table.Th>
-              <Table.Th miw="5rem">{t('game.label.cheat_info.submit_user')}</Table.Th>
-              <Table.Th miw="3rem">{t('common.label.challenge')}</Table.Th>
-              <Table.Th className={classes.mono}>{t('common.label.flag')}</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
-        </Table>
+        <Stack gap="sm">{rows}</Stack>
       </ScrollArea>
     </Paper>
   )
