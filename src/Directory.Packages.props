@@ -14,7 +14,7 @@
     <PackageVersion Include="Docker.DotNet.Enhanced" Version="3.131.1" />
     <PackageVersion Include="Docker.DotNet.Enhanced.BasicAuth" Version="3.131.1" />
     <PackageVersion Include="KubernetesClient" Version="19.0.2" />
-    <PackageVersion Include="MailKit" Version="4.15.0" />
+    <PackageVersion Include="MailKit" Version="4.15.1" />
     <PackageVersion Include="MemoryPack" Version="1.21.4" />
     <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
@@ -32,7 +32,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.1" />
-    <PackageVersion Include="NPOI" Version="2.7.5" />
+    <PackageVersion Include="NPOI" Version="2.7.6" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.6.3" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.6.3" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.0" />
@@ -47,7 +47,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.15.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.15.0-beta.1" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.47" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.13.1" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
