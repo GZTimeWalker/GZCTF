@@ -3,6 +3,13 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.2..v1.8.3) - 2026-03-15
+
+### 🔨 Refactor
+
+- **(deps)** upgrade to vite 8 - ([a98027](https://github.com/GZTimeWalker/GZCTF/commit/a98027)) by **GZTime**
+
+---
 ## [1.8.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.1..v1.8.2) - 2026-02-26
 
 ### 🐛 Bug Fixes
