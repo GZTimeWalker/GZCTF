@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload Unit Test Results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: unit-test-results
           path: src/GZCTF.Test/**/unit-test-results.trx
@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload Integration Test Results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-results-local
           path: src/GZCTF.Integration.Test/**/integration-test-results.trx
@@ -85,7 +85,7 @@ jobs:
 
       - name: Upload coverage artifacts
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-local
           path: |
@@ -128,7 +128,7 @@ jobs:
 
       - name: Upload Integration Test Results (Cloud Mode)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-results-cloud
           path: src/GZCTF.Integration.Test/**/integration-test-results-cloud.trx
@@ -144,7 +144,7 @@ jobs:
 
       - name: Upload coverage artifacts
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-cloud
           path: src/GZCTF.Integration.Test/coverage-cloud/coverage.cobertura.xml
@@ -160,14 +160,14 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Download coverage artifacts (local)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           name: coverage-local
           path: coverage-local
 
       - name: Download coverage artifacts (cloud)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           name: coverage-cloud

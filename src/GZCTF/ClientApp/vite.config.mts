@@ -5,7 +5,6 @@ import banner from 'vite-plugin-banner'
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import Pages from 'vite-plugin-pages'
 import webfontDownload from 'vite-plugin-webfont-dl'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import { fetchContributors } from './plugins/vite-fetch-contributors'
 import { i18nVirtualManifest } from './plugins/vite-i18n-virtual-manifest'
 
@@ -36,6 +35,9 @@ export default defineConfig(({ mode }) => {
         '/favicon.webp': TARGET,
       },
     },
+    resolve: {
+      tsconfigPaths: true,
+    },
     preview: { port: 64000 },
     build: {
       outDir: 'build',
@@ -57,7 +59,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       banner(BANNER),
-      tsconfigPaths(),
       webfontDownload(
         [
           'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend:wght@100..900&display=swap',
