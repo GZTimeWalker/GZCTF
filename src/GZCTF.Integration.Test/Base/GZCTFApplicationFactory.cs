@@ -35,8 +35,10 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         .Build();
 
     private readonly MinioContainer? _minioContainer;
+    // ReSharper disable once InconsistentNaming
     private readonly K3sContainer? _k3sContainer;
 
+    // ReSharper disable once InconsistentNaming
     private readonly bool _useK3sMode;
     private readonly bool _useMinioStorage;
 
@@ -70,7 +72,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         {
             Console.WriteLine(@"[GZCTFApplicationFactory] Creating K3s container...");
 
-            var builder = new K3sBuilder("rancher/k3s:v1.35.0-k3s1")
+            var builder = new K3sBuilder("rancher/k3s:v1.35.2-k3s1")
                 .WithCleanUp(true);
 
             _k3sContainer = builder.Build();
@@ -193,6 +195,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         });
     }
 
+    // ReSharper disable once InconsistentNaming
     private async Task InitializeK3sAsync()
     {
         if (_k3sContainer is null)
