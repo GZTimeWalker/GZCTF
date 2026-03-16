@@ -7,12 +7,15 @@
     "change_password": "Change Password",
     "confirm_email": "Confirm Email",
     "login": "Login",
+    "login_with_passkey": "Login with Passkey",
     "recovery": "Send Reset Email",
     "register": "Register",
     "reset": "Reset Password",
     "save_profile": "Save Profile",
     "update_email": "Change Email",
-    "verify_account": "Verify Account"
+    "verify_account": "Verify Account",
+    "add_passkey": "Add Passkey",
+    "manage_passkeys": "Manage Passkeys"
   },
   "content": {
     "confirm": {
@@ -101,6 +104,22 @@
     "include_uppercase": "Include upper case letters",
     "min_length": "At least 6 characters",
     "not_match": "The repeated password is incorrect"
+  },
+  "passkey": {
+    "title": "Passkeys",
+    "description": "Passkeys are a secure, passwordless way to sign in using your fingerprint, face, or device PIN.",
+    "no_passkeys": "No passkeys registered",
+    "add_success": "Passkey added successfully",
+    "add_failed": "Failed to add passkey",
+    "delete_success": "Passkey deleted successfully",
+    "delete_failed": "Failed to delete passkey",
+    "login_failed": "Failed to login with passkey",
+    "not_supported": "Passkeys are not supported in this browser",
+    "name_label": "Passkey Name",
+    "name_placeholder": "My Device",
+    "created_at": "Created",
+    "backed_up": "Backed up",
+    "confirm_delete": "Are you sure you want to delete this passkey?"
   },
   "placeholder": {
     "bio": "This person is lazy, nothing written",
