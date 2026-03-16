@@ -10,7 +10,7 @@ ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
 
 WORKDIR /app
 RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs \
-    ca-certificates libgdiplus tzdata krb5-libs && \
+    ca-certificates libgdiplus tzdata krb5-libs docker-cli docker-cli-compose && \
     update-ca-certificates
 
 COPY --from=build --chown=$APP_UID:$APP_UID /publish .

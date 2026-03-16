@@ -108,6 +108,7 @@
         },
         "category": "분야",
         "container_image": "컨테이너 이미지",
+        "container_compose": "Compose Script or Image Name",
         "cpu_limit": {
           "description": "0.1 CPU 코어 개수",
           "label": "CPU 제한 (단위: 0.1 CPU)"

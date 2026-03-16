@@ -39,8 +39,11 @@ import {
 } from '@Utils/Shared'
 import { useEditChallenge, useEditChallenges } from '@Hooks/useEdit'
 import { useGame } from '@Hooks/useGame'
-import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel, NetworkMode } from '@Api'
+import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel, ContainerProviderType, NetworkMode } from '@Api'
 import misc from '@Styles/Misc.module.css'
+
+// This will never change at runtime, so just hard-cache it
+let cachedContainerProvider: ContainerProviderType | null = null
 
 const GameChallengeEdit: FC = () => {
   const navigate = useNavigate()
@@ -64,6 +67,7 @@ const GameChallengeEdit: FC = () => {
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
   const [previewOpened, setPreviewOpened] = useState(false)
+  const [containerProvider, setContainerProvider] = useState<ContainerProviderType | null>(cachedContainerProvider);
 
   const modals = useModals()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
@@ -83,6 +87,18 @@ const GameChallengeEdit: FC = () => {
       setNetworkMode(challenge.networkMode ?? NetworkMode.Open)
     }
   }, [challenge])
+
+  useEffect(() => {
+    if (cachedContainerProvider !== null)
+      return
+
+    api.admin.adminGetContainerProvider()
+      .then(res => {
+        cachedContainerProvider = res.data.type ?? null
+        setContainerProvider(cachedContainerProvider)
+      })
+      .catch(() => setContainerProvider(cachedContainerProvider))
+  }, [])
 
   const onUpdate = async (challenge: ChallengeUpdateModel, noFeedback?: boolean) => {
     if (!challenge) return
@@ -468,14 +484,26 @@ const GameChallengeEdit: FC = () => {
           <Grid columns={12}>
             <Grid.Col span={8}>
               <Group justify="space-between" align="flex-end">
-                <TextInput
-                  label={t('admin.content.games.challenges.container_image')}
-                  disabled={disabled}
-                  value={challengeInfo.containerImage ?? ''}
-                  required
-                  onChange={(e) => setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })}
-                  classNames={{ root: misc.flexGrow }}
-                />
+                {(containerProvider == ContainerProviderType.DockerCompose) && (
+                  <Textarea
+                    label={t('admin.content.games.challenges.container_compose')}
+                    disabled={disabled}
+                    value={challengeInfo.containerImage ?? ''}
+                    required
+                    onChange={(e) => setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })}
+                    classNames={{ root: misc.flexGrow }}
+                    styles={{ input: { resize: 'vertical' } }}
+                  />
+                ) || (
+                  <TextInput
+                    label={t('admin.content.games.challenges.container_image')}
+                    disabled={disabled}
+                    value={challengeInfo.containerImage ?? ''}
+                    required
+                    onChange={(e) => setChallengeInfo({ ...challengeInfo, containerImage: e.target.value })}
+                    classNames={{ root: misc.flexGrow }}
+                  />
+                )}
                 <NumberInput
                   label={t('admin.content.games.challenges.service_port.label')}
                   min={1}

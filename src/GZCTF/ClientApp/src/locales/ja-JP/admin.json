@@ -108,6 +108,7 @@
         },
         "category": "カテゴリ",
         "container_image": "コンテナイメージ",
+        "container_compose": "Compose Script or Image Name",
         "cpu_limit": {
           "description": "0.1を掛けると、CPUのコア数になります",
           "label": "CPU 制限 (0.1 CPUs)"

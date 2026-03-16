@@ -1,0 +1,55 @@
+services:
+  gzctf:
+    image: gztime/gzctf:latest
+    restart: unless-stopped
+    environment:
+      - "ADMIN_PASSWORD=Admin@1Test"
+      - "LC_ALL=en_US.UTF-8"
+    ports:
+      - "8081:8080"
+    volumes:
+      - "gzctf-files:/app/files"
+      - "./settings.json:/app/appsettings.json:ro"
+      - "docker-socket:/run"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      - "POSTGRES_PASSWORD=PgAdminPwBla"
+    volumes:
+      - "db-data:/var/lib/postgresql"
+
+  dind:
+    build:
+      context: .
+      pull: true
+      dockerfile_inline: |
+        FROM docker:dind-rootless
+        USER root
+        RUN sed -i -e 's/^rootless:x:1000:1000:/rootless:x:895:895:/' /etc/passwd && \
+            sed -i -e 's/^rootless:x:1000:/rootless:x:895:/' /etc/group && \
+            chown -R rootless:rootless ~rootless
+        USER rootless
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    command: dockerd --host=unix:///run/docker/docker.sock --group 897
+    volumes:
+      - "docker-socket:/run/docker"
+      - "docker-data:/var/lib/docker"
+      - "docker-user-data:/home/rootless/.local/share/docker"
+
+volumes:
+  docker-socket:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: size=16m,mode=1777,nosuid,nodev
+  docker-data:
+  docker-user-data:
+  gzctf-files:
+  db-data:
