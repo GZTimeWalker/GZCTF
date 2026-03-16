@@ -68,6 +68,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IGameRepository, GameRepository>();
             builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+            builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
             builder.Services.AddScoped<IApiTokenRepository, ApiTokenRepository>();
             builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
             builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
@@ -77,9 +78,9 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IGameInstanceRepository, GameInstanceRepository>();
             builder.Services.AddScoped<IGameChallengeRepository, GameChallengeRepository>();
             builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
+            builder.Services.AddScoped<IUserMetadataFieldRepository, UserMetadataFieldRepository>();
             builder.Services.AddScoped<IExerciseInstanceRepository, ExerciseInstanceRepository>();
             builder.Services.AddScoped<IExerciseChallengeRepository, ExerciseChallengeRepository>();
-            builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
 
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();
@@ -141,6 +142,7 @@ internal static class ServicesExtension
                 settings.UseControllerSummaryAsTagDescription = true;
                 settings.SchemaSettings.TypeMappers.Add(new OpenApiDateTimeOffsetToUIntMapper());
                 settings.SchemaSettings.TypeMappers.Add(new OpenApiIPAddressToStringMapper());
+                settings.SchemaSettings.TypeMappers.Add(new OpenApiMetadataStoreToObjectMapper());
                 settings.SchemaSettings.ReflectionService = new GenericsSystemTextJsonReflectionService();
             });
         }

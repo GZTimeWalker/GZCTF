@@ -219,9 +219,9 @@ public class DockerManager : IContainerManager
 
         container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
+        container.IP = info.NetworkSettings.Networks.Values.FirstOrDefault()?.IPAddress ?? string.Empty;
 
         if (!_meta.ExposePort)
             return container;
@@ -252,8 +252,8 @@ public class DockerManager : IContainerManager
                 TaskStatus.Failed,
                 LogLevel.Warning);
 
-        if (!string.IsNullOrEmpty(_meta.PublicEntry))
-            container.PublicIP = _meta.PublicEntry;
+        if (_meta.PublicEntry is { } entry)
+            container.PublicHost = entry;
 
         return container;
     }

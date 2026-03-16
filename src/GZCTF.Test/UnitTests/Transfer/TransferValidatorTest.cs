@@ -147,7 +147,7 @@ public class TransferValidatorTest
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
             TransferValidator.ValidateRecursive(challenge, "Challenge"));
-        Assert.Contains("Original score must be positive", ex.Message);
+        Assert.Contains("Original score must be non-negative", ex.Message);
     }
 
     [Fact]

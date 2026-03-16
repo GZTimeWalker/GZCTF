@@ -278,7 +278,7 @@ const Instances: FC = () => {
                             fz="sm"
                             className={tableClasses.clickable}
                             onClick={() => {
-                              clipBoard.copy(`${inst.ip ?? ''}:${inst.port ?? ''}`)
+                              clipBoard.copy(`${inst.host ?? ''}:${inst.port ?? ''}`)
                               showNotification({
                                 color: 'teal',
                                 message: t('admin.notification.instances.entry_copied'),
@@ -286,7 +286,7 @@ const Instances: FC = () => {
                               })
                             }}
                           >
-                            {`${inst.ip}:`}
+                            {`${inst.host ?? ''}:`}
                             <Text span fw="bold">
                               {inst.port}
                             </Text>

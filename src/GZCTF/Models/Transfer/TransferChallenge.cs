@@ -94,7 +94,7 @@ public class ScoringSection
     /// <summary>
     /// Original score
     /// </summary>
-    [Range(1, int.MaxValue, ErrorMessage = "Original score must be positive")]
+    [Range(0, int.MaxValue, ErrorMessage = "Original score must be non-negative")]
     public int Original { get; set; } = 1000;
 
     /// <summary>
