@@ -1,0 +1,154 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+}
+
+.overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(0px);
+}
+
+.overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(0px);
+  transition: backdrop-filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.overlay[data-phase='expand']::before,
+.overlay[data-phase='logo']::before,
+.overlay[data-phase='exit']::before {
+  opacity: 1;
+}
+
+.overlay[data-phase='expand']::after,
+.overlay[data-phase='logo']::after,
+.overlay[data-phase='exit']::after {
+  backdrop-filter: blur(4px);
+}
+
+.overlay[data-phase='exit'] {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.poster {
+  position: fixed;
+  top: var(--intro-top);
+  left: var(--intro-left);
+  width: var(--intro-width);
+  height: var(--intro-height);
+  border-radius: 50%;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #0f1826;
+  transform: translate3d(0, 0, 0) scale(1);
+  clip-path: circle(var(--intro-initial-radius) at center);
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.8s ease;
+  filter: blur(0px);
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+}
+
+.poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.overlay[data-phase='expand'] .poster,
+.overlay[data-phase='logo'] .poster,
+.overlay[data-phase='exit'] .poster {
+  transform: translate3d(var(--intro-translate-x), var(--intro-translate-y), 0) scale(var(--intro-scale));
+  clip-path: circle(var(--intro-target-radius) at center);
+  filter: blur(4px);
+}
+
+.overlay[data-phase='expand'] .poster::after,
+.overlay[data-phase='logo'] .poster::after,
+.overlay[data-phase='exit'] .poster::after {
+  opacity: 1;
+}
+
+.logoWrapper {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.8);
+  transition:
+    opacity 0.4s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.overlay[data-phase='logo'] .logoWrapper {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.overlay[data-phase='exit'] .logoWrapper {
+  opacity: 0;
+  transform: translateY(-40px) scale(0.9);
+}
+
+.logo {
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45));
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* Title text for entry animation */
+.title {
+  margin-top: 20px;
+  transform: translateX(-120vw) translateZ(0);
+  opacity: 0;
+  white-space: nowrap;
+  color: var(--mantine-color-text);
+  font-weight: 600;   
+  text-align: center;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+  font-size: clamp(16px, 2.5vw, 22px);
+  backface-visibility: hidden;
+}
+
+.overlay[data-phase='expand'] .title {
+  transform: translateX(-120vw) translateZ(0);
+  opacity: 0;
+}
+
+.overlay[data-phase='logo'] .title {
+  transform: translateX(0) translateZ(0);
+  opacity: 1;
+}
+
+.overlay[data-phase='exit'] .title {
+  transform: translateX(120vw) translateZ(0);
+  opacity: 0;
+}

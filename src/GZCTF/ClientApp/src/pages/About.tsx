@@ -11,21 +11,31 @@ import {
   Avatar,
   Container,
 } from '@mantine/core'
-import { mdiScaleBalance, mdiFileDocumentOutline, mdiGithub, mdiTag, mdiAccountGroup, mdiLink } from '@mdi/js'
+import { mdiScaleBalance, mdiFileDocumentOutline, mdiGithub, mdiTag, mdiAccountGroup, mdiLink, mdiShieldCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import contributorsData from 'virtual:contributors'
 import { WithNavBar } from '@Components/WithNavbar'
 import { MainIcon } from '@Components/icon/MainIcon'
 import { useIsMobile } from '@Utils/ThemeOverride'
-import { ValidatedRepoMeta } from '@Hooks/useConfig'
+import { ValidatedRepoMeta, useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
 import classes from '@Styles/About.module.css'
-import logoClasses from '@Styles/LogoHeader.module.css'
+
+const maintainers = [
+  { name: '铸剑网络安全实验室', abbr: '铸' },
+  { name: 'tamako', abbr: 'T' },
+  { name: 'xingu', abbr: 'X' },
+  { name: 'yzqzss', abbr: 'Y' },
+  { name: 'Dekul', abbr: 'D'},
+] as const
+
+type Maintainer = (typeof maintainers)[number]
 
 const About: FC = () => {
   const { repo, valid, rawTag: tag, sha, buildTime } = ValidatedRepoMeta()
+  const { config } = useConfig()
   const { t } = useTranslation()
   const theme = useMantineTheme()
   const shortSha = `#${sha.substring(0, 8)}`
@@ -39,6 +49,7 @@ const About: FC = () => {
       (i + 1) * Math.ceil(contributorsData.length / numRows)
     )
   )
+  const maintainerMarquee = useMemo<Maintainer[]>(() => [...maintainers, ...maintainers, ...maintainers], [])
 
   usePageTitle(t('common.title.about'))
 
@@ -48,9 +59,9 @@ const About: FC = () => {
         <Center>
           <Stack align="center" gap={0}>
             <MainIcon size="5rem" className={classes.mainIcon} />
-            <Title order={1} size="3.5rem" fw={800} ta="center" className={classes.mainTitle}>
-              GZ<span className={logoClasses.brand}>::</span>CTF
-            </Title>
+              <Title order={1} size="3.5rem" fw={800} ta="center" className={classes.mainTitle}>
+                {config?.title ?? 'GZ::CTF'}
+              </Title>
             <Text size="xl" fw={500} ta="center" c="dimmed" ff="monospace" mt="xs" className={classes.slogan}>
               &gt;&nbsp;{t('common.content.about.slogan')}
               <Text span className={classes.blink}>
@@ -180,6 +191,31 @@ const About: FC = () => {
             </Container>
           </Stack>
         </Flex>
+
+        <Stack align="center" gap="md" className={classes.contentStack}>
+          <Group gap="xs" justify="center">
+            <Icon path={mdiShieldCheck} size={1} />
+            <Title order={3} fw={600} ta="center">
+              {t('common.content.about.maintainers', { defaultValue: '平台维护' })}
+            </Title>
+          </Group>
+          <Container size="md" px={0}>
+            <div className={classes.scrollContainer}>
+              <Group gap={0} wrap="nowrap" w="max-content" className={classes.scrollGroup}>
+                {maintainerMarquee.map((maintainer, index) => (
+                  <Group key={`${maintainer.name}-${index}`} gap="xs" align="center" justify="center" mr="xl">
+                    <Avatar radius="xl" size="sm" className={classes.contributorAvatar} color={theme.primaryColor}>
+                      {maintainer.abbr}
+                    </Avatar>
+                    <Text size="sm" fw={500} c={theme.primaryColor} className={classes.contributorLink}>
+                      {maintainer.name}
+                    </Text>
+                  </Group>
+                ))}
+              </Group>
+            </div>
+          </Container>
+        </Stack>
 
         <Stack align="center" gap="md">
           <Group gap="xs" justify="center">

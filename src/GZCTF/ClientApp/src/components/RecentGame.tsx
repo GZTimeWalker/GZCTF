@@ -2,7 +2,7 @@ import { Badge, Card, Center, Group, Image, Stack, Text, Title, useMantineTheme 
 import { mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC } from 'react'
+import { FC, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { GameColorMap, GameStatus } from '@Components/GameCard'
@@ -11,6 +11,7 @@ import { useForeground } from '@Hooks/useForeground'
 import { getGameStatus } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
+import { storeGameTransitionState } from '@Utils/gameTransition'
 
 export interface RecentGameProps {
   game: BasicGameInfoModel
@@ -31,9 +32,51 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
   const duration = status === GameStatus.OnGoing ? endTime.diff(dayjs(), 'h') : endTime.diff(startTime, 'h')
 
   const titleColor = useForeground(poster)
+  const cardRef = useRef<HTMLAnchorElement>(null)
+
+  const captureTransition = () => {
+    if (!cardRef.current) {
+      return
+    }
+    const rect = cardRef.current.getBoundingClientRect()
+    storeGameTransitionState({
+      id: game.id,
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      poster,
+    })
+  }
+
+  const handleClickCapture = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (event.defaultPrevented) {
+      return
+    }
+    if (event.button !== 0) {
+      return
+    }
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return
+    }
+    captureTransition()
+  }
+
+  const handleTouchStart = (_event: ReactTouchEvent<HTMLAnchorElement>) => {
+    captureTransition()
+  }
 
   return (
-    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={{ root: misc.hoverCard }}>
+    <Card
+      {...others}
+      shadow="sm"
+      component={Link}
+      to={`/games/${game.id}`}
+      ref={cardRef}
+      onClickCapture={handleClickCapture}
+      onTouchStart={handleTouchStart}
+      classNames={{ root: misc.hoverCard }}
+    >
       <Card.Section pos="relative">
         {poster ? (
           <Image src={poster} h={POSTER_HEIGHT} alt="poster" />

@@ -413,7 +413,7 @@
           "label": "平台 Logo"
         },
         "name": {
-          "description": "后跟 ::CTF 字段进行展示",
+          "description": "自定义展示的平台名称",
           "label": "平台名称"
         },
         "slogan": {

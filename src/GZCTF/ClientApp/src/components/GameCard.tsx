@@ -12,13 +12,14 @@ import {
 } from '@mantine/core'
 import { mdiChevronTripleRight, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC } from 'react'
+import { FC, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
 import { getGameStatus, toLimitTag } from '@Hooks/useGame'
 import { BasicGameInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
+import { storeGameTransitionState } from '@Utils/gameTransition'
 
 export enum GameStatus {
   Coming = 'coming',
@@ -40,6 +41,7 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
   const theme = useMantineTheme()
   const { t } = useTranslation()
   const { locale } = useLanguage()
+  const cardRef = useRef<HTMLAnchorElement>(null)
 
   const { summary, title, poster, limit } = game
   const { startTime, endTime, status } = getGameStatus(game)
@@ -48,8 +50,57 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
 
   const color = GameColorMap.get(status)
 
+  const durationLabel = useMemo(
+    () =>
+      t('game.content.duration', {
+        hours: duration,
+      }),
+    [duration, t]
+  )
+
+  const captureTransition = () => {
+    if (!cardRef.current) {
+      return
+    }
+    const rect = cardRef.current.getBoundingClientRect()
+    storeGameTransitionState({
+      id: game.id,
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      poster,
+    })
+  }
+
+  const handleClickCapture = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (event.defaultPrevented) {
+      return
+    }
+    if (event.button !== 0) {
+      return
+    }
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return
+    }
+    captureTransition()
+  }
+
+  const handleTouchStart = (_event: ReactTouchEvent<HTMLAnchorElement>) => {
+    captureTransition()
+  }
+
   return (
-    <Card {...others} shadow="sm" component={Link} to={`/games/${game.id}`} classNames={{ root: misc.hoverCard }}>
+    <Card
+      {...others}
+      shadow="sm"
+      component={Link}
+      to={`/games/${game.id}`}
+      ref={cardRef}
+      onClickCapture={handleClickCapture}
+      onTouchStart={handleTouchStart}
+      classNames={{ root: misc.hoverCard }}
+    >
       <Card.Section>
         <BackgroundImage src={poster ?? ''} h="12rem" w="100%" pos="relative">
           {!poster && (
@@ -72,9 +123,7 @@ export const GameCard: FC<GameCardProps> = ({ game, ...others }) => {
                 {toLimitTag(t, limit)}
               </Badge>
               <Badge size="xs" color={color}>
-                {t('game.content.duration', {
-                  hours: duration,
-                })}
+                {durationLabel}
               </Badge>
             </Group>
             <Title order={3} ta="left" lineClamp={2}>

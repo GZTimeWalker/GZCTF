@@ -6,7 +6,6 @@ import { MainIcon } from '@Components/icon/MainIcon'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { useConfig } from '@Hooks/useConfig'
 import classes from '@Styles/AppFooter.module.css'
-import logoClasses from '@Styles/LogoHeader.module.css'
 
 export const AppFooter: FC = () => {
   const { config } = useConfig()
@@ -21,7 +20,7 @@ export const AppFooter: FC = () => {
             <Stack w="100%" align="center" gap={2}>
               <MainIcon size={isMobile ? '3rem' : '4rem'} />
               <Text fw="bold" size={isMobile ? '2rem' : '2.5rem'}>
-                GZ<span className={logoClasses.brand}>::</span>CTF
+                {config?.title ?? 'GZ::CTF'}
               </Text>
             </Stack>
             {isMobile ? (
