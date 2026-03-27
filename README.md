@@ -166,6 +166,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **RedrockCTF 2024：Information Security Novice Competition of Chongqing University Of Posts And Telecommunications**
 - **WAXFCTF 2024：Chongqing Vocational Institute of Safety Technology "Pioneer Cup" Cybersecurity Skills Competition**
 - **ZGCTF 2025：College of XuChang The 3rd "Zhuoguang Cup" Information Security Competition** 
+- **furryCTF 2025**
 
 _These list is not in any particular order, and PRs are welcome for additions._
 
