@@ -70,19 +70,19 @@ export const RecentGame: FC<RecentGameProps> = ({ game, ...others }) => {
           <Text size="sm" fw="bold">
             {status === GameStatus.Coming ? t('game.content.start_at') : t('game.content.end_at')}
           </Text>
-          <Badge size="xs" color={color} variant="light">
+          <Text size="xs" fw="bold">
             {status === GameStatus.Coming
               ? dayjs(startTime).locale(locale).format('L LT')
               : dayjs(endTime).locale(locale).format('L LT')}
-          </Badge>
+          </Text>
         </Group>
         <Group wrap="nowrap" gap={0} justify="space-between">
           <Text size="sm" fw="bold">
             {status === GameStatus.OnGoing ? t('game.content.remaining_time') : t('game.content.total_time')}
           </Text>
-          <Badge size="xs" color={color} variant="light">
+          <Text size="xs" fw="bold">
             {t('game.content.duration', { hours: duration })}
-          </Badge>
+          </Text>
         </Group>
       </Stack>
     </Card>
