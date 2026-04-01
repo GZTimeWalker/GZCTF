@@ -20,6 +20,7 @@ import { createStyles } from '@mantine/emotion'
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks'
 import { useEffect, useState } from 'react'
 import { useConfig } from '@Hooks/useConfig'
+import badgeClasses from '@Styles/Badge.module.css'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
 const CustomTheme: MantineThemeOverride = {
@@ -146,6 +147,7 @@ const CustomTheme: MantineThemeOverride = {
       defaultProps: {
         variant: 'outline',
       },
+      classNames: badgeClasses,
     }),
     Tabs: Tabs.extend({
       styles: {
