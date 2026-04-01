@@ -153,7 +153,7 @@ const Traffic: FC = () => {
         </Center>
       ) : (
         <Paper shadow="md" p="md">
-          <Grid gutter={0} h="calc(100vh - 142px)">
+          <Grid gap={0} h="calc(100vh - 142px)">
             <Grid.Col span={3} style={innerStyle}>
               <Group h={headerHeight} pb="3px" px="xs">
                 <Text size="md" fw="bold">
