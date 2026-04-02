@@ -89,7 +89,7 @@
       "label": "Просмотр по командам"
     },
     "total_duration": "Всего: {{hours}}",
-    "total_time": "Длительность",
+    "total_time": "Время",
     "traffic": {
       "delete_confirm": "Удалить этот файл трафика?",
       "deleted_all_confirm": "Удалить весь перечисленный трафик?"
