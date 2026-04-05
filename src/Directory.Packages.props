@@ -7,7 +7,7 @@
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.2.1" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.2.1" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="13.2.1" />
-    <PackageVersion Include="AWSSDK.S3" Version="4.0.20.1" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.20.3" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.4.0" />
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.6.2" />
     <PackageVersion Include="Cronos" Version="0.11.1" />
@@ -47,7 +47,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.15.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.15.0-beta.1" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.13.18" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.13.20" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Serilog.Expressions" Version="5.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
