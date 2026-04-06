@@ -103,7 +103,7 @@ export const ChallengePanel: FC = () => {
           {Array(13)
             .fill(null)
             .map((_v, i) => (
-              <Card key={i} radius="md" shadow="sm">
+              <Card key={i} shadow="sm">
                 <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
                   <Skeleton height="1.5rem" width="70%" mt={4} />
                   <Divider />

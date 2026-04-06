@@ -1,5 +1,0 @@
-.label {
-  /* wait for: https://github.com/mantinedev/mantine/issues/8788 */
-  text-box-trim: none !important;
-  text-box-edge: auto !important;
-}

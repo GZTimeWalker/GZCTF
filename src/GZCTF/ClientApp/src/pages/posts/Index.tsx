@@ -88,7 +88,6 @@ const Posts: FC = () => {
             '--fixed-bottom': '6rem',
           }}
           variant="filled"
-          radius="xl"
           size="md"
           leftSection={<Icon path={mdiPlus} size={1} />}
           to="/posts/new/edit"

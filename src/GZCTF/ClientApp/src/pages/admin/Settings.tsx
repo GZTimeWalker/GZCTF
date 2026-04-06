@@ -104,7 +104,6 @@ const Configs: FC = () => {
           '--fixed-right': 'calc(0.05 * (100vw - 70px - 2rem) + 1rem)',
         }}
         variant="filled"
-        radius="xl"
         size="md"
         leftSection={<Icon path={saved ? mdiContentSaveOutline : mdiCheck} size={1} />}
         onClick={() => {

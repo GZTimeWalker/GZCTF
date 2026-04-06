@@ -32,7 +32,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="10.0.2" />
-    <PackageVersion Include="NPOI" Version="2.7.6" />
+    <PackageVersion Include="NPOI" Version="2.8.0" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.6.3" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.6.3" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.1" />

@@ -21,6 +21,7 @@
     <ReleaseVersion>1.8.3</ReleaseVersion>
     <WarningLevel>4</WarningLevel>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
     <!-- Temporarily disabled due to EF Core 10.0.0 compiled model generation bug with Dependency<T> pattern -->
     <!-- Re-enable when EF Core 10.0.0 stable is released with the fix -->
     <EFOptimizeContext>false</EFOptimizeContext>
