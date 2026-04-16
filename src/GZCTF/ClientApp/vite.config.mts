@@ -43,9 +43,6 @@ export default defineConfig(({ mode }) => {
         '/favicon.webp': TARGET,
       },
     },
-    resolve: {
-      tsconfigPaths: true,
-    },
     preview: { port: 64000 },
     worker: {
       format: 'es',
