@@ -280,7 +280,7 @@ export const DivisionEditDrawer: FC<DivisionEditDrawerProps> = ({
 
         {sortedSelected.length > 0 && (
           <ScrollArea type="auto" offsetScrollbars h={300}>
-            <Accordion chevronPosition="left" variant="filled" radius="md">
+            <Accordion chevronPosition="left" variant="filled">
               {sortedSelected.map((value) => {
                 const id = Number(value)
                 return (

@@ -872,7 +872,6 @@ export interface ApiToken {
   /**
    * The timestamp when the token was created.
    * @format uint64
-   * @minLength 1
    */
   createdAt: number;
   /**
@@ -1055,7 +1054,6 @@ export interface PostDetailModel {
   /**
    * Publish time
    * @format uint64
-   * @minLength 1
    */
   time: number;
 }
@@ -1111,13 +1109,11 @@ export interface GameInfoModel {
   /**
    * Start time
    * @format uint64
-   * @minLength 1
    */
   start: number;
   /**
    * End time
    * @format uint64
-   * @minLength 1
    */
   end: number;
   /**
@@ -1160,7 +1156,6 @@ export type GameNotice = FormattableDataOfNoticeType & {
   /**
    * Publish time
    * @format uint64
-   * @minLength 1
    */
   time: number;
 };
@@ -1644,13 +1639,11 @@ export interface BasicGameInfoModel {
   /**
    * Start time
    * @format uint64
-   * @minLength 1
    */
   start: number;
   /**
    * End time
    * @format uint64
-   * @minLength 1
    */
   end: number;
 }
@@ -1776,7 +1769,6 @@ export interface ScoreboardModel {
   /**
    * Update time
    * @format uint64
-   * @minLength 1
    */
   updateTimeUtc: number;
   /**
@@ -1824,7 +1816,6 @@ export interface TimeLine {
   /**
    * Time
    * @format uint64
-   * @minLength 1
    */
   time: number;
   /**
@@ -1872,7 +1863,6 @@ export interface ScoreboardItem {
   /**
    * Last submission time
    * @format uint64
-   * @minLength 1
    */
   lastSubmissionTime: number;
   /** List of solved challenges */
@@ -1902,7 +1892,6 @@ export interface ChallengeItem {
   /**
    * Submission time for the challenge, used to calculate the timeline
    * @format uint64
-   * @minLength 1
    */
   time: number;
 }
@@ -1996,7 +1985,6 @@ export type GameEvent = FormattableDataOfEventType & {
   /**
    * Publish time
    * @format uint64
-   * @minLength 1
    */
   time: number;
   /** Related username */
@@ -2149,7 +2137,6 @@ export interface GameDetailModel {
   /**
    * Writeup submission deadline
    * @format uint64
-   * @minLength 1
    */
   writeupDeadline: number;
 }
@@ -2318,7 +2305,6 @@ export interface PostInfoModel {
   /**
    * Update time
    * @format uint64
-   * @minLength 1
    */
   time: number;
 }
