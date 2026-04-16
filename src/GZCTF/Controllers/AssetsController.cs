@@ -490,7 +490,8 @@ public class AssetsController(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to log download for target {TargetIdentifier}", accessContext.TargetIdentifier);
+            logger.LogError(ex, "Failed to log download for target {TargetIdentifier}",
+                accessContext.TargetIdentifier.Replace("\n", "\\n").Replace("\r", "\\r"));
         }
     }
 

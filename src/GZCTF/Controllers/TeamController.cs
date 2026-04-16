@@ -595,12 +595,12 @@ public partial class TeamController(
         var id = model.TeamToken[..pos];
         var sign = model.TeamToken[(pos + 1)..];
 
-        if (!int.TryParse(id, out _) || string.IsNullOrEmpty(sign))
+        if (!int.TryParse(id, out var teamId) || string.IsNullOrEmpty(sign))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));
 
         Ed25519PublicKeyParameters publicKey = new(pk, 0);
 
-        if (CryptoUtils.VerifySignature($"GZCTF_TEAM_{id}", sign, publicKey, SignAlgorithm.Ed25519))
+        if (CryptoUtils.VerifySignature($"GZCTF_TEAM_{teamId}", sign, publicKey, SignAlgorithm.Ed25519))
             return Ok();
 
         return Unauthorized(new RequestResponse(localizer[nameof(Resources.Program.Signature_Invalid)]));

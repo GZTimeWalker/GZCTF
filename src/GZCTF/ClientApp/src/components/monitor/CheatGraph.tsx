@@ -3,7 +3,7 @@ import { EchartsContainer } from '@Components/charts/EchartsContainer'
 import type { CheatReport, IpAnalysisResult } from '@Api'
 import { FC, useMemo, useCallback } from 'react'
 import { notifications } from '@mantine/notifications'
-import { useFullscreen } from '@mantine/hooks'
+import { useFullscreenElement } from '@mantine/hooks'
 import Icon from '@mdi/react'
 import { mdiCheck, mdiFullscreen, mdiFullscreenExit } from '@mdi/js'
 import copy from 'copy-to-clipboard'
@@ -14,7 +14,7 @@ interface CheatGraphProps {
 
 export const CheatGraph: FC<CheatGraphProps> = ({ report }) => {
     const theme = useMantineTheme()
-    const { ref, toggle, fullscreen } = useFullscreen()
+    const { ref, toggle, fullscreen } = useFullscreenElement()
 
     const onChartClick = useCallback((params: any) => {
         if (params.dataType === 'node' && params.name) {

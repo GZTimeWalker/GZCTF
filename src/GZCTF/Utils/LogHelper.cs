@@ -64,7 +64,7 @@ public static class LogHelper
         /// <param name="user">the user</param>
         public void Log(string msg, UserInfo? user, TaskStatus status,
             LogLevel? level = null) =>
-            Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP, status, level, null);
+            Log(logger, msg, user?.UserName ?? "Anonymous", user?.IP?.ToString(), status, level, null);
 
         /// <summary>
         /// Record a log
@@ -79,7 +79,7 @@ public static class LogHelper
             var username = context?.User.Identity?.Name ?? "Anonymous";
             var fingerprint = ContextHelper.GetValidBrowserFingerprint(context?.User);
 
-            Log(logger, msg, username, context?.Connection.RemoteIpAddress, status, level, fingerprint);
+            Log(logger, msg, username, context?.Connection.RemoteIpAddress?.ToString(), status, level, fingerprint);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ public static class LogHelper
         /// <param name="ip">ip</param>
         public void Log(string msg, IPAddress? ip, TaskStatus status,
             LogLevel? level = null)
-            => Log(logger, msg, "Anonymous", ip, status, level, null);
+            => Log(logger, msg, "Anonymous", ip?.ToString(), status, level, null);
 
         /// <summary>
         /// Record a log
@@ -102,7 +102,7 @@ public static class LogHelper
         /// <param name="uname">user name</param>
         /// <param name="ip">ip</param>
         /// <param name="fingerprint">browser fingerprint</param>
-        public void Log(string msg, string uname, IPAddress? ip, TaskStatus status,
+        public void Log(string msg, string uname, string? ip, TaskStatus status,
             LogLevel? level = null, string? fingerprint = null)
         {
             using (LogContext.PushProperty("UserName", uname))

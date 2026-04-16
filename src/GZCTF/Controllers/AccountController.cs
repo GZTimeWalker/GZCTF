@@ -188,7 +188,7 @@ public partial class AccountController(
 
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredLog)],
                 user.UserName ?? "Anonymous",
-                user.IP,
+                user.IP?.ToString(),
                 TaskStatus.Success,
                 fingerprint: fingerprint);
             return Ok(new RequestResponse<RegisterStatus>(localizer[nameof(Resources.Program.Account_UserRegistered)],
@@ -200,7 +200,7 @@ public partial class AccountController(
         {
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserRegisteredWaitingApprovalLog)],
                 user.UserName ?? "Anonymous",
-                user.IP,
+                user.IP?.ToString(),
                 TaskStatus.Success,
                 fingerprint: fingerprint);
             return Ok(new RequestResponse<RegisterStatus>(
@@ -210,7 +210,7 @@ public partial class AccountController(
 
         logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)],
             user.UserName ?? "Anonymous",
-            user.IP,
+            user.IP?.ToString(),
             TaskStatus.Pending,
             fingerprint: fingerprint);
 
@@ -219,7 +219,8 @@ public partial class AccountController(
 
         if (environment.IsDevelopment())
         {
-            logger.Log(link, user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)],
+                user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
@@ -427,7 +428,8 @@ public partial class AccountController(
 
         if (environment.IsDevelopment())
         {
-            logger.Log(link, user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailVerification)],
+                user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {
@@ -577,7 +579,7 @@ public partial class AccountController(
 
         logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserLogined)],
             user.UserName ?? "Anonymous",
-            user.IP,
+            user.IP?.ToString(),
             TaskStatus.Success,
             fingerprint: fingerprint);
 
@@ -718,7 +720,8 @@ public partial class AccountController(
 
         if (environment.IsDevelopment())
         {
-            logger.Log(link, user, TaskStatus.Pending, LogLevel.Debug);
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Account_SendEmailChange)],
+                user, TaskStatus.Pending, LogLevel.Debug);
         }
         else
         {

@@ -21,14 +21,13 @@ public static partial class Codec
     [SuppressMessage("ReSharper", "StringLiteralTypo")]
     public static string RandomPassword(int length)
     {
-        var random = new Random();
         const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+";
 
         string pwd;
         do
         {
             pwd = new string(Enumerable.Repeat(chars, length < 8 ? 8 : length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+                .Select(s => s[RandomNumberGenerator.GetInt32(s.Length)]).ToArray());
         } while (!PasswordRegex().IsMatch(pwd));
 
         return pwd;

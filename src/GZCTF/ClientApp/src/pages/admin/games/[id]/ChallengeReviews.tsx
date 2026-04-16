@@ -66,7 +66,7 @@ const ChallengeReviews: FC = () => {
     const cards = isLoading
         ? Array.from({ length: 5 }).map((_, i) => (
             <Card key={i} shadow="sm" radius="md" withBorder p="sm">
-                <Grid align="center" gutter="xs">
+                <Grid align="center" gap="xs">
                     <Grid.Col span={3}>
                         <Stack gap={4}>
                             <Skeleton height={20} width="80%" radius="xl" />
@@ -102,7 +102,7 @@ const ChallengeReviews: FC = () => {
                     p="sm"
                     style={{ borderColor }}
                 >
-                    <Grid align="center" gutter="xs">
+                    <Grid align="center" gap="xs">
                         {/* Challenge Name & Rating */}
                         <Grid.Col span={3}>
                             <Stack gap={4}>
