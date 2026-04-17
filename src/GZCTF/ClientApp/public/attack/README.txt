@@ -3,11 +3,11 @@ Attack page audio assets
 
 firstblood.mp3
 --------------
-A ~0.75-second synthesized stinger (C5 -> E5 -> G5 arpeggio) generated with
-ffmpeg for the /games/{id}/attack first-blood overlay.
+First-blood stinger played by the /games/{id}/attack page when a team
+earns a first blood.
 
-License: CC0 / Public Domain (generated programmatically from pure sine waves,
-no copyrightable material involved).
+Source: https://github.com/0x4m4/first-strike-alert
+File:   static/sounds/blood.mp3
 
-To replace with a downloaded CC0 fanfare from freesound.org (or similar),
-overwrite this file with the same filename — no code changes required.
+To replace, drop any mp3 with the same filename here and rebuild the
+frontend — no code changes required.
