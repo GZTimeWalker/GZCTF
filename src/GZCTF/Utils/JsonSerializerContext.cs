@@ -67,6 +67,8 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(ApiToken))]
 [JsonSerializable(typeof(ApiTokenResponse))]
 [JsonSerializable(typeof(ApiToken[]))]
+[JsonSerializable(typeof(AttackEvent))]
+[JsonSerializable(typeof(AttackEvent[]))]
 internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;
 
 public class DateTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
