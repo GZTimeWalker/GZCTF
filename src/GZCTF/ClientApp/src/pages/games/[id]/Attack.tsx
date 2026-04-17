@@ -13,6 +13,8 @@
  *
  * First bloods trigger a red full-screen pulse + bundled sound (rate-limited).
  */
+import { mdiIncognito } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router'
@@ -59,6 +61,19 @@ interface FirstBloodBanner {
   startedAt: number
 }
 
+interface Attacker {
+  id: number
+  x: number
+  y: number
+  color: string
+  teamName: string
+  challengeTitle: string
+  type: SubmissionType
+  spawnedAt: number
+  /** When true, the sprite has been marked for early fade-out (over-cap). */
+  fadingEarly: boolean
+}
+
 /* -------------------------------------------------------------------------- */
 /* Constants                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -69,6 +84,17 @@ const FIRST_BLOOD_DURATION_MS = 3000
 const FIRST_BLOOD_COOLDOWN_MS = 1500
 const SCOREBOARD_REFRESH_MS = 30_000
 const SCOREBOARD_DEBOUNCE_MS = 2000
+
+// Attacker-sprite constants
+const ATTACKER_LIFETIME_MS = 3000
+const ATTACKER_FADE_TAIL_MS = 600
+const MAX_ATTACKERS = 30
+const ATTACKER_BURST_COUNT = 8
+const ATTACKER_BURST_INTERVAL_MS = 200
+const ATTACKER_RATE_WINDOW_MS = 3000
+const ATTACKER_RATE_LIMIT = 15
+const ATTACKER_ICON_SIZE = 56
+const ATTACKER_HQ_MARGIN = 200
 
 const colorForType = (t: SubmissionType): { color: string; glow: boolean; opacity: number } => {
   switch (t) {
@@ -237,6 +263,9 @@ const Attack: FC = () => {
   const [recentEvents, setRecentEvents] = useState<AttackEvent[]>([])
   const [firstBlood, setFirstBlood] = useState<FirstBloodBanner | null>(null)
 
+  // Transient "hacker" sprites, each spawned per attack event.
+  const [attackers, setAttackers] = useState<Attacker[]>([])
+
   // Force re-render tick for SVG particles
   const [, setTick] = useState(0)
 
@@ -245,6 +274,13 @@ const Attack: FC = () => {
 
   // Debounced scoreboard refresh per-team
   const scoreboardRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Tracked timers (setTimeouts for attacker-burst particles + sprite teardown)
+  // so we can clear them on unmount and avoid leaks.
+  const attackerTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
+
+  // Timestamps (performance.now()) of recently-spawned sprites, for rate limiting.
+  const spriteSpawnTimesRef = useRef<number[]>([])
 
   /* ---- Viewport tracking ---- */
   useEffect(() => {
@@ -313,21 +349,20 @@ const Attack: FC = () => {
     return m
   }, [positions])
 
-  /* ---- Spawn a particle ---- */
-  const spawnParticle = useCallback(
-    (evt: AttackEvent) => {
-      const from = teamIndex.get(evt.teamName)
-      if (!from) return
-      const { color, glow } = colorForType(evt.type)
+  /* ---- Spawn a particle (at explicit coords, or resolved from team name) ---- */
+  const spawnParticleAt = useCallback(
+    (fromX: number, fromY: number, type: SubmissionType) => {
+      const { color, glow } = colorForType(type)
 
-      // Random mid-point offset so particles don't all stack
-      const midX = (from.x + cx) / 2 + (Math.random() - 0.5) * Math.min(viewport.w, viewport.h) * 0.12
-      const midY = (from.y + cy) / 2 + (Math.random() - 0.5) * Math.min(viewport.w, viewport.h) * 0.12
+      // Random mid-point offset so particles don't all stack on the same arc.
+      const spread = Math.min(viewport.w, viewport.h) * 0.12
+      const midX = (fromX + cx) / 2 + (Math.random() - 0.5) * spread
+      const midY = (fromY + cy) / 2 + (Math.random() - 0.5) * spread
 
       const p: Particle = {
         id: nextIdRef.current++,
-        fromX: from.x,
-        fromY: from.y,
+        fromX,
+        fromY,
         ctrlX: midX,
         ctrlY: midY,
         toX: cx,
@@ -335,7 +370,7 @@ const Attack: FC = () => {
         color,
         glow,
         startedAt: performance.now(),
-        type: evt.type,
+        type,
       }
 
       particlesRef.current.push(p)
@@ -343,7 +378,94 @@ const Attack: FC = () => {
         particlesRef.current.splice(0, particlesRef.current.length - MAX_PARTICLES)
       }
     },
-    [teamIndex, cx, cy, viewport.w, viewport.h]
+    [cx, cy, viewport.w, viewport.h]
+  )
+
+  /* ---- Spawn a single particle tied to an event (kept for supplementary arc) ---- */
+  const spawnParticle = useCallback(
+    (evt: AttackEvent) => {
+      const from = teamIndex.get(evt.teamName)
+      if (!from) return
+      spawnParticleAt(from.x, from.y, evt.type)
+    },
+    [teamIndex, spawnParticleAt]
+  )
+
+  /* ---- Random off-HQ point for column-layout attacker sprites ---- */
+  const randomFieldPoint = useCallback((): { x: number; y: number } => {
+    const w = viewport.w
+    const h = viewport.h
+    const margin = ATTACKER_HQ_MARGIN
+    // Sample until we find a point outside the HQ exclusion box AND not too
+    // close to screen edges. Bounded loop protects against degenerate viewports.
+    for (let i = 0; i < 20; i += 1) {
+      const x = Math.floor(Math.random() * Math.max(1, w - 160)) + 80
+      const y = Math.floor(Math.random() * Math.max(1, h - 160)) + 80
+      if (Math.abs(x - cx) > margin || Math.abs(y - cy) > margin) {
+        return { x, y }
+      }
+    }
+    // Fallback: a corner.
+    return { x: Math.max(80, w * 0.15), y: Math.max(80, h * 0.2) }
+  }, [viewport.w, viewport.h, cx, cy])
+
+  /* ---- Spawn an attacker sprite + staggered particle burst ---- */
+  const spawnAttacker = useCallback(
+    (evt: AttackEvent, ox: number, oy: number) => {
+      const { color } = colorForType(evt.type)
+      const id = nextIdRef.current++
+      const spawnedAt = performance.now()
+
+      setAttackers((prev) => {
+        const next: Attacker[] = [
+          ...prev,
+          {
+            id,
+            x: ox,
+            y: oy,
+            color,
+            teamName: evt.teamName,
+            challengeTitle: evt.challengeTitle,
+            type: evt.type,
+            spawnedAt,
+            fadingEarly: false,
+          },
+        ]
+        // Cap: mark oldest as fading-early if we exceed MAX_ATTACKERS.
+        if (next.length > MAX_ATTACKERS) {
+          const overflow = next.length - MAX_ATTACKERS
+          for (let i = 0; i < overflow; i += 1) {
+            if (!next[i].fadingEarly) next[i] = { ...next[i], fadingEarly: true }
+          }
+        }
+        return next
+      })
+
+      // Staggered particle burst from sprite origin -> HQ.
+      for (let i = 0; i < ATTACKER_BURST_COUNT; i += 1) {
+        const t = setTimeout(() => {
+          attackerTimersRef.current.delete(t)
+          spawnParticleAt(ox, oy, evt.type)
+        }, i * ATTACKER_BURST_INTERVAL_MS)
+        attackerTimersRef.current.add(t)
+      }
+
+      // Sprite teardown.
+      const removeTimer = setTimeout(() => {
+        attackerTimersRef.current.delete(removeTimer)
+        setAttackers((prev) => prev.filter((a) => a.id !== id))
+      }, ATTACKER_LIFETIME_MS)
+      attackerTimersRef.current.add(removeTimer)
+
+      // Early-fade removal for over-cap sprites: trim about 1s before the
+      // natural lifetime so they clear off-screen quickly.
+      const earlyTimer = setTimeout(() => {
+        attackerTimersRef.current.delete(earlyTimer)
+        setAttackers((prev) => prev.filter((a) => !(a.fadingEarly && a.id === id)))
+      }, Math.max(600, ATTACKER_LIFETIME_MS - 1000))
+      attackerTimersRef.current.add(earlyTimer)
+    },
+    [spawnParticleAt]
   )
 
   /* ---- Animation frame loop ---- */
@@ -386,8 +508,41 @@ const Attack: FC = () => {
   /* ---- Handle incoming attack event ---- */
   const handleAttack = useCallback(
     (evt: AttackEvent) => {
+      // Always fire a single supplementary particle arc so even rate-limited
+      // or unresolvable events show movement toward HQ.
       spawnParticle(evt)
       setRecentEvents((prev) => [evt, ...prev].slice(0, 8))
+
+      // Resolve sprite origin. Radial/dual-ring layouts pin to the team's
+      // ring position; the column layout uses a random off-HQ point.
+      let ox: number | null = null
+      let oy: number | null = null
+      if (layout === 'list') {
+        const pt = randomFieldPoint()
+        ox = pt.x
+        oy = pt.y
+      } else {
+        const from = teamIndex.get(evt.teamName)
+        if (from) {
+          ox = from.x
+          oy = from.y
+        }
+      }
+
+      // Rate-limit sprite spawns (but leave particles + scoreboard updates alone).
+      const now = performance.now()
+      const recent = spriteSpawnTimesRef.current.filter(
+        (t) => now - t < ATTACKER_RATE_WINDOW_MS
+      )
+      const canSpawnSprite = recent.length < ATTACKER_RATE_LIMIT
+
+      if (ox !== null && oy !== null && canSpawnSprite) {
+        recent.push(now)
+        spriteSpawnTimesRef.current = recent
+        spawnAttacker(evt, ox, oy)
+      } else {
+        spriteSpawnTimesRef.current = recent
+      }
 
       // First blood overlay + sound
       if (evt.type === SubmissionType.FirstBlood) {
@@ -397,9 +552,9 @@ const Attack: FC = () => {
           challengeTitle: evt.challengeTitle,
           startedAt: performance.now(),
         })
-        const now = performance.now()
-        if (audioEnabled && audioRef.current && now - lastBloodSoundAtRef.current > FIRST_BLOOD_COOLDOWN_MS) {
-          lastBloodSoundAtRef.current = now
+        const audioNow = performance.now()
+        if (audioEnabled && audioRef.current && audioNow - lastBloodSoundAtRef.current > FIRST_BLOOD_COOLDOWN_MS) {
+          lastBloodSoundAtRef.current = audioNow
           audioRef.current.currentTime = 0
           audioRef.current.play().catch(() => undefined)
         }
@@ -413,8 +568,17 @@ const Attack: FC = () => {
         }, SCOREBOARD_DEBOUNCE_MS)
       }
     },
-    [spawnParticle, audioEnabled, refreshScoreboard]
+    [spawnParticle, audioEnabled, refreshScoreboard, layout, teamIndex, randomFieldPoint, spawnAttacker]
   )
+
+  /* ---- Clean up all attacker-related timers on unmount ---- */
+  useEffect(() => {
+    const timers = attackerTimersRef.current
+    return () => {
+      timers.forEach((t) => clearTimeout(t))
+      timers.clear()
+    }
+  }, [])
 
   /* ---- First-blood overlay fade-out ---- */
   useEffect(() => {
@@ -498,6 +662,20 @@ const Attack: FC = () => {
         @keyframes attackToastFade {
           from { opacity: 0; transform: translateY(-8px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes attackerPopIn {
+          0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+          60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+          100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes attackerFade {
+          0%   { opacity: 1; }
+          80%  { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        @keyframes attackerPulseRing {
+          0%   { transform: translate(-50%, -50%) scale(0.08); opacity: 0.9; }
+          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
       `}</style>
 
@@ -680,6 +858,94 @@ const Attack: FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Attacker pulse rings — DOM nodes using transform:scale so they animate
+          reliably across all browsers (SVG `r` CSS animation support varies). */}
+      {attackers.map((a) => (
+        <div
+          key={`ring-${a.id}`}
+          style={{
+            position: 'absolute',
+            left: a.x,
+            top: a.y,
+            width: 150,
+            height: 150,
+            borderRadius: '50%',
+            border: `3px solid ${a.color}`,
+            pointerEvents: 'none',
+            zIndex: 3,
+            // Baseline transform so that — if the animation hasn't been applied
+            // for a frame — the ring stays centered on (a.x, a.y).
+            transform: 'translate(-50%, -50%) scale(0.08)',
+            opacity: 0,
+            animation: 'attackerPulseRing 600ms ease-out forwards',
+            filter:
+              a.type === SubmissionType.FirstBlood
+                ? `drop-shadow(0 0 6px ${a.color})`
+                : undefined,
+          }}
+        />
+      ))}
+
+      {/* Attacker sprites (DOM overlay, absolute-positioned per attacker). */}
+      {attackers.map((a) => {
+        const isFb = a.type === SubmissionType.FirstBlood
+        const isUn = a.type === SubmissionType.Unaccepted
+        const labelLinePrimary = a.teamName.length > 22 ? `${a.teamName.slice(0, 21)}…` : a.teamName
+        const labelLineSecondary = a.challengeTitle.length > 22
+          ? `${a.challengeTitle.slice(0, 21)}…`
+          : a.challengeTitle
+        // Compose animation: pop-in for the first 200ms, then fade over the tail.
+        const animation =
+          `attackerPopIn 200ms cubic-bezier(0.34,1.56,0.64,1) both, ` +
+          `attackerFade ${ATTACKER_FADE_TAIL_MS}ms ease-in ${ATTACKER_LIFETIME_MS - ATTACKER_FADE_TAIL_MS}ms forwards`
+        return (
+          <div
+            key={`sprite-${a.id}`}
+            style={{
+              position: 'absolute',
+              left: a.x,
+              top: a.y,
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+              zIndex: 4,
+              animation,
+              opacity: isUn ? 0.4 : 1,
+              textAlign: 'center',
+            }}
+          >
+            <div
+              style={{
+                width: ATTACKER_ICON_SIZE,
+                height: ATTACKER_ICON_SIZE,
+                margin: '0 auto',
+                color: a.color,
+                filter: isFb
+                  ? `drop-shadow(0 0 8px ${a.color}) drop-shadow(0 0 16px ${a.color})`
+                  : `drop-shadow(0 0 4px rgba(0,0,0,0.6))`,
+              }}
+            >
+              <Icon path={mdiIncognito} size={`${ATTACKER_ICON_SIZE}px`} color={a.color} />
+            </div>
+            <div
+              style={{
+                marginTop: 2,
+                fontSize: 12,
+                color: a.color,
+                lineHeight: 1.2,
+                textShadow: '0 1px 2px rgba(0,0,0,0.9)',
+                maxWidth: 180,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <div style={{ fontWeight: 700 }}>{labelLinePrimary}</div>
+              <div style={{ fontWeight: 400 }}>{labelLineSecondary}</div>
+            </div>
+          </div>
+        )
+      })}
 
       {/* Top-5 leaderboard (top-right) */}
       <div
