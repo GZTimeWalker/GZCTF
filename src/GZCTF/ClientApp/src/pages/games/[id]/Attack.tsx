@@ -515,6 +515,9 @@ const Attack: FC = () => {
 
       // Resolve sprite origin. Radial/dual-ring layouts pin to the team's
       // ring position; the column layout uses a random off-HQ point.
+      // If the team isn't in the scoreboard (debug triggers, new teams not
+      // yet synced, empty scoreboard) fall back to a random off-HQ point so
+      // the sprite still appears.
       let ox: number | null = null
       let oy: number | null = null
       if (layout === 'list') {
@@ -526,6 +529,10 @@ const Attack: FC = () => {
         if (from) {
           ox = from.x
           oy = from.y
+        } else {
+          const pt = randomFieldPoint()
+          ox = pt.x
+          oy = pt.y
         }
       }
 
