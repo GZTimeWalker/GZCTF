@@ -501,10 +501,12 @@ const Attack: FC = () => {
         }
       `}</style>
 
-      {/* Hidden audio element */}
+      {/* Hidden audio element — query-string cache-buster keyed to the
+          build SHA so asset swaps invalidate CDN/browser caches without
+          waiting for the 7-day Cache-Control window. */}
       <audio
         ref={audioRef}
-        src="/attack/firstblood.mp3"
+        src={`/attack/firstblood.mp3?v=${import.meta.env.VITE_APP_GIT_SHA ?? 'dev'}`}
         preload="auto"
         style={{ display: 'none' }}
       />
