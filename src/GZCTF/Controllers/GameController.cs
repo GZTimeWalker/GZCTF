@@ -15,6 +15,7 @@ using GZCTF.Services.Config;
 using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -50,6 +51,7 @@ public class GameController(
     ICheatInfoRepository cheatInfoRepository,
     IContainerRepository containerRepository,
     IGameEventRepository gameEventRepository,
+    IHubContext<Hubs.AttackHub, Hubs.Clients.IAttackClient> attackHub,
     ISubmissionRepository submissionRepository,
     IGameChallengeRepository challengeRepository,
     IGameInstanceRepository gameInstanceRepository,
@@ -416,6 +418,50 @@ public class GameController(
         Array.Reverse(events);
 
         return Ok(events);
+    }
+
+    /// <summary>
+    /// Fire a synthetic AttackEvent on the public AttackHub for testing the
+    /// attack-animation page (e.g., audible first-blood cue). Admin-only.
+    /// </summary>
+    /// <remarks>
+    /// This does NOT create a Submission or award points — it only emits a
+    /// transient SignalR broadcast to connected `/games/{id}/attack` viewers.
+    /// </remarks>
+    /// <param name="id">Game id</param>
+    /// <param name="type">SubmissionType to simulate (default FirstBlood)</param>
+    /// <param name="teamName">Team label shown on the particle</param>
+    /// <param name="challengeTitle">Challenge title shown on the banner</param>
+    /// <param name="token"></param>
+    /// <response code="200">Broadcast dispatched</response>
+    /// <response code="404">Game not found</response>
+    [HttpPost("{id:int}/DebugAttack")]
+    [RequireAdmin]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DebugAttack(
+        [FromRoute] int id,
+        [FromQuery] SubmissionType type = SubmissionType.FirstBlood,
+        [FromQuery] string teamName = "TEST TEAM",
+        [FromQuery] string challengeTitle = "debug-stinger",
+        CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var evt = new AttackEvent(
+            teamName,
+            null,
+            null,
+            challengeTitle,
+            ChallengeCategory.Misc,
+            type,
+            DateTimeOffset.UtcNow);
+
+        await attackHub.Clients.Group($"AttackGame_{id}").ReceivedAttack(evt);
+        return Ok();
     }
 
     /// <summary>
