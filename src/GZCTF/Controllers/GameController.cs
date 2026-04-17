@@ -374,6 +374,51 @@ public class GameController(
     }
 
     /// <summary>
+    /// Get recent attack events for the public animation page
+    /// </summary>
+    /// <remarks>
+    /// Returns the latest flag submissions (accepted + wrong) for the given game,
+    /// used to seed the /games/{id}/attack page on load. No authentication required.
+    /// </remarks>
+    /// <param name="id">Game ID</param>
+    /// <param name="limit">Max number of events to return (default 50, max 200)</param>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved attack events</response>
+    /// <response code="404">Game not found</response>
+    [HttpGet("{id:int}/AttackFeed")]
+    [ProducesResponseType(typeof(AttackEvent[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AttackFeed([FromRoute] int id,
+        [FromQuery][Range(1, 200)] int limit = 50, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var subs = await submissionRepository.GetRecentSubmissionsForAttackFeed(id, limit, token);
+
+        // Seed events use a coarse SubmissionType (Normal vs. Unaccepted). The
+        // live hub delivers precise blood types once FlagChecker resolves them.
+        var events = subs
+            .Select(s => new AttackEvent(
+                s.Team?.Name ?? s.TeamName,
+                s.Team?.AvatarHash is null ? null : $"/assets/{s.Team.AvatarHash}/avatar",
+                null,
+                s.GameChallenge?.Title ?? s.ChallengeName,
+                s.GameChallenge?.Category ?? ChallengeCategory.Misc,
+                s.Status == AnswerResult.Accepted ? SubmissionType.Normal : SubmissionType.Unaccepted,
+                s.SubmitTimeUtc))
+            .ToArray();
+
+        // Oldest first so the client can replay in chronological order.
+        Array.Reverse(events);
+
+        return Ok(events);
+    }
+
+    /// <summary>
     /// Get game notices
     /// </summary>
     /// <remarks>

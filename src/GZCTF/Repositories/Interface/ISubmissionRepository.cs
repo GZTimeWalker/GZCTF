@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Repositories.Interface;
+﻿using GZCTF.Models.Request.Game;
+
+namespace GZCTF.Repositories.Interface;
 
 public interface ISubmissionRepository : IRepository
 {
@@ -32,6 +34,21 @@ public interface ISubmissionRepository : IRepository
     /// </summary>
     /// <param name="submission"></param>
     public Task SendSubmission(Submission submission);
+
+    /// <summary>
+    /// Broadcast a precise <see cref="AttackEvent"/> (with known
+    /// <see cref="SubmissionType"/>) on the public AttackHub. Used by
+    /// FlagChecker right after VerifyAnswer so that blood colors reach
+    /// the animation page accurately.
+    /// </summary>
+    public Task SendAttackEvent(Submission submission, SubmissionType type);
+
+    /// <summary>
+    /// Recent submissions for the public attack-feed seed. Includes both
+    /// accepted and rejected answers so the page can render history on load.
+    /// </summary>
+    public Task<Submission[]> GetRecentSubmissionsForAttackFeed(int gameId, int limit,
+        CancellationToken token = default);
 
     /// <summary>
     /// Get submissions for a specific team, ordered by time descending

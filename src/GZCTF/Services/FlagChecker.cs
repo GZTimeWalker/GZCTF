@@ -172,6 +172,13 @@ public class FlagChecker(
 
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);
+
+                    // Public attack-animation feed: always broadcast, with
+                    // the precise SubmissionType resolved by VerifyAnswer
+                    // (Normal / FirstBlood / SecondBlood / ThirdBlood /
+                    // Unaccepted). The AttackHub is a separate, unauth'd
+                    // broadcast channel and doesn't affect the monitor feed.
+                    await submissionRepository.SendAttackEvent(item, type);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
