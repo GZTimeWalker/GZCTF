@@ -746,33 +746,45 @@ function playAftershock(vol: number): void {
 /* DOM-level screen effects                                         */
 /* ---------------------------------------------------------------- */
 
+/** Target only the scene elements (.attack-shake-zone), not <html>, so
+ *  the static HUD panels / header / footer / FB strip / INCOMING banner
+ *  stay perfectly anchored while the scene jolts at impact. */
+function shakeZones(): HTMLElement[] {
+  return Array.from(document.querySelectorAll<HTMLElement>('.attack-shake-zone'))
+}
+
 function quakeScreen(): void {
-  const el = document.documentElement
-  el.classList.remove('attack-shake')
-  el.classList.remove('attack-quake')
-  // Force reflow
-  void el.offsetWidth
-  el.classList.add('attack-quake')
-  setTimeout(() => el.classList.remove('attack-quake'), 1450)
+  const zones = shakeZones()
+  zones.forEach((el) => {
+    el.classList.remove('attack-shake')
+    el.classList.remove('attack-quake')
+    // Force reflow so re-adding the class restarts the animation
+    void el.offsetWidth
+    el.classList.add('attack-quake')
+  })
+  setTimeout(() => shakeZones().forEach((el) => el.classList.remove('attack-quake')), 1450)
 }
 
 function shakeScreen(): void {
-  const el = document.documentElement
-  el.classList.remove('attack-shake')
-  void el.offsetWidth
-  el.classList.add('attack-shake')
-  setTimeout(() => el.classList.remove('attack-shake'), 950)
+  const zones = shakeZones()
+  zones.forEach((el) => {
+    el.classList.remove('attack-shake')
+    void el.offsetWidth
+    el.classList.add('attack-shake')
+  })
+  setTimeout(() => shakeZones().forEach((el) => el.classList.remove('attack-shake')), 950)
 }
 
 function rumbleOn(): void {
-  const el = document.documentElement
-  if (!el.classList.contains('attack-shake') && !el.classList.contains('attack-quake')) {
-    el.classList.add('attack-rumble')
-  }
+  shakeZones().forEach((el) => {
+    if (!el.classList.contains('attack-shake') && !el.classList.contains('attack-quake')) {
+      el.classList.add('attack-rumble')
+    }
+  })
 }
 
 function rumbleOff(): void {
-  document.documentElement.classList.remove('attack-rumble')
+  shakeZones().forEach((el) => el.classList.remove('attack-rumble'))
 }
 
 function whiteOutScreen(): void {
@@ -882,36 +894,34 @@ function shatterAt(x: number, y: number, color: string): void {
     )
   }
 
+  // Smaller, quicker hub so the title stays legible through the impact.
   const hub = document.createElementNS(SVG_NS, 'circle')
   hub.setAttribute('cx', String(x))
   hub.setAttribute('cy', String(y))
-  hub.setAttribute('r', '4')
+  hub.setAttribute('r', '2')
   hub.setAttribute('fill', '#fff')
-  hub.style.filter = `drop-shadow(0 0 20px ${color})`
+  hub.style.filter = `drop-shadow(0 0 12px ${color})`
   svg.appendChild(hub)
   hub.animate(
-    [{ r: 4, opacity: 1 }, { r: 40, opacity: 0 }] as unknown as Keyframe[],
-    { duration: 700, easing: 'ease-out', fill: 'forwards' }
+    [{ r: 2, opacity: 0.9 }, { r: 18, opacity: 0 }] as unknown as Keyframe[],
+    { duration: 380, easing: 'ease-out', fill: 'forwards' }
   ).onfinish = () => hub.remove()
 
   setTimeout(() => svg.remove(), 2600)
 }
 
 function hqPunch(hex: HTMLElement): void {
-  // Animates the INNER hex element (not the centered wrapper), so the
-  // translate(-50%,-50%) centering stays exclusively on the wrapper and
-  // React re-renders can't stomp on the animation state mid-sequence.
+  // Single soft recoil so the hex gets hit without competing with the
+  // screen-quake (which already shakes the whole viewport).  Multiple
+  // scale/rotate oscillations on top of the quake read as "flickering".
   hex.animate(
     [
       { transform: `scale(1)` },
-      { transform: `scale(0.72) rotate(-3deg)`, offset: 0.08 },
-      { transform: `scale(1.28) rotate(2deg)`, offset: 0.22 },
-      { transform: `scale(0.9) rotate(-1deg)`, offset: 0.4 },
-      { transform: `scale(1.12)`, offset: 0.6 },
-      { transform: `scale(0.96)`, offset: 0.8 },
+      { transform: `scale(1.08)`, offset: 0.25 },
+      { transform: `scale(0.98)`, offset: 0.6 },
       { transform: `scale(1)` },
     ],
-    { duration: 1100, easing: 'cubic-bezier(.3,1.4,.5,1)', fill: 'forwards' }
+    { duration: 600, easing: 'cubic-bezier(.3,.7,.4,1)', fill: 'forwards' }
   )
 }
 
@@ -1570,8 +1580,18 @@ export function spawnFirstBlood(
   // Beam fires at charge end
   setTimeout(() => {
     chargeAlive.v = false
-    vignette.remove()
-    dim.remove()
+    // Fade out the dim + vignette instead of snap-removing them, so the
+    // HQ title doesn't visually "pop back in" when the darkening goes away.
+    vignette.animate([{ opacity: vignette.style.opacity || '1' }, { opacity: '0' }], {
+      duration: 260,
+      fill: 'forwards',
+      easing: 'ease-out',
+    }).onfinish = () => vignette.remove()
+    dim.animate([{ opacity: dim.style.opacity || '1' }, { opacity: '0' }], {
+      duration: 260,
+      fill: 'forwards',
+      easing: 'ease-out',
+    }).onfinish = () => dim.remove()
     rumbleOff()
     clearTimeout(rumbleTimer)
     clearTimeout(incomingTimer)

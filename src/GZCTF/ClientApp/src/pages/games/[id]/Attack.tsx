@@ -256,12 +256,55 @@ const computeLayout = (
 /* Component                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/** When ?preview=1 (or preview=N for N mock teams) the page runs with
+ *  mock data + an on-screen trigger panel — no backend / SignalR.  Used
+ *  for fast local iteration on the visuals. */
+const parsePreviewParam = (): number | null => {
+  if (typeof window === 'undefined') return null
+  const v = new URLSearchParams(window.location.search).get('preview')
+  if (v === null) return null
+  const n = parseInt(v)
+  return Number.isFinite(n) && n >= 0 ? n : 10
+}
+
+const makeMockScoreboard = (teams: number): ScoreboardModel => {
+  const base = [
+    'ROOT-SKSD', 'BINARY-SHOCK', 'NULLBYTE-ID', 'SEGFAULT', 'CTRL-Z', '0X4D4',
+    'HEAPOVERFLOW', 'BLUEHAWKS', 'SHELL-STORM', 'KERNEL-PANIC',
+  ]
+  const items = Array.from({ length: teams }).map((_, i) => ({
+    id: i + 1,
+    name: i < base.length ? base[i] : `TEAM-${String(i + 1).padStart(3, '0')}`,
+    score: 5000 - i * 40 - Math.floor(Math.random() * 30),
+    rank: i + 1,
+    avatar: null,
+    // Unknown optional fields filled from the Api model default
+  })) as ScoreboardModel['items']
+  return { items } as unknown as ScoreboardModel
+}
+
+const CHALLS: Array<[ChallengeCategory, string]> = [
+  [ChallengeCategory.Pwn, 'BABU-FORMAT'],
+  [ChallengeCategory.Web, 'BIJI'],
+  [ChallengeCategory.Web, 'WHITE-NIGHTS'],
+  [ChallengeCategory.Crypto, 'VIRTUOSO'],
+  [ChallengeCategory.Forensics, 'BAD-OPSEC'],
+  [ChallengeCategory.Reverse, 'LATENT-KINGDOM'],
+]
+
 const Attack: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const [game, setGame] = useState<DetailedGameInfoModel | null>(null)
-  const [scoreboard, setScoreboard] = useState<ScoreboardModel | null>(null)
+  const previewTeams = useMemo(() => parsePreviewParam(), [])
+  const isPreview = previewTeams !== null
+
+  const [game, setGame] = useState<DetailedGameInfoModel | null>(
+    isPreview ? ({ title: 'CJ2025 · FINALS' } as DetailedGameInfoModel) : null
+  )
+  const [scoreboard, setScoreboard] = useState<ScoreboardModel | null>(
+    isPreview ? makeMockScoreboard(previewTeams ?? 10) : null
+  )
   const [viewport, setViewport] = useState({
     w: typeof window !== 'undefined' ? window.innerWidth : 1920,
     h: typeof window !== 'undefined' ? window.innerHeight : 1080,
@@ -300,6 +343,7 @@ const Attack: FC = () => {
 
   /* ---- Initial data load ---- */
   useEffect(() => {
+    if (isPreview) return
     if (Number.isNaN(numId) || numId < 0) return
     void (async () => {
       try {
@@ -344,10 +388,11 @@ const Attack: FC = () => {
   }, [numId])
 
   useEffect(() => {
+    if (isPreview) return
     if (Number.isNaN(numId) || numId < 0) return
     const iv = setInterval(() => void refreshScoreboard(), SCOREBOARD_REFRESH_MS)
     return () => clearInterval(iv)
-  }, [numId, refreshScoreboard])
+  }, [numId, refreshScoreboard, isPreview])
 
   /* ---- PixiJS lifecycle ---- */
   useEffect(() => {
@@ -532,15 +577,18 @@ const Attack: FC = () => {
         }
       }
 
-      // Debounced scoreboard refresh (non-rejected solves affect rank)
-      if (evt.type !== SubmissionType.Unaccepted) {
+      // Debounced scoreboard refresh (non-rejected solves affect rank).
+      // Skipped in preview mode — otherwise vite's /api proxy would replace
+      // the mock scoreboard with a real (possibly empty) backend response
+      // and the teams would disappear mid-sequence.
+      if (!isPreview && evt.type !== SubmissionType.Unaccepted) {
         if (scoreboardRefreshTimerRef.current) clearTimeout(scoreboardRefreshTimerRef.current)
         scoreboardRefreshTimerRef.current = setTimeout(() => {
           void refreshScoreboard()
         }, SCOREBOARD_DEBOUNCE_MS)
       }
     },
-    [audioEnabled, hqCenter.x, hqCenter.y, refreshScoreboard, resolveSource]
+    [audioEnabled, hqCenter.x, hqCenter.y, refreshScoreboard, resolveSource, isPreview]
   )
 
   /* ---- Cleanup burst timers on unmount ---- */
@@ -561,6 +609,7 @@ const Attack: FC = () => {
 
   /* ---- SignalR ---- */
   useEffect(() => {
+    if (isPreview) return
     if (Number.isNaN(numId) || numId < 0) return
     const connection = new signalR.HubConnectionBuilder()
       .withUrl(`/hub/attack?game=${numId}`)
@@ -582,7 +631,27 @@ const Attack: FC = () => {
     return () => {
       connection.stop().catch(() => undefined)
     }
-  }, [numId, handleAttack])
+  }, [numId, handleAttack, isPreview])
+
+  /* ---- Preview triggers ---- */
+  const fireMockEvent = useCallback(
+    (type: SubmissionType) => {
+      const teams = scoreboard?.items ?? []
+      const team = teams[Math.floor(Math.random() * Math.max(teams.length, 1))]
+      const chall = CHALLS[Math.floor(Math.random() * CHALLS.length)]
+      const evt: AttackEvent = {
+        teamName: team?.name ?? 'MOCK-TEAM',
+        teamAvatar: null,
+        teamScore: team?.score ?? null,
+        challengeTitle: chall[1],
+        category: chall[0],
+        type,
+        time: new Date().toISOString(),
+      }
+      handleAttack(evt)
+    },
+    [handleAttack, scoreboard]
+  )
 
   /* ---- Render ---- */
   const eventTitle = game?.title ?? 'ATTACK'
@@ -602,12 +671,18 @@ const Attack: FC = () => {
         userSelect: 'none',
       }}
     >
-      {/* Shared keyframes + screen-shake classes */}
+      {/* Shared keyframes + screen-shake classes.
+          Shake targets a WRAPPER (.attack-shake-zone) containing the canvas
+          + theater (HQ + team nodes), NOT <html> — so the static HUD
+          (header, footer, feed, scoreboard, FB strip, INCOMING) stays
+          anchored while only the scene jolts at impact. */}
       <style>{`
-        html.attack-shake,html.attack-quake,html.attack-rumble{will-change:transform;background:#060609}
-        html.attack-shake{animation:attackShake .9s cubic-bezier(.36,.07,.19,.97)}
+        .attack-shake-zone.attack-shake,
+        .attack-shake-zone.attack-quake,
+        .attack-shake-zone.attack-rumble { will-change: transform }
+        .attack-shake-zone.attack-shake{animation:attackShake .9s cubic-bezier(.36,.07,.19,.97)}
         @keyframes attackShake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
-        html.attack-quake{animation:attackQuake 1.4s cubic-bezier(.36,.07,.19,.97)}
+        .attack-shake-zone.attack-quake{animation:attackQuake 1.4s cubic-bezier(.36,.07,.19,.97)}
         @keyframes attackQuake{
           0%,100%{transform:translate3d(0,0,0) rotate(0)}
           3%{transform:translate3d(-34px,-20px,0) rotate(-1.1deg)}
@@ -623,7 +698,7 @@ const Attack: FC = () => {
           82%{transform:translate3d(-4px,3px,0)}
           92%{transform:translate3d(2px,-1px,0)}
         }
-        html.attack-rumble{animation:attackRumble .12s linear infinite}
+        .attack-shake-zone.attack-rumble{animation:attackRumble .12s linear infinite}
         @keyframes attackRumble{
           0%,100%{transform:translate3d(0,0,0)}
           25%{transform:translate3d(-1.5px,-1px,0)}
@@ -798,11 +873,16 @@ const Attack: FC = () => {
         atkRate={atkRate}
       />
 
-      {/* Theater: orbital deco rings + HQ + team nodes.
-          Z-index sits ABOVE the pixi canvas (z:12) so HUD text (HQ title,
-          team labels) renders on top of the bullets + charge glow. */}
+      {/* Single shake container — hex + canvas + title all inside so they
+          share one transform and can't desync during the quake.  Inner
+          z-indices: theater=5 (hex behind canvas), canvas=12, title=15.
+          HUD panels outside this wrapper stay anchored to the viewport. */}
       <div
-        style={{ position: 'fixed', inset: 0, zIndex: 15, pointerEvents: 'none' }}
+        className="attack-shake-zone"
+        style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}
+      >
+      <div
+        style={{ position: 'fixed', inset: 0, zIndex: 5, pointerEvents: 'none' }}
       >
         {/* Inner dashed ring */}
         <div
@@ -849,6 +929,9 @@ const Attack: FC = () => {
             pointerEvents: 'none',
           }}
         >
+          {/* Hex SHAPE only — sits at z:5 below the canvas so the laser
+              visibly strikes the hex outline.  Text labels live in a
+              separate z:15 overlay below. */}
           <div
             ref={hexRef}
             style={{
@@ -857,57 +940,10 @@ const Attack: FC = () => {
               position: 'relative',
               clipPath: 'polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)',
               background:
-                'radial-gradient(circle at center, rgba(255,42,42,.1), transparent 70%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              padding: 30,
+                'radial-gradient(circle at center, #1a1214 0%, #141018 55%, rgba(20,16,24,0.0) 100%)',
               willChange: 'transform',
             }}
-          >
-            <div
-              style={{
-                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-                fontSize: 10,
-                letterSpacing: '.35em',
-                color: '#f4b619',
-                opacity: 0.85,
-                marginBottom: 4,
-              }}
-            >
-              // TARGET
-            </div>
-            <div
-              style={{
-                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-                fontSize: 24,
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '.12em',
-                color: '#ffd34a',
-                textAlign: 'center',
-                lineHeight: 1.15,
-                textShadow: '0 0 22px rgba(255,211,74,.55)',
-                maxWidth: hqSize - 30,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {eventTitle}
-            </div>
-            <div
-              style={{
-                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-                fontSize: 9.5,
-                letterSpacing: '.4em',
-                color: '#6b7183',
-                marginTop: 10,
-              }}
-            >
-              OPS · CONTROL · HQ
-            </div>
-          </div>
+          />
         </div>
 
         {/* Team nodes */}
@@ -952,6 +988,68 @@ const Attack: FC = () => {
         })}
       </div>
 
+      {/* HQ text labels — inside the shake wrapper at z:15 (above the
+          pixi canvas) so the title + TARGET + OPS stay legible on top
+          of the charge halo, and move in perfect sync with the hex. */}
+      <div
+        style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%,-50%)',
+          zIndex: 15,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          width: hqSize - 60,
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 10,
+            letterSpacing: '.35em',
+            color: '#f4b619',
+            opacity: 0.85,
+            marginBottom: 4,
+          }}
+        >
+          // TARGET
+        </div>
+        <div
+          style={{
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 24,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '.12em',
+            color: '#ffd34a',
+            lineHeight: 1.15,
+            textShadow: '0 0 22px rgba(255,211,74,.55)',
+            maxWidth: hqSize - 30,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {eventTitle}
+        </div>
+        <div
+          style={{
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 9.5,
+            letterSpacing: '.4em',
+            color: '#6b7183',
+            marginTop: 10,
+          }}
+        >
+          OPS · CONTROL · HQ
+        </div>
+      </div>
+      </div>{/* end .attack-shake-zone wrapper */}
+
       {/* Rank column (active-only layout) */}
       {layout === 'active' && rankColumn && (
         <div
@@ -962,7 +1060,7 @@ const Attack: FC = () => {
             width: rankColumn.w,
             height: rankColumn.h,
             zIndex: 18,
-            background: 'rgba(12,13,18,.94)',
+            background: '#0c0d12',
             padding: '14px 16px',
             overflow: 'hidden',
             fontFamily: '"JetBrains Mono", ui-monospace, monospace',
@@ -1010,7 +1108,7 @@ const Attack: FC = () => {
         </div>
       )}
 
-      {/* PixiJS canvas — sized via the renderer */}
+      {/* PixiJS canvas — inside the shake wrapper so it moves with theater + title. */}
       <canvas
         ref={canvasRef}
         style={{
@@ -1020,8 +1118,6 @@ const Attack: FC = () => {
           height: '100vh',
           zIndex: 12,
           pointerEvents: 'none',
-          willChange: 'transform',
-          transform: 'translateZ(0)',
         }}
       />
 
@@ -1074,9 +1170,76 @@ const Attack: FC = () => {
           </div>
         </div>
       )}
+
+      {/* Preview trigger panel — only rendered when ?preview= is in the URL */}
+      {isPreview && (
+        <div
+          style={{
+            position: 'fixed',
+            left: 20,
+            bottom: FOOTER_H + 16,
+            zIndex: 80,
+            display: 'flex',
+            gap: 8,
+            background: '#14141f',
+            padding: 8,
+            border: '2px solid #ff2a2a',
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          }}
+        >
+          <button
+            onClick={() => fireMockEvent(SubmissionType.FirstBlood)}
+            style={previewBtn('#ff2a2a', '#ffffff')}
+          >
+            FB LASER
+          </button>
+          <button
+            onClick={() => fireMockEvent(SubmissionType.Normal)}
+            style={previewBtn('#3ae85c', '#0b0b11')}
+          >
+            NORMAL
+          </button>
+          <button
+            onClick={() => fireMockEvent(SubmissionType.SecondBlood)}
+            style={previewBtn('#f4b619', '#0b0b11')}
+          >
+            AMBER
+          </button>
+          <button
+            onClick={() => fireMockEvent(SubmissionType.Unaccepted)}
+            style={previewBtn('#ff6262', '#0b0b11')}
+          >
+            WRONG
+          </button>
+          <span
+            style={{
+              alignSelf: 'center',
+              marginLeft: 12,
+              fontSize: 11,
+              color: '#6b7183',
+              letterSpacing: '.15em',
+            }}
+          >
+            PREVIEW MODE · {previewTeams} teams
+          </span>
+        </div>
+      )}
     </div>
   )
 }
+
+const previewBtn = (bg: string, fg: string): React.CSSProperties => ({
+  background: bg,
+  color: fg,
+  border: 'none',
+  padding: '8px 14px',
+  fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: '.15em',
+  textTransform: 'uppercase',
+  cursor: 'pointer',
+})
 
 /* -------------------------------------------------------------------------- */
 /* Feed panel                                                                  */
@@ -1100,7 +1263,7 @@ const FeedPanel: FC<FeedPanelProps> = ({ left, top, bottom, width, lines }) => {
         bottom,
         width,
         zIndex: 20,
-        background: 'rgba(12,13,18,.94)',
+        background: '#0c0d12',
         padding: '16px 18px 14px',
         overflow: 'hidden',
         contain: 'layout style paint' as React.CSSProperties['contain'],
@@ -1159,6 +1322,7 @@ const FeedPanel: FC<FeedPanelProps> = ({ left, top, bottom, width, lines }) => {
       >
         $ gzctf.watch()
         <span
+          className="attack-cursor"
           style={{
             display: 'inline-block',
             width: 7,
@@ -1242,7 +1406,7 @@ const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
           top,
           width,
           zIndex: 20,
-          background: 'rgba(12,13,18,.94)',
+          background: '#0c0d12',
           padding: '16px 18px 14px',
           contain: 'layout style paint' as React.CSSProperties['contain'],
         }}
@@ -1326,7 +1490,7 @@ const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
           top: statsTop,
           width,
           zIndex: 20,
-          background: 'rgba(12,13,18,.92)',
+          background: '#0c0d12',
           padding: '12px 18px',
           contain: 'layout style paint' as React.CSSProperties['contain'],
         }}
