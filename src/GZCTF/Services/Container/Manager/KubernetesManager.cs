@@ -250,7 +250,7 @@ public class KubernetesManager : IContainerManager
 
     private static IList<V1EnvVar> BuildContainerEnv(ContainerConfig config)
     {
-        var envs = new List<V1EnvVar>
+        var envs = new List<V1EnvVar>(5)
         {
             new() { Name = "GZCTF_TEAM_ID", Value = config.TeamId },
             new() { Name = "GZCTF_USER_ID", Value = config.UserId.ToString() },
@@ -261,7 +261,7 @@ public class KubernetesManager : IContainerManager
             envs.Add(new V1EnvVar { Name = "GZCTF_GAME_ID", Value = gameId.ToString() });
 
         if (!string.IsNullOrWhiteSpace(config.Flag))
-            envs.Insert(0, new V1EnvVar { Name = "GZCTF_FLAG", Value = config.Flag });
+            envs.Add(new V1EnvVar { Name = "GZCTF_FLAG", Value = config.Flag });
 
         return envs;
     }

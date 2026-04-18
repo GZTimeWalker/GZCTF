@@ -293,7 +293,7 @@ public class DockerManager : IContainerManager
 
     private static IList<string> BuildContainerEnv(GZCTF.Models.Internal.ContainerConfig config)
     {
-        var env = new List<string>
+        var env = new List<string>(5)
         {
             $"GZCTF_TEAM_ID={config.TeamId}",
             $"GZCTF_USER_ID={config.UserId}",
@@ -304,7 +304,7 @@ public class DockerManager : IContainerManager
             env.Add($"GZCTF_GAME_ID={gameId}");
 
         if (!string.IsNullOrWhiteSpace(config.Flag))
-            env.Insert(0, $"GZCTF_FLAG={config.Flag}");
+            env.Add($"GZCTF_FLAG={config.Flag}");
 
         return env;
     }
