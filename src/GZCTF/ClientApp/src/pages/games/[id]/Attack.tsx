@@ -280,7 +280,6 @@ const Attack: FC = () => {
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const hqRef = useRef<HTMLDivElement | null>(null)
   const hexRef = useRef<HTMLDivElement | null>(null)
 
   const pixiReadyRef = useRef(false)
@@ -827,7 +826,6 @@ const Attack: FC = () => {
             the inner hex element is what hqPunch animates (scale/rotate only).
             Sits above the canvas so the title stays readable during the charge. */}
         <div
-          ref={hqRef}
           style={{
             position: 'absolute',
             left: '50%',

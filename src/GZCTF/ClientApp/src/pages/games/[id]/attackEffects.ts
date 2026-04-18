@@ -939,11 +939,14 @@ function slideScanBar(i: number): void {
 
 function showIncomingBanner(durationMs: number): void {
   const warn = document.createElement('div')
+  // Positioned in the upper HUD band well clear of both the FB strip
+  // banner (top:58px) and the HQ hex (centered at 50vh).  top:140px
+  // leaves ~40px gap below the FB strip and far above the hex.
   Object.assign(warn.style, {
     position: 'fixed',
     left: '50%',
-    top: '38%',
-    transform: 'translate(-50%,-50%)',
+    top: '140px',
+    transform: 'translateX(-50%)',
     zIndex: '45',
     pointerEvents: 'none',
     padding: '14px 32px',
@@ -962,15 +965,15 @@ function showIncomingBanner(durationMs: number): void {
   document.body.appendChild(warn)
   warn.animate(
     [
-      { opacity: 0, transform: 'translate(-50%,-50%) scale(.7)' },
-      { opacity: 1, transform: 'translate(-50%,-50%) scale(1)', offset: 0.1 },
-      { opacity: 0.6, transform: 'translate(-50%,-50%) scale(1)', offset: 0.2 },
-      { opacity: 1, transform: 'translate(-50%,-50%) scale(1.04)', offset: 0.35 },
-      { opacity: 0.6, transform: 'translate(-50%,-50%) scale(1)', offset: 0.5 },
-      { opacity: 1, transform: 'translate(-50%,-50%) scale(1.08)', offset: 0.7 },
-      { opacity: 0.4, transform: 'translate(-50%,-50%) scale(1)', offset: 0.85 },
-      { opacity: 1, transform: 'translate(-50%,-50%) scale(1.15)', offset: 0.95 },
-      { opacity: 0, transform: 'translate(-50%,-50%) scale(1.4)' },
+      { opacity: 0, transform: 'translateX(-50%) scale(.7)' },
+      { opacity: 1, transform: 'translateX(-50%) scale(1)', offset: 0.1 },
+      { opacity: 0.6, transform: 'translateX(-50%) scale(1)', offset: 0.2 },
+      { opacity: 1, transform: 'translateX(-50%) scale(1.04)', offset: 0.35 },
+      { opacity: 0.6, transform: 'translateX(-50%) scale(1)', offset: 0.5 },
+      { opacity: 1, transform: 'translateX(-50%) scale(1.08)', offset: 0.7 },
+      { opacity: 0.4, transform: 'translateX(-50%) scale(1)', offset: 0.85 },
+      { opacity: 1, transform: 'translateX(-50%) scale(1.15)', offset: 0.95 },
+      { opacity: 0, transform: 'translateX(-50%) scale(1.4)' },
     ],
     { duration: durationMs, fill: 'forwards', easing: 'ease-out' }
   ).onfinish = () => warn.remove()
