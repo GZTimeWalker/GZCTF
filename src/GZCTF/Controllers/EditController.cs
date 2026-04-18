@@ -785,6 +785,7 @@ public class EditController(
                 MemoryLimit = challenge.MemoryLimit ?? 64,
                 StorageLimit = challenge.StorageLimit ?? 256,
                 NetworkMode = challenge.NetworkMode ?? NetworkMode.Open,
+                PreStopCommand = challenge.PreStopCommand,
                 ExposedPort = challenge.ExposePort.Value,
             }, token);
 

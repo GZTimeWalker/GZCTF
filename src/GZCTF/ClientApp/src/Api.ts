@@ -1167,6 +1167,8 @@ export interface ChallengeEditDetailModel {
    * @format int32
    */
   exposePort?: number | null;
+  /** Optional command path executed inside the container before it is destroyed */
+  preStopCommand?: string | null;
   /** Container network mode */
   networkMode?: NetworkMode | null;
   /** Whether to record traffic */
@@ -1348,6 +1350,8 @@ export interface ChallengeUpdateModel {
    * @format int32
    */
   exposePort?: number | null;
+  /** Optional command path executed inside the container before it is destroyed */
+  preStopCommand?: string | null;
   /** Container network mode */
   networkMode?: NetworkMode | null;
   /** Is traffic capture enabled (disabled by default) */

@@ -87,6 +87,9 @@ public class GameChallenge : Challenge
         if (model.FlagTemplate is { } template)
             FlagTemplate = string.IsNullOrWhiteSpace(template) ? null : template;
 
+        if (model.PreStopCommand is { } preStopCommand)
+            PreStopCommand = string.IsNullOrWhiteSpace(preStopCommand) ? null : preStopCommand.Trim();
+
         // Container only
         EnableTrafficCapture = Type.IsContainer() && (model.EnableTrafficCapture ?? EnableTrafficCapture);
     }

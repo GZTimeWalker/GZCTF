@@ -164,6 +164,10 @@
             "open": "开放"
           }
         },
+        "pre_stop_command": {
+          "description": "容器销毁前在容器内执行的可选命令路径，直接执行，不经过 shell。",
+          "label": "销毁前命令"
+        },
         "score": "题目分值",
         "service_port": {
           "description": "容器内服务的端口号",

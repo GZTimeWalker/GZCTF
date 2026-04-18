@@ -13,6 +13,7 @@ namespace GZCTF.Services.Container.Manager;
 
 public class DockerManager : IContainerManager
 {
+    private static readonly TimeSpan PreStopTimeout = TimeSpan.FromSeconds(5);
     private readonly DockerClient _client;
     private readonly ILogger<DockerManager> _logger;
     private readonly DockerMetadata _meta;
@@ -30,6 +31,8 @@ public class DockerManager : IContainerManager
 
     public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
     {
+        await TryRunPreStopCommandAsync(container, token);
+
         try
         {
             await _client.Containers.RemoveContainerAsync(container.ContainerId,
@@ -169,7 +172,12 @@ public class DockerManager : IContainerManager
             return null;
         }
 
-        var container = new Models.Data.Container { ContainerId = containerRes.ID, Image = config.Image };
+        var container = new Models.Data.Container
+        {
+            ContainerId = containerRes.ID,
+            Image = config.Image,
+            PreStopCommand = NormalizePreStopCommand(config.PreStopCommand)
+        };
 
         retry = 0;
 
@@ -292,4 +300,52 @@ public class DockerManager : IContainerManager
                 NetworkMode = _meta.NetworkNames[config.NetworkMode]
             }
         };
+
+    private async Task TryRunPreStopCommandAsync(Models.Data.Container container, CancellationToken token)
+    {
+        var command = NormalizePreStopCommand(container.PreStopCommand);
+
+        if (command is null)
+            return;
+
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
+        timeout.CancelAfter(PreStopTimeout);
+
+        try
+        {
+            var exec = await _client.Exec.CreateContainerExecAsync(container.ContainerId,
+                new ContainerExecCreateParameters
+                {
+                    AttachStdout = true,
+                    AttachStderr = true,
+                    TTY = false,
+                    Cmd = [command]
+                }, timeout.Token);
+
+            using var stream = await _client.Exec.StartContainerExecAsync(exec.ID,
+                new ContainerExecStartParameters { Detach = false, TTY = false }, timeout.Token);
+            await stream.ReadOutputToEndAsync(timeout.Token);
+
+            var inspect = await _client.Exec.InspectContainerExecAsync(exec.ID, timeout.Token);
+
+            if (inspect.ExitCode != 0)
+            {
+                _logger.LogWarning("Container pre-stop command {Command} for {ContainerId} exited with code {ExitCode}",
+                    command, container.ContainerId, inspect.ExitCode);
+            }
+        }
+        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+        {
+            _logger.LogWarning("Container pre-stop command {Command} for {ContainerId} timed out after {Timeout}s",
+                command, container.ContainerId, PreStopTimeout.TotalSeconds);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Container pre-stop command {Command} for {ContainerId} failed",
+                command, container.ContainerId);
+        }
+    }
+
+    private static string? NormalizePreStopCommand(string? command) =>
+        string.IsNullOrWhiteSpace(command) ? null : command.Trim();
 }

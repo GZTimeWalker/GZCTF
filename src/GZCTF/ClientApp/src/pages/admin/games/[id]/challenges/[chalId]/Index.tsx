@@ -515,6 +515,16 @@ const GameChallengeEdit: FC = () => {
                 }}
               />
             </Grid.Col>
+            <Grid.Col span={8}>
+              <TextInput
+                label={t('admin.content.games.challenges.pre_stop_command.label')}
+                description={t('admin.content.games.challenges.pre_stop_command.description')}
+                disabled={disabled}
+                value={challengeInfo.preStopCommand ?? ''}
+                placeholder="/about_to_destroy"
+                onChange={(e) => setChallengeInfo({ ...challengeInfo, preStopCommand: e.target.value })}
+              />
+            </Grid.Col>
             <Grid.Col span={2}>
               <Select
                 required

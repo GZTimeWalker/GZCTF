@@ -164,6 +164,10 @@
             "open": "Open"
           }
         },
+        "pre_stop_command": {
+          "description": "Optional executable path invoked inside the container before it is destroyed. It runs directly without a shell.",
+          "label": "Pre-stop Command"
+        },
         "score": "Score",
         "service_port": {
           "description": "Port of container services",

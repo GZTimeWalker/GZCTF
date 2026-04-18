@@ -174,6 +174,7 @@ public class GameInstanceRepository(
             MemoryLimit = challenge.MemoryLimit ?? 64,
             StorageLimit = challenge.StorageLimit ?? 256,
             NetworkMode = challenge.NetworkMode ?? NetworkMode.Open,
+            PreStopCommand = challenge.PreStopCommand,
             EnableTrafficCapture = challenge.EnableTrafficCapture && game.IsActive,
             ExposedPort = challenge.ExposePort ??
                           throw new ArgumentException(

@@ -33,6 +33,11 @@ public class ContainerConfig
     public string? Flag { get; set; } = string.Empty;
 
     /// <summary>
+    /// Optional command path executed inside the container before it is destroyed
+    /// </summary>
+    public string? PreStopCommand { get; set; }
+
+    /// <summary>
     /// Whether to record traffic
     /// </summary>
     public bool EnableTrafficCapture { get; set; }

@@ -164,6 +164,7 @@ public class ExerciseInstanceRepository(
             MemoryLimit = instance.Exercise.MemoryLimit ?? 64,
             StorageLimit = instance.Exercise.StorageLimit ?? 256,
             NetworkMode = instance.Exercise.NetworkMode ?? NetworkMode.Open,
+            PreStopCommand = instance.Exercise.PreStopCommand,
             EnableTrafficCapture = false,
             ExposedPort = instance.Exercise.ExposePort.Value
         }, token);

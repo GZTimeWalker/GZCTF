@@ -91,6 +91,12 @@ public class Challenge
     public NetworkMode? NetworkMode { get; set; } = Utils.NetworkMode.Open;
 
     /// <summary>
+    /// Optional command path executed inside the container before it is destroyed
+    /// </summary>
+    [MaxLength(256)]
+    public string? PreStopCommand { get; set; }
+
+    /// <summary>
     /// Download file name, used only for dynamic attachment unified file name
     /// </summary>
     public string? FileName { get; set; } = "attachment";

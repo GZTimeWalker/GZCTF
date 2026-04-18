@@ -87,6 +87,12 @@ public class Container
     public int? PublicPort { get; set; }
 
     /// <summary>
+    /// Optional command path executed inside the container before it is destroyed
+    /// </summary>
+    [MaxLength(256)]
+    public string? PreStopCommand { get; set; }
+
+    /// <summary>
     /// Container instance access method
     /// </summary>
     [NotMapped]

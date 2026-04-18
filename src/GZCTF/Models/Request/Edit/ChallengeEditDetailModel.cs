@@ -116,6 +116,11 @@ public class ChallengeEditDetailModel
     public NetworkMode? NetworkMode { get; set; }
 
     /// <summary>
+    /// Optional command path executed inside the container before it is destroyed
+    /// </summary>
+    public string? PreStopCommand { get; set; }
+
+    /// <summary>
     /// Whether to record traffic
     /// </summary>
     public bool? EnableTrafficCapture { get; set; } = false;
@@ -172,6 +177,7 @@ public class ChallengeEditDetailModel
             StorageLimit = chal.StorageLimit,
             ExposePort = chal.ExposePort,
             NetworkMode = chal.NetworkMode,
+            PreStopCommand = chal.PreStopCommand,
             EnableTrafficCapture = chal.EnableTrafficCapture,
             DisableBloodBonus = chal.DisableBloodBonus,
             OriginalScore = chal.OriginalScore,

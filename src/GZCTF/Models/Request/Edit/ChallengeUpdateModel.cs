@@ -96,6 +96,12 @@ public class ChallengeUpdateModel
     public NetworkMode? NetworkMode { get; set; }
 
     /// <summary>
+    /// Optional command path executed inside the container before it is destroyed
+    /// </summary>
+    [MaxLength(256)]
+    public string? PreStopCommand { get; set; }
+
+    /// <summary>
     /// Is traffic capture enabled (disabled by default)
     /// </summary>
     public bool? EnableTrafficCapture { get; set; }

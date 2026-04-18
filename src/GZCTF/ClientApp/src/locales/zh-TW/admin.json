@@ -164,6 +164,10 @@
             "open": "開放"
           }
         },
+        "pre_stop_command": {
+          "description": "容器銷毀前在容器內執行的可選命令路徑，會直接執行，不經過 shell。",
+          "label": "銷毀前命令"
+        },
         "score": "題目分值",
         "service_port": {
           "description": "容器內服務的埠號",

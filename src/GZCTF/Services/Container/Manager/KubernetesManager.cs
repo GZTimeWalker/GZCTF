@@ -14,6 +14,7 @@ namespace GZCTF.Services.Container.Manager;
 
 public class KubernetesManager : IContainerManager
 {
+    private static readonly TimeSpan PreStopTimeout = TimeSpan.FromSeconds(5);
     private readonly Kubernetes _client;
     private readonly ILogger<KubernetesManager> _logger;
     private readonly KubernetesMetadata _meta;
@@ -208,6 +209,7 @@ public class KubernetesManager : IContainerManager
         {
             ContainerId = name,
             Image = config.Image,
+            PreStopCommand = NormalizePreStopCommand(config.PreStopCommand),
             Port = config.ExposedPort,
             IP = service.Spec.ClusterIP,
             IsProxy = !_meta.ExposePort,
@@ -226,6 +228,8 @@ public class KubernetesManager : IContainerManager
 
     public async Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default)
     {
+        await TryRunPreStopCommandAsync(container, token);
+
         try
         {
             await _client.CoreV1.DeleteNamespacedServiceAsync(container.ContainerId, _meta.Config.Namespace,
@@ -253,4 +257,46 @@ public class KubernetesManager : IContainerManager
 
         container.Status = ContainerStatus.Destroyed;
     }
+
+    private async Task TryRunPreStopCommandAsync(Models.Data.Container container, CancellationToken token)
+    {
+        var command = NormalizePreStopCommand(container.PreStopCommand);
+
+        if (command is null)
+            return;
+
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
+        timeout.CancelAfter(PreStopTimeout);
+
+        try
+        {
+            var exitCode = await _client.NamespacedPodExecAsync(
+                container.ContainerId,
+                _meta.Config.Namespace,
+                container.ContainerId,
+                [command],
+                false,
+                (_, _, _) => Task.CompletedTask,
+                timeout.Token);
+
+            if (exitCode != 0)
+            {
+                _logger.LogWarning("Container pre-stop command {Command} for {ContainerId} exited with code {ExitCode}",
+                    command, container.ContainerId, exitCode);
+            }
+        }
+        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+        {
+            _logger.LogWarning("Container pre-stop command {Command} for {ContainerId} timed out after {Timeout}s",
+                command, container.ContainerId, PreStopTimeout.TotalSeconds);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Container pre-stop command {Command} for {ContainerId} failed",
+                command, container.ContainerId);
+        }
+    }
+
+    private static string? NormalizePreStopCommand(string? command) =>
+        string.IsNullOrWhiteSpace(command) ? null : command.Trim();
 }

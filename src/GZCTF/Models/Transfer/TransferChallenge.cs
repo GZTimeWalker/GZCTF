@@ -267,6 +267,12 @@ public class ContainerSection
     public int ExposePort { get; set; } = 80;
 
     /// <summary>
+    /// Optional command path executed inside the container before it is destroyed
+    /// </summary>
+    [MaxLength(256, ErrorMessage = "Pre-stop command is too long")]
+    public string? PreStopCommand { get; set; }
+
+    /// <summary>
     /// Container network mode
     /// </summary>
     public NetworkMode? NetworkMode { get; set; } = Utils.NetworkMode.Open;

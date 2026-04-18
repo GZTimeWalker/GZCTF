@@ -170,6 +170,10 @@ namespace GZCTF.Migrations
                     b.Property<int?>("PublicPort")
                         .HasColumnType("integer");
 
+                    b.Property<string>("PreStopCommand")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
                     b.Property<DateTimeOffset>("StartedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -283,6 +287,10 @@ namespace GZCTF.Migrations
                     b.Property<string>("FlagTemplate")
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
+
+                    b.Property<string>("PreStopCommand")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Hints")
                         .HasColumnType("text");
@@ -574,6 +582,10 @@ namespace GZCTF.Migrations
                     b.Property<string>("FlagTemplate")
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
+
+                    b.Property<string>("PreStopCommand")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<int>("GameId")
                         .HasColumnType("integer");

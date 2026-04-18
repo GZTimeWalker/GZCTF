@@ -410,6 +410,7 @@ public class GameImportService(
             CPUCount = transferChallenge.Container?.CpuCount,
             StorageLimit = transferChallenge.Container?.StorageLimit,
             NetworkMode = transferChallenge.Container?.NetworkMode,
+            PreStopCommand = transferChallenge.Container?.PreStopCommand,
 
             // File settings
             FileName = transferChallenge.Container?.FileName,

@@ -76,6 +76,7 @@ public class TransferChallengeTests
             CPUCount = 2,
             StorageLimit = 512,
             ExposePort = 9999,
+            PreStopCommand = "/about_to_destroy",
             FileName = "exploit",
             NetworkMode = NetworkMode.Custom,
             Flags = []
@@ -95,6 +96,7 @@ public class TransferChallengeTests
         Assert.Equal(2, transfer.Container.CpuCount);
         Assert.Equal(512, transfer.Container.StorageLimit);
         Assert.Equal(9999, transfer.Container.ExposePort);
+        Assert.Equal("/about_to_destroy", transfer.Container.PreStopCommand);
         Assert.Equal("exploit", transfer.Container.FileName);
         Assert.Equal(NetworkMode.Custom, transfer.Container.NetworkMode);
     }
@@ -116,7 +118,17 @@ public class TransferChallengeTests
             EnableTrafficCapture = false,
             Static = [new() { Value = "flag{crypto_master}" }]
         },
-        Hints = ["RSA", "Small e"]
+        Hints = ["RSA", "Small e"],
+        Container = new ContainerSection
+        {
+            Image = "crypto/toolkit:latest",
+            MemoryLimit = 64,
+            CpuCount = 1,
+            StorageLimit = 128,
+            ExposePort = 1337,
+            PreStopCommand = "/cleanup",
+            NetworkMode = NetworkMode.Isolated
+        }
     };
 
     [Fact]
@@ -137,6 +149,7 @@ public class TransferChallengeTests
         Assert.Equal(10, challenge.SubmissionLimit);
         Assert.True(challenge.DisableBloodBonus);
         Assert.Equal(2, challenge.Hints!.Count);
+        Assert.Equal("/cleanup", challenge.PreStopCommand);
     }
 
     [Fact]

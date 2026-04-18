@@ -212,6 +212,75 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     }
 
     /// <summary>
+    /// Test UpdateGameChallenge persists pre-stop command configuration
+    /// </summary>
+    [Fact]
+    public async Task UpdateGameChallenge_ShouldPersistPreStopCommand()
+    {
+        var adminPassword = "Admin@Pass123";
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
+            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Pre-stop Command Test");
+        var challengeId = 0;
+
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var gameRepository = scope.ServiceProvider.GetRequiredService<IGameRepository>();
+            var challengeRepository = scope.ServiceProvider.GetRequiredService<IGameChallengeRepository>();
+
+            var gameEntity = await gameRepository.GetGameById(game.Id)
+                             ?? throw new InvalidOperationException($"Game {game.Id} not found");
+
+            var challengeEntity = new GameChallenge
+            {
+                Title = "Hook Challenge",
+                Content = "Container challenge content",
+                Category = ChallengeCategory.Misc,
+                Type = ChallengeType.DynamicContainer,
+                Hints = [],
+                IsEnabled = true,
+                SubmissionLimit = 0,
+                OriginalScore = 500,
+                MinScoreRate = 0.8,
+                Difficulty = 5,
+                ContainerImage = "ghcr.io/gzctf/challenge-base/echo:latest",
+                ExposePort = 80,
+                CPUCount = 1,
+                MemoryLimit = 64,
+                StorageLimit = 256,
+                Game = gameEntity,
+                GameId = gameEntity.Id
+            };
+
+            await challengeRepository.CreateChallenge(gameEntity, challengeEntity);
+            challengeId = challengeEntity.Id;
+        }
+
+        using var adminClient = factory.CreateClient();
+
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        loginResponse.EnsureSuccessStatusCode();
+
+        var updateResponse = await adminClient.PutAsJsonAsync($"/api/Edit/Games/{game.Id}/Challenges/{challengeId}",
+            new ChallengeUpdateModel { PreStopCommand = "  /about_to_destroy  " });
+        updateResponse.EnsureSuccessStatusCode();
+
+        var updated = await updateResponse.Content.ReadFromJsonAsync<ChallengeEditDetailModel>();
+
+        Assert.NotNull(updated);
+        Assert.Equal("/about_to_destroy", updated.PreStopCommand);
+
+        var getResponse = await adminClient.GetAsync($"/api/Edit/Games/{game.Id}/Challenges/{challengeId}");
+        getResponse.EnsureSuccessStatusCode();
+        var detail = await getResponse.Content.ReadFromJsonAsync<ChallengeEditDetailModel>();
+
+        Assert.NotNull(detail);
+        Assert.Equal("/about_to_destroy", detail.PreStopCommand);
+    }
+
+    /// <summary>
     /// Test DeleteDivision works correctly
     /// </summary>
     [Fact]
