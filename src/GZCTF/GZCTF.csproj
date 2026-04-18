@@ -101,7 +101,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\favicon.webp"/>
-    <EmbeddedResource Update="Resources\Program.resx" PublicClass="true"/>
+    <EmbeddedResource Update="Resources\Program.resx">
+      <PublicClass>true</PublicClass>
+      <CustomToolNamespace>GZCTF.Resources</CustomToolNamespace>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

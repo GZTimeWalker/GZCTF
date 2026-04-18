@@ -294,11 +294,11 @@ public class DockerManager : IContainerManager
     private static IList<string> BuildContainerEnv(GZCTF.Models.Internal.ContainerConfig config)
     {
         var env = new List<string>
-        [
+        {
             $"GZCTF_TEAM_ID={config.TeamId}",
             $"GZCTF_USER_ID={config.UserId}",
             $"GZCTF_CHALLENGE_ID={config.ChallengeId}"
-        ];
+        };
 
         if (config.GameId is int gameId)
             env.Add($"GZCTF_GAME_ID={gameId}");
