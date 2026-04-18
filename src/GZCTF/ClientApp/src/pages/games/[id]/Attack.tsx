@@ -426,22 +426,24 @@ const Attack: FC = () => {
   /* ---- Resolve source position for an attacker ----
    * For teams present in the scoreboard we pin to their ring position.
    * For events from unknown teams (empty scoreboard / debug triggers) we
-   * place the source on a ring 1.6x the HQ radius, angled by a hash of
-   * the team name so the same team always spawns from the same spot and
-   * the charge visuals never appear against the screen edges.
+   * place the source on a ring ~1.6x the HQ radius at a team-name-hashed
+   * BASE angle plus a small per-event jitter — so bursts from the same
+   * team cluster together but don't pile up on one spot, and the charge
+   * visuals never appear against the screen edges.
    */
   const resolveSource = useCallback(
     (evt: AttackEvent): { x: number; y: number } => {
       const from = teamIndex.get(evt.teamName)
       if (from) return { x: from.x, y: from.y }
-      // Deterministic angle per team name — keeps source stable across bursts
       let h = 0
       for (let i = 0; i < evt.teamName.length; i++) h = (h * 31 + evt.teamName.charCodeAt(i)) >>> 0
-      const angle = ((h % 360) / 360) * Math.PI * 2 - Math.PI / 2
+      const baseAngle = ((h % 360) / 360) * Math.PI * 2
+      // ±70° jitter around base angle → bursts from same team land in a sector
+      const jitter = (Math.random() - 0.5) * (Math.PI * 70 / 180 * 2)
+      const angle = baseAngle + jitter
       const ringR = Math.min(Math.min(pw, ph) * 0.3, hqSize * 1.8)
       const x = cx + Math.cos(angle) * ringR
       const y = cy + Math.sin(angle) * ringR
-      // Clamp into the safe play area
       return {
         x: Math.min(px1 - 40, Math.max(px0 + 40, x)),
         y: Math.min(py1 - 40, Math.max(py0 + 40, y)),
