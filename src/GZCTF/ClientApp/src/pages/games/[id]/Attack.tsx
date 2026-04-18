@@ -281,6 +281,7 @@ const Attack: FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const hqRef = useRef<HTMLDivElement | null>(null)
+  const hexRef = useRef<HTMLDivElement | null>(null)
 
   const pixiReadyRef = useRef(false)
   const lastBloodSoundAtRef = useRef(0)
@@ -482,7 +483,7 @@ const Attack: FC = () => {
 
       if (evt.type === SubmissionType.FirstBlood) {
         spawnFirstBlood(src.x, src.y, hqCenter.x, hqCenter.y, color, {
-          hqElement: hqRef.current,
+          hexElement: hexRef.current,
           onImpact: () => {
             if (audioEnabled && audioRef.current) {
               audioRef.current.currentTime = 0
@@ -787,9 +788,11 @@ const Attack: FC = () => {
         atkRate={atkRate}
       />
 
-      {/* Theater: orbital deco rings + HQ + team nodes */}
+      {/* Theater: orbital deco rings + HQ + team nodes.
+          Z-index sits ABOVE the pixi canvas (z:12) so HUD text (HQ title,
+          team labels) renders on top of the bullets + charge glow. */}
       <div
-        style={{ position: 'fixed', inset: 0, zIndex: 5, pointerEvents: 'none' }}
+        style={{ position: 'fixed', inset: 0, zIndex: 15, pointerEvents: 'none' }}
       >
         {/* Inner dashed ring */}
         <div
@@ -820,7 +823,9 @@ const Attack: FC = () => {
           }}
         />
 
-        {/* HQ hex */}
+        {/* HQ hex — outer wrapper holds the centering transform (static);
+            the inner hex element is what hqPunch animates (scale/rotate only).
+            Sits above the canvas so the title stays readable during the charge. */}
         <div
           ref={hqRef}
           style={{
@@ -828,12 +833,15 @@ const Attack: FC = () => {
             left: '50%',
             top: '50%',
             transform: 'translate(-50%,-50%)',
+            zIndex: 15,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            pointerEvents: 'none',
           }}
         >
           <div
+            ref={hexRef}
             style={{
               width: hqSize,
               height: hqSize * 1.12,
@@ -846,6 +854,7 @@ const Attack: FC = () => {
               justifyContent: 'center',
               flexDirection: 'column',
               padding: 30,
+              willChange: 'transform',
             }}
           >
             <div

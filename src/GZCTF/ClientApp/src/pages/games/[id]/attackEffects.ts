@@ -897,16 +897,19 @@ function shatterAt(x: number, y: number, color: string): void {
   setTimeout(() => svg.remove(), 2600)
 }
 
-function hqPunch(hq: HTMLElement): void {
-  hq.animate(
+function hqPunch(hex: HTMLElement): void {
+  // Animates the INNER hex element (not the centered wrapper), so the
+  // translate(-50%,-50%) centering stays exclusively on the wrapper and
+  // React re-renders can't stomp on the animation state mid-sequence.
+  hex.animate(
     [
-      { transform: `translate(-50%,-50%) scale(1)` },
-      { transform: `translate(-50%,-50%) scale(0.72) rotate(-3deg)`, offset: 0.08 },
-      { transform: `translate(-50%,-50%) scale(1.28) rotate(2deg)`, offset: 0.22 },
-      { transform: `translate(-50%,-50%) scale(0.9) rotate(-1deg)`, offset: 0.4 },
-      { transform: `translate(-50%,-50%) scale(1.12)`, offset: 0.6 },
-      { transform: `translate(-50%,-50%) scale(0.96)`, offset: 0.8 },
-      { transform: `translate(-50%,-50%) scale(1)` },
+      { transform: `scale(1)` },
+      { transform: `scale(0.72) rotate(-3deg)`, offset: 0.08 },
+      { transform: `scale(1.28) rotate(2deg)`, offset: 0.22 },
+      { transform: `scale(0.9) rotate(-1deg)`, offset: 0.4 },
+      { transform: `scale(1.12)`, offset: 0.6 },
+      { transform: `scale(0.96)`, offset: 0.8 },
+      { transform: `scale(1)` },
     ],
     { duration: 1100, easing: 'cubic-bezier(.3,1.4,.5,1)', fill: 'forwards' }
   )
@@ -1311,7 +1314,9 @@ export function fireBullet(
 
 export interface FirstBloodOptions {
   onImpact?: () => void
-  hqElement?: HTMLElement | null
+  /** The INNER hex element (not the centering wrapper) — receives the
+   *  scale/rotate punch animation at impact. */
+  hexElement?: HTMLElement | null
 }
 
 export function spawnFirstBlood(
@@ -1654,7 +1659,7 @@ export function spawnFirstBlood(
       quakeScreen()
       shatterAt(x1, y1, color)
       megaShockwaves(x1, y1, color)
-      if (opts.hqElement) hqPunch(opts.hqElement)
+      if (opts.hexElement) hqPunch(opts.hexElement)
       debrisChunks(x1, y1, color)
       impactBurst(x1, y1, color, SubmissionType.FirstBlood)
       playShatter()
