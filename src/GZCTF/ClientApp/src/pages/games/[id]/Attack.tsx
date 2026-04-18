@@ -2,21 +2,19 @@
  * Public per-game attack animation page.
  *
  * Route: /games/{id}/attack (no authentication).
- * Layout adapts to scoreboard size:
- *   - teams <= 30  -> radial ring (SVG)
- *   - teams <= 80  -> two concentric rings (SVG)
- *   - teams  > 80  -> vertical list + canvas particles
  *
- * Each flag submission spawns a particle traveling from the team's position to
- * the central HQ along a quadratic bezier. Colors encode SubmissionType:
- *   Normal -> green, FirstBlood -> gold, Second/Third -> amber, Unaccepted -> red.
+ * Tactical-ops HUD aesthetic: fixed header/footer strips, event-stream
+ * feed panel (left), scoreboard + stats panel (right), hexagonal HQ in
+ * the center, team nodes arranged as a ring / dual-ring / active-only
+ * column depending on team count.
  *
- * First bloods trigger a red full-screen pulse + bundled sound (rate-limited).
+ * Field visuals (bullets, laser charge/beam/impact, debris, shockwaves)
+ * are rendered by a PixiJS WebGL renderer in attackEffects.ts.  First
+ * blood triggers a 10-second dread-build laser strike that shakes the
+ * whole viewport and shatters the screen.
  */
-import { mdiIncognito } from '@mdi/js'
-import { Icon } from '@mdi/react'
-import * as signalR from '@microsoft/signalr'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import * as signalR from '@microsoft/signalr'
 import { useParams } from 'react-router'
 import api, {
   ChallengeCategory,
@@ -25,6 +23,14 @@ import api, {
   ScoreboardModel,
   SubmissionType,
 } from '@Api'
+import {
+  disposeEffects,
+  fireBullet,
+  initEffects,
+  playPew,
+  spawnFirstBlood,
+  unlockAudio,
+} from './attackEffects'
 
 /* -------------------------------------------------------------------------- */
 /* Types                                                                      */
@@ -40,17 +46,11 @@ interface AttackEvent {
   time: string
 }
 
-interface Particle {
-  id: number
-  fromX: number
-  fromY: number
-  ctrlX: number
-  ctrlY: number
-  toX: number
-  toY: number
-  color: string
-  glow: boolean
-  startedAt: number
+interface FeedLine {
+  key: string
+  time: string
+  teamName: string
+  challengeTitle: string
   type: SubmissionType
 }
 
@@ -61,73 +61,51 @@ interface FirstBloodBanner {
   startedAt: number
 }
 
-interface Attacker {
-  id: number
-  x: number
-  y: number
-  color: string
-  teamName: string
-  challengeTitle: string
-  type: SubmissionType
-  spawnedAt: number
-  /** When true, the sprite has been marked for early fade-out (over-cap). */
-  fadingEarly: boolean
-}
-
 /* -------------------------------------------------------------------------- */
 /* Constants                                                                  */
 /* -------------------------------------------------------------------------- */
 
-const PARTICLE_DURATION_MS = 1200
-const MAX_PARTICLES = 100
-const FIRST_BLOOD_DURATION_MS = 3000
-const FIRST_BLOOD_COOLDOWN_MS = 1500
 const SCOREBOARD_REFRESH_MS = 30_000
 const SCOREBOARD_DEBOUNCE_MS = 2000
+const FIRST_BLOOD_BANNER_MS = 10_000
+const BURST_COUNT = 8
+const BURST_INTERVAL_MS = 200
+const BURST_RATE_WINDOW_MS = 3000
+const BURST_RATE_LIMIT = 15
+const FEED_MAX = 18
 
-// Attacker-sprite constants
-const ATTACKER_LIFETIME_MS = 3000
-const ATTACKER_FADE_TAIL_MS = 600
-const MAX_ATTACKERS = 30
-const ATTACKER_BURST_COUNT = 8
-const ATTACKER_BURST_INTERVAL_MS = 200
-const ATTACKER_RATE_WINDOW_MS = 3000
-const ATTACKER_RATE_LIMIT = 15
-const ATTACKER_ICON_SIZE = 56
-const ATTACKER_HQ_MARGIN = 200
-
-const colorForType = (t: SubmissionType): { color: string; glow: boolean; opacity: number } => {
+const colorForType = (t: SubmissionType): string => {
   switch (t) {
-    case SubmissionType.Normal:
-      return { color: '#22c55e', glow: false, opacity: 1 }
     case SubmissionType.FirstBlood:
-      return { color: '#eab308', glow: true, opacity: 1 }
+      return '#ffd34a'
+    case SubmissionType.Normal:
+      return '#3ae85c'
     case SubmissionType.SecondBlood:
     case SubmissionType.ThirdBlood:
-      return { color: '#f59e0b', glow: false, opacity: 1 }
+      return '#f4b619'
     case SubmissionType.Unaccepted:
     default:
-      return { color: '#ef4444', glow: false, opacity: 0.4 }
+      return '#ff6262'
   }
 }
 
-const typeLabel = (t: SubmissionType): string => {
+const feedPrefix = (t: SubmissionType): string => {
   switch (t) {
     case SubmissionType.FirstBlood:
-      return '1st Blood'
-    case SubmissionType.SecondBlood:
-      return '2nd Blood'
-    case SubmissionType.ThirdBlood:
-      return '3rd Blood'
+      return '!! 1st-BLOOD !! '
     case SubmissionType.Normal:
-      return 'Solve'
+      return '[ SOLVE  ] '
+    case SubmissionType.SecondBlood:
+      return '[ 2nd-BLD] '
+    case SubmissionType.ThirdBlood:
+      return '[ 3rd-BLD] '
     default:
-      return 'Miss'
+      return '[ MISS   ] '
   }
 }
 
 /* -------------------------------------------------------------------------- */
-/* Team positioning                                                           */
+/* Layout                                                                     */
 /* -------------------------------------------------------------------------- */
 
 interface TeamPos {
@@ -141,102 +119,141 @@ interface TeamPos {
   labelled: boolean
 }
 
-type Layout = 'ring' | 'dual-ring' | 'list'
+type Layout = 'ring' | 'dual-ring' | 'active'
 
-const computeLayout = (teams: ScoreboardItem[], width: number, height: number): {
+interface LayoutResult {
   layout: Layout
   positions: TeamPos[]
   cx: number
   cy: number
-  hqRadius: number
-} => {
-  const cx = width / 2
-  const cy = height / 2
+  hqSize: number
+  px0: number
+  py0: number
+  px1: number
+  py1: number
+  pw: number
+  ph: number
+  rankColumn: { x: number; y: number; w: number; h: number } | null
+  ringRx: number
+  ringRy: number
+}
+
+const FEED_W_MIN = 240
+const FEED_W_MAX = 360
+const BOARD_W_MIN = 220
+const BOARD_W_MAX = 300
+const HEADER_H = 46
+const FOOTER_H = 40
+const GUTTER = 18
+const INNER_PAD = 20
+const LABEL_MARGIN = 60
+
+const computeLayout = (
+  teams: ScoreboardItem[],
+  w: number,
+  h: number
+): LayoutResult => {
+  const feedW = Math.min(FEED_W_MAX, Math.max(FEED_W_MIN, w * 0.19))
+  const boardW = Math.min(BOARD_W_MAX, Math.max(BOARD_W_MIN, w * 0.16))
+  const px0 = GUTTER + feedW + INNER_PAD
+  const px1 = w - GUTTER - boardW - INNER_PAD
+  const py0 = HEADER_H + INNER_PAD
+  const py1 = h - FOOTER_H - INNER_PAD
+  const pw = px1 - px0
+  const ph = py1 - py0
+
+  const cx = w / 2
+  const cy = h / 2
+  const hqSize = Math.min(280, Math.max(160, Math.min(pw, ph) * 0.28))
 
   const sorted = [...teams].sort((a, b) => a.rank - b.rank)
-
+  const count = sorted.length
   let layout: Layout
-  if (sorted.length <= 30) layout = 'ring'
-  else if (sorted.length <= 80) layout = 'dual-ring'
-  else layout = 'list'
+  if (count <= 24) layout = 'ring'
+  else if (count <= 70) layout = 'dual-ring'
+  else layout = 'active'
+
+  const hqHalfV = hqSize * 0.6
+  const hqHalfH = hqSize * 0.5
+  const rxRoom = Math.min(cx - px0, px1 - cx) - LABEL_MARGIN
+  const ryRoom = Math.min(cy - py0, py1 - cy) - LABEL_MARGIN
+  const rMin = Math.max(hqHalfV, hqHalfH) + 40
+  const rxFinal = Math.max(rMin, Math.min(Math.max(rxRoom, rMin), Math.max(rMin, pw * 0.45)))
+  const ryFinal = Math.max(rMin, Math.min(Math.max(ryRoom, rMin), Math.max(rMin, ph * 0.45)))
 
   const positions: TeamPos[] = []
-  const minDim = Math.min(width, height)
-  const hqRadius = Math.max(60, minDim * 0.08)
+  let rankColumn: LayoutResult['rankColumn'] = null
 
-  if (layout === 'ring') {
-    const r = minDim * 0.4
-    sorted.forEach((t, i) => {
-      const theta = (i / sorted.length) * Math.PI * 2 - Math.PI / 2
-      positions.push({
-        id: t.id,
-        name: t.name,
-        score: t.score,
-        rank: t.rank,
-        avatar: t.avatar ?? null,
-        x: cx + r * Math.cos(theta),
-        y: cy + r * Math.sin(theta),
-        labelled: true,
-      })
-    })
-  } else if (layout === 'dual-ring') {
-    const rInner = minDim * 0.28
-    const rOuter = minDim * 0.45
-    const inner = sorted.slice(0, 12)
-    const outer = sorted.slice(12)
-
-    inner.forEach((t, i) => {
-      const theta = (i / inner.length) * Math.PI * 2 - Math.PI / 2
-      positions.push({
-        id: t.id,
-        name: t.name,
-        score: t.score,
-        rank: t.rank,
-        avatar: t.avatar ?? null,
-        x: cx + rInner * Math.cos(theta),
-        y: cy + rInner * Math.sin(theta),
-        labelled: true,
-      })
-    })
-    outer.forEach((t, i) => {
-      const theta = (i / outer.length) * Math.PI * 2 - Math.PI / 2
-      positions.push({
-        id: t.id,
-        name: t.name,
-        score: t.score,
-        rank: t.rank,
-        avatar: t.avatar ?? null,
-        x: cx + rOuter * Math.cos(theta),
-        y: cy + rOuter * Math.sin(theta),
-        labelled: false,
-      })
-    })
-  } else {
-    // list: left column, ranked by score, 20 visible via scroll
-    const listX = Math.max(120, width * 0.08)
-    const listTop = height * 0.12
-    const listBottom = height * 0.95
-    const visibleCount = Math.min(sorted.length, 20)
-    const rowH = (listBottom - listTop) / Math.max(visibleCount, 1)
-    sorted.forEach((t, i) => {
-      positions.push({
-        id: t.id,
-        name: t.name,
-        score: t.score,
-        rank: t.rank,
-        avatar: t.avatar ?? null,
-        x: listX,
-        y: listTop + (i + 0.5) * rowH,
-        labelled: true,
-      })
+  const pushTeam = (t: ScoreboardItem, x: number, y: number, labelled: boolean): void => {
+    positions.push({
+      id: t.id,
+      name: t.name,
+      score: t.score,
+      rank: t.rank,
+      avatar: t.avatar ?? null,
+      x,
+      y,
+      labelled,
     })
   }
 
-  return { layout, positions, cx, cy, hqRadius }
+  if (count === 0) {
+    // Nothing to lay out — emit empty positions but still give geometry for fallbacks
+  } else if (layout === 'ring') {
+    const perim = Math.PI * (3 * (rxFinal + ryFinal) - Math.sqrt((3 * rxFinal + ryFinal) * (rxFinal + 3 * ryFinal)))
+    const showLabels = perim / count >= 70
+    sorted.forEach((t, i) => {
+      const a = (i / count) * Math.PI * 2 - Math.PI / 2
+      pushTeam(t, cx + rxFinal * Math.cos(a), cy + ryFinal * Math.sin(a), showLabels)
+    })
+  } else if (layout === 'dual-ring') {
+    const innerCount = Math.min(12, count)
+    const inner = sorted.slice(0, innerCount)
+    const outer = sorted.slice(innerCount)
+    const rxI = rxFinal * 0.6
+    const ryI = ryFinal * 0.6
+    inner.forEach((t, i) => {
+      const a = (i / inner.length) * Math.PI * 2 - Math.PI / 2
+      pushTeam(t, cx + rxI * Math.cos(a), cy + ryI * Math.sin(a), true)
+    })
+    outer.forEach((t, i) => {
+      const a = (i / outer.length) * Math.PI * 2 - Math.PI / 2
+      pushTeam(t, cx + rxFinal * Math.cos(a), cy + ryFinal * Math.sin(a), false)
+    })
+  } else {
+    // active-only: left rank column (top 20); remaining teams spawn from random points
+    const colX = px0
+    const colY = py0
+    const colW = Math.min(240, pw * 0.22)
+    const colH = py1 - py0
+    rankColumn = { x: colX, y: colY, w: colW, h: colH }
+    const visible = sorted.slice(0, 20)
+    const rowH = (colH - 36) / Math.max(visible.length, 1)
+    visible.forEach((t, i) => {
+      pushTeam(t, colX + colW + 10, colY + 36 + (i + 0.5) * rowH, true)
+    })
+  }
+
+  return {
+    layout,
+    positions,
+    cx,
+    cy,
+    hqSize,
+    px0,
+    py0,
+    px1,
+    py1,
+    pw,
+    ph,
+    rankColumn,
+    ringRx: rxFinal,
+    ringRy: ryFinal,
+  }
 }
 
 /* -------------------------------------------------------------------------- */
-/* Page component                                                             */
+/* Component                                                                  */
 /* -------------------------------------------------------------------------- */
 
 const Attack: FC = () => {
@@ -250,41 +267,33 @@ const Attack: FC = () => {
     h: typeof window !== 'undefined' ? window.innerHeight : 1080,
   })
 
-  // Sound-unlock overlay state
   const [audioEnabled, setAudioEnabled] = useState(false)
   const [showAudioToast, setShowAudioToast] = useState(true)
 
-  // Visualization state refs (non-react to avoid re-renders per frame)
-  const particlesRef = useRef<Particle[]>([])
-  const nextIdRef = useRef(1)
-  const lastBloodSoundAtRef = useRef(0)
-
-  // Recent events for the bottom scrolling banner and first blood overlay
-  const [recentEvents, setRecentEvents] = useState<AttackEvent[]>([])
+  const [feedLines, setFeedLines] = useState<FeedLine[]>([])
   const [firstBlood, setFirstBlood] = useState<FirstBloodBanner | null>(null)
 
-  // Transient "hacker" sprites, each spawned per attack event.
-  const [attackers, setAttackers] = useState<Attacker[]>([])
+  const [eventCount, setEventCount] = useState(0)
+  const [fbCount, setFbCount] = useState(0)
+  const [atkRate, setAtkRate] = useState('0/min')
+  const [clockText, setClockText] = useState(() => new Date().toISOString().slice(11, 19))
 
-  // Force re-render tick for SVG particles
-  const [, setTick] = useState(0)
-
-  // Audio element ref
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const hqRef = useRef<HTMLDivElement | null>(null)
 
-  // Debounced scoreboard refresh per-team
+  const pixiReadyRef = useRef(false)
+  const lastBloodSoundAtRef = useRef(0)
+  const atkTimestampsRef = useRef<number[]>([])
+  const burstTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
+  const burstSpawnTimesRef = useRef<number[]>([])
   const scoreboardRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Tracked timers (setTimeouts for attacker-burst particles + sprite teardown)
-  // so we can clear them on unmount and avoid leaks.
-  const attackerTimersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
-
-  // Timestamps (performance.now()) of recently-spawned sprites, for rate limiting.
-  const spriteSpawnTimesRef = useRef<number[]>([])
+  const nextFeedKeyRef = useRef(0)
 
   /* ---- Viewport tracking ---- */
   useEffect(() => {
-    const onResize = () => setViewport({ w: window.innerWidth, h: window.innerHeight })
+    const onResize = (): void =>
+      setViewport({ w: window.innerWidth, h: window.innerHeight })
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
@@ -292,7 +301,6 @@ const Attack: FC = () => {
   /* ---- Initial data load ---- */
   useEffect(() => {
     if (Number.isNaN(numId) || numId < 0) return
-
     void (async () => {
       try {
         const [gameRes, scoreRes] = await Promise.all([
@@ -302,17 +310,22 @@ const Attack: FC = () => {
         setGame(gameRes.data)
         setScoreboard(scoreRes.data)
       } catch (e) {
-        // Non-fatal: the page will still render the HQ title as "Attack"
         // eslint-disable-next-line no-console
         console.warn('[attack] initial load failed', e)
       }
-
-      // Seed recent events from the public attack-feed endpoint.
       try {
         const feedRes = await fetch(`/api/game/${numId}/AttackFeed?limit=50`)
         if (feedRes.ok) {
           const feed = (await feedRes.json()) as AttackEvent[]
-          setRecentEvents(feed.slice(-8).reverse())
+          setFeedLines(
+            feed.slice(-FEED_MAX).reverse().map((e) => ({
+              key: `seed-${nextFeedKeyRef.current++}`,
+              time: new Date(e.time).toTimeString().slice(0, 8),
+              teamName: e.teamName,
+              challengeTitle: e.challengeTitle,
+              type: e.type,
+            }))
+          )
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -321,13 +334,12 @@ const Attack: FC = () => {
     })()
   }, [numId])
 
-  /* ---- Periodic scoreboard refresh ---- */
   const refreshScoreboard = useCallback(async () => {
     try {
       const res = await api.game.gameScoreboard(numId)
       setScoreboard(res.data)
     } catch {
-      // ignore
+      // non-fatal
     }
   }, [numId])
 
@@ -337,164 +349,40 @@ const Attack: FC = () => {
     return () => clearInterval(iv)
   }, [numId, refreshScoreboard])
 
-  /* ---- Layout based on current scoreboard ---- */
-  const { layout, positions, cx, cy, hqRadius } = useMemo(
-    () => computeLayout(scoreboard?.items ?? [], viewport.w, viewport.h),
-    [scoreboard, viewport.w, viewport.h]
-  )
-
-  const teamIndex = useMemo(() => {
-    const m = new Map<string, TeamPos>()
-    positions.forEach((p) => m.set(p.name, p))
-    return m
-  }, [positions])
-
-  /* ---- Spawn a particle (at explicit coords, or resolved from team name) ---- */
-  const spawnParticleAt = useCallback(
-    (fromX: number, fromY: number, type: SubmissionType) => {
-      const { color, glow } = colorForType(type)
-
-      // Random mid-point offset so particles don't all stack on the same arc.
-      const spread = Math.min(viewport.w, viewport.h) * 0.12
-      const midX = (fromX + cx) / 2 + (Math.random() - 0.5) * spread
-      const midY = (fromY + cy) / 2 + (Math.random() - 0.5) * spread
-
-      const p: Particle = {
-        id: nextIdRef.current++,
-        fromX,
-        fromY,
-        ctrlX: midX,
-        ctrlY: midY,
-        toX: cx,
-        toY: cy,
-        color,
-        glow,
-        startedAt: performance.now(),
-        type,
-      }
-
-      particlesRef.current.push(p)
-      if (particlesRef.current.length > MAX_PARTICLES) {
-        particlesRef.current.splice(0, particlesRef.current.length - MAX_PARTICLES)
-      }
-    },
-    [cx, cy, viewport.w, viewport.h]
-  )
-
-  /* ---- Spawn a single particle tied to an event (kept for supplementary arc) ---- */
-  const spawnParticle = useCallback(
-    (evt: AttackEvent) => {
-      const from = teamIndex.get(evt.teamName)
-      if (!from) return
-      spawnParticleAt(from.x, from.y, evt.type)
-    },
-    [teamIndex, spawnParticleAt]
-  )
-
-  /* ---- Random off-HQ point for column-layout attacker sprites ---- */
-  const randomFieldPoint = useCallback((): { x: number; y: number } => {
-    const w = viewport.w
-    const h = viewport.h
-    const margin = ATTACKER_HQ_MARGIN
-    // Sample until we find a point outside the HQ exclusion box AND not too
-    // close to screen edges. Bounded loop protects against degenerate viewports.
-    for (let i = 0; i < 20; i += 1) {
-      const x = Math.floor(Math.random() * Math.max(1, w - 160)) + 80
-      const y = Math.floor(Math.random() * Math.max(1, h - 160)) + 80
-      if (Math.abs(x - cx) > margin || Math.abs(y - cy) > margin) {
-        return { x, y }
-      }
-    }
-    // Fallback: a corner.
-    return { x: Math.max(80, w * 0.15), y: Math.max(80, h * 0.2) }
-  }, [viewport.w, viewport.h, cx, cy])
-
-  /* ---- Spawn an attacker sprite + staggered particle burst ---- */
-  const spawnAttacker = useCallback(
-    (evt: AttackEvent, ox: number, oy: number) => {
-      const { color } = colorForType(evt.type)
-      const id = nextIdRef.current++
-      const spawnedAt = performance.now()
-
-      setAttackers((prev) => {
-        const next: Attacker[] = [
-          ...prev,
-          {
-            id,
-            x: ox,
-            y: oy,
-            color,
-            teamName: evt.teamName,
-            challengeTitle: evt.challengeTitle,
-            type: evt.type,
-            spawnedAt,
-            fadingEarly: false,
-          },
-        ]
-        // Cap: mark oldest as fading-early if we exceed MAX_ATTACKERS.
-        if (next.length > MAX_ATTACKERS) {
-          const overflow = next.length - MAX_ATTACKERS
-          for (let i = 0; i < overflow; i += 1) {
-            if (!next[i].fadingEarly) next[i] = { ...next[i], fadingEarly: true }
-          }
-        }
-        return next
-      })
-
-      // Staggered particle burst from sprite origin -> HQ.
-      for (let i = 0; i < ATTACKER_BURST_COUNT; i += 1) {
-        const t = setTimeout(() => {
-          attackerTimersRef.current.delete(t)
-          spawnParticleAt(ox, oy, evt.type)
-        }, i * ATTACKER_BURST_INTERVAL_MS)
-        attackerTimersRef.current.add(t)
-      }
-
-      // Sprite teardown.
-      const removeTimer = setTimeout(() => {
-        attackerTimersRef.current.delete(removeTimer)
-        setAttackers((prev) => prev.filter((a) => a.id !== id))
-      }, ATTACKER_LIFETIME_MS)
-      attackerTimersRef.current.add(removeTimer)
-
-      // Early-fade removal for over-cap sprites: trim about 1s before the
-      // natural lifetime so they clear off-screen quickly.
-      const earlyTimer = setTimeout(() => {
-        attackerTimersRef.current.delete(earlyTimer)
-        setAttackers((prev) => prev.filter((a) => !(a.fadingEarly && a.id === id)))
-      }, Math.max(600, ATTACKER_LIFETIME_MS - 1000))
-      attackerTimersRef.current.add(earlyTimer)
-    },
-    [spawnParticleAt]
-  )
-
-  /* ---- Animation frame loop ---- */
+  /* ---- PixiJS lifecycle ---- */
   useEffect(() => {
-    let raf = 0
-    const tick = () => {
-      const now = performance.now()
-      particlesRef.current = particlesRef.current.filter((p) => now - p.startedAt < PARTICLE_DURATION_MS)
-      setTick((t) => (t + 1) % 1_000_000)
-      raf = requestAnimationFrame(tick)
+    if (!canvasRef.current) return
+    const canvas = canvasRef.current
+    let cancelled = false
+    void initEffects(canvas).then(() => {
+      if (!cancelled) pixiReadyRef.current = true
+    })
+    return () => {
+      cancelled = true
+      pixiReadyRef.current = false
+      disposeEffects()
     }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
   }, [])
 
   /* ---- Audio unlock on first user interaction ---- */
   useEffect(() => {
     if (audioEnabled) return
-    const unlock = () => {
+    const unlock = (): void => {
       setAudioEnabled(true)
       setShowAudioToast(false)
-      // Prime the audio element
+      unlockAudio()
       if (audioRef.current) {
         audioRef.current.volume = 0
-        audioRef.current.play().then(() => {
-          audioRef.current?.pause()
-          if (audioRef.current) audioRef.current.currentTime = 0
-          if (audioRef.current) audioRef.current.volume = 0.8
-        }).catch(() => undefined)
+        audioRef.current
+          .play()
+          .then(() => {
+            audioRef.current?.pause()
+            if (audioRef.current) {
+              audioRef.current.currentTime = 0
+              audioRef.current.volume = 0.85
+            }
+          })
+          .catch(() => undefined)
       }
     }
     window.addEventListener('click', unlock, { once: true })
@@ -505,69 +393,135 @@ const Attack: FC = () => {
     }
   }, [audioEnabled])
 
+  /* ---- Layout ---- */
+  const layoutResult = useMemo(
+    () => computeLayout(scoreboard?.items ?? [], viewport.w, viewport.h),
+    [scoreboard, viewport.w, viewport.h]
+  )
+  const { layout, positions, cx, cy, hqSize, px0, py0, px1, py1, pw, ph, rankColumn, ringRx, ringRy } =
+    layoutResult
+
+  const teamIndex = useMemo(() => {
+    const m = new Map<string, TeamPos>()
+    positions.forEach((p) => m.set(p.name, p))
+    return m
+  }, [positions])
+
+  const top5 = useMemo(
+    () => (scoreboard?.items ?? []).slice().sort((a, b) => a.rank - b.rank).slice(0, 5),
+    [scoreboard]
+  )
+
+  /* ---- Clock + rolling attack-rate ---- */
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setClockText(new Date().toISOString().slice(11, 19))
+      const now = Date.now()
+      while (atkTimestampsRef.current[0] < now - 60_000) atkTimestampsRef.current.shift()
+      setAtkRate(`${atkTimestampsRef.current.length}/min`)
+    }, 1000)
+    return () => clearInterval(iv)
+  }, [])
+
+  /* ---- Resolve source position for an attacker ---- */
+  const resolveSource = useCallback(
+    (evt: AttackEvent): { x: number; y: number } => {
+      const from = teamIndex.get(evt.teamName)
+      if (from) return { x: from.x, y: from.y }
+      // Fallback: random point inside the play area, avoiding the HQ zone
+      for (let i = 0; i < 20; i++) {
+        const x = px0 + 30 + Math.random() * (pw - 60)
+        const y = py0 + 30 + Math.random() * (ph - 60)
+        if (Math.abs(x - cx) > hqSize * 0.6 || Math.abs(y - cy) > hqSize * 0.7) {
+          return { x, y }
+        }
+      }
+      return { x: Math.max(px0 + 30, cx - 200), y: py0 + 100 }
+    },
+    [teamIndex, px0, py0, px1, py1, pw, ph, cx, cy, hqSize]
+  )
+
+  /* ---- HQ center resolved from layout geometry ---- */
+  const hqCenter = useMemo(() => ({ x: cx, y: cy }), [cx, cy])
+
   /* ---- Handle incoming attack event ---- */
   const handleAttack = useCallback(
     (evt: AttackEvent) => {
-      // Always fire a single supplementary particle arc so even rate-limited
-      // or unresolvable events show movement toward HQ.
-      spawnParticle(evt)
-      setRecentEvents((prev) => [evt, ...prev].slice(0, 8))
+      const time = new Date().toTimeString().slice(0, 8)
 
-      // Resolve sprite origin. Radial/dual-ring layouts pin to the team's
-      // ring position; the column layout uses a random off-HQ point.
-      // If the team isn't in the scoreboard (debug triggers, new teams not
-      // yet synced, empty scoreboard) fall back to a random off-HQ point so
-      // the sprite still appears.
-      let ox: number | null = null
-      let oy: number | null = null
-      if (layout === 'list') {
-        const pt = randomFieldPoint()
-        ox = pt.x
-        oy = pt.y
-      } else {
-        const from = teamIndex.get(evt.teamName)
-        if (from) {
-          ox = from.x
-          oy = from.y
-        } else {
-          const pt = randomFieldPoint()
-          ox = pt.x
-          oy = pt.y
+      setFeedLines((prev) => {
+        const line: FeedLine = {
+          key: `f-${nextFeedKeyRef.current++}`,
+          time,
+          teamName: evt.teamName,
+          challengeTitle: evt.challengeTitle,
+          type: evt.type,
         }
+        return [line, ...prev].slice(0, FEED_MAX)
+      })
+      setEventCount((c) => c + 1)
+      atkTimestampsRef.current.push(Date.now())
+
+      const src = resolveSource(evt)
+      const color = colorForType(evt.type)
+
+      // Visual effects only fire once Pixi has finished initializing;
+      // the feed/stats updates above still run so data stays fresh.
+      if (!pixiReadyRef.current) {
+        if (evt.type === SubmissionType.FirstBlood) {
+          setFbCount((c) => c + 1)
+          setFirstBlood({
+            id: Math.random(),
+            teamName: evt.teamName,
+            challengeTitle: evt.challengeTitle,
+            startedAt: performance.now(),
+          })
+        }
+        return
       }
 
-      // Rate-limit sprite spawns (but leave particles + scoreboard updates alone).
-      const now = performance.now()
-      const recent = spriteSpawnTimesRef.current.filter(
-        (t) => now - t < ATTACKER_RATE_WINDOW_MS
-      )
-      const canSpawnSprite = recent.length < ATTACKER_RATE_LIMIT
-
-      if (ox !== null && oy !== null && canSpawnSprite) {
-        recent.push(now)
-        spriteSpawnTimesRef.current = recent
-        spawnAttacker(evt, ox, oy)
-      } else {
-        spriteSpawnTimesRef.current = recent
-      }
-
-      // First blood overlay + sound
       if (evt.type === SubmissionType.FirstBlood) {
+        spawnFirstBlood(src.x, src.y, hqCenter.x, hqCenter.y, color, {
+          hqElement: hqRef.current,
+          onImpact: () => {
+            if (audioEnabled && audioRef.current) {
+              audioRef.current.currentTime = 0
+              audioRef.current.play().catch(() => undefined)
+              lastBloodSoundAtRef.current = performance.now()
+            }
+          },
+        })
+        setFbCount((c) => c + 1)
         setFirstBlood({
           id: Math.random(),
           teamName: evt.teamName,
           challengeTitle: evt.challengeTitle,
           startedAt: performance.now(),
         })
-        const audioNow = performance.now()
-        if (audioEnabled && audioRef.current && audioNow - lastBloodSoundAtRef.current > FIRST_BLOOD_COOLDOWN_MS) {
-          lastBloodSoundAtRef.current = audioNow
-          audioRef.current.currentTime = 0
-          audioRef.current.play().catch(() => undefined)
+      } else {
+        // Rate-limit bullet bursts
+        const now = performance.now()
+        const recent = burstSpawnTimesRef.current.filter((t) => now - t < BURST_RATE_WINDOW_MS)
+        const canBurst = recent.length < BURST_RATE_LIMIT
+        if (canBurst) {
+          recent.push(now)
+          burstSpawnTimesRef.current = recent
+          for (let i = 0; i < BURST_COUNT; i++) {
+            const t = setTimeout(() => {
+              burstTimersRef.current.delete(t)
+              fireBullet(src.x, src.y, hqCenter.x, hqCenter.y, color, evt.type)
+              playPew(evt.type)
+            }, i * BURST_INTERVAL_MS)
+            burstTimersRef.current.add(t)
+          }
+        } else {
+          burstSpawnTimesRef.current = recent
+          // Fire a single reduced arc so the event still registers visually
+          fireBullet(src.x, src.y, hqCenter.x, hqCenter.y, color, evt.type)
         }
       }
 
-      // Debounced scoreboard refresh (any valid solve affects rank)
+      // Debounced scoreboard refresh (non-rejected solves affect rank)
       if (evt.type !== SubmissionType.Unaccepted) {
         if (scoreboardRefreshTimerRef.current) clearTimeout(scoreboardRefreshTimerRef.current)
         scoreboardRefreshTimerRef.current = setTimeout(() => {
@@ -575,26 +529,26 @@ const Attack: FC = () => {
         }, SCOREBOARD_DEBOUNCE_MS)
       }
     },
-    [spawnParticle, audioEnabled, refreshScoreboard, layout, teamIndex, randomFieldPoint, spawnAttacker]
+    [audioEnabled, hqCenter.x, hqCenter.y, refreshScoreboard, resolveSource]
   )
 
-  /* ---- Clean up all attacker-related timers on unmount ---- */
+  /* ---- Cleanup burst timers on unmount ---- */
   useEffect(() => {
-    const timers = attackerTimersRef.current
+    const timers = burstTimersRef.current
     return () => {
       timers.forEach((t) => clearTimeout(t))
       timers.clear()
     }
   }, [])
 
-  /* ---- First-blood overlay fade-out ---- */
+  /* ---- First-blood banner auto-dismiss ---- */
   useEffect(() => {
     if (!firstBlood) return
-    const timer = setTimeout(() => setFirstBlood(null), FIRST_BLOOD_DURATION_MS)
-    return () => clearTimeout(timer)
+    const t = setTimeout(() => setFirstBlood(null), FIRST_BLOOD_BANNER_MS)
+    return () => clearTimeout(t)
   }, [firstBlood])
 
-  /* ---- SignalR connection ---- */
+  /* ---- SignalR ---- */
   useEffect(() => {
     if (Number.isNaN(numId) || numId < 0) return
     const connection = new signalR.HubConnectionBuilder()
@@ -603,7 +557,6 @@ const Attack: FC = () => {
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.None)
       .build()
-
     connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 2
 
     connection.on('ReceivedAttack', (msg: AttackEvent) => {
@@ -620,15 +573,9 @@ const Attack: FC = () => {
     }
   }, [numId, handleAttack])
 
-  /* ---- Derived UI ---- */
-  const now = performance.now()
-
-  const top5 = useMemo(
-    () => (scoreboard?.items ?? []).slice().sort((a, b) => a.rank - b.rank).slice(0, 5),
-    [scoreboard]
-  )
-
   /* ---- Render ---- */
+  const eventTitle = game?.title ?? 'ATTACK'
+  const sortedTop = positions.slice(0, 20)
 
   return (
     <div
@@ -637,58 +584,178 @@ const Attack: FC = () => {
         inset: 0,
         width: '100vw',
         height: '100vh',
-        background: '#0b0b12',
-        color: '#e5e7eb',
-        fontFamily: 'Lexend, sans-serif',
+        background: '#060609',
+        color: '#d7dbe4',
+        fontFamily: '"Space Grotesk", system-ui, sans-serif',
         overflow: 'hidden',
         userSelect: 'none',
       }}
     >
-      {/* Shared keyframes */}
+      {/* Shared keyframes + screen-shake classes */}
       <style>{`
-        @keyframes attackHqPulse {
-          0%, 100% { filter: drop-shadow(0 0 12px rgba(96,165,250,.35)) drop-shadow(0 0 32px rgba(96,165,250,.15)); transform: scale(1); }
-          50% { filter: drop-shadow(0 0 24px rgba(96,165,250,.65)) drop-shadow(0 0 64px rgba(96,165,250,.25)); transform: scale(1.02); }
+        html.attack-shake,html.attack-quake,html.attack-rumble{will-change:transform;background:#060609}
+        html.attack-shake{animation:attackShake .9s cubic-bezier(.36,.07,.19,.97)}
+        @keyframes attackShake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
+        html.attack-quake{animation:attackQuake 1.4s cubic-bezier(.36,.07,.19,.97)}
+        @keyframes attackQuake{
+          0%,100%{transform:translate3d(0,0,0) rotate(0)}
+          3%{transform:translate3d(-34px,-20px,0) rotate(-1.1deg)}
+          7%{transform:translate3d(32px,24px,0) rotate(.9deg)}
+          12%{transform:translate3d(-40px,14px,0) rotate(-1.3deg)}
+          18%{transform:translate3d(36px,-22px,0) rotate(1.1deg)}
+          25%{transform:translate3d(-28px,22px,0) rotate(-.8deg)}
+          33%{transform:translate3d(24px,-16px,0) rotate(.6deg)}
+          42%{transform:translate3d(-18px,12px,0) rotate(-.4deg)}
+          52%{transform:translate3d(14px,-10px,0)}
+          62%{transform:translate3d(-10px,7px,0)}
+          72%{transform:translate3d(7px,-5px,0)}
+          82%{transform:translate3d(-4px,3px,0)}
+          92%{transform:translate3d(2px,-1px,0)}
         }
-        @keyframes firstBloodPulse {
-          0% { opacity: 0; transform: scale(0.95); }
-          15% { opacity: 1; transform: scale(1); }
-          80% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.02); }
+        html.attack-rumble{animation:attackRumble .12s linear infinite}
+        @keyframes attackRumble{
+          0%,100%{transform:translate3d(0,0,0)}
+          25%{transform:translate3d(-1.5px,-1px,0)}
+          50%{transform:translate3d(2px,1.5px,0)}
+          75%{transform:translate3d(-1px,2px,0)}
         }
-        @keyframes fbScreenFlash {
-          0% { opacity: 0; }
-          15% { opacity: 0.55; }
-          80% { opacity: 0.35; }
-          100% { opacity: 0; }
-        }
-        @keyframes attackBannerSlide {
-          from { transform: translateX(40px); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes attackToastFade {
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes attackerPopIn {
-          0%   { opacity: 0; transform: translate(-50%, -50%) scale(0); }
-          60%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
-          100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        @keyframes attackerFade {
-          0%   { opacity: 1; }
-          80%  { opacity: 1; }
-          100% { opacity: 0; }
-        }
-        @keyframes attackerPulseRing {
-          0%   { transform: translate(-50%, -50%) scale(0.08); opacity: 0.9; }
-          100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        @keyframes attackHexBreathe { 50% { opacity: .6 } }
+        @keyframes attackSpin { to { transform: translate(-50%,-50%) rotate(360deg) } }
+        @keyframes attackSpinRev { from { transform: translate(-50%,-50%) rotate(0) } to { transform: translate(-50%,-50%) rotate(-360deg) } }
+        @keyframes attackPulse { 50% { opacity: .4 } }
+        @keyframes attackCursor { 50% { opacity: 0 } }
+        @keyframes attackFbStrip {
+          0%   { transform: translate(-50%,-140%); opacity: 0 }
+          3%   { transform: translate(-50%,0);     opacity: 1 }
+          92%  { transform: translate(-50%,0);     opacity: 1 }
+          100% { transform: translate(-50%,-140%); opacity: 0 }
         }
       `}</style>
 
-      {/* Hidden audio element — query-string cache-buster keyed to the
-          build SHA so asset swaps invalidate CDN/browser caches without
-          waiting for the 7-day Cache-Control window. */}
+      {/* Scanlines + grid backdrop */}
+      <div
+        aria-hidden
+        style={{
+          position: 'fixed',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 1,
+          background:
+            'repeating-linear-gradient(to bottom, transparent 0 2px, rgba(255,255,255,.03) 2px 3px)',
+        }}
+      />
+      <div
+        aria-hidden
+        style={{
+          position: 'fixed',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 1,
+          backgroundImage:
+            'linear-gradient(#14161f 1px, transparent 1px), linear-gradient(90deg, #14161f 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          opacity: 0.28,
+        }}
+      />
+
+      {/* Header */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: HEADER_H,
+          zIndex: 30,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: `0 ${GUTTER}px`,
+          fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          fontSize: 11,
+          color: '#6b7183',
+          letterSpacing: '.22em',
+          textTransform: 'uppercase',
+          background:
+            'linear-gradient(to bottom, rgba(12,13,18,.9), rgba(12,13,18,.5))',
+          borderBottom: '1px solid rgba(255,42,42,.3)',
+        }}
+      >
+        <span>
+          <span style={{ color: '#ff2a2a' }}>▙</span>
+          &nbsp;{eventTitle} //// TACTICAL-OPS
+        </span>
+        <span>
+          <span style={{ color: '#3ae85c', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: '#3ae85c',
+                boxShadow: '0 0 12px #3ae85c',
+                animation: 'attackPulse 1.2s infinite',
+              }}
+            />
+            LIVE
+          </span>
+          &nbsp;//&nbsp; {clockText} UTC
+        </span>
+      </div>
+
+      {/* Footer */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: FOOTER_H,
+          zIndex: 30,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: `0 ${GUTTER}px`,
+          fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          fontSize: 10.5,
+          color: '#6b7183',
+          letterSpacing: '.22em',
+          textTransform: 'uppercase',
+          background: 'linear-gradient(to top, rgba(12,13,18,.9), rgba(12,13,18,.5))',
+          borderTop: '1px solid rgba(255,211,74,.2)',
+        }}
+      >
+        <span>
+          SIGNAL NOMINAL &nbsp;//&nbsp; {positions.length} TEAMS &nbsp;//&nbsp; {eventCount} EVENTS
+        </span>
+        <span>GZCTF ATTACK-STREAM // PUBLIC</span>
+      </div>
+
+      {/* Sound-unlock toast */}
+      {showAudioToast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: HEADER_H + 14,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 200,
+            background: '#f4b619',
+            color: '#0b0b11',
+            padding: '10px 22px',
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontWeight: 700,
+            fontSize: 12,
+            letterSpacing: '.2em',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+          }}
+        >
+          ▶ CLICK TO ENABLE SOUND
+        </div>
+      )}
+
+      {/* Hidden first-blood audio */}
       <audio
         ref={audioRef}
         src={`/attack/firstblood.mp3?v=${import.meta.env.VITE_APP_GIT_SHA ?? 'dev'}`}
@@ -696,303 +763,223 @@ const Attack: FC = () => {
         style={{ display: 'none' }}
       />
 
-      {/* Audio-unlock toast */}
-      {showAudioToast && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 16,
-            left: 16,
-            padding: '10px 16px',
-            background: 'rgba(17,24,39,0.85)',
-            border: '1px solid rgba(96,165,250,0.35)',
-            borderRadius: 8,
-            fontSize: 13,
-            color: '#cbd5e1',
-            backdropFilter: 'blur(6px)',
-            animation: 'attackToastFade 300ms ease-out',
-            zIndex: 50,
-          }}
-        >
-          Click anywhere to enable sound
-        </div>
-      )}
+      {/* Feed panel (left) */}
+      <FeedPanel
+        left={GUTTER}
+        top={HEADER_H + GUTTER}
+        bottom={FOOTER_H + GUTTER}
+        width={
+          Math.min(FEED_W_MAX, Math.max(FEED_W_MIN, viewport.w * 0.19))
+        }
+        lines={feedLines}
+      />
 
-      {/* Main SVG canvas (for ring and dual-ring layouts) */}
-      {layout !== 'list' && (
-        <svg
-          width={viewport.w}
-          height={viewport.h}
-          viewBox={`0 0 ${viewport.w} ${viewport.h}`}
-          style={{ position: 'absolute', inset: 0 }}
-        >
-          {/* Faint orbit rings */}
-          <g opacity={0.12} stroke="#60a5fa" fill="none" strokeWidth={1}>
-            {layout === 'ring' && (
-              <circle cx={cx} cy={cy} r={Math.min(viewport.w, viewport.h) * 0.4} />
-            )}
-            {layout === 'dual-ring' && (
-              <>
-                <circle cx={cx} cy={cy} r={Math.min(viewport.w, viewport.h) * 0.28} />
-                <circle cx={cx} cy={cy} r={Math.min(viewport.w, viewport.h) * 0.45} />
-              </>
-            )}
-          </g>
+      {/* Scoreboard + stats (right) */}
+      <ScoreboardPanel
+        right={GUTTER}
+        top={HEADER_H + GUTTER}
+        width={
+          Math.min(BOARD_W_MAX, Math.max(BOARD_W_MIN, viewport.w * 0.16))
+        }
+        top5={top5}
+        eventCount={eventCount}
+        fbCount={fbCount}
+        atkRate={atkRate}
+      />
 
-          {/* Team nodes */}
-          {positions.map((t) => (
-            <g key={t.id}>
-              <circle
-                cx={t.x}
-                cy={t.y}
-                r={t.labelled ? 7 : 3.5}
-                fill="#1f2937"
-                stroke="#60a5fa"
-                strokeWidth={1.2}
-              />
-              {t.labelled && (
-                <text
-                  x={t.x}
-                  y={t.y + 20}
-                  textAnchor="middle"
-                  fontSize={11}
-                  fill="#94a3b8"
-                  style={{ pointerEvents: 'none' }}
-                >
-                  {t.name.length > 18 ? `${t.name.slice(0, 17)}…` : t.name}
-                </text>
-              )}
-            </g>
-          ))}
-
-          {/* Particles */}
-          {particlesRef.current.map((p) => {
-            const t = Math.min(1, (now - p.startedAt) / PARTICLE_DURATION_MS)
-            const oneMinusT = 1 - t
-            // quadratic bezier
-            const bx = oneMinusT * oneMinusT * p.fromX + 2 * oneMinusT * t * p.ctrlX + t * t * p.toX
-            const by = oneMinusT * oneMinusT * p.fromY + 2 * oneMinusT * t * p.ctrlY + t * t * p.toY
-            const opacity = (1 - t) * (p.type === SubmissionType.Unaccepted ? 0.4 : 1)
-            const size = 5 + 3 * (1 - t)
-            return (
-              <circle
-                key={p.id}
-                cx={bx}
-                cy={by}
-                r={size}
-                fill={p.color}
-                opacity={opacity}
-                style={{
-                  filter: p.glow ? `drop-shadow(0 0 8px ${p.color}) drop-shadow(0 0 16px ${p.color})` : undefined,
-                }}
-              />
-            )
-          })}
-
-          {/* HQ core */}
-          <circle
-            cx={cx}
-            cy={cy}
-            r={hqRadius}
-            fill="rgba(15,23,42,0.8)"
-            stroke="#60a5fa"
-            strokeWidth={2}
-            style={{ animation: 'attackHqPulse 1.5s ease-in-out infinite' }}
-          />
-        </svg>
-      )}
-
-      {/* List layout: canvas renderer */}
-      {layout === 'list' && (
-        <ListLayoutCanvas
-          positions={positions}
-          particles={particlesRef.current}
-          cx={cx}
-          cy={cy}
-          hqRadius={hqRadius}
-          viewportW={viewport.w}
-          viewportH={viewport.h}
-          now={now}
-        />
-      )}
-
-      {/* Central HQ title overlay */}
+      {/* Theater: orbital deco rings + HQ + team nodes */}
       <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100vw',
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          pointerEvents: 'none',
-        }}
+        style={{ position: 'fixed', inset: 0, zIndex: 5, pointerEvents: 'none' }}
       >
+        {/* Inner dashed ring */}
         <div
           style={{
-            textAlign: 'center',
-            animation: 'attackHqPulse 1.5s ease-in-out infinite',
+            position: 'absolute',
+            left: cx,
+            top: cy,
+            width: ringRx * 0.75 * 2,
+            height: ringRy * 0.75 * 2,
+            border: '1px dashed rgba(255,42,42,.22)',
+            borderRadius: '50%',
+            transform: 'translate(-50%,-50%)',
+            animation: 'attackSpin 40s linear infinite',
+          }}
+        />
+        {/* Outer dashed ring (gold) */}
+        <div
+          style={{
+            position: 'absolute',
+            left: cx,
+            top: cy,
+            width: ringRx * 2,
+            height: ringRy * 2,
+            border: '1px dashed rgba(255,211,74,.15)',
+            borderRadius: '50%',
+            transform: 'translate(-50%,-50%)',
+            animation: 'attackSpinRev 70s linear infinite',
+          }}
+        />
+
+        {/* HQ hex */}
+        <div
+          ref={hqRef}
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%,-50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
           <div
             style={{
-              fontSize: `clamp(28px, ${Math.max(3, Math.min(viewport.w, viewport.h) * 0.004)}vmin, 72px)`,
-              fontWeight: 800,
-              letterSpacing: '0.08em',
-              background: 'linear-gradient(180deg,#ffffff 0%,#a5b4fc 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textTransform: 'uppercase',
-              maxWidth: '60vw',
-              margin: '0 auto',
-              lineHeight: 1.1,
-            }}
-          >
-            {game?.title ?? 'Attack'}
-          </div>
-          <div
-            style={{
-              marginTop: 8,
-              fontSize: 12,
-              letterSpacing: '0.3em',
-              color: '#64748b',
-              textTransform: 'uppercase',
-            }}
-          >
-            Live Attack Radar
-          </div>
-        </div>
-      </div>
-
-      {/* Attacker pulse rings — DOM nodes using transform:scale so they animate
-          reliably across all browsers (SVG `r` CSS animation support varies). */}
-      {attackers.map((a) => (
-        <div
-          key={`ring-${a.id}`}
-          style={{
-            position: 'absolute',
-            left: a.x,
-            top: a.y,
-            width: 150,
-            height: 150,
-            borderRadius: '50%',
-            border: `3px solid ${a.color}`,
-            pointerEvents: 'none',
-            zIndex: 3,
-            // Baseline transform so that — if the animation hasn't been applied
-            // for a frame — the ring stays centered on (a.x, a.y).
-            transform: 'translate(-50%, -50%) scale(0.08)',
-            opacity: 0,
-            animation: 'attackerPulseRing 600ms ease-out forwards',
-            filter:
-              a.type === SubmissionType.FirstBlood
-                ? `drop-shadow(0 0 6px ${a.color})`
-                : undefined,
-          }}
-        />
-      ))}
-
-      {/* Attacker sprites (DOM overlay, absolute-positioned per attacker). */}
-      {attackers.map((a) => {
-        const isFb = a.type === SubmissionType.FirstBlood
-        const isUn = a.type === SubmissionType.Unaccepted
-        const labelLinePrimary = a.teamName.length > 22 ? `${a.teamName.slice(0, 21)}…` : a.teamName
-        const labelLineSecondary = a.challengeTitle.length > 22
-          ? `${a.challengeTitle.slice(0, 21)}…`
-          : a.challengeTitle
-        // Compose animation: pop-in for the first 200ms, then fade over the tail.
-        const animation =
-          `attackerPopIn 200ms cubic-bezier(0.34,1.56,0.64,1) both, ` +
-          `attackerFade ${ATTACKER_FADE_TAIL_MS}ms ease-in ${ATTACKER_LIFETIME_MS - ATTACKER_FADE_TAIL_MS}ms forwards`
-        return (
-          <div
-            key={`sprite-${a.id}`}
-            style={{
-              position: 'absolute',
-              left: a.x,
-              top: a.y,
-              transform: 'translate(-50%, -50%)',
-              pointerEvents: 'none',
-              zIndex: 4,
-              animation,
-              opacity: isUn ? 0.4 : 1,
-              textAlign: 'center',
+              width: hqSize,
+              height: hqSize * 1.12,
+              position: 'relative',
+              clipPath: 'polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)',
+              background:
+                'radial-gradient(circle at center, rgba(255,42,42,.1), transparent 70%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              padding: 30,
             }}
           >
             <div
               style={{
-                width: ATTACKER_ICON_SIZE,
-                height: ATTACKER_ICON_SIZE,
-                margin: '0 auto',
-                color: a.color,
-                filter: isFb
-                  ? `drop-shadow(0 0 8px ${a.color}) drop-shadow(0 0 16px ${a.color})`
-                  : `drop-shadow(0 0 4px rgba(0,0,0,0.6))`,
+                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+                fontSize: 10,
+                letterSpacing: '.35em',
+                color: '#f4b619',
+                opacity: 0.85,
+                marginBottom: 4,
               }}
             >
-              <Icon path={mdiIncognito} size={`${ATTACKER_ICON_SIZE}px`} color={a.color} />
+              // TARGET
             </div>
             <div
               style={{
-                marginTop: 2,
-                fontSize: 12,
-                color: a.color,
-                lineHeight: 1.2,
-                textShadow: '0 1px 2px rgba(0,0,0,0.9)',
-                maxWidth: 180,
-                whiteSpace: 'nowrap',
+                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+                fontSize: 24,
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '.12em',
+                color: '#ffd34a',
+                textAlign: 'center',
+                lineHeight: 1.15,
+                textShadow: '0 0 22px rgba(255,211,74,.55)',
+                maxWidth: hqSize - 30,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
               }}
             >
-              <div style={{ fontWeight: 700 }}>{labelLinePrimary}</div>
-              <div style={{ fontWeight: 400 }}>{labelLineSecondary}</div>
+              {eventTitle}
+            </div>
+            <div
+              style={{
+                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+                fontSize: 9.5,
+                letterSpacing: '.4em',
+                color: '#6b7183',
+                marginTop: 10,
+              }}
+            >
+              OPS · CONTROL · HQ
             </div>
           </div>
-        )
-      })}
-
-      {/* Top-5 leaderboard (top-right) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 24,
-          right: 24,
-          width: 280,
-          padding: 16,
-          background: 'rgba(17,24,39,0.65)',
-          border: '1px solid rgba(96,165,250,0.2)',
-          borderRadius: 10,
-          backdropFilter: 'blur(8px)',
-          fontSize: 13,
-          zIndex: 5,
-        }}
-      >
-        <div style={{ fontSize: 11, letterSpacing: '0.2em', color: '#60a5fa', marginBottom: 10 }}>
-          TOP 5
         </div>
-        {top5.length === 0 && (
-          <div style={{ color: '#64748b', fontSize: 12 }}>No scoreboard yet</div>
-        )}
-        {top5.map((t) => (
-          <div
-            key={t.id}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 6,
-              gap: 8,
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, overflow: 'hidden' }}>
-              <span style={{ color: '#60a5fa', minWidth: 16 }}>{t.rank}</span>
+
+        {/* Team nodes */}
+        {positions.map((t) => {
+          const isLeft = t.x < viewport.w / 2
+          const nameShort = t.name.length > 18 ? `${t.name.slice(0, 17)}…` : t.name
+          return (
+            <div
+              key={t.id}
+              style={{
+                position: 'absolute',
+                left: t.x,
+                top: t.y,
+                transform: 'translate(-50%,-50%)',
+                color: '#d7dbe4',
+                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+                fontSize: 10.5,
+                letterSpacing: '.06em',
+                textTransform: 'uppercase',
+                display: 'flex',
+                flexDirection: isLeft ? 'row' : 'row-reverse',
+                alignItems: 'center',
+                gap: t.labelled ? 6 : 0,
+                whiteSpace: 'nowrap',
+                pointerEvents: 'none',
+              }}
+            >
               <span
                 style={{
-                  color: '#e5e7eb',
-                  fontWeight: 600,
+                  width: t.labelled ? 10 : 8,
+                  height: t.labelled ? 10 : 8,
+                  borderRadius: '50%',
+                  background: t.labelled ? '#6b7183' : '#ff2a2a',
+                  opacity: t.labelled ? 1 : 0.5,
+                  boxShadow: '0 0 6px currentColor',
+                  flexShrink: 0,
+                }}
+              />
+              {t.labelled && <span>{nameShort}</span>}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Rank column (active-only layout) */}
+      {layout === 'active' && rankColumn && (
+        <div
+          style={{
+            position: 'fixed',
+            left: rankColumn.x,
+            top: rankColumn.y,
+            width: rankColumn.w,
+            height: rankColumn.h,
+            zIndex: 18,
+            background: 'rgba(12,13,18,.94)',
+            padding: '14px 16px',
+            overflow: 'hidden',
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              letterSpacing: '.25em',
+              color: '#3ae85c',
+              marginBottom: 10,
+            }}
+          >
+            // ACTIVE · TOP 20 (of {positions.length})
+          </div>
+          {sortedTop.map((t) => (
+            <div
+              key={t.id}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '28px 1fr',
+                gap: 6,
+                fontSize: 11.5,
+                padding: '3px 0',
+                borderBottom: '1px dashed #1c1f2a',
+              }}
+            >
+              <span style={{ color: '#ffd34a', fontWeight: 700 }}>
+                {String(t.rank).padStart(2, '0')}
+              </span>
+              <span
+                style={{
+                  color: '#d7dbe4',
+                  letterSpacing: '.06em',
+                  textTransform: 'uppercase',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -1001,237 +988,363 @@ const Attack: FC = () => {
                 {t.name}
               </span>
             </div>
-            <span style={{ color: '#fcd34d', fontVariantNumeric: 'tabular-nums' }}>{t.score}</span>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Bottom scrolling event banner */}
-      <div
+      {/* PixiJS canvas — sized via the renderer */}
+      <canvas
+        ref={canvasRef}
         style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: '12px 24px',
-          background: 'linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,0.85) 60%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-          fontSize: 13,
-          overflow: 'hidden',
-          zIndex: 5,
+          position: 'fixed',
+          inset: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 12,
+          pointerEvents: 'none',
+          willChange: 'transform',
+          transform: 'translateZ(0)',
         }}
-      >
-        <div style={{ fontSize: 10, letterSpacing: '0.2em', color: '#60a5fa', flexShrink: 0 }}>
-          LIVE FEED
-        </div>
-        <div style={{ display: 'flex', gap: 20, overflow: 'hidden' }}>
-          {recentEvents.length === 0 && (
-            <div style={{ color: '#475569' }}>Waiting for first submission…</div>
-          )}
-          {recentEvents.map((e, i) => {
-            const { color } = colorForType(e.type)
-            return (
-              <div
-                key={`${e.time}-${i}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  animation: i === 0 ? 'attackBannerSlide 500ms ease-out' : undefined,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <span style={{ color: '#e5e7eb', fontWeight: 600 }}>{e.teamName}</span>
-                <span style={{ color: '#94a3b8' }}>→</span>
-                <span style={{ color: '#cbd5e1' }}>{e.challengeTitle}</span>
-                <span
-                  style={{
-                    background: color,
-                    color: '#0b0b12',
-                    padding: '2px 8px',
-                    borderRadius: 12,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                  }}
-                >
-                  {typeLabel(e.type)}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      />
 
-      {/* First blood overlay */}
+      {/* First-blood strip (slides down from header) */}
       {firstBlood && (
-        <>
+        <div
+          key={firstBlood.id}
+          style={{
+            position: 'fixed',
+            left: '50%',
+            top: HEADER_H + 12,
+            transform: 'translate(-50%,-140%)',
+            zIndex: 40,
+            display: 'flex',
+            alignItems: 'stretch',
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            border: '2px solid #0b0b11',
+            animation: `attackFbStrip ${FIRST_BLOOD_BANNER_MS}ms ease-out both`,
+          }}
+        >
           <div
             style={{
-              position: 'absolute',
-              inset: 0,
-              background:
-                'radial-gradient(ellipse at center, rgba(239,68,68,0.45) 0%, rgba(127,29,29,0.35) 60%, rgba(0,0,0,0) 100%)',
-              pointerEvents: 'none',
-              animation: `fbScreenFlash ${FIRST_BLOOD_DURATION_MS}ms ease-out forwards`,
-              zIndex: 40,
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: '42%',
+              background: '#ff2a2a',
+              color: '#0b0b11',
+              padding: '10px 18px',
+              letterSpacing: '.24em',
+              fontSize: 14,
               display: 'flex',
-              justifyContent: 'center',
-              pointerEvents: 'none',
-              animation: `firstBloodPulse ${FIRST_BLOOD_DURATION_MS}ms ease-out forwards`,
-              zIndex: 41,
+              alignItems: 'center',
+              gap: 8,
             }}
           >
-            <div
-              style={{
-                padding: '24px 48px',
-                background: 'rgba(127,29,29,0.85)',
-                border: '2px solid #fecaca',
-                borderRadius: 14,
-                boxShadow: '0 0 80px rgba(239,68,68,0.6), 0 0 160px rgba(239,68,68,0.3)',
-                textAlign: 'center',
-                maxWidth: '80vw',
-              }}
-            >
-              <div style={{ fontSize: 40, fontWeight: 900, color: '#fff1f2', letterSpacing: '0.06em' }}>
-                🩸 FIRST BLOOD
-              </div>
-              <div style={{ marginTop: 6, fontSize: 22, color: '#fee2e2', fontWeight: 700 }}>
-                {firstBlood.challengeTitle}
-              </div>
-              <div style={{ marginTop: 4, fontSize: 18, color: '#fecaca', letterSpacing: '0.08em' }}>
-                {firstBlood.teamName.toUpperCase()}
-              </div>
-            </div>
+            ▙ FIRST BLOOD
           </div>
-        </>
+          <div
+            style={{
+              background: '#0b0b11',
+              color: '#f4b619',
+              padding: '10px 18px',
+              letterSpacing: '.22em',
+              fontSize: 12,
+              display: 'flex',
+              alignItems: 'center',
+              borderLeft: '2px solid #ff2a2a',
+            }}
+          >
+            {firstBlood.challengeTitle} · {firstBlood.teamName}
+          </div>
+        </div>
       )}
     </div>
   )
 }
 
 /* -------------------------------------------------------------------------- */
-/* Canvas layout for >80 teams                                                */
+/* Feed panel                                                                  */
 /* -------------------------------------------------------------------------- */
 
-interface ListLayoutCanvasProps {
-  positions: TeamPos[]
-  particles: Particle[]
-  cx: number
-  cy: number
-  hqRadius: number
-  viewportW: number
-  viewportH: number
-  now: number
+interface FeedPanelProps {
+  left: number
+  top: number
+  bottom: number
+  width: number
+  lines: FeedLine[]
 }
 
-const ListLayoutCanvas: FC<ListLayoutCanvasProps> = ({
-  positions,
-  particles,
-  cx,
-  cy,
-  hqRadius,
-  viewportW,
-  viewportH,
-  now,
+const FeedPanel: FC<FeedPanelProps> = ({ left, top, bottom, width, lines }) => {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left,
+        top,
+        bottom,
+        width,
+        zIndex: 20,
+        background: 'rgba(12,13,18,.94)',
+        padding: '16px 18px 14px',
+        overflow: 'hidden',
+        contain: 'layout style paint' as React.CSSProperties['contain'],
+      }}
+    >
+      {/* Bracket corners */}
+      <Bracket placement="tl" />
+      <Bracket placement="tr" />
+      <Bracket placement="bl" />
+      <Bracket placement="br" />
+
+      <div
+        style={{
+          fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          fontSize: 10,
+          letterSpacing: '.25em',
+          color: '#ff2a2a',
+          marginBottom: 12,
+        }}
+      >
+        // EVENT STREAM
+      </div>
+      {lines.map((line) => (
+        <div
+          key={line.key}
+          style={{
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 12,
+            lineHeight: 1.5,
+            marginBottom: 3,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          <span style={{ color: '#6b7183' }}>{line.time}</span>{' '}
+          <span
+            style={{
+              color: lineColorFor(line.type),
+              fontWeight: line.type === SubmissionType.FirstBlood ? 700 : 400,
+              opacity: line.type === SubmissionType.Unaccepted ? 0.55 : 1,
+            }}
+          >
+            {feedPrefix(line.type)}
+            {line.teamName} :: {line.challengeTitle}
+          </span>
+        </div>
+      ))}
+      <div
+        style={{
+          fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          fontSize: 12,
+          lineHeight: 1.5,
+          color: '#6b7183',
+        }}
+      >
+        $ gzctf.watch()
+        <span
+          style={{
+            display: 'inline-block',
+            width: 7,
+            height: 12,
+            background: '#3ae85c',
+            verticalAlign: -1,
+            animation: 'attackCursor 1s steps(2,start) infinite',
+            marginLeft: 2,
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+const lineColorFor = (t: SubmissionType): string => {
+  switch (t) {
+    case SubmissionType.FirstBlood:
+      return '#ff2a2a'
+    case SubmissionType.Normal:
+      return '#3ae85c'
+    case SubmissionType.SecondBlood:
+    case SubmissionType.ThirdBlood:
+      return '#f4b619'
+    default:
+      return '#ff6262'
+  }
+}
+
+const Bracket: FC<{ placement: 'tl' | 'tr' | 'bl' | 'br' }> = ({ placement }) => {
+  const base: React.CSSProperties = {
+    position: 'absolute',
+    width: 16,
+    height: 16,
+    border: '2px solid #ff2a2a',
+  }
+  if (placement === 'tl')
+    Object.assign(base, { top: -1, left: -1, borderRight: 'none', borderBottom: 'none' })
+  if (placement === 'tr')
+    Object.assign(base, { top: -1, right: -1, borderLeft: 'none', borderBottom: 'none' })
+  if (placement === 'bl')
+    Object.assign(base, { bottom: -1, left: -1, borderRight: 'none', borderTop: 'none' })
+  if (placement === 'br')
+    Object.assign(base, { bottom: -1, right: -1, borderLeft: 'none', borderTop: 'none' })
+  return <div style={base} />
+}
+
+/* -------------------------------------------------------------------------- */
+/* Scoreboard + stats panel                                                    */
+/* -------------------------------------------------------------------------- */
+
+interface ScoreboardPanelProps {
+  right: number
+  top: number
+  width: number
+  top5: ScoreboardItem[]
+  eventCount: number
+  fbCount: number
+  atkRate: string
+}
+
+const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
+  right,
+  top,
+  width,
+  top5,
+  eventCount,
+  fbCount,
+  atkRate,
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const rowCount = Math.max(top5.length, 1)
+  const approxBoardHeight = 6 * 32 + 36
+  const statsTop = top + approxBoardHeight + 10
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const dpr = window.devicePixelRatio || 1
-    canvas.width = viewportW * dpr
-    canvas.height = viewportH * dpr
-    canvas.style.width = `${viewportW}px`
-    canvas.style.height = `${viewportH}px`
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-
-    ctx.clearRect(0, 0, viewportW, viewportH)
-
-    // Background guide line (left column)
-    if (positions.length > 0) {
-      const first = positions[0]
-      ctx.strokeStyle = 'rgba(96,165,250,0.08)'
-      ctx.lineWidth = 1
-      ctx.beginPath()
-      ctx.moveTo(first.x, viewportH * 0.1)
-      ctx.lineTo(first.x, viewportH * 0.96)
-      ctx.stroke()
-    }
-
-    // Team rows (only top 20 visible to keep text readable)
-    const visible = positions.slice(0, 20)
-    ctx.font = '12px Lexend, sans-serif'
-    visible.forEach((t) => {
-      ctx.fillStyle = '#1f2937'
-      ctx.strokeStyle = '#60a5fa'
-      ctx.lineWidth = 1.2
-      ctx.beginPath()
-      ctx.arc(t.x, t.y, 5, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.stroke()
-
-      ctx.fillStyle = '#94a3b8'
-      ctx.textAlign = 'left'
-      ctx.textBaseline = 'middle'
-      const name = t.name.length > 22 ? `${t.name.slice(0, 21)}…` : t.name
-      ctx.fillText(`${t.rank}. ${name}`, t.x + 12, t.y)
-
-      ctx.fillStyle = '#fcd34d'
-      ctx.textAlign = 'right'
-      ctx.fillText(`${t.score}`, t.x + 260, t.y)
-    })
-
-    // Particles
-    particles.forEach((p) => {
-      const t = Math.min(1, (now - p.startedAt) / PARTICLE_DURATION_MS)
-      const oneMinusT = 1 - t
-      const bx = oneMinusT * oneMinusT * p.fromX + 2 * oneMinusT * t * p.ctrlX + t * t * p.toX
-      const by = oneMinusT * oneMinusT * p.fromY + 2 * oneMinusT * t * p.ctrlY + t * t * p.toY
-      const opacity = (1 - t) * (p.type === SubmissionType.Unaccepted ? 0.4 : 1)
-      const size = 5 + 3 * (1 - t)
-
-      ctx.globalAlpha = opacity
-      if (p.glow) {
-        ctx.shadowColor = p.color
-        ctx.shadowBlur = 16
-      } else {
-        ctx.shadowBlur = 0
-      }
-      ctx.fillStyle = p.color
-      ctx.beginPath()
-      ctx.arc(bx, by, size, 0, Math.PI * 2)
-      ctx.fill()
-    })
-    ctx.globalAlpha = 1
-    ctx.shadowBlur = 0
-
-    // HQ core
-    ctx.fillStyle = 'rgba(15,23,42,0.8)'
-    ctx.strokeStyle = '#60a5fa'
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.arc(cx, cy, hqRadius, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.stroke()
-  }, [positions, particles, cx, cy, hqRadius, viewportW, viewportH, now])
-
-  return <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0 }} />
+  return (
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          right,
+          top,
+          width,
+          zIndex: 20,
+          background: 'rgba(12,13,18,.94)',
+          padding: '16px 18px 14px',
+          contain: 'layout style paint' as React.CSSProperties['contain'],
+        }}
+      >
+        <Bracket placement="tl" />
+        <Bracket placement="tr" />
+        <Bracket placement="bl" />
+        <Bracket placement="br" />
+        <div
+          style={{
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 10,
+            letterSpacing: '.25em',
+            color: '#f4b619',
+            marginBottom: 12,
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          <span>// SCOREBOARD</span>
+          <span>TOP {rowCount}</span>
+        </div>
+        {top5.map((t) => (
+          <div
+            key={t.id}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '32px 1fr auto',
+              alignItems: 'baseline',
+              padding: '6px 0',
+              borderBottom: '1px dashed #20232d',
+              gap: 8,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+                fontWeight: 700,
+                fontSize: 20,
+                color: '#ffd34a',
+                lineHeight: 1,
+                textAlign: 'right',
+                textShadow: t.rank === 1 ? '0 0 14px rgba(255,211,74,.6)' : undefined,
+              }}
+            >
+              {String(t.rank).padStart(2, '0')}
+            </span>
+            <span
+              style={{
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '.07em',
+                fontSize: 12,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t.name}
+            </span>
+            <span
+              style={{
+                fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+                fontWeight: 500,
+                color: '#6b7183',
+                fontSize: 11.5,
+              }}
+            >
+              {t.score}
+            </span>
+          </div>
+        ))}
+        {top5.length === 0 && (
+          <div style={{ color: '#475569', fontSize: 12 }}>No scoreboard yet</div>
+        )}
+      </div>
+      <div
+        style={{
+          position: 'fixed',
+          right,
+          top: statsTop,
+          width,
+          zIndex: 20,
+          background: 'rgba(12,13,18,.92)',
+          padding: '12px 18px',
+          contain: 'layout style paint' as React.CSSProperties['contain'],
+        }}
+      >
+        <div
+          style={{
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 10,
+            letterSpacing: '.25em',
+            color: '#3ae85c',
+            marginBottom: 8,
+          }}
+        >
+          // STATS
+        </div>
+        <StatsRow label="ATK_RATE" value={atkRate} />
+        <StatsRow label="1ST_BLOOD" value={String(fbCount)} />
+        <StatsRow label="EVENTS" value={String(eventCount)} />
+      </div>
+    </>
+  )
 }
+
+const StatsRow: FC<{ label: string; value: string }> = ({ label, value }) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: '3px 0',
+      fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+      fontSize: 11,
+    }}
+  >
+    <span style={{ color: '#6b7183', letterSpacing: '.1em' }}>{label}</span>
+    <span style={{ color: '#d7dbe4', fontWeight: 700 }}>{value}</span>
+  </div>
+)
 
 export default Attack
