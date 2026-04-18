@@ -282,9 +282,7 @@ public class DockerManager : IContainerManager
             // Modification without a valid authorization may be treated as misuse.
             //
             // References: NOTICE, LICENSE_ADDENDUM.txt, licenses/LicenseRef-GZCTF-Restricted.txt
-            Env = config.Flag is null
-                ? [$"GZCTF_TEAM_ID={config.TeamId}"]
-                : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"],
+            Env = BuildContainerEnv(config),
             HostConfig = new()
             {
                 Memory = config.MemoryLimit * 1024 * 1024,
@@ -292,4 +290,22 @@ public class DockerManager : IContainerManager
                 NetworkMode = _meta.NetworkNames[config.NetworkMode]
             }
         };
+
+    private static IList<string> BuildContainerEnv(GZCTF.Models.Internal.ContainerConfig config)
+    {
+        var env = new List<string>(5)
+        {
+            $"GZCTF_TEAM_ID={config.TeamId}",
+            $"GZCTF_USER_ID={config.UserId}",
+            $"GZCTF_CHALLENGE_ID={config.ChallengeId}"
+        };
+
+        if (config.GameId is int gameId)
+            env.Add($"GZCTF_GAME_ID={gameId}");
+
+        if (!string.IsNullOrWhiteSpace(config.Flag))
+            env.Add($"GZCTF_FLAG={config.Flag}");
+
+        return env;
+    }
 }

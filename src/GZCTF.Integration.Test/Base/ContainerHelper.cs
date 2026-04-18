@@ -21,6 +21,51 @@ public static class ContainerHelper
     private const int DelayMs = 2000;
 
     /// <summary>
+    /// Read environment variables from an admin test container
+    /// </summary>
+    public static async Task<IReadOnlyDictionary<string, string?>> GetAdminContainerEnvAsync(
+        IServiceProvider serviceProvider,
+        int challengeId)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var challenge = await context.GameChallenges
+            .AsNoTracking()
+            .Include(c => c.TestContainer)
+            .FirstOrDefaultAsync(c => c.Id == challengeId);
+
+        if (challenge?.TestContainer is null)
+            throw new InvalidOperationException($"Challenge {challengeId} not found");
+
+        return await GetContainerEnvAsync(serviceProvider, challenge.TestContainer);
+    }
+
+    /// <summary>
+    /// Read environment variables from a user challenge container
+    /// </summary>
+    public static async Task<IReadOnlyDictionary<string, string?>> GetUserContainerEnvAsync(
+        IServiceProvider serviceProvider,
+        int challengeId,
+        int participationId)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var instance = await context.GameInstances
+            .AsNoTracking()
+            .Include(i => i.Container)
+            .FirstOrDefaultAsync(i =>
+                i.ChallengeId == challengeId && i.ParticipationId == participationId);
+
+        if (instance?.Container is null)
+            throw new InvalidOperationException(
+                $"No game instance found for challenge {challengeId}, participation {participationId}");
+
+        return await GetContainerEnvAsync(serviceProvider, instance.Container);
+    }
+
+    /// <summary>
     /// Wait for admin test container to be ready
     /// </summary>
     /// <param name="serviceProvider">DI service provider</param>
@@ -157,6 +202,50 @@ public static class ContainerHelper
         {
             await WaitDockerContainerReadyAsync(dockerProviderService, container, output);
             return;
+        }
+
+        throw new InvalidOperationException("Neither Kubernetes nor Docker provider is available");
+    }
+
+    /// <summary>
+    /// Internal: Read container env vars from the active container provider
+    /// </summary>
+    private static async Task<IReadOnlyDictionary<string, string?>> GetContainerEnvAsync(
+        IServiceProvider serviceProvider,
+        Container container)
+    {
+        var k8sProviderService = serviceProvider.GetService<IContainerProvider<Kubernetes, KubernetesMetadata>>();
+        if (k8sProviderService != null)
+        {
+            var pod = await k8sProviderService.GetProvider()
+                .CoreV1.ReadNamespacedPodAsync(container.ContainerId, Namespace);
+
+            var envVars = pod.Spec?.Containers
+                .SelectMany(c => c.Env ?? [])
+                .ToDictionary(env => env.Name, env => (string?)env.Value);
+
+            return envVars ?? new Dictionary<string, string?>();
+        }
+
+        var dockerProviderService = serviceProvider.GetService<IContainerProvider<DockerClient, DockerMetadata>>();
+        if (dockerProviderService != null)
+        {
+            var inspection = await dockerProviderService.GetProvider()
+                .Containers.InspectContainerAsync(container.ContainerId);
+
+            return (inspection.Config?.Env ?? [])
+                .Select(env =>
+                {
+                    var separatorIndex = env.IndexOf('=');
+                    return separatorIndex switch
+                    {
+                        < 0 => new KeyValuePair<string, string?>(env, null),
+                        _ => new KeyValuePair<string, string?>(
+                            env[..separatorIndex],
+                            env[(separatorIndex + 1)..])
+                    };
+                })
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         throw new InvalidOperationException("Neither Kubernetes nor Docker provider is available");
