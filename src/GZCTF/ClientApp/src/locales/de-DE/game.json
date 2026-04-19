@@ -20,7 +20,8 @@
       "upload": "Einreichen Writeup",
       "uploading": "Hochladen..."
     },
-    "attack": "Attack-Feed"
+    "attack": "Attack-Feed",
+    "find_my_team": "Mein Team finden"
   },
   "content": {
     "all_solved": {

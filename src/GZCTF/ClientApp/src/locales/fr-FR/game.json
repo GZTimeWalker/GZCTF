@@ -20,7 +20,8 @@
       "upload": "Soumettre",
       "uploading": "Téléchargement..."
     },
-    "attack": "Flux d'attaques"
+    "attack": "Flux d'attaques",
+    "find_my_team": "Trouver mon équipe"
   },
   "content": {
     "all_solved": {

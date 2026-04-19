@@ -76,7 +76,7 @@ export const TeamRank: FC<CardProps> = (props) => {
     <Card {...props} shadow="sm">
       <Stack gap="xs">
         <Group gap="sm" wrap="nowrap">
-          <Avatar alt="avatar" size={50} radius="md" src={rank?.avatar}>
+          <Avatar imageProps={{loading:"lazy"}} alt="avatar" size={50} radius="md" src={rank?.avatar}>
             {rank?.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Skeleton visible={!rank}>

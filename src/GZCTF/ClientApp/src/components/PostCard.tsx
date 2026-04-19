@@ -89,7 +89,7 @@ export const PostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           )}
           <Group pt="xs" w="100%" justify="space-between" m="auto" fs="normal">
             <Group gap={5} justify="right" w="100%" px={0} align="center" wrap="nowrap">
-              <Avatar alt="avatar" src={post.authorAvatar} size="sm">
+              <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={post.authorAvatar} size="sm">
                 {post.authorName?.slice(0, 1) ?? 'A'}
               </Avatar>
               <Tooltip label={post.authorName}>

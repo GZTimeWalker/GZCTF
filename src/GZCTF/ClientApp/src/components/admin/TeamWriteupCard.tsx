@@ -44,7 +44,7 @@ export const TeamWriteupCard: FC<TeamWriteupCardProps> = ({ writeup, selected, d
     >
       <Group wrap="nowrap" gap={3} justify="space-between">
         <Group gap="sm" wrap="nowrap" justify="space-between" maw="calc(100% - 2rem)">
-          <Avatar alt="avatar" src={writeup.team?.avatar} size="md">
+          <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={writeup.team?.avatar} size="md">
             {writeup.team?.name?.slice(0, 1)}
           </Avatar>
           <Stack gap={0} justify="space-between" maw="calc(100% - 3rem)">

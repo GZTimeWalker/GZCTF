@@ -13,6 +13,7 @@ import { RequireRole } from '@Components/WithRole'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { getGameStatus, useGame } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
+import { useTicker } from '@Hooks/useTicker'
 import { useUserRole } from '@Hooks/useUser'
 import { DetailedGameInfoModel, ParticipationStatus, Role } from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -21,16 +22,10 @@ dayjs.extend(duration)
 
 const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   const { endTime, progress } = getGameStatus(game)
-
-  const [now, setNow] = useState(dayjs())
+  // Shared 1s ticker: single global interval for every countdown on the page.
+  const now = useTicker()
 
   const { t } = useTranslation()
-
-  useEffect(() => {
-    if (!game || dayjs() > dayjs(game.end)) return
-    const interval = setInterval(() => setNow(dayjs()), 1000)
-    return () => clearInterval(interval)
-  }, [game])
 
   const countdown = dayjs.duration(endTime.diff(now))
 

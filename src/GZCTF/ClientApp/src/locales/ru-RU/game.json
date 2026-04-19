@@ -20,7 +20,8 @@
       "upload": "Загрузить",
       "uploading": "Загрузка..."
     },
-    "attack": "Лента атак"
+    "attack": "Лента атак",
+    "find_my_team": "Найти мою команду"
   },
   "content": {
     "all_solved": {

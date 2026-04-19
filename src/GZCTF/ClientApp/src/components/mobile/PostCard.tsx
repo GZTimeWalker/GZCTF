@@ -55,7 +55,7 @@ export const MobilePostCard: FC<PostCardProps> = ({ post, onTogglePinned }) => {
           )}
         </Group>
         <Group gap={5} justify="left">
-          <Avatar alt="avatar" src={post.authorAvatar} size="sm">
+          <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={post.authorAvatar} size="sm">
             {post.authorName?.slice(0, 1) ?? 'A'}
           </Avatar>
           <Text fw={500} size="sm">

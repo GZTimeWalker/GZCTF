@@ -20,7 +20,8 @@
       "upload": "上传 Writeup",
       "uploading": "正在上传"
     },
-    "attack": "攻击实况"
+    "attack": "攻击实况",
+    "find_my_team": "找我的队伍"
   },
   "content": {
     "all_solved": {

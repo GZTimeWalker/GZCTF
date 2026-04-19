@@ -1,4 +1,4 @@
-import { Group, Stack, Title, useMantineTheme } from '@mantine/core'
+import { Group, Skeleton, Stack, Title, useMantineTheme } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { mdiFlagCheckered } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -68,9 +68,28 @@ const Home: FC = () => {
         <Stack align="center">
           <Group wrap="nowrap" gap={4} justify="space-between" align="flex-start" w="100%">
             <Stack className={classes.posts}>
-              {isMobile
-                ? posts?.map((post) => <MobilePostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)
-                : posts?.map((post) => <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />)}
+              {posts === undefined
+                ? /* First paint skeleton — stops the home page from
+                     flashing blank for ~2s while posts load. */
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <Stack key={i} gap={8} p="md">
+                      <Group>
+                        <Skeleton height={32} circle />
+                        <Skeleton height={12} width="30%" radius="sm" />
+                      </Group>
+                      <Skeleton height={20} width="70%" radius="sm" />
+                      <Skeleton height={12} radius="sm" />
+                      <Skeleton height={12} width="90%" radius="sm" />
+                      <Skeleton height={12} width="60%" radius="sm" />
+                    </Stack>
+                  ))
+                : isMobile
+                  ? posts.map((post) => (
+                      <MobilePostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
+                    ))
+                  : posts.map((post) => (
+                      <PostCard key={post.id} post={post} onTogglePinned={onTogglePinned} />
+                    ))}
             </Stack>
             {!isMobile && (
               <nav className={classes.wrapper}>

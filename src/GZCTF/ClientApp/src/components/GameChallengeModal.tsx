@@ -273,6 +273,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       onSubmitFlag={onSubmit}
       onReviewSubmit={onReviewSubmit}
       disabled={disabled || isLimitReached}
+      submitting={disabled || submitId > 0}
       onExtend={onExtend}
       gameEnded={gameEnded}
       practiceMode={practiceMode}

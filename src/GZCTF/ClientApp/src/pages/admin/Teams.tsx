@@ -217,7 +217,7 @@ const Teams: FC = () => {
                       <Table.Td>
                         <Group justify="space-between" gap={0} wrap="nowrap">
                           <Group justify="left" wrap="nowrap" w="calc(100% - 7rem)">
-                            <Avatar alt="avatar" src={team.avatar} radius="xl">
+                            <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={team.avatar} radius="xl">
                               {team.name?.slice(0, 1)}
                             </Avatar>
                             <ScrollingText
@@ -237,7 +237,7 @@ const Teams: FC = () => {
                             {members &&
                               members.slice(0, 8).map((m) => (
                                 <Tooltip key={m.id} label={m.userName} withArrow>
-                                  <Avatar alt="avatar" radius="xl" src={m.avatar}>
+                                  <Avatar imageProps={{loading:"lazy"}} alt="avatar" radius="xl" src={m.avatar}>
                                     {m.userName?.slice(0, 1) ?? 'U'}
                                   </Avatar>
                                 </Tooltip>
@@ -254,7 +254,7 @@ const Teams: FC = () => {
                                 }
                                 withArrow
                               >
-                                <Avatar alt="avatar" radius="xl">
+                                <Avatar imageProps={{loading:"lazy"}} alt="avatar" radius="xl">
                                   +{members.length - 8}
                                 </Avatar>
                               </Tooltip>

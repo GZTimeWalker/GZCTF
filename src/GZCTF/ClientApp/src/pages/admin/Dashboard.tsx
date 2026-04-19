@@ -239,7 +239,7 @@ const Dashboard: FC = () => {
                                         <Table.Tr key={game.id}>
                                             <Table.Td>
                                                 <Group gap="sm" wrap="nowrap">
-                                                    <Avatar src={game.poster} radius="sm" size="sm" />
+                                                    <Avatar imageProps={{loading:"lazy"}} src={game.poster} radius="sm" size="sm" />
                                                     <ScrollingText text={game.title ?? ''} maw="8rem" />
                                                 </Group>
                                             </Table.Td>

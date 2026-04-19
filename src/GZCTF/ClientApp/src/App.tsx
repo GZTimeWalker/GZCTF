@@ -15,12 +15,53 @@ import { localCacheProvider } from '@Utils/Cache'
 import { useLanguage } from '@Utils/I18n'
 import { useCustomTheme } from '@Utils/ThemeOverride'
 import { useBanner } from '@Hooks/useConfig'
-import { fetcher } from '@Api'
+import { fetcher as rawFetcher } from '@Api'
 import '@mantine/core/styles.css'
 import '@mantine/dates/styles.css'
 import '@mantine/dropzone/styles.css'
 import '@mantine/notifications/styles.css'
 import './styles/App.css'
+
+/**
+ * Wraps the generated swagger fetcher so any 401 globally redirects
+ * to /account/login?from=<current> and pops a "session expired" toast.
+ * This replaces the old silent-empty-state behaviour after cookie
+ * expiry.  Flagged on window so the interceptor fires at most once
+ * per navigation.
+ */
+let authRedirectInFlight = false
+const authAwareFetcher = async (args: Parameters<typeof rawFetcher>[0]) => {
+  try {
+    return await rawFetcher(args)
+  } catch (e: unknown) {
+    const status = (e as { status?: number } | undefined)?.status
+    const path = typeof args === 'string' ? args : args[0]
+    const isAuthEndpoint = path.includes('/account/') || path.includes('/info')
+    if (
+      status === 401 &&
+      !authRedirectInFlight &&
+      !isAuthEndpoint &&
+      typeof window !== 'undefined' &&
+      !window.location.pathname.startsWith('/account/')
+    ) {
+      authRedirectInFlight = true
+      try {
+        const { showNotification } = await import('@mantine/notifications')
+        showNotification({
+          id: 'session-expired',
+          color: 'red',
+          title: 'Session expired',
+          message: 'Please log in again.',
+        })
+      } catch {
+        // notifications unavailable — skip toast, still redirect
+      }
+      const from = window.location.pathname + window.location.search
+      window.location.href = `/account/login?from=${encodeURIComponent(from)}`
+    }
+    throw e
+  }
+}
 
 export const App: FC = () => {
   useBanner()
@@ -38,10 +79,13 @@ export const App: FC = () => {
             <ModalsProvider labels={{ confirm: t('common.modal.confirm'), cancel: t('common.modal.cancel') }}>
               <SWRConfig
                 value={{
-                  refreshInterval: 10000,
+                  // Default refresh at 60s keeps most screens cheap; hot
+                  // paths (live scoreboard, notices, instance polling)
+                  // opt in to shorter intervals explicitly at call sites.
+                  refreshInterval: 60_000,
                   keepPreviousData: true,
                   provider: localCacheProvider,
-                  fetcher,
+                  fetcher: authAwareFetcher,
                 }}
               >
                 <WsrxProvider>

@@ -2,6 +2,7 @@ import {
   alpha,
   Avatar,
   Box,
+  Button,
   Center,
   Grid,
   Group,
@@ -17,7 +18,7 @@ import {
   useMantineTheme,
 } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
-import { mdiAccountGroup, mdiMagnify, mdiFlagOutline } from '@mdi/js'
+import { mdiAccountGroup, mdiCrosshairsGps, mdiMagnify, mdiFlagOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -35,7 +36,7 @@ import {
   useBonusLabels,
   PartialIconProps,
 } from '@Utils/Shared'
-import { useGameScoreboard } from '@Hooks/useGame'
+import { useGame, useGameScoreboard, useGameTeamInfo } from '@Hooks/useGame'
 import { ChallengeInfo, ChallengeCategory, ScoreboardItem, SubmissionType } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import classes from '@Styles/ScoreboardTable.module.css'
@@ -136,7 +137,8 @@ const TableRow: FC<{
   iconMap: Map<SubmissionType, PartialIconProps | undefined>
   challenges?: Record<string, ChallengeInfo[]>
   divisionMap: Map<number, string>
-}> = React.memo(({ item, challenges, onOpenDetail, iconMap, tableRank, allRank, divisionMap }) => {
+  highlighted?: boolean
+}> = React.memo(({ item, challenges, onOpenDetail, iconMap, tableRank, allRank, divisionMap, highlighted }) => {
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const solved = item.solvedChallenges
   const theme = useMantineTheme()
@@ -161,7 +163,19 @@ const TableRow: FC<{
   }, [solved])
 
   return (
-    <Table.Tr>
+    <Table.Tr
+      data-team-name={item.name ?? ''}
+      style={
+        highlighted
+          ? {
+              outline: `2px solid ${theme.colors[theme.primaryColor][4]}`,
+              outlineOffset: -2,
+              background: alpha(theme.colors[theme.primaryColor][4], 0.12),
+              transition: 'background .3s ease, outline .3s ease',
+            }
+          : undefined
+      }
+    >
       <Table.Td className={cx(classes.mono, classes.left)} style={{ left: Lefts[0] }}>
         {item.rank || '-'}
       </Table.Td>
@@ -177,7 +191,7 @@ const TableRow: FC<{
           maw={Widths[2] - 10}
           className={classes.pointer}
         >
-          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30} color={theme.primaryColor}>
+          <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={item.avatar} radius="xl" size={30} color={theme.primaryColor}>
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0} h="2.5rem" justify="center" w={Widths[2] - 45}>
@@ -255,6 +269,11 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId
   const [debouncedKeyword] = useDebouncedValue(keyword, 400)
 
   const { scoreboard } = useGameScoreboard(numId)
+  const { game } = useGame(numId)
+  const myTeamName = game?.teamName ?? null
+  // When a "find my team" click lands on a row we highlight it for 2.5s.
+  const [highlightedTeam, setHighlightedTeam] = useState<string | null>(null)
+  void useGameTeamInfo // alias kept for future use / side-effect polling
 
   const divisionMap = useMemo(() => {
     const map = new Map<number, string>()
@@ -340,7 +359,34 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId
               leftSection={<Icon path={mdiAccountGroup} size={1} />}
             />
           </Grid.Col>
-          <Grid.Col span={6} />
+          <Grid.Col span={4}>
+            {myTeamName && (
+              <Button
+                variant="light"
+                leftSection={<Icon path={mdiCrosshairsGps} size={0.9} />}
+                onClick={() => {
+                  // Find my team in the filtered list; jump to its page
+                  // and flash the row briefly.
+                  const idx = filteredList.findIndex((it) => it.name === myTeamName)
+                  if (idx < 0) return
+                  const page = Math.floor(idx / ITEM_COUNT_PER_PAGE) + 1
+                  setPage(page)
+                  setHighlightedTeam(myTeamName)
+                  // Scroll the highlighted row into view after render.
+                  requestAnimationFrame(() => {
+                    const el = document.querySelector(
+                      `[data-team-name="${CSS.escape(myTeamName)}"]`
+                    )
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                  })
+                  setTimeout(() => setHighlightedTeam(null), 2500)
+                }}
+              >
+                {t('game.button.find_my_team')}
+              </Button>
+            )}
+          </Grid.Col>
+          <Grid.Col span={2} />
           <Grid.Col span={3}>
             <TextInput
               placeholder={t('game.placeholder.search_team')}
@@ -374,6 +420,7 @@ export const ScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivisionId
                       challenges={scoreboard.challenges}
                       iconMap={iconMap}
                       divisionMap={divisionMap}
+                      highlighted={highlightedTeam === item.name}
                     />
                   ))}
               </Table.Tbody>

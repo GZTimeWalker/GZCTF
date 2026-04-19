@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 import { HandleWsrxError, useWsrx } from '@Components/WsrxProvider'
 import { getProxyUrl as getProxyEntry } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
+import { useTicker } from '@Hooks/useTicker'
 import { ClientFlagContext, ContainerPortMappingType } from '@Api'
 import classes from '@Styles/InstanceEntry.module.css'
 import misc from '@Styles/Misc.module.css'
@@ -45,17 +46,11 @@ interface CountdownProps {
 const Countdown: FC<CountdownProps> = (props) => {
   const { time, onTimeout, extendEnabled, enableExtend } = props
   const { config } = useConfig()
-  const [now, setNow] = useState(dayjs())
+  const now = useTicker()
   const [timeoutExecuted, setTimeoutExecuted] = useState(false)
   const end = time ? dayjs(time) : now.add(config.defaultLifetime ?? 120, 'minutes')
 
   const countdown = dayjs.duration(end.diff(now))
-
-  useEffect(() => {
-    if (dayjs() > end) return
-    const interval = setInterval(() => setNow(dayjs()), 1000)
-    return () => clearInterval(interval)
-  }, [])
 
   useEffect(() => {
     if (!extendEnabled && config.renewalWindow && countdown.asMinutes() < config.renewalWindow) enableExtend()

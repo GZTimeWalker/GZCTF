@@ -25,6 +25,7 @@ import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
+import { useTicker } from '@Hooks/useTicker'
 import { ChallengeDetailModel, ChallengeType, ReviewRating } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
 import misc from '@Styles/Misc.module.css'
@@ -38,14 +39,9 @@ interface ChallengeDeadlineNoticeProps {
 
 const ChallengeDeadlineNotice: FC<ChallengeDeadlineNoticeProps> = ({ deadline, onExpiredChange }) => {
   const { t } = useTranslation()
-  const [now, setNow] = useState(dayjs())
+  // Shared 1s ticker so multiple deadline widgets share one interval.
+  const now = useTicker()
   const { locale } = useLanguage()
-
-  useEffect(() => {
-    setNow(dayjs())
-    const timer = setInterval(() => setNow(dayjs()), 1000)
-    return () => clearInterval(timer)
-  }, [deadline])
 
   useEffect(() => {
     onExpiredChange(now.isAfter(deadline))
@@ -84,6 +80,9 @@ export interface ChallengeModalProps extends ModalProps {
   cateData: ChallengeCategoryItemProps
   solved?: boolean
   disabled?: boolean
+  /** True while a flag submission is in-flight (network or server-side
+   *  check) — renders a spinner inside the submit button. */
+  submitting?: boolean
   gameTitle?: string
   gameEnded?: boolean
   practiceMode?: boolean
@@ -103,6 +102,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     cateData,
     solved,
     disabled,
+    submitting,
     gameTitle,
     gameEnded,
     practiceMode,
@@ -378,7 +378,12 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
             onChange={setFlag}
             classNames={{ root: misc.flexGrow, input: misc.ffmono }}
           />
-          <Button miw="6rem" type="submit" disabled={inputDisabled}>
+          <Button
+            miw="6rem"
+            type="submit"
+            disabled={inputDisabled}
+            loading={submitting}
+          >
             {t('challenge.button.submit_flag')}
           </Button>
         </Group>

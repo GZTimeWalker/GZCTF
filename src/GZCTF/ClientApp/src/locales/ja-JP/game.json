@@ -20,7 +20,8 @@
       "upload": "記事を提出",
       "uploading": "アップロード中"
     },
-    "attack": "アタックフィード"
+    "attack": "アタックフィード",
+    "find_my_team": "自分のチームを探す"
   },
   "content": {
     "all_solved": {

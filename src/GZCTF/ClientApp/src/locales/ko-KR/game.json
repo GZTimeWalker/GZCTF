@@ -20,7 +20,8 @@
       "upload": "풀이 제출",
       "uploading": "업로드 중..."
     },
-    "attack": "공격 피드"
+    "attack": "공격 피드",
+    "find_my_team": "내 팀 찾기"
   },
   "content": {
     "all_solved": {

@@ -261,7 +261,7 @@ const Users: FC = () => {
                     <Table.Td>
                       <Group wrap="nowrap" justify="space-between" gap="xs">
                         <Group wrap="nowrap" justify="left">
-                          <Avatar alt="avatar" src={user.avatar} radius="xl">
+                          <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={user.avatar} radius="xl">
                             {user.userName?.slice(0, 1) ?? 'U'}
                           </Avatar>
                           <ScrollingText text={user.userName ?? ''} ff="monospace" size="sm" fw="bold" maw="8rem" />

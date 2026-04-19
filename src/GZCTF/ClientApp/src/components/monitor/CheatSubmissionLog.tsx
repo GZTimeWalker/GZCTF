@@ -194,7 +194,7 @@ const CheatInfoItem: FC<CheatInfoItemProps> = (props) => {
                 <Accordion.Control>
                     <Group justify="space-between">
                         <Group justify="left">
-                            <Avatar alt="avatar" src={cheatTeamInfo.avatar}>
+                            <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={cheatTeamInfo.avatar}>
                                 {!cheatTeamInfo.name ? 'T' : cheatTeamInfo.name.slice(0, 1)}
                             </Avatar>
                             <Stack gap={0}>

@@ -20,7 +20,8 @@
       "upload": "Submit Writeup",
       "uploading": "Uploading..."
     },
-    "attack": "Attack Feed"
+    "attack": "Attack Feed",
+    "find_my_team": "Find My Team"
   },
   "content": {
     "all_solved": {

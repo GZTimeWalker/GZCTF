@@ -20,7 +20,8 @@
       "upload": "Enviar Writeup",
       "uploading": "Cargando..."
     },
-    "attack": "Feed de Ataques"
+    "attack": "Feed de Ataques",
+    "find_my_team": "Encontrar mi equipo"
   },
   "content": {
     "all_solved": {

@@ -20,7 +20,8 @@
       "upload": "Submit writeup",
       "uploading": "Mengunggah..."
     },
-    "attack": "Live Attack"
+    "attack": "Live Attack",
+    "find_my_team": "Cari Tim Saya"
   },
   "content": {
     "all_solved": {

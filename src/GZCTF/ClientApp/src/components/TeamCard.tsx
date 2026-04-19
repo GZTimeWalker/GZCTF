@@ -30,7 +30,7 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
       classNames={{ root: misc.hoverCard }}
     >
       <Group className={isMobile ? teamCardClasses.contentGroupMobile : teamCardClasses.contentGroup}>
-        <Avatar alt="avatar" size="xl" radius="xl" src={team.avatar}>
+        <Avatar imageProps={{loading:"lazy"}} alt="avatar" size="xl" radius="xl" src={team.avatar}>
           {team.name?.slice(0, 1) ?? 'T'}
         </Avatar>
         <Stack gap={4} className={misc.flexGrow}>
@@ -46,13 +46,13 @@ export const TeamCard: FC<TeamCardProps> = (props) => {
             <Avatar.Group className={teamCardClasses.avatarGroup}>
               {team.members?.slice(0, 6).map((m) => (
                 <Tooltip key={m.id} label={m.userName} withArrow>
-                  <Avatar alt="avatar" radius="xl" size="md" src={m.avatar}>
+                  <Avatar imageProps={{loading:"lazy"}} alt="avatar" radius="xl" size="md" src={m.avatar}>
                     {m.userName?.slice(0, 1) ?? 'U'}
                   </Avatar>
                 </Tooltip>
               ))}
               {team.members && team.members.length > 6 && (
-                <Avatar radius="xl" size="lg">
+                <Avatar imageProps={{loading:"lazy"}} radius="xl" size="lg">
                   +{team.members.length - 6}
                 </Avatar>
               )}

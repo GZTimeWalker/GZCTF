@@ -52,7 +52,7 @@ export const TeamItem: SelectableItemComponent<TeamTrafficModel> = (itemProps) =
     <SelectableItem h={itemHeight} pr={5} {...props}>
       <Group justify="space-between" gap="sm" w="100%" wrap="nowrap" maw="100%">
         <Group justify="left" gap="xs" wrap="nowrap" miw={0} flex={1}>
-          <Avatar alt="avatar" src={item.avatar} radius="xl" size={30}>
+          <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={item.avatar} radius="xl" size={30}>
             {item.name?.slice(0, 1) ?? 'T'}
           </Avatar>
           <Stack gap={0} align="flex-start" miw={0} flex={1}>

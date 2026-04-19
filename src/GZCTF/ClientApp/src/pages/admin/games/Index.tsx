@@ -231,7 +231,7 @@ const Games: FC = () => {
                             onClick={() => navigate(`/games/${game.id}`)}
                             className={misc.cPointer}
                           >
-                            <Avatar alt="avatar" src={game.poster} radius={0}>
+                            <Avatar imageProps={{loading:"lazy"}} alt="avatar" src={game.poster} radius={0}>
                               {game.title?.slice(0, 1)}
                             </Avatar>
                             <Text fw="bold" lineClamp={1} maw="calc(20vw)">
