@@ -12,7 +12,9 @@ export const useRecentGames = () => {
     }
   )
 
-  return { recentGames: data, error, mutate }
+  // Guard against SWR hydrating a stale non-array value from persistent
+  // cache (e.g. an old 302/HTML response from a misconfigured proxy).
+  return { recentGames: Array.isArray(data) ? data : undefined, error, mutate }
 }
 
 export const getGameStatus = (game?: { start?: number; end?: number }) => {

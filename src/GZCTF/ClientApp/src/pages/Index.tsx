@@ -68,9 +68,11 @@ const Home: FC = () => {
         <Stack align="center">
           <Group wrap="nowrap" gap={4} justify="space-between" align="flex-start" w="100%">
             <Stack className={classes.posts}>
-              {posts === undefined
+              {!Array.isArray(posts)
                 ? /* First paint skeleton — stops the home page from
-                     flashing blank for ~2s while posts load. */
+                     flashing blank for ~2s while posts load.  Also
+                     covers non-array error responses from a broken
+                     backend/proxy so the page doesn't crash. */
                   Array.from({ length: 3 }).map((_, i) => (
                     <Stack key={i} gap={8} p="md">
                       <Group>
