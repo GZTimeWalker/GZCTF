@@ -13,6 +13,8 @@
  * blood triggers a 10-second dread-build laser strike that shakes the
  * whole viewport and shatters the screen.
  */
+import { mdiWater } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as signalR from '@microsoft/signalr'
 import { useParams } from 'react-router'
@@ -1458,7 +1460,7 @@ const Attack: FC = () => {
               gap: 8,
             }}
           >
-            <span style={{ fontSize: 18, lineHeight: 1 }}>🩸</span>
+            <Icon path={mdiWater} size={0.85} color="#0b0b11" />
             <span>FIRST BLOOD</span>
           </div>
           <div
