@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "Soumettre",
       "uploading": "Téléchargement..."
-    }
+    },
+    "attack": "Flux d'attaques"
   },
   "content": {
     "all_solved": {

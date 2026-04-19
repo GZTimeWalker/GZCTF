@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "上傳 Writeup",
       "uploading": "正在上傳"
-    }
+    },
+    "attack": "攻擊實況"
   },
   "content": {
     "all_solved": {

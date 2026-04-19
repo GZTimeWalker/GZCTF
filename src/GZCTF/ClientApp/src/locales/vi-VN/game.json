@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "Tải Writeup",
       "uploading": "Đang tải lên..."
-    }
+    },
+    "attack": "Feed tấn công"
   },
   "content": {
     "all_solved": {

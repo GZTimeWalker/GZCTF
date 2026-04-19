@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "풀이 제출",
       "uploading": "업로드 중..."
-    }
+    },
+    "attack": "공격 피드"
   },
   "content": {
     "all_solved": {

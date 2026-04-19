@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "Submit writeup",
       "uploading": "Mengunggah..."
-    }
+    },
+    "attack": "Live Attack"
   },
   "content": {
     "all_solved": {

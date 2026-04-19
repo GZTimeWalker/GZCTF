@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "Enviar Writeup",
       "uploading": "Cargando..."
-    }
+    },
+    "attack": "Feed de Ataques"
   },
   "content": {
     "all_solved": {

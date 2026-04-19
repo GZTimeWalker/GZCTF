@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "Einreichen Writeup",
       "uploading": "Hochladen..."
-    }
+    },
+    "attack": "Attack-Feed"
   },
   "content": {
     "all_solved": {

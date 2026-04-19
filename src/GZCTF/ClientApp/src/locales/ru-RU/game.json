@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "Загрузить",
       "uploading": "Загрузка..."
-    }
+    },
+    "attack": "Лента атак"
   },
   "content": {
     "all_solved": {

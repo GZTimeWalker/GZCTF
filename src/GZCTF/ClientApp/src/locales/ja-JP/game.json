@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "記事を提出",
       "uploading": "アップロード中"
-    }
+    },
+    "attack": "アタックフィード"
   },
   "content": {
     "all_solved": {

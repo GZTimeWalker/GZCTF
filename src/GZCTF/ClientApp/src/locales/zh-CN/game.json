@@ -19,7 +19,8 @@
     "writeup": {
       "upload": "上传 Writeup",
       "uploading": "正在上传"
-    }
+    },
+    "attack": "攻击实况"
   },
   "content": {
     "all_solved": {
