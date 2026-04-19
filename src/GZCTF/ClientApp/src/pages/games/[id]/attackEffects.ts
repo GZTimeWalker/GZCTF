@@ -28,7 +28,25 @@ let app: PIXI.Application | null = null
 let stage: PIXI.Container | null = null
 const entities: Entity[] = []
 const pendingEntities: Entity[] = []
-const ENT_CAP = 400
+const ENT_CAP_FULL = 400
+const ENT_CAP_LOW = 180
+let entCap = ENT_CAP_FULL
+let __FPS = 60
+let __LOW_FPS = false
+
+export function getFPS(): number {
+  return __FPS
+}
+export function isLowFPS(): boolean {
+  return __LOW_FPS
+}
+
+/** Pause / resume the Pixi ticker (keyboard P shortcut). */
+export function setPausedState(p: boolean): void {
+  if (!app) return
+  if (p) app.ticker.stop()
+  else app.ticker.start()
+}
 
 let audioCtx: AudioContext | null = null
 let masterOut: AudioNode | null = null
@@ -89,7 +107,7 @@ export async function initEffects(canvas: HTMLCanvasElement): Promise<void> {
 
   // Drain any entities that tried to spawn before init completed
   for (const e of pendingEntities) {
-    if (entities.length >= ENT_CAP) {
+    if (entities.length >= entCap) {
       const gone = entities.shift()
       if (gone?.destroy) gone.destroy()
     }
@@ -97,8 +115,31 @@ export async function initEffects(canvas: HTMLCanvasElement): Promise<void> {
   }
   pendingEntities.length = 0
 
+  // Pre-bake glow textures for all event colors so the first bullet
+  // frame doesn't hitch while the atlas is generated lazily.
+  for (const c of ['#ffd34a', '#3ae85c', '#f4b619', '#ff6262', '#ff2a2a', '#ffffff']) {
+    glowTex(c)
+  }
+
+  // FPS sampler — rolling window of 30 frames.  When sustained < 45 fps
+  // we flip __LOW_FPS; spawners check this to halve their emission rate
+  // and the entity cap drops so the renderer stays responsive.
+  let lastFrame = performance.now()
+  const frameSamples: number[] = []
   app.ticker.add(() => {
     const now = performance.now()
+    const dt = now - lastFrame
+    lastFrame = now
+    frameSamples.push(dt)
+    if (frameSamples.length > 30) frameSamples.shift()
+    if (frameSamples.length === 30) {
+      const avg = frameSamples.reduce((a, b) => a + b, 0) / 30
+      __FPS = Math.round(1000 / avg)
+      const wasLow = __LOW_FPS
+      __LOW_FPS = __FPS < 45
+      if (__LOW_FPS !== wasLow) entCap = __LOW_FPS ? ENT_CAP_LOW : ENT_CAP_FULL
+    }
+
     for (let i = entities.length - 1; i >= 0; i--) {
       const e = entities[i]
       if (e.update(now) === false) {
@@ -109,11 +150,28 @@ export async function initEffects(canvas: HTMLCanvasElement): Promise<void> {
   })
 
   window.addEventListener('resize', onResize)
+  document.addEventListener('visibilitychange', onVisibility)
+}
+
+function onVisibility(): void {
+  if (!app) return
+  if (document.hidden) {
+    app.ticker.stop()
+    if (audioCtx && audioCtx.state === 'running') {
+      void audioCtx.suspend().catch(() => undefined)
+    }
+  } else {
+    app.ticker.start()
+    if (audioCtx && audioCtx.state === 'suspended') {
+      void audioCtx.resume().catch(() => undefined)
+    }
+  }
 }
 
 export function disposeEffects(): void {
   if (!app) return
   window.removeEventListener('resize', onResize)
+  document.removeEventListener('visibilitychange', onVisibility)
   // Destroy entities
   for (const e of entities) {
     if (e.destroy) e.destroy()
@@ -149,7 +207,7 @@ function addEnt(e: Entity): Entity {
     pendingEntities.push(e)
     return e
   }
-  if (entities.length >= ENT_CAP) {
+  if (entities.length >= entCap) {
     const gone = entities.shift()
     if (gone?.destroy) gone.destroy()
   }
@@ -834,8 +892,15 @@ function flashScreen(color: string): void {
   ).onfinish = () => f.remove()
 }
 
+let __shatterSvg: SVGSVGElement | null = null
 function shatterAt(x: number, y: number, color: string): void {
   const SVG_NS = 'http://www.w3.org/2000/svg'
+  // Remove any previous shatter overlay still in the DOM so rapid-fire
+  // first-bloods don't stack SVGs on top of each other.
+  if (__shatterSvg && __shatterSvg.parentNode) {
+    __shatterSvg.remove()
+    __shatterSvg = null
+  }
   const svg = document.createElementNS(SVG_NS, 'svg')
   Object.assign(svg.style, {
     position: 'fixed',
@@ -847,6 +912,7 @@ function shatterAt(x: number, y: number, color: string): void {
   } as CSSStyleDeclaration)
   svg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`)
   document.body.appendChild(svg)
+  __shatterSvg = svg
 
   const n = 10 + Math.floor(Math.random() * 3)
   const diag = Math.hypot(window.innerWidth, window.innerHeight)
@@ -907,7 +973,10 @@ function shatterAt(x: number, y: number, color: string): void {
     { duration: 380, easing: 'ease-out', fill: 'forwards' }
   ).onfinish = () => hub.remove()
 
-  setTimeout(() => svg.remove(), 2600)
+  setTimeout(() => {
+    svg.remove()
+    if (__shatterSvg === svg) __shatterSvg = null
+  }, 2600)
 }
 
 function hqPunch(hex: HTMLElement): void {
@@ -927,38 +996,57 @@ function hqPunch(hex: HTMLElement): void {
 
 function slideScanBar(i: number): void {
   const bar = document.createElement('div')
+  // Each bar gets a different height, opacity, and speed so the three
+  // scan-bar passes don't feel mechanical.  Edges fade into transparent
+  // horizontally too so they don't look like bars with hard ends.
+  const h = 40 + Math.floor(Math.random() * 30)
+  const dur = 700 + Math.floor(Math.random() * 600)
+  const alpha = 0.4 + Math.random() * 0.35
   Object.assign(bar.style, {
     position: 'fixed',
     left: '0',
     right: '0',
-    top: '-50px',
-    height: '50px',
+    top: `-${h}px`,
+    height: `${h}px`,
     zIndex: '6',
     pointerEvents: 'none',
-    background: 'linear-gradient(to bottom, transparent, rgba(255,42,42,.55), transparent)',
-    opacity: '0.85',
+    background:
+      `linear-gradient(to bottom, transparent 0%, rgba(255,42,42,${alpha}) 50%, transparent 100%)`,
+    opacity: String(0.7 + Math.random() * 0.25),
     willChange: 'top',
-  } as CSSStyleDeclaration)
+  } as unknown as CSSStyleDeclaration)
+  bar.style.maskImage = 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)'
+  bar.style.webkitMaskImage = 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)'
   document.body.appendChild(bar)
-  bar.animate([{ top: '-50px' }, { top: `${window.innerHeight}px` }], {
-    duration: 900 - i * 150,
+  bar.animate([{ top: `-${h}px` }, { top: `${window.innerHeight}px` }], {
+    duration: dur,
     easing: 'linear',
     fill: 'forwards',
   }).onfinish = () => bar.remove()
+  void i
 }
 
 function showIncomingBanner(durationMs: number): void {
-  const warn = document.createElement('div')
-  // Positioned in the upper HUD band well clear of both the FB strip
-  // banner (top:58px) and the HQ hex (centered at 50vh).  top:140px
-  // leaves ~40px gap below the FB strip and far above the hex.
-  Object.assign(warn.style, {
+  // Container positions the banner at a fraction of the viewport
+  // height, directly ABOVE the HQ hex (which is at 50vh).  A thin
+  // vertical line drops from the banner toward the hex to read as a
+  // "target lock" visual cue.
+  const wrap = document.createElement('div')
+  Object.assign(wrap.style, {
     position: 'fixed',
     left: '50%',
-    top: '140px',
+    top: '22vh',
     transform: 'translateX(-50%)',
     zIndex: '45',
     pointerEvents: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    opacity: '0',
+    willChange: 'opacity, transform',
+  } as CSSStyleDeclaration)
+  const warn = document.createElement('div')
+  Object.assign(warn.style, {
     padding: '14px 32px',
     background: '#1a0a0a',
     border: '2px solid #ff2a2a',
@@ -968,12 +1056,22 @@ function showIncomingBanner(durationMs: number): void {
     fontSize: 'clamp(14px, 2vw, 20px)',
     letterSpacing: '.3em',
     textTransform: 'uppercase',
-    opacity: '0',
-    willChange: 'opacity, transform',
   } as CSSStyleDeclaration)
   warn.innerHTML = '▼&nbsp;&nbsp;INCOMING STRIKE&nbsp;&nbsp;▼'
-  document.body.appendChild(warn)
-  warn.animate(
+  const line = document.createElement('div')
+  // Thin dashed line dropping from the banner toward the HQ hex.
+  Object.assign(line.style, {
+    width: '2px',
+    height: 'clamp(40px, 14vh, 180px)',
+    marginTop: '4px',
+    background:
+      'repeating-linear-gradient(to bottom, #ff2a2a 0 6px, transparent 6px 12px)',
+  } as CSSStyleDeclaration)
+  wrap.appendChild(warn)
+  wrap.appendChild(line)
+  document.body.appendChild(wrap)
+  const warnRef = wrap
+  warnRef.animate(
     [
       { opacity: 0, transform: 'translateX(-50%) scale(.7)' },
       { opacity: 1, transform: 'translateX(-50%) scale(1)', offset: 0.1 },
@@ -986,7 +1084,7 @@ function showIncomingBanner(durationMs: number): void {
       { opacity: 0, transform: 'translateX(-50%) scale(1.4)' },
     ],
     { duration: durationMs, fill: 'forwards', easing: 'ease-out' }
-  ).onfinish = () => warn.remove()
+  ).onfinish = () => warnRef.remove()
 }
 
 function spawnVignette(durationMs: number): HTMLDivElement {
@@ -1449,7 +1547,7 @@ export function spawnFirstBlood(
   addEnt({
     update(now) {
       if (!chargeAlive.v || now - chargeStart >= CHARGE_MS) return false
-      if (now - particleLastSpawn < 220) return true
+      if (now - particleLastSpawn < (__LOW_FPS ? 440 : 220)) return true
       particleLastSpawn = now
       const ang = Math.random() * Math.PI * 2
       const dist = 100 + Math.random() * 200
@@ -1488,7 +1586,7 @@ export function spawnFirstBlood(
   addEnt({
     update(now) {
       if (!chargeAlive.v || now - chargeStart >= CHARGE_MS) return false
-      if (now - arcLastSpawn < 220) return true
+      if (now - arcLastSpawn < (__LOW_FPS ? 440 : 220)) return true
       arcLastSpawn = now
       const frac = (now - chargeStart) / CHARGE_MS
       const spokes = 1 + Math.floor(frac * 1.5)

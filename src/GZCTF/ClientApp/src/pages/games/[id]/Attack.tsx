@@ -28,6 +28,7 @@ import {
   fireBullet,
   initEffects,
   playPew,
+  setPausedState,
   spawnFirstBlood,
   unlockAudio,
 } from './attackEffects'
@@ -58,7 +59,16 @@ interface FirstBloodBanner {
   id: number
   teamName: string
   challengeTitle: string
+  category: ChallengeCategory
   startedAt: number
+}
+
+interface TickerEvent {
+  id: number
+  teamName: string
+  challengeTitle: string
+  category: ChallengeCategory
+  type: SubmissionType
 }
 
 /* -------------------------------------------------------------------------- */
@@ -153,8 +163,13 @@ const computeLayout = (
   w: number,
   h: number
 ): LayoutResult => {
-  const feedW = Math.min(FEED_W_MAX, Math.max(FEED_W_MIN, w * 0.19))
-  const boardW = Math.min(BOARD_W_MAX, Math.max(BOARD_W_MIN, w * 0.16))
+  // Panel widths scale with the shorter viewport dimension so they don't
+  // dominate narrow laptops or vanish on 4K projectors.  The previous
+  // pure w*0.19 pushed feed to 360px on 4K (tiny) and ate 260px on a
+  // 1366-wide laptop (too much).
+  const shortDim = Math.min(w, h)
+  const feedW = Math.min(FEED_W_MAX, Math.max(FEED_W_MIN, shortDim * 0.28))
+  const boardW = Math.min(BOARD_W_MAX, Math.max(BOARD_W_MIN, shortDim * 0.24))
   const px0 = GUTTER + feedW + INNER_PAD
   const px1 = w - GUTTER - boardW - INNER_PAD
   const py0 = HEADER_H + INNER_PAD
@@ -210,8 +225,11 @@ const computeLayout = (
     const innerCount = Math.min(12, count)
     const inner = sorted.slice(0, innerCount)
     const outer = sorted.slice(innerCount)
-    const rxI = rxFinal * 0.6
-    const ryI = ryFinal * 0.6
+    // Enforce a minimum 40% radius gap between inner and outer rings so
+    // they don't visually merge on small viewports where rxFinal is tight.
+    const ratio = 0.55
+    const rxI = Math.min(rxFinal * ratio, rxFinal - 60)
+    const ryI = Math.min(ryFinal * ratio, ryFinal - 60)
     inner.forEach((t, i) => {
       const a = (i / inner.length) * Math.PI * 2 - Math.PI / 2
       pushTeam(t, cx + rxI * Math.cos(a), cy + ryI * Math.sin(a), true)
@@ -315,11 +333,22 @@ const Attack: FC = () => {
 
   const [feedLines, setFeedLines] = useState<FeedLine[]>([])
   const [firstBlood, setFirstBlood] = useState<FirstBloodBanner | null>(null)
+  const [ticker, setTicker] = useState<TickerEvent | null>(null)
+  const tickerQueueRef = useRef<TickerEvent[]>([])
+  const [audioMuted, setAudioMuted] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [showDevPanel, setShowDevPanel] = useState(true)
 
   const [eventCount, setEventCount] = useState(0)
   const [fbCount, setFbCount] = useState(0)
-  const [atkRate, setAtkRate] = useState('0/min')
-  const [clockText, setClockText] = useState(() => new Date().toISOString().slice(11, 19))
+  // Clock + attack-rate are ref-driven (direct textContent writes) so the
+  // 1s interval doesn't re-render the whole Attack tree + 300 child nodes.
+  const clockRef = useRef<HTMLSpanElement | null>(null)
+  const atkRateRef = useRef<HTMLSpanElement | null>(null)
+  // SignalR status refs — header dot + label updated imperatively on
+  // connection state transitions without re-rendering the whole tree.
+  const liveBadgeRef = useRef<HTMLSpanElement | null>(null)
+  const liveLabelRef = useRef<HTMLSpanElement | null>(null)
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -338,8 +367,15 @@ const Attack: FC = () => {
     const onResize = (): void =>
       setViewport({ w: window.innerWidth, h: window.innerHeight })
     window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
+    window.addEventListener('orientationchange', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+      window.removeEventListener('orientationchange', onResize)
+    }
   }, [])
+
+  const isTooSmall = viewport.w < 900 && viewport.w < viewport.h  // portrait < 900px
+  const isUnsupported = viewport.w < 700  // too small even in landscape
 
   /* ---- Initial data load ---- */
   useEffect(() => {
@@ -460,10 +496,10 @@ const Attack: FC = () => {
   /* ---- Clock + rolling attack-rate ---- */
   useEffect(() => {
     const iv = setInterval(() => {
-      setClockText(new Date().toISOString().slice(11, 19))
+      if (clockRef.current) clockRef.current.textContent = new Date().toISOString().slice(11, 19)
       const now = Date.now()
       while (atkTimestampsRef.current[0] < now - 60_000) atkTimestampsRef.current.shift()
-      setAtkRate(`${atkTimestampsRef.current.length}/min`)
+      if (atkRateRef.current) atkRateRef.current.textContent = `${atkTimestampsRef.current.length}/min`
     }, 1000)
     return () => clearInterval(iv)
   }, [])
@@ -518,6 +554,25 @@ const Attack: FC = () => {
       setEventCount((c) => c + 1)
       atkTimestampsRef.current.push(Date.now())
 
+      // Queue a SOLVED ticker entry for the audience on the projector.
+      // Accepted events only — wrong answers are noise on the ticker.
+      if (evt.type !== SubmissionType.Unaccepted) {
+        const tEvt: TickerEvent = {
+          id: nextFeedKeyRef.current++,
+          teamName: evt.teamName,
+          challengeTitle: evt.challengeTitle,
+          category: evt.category,
+          type: evt.type,
+        }
+        // First-blood jumps the queue.
+        if (evt.type === SubmissionType.FirstBlood) {
+          tickerQueueRef.current = [tEvt, ...tickerQueueRef.current]
+        } else {
+          tickerQueueRef.current = [...tickerQueueRef.current, tEvt].slice(-5)
+        }
+        setTicker((cur) => cur ?? tickerQueueRef.current.shift() ?? null)
+      }
+
       const src = resolveSource(evt)
       const color = colorForType(evt.type)
 
@@ -530,6 +585,7 @@ const Attack: FC = () => {
             id: Math.random(),
             teamName: evt.teamName,
             challengeTitle: evt.challengeTitle,
+            category: evt.category,
             startedAt: performance.now(),
           })
         }
@@ -537,6 +593,7 @@ const Attack: FC = () => {
       }
 
       if (evt.type === SubmissionType.FirstBlood) {
+        lastFbEvtRef.current = evt
         spawnFirstBlood(src.x, src.y, hqCenter.x, hqCenter.y, color, {
           hexElement: hexRef.current,
           onImpact: () => {
@@ -552,6 +609,7 @@ const Attack: FC = () => {
           id: Math.random(),
           teamName: evt.teamName,
           challengeTitle: evt.challengeTitle,
+          category: evt.category,
           startedAt: performance.now(),
         })
       } else {
@@ -607,6 +665,47 @@ const Attack: FC = () => {
     return () => clearTimeout(t)
   }, [firstBlood])
 
+  /* ---- Keyboard shortcuts: M(ute) / P(ause) / R(eplay-last-FB) ----
+   * Only active once audio is unlocked so we don't fight the click-to-begin
+   * overlay.  Mute flips <audio>.muted + audioCtx master gain. Pause toggles
+   * the Pixi ticker.  Replay re-dispatches the most recent FB event. */
+  const mutedRef = useRef(false)
+  const pausedRef = useRef(false)
+  const lastFbEvtRef = useRef<AttackEvent | null>(null)
+  useEffect(() => {
+    if (!audioEnabled) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+      const k = e.key.toLowerCase()
+      if (k === 'm') {
+        mutedRef.current = !mutedRef.current
+        if (audioRef.current) audioRef.current.muted = mutedRef.current
+        setAudioMuted(mutedRef.current)
+      } else if (k === 'p') {
+        pausedRef.current = !pausedRef.current
+        setPausedState(pausedRef.current)
+        setPaused(pausedRef.current)
+      } else if (k === 'r') {
+        if (lastFbEvtRef.current) handleAttack(lastFbEvtRef.current)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [audioEnabled])
+
+  /* ---- SOLVED ticker queue drain — one event at a time, 4s each ---- */
+  useEffect(() => {
+    if (ticker) return
+    const next = tickerQueueRef.current.shift()
+    if (next) setTicker(next)
+  }, [ticker])
+  useEffect(() => {
+    if (!ticker) return
+    const dur = ticker.type === SubmissionType.FirstBlood ? 6000 : 4000
+    const t = setTimeout(() => setTicker(null), dur)
+    return () => clearTimeout(t)
+  }, [ticker])
+
   /* ---- SignalR ---- */
   useEffect(() => {
     if (isPreview) return
@@ -623,10 +722,34 @@ const Attack: FC = () => {
       handleAttack(msg)
     })
 
-    connection.start().catch((err) => {
-      // eslint-disable-next-line no-console
-      console.warn('[attack] signalR connect failed', err)
-    })
+    // Imperative live-status indicator: paint the header LIVE dot + label
+    // directly via refs so connection-state churn never re-renders the
+    // whole Attack component.
+    const setStatus = (label: string, color: string, pulse: boolean) => {
+      if (liveLabelRef.current) liveLabelRef.current.textContent = label
+      if (liveBadgeRef.current) {
+        liveBadgeRef.current.style.color = color
+        const dot = liveBadgeRef.current.firstElementChild as HTMLElement | null
+        if (dot) {
+          dot.style.background = color
+          dot.style.boxShadow = `0 0 16px ${color}, 0 0 32px ${color}66`
+          dot.style.animation = pulse ? 'attackPulse 1.2s infinite' : 'none'
+          dot.style.opacity = pulse ? '1' : '0.6'
+        }
+      }
+    }
+    connection.onreconnecting(() => setStatus('RECONNECTING', '#f4b619', true))
+    connection.onreconnected(() => setStatus('LIVE', '#3ae85c', true))
+    connection.onclose(() => setStatus('OFFLINE', '#ff2a2a', false))
+
+    connection
+      .start()
+      .then(() => setStatus('LIVE', '#3ae85c', true))
+      .catch((err) => {
+        setStatus('OFFLINE', '#ff2a2a', false)
+        // eslint-disable-next-line no-console
+        console.warn('[attack] signalR connect failed', err)
+      })
 
     return () => {
       connection.stop().catch(() => undefined)
@@ -716,6 +839,10 @@ const Attack: FC = () => {
           92%  { transform: translate(-50%,0);     opacity: 1 }
           100% { transform: translate(-50%,-140%); opacity: 0 }
         }
+        @keyframes attackTickerIn {
+          from { opacity: 0; transform: translate(-50%, 12px) }
+          to   { opacity: 1; transform: translate(-50%, 0)    }
+        }
       `}</style>
 
       {/* Scanlines + grid backdrop */}
@@ -727,7 +854,7 @@ const Attack: FC = () => {
           pointerEvents: 'none',
           zIndex: 1,
           background:
-            'repeating-linear-gradient(to bottom, transparent 0 2px, rgba(255,255,255,.03) 2px 3px)',
+            'repeating-linear-gradient(to bottom, transparent 0 2px, rgba(255,255,255,.018) 2px 3px)',
         }}
       />
       <div
@@ -772,20 +899,24 @@ const Attack: FC = () => {
           &nbsp;{eventTitle} //// TACTICAL-OPS
         </span>
         <span>
-          <span style={{ color: '#3ae85c', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <span
+            ref={liveBadgeRef}
+            style={{ color: '#3ae85c', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+          >
             <span
               style={{
-                width: 8,
-                height: 8,
+                width: 12,
+                height: 12,
                 borderRadius: '50%',
                 background: '#3ae85c',
-                boxShadow: '0 0 12px #3ae85c',
+                boxShadow: '0 0 16px #3ae85c, 0 0 32px rgba(58,232,92,.4)',
                 animation: 'attackPulse 1.2s infinite',
+                flexShrink: 0,
               }}
             />
-            LIVE
+            <span ref={liveLabelRef}>LIVE</span>
           </span>
-          &nbsp;//&nbsp; {clockText} UTC
+          &nbsp;//&nbsp; <span ref={clockRef}>{new Date().toISOString().slice(11, 19)}</span> UTC
         </span>
       </div>
 
@@ -814,30 +945,144 @@ const Attack: FC = () => {
         <span>
           SIGNAL NOMINAL &nbsp;//&nbsp; {positions.length} TEAMS &nbsp;//&nbsp; {eventCount} EVENTS
         </span>
-        <span>GZCTF ATTACK-STREAM // PUBLIC</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {audioMuted && (
+            <span style={{ color: '#ff6262', fontWeight: 700 }}>MUTED</span>
+          )}
+          {paused && (
+            <span style={{ color: '#f4b619', fontWeight: 700 }}>PAUSED</span>
+          )}
+          <span style={{ opacity: 0.6 }}>[M] MUTE · [P] PAUSE · [R] REPLAY-FB</span>
+        </span>
       </div>
 
-      {/* Sound-unlock toast */}
-      {showAudioToast && (
+      {/* Small-viewport / portrait warning.  The attack page is designed
+          for large landscape displays (projectors, 1080p+); anything
+          smaller collapses the HUD into the play area.  Show a nudge
+          instead of rendering a broken layout. */}
+      {(isTooSmall || isUnsupported) && (
         <div
           style={{
             position: 'fixed',
-            top: HEADER_H + 14,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 200,
-            background: '#f4b619',
-            color: '#0b0b11',
-            padding: '10px 22px',
+            inset: 0,
+            zIndex: 220,
+            background: '#060609',
+            color: '#d7dbe4',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-            fontWeight: 700,
-            fontSize: 12,
-            letterSpacing: '.2em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
+            textAlign: 'center',
+            padding: 32,
           }}
         >
-          ▶ CLICK TO ENABLE SOUND
+          <div style={{ fontSize: 60, marginBottom: 16 }}>↺</div>
+          <div
+            style={{
+              fontSize: 14,
+              letterSpacing: '.35em',
+              color: '#f4b619',
+              marginBottom: 10,
+              textTransform: 'uppercase',
+            }}
+          >
+            LANDSCAPE DISPLAY REQUIRED
+          </div>
+          <div style={{ fontSize: 12, letterSpacing: '.1em', color: '#6b7183', maxWidth: 420 }}>
+            {isUnsupported
+              ? 'The attack feed needs at least 700px of horizontal space. Open it on a laptop, projector, or cast to a larger screen.'
+              : 'Rotate your device to landscape, or open on a larger screen for the full visualization.'}
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen audio-unlock overlay — doubles as a title card so
+          the page looks intentional before the user clicks.  Dismisses
+          on any click/keydown, which also satisfies the WebAudio
+          user-gesture requirement. */}
+      {showAudioToast && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => {
+            setAudioEnabled(true)
+            setShowAudioToast(false)
+            unlockAudio()
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setAudioEnabled(true)
+              setShowAudioToast(false)
+              unlockAudio()
+            }
+          }}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 210,
+            background: 'rgba(6,6,9,.92)',
+            backdropFilter: 'blur(4px)',
+            WebkitBackdropFilter: 'blur(4px)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            textAlign: 'center',
+            padding: 24,
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 12,
+              letterSpacing: '.4em',
+              color: '#ff2a2a',
+              marginBottom: 20,
+            }}
+          >
+            ▙ GZCTF // TACTICAL-OPS
+          </div>
+          <div
+            style={{
+              fontSize: 'clamp(32px, 6vw, 72px)',
+              fontWeight: 700,
+              letterSpacing: '.12em',
+              color: '#ffd34a',
+              textTransform: 'uppercase',
+              textShadow: '0 0 32px rgba(255,211,74,.5)',
+              maxWidth: '70vw',
+              lineHeight: 1.1,
+            }}
+          >
+            {eventTitle}
+          </div>
+          <div
+            style={{
+              fontSize: 12,
+              letterSpacing: '.35em',
+              color: '#6b7183',
+              marginTop: 20,
+            }}
+          >
+            LIVE ATTACK FEED · PUBLIC
+          </div>
+          <div
+            style={{
+              marginTop: 48,
+              padding: '14px 32px',
+              background: '#f4b619',
+              color: '#0b0b11',
+              fontSize: 14,
+              fontWeight: 700,
+              letterSpacing: '.25em',
+              textTransform: 'uppercase',
+              animation: 'attackPulse 1.4s infinite',
+            }}
+          >
+            ▶ CLICK ANYWHERE TO BEGIN
+          </div>
         </div>
       )}
 
@@ -870,7 +1115,7 @@ const Attack: FC = () => {
         top5={top5}
         eventCount={eventCount}
         fbCount={fbCount}
-        atkRate={atkRate}
+        atkRateRef={atkRateRef}
       />
 
       {/* Single shake container — hex + canvas + title all inside so they
@@ -953,6 +1198,7 @@ const Attack: FC = () => {
           return (
             <div
               key={t.id}
+              title={t.name}
               style={{
                 position: 'absolute',
                 left: t.x,
@@ -968,7 +1214,7 @@ const Attack: FC = () => {
                 alignItems: 'center',
                 gap: t.labelled ? 6 : 0,
                 whiteSpace: 'nowrap',
-                pointerEvents: 'none',
+                pointerEvents: 'auto',
               }}
             >
               <span
@@ -1020,6 +1266,7 @@ const Attack: FC = () => {
           // TARGET
         </div>
         <div
+          title={eventTitle}
           style={{
             fontFamily: '"JetBrains Mono", ui-monospace, monospace',
             fontSize: 24,
@@ -1030,8 +1277,15 @@ const Attack: FC = () => {
             lineHeight: 1.15,
             textShadow: '0 0 22px rgba(255,211,74,.55)',
             maxWidth: hqSize - 30,
+            // Up to 2 lines, then ellipsize — long titles like
+            // "CSIRT - Finals 2026" now wrap cleanly instead of getting
+            // truncated to "CSIRT - Final…" on narrow hexes.
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
+            wordBreak: 'break-word',
+            textAlign: 'center',
           }}
         >
           {eventTitle}
@@ -1039,10 +1293,10 @@ const Attack: FC = () => {
         <div
           style={{
             fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-            fontSize: 9.5,
-            letterSpacing: '.4em',
-            color: '#6b7183',
-            marginTop: 10,
+            fontSize: 11,
+            letterSpacing: '.35em',
+            color: '#94a1b8',
+            marginTop: 12,
           }}
         >
           OPS · CONTROL · HQ
@@ -1121,6 +1375,58 @@ const Attack: FC = () => {
         }}
       />
 
+      {/* SOLVED ticker — big readable call-out for the projector audience. */}
+      {ticker && (
+        <div
+          key={ticker.id}
+          style={{
+            position: 'fixed',
+            left: '50%',
+            bottom: FOOTER_H + 14,
+            transform: 'translateX(-50%)',
+            zIndex: 35,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
+            padding: '10px 22px',
+            background: 'rgba(12,13,18,.92)',
+            border: `2px solid ${colorForType(ticker.type)}`,
+            fontFamily: '"JetBrains Mono", ui-monospace, monospace',
+            fontSize: 14,
+            letterSpacing: '.18em',
+            textTransform: 'uppercase',
+            color: '#d7dbe4',
+            maxWidth: '70vw',
+            animation: 'attackTickerIn .3s ease-out both',
+            pointerEvents: 'none',
+          }}
+        >
+          <span
+            style={{
+              background: colorForType(ticker.type),
+              color: '#0b0b11',
+              padding: '3px 10px',
+              fontWeight: 700,
+              letterSpacing: '.2em',
+              fontSize: 11,
+            }}
+          >
+            {ticker.type === SubmissionType.FirstBlood
+              ? '1ST BLOOD'
+              : ticker.type === SubmissionType.SecondBlood
+                ? '2ND BLOOD'
+                : ticker.type === SubmissionType.ThirdBlood
+                  ? '3RD BLOOD'
+                  : 'SOLVED'}
+          </span>
+          <span style={{ fontWeight: 700, color: '#ffd34a' }}>{ticker.teamName}</span>
+          <span style={{ color: '#6b7183' }}>»</span>
+          <span style={{ color: '#94a1b8' }}>{ticker.category}</span>
+          <span style={{ color: '#6b7183' }}>/</span>
+          <span style={{ color: '#d7dbe4' }}>{ticker.challengeTitle}</span>
+        </div>
+      )}
+
       {/* First-blood strip (slides down from header) */}
       {firstBlood && (
         <div
@@ -1152,7 +1458,8 @@ const Attack: FC = () => {
               gap: 8,
             }}
           >
-            ▙ FIRST BLOOD
+            <span style={{ fontSize: 18, lineHeight: 1 }}>🩸</span>
+            <span>FIRST BLOOD</span>
           </div>
           <div
             style={{
@@ -1166,13 +1473,15 @@ const Attack: FC = () => {
               borderLeft: '2px solid #ff2a2a',
             }}
           >
-            {firstBlood.challengeTitle} · {firstBlood.teamName}
+            {firstBlood.category} / {firstBlood.challengeTitle} · {firstBlood.teamName}
           </div>
         </div>
       )}
 
-      {/* Preview trigger panel — only rendered when ?preview= is in the URL */}
-      {isPreview && (
+      {/* Dev controls — only when ?preview=N is in the URL. N=0 still
+          spawns the panel so the developer can click buttons; they can
+          hide it with the × and re-open via page reload. */}
+      {isPreview && showDevPanel && (
         <div
           style={{
             position: 'fixed',
@@ -1180,48 +1489,67 @@ const Attack: FC = () => {
             bottom: FOOTER_H + 16,
             zIndex: 80,
             display: 'flex',
-            gap: 8,
+            flexDirection: 'column',
+            gap: 6,
             background: '#14141f',
-            padding: 8,
+            padding: 10,
             border: '2px solid #ff2a2a',
             fontFamily: '"JetBrains Mono", ui-monospace, monospace',
           }}
         >
-          <button
-            onClick={() => fireMockEvent(SubmissionType.FirstBlood)}
-            style={previewBtn('#ff2a2a', '#ffffff')}
-          >
-            FB LASER
-          </button>
-          <button
-            onClick={() => fireMockEvent(SubmissionType.Normal)}
-            style={previewBtn('#3ae85c', '#0b0b11')}
-          >
-            NORMAL
-          </button>
-          <button
-            onClick={() => fireMockEvent(SubmissionType.SecondBlood)}
-            style={previewBtn('#f4b619', '#0b0b11')}
-          >
-            AMBER
-          </button>
-          <button
-            onClick={() => fireMockEvent(SubmissionType.Unaccepted)}
-            style={previewBtn('#ff6262', '#0b0b11')}
-          >
-            WRONG
-          </button>
-          <span
+          <div
             style={{
-              alignSelf: 'center',
-              marginLeft: 12,
-              fontSize: 11,
-              color: '#6b7183',
-              letterSpacing: '.15em',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              fontSize: 10,
+              letterSpacing: '.25em',
+              color: '#ff2a2a',
             }}
           >
-            PREVIEW MODE · {previewTeams} teams
-          </span>
+            <span>// DEV CONTROLS · {previewTeams} teams</span>
+            <button
+              onClick={() => setShowDevPanel(false)}
+              aria-label="Hide dev panel"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#6b7183',
+                cursor: 'pointer',
+                fontSize: 14,
+                padding: '0 4px',
+                marginLeft: 10,
+              }}
+            >
+              ×
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={() => fireMockEvent(SubmissionType.FirstBlood)}
+              style={previewBtn('#ff2a2a', '#ffffff')}
+            >
+              FB LASER
+            </button>
+            <button
+              onClick={() => fireMockEvent(SubmissionType.Normal)}
+              style={previewBtn('#3ae85c', '#0b0b11')}
+            >
+              NORMAL
+            </button>
+            <button
+              onClick={() => fireMockEvent(SubmissionType.SecondBlood)}
+              style={previewBtn('#f4b619', '#0b0b11')}
+            >
+              AMBER
+            </button>
+            <button
+              onClick={() => fireMockEvent(SubmissionType.Unaccepted)}
+              style={previewBtn('#ff6262', '#0b0b11')}
+            >
+              WRONG
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -1353,20 +1681,23 @@ const lineColorFor = (t: SubmissionType): string => {
 }
 
 const Bracket: FC<{ placement: 'tl' | 'tr' | 'bl' | 'br' }> = ({ placement }) => {
+  // Offset the bracket by 2px so its outer edge doesn't double over the
+  // parent's own border on HiDPI screens (visible 3-4px line).
   const base: React.CSSProperties = {
     position: 'absolute',
     width: 16,
     height: 16,
     border: '2px solid #ff2a2a',
+    pointerEvents: 'none',
   }
   if (placement === 'tl')
-    Object.assign(base, { top: -1, left: -1, borderRight: 'none', borderBottom: 'none' })
+    Object.assign(base, { top: -2, left: -2, borderRight: 'none', borderBottom: 'none' })
   if (placement === 'tr')
-    Object.assign(base, { top: -1, right: -1, borderLeft: 'none', borderBottom: 'none' })
+    Object.assign(base, { top: -2, right: -2, borderLeft: 'none', borderBottom: 'none' })
   if (placement === 'bl')
-    Object.assign(base, { bottom: -1, left: -1, borderRight: 'none', borderTop: 'none' })
+    Object.assign(base, { bottom: -2, left: -2, borderRight: 'none', borderTop: 'none' })
   if (placement === 'br')
-    Object.assign(base, { bottom: -1, right: -1, borderLeft: 'none', borderTop: 'none' })
+    Object.assign(base, { bottom: -2, right: -2, borderLeft: 'none', borderTop: 'none' })
   return <div style={base} />
 }
 
@@ -1381,7 +1712,7 @@ interface ScoreboardPanelProps {
   top5: ScoreboardItem[]
   eventCount: number
   fbCount: number
-  atkRate: string
+  atkRateRef: React.RefObject<HTMLSpanElement | null>
 }
 
 const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
@@ -1391,11 +1722,14 @@ const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
   top5,
   eventCount,
   fbCount,
-  atkRate,
+  atkRateRef,
 }) => {
   const rowCount = Math.max(top5.length, 1)
-  const approxBoardHeight = 6 * 32 + 36
-  const statsTop = top + approxBoardHeight + 10
+  // Board height: 36px header + rowCount * 32px row + 30px padding.
+  // Using the actual row count instead of a hardcoded 6 avoids the
+  // ~100px gap below an empty-ish scoreboard.
+  const boardHeight = 36 + rowCount * 32 + 30
+  const statsTop = top + boardHeight + 10
 
   return (
     <>
@@ -1506,7 +1840,7 @@ const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
         >
           // STATS
         </div>
-        <StatsRow label="ATK_RATE" value={atkRate} />
+        <StatsRow label="ATK_RATE" value="0/min" valueRef={atkRateRef} />
         <StatsRow label="1ST_BLOOD" value={String(fbCount)} />
         <StatsRow label="EVENTS" value={String(eventCount)} />
       </div>
@@ -1514,7 +1848,11 @@ const ScoreboardPanel: FC<ScoreboardPanelProps> = ({
   )
 }
 
-const StatsRow: FC<{ label: string; value: string }> = ({ label, value }) => (
+const StatsRow: FC<{
+  label: string
+  value: string
+  valueRef?: React.RefObject<HTMLSpanElement | null>
+}> = ({ label, value, valueRef }) => (
   <div
     style={{
       display: 'flex',
@@ -1525,7 +1863,7 @@ const StatsRow: FC<{ label: string; value: string }> = ({ label, value }) => (
     }}
   >
     <span style={{ color: '#6b7183', letterSpacing: '.1em' }}>{label}</span>
-    <span style={{ color: '#d7dbe4', fontWeight: 700 }}>{value}</span>
+    <span ref={valueRef} style={{ color: '#d7dbe4', fontWeight: 700 }}>{value}</span>
   </div>
 )
 
