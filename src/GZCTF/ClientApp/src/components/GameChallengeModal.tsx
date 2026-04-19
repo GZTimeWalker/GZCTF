@@ -197,12 +197,14 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
           setFlag('')
           checkDataFlag(submitId, res.data)
           clearInterval(polling)
+          setSubmitId(0) // reset so the next attempt starts clean
         }
       } catch (err) {
         setDisabled(false)
         setFlag('')
         showErrorMsg(err, t)
         clearInterval(polling)
+        setSubmitId(0)
       }
     }, 500)
 
@@ -273,7 +275,11 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       onSubmitFlag={onSubmit}
       onReviewSubmit={onReviewSubmit}
       disabled={disabled || isLimitReached}
-      submitting={disabled || submitId > 0}
+      // `disabled` alone covers both the POST and the 500ms /gameStatus
+      // poll loop (the poll calls setDisabled(false) only when it resolves).
+      // Previously also ORed submitId > 0, but submitId is never reset so
+      // the button would stay in loading state forever after a wrong flag.
+      submitting={disabled}
       onExtend={onExtend}
       gameEnded={gameEnded}
       practiceMode={practiceMode}
