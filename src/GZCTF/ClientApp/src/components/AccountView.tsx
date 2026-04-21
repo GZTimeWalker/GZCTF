@@ -6,7 +6,7 @@ import { LogoHeader } from '@Components/LogoHeader'
 import misc from '@Styles/Misc.module.css'
 
 interface AccountViewProps extends PropsWithChildren {
-  onSubmit?: (event: React.FormEvent) => Promise<void>
+  onSubmit?: (event: React.SubmitEvent<HTMLFormElement>) => Promise<void>
 }
 
 export const AccountView: FC<AccountViewProps> = ({ onSubmit, children }) => {

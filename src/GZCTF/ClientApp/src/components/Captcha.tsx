@@ -73,6 +73,9 @@ export const Captcha = forwardRef<CaptchaInstance, CaptchaProps>((props, ref) =>
         if (type === CaptchaProvider.HashPow) {
           backendRef.current?.cleanUp?.(success)
         }
+        if (type === CaptchaProvider.CloudflareTurnstile) {
+          turnstileRef.current?.reset()
+        }
       },
     }),
     [error, info, type]
