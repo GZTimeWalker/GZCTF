@@ -23,7 +23,6 @@ export const TeamRadarMap: FC<TeamRadarMapProps> = ({ indicator, value, name }) 
           indicator,
           shape: 'circle',
           radius: '75%',
-          center: ['50%', '55%'],
           axisName: {
             color: colorScheme === 'dark' ? theme.colors.light[1] : theme.colors.dark[5],
             fontWeight: 'bold',
