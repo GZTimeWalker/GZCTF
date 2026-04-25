@@ -727,7 +727,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         Assert.Equal(game.Id.ToString(), envVars["GZCTF_GAME_ID"]);
 
         // 5. Fetch the flag
-        var flag = await ContainerHelper.FetchFlag(entry);
+        var flag = await ContainerHelper.FetchFlag(entry, factory);
         Assert.NotNull(flag);
         Assert.StartsWith("flag{", flag);
         Assert.Equal(flag, envVars["GZCTF_FLAG"]);

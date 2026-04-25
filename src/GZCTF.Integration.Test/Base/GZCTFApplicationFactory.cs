@@ -143,6 +143,11 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                     $@"[ConfigureWebHost] Setting ContainerProvider to Docker (K3s mode: {_useK3sMode}, path: {_kubeConfigPath ?? "null"})");
                 configDict["ContainerProvider:Type"] = "Docker";
                 configDict["ContainerProvider:PublicEntry"] = "localhost";
+
+                // Local Docker mode: use platform proxy so traffic flows through
+                // the WebSocket proxy, enabling traffic capture tests
+                configDict["ContainerProvider:PortMappingType"] = "PlatformProxy";
+                configDict["ContainerProvider:EnableTrafficCapture"] = "true";
             }
 
             config.AddInMemoryCollection(configDict);

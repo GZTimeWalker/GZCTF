@@ -1,9 +1,11 @@
 using System.Net.Sockets;
+using System.Net.WebSockets;
 using Docker.DotNet;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Services.Container.Provider;
 using k8s;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
@@ -132,28 +134,44 @@ public static class ContainerHelper
     }
 
     /// <summary>
-    /// Fetch flag from container
+    /// Fetch flag from container, auto-detecting the access method based on entry format.
     /// NOTE: use `ghcr.io/gzctf/challenge-base/echo:latest`
     /// </summary>
-    /// <param name="entry"></param>
-    /// <returns></returns>
-    public static async Task<string?> FetchFlag(string entry)
+    /// <param name="entry">Container entry: a GUID for PlatformProxy, or "IP:Port" for direct TCP</param>
+    /// <param name="factory">
+    /// The WebApplicationFactory, required when entry is a GUID (PlatformProxy mode)
+    /// to create a WebSocket connection through the test server.
+    /// </param>
+    /// <returns>The flag string, or null if connection failed</returns>
+    public static async Task<string?> FetchFlag(string entry, WebApplicationFactory<Program>? factory = null)
     {
-        Console.WriteLine($@"🔍 Fetching flag from container entry: {entry}");
+        Console.WriteLine($@"Fetching flag from container entry: {entry}");
 
-        // Parse the Entry field to get IP and port
-        // Entry format is either "proxy-id" or "IP:Port"
-        // For test environments, use localhost since Docker containers are accessible locally
+        // If entry looks like a GUID, use WebSocket proxy; otherwise use direct TCP
+        if (Guid.TryParse(entry, out _))
+        {
+            if (factory is null)
+                throw new InvalidOperationException(
+                    "WebApplicationFactory is required for PlatformProxy (GUID) entry");
+            return await FetchFlagViaProxy(entry, factory);
+        }
+
+        return await FetchFlagViaTcp(entry);
+    }
+
+    /// <summary>
+    /// Fetch flag via direct TCP connection (cloud/k3s mode with exposed ports)
+    /// </summary>
+    static async Task<string?> FetchFlagViaTcp(string entry)
+    {
         var parts = entry.Split(':');
 
         if (parts.Length != 2 || !int.TryParse(parts[1], out var port))
             return null;
 
-        // Use localhost for test environment instead of the container IP
         var host = parts[0];
-
-        // Try to connect to the container and retrieve the flag
         string? flag = null;
+
         for (var attempt = 0; attempt < 10; attempt++)
         {
             try
@@ -161,7 +179,6 @@ public static class ContainerHelper
                 using var client = new TcpClient();
                 await client.ConnectAsync(host, port);
                 await using var stream = client.GetStream();
-                // Read the flag from the echo container
                 var buffer = new byte[256];
                 var bytesRead = await stream.ReadAsync(buffer);
                 flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
@@ -169,14 +186,53 @@ public static class ContainerHelper
             }
             catch (SocketException) when (attempt < 9)
             {
-                // Container might not be ready yet, retry after delay
                 await Task.Delay(500);
             }
         }
 
-        // Output the retrieved flag for verification
-        Console.WriteLine($@"✅ Successfully retrieved flag from {entry}: {flag}");
+        Console.WriteLine($@"Retrieved flag via TCP from {entry}: {flag}");
+        return flag;
+    }
 
+    /// <summary>
+    /// Fetch flag via WebSocket proxy (local Docker mode with PlatformProxy).
+    /// Connects to the test server's /api/Proxy/{guid} WebSocket endpoint.
+    /// </summary>
+    static async Task<string?> FetchFlagViaProxy(string containerId, WebApplicationFactory<Program> factory)
+    {
+        string? flag = null;
+
+        for (var attempt = 0; attempt < 10; attempt++)
+        {
+            try
+            {
+                // CreateWebSocketClient uses the TestServer's internal transport,
+                // no real HTTP listener needed
+                var wsClient = factory.Server.CreateWebSocketClient();
+                var wsUri = new Uri(factory.Server.BaseAddress, $"api/Proxy/{containerId}");
+
+                // Replace http(s) scheme with ws(s)
+                var builder = new UriBuilder(wsUri) { Scheme = wsUri.Scheme == "https" ? "wss" : "ws" };
+
+                using var ws = await wsClient.ConnectAsync(builder.Uri, CancellationToken.None);
+
+                // The echo container sends the flag immediately on connection
+                var buffer = new byte[256];
+                var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
+
+                if (result.Count > 0)
+                    flag = System.Text.Encoding.UTF8.GetString(buffer, 0, result.Count).Trim();
+
+                await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, null, CancellationToken.None);
+                break;
+            }
+            catch (Exception) when (attempt < 9)
+            {
+                await Task.Delay(500);
+            }
+        }
+
+        Console.WriteLine($@"Retrieved flag via WebSocket proxy from {containerId}: {flag}");
         return flag;
     }
 
