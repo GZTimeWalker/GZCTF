@@ -1104,4 +1104,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>La fecha límite de este desafío ha pasado</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>Captura de tráfico [{0}] guardada: {1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>Captura de tráfico [{0}] error al guardar: {1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>Captura de tráfico [{0}] error de escritura</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>Captura de tráfico [{0}] tiempo de espera de liberación agotado</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>Cierre de captura de tráfico expirado, {0} grabador(es) pendiente(s)</value>
+  </data>
 </root>

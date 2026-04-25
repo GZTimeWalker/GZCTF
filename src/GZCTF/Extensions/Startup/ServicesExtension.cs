@@ -5,6 +5,7 @@ using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Capture;
 using GZCTF.Services.Config;
 using GZCTF.Services.Container;
 using GZCTF.Services.CronJob;
@@ -88,6 +89,7 @@ internal static class ServicesExtension
             builder.Services.AddChannel<Submission>();
             builder.Services.AddChannel<CacheRequest>();
             builder.Services.AddSingleton<CacheHelper>();
+            builder.Services.AddSingleton<TrafficRecorderRegistry>();
             builder.Services.AddSingleton<IMailSender, MailSender>();
 
             builder.Services.AddHostedService<CacheMaker>();

@@ -127,6 +127,20 @@ public class Container
     }
 
     /// <summary>
+    /// Container instance traffic capture directory path.
+    /// Used by TrafficRecorder together with <see cref="ShortId"/> to generate pcap filenames.
+    /// </summary>
+    public string TrafficDir()
+    {
+        if (GameInstance is null)
+            return string.Empty;
+
+        return StoragePath.Combine(PathHelper.Capture,
+            GameInstance.ChallengeId.ToString(),
+            GameInstance.ParticipationId.ToString());
+    }
+
+    /// <summary>
     /// Generate metadata for the container
     /// </summary>
     /// <returns></returns>

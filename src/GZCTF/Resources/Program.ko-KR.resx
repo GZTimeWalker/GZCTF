@@ -1088,4 +1088,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>이 도전 과제의 마감 시간이 지났습니다</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>트래픽 캡처 [{0}] 저장 완료: {1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>트래픽 캡처 [{0}] 저장 실패: {1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>트래픽 캡처 [{0}] 기록기 오류</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>트래픽 캡처 [{0}] 해제 시간 초과</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>트래픽 캡처 종료 시간 초과, {0}개 레코더 대기 중</value>
+  </data>
 </root>

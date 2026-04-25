@@ -1088,4 +1088,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Batas waktu untuk tantangan ini telah berakhir</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>Penangkapan lalu lintas [{0}] tersimpan: {1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>Penangkapan lalu lintas [{0}] gagal menyimpan: {1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>Penangkapan lalu lintas [{0}] kesalahan penulis</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>Penangkapan lalu lintas [{0}] waktu pelepasan habis</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>Waktu shutdown penangkapan lalu lintas habis, {0} perekam tertunda</value>
+  </data>
 </root>

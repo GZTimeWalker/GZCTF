@@ -1,31 +1,21 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using GZCTF.Storage.Interface;
-using PacketDotNet;
-using PacketDotNet.Utils;
-using SharpPcap;
-using SharpPcap.LibPcap;
+using GZCTF.Services.Capture;
 
 namespace GZCTF.Utils;
 
 public class RecordableNetworkStreamOptions
 {
     /// <summary>
-    /// The source address of the traffic
+    /// The source address of the traffic (client side)
     /// </summary>
     public IPEndPoint Source { get; init; } = new(0, 0);
 
     /// <summary>
-    /// The destination address of the traffic
+    /// The destination address of the traffic (container side)
     /// </summary>
     public IPEndPoint Dest { get; init; } = new(0, 0);
-
-    /// <summary>
-    /// The path to store the captured traffic
-    /// </summary>
-    public string BlobPath { get; init; } = string.Empty;
 
     /// <summary>
     /// Is the capture enabled
@@ -34,50 +24,37 @@ public class RecordableNetworkStreamOptions
 }
 
 /// <summary>
-/// The network stream that can record the traffic
+/// A network stream that records traffic by sending captured packets to a shared TrafficRecorder.
+/// Instead of writing pcap files directly, packets are forwarded through the recorder's channel
+/// so that concurrent connections to the same container share a single pcap output.
 /// </summary>
 [ExcludeFromCodeCoverage(Justification = "Network stream recording requires platform proxy support")]
 public sealed class RecordableNetworkStream : NetworkStream
 {
-    private static readonly PhysicalAddress DummyPhysicalAddress = PhysicalAddress.Parse("00-11-00-11-00-11");
-    private static readonly IPEndPoint Host = new(0, 65535);
+    readonly RecordableNetworkStreamOptions _options;
+    readonly TrafficRecorder? _recorder;
 
-    private readonly CaptureFileWriterDevice? _device;
-    private readonly RecordableNetworkStreamOptions _options;
-    private readonly IBlobStorage? _storage;
-    private readonly string _tempFile = string.Empty;
+    bool _disposed;
 
-    private bool _disposed;
-    private bool _hasRecord;
-
-    public RecordableNetworkStream(Socket socket, byte[]? metadata, IBlobStorage storage,
-        RecordableNetworkStreamOptions options) :
+    public RecordableNetworkStream(Socket socket, RecordableNetworkStreamOptions options,
+        TrafficRecorder? recorder = null) :
         base(socket)
     {
         _options = options;
+        _recorder = options.EnableCapture ? recorder : null;
 
-        options.Source.Address = options.Source.Address.MapToIPv6();
-        options.Dest.Address = options.Dest.Address.MapToIPv6();
-
-        if (!_options.EnableCapture || string.IsNullOrEmpty(_options.BlobPath))
-            return;
-
-        _storage = storage;
-        _tempFile = Path.GetTempFileName();
-
-        _device = new(_tempFile, FileMode.Open);
-
-        _device.Open();
-
-        if (metadata is not null)
-            WriteCapturedData(Host, _options.Source, metadata);
+        if (_recorder is not null)
+        {
+            options.Source.Address = options.Source.Address.MapToIPv6();
+            options.Dest.Address = options.Dest.Address.MapToIPv6();
+        }
     }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         var count = await base.ReadAsync(buffer, cancellationToken);
 
-        if (_options.EnableCapture && count > 0)
+        if (_recorder is not null && count > 0)
             WriteCapturedData(_options.Dest, _options.Source, buffer[..count]);
 
         return count;
@@ -85,54 +62,30 @@ public sealed class RecordableNetworkStream : NetworkStream
 
     public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        if (_options.EnableCapture && buffer.Length > 0)
+        if (_recorder is not null && buffer.Length > 0)
             WriteCapturedData(_options.Source, _options.Dest, buffer);
 
         return base.WriteAsync(buffer, cancellationToken);
     }
 
     /// <summary>
-    /// Write the captured data to the file
+    /// Send captured data to the shared TrafficRecorder via its channel.
+    /// The data is copied because the original buffer may be returned to ArrayPool.
     /// </summary>
     /// <param name="source">Source address</param>
     /// <param name="dest">Destination address</param>
     /// <param name="buffer">Data buffer</param>
-    private void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer)
-    {
-        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
-        {
-            PayloadDataSegment = new ByteArraySegment(buffer.ToArray())
-        };
-
-        var packet = new EthernetPacket(DummyPhysicalAddress, DummyPhysicalAddress, EthernetType.IPv6)
-        {
-            PayloadPacket = new IPv6Packet(source.Address, dest.Address) { PayloadPacket = udp }
-        };
-
-        udp.UpdateUdpChecksum();
-
-        _device?.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
-
-        _hasRecord = true;
-    }
+    void WriteCapturedData(IPEndPoint source, IPEndPoint dest, ReadOnlyMemory<byte> buffer) =>
+        _recorder?.WritePacket(new CapturePacket(source, dest, buffer.ToArray(), DateTimeOffset.UtcNow));
 
     public override async ValueTask DisposeAsync()
     {
         if (_disposed)
             return;
 
-        _device?.Close();
-        _device?.Dispose();
-
-        // move temp file to storage with specified path
-        if (_options.EnableCapture && !string.IsNullOrEmpty(_options.BlobPath) && _storage is not null)
-        {
-            // only save traffic with records
-            if (_hasRecord)
-                await _storage.WriteFileAsync(_options.BlobPath, _tempFile);
-
-            File.Delete(_tempFile);
-        }
+        // Note: we do NOT dispose/flush the recorder here.
+        // The recorder is shared across connections and managed by TrafficRecorderRegistry.
+        // Connection unregistration is handled by ProxyController.
 
         await base.DisposeAsync();
         GC.SuppressFinalize(this);

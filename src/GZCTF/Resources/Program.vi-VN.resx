@@ -1088,4 +1088,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Thời hạn cho thử thách này đã hết</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>Bắt lưu lượng [{0}] đã lưu: {1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>Bắt lưu lượng [{0}] lưu thất bại: {1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>Bắt lưu lượng [{0}] lỗi ghi</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>Bắt lưu lượng [{0}] hết thời gian giải phóng</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>Tắt bắt lưu lượng hết thời gian, {0} bộ ghi đang chờ</value>
+  </data>
 </root>

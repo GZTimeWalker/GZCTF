@@ -1088,4 +1088,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>该题目的截止时间已过</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>流量捕获 [{0}] 已保存：{1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>流量捕获 [{0}] 保存失败：{1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>流量捕获 [{0}] 写入器错误</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>流量捕获 [{0}] 释放超时</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>流量捕获关闭超时，{0} 个记录器待处理</value>
+  </data>
 </root>

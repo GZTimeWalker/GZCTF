@@ -1101,4 +1101,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>La date limite pour ce challenge est dépassée</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>Capture de trafic [{0}] enregistrée : {1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>Capture de trafic [{0}] échec d'enregistrement : {1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>Capture de trafic [{0}] erreur d'écriture</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>Capture de trafic [{0}] délai de libération dépassé</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>Arrêt de la capture de trafic expiré, {0} enregistreur(s) en attente</value>
+  </data>
 </root>

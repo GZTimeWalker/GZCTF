@@ -1,6 +1,7 @@
 ﻿using GZCTF.Models.Request.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
+using GZCTF.Services.Capture;
 using GZCTF.Services.Container.Manager;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -10,6 +11,7 @@ namespace GZCTF.Repositories;
 public class ContainerRepository(
     IDistributedCache cache,
     IContainerManager service,
+    TrafficRecorderRegistry recorderRegistry,
     ILogger<ContainerRepository> logger,
     AppDbContext context) : RepositoryBase(context), IContainerRepository
 {
@@ -55,6 +57,9 @@ public class ContainerRepository(
                 return false;
 
             await cache.RemoveAsync(CacheKey.ConnectionCount(container.Id), token);
+
+            // Flush and remove any active traffic recorder for this container
+            await recorderRegistry.RemoveAsync(container.Id);
 
             Context.Containers.Remove(container);
             await SaveAsync(token);

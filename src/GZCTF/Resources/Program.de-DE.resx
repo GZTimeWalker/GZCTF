@@ -1108,4 +1108,19 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Die Frist für diese Herausforderung ist abgelaufen</value>
   </data>
+  <data name="TrafficRecorder_Persisted" xml:space="preserve">
+    <value>Traffic-Aufzeichnung [{0}] gespeichert: {1}</value>
+  </data>
+  <data name="TrafficRecorder_PersistFailed" xml:space="preserve">
+    <value>Traffic-Aufzeichnung [{0}] Speichern fehlgeschlagen: {1}</value>
+  </data>
+  <data name="TrafficRecorder_WriterLoopError" xml:space="preserve">
+    <value>Traffic-Aufzeichnung [{0}] Schreibfehler</value>
+  </data>
+  <data name="TrafficRecorder_DisposeTimeout" xml:space="preserve">
+    <value>Traffic-Aufzeichnung [{0}] Freigabe-Zeitüberschreitung</value>
+  </data>
+  <data name="TrafficRecorder_ShutdownTimeout" xml:space="preserve">
+    <value>Traffic-Aufzeichnung Shutdown-Zeitüberschreitung, {0} Rekorder ausstehend</value>
+  </data>
 </root>
