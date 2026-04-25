@@ -3,6 +3,25 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.3..v1.8.4) - 2026-04-25
+
+### 🐛 Bug Fixes
+
+- **(captcha)** reset Turnstile token after form submission to prevent reuse - ([e53141](https://github.com/GZTimeWalker/GZCTF/commit/e53141)) by **GZTime**
+- **(division)** ensure inviteCode is always set in model - ([850ef3](https://github.com/GZTimeWalker/GZCTF/commit/850ef3)) by **GZTime**
+- **(style)** radar chart not centered - ([92832e](https://github.com/GZTimeWalker/GZCTF/commit/92832e)) by **GZTime**
+
+### 🎨 Styling
+
+- **(badge)** temporary fix Badge styles in mantine v9 - ([a807ee](https://github.com/GZTimeWalker/GZCTF/commit/a807ee)) by **GZTime**
+- **(recent_game)** use Text instead of Badge - ([009430](https://github.com/GZTimeWalker/GZCTF/commit/009430)) by **GZTime**
+- **(traffic)** improve layout of Traffic & Challenge items - ([25a44f](https://github.com/GZTimeWalker/GZCTF/commit/25a44f)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(deps)** upgrade mantine to v9 - ([e2bcd1](https://github.com/GZTimeWalker/GZCTF/commit/e2bcd1)) by **GZTime**
+
+---
 ## [1.8.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.2..v1.8.3) - 2026-03-15
 
 ### 🔨 Refactor
