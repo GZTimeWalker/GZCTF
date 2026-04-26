@@ -21,7 +21,6 @@ namespace GZCTF.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[ExcludeFromCodeCoverage]
 public class ProxyController(
     ILogger<ProxyController> logger,
     IDistributedCache cache,
