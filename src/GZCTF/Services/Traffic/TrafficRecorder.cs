@@ -18,8 +18,14 @@ namespace GZCTF.Services.Traffic;
 ///            ↗ new Acquire cancels timer   ↓ 30s timeout
 ///                                        Archiving → Archived
 ///
-/// Once Channel is completed (archiving), no new packets can be enqueued.
-/// The registry detects this state and creates a new Recorder for subsequent connections.
+/// Thread-safety:
+///   _refCount: reference count (≥ 0) for active writers, or -1 sentinel (archiving).
+///   Transitions to -1 are atomic: OnIdleTimeout uses CAS(0→-1), ArchiveAsync uses Exchange(→-1).
+///   Once _refCount &lt; 0, TryAcquire rejects all new connections.
+///
+/// Best-effort semantics:
+///   Enqueue uses TryWrite; packets are silently dropped when the channel is completed
+///   (i.e. during the brief window between TryComplete and the last writer releasing).
 /// </summary>
 internal sealed class TrafficRecorder : IAsyncDisposable
 {
@@ -44,7 +50,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     int _refCount;
     bool _hasRecords;
     bool _disposed;
-    Timer? _idleTimer;
+    readonly Timer _idleTimer;
 
     readonly Action<Guid, TrafficRecorder> _onArchived;
 
@@ -63,6 +69,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         _logger = logger;
         _onArchived = onArchived;
 
+        _idleTimer = new Timer(OnIdleTimeout, null, Timeout.Infinite, Timeout.Infinite);
+
         _tempFile = Path.GetTempFileName();
         _device = new CaptureFileWriterDevice(_tempFile, FileMode.Open);
         _device.Open();
@@ -77,12 +85,11 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
     public bool IsCompleted => _channel.Reader.Completion.IsCompleted;
 
-    public bool IsFullyDrained =>
-        _channel.Reader.Completion.IsCompleted && !_channel.Reader.TryPeek(out _);
+    public bool IsFullyDrained => IsCompleted && !_channel.Reader.TryPeek(out _);
 
     internal bool TryAcquire()
     {
-        if (_channel.Reader.Completion.IsCompleted)
+        if (IsCompleted)
             return false;
 
         while (true)
@@ -93,14 +100,13 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
             if (Interlocked.CompareExchange(ref _refCount, current + 1, current) == current)
             {
-                _idleTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+                _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 return true;
             }
         }
     }
 
-    internal void Enqueue(TrafficPacket packet) =>
-        _channel.Writer.TryWrite(packet);
+    internal void Enqueue(TrafficPacket packet) => _channel.Writer.TryWrite(packet);
 
     internal ValueTask ReleaseAsync()
     {
@@ -110,25 +116,36 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         return ValueTask.CompletedTask;
     }
 
-    void StartIdleTimer()
-    {
-        _idleTimer ??= new Timer(OnIdleTimeout, null, Timeout.Infinite, Timeout.Infinite);
-        _idleTimer.Change(IdleTimeout, Timeout.InfiniteTimeSpan);
-    }
+    void StartIdleTimer() => _idleTimer.Change(IdleTimeout, Timeout.InfiniteTimeSpan);
 
     void OnIdleTimeout(object? state)
     {
-        if (Volatile.Read(ref _refCount) == 0)
-            _ = ArchiveAsync();
-    }
-
-    internal async ValueTask ArchiveAsync()
-    {
-        var prev = Interlocked.Exchange(ref _refCount, -1);
-        if (prev < 0)
+        // Atomically try to transition from 0 to -1.
+        // If refCount changed (e.g. TryAcquire raced in), CAS fails and we bail.
+        if (Interlocked.CompareExchange(ref _refCount, -1, 0) != 0)
             return;
 
-        _idleTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+        _ = RunArchiveAsync();
+    }
+
+    /// <summary>
+    /// Force-archive regardless of active connection count.
+    /// Called by container destroy and server shutdown.
+    /// </summary>
+    internal async ValueTask ArchiveAsync()
+    {
+        if (Interlocked.Exchange(ref _refCount, -1) < 0)
+            return;
+
+        await RunArchiveAsync();
+    }
+
+    /// <summary>
+    /// Core archive logic. Assumes _refCount is already -1 (set by caller).
+    /// </summary>
+    async Task RunArchiveAsync()
+    {
+        _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
         _channel.Writer.TryComplete();
 
@@ -146,7 +163,6 @@ internal sealed class TrafficRecorder : IAsyncDisposable
             _device.Close();
             _device.Dispose();
             try { File.Delete(_tempFile); } catch { /* best effort */ }
-            _idleTimer?.Dispose();
         }
     }
 
@@ -206,5 +222,6 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
         _disposed = true;
         await ArchiveAsync();
+        await _idleTimer.DisposeAsync();
     }
 }

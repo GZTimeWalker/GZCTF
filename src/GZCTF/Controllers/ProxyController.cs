@@ -213,6 +213,8 @@ public class ProxyController(
         {
             if (stream is not null)
                 await stream.DisposeAsync();
+            else if (writer is not null)
+                await writer.DisposeAsync();
 
             await DecreaseConnectionCount(CacheKey.ConnectionCount(id));
         }
