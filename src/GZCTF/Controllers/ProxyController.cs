@@ -92,11 +92,8 @@ public class ProxyController(
         if (ipAddress is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
-        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientIp = HttpContext.Connection.RemoteIpAddress ?? IPAddress.Loopback;
         var clientPort = HttpContext.Connection.RemotePort;
-
-        if (clientIp is null)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_InvalidClientAddress)]));
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
 
@@ -154,11 +151,8 @@ public class ProxyController(
         if (ipAddress is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
-        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientIp = HttpContext.Connection.RemoteIpAddress ?? IPAddress.Loopback;
         var clientPort = HttpContext.Connection.RemotePort;
-
-        if (clientIp is null)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_InvalidClientAddress)]));
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);

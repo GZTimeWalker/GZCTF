@@ -1,9 +1,12 @@
 using System.Net.Sockets;
+using System.Net.WebSockets;
+using System.Text;
 using Docker.DotNet;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Services.Container.Provider;
 using k8s;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
@@ -135,10 +138,17 @@ public static class ContainerHelper
     /// Fetch flag from container
     /// NOTE: use `ghcr.io/gzctf/challenge-base/echo:latest`
     /// </summary>
-    /// <param name="entry"></param>
+    /// <param name="entry">Container entry (GUID for proxy mode, IP:Port for direct mode)</param>
+    /// <param name="server">TestServer for proxy mode (from factory.Server)</param>
+    /// <param name="isNoInst">Use NoInst proxy endpoint (for admin test containers)</param>
     /// <returns></returns>
-    public static async Task<string?> FetchFlag(string entry)
+    public static async Task<string?> FetchFlag(string entry, TestServer? server = null,
+        bool isNoInst = false)
     {
+        // If entry is a GUID and server is provided, use proxy mode
+        if (Guid.TryParse(entry, out var containerId) && server is not null)
+            return await FetchFlagViaProxy(server, containerId, isNoInst);
+
         Console.WriteLine($@"🔍 Fetching flag from container entry: {entry}");
 
         // Parse the Entry field to get IP and port
@@ -164,7 +174,7 @@ public static class ContainerHelper
                 // Read the flag from the echo container
                 var buffer = new byte[256];
                 var bytesRead = await stream.ReadAsync(buffer);
-                flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                flag = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 break;
             }
             catch (SocketException) when (attempt < 9)
@@ -178,6 +188,49 @@ public static class ContainerHelper
         Console.WriteLine($@"✅ Successfully retrieved flag from {entry}: {flag}");
 
         return flag;
+    }
+
+    /// <summary>
+    /// Fetch flag via platform WebSocket proxy
+    /// </summary>
+    private static async Task<string?> FetchFlagViaProxy(TestServer server, Guid containerId,
+        bool isNoInst)
+    {
+        var path = isNoInst
+            ? $"api/Proxy/NoInst/{containerId}"
+            : $"api/Proxy/{containerId}";
+
+        Console.WriteLine($@"🔍 Fetching flag via WebSocket proxy: {path}");
+
+        var wsUrl = new UriBuilder("127.0.0.1:8080")
+        {
+            Scheme = "ws",
+            Path = path
+        }.Uri;
+        var wsClient = server.CreateWebSocketClient();
+
+        for (var attempt = 0; attempt < 10; attempt++)
+        {
+            try
+            {
+                var ws = await wsClient.ConnectAsync(wsUrl, CancellationToken.None);
+
+                var buffer = new byte[256];
+                var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
+                var flag = Encoding.UTF8.GetString(buffer, 0, result.Count).Trim();
+
+                await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+
+                Console.WriteLine($@"✅ Successfully retrieved flag via proxy: {flag}");
+                return flag;
+            }
+            catch (WebSocketException) when (attempt < 9)
+            {
+                await Task.Delay(500);
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
