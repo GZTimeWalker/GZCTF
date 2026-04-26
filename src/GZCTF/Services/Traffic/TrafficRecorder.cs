@@ -48,8 +48,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     readonly Task _writeLoop;
 
     int _refCount;
+    int _disposed;
     bool _hasRecords;
-    bool _disposed;
     readonly Timer _idleTimer;
 
     readonly Action<Guid, TrafficRecorder> _onArchived;
@@ -78,20 +78,13 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         if (metadata is not null)
             WritePcapPacket(MetadataHost, firstClient, metadata);
 
-        _refCount = 1;
+        _refCount = 0;
         _writeLoop = Task.Factory.StartNew(
             WriteLoopAsync, TaskCreationOptions.LongRunning).Unwrap();
     }
 
-    public bool IsCompleted => _channel.Reader.Completion.IsCompleted;
-
-    public bool IsFullyDrained => IsCompleted && !_channel.Reader.TryPeek(out _);
-
     internal bool TryAcquire()
     {
-        if (IsCompleted)
-            return false;
-
         while (true)
         {
             var current = Volatile.Read(ref _refCount);
@@ -217,10 +210,9 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_disposed)
+        if (Interlocked.Exchange(ref _disposed, 1) == 1)
             return;
 
-        _disposed = true;
         await ArchiveAsync();
         await _idleTimer.DisposeAsync();
     }

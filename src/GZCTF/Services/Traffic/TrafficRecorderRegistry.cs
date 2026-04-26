@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Net;
 using GZCTF.Storage.Interface;
-using GZCTF.Utils;
 
 namespace GZCTF.Services.Traffic;
 
@@ -22,9 +21,9 @@ public readonly record struct TrafficRecorderDescriptor(
 /// Each container has at most one active recorder per GZCTF instance at a time.
 ///
 /// Thread-safety:
-///   - ConcurrentDictionary for recorder lookup
+///   - ConcurrentDictionary with GetOrAdd for lock-free lookup + atomic creation
+///   - Value-based TryRemove in OnRecorderArchived prevents removing a newer recorder
 ///   - Lock-free TryAcquire on individual recorders
-///   - Retry loop handles races between archive and acquire
 /// </summary>
 public sealed class TrafficRecorderRegistry(
     IBlobStorage storage,
@@ -34,7 +33,8 @@ public sealed class TrafficRecorderRegistry(
 
     /// <summary>
     /// Acquire a TrafficWriter for the given container.
-    /// Creates a new TrafficRecorder if none exists or the existing one is archiving.
+    /// Uses GetOrAdd to avoid unnecessary recorder creation in race conditions.
+    /// When the existing recorder is archiving, TryUpdate atomically replaces it.
     /// </summary>
     public TrafficWriter AcquireWriter(TrafficRecorderDescriptor descriptor)
     {
@@ -42,32 +42,21 @@ public sealed class TrafficRecorderRegistry(
 
         while (true)
         {
-            if (_recorders.TryGetValue(key, out var existing))
-            {
-                if (existing.TryAcquire())
-                    return new TrafficWriter(existing);
+            var recorder = _recorders.GetOrAdd(key, _ => CreateRecorder(key, descriptor));
 
-                if (existing.IsFullyDrained)
-                    _recorders.TryRemove(key, out _);
-            }
-
-            var blobPath = BuildBlobPath(descriptor);
-
-            var recorder = new TrafficRecorder(
-                registryKey: key,
-                blobPath: blobPath,
-                metadata: descriptor.Metadata,
-                firstClient: descriptor.ClientEndpoint,
-                storage: storage,
-                logger: logger,
-                onArchived: OnRecorderArchived);
-
-            if (_recorders.TryAdd(key, recorder))
+            if (recorder.TryAcquire())
                 return new TrafficWriter(recorder);
 
-            // Race: another thread added one first.
-            // Dispose ours (it has no external writers, safe to archive immediately).
-            _ = recorder.DisposeAsync();
+            // Recorder is archiving — atomically replace with a new one.
+            var replacement = CreateRecorder(key, descriptor);
+            replacement.TryAcquire();
+
+            if (_recorders.TryUpdate(key, replacement, recorder))
+                return new TrafficWriter(replacement);
+            
+            // Swap failed — either _onArchived removed the old recorder
+            // or another thread already replaced it. Dispose unused replacement.
+            _ = replacement.DisposeAsync();
         }
     }
 
@@ -91,8 +80,21 @@ public sealed class TrafficRecorderRegistry(
         _recorders.Clear();
     }
 
+    TrafficRecorder CreateRecorder(Guid key, TrafficRecorderDescriptor descriptor)
+    {
+        var blobPath = BuildBlobPath(descriptor);
+        return new TrafficRecorder(
+            registryKey: key,
+            blobPath: blobPath,
+            metadata: descriptor.Metadata,
+            firstClient: descriptor.ClientEndpoint,
+            storage: storage,
+            logger: logger,
+            onArchived: OnRecorderArchived);
+    }
+
     void OnRecorderArchived(Guid key, TrafficRecorder recorder) =>
-        _recorders.TryRemove(key, out _);
+        _recorders.TryRemove(new KeyValuePair<Guid, TrafficRecorder>(key, recorder));
 
     static string BuildBlobPath(TrafficRecorderDescriptor descriptor)
     {
