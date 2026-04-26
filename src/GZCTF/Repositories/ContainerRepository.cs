@@ -2,6 +2,7 @@
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container.Manager;
+using GZCTF.Services.Traffic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -10,6 +11,7 @@ namespace GZCTF.Repositories;
 public class ContainerRepository(
     IDistributedCache cache,
     IContainerManager service,
+    TrafficRecorderRegistry trafficRegistry,
     ILogger<ContainerRepository> logger,
     AppDbContext context) : RepositoryBase(context), IContainerRepository
 {
@@ -49,6 +51,8 @@ public class ContainerRepository(
     {
         try
         {
+            await trafficRegistry.ArchiveAsync(container.Id);
+
             await service.DestroyContainerAsync(container, token);
 
             if (container.Status != ContainerStatus.Destroyed)

@@ -8,6 +8,7 @@ using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Container;
 using GZCTF.Services.CronJob;
+using GZCTF.Services.Traffic;
 using GZCTF.Services.Mail;
 using GZCTF.Services.Token;
 using GZCTF.Services.Transfer;
@@ -89,6 +90,7 @@ internal static class ServicesExtension
             builder.Services.AddChannel<CacheRequest>();
             builder.Services.AddSingleton<CacheHelper>();
             builder.Services.AddSingleton<IMailSender, MailSender>();
+            builder.Services.AddSingleton<TrafficRecorderRegistry>();
 
             builder.Services.AddHostedService<CacheMaker>();
             builder.Services.AddHostedService<FlagChecker>();

@@ -8,7 +8,7 @@ using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
-using GZCTF.Storage.Interface;
+using GZCTF.Services.Traffic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
@@ -25,9 +25,9 @@ namespace GZCTF.Controllers;
 public class ProxyController(
     ILogger<ProxyController> logger,
     IDistributedCache cache,
-    IBlobStorage storage,
     IOptions<ContainerProvider> provider,
     IContainerRepository containerRepository,
+    TrafficRecorderRegistry trafficRegistry,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     private const int BufferSize = 4096;
@@ -100,19 +100,23 @@ public class ProxyController(
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
 
-        var metadata = enable ? container.GenerateMetadata(JsonOptions) : null;
-
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, metadata,
-            new()
-            {
-                Source = client,
-                Dest = target,
-                EnableCapture = enable,
-                BlobPath = container.TrafficPath(HttpContext.Connection.Id)
-            }, token);
+        TrafficWriter? writer = null;
+        if (enable)
+        {
+            var descriptor = new TrafficRecorderDescriptor(
+                ContainerId: id,
+                ChallengeId: container.GameInstance!.ChallengeId,
+                ParticipationId: container.GameInstance!.ParticipationId,
+                ConnectionId: HttpContext.Connection.Id,
+                Metadata: container.GenerateMetadata(JsonOptions),
+                ClientEndpoint: client);
+            writer = trafficRegistry.AcquireWriter(descriptor);
+        }
+
+        return await DoContainerProxy(id, client, target, writer, token);
     }
 
     /// <summary>
@@ -159,15 +163,15 @@ public class ProxyController(
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, null, new(), token);
+        return await DoContainerProxy(id, client, target, null, token);
     }
 
     private async Task<IActionResult> DoContainerProxy(Guid id, IPEndPoint client, IPEndPoint target,
-        byte[]? metadata, RecordableNetworkStreamOptions options, CancellationToken token = default)
+        TrafficWriter? writer, CancellationToken token = default)
     {
         using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-        RecordableNetworkStream? stream = null;
+        CaptureNetworkStream? stream = null;
 
         try
         {
@@ -178,7 +182,7 @@ public class ProxyController(
                 if (!socket.Connected)
                     throw new SocketException((int)SocketError.NotConnected);
 
-                stream = new RecordableNetworkStream(socket, metadata, storage, options);
+                stream = new CaptureNetworkStream(socket, writer, client, target);
             }
             catch (SocketException e)
             {
@@ -233,7 +237,7 @@ public class ProxyController(
     /// <param name="ws"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws,
+    private static async Task<(ulong, ulong)> RunProxy(NetworkStream stream, WebSocket ws,
         CancellationToken token = default)
     {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
