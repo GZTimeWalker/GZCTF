@@ -78,7 +78,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         _device.Open();
 
         if (metadata is not null)
-            WritePcapPacket(MetadataHost, firstClient, metadata);
+            WritePcapPacket(new(MetadataHost, firstClient, metadata, DateTimeOffset.UtcNow));
 
         _refCount = 0;
         _writeLoop = Task.Factory.StartNew(
@@ -102,14 +102,6 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     }
 
     internal void Enqueue(TrafficPacket packet) => _channel.Writer.TryWrite(packet);
-
-    internal ValueTask ReleaseAsync()
-    {
-        var newCount = Interlocked.Decrement(ref _refCount);
-        if (newCount == 0)
-            StartIdleTimer();
-        return ValueTask.CompletedTask;
-    }
 
     void StartIdleTimer() => _idleTimer.Change(IdleTimeout, Timeout.InfiniteTimeSpan);
 
@@ -161,7 +153,14 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         {
             _device.Close();
             _device.Dispose();
-            try { File.Delete(_tempFile); } catch { /* best effort */ }
+            try
+            {
+                File.Delete(_tempFile);
+            }
+            catch
+            {
+                /* best effort */
+            }
         }
     }
 
@@ -170,7 +169,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         try
         {
             await foreach (var packet in _channel.Reader.ReadAllAsync())
-                WritePcapPacket(packet.Source, packet.Dest, packet.Data);
+                WritePcapPacket(packet);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -178,23 +177,24 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         }
     }
 
-    void WritePcapPacket(IPEndPoint source, IPEndPoint dest, byte[] data)
+    void WritePcapPacket(TrafficPacket packet)
     {
-        var udp = new UdpPacket((ushort)source.Port, (ushort)dest.Port)
+        var udp = new UdpPacket((ushort)packet.Source.Port, (ushort)packet.Dest.Port)
         {
-            PayloadDataSegment = new ByteArraySegment(data)
+            PayloadDataSegment = new ByteArraySegment(packet.Data)
         };
 
-        var packet = new EthernetPacket(DummyMac, DummyMac, EthernetType.IPv6)
+        var eth = new EthernetPacket(DummyMac, DummyMac, EthernetType.IPv6)
         {
-            PayloadPacket = new IPv6Packet(
-                source.Address.MapToIPv6(),
-                dest.Address.MapToIPv6()) { PayloadPacket = udp }
+            PayloadPacket = new IPv6Packet(packet.Source.Address, packet.Dest.Address) { PayloadPacket = udp }
         };
 
         udp.UpdateUdpChecksum();
 
-        _device.Write(new RawCapture(LinkLayers.Ethernet, new(), packet.Bytes));
+        var time = new PosixTimeval((ulong)packet.Timestamp.ToUnixTimeSeconds(),
+            (ulong)packet.Timestamp.Microsecond);
+
+        _device.Write(new RawCapture(LinkLayers.Ethernet, time, eth.Bytes));
 
         _hasRecords = true;
     }
@@ -212,6 +212,13 @@ internal sealed class TrafficRecorder : IAsyncDisposable
                 _logger.LogError(ex, "Failed to upload pcap to {Path}", BlobPath);
             }
         }
+    }
+
+    internal ValueTask ReleaseAsync()
+    {
+        if (Interlocked.Decrement(ref _refCount) == 0)
+            StartIdleTimer();
+        return ValueTask.CompletedTask;
     }
 
     public async ValueTask DisposeAsync()

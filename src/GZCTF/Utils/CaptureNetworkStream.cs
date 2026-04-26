@@ -12,31 +12,24 @@ namespace GZCTF.Utils;
 /// interception and packet creation — pcap writing is delegated to the
 /// TrafficRecorder via the TrafficWriter handle.
 /// </summary>
-public sealed class CaptureNetworkStream : NetworkStream
+public sealed class CaptureNetworkStream(
+    Socket socket,
+    TrafficWriter? writer,
+    IPEndPoint source,
+    IPEndPoint dest)
+    : NetworkStream(socket)
 {
-    readonly TrafficWriter? _writer;
-    readonly IPEndPoint _source;
-    readonly IPEndPoint _dest;
+    readonly IPEndPoint _source = new(source.Address.MapToIPv6(), source.Port);
+    readonly IPEndPoint _dest = new(dest.Address.MapToIPv6(), dest.Port);
     bool _disposed;
-
-    public CaptureNetworkStream(
-        Socket socket,
-        TrafficWriter? writer,
-        IPEndPoint source,
-        IPEndPoint dest) : base(socket)
-    {
-        _writer = writer;
-        _source = new IPEndPoint(source.Address.MapToIPv6(), source.Port);
-        _dest = new IPEndPoint(dest.Address.MapToIPv6(), dest.Port);
-    }
 
     public override async ValueTask<int> ReadAsync(
         Memory<byte> buffer, CancellationToken ct = default)
     {
         var count = await base.ReadAsync(buffer, ct);
 
-        if (_writer is not null && count > 0)
-            _writer.Write(new TrafficPacket(
+        if (writer is not null && count > 0)
+            writer.Write(new(
                 _dest, _source, buffer[..count].ToArray(), DateTimeOffset.UtcNow));
 
         return count;
@@ -45,8 +38,8 @@ public sealed class CaptureNetworkStream : NetworkStream
     public override ValueTask WriteAsync(
         ReadOnlyMemory<byte> buffer, CancellationToken ct = default)
     {
-        if (_writer is not null && buffer.Length > 0)
-            _writer.Write(new TrafficPacket(
+        if (writer is not null && buffer.Length > 0)
+            writer.Write(new(
                 _source, _dest, buffer.ToArray(), DateTimeOffset.UtcNow));
 
         return base.WriteAsync(buffer, ct);
@@ -59,8 +52,8 @@ public sealed class CaptureNetworkStream : NetworkStream
 
         _disposed = true;
 
-        if (_writer is not null)
-            await _writer.DisposeAsync();
+        if (writer is not null)
+            await writer.DisposeAsync();
 
         await base.DisposeAsync();
         GC.SuppressFinalize(this);
