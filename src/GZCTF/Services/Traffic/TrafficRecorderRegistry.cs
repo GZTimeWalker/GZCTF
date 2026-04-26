@@ -21,7 +21,7 @@ public readonly record struct TrafficRecorderDescriptor(
 /// Each container has at most one active recorder per GZCTF instance at a time.
 ///
 /// Thread-safety:
-///   - ConcurrentDictionary with GetOrAdd for lock-free lookup + atomic creation
+///   - ConcurrentDictionary with GetOrAdd for lock-free lookup + lazy creation
 ///   - Value-based TryRemove in OnRecorderArchived prevents removing a newer recorder
 ///   - Lock-free TryAcquire on individual recorders
 /// </summary>
@@ -29,7 +29,7 @@ public sealed class TrafficRecorderRegistry(
     IBlobStorage storage,
     ILogger<TrafficRecorderRegistry> logger) : IAsyncDisposable
 {
-    readonly ConcurrentDictionary<Guid, TrafficRecorder> _recorders = new();
+    readonly ConcurrentDictionary<Guid, Lazy<TrafficRecorder>> _recorders = new();
 
     /// <summary>
     /// Acquire a TrafficWriter for the given container.
@@ -42,21 +42,21 @@ public sealed class TrafficRecorderRegistry(
 
         while (true)
         {
-            var recorder = _recorders.GetOrAdd(key, _ => CreateRecorder(key, descriptor));
+            var lazyRecorder = _recorders.GetOrAdd(key, _ => CreateRecorder(key, descriptor));
+            var recorder = lazyRecorder.Value;
 
             if (recorder.TryAcquire())
                 return new TrafficWriter(recorder);
 
             // Recorder is archiving — atomically replace with a new one.
             var replacement = CreateRecorder(key, descriptor);
-            replacement.TryAcquire();
 
-            if (_recorders.TryUpdate(key, replacement, recorder))
-                return new TrafficWriter(replacement);
-            
-            // Swap failed — either _onArchived removed the old recorder
-            // or another thread already replaced it. Dispose unused replacement.
-            _ = replacement.DisposeAsync();
+            if (_recorders.TryUpdate(key, replacement, lazyRecorder))
+            {
+                var replacementRecorder = replacement.Value;
+                replacementRecorder.TryAcquire();
+                return new TrafficWriter(replacementRecorder);
+            }
         }
     }
 
@@ -66,8 +66,8 @@ public sealed class TrafficRecorderRegistry(
     /// </summary>
     public async ValueTask ArchiveAsync(Guid containerId)
     {
-        if (_recorders.TryRemove(containerId, out var recorder))
-            await recorder.ArchiveAsync();
+        if (_recorders.TryRemove(containerId, out var recorder) && recorder.IsValueCreated)
+            await recorder.Value.ArchiveAsync();
     }
 
     /// <summary>
@@ -75,26 +75,30 @@ public sealed class TrafficRecorderRegistry(
     /// </summary>
     public async ValueTask DisposeAsync()
     {
-        var tasks = _recorders.Values.Select(r => r.ArchiveAsync().AsTask());
+        var tasks = _recorders.Values
+            .Where(r => r.IsValueCreated)
+            .Select(r => r.Value.ArchiveAsync().AsTask());
         await Task.WhenAll(tasks);
         _recorders.Clear();
     }
 
-    TrafficRecorder CreateRecorder(Guid key, TrafficRecorderDescriptor descriptor)
-    {
-        var blobPath = BuildBlobPath(descriptor);
-        return new TrafficRecorder(
+    Lazy<TrafficRecorder> CreateRecorder(Guid key, TrafficRecorderDescriptor descriptor) =>
+        new(() => new TrafficRecorder(
             registryKey: key,
-            blobPath: blobPath,
+            blobPath: BuildBlobPath(descriptor),
             metadata: descriptor.Metadata,
             firstClient: descriptor.ClientEndpoint,
             storage: storage,
             logger: logger,
-            onArchived: OnRecorderArchived);
-    }
+            onArchived: OnRecorderArchived));
 
-    void OnRecorderArchived(Guid key, TrafficRecorder recorder) =>
-        _recorders.TryRemove(new KeyValuePair<Guid, TrafficRecorder>(key, recorder));
+    void OnRecorderArchived(Guid key, TrafficRecorder recorder)
+    {
+        if (_recorders.TryGetValue(key, out var current) &&
+            current.IsValueCreated &&
+            ReferenceEquals(current.Value, recorder))
+            _recorders.TryRemove(new KeyValuePair<Guid, Lazy<TrafficRecorder>>(key, current));
+    }
 
     static string BuildBlobPath(TrafficRecorderDescriptor descriptor)
     {

@@ -46,6 +46,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     readonly CaptureFileWriterDevice _device;
 
     readonly Task _writeLoop;
+    readonly object _archiveLock = new();
+    Task? _archiveTask;
 
     int _refCount;
     int _disposed;
@@ -118,7 +120,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         if (Interlocked.CompareExchange(ref _refCount, -1, 0) != 0)
             return;
 
-        _ = RunArchiveAsync();
+        _ = StartArchiveAsync();
     }
 
     /// <summary>
@@ -127,10 +129,14 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     /// </summary>
     internal async ValueTask ArchiveAsync()
     {
-        if (Interlocked.Exchange(ref _refCount, -1) < 0)
-            return;
+        Interlocked.Exchange(ref _refCount, -1);
+        await StartArchiveAsync();
+    }
 
-        await RunArchiveAsync();
+    Task StartArchiveAsync()
+    {
+        lock (_archiveLock)
+            return _archiveTask ??= RunArchiveAsync();
     }
 
     /// <summary>
