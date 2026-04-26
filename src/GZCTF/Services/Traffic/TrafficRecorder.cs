@@ -30,11 +30,11 @@ namespace GZCTF.Services.Traffic;
 internal sealed class TrafficRecorder : IAsyncDisposable
 {
     static readonly PhysicalAddress DummyMac = PhysicalAddress.Parse("00-11-00-11-00-11");
-    static readonly IPEndPoint MetadataHost = new(IPAddress.Any, 65535);
+    static readonly IPEndPoint MetadataHost = new(IPAddress.IPv6Any, 65535);
     static readonly TimeSpan IdleTimeout = TimeSpan.FromSeconds(30);
 
-    readonly Channel<TrafficPacket> _channel = Channel.CreateUnbounded<TrafficPacket>(
-        new UnboundedChannelOptions { SingleWriter = false, SingleReader = true });
+    readonly Channel<TrafficPacket> _channel = Channel.CreateBounded<TrafficPacket>(
+        new BoundedChannelOptions(1024) { SingleWriter = false, SingleReader = true });
 
     readonly IBlobStorage _storage;
     readonly ILogger _logger;
