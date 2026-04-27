@@ -228,7 +228,7 @@ public class DockerManager : IContainerManager
 
         var bindings = GetPublishedPortBindings(info.NetworkSettings.Ports, config.ExposedPort);
 
-        if (bindings is not { Count: > 0 })
+        if (bindings is [])
         {
             _logger.SystemLog(
                 StaticLocalizer[
