@@ -82,7 +82,10 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         _device.Open();
 
         if (metadata is not null)
-            WritePcapPacket(new(MetadataHost, new(remoteAddress, PortMin), metadata, DateTimeOffset.UtcNow));
+        {
+            var metadataRemoteAddress = remoteAddress.MapToIPv6();
+            WritePcapPacket(new(MetadataHost, new(metadataRemoteAddress, PortMin), metadata, DateTimeOffset.UtcNow));
+        }
 
         _refCount = 0;
         _writeLoop = Task.Run(WriteLoopAsync);
