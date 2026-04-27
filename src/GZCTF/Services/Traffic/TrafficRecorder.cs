@@ -32,9 +32,11 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     static readonly PhysicalAddress DummyMac = PhysicalAddress.Parse("00-11-00-11-00-11");
     static readonly IPEndPoint MetadataHost = new(IPAddress.IPv6Any, 65535);
     static readonly TimeSpan IdleTimeout = TimeSpan.FromSeconds(30);
-    const int PortMin = 10000;          // meta + first connection port base
-    const int PortMax = 65000;          // last port
-    const int PortTotal = PortMax - PortMin + 1; // 55001
+
+    const int MetaPort = 10000;
+    const int PortMin = MetaPort + 1;
+    const int PortMax = 65000;
+    const int PortTotal = PortMax - PortMin + 1;
 
     readonly Channel<TrafficPacket> _channel = Channel.CreateBounded<TrafficPacket>(
         new BoundedChannelOptions(1024) { SingleWriter = false, SingleReader = true });
@@ -83,8 +85,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
         if (metadata is not null)
         {
-            var metadataRemoteAddress = remoteAddress.MapToIPv6();
-            WritePcapPacket(new(MetadataHost, new(metadataRemoteAddress, PortMin), metadata, DateTimeOffset.UtcNow));
+            var endPoint = new IPEndPoint(remoteAddress.MapToIPv6(), PortMin);
+            WritePcapPacket(new(MetadataHost, endPoint, metadata, DateTimeOffset.UtcNow));
         }
 
         _refCount = 0;
@@ -202,12 +204,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
         udp.UpdateUdpChecksum();
 
-        var subSecondTicks = packet.Timestamp.Ticks % TimeSpan.TicksPerSecond;
-        var subSecondMicroseconds = subSecondTicks / (TimeSpan.TicksPerMillisecond / 100);
-        var time = new PosixTimeval((ulong)packet.Timestamp.ToUnixTimeSeconds(),
-            (ulong)subSecondMicroseconds);
-
-        _device.Write(new RawCapture(LinkLayers.Ethernet, time, eth.Bytes));
+        var timeval = new PosixTimeval(packet.Timestamp.UtcDateTime);
+        _device.Write(new RawCapture(LinkLayers.Ethernet, timeval, eth.Bytes));
 
         _hasRecords = true;
     }

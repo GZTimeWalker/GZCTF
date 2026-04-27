@@ -202,18 +202,14 @@ public static class ContainerHelper
 
         Console.WriteLine($@"🔍 Fetching flag via WebSocket proxy: {path}");
 
-        var wsUrl = new UriBuilder("127.0.0.1:8080")
-        {
-            Scheme = "ws",
-            Path = path
-        }.Uri;
+        var wsUrl = new UriBuilder("127.0.0.1:8080") { Scheme = "ws", Path = path }.Uri;
         var wsClient = server.CreateWebSocketClient();
 
         for (var attempt = 0; attempt < 10; attempt++)
         {
             try
             {
-                var ws = await wsClient.ConnectAsync(wsUrl, CancellationToken.None);
+                using var ws = await wsClient.ConnectAsync(wsUrl, CancellationToken.None);
 
                 var buffer = new byte[256];
                 var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
