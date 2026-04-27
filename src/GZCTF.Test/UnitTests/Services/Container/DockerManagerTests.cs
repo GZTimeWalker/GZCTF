@@ -48,6 +48,6 @@ public class DockerManagerTests
 
         var bindings = DockerManager.GetPublishedPortBindings(ports, 53);
 
-        Assert.Null(bindings);
+        Assert.Empty(bindings);
     }
 }

@@ -256,11 +256,11 @@ public class DockerManager : IContainerManager
         return container;
     }
 
-    internal static IList<PortBinding>? GetPublishedPortBindings(
+    internal static IList<PortBinding> GetPublishedPortBindings(
         IDictionary<string, IList<PortBinding>>? ports, int exposedPort)
     {
-        if (ports is null || ports.Count == 0)
-            return null;
+        if (ports is not { Count: > 0 })
+            return [];
 
         var port = exposedPort.ToString();
         var portPrefix = $"{port}/";
@@ -269,16 +269,15 @@ public class DockerManager : IContainerManager
                 && kv.Key.StartsWith(portPrefix, StringComparison.Ordinal))
             .ToArray();
 
-        if (matchedPorts.Length == 0)
-            return null;
-
-        if (matchedPorts.Length == 1)
-            return matchedPorts[0].Value;
-
-        return matchedPorts.FirstOrDefault(kv =>
-                   kv.Key.EndsWith("/tcp", StringComparison.OrdinalIgnoreCase))
-               .Value
-            ?? matchedPorts[0].Value;
+        return matchedPorts switch
+        {
+            [] => [],
+            [{ Value: var bindings }] => bindings,
+            _ => matchedPorts.FirstOrDefault(kv =>
+                     kv.Key.EndsWith("/tcp", StringComparison.OrdinalIgnoreCase))
+                 .Value
+                 ?? matchedPorts[0].Value
+        };
     }
 
     private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
