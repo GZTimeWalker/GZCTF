@@ -8,11 +8,11 @@ namespace GZCTF.Test.UnitTests.Services.Container;
 public class DockerManagerTests
 {
     [Fact]
-    public void GetPublishedPortBindings_ReturnsExactPortBinding()
+    public void GetPublishedPortBindings_ReturnsMatchingProtocolBinding()
     {
         var ports = new Dictionary<string, IList<PortBinding>>
         {
-            ["80"] = [new() { HostPort = "32768" }]
+            ["80/tcp"] = [new() { HostPort = "32768" }]
         };
 
         var bindings = DockerManager.GetPublishedPortBindings(ports, 80);

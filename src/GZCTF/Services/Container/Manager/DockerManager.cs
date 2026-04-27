@@ -266,8 +266,7 @@ public class DockerManager : IContainerManager
         var portPrefix = $"{port}/";
         var matchedPorts = ports
             .Where(kv => kv.Value is { Count: > 0 }
-                && (kv.Key.Equals(port, StringComparison.Ordinal)
-                    || kv.Key.StartsWith(portPrefix, StringComparison.Ordinal)))
+                && kv.Key.StartsWith(portPrefix, StringComparison.Ordinal))
             .ToArray();
 
         if (matchedPorts.Length == 0)
