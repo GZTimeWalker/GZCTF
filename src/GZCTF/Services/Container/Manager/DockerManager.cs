@@ -226,9 +226,7 @@ public class DockerManager : IContainerManager
         if (!_meta.ExposePort)
             return container;
 
-        var portString = config.ExposedPort.ToString();
-        var bindings = info.NetworkSettings.Ports.Where(kv => kv.Key.StartsWith(portString)).Select(kv => kv.Value)
-            .SingleOrDefault();
+        var bindings = GetPublishedPortBindings(info.NetworkSettings.Ports, config.ExposedPort);
 
         if (bindings is not { Count: > 0 })
         {
@@ -256,6 +254,32 @@ public class DockerManager : IContainerManager
             container.PublicIP = _meta.PublicEntry;
 
         return container;
+    }
+
+    internal static IList<PortBinding>? GetPublishedPortBindings(
+        IDictionary<string, IList<PortBinding>>? ports, int exposedPort)
+    {
+        if (ports is null || ports.Count == 0)
+            return null;
+
+        var port = exposedPort.ToString();
+        var portPrefix = $"{port}/";
+        var matchedPorts = ports
+            .Where(kv => kv.Value is { Count: > 0 }
+                && (kv.Key.Equals(port, StringComparison.Ordinal)
+                    || kv.Key.StartsWith(portPrefix, StringComparison.Ordinal)))
+            .ToArray();
+
+        if (matchedPorts.Length == 0)
+            return null;
+
+        if (matchedPorts.Length == 1)
+            return matchedPorts[0].Value;
+
+        return matchedPorts.FirstOrDefault(kv =>
+                   kv.Key.EndsWith("/tcp", StringComparison.OrdinalIgnoreCase))
+               .Value
+            ?? matchedPorts[0].Value;
     }
 
     private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
