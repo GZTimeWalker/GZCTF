@@ -10,7 +10,13 @@ public sealed class TrafficWriter : IAsyncDisposable
     readonly TrafficRecorder _recorder;
     bool _disposed;
 
-    internal TrafficWriter(TrafficRecorder recorder) => _recorder = recorder;
+    public int ConnectionId { get; }
+
+    internal TrafficWriter(TrafficRecorder recorder, int connectionId)
+    {
+        _recorder = recorder;
+        ConnectionId = connectionId;
+    }
 
     /// <summary>
     /// Enqueue a traffic packet for pcap writing. Non-blocking.

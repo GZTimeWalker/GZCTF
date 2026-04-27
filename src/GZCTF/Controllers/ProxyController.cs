@@ -92,12 +92,8 @@ public class ProxyController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
         var clientIp = HttpContext.Connection.RemoteIpAddress ?? IPAddress.Loopback;
-        var clientPort = HttpContext.Connection.RemotePort;
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
-
-        IPEndPoint client = new(clientIp, clientPort);
-        IPEndPoint target = new(ipAddress, container.Port);
 
         TrafficWriter? writer = null;
         if (enable)
@@ -108,9 +104,14 @@ public class ProxyController(
                 ParticipationId: container.GameInstance!.ParticipationId,
                 ConnectionId: HttpContext.Connection.Id,
                 Metadata: container.GenerateMetadata(JsonOptions),
-                ClientEndpoint: client);
+                ClientEndpoint: new(clientIp, HttpContext.Connection.RemotePort));
             writer = trafficRegistry.AcquireWriter(descriptor);
         }
+
+        var clientPort = writer?.ConnectionId ?? HttpContext.Connection.RemotePort;
+
+        IPEndPoint client = new(clientIp, clientPort);
+        IPEndPoint target = new(ipAddress, container.Port);
 
         return await DoContainerProxy(id, client, target, writer, token);
     }

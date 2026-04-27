@@ -45,8 +45,9 @@ public sealed class TrafficRecorderRegistry(
             var lazyRecorder = _recorders.GetOrAdd(key, _ => CreateRecorder(key, descriptor));
             var recorder = lazyRecorder.Value;
 
-            if (recorder.TryAcquire())
-                return new TrafficWriter(recorder);
+            var connectionId = recorder.TryAcquire();
+            if (connectionId > 0)
+                return new TrafficWriter(recorder, connectionId);
 
             // Recorder is archiving — atomically replace with a new one.
             var replacement = CreateRecorder(key, descriptor);
@@ -54,8 +55,8 @@ public sealed class TrafficRecorderRegistry(
             if (_recorders.TryUpdate(key, replacement, lazyRecorder))
             {
                 var replacementRecorder = replacement.Value;
-                replacementRecorder.TryAcquire();
-                return new TrafficWriter(replacementRecorder);
+                var replacementId = replacementRecorder.TryAcquire();
+                return new TrafficWriter(replacementRecorder, replacementId);
             }
         }
     }

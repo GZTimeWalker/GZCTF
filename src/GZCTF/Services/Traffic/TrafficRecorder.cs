@@ -51,6 +51,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
     int _refCount;
     int _disposed;
+    int _nextConnectionId;
     bool _hasRecords;
     readonly Timer _idleTimer;
 
@@ -81,21 +82,21 @@ internal sealed class TrafficRecorder : IAsyncDisposable
             WritePcapPacket(new(MetadataHost, firstClient, metadata, DateTimeOffset.UtcNow));
 
         _refCount = 0;
-        _writeLoop = Task.Factory.StartNew(WriteLoopAsync, TaskCreationOptions.None).Unwrap();
+        _writeLoop = Task.Run(WriteLoopAsync);
     }
 
-    internal bool TryAcquire()
+    internal int TryAcquire()
     {
         while (true)
         {
             var current = Volatile.Read(ref _refCount);
             if (current < 0)
-                return false;
+                return 0;
 
             if (Interlocked.CompareExchange(ref _refCount, current + 1, current) == current)
             {
                 _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                return true;
+                return Interlocked.Increment(ref _nextConnectionId);
             }
         }
     }
@@ -163,6 +164,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         {
             /* best effort */
         }
+
+        await _idleTimer.DisposeAsync();
     }
 
     async Task WriteLoopAsync()
@@ -228,6 +231,5 @@ internal sealed class TrafficRecorder : IAsyncDisposable
             return;
 
         await ArchiveAsync();
-        await _idleTimer.DisposeAsync();
     }
 }
