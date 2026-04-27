@@ -91,7 +91,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         }
 
         _refCount = 0;
-        _writeLoop = Task.Run(WriteLoopAsync);
+        _writeLoop = WriteLoopAsync();
     }
 
     internal int TryAcquire()

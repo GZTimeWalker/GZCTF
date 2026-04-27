@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Net;
 using GZCTF.Storage.Interface;
-using Microsoft.Extensions.Logging;
 
 namespace GZCTF.Services.Traffic;
 
@@ -37,7 +36,7 @@ public sealed class TrafficRecorderRegistry(
     /// Uses GetOrAdd to avoid unnecessary recorder creation in race conditions.
     /// When the existing recorder is archiving, TryUpdate atomically replaces it.
     /// </summary>
-    public TrafficWriter AcquireWriter(TrafficRecorderDescriptor descriptor)
+    internal TrafficWriter AcquireWriter(TrafficRecorderDescriptor descriptor)
     {
         var key = descriptor.ContainerId;
 
@@ -55,9 +54,10 @@ public sealed class TrafficRecorderRegistry(
 
             if (_recorders.TryUpdate(key, replacement, lazyRecorder))
             {
-                var replacementRecorder = replacement.Value;
-                var replacementId = replacementRecorder.TryAcquire();
-                return new TrafficWriter(replacementRecorder, replacementId);
+                var newRecorder = replacement.Value;
+                var newSeq = newRecorder.TryAcquire();
+                if (newSeq > 0)
+                    return new TrafficWriter(newRecorder, newSeq);
             }
         }
     }
@@ -66,9 +66,12 @@ public sealed class TrafficRecorderRegistry(
     /// Force-archive the recorder for a specific container.
     /// Called when the container is destroyed.
     /// </summary>
-    public async ValueTask ArchiveAsync(Guid containerId)
+    internal async ValueTask ArchiveAsync(Guid containerId)
     {
-        if (_recorders.TryRemove(containerId, out var recorder) && recorder.IsValueCreated)
+        // always try to archive the recorder, to avoid a race condition
+        // where the same recorder is acquiring after the `GetOrAdd`
+        // in which case this recorder would not clean up
+        if (_recorders.TryRemove(containerId, out var recorder))
             await recorder.Value.ArchiveAsync();
     }
 
