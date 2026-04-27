@@ -12,9 +12,8 @@ public readonly record struct TrafficRecorderDescriptor(
     Guid ContainerId,
     int ChallengeId,
     int ParticipationId,
-    string ConnectionId,
     byte[]? Metadata,
-    IPEndPoint ClientEndpoint);
+    ConnectionInfo Connection);
 
 /// <summary>
 /// Singleton registry managing all active TrafficRecorders.
@@ -88,7 +87,7 @@ public sealed class TrafficRecorderRegistry(
             registryKey: key,
             blobPath: BuildBlobPath(descriptor),
             metadata: descriptor.Metadata,
-            firstClient: descriptor.ClientEndpoint,
+            remoteAddress: descriptor.Connection.RemoteIpAddress ?? IPAddress.IPv6Loopback,
             storage: storage,
             logger: logger,
             onArchived: OnRecorderArchived));
@@ -109,6 +108,6 @@ public sealed class TrafficRecorderRegistry(
             PathHelper.Capture,
             descriptor.ChallengeId.ToString(),
             descriptor.ParticipationId.ToString(),
-            $"{shortId}-{descriptor.ConnectionId}.pcap");
+            $"{shortId}-{descriptor.Connection.Id}.pcap");
     }
 }

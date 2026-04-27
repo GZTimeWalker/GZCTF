@@ -51,7 +51,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
     int _refCount;
     int _disposed;
-    int _nextConnectionId;
+    int _nextConnectionId = 100;
     bool _hasRecords;
     readonly Timer _idleTimer;
 
@@ -61,7 +61,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         Guid registryKey,
         string blobPath,
         byte[]? metadata,
-        IPEndPoint firstClient,
+        IPAddress remoteAddress,
         IBlobStorage storage,
         ILogger logger,
         Action<Guid, TrafficRecorder> onArchived)
@@ -79,7 +79,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         _device.Open();
 
         if (metadata is not null)
-            WritePcapPacket(new(MetadataHost, firstClient, metadata, DateTimeOffset.UtcNow));
+            WritePcapPacket(new(MetadataHost, new(remoteAddress, _nextConnectionId), metadata, DateTimeOffset.UtcNow));
 
         _refCount = 0;
         _writeLoop = Task.Run(WriteLoopAsync);

@@ -102,9 +102,8 @@ public class ProxyController(
                 ContainerId: id,
                 ChallengeId: container.GameInstance!.ChallengeId,
                 ParticipationId: container.GameInstance!.ParticipationId,
-                ConnectionId: HttpContext.Connection.Id,
                 Metadata: container.GenerateMetadata(JsonOptions),
-                ClientEndpoint: new(clientIp, HttpContext.Connection.RemotePort));
+                Connection: HttpContext.Connection);
             writer = trafficRegistry.AcquireWriter(descriptor);
         }
 
