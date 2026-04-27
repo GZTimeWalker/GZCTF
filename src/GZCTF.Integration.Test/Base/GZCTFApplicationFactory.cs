@@ -143,15 +143,18 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                     $@"[ConfigureWebHost] Setting ContainerProvider to Docker (K3s mode: {_useK3sMode}, path: {_kubeConfigPath ?? "null"})");
                 configDict["ContainerProvider:Type"] = "Docker";
                 configDict["ContainerProvider:PublicEntry"] = "localhost";
+                configDict["ContainerProvider:PortMappingType"] = "PlatformProxy";
+                configDict["ContainerProvider:EnableTrafficCapture"] = "true";
             }
-
-            config.AddInMemoryCollection(configDict);
 
             // Then add back all the original sources
             foreach (var source in sources)
             {
                 config.Sources.Add(source);
             }
+
+            // Add in-memory collection LAST so it overrides original sources (e.g. appsettings.Development.json)
+            config.AddInMemoryCollection(configDict);
         });
 
         builder.ConfigureTestServices(services =>

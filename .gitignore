@@ -236,7 +236,7 @@ _Pvt_Extensions
 .fake/
 
 # Docs
-**/.next
+docs
 
 **/appsettings.json
 **/appsettings.*.json

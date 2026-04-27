@@ -8,7 +8,7 @@ using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
-using GZCTF.Storage.Interface;
+using GZCTF.Services.Traffic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
@@ -21,13 +21,12 @@ namespace GZCTF.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[ExcludeFromCodeCoverage]
 public class ProxyController(
     ILogger<ProxyController> logger,
     IDistributedCache cache,
-    IBlobStorage storage,
     IOptions<ContainerProvider> provider,
     IContainerRepository containerRepository,
+    TrafficRecorderRegistry trafficRegistry,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     private const int BufferSize = 4096;
@@ -92,27 +91,30 @@ public class ProxyController(
         if (ipAddress is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
-        var clientIp = HttpContext.Connection.RemoteIpAddress;
-        var clientPort = HttpContext.Connection.RemotePort;
-
-        if (clientIp is null)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_InvalidClientAddress)]));
+        var clientIp = HttpContext.Connection.RemoteIpAddress ?? IPAddress.Loopback;
 
         var enable = _enableTrafficCapture && container.EnableTrafficCapture;
 
-        var metadata = enable ? container.GenerateMetadata(JsonOptions) : null;
+        TrafficWriter? writer = null;
+        if (enable)
+        {
+            var descriptor = new TrafficRecorderDescriptor(
+                ContainerId: id,
+                ChallengeId: container.GameInstance!.ChallengeId,
+                ParticipationId: container.GameInstance!.ParticipationId,
+                Metadata: container.GenerateMetadata(JsonOptions),
+                ConnectionId: HttpContext.Connection.Id,
+                RemoteIpAddress: HttpContext.Connection.RemoteIpAddress);
+            writer = trafficRegistry.AcquireWriter(descriptor);
+        }
+
+        var realRemotePort = HttpContext.Connection.RemotePort;
+        var clientPort = writer?.Sequence ?? realRemotePort;
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, metadata,
-            new()
-            {
-                Source = client,
-                Dest = target,
-                EnableCapture = enable,
-                BlobPath = container.TrafficPath(HttpContext.Connection.Id)
-            }, token);
+        return await DoContainerProxy(id, client, target, writer, realRemotePort, token);
     }
 
     /// <summary>
@@ -150,24 +152,21 @@ public class ProxyController(
         if (ipAddress is null)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_AddressResolveFailed)]));
 
-        var clientIp = HttpContext.Connection.RemoteIpAddress;
+        var clientIp = HttpContext.Connection.RemoteIpAddress ?? IPAddress.Loopback;
         var clientPort = HttpContext.Connection.RemotePort;
-
-        if (clientIp is null)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Container_InvalidClientAddress)]));
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, null, new(), token);
+        return await DoContainerProxy(id, client, target, null, client.Port, token);
     }
 
     private async Task<IActionResult> DoContainerProxy(Guid id, IPEndPoint client, IPEndPoint target,
-        byte[]? metadata, RecordableNetworkStreamOptions options, CancellationToken token = default)
+        TrafficWriter? writer, int realClientPort, CancellationToken token = default)
     {
         using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-        RecordableNetworkStream? stream = null;
+        CaptureNetworkStream? stream = null;
 
         try
         {
@@ -178,7 +177,7 @@ public class ProxyController(
                 if (!socket.Connected)
                     throw new SocketException((int)SocketError.NotConnected);
 
-                stream = new RecordableNetworkStream(socket, metadata, storage, options);
+                stream = new CaptureNetworkStream(socket, writer, client, target);
             }
             catch (SocketException e)
             {
@@ -198,7 +197,7 @@ public class ProxyController(
             try
             {
                 var (tx, rx) = await RunProxy(stream, ws, token);
-                LogProxyResult(id, client, target, tx, rx);
+                LogProxyResult(id, new IPEndPoint(client.Address, realClientPort), target, tx, rx);
             }
             catch (Exception e)
             {
@@ -209,6 +208,8 @@ public class ProxyController(
         {
             if (stream is not null)
                 await stream.DisposeAsync();
+            else
+                writer?.Dispose();
 
             await DecreaseConnectionCount(CacheKey.ConnectionCount(id));
         }
@@ -233,7 +234,7 @@ public class ProxyController(
     /// <param name="ws"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    private static async Task<(ulong, ulong)> RunProxy(RecordableNetworkStream stream, WebSocket ws,
+    private static async Task<(ulong, ulong)> RunProxy(CaptureNetworkStream stream, WebSocket ws,
         CancellationToken token = default)
     {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);

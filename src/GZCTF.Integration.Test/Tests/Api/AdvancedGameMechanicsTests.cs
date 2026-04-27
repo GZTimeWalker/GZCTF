@@ -660,7 +660,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 MinScoreRate = 0.5,
                 Difficulty = 2,
                 Game = gameObj,
-                GameId = gameObj.Id
+                GameId = gameObj.Id,
+                EnableTrafficCapture = true
             };
 
             await challengeRepository.CreateChallenge(gameObj, challenge);
@@ -727,7 +728,7 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         Assert.Equal(game.Id.ToString(), envVars["GZCTF_GAME_ID"]);
 
         // 5. Fetch the flag
-        var flag = await ContainerHelper.FetchFlag(entry);
+        var flag = await ContainerHelper.FetchFlag(entry, factory.Server);
         Assert.NotNull(flag);
         Assert.StartsWith("flag{", flag);
         Assert.Equal(flag, envVars["GZCTF_FLAG"]);

@@ -535,7 +535,7 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
 
             output.WriteLine($"✅ Container entry: {entry}");
 
-            var flag = await ContainerHelper.FetchFlag(entry);
+            var flag = await ContainerHelper.FetchFlag(entry, factory.Server, isNoInst: true);
 
             // Assert: Should have retrieved a flag
             Assert.NotNull(flag);
