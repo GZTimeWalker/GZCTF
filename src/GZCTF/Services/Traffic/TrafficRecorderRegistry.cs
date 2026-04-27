@@ -13,7 +13,8 @@ public readonly record struct TrafficRecorderDescriptor(
     int ChallengeId,
     int ParticipationId,
     byte[]? Metadata,
-    ConnectionInfo Connection);
+    string ConnectionId,
+    IPAddress? RemoteIpAddress);
 
 /// <summary>
 /// Singleton registry managing all active TrafficRecorders.
@@ -44,9 +45,9 @@ public sealed class TrafficRecorderRegistry(
             var lazyRecorder = _recorders.GetOrAdd(key, _ => CreateRecorder(key, descriptor));
             var recorder = lazyRecorder.Value;
 
-            var connectionId = recorder.TryAcquire();
-            if (connectionId > 0)
-                return new TrafficWriter(recorder, connectionId);
+            var seq = recorder.TryAcquire();
+            if (seq > 0)
+                return new TrafficWriter(recorder, seq);
 
             // Recorder is archiving — atomically replace with a new one.
             var replacement = CreateRecorder(key, descriptor);
@@ -87,7 +88,7 @@ public sealed class TrafficRecorderRegistry(
             registryKey: key,
             blobPath: BuildBlobPath(descriptor),
             metadata: descriptor.Metadata,
-            remoteAddress: descriptor.Connection.RemoteIpAddress ?? IPAddress.IPv6Loopback,
+            remoteAddress: descriptor.RemoteIpAddress?.MapToIPv6() ?? IPAddress.IPv6Loopback,
             storage: storage,
             logger: logger,
             onArchived: OnRecorderArchived));
@@ -108,6 +109,6 @@ public sealed class TrafficRecorderRegistry(
             PathHelper.Capture,
             descriptor.ChallengeId.ToString(),
             descriptor.ParticipationId.ToString(),
-            $"{shortId}-{descriptor.Connection.Id}.pcap");
+            $"{shortId}-{descriptor.ConnectionId}.pcap");
     }
 }

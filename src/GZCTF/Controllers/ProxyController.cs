@@ -103,11 +103,12 @@ public class ProxyController(
                 ChallengeId: container.GameInstance!.ChallengeId,
                 ParticipationId: container.GameInstance!.ParticipationId,
                 Metadata: container.GenerateMetadata(JsonOptions),
-                Connection: HttpContext.Connection);
+                ConnectionId: HttpContext.Connection.Id,
+                RemoteIpAddress: HttpContext.Connection.RemoteIpAddress);
             writer = trafficRegistry.AcquireWriter(descriptor);
         }
 
-        var clientPort = writer?.ConnectionId ?? HttpContext.Connection.RemotePort;
+        var clientPort = writer?.Sequence ?? HttpContext.Connection.RemotePort;
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);

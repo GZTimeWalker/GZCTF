@@ -10,12 +10,12 @@ public sealed class TrafficWriter : IAsyncDisposable
     readonly TrafficRecorder _recorder;
     bool _disposed;
 
-    public int ConnectionId { get; }
+    public int Sequence { get; }
 
-    internal TrafficWriter(TrafficRecorder recorder, int connectionId)
+    internal TrafficWriter(TrafficRecorder recorder, int sequence)
     {
         _recorder = recorder;
-        ConnectionId = connectionId;
+        Sequence = sequence;
     }
 
     /// <summary>

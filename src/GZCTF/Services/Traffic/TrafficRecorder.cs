@@ -24,8 +24,9 @@ namespace GZCTF.Services.Traffic;
 ///   Once _refCount &lt; 0, TryAcquire rejects all new connections.
 ///
 /// Best-effort semantics:
-///   Enqueue uses TryWrite; packets are silently dropped when the channel is completed
-///   (i.e. during the brief window between TryComplete and the last writer releasing).
+///   Enqueue uses TryWrite on a bounded channel; packets are silently dropped when the
+///   channel is full, or when the channel has already been completed (e.g. during the
+///   brief window between TryComplete and the last writer releasing).
 /// </summary>
 internal sealed class TrafficRecorder : IAsyncDisposable
 {
@@ -85,7 +86,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
         if (metadata is not null)
         {
-            var endPoint = new IPEndPoint(remoteAddress.MapToIPv6(), PortMin);
+            var endPoint = new IPEndPoint(remoteAddress, PortMin);
             WritePcapPacket(new(MetadataHost, endPoint, metadata, DateTimeOffset.UtcNow));
         }
 
