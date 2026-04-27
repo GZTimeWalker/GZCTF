@@ -21,7 +21,7 @@ public sealed class CaptureNetworkStream(
 {
     readonly IPEndPoint _source = new(source.Address.MapToIPv6(), source.Port);
     readonly IPEndPoint _dest = new(dest.Address.MapToIPv6(), dest.Port);
-    bool _disposed;
+    int _disposed;
 
     public override async ValueTask<int> ReadAsync(
         Memory<byte> buffer, CancellationToken ct = default)
@@ -47,13 +47,10 @@ public sealed class CaptureNetworkStream(
 
     public override async ValueTask DisposeAsync()
     {
-        if (_disposed)
+        if (Interlocked.Exchange(ref _disposed, 1) == 1)
             return;
 
-        _disposed = true;
-
-        if (writer is not null)
-            await writer.DisposeAsync();
+        writer?.Dispose();
 
         await base.DisposeAsync();
         GC.SuppressFinalize(this);

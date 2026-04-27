@@ -108,12 +108,13 @@ public class ProxyController(
             writer = trafficRegistry.AcquireWriter(descriptor);
         }
 
-        var clientPort = writer?.Sequence ?? HttpContext.Connection.RemotePort;
+        var realRemotePort = HttpContext.Connection.RemotePort;
+        var clientPort = writer?.Sequence ?? realRemotePort;
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, writer, token);
+        return await DoContainerProxy(id, client, target, writer, realRemotePort, token);
     }
 
     /// <summary>
@@ -157,11 +158,11 @@ public class ProxyController(
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
 
-        return await DoContainerProxy(id, client, target, null, token);
+        return await DoContainerProxy(id, client, target, null, client.Port, token);
     }
 
     private async Task<IActionResult> DoContainerProxy(Guid id, IPEndPoint client, IPEndPoint target,
-        TrafficWriter? writer, CancellationToken token = default)
+        TrafficWriter? writer, int realClientPort, CancellationToken token = default)
     {
         using var socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -196,7 +197,7 @@ public class ProxyController(
             try
             {
                 var (tx, rx) = await RunProxy(stream, ws, token);
-                LogProxyResult(id, client, target, tx, rx);
+                LogProxyResult(id, new IPEndPoint(client.Address, realClientPort), target, tx, rx);
             }
             catch (Exception e)
             {
@@ -207,8 +208,8 @@ public class ProxyController(
         {
             if (stream is not null)
                 await stream.DisposeAsync();
-            else if (writer is not null)
-                await writer.DisposeAsync();
+            else
+                writer?.Dispose();
 
             await DecreaseConnectionCount(CacheKey.ConnectionCount(id));
         }

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Net;
 using GZCTF.Storage.Interface;
+using Microsoft.Extensions.Logging;
 
 namespace GZCTF.Services.Traffic;
 
@@ -27,7 +28,7 @@ public readonly record struct TrafficRecorderDescriptor(
 /// </summary>
 public sealed class TrafficRecorderRegistry(
     IBlobStorage storage,
-    ILogger<TrafficRecorderRegistry> logger) : IAsyncDisposable
+    ILoggerFactory loggerFactory) : IAsyncDisposable
 {
     readonly ConcurrentDictionary<Guid, Lazy<TrafficRecorder>> _recorders = new();
 
@@ -90,7 +91,7 @@ public sealed class TrafficRecorderRegistry(
             metadata: descriptor.Metadata,
             remoteAddress: descriptor.RemoteIpAddress?.MapToIPv6() ?? IPAddress.IPv6Loopback,
             storage: storage,
-            logger: logger,
+            logger: loggerFactory.CreateLogger<TrafficRecorder>(),
             onArchived: OnRecorderArchived));
 
     void OnRecorderArchived(Guid key, TrafficRecorder recorder)

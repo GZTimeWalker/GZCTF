@@ -57,7 +57,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
     int _refCount;
     int _disposed;
-    int _connectionCounter;
+    uint _connectionCounter;
     bool _hasRecords;
     readonly Timer _idleTimer;
 
@@ -106,7 +106,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
             {
                 _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 var raw = Interlocked.Increment(ref _connectionCounter);
-                return raw % PortTotal + PortMin;
+                return (int)(raw % PortTotal) + PortMin;
             }
         }
     }
@@ -226,11 +226,10 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         }
     }
 
-    internal ValueTask ReleaseAsync()
+    internal void Release()
     {
         if (Interlocked.Decrement(ref _refCount) == 0)
             StartIdleTimer();
-        return ValueTask.CompletedTask;
     }
 
     public async ValueTask DisposeAsync()

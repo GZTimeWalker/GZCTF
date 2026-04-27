@@ -5,7 +5,7 @@ namespace GZCTF.Services.Traffic;
 /// Obtained via TrafficRecorderRegistry.AcquireWriter().
 /// Disposing this handle decrements the recorder's reference count.
 /// </summary>
-public sealed class TrafficWriter : IAsyncDisposable
+public sealed class TrafficWriter : IDisposable
 {
     readonly TrafficRecorder _recorder;
     bool _disposed;
@@ -28,12 +28,12 @@ public sealed class TrafficWriter : IAsyncDisposable
         _recorder.Enqueue(packet);
     }
 
-    public ValueTask DisposeAsync()
+    public void Dispose()
     {
         if (_disposed)
-            return ValueTask.CompletedTask;
+            return;
 
         _disposed = true;
-        return _recorder.ReleaseAsync();
+        _recorder.Release();
     }
 }
