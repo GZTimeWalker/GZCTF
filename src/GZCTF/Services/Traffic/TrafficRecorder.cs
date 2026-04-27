@@ -46,7 +46,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     readonly CaptureFileWriterDevice _device;
 
     readonly Task _writeLoop;
-    readonly object _archiveLock = new();
+    readonly Lock _archiveLock = new();
     Task? _archiveTask;
 
     int _refCount;
@@ -81,8 +81,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
             WritePcapPacket(new(MetadataHost, firstClient, metadata, DateTimeOffset.UtcNow));
 
         _refCount = 0;
-        _writeLoop = Task.Factory.StartNew(
-            WriteLoopAsync, TaskCreationOptions.LongRunning).Unwrap();
+        _writeLoop = Task.Factory.StartNew(WriteLoopAsync, TaskCreationOptions.None).Unwrap();
     }
 
     internal bool TryAcquire()
@@ -147,20 +146,22 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         try
         {
             await _writeLoop;
-            await FlushAndUploadAsync();
         }
         finally
         {
             _device.Close();
             _device.Dispose();
-            try
-            {
-                File.Delete(_tempFile);
-            }
-            catch
-            {
-                /* best effort */
-            }
+        }
+
+        await FlushAndUploadAsync();
+
+        try
+        {
+            File.Delete(_tempFile);
+        }
+        catch
+        {
+            /* best effort */
         }
     }
 
