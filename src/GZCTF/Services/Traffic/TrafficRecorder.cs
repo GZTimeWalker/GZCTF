@@ -32,6 +32,9 @@ internal sealed class TrafficRecorder : IAsyncDisposable
     static readonly PhysicalAddress DummyMac = PhysicalAddress.Parse("00-11-00-11-00-11");
     static readonly IPEndPoint MetadataHost = new(IPAddress.IPv6Any, 65535);
     static readonly TimeSpan IdleTimeout = TimeSpan.FromSeconds(30);
+    const int PortMin = 10000;          // meta + first connection port base
+    const int PortMax = 65000;          // last port
+    const int PortTotal = PortMax - PortMin + 1; // 55001
 
     readonly Channel<TrafficPacket> _channel = Channel.CreateBounded<TrafficPacket>(
         new BoundedChannelOptions(1024) { SingleWriter = false, SingleReader = true });
@@ -51,7 +54,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
     int _refCount;
     int _disposed;
-    int _nextConnectionId = 100;
+    int _connectionCounter;
     bool _hasRecords;
     readonly Timer _idleTimer;
 
@@ -79,7 +82,7 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         _device.Open();
 
         if (metadata is not null)
-            WritePcapPacket(new(MetadataHost, new(remoteAddress, _nextConnectionId), metadata, DateTimeOffset.UtcNow));
+            WritePcapPacket(new(MetadataHost, new(remoteAddress, PortMin), metadata, DateTimeOffset.UtcNow));
 
         _refCount = 0;
         _writeLoop = Task.Run(WriteLoopAsync);
@@ -96,7 +99,8 @@ internal sealed class TrafficRecorder : IAsyncDisposable
             if (Interlocked.CompareExchange(ref _refCount, current + 1, current) == current)
             {
                 _idleTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                return Interlocked.Increment(ref _nextConnectionId);
+                var raw = Interlocked.Increment(ref _connectionCounter);
+                return raw % PortTotal + PortMin;
             }
         }
     }
