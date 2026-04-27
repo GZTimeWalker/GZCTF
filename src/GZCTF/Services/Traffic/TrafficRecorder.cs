@@ -199,8 +199,10 @@ internal sealed class TrafficRecorder : IAsyncDisposable
 
         udp.UpdateUdpChecksum();
 
+        var subSecondTicks = packet.Timestamp.Ticks % TimeSpan.TicksPerSecond;
+        var subSecondMicroseconds = subSecondTicks / (TimeSpan.TicksPerMillisecond / 100);
         var time = new PosixTimeval((ulong)packet.Timestamp.ToUnixTimeSeconds(),
-            (ulong)packet.Timestamp.Microsecond);
+            (ulong)subSecondMicroseconds);
 
         _device.Write(new RawCapture(LinkLayers.Ethernet, time, eth.Bytes));
 
