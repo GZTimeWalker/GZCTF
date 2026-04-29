@@ -180,10 +180,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         var key = NormalizeKey(path);
         var request = new PutObjectRequest
         {
-            BucketName = _bucket,
-            Key = key,
-            InputStream = content,
-            AutoCloseStream = false
+            BucketName = _bucket, Key = key, InputStream = content, AutoCloseStream = false
         };
 
         await _client.PutObjectAsync(request, cancellationToken);
@@ -195,27 +192,12 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(localFilePath);
 
-        if (format == CompressionFormat.None)
-        {
-            await using var stream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
-                8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
-            await WriteAsync(path, stream, false, cancellationToken);
-            return;
-        }
-
         var storagePath = CompressionHelper.AppendExtension(path, format);
 
         await using var source = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
             8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
-        await using var compressed = BufferHelper.GetTempStream(source.Length);
-        await using (var compressor = CompressionHelper.CreateCompressionStream(compressed, format))
-        {
-            await source.CopyToAsync(compressor, cancellationToken);
-            await compressor.FlushAsync(cancellationToken);
-        }
-
-        compressed.Position = 0;
-        await WriteAsync(storagePath, compressed, false, cancellationToken);
+        await using var stream = CompressionHelper.CreateCompressingReadStream(source, format, cancellationToken);
+        await WriteAsync(storagePath, stream, false, cancellationToken);
     }
 
     public async Task WriteTextAsync(string path, string contents, CancellationToken cancellationToken = default)
@@ -272,9 +254,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         List<StorageItem> results = [];
         var request = new ListObjectsV2Request
         {
-            BucketName = _bucket,
-            Prefix = prefix,
-            Delimiter = useFlatListing ? null : "/"
+            BucketName = _bucket, Prefix = prefix, Delimiter = useFlatListing ? null : "/"
         };
 
         do
@@ -284,20 +264,20 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
             if (!useFlatListing && response.CommonPrefixes is { } prefixes)
             {
                 results.AddRange(from commonPrefix in prefixes
-                                 select StoragePath.Normalize(commonPrefix)
+                    select StoragePath.Normalize(commonPrefix)
                     into directoryKey
-                                 let name = GetLeafName(directoryKey)
-                                 select new StorageItem(directoryKey, name, true));
+                    let name = GetLeafName(directoryKey)
+                    select new StorageItem(directoryKey, name, true));
             }
 
             if (response.S3Objects is { } objects)
             {
                 results.AddRange(from obj in objects
-                                 where useFlatListing || !obj.Key.EndsWith('/')
-                                 where useFlatListing || !string.Equals(obj.Key, prefix, StringComparison.Ordinal)
-                                 let itemKey = StoragePath.Normalize(obj.Key)
-                                 let name = GetLeafName(itemKey)
-                                 select new StorageItem(itemKey, name, false, obj.Size, obj.LastModified));
+                    where useFlatListing || !obj.Key.EndsWith('/')
+                    where useFlatListing || !string.Equals(obj.Key, prefix, StringComparison.Ordinal)
+                    let itemKey = StoragePath.Normalize(obj.Key)
+                    let name = GetLeafName(itemKey)
+                    select new StorageItem(itemKey, name, false, obj.Size, obj.LastModified));
             }
 
             request.ContinuationToken = response.IsTruncated is true ? response.NextContinuationToken : null;
