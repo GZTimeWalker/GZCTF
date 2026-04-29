@@ -195,12 +195,27 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(localFilePath);
 
+        if (format == CompressionFormat.None)
+        {
+            await using var stream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
+                8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            await WriteAsync(path, stream, false, cancellationToken);
+            return;
+        }
+
         var storagePath = CompressionHelper.AppendExtension(path, format);
 
         await using var source = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
             8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
-        await using var stream = CompressionHelper.CreateCompressingReadStream(source, format, cancellationToken);
-        await WriteAsync(storagePath, stream, false, cancellationToken);
+        await using var compressed = BufferHelper.GetTempStream(source.Length * 3 / 4);
+        await using (var compressor = CompressionHelper.CreateCompressionStream(compressed, format))
+        {
+            await source.CopyToAsync(compressor, cancellationToken);
+            await compressor.FlushAsync(cancellationToken);
+        }
+
+        compressed.Position = 0;
+        await WriteAsync(storagePath, compressed, false, cancellationToken);
     }
 
     public async Task WriteTextAsync(string path, string contents, CancellationToken cancellationToken = default)
@@ -269,20 +284,20 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
             if (!useFlatListing && response.CommonPrefixes is { } prefixes)
             {
                 results.AddRange(from commonPrefix in prefixes
-                    select StoragePath.Normalize(commonPrefix)
+                                 select StoragePath.Normalize(commonPrefix)
                     into directoryKey
-                    let name = GetLeafName(directoryKey)
-                    select new StorageItem(directoryKey, name, true));
+                                 let name = GetLeafName(directoryKey)
+                                 select new StorageItem(directoryKey, name, true));
             }
 
             if (response.S3Objects is { } objects)
             {
                 results.AddRange(from obj in objects
-                    where useFlatListing || !obj.Key.EndsWith('/')
-                    where useFlatListing || !string.Equals(obj.Key, prefix, StringComparison.Ordinal)
-                    let itemKey = StoragePath.Normalize(obj.Key)
-                    let name = GetLeafName(itemKey)
-                    select new StorageItem(itemKey, name, false, obj.Size, obj.LastModified));
+                                 where useFlatListing || !obj.Key.EndsWith('/')
+                                 where useFlatListing || !string.Equals(obj.Key, prefix, StringComparison.Ordinal)
+                                 let itemKey = StoragePath.Normalize(obj.Key)
+                                 let name = GetLeafName(itemKey)
+                                 select new StorageItem(itemKey, name, false, obj.Size, obj.LastModified));
             }
 
             request.ContinuationToken = response.IsTruncated is true ? response.NextContinuationToken : null;

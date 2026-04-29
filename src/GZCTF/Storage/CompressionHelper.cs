@@ -34,29 +34,6 @@ public static class CompressionHelper
         };
 
     /// <summary>
-    /// Returns a read-only stream that compresses data from <paramref name="source"/> on a
-    /// background task, using a <see cref="System.IO.Pipelines.Pipe"/> as a producer-consumer bridge.
-    /// <para>
-    /// This is designed for streaming uploads (e.g. S3) where the consumer reads compressed
-    /// bytes as a normal forward-only stream while compression happens concurrently.
-    /// </para>
-    /// </summary>
-    /// <param name="source">The uncompressed source stream to read from.</param>
-    /// <param name="format">The compression algorithm to apply.</param>
-    /// <param name="cancellationToken">Token observed by the background compression task.</param>
-    /// <returns>
-    /// A readable stream of compressed data, or <paramref name="source"/> itself when
-    /// <paramref name="format"/> is <see cref="CompressionFormat.None"/>.
-    /// </returns>
-    public static Stream CreateCompressingReadStream(Stream source, CompressionFormat format,
-        CancellationToken cancellationToken = default) =>
-        format switch
-        {
-            CompressionFormat.None => source,
-            _ => new CompressingReadStream(source, format, cancellationToken)
-        };
-
-    /// <summary>
     /// Appends the conventional file extension for <paramref name="format"/> to the given path
     /// (e.g. <c>.gz</c> for GZip, <c>.zst</c> for ZStandard). Returns the path unchanged
     /// when no compression is applied.
