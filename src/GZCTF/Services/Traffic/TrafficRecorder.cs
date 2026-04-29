@@ -217,11 +217,11 @@ internal sealed class TrafficRecorder : IAsyncDisposable
         {
             try
             {
-                await _storage.WriteFileAsync(BlobPath, _tempFile);
+                await _storage.WriteFileAsync(BlobPath, _tempFile, CompressionFormat.GZip);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to upload pcap to {Path}", BlobPath);
+                _logger.LogError(ex, "Failed to upload compressed pcap to {Path}", BlobPath);
             }
         }
     }

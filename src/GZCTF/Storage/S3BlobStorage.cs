@@ -189,13 +189,33 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         await _client.PutObjectAsync(request, cancellationToken);
     }
 
-    public async Task WriteFileAsync(string path, string localFilePath, CancellationToken cancellationToken = default)
+    public async Task WriteFileAsync(string path, string localFilePath,
+        CompressionFormat format = CompressionFormat.None,
+        CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(localFilePath);
 
-        await using var stream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
+        if (format == CompressionFormat.None)
+        {
+            await using var stream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
+                8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            await WriteAsync(path, stream, false, cancellationToken);
+            return;
+        }
+
+        var storagePath = CompressionHelper.AppendExtension(path, format);
+
+        await using var source = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read,
             8192, FileOptions.Asynchronous | FileOptions.SequentialScan);
-        await WriteAsync(path, stream, false, cancellationToken);
+        await using var compressed = BufferHelper.GetTempStream(source.Length);
+        await using (var compressor = CompressionHelper.CreateCompressionStream(compressed, format))
+        {
+            await source.CopyToAsync(compressor, cancellationToken);
+            await compressor.FlushAsync(cancellationToken);
+        }
+
+        compressed.Position = 0;
+        await WriteAsync(storagePath, compressed, false, cancellationToken);
     }
 
     public async Task WriteTextAsync(string path, string contents, CancellationToken cancellationToken = default)

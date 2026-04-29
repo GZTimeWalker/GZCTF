@@ -558,6 +558,16 @@ public static class AnswerResultExtensions
 }
 
 /// <summary>
+/// Compression format
+/// </summary>
+public enum CompressionFormat
+{
+    None,
+    GZip,
+    Zstd
+}
+
+/// <summary>
 /// System error codes, starting from 10000
 /// </summary>
 public static class ErrorCodes
