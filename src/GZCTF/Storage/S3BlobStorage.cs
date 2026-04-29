@@ -180,7 +180,10 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         var key = NormalizeKey(path);
         var request = new PutObjectRequest
         {
-            BucketName = _bucket, Key = key, InputStream = content, AutoCloseStream = false
+            BucketName = _bucket,
+            Key = key,
+            InputStream = content,
+            AutoCloseStream = false
         };
 
         await _client.PutObjectAsync(request, cancellationToken);
@@ -240,7 +243,7 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
             {
                 StorageItem[] single =
                 [
-                    new StorageItem(normalized, GetLeafName(normalized), false,
+                    new(normalized, GetLeafName(normalized), false,
                         meta.ContentLength, meta.LastModified)
                 ];
                 return single;
@@ -254,7 +257,9 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         List<StorageItem> results = [];
         var request = new ListObjectsV2Request
         {
-            BucketName = _bucket, Prefix = prefix, Delimiter = useFlatListing ? null : "/"
+            BucketName = _bucket,
+            Prefix = prefix,
+            Delimiter = useFlatListing ? null : "/"
         };
 
         do
