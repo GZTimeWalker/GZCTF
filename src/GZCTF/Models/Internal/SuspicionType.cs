@@ -20,6 +20,19 @@ public static class SuspicionType
     public const string SequenceSimilarity = "SequenceSimilarity";
     public const string CollusionGroup = "CollusionGroup";
 
+    // New signals
+    public const string ZeroWrongAttempts = "ZeroWrongAttempts";
+    public const string WrongFlagLeakage = "WrongFlagLeakage";
+    public const string SolutionRelay = "SolutionRelay";
+    public const string AdaptiveFastSolve = "AdaptiveFastSolve";
+    public const string DirectedSolving = "DirectedSolving";
+    public const string ClusteredRegistration = "ClusteredRegistration";
+    public const string SubnetOverlap = "SubnetOverlap";
+    public const string HighWrongRate = "HighWrongRate";
+    public const string AutomatedPattern = "AutomatedPattern";
+    public const string SessionConcurrency = "SessionConcurrency";
+    public const string FirstBloodAnomaly = "FirstBloodAnomaly";
+
     public static readonly Dictionary<string, (int Weight, string Description)> Defaults = new()
     {
         { StolenFlag, (100, "Flag stolen from another team") },
@@ -38,5 +51,17 @@ public static class SuspicionType
         { FastSolveDownload, (50, "Solved very quickly after downloading attachment") },
         { FastSolveContainer, (50, "Solved very quickly after starting container") },
         { SequenceSimilarity, (40, "High similarity in solve order and timing") },
-        { CollusionGroup, (10, "Member of a detected collusion group") }
-    };}
+        { CollusionGroup, (10, "Member of a detected collusion group") },
+        { ZeroWrongAttempts, (50, "Solved dynamic challenge on first attempt with no wrong submissions") },
+        { WrongFlagLeakage, (80, "Submitted another team's valid dynamic flag as a wrong answer") },
+        { SolutionRelay, (60, "Consistently solves challenges shortly after another team with constant lag") },
+        { AdaptiveFastSolve, (60, "Solved far faster than the community median solve time") },
+        { DirectedSolving, (30, "Only opened challenges they solved — no exploratory browsing") },
+        { ClusteredRegistration, (40, "Multiple team accounts registered from the same IP within 48h") },
+        { SubnetOverlap, (5, "Teams share the same /24 subnet") },
+        { HighWrongRate, (40, "Burst of wrong flag submissions — possible brute force") },
+        { AutomatedPattern, (50, "Machine-speed flag submission intervals — likely scripted") },
+        { SessionConcurrency, (30, "Same user account active from two different IPs within 10 minutes") },
+        { FirstBloodAnomaly, (20, "First blood on a hard challenge not solved by others for 2+ hours") },
+    };
+}
