@@ -1234,6 +1234,7 @@ public class GameController(
     public async Task<IActionResult> GetReviewSummary(
         [FromRoute] int id,
         [FromServices] IChallengeReviewRepository reviewRepository,
+        [FromServices] ISubmissionRepository submissionRepository,
         CancellationToken token)
     {
         var game = await gameRepository.GetGameById(id, token);
@@ -1242,7 +1243,24 @@ public class GameController(
                 StatusCodes.Status404NotFound));
 
         var summaries = await reviewRepository.GetRatingSummariesAsync(id, token);
-        return Ok(summaries);
+
+        // After the game ends, ratings are public to everyone
+        if (game.EndTimeUtc < DateTimeOffset.UtcNow && !game.PracticeMode)
+            return Ok(summaries);
+
+        // During the game, only return ratings for challenges the user has solved
+        var user = await userManager.GetUserAsync(User);
+        if (user is null)
+            return Ok(Array.Empty<ChallengeRatingSummary>());
+
+        var part = await participationRepository.GetParticipation(user.Id, game.Id, token);
+        if (part is null || part.Status != ParticipationStatus.Accepted)
+            return Ok(Array.Empty<ChallengeRatingSummary>());
+
+        var solved = await submissionRepository.GetSubmissions(part, AnswerResult.Accepted, count: 0, token: token);
+        var solvedIds = solved.Select(s => s.ChallengeId).ToHashSet();
+
+        return Ok(summaries.Where(s => solvedIds.Contains(s.ChallengeId)).ToArray());
     }
 
     /// <summary>

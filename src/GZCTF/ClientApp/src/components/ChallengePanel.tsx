@@ -331,7 +331,7 @@ export const ChallengePanel: FC = () => {
                   }}
                   solved={solved}
                   teamId={teamInfo?.rank?.id}
-                  rating={ratingMap.get(chal.id)}
+                  rating={solved || dayjs(game?.end) < dayjs() ? ratingMap.get(chal.id) : undefined}
                 />
               )
             })}
