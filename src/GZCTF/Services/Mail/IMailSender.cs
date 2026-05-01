@@ -44,4 +44,15 @@ public interface IMailSender
     /// <param name="options">全局配置</param>
     public bool SendResetPasswordUrl(string? userName, string? email, string? resetLink,
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options);
+
+    /// <summary>
+    /// Batch-send credential emails using a single SMTP connection.
+    /// Returns (Sent, Failed) counts.
+    /// </summary>
+    public Task<(int Sent, int Failed)> SendCredentialsBatch(
+        IEnumerable<(string UserName, string Email, string Password)> credentials,
+        string loginUrl,
+        IStringLocalizer<Program> localizer,
+        IOptionsSnapshot<GlobalConfig> options,
+        CancellationToken token = default);
 }

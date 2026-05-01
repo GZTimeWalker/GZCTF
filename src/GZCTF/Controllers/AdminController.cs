@@ -15,6 +15,7 @@ using GZCTF.Models.Response.Admin;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
+using GZCTF.Services.Mail;
 using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -315,15 +316,16 @@ public class AdminController(
     }
 
     /// <summary>
-    /// Import users from a CSV file
+    /// Import users from pre-parsed, user-reviewed rows
     /// </summary>
     /// <remarks>
-    /// Parses CSV text, auto-generates unique usernames and secure passwords server-side,
-    /// creates accounts and teams in a single transaction, and returns the full credentials
-    /// list so the admin can download them. Rate-limit-safe: one HTTP call for any import size.
+    /// Accepts structured rows (after client-side CSV parsing and user editing).
+    /// Auto-generates unique usernames and secure passwords server-side, creates accounts
+    /// and teams in a single atomic transaction, and returns the full credentials list.
+    /// Rate-limit-safe: one HTTP call regardless of import size.
     /// </remarks>
     /// <response code="200">Import complete — returns per-user credentials and summary counts</response>
-    /// <response code="400">CSV parse error or required columns not found</response>
+    /// <response code="400">No rows provided or request is invalid</response>
     /// <response code="401">Unauthorized</response>
     /// <response code="403">Forbidden</response>
     [RequireAdmin]
@@ -332,50 +334,20 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ImportUsersFromCsv([FromBody] CsvImportRequest request, CancellationToken token = default)
     {
-        if (string.IsNullOrWhiteSpace(request.CsvText))
-            return BadRequest(new RequestResponse("CSV content is empty"));
+        if (request.Rows is null || request.Rows.Count == 0)
+            return BadRequest(new RequestResponse("No rows provided"));
 
-        List<string[]> rows;
-        try { rows = ParseCsvContent(request.CsvText); }
-        catch (Exception ex) { return BadRequest(new RequestResponse($"CSV parse error: {ex.Message}")); }
-
-        if (rows.Count < 2)
-            return BadRequest(new RequestResponse("CSV must have at least a header row and one data row"));
-
-        var headers = rows[0];
-        var dataRows = rows[1..];
-
-        int FindCol(string? name)
-        {
-            if (string.IsNullOrWhiteSpace(name)) return -1;
-            return Array.FindIndex(headers, h => h.Equals(name.Trim(), StringComparison.OrdinalIgnoreCase));
-        }
-
-        int realNameIdx = FindCol(request.RealNameColumn);
-        int emailIdx = FindCol(request.EmailColumn);
-        int teamNameIdx = FindCol(request.TeamNameColumn);
-        int stdNumberIdx = FindCol(request.StdNumberColumn);
-        int phoneIdx = FindCol(request.PhoneColumn);
-
-        if (realNameIdx < 0)
-            return BadRequest(new RequestResponse($"Real Name column '{request.RealNameColumn}' not found in CSV headers"));
-        if (emailIdx < 0)
-            return BadRequest(new RequestResponse($"Email column '{request.EmailColumn}' not found in CSV headers"));
-
-        string Cell(string[] row, int idx) =>
-            idx >= 0 && idx < row.Length ? row[idx].Trim() : string.Empty;
-        string? NE(string s) =>
-            string.IsNullOrWhiteSpace(s) ? null : s;
+        string? NE(string? s) => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
 
         var takenUsernames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var seenEmails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var toCreate = new List<(UserCreateModel Model, string RealName)>(dataRows.Count);
+        var toCreate = new List<(UserCreateModel Model, string RealName)>(request.Rows.Count);
         var skipped = new List<CsvImportUserResult>();
 
-        foreach (var row in dataRows)
+        foreach (var row in request.Rows)
         {
-            var realName = Cell(row, realNameIdx);
-            var email = Cell(row, emailIdx).ToLowerInvariant();
+            var realName = row.RealName?.Trim() ?? string.Empty;
+            var email = row.Email?.Trim().ToLowerInvariant() ?? string.Empty;
 
             if (string.IsNullOrEmpty(email) || !email.Contains('@'))
             {
@@ -385,25 +357,30 @@ public class AdminController(
 
             if (!seenEmails.Add(email))
             {
-                skipped.Add(new CsvImportUserResult { Email = email, RealName = realName, Status = "skipped", Error = "Duplicate email in CSV" });
+                skipped.Add(new CsvImportUserResult { Email = email, RealName = realName, Status = "skipped", Error = "Duplicate email" });
                 continue;
             }
 
+            // Username: use explicit override if provided, otherwise auto-generate from real name
+            var username = !string.IsNullOrWhiteSpace(row.UserNameOverride)
+                ? CsvEnsureUniqueUsername(row.UserNameOverride.Trim(), takenUsernames)
+                : CsvGenerateUsername(realName, takenUsernames);
+
             string? teamName = request.TeamMode switch
             {
-                "single" => NE(request.SingleTeamName?.Trim()),
-                "csv" => NE(Cell(row, teamNameIdx)),
+                "single" => NE(request.SingleTeamName),
+                "fromrow" => NE(row.TeamName),
                 _ => null
             };
 
             toCreate.Add((new UserCreateModel
             {
-                UserName = CsvGenerateUsername(realName, takenUsernames),
+                UserName = username,
                 Password = CsvGeneratePassword(),
                 Email = email,
                 RealName = NE(realName),
-                StdNumber = NE(Cell(row, stdNumberIdx)),
-                Phone = NE(Cell(row, phoneIdx)),
+                StdNumber = NE(row.StdNumber),
+                Phone = NE(row.Phone),
                 TeamName = teamName,
             }, realName));
         }
@@ -494,7 +471,7 @@ public class AdminController(
 
         return Ok(new CsvImportResultModel
         {
-            Total = dataRows.Count,
+            Total = request.Rows.Count,
             Created = results.Count(r => r.Status == "created"),
             Updated = results.Count(r => r.Status == "updated"),
             Skipped = results.Count(r => r.Status == "skipped"),
@@ -502,7 +479,56 @@ public class AdminController(
         });
     }
 
+    /// <summary>
+    /// Batch-send credential emails to imported users
+    /// </summary>
+    /// <remarks>
+    /// Sends one email per item using a single SMTP connection.
+    /// Passwords are provided by the caller (from the import result) and are not stored.
+    /// Returns sent/failed counts.
+    /// </remarks>
+    /// <response code="200">Email send complete — returns sent and failed counts</response>
+    /// <response code="400">No items provided</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="403">Forbidden</response>
+    [RequireAdmin]
+    [HttpPost("Users/Credentials/Send")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SendCredentialEmails([FromBody] SendCredentialsRequest request,
+        CancellationToken token = default)
+    {
+        if (request.Items is null || request.Items.Count == 0)
+            return BadRequest(new RequestResponse("No credentials provided"));
+
+        var mailSender = serviceProvider.GetRequiredService<IMailSender>();
+        var globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>();
+        var loginUrl = $"{Request.Scheme}://{Request.Host}";
+
+        var credentials = request.Items.Select(i => (i.UserName, i.Email, i.Password));
+        var (sent, failed) = await mailSender.SendCredentialsBatch(credentials, loginUrl, localizer, globalConfig, token);
+
+        logger.Log(
+            StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), sent],
+            await userManager.GetUserAsync(User), TaskStatus.Success);
+
+        return Ok(new { sent, failed });
+    }
+
     // ─── CSV import helpers ───────────────────────────────────────────────────
+
+    private static string CsvEnsureUniqueUsername(string desired, HashSet<string> taken, int maxLen = 15)
+    {
+        var @base = desired.Length > maxLen ? desired[..maxLen] : desired;
+        var name = @base;
+        for (int i = 1; taken.Contains(name); i++)
+        {
+            var suf = i.ToString();
+            name = (@base.Length + suf.Length > maxLen ? @base[..(maxLen - suf.Length)] : @base) + suf;
+        }
+        taken.Add(name);
+        return name;
+    }
 
     private static string CsvGenerateUsername(string realName, HashSet<string> taken, int maxLen = 15)
     {

@@ -122,6 +122,99 @@ public sealed class MailSender : IMailSender, IDisposable
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options) =>
         EnqueueMailTask(userName, email, resetLink, MailType.ResetPassword, localizer, options);
 
+    public async Task<(int Sent, int Failed)> SendCredentialsBatch(
+        IEnumerable<(string UserName, string Email, string Password)> credentials,
+        string loginUrl,
+        IStringLocalizer<Program> localizer,
+        IOptionsSnapshot<GlobalConfig> options,
+        CancellationToken token = default)
+    {
+        var items = credentials.ToList();
+        if (items.Count == 0)
+            return (0, 0);
+
+        if (_options?.Smtp?.Host is null || !(_options.Smtp.Port > 0) ||
+            string.IsNullOrWhiteSpace(_options.SenderAddress))
+            return (0, items.Count);
+
+        var template = localizer[nameof(Resources.Program.MailSender_Template)].Value;
+        var platform = options.Value.Platform;
+        var sender = string.IsNullOrWhiteSpace(_options.SenderName) ? platform : _options.SenderName;
+        var from = new MailboxAddress(sender, _options.SenderAddress);
+        var nowTime = DateTimeOffset.UtcNow.ToString("u");
+
+        int sent = 0, failed = 0;
+
+        using var client = new SmtpClient();
+        client.AuthenticationMechanisms.Remove("XOAUTH2");
+        client.ServerCertificateValidationCallback = (_, _, _, errors)
+            => errors is SslPolicyErrors.None || _options.Smtp.BypassCertVerify is true;
+
+        if (!OperatingSystem.IsWindows())
+            client.SslCipherSuitesPolicy = new CipherSuitesPolicy(Enum.GetValues<TlsCipherSuite>()
+                .Where(cipher =>
+                {
+                    var n = cipher.ToString();
+                    return !n.EndsWith("MD5") && !n.EndsWith("SHA") && !n.EndsWith("NULL");
+                }));
+
+        try
+        {
+            await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port.Value, cancellationToken: token);
+            await client.AuthenticateAsync(_options.UserName, _options.Password, token);
+
+            foreach (var (userName, email, password) in items)
+            {
+                var info =
+                    "<p>Your account has been created. Here are your login credentials:</p>" +
+                    $"<p><strong>Username:</strong> <code>{userName}</code><br/>" +
+                    $"<strong>Password:</strong> <code>{password}</code></p>" +
+                    "<p>Please change your password immediately after your first login.</p>";
+
+                var body = new StringBuilder(template)
+                    .Replace("{title}", "Your Account Credentials")
+                    .Replace("{information}", info)
+                    .Replace("{btnmsg}", "Log In Now")
+                    .Replace("{email}", email)
+                    .Replace("{userName}", userName)
+                    .Replace("{url}", loginUrl)
+                    .Replace("{nowtime}", nowTime)
+                    .Replace("{platform}", platform)
+                    .ToString();
+
+                using var msg = new MimeMessage();
+                msg.From.Add(from);
+                msg.To.Add(new MailboxAddress(userName, email));
+                msg.Subject = $"Your Account Credentials - {platform}";
+                msg.Body = new TextPart(TextFormat.Html) { Text = body };
+
+                try
+                {
+                    await client.SendAsync(msg, token);
+                    sent++;
+                    _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), email],
+                        TaskStatus.Success, LogLevel.Information);
+                }
+                catch (Exception e)
+                {
+                    failed++;
+                    _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
+            failed += items.Count - sent - failed;
+        }
+        finally
+        {
+            try { await client.DisconnectAsync(true, token); } catch { }
+        }
+
+        return (sent, failed);
+    }
+
     private async Task<bool> SendEmailAsync(string subject, string content, MailboxAddress from, MailboxAddress to)
     {
         if (_smtpClient is null)
