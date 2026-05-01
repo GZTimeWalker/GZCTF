@@ -12,9 +12,7 @@ import {
   useMantineTheme,
   ScrollAreaAutosize,
   Input,
-  ActionIcon,
   Textarea,
-  SegmentedControl,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiAlertCircleOutline, mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'

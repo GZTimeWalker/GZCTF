@@ -953,9 +953,6 @@
   <data name="Challenge_SubmissionLimitExceeded" xml:space="preserve">
     <value>Submission limit reached</value>
   </data>
-  <data name="Challenge_WrongAnswerCooldown" xml:space="preserve">
-    <value>Too many wrong attempts — please wait {0} minutes before trying again</value>
-  </data>
   <data name="Container_AddressResolveFailed" xml:space="preserve">
     <value>Container address parse failed</value>
   </data>

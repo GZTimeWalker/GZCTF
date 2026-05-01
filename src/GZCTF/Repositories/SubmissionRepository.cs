@@ -31,13 +31,6 @@ public class SubmissionRepository(
         Context.Submissions.CountAsync(s =>
             s.ParticipationId == participationId && s.ChallengeId == challengeId, token);
 
-    public Task<int> CountRecentWrongSubmissions(int participationId, int challengeId, DateTimeOffset since,
-        CancellationToken token = default) =>
-        Context.Submissions.CountAsync(s =>
-            s.ParticipationId == participationId &&
-            s.ChallengeId == challengeId &&
-            s.Status == AnswerResult.WrongAnswer &&
-            s.SubmitTimeUtc >= since, token);
 
     public Task<Submission[]> GetUncheckedFlags(CancellationToken token = default) =>
         Context.Submissions.Where(s => s.Status == AnswerResult.FlagSubmitted)
