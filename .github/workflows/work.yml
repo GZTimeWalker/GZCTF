@@ -2,11 +2,11 @@ name: Work Branch CI
 
 on:
   pull_request:
-    branches: ["work"]
-    paths: ["src/**"]
+    branches: [ "work" ]
+    paths: [ "src/**" ]
   push:
-    branches: ["work"]
-    paths: ["src/**"]
+    branches: [ "work" ]
+    paths: [ "src/**" ]
   workflow_dispatch:
 
 jobs:
@@ -30,8 +30,10 @@ jobs:
         with:
           node-version: latest
 
-      - name: Install pnpm
-        run: npm i -g pnpm
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: 11
 
       - name: Restore dependencies
         run: dotnet restore
