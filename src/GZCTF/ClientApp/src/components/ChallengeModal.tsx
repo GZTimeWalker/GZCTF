@@ -11,6 +11,7 @@ import {
   TextInput,
   Text,
   Title,
+  Tooltip,
   useMantineTheme,
   ScrollAreaAutosize,
   Input,
@@ -245,29 +246,49 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
                 }
                 labelPosition="left"
               />
-              <ScrollArea h={Math.min(solvers.length * 34, 170)} scrollbarSize={4}>
-                <Stack gap={2}>
+              <ScrollArea h={Math.min(solvers.length * 30, 165)} scrollbarSize={4}>
+                <Stack gap={1}>
                   {solvers.map((s, i) => {
                     const icon = solverIconMap.get(s.type) ?? solverIconMap.get(SubmissionType.Normal)!
                     return (
-                      <Group key={i} gap="xs" wrap="nowrap" px={2}>
-                        <Icon path={icon.path} size={0.75} color={icon.color} />
-                        <Avatar
-                          src={s.teamAvatar}
-                          size={20}
-                          radius="xl"
+                      <Group key={i} gap={6} wrap="nowrap" px={2} style={{ minWidth: 0 }}>
+                        {/* Solve position */}
+                        <Text
+                          size="xs"
+                          c="dimmed"
+                          ff="monospace"
+                          w={22}
+                          ta="right"
                           style={{ flexShrink: 0 }}
                         >
+                          {i + 1}.
+                        </Text>
+
+                        {/* Blood / solve-type icon */}
+                        <Icon path={icon.path} size={0.7} color={icon.color} style={{ flexShrink: 0 }} />
+
+                        {/* Team avatar */}
+                        <Avatar src={s.teamAvatar} size={18} radius="xl" style={{ flexShrink: 0 }}>
                           {s.teamName.slice(0, 1)}
                         </Avatar>
-                        <Text size="xs" fw={600} truncate maw="8rem" style={{ flexShrink: 0 }}>
-                          {s.teamName}
-                        </Text>
-                        {s.userName && (
-                          <Text size="xs" c="dimmed" truncate maw="7rem">
-                            {s.userName}
+
+                        {/* Team name — truncates, full text in tooltip */}
+                        <Tooltip label={s.teamName} position="top" withArrow openDelay={400} disabled={s.teamName.length <= 16}>
+                          <Text size="xs" fw={600} truncate style={{ minWidth: 0, flex: '2 1 0' }}>
+                            {s.teamName}
                           </Text>
+                        </Tooltip>
+
+                        {/* Username — truncates, full text in tooltip */}
+                        {s.userName && (
+                          <Tooltip label={s.userName} position="top" withArrow openDelay={400} disabled={s.userName.length <= 14}>
+                            <Text size="xs" c="dimmed" truncate style={{ minWidth: 0, flex: '1.5 1 0' }}>
+                              {s.userName}
+                            </Text>
+                          </Tooltip>
                         )}
+
+                        {/* Relative time */}
                         <Text size="xs" c="dimmed" ff="monospace" ml="auto" style={{ flexShrink: 0 }}>
                           {dayjs(s.time).fromNow()}
                         </Text>
