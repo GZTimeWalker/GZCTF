@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Card,
   Center,
@@ -12,7 +13,7 @@ import {
   alpha,
   useMantineTheme,
 } from '@mantine/core'
-import { mdiFlag } from '@mdi/js'
+import { mdiFlag, mdiThumbUp } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -32,10 +33,11 @@ interface ChallengeCardProps {
   iconMap: Map<SubmissionType, PartialIconProps | undefined>
   colorMap: Map<SubmissionType, string | undefined>
   teamId?: number
+  rating?: { likes: number; dislikes: number }
 }
 
 export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps) => {
-  const { challenge, solved, onClick, iconMap, teamId, colorMap } = props
+  const { challenge, solved, onClick, iconMap, teamId, colorMap, rating } = props
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const cateData = challengeCategoryLabelMap.get(challenge.category!)
   const theme = useMantineTheme()
@@ -46,6 +48,15 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
 
     return dayjs().isAfter(dayjs(challenge.deadline))
   }, [challenge.deadline])
+
+  const ratingBadge = useMemo(() => {
+    if (!rating) return null
+    const total = rating.likes + rating.dislikes
+    if (total < 3) return null
+    const pct = Math.round((rating.likes / total) * 100)
+    const color = pct >= 70 ? 'teal' : pct >= 40 ? 'orange' : 'red'
+    return { pct, color }
+  }, [rating])
 
   return (
     <Card
@@ -58,6 +69,19 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
       <Stack gap="xs" pos="relative" style={{ zIndex: 99 }}>
         <Group h="30px" wrap="nowrap" justify="space-between" gap={2}>
           <ScrollingText text={challenge.title || ''} size="lg" />
+          {ratingBadge && (
+            <Tooltip label={`${rating!.likes}👍 / ${rating!.dislikes}👎`} position="top" withArrow>
+              <Badge
+                size="xs"
+                color={ratingBadge.color}
+                variant="light"
+                leftSection={<Icon path={mdiThumbUp} size={0.5} />}
+                style={{ flexShrink: 0, cursor: 'default' }}
+              >
+                {ratingBadge.pct}%
+              </Badge>
+            </Tooltip>
+          )}
         </Group>
         <Divider size="sm" color={cateData?.color} />
         <Group wrap="nowrap" justify="space-between" align="center" gap={2}>

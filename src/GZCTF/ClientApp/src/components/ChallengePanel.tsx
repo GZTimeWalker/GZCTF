@@ -20,6 +20,7 @@ import dayjs from 'dayjs'
 import { FC, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useParams } from 'react-router'
+import useSWR from 'swr'
 import { ChallengeCard } from '@Components/ChallengeCard'
 import { Empty } from '@Components/Empty'
 import { GameChallengeModal } from '@Components/GameChallengeModal'
@@ -28,6 +29,15 @@ import { useChallengeCategoryLabelMap, SubmissionTypeIconMap } from '@Utils/Shar
 import { useGame, useGameTeamInfo } from '@Hooks/useGame'
 import { ChallengeInfo, ChallengeCategory, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
+
+interface RatingSummary {
+  challengeId: number
+  likes: number
+  dislikes: number
+}
+
+const ratingSWRFetcher = (url: string) =>
+  fetch(url, { credentials: 'include' }).then((r) => (r.ok ? r.json() : []))
 
 export const ChallengePanel: FC = () => {
   const { hash } = useLocation()
@@ -38,6 +48,20 @@ export const ChallengePanel: FC = () => {
   const challenges = teamInfo?.challenges
 
   const { game } = useGame(numId)
+
+  const { data: ratingsData } = useSWR<RatingSummary[]>(
+    numId > 0 ? `/api/game/${numId}/Reviews/Summary` : null,
+    ratingSWRFetcher,
+    { refreshInterval: 60000, revalidateOnFocus: false }
+  )
+
+  const ratingMap = useMemo(() => {
+    const map = new Map<number, { likes: number; dislikes: number }>()
+    for (const r of ratingsData ?? []) {
+      map.set(r.challengeId, { likes: r.likes, dislikes: r.dislikes })
+    }
+    return map
+  }, [ratingsData])
 
   const categories = Object.keys(challenges ?? {}).sort()
   const [activeTab, setActiveTab] = useState<ChallengeCategory | 'All'>('All')
@@ -307,6 +331,7 @@ export const ChallengePanel: FC = () => {
                   }}
                   solved={solved}
                   teamId={teamInfo?.rank?.id}
+                  rating={ratingMap.get(chal.id)}
                 />
               )
             })}

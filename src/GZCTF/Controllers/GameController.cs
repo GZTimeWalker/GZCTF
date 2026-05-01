@@ -1223,6 +1223,29 @@ public class GameController(
     }
 
     /// <summary>
+    /// Get community rating summaries for all challenges in a game
+    /// </summary>
+    /// <remarks>
+    /// Returns like/dislike counts per challenge. No authentication required beyond game access.
+    /// </remarks>
+    [HttpGet("{id:int}/Reviews/Summary")]
+    [ProducesResponseType(typeof(ChallengeRatingSummary[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetReviewSummary(
+        [FromRoute] int id,
+        [FromServices] IChallengeReviewRepository reviewRepository,
+        CancellationToken token)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var summaries = await reviewRepository.GetRatingSummariesAsync(id, token);
+        return Ok(summaries);
+    }
+
+    /// <summary>
     /// Submits a flag
     /// </summary>
     /// <remarks>

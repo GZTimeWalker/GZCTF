@@ -85,6 +85,20 @@ public class ChallengeReviewRepository(AppDbContext context) : IChallengeReviewR
         await context.SaveChangesAsync(token);
     }
 
+    public Task<Models.Response.Game.ChallengeRatingSummary[]> GetRatingSummariesAsync(int gameId, CancellationToken token = default)
+    {
+        return context.ChallengeReviews
+            .Where(r => r.GameId == gameId && r.Rating != ReviewRating.None)
+            .GroupBy(r => r.ChallengeId)
+            .Select(g => new Models.Response.Game.ChallengeRatingSummary
+            {
+                ChallengeId = g.Key,
+                Likes = g.Count(r => r.Rating == ReviewRating.Like),
+                Dislikes = g.Count(r => r.Rating == ReviewRating.Dislike),
+            })
+            .ToArrayAsync(token);
+    }
+
     public async Task<Models.Response.Admin.ReviewAnalyticsModel> GetAnalyticsAsync(int gameId, CancellationToken token = default)
     {
         var reviews = await context.ChallengeReviews
