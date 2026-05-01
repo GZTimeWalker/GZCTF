@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Divider,
   Group,
@@ -15,11 +16,12 @@ import {
   Textarea,
   SegmentedControl,
 } from '@mantine/core'
-import { mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'
+import { showNotification } from '@mantine/notifications'
+import { mdiAlertCircleOutline, mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
@@ -132,6 +134,14 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const [rating, setRating] = useState<ReviewRating>(ReviewRating.None)
   const [comment, setComment] = useState('')
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+  const [reviewSubmitted, setReviewSubmitted] = useState(false)
+
+  // Reset reviewSubmitted each time the challenge transitions to newly-solved
+  const prevSolved = useRef(false)
+  useEffect(() => {
+    if (solved && !prevSolved.current) setReviewSubmitted(false)
+    prevSolved.current = !!solved
+  }, [solved])
 
   useEffect(() => {
     if (challenge) {
@@ -139,6 +149,21 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
       setComment((challenge as any).userComment ?? '')
     }
   }, [challenge])
+
+  // Guard close: if just solved and review not yet submitted, block and nudge
+  const handleClose = () => {
+    if (solved && !reviewSubmitted) {
+      showNotification({
+        color: 'orange',
+        message: t('challenge.review.required_to_close', 'Please rate this challenge before closing'),
+        icon: <Icon path={mdiAlertCircleOutline} size={1} />,
+        autoClose: 3000,
+      })
+      return
+    }
+    setFlag('')
+    modalProps.onClose()
+  }
 
   const deadlineTime = useMemo(() => (challenge?.deadline ? dayjs(challenge.deadline) : null), [challenge?.deadline])
   const [isDeadlinePassed, setIsDeadlinePassed] = useState(() => (deadlineTime ? dayjs().isAfter(deadlineTime) : false))
@@ -273,9 +298,12 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const canSubmitDespiteDeadline = !isDeadlinePassed || (gameEnded && practiceMode)
   const inputDisabled = disabled || solved || isLimitReached || !canSubmitDespiteDeadline
 
-  const reviewSection = solved && (
+  const reviewSection = solved && !reviewSubmitted && (
     <Stack gap="sm">
       <Divider label={t('challenge.review.label', 'Rate this challenge')} labelPosition="center" />
+      <Alert icon={<Icon path={mdiAlertCircleOutline} size={0.9} />} color="orange" p="xs">
+        <Text size="xs">{t('challenge.review.required_notice', 'Please rate this challenge — you can close after submitting.')}</Text>
+      </Alert>
       <Group grow>
         <Button
           variant={rating === ReviewRating.Like ? 'filled' : 'default'}
@@ -342,10 +370,13 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
               setIsSubmittingReview(true)
               await onReviewSubmit(rating, comment)
               setIsSubmittingReview(false)
+              setReviewSubmitted(true)
+              setFlag('')
+              modalProps.onClose()
             }
           }}
         >
-          {t('common.button.submit', 'Submit')}
+          {t('challenge.review.submit_and_close', 'Submit & Close')}
         </Button>
       </Group>
     </Stack>
@@ -396,10 +427,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     <Modal.Root
       size="42vw"
       {...modalProps}
-      onClose={() => {
-        setFlag('')
-        modalProps.onClose()
-      }}
+      onClose={handleClose}
       centered
       classNames={classes}
     >
