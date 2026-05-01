@@ -46,11 +46,12 @@ public interface IMailSender
         IStringLocalizer<Program> localizer, IOptionsSnapshot<GlobalConfig> options);
 
     /// <summary>
-    /// Batch-send credential emails using a single SMTP connection.
+    /// Batch-send "set your password" emails using a single SMTP connection.
+    /// Each email contains a one-time reset link — no password is transmitted.
     /// Returns (Sent, Failed) counts.
     /// </summary>
     public Task<(int Sent, int Failed)> SendCredentialsBatch(
-        IEnumerable<(string UserName, string Email, string Password)> credentials,
+        IEnumerable<(string UserName, string Email, string ResetLink)> items,
         string loginUrl,
         IStringLocalizer<Program> localizer,
         IOptionsSnapshot<GlobalConfig> options,

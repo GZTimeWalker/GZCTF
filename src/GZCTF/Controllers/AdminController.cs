@@ -17,6 +17,7 @@ using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
 using GZCTF.Storage.Interface;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -503,10 +504,24 @@ public class AdminController(
 
         var mailSender = serviceProvider.GetRequiredService<IMailSender>();
         var globalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>();
-        var loginUrl = $"{Request.Scheme}://{Request.Host}";
+        var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
-        var credentials = request.Items.Select(i => (i.UserName, i.Email, i.Password));
-        var (sent, failed) = await mailSender.SendCredentialsBatch(credentials, loginUrl, localizer, globalConfig, token);
+        // Build (UserName, Email, ResetLink) tuples — one password-reset token per user
+        var resetItems = new List<(string UserName, string Email, string ResetLink)>(request.Items.Count);
+        foreach (var item in request.Items)
+        {
+            var user = await userManager.FindByEmailAsync(item.Email);
+            if (user is null) continue;
+
+            var rawToken = await userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Codec.Base64.Encode(rawToken);
+            var encodedEmail = Codec.Base64.Encode(item.Email);
+            var resetLink = $"{baseUrl}/account/reset?token={encodedToken}&email={encodedEmail}";
+            resetItems.Add((item.UserName, item.Email, resetLink));
+        }
+
+        var (sent, failed) = await mailSender.SendCredentialsBatch(resetItems, baseUrl, localizer, globalConfig, token);
+        failed += request.Items.Count - resetItems.Count; // users not found count as failed
 
         logger.Log(
             StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), sent],

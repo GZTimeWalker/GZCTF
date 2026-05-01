@@ -123,19 +123,19 @@ public sealed class MailSender : IMailSender, IDisposable
         EnqueueMailTask(userName, email, resetLink, MailType.ResetPassword, localizer, options);
 
     public async Task<(int Sent, int Failed)> SendCredentialsBatch(
-        IEnumerable<(string UserName, string Email, string Password)> credentials,
+        IEnumerable<(string UserName, string Email, string ResetLink)> items,
         string loginUrl,
         IStringLocalizer<Program> localizer,
         IOptionsSnapshot<GlobalConfig> options,
         CancellationToken token = default)
     {
-        var items = credentials.ToList();
-        if (items.Count == 0)
+        var list = items.ToList();
+        if (list.Count == 0)
             return (0, 0);
 
         if (_options?.Smtp?.Host is null || !(_options.Smtp.Port > 0) ||
             string.IsNullOrWhiteSpace(_options.SenderAddress))
-            return (0, items.Count);
+            return (0, list.Count);
 
         var template = localizer[nameof(Resources.Program.MailSender_Template)].Value;
         var platform = options.Value.Platform;
@@ -163,21 +163,21 @@ public sealed class MailSender : IMailSender, IDisposable
             await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port.Value, cancellationToken: token);
             await client.AuthenticateAsync(_options.UserName, _options.Password, token);
 
-            foreach (var (userName, email, password) in items)
+            foreach (var (userName, email, resetLink) in list)
             {
                 var info =
-                    "<p>Your account has been created. Here are your login credentials:</p>" +
-                    $"<p><strong>Username:</strong> <code>{userName}</code><br/>" +
-                    $"<strong>Password:</strong> <code>{password}</code></p>" +
-                    "<p>Please change your password immediately after your first login.</p>";
+                    $"<p>An account has been created for you on <strong>{platform}</strong>.</p>" +
+                    $"<p><strong>Username:</strong> <code>{userName}</code></p>" +
+                    "<p>Click the button below to set your own password. " +
+                    "This link is valid for 24 hours and can only be used once.</p>";
 
                 var body = new StringBuilder(template)
-                    .Replace("{title}", "Your Account Credentials")
+                    .Replace("{title}", "Set Your Password")
                     .Replace("{information}", info)
-                    .Replace("{btnmsg}", "Log In Now")
+                    .Replace("{btnmsg}", "Set My Password")
                     .Replace("{email}", email)
                     .Replace("{userName}", userName)
-                    .Replace("{url}", loginUrl)
+                    .Replace("{url}", resetLink)
                     .Replace("{nowtime}", nowTime)
                     .Replace("{platform}", platform)
                     .ToString();
@@ -185,7 +185,7 @@ public sealed class MailSender : IMailSender, IDisposable
                 using var msg = new MimeMessage();
                 msg.From.Add(from);
                 msg.To.Add(new MailboxAddress(userName, email));
-                msg.Subject = $"Your Account Credentials - {platform}";
+                msg.Subject = $"Set Your Password - {platform}";
                 msg.Body = new TextPart(TextFormat.Html) { Text = body };
 
                 try
@@ -205,7 +205,7 @@ public sealed class MailSender : IMailSender, IDisposable
         catch (Exception e)
         {
             _logger.LogErrorMessage(e, StaticLocalizer[nameof(Resources.Program.MailSender_MailSendFailed)]);
-            failed += items.Count - sent - failed;
+            failed += list.Count - sent - failed;
         }
         finally
         {

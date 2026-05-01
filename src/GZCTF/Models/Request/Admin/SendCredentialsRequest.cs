@@ -9,7 +9,7 @@ public class SendCredentialsRequest
     public List<CredentialItem> Items { get; set; } = [];
 }
 
-/// <summary>A single user's credentials to email.</summary>
+/// <summary>A single user entry to send a "set your password" email to.</summary>
 public class CredentialItem
 {
     [Required]
@@ -17,7 +17,4 @@ public class CredentialItem
 
     [Required]
     public string UserName { get; set; } = string.Empty;
-
-    [Required]
-    public string Password { get; set; } = string.Empty;
 }

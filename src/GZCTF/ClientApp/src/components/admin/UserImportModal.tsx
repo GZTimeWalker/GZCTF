@@ -391,8 +391,8 @@ export const UserImportModal: FC<UserImportModalProps> = ({ onImportComplete, ..
     setSendingEmail(true)
     setEmailSendResult(null)
     const items = importResult.users
-      .filter((u) => u.status !== 'skipped' && u.password)
-      .map((u) => ({ email: u.email, userName: u.userName, password: u.password }))
+      .filter((u) => u.status !== 'skipped')
+      .map((u) => ({ email: u.email, userName: u.userName }))
 
     try {
       const resp = await fetch('/api/admin/users/credentials/send', {
