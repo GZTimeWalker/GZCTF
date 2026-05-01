@@ -1,6 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mime;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
@@ -309,6 +312,264 @@ public class AdminController(
             await trans.RollbackAsync(token);
             throw;
         }
+    }
+
+    /// <summary>
+    /// Import users from a CSV file
+    /// </summary>
+    /// <remarks>
+    /// Parses CSV text, auto-generates unique usernames and secure passwords server-side,
+    /// creates accounts and teams in a single transaction, and returns the full credentials
+    /// list so the admin can download them. Rate-limit-safe: one HTTP call for any import size.
+    /// </remarks>
+    /// <response code="200">Import complete — returns per-user credentials and summary counts</response>
+    /// <response code="400">CSV parse error or required columns not found</response>
+    /// <response code="401">Unauthorized</response>
+    /// <response code="403">Forbidden</response>
+    [RequireAdmin]
+    [HttpPost("Users/Import")]
+    [ProducesResponseType(typeof(CsvImportResultModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ImportUsersFromCsv([FromBody] CsvImportRequest request, CancellationToken token = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.CsvText))
+            return BadRequest(new RequestResponse("CSV content is empty"));
+
+        List<string[]> rows;
+        try { rows = ParseCsvContent(request.CsvText); }
+        catch (Exception ex) { return BadRequest(new RequestResponse($"CSV parse error: {ex.Message}")); }
+
+        if (rows.Count < 2)
+            return BadRequest(new RequestResponse("CSV must have at least a header row and one data row"));
+
+        var headers = rows[0];
+        var dataRows = rows[1..];
+
+        int FindCol(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return -1;
+            return Array.FindIndex(headers, h => h.Equals(name.Trim(), StringComparison.OrdinalIgnoreCase));
+        }
+
+        int realNameIdx = FindCol(request.RealNameColumn);
+        int emailIdx = FindCol(request.EmailColumn);
+        int teamNameIdx = FindCol(request.TeamNameColumn);
+        int stdNumberIdx = FindCol(request.StdNumberColumn);
+        int phoneIdx = FindCol(request.PhoneColumn);
+
+        if (realNameIdx < 0)
+            return BadRequest(new RequestResponse($"Real Name column '{request.RealNameColumn}' not found in CSV headers"));
+        if (emailIdx < 0)
+            return BadRequest(new RequestResponse($"Email column '{request.EmailColumn}' not found in CSV headers"));
+
+        string Cell(string[] row, int idx) =>
+            idx >= 0 && idx < row.Length ? row[idx].Trim() : string.Empty;
+        string? NE(string s) =>
+            string.IsNullOrWhiteSpace(s) ? null : s;
+
+        var takenUsernames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seenEmails = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var toCreate = new List<(UserCreateModel Model, string RealName)>(dataRows.Count);
+        var skipped = new List<CsvImportUserResult>();
+
+        foreach (var row in dataRows)
+        {
+            var realName = Cell(row, realNameIdx);
+            var email = Cell(row, emailIdx).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(email) || !email.Contains('@'))
+            {
+                skipped.Add(new CsvImportUserResult { Email = email, RealName = realName, Status = "skipped", Error = "Invalid or missing email" });
+                continue;
+            }
+
+            if (!seenEmails.Add(email))
+            {
+                skipped.Add(new CsvImportUserResult { Email = email, RealName = realName, Status = "skipped", Error = "Duplicate email in CSV" });
+                continue;
+            }
+
+            string? teamName = request.TeamMode switch
+            {
+                "single" => NE(request.SingleTeamName?.Trim()),
+                "csv" => NE(Cell(row, teamNameIdx)),
+                _ => null
+            };
+
+            toCreate.Add((new UserCreateModel
+            {
+                UserName = CsvGenerateUsername(realName, takenUsernames),
+                Password = CsvGeneratePassword(),
+                Email = email,
+                RealName = NE(realName),
+                StdNumber = NE(Cell(row, stdNumberIdx)),
+                Phone = NE(Cell(row, phoneIdx)),
+                TeamName = teamName,
+            }, realName));
+        }
+
+        var currentUser = await userManager.GetUserAsync(User);
+        var trans = await teamRepository.BeginTransactionAsync(token);
+        var results = new List<CsvImportUserResult>(toCreate.Count);
+
+        try
+        {
+            var created = new List<(UserInfo User, string? TeamName)>(toCreate.Count);
+
+            foreach (var (model, realName) in toCreate)
+            {
+                var userInfo = model.ToUserInfo();
+                userInfo.EmailConfirmed = request.EmailConfirmed;
+
+                var result = await userManager.CreateAsync(userInfo, model.Password);
+                string status = "created";
+
+                if (!result.Succeeded)
+                {
+                    var errorCode = result.Errors.FirstOrDefault()?.Code;
+                    userInfo = errorCode switch
+                    {
+                        "DuplicateEmail" => await userManager.FindByEmailAsync(model.Email),
+                        "DuplicateUserName" => await userManager.FindByNameAsync(model.UserName),
+                        _ => null
+                    };
+
+                    if (userInfo is null)
+                    {
+                        results.Add(new CsvImportUserResult
+                        {
+                            Email = model.Email, RealName = realName, UserName = model.UserName,
+                            Status = "skipped", Error = result.Errors.FirstOrDefault()?.Description
+                        });
+                        continue;
+                    }
+
+                    userInfo.UpdateUserInfo(model);
+                    var resetCode = await userManager.GeneratePasswordResetTokenAsync(userInfo);
+                    await userManager.ResetPasswordAsync(userInfo, resetCode, model.Password);
+                    status = "updated";
+                }
+
+                created.Add((userInfo, model.TeamName));
+                results.Add(new CsvImportUserResult
+                {
+                    Email = model.Email,
+                    RealName = realName,
+                    UserName = userInfo.UserName ?? model.UserName,
+                    Password = model.Password,
+                    TeamName = model.TeamName,
+                    Status = status
+                });
+            }
+
+            var teams = new List<Team>();
+            foreach (var (user, teamName) in created)
+            {
+                if (teamName is null) continue;
+                var team = teams.Find(t => t.Name == teamName);
+                if (team is null)
+                {
+                    team = await teamRepository.CreateTeam(new() { Name = teamName }, user, token);
+                    teams.Add(team);
+                }
+                else
+                {
+                    team.Members.Add(user);
+                }
+            }
+
+            await teamRepository.SaveAsync(token);
+            await trans.CommitAsync(token);
+
+            logger.Log(StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), results.Count(r => r.Status == "created")],
+                currentUser, TaskStatus.Success);
+        }
+        catch
+        {
+            await trans.RollbackAsync(token);
+            throw;
+        }
+
+        results.AddRange(skipped);
+
+        return Ok(new CsvImportResultModel
+        {
+            Total = dataRows.Count,
+            Created = results.Count(r => r.Status == "created"),
+            Updated = results.Count(r => r.Status == "updated"),
+            Skipped = results.Count(r => r.Status == "skipped"),
+            Users = results
+        });
+    }
+
+    // ─── CSV import helpers ───────────────────────────────────────────────────
+
+    private static string CsvGenerateUsername(string realName, HashSet<string> taken, int maxLen = 15)
+    {
+        var clean = Regex.Replace(realName.ToLowerInvariant().Replace(" ", "."), @"[^a-z0-9.]", string.Empty);
+        var @base = clean.Length > 0 ? (clean.Length > maxLen ? clean[..maxLen] : clean) : "user";
+        var name = @base;
+        for (int i = 1; taken.Contains(name); i++)
+        {
+            var suf = i.ToString();
+            name = (@base.Length + suf.Length > maxLen ? @base[..(maxLen - suf.Length)] : @base) + suf;
+        }
+        taken.Add(name);
+        return name;
+    }
+
+    private static string CsvGeneratePassword()
+    {
+        const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const string lower = "abcdefghijklmnopqrstuvwxyz";
+        const string digits = "0123456789";
+        const string special = "!@#$%^&*";
+        const string all = upper + lower + digits + special;
+
+        var rng = RandomNumberGenerator.GetBytes(32);
+        var chars = new char[16];
+        // Guarantee at least one character from each required class
+        chars[0] = upper[rng[0] % upper.Length];
+        chars[1] = lower[rng[1] % lower.Length];
+        chars[2] = digits[rng[2] % digits.Length];
+        chars[3] = special[rng[3] % special.Length];
+        for (int i = 4; i < 16; i++)
+            chars[i] = all[rng[i] % all.Length];
+        // Fisher-Yates shuffle
+        for (int i = 15; i > 0; i--)
+        {
+            int j = rng[16 + i] % (i + 1);
+            (chars[i], chars[j]) = (chars[j], chars[i]);
+        }
+        return new string(chars);
+    }
+
+    private static List<string[]> ParseCsvContent(string content)
+    {
+        var result = new List<string[]>();
+        using var reader = new StringReader(content);
+        string? line;
+        while ((line = reader.ReadLine()) != null)
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+            var fields = new List<string>();
+            var field = new StringBuilder();
+            bool inQuote = false;
+            for (int i = 0; i < line.Length; i++)
+            {
+                var c = line[i];
+                if (c == '"')
+                {
+                    if (inQuote && i + 1 < line.Length && line[i + 1] == '"') { field.Append('"'); i++; }
+                    else inQuote = !inQuote;
+                }
+                else if (c == ',' && !inQuote) { fields.Add(field.ToString().Trim()); field.Clear(); }
+                else field.Append(c);
+            }
+            fields.Add(field.ToString().Trim());
+            result.Add([.. fields]);
+        }
+        return result;
     }
 
     /// <summary>

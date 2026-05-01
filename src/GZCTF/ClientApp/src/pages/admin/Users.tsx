@@ -18,6 +18,7 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
 import {
+  mdiAccountMultiplePlus,
   mdiAccountOutline,
   mdiArrowLeftBold,
   mdiArrowRightBold,
@@ -28,11 +29,12 @@ import {
   mdiPencilOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { UserEditModal, RoleColorMap } from '@Components/admin/UserEditModal'
+import { UserImportModal } from '@Components/admin/UserImportModal'
 import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
 import { useUser } from '@Hooks/useUser'
@@ -45,6 +47,7 @@ const Users: FC = () => {
   const [page, setPage] = useState(1)
   const [update, setUpdate] = useState(new Date())
   const [editModalOpened, setEditModalOpened] = useState(false)
+  const [importModalOpened, setImportModalOpened] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
   const { data: users, total, setData: setUsers, updateData: updateUsers } = useArrayResponse<UserInfoModel>()
   const [hint, setHint] = useInputState('')
@@ -209,6 +212,14 @@ const Users: FC = () => {
             rightSection={<Icon path={mdiAccountOutline} size={1} />}
           />
           <Group justify="right">
+            <Button
+              leftSection={<Icon path={mdiAccountMultiplePlus} size={0.9} />}
+              variant="outline"
+              size="sm"
+              onClick={() => setImportModalOpened(true)}
+            >
+              Import CSV
+            </Button>
             <Text fw="bold" size="sm">
               <Trans
                 i18nKey="admin.content.users.stats"
@@ -330,6 +341,12 @@ const Users: FC = () => {
             </Table.Tbody>
           </Table>
         </ScrollArea>
+        <UserImportModal
+          title=""
+          opened={importModalOpened}
+          onClose={() => setImportModalOpened(false)}
+          onImportComplete={() => setUpdate(new Date())}
+        />
         <UserEditModal
           size="35%"
           title={t('admin.button.users.edit')}
