@@ -15,20 +15,20 @@ public class GameNoticeRepository(
     ISendWebhookService webhookService,
     AppDbContext context) : RepositoryBase(context), IGameNoticeRepository
 {
-    public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
+    public async Task<GameNotice> AddNotice(GameNotice notice, bool broadcast = true, CancellationToken token = default)
     {
         await Context.AddAsync(notice, token);
         await SaveAsync(token);
 
         await cacheHelper.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
 
-        await hub.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
-
-        // Send webhook notification
-        var game = await Context.Games.FindAsync([notice.GameId], token);
-        if (game?.DiscordWebhook is { Length: > 0 } webhookUrl)
+        if (broadcast)
         {
-            _ = webhookService.SendNoticeAsync(notice, webhookUrl);
+            await hub.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
+
+            var game = await Context.Games.FindAsync([notice.GameId], token);
+            if (game?.DiscordWebhook is { Length: > 0 } webhookUrl)
+                _ = webhookService.SendNoticeAsync(notice, webhookUrl);
         }
 
         return notice;
@@ -45,11 +45,28 @@ public class GameNoticeRepository(
     public Task<DataWithModifiedTime<GameNotice[]>> GetLatestNotices(int gameId, CancellationToken token = default)
         => cacheHelper.GetOrCreateAsync(logger, CacheKey.GameNotice(gameId), async entry =>
         {
-            entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-            var notices = await Context.GameNotices.Where(e => e.GameId == gameId)
+            var now = DateTimeOffset.UtcNow;
+
+            // Only include Normal notices whose scheduled publish time has arrived
+            var notices = await Context.GameNotices
+                .Where(e => e.GameId == gameId &&
+                            (e.Type != NoticeType.Normal || e.PublishTimeUtc <= now))
                 .OrderByDescending(e => e.Type == NoticeType.Normal ? DateTimeOffset.UtcNow : e.PublishTimeUtc)
                 .Take(300).ToArrayAsync(token);
-            return new DataWithModifiedTime<GameNotice[]>(notices, DateTimeOffset.UtcNow);
+
+            // Expire the cache just in time for the next scheduled notice, max 30 min
+            var nextScheduled = await Context.GameNotices
+                .Where(e => e.GameId == gameId && e.Type == NoticeType.Normal && e.PublishTimeUtc > now)
+                .Select(e => (DateTimeOffset?)e.PublishTimeUtc)
+                .MinAsync(token);
+
+            var ttl = nextScheduled is { } next
+                ? TimeSpan.FromTicks(Math.Min((next - now).Ticks, TimeSpan.FromMinutes(30).Ticks))
+                : TimeSpan.FromMinutes(30);
+
+            entry.AbsoluteExpirationRelativeToNow = ttl;
+
+            return new DataWithModifiedTime<GameNotice[]>(notices, now);
         }, token: token);
 
     public async Task RemoveNotice(GameNotice notice, CancellationToken token = default)
@@ -62,11 +79,8 @@ public class GameNoticeRepository(
 
     public async Task<GameNotice> UpdateNotice(GameNotice notice, CancellationToken token = default)
     {
-        notice.PublishTimeUtc = DateTimeOffset.UtcNow;
         await SaveAsync(token);
-
         await cacheHelper.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
-
         return notice;
     }
 }

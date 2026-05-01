@@ -8,7 +8,8 @@ public interface IGameNoticeRepository : IRepository
     /// <param name="notice"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default);
+    /// <param name="broadcast">When false the SignalR push is skipped (scheduled notices).</param>
+    public Task<GameNotice> AddNotice(GameNotice notice, bool broadcast = true, CancellationToken token = default);
 
     /// <summary>
     /// Get latest notices for a specific game

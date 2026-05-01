@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "隱藏",
-      "summary": "簡介"
+      "summary": "簡介",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "容器 ID",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "公告已創建",
         "deleted": "公告已刪除",
-        "updated": "公告已更新"
+        "updated": "公告已更新",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "隊伍參與狀態已更新"
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "（無簡介）",
         "team": "（無名隊伍）"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "管理員",
       "notices": "比賽公告",
       "review": "隊伍審核",
-      "writeups": "Writeups"
+      "writeups": "Writeups",
+      "health": "Health"
     },
     "instances": "實例管理",
     "logs": "系統日誌",

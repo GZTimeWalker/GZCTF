@@ -924,6 +924,71 @@ public class AdminController(
     }
 
     /// <summary>
+    /// Get per-challenge health stats for a game
+    /// </summary>
+    /// <remarks>
+    /// Returns solve count, wrong attempt count, wrong rate, first-solve time, and solving-team count
+    /// for every enabled challenge in the game. Requires GameAdmin permission.
+    /// </remarks>
+    /// <response code="200">Challenge health stats</response>
+    /// <response code="404">Game not found</response>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/Challenges/Health")]
+    [ProducesResponseType(typeof(ChallengeHealthModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChallengeHealth([FromRoute] int id, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+
+        var challenges = await dbContext.GameChallenges
+            .AsNoTracking()
+            .Where(c => c.GameId == id && c.IsEnabled)
+            .Select(c => new { c.Id, c.Title, Category = c.Category.ToString() })
+            .ToListAsync(token);
+
+        var solveStats = await dbContext.Submissions
+            .AsNoTracking()
+            .Where(s => s.GameId == id && s.Status == AnswerResult.Accepted)
+            .GroupBy(s => s.ChallengeId)
+            .Select(g => new
+            {
+                ChallengeId = g.Key,
+                Count = g.Count(),
+                TeamCount = g.Select(s => s.TeamId).Distinct().Count(),
+                FirstTime = g.Min(s => (DateTimeOffset?)s.SubmitTimeUtc)
+            })
+            .ToListAsync(token);
+
+        var wrongStats = await dbContext.Submissions
+            .AsNoTracking()
+            .Where(s => s.GameId == id && s.Status == AnswerResult.WrongAnswer)
+            .GroupBy(s => s.ChallengeId)
+            .Select(g => new { ChallengeId = g.Key, Count = g.Count() })
+            .ToListAsync(token);
+
+        var solveMap = solveStats.ToDictionary(x => x.ChallengeId);
+        var wrongMap = wrongStats.ToDictionary(x => x.ChallengeId);
+
+        var result = challenges.Select(c => new ChallengeHealthModel
+        {
+            Id = c.Id,
+            Title = c.Title,
+            Category = c.Category,
+            SolveCount = solveMap.TryGetValue(c.Id, out var s) ? s.Count : 0,
+            SolveTeamCount = solveMap.TryGetValue(c.Id, out var st) ? st.TeamCount : 0,
+            WrongCount = wrongMap.TryGetValue(c.Id, out var w) ? w.Count : 0,
+            FirstSolveTime = solveMap.TryGetValue(c.Id, out var fs) ? fs.FirstTime : null,
+        }).ToArray();
+
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Get all Writeup basic information
     /// </summary>
     /// <remarks>

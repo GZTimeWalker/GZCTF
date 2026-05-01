@@ -466,7 +466,12 @@
   "label": {
     "games": {
       "hide": "Ẩn.",
-      "summary": "Tóm tắt."
+      "summary": "Tóm tắt.",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "ID Container.",
@@ -548,7 +553,8 @@
       "notices": {
         "created": "Thông báo đã được tạo.",
         "deleted": "Thông báo đã bị xóa.",
-        "updated": "Thông báo đã được cập nhật."
+        "updated": "Thông báo đã được cập nhật.",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "Đã cập nhật trạng thái của đội"
@@ -590,6 +596,9 @@
       "participation": {
         "bio": "(no bio).",
         "team": "(no name)."
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -628,7 +637,8 @@
       "managers": "Quản lý",
       "notices": "Thông báo",
       "review": "Đội",
-      "writeups": "Writeups"
+      "writeups": "Writeups",
+      "health": "Health"
     },
     "instances": "Instances",
     "logs": "Nhật ký",

@@ -5,7 +5,8 @@
     "edit": "Thông tin về Đội",
     "join": "Gia nhập Đội",
     "leave": "Rời Đội",
-    "save": "Cập nhật Thông tin"
+    "save": "Cập nhật Thông tin",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "Bạn có thể tạo một đội và mời người khác gia nhập. Mỗi người chơi chỉ có thể tạo một đội.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Mã mời đã được sao chép vào clipboard",
-      "updated": "Token mời của đội đã được cập nhật"
+      "updated": "Token mời của đội đã được cập nhật",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Gia nhập đội thành công",

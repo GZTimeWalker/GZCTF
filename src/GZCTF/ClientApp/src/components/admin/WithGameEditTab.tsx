@@ -4,6 +4,7 @@ import {
   mdiBullhornOutline,
   mdiFileDocumentCheckOutline,
   mdiFlagOutline,
+  mdiHeartPulse,
   mdiKeyboardBackspace,
   mdiTagOutline,
   mdiTextBoxOutline,
@@ -52,6 +53,7 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
     { icon: mdiAccountGroupOutline, title: t('admin.tab.games.review'), path: 'review' },
     { icon: mdiCommentTextOutline, title: t('admin.title.challenge_reviews', 'Reviews'), path: 'challengereviews' },
     { icon: mdiFileDocumentCheckOutline, title: t('admin.tab.games.writeups'), path: 'writeups' },
+    { icon: mdiHeartPulse, title: t('admin.tab.games.health', 'Health'), path: 'health' },
   ].filter((p) => isAdmin || !p.adminOnly)
 
   const getTab = (path: string) => pages.find((page) => path.includes(page.path))

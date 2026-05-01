@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "Ocultar",
-      "summary": "Resumen"
+      "summary": "Resumen",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "ID del Contenedor",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "Aviso creado",
         "deleted": "Aviso eliminado",
-        "updated": "Aviso actualizado"
+        "updated": "Aviso actualizado",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "El estado de participación del equipo ha sido actualizado"
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "(sin biografía)",
         "team": "(sin nombre)"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "Gerentes",
       "notices": "Avisos",
       "review": "Equipos",
-      "writeups": "Writeups"
+      "writeups": "Writeups",
+      "health": "Health"
     },
     "instances": "Instancias",
     "logs": "Registros",

@@ -5,7 +5,8 @@
     "edit": "팀 정보",
     "join": "팀 참가",
     "leave": "팀 나가기",
-    "save": "정보 수정"
+    "save": "정보 수정",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "팀을 생성하여 다른 사람들을 초대할 수 있습니다.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "초대 코드가 클립보드에 복사 되었습니다.",
-      "updated": "팀 초대 코드가 업데이트 되었습니다."
+      "updated": "팀 초대 코드가 업데이트 되었습니다.",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "팀에 성공적으로 가입했습니다.",

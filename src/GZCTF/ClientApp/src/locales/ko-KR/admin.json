@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "숨김",
-      "summary": "요약"
+      "summary": "요약",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "컨테이어 ID",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "공지사항이 추가되었습니다.",
         "deleted": "공지사항이 삭제되었습니다.",
-        "updated": "공지사항이 수정되었습니다."
+        "updated": "공지사항이 수정되었습니다.",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "팀 참여 상태 업데이트."
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "(이력 없음)",
         "team": "(이름 없음)"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "관리자",
       "notices": "공지사항",
       "review": "팀",
-      "writeups": "풀이"
+      "writeups": "풀이",
+      "health": "Health"
     },
     "instances": "인스턴스",
     "logs": "로그",

@@ -5,7 +5,8 @@
     "edit": "Détails de l'équipe",
     "join": "Rejoindre l'équipe",
     "leave": "Quitter l'équipe",
-    "save": "Mettre à jour les infos"
+    "save": "Mettre à jour les infos",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "Vous pouvez créer une équipe et inviter d'autres à se joindre.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Le code d'invitation est copié dans le presse-papiers",
-      "updated": "Le jeton d'invitation de l'équipe a été mis à jour"
+      "updated": "Le jeton d'invitation de l'équipe a été mis à jour",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Rejoint l'équipe avec succès",

@@ -5,7 +5,8 @@
     "edit": "Detalles del equipo",
     "join": "Unirse al equipo",
     "leave": "Abandonar equipo",
-    "save": "Actualizar info"
+    "save": "Actualizar info",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "Puedes crear un equipo e invitar a otros a unirse.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Código de invitación copiado al portapapeles",
-      "updated": "Token de invitación del equipo actualizado"
+      "updated": "Token de invitación del equipo actualizado",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Se unió al equipo con éxito",

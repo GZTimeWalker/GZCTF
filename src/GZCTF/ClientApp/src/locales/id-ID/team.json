@@ -5,7 +5,8 @@
     "edit": "Detail Tim",
     "join": "Gabung ke Tim",
     "leave": "Keluar dari tim",
-    "save": "Perbarui Info"
+    "save": "Perbarui Info",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "Kamu bisa membuat tim dan mengundang orang lain untuk bergabung.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Kode undangan telah disalin ke clipboard",
-      "updated": "Token undangan tim telah diperbarui"
+      "updated": "Token undangan tim telah diperbarui",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Berhasil bergabung dengan tim",

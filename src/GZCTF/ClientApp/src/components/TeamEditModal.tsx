@@ -23,7 +23,7 @@ import { useClipboard } from '@mantine/hooks'
 import { useModals } from '@mantine/modals'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { ScrollingText } from '@Components/ScrollingText'
-import { mdiCheck, mdiClose, mdiRefresh, mdiStar } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiLinkVariant, mdiRefresh, mdiStar } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -363,29 +363,48 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
           </Grid.Col>
         </Grid>
         {isCaptain && (
-          <PasswordInput
-            label={
-              <Group gap={3}>
-                <Text fw={500} size="sm">
-                  {t('team.label.invite_code')}
-                </Text>
-                <ActionIcon size="sm" onClick={onRefreshInviteCode}>
-                  <Icon path={mdiRefresh} size={1} />
-                </ActionIcon>
-              </Group>
-            }
-            value={inviteCode}
-            placeholder="loading..."
-            onClick={() => {
-              clipboard.copy(inviteCode)
-              showNotification({
-                color: 'teal',
-                message: t('team.notification.invite_code.copied'),
-                icon: <Icon path={mdiCheck} size={1} />,
-              })
-            }}
-            readOnly
-          />
+          <>
+            <PasswordInput
+              label={
+                <Group gap={3}>
+                  <Text fw={500} size="sm">
+                    {t('team.label.invite_code')}
+                  </Text>
+                  <ActionIcon size="sm" onClick={onRefreshInviteCode}>
+                    <Icon path={mdiRefresh} size={1} />
+                  </ActionIcon>
+                </Group>
+              }
+              value={inviteCode}
+              placeholder="loading..."
+              onClick={() => {
+                clipboard.copy(inviteCode)
+                showNotification({
+                  color: 'teal',
+                  message: t('team.notification.invite_code.copied'),
+                  icon: <Icon path={mdiCheck} size={1} />,
+                })
+              }}
+              readOnly
+            />
+            <Button
+              size="xs"
+              variant="light"
+              leftSection={<Icon path={mdiLinkVariant} size={0.8} />}
+              disabled={!inviteCode}
+              onClick={() => {
+                const link = `${window.location.origin}/teams?join=${encodeURIComponent(inviteCode)}`
+                clipboard.copy(link)
+                showNotification({
+                  color: 'teal',
+                  message: t('team.notification.invite_code.link_copied'),
+                  icon: <Icon path={mdiCheck} size={1} />,
+                })
+              }}
+            >
+              {t('team.button.copy_invite_link')}
+            </Button>
+          </>
         )}
         <Textarea
           label={t('team.label.bio')}

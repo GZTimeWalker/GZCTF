@@ -5,7 +5,8 @@
     "edit": "Team Details",
     "join": "Join Team",
     "leave": "Quit Team",
-    "save": "Update Info"
+    "save": "Update Info",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "You can create a team and invite others to join.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Invitation code is copied to clipboard",
-      "updated": "Team invitation token updated"
+      "updated": "Team invitation token updated",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Successfully joined team",

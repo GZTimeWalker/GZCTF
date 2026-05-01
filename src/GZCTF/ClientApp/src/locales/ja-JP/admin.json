@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "隠す",
-      "summary": "概要"
+      "summary": "概要",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "コンテナーID",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "お知らせが作成されました",
         "deleted": "お知らせを削除しました",
-        "updated": "お知らせが更新されました"
+        "updated": "お知らせが更新されました",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "チームの承認状態が更新されました"
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "（自己紹介なし）",
         "team": "（チーム名なし）"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "マネージャー",
       "notices": "お知らせ",
       "review": "チーム承認",
-      "writeups": "記事"
+      "writeups": "記事",
+      "health": "Health"
     },
     "instances": "インスタンス管理",
     "logs": "システムログ",

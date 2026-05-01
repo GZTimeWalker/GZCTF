@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "隐藏",
-      "summary": "简介"
+      "summary": "简介",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "容器 ID",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "公告已创建",
         "deleted": "公告已删除",
-        "updated": "公告已更新"
+        "updated": "公告已更新",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "队伍审核状态已更新"
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "（无简介）",
         "team": "（无名队伍）"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "管理员",
       "notices": "比赛公告",
       "review": "队伍审核",
-      "writeups": "Writeups"
+      "writeups": "Writeups",
+      "health": "Health"
     },
     "instances": "实例管理",
     "logs": "系统日志",

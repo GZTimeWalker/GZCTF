@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "Скрыть",
-      "summary": "Сводка"
+      "summary": "Сводка",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "ID контейнера",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "Объявление создано",
         "deleted": "Объявление удалено",
-        "updated": "Объявление обновлено"
+        "updated": "Объявление обновлено",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "Статус участия команды обновлен"
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "(нет описания)",
         "team": "(нет имени)"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "Менеджеры",
       "notices": "Объявления",
       "review": "Команды",
-      "writeups": "Отчеты"
+      "writeups": "Отчеты",
+      "health": "Health"
     },
     "instances": "Контейнеры",
     "logs": "Журналы",

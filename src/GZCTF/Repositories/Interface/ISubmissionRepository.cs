@@ -93,4 +93,11 @@ public interface ISubmissionRepository : IRepository
     /// Count submissions for a specific participation and challenge.
     /// </summary>
     public Task<int> CountSubmissions(int participationId, int challengeId, CancellationToken token = default);
+
+    /// <summary>
+    /// Count WrongAnswer submissions for a specific participation and challenge since a given time.
+    /// Used for per-user per-challenge submission cooldown enforcement.
+    /// </summary>
+    public Task<int> CountRecentWrongSubmissions(int participationId, int challengeId, DateTimeOffset since,
+        CancellationToken token = default);
 }

@@ -14,7 +14,8 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiAccountMultiplePlus, mdiCheck, mdiClose, mdiHumanGreetingVariant } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { LogoHeader } from '@Components/LogoHeader'
 import { TeamCard } from '@Components/TeamCard'
@@ -36,6 +37,17 @@ const Teams: FC = () => {
 
   const [joinOpened, setJoinOpened] = useState(false)
   const [joinTeamCode, setJoinTeamCode] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Auto-open join modal when arriving via invite link (?join=code)
+  useEffect(() => {
+    const code = searchParams.get('join')
+    if (code) {
+      setJoinTeamCode(decodeURIComponent(code))
+      setJoinOpened(true)
+      setSearchParams({}, { replace: true })
+    }
+  }, [])
 
   const [createOpened, setCreateOpened] = useState(false)
   const [editOpened, setEditOpened] = useState(false)

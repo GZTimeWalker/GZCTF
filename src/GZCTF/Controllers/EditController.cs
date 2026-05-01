@@ -395,14 +395,20 @@ public class EditController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
+        var publishTime = model.PublishAt is { } at && at > DateTimeOffset.UtcNow
+            ? at.ToUniversalTime()
+            : DateTimeOffset.UtcNow;
+
         var res = await gameNoticeRepository.AddNotice(
             new()
             {
                 Values = [model.Content],
                 GameId = game.Id,
                 Type = NoticeType.Normal,
-                PublishTimeUtc = DateTimeOffset.UtcNow
-            }, token);
+                PublishTimeUtc = publishTime
+            },
+            broadcast: publishTime <= DateTimeOffset.UtcNow,
+            token);
 
         return Ok(res);
     }
@@ -459,6 +465,8 @@ public class EditController(
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Notification_SystemNotEditable)]));
 
         notice.Values = [model.Content];
+        if (model.PublishAt.HasValue)
+            notice.PublishTimeUtc = model.PublishAt.Value.ToUniversalTime();
         return Ok(await gameNoticeRepository.UpdateNotice(notice, token));
     }
 

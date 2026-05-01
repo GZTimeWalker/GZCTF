@@ -5,7 +5,8 @@
     "edit": "Teamdetails",
     "join": "Team beitreten",
     "leave": "Team verlassen",
-    "save": "Informationen aktualisieren"
+    "save": "Informationen aktualisieren",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "Sie können ein Team erstellen und andere einladen, beizutreten.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Einladungscode in die Zwischenablage kopiert",
-      "updated": "Einladungs-Token für das Team aktualisiert"
+      "updated": "Einladungs-Token für das Team aktualisiert",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Erfolgreich dem Team beigetreten",

@@ -5,7 +5,8 @@
     "edit": "Информация о команде",
     "join": "Присоединиться",
     "leave": "Покинуть",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "Вы можете создать команду и пригласить других игроков.",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "Код приглашения скопирован",
-      "updated": "Код приглашения обновлен"
+      "updated": "Код приглашения обновлен",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "Вы присоединились к команде",

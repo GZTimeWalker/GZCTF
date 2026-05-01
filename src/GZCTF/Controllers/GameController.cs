@@ -1248,6 +1248,16 @@ public class GameController(
                     new RequestResponse(localizer[nameof(Resources.Program.Challenge_SubmissionLimitExceeded)]));
             }
 
+            // Per-user per-challenge cooldown: 3 wrong answers within 10 min → 10 min cooldown
+            const int wrongThreshold = 3;
+            const int cooldownMinutes = 10;
+            var cooldownWindowStart = submitTime.AddMinutes(-cooldownMinutes);
+            var recentWrong = await submissionRepository.CountRecentWrongSubmissions(
+                context.Participation!.Id, challengeId, cooldownWindowStart, token);
+            if (recentWrong >= wrongThreshold)
+                return BadRequest(new RequestResponse(
+                    localizer[nameof(Resources.Program.Challenge_WrongAnswerCooldown), cooldownMinutes]));
+
             Submission submission = new()
             {
                 Game = context.Game!,

@@ -5,7 +5,8 @@
     "edit": "队伍详情",
     "join": "加入队伍",
     "leave": "退出队伍",
-    "save": "更新信息"
+    "save": "更新信息",
+    "copy_invite_link": "Copy Invite Link"
   },
   "content": {
     "create": "创建一个队伍，并且邀请其他人加入。",
@@ -68,7 +69,8 @@
     },
     "invite_code": {
       "copied": "邀请码已复制到剪贴板",
-      "updated": "队伍邀请码已更新"
+      "updated": "队伍邀请码已更新",
+      "link_copied": "Invite link copied to clipboard"
     },
     "join": {
       "success": "加入队伍成功",

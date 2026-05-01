@@ -1,4 +1,5 @@
-import { Button, Group, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
+import { Button, Group, Modal, ModalProps, Stack, Switch, Text, Textarea } from '@mantine/core'
+import { DateTimePicker } from '@mantine/dates'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -19,11 +20,24 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   const { gameNotice, mutateGameNotice, ...modalProps } = props
 
   const [content, setContent] = useState<string>(gameNotice?.values.at(-1) || '')
+  const [scheduled, setScheduled] = useState(false)
+  const [publishAt, setPublishAt] = useState<Date | null>(null)
   const [disabled, setDisabled] = useState(false)
   const { t } = useTranslation()
 
   useEffect(() => {
     setContent(gameNotice?.values.at(-1) || '')
+    // Pre-populate schedule if existing notice has a future publish time
+    if (gameNotice?.time) {
+      const t = new Date(gameNotice.time)
+      if (t > new Date()) {
+        setScheduled(true)
+        setPublishAt(t)
+      } else {
+        setScheduled(false)
+        setPublishAt(null)
+      }
+    }
   }, [gameNotice])
 
   const onConfirm = async () => {
@@ -35,7 +49,7 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
       })
       return
     }
-    if (content === gameNotice?.values.at(-1)) {
+    if (content === gameNotice?.values.at(-1) && !scheduled) {
       showNotification({
         color: 'orange',
         message: t('common.error.no_change'),
@@ -47,12 +61,18 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     setDisabled(true)
 
     try {
+      const body = {
+        content: content.trim(),
+        publishAt: scheduled && publishAt ? publishAt.toISOString() : undefined,
+      }
       const res = gameNotice
-        ? await api.edit.editUpdateGameNotice(numId, gameNotice.id, { content: content.trim() })
-        : await api.edit.editAddGameNotice(numId, { content: content.trim() })
+        ? await api.edit.editUpdateGameNotice(numId, gameNotice.id, body)
+        : await api.edit.editAddGameNotice(numId, body)
       showNotification({
         color: 'teal',
-        message: t(`admin.notification.games.notices.${gameNotice ? 'updated' : 'created'}`),
+        message: scheduled && publishAt
+          ? t('admin.notification.games.notices.scheduled')
+          : t(`admin.notification.games.notices.${gameNotice ? 'updated' : 'created'}`),
         icon: <Icon path={mdiCheck} size={1} />,
       })
       mutateGameNotice(res.data)
@@ -62,6 +82,8 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
     } finally {
       setDisabled(false)
       setContent('')
+      setScheduled(false)
+      setPublishAt(null)
     }
   }
 
@@ -77,8 +99,26 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
           maxRows={16}
           onChange={(e) => setContent(e.currentTarget.value)}
         />
+        <Switch
+          label={t('admin.label.games.notices.schedule')}
+          checked={scheduled}
+          onChange={(e) => {
+            setScheduled(e.currentTarget.checked)
+            if (!e.currentTarget.checked) setPublishAt(null)
+          }}
+        />
+        {scheduled && (
+          <DateTimePicker
+            label={t('admin.label.games.notices.publish_at')}
+            placeholder={t('admin.placeholder.games.notices.publish_at')}
+            value={publishAt}
+            onChange={setPublishAt}
+            minDate={new Date()}
+            clearable
+          />
+        )}
         <Group grow m="auto" w="100%">
-          <Button fullWidth disabled={disabled} onClick={onConfirm}>
+          <Button fullWidth disabled={disabled || (scheduled && !publishAt)} onClick={onConfirm}>
             {t('common.modal.confirm')}
           </Button>
         </Group>

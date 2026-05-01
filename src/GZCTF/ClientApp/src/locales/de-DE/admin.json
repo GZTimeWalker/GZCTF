@@ -461,7 +461,12 @@
   "label": {
     "games": {
       "hide": "Verbergen",
-      "summary": "Zusammenfassung"
+      "summary": "Zusammenfassung",
+      "notices": {
+        "schedule": "Schedule for later",
+        "publish_at": "Publish at",
+        "scheduled_badge": "Scheduled"
+      }
     },
     "instances": {
       "container_id": "Container-ID",
@@ -543,7 +548,8 @@
       "notices": {
         "created": "Hinweis erstellt",
         "deleted": "Hinweis gelöscht",
-        "updated": "Hinweis aktualisiert"
+        "updated": "Hinweis aktualisiert",
+        "scheduled": "Notice scheduled"
       },
       "participation": {
         "updated": "Teamstatus wurde aktualisiert"
@@ -585,6 +591,9 @@
       "participation": {
         "bio": "(kein Lebenslauf)",
         "team": "(kein Name)"
+      },
+      "notices": {
+        "publish_at": "Select publish date/time"
       }
     },
     "instances": {
@@ -623,7 +632,8 @@
       "managers": "Manager",
       "notices": "Mitteilungen",
       "review": "Teams",
-      "writeups": "Writeups"
+      "writeups": "Writeups",
+      "health": "Health"
     },
     "instances": "Instanzen",
     "logs": "Protokolle",
