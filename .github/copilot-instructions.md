@@ -23,7 +23,7 @@ GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and 
   - Rate limiting: Global sliding window + named policies (`Middlewares/RateLimiter.cs`), disabled by `DisableRateLimit=true`.
   - i18n: `Resources/` with `IStringLocalizer<Program>`; invalid model state returns JSON via `InvalidModelStateHandler`.
   - SignalR patterns: Strongly-typed hubs (`AdminHub`, `MonitorHub`, `UserHub`) with client interfaces (`IAdminClient`, `IMonitorClient`, `IUserClient`) for real-time notifications. Each hub validates permissions and groups clients by game ID.
-  - Container proxy: `ProxyController` handles TCP-over-WebSocket for challenge access when `ContainerPortMappingType.PlatformProxy` is set. Supports Docker Swarm and Kubernetes with traffic capture capabilities.
+  - Container proxy: `ProxyController` handles TCP-over-WebSocket for challenge access when `ContainerPortMappingType.PlatformProxy` is set. Supports Kubernetes with traffic capture capabilities.
 - Frontend `src/GZCTF/ClientApp` (React + Mantine + Vite):
   - Dev server on `63000` with proxy to backend; configure backend URL via `VITE_BACKEND_URL` (defaults to `http://localhost:8080`) in `vite.config.mts`.
   - Build outputs to `ClientApp/build` and is copied to backend `wwwroot` during `dotnet publish`.
@@ -74,7 +74,7 @@ Design notes (flexibility vs performance)
 - Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`. Self-maintenance storage ensures blob cleanup and consistency.
 - Environment configuration prefix: `GZCTF_` (env vars override config).
 - Role hierarchy: `Admin` (3) > `Monitor` (1) > `User` (0) > `Banned` (-1). Frontend `WithRole` component uses `RoleMap` for access control.
-- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/MinIO integration. Use `IContainerManager` interface for consistency.
+- Container management: Docker (`DockerManager`) and Kubernetes (`KubernetesManager`) support with K3s/MinIO integration. Use `IContainerManager` interface for consistency.
 - Task Status: Enum includes `Success`, `Failed`, `Pending`, `Running`, `Unhealthy`, `Degraded` statuses for container/service health.
 - Divisions API: Endpoints for game-scoped division management with challenge configs. Division affects challenge visibility, scoring, and deadline enforcement.
 - FirstSolves tracking: Separate table for first-blood metadata (team, user, timestamp); used for bonus scoring and statistics.
@@ -100,7 +100,7 @@ Design notes (flexibility vs performance)
   - `dotnet test src/GZCTF.Integration.Test/GZCTF.Integration.Test.csproj -v minimal /p:CollectCoverage=true` (requires Docker; uses Testcontainers for K3s, MinIO, PostgreSQL)
 - Testing framework:
   - Unit tests: xUnit with `IRepository<T>` and service mocking; examples in `GZCTF.Test/UnitTests/`.
-  - Integration tests: Testcontainers for Docker Swarm/Kubernetes, MinIO S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation.
+  - Integration tests: Testcontainers for Docker/Kubernetes, MinIO S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation.
 - EF Core migrations (PostgreSQL):
   - `dotnet ef migrations add <Name> --project src/GZCTF/GZCTF.csproj --startup-project src/GZCTF/GZCTF.csproj`
   - `dotnet ef database update`
@@ -120,7 +120,7 @@ Design notes (flexibility vs performance)
 ## Container management
 
 - Port mapping types: `Default` (random host ports) vs `PlatformProxy` (TCP-over-WebSocket).
-- Container providers: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) with `IContainerManager` abstraction.
+- Container providers: Docker (`DockerManager`) and Kubernetes (`KubernetesManager`) with `IContainerManager` abstraction.
 - Traffic capture: Optional recording of container network traffic to storage when `EnableTrafficCapture=true`.
 - Challenge types: Static/Dynamic containers with environment variable flag injection.
 - Resource management: Automatic cleanup and scaling based on team participation.

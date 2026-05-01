@@ -365,9 +365,6 @@
   <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
     <value>服务 {0} 创建失败, 状态：{1}</value>
   </data>
-  <data name="ContainerManager_SwarmMode" xml:space="preserve">
-    <value>容器管理模式：Docker Swarm 集群容器控制</value>
-  </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
     <value>无法解析镜像名称 '{0}'</value>
   </data>
@@ -382,6 +379,15 @@
   </data>
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s 初始化失败，请检查相关配置是否正确 ({0})</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>第三方容器 provider base URL 未配置</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>第三方容器 provider 初始化成功 ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>容器管理模式：第三方容器控制</value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>比赛 #{0} 即将开始，积分榜缓存已加入缓存队列</value>
