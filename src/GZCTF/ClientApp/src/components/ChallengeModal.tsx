@@ -11,7 +11,6 @@ import {
   TextInput,
   Text,
   Title,
-  Tooltip,
   useMantineTheme,
   ScrollAreaAutosize,
   Input,
@@ -29,6 +28,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
+import { ScrollingText } from '@Components/ScrollingText'
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { useTicker } from '@Hooks/useTicker'
@@ -272,20 +272,12 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
                           {s.teamName.slice(0, 1)}
                         </Avatar>
 
-                        {/* Team name — truncates, full text in tooltip */}
-                        <Tooltip label={s.teamName} position="top" withArrow openDelay={400} disabled={s.teamName.length <= 16}>
-                          <Text size="xs" fw={600} truncate style={{ minWidth: 0, flex: '2 1 0' }}>
-                            {s.teamName}
-                          </Text>
-                        </Tooltip>
+                        {/* Team name */}
+                        <ScrollingText text={s.teamName} size="xs" fw={600} style={{ flex: '2 1 0', minWidth: 0 }} />
 
-                        {/* Username — truncates, full text in tooltip */}
+                        {/* Username */}
                         {s.userName && (
-                          <Tooltip label={s.userName} position="top" withArrow openDelay={400} disabled={s.userName.length <= 14}>
-                            <Text size="xs" c="dimmed" truncate style={{ minWidth: 0, flex: '1.5 1 0' }}>
-                              {s.userName}
-                            </Text>
-                          </Tooltip>
+                          <ScrollingText text={s.userName} size="xs" c="dimmed" style={{ flex: '1.5 1 0', minWidth: 0 }} />
                         )}
 
                         {/* Relative time */}
