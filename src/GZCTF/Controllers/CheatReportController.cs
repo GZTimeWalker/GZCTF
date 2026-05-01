@@ -172,6 +172,28 @@ public class CheatReportController(
             })
             .ToListAsync(token);
 
+        // Build registration-IP lookup from each user's first-ever AccountController log entry
+        // (more accurate than UserInfo.IP which is the most-recent login IP)
+        var allGameUserNames = teams
+            .SelectMany(t => t.Members.Select(m => m.UserName))
+            .Where(n => !string.IsNullOrEmpty(n))
+            .ToHashSet();
+
+        var allTimeUserLogs = await dbContext.Logs
+            .AsNoTracking()
+            .Where(l => l.Logger.Contains("AccountController") &&
+                        l.RemoteIP != null &&
+                        l.UserName != null &&
+                        allGameUserNames.Contains(l.UserName!))
+            .Select(l => new { l.UserName, l.RemoteIP, l.TimeUtc })
+            .ToListAsync(token);
+
+        var firstLogIpPerUser = allTimeUserLogs
+            .GroupBy(l => l.UserName!)
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderBy(x => x.TimeUtc).First().RemoteIP?.ToString());
+
         bool RequiresLocalDownload(int teamId, GameChallenge challenge)
         {
             if (challenge.Type == ChallengeType.DynamicAttachment)
@@ -659,28 +681,54 @@ public class CheatReportController(
             .GroupBy(s => s.ChallengeId)
             .ToDictionary(g => g.Key, g => g.Count());
 
+        var teamParticipatingCount = teams.Count;
+
+        // Per-challenge: fraction of solvers who had zero wrong attempts before their solve
+        var zeroAttemptRatePerChallenge = submissions
+            .GroupBy(s => s.ChallengeId)
+            .ToDictionary(g => g.Key, g =>
+            {
+                var solvers = g.ToList();
+                if (solvers.Count == 0) return 0.0;
+                var zeroAttemptSolvers = solvers.Count(s =>
+                    !wrongByTeamChallenge.TryGetValue((s.TeamId, s.ChallengeId), out var wrongs) ||
+                    !wrongs.Any(w => w.SubmitTimeUtc < s.SubmitTimeUtc));
+                return (double)zeroAttemptSolvers / solvers.Count;
+            });
+
+        // Easy challenge: solve-rate > 40% of participating teams, OR zero-attempt-rate > 30%
+        // Suppress most per-challenge signals for easy challenges (FP-heavy).
+        bool IsChallengeEasy(int challengeId) =>
+            (teamParticipatingCount > 0 &&
+             challengeSolveCount.GetValueOrDefault(challengeId, 0) / (double)teamParticipatingCount > 0.40) ||
+            zeroAttemptRatePerChallenge.GetValueOrDefault(challengeId, 0.0) > 0.30;
+
         // Check F: Registration Clustering
-        // Detects accounts from multiple teams that share the same recent IP and registered
-        // within 48 hours of each other — strong indicator of sockpuppet/multi-accounting.
-        var membersByIp = teams
+        // Detects accounts from multiple teams whose first-ever login IP is shared,
+        // registered within 48 hours — strong indicator of sockpuppet/multi-accounting.
+        // Uses log-derived registration IP (not UserInfo.IP which is last-login IP).
+        // Suppressed if >4 teams share the IP (large shared NAT like a university).
+        var memberRegGroups = teams
             .SelectMany(t => t.Members
-                .Where(m => m.IP != null &&
-                            !IPAddress.Any.Equals(m.IP) &&
-                            !IPAddress.IPv6Any.Equals(m.IP) &&
-                            !IPAddress.Loopback.Equals(m.IP) &&
-                            !IPAddress.IPv6Loopback.Equals(m.IP))
+                .Where(m => !string.IsNullOrEmpty(m.UserName) &&
+                            firstLogIpPerUser.TryGetValue(m.UserName!, out var regIp) &&
+                            !string.IsNullOrEmpty(regIp))
                 .Select(m => new
                 {
                     TeamId = t.Id,
                     m.UserName,
-                    Ip = m.IP!.ToString(),
+                    Ip = firstLogIpPerUser[m.UserName!]!,
                     m.RegisterTimeUtc
                 }))
             .GroupBy(x => x.Ip)
-            .Where(g => g.Select(x => x.TeamId).Distinct().Count() > 1)
+            .Where(g =>
+            {
+                var distinctTeams = g.Select(x => x.TeamId).Distinct().Count();
+                return distinctTeams > 1 && distinctTeams <= 4; // suppress large shared networks
+            })
             .ToList();
 
-        foreach (var group in membersByIp)
+        foreach (var group in memberRegGroups)
         {
             var memberList = group.ToList();
             var registrationSpan = memberList.Max(m => m.RegisterTimeUtc) - memberList.Min(m => m.RegisterTimeUtc);
@@ -704,7 +752,7 @@ public class CheatReportController(
                     RelatedUsers = otherMembers.Select(m => m.UserName ?? "").Where(n => n.Length > 0).ToList(),
                     RelatedTeams = teamsInvolved.Where(t => t != teamId).Select(TeamRef).ToList(),
                     Details = BuildDetail(
-                        ("Summary", "Multiple team accounts registered from same IP within 48 hours"),
+                        ("Summary", "Multiple team accounts share same first-login IP and registered within 48 hours"),
                         ("Target", TeamRef(teamId)),
                         ("IP", group.Key),
                         ("Registration span", $"{registrationSpan.TotalHours:F0}h"),
@@ -718,18 +766,22 @@ public class CheatReportController(
         // Check G: Subnet Overlap (/24)
         // Soft signal: teams accessing from the same /24 subnet.
         // Low weight alone, but amplifies other corroborating signals.
-        var teamSubnets24 = teamIps.ToDictionary(
+        var teamSubnets28 = teamIps.ToDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value
-                .Select(GetSubnet24)
+                .Select(GetSubnet28)
                 .Where(s => s != null)
                 .Cast<string>()
                 .ToHashSet());
 
-        var subnetGroups = teamSubnets24
+        var subnetGroups = teamSubnets28
             .SelectMany(kvp => kvp.Value.Select(s => new { TeamId = kvp.Key, Subnet = s }))
             .GroupBy(x => x.Subnet)
-            .Where(g => g.Select(x => x.TeamId).Distinct().Count() > 1)
+            .Where(g =>
+            {
+                var distinctTeams = g.Select(x => x.TeamId).Distinct().Count();
+                return distinctTeams > 1 && distinctTeams <= 4; // suppress large shared networks
+            })
             .ToList();
 
         foreach (var group in subnetGroups)
@@ -757,11 +809,15 @@ public class CheatReportController(
         }
 
         // Check I: Session Concurrency
-        // Detects the same user account appearing from two different IPs within 10 minutes.
-        // Strong indicator of account sharing.
+        // Detects repeated occurrences of the same user account appearing from two IPs that are
+        // in different /20 subnets within a 10-minute window (≥3 occurrences required).
+        // Filters out mobile IP churn (same ISP /20 = same pool) and one-off VPN switches.
         {
             const int SessionWindowMinutes = 10;
-            var concurrencyReported = new HashSet<string>();
+            const int SessionConcurrencyMinOccurrences = 3;
+            var userConcurrencyEvents = new Dictionary<string, List<DateTimeOffset>>();
+            var userConcurrencyIps = new Dictionary<string, HashSet<string>>();
+
             var userSessions = logIdentities
                 .GroupBy(l => l.UserName)
                 .ToDictionary(g => g.Key, g => g.OrderBy(x => x.Time).ToList());
@@ -781,30 +837,44 @@ public class CheatReportController(
                         var ip2 = sessions[sj].Ip ?? "";
                         if (string.IsNullOrEmpty(ip1) || string.IsNullOrEmpty(ip2) || ip1 == ip2) continue;
 
-                        var dedupeKey = $"{userName}:{(ip1.CompareTo(ip2) < 0 ? ip1 : ip2)}:{(ip1.CompareTo(ip2) < 0 ? ip2 : ip1)}";
-                        if (!concurrencyReported.Add(dedupeKey)) continue;
+                        // Suppress: IPs in same /20 are likely the same ISP pool (mobile, DHCP rotation)
+                        if (SameSubnet20(ip1, ip2)) continue;
 
-                        var teamId = sessions[si].TeamId;
-                        if (!teamMap.TryGetValue(teamId, out var scTeam)) continue;
-
-                        report.IpAnalysis.Add(new IpAnalysisResult
+                        if (!userConcurrencyEvents.ContainsKey(userName))
                         {
-                            TeamId = teamId,
-                            TeamName = scTeam.Name,
-                            Type = SuspicionType.SessionConcurrency,
-                            Ip = $"{ip1} / {ip2}",
-                            Time = sessions[sj].Time,
-                            UserNames = [userName],
-                            Details = BuildDetail(
-                                ("Summary", "Same user account active from two different IPs within 10 minutes"),
-                                ("Target", TeamRef(teamId)),
-                                ("User", userName),
-                                ("IP 1", ip1),
-                                ("IP 2", ip2),
-                                ("Time gap", $"{timeDiff.TotalMinutes:F1} min"))
-                        });
+                            userConcurrencyEvents[userName] = [];
+                            userConcurrencyIps[userName] = [];
+                        }
+                        userConcurrencyEvents[userName].Add(sessions[sj].Time);
+                        userConcurrencyIps[userName].Add(ip1);
+                        userConcurrencyIps[userName].Add(ip2);
                     }
                 }
+            }
+
+            // Only fire if ≥3 distinct concurrent-session events (pattern, not one-off)
+            foreach (var (userName, concurrencyOccurrences) in userConcurrencyEvents)
+            {
+                if (concurrencyOccurrences.Count < SessionConcurrencyMinOccurrences) continue;
+                if (!userTeamMap.TryGetValue(userName, out var teamId)) continue;
+                if (!teamMap.TryGetValue(teamId, out var scTeam)) continue;
+
+                var distinctIps = userConcurrencyIps[userName];
+                report.IpAnalysis.Add(new IpAnalysisResult
+                {
+                    TeamId = teamId,
+                    TeamName = scTeam.Name,
+                    Type = SuspicionType.SessionConcurrency,
+                    Ip = string.Join(" / ", distinctIps.Take(3)),
+                    Time = concurrencyOccurrences.Max(),
+                    UserNames = [userName],
+                    Details = BuildDetail(
+                        ("Summary", $"User active from distinct /20 subnets {concurrencyOccurrences.Count}× within 10-minute windows"),
+                        ("Target", TeamRef(teamId)),
+                        ("User", userName),
+                        ("Distinct IPs", string.Join(", ", distinctIps.Take(6))),
+                        ("Occurrences", concurrencyOccurrences.Count.ToString()))
+                });
             }
         }
 
@@ -1029,7 +1099,10 @@ public class CheatReportController(
             // Check A: Zero Wrong Attempts
             // A legitimate solver typically submits several wrong flags before the correct one.
             // Solving a dynamic-flag challenge on the very first attempt indicates the flag was received externally.
-            if (chal.Type.IsDynamic())
+            // Suppressed for easy challenges (high zero-attempt rate) and challenges with few solvers.
+            if (chal.Type.IsDynamic() &&
+                !IsChallengeEasy(sub.ChallengeId) &&
+                challengeSolveCount.GetValueOrDefault(sub.ChallengeId, 0) >= 5)
             {
                 var waKey = (sub.TeamId, sub.ChallengeId);
                 var wrongsBefore = wrongByTeamChallenge.TryGetValue(waKey, out var wrongs)
@@ -1052,32 +1125,43 @@ public class CheatReportController(
             }
 
             // Check D: Adaptive Fast Solve (community-relative threshold)
-            // The fixed 2-minute FastSolve threshold misses hard challenges solved suspiciously fast.
-            // This check fires when a team's solve time is under 10% of the community median,
-            // provided the community median is over 60 minutes (a genuinely hard challenge).
-            if (challengeSolveCount.TryGetValue(sub.ChallengeId, out var commSolveCount) && commSolveCount >= 5)
+            // Fires when solve time < 5% of community median AND median > 60 min (genuinely hard challenge).
+            // Suppressed for easy challenges, challenges with few data points, and when a
+            // specialist cohort (≥3 teams) solved it equally quickly (bimodal skill distribution).
+            if (!IsChallengeEasy(sub.ChallengeId) &&
+                challengeSolveCount.TryGetValue(sub.ChallengeId, out var commSolveCount) && commSolveCount >= 8)
             {
                 var teamOffset = (sub.SubmitTimeUtc - game.StartTimeUtc).TotalMinutes;
                 var medianOffset = challengeMedianSolveOffset.GetValueOrDefault(sub.ChallengeId);
                 var firstSolveTime = challengeFirstSolveTime.GetValueOrDefault(sub.ChallengeId);
 
-                if (medianOffset > 60 && teamOffset > 0 && teamOffset < medianOffset * 0.10)
+                if (medianOffset > 60 && teamOffset > 0 && teamOffset < medianOffset * 0.05)
                 {
-                    var isFirstBlood = sub.SubmitTimeUtc <= firstSolveTime.AddSeconds(1);
-                    report.AbnormalSolves.Add(new AbnormalSolveResult
+                    // Cohort suppression: if ≥3 other teams also solved it this quickly,
+                    // it's a legitimate specialist cluster — not a single outlier cheater.
+                    var fastCohortCount = submissions.Count(s =>
+                        s.ChallengeId == sub.ChallengeId &&
+                        s.TeamId != sub.TeamId &&
+                        (s.SubmitTimeUtc - game.StartTimeUtc).TotalMinutes < medianOffset * 0.15);
+
+                    if (fastCohortCount < 3)
                     {
-                        TeamId = sub.TeamId,
-                        TeamName = sub.TeamName,
-                        ChallengeId = sub.ChallengeId,
-                        ChallengeName = sub.ChallengeName,
-                        Type = SuspicionType.AdaptiveFastSolve,
-                        SolveTime = sub.SubmitTimeUtc,
-                        Details = $"Target {TeamRef(sub.TeamId)} solved '{sub.ChallengeName}' in {teamOffset:F0}m " +
-                                  $"while community median was {medianOffset:F0}m ({teamOffset / medianOffset:P0} of median). " +
-                                  (isFirstBlood
-                                      ? "This was the first blood."
-                                      : $"First blood was at {firstSolveTime:MM/dd HH:mm}.")
-                    });
+                        var isFirstBlood = sub.SubmitTimeUtc <= firstSolveTime.AddSeconds(1);
+                        report.AbnormalSolves.Add(new AbnormalSolveResult
+                        {
+                            TeamId = sub.TeamId,
+                            TeamName = sub.TeamName,
+                            ChallengeId = sub.ChallengeId,
+                            ChallengeName = sub.ChallengeName,
+                            Type = SuspicionType.AdaptiveFastSolve,
+                            SolveTime = sub.SubmitTimeUtc,
+                            Details = $"Target {TeamRef(sub.TeamId)} solved '{sub.ChallengeName}' in {teamOffset:F0}m " +
+                                      $"while community median was {medianOffset:F0}m ({teamOffset / medianOffset:P0} of median). " +
+                                      (isFirstBlood
+                                          ? "This was the first blood."
+                                          : $"First blood was at {firstSolveTime:MM/dd HH:mm}.")
+                        });
+                    }
                 }
             }
         }
@@ -1195,7 +1279,7 @@ public class CheatReportController(
                 // Beyond sequence order, check if one team consistently solves SHORTLY AFTER the other
                 // with a constant lag and low variance — a pattern consistent with flag sharing via messaging.
                 // Only run this when RSI > 0.5 (teams are meaningfully similar).
-                if (rsi > 0.5 && sharedChallenges.Count >= 4)
+                if (rsi >= 0.7 && sharedChallenges.Count >= 6)
                 {
                     // Collect lags: B.solveTime - A.solveTime for each common challenge
                     var solveTimesA = teamA.Raw.ToDictionary(s => s.ChallengeId, s => s.SubmitTimeUtc);
@@ -1217,7 +1301,13 @@ public class CheatReportController(
 
                     void ReportRelay(List<double> lags, int sourceTeamId, int receiverTeamId)
                     {
-                        if (lags.Count < 4) return;
+                        if (lags.Count < 6) return;
+
+                        // Coverage: relay pattern must appear in ≥60% of common challenges.
+                        // Coincidental timing clusters locally; relay sharing spans all challenges.
+                        var coverageRatio = (double)lags.Count / sharedChallenges.Count;
+                        if (coverageRatio < 0.60) return;
+
                         var mean = lags.Average();
                         var stddev = Math.Sqrt(lags.Select(l => (l - mean) * (l - mean)).Average());
 
@@ -1345,6 +1435,8 @@ public class CheatReportController(
         // Check E: Directed Solving
         // A team that opens almost exactly the challenges they solve (minimal exploratory browsing)
         // is receiving external guidance about which challenges to attempt.
+        // Requires ≥8 solves, ratio <1.05, and the community median ratio must be ≥1.5
+        // (if the whole game is focused, suppress — not suspicious in that context).
         {
             var teamUniqueOpens = teamChallengeOpens.Keys
                 .GroupBy(k => k.TeamId)
@@ -1354,35 +1446,58 @@ public class CheatReportController(
                 .GroupBy(s => s.TeamId)
                 .ToDictionary(g => g.Key, g => g.Select(s => s.ChallengeId).ToHashSet());
 
-            foreach (var (teamId, solved) in teamSolvedSets)
-            {
-                if (solved.Count < 4) continue;
-                var opened = teamUniqueOpens.TryGetValue(teamId, out var op) ? op.Count : 0;
-                if (opened == 0) continue;
-
-                var explorationRatio = (double)opened / solved.Count;
-                if (explorationRatio >= 1.2) continue;
-
-                if (!teamMap.TryGetValue(teamId, out var dsTeam)) continue;
-                var lastSolve = submissions
-                    .Where(s => s.TeamId == teamId)
-                    .Max(s => s.SubmitTimeUtc);
-
-                report.AbnormalSolves.Add(new AbnormalSolveResult
+            // Community median open/solve ratio — if teams generally browse very little, suppress
+            var communityRatios = teamSolvedSets
+                .Select(kvp =>
                 {
-                    TeamId = teamId,
-                    TeamName = dsTeam.Name,
-                    ChallengeId = 0,
-                    ChallengeName = string.Empty,
-                    Type = SuspicionType.DirectedSolving,
-                    SolveTime = lastSolve,
-                    Details = BuildDetail(
-                        ("Summary", "Team opened almost only the challenges they solved — no exploratory browsing"),
-                        ("Target", TeamRef(teamId)),
-                        ("Challenges solved", solved.Count.ToString()),
-                        ("Challenges opened", opened.ToString()),
-                        ("Open/solve ratio", explorationRatio.ToString("F2")))
-                });
+                    var teamOpened = teamUniqueOpens.TryGetValue(kvp.Key, out var op) ? op.Count : 0;
+                    return (kvp.Value.Count >= 4 && teamOpened > 0)
+                        ? (double?)((double)teamOpened / kvp.Value.Count)
+                        : null;
+                })
+                .Where(r => r.HasValue)
+                .Select(r => r!.Value)
+                .OrderBy(r => r)
+                .ToList();
+
+            var communityMedianRatio = communityRatios.Count > 0
+                ? communityRatios[communityRatios.Count / 2]
+                : 2.0;
+
+            // If the whole game is focused (short sprint, practice round), don't flag
+            if (communityMedianRatio >= 1.5)
+            {
+                foreach (var (teamId, solved) in teamSolvedSets)
+                {
+                    if (solved.Count < 8) continue;
+                    var opened = teamUniqueOpens.TryGetValue(teamId, out var op) ? op.Count : 0;
+                    if (opened == 0) continue;
+
+                    var explorationRatio = (double)opened / solved.Count;
+                    if (explorationRatio >= 1.05) continue;
+
+                    if (!teamMap.TryGetValue(teamId, out var dsTeam)) continue;
+                    var lastSolve = submissions
+                        .Where(s => s.TeamId == teamId)
+                        .Max(s => s.SubmitTimeUtc);
+
+                    report.AbnormalSolves.Add(new AbnormalSolveResult
+                    {
+                        TeamId = teamId,
+                        TeamName = dsTeam.Name,
+                        ChallengeId = 0,
+                        ChallengeName = string.Empty,
+                        Type = SuspicionType.DirectedSolving,
+                        SolveTime = lastSolve,
+                        Details = BuildDetail(
+                            ("Summary", "Team opened almost only the challenges they solved — no exploratory browsing"),
+                            ("Target", TeamRef(teamId)),
+                            ("Challenges solved", solved.Count.ToString()),
+                            ("Challenges opened", opened.ToString()),
+                            ("Open/solve ratio", explorationRatio.ToString("F2")),
+                            ("Community median ratio", communityMedianRatio.ToString("F2")))
+                    });
+                }
             }
         }
 
@@ -1390,7 +1505,7 @@ public class CheatReportController(
         // Detects brute-force flag submission (many wrong answers per challenge in a short window)
         // and machine-speed submission intervals (< 2s between attempts — likely scripted).
         {
-            const int BurstWrongThreshold = 20;
+            const int BurstWrongThreshold = 40;
             const int AutoSpeedCount = 10;
 
             var wrongByTeamChallengeForH = wrongSubmissions
@@ -1417,17 +1532,28 @@ public class CheatReportController(
 
                         if (burst >= BurstWrongThreshold && reportedTypes.Add(SuspicionType.HighWrongRate))
                         {
-                            report.AbnormalSolves.Add(new AbnormalSolveResult
+                            // Suppress if they solved the challenge within 5 minutes of the burst —
+                            // that suggests productive flag-format exploration, not blind probing.
+                            var solvedAfterBurst = submissions.Any(s =>
+                                s.TeamId == group.Key.TeamId &&
+                                s.ChallengeId == group.Key.ChallengeId &&
+                                s.SubmitTimeUtc >= wrongs[wi].SubmitTimeUtc &&
+                                s.SubmitTimeUtc <= wrongs[wi].SubmitTimeUtc.AddMinutes(5));
+
+                            if (!solvedAfterBurst)
                             {
-                                TeamId = group.Key.TeamId,
-                                TeamName = hwTeam.Name,
-                                ChallengeId = group.Key.ChallengeId,
-                                ChallengeName = hwChal?.Title ?? "Unknown",
-                                Type = SuspicionType.HighWrongRate,
-                                SolveTime = wrongs[wi].SubmitTimeUtc,
-                                Details = $"Target {TeamRef(group.Key.TeamId)} submitted {burst} wrong answers for '{hwChal?.Title ?? "Unknown"}' " +
-                                          $"within 60 seconds starting at {wrongs[wi].SubmitTimeUtc:MM/dd HH:mm:ss}. Possible brute-force."
-                            });
+                                report.AbnormalSolves.Add(new AbnormalSolveResult
+                                {
+                                    TeamId = group.Key.TeamId,
+                                    TeamName = hwTeam.Name,
+                                    ChallengeId = group.Key.ChallengeId,
+                                    ChallengeName = hwChal?.Title ?? "Unknown",
+                                    Type = SuspicionType.HighWrongRate,
+                                    SolveTime = wrongs[wi].SubmitTimeUtc,
+                                    Details = $"Target {TeamRef(group.Key.TeamId)} submitted {burst} wrong answers for '{hwChal?.Title ?? "Unknown"}' " +
+                                              $"within 60 seconds starting at {wrongs[wi].SubmitTimeUtc:MM/dd HH:mm:ss}. No solve followed — likely blind probing."
+                                });
+                            }
                             break;
                         }
                     }
@@ -1509,6 +1635,28 @@ public class CheatReportController(
                         ("Team solve offset", $"{fbOffset:F0}m from game start"))
                 });
             }
+        }
+
+        // Tier Gating: Soft signals only score if the team already has at least one Hard/Strong signal.
+        // Prevents soft-signal stacking (SubnetOverlap + DirectedSolving + AdaptiveFastSolve = false Red).
+        {
+            var teamsWithStrongSignal = new HashSet<int>();
+
+            foreach (var item in report.IpAnalysis)
+                if (!SuspicionType.IsSoft(item.Type))
+                    teamsWithStrongSignal.Add(item.TeamId);
+
+            foreach (var item in report.AbnormalSolves)
+                if (!SuspicionType.IsSoft(item.Type))
+                    teamsWithStrongSignal.Add(item.TeamId);
+
+            report.IpAnalysis = report.IpAnalysis
+                .Where(i => !SuspicionType.IsSoft(i.Type) || teamsWithStrongSignal.Contains(i.TeamId))
+                .ToList();
+
+            report.AbnormalSolves = report.AbnormalSolves
+                .Where(a => !SuspicionType.IsSoft(a.Type) || teamsWithStrongSignal.Contains(a.TeamId))
+                .ToList();
         }
 
         report.IpAnalysis = report.IpAnalysis.OrderBy(x => x.TeamId).ThenBy(x => x.Time).ToList();
@@ -1703,12 +1851,24 @@ public class CheatReportController(
             : null;
     }
 
-    private static string? GetSubnet24(string ip)
+    private static string? GetSubnet28(string ip)
     {
         if (!IPAddress.TryParse(ip, out var addr)) return null;
         var bytes = addr.GetAddressBytes();
         if (bytes.Length != 4) return null; // IPv4 only
-        return $"{bytes[0]}.{bytes[1]}.{bytes[2]}.0/24";
+        // /28: mask 255.255.255.240 — zero the last 4 bits of the final octet
+        var lastByte = (byte)(bytes[3] & 0xF0);
+        return $"{bytes[0]}.{bytes[1]}.{bytes[2]}.{lastByte}/28";
+    }
+
+    private static bool SameSubnet20(string ip1, string ip2)
+    {
+        if (!IPAddress.TryParse(ip1, out var addr1) || !IPAddress.TryParse(ip2, out var addr2)) return false;
+        var b1 = addr1.GetAddressBytes();
+        var b2 = addr2.GetAddressBytes();
+        if (b1.Length != 4 || b2.Length != 4) return false;
+        // /20: mask 255.255.240.0 — first 20 bits = b[0], b[1], upper nibble of b[2]
+        return b1[0] == b2[0] && b1[1] == b2[1] && (b1[2] & 0xF0) == (b2[2] & 0xF0);
     }
 
     private static List<int> GetLongestCommonSubsequence(List<int> seq1, List<int> seq2)

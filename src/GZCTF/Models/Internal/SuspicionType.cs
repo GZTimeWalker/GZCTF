@@ -64,4 +64,20 @@ public static class SuspicionType
         { SessionConcurrency, (30, "Same user account active from two different IPs within 10 minutes") },
         { FirstBloodAnomaly, (20, "First blood on a hard challenge not solved by others for 2+ hours") },
     };
+
+    /// Hard evidence — always persisted regardless of other signals.
+    public static readonly HashSet<string> HardSignals = [
+        StolenFlag, WrongFlagLeakage, NoContainer, NoDownload, TokenAbuse
+    ];
+
+    /// Strong evidence — filed always; Soft signals unlock only when a Strong/Hard signal exists.
+    public static readonly HashSet<string> StrongSignals = [
+        ZeroWrongAttempts, SolutionRelay, HighWrongRate, AutomatedPattern,
+        Burst, FingerprintChurn, SharedFingerprint, CollusionGroup,
+        CrossTeamIP, SequenceSimilarity
+    ];
+
+    /// Returns true if the signal is "Soft" — low-confidence, suppressible without corroboration.
+    public static bool IsSoft(string ruleCode) =>
+        !HardSignals.Contains(ruleCode) && !StrongSignals.Contains(ruleCode);
 }
