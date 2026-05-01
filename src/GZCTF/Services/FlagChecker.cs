@@ -168,7 +168,7 @@ public class FlagChecker(
                         && type != SubmissionType.Unaccepted
                         && type != SubmissionType.Normal)
                         await gameNoticeRepository.AddNotice(
-                            GameNotice.FromSubmission(item, type, StaticLocalizer), token);
+                            GameNotice.FromSubmission(item, type, StaticLocalizer), broadcast: true, token);
 
                     item.Status = ans;
                     await submissionRepository.SendSubmission(item);

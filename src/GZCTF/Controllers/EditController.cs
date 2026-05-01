@@ -783,7 +783,7 @@ public class EditController(
 
                     if (game.IsActive)
                         await gameNoticeRepository.AddNotice(
-                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, token);
+                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, broadcast: true, token);
                     break;
                 }
             case false when res.Type.IsContainer():
@@ -797,7 +797,7 @@ public class EditController(
         if (game.IsActive && res.IsEnabled && hintUpdated)
             await gameNoticeRepository.AddNotice(
                 new() { Game = game, Type = NoticeType.NewHint, Values = [res.Title] },
-                token);
+                broadcast: true, token);
 
         await challengeRepository.SaveAsync(token);
 

@@ -112,7 +112,7 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
             label={t('admin.label.games.notices.publish_at')}
             placeholder={t('admin.placeholder.games.notices.publish_at')}
             value={publishAt}
-            onChange={setPublishAt}
+            onChange={(e) => setPublishAt(e ? new Date(e) : null)}
             minDate={new Date()}
             clearable
           />
