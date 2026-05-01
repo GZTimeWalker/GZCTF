@@ -7,12 +7,15 @@
     "change_password": "更改密码",
     "confirm_email": "确认邮箱",
     "login": "登录",
+    "login_with_passkey": "使用通行密钥登录",
     "recovery": "发送重置邮件",
     "register": "注册",
     "reset": "重置密码",
     "save_profile": "保存个人信息",
     "update_email": "更改邮箱",
-    "verify_account": "验证账户"
+    "verify_account": "验证账户",
+    "add_passkey": "添加通行密钥",
+    "manage_passkeys": "管理通行密钥"
   },
   "content": {
     "confirm": {
@@ -101,6 +104,22 @@
     "include_uppercase": "包含大写字母",
     "min_length": "至少 6 个字符",
     "not_match": "重复密码有误"
+  },
+  "passkey": {
+    "title": "通行密钥",
+    "description": "通行密钥是一种安全的无密码登录方式，使用指纹、面部识别或设备 PIN 进行身份验证。",
+    "no_passkeys": "未注册通行密钥",
+    "add_success": "通行密钥添加成功",
+    "add_failed": "添加通行密钥失败",
+    "delete_success": "通行密钥删除成功",
+    "delete_failed": "删除通行密钥失败",
+    "login_failed": "通行密钥登录失败",
+    "not_supported": "此浏览器不支持通行密钥",
+    "name_label": "通行密钥名称",
+    "name_placeholder": "我的设备",
+    "created_at": "创建时间",
+    "backed_up": "已备份",
+    "confirm_delete": "确定要删除此通行密钥吗？"
   },
   "placeholder": {
     "bio": "这个人很懒，什么都没有写",

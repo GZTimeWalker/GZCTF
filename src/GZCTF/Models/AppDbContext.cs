@@ -447,5 +447,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
         });
+
+        // Configure passkey entity (Identity Schema Version 3)
+        builder.Entity<IdentityUserPasskey<Guid>>(entity =>
+        {
+            entity.HasKey(p => p.CredentialId);
+            entity.ToTable("AspNetUserPasskeys");
+            entity.Property(p => p.CredentialId).HasMaxLength(1024);
+            entity.OwnsOne(p => p.Data).ToJson();
+
+            entity.HasOne<UserInfo>()
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
