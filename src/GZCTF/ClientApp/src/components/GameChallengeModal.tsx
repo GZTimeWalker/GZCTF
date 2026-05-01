@@ -268,6 +268,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       challenge={challenge ?? { title, score }}
       cateData={cateData}
       solved={(status !== SubmissionType.Unaccepted && status !== undefined) || solvedChallengeId === challengeId}
+      justSolved={solvedChallengeId === challengeId}
       flag={flag}
       setFlag={setFlag}
       onCreate={onCreate}

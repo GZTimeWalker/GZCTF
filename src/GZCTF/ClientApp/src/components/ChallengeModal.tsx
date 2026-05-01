@@ -19,7 +19,7 @@ import { mdiAlertCircleOutline, mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageV
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { FC, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
@@ -94,6 +94,8 @@ export interface ChallengeModalProps extends ModalProps {
   onSubmitFlag: () => void
   onDownload?: () => void
   onReviewSubmit?: (rating: ReviewRating, comment: string) => Promise<void>
+  /** True only when the flag was accepted in this browser session (not a pre-existing solve). */
+  justSolved?: boolean
 }
 
 export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
@@ -101,6 +103,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     challenge,
     cateData,
     solved,
+    justSolved,
     disabled,
     submitting,
     gameTitle,
@@ -134,12 +137,10 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
   const [reviewSubmitted, setReviewSubmitted] = useState(false)
 
-  // Reset reviewSubmitted each time the challenge transitions to newly-solved
-  const prevSolved = useRef(false)
+  // Reset review state only when a fresh in-session solve occurs
   useEffect(() => {
-    if (solved && !prevSolved.current) setReviewSubmitted(false)
-    prevSolved.current = !!solved
-  }, [solved])
+    if (justSolved) setReviewSubmitted(false)
+  }, [justSolved])
 
   useEffect(() => {
     if (challenge) {
@@ -148,9 +149,9 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     }
   }, [challenge])
 
-  // Guard close: if just solved and review not yet submitted, block and nudge
+  // Block close only for challenges solved in this session that haven't been reviewed yet
   const handleClose = () => {
-    if (solved && !reviewSubmitted) {
+    if (justSolved && !reviewSubmitted) {
       showNotification({
         color: 'orange',
         message: t('challenge.review.required_to_close', 'Please rate this challenge before closing'),
@@ -296,7 +297,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
   const canSubmitDespiteDeadline = !isDeadlinePassed || (gameEnded && practiceMode)
   const inputDisabled = disabled || solved || isLimitReached || !canSubmitDespiteDeadline
 
-  const reviewSection = solved && !reviewSubmitted && (
+  const reviewSection = justSolved && !reviewSubmitted && (
     <Stack gap="sm">
       <Divider label={t('challenge.review.label', 'Rate this challenge')} labelPosition="center" />
       <Alert icon={<Icon path={mdiAlertCircleOutline} size={0.9} />} color="orange" p="xs">
