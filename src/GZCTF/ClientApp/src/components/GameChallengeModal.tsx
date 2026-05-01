@@ -3,14 +3,28 @@ import { useInputState } from '@mantine/hooks'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose, mdiLoading } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChallengeModal } from '@Components/ChallengeModal'
+import useSWR from 'swr'
+import { ChallengeModal, SolverInfo } from '@Components/ChallengeModal'
 import { encryptApiData } from '@Utils/Crypto'
 import { showErrorMsg } from '@Utils/Shared'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import api, { AnswerResult, ChallengeType, SubmissionType, ReviewRating } from '@Api'
+
+interface ChallengeSolverModel {
+  rank: number
+  teamName: string
+  teamAvatar: string | null
+  userName: string | null
+  type: SubmissionType
+  time: string
+  score: number
+}
+
+const fetcher = (url: string) =>
+  fetch(url, { credentials: 'include' }).then((r) => (r.ok ? r.json() : []))
 
 interface GameChallengeModalProps extends ModalProps {
   gameId: number
@@ -31,6 +45,27 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
   const { data: challenge, mutate } = api.game.useGameGetChallenge(gameId, challengeId, {
     refreshInterval: 120 * 1000,
   })
+
+  const { data: solverData } = useSWR<ChallengeSolverModel[]>(
+    gameId > 0 && challengeId > 0
+      ? `/api/game/${gameId}/challenges/${challengeId}/solvers`
+      : null,
+    fetcher,
+    { refreshInterval: 30000, revalidateOnFocus: false }
+  )
+
+  const solvers = useMemo((): SolverInfo[] =>
+    (solverData ?? []).map((s) => ({
+      rank: s.rank,
+      teamName: s.teamName,
+      teamAvatar: s.teamAvatar,
+      userName: s.userName,
+      type: s.type,
+      time: new Date(s.time).getTime(),
+      score: s.score,
+    })),
+    [solverData]
+  )
 
   const { config } = useConfig()
   const { t } = useTranslation()
@@ -269,6 +304,7 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       cateData={cateData}
       solved={(status !== SubmissionType.Unaccepted && status !== undefined) || solvedChallengeId === challengeId}
       justSolved={solvedChallengeId === challengeId}
+      solvers={solvers}
       flag={flag}
       setFlag={setFlag}
       onCreate={onCreate}

@@ -1,10 +1,12 @@
 import {
   Alert,
+  Avatar,
   Button,
   Divider,
   Group,
   Modal,
   ModalProps,
+  ScrollArea,
   Stack,
   TextInput,
   Text,
@@ -15,10 +17,13 @@ import {
   Textarea,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiAlertCircleOutline, mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'
+import { mdiAlertCircleOutline, mdiFlag, mdiHexagonSlice2, mdiHexagonSlice4, mdiHexagonSlice6, mdiLightbulbOnOutline, mdiOpenInNew, mdiPackageVariantClosed, mdiThumbUp, mdiThumbDown } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InstanceEntry } from '@Components/InstanceEntry'
@@ -26,7 +31,17 @@ import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/Markdo
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { useTicker } from '@Hooks/useTicker'
-import { ChallengeDetailModel, ChallengeType, ReviewRating } from '@Api'
+import { ChallengeDetailModel, ChallengeType, ReviewRating, SubmissionType } from '@Api'
+
+export interface SolverInfo {
+  rank: number
+  teamName: string
+  teamAvatar: string | null
+  userName: string | null
+  type: SubmissionType
+  time: number
+  score: number
+}
 import classes from '@Styles/ChallengeModal.module.css'
 import misc from '@Styles/Misc.module.css'
 
@@ -96,6 +111,7 @@ export interface ChallengeModalProps extends ModalProps {
   onReviewSubmit?: (rating: ReviewRating, comment: string) => Promise<void>
   /** True only when the flag was accepted in this browser session (not a pre-existing solve). */
   justSolved?: boolean
+  solvers?: SolverInfo[]
 }
 
 export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
@@ -117,6 +133,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     onDownload,
     onSubmitFlag,
     onReviewSubmit,
+    solvers,
     ...modalProps
   } = props
   const { t } = useTranslation()
@@ -193,6 +210,13 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     </Stack>
   )
 
+  const solverIconMap = new Map([
+    [SubmissionType.FirstBlood,  { path: mdiHexagonSlice6, color: theme.colors.yellow[5] }],
+    [SubmissionType.SecondBlood, { path: mdiHexagonSlice4, color: theme.colors.gray[4] }],
+    [SubmissionType.ThirdBlood,  { path: mdiHexagonSlice2, color: theme.colors.orange[6] }],
+    [SubmissionType.Normal,      { path: mdiFlag,          color: theme.colors[theme.primaryColor][5] }],
+  ])
+
   const content = (
     <ScrollAreaAutosize mah="52vh" maw="100%" scrollbars="y" scrollbarSize={6} type="scroll">
       {challenge?.content === undefined ? (
@@ -208,6 +232,50 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
                   <InlineMarkdown key={hint} size="sm" maw="calc(100% - 2rem)" source={hint} />
                 </Group>
               ))}
+            </Stack>
+          )}
+
+          {solvers && solvers.length > 0 && (
+            <Stack gap={4} pt="md">
+              <Divider
+                label={
+                  <Text size="xs" c="dimmed" fw={500}>
+                    Solved by {solvers.length} {solvers.length === 1 ? 'team' : 'teams'}
+                  </Text>
+                }
+                labelPosition="left"
+              />
+              <ScrollArea h={Math.min(solvers.length * 34, 170)} scrollbarSize={4}>
+                <Stack gap={2}>
+                  {solvers.map((s, i) => {
+                    const icon = solverIconMap.get(s.type) ?? solverIconMap.get(SubmissionType.Normal)!
+                    return (
+                      <Group key={i} gap="xs" wrap="nowrap" px={2}>
+                        <Icon path={icon.path} size={0.75} color={icon.color} />
+                        <Avatar
+                          src={s.teamAvatar}
+                          size={20}
+                          radius="xl"
+                          style={{ flexShrink: 0 }}
+                        >
+                          {s.teamName.slice(0, 1)}
+                        </Avatar>
+                        <Text size="xs" fw={600} truncate maw="8rem" style={{ flexShrink: 0 }}>
+                          {s.teamName}
+                        </Text>
+                        {s.userName && (
+                          <Text size="xs" c="dimmed" truncate maw="7rem">
+                            {s.userName}
+                          </Text>
+                        )}
+                        <Text size="xs" c="dimmed" ff="monospace" ml="auto" style={{ flexShrink: 0 }}>
+                          {dayjs(s.time).fromNow()}
+                        </Text>
+                      </Group>
+                    )
+                  })}
+                </Stack>
+              </ScrollArea>
             </Stack>
           )}
         </>

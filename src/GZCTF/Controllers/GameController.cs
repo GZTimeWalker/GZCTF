@@ -9,6 +9,7 @@ using GZCTF.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
+using GZCTF.Models.Response.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
@@ -1011,6 +1012,47 @@ public class GameController(
     /// <response code="400">Invalid operation</response>
     /// <response code="404">Game not found</response>
     [RequireUser]
+    /// <summary>
+    /// Get the list of teams that solved a specific challenge
+    /// </summary>
+    /// <remarks>
+    /// Lightweight alternative to fetching the full scoreboard — returns only the
+    /// solver list for one challenge, ordered by solve time. Uses the cached scoreboard.
+    /// </remarks>
+    [HttpGet("{id:int}/Challenges/{challengeId:int}/Solvers")]
+    [ProducesResponseType(typeof(ChallengeSolverModel[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChallengeSolvers([FromRoute] int id, [FromRoute] int challengeId,
+        CancellationToken token)
+    {
+        var context = await GetContextInfo(id, token: token);
+        if (context.Result is not null)
+            return context.Result;
+
+        var scoreboard = await gameRepository.GetScoreboard(context.Game!, token);
+
+        var solvers = scoreboard.Items.Values
+            .Select(team =>
+            {
+                var solve = team.SolvedChallenges.FirstOrDefault(c => c.Id == challengeId);
+                return solve is null ? null : new ChallengeSolverModel
+                {
+                    Rank = team.Rank,
+                    TeamName = team.Name,
+                    TeamAvatar = team.Avatar,
+                    UserName = solve.UserName,
+                    Type = solve.Type,
+                    Time = solve.SubmitTimeUtc,
+                    Score = solve.Score,
+                };
+            })
+            .Where(s => s is not null)
+            .OrderBy(s => s!.Time)
+            .ToArray();
+
+        return Ok(solvers);
+    }
+
     [HttpGet("{id:int}/Challenges/{challengeId:int}")]
     [ProducesResponseType(typeof(ChallengeDetailModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
