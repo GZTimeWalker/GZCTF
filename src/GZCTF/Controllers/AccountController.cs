@@ -3,9 +3,11 @@ using System.Security.Cryptography;
 using System.Security.Claims;
 using System.Text.Json;
 using GZCTF.Middlewares;
+using GZCTF.Models;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Response.Account;
+using GZCTF.Utils;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services;
 using GZCTF.Services.Config;
@@ -783,6 +785,58 @@ public partial class AccountController(
         model.HasManagedGames = await dbContext.EventManagers.AnyAsync(e => e.UserId == user!.Id);
 
         return Ok(model);
+    }
+
+    /// <summary>
+    /// Get personal stats for the current user
+    /// </summary>
+    /// <remarks>
+    /// Returns solve counts by category, first-blood count, and per-game summaries.
+    /// </remarks>
+    /// <response code="200">User statistics</response>
+    [HttpGet]
+    [RequireUser]
+    [ProducesResponseType(typeof(UserStatsModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Stats([FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var user = await userManager.GetUserAsync(User);
+        var userId = user!.Id;
+
+        var accepted = await dbContext.Submissions
+            .AsNoTracking()
+            .Where(s => s.UserId == userId && s.Status == AnswerResult.Accepted)
+            .Select(s => new { s.GameId, s.ChallengeId, Category = s.GameChallenge!.Category.ToString(), GameTitle = s.Game!.Title, GameEnd = s.Game.EndTimeUtc })
+            .ToListAsync(token);
+
+        var firstBloods = await dbContext.FirstSolves
+            .AsNoTracking()
+            .Where(fs => fs.Submission!.UserId == userId)
+            .CountAsync(token);
+
+        var solvesByCategory = accepted
+            .GroupBy(s => s.Category)
+            .ToDictionary(g => g.Key, g => g.Select(s => s.ChallengeId).Distinct().Count());
+
+        var gameGroups = accepted
+            .GroupBy(s => s.GameId)
+            .Select(g => new GameStatItem
+            {
+                GameId = g.Key,
+                GameTitle = g.First().GameTitle ?? string.Empty,
+                EndTimeUtc = g.First().GameEnd,
+                Solves = g.Select(s => s.ChallengeId).Distinct().Count(),
+            })
+            .OrderByDescending(g => g.EndTimeUtc)
+            .ToList();
+
+        return Ok(new UserStatsModel
+        {
+            TotalSolves = accepted.Select(s => s.ChallengeId).Distinct().Count(),
+            TotalFirstBloods = firstBloods,
+            GamesParticipated = gameGroups.Count,
+            SolvesByCategory = solvesByCategory,
+            Games = gameGroups,
+        });
     }
 
     /// <summary>

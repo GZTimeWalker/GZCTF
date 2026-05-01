@@ -1,10 +1,11 @@
-import { Stack } from '@mantine/core'
+import { Divider, Stack, Text } from '@mantine/core'
 import { FC, useState } from 'react'
 import { useParams } from 'react-router'
 import { ScoreboardTable } from '@Components/ScoreboardTable'
 import { TeamRank } from '@Components/TeamRank'
 import { WithGameTab } from '@Components/WithGameTab'
 import { WithNavBar } from '@Components/WithNavbar'
+import { ScoreHeatMap } from '@Components/charts/ScoreHeatMap'
 import { ScoreTimeLine } from '@Components/charts/ScoreTimeLine'
 import { MobileScoreboardTable } from '@Components/mobile/ScoreboardTable'
 import { useIsMobile } from '@Utils/ThemeOverride'
@@ -34,6 +35,8 @@ const Scoreboard: FC = () => {
         <WithGameTab>
           <Stack pb="2rem">
             <ScoreTimeLine divisionId={divisionId} />
+            <Divider label={<Text size="xs" c="dimmed">Solve Heatmap — green = first, orange = last</Text>} labelPosition="center" />
+            <ScoreHeatMap divisionId={divisionId} />
             <ScoreboardTable divisionId={divisionId} setDivisionId={setDivisionId} />
           </Stack>
         </WithGameTab>

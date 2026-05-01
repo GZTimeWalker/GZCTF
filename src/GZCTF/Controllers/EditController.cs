@@ -306,6 +306,95 @@ public class EditController(
     }
 
     /// <summary>
+    /// Clone a game as a template
+    /// </summary>
+    /// <remarks>
+    /// Creates a new hidden game copied from the source game's settings and challenges.
+    /// Flags for static challenges are copied; dynamic flag templates are preserved.
+    /// Attachments are not duplicated — re-upload them in the new game.
+    /// </remarks>
+    /// <response code="200">New game ID</response>
+    /// <response code="404">Source game not found</response>
+    [RequireAdmin]
+    [HttpPost("Games/{id:int}/Clone")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CloneGame([FromRoute] int id, [FromBody] GameCloneModel model,
+        [FromServices] AppDbContext dbContext, CancellationToken token = default)
+    {
+        var source = await gameRepository.GetGameById(id, token);
+        if (source is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        var sourceChallenges = model.IncludeChallenges
+            ? await dbContext.GameChallenges.AsNoTracking()
+                .Where(c => c.GameId == id)
+                .Include(c => c.Flags)
+                .ToListAsync(token)
+            : [];
+
+        var newGame = new Game
+        {
+            Title = model.Title.Trim(),
+            Summary = source.Summary,
+            Content = source.Content,
+            PracticeMode = source.PracticeMode,
+            AcceptWithoutReview = source.AcceptWithoutReview,
+            WriteupRequired = source.WriteupRequired,
+            WriteupNote = source.WriteupNote,
+            TeamMemberCountLimit = source.TeamMemberCountLimit,
+            ContainerCountLimit = source.ContainerCountLimit,
+            BloodBonusValue = source.BloodBonusValue,
+            StartTimeUtc = model.StartTimeUtc.ToUniversalTime(),
+            EndTimeUtc = model.EndTimeUtc.ToUniversalTime(),
+            Hidden = true,
+        };
+        await gameRepository.CreateGame(newGame, token);
+
+        foreach (var src in sourceChallenges)
+        {
+            var clone = new GameChallenge
+            {
+                GameId = newGame.Id,
+                Title = src.Title,
+                Content = src.Content,
+                Category = src.Category,
+                Type = src.Type,
+                Hints = src.Hints is null ? null : [.. src.Hints],
+                FlagTemplate = src.FlagTemplate,
+                FileName = src.FileName,
+                ContainerImage = src.ContainerImage,
+                MemoryLimit = src.MemoryLimit,
+                StorageLimit = src.StorageLimit,
+                CPUCount = src.CPUCount,
+                ExposePort = src.ExposePort,
+                NetworkMode = src.NetworkMode,
+                EnableTrafficCapture = src.EnableTrafficCapture,
+                DisableBloodBonus = src.DisableBloodBonus,
+                OriginalScore = src.OriginalScore,
+                MinScoreRate = src.MinScoreRate,
+                Difficulty = src.Difficulty,
+                SubmissionLimit = src.SubmissionLimit,
+                IsEnabled = false,
+            };
+            dbContext.GameChallenges.Add(clone);
+            await dbContext.SaveChangesAsync(token);
+
+            foreach (var flag in src.Flags ?? [])
+                dbContext.FlagContexts.Add(new FlagContext { Flag = flag.Flag, ChallengeId = clone.Id });
+
+            if (src.Flags?.Count > 0)
+                await dbContext.SaveChangesAsync(token);
+        }
+
+        logger.SystemLog($"Cloned game \"{source.Title}\" → \"{newGame.Title}\" (id={newGame.Id})",
+            TaskStatus.Success, LogLevel.Information);
+
+        return Ok(newGame.Id);
+    }
+
+    /// <summary>
     /// Delete All WriteUps
     /// </summary>
     /// <remarks>

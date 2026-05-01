@@ -19,6 +19,7 @@ import {
   mdiArrowLeftBold,
   mdiArrowRightBold,
   mdiChevronTripleRight,
+  mdiContentDuplicate,
   mdiPencilOutline,
   mdiPlus,
   mdiUpload,
@@ -30,6 +31,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { GameColorMap } from '@Components/GameCard'
 import { AdminPage } from '@Components/admin/AdminPage'
+import { CloneGameModal } from '@Components/admin/CloneGameModal'
 import { GameCreateModal } from '@Components/admin/GameCreateModal'
 import { showErrorMsg } from '@Utils/Shared'
 import { useArrayResponse } from '@Hooks/useArrayResponse'
@@ -45,6 +47,7 @@ const ITEM_COUNT_PER_PAGE = 30
 const Games: FC = () => {
   const [page, setPage] = useState(1)
   const [createOpened, setCreateOpened] = useState(false)
+  const [cloneTarget, setCloneTarget] = useState<GameInfoModel | null>(null)
   const [disabled, setDisabled] = useState(false)
   const [progress, setProgress] = useState(0)
   const { data: games, total, setData: setGames, updateData: updateGames } = useArrayResponse<GameInfoModel>()
@@ -258,7 +261,12 @@ const Games: FC = () => {
                         </Text>
                       </Table.Td>
                       <Table.Td>
-                        <Group justify="right">
+                        <Group justify="right" gap="xs">
+                          {user?.role === Role.Admin && (
+                            <ActionIcon variant="subtle" color="cyan" onClick={() => setCloneTarget(game)}>
+                              <Icon path={mdiContentDuplicate} size={1} />
+                            </ActionIcon>
+                          )}
                           <ActionIcon component={Link} to={`/admin/games/${game.id}/info`}>
                             <Icon path={mdiPencilOutline} size={1} />
                           </ActionIcon>
@@ -275,6 +283,11 @@ const Games: FC = () => {
         opened={createOpened}
         onClose={() => setCreateOpened(false)}
         onAddGame={(game) => updateGames([...(games ?? []), game])}
+      />
+      <CloneGameModal
+        game={cloneTarget}
+        opened={!!cloneTarget}
+        onClose={() => setCloneTarget(null)}
       />
     </AdminPage>
   )

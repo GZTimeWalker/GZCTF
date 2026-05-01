@@ -18,10 +18,11 @@ import {
 } from '@mantine/core'
 import { Dropzone } from '@mantine/dropzone'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiChartBar, mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { PasswordChangeModal } from '@Components/PasswordChangeModal'
 import { WithNavBar } from '@Components/WithNavbar'
 import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
@@ -226,6 +227,17 @@ const Profile: FC = () => {
             <Grid.Col span={4}>
               <Button fullWidth disabled={disabled} onClick={onChangeProfile}>
                 {t('account.button.save_profile')}
+              </Button>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Button
+                fullWidth
+                variant="light"
+                component={Link}
+                to="/account/stats"
+                leftSection={<Icon path={mdiChartBar} size={0.9} />}
+              >
+                {t('account.button.view_stats', 'View My Stats')}
               </Button>
             </Grid.Col>
           </Grid>
