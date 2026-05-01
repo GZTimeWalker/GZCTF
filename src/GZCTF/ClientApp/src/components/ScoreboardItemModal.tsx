@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Avatar,
   Badge,
   Center,
@@ -10,9 +11,13 @@ import {
   Stack,
   Table,
   Text,
+  Tooltip,
+  useMantineTheme,
 } from '@mantine/core'
+import { mdiAccountArrowLeft, mdiAccountOutline, mdiClose, mdiTrophyVariantOutline } from '@mdi/js'
+import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useMemo } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MemberContributionPie } from '@Components/charts/MemberContributionPie'
 import { MemberContributionPieProps } from '@Components/charts/MemberContributionPie'
@@ -63,13 +68,8 @@ function calculateMemberContribution(item?: ScoreboardItem): MemberContributionP
       return acc
     }, new Map<string, number>()) ?? new Map<string, number>()
 
-  const data = Array.from(memberScores.entries()).map(([name, value]) => ({
-    name,
-    value,
-  }))
-
+  const data = Array.from(memberScores.entries()).map(([name, value]) => ({ name, value }))
   data.sort((a, b) => b.value - a.value)
-
   return { data }
 }
 
@@ -77,28 +77,66 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
   const { item, scoreboard, bloodBonusMap, divisionMap, ...modalProps } = props
   const { t } = useTranslation()
   const { locale } = useLanguage()
+  const theme = useMantineTheme()
+
   const challenges = scoreboard?.challenges
   const challengeIdMap =
     challenges &&
     Object.keys(challenges).reduce((map, key) => {
-      challenges[key].forEach((challenge) => {
-        map.set(challenge.id!, challenge)
-      })
+      challenges[key].forEach((challenge) => map.set(challenge.id!, challenge))
       return map
     }, new Map<number, ChallengeInfo>())
 
   const valid = item && challenges && challengeIdMap
-  const solved = (item?.solvedCount ?? 0) / (scoreboard?.challengeCount ?? 1)
+
+  // ── Per-user drill-down ──────────────────────────────────────────────────
+  const [selectedUser, setSelectedUser] = useState<string | null>(null)
+
+  useEffect(() => { setSelectedUser(null) }, [item?.id])
+
+  const userChallenges = useMemo(
+    () => (item?.solvedChallenges ?? []).filter((c) => c.userName === selectedUser),
+    [item?.solvedChallenges, selectedUser]
+  )
+
+  const userScore = useMemo(
+    () => userChallenges.reduce((s, c) => s + (c.score ?? 0), 0),
+    [userChallenges]
+  )
+
+  const userFirstBloods = useMemo(
+    () => userChallenges.filter((c) => c.type && BloodsTypes.includes(c.type)).length,
+    [userChallenges]
+  )
+
+  // Virtual item for radar when a user is selected
+  const radarItem = useMemo(
+    () => selectedUser ? { ...item!, solvedChallenges: userChallenges } : item,
+    [selectedUser, item, userChallenges]
+  )
+
+  const teamSolveRatio = (item?.solvedCount ?? 0) / (scoreboard?.challengeCount ?? 1)
+  const userSolveRatio = userChallenges.length / (scoreboard?.challengeCount ?? 1)
 
   const radarData = useMemo(() => {
     if (!valid) return null
-    return calculateScoreRadar(challenges, challengeIdMap, item)
-  }, [valid, challenges, challengeIdMap, item])
+    return calculateScoreRadar(challenges, challengeIdMap, radarItem ?? undefined)
+  }, [valid, challenges, challengeIdMap, radarItem])
 
   const memberContributionData = useMemo(() => {
     if (!valid) return null
     return calculateMemberContribution(item)
   }, [valid, item])
+
+  // All distinct members who contributed a solve
+  const members = useMemo(
+    () => [...new Set((item?.solvedChallenges ?? []).map((c) => c.userName).filter(Boolean))],
+    [item?.solvedChallenges]
+  )
+
+  const visibleRows = selectedUser
+    ? userChallenges.slice().sort((a, b) => dayjs(a.time).diff(dayjs(b.time)))
+    : (item?.solvedChallenges ?? []).slice().sort((a, b) => dayjs(a.time).diff(dayjs(b.time)))
 
   return (
     <Modal
@@ -134,59 +172,136 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
       }
     >
       <Stack align="center" gap="xs">
-        <Stack w="85%" miw="20rem">
+        <Stack w="85%" miw="20rem" gap="xs">
+
+          {/* ── Charts ─────────────────────────────────────────────────── */}
           <Center h="14rem">
-            {valid && radarData && memberContributionData && (
-              <Group wrap="nowrap" gap={0} justify="center" w="100%" h="100%">
+            {valid && radarData && (
+              selectedUser ? (
+                // User selected: show only radar for their category breakdown
                 <TeamRadarMap {...radarData} />
-                <MemberContributionPie {...memberContributionData} />
-              </Group>
+              ) : (
+                memberContributionData && (
+                  <Group wrap="nowrap" gap={0} justify="center" w="100%" h="100%">
+                    <TeamRadarMap {...radarData} />
+                    <MemberContributionPie {...memberContributionData} />
+                  </Group>
+                )
+              )
             )}
           </Center>
+
+          {/* ── User drill-down banner ──────────────────────────────────── */}
+          {selectedUser ? (
+            <Group
+              justify="space-between"
+              px="sm"
+              py={6}
+              style={{
+                borderRadius: theme.radius.sm,
+                border: `1px solid ${theme.colors.blue[5]}`,
+                backgroundColor: 'var(--mantine-color-blue-light)',
+              }}
+            >
+              <Group gap="xs">
+                <Icon path={mdiAccountOutline} size={0.85} color={theme.colors.blue[5]} />
+                <Text size="sm" fw={700} c="blue">{selectedUser}</Text>
+              </Group>
+              <Tooltip label="Back to team view">
+                <ActionIcon size="sm" variant="subtle" color="blue" onClick={() => setSelectedUser(null)}>
+                  <Icon path={mdiClose} size={0.75} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+          ) : (
+            // Member chips — click to drill into a user
+            members.length > 1 && (
+              <Group gap={6} justify="center" wrap="wrap">
+                {members.map((name) => (
+                  <Badge
+                    key={name}
+                    variant="light"
+                    color="gray"
+                    size="sm"
+                    leftSection={<Icon path={mdiAccountArrowLeft} size={0.55} />}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setSelectedUser(name!)}
+                  >
+                    {name}
+                  </Badge>
+                ))}
+              </Group>
+            )
+          )}
+
+          {/* ── Stats bar ──────────────────────────────────────────────── */}
           <Group grow ta="center">
-            <Stack gap={2}>
-              <Text fw="bold" size="sm" ff="monospace">
-                {item?.rank || '-'}
-              </Text>
-              <Text size="xs" fw={500}>
-                {t('game.label.score_table.rank_total')}
-              </Text>
-            </Stack>
-            {item?.divisionId && (
-              <Stack gap={2}>
-                <Text fw="bold" size="sm" ff="monospace">
-                  {item?.divisionRank || '-'}
-                </Text>
-                <Text size="xs" fw={500}>
-                  {t('game.label.score_table.rank_division')}
-                </Text>
-              </Stack>
+            {selectedUser ? (
+              <>
+                <Stack gap={2}>
+                  <Text fw="bold" size="sm" ff="monospace">{userScore}</Text>
+                  <Text size="xs" fw={500}>{t('game.label.score_table.score')}</Text>
+                </Stack>
+                <Stack gap={2}>
+                  <Text fw="bold" size="sm" ff="monospace">{userChallenges.length}</Text>
+                  <Text size="xs" fw={500}>{t('game.label.score_table.solved_count')}</Text>
+                </Stack>
+                {userFirstBloods > 0 && (
+                  <Stack gap={2}>
+                    <Text fw="bold" size="sm" ff="monospace" c="orange">{userFirstBloods}</Text>
+                    <Text size="xs" fw={500}>Bloods</Text>
+                  </Stack>
+                )}
+                <Stack gap={2}>
+                  <Text fw="bold" size="sm" ff="monospace">
+                    {item?.score ? `${Math.round(userScore / item.score * 100)}%` : '-'}
+                  </Text>
+                  <Text size="xs" fw={500}>Contribution</Text>
+                </Stack>
+              </>
+            ) : (
+              <>
+                <Stack gap={2}>
+                  <Text fw="bold" size="sm" ff="monospace">{item?.rank || '-'}</Text>
+                  <Text size="xs" fw={500}>{t('game.label.score_table.rank_total')}</Text>
+                </Stack>
+                {item?.divisionId && (
+                  <Stack gap={2}>
+                    <Text fw="bold" size="sm" ff="monospace">{item?.divisionRank || '-'}</Text>
+                    <Text size="xs" fw={500}>{t('game.label.score_table.rank_division')}</Text>
+                  </Stack>
+                )}
+                <Stack gap={2}>
+                  <Text fw="bold" size="sm" ff="monospace">{item?.score}</Text>
+                  <Text size="xs" fw={500}>{t('game.label.score_table.score')}</Text>
+                </Stack>
+                <Stack gap={2}>
+                  <Text fw="bold" size="sm" ff="monospace">{item?.solvedCount}</Text>
+                  <Text size="xs" fw={500}>{t('game.label.score_table.solved_count')}</Text>
+                </Stack>
+              </>
             )}
-            <Stack gap={2}>
-              <Text fw="bold" size="sm" ff="monospace">
-                {item?.score}
-              </Text>
-              <Text size="xs" fw={500}>
-                {t('game.label.score_table.score')}
-              </Text>
-            </Stack>
-            <Stack gap={2}>
-              <Text fw="bold" size="sm" ff="monospace">
-                {item?.solvedCount}
-              </Text>
-              <Text size="xs" fw={500}>
-                {t('game.label.score_table.solved_count')}
-              </Text>
-            </Stack>
           </Group>
-          <Progress value={solved * 100} />
+
+          <Progress
+            value={(selectedUser ? userSolveRatio : teamSolveRatio) * 100}
+            color={selectedUser ? 'blue' : undefined}
+          />
         </Stack>
+
+        {/* ── Solve table ────────────────────────────────────────────────── */}
         {item?.solvedCount && item?.solvedCount > 0 ? (
           <ScrollArea scrollbarSize={6} h="12rem" w="100%" scrollbars="y">
             <Table className={tableClasses.table}>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>{t('common.label.user')}</Table.Th>
+                  {!selectedUser && (
+                    <Table.Th>
+                      <Text size="xs" c="dimmed" fs="italic">
+                        {t('common.label.user')}
+                      </Text>
+                    </Table.Th>
+                  )}
                   <Table.Th>{t('common.label.challenge')}</Table.Th>
                   <Table.Th>{t('game.label.score_table.type')}</Table.Th>
                   <Table.Th>{t('game.label.score_table.score')}</Table.Th>
@@ -194,35 +309,54 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {item?.solvedChallenges &&
-                  challengeIdMap &&
-                  item.solvedChallenges
-                    .sort((a, b) => dayjs(b.time).diff(dayjs(a.time)))
-                    .map((chal) => {
-                      const info = challengeIdMap.get(chal.id!)!
-                      return (
-                        <Table.Tr key={chal.id}>
-                          <Table.Td fw="bold">
-                            <ScrollingText text={chal.userName ?? ''} size="sm" maw="8rem" />
-                          </Table.Td>
+                {challengeIdMap &&
+                  visibleRows.map((chal, idx) => {
+                    const info = challengeIdMap.get(chal.id!)
+                    const isBlood = chal.type && BloodsTypes.includes(chal.type)
+                    return (
+                      <Table.Tr key={`${chal.id}-${idx}`}>
+                        {!selectedUser && (
                           <Table.Td>
-                            <ScrollingText text={info.title} miw="14rem" maw="20rem" />
+                            <Text
+                              size="sm"
+                              fw={600}
+                              c="blue"
+                              maw="8rem"
+                              truncate
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => setSelectedUser(chal.userName ?? null)}
+                            >
+                              {chal.userName ?? ''}
+                            </Text>
                           </Table.Td>
-                          <Table.Td fz="sm">{info.category}</Table.Td>
-                          <Table.Td ff="monospace" fz="sm">
+                        )}
+                        <Table.Td>
+                          <ScrollingText text={info?.title ?? `#${chal.id}`} miw="10rem" maw="16rem" />
+                        </Table.Td>
+                        <Table.Td fz="sm">{info?.category}</Table.Td>
+                        <Table.Td ff="monospace" fz="sm">
+                          <Group gap={4} wrap="nowrap">
+                            {isBlood && (
+                              <Icon
+                                path={mdiTrophyVariantOutline}
+                                size={0.6}
+                                color={theme.colors.orange[5]}
+                              />
+                            )}
                             {chal.score}
-                            {info.score && chal.score! > info.score && chal.type && BloodsTypes.includes(chal.type) && (
-                              <Text size="sm" c="dimmed" span>
-                                {`(${bloodBonusMap.get(chal.type)?.descr})`}
+                            {info?.score && chal.score! > info.score && isBlood && (
+                              <Text size="xs" c="dimmed" span>
+                                {`+${bloodBonusMap.get(chal.type!)?.descr ?? ''}`}
                               </Text>
                             )}
-                          </Table.Td>
-                          <Table.Td ff="monospace" fz="sm">
-                            {dayjs(chal.time).locale(locale).format('SL HH:mm:ss')}
-                          </Table.Td>
-                        </Table.Tr>
-                      )
-                    })}
+                          </Group>
+                        </Table.Td>
+                        <Table.Td ff="monospace" fz="sm">
+                          {dayjs(chal.time).locale(locale).format('SL HH:mm:ss')}
+                        </Table.Td>
+                      </Table.Tr>
+                    )
+                  })}
               </Table.Tbody>
             </Table>
           </ScrollArea>
