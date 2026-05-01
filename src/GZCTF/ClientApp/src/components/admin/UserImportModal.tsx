@@ -599,7 +599,7 @@ export const UserImportModal: FC<UserImportModalProps> = ({ onImportComplete, ..
             </Alert>
 
             <Paper withBorder>
-              <ScrollArea h="calc(100vh - 460px)" minh={200}>
+              <ScrollArea h="calc(100vh - 460px)" mih={200}>
                 <Table striped highlightOnHover withColumnBorders fz="xs" style={{ minWidth: 780 }}>
                   <Table.Thead>
                     <Table.Tr>
