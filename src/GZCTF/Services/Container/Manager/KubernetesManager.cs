@@ -212,7 +212,7 @@ public class KubernetesManager : IContainerManager
         if (!_meta.ExposePort)
             return container;
 
-        container.PublicIP = _meta.PublicEntry;
+        container.PublicHost = _meta.PublicEntry;
         container.PublicPort = service.Spec.Ports[0].NodePort;
 
         return container;

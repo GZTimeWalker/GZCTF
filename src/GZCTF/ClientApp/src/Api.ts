@@ -10,6 +10,21 @@
  * ---------------------------------------------------------------
  */
 
+/** User metadata field type */
+export enum UserMetadataFieldType {
+  Text = "Text",
+  TextArea = "TextArea",
+  Number = "Number",
+  Boolean = "Boolean",
+  DateTime = "DateTime",
+  Date = "Date",
+  Select = "Select",
+  MultiSelect = "MultiSelect",
+  Email = "Email",
+  Url = "Url",
+  Phone = "Phone",
+}
+
 export enum CaptchaProvider {
   None = "None",
   HashPow = "HashPow",
@@ -276,16 +291,8 @@ export interface ProfileUpdateModel {
    * @format phone
    */
   phone?: string | null;
-  /**
-   * Real name
-   * @maxLength 128
-   */
-  realName?: string | null;
-  /**
-   * Student ID
-   * @maxLength 64
-   */
-  stdNumber?: string | null;
+  /** User metadata (custom fields) */
+  metadata?: Record<string, any>;
 }
 
 /** Password change */
@@ -342,12 +349,10 @@ export interface ProfileUserInfoModel {
   bio?: string | null;
   /** Phone number */
   phone?: string | null;
-  /** Real name */
-  realName?: string | null;
-  /** Student ID */
-  stdNumber?: string | null;
   /** Avatar URL */
   avatar?: string | null;
+  /** User metadata (custom fields) */
+  metadata?: Record<string, any>;
 }
 
 /** Global configuration update */
@@ -451,10 +456,6 @@ export interface UserInfoModel {
   id?: string | null;
   /** Username */
   userName?: string | null;
-  /** Real name */
-  realName?: string | null;
-  /** Student number */
-  stdNumber?: string | null;
   /** Contact phone number */
   phone?: string | null;
   /** Bio */
@@ -479,6 +480,8 @@ export interface UserInfoModel {
   role?: Role | null;
   /** Is email confirmed (can log in) */
   emailConfirmed?: boolean | null;
+  /** User metadata (custom fields) */
+  metadata?: Record<string, any>;
 }
 
 /** Batch user creation (Admin) */
@@ -501,16 +504,6 @@ export interface UserCreateModel {
    */
   email: string;
   /**
-   * Real name
-   * @maxLength 128
-   */
-  realName?: string | null;
-  /**
-   * Student number
-   * @maxLength 64
-   */
-  stdNumber?: string | null;
-  /**
    * Contact phone number
    * @format phone
    */
@@ -520,6 +513,8 @@ export interface UserCreateModel {
    * @maxLength 20
    */
   teamName?: string | null;
+  /** User metadata (custom fields) */
+  metadata?: Record<string, any>;
 }
 
 /** List response */
@@ -613,16 +608,8 @@ export interface AdminUserInfoModel {
    * @format phone
    */
   phone?: string | null;
-  /**
-   * Real name
-   * @maxLength 128
-   */
-  realName?: string | null;
-  /**
-   * Student number
-   * @maxLength 64
-   */
-  stdNumber?: string | null;
+  /** User metadata (custom fields) */
+  metadata?: Record<string, any>;
   /** Is email confirmed (can log in) */
   emailConfirmed?: boolean | null;
   /** User role */
@@ -729,8 +716,8 @@ export interface ContainerInstanceModel {
    * @format uint64
    */
   expectStopAt?: number;
-  /** Access IP */
-  ip?: string;
+  /** Access host */
+  host?: string;
   /**
    * Access port
    * @format int32
@@ -2129,6 +2116,64 @@ export interface HashPowChallenge {
    * @format int32
    */
   difficulty?: number;
+}
+
+/** User metadata field configuration */
+export interface UserMetadataField {
+  /**
+   * Field key (e.g., "department", "studentId", "organization")
+   * @minLength 1
+   * @maxLength 40
+   */
+  key: string;
+  /**
+   * Display name for the field
+   * @minLength 1
+   * @maxLength 80
+   */
+  displayName: string;
+  /** Field type */
+  type?: UserMetadataFieldType;
+  /** Whether this field is required */
+  required?: boolean;
+  /** Whether this field is hidden from user view (frontend only) */
+  hidden?: boolean;
+  /** Whether this field can only be edited by privileged flows (admin/provider) */
+  locked?: boolean;
+  /**
+   * Display order
+   * @format int32
+   */
+  order?: number;
+  /** Default value for the field (stored as JSON) */
+  defaultValue?: JsonDocument | null;
+  /**
+   * Maximum length for text fields
+   * @format int32
+   */
+  maxLength?: number | null;
+  /**
+   * Minimum value for number fields
+   * @format int32
+   */
+  minValue?: number | null;
+  /**
+   * Maximum value for number fields
+   * @format int32
+   */
+  maxValue?: number | null;
+  /** Options for select fields (stored as JSON) */
+  options?: string[] | null;
+  /**
+   * Validation pattern (regex) for the field
+   * @maxLength 400
+   */
+  pattern?: string | null;
+}
+
+export interface JsonDocument {
+  isDisposable?: boolean;
+  rootElement?: any;
 }
 
 /** Team information update */
@@ -5933,6 +5978,51 @@ export class Api<
     ) => mutate<PostInfoModel[]>(`/api/posts/latest`, data, options),
 
     /**
+     * No description
+     *
+     * @tags Info
+     * @name InfoGetMetadataFields
+     * @summary Get user metadata fields
+     * @request GET:/api/metadata
+     */
+    infoGetMetadataFields: (params: RequestParams = {}) =>
+      this.request<UserMetadataField[], any>({
+        path: `/api/metadata`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Info
+     * @name InfoGetMetadataFields
+     * @summary Get user metadata fields
+     * @request GET:/api/metadata
+     */
+    useInfoGetMetadataFields: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<UserMetadataField[], any>(
+        doFetch ? `/api/metadata` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Info
+     * @name InfoGetMetadataFields
+     * @summary Get user metadata fields
+     * @request GET:/api/metadata
+     */
+    mutateInfoGetMetadataFields: (
+      data?: UserMetadataField[] | Promise<UserMetadataField[]>,
+      options?: MutatorOptions,
+    ) => mutate<UserMetadataField[]>(`/api/metadata`, data, options),
+
+    /**
      * @description Get post details
      *
      * @tags Info
@@ -6062,6 +6152,102 @@ export class Api<
       data?: HashPowChallenge | Promise<HashPowChallenge>,
       options?: MutatorOptions,
     ) => mutate<HashPowChallenge>(`/api/captcha/powchallenge`, data, options),
+  };
+  metadata = {
+    /**
+     * No description
+     *
+     * @tags Metadata
+     * @name MetadataCreate
+     * @summary Create a new metadata field
+     * @request POST:/api/admin/metadata
+     */
+    metadataCreate: (data: UserMetadataField, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/metadata`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Metadata
+     * @name MetadataDelete
+     * @summary Delete a metadata field
+     * @request DELETE:/api/admin/metadata/{key}
+     */
+    metadataDelete: (key: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/admin/metadata/${key}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Metadata
+     * @name MetadataGet
+     * @summary Get all metadata fields
+     * @request GET:/api/admin/metadata
+     */
+    metadataGet: (params: RequestParams = {}) =>
+      this.request<UserMetadataField[], any>({
+        path: `/api/admin/metadata`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Metadata
+     * @name MetadataGet
+     * @summary Get all metadata fields
+     * @request GET:/api/admin/metadata
+     */
+    useMetadataGet: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<UserMetadataField[], any>(
+        doFetch ? `/api/admin/metadata` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Metadata
+     * @name MetadataGet
+     * @summary Get all metadata fields
+     * @request GET:/api/admin/metadata
+     */
+    mutateMetadataGet: (
+      data?: UserMetadataField[] | Promise<UserMetadataField[]>,
+      options?: MutatorOptions,
+    ) => mutate<UserMetadataField[]>(`/api/admin/metadata`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags Metadata
+     * @name MetadataUpdate
+     * @summary Update a metadata field
+     * @request PUT:/api/admin/metadata/{key}
+     */
+    metadataUpdate: (
+      key: string,
+      data: UserMetadataField,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse | ProblemDetails>({
+        path: `/api/admin/metadata/${key}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
   };
   proxy = {
     /**

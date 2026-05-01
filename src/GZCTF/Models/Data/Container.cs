@@ -23,6 +23,7 @@ public class Container
     /// The Image used to create the container
     /// </summary>
     [Required]
+    [MaxLength(Limits.MaxUrlLength)]
     public string Image { get; set; } = string.Empty;
 
     /// <summary>
@@ -33,6 +34,7 @@ public class Container
     /// used for managing the container instance
     /// </remarks>
     [Required]
+    [MaxLength(Limits.MaxContainerIdLength)]
     public string ContainerId { get; set; } = string.Empty;
 
     /// <summary>
@@ -67,6 +69,7 @@ public class Container
     /// Local IP
     /// </summary>
     [Required]
+    [MaxLength(Limits.MaxIPLength)]
     public string IP { get; set; } = string.Empty;
 
     /// <summary>
@@ -76,9 +79,10 @@ public class Container
     public int Port { get; set; }
 
     /// <summary>
-    /// Public IP
+    /// Public Host, can be DNS name
     /// </summary>
-    public string? PublicIP { get; set; }
+    [MaxLength(Limits.MaxHostLength)]
+    public string? PublicHost { get; set; }
 
     /// <summary>
     /// Public port
@@ -89,7 +93,7 @@ public class Container
     /// Container instance access method
     /// </summary>
     [NotMapped]
-    public string Entry => IsProxy ? Id.ToString() : $"{PublicIP ?? IP}:{PublicPort ?? Port}";
+    public string Entry => IsProxy ? Id.ToString() : $"{PublicHost ?? IP}:{PublicPort ?? Port}";
 
     /// <summary>
     /// Whether traffic capture is enabled
