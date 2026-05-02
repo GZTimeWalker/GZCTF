@@ -74,7 +74,8 @@ public static class SuspicionType
     public static readonly HashSet<string> StrongSignals = [
         ZeroWrongAttempts, SolutionRelay, HighWrongRate, AutomatedPattern,
         Burst, FingerprintChurn, SharedFingerprint, CollusionGroup,
-        CrossTeamIP, SequenceSimilarity
+        CrossTeamIP, SequenceSimilarity,
+        FastSolveOpen, FastSolveDownload, FastSolveContainer, Hoarding, SharedIP
     ];
 
     /// Returns true if the signal is "Soft" — low-confidence, suppressible without corroboration.

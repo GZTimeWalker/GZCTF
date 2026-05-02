@@ -999,26 +999,13 @@ public class GameController(
     }
 
     /// <summary>
-    /// Get challenge information
-    /// </summary>
-    /// <remarks>
-    /// Retrieves challenge information; requires User permission and active team participation
-    /// </remarks>
-    /// <param name="id">Game ID</param>
-    /// <param name="challengeId">Challenge ID</param>
-    /// <param name="reviewRepository"></param>
-    /// <param name="token"></param>
-    /// <response code="200">Successfully retrieved game challenge information</response>
-    /// <response code="400">Invalid operation</response>
-    /// <response code="404">Game not found</response>
-    [RequireUser]
-    /// <summary>
     /// Get the list of teams that solved a specific challenge
     /// </summary>
     /// <remarks>
     /// Lightweight alternative to fetching the full scoreboard — returns only the
     /// solver list for one challenge, ordered by solve time. Uses the cached scoreboard.
     /// </remarks>
+    [RequireUser]
     [HttpGet("{id:int}/Challenges/{challengeId:int}/Solvers")]
     [ProducesResponseType(typeof(ChallengeSolverModel[]), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
