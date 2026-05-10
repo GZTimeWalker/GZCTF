@@ -2,6 +2,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace GZCTF.Controllers;
 
@@ -14,9 +15,13 @@ namespace GZCTF.Controllers;
 ///
 /// Responses look plausible long enough that the scanner records the hit
 /// without immediately learning it tripped a tripwire.
+///
+/// Hidden from the OpenAPI spec so (a) honeypot paths can't be enumerated by reading
+/// the API doc, and (b) NSwag doesn't choke on actions with multiple route attributes.
 /// </summary>
 [ApiController]
 [AllowAnonymous]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class HoneypotController(IHoneypotService honeypotService) : ControllerBase
 {
     private const string Category = "http";

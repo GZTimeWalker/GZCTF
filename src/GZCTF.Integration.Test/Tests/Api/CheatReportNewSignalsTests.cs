@@ -719,8 +719,12 @@ public class CheatReportNewSignalsTests(GZCTFApplicationFactory factory, ITestOu
         output.WriteLine($"Cheat report elapsed: {sw.ElapsedMilliseconds} ms");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(10),
-            $"Cheat report took {sw.Elapsed.TotalSeconds:F2}s, expected < 10s");
+        // Threshold is intentionally generous: this test runs alongside ~225 other
+        // integration tests that share the host's Docker daemon and CPU. The point is
+        // catching catastrophic O(n²+) regressions, not micro-optimizations — a tight
+        // bound caused noisy CI failures on busy runners.
+        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(20),
+            $"Cheat report took {sw.Elapsed.TotalSeconds:F2}s, expected < 20s");
 
         var report = await response.Content.ReadFromJsonAsync<CheatReport>(GetJsonOptions());
         Assert.NotNull(report);
