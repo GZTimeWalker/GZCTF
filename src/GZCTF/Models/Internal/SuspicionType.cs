@@ -33,6 +33,12 @@ public static class SuspicionType
     public const string SessionConcurrency = "SessionConcurrency";
     public const string FirstBloodAnomaly = "FirstBloodAnomaly";
 
+    // Inspector signals — automated-tool / scanner detection
+    public const string HoneypotHit = "HoneypotHit";
+    public const string HoneypotProtocolHit = "HoneypotProtocolHit";
+    public const string HoneypotCanaryFlag = "HoneypotCanaryFlag";
+    public const string HoneypotChain = "HoneypotChain";
+
     public static readonly Dictionary<string, (int Weight, string Description)> Defaults = new()
     {
         { StolenFlag, (100, "Flag stolen from another team") },
@@ -63,11 +69,16 @@ public static class SuspicionType
         { AutomatedPattern, (50, "Machine-speed flag submission intervals — likely scripted") },
         { SessionConcurrency, (30, "Same user account active from two different IPs within 10 minutes") },
         { FirstBloodAnomaly, (20, "First blood on a hard challenge not solved by others for 2+ hours") },
+        { HoneypotHit, (70, "Hit a platform honeypot HTTP route — automated reconnaissance") },
+        { HoneypotProtocolHit, (90, "Connected to a platform honeypot protocol service (SSH, Redis, etc.) — broad infra scan") },
+        { HoneypotCanaryFlag, (100, "Submitted a canary flag exposed only via honeypot — automated scrape pipeline") },
+        { HoneypotChain, (150, "Followed multiple cross-referenced honeypot baits — automated link-following scanner or agent") },
     };
 
     /// Hard evidence — always persisted regardless of other signals.
     public static readonly HashSet<string> HardSignals = [
-        StolenFlag, WrongFlagLeakage, NoContainer, NoDownload, TokenAbuse
+        StolenFlag, WrongFlagLeakage, NoContainer, NoDownload, TokenAbuse,
+        HoneypotProtocolHit, HoneypotCanaryFlag, HoneypotChain
     ];
 
     /// Strong evidence — filed always; Soft signals unlock only when a Strong/Hard signal exists.
@@ -75,7 +86,8 @@ public static class SuspicionType
         ZeroWrongAttempts, SolutionRelay, HighWrongRate, AutomatedPattern,
         Burst, FingerprintChurn, SharedFingerprint, CollusionGroup,
         CrossTeamIP, SequenceSimilarity,
-        FastSolveOpen, FastSolveDownload, FastSolveContainer, Hoarding, SharedIP
+        FastSolveOpen, FastSolveDownload, FastSolveContainer, Hoarding, SharedIP,
+        HoneypotHit
     ];
 
     /// Returns true if the signal is "Soft" — low-confidence, suppressible without corroboration.

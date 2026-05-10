@@ -6,12 +6,47 @@ services:
       dockerfile: GZCTF/Dockerfile.local
     ports:
       - "8080:8080"
+      - "2222:2222"
+      - "3306:3306"
+      - "5432:5432"
+      - "6379:6379"
+      - "11211:11211"
+      - "27017:27017"
+      - "9200:9200"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Database=Host=postgres;Database=gzctf;Username=gzctf;Password=gzctf
       - ConnectionStrings__Redis=redis:6379,password=gzctf
       - XorKey=gzctf-xor-key
       - ContainerProvider__DockerConfig__ChallengeNetwork=z-test-challenges
+      - HoneypotConfig__Enabled=true
+      - HoneypotConfig__ListenAddress=0.0.0.0
+      - HoneypotConfig__Ports__0__Name=ssh
+      - HoneypotConfig__Ports__0__Port=2222
+      - HoneypotConfig__Ports__0__Banner=SSH-2.0-OpenSSH_8.4p1 backup-server
+      - HoneypotConfig__Ports__0__Enabled=true
+      - HoneypotConfig__Ports__1__Name=mysql
+      - HoneypotConfig__Ports__1__Port=3306
+      - HoneypotConfig__Ports__1__Enabled=true
+      - HoneypotConfig__Ports__2__Name=postgres
+      - HoneypotConfig__Ports__2__Port=5432
+      - HoneypotConfig__Ports__2__Enabled=true
+      - HoneypotConfig__Ports__3__Name=redis
+      - HoneypotConfig__Ports__3__Port=6379
+      - HoneypotConfig__Ports__3__Enabled=true
+      - HoneypotConfig__Ports__4__Name=memcached
+      - HoneypotConfig__Ports__4__Port=11211
+      - HoneypotConfig__Ports__4__Enabled=true
+      - HoneypotConfig__Ports__5__Name=mongo
+      - HoneypotConfig__Ports__5__Port=27017
+      - HoneypotConfig__Ports__5__Enabled=true
+      - HoneypotConfig__Ports__6__Name=elastic
+      - HoneypotConfig__Ports__6__Port=9200
+      - HoneypotConfig__Ports__6__Enabled=true
+      - HoneypotConfig__ChainEnabled=true
+      - HoneypotConfig__ChainThreshold=3
+      - HoneypotConfig__ChainWindowMinutes=30
+      - HoneypotConfig__ChainSweepIntervalSeconds=60
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "gzctf-files:/app/files"

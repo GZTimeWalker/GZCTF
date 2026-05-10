@@ -33,6 +33,7 @@ internal static class ServicesExtension
             builder.AddConfig<ManagedConfig>();
             builder.AddConfig<ContainerPolicy>();
             builder.AddConfig<ContainerProvider>();
+            builder.AddConfig<HoneypotConfig>();
 
             builder.Services.Configure<RegistrySet<RegistryConfig>>(builder.Configuration.GetSection("Registries"));
 
@@ -85,6 +86,8 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
             builder.Services.AddScoped<IChallengeReviewRepository, ChallengeReviewRepository>();
 
+            builder.Services.AddScoped<IHoneypotService, HoneypotService>();
+
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();
             builder.Services.AddScoped<GameImportService>();
@@ -97,6 +100,8 @@ internal static class ServicesExtension
             builder.Services.AddHostedService<CacheMaker>();
             builder.Services.AddHostedService<FlagChecker>();
             builder.Services.AddHostedService<CronJobService>();
+            builder.Services.AddHostedService<HoneypotPortListenerService>();
+            builder.Services.AddHostedService<HoneypotChainDetectorService>();
         }
 
         internal void AddWebServices()

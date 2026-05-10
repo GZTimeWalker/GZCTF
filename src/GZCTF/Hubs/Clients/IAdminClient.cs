@@ -8,4 +8,9 @@ public interface IAdminClient
     /// 接收到广播日志信息
     /// </summary>
     public Task ReceivedLog(LogMessageModel log);
+
+    /// <summary>
+    /// Receive a honeypot hit notice for the admin live feed.
+    /// </summary>
+    public Task ReceivedHoneypotHit(HoneypotHitModel hit);
 }
