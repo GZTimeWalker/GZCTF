@@ -281,6 +281,7 @@
         },
         "end_date": "Ngày kết thúc.",
         "end_time": "Thời gian kết thúc.",
+        "freeze_time": "Thời gian Đóng băng",
         "invite_code": {
           "description": "Có thể bị ghi đè bởi các bảng",
           "label": "Mã mời.",

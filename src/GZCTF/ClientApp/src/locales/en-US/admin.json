@@ -276,6 +276,7 @@
         },
         "end_date": "End Date",
         "end_time": "End Time",
+        "freeze_time": "Freeze Time",
         "invite_code": {
           "description": "Can be overwritten by divisions",
           "label": "Invitation Code",

@@ -67,8 +67,11 @@ public class CacheHelper(
         memoryCache.Remove(key);
     }
 
-    public async Task FlushScoreboardCache(int gameId, CancellationToken token) =>
+    public async Task FlushScoreboardCache(int gameId, CancellationToken token)
+    {
         await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(gameId), token);
+        await channelWriter.WriteAsync(ScoreboardFrozenCacheHandler.MakeCacheRequest(gameId), token);
+    }
 
     public async Task FlushRecentGamesCache(CancellationToken token) =>
         await channelWriter.WriteAsync(RecentGamesCacheHandler.MakeCacheRequest(), token);
@@ -197,6 +200,11 @@ public static class CacheKey
     public const string ScoreBoardBase = "_ScoreBoard";
 
     /// <summary>
+    /// Scoreboard (frozen view, ICPC-style — built with the freeze-cutoff applied)
+    /// </summary>
+    public const string ScoreBoardFrozenBase = "_ScoreBoardFrozen";
+
+    /// <summary>
     /// Recent games
     /// </summary>
     public const string RecentGames = "_RecentGames";
@@ -250,6 +258,16 @@ public static class CacheKey
     /// Scoreboard cache
     /// </summary>
     public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
+
+    /// <summary>
+    /// Frozen scoreboard cache
+    /// </summary>
+    public static string ScoreBoardFrozen(int id) => $"_ScoreBoardFrozen_{id}";
+
+    /// <summary>
+    /// Frozen scoreboard cache
+    /// </summary>
+    public static string ScoreBoardFrozen(string id) => $"_ScoreBoardFrozen_{id}";
 
     /// <summary>
     /// Game cache

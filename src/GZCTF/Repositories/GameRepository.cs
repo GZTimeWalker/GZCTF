@@ -164,11 +164,22 @@ public class GameRepository(
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(7);
-                return GenScoreboard(game, token);
+                return GenScoreboard(game, cutoff: null, token);
             }, token: token);
 
     public Task<ScoreboardModel?> TryGetScoreboard(int gameId, CancellationToken token = default)
         => cacheHelper.GetAsync<ScoreboardModel>(CacheKey.ScoreBoard(gameId), token);
+
+    public Task<ScoreboardModel> GetFrozenScoreboard(Game game, CancellationToken token = default)
+        => cacheHelper.GetOrCreateAsync(logger, CacheKey.ScoreBoardFrozen(game.Id),
+            entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromDays(7);
+                return GenScoreboard(game, cutoff: game.FreezeTimeUtc, token);
+            }, token: token);
+
+    public Task<ScoreboardModel?> TryGetFrozenScoreboard(int gameId, CancellationToken token = default)
+        => cacheHelper.GetAsync<ScoreboardModel>(CacheKey.ScoreBoardFrozen(gameId), token);
 
     public Task<bool> IsGameClosed(int gameId, CancellationToken token = default)
         => Context.Games.AnyAsync(game =>
@@ -244,6 +255,7 @@ public class GameRepository(
             await cacheHelper.FlushRecentGamesCache(token);
 
             await cacheHelper.RemoveAsync(CacheKey.ScoreBoard(game.Id), token);
+            await cacheHelper.RemoveAsync(CacheKey.ScoreBoardFrozen(game.Id), token);
 
             return TaskStatus.Success;
         }
@@ -277,7 +289,7 @@ public class GameRepository(
 
     // By xfoxfu & GZTimeWalker @ 2022/04/03
     // Refactored by GZTimeWalker @ 2024/08/31
-    public async Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default)
+    public async Task<ScoreboardModel> GenScoreboard(Game game, DateTimeOffset? cutoff = null, CancellationToken token = default)
     {
         Dictionary<int, ScoreboardItem> items;
         Dictionary<int, ChallengeInfo> challenges;
@@ -397,6 +409,11 @@ public class GameRepository(
 
         foreach (var snapshot in solveSnapshots)
         {
+            // ICPC freeze: when a cutoff is supplied, post-cutoff snapshots are fully invisible —
+            // they don't contribute to dynamic solve counts, blood, ranks, or timelines.
+            if (cutoff is { } cut && snapshot.SubmitTimeUtc >= cut)
+                continue;
+
             if (!items.TryGetValue(snapshot.ParticipantId, out var scoreboardItem))
                 continue;
 
@@ -611,7 +628,10 @@ public class GameRepository(
             Items = items,
             Divisions = divisions,
             TimeLines = timelines,
-            BloodBonusValue = game.BloodBonus.Val
+            BloodBonusValue = game.BloodBonus.Val,
+            // Always expose the game's configured freeze time (independent of which projection
+            // we're building) so the admin UI can show a "live view (public is frozen)" indicator.
+            FreezeTimeUtc = game.FreezeTimeUtc
         };
     }
 

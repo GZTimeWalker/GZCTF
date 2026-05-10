@@ -31,6 +31,7 @@
     "duration": "{{hours}} 시간",
     "end_at": "종료 시각",
     "end_time": "종료 시각",
+    "frozen_banner": "스코어보드가 {{time}}에 동결되었습니다. 최종 순위는 게임 종료 시 공개됩니다.",
     "game_ended": "종료됨",
     "game_lasts_long": "게임이 종료되기까지 많이 남았습니다.",
     "hide_container_events": {

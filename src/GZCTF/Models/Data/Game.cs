@@ -117,6 +117,13 @@ public partial class Game
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
+    /// Optional scoreboard freeze time (ICPC-style). When set and the current time is in
+    /// [FreezeTimeUtc, EndTimeUtc), non-monitor viewers see a frozen snapshot of the scoreboard.
+    /// Submissions made during the freeze still persist and are scored; only the public view is frozen.
+    /// </summary>
+    public DateTimeOffset? FreezeTimeUtc { get; set; }
+
+    /// <summary>
     /// Additional notes for writeup
     /// </summary>
     [Required]
@@ -206,6 +213,7 @@ public partial class Game
         WriteupNote = model.WriteupNote;
         WriteupRequired = model.WriteupRequired;
         WriteupDeadline = model.WriteupDeadline;
+        FreezeTimeUtc = model.FreezeTimeUtc;
         BloodBonus = BloodBonus.FromValue(model.BloodBonusValue);
         DiscordWebhook = model.DiscordWebhook;
 

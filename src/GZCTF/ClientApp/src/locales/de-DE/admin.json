@@ -276,6 +276,7 @@
         },
         "end_date": "Enddatum",
         "end_time": "Endzeit",
+        "freeze_time": "Sperrzeit",
         "invite_code": {
           "description": "Können von Abteilungen überschrieben werden",
           "label": "Einladungscode",

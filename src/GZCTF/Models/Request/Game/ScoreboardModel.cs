@@ -97,6 +97,21 @@ public partial class ScoreboardModel
     [Required]
     [MemoryPackIgnore]
     public int ChallengeCount { get; private set; }
+
+    /// <summary>
+    /// Game freeze time (UTC). Null if scoreboard freeze is not configured.
+    /// </summary>
+    [JsonPropertyName("freeze")]
+    public DateTimeOffset? FreezeTimeUtc { get; set; }
+
+    /// <summary>
+    /// True iff this response was built with the freeze cutoff applied for the current viewer.
+    /// Set per-request by the controller; never persisted to cache.
+    /// </summary>
+    [MemoryPackIgnore]
+    [JsonInclude]
+    [JsonPropertyName("isFrozenView")]
+    public bool IsFrozenView { get; set; }
 }
 
 public record TimeLineItem([Required] int DivisionId, [Required] IEnumerable<TopTimeLine> Teams);

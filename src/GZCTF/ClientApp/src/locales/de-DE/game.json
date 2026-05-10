@@ -31,6 +31,7 @@
     "duration": "{{hours}} Stunde(n)",
     "end_at": "Endet um",
     "end_time": "Endzeit",
+    "frozen_banner": "Scoreboard seit {{time}} eingefroren. Endstand wird bei Spielende veröffentlicht.",
     "game_ended": "Beendet",
     "game_lasts_long": "Das Spiel wird lange dauern",
     "hide_container_events": {

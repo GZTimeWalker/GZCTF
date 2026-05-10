@@ -276,6 +276,7 @@
         },
         "end_date": "종료 날짜",
         "end_time": "종료 시간",
+        "freeze_time": "동결 시간",
         "invite_code": {
           "description": "부문에 의해 덮어씌워질 수 있습니다",
           "label": "초대 코드",

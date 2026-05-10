@@ -31,6 +31,7 @@
     "duration": "{{hours}} 時間",
     "end_at": "終了日時",
     "end_time": "終了日時",
+    "frozen_banner": "スコアボードは {{time}} に凍結されました。最終順位はゲーム終了時に発表されます。",
     "game_ended": "ゲーム終了",
     "game_lasts_long": "ゲームはまだ長く続くでしょう",
     "hide_container_events": {

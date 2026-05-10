@@ -55,6 +55,7 @@ const GameInfoEdit: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [start, setStart] = useInputState(dayjs())
   const [end, setEnd] = useInputState(dayjs())
+  const [freeze, setFreeze] = useState<dayjs.Dayjs | null>(null)
   const [wpddl, setWpddl] = useInputState(3)
 
   const modals = useModals()
@@ -77,6 +78,7 @@ const GameInfoEdit: FC = () => {
       setGame(gameSource)
       setStart(dayjs(gameSource.start))
       setEnd(dayjs(gameSource.end))
+      setFreeze(gameSource.freeze ? dayjs(gameSource.freeze) : null)
 
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
@@ -132,6 +134,7 @@ const GameInfoEdit: FC = () => {
         inviteCode: (game.inviteCode?.length ?? 0 > 6) ? game.inviteCode : null,
         start: start.valueOf(),
         end: end.valueOf(),
+        freeze: freeze ? freeze.valueOf() : null,
         writeupDeadline: end.add(wpddl, 'h').valueOf(),
       })
       showNotification({
@@ -311,6 +314,18 @@ const GameInfoEdit: FC = () => {
           }}
           error={end < start}
           required
+        />
+        <DateTimePicker
+          label={t('admin.content.games.info.freeze_time')}
+          size="sm"
+          disabled={disabled}
+          minDate={start.toDate()}
+          maxDate={end.toDate()}
+          value={freeze?.toDate() ?? null}
+          valueFormat="L LT"
+          clearable
+          onChange={(e) => setFreeze(e ? dayjs(e) : null)}
+          error={!!freeze && (freeze.isBefore(start) || freeze.isAfter(end))}
         />
         <Switch
           disabled={disabled}

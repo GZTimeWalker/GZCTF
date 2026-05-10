@@ -276,6 +276,7 @@
         },
         "end_date": "Date de fin",
         "end_time": "Heure de fin",
+        "freeze_time": "Heure de Gel",
         "invite_code": {
           "description": "Peuvent être remplacés par les divisions",
           "label": "Code d'invitation",

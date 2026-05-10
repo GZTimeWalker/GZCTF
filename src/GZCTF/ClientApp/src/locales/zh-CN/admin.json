@@ -276,6 +276,7 @@
         },
         "end_date": "结束日期",
         "end_time": "结束时间",
+        "freeze_time": "封榜时间",
         "invite_code": {
           "description": "可被分组覆盖",
           "label": "邀请码",

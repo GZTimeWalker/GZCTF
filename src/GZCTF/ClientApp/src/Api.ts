@@ -1117,6 +1117,11 @@ export interface GameInfoModel {
    */
   end: number;
   /**
+   * Optional scoreboard freeze time. If set, must fall strictly between StartTimeUtc and EndTimeUtc.
+   * @format uint64
+   */
+  freeze?: number | null;
+  /**
    * Writeup submission deadline
    * @format uint64
    */
@@ -1789,6 +1794,13 @@ export interface ScoreboardModel {
    * @format int32
    */
   challengeCount: number;
+  /**
+   * Game freeze time (UTC). Null if scoreboard freeze is not configured.
+   * @format uint64
+   */
+  freeze?: number | null;
+  /** True iff this response was built with the freeze cutoff applied for the current viewer. */
+  isFrozenView?: boolean;
 }
 
 export interface TimeLineItem {

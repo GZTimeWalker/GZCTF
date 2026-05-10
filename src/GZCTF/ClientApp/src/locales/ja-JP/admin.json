@@ -276,6 +276,7 @@
         },
         "end_date": "終了日",
         "end_time": "終了時間",
+        "freeze_time": "凍結時間",
         "invite_code": {
           "description": "区分によって上書き可能",
           "label": "招待コード",

@@ -31,6 +31,7 @@
     "duration": "{{hours}} hour(s)",
     "end_at": "Ends at",
     "end_time": "End Time",
+    "frozen_banner": "Scoreboard frozen since {{time}}. Final standings will be revealed at game end.",
     "game_ended": "Ended",
     "game_lasts_long": "The game will last for a long time",
     "hide_container_events": {

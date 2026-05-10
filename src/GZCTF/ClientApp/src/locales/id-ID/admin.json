@@ -276,6 +276,7 @@
         },
         "end_date": "Tanggal Berakhir",
         "end_time": "Waktu Selesai",
+        "freeze_time": "Waktu Beku",
         "invite_code": {
           "description": "Dapat ditimpa oleh divisi",
           "label": "Kode Undangan",

@@ -276,6 +276,7 @@
         },
         "end_date": "Fecha de Finalización",
         "end_time": "Hora de Finalización",
+        "freeze_time": "Hora de Congelación",
         "invite_code": {
           "description": "Pueden ser sobrescritos por las divisiones",
           "label": "Código de Invitación",

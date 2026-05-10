@@ -31,6 +31,7 @@
     "duration": "{{hours}} hora(s)",
     "end_at": "Finaliza a las",
     "end_time": "Hora de finalización",
+    "frozen_banner": "Tabla de puntuación congelada desde {{time}}. La clasificación final se revelará al finalizar el juego.",
     "game_ended": "Finalizado",
     "game_lasts_long": "El juego durará mucho tiempo",
     "hide_container_events": {

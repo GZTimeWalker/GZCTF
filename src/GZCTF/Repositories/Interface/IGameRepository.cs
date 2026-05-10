@@ -141,14 +141,18 @@ public interface IGameRepository : IRepository
     #region Scoreboard
 
     /// <summary>
-    /// Generate scoreboard for a game
+    /// Generate scoreboard for a game.
     /// </summary>
     /// <param name="game">game</param>
+    /// <param name="cutoff">
+    /// Optional snapshot cutoff. When set, submissions at or after the cutoff are excluded
+    /// from scoring, dynamic challenge solve counts, blood, ranks, and timelines (ICPC freeze).
+    /// </param>
     /// <param name="token"></param>
-    public Task<ScoreboardModel> GenScoreboard(Game game, CancellationToken token = default);
+    public Task<ScoreboardModel> GenScoreboard(Game game, DateTimeOffset? cutoff = null, CancellationToken token = default);
 
     /// <summary>
-    /// Get scoreboard by game
+    /// Get scoreboard by game (live view).
     /// </summary>
     /// <param name="game">Game</param>
     /// <param name="token"></param>
@@ -156,12 +160,26 @@ public interface IGameRepository : IRepository
     public Task<ScoreboardModel> GetScoreboard(Game game, CancellationToken token = default);
 
     /// <summary>
-    /// Try to get scoreboard by game id, return null if not exists
+    /// Try to get scoreboard by game id (live view), return null if not exists
     /// </summary>
     /// <param name="gameId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<ScoreboardModel?> TryGetScoreboard(int gameId, CancellationToken token = default);
+
+    /// <summary>
+    /// Get the frozen scoreboard (built with the game's FreezeTimeUtc as the snapshot cutoff).
+    /// </summary>
+    /// <param name="game">Game (must have FreezeTimeUtc set for the result to differ from the live view)</param>
+    /// <param name="token"></param>
+    public Task<ScoreboardModel> GetFrozenScoreboard(Game game, CancellationToken token = default);
+
+    /// <summary>
+    /// Try to get the frozen scoreboard by game id, return null if not exists.
+    /// </summary>
+    /// <param name="gameId"></param>
+    /// <param name="token"></param>
+    public Task<ScoreboardModel?> TryGetFrozenScoreboard(int gameId, CancellationToken token = default);
 
     /// <summary>
     /// Get if the game is closed

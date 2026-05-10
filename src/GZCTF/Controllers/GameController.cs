@@ -348,19 +348,9 @@ public class GameController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Scoreboard([FromRoute] int id, CancellationToken token)
     {
-        var scoreboard = await gameRepository.TryGetScoreboard(id, token);
-        string eTag;
-        if (scoreboard is not null)
-        {
-            eTag = GameETag(id, scoreboard.UpdateTimeUtc);
-            if (ContextHelper.IsNotModified(Request, Response, eTag, scoreboard.UpdateTimeUtc))
-                return StatusCode(StatusCodes.Status304NotModified);
-
-            return Ok(scoreboard);
-        }
-
+        // Need the Game for the freeze decision, so load it first. GameCache is a 2-day
+        // sliding cache so this is effectively one Redis hit.
         var game = await gameRepository.GetGameById(id, token);
-
         if (game is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
@@ -368,9 +358,39 @@ public class GameController(
         if (DateTimeOffset.UtcNow < game.StartTimeUtc)
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_NotStarted)]));
 
-        scoreboard = await gameRepository.GetScoreboard(game, token);
+        var isMonitor = await ContextHelper.HasMonitor(HttpContext);
+        var now = DateTimeOffset.UtcNow;
+        var isFrozenView = !isMonitor
+                           && game.FreezeTimeUtc is { } freeze
+                           && now >= freeze
+                           && now < game.EndTimeUtc;
+
+        // Defensive: shared HTTP caches/bf-cache must not serve a frozen body to an admin
+        // (or vice-versa) just because the URL matches.
+        Response.Headers.Append("Vary", "Cookie");
+
+        var scoreboard = isFrozenView
+            ? await gameRepository.TryGetFrozenScoreboard(id, token)
+            : await gameRepository.TryGetScoreboard(id, token);
+
+        string eTag;
+        if (scoreboard is not null)
+        {
+            scoreboard.IsFrozenView = isFrozenView;
+            eTag = GameETag(id, scoreboard.UpdateTimeUtc, isFrozenView);
+            if (ContextHelper.IsNotModified(Request, Response, eTag, scoreboard.UpdateTimeUtc))
+                return StatusCode(StatusCodes.Status304NotModified);
+
+            return Ok(scoreboard);
+        }
+
+        scoreboard = isFrozenView
+            ? await gameRepository.GetFrozenScoreboard(game, token)
+            : await gameRepository.GetScoreboard(game, token);
+        scoreboard.IsFrozenView = isFrozenView;
+
         var lastModified = scoreboard.UpdateTimeUtc;
-        eTag = GameETag(game.Id, lastModified);
+        eTag = GameETag(game.Id, lastModified, isFrozenView);
         ContextHelper.SetCacheHeaders(Response, eTag, lastModified);
 
         return Ok(scoreboard);
@@ -1713,8 +1733,8 @@ public class GameController(
         return res;
     }
 
-    private static string GameETag(int gameId, DateTimeOffset lastModified) =>
-        $"\"{gameId}-{lastModified.ToUnixTimeSeconds():X}\"";
+    private static string GameETag(int gameId, DateTimeOffset lastModified, bool frozen = false) =>
+        $"\"{gameId}-{lastModified.ToUnixTimeSeconds():X}-{(frozen ? "f" : "l")}\"";
 
     private static Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> FilterChallengesByPermission(
         Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> challenges,

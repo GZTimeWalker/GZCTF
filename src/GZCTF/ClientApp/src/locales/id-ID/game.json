@@ -31,6 +31,7 @@
     "duration": "{{hours}} jam",
     "end_at": "Berakhir pada",
     "end_time": "Waktu Berakhir",
+    "frozen_banner": "Papan skor dibekukan sejak {{time}}. Peringkat akhir akan diungkap saat permainan berakhir.",
     "game_ended": "Telah berakhir",
     "game_lasts_long": "Game ini akan berlangsung lama",
     "hide_container_events": {

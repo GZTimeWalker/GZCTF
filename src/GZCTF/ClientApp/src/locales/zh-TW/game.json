@@ -31,6 +31,7 @@
     "duration": "{{hours}} 小時",
     "end_at": "結束於",
     "end_time": "結束時間",
+    "frozen_banner": "積分榜已於 {{time}} 封榜，最終排名將在比賽結束時揭曉。",
     "game_ended": "比賽已結束",
     "game_lasts_long": "比賽還會很久",
     "hide_container_events": {

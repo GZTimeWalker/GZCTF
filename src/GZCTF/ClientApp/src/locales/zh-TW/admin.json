@@ -276,6 +276,7 @@
         },
         "end_date": "結束日期",
         "end_time": "結束時間",
+        "freeze_time": "封榜時間",
         "invite_code": {
           "description": "可被組織覆蓋",
           "label": "邀請碼",

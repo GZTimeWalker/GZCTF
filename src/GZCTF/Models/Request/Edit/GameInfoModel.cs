@@ -6,7 +6,7 @@ namespace GZCTF.Models.Request.Edit;
 /// <summary>
 /// Game information (Edit)
 /// </summary>
-public class GameInfoModel
+public class GameInfoModel : IValidatableObject
 {
     /// <summary>
     /// Game ID
@@ -100,6 +100,13 @@ public class GameInfoModel
     public DateTimeOffset EndTimeUtc { get; set; } = DateTimeOffset.FromUnixTimeSeconds(0);
 
     /// <summary>
+    /// Optional scoreboard freeze time. If set, must fall strictly between StartTimeUtc and EndTimeUtc.
+    /// Non-monitor viewers see a snapshot built at this time; admins/monitors always see live.
+    /// </summary>
+    [JsonPropertyName("freeze")]
+    public DateTimeOffset? FreezeTimeUtc { get; set; }
+
+    /// <summary>
     /// Writeup submission deadline
     /// </summary>
     public DateTimeOffset WriteupDeadline { get; set; } = DateTimeOffset.UtcNow;
@@ -133,9 +140,21 @@ public class GameInfoModel
             DiscordWebhook = game.DiscordWebhook,
             StartTimeUtc = game.StartTimeUtc,
             EndTimeUtc = game.EndTimeUtc,
+            FreezeTimeUtc = game.FreezeTimeUtc,
             WriteupDeadline = game.WriteupDeadline,
             WriteupNote = game.WriteupNote,
             WriteupRequired = game.WriteupRequired,
             BloodBonusValue = game.BloodBonus.Val
         };
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (FreezeTimeUtc is { } freeze &&
+            (freeze <= StartTimeUtc || freeze >= EndTimeUtc))
+        {
+            yield return new ValidationResult(
+                "FreezeTimeUtc must be strictly between StartTimeUtc and EndTimeUtc.",
+                [nameof(FreezeTimeUtc)]);
+        }
+    }
 }

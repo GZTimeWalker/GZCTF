@@ -31,6 +31,7 @@
     "duration": "{{hours}} giờ",
     "end_at": "Kết thúc lúc",
     "end_time": "Thời gian kết thúc",
+    "frozen_banner": "Bảng xếp hạng đã đóng băng từ {{time}}. Thứ hạng cuối cùng sẽ được công bố khi kết thúc trận đấu.",
     "game_ended": "Đã kết thúc",
     "game_lasts_long": "Trò chơi sẽ kéo dài lâu",
     "hide_container_events": {
