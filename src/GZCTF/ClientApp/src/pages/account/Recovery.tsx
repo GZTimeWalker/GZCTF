@@ -22,7 +22,7 @@ const Recovery: FC = () => {
 
   usePageTitle(t('account.title.recovery'))
 
-  const onRecovery = async (event: React.FormEvent) => {
+  const onRecovery = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     const { valid, token } = await getToken()

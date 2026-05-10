@@ -5,7 +5,7 @@
     <IsPackable>false</IsPackable>
     <CollectCoverage>true</CollectCoverage>
     <Configurations>Debug;Release</Configurations>
-    <ReleaseVersion>1.8.3</ReleaseVersion>
+    <ReleaseVersion>1.8.5</ReleaseVersion>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -17,8 +17,14 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="xunit.runner.console" />
-    <PackageReference Include="coverlet.collector" />
-    <PackageReference Include="coverlet.msbuild" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.msbuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

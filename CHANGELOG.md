@@ -3,6 +3,44 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.4..v1.8.5) - 2026-05-01
+
+### ⛰️ Features
+
+- **(storage)** stream compression directly to S3 without intermediate buffering - ([7a2bca](https://github.com/GZTimeWalker/GZCTF/commit/7a2bca)) by **GZTime**
+- **(storage)** add compression support for file uploads - ([674a52](https://github.com/GZTimeWalker/GZCTF/commit/674a52)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(scoreboard)** reset scrolling text measurement when text prop changes - ([c42701](https://github.com/GZTimeWalker/GZCTF/commit/c42701)) by **GZTime**
+- **(team)** pass correct user to RemoveUserParticipations when kicking member - ([3bc125](https://github.com/GZTimeWalker/GZCTF/commit/3bc125)) by **GZTime**
+- **(traffic)** archive traffic records before container destruction - ([393884](https://github.com/GZTimeWalker/GZCTF/commit/393884)) by **GZTime**
+- **(traffic)** resolve race conditions and fire-and-forget in traffic recording - ([18beb2](https://github.com/GZTimeWalker/GZCTF/commit/18beb2)) by **GZTime**
+
+### 🔨 Refactor
+
+- Traffic capture for platform proxy (#574) - ([d20bd9](https://github.com/GZTimeWalker/GZCTF/commit/d20bd9)) by **GZTime**
+
+---
+## [1.8.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.3..v1.8.4) - 2026-04-25
+
+### 🐛 Bug Fixes
+
+- **(captcha)** reset Turnstile token after form submission to prevent reuse - ([e53141](https://github.com/GZTimeWalker/GZCTF/commit/e53141)) by **GZTime**
+- **(division)** ensure inviteCode is always set in model - ([850ef3](https://github.com/GZTimeWalker/GZCTF/commit/850ef3)) by **GZTime**
+- **(style)** radar chart not centered - ([92832e](https://github.com/GZTimeWalker/GZCTF/commit/92832e)) by **GZTime**
+
+### 🎨 Styling
+
+- **(badge)** temporary fix Badge styles in mantine v9 - ([a807ee](https://github.com/GZTimeWalker/GZCTF/commit/a807ee)) by **GZTime**
+- **(recent_game)** use Text instead of Badge - ([009430](https://github.com/GZTimeWalker/GZCTF/commit/009430)) by **GZTime**
+- **(traffic)** improve layout of Traffic & Challenge items - ([25a44f](https://github.com/GZTimeWalker/GZCTF/commit/25a44f)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(deps)** upgrade mantine to v9 - ([e2bcd1](https://github.com/GZTimeWalker/GZCTF/commit/e2bcd1)) by **GZTime**
+
+---
 ## [1.8.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.2..v1.8.3) - 2026-03-15
 
 ### 🔨 Refactor

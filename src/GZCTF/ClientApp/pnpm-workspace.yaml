@@ -1,4 +1,2 @@
-# pnpm 11+ requires explicit opt-in for postinstall scripts. esbuild's postinstall
-# downloads the platform-specific binary and is required for vite to bundle.
 allowBuilds:
-  esbuild: true
+  esbuild: false

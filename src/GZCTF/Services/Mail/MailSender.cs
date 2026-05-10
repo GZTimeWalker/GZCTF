@@ -31,7 +31,7 @@ public sealed class MailSender : IMailSender, IDisposable
         _cancellationToken = _cancellationTokenSource.Token;
 
         if (string.IsNullOrWhiteSpace(_options.SenderAddress) ||
-            string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port is not > 0)
+            string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port <= 0)
             return;
 
         _smtpClient = new();
@@ -160,7 +160,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         try
         {
-            await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port.Value, cancellationToken: token);
+            await client.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, cancellationToken: token);
             await client.AuthenticateAsync(_options.UserName, _options.Password, token);
 
             foreach (var (userName, email, resetLink) in list)
@@ -254,7 +254,7 @@ public sealed class MailSender : IMailSender, IDisposable
             try
             {
                 if (!_smtpClient.IsConnected)
-                    await _smtpClient.ConnectAsync(_options!.Smtp!.Host, _options.Smtp.Port!.Value,
+                    await _smtpClient.ConnectAsync(_options!.Smtp!.Host, _options.Smtp.Port,
                         cancellationToken: _cancellationToken);
 
                 if (!_smtpClient.IsAuthenticated)
@@ -306,7 +306,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         try
         {
-            _smtpClient.Connect(_options!.Smtp!.Host, _options.Smtp.Port!.Value, cancellationToken: token);
+            _smtpClient.Connect(_options!.Smtp!.Host, _options.Smtp.Port, cancellationToken: token);
             _smtpClient.Authenticate(_options.UserName, _options.Password, token);
             _smtpClient.Disconnect(true, token);
             return true;

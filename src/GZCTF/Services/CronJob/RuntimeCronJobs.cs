@@ -2,8 +2,11 @@ using System.Threading.Channels;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Cache.Handlers;
+using GZCTF.Services.Traffic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
+
+// ReSharper disable UnusedMember.Global
 
 namespace GZCTF.Services.CronJob;
 
@@ -13,9 +16,11 @@ public static class RuntimeCronJobs
     public static async Task ContainerChecker(AsyncServiceScope scope, ILogger<CronJobService> logger)
     {
         var containerRepo = scope.ServiceProvider.GetRequiredService<IContainerRepository>();
+        var trafficRegistry = scope.ServiceProvider.GetRequiredService<TrafficRecorderRegistry>();
 
         foreach (var container in await containerRepo.GetDyingContainers())
         {
+            await trafficRegistry.ArchiveAsync(container.Id);
             await containerRepo.DestroyContainer(container);
             logger.SystemLog(
                 StaticLocalizer[nameof(Resources.Program.CronJob_RemoveExpiredContainer),
@@ -33,8 +38,7 @@ public static class RuntimeCronJobs
         if (upcoming.Length <= 0)
             return;
 
-        var channelWriter =
-            scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
+        var writer = scope.ServiceProvider.GetRequiredService<ChannelWriter<CacheRequest>>();
         var cache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
         foreach (var game in upcoming)
@@ -43,7 +47,7 @@ public static class RuntimeCronJobs
             if (await cache.GetAsync(key) is not null)
                 continue;
 
-            await channelWriter.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
+            await writer.WriteAsync(ScoreboardCacheHandler.MakeCacheRequest(game));
             logger.SystemLog(StaticLocalizer[nameof(Resources.Program.CronJob_BootstrapRankingCache), key],
                 TaskStatus.Success,
                 LogLevel.Debug);

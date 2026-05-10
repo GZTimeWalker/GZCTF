@@ -144,7 +144,7 @@ const Login: FC = () => {
     }
   }
 
-  const onLogin = async (event: React.FormEvent) => {
+  const onLogin = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     await executeLogin()
   }

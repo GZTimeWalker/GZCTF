@@ -163,7 +163,7 @@ const Register: FC = () => {
     }
   }
 
-  const onRegister = async (event: React.FormEvent) => {
+  const onRegister = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     await executeRegister()
   }

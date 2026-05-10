@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
@@ -109,22 +108,6 @@ public class Container
     /// </summary>
     [NotMapped]
     internal string LogId => $"<{ShortId}> {ContainerId}";
-
-    /// <summary>
-    /// Container instance traffic capture storage path
-    /// </summary>
-    public string TrafficPath(string conn)
-    {
-        if (GameInstance is null)
-            return string.Empty;
-
-        var shortId = Id.ToString("N")[..12];
-
-        return StoragePath.Combine(PathHelper.Capture,
-            GameInstance.ChallengeId.ToString(),
-            GameInstance.ParticipationId.ToString(),
-            $"{shortId}-{conn}.pcap");
-    }
 
     /// <summary>
     /// Generate metadata for the container
