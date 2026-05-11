@@ -1,7 +1,9 @@
 ﻿using System.Threading.Channels;
+using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services;
 
@@ -122,6 +124,25 @@ public class FlagChecker(
 
                                 // always flush the scoreboard
                                 await cacheHelper.FlushScoreboardCache(item.GameId, token);
+
+                                // Access-event-based cheat checks. Best-effort: must never
+                                // block accept-path side effects, which have already run.
+                                try
+                                {
+                                    var detector = scope.ServiceProvider
+                                        .GetRequiredService<IContainerAccessSubmissionDetector>();
+                                    var providerOptions = scope.ServiceProvider
+                                        .GetRequiredService<IOptions<ContainerProvider>>().Value;
+                                    var platformProxyEnabled =
+                                        providerOptions.PortMappingType == ContainerPortMappingType.PlatformProxy;
+                                    await detector.RunChecks(item, platformProxyEnabled, token);
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError(ex,
+                                        "ContainerAccessSubmissionDetector failed for submission {Id}",
+                                        item.Id);
+                                }
                                 break;
                             }
                         default:

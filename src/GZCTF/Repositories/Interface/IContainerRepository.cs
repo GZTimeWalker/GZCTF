@@ -68,4 +68,13 @@ public interface IContainerRepository : IRepository
     /// <param name="token"></param>
     /// <returns>Distinct flag strings for the challenge, or empty if none.</returns>
     public Task<string[]> GetStaticChallengeFlags(int challengeId, CancellationToken token = default);
+
+    /// <summary>
+    /// Resolve a user's <see cref="Participation"/> ID in a specific game,
+    /// or null if they are not on any team in that game. Indexed point read
+    /// against the <c>UserParticipations</c> table; used by the container
+    /// access logger to determine whether the connecting user is from the
+    /// container-owning team or a different team.
+    /// </summary>
+    public Task<int?> GetUserParticipationIdInGame(Guid userId, int gameId, CancellationToken token = default);
 }

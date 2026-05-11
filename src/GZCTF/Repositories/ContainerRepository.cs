@@ -55,6 +55,13 @@ public class ContainerRepository(
             .Distinct()
             .ToArrayAsync(token);
 
+    public async Task<int?> GetUserParticipationIdInGame(Guid userId, int gameId, CancellationToken token = default) =>
+        await Context.Set<UserParticipation>()
+            .AsNoTracking()
+            .Where(up => up.UserId == userId && up.GameId == gameId)
+            .Select(up => (int?)up.ParticipationId)
+            .FirstOrDefaultAsync(token);
+
     public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
     {
         try

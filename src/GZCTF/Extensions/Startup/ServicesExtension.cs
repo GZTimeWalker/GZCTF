@@ -36,6 +36,7 @@ internal static class ServicesExtension
             builder.AddConfig<ContainerProvider>();
             builder.AddConfig<HoneypotConfig>();
             builder.AddConfig<FlagEgressConfig>();
+            builder.AddConfig<CheatDetectionConfig>();
 
             builder.Services.Configure<RegistrySet<RegistryConfig>>(builder.Configuration.GetSection("Registries"));
 
@@ -89,6 +90,9 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IChallengeReviewRepository, ChallengeReviewRepository>();
 
             builder.Services.AddScoped<IHoneypotService, HoneypotService>();
+            builder.Services.AddScoped<IContainerAccessLogger, ContainerAccessLogger>();
+            builder.Services.AddScoped<IIpAttributionHelper, IpAttributionHelper>();
+            builder.Services.AddScoped<IContainerAccessSubmissionDetector, ContainerAccessSubmissionDetector>();
 
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();

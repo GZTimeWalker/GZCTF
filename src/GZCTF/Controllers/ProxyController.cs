@@ -3,12 +3,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Traffic;
+using GZCTF.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
@@ -132,6 +135,52 @@ public class ProxyController(
 
         IPEndPoint client = new(clientIp, clientPort);
         IPEndPoint target = new(ipAddress, container.Port);
+
+        // Record the proxy access. This is purely additive — failure here must
+        // not block the proxy, so the whole block sits inside try/catch.
+        try
+        {
+            var accessLogger = HttpContext.RequestServices.GetRequiredService<IContainerAccessLogger>();
+
+            Guid? userId = null;
+            string? userName = null;
+            int? accessingParticipationId = null;
+            var isAdmin = false;
+
+            if (HttpContext.User?.Identity?.IsAuthenticated == true)
+            {
+                var idStr = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (Guid.TryParse(idStr, out var parsed))
+                {
+                    userId = parsed;
+                    userName = HttpContext.User.Identity.Name;
+                    accessingParticipationId = await containerRepository
+                        .GetUserParticipationIdInGame(parsed,
+                            container.GameInstance!.Participation.GameId, token);
+                    isAdmin = await ContextHelper.HasMonitor(HttpContext);
+                }
+            }
+
+            var userAgent = HttpContext.Request.Headers.UserAgent.ToString();
+            if (userAgent.Length > 512) userAgent = userAgent[..512];
+
+            await accessLogger.LogAccess(new ContainerAccessContext(
+                ContainerId: id,
+                ChallengeId: container.GameInstance!.ChallengeId,
+                ContainerOwnerParticipationId: container.GameInstance!.ParticipationId,
+                GameId: container.GameInstance!.Participation.GameId,
+                AccessingUserId: userId,
+                AccessingUserName: userName,
+                AccessingParticipationId: accessingParticipationId,
+                RemoteIp: clientIp.ToString(),
+                UserAgent: string.IsNullOrEmpty(userAgent) ? null : userAgent,
+                IsAdmin: isAdmin,
+                ConnectedAtUtc: DateTimeOffset.UtcNow), token);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "ContainerAccessLogger failed for container {Id}", id);
+        }
 
         return await DoContainerProxy(id, client, target, writer, realRemotePort, token);
     }

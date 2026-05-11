@@ -46,6 +46,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<SuspicionEvent> SuspicionEvents { get; set; } = null!;
     public DbSet<SuspicionRule> SuspicionRules { get; set; } = null!;
     public DbSet<FlagEgressEvent> FlagEgressEvents { get; set; } = null!;
+    public DbSet<ContainerAccessEvent> ContainerAccessEvents { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -478,6 +479,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasOne(e => e.Participation)
                 .WithMany()
                 .HasForeignKey(e => e.ParticipationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Challenge)
+                .WithMany()
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<ContainerAccessEvent>(entity =>
+        {
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Challenge)

@@ -40,6 +40,13 @@ public static class SuspicionType
     public const string HoneypotChain = "HoneypotChain";
     public const string FlagEgress = "FlagEgress";
 
+    // Container-access signals — derived from ContainerAccessEvent rows
+    public const string CrossTeamContainerAccess        = "CrossTeamContainerAccess";
+    public const string DelayedSolveSubmission          = "DelayedSolveSubmission";
+    public const string InstantSubmitAfterAccess        = "InstantSubmitAfterAccess";
+    public const string SubmitterNeverAccessedContainer = "SubmitterNeverAccessedContainer";
+    public const string AccessIpMismatchAtSubmission    = "AccessIpMismatchAtSubmission";
+
     public static readonly Dictionary<string, (int Weight, string Description)> Defaults = new()
     {
         { StolenFlag, (100, "Flag stolen from another team") },
@@ -75,12 +82,18 @@ public static class SuspicionType
         { HoneypotCanaryFlag, (100, "Submitted a canary flag exposed only via honeypot — automated scrape pipeline") },
         { HoneypotChain, (150, "Followed multiple cross-referenced honeypot baits — automated link-following scanner or agent") },
         { FlagEgress, (80, "Team flag observed in proxied container traffic — exfil pipeline or automated solver") },
+        { CrossTeamContainerAccess,        (120, "A non-admin user from a different team opened the proxy WebSocket on this team's container") },
+        { DelayedSolveSubmission,          ( 40, "Submitter personally opened the container long before they submitted the flag") },
+        { InstantSubmitAfterAccess,        ( 50, "Submission within seconds of the submitter's first proxy access — automated solver pipeline") },
+        { SubmitterNeverAccessedContainer, ( 30, "Submitter never personally opened the container; a teammate did") },
+        { AccessIpMismatchAtSubmission,    ( 30, "Submitter's IP at submission time does not match any IP they used to access the container") },
     };
 
     /// Hard evidence — always persisted regardless of other signals.
     public static readonly HashSet<string> HardSignals = [
         StolenFlag, WrongFlagLeakage, NoContainer, NoDownload, TokenAbuse,
-        HoneypotProtocolHit, HoneypotCanaryFlag, HoneypotChain, FlagEgress
+        HoneypotProtocolHit, HoneypotCanaryFlag, HoneypotChain, FlagEgress,
+        CrossTeamContainerAccess
     ];
 
     /// Strong evidence — filed always; Soft signals unlock only when a Strong/Hard signal exists.
@@ -89,7 +102,8 @@ public static class SuspicionType
         Burst, FingerprintChurn, SharedFingerprint, CollusionGroup,
         CrossTeamIP, SequenceSimilarity,
         FastSolveOpen, FastSolveDownload, FastSolveContainer, Hoarding, SharedIP,
-        HoneypotHit
+        HoneypotHit,
+        DelayedSolveSubmission, InstantSubmitAfterAccess
     ];
 
     /// Returns true if the signal is "Soft" — low-confidence, suppressible without corroboration.
