@@ -91,10 +91,16 @@ public sealed class ContainerAccessLogger(
                 GameId = ctx.GameId,
             };
 
+            // Details format aligns with the frontend's parseDetailLines
+            // (monitor/CheatInfo.tsx): semicolons between fields, colon as
+            // key/value separator, no other colons in values so each line
+            // parses to one label+value pair.
             var details =
-                $"accessingUserId={ctx.AccessingUserId} accessingUserName={ctx.AccessingUserName} " +
-                $"accessingParticipationId={ctx.AccessingParticipationId} containerId={ctx.ContainerId} " +
-                $"remoteIp={ctx.RemoteIp}";
+                $"accessingUser:{ctx.AccessingUserName};" +
+                $"accessingUserId:{ctx.AccessingUserId};" +
+                $"accessingPid:{ctx.AccessingParticipationId};" +
+                $"containerId:{ctx.ContainerId};" +
+                $"remoteIp:{ctx.RemoteIp}";
 
             await suspicion.AddSuspicion(
                 stub,

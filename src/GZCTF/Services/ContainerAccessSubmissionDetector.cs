@@ -77,11 +77,18 @@ public sealed class ContainerAccessSubmissionDetector(
             // can happen across services; treat as zero.
             if (latency < TimeSpan.Zero) latency = TimeSpan.Zero;
 
+            // Details use ';' field separators + ':' key/value separator and avoid
+            // any other colons (no ISO timestamps in values) so the frontend
+            // parseDetailLines in monitor/CheatInfo.tsx renders each field as
+            // a clean label+value pair. Timestamps go to unix-seconds.
             if (latency.TotalMinutes > cfg.DelayedSubmissionThresholdMinutes)
             {
                 try
                 {
-                    var details = $"firstAccessUtc={firstAccess:O} submitTimeUtc={submission.SubmitTimeUtc:O} latencyMin={(int)latency.TotalMinutes}";
+                    var details =
+                        $"latencyMin:{(int)latency.TotalMinutes};" +
+                        $"firstAccessUnix:{firstAccess.ToUnixTimeSeconds()};" +
+                        $"submitUnix:{submission.SubmitTimeUtc.ToUnixTimeSeconds()}";
                     await suspicion.AddSuspicion(participation, SuspicionType.DelayedSolveSubmission, details, token: token);
                 }
                 catch (Exception ex)
@@ -93,7 +100,10 @@ public sealed class ContainerAccessSubmissionDetector(
             {
                 try
                 {
-                    var details = $"firstAccessUtc={firstAccess:O} submitTimeUtc={submission.SubmitTimeUtc:O} latencyMs={(int)latency.TotalMilliseconds}";
+                    var details =
+                        $"latencyMs:{(int)latency.TotalMilliseconds};" +
+                        $"firstAccessUnix:{firstAccess.ToUnixTimeSeconds()};" +
+                        $"submitUnix:{submission.SubmitTimeUtc.ToUnixTimeSeconds()}";
                     await suspicion.AddSuspicion(participation, SuspicionType.InstantSubmitAfterAccess, details, token: token);
                 }
                 catch (Exception ex)
@@ -115,7 +125,7 @@ public sealed class ContainerAccessSubmissionDetector(
                             .Take(8)
                             .Select(g => g!.Value.ToString()));
 
-                var details = $"submitterUserId={userId} teamAccessUserIds={teamAccessUserIds}";
+                var details = $"submitterUserId:{userId};teamAccessUserIds:{teamAccessUserIds}";
                 await suspicion.AddSuspicion(participation, SuspicionType.SubmitterNeverAccessedContainer, details, token: token);
             }
             catch (Exception ex)
@@ -144,7 +154,10 @@ public sealed class ContainerAccessSubmissionDetector(
                         var submitterIpString = NormalizeIp(submitterIp);
                         if (!submitterAccessIps.Contains(submitterIpString))
                         {
-                            var details = $"submitterIp={submitterIpString} accessIps={string.Join(',', submitterAccessIps.Take(8))} userId={userId}";
+                            var details =
+                                $"submitterIp:{submitterIpString};" +
+                                $"accessIps:{string.Join(',', submitterAccessIps.Take(8))};" +
+                                $"userId:{userId}";
                             await suspicion.AddSuspicion(participation, SuspicionType.AccessIpMismatchAtSubmission, details, token: token);
                         }
                     }
