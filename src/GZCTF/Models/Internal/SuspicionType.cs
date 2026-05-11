@@ -38,6 +38,7 @@ public static class SuspicionType
     public const string HoneypotProtocolHit = "HoneypotProtocolHit";
     public const string HoneypotCanaryFlag = "HoneypotCanaryFlag";
     public const string HoneypotChain = "HoneypotChain";
+    public const string FlagEgress = "FlagEgress";
 
     public static readonly Dictionary<string, (int Weight, string Description)> Defaults = new()
     {
@@ -73,12 +74,13 @@ public static class SuspicionType
         { HoneypotProtocolHit, (90, "Connected to a platform honeypot protocol service (SSH, Redis, etc.) — broad infra scan") },
         { HoneypotCanaryFlag, (100, "Submitted a canary flag exposed only via honeypot — automated scrape pipeline") },
         { HoneypotChain, (150, "Followed multiple cross-referenced honeypot baits — automated link-following scanner or agent") },
+        { FlagEgress, (80, "Team flag observed in proxied container traffic — exfil pipeline or automated solver") },
     };
 
     /// Hard evidence — always persisted regardless of other signals.
     public static readonly HashSet<string> HardSignals = [
         StolenFlag, WrongFlagLeakage, NoContainer, NoDownload, TokenAbuse,
-        HoneypotProtocolHit, HoneypotCanaryFlag, HoneypotChain
+        HoneypotProtocolHit, HoneypotCanaryFlag, HoneypotChain, FlagEgress
     ];
 
     /// Strong evidence — filed always; Soft signals unlock only when a Strong/Hard signal exists.

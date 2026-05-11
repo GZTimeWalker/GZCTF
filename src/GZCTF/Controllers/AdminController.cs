@@ -989,6 +989,66 @@ public class AdminController(
     }
 
     /// <summary>
+    /// Get flag-egress events for a game
+    /// </summary>
+    /// <remarks>
+    /// Returns flag-egress events (admin live feed). Each row represents a sliding-window
+    /// aggregation of hits where the team's per-team dynamic flag was observed in
+    /// proxied container traffic. Requires GameAdmin permission.
+    /// </remarks>
+    /// <response code="200">Flag egress events page</response>
+    /// <response code="404">Game not found</response>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/FlagEgress")]
+    [ProducesResponseType(typeof(ArrayResponse<FlagEgressEventModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetFlagEgressEvents(
+        [FromRoute] int id,
+        [FromQuery] int skip = 0,
+        [FromQuery] int count = 50,
+        CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        count = Math.Clamp(count, 1, 200);
+        skip = Math.Max(0, skip);
+
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+
+        var total = await dbContext.FlagEgressEvents.AsNoTracking()
+            .Where(e => e.GameId == id)
+            .CountAsync(token);
+
+        var rows = await dbContext.FlagEgressEvents.AsNoTracking()
+            .Where(e => e.GameId == id)
+            .OrderByDescending(e => e.LastSeenUtc)
+            .Skip(skip)
+            .Take(count)
+            .Select(e => new FlagEgressEventModel
+            {
+                Id = e.Id,
+                GameId = e.GameId,
+                ParticipationId = e.ParticipationId,
+                ChallengeId = e.ChallengeId,
+                ContainerId = e.ContainerId,
+                TeamName = e.Participation.Team.Name,
+                ChallengeTitle = e.Challenge.Title,
+                RemoteIp = e.RemoteIp,
+                RemotePort = e.RemotePort,
+                HitCount = e.HitCount,
+                FirstSeenUtc = e.FirstSeenUtc,
+                LastSeenUtc = e.LastSeenUtc,
+                Direction = e.Direction,
+            })
+            .ToArrayAsync(token);
+
+        return Ok(new ArrayResponse<FlagEgressEventModel>(rows, total));
+    }
+
+    /// <summary>
     /// Get all Writeup basic information
     /// </summary>
     /// <remarks>

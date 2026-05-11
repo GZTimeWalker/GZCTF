@@ -58,4 +58,14 @@ public interface IContainerRepository : IRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task<bool> DestroyContainer(Container container, CancellationToken token = default);
+
+    /// <summary>
+    /// Get all flag strings associated with a challenge for static-flag challenges
+    /// (StaticAttachment / StaticContainer). Returns the rendered flag strings only.
+    /// Used by the egress flag tracer to scan packets for shared static flags.
+    /// </summary>
+    /// <param name="challengeId">challenge ID</param>
+    /// <param name="token"></param>
+    /// <returns>Distinct flag strings for the challenge, or empty if none.</returns>
+    public Task<string[]> GetStaticChallengeFlags(int challengeId, CancellationToken token = default);
 }

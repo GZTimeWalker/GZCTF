@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using GZCTF.Models.Data;
 using GZCTF.Services.Traffic;
 
 namespace GZCTF.Utils;
@@ -29,8 +30,13 @@ public sealed class CaptureNetworkStream(
         var count = await base.ReadAsync(buffer, ct);
 
         if (writer is not null && count > 0)
-            writer.Write(new(
-                _dest, _source, buffer[..count].ToArray(), DateTimeOffset.UtcNow));
+        {
+            var span = buffer.Span[..count];
+            var ts = DateTimeOffset.UtcNow;
+            // Container → team direction: flag exfil shows up here.
+            writer.Inspect(span, FlagEgressDirection.ContainerToTeam, _dest, _source, ts);
+            writer.Write(new(_dest, _source, span.ToArray(), ts));
+        }
 
         return count;
     }
@@ -39,8 +45,13 @@ public sealed class CaptureNetworkStream(
         ReadOnlyMemory<byte> buffer, CancellationToken ct = default)
     {
         if (writer is not null && buffer.Length > 0)
-            writer.Write(new(
-                _source, _dest, buffer.ToArray(), DateTimeOffset.UtcNow));
+        {
+            var span = buffer.Span;
+            var ts = DateTimeOffset.UtcNow;
+            // Team → container direction: replays / unusual submissions show up here.
+            writer.Inspect(span, FlagEgressDirection.TeamToContainer, _source, _dest, ts);
+            writer.Write(new(_source, _dest, buffer.ToArray(), ts));
+        }
 
         return base.WriteAsync(buffer, ct);
     }

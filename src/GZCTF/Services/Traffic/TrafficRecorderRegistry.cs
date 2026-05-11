@@ -12,6 +12,9 @@ public readonly record struct TrafficRecorderDescriptor(
     Guid ContainerId,
     int ChallengeId,
     int ParticipationId,
+    int GameId,
+    string? Flag,
+    bool IsStaticFlag,
     byte[]? Metadata,
     string ConnectionId,
     IPAddress? RemoteIpAddress);
@@ -27,7 +30,8 @@ public readonly record struct TrafficRecorderDescriptor(
 /// </summary>
 public sealed class TrafficRecorderRegistry(
     IBlobStorage storage,
-    ILoggerFactory loggerFactory) : IAsyncDisposable
+    ILoggerFactory loggerFactory,
+    FlagEgressService flagEgress) : IAsyncDisposable
 {
     readonly ConcurrentDictionary<Guid, Lazy<TrafficRecorder>> _recorders = new();
 
@@ -47,7 +51,7 @@ public sealed class TrafficRecorderRegistry(
 
             var seq = recorder.TryAcquire();
             if (seq > 0)
-                return new TrafficWriter(recorder, seq);
+                return new TrafficWriter(recorder, flagEgress, seq);
 
             // Recorder is archiving — atomically replace with a new one.
             var replacement = CreateRecorder(key, descriptor);
@@ -57,7 +61,7 @@ public sealed class TrafficRecorderRegistry(
                 var newRecorder = replacement.Value;
                 var newSeq = newRecorder.TryAcquire();
                 if (newSeq > 0)
-                    return new TrafficWriter(newRecorder, newSeq);
+                    return new TrafficWriter(newRecorder, flagEgress, newSeq);
             }
         }
     }
@@ -73,6 +77,8 @@ public sealed class TrafficRecorderRegistry(
         // in which case this recorder would not clean up
         if (_recorders.TryRemove(containerId, out var recorder))
             await recorder.Value.ArchiveAsync();
+
+        flagEgress.UnregisterRecorder(containerId);
     }
 
     /// <summary>
@@ -87,8 +93,16 @@ public sealed class TrafficRecorderRegistry(
         _recorders.Clear();
     }
 
-    Lazy<TrafficRecorder> CreateRecorder(Guid key, TrafficRecorderDescriptor descriptor) =>
-        new(() => new TrafficRecorder(
+    Lazy<TrafficRecorder> CreateRecorder(Guid key, TrafficRecorderDescriptor descriptor)
+    {
+        // Inspector registration must happen before the recorder is returned so
+        // that the first CaptureNetworkStream packet finds an inspector ready.
+        // Note: scanning is performed at the CaptureNetworkStream seam (not in
+        // the recorder's write loop) so the recorder's metadata packet — which
+        // intentionally contains the flag string — never reaches the inspector.
+        flagEgress.RegisterRecorder(descriptor);
+
+        return new(() => new TrafficRecorder(
             registryKey: key,
             blobPath: BuildBlobPath(descriptor),
             metadata: descriptor.Metadata,
@@ -96,6 +110,7 @@ public sealed class TrafficRecorderRegistry(
             storage: storage,
             logger: loggerFactory.CreateLogger<TrafficRecorder>(),
             onArchived: OnRecorderArchived));
+    }
 
     void OnRecorderArchived(Guid key, TrafficRecorder recorder)
     {

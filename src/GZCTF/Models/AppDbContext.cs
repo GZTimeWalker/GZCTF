@@ -45,6 +45,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<EventManager> EventManagers { get; set; } = null!;
     public DbSet<SuspicionEvent> SuspicionEvents { get; set; } = null!;
     public DbSet<SuspicionRule> SuspicionRules { get; set; } = null!;
+    public DbSet<FlagEgressEvent> FlagEgressEvents { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -463,6 +464,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Property(e => e.Status)
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
+        });
+
+        builder.Entity<FlagEgressEvent>(entity =>
+        {
+            entity.Property(e => e.Direction).HasConversion<int>();
+
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Participation)
+                .WithMany()
+                .HasForeignKey(e => e.ParticipationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Challenge)
+                .WithMany()
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

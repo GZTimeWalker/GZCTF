@@ -98,10 +98,29 @@ public class ProxyController(
         TrafficWriter? writer = null;
         if (enable)
         {
+            // For dynamic-flag challenges (DynamicContainer / DynamicAttachment) the
+            // per-team flag lives on GameInstance.FlagContext. For StaticContainer the
+            // flag is shared across teams and lives on GameChallenge.Flags. Without this
+            // fallback the egress tracer would silently no-op on static challenges.
+            string? flag = container.GameInstance!.FlagContext?.Flag;
+            var isStaticFlag = false;
+
+            if (string.IsNullOrEmpty(flag) &&
+                container.GameInstance!.Challenge.Type == ChallengeType.StaticContainer)
+            {
+                var staticFlags = await containerRepository.GetStaticChallengeFlags(
+                    container.GameInstance!.ChallengeId, token);
+                flag = staticFlags.FirstOrDefault();
+                isStaticFlag = !string.IsNullOrEmpty(flag);
+            }
+
             var descriptor = new TrafficRecorderDescriptor(
                 ContainerId: id,
                 ChallengeId: container.GameInstance!.ChallengeId,
                 ParticipationId: container.GameInstance!.ParticipationId,
+                GameId: container.GameInstance!.Participation.GameId,
+                Flag: flag,
+                IsStaticFlag: isStaticFlag,
                 Metadata: container.GenerateMetadata(JsonOptions),
                 ConnectionId: HttpContext.Connection.Id,
                 RemoteIpAddress: HttpContext.Connection.RemoteIpAddress);

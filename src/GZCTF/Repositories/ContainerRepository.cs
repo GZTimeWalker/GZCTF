@@ -47,6 +47,14 @@ public class ContainerRepository(
     public async Task<bool> ValidateContainer(Guid guid, CancellationToken token = default) =>
         await Context.Containers.AnyAsync(c => c.Id == guid, token);
 
+    public async Task<string[]> GetStaticChallengeFlags(int challengeId, CancellationToken token = default) =>
+        await Context.Set<FlagContext>()
+            .AsNoTracking()
+            .Where(f => f.ChallengeId == challengeId && f.Flag != string.Empty)
+            .Select(f => f.Flag)
+            .Distinct()
+            .ToArrayAsync(token);
+
     public async Task<bool> DestroyContainer(Container container, CancellationToken token = default)
     {
         try

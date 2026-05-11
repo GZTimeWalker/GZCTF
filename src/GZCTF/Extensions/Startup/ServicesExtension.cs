@@ -35,6 +35,7 @@ internal static class ServicesExtension
             builder.AddConfig<ContainerPolicy>();
             builder.AddConfig<ContainerProvider>();
             builder.AddConfig<HoneypotConfig>();
+            builder.AddConfig<FlagEgressConfig>();
 
             builder.Services.Configure<RegistrySet<RegistryConfig>>(builder.Configuration.GetSection("Registries"));
 
@@ -97,6 +98,7 @@ internal static class ServicesExtension
             builder.Services.AddChannel<CacheRequest>();
             builder.Services.AddSingleton<CacheHelper>();
             builder.Services.AddSingleton<IMailSender, MailSender>();
+            builder.Services.AddSingleton<FlagEgressService>();
             builder.Services.AddSingleton<TrafficRecorderRegistry>();
 
             builder.Services.AddHostedService<CacheMaker>();

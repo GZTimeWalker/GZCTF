@@ -1,3 +1,6 @@
+using System.Net;
+using GZCTF.Models.Data;
+
 namespace GZCTF.Services.Traffic;
 
 /// <summary>
@@ -8,13 +11,15 @@ namespace GZCTF.Services.Traffic;
 public sealed class TrafficWriter : IDisposable
 {
     readonly TrafficRecorder _recorder;
+    readonly FlagEgressService _flagEgress;
     bool _disposed;
 
     public int Sequence { get; }
 
-    internal TrafficWriter(TrafficRecorder recorder, int sequence)
+    internal TrafficWriter(TrafficRecorder recorder, FlagEgressService flagEgress, int sequence)
     {
         _recorder = recorder;
+        _flagEgress = flagEgress;
         Sequence = sequence;
     }
 
@@ -26,6 +31,21 @@ public sealed class TrafficWriter : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         _recorder.Enqueue(packet);
+    }
+
+    /// <summary>
+    /// Scan a captured buffer for the per-team flag bytes. Synchronous,
+    /// SIMD-fast, zero allocation on no-hit and small-packet paths.
+    /// </summary>
+    public void Inspect(
+        ReadOnlySpan<byte> data,
+        FlagEgressDirection direction,
+        IPEndPoint source,
+        IPEndPoint dest,
+        DateTimeOffset timestamp)
+    {
+        if (_disposed) return;
+        _flagEgress.Inspect(_recorder.RegistryKey, data, direction, source, dest, timestamp);
     }
 
     public void Dispose()
