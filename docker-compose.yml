@@ -19,6 +19,14 @@ services:
       - ConnectionStrings__Redis=redis:6379,password=gzctf
       - XorKey=gzctf-xor-key
       - ContainerProvider__DockerConfig__ChallengeNetwork=z-test-challenges
+      - ContainerProvider__PortMappingType=PlatformProxy
+      - ContainerProvider__EnableTrafficCapture=true
+      - CheatDetectionConfig__LogContainerAccess=true
+      - CheatDetectionConfig__DelayedSubmissionThresholdMinutes=1
+      - RequestLogging=true
+      - ForwardedOptions__ForwardedHeaders=1
+      - ForwardedOptions__ForwardLimit=1
+      - ForwardedOptions__TrustedNetworks__0=172.0.4.0/24
       - HoneypotConfig__Enabled=true
       - HoneypotConfig__ListenAddress=0.0.0.0
       - HoneypotConfig__Ports__0__Name=ssh
