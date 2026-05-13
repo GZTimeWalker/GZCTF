@@ -61,6 +61,9 @@ services:
     depends_on:
       - postgres
       - redis
+    networks:
+      - default
+      - z-test-challenges-open
 
   postgres:
     image: postgres:16-alpine
@@ -81,3 +84,7 @@ volumes:
   postgres_data:
   redis_data:
   gzctf-files:
+
+networks:
+  z-test-challenges-open:
+    external: true
