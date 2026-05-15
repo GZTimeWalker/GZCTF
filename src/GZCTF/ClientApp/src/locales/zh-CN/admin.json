@@ -379,6 +379,17 @@
           "description": "在登录/注册时收集浏览器指纹用于风险分析。",
           "warning": "启用此功能将收集额外的用户设备信息。请确保符合当地隐私法规，并相应更新隐私政策。"
         },
+        "unique_ip_per_team_user": {
+          "label": "队员 IP 唯一性",
+          "description": "当另一名队员在 24 小时内已从相同 IP 登录时，阻止登录。"
+        },
+        "unique_fingerprint_per_team_user": {
+          "label": "队员浏览器指纹唯一性",
+          "description": "当另一名队员在 24 小时内已使用相同浏览器指纹登录时，阻止登录。需先启用浏览器指纹。"
+        },
+        "unique_per_team_user": {
+          "warning": "这些策略会拦截来自共享 NAT（宿舍/办公室）、共享实验室设备或 CGNAT 出口 IP 的合法登录。仅在确认每位队员都使用独立的设备和网络登录时启用。"
+        },
         "title": "账户策略",
         "use_captcha": {
           "description": "是否在登录、注册和找回时进行校验",

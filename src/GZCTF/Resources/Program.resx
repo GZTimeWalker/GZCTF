@@ -182,6 +182,12 @@
   <data name="Account_UserDisabled" xml:space="preserve">
     <value>User is banned</value>
   </data>
+  <data name="Account_TeammateIpInUse" xml:space="preserve">
+    <value>This IP address is already in use by another member of your team ({0}). Each teammate must log in from a distinct IP within 24 hours.</value>
+  </data>
+  <data name="Account_TeammateFingerprintInUse" xml:space="preserve">
+    <value>This browser fingerprint is already in use by another member of your team ({0}). Each teammate must use a distinct browser fingerprint within 24 hours.</value>
+  </data>
   <data name="Account_UserExisting" xml:space="preserve">
     <value>This account already exists</value>
   </data>

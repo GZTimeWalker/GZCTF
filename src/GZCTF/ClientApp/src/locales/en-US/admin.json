@@ -379,6 +379,17 @@
           "description": "Collect browser fingerprint during login/registration for risk analysis.",
           "warning": "Enabling this feature collects additional user device information. Please ensure this complies with your local privacy regulations and update your privacy policy accordingly."
         },
+        "unique_ip_per_team_user": {
+          "label": "Require Unique IP per Team Member",
+          "description": "Block login when another teammate has logged in from the same IP within the last 24 hours."
+        },
+        "unique_fingerprint_per_team_user": {
+          "label": "Require Unique Fingerprint per Team Member",
+          "description": "Block login when another teammate has logged in with the same browser fingerprint within the last 24 hours. Requires Browser Fingerprinting to be enabled."
+        },
+        "unique_per_team_user": {
+          "warning": "These policies block legitimate logins from shared NAT (dorm/office), shared lab machines, or CGNAT exit IPs. Use only when each teammate is expected to log in from a distinct device and network."
+        },
         "title": "Account Policy",
         "use_captcha": {
           "description": "Verify on login, registration and recovery",

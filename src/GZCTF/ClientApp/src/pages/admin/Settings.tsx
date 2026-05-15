@@ -332,10 +332,43 @@ const Configs: FC = () => {
                 })
               }
             />
+            <Switch
+              checked={accountPolicy?.requireUniqueIpPerTeamUser ?? false}
+              disabled={disabled}
+              label={SwitchLabel(
+                t('admin.content.settings.account.unique_ip_per_team_user.label'),
+                t('admin.content.settings.account.unique_ip_per_team_user.description')
+              )}
+              onChange={(e) =>
+                setAccountPolicy({
+                  ...accountPolicy,
+                  requireUniqueIpPerTeamUser: e.currentTarget.checked,
+                })
+              }
+            />
+            <Switch
+              checked={accountPolicy?.requireUniqueFingerprintPerTeamUser ?? false}
+              disabled={disabled}
+              label={SwitchLabel(
+                t('admin.content.settings.account.unique_fingerprint_per_team_user.label'),
+                t('admin.content.settings.account.unique_fingerprint_per_team_user.description')
+              )}
+              onChange={(e) =>
+                setAccountPolicy({
+                  ...accountPolicy,
+                  requireUniqueFingerprintPerTeamUser: e.currentTarget.checked,
+                })
+              }
+            />
           </SimpleGrid>
           {accountPolicy?.enableBrowserFingerprint && (
             <Alert color="yellow" icon={<Icon path={mdiAlert} size={1} />}>
               {t('admin.content.settings.account.browser_fingerprint.warning')}
+            </Alert>
+          )}
+          {(accountPolicy?.requireUniqueIpPerTeamUser || accountPolicy?.requireUniqueFingerprintPerTeamUser) && (
+            <Alert color="yellow" icon={<Icon path={mdiAlert} size={1} />}>
+              {t('admin.content.settings.account.unique_per_team_user.warning')}
             </Alert>
           )}
           <TextInput

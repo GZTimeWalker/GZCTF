@@ -418,6 +418,10 @@ export interface AccountPolicy {
   emailDomainList?: string;
   /** Enable browser fingerprinting in Login/Register */
   enableBrowserFingerprint?: boolean;
+  /** Require each user on a team to log in from an IP not used by another teammate within the last 24 hours */
+  requireUniqueIpPerTeamUser?: boolean;
+  /** Require each user on a team to have a browser fingerprint not used by another teammate within the last 24 hours */
+  requireUniqueFingerprintPerTeamUser?: boolean;
 }
 
 /** Global settings */

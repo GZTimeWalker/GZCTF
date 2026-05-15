@@ -182,6 +182,12 @@
   <data name="Account_UserDisabled" xml:space="preserve">
     <value>用户已被禁用</value>
   </data>
+  <data name="Account_TeammateIpInUse" xml:space="preserve">
+    <value>此 IP 地址已被你的队友（{0}）使用。每位队员必须在 24 小时内使用不同的 IP 登录。</value>
+  </data>
+  <data name="Account_TeammateFingerprintInUse" xml:space="preserve">
+    <value>此浏览器指纹已被你的队友（{0}）使用。每位队员必须在 24 小时内使用不同的浏览器指纹。</value>
+  </data>
   <data name="Account_UserExisting" xml:space="preserve">
     <value>此账户已存在</value>
   </data>

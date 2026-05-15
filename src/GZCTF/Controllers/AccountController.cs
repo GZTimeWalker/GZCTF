@@ -535,6 +535,7 @@ public partial class AccountController(
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> LogIn([FromBody] LoginModel model, CancellationToken token = default)
     {
@@ -572,6 +573,53 @@ public partial class AccountController(
             return Unauthorized(new RequestResponse(
                 localizer[nameof(Resources.Program.Account_IncorrectUserNameOrPassword)],
                 StatusCodes.Status401Unauthorized));
+
+        var policy = accountPolicy.Value;
+        if (policy.RequireUniqueIpPerTeamUser || policy.RequireUniqueFingerprintPerTeamUser)
+        {
+            var currentIp = HttpContext.Connection.RemoteIpAddress;
+            var since = DateTimeOffset.UtcNow.AddHours(-24);
+            var teammates = await userManager.Users
+                .Where(u => u.Id != user.Id
+                    && u.LastVisitedUtc > since
+                    && u.Teams.Any(t => t.Members.Any(m => m.Id == user.Id)))
+                .Select(u => new { u.UserName, u.IP, u.BrowserFingerprint })
+                .ToListAsync(token);
+
+            if (policy.RequireUniqueIpPerTeamUser && currentIp is not null)
+            {
+                var conflict = teammates.FirstOrDefault(t => t.IP is not null && t.IP.Equals(currentIp));
+                if (conflict is not null)
+                {
+                    logger.Log(
+                        StaticLocalizer[nameof(Resources.Program.Account_TeammateIpInUse), conflict.UserName ?? "?"],
+                        user.UserName ?? "Anonymous",
+                        currentIp.ToString(),
+                        TaskStatus.Failed);
+                    return new ObjectResult(new RequestResponse(
+                        localizer[nameof(Resources.Program.Account_TeammateIpInUse), conflict.UserName ?? "?"],
+                        StatusCodes.Status403Forbidden))
+                    { StatusCode = StatusCodes.Status403Forbidden };
+                }
+            }
+
+            if (policy.RequireUniqueFingerprintPerTeamUser && !string.IsNullOrEmpty(fingerprint))
+            {
+                var conflict = teammates.FirstOrDefault(t => t.BrowserFingerprint == fingerprint);
+                if (conflict is not null)
+                {
+                    logger.Log(
+                        StaticLocalizer[nameof(Resources.Program.Account_TeammateFingerprintInUse), conflict.UserName ?? "?"],
+                        user.UserName ?? "Anonymous",
+                        currentIp?.ToString(),
+                        TaskStatus.Failed);
+                    return new ObjectResult(new RequestResponse(
+                        localizer[nameof(Resources.Program.Account_TeammateFingerprintInUse), conflict.UserName ?? "?"],
+                        StatusCodes.Status403Forbidden))
+                    { StatusCode = StatusCodes.Status403Forbidden };
+                }
+            }
+        }
 
         user.LastSignedInUtc = DateTimeOffset.UtcNow;
         user.UpdateByHttpContext(HttpContext);

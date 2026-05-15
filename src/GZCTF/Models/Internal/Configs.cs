@@ -65,6 +65,16 @@ public class AccountPolicy
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
     public bool EnableBrowserFingerprint { get; set; }
+
+    /// <summary>
+    /// Require each user on a team to log in from an IP not used by another teammate within the last 24 hours
+    /// </summary>
+    public bool RequireUniqueIpPerTeamUser { get; set; }
+
+    /// <summary>
+    /// Require each user on a team to have a browser fingerprint not used by another teammate within the last 24 hours
+    /// </summary>
+    public bool RequireUniqueFingerprintPerTeamUser { get; set; }
 }
 
 /// <summary>
