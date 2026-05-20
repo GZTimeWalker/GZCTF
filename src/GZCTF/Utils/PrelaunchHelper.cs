@@ -100,6 +100,9 @@ public static class PrelaunchHelper
                     await context.SaveChangesAsync();
                 }
             }
+
+            if (app.Environment.IsDevelopment())
+                await DevDataSeeder.SeedAsync(serviceScope.ServiceProvider, logger, CancellationToken.None);
         }
     }
 
