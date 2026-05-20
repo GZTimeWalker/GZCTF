@@ -94,6 +94,9 @@
   "pnpm": {
     "overrides": {
       "canvas": "npm:dry-uninstall"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
