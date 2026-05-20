@@ -30,9 +30,13 @@ public static class DevDataSeeder
     public const string TeamAlphaName = "Team Alpha";
     public const string TeamBravoName = "Team Bravo";
     public const string GameTitle = "Dev Test Game";
-    public const string StaticChallengeTitle = "Static Welcome";
-    public const string DynamicChallengeTitle = "Dynamic Echo";
-    public const string StaticFlag = "flag{dev-static-welcome}";
+    public const string StaticAttachmentTitle = "Static Attachment Welcome";
+    public const string DynamicAttachmentTitle = "Dynamic Attachment Echo";
+    public const string StaticContainerTitle = "Static Container Hello";
+    public const string DynamicContainerTitle = "Dynamic Container Solve";
+    public const string StaticAttachmentFlag = "flag{dev-static-attachment}";
+    public const string StaticContainerFlag = "flag{dev-static-container}";
+    public const string ContainerImage = "nginx:alpine";
 
     public static async Task SeedAsync(IServiceProvider sp, ILogger logger, CancellationToken token)
     {
@@ -82,23 +86,43 @@ public static class DevDataSeeder
         var (game, gameJustCreated) = await EnsureGameAsync(gameRepo, context, token);
         if (gameJustCreated) seeded = true;
 
-        var (staticChallenge, staticJustCreated) = await EnsureChallengeAsync(
+        var (staticAttachment, sa) = await EnsureChallengeAsync(
             challengeRepo, context, game,
-            title: StaticChallengeTitle,
+            title: StaticAttachmentTitle,
             type: ChallengeType.StaticAttachment,
             score: 100,
-            staticFlag: StaticFlag,
-            token);
+            staticFlag: StaticAttachmentFlag,
+            token: token);
 
-        var (dynamicChallenge, dynamicJustCreated) = await EnsureChallengeAsync(
+        var (dynamicAttachment, da) = await EnsureChallengeAsync(
             challengeRepo, context, game,
-            title: DynamicChallengeTitle,
+            title: DynamicAttachmentTitle,
             type: ChallengeType.DynamicAttachment,
             score: 200,
             staticFlag: null,
-            token);
+            token: token);
 
-        if (staticJustCreated || dynamicJustCreated) seeded = true;
+        var (staticContainer, sc) = await EnsureChallengeAsync(
+            challengeRepo, context, game,
+            title: StaticContainerTitle,
+            type: ChallengeType.StaticContainer,
+            score: 150,
+            staticFlag: StaticContainerFlag,
+            containerImage: ContainerImage,
+            enableTrafficCapture: true,
+            token: token);
+
+        var (dynamicContainer, dc) = await EnsureChallengeAsync(
+            challengeRepo, context, game,
+            title: DynamicContainerTitle,
+            type: ChallengeType.DynamicContainer,
+            score: 250,
+            staticFlag: null,
+            containerImage: ContainerImage,
+            enableTrafficCapture: true,
+            token: token);
+
+        if (sa || da || sc || dc) seeded = true;
 
         var partAlpha = await EnsureParticipationAsync(context, gameRepo, game, teamAlpha.team,
             [users["User1"], users["User2"]], token);
@@ -106,8 +130,8 @@ public static class DevDataSeeder
             [users["User3"], users["User4"]], token);
         if (partAlpha.justCreated || partBravo.justCreated) seeded = true;
 
-        var activitySeeded = await EnsureSyntheticActivityAsync(context, game, staticChallenge,
-            dynamicChallenge, partAlpha.part, partBravo.part, users, token);
+        var activitySeeded = await EnsureSyntheticActivityAsync(context, game, staticAttachment,
+            dynamicContainer, partAlpha.part, partBravo.part, users, token);
         if (activitySeeded) seeded = true;
 
         if (seeded)
@@ -175,7 +199,9 @@ public static class DevDataSeeder
 
     private static async Task<(GameChallenge challenge, bool justCreated)> EnsureChallengeAsync(
         IGameChallengeRepository challengeRepo, AppDbContext context, Game game,
-        string title, ChallengeType type, int score, string? staticFlag, CancellationToken token)
+        string title, ChallengeType type, int score, string? staticFlag,
+        CancellationToken token,
+        string? containerImage = null, bool enableTrafficCapture = false)
     {
         var existing = await context.GameChallenges
             .Include(c => c.Flags)
@@ -195,6 +221,16 @@ public static class DevDataSeeder
             IsEnabled = true,
             FlagTemplate = type.IsDynamic() ? "flag{[GUID]}" : null
         };
+
+        if (type.IsContainer())
+        {
+            challenge.ContainerImage = containerImage ?? ContainerImage;
+            challenge.ExposePort = 80;
+            challenge.MemoryLimit = 64;
+            challenge.StorageLimit = 256;
+            challenge.CPUCount = 1;
+            challenge.EnableTrafficCapture = enableTrafficCapture;
+        }
 
         if (staticFlag is not null)
         {
@@ -243,7 +279,7 @@ public static class DevDataSeeder
 
         var acceptedSubmission = new Submission
         {
-            Answer = StaticFlag,
+            Answer = StaticAttachmentFlag,
             Status = AnswerResult.Accepted,
             SubmitTimeUtc = now.AddMinutes(-30),
             UserId = users["User1"].Id,
