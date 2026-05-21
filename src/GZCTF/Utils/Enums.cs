@@ -31,6 +31,31 @@ public enum Role : byte
 }
 
 /// <summary>
+/// Review state for a challenge that was imported via the tarball/github
+/// pipeline. <c>Active</c> means the challenge is visible to participants
+/// (subject to the usual <c>IsEnabled</c> gate). <c>Pending</c> hides it
+/// until an admin reviews. <c>Rejected</c> is a terminal state kept for
+/// audit but never shown to participants.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<ChallengeReviewStatus>))]
+public enum ChallengeReviewStatus : byte
+{
+    Active = 0,
+    Pending = 1,
+    Rejected = 2
+}
+
+/// <summary>
+/// Lifecycle state of a <see cref="GZCTF.Models.Data.RepoWatch"/>.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<RepoWatchStatus>))]
+public enum RepoWatchStatus : byte
+{
+    Active = 0,
+    Paused = 1
+}
+
+/// <summary>
 /// Login response status
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<RegisterStatus>))]

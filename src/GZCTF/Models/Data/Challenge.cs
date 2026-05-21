@@ -109,6 +109,32 @@ public class Challenge
     public string? FlagTemplate { get; set; }
 
     /// <summary>
+    /// Review state for challenges that came in via the tarball / github
+    /// import pipeline. Defaults to <see cref="ChallengeReviewStatus.Active"/>
+    /// so admin-created challenges and existing rows behave unchanged.
+    /// User-submitted challenges land as <see cref="ChallengeReviewStatus.Pending"/>
+    /// and are invisible to participants until an admin approves.
+    /// </summary>
+    [Required]
+    public ChallengeReviewStatus ReviewStatus { get; set; } = ChallengeReviewStatus.Active;
+
+    /// <summary>
+    /// Optional admin note attached on Approve / Reject. Free-form.
+    /// </summary>
+    [MaxLength(Limits.MaxUserDataLength)]
+    public string? ReviewNote { get; set; }
+
+    /// <summary>
+    /// User that submitted this challenge through the import endpoint.
+    /// Null for admin-created challenges.
+    /// </summary>
+    public Guid? SubmittedByUserId { get; set; }
+
+    public DateTimeOffset? SubmittedAtUtc { get; set; }
+
+    public DateTimeOffset? ReviewedAtUtc { get; set; }
+
+    /// <summary>
     /// Generate dynamic flag for the participant
     /// </summary>
     /// <param name="part"></param>

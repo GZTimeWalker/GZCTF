@@ -47,6 +47,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<SuspicionRule> SuspicionRules { get; set; } = null!;
     public DbSet<FlagEgressEvent> FlagEgressEvents { get; set; } = null!;
     public DbSet<ContainerAccessEvent> ContainerAccessEvents { get; set; } = null!;
+    public DbSet<RepoWatch> RepoWatches { get; set; } = null!;
+    public DbSet<RepoWatchSync> RepoWatchSyncs { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
