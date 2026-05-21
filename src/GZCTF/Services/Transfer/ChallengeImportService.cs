@@ -230,7 +230,9 @@ public sealed class ChallengeImportService(
             ? (m.Description ?? string.Empty)
             : $"Author: **{m.Author}**\n\n{m.Description ?? string.Empty}";
         c.Hints = m.Hints;
-        c.OriginalScore = m.Value ?? c.OriginalScore;
+        // 'value:' is intentionally ignored — points are admin-controlled.
+        // New imports inherit the GameChallenge.OriginalScore default
+        // (1000); existing rows keep whatever the admin already set.
         c.MinScoreRate = m.MinScoreRate ?? c.MinScoreRate;
         c.Difficulty = m.Difficulty ?? c.Difficulty;
         c.SubmissionLimit = m.SubmissionLimit ?? c.SubmissionLimit;

@@ -35,9 +35,6 @@ public sealed class ChallengeYamlModel
     [YamlMember(Alias = "category")]
     public string? Category { get; set; }
 
-    [YamlMember(Alias = "value")]
-    public int? Value { get; set; }
-
     [YamlMember(Alias = "min_score_rate")]
     public double? MinScoreRate { get; set; }
 
