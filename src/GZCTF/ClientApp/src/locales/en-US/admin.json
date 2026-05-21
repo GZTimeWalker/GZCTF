@@ -79,7 +79,8 @@
     "review": {
       "approve": "Approve",
       "reject": "Reject",
-      "audit": "Audit"
+      "audit": "Audit",
+      "delete": "Delete"
     },
     "audit": {
       "download": "Download archive"
@@ -536,7 +537,10 @@
       },
       "reject_title": "Reject \"{{name}}\"?",
       "reject_note_placeholder": "Reason (optional, visible to admins only).",
+      "delete_title": "Delete \"{{name}}\" permanently?",
+      "delete_warning": "This removes the challenge row, its flags, the persisted archive, and any attachments. There is no undo.",
       "column": {
+        "status": "Status",
         "submitted": "Submitted",
         "submitter": "Submitter",
         "title": "Title",
@@ -692,7 +696,8 @@
     },
     "review": {
       "approved": "Challenge approved",
-      "rejected": "Challenge rejected"
+      "rejected": "Challenge rejected",
+      "deleted": "{{name}} deleted"
     },
     "watch": {
       "created": "Watch created",

@@ -79,7 +79,8 @@
     "review": {
       "approve": "通过",
       "reject": "驳回",
-      "audit": "审查"
+      "audit": "审查",
+      "delete": "删除"
     },
     "audit": {
       "download": "下载压缩包"
@@ -536,7 +537,10 @@
       },
       "reject_title": "驳回 \"{{name}}\" 吗？",
       "reject_note_placeholder": "理由（可选，仅管理员可见）。",
+      "delete_title": "永久删除 \"{{name}}\" 吗？",
+      "delete_warning": "这将彻底移除题目记录、Flag、原始压缩包以及附件。不可恢复。",
       "column": {
+        "status": "状态",
         "submitted": "提交时间",
         "submitter": "提交者",
         "title": "标题",
@@ -692,7 +696,8 @@
     },
     "review": {
       "approved": "题目已通过",
-      "rejected": "题目已驳回"
+      "rejected": "题目已驳回",
+      "deleted": "{{name}} 已删除"
     },
     "watch": {
       "created": "已创建监听",

@@ -11,7 +11,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose, mdiMagnify } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiDeleteOutline, mdiMagnify } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -23,7 +23,7 @@ import { useParams } from 'react-router'
 import { ChallengeAuditModal } from '@Components/admin/ChallengeAuditModal'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
-import api from '@Api'
+import api, { PendingChallengeModel } from '@Api'
 
 const PendingChallenges: FC = () => {
   const { id } = useParams()
@@ -78,6 +78,31 @@ const PendingChallenges: FC = () => {
     })
   }
 
+  const onDelete = (row: PendingChallengeModel) => {
+    modals.openConfirmModal({
+      title: t('admin.content.review.delete_title', { name: row.title }),
+      children: <Text size="sm">{t('admin.content.review.delete_warning')}</Text>,
+      labels: { confirm: t('admin.button.review.delete'), cancel: t('common.button.cancel') },
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        setBusy(true)
+        try {
+          await api.edit.editRemoveGameChallenge(gameId, row.id)
+          showNotification({
+            color: 'teal',
+            message: t('admin.notification.review.deleted', { name: row.title }),
+            icon: <Icon path={mdiDeleteOutline} size={1} />,
+          })
+          mutate()
+        } catch (e) {
+          showErrorMsg(e, t)
+        } finally {
+          setBusy(false)
+        }
+      },
+    })
+  }
+
   return (
     <WithGameEditTab isLoading={!pending}>
       <Stack gap="md" w="100%">
@@ -93,6 +118,7 @@ const PendingChallenges: FC = () => {
           <Table striped highlightOnHover>
             <Table.Thead>
               <Table.Tr>
+                <Table.Th>{t('admin.content.review.column.status')}</Table.Th>
                 <Table.Th>{t('admin.content.review.column.submitted')}</Table.Th>
                 <Table.Th>{t('admin.content.review.column.submitter')}</Table.Th>
                 <Table.Th>{t('admin.content.review.column.title')}</Table.Th>
@@ -102,33 +128,64 @@ const PendingChallenges: FC = () => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {pending.map((row) => (
-                <Table.Tr key={row.id}>
-                  <Table.Td>{row.submittedAtUtc ? dayjs(row.submittedAtUtc).fromNow() : '—'}</Table.Td>
-                  <Table.Td>{row.submittedByUserName ?? '—'}</Table.Td>
-                  <Table.Td><Text fw="bold">{row.title}</Text></Table.Td>
-                  <Table.Td><Badge variant="light">{row.category}</Badge></Table.Td>
-                  <Table.Td><Badge variant="outline">{row.type}</Badge></Table.Td>
-                  <Table.Td>
-                    <Group gap="xs" wrap="nowrap">
-                      <Button
-                        size="xs"
-                        variant="default"
-                        leftSection={<Icon path={mdiMagnify} size={0.8} />}
-                        onClick={() => setAuditTarget({ id: row.id, title: row.title, submitter: row.submittedByUserName })}
-                      >
-                        {t('admin.button.review.audit')}
-                      </Button>
-                      <Button size="xs" color="teal" disabled={busy} onClick={() => onApprove(row.id)}>
-                        {t('admin.button.review.approve')}
-                      </Button>
-                      <Button size="xs" color="red" variant="outline" disabled={busy} onClick={() => onReject(row.id, row.title)}>
-                        {t('admin.button.review.reject')}
-                      </Button>
-                    </Group>
-                  </Table.Td>
-                </Table.Tr>
-              ))}
+              {pending.map((row) => {
+                const isRejected = row.reviewStatus === 'Rejected'
+                return (
+                  <Table.Tr key={row.id}>
+                    <Table.Td>
+                      <Badge size="sm" color={isRejected ? 'red' : 'yellow'} variant="filled">
+                        {isRejected
+                          ? t('admin.content.review.badge.rejected')
+                          : t('admin.content.review.badge.pending')}
+                      </Badge>
+                    </Table.Td>
+                    <Table.Td>{row.submittedAtUtc ? dayjs(row.submittedAtUtc).fromNow() : '—'}</Table.Td>
+                    <Table.Td>{row.submittedByUserName ?? '—'}</Table.Td>
+                    <Table.Td>
+                      <Stack gap={0}>
+                        <Text fw="bold">{row.title}</Text>
+                        {row.reviewNote && (
+                          <Text size="xs" c="dimmed" lineClamp={2}>
+                            {row.reviewNote}
+                          </Text>
+                        )}
+                      </Stack>
+                    </Table.Td>
+                    <Table.Td><Badge variant="light">{row.category}</Badge></Table.Td>
+                    <Table.Td><Badge variant="outline">{row.type}</Badge></Table.Td>
+                    <Table.Td>
+                      <Group gap="xs" wrap="nowrap">
+                        <Button
+                          size="xs"
+                          variant="default"
+                          leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                          onClick={() => setAuditTarget({ id: row.id, title: row.title, submitter: row.submittedByUserName })}
+                        >
+                          {t('admin.button.review.audit')}
+                        </Button>
+                        <Button size="xs" color="teal" disabled={busy} onClick={() => onApprove(row.id)}>
+                          {t('admin.button.review.approve')}
+                        </Button>
+                        {!isRejected && (
+                          <Button size="xs" color="red" variant="outline" disabled={busy} onClick={() => onReject(row.id, row.title)}>
+                            {t('admin.button.review.reject')}
+                          </Button>
+                        )}
+                        <Button
+                          size="xs"
+                          color="red"
+                          variant="subtle"
+                          leftSection={<Icon path={mdiDeleteOutline} size={0.8} />}
+                          disabled={busy}
+                          onClick={() => onDelete(row)}
+                        >
+                          {t('admin.button.review.delete')}
+                        </Button>
+                      </Group>
+                    </Table.Td>
+                  </Table.Tr>
+                )
+              })}
             </Table.Tbody>
           </Table>
         )}

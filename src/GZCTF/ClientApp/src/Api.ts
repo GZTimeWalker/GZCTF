@@ -2205,13 +2205,17 @@ export interface ChallengeAuditModel {
   archiveAvailable: boolean
 }
 
-/** Row returned by GET .../PendingChallenges */
+/** Row returned by GET .../PendingChallenges (includes Pending + Rejected) */
 export interface PendingChallengeModel {
   id: number
   title: string
   category: ChallengeCategory
   type: ChallengeType
+  /** Either "Pending" or "Rejected" — "Active" rows are filtered out server-side. */
+  reviewStatus: ChallengeReviewStatus
+  reviewNote?: string | null
   submittedAtUtc?: string | null
+  reviewedAtUtc?: string | null
   submittedByUserId?: string | null
   submittedByUserName?: string | null
 }

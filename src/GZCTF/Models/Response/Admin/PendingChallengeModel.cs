@@ -12,7 +12,21 @@ public sealed class PendingChallengeModel
     public string Title { get; set; } = string.Empty;
     public ChallengeCategory Category { get; set; }
     public ChallengeType Type { get; set; }
+
+    /// <summary>
+    /// Either <see cref="ChallengeReviewStatus.Pending"/> or
+    /// <see cref="ChallengeReviewStatus.Rejected"/>; Active rows are
+    /// excluded server-side.
+    /// </summary>
+    public ChallengeReviewStatus ReviewStatus { get; set; }
+
+    /// <summary>
+    /// Admin-supplied note from a previous Reject. Null otherwise.
+    /// </summary>
+    public string? ReviewNote { get; set; }
+
     public DateTimeOffset? SubmittedAtUtc { get; set; }
+    public DateTimeOffset? ReviewedAtUtc { get; set; }
     public Guid? SubmittedByUserId { get; set; }
     public string? SubmittedByUserName { get; set; }
 }

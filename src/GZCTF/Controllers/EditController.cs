@@ -754,13 +754,18 @@ public class EditController(
 
         var scoreboard = await gameRepository.TryGetScoreboard(id, token);
 
-        var result = challenges.Select(c =>
-        {
-            var model = ChallengeInfoModel.FromChallenge(c);
-            if (scoreboard is not null && scoreboard.ChallengeMap.TryGetValue(c.Id, out var challengeInfo))
-                model.Score = challengeInfo.Score;
-            return model;
-        });
+        // Hide Pending / Rejected from the main admin list — they live in
+        // /admin/games/{id}/pending so the active list stays focused on
+        // challenges that participants might actually see.
+        var result = challenges
+            .Where(c => c.ReviewStatus == ChallengeReviewStatus.Active)
+            .Select(c =>
+            {
+                var model = ChallengeInfoModel.FromChallenge(c);
+                if (scoreboard is not null && scoreboard.ChallengeMap.TryGetValue(c.Id, out var challengeInfo))
+                    model.Score = challengeInfo.Score;
+                return model;
+            });
 
         return Ok(result);
     }
@@ -1524,17 +1529,24 @@ public class EditController(
     [ProducesResponseType(typeof(PendingChallengeModel[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListPendingChallenges([FromRoute] int id, CancellationToken token)
     {
+        // Pending + Rejected both belong to the review queue. Active rows
+        // live in the main /admin/games/{id}/challenges list; Active is
+        // excluded here so the queue stays focused on "needs attention".
         var rows = await dbContext.GameChallenges
             .AsNoTracking()
-            .Where(c => c.GameId == id && c.ReviewStatus == ChallengeReviewStatus.Pending)
-            .OrderByDescending(c => c.SubmittedAtUtc)
+            .Where(c => c.GameId == id && c.ReviewStatus != ChallengeReviewStatus.Active)
+            .OrderBy(c => c.ReviewStatus) // Pending (1) before Rejected (2)
+            .ThenByDescending(c => c.SubmittedAtUtc)
             .Select(c => new PendingChallengeModel
             {
                 Id = c.Id,
                 Title = c.Title,
                 Category = c.Category,
                 Type = c.Type,
+                ReviewStatus = c.ReviewStatus,
+                ReviewNote = c.ReviewNote,
                 SubmittedAtUtc = c.SubmittedAtUtc,
+                ReviewedAtUtc = c.ReviewedAtUtc,
                 SubmittedByUserId = c.SubmittedByUserId,
                 SubmittedByUserName = c.SubmittedByUserId != null
                     ? dbContext.Users.Where(u => u.Id == c.SubmittedByUserId).Select(u => u.UserName).FirstOrDefault()
