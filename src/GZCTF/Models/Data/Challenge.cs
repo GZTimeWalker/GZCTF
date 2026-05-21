@@ -143,6 +143,29 @@ public class Challenge
     public string? OriginalArchiveBlobPath { get; set; }
 
     /// <summary>
+    /// Most recent outcome of the auto-build pipeline for this
+    /// challenge's image. <see cref="ChallengeBuildStatus.None"/> for
+    /// challenges that ship a registry-published image (no build needed).
+    /// </summary>
+    [Required]
+    public ChallengeBuildStatus BuildStatus { get; set; } = ChallengeBuildStatus.None;
+
+    /// <summary>
+    /// SHA256 digest of the most recently built image, surfaced for audit
+    /// (admin can confirm a re-import didn't accidentally retag).
+    /// </summary>
+    [MaxLength(80)]
+    public string? BuildImageDigest { get; set; }
+
+    /// <summary>
+    /// Tail of the docker-build log (last ~32 KiB) for the most recent
+    /// build attempt. Lets the admin diagnose a Failed build without
+    /// re-running.
+    /// </summary>
+    [MaxLength(32768)]
+    public string? LastBuildLog { get; set; }
+
+    /// <summary>
     /// Generate dynamic flag for the participant
     /// </summary>
     /// <param name="part"></param>

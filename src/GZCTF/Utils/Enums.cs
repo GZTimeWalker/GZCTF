@@ -46,6 +46,23 @@ public enum ChallengeReviewStatus : byte
 }
 
 /// <summary>
+/// Tri-state for the auto-build pipeline that turns a local
+/// <c>Dockerfile</c> declared in a challenge.yaml into a usable image
+/// reference. None = no build needed (challenge ships a registry ref or
+/// has no container at all); Success / Failed reflect the most recent
+/// <see cref="GZCTF.Services.Container.Build.IChallengeImageBuilder"/>
+/// outcome.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<ChallengeBuildStatus>))]
+public enum ChallengeBuildStatus : byte
+{
+    None = 0,
+    Success = 1,
+    Failed = 2,
+    Building = 3
+}
+
+/// <summary>
 /// Lifecycle state of a <see cref="GZCTF.Models.Data.RepoWatch"/>.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<RepoWatchStatus>))]

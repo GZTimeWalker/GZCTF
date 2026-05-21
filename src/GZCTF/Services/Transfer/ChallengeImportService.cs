@@ -4,6 +4,7 @@ using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Container.Build;
 using GZCTF.Storage.Interface;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ public sealed class ChallengeImportService(
     IBlobStorage blobStorage,
     AppDbContext context,
     IHttpClientFactory httpClientFactory,
+    IChallengeImageBuilder imageBuilder,
     ILogger<ChallengeImportService> logger)
 {
     static readonly HashSet<string> IgnoredDirNames = new(StringComparer.OrdinalIgnoreCase)
@@ -178,12 +180,25 @@ public sealed class ChallengeImportService(
         if (!Enum.TryParse<ChallengeType>(model.Type ?? "", true, out var type))
             return new(OutcomeKind.Skipped, $"Unknown challenge type '{model.Type}'");
 
-        // Container challenges with a local-path image are rejected until
-        // server-side docker build is wired up.
+        // Container challenges with a local-path image trigger the
+        // auto-build pipeline; non-container or registry-published refs
+        // pass through unchanged.
         var image = model.Container?.ContainerImage?.Trim();
+        ChallengeBuildResult? buildResult = null;
         if (type.IsContainer() && !string.IsNullOrEmpty(image) && IsLocalDockerfilePath(image))
-            return new(OutcomeKind.Skipped,
-                $"'{model.Name}': server-side docker build is not enabled. Publish the image to a registry first.");
+        {
+            var (contextDir, dockerfile) = ResolveBuildContext(packageDir, image);
+            if (!File.Exists(Path.Combine(contextDir, dockerfile)))
+                return new(OutcomeKind.Skipped,
+                    $"'{model.Name}': Dockerfile not found at '{image}'.");
+
+            buildResult = await imageBuilder.BuildAsync(
+                new ChallengeBuildRequest(game.Id, model.Name, contextDir, dockerfile), token);
+            if (buildResult.Success && buildResult.ImageTag is not null)
+                image = buildResult.ImageTag;
+            // On failure we still upsert the challenge so admin can see
+            // the diagnostic — image stays whatever was there or empty.
+        }
 
         var existing = await context.GameChallenges
             .Include(c => c.Flags)
@@ -209,6 +224,15 @@ public sealed class ChallengeImportService(
             kind = OutcomeKind.Updated;
         }
 
+        if (buildResult is not null)
+        {
+            challenge.BuildStatus = buildResult.Success
+                ? ChallengeBuildStatus.Success
+                : ChallengeBuildStatus.Failed;
+            challenge.BuildImageDigest = buildResult.Digest;
+            challenge.LastBuildLog = buildResult.LogTail;
+        }
+
         ApplyYamlToChallenge(challenge, model, type, image, opts, packageDir);
         if (originalArchiveBlobPath is not null)
             challenge.OriginalArchiveBlobPath = originalArchiveBlobPath;
@@ -217,7 +241,44 @@ public sealed class ChallengeImportService(
         await SyncFlagsAsync(challenge, model.Flags ?? [], token);
         await SyncAttachmentAsync(challenge, packageDir, model.Provide, token);
 
+        if (buildResult is { Success: false } br)
+            return new(OutcomeKind.Skipped,
+                $"'{model.Name}': image build failed — {br.ErrorMessage}");
+
         return new(kind, null);
+    }
+
+    /// <summary>
+    /// Resolve the <c>container_image</c> path declared in challenge.yaml
+    /// to a (contextDir, dockerfileRelPath) pair suitable for
+    /// <c>docker build</c>:
+    /// <list type="bullet">
+    ///   <item><description><c>./src</c>             → context = <c>{packageDir}/src</c>, dockerfile = <c>Dockerfile</c></description></item>
+    ///   <item><description><c>./Dockerfile</c>      → context = <c>{packageDir}</c>,     dockerfile = <c>Dockerfile</c></description></item>
+    ///   <item><description><c>./src/Dockerfile</c>  → context = <c>{packageDir}/src</c>, dockerfile = <c>Dockerfile</c></description></item>
+    /// </list>
+    /// </summary>
+    private static (string ContextDir, string Dockerfile) ResolveBuildContext(string packageDir, string declared)
+    {
+        var rel = declared.Replace('\\', '/').TrimStart('.').TrimStart('/');
+        var combined = Path.Combine(packageDir, rel);
+        if (Directory.Exists(combined))
+            return (Path.GetFullPath(combined), "Dockerfile");
+
+        // Caller pointed at the Dockerfile itself.
+        if (File.Exists(combined) &&
+            string.Equals(Path.GetFileName(combined), "Dockerfile", StringComparison.OrdinalIgnoreCase))
+        {
+            return (Path.GetFullPath(Path.GetDirectoryName(combined)!), "Dockerfile");
+        }
+
+        // Plain "Dockerfile" at the package root.
+        if (string.Equals(declared, "Dockerfile", StringComparison.OrdinalIgnoreCase))
+            return (Path.GetFullPath(packageDir), "Dockerfile");
+
+        // Fallback: treat as a directory under the package even if it
+        // doesn't exist yet (caller will get a clear "Dockerfile not found").
+        return (Path.GetFullPath(combined), "Dockerfile");
     }
 
     private static void ApplyYamlToChallenge(
