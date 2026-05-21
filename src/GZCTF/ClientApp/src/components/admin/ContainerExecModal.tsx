@@ -80,6 +80,22 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
       .build()
     hubRef.current = hub
 
+    // Server pushes terminal output via the "Receive" client method
+    // (sessionId, base64Chunk) and signals end-of-session via "Closed"
+    // (sessionId, reason). We register the handlers BEFORE invoking
+    // Open so we don't drop the welcome chunk that the hub sends
+    // immediately after the session opens.
+    hub.on('Receive', (sid: string, chunk: string) => {
+      if (disposed || sessionIdRef.current !== sid) return
+      try { term.write(decodeBase64(chunk)) }
+      catch { /* ignore malformed chunk */ }
+    })
+    hub.on('Closed', (sid: string, reason: string) => {
+      if (disposed || sessionIdRef.current !== sid) return
+      setStatus('closed')
+      if (reason && reason !== 'eof') setErrorMsg(reason)
+    })
+
     const start = async () => {
       setStatus('connecting')
       setErrorMsg(null)
@@ -96,25 +112,6 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
 
         const { cols, rows } = term
         hub.invoke('Resize', sid, cols, rows).catch(() => undefined)
-
-        // Server -> terminal pump.
-        const sub = hub.stream<string>('Stream', sid)
-        sub.subscribe({
-          next: (chunk) => {
-            if (disposed) return
-            try { term.write(decodeBase64(chunk)) }
-            catch { /* ignore malformed chunk */ }
-          },
-          error: (err) => {
-            if (disposed) return
-            setStatus('error')
-            setErrorMsg(err?.message ?? String(err))
-          },
-          complete: () => {
-            if (disposed) return
-            setStatus('closed')
-          },
-        })
 
         // Terminal -> server pump.
         term.onData((data) => {
