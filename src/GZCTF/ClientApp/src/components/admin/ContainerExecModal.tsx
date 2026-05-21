@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Modal, ModalProps, SegmentedControl, Stack, Text } from '@mantine/core'
+import { Alert, Group, Modal, ModalProps, SegmentedControl, Stack, Text } from '@mantine/core'
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr'
 import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
@@ -28,7 +28,12 @@ interface ContainerExecModalProps extends Omit<ModalProps, 'children'> {
 export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
   const { containerGuid, containerTitle, opened, onClose, ...rest } = props
   const { t } = useTranslation()
-  const containerRef = useRef<HTMLDivElement | null>(null)
+  // Callback-ref so the effect below re-fires *after* the DOM node is
+  // actually attached. A plain useRef misses the first attach because
+  // Mantine's Modal portal can mount the children on the same render
+  // cycle as the effect — the ref's current is still null when the
+  // effect first runs and the connect path was being skipped silently.
+  const [terminalEl, setTerminalEl] = useState<HTMLDivElement | null>(null)
   const fitRef = useRef<FitAddon | null>(null)
   const hubRef = useRef<HubConnection | null>(null)
   const sessionIdRef = useRef<string | null>(null)
@@ -53,7 +58,7 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
   }
 
   useEffect(() => {
-    if (!opened || !containerGuid || !containerRef.current) return
+    if (!opened || !containerGuid || !terminalEl) return
     let disposed = false
     shellRef.current = shell
 
@@ -65,7 +70,7 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
     })
     const fit = new FitAddon()
     term.loadAddon(fit)
-    term.open(containerRef.current)
+    term.open(terminalEl)
     fit.fit()
     fitRef.current = fit
 
@@ -150,7 +155,7 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
       term.dispose()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, containerGuid])
+  }, [opened, containerGuid, terminalEl])
 
   return (
     <Modal
@@ -176,25 +181,20 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
       {...rest}
     >
       <Stack gap="sm">
-        <Group gap="sm" justify="space-between">
-          <SegmentedControl
-            size="xs"
-            data={['sh', 'bash']}
-            value={shell}
-            onChange={(v) => setShell(v as 'sh' | 'bash')}
-            disabled={status === 'connecting' || status === 'connected'}
-          />
-          <Button size="xs" variant="default" onClick={() => fitRef.current?.fit()}>
-            {t('admin.button.exec.fit')}
-          </Button>
-        </Group>
+        <SegmentedControl
+          size="xs"
+          data={['sh', 'bash']}
+          value={shell}
+          onChange={(v) => setShell(v as 'sh' | 'bash')}
+          disabled={status === 'connecting' || status === 'connected'}
+        />
         {status === 'error' && errorMsg && (
           <Alert color="red" variant="light" title={t('admin.content.exec.error_title', 'Connection error')}>
             <Text size="xs" ff="monospace">{errorMsg}</Text>
           </Alert>
         )}
         <div
-          ref={containerRef}
+          ref={setTerminalEl}
           style={{
             height: '50vh',
             background: '#0c0c14',

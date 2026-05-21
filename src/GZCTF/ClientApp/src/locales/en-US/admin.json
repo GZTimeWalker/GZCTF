@@ -83,8 +83,7 @@
       "delete": "Delete"
     },
     "exec": {
-      "open": "Open shell",
-      "fit": "Fit"
+      "open": "Open shell"
     },
     "audit": {
       "download": "Download archive"

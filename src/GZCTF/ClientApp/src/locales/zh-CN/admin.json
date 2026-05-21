@@ -83,8 +83,7 @@
       "delete": "删除"
     },
     "exec": {
-      "open": "打开终端",
-      "fit": "自适应"
+      "open": "打开终端"
     },
     "audit": {
       "download": "下载压缩包"
