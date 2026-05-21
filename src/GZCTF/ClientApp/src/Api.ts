@@ -2310,6 +2310,21 @@ export type RepoWatchStatus = "Active" | "Paused"
 /** Health of the encrypted GitHub access token for a binding / watch */
 export type TokenStatus = "NotConfigured" | "Ok" | "DecryptFailed"
 
+/** Anti-cheat block kind: which dimension fired the block */
+export type AntiCheatBlockKind = "Ip" | "Fingerprint"
+
+/** Row in the anti-cheat block log (GET /api/admin/AntiCheatBlocks) */
+export interface AntiCheatBlockModel {
+  id: number
+  userId: string
+  userName?: string | null
+  conflictUserId?: string | null
+  conflictUserName?: string | null
+  kind: AntiCheatBlockKind
+  conflictingValue?: string | null
+  occurredAtUtc: string
+}
+
 /**
  * GET /api/Edit/Games/{id}/WatchBinding — read-only binding context.
  * Returned when the game was auto-spawned by a GameRepoBinding; the
@@ -4210,6 +4225,50 @@ export class Api<
     adminDeleteRepoBinding: (id: number, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/admin/repobindings/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * @description List recent anti-cheat block events. Newest first; max 500 per page.
+     * @tags Admin
+     * @name AdminListAntiCheatBlocks
+     * @request GET:/api/admin/anticheatblocks
+     */
+    adminListAntiCheatBlocks: (
+      query?: { count?: number; skip?: number },
+      params: RequestParams = {},
+    ) =>
+      this.request<AntiCheatBlockModel[], RequestResponse>({
+        path: `/api/admin/anticheatblocks`,
+        method: "GET",
+        query,
+        format: "json",
+        ...params,
+      }),
+
+    useAdminListAntiCheatBlocks: (
+      query?: { count?: number; skip?: number },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) => {
+      const params = new URLSearchParams()
+      if (query?.count != null) params.append('count', String(query.count))
+      if (query?.skip != null) params.append('skip', String(query.skip))
+      const qs = params.toString()
+      const path = `/api/admin/anticheatblocks${qs ? `?${qs}` : ''}`
+      return useSWR<AntiCheatBlockModel[], RequestResponse>(doFetch ? path : null, options)
+    },
+
+    /**
+     * @description Delete an anti-cheat block row (false-positive clearance).
+     * @tags Admin
+     * @name AdminClearAntiCheatBlock
+     * @request DELETE:/api/admin/anticheatblocks/{id}
+     */
+    adminClearAntiCheatBlock: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/anticheatblocks/${id}`,
         method: "DELETE",
         ...params,
       }),

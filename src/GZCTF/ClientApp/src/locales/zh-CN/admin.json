@@ -105,6 +105,9 @@
       "history": "扫描历史",
       "pause": "暂停轮询",
       "resume": "恢复轮询"
+    },
+    "anti_cheat": {
+      "clear": "清除此记录"
     }
   },
   "content": {
@@ -614,6 +617,19 @@
         "actions": "操作"
       }
     },
+    "anti_cheat": {
+      "title": "反作弊拦截",
+      "subtitle": "按「每队员独立 IP / 指纹」策略被拦截的登录请求。若属误判（如队友共享 NAT 公网 IP），可清除该记录。",
+      "empty_title": "暂无拦截记录",
+      "empty": "策略触发时会显示在这里。请在「设置 → 账号策略」中配置。",
+      "column": {
+        "when": "时间",
+        "user": "被拦截用户",
+        "kind": "类型",
+        "conflict_with": "冲突来自",
+        "value": "值"
+      }
+    },
     "watches": {
       "title": "仓库监听",
       "add": "添加监听",
@@ -782,6 +798,9 @@
       "run_queued": "将在下一个心跳触发",
       "token_updated": "Token 已更新"
     },
+    "anti_cheat": {
+      "cleared": "已清除"
+    },
     "repo_binding": {
       "scanned": "扫描完成",
       "summary": "比赛 {{games}}，题目 {{challenges}}，失败 {{failures}}"
@@ -849,6 +868,7 @@
     "instances": "实例管理",
     "logs": "系统日志",
     "repo_bindings": "仓库绑定",
+    "anti_cheat": "反作弊",
     "settings": "系统设置",
     "teams": "队伍管理",
     "users": "用户管理"

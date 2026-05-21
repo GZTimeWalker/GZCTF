@@ -51,6 +51,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<RepoWatchSync> RepoWatchSyncs { get; set; } = null!;
     public DbSet<GameRepoBinding> GameRepoBindings { get; set; } = null!;
     public DbSet<GameRepoBindingScan> GameRepoBindingScans { get; set; } = null!;
+    public DbSet<AntiCheatBlock> AntiCheatBlocks { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(

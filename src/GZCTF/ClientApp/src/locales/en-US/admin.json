@@ -105,6 +105,9 @@
       "history": "Scan history",
       "pause": "Pause polling",
       "resume": "Resume polling"
+    },
+    "anti_cheat": {
+      "clear": "Clear this block"
     }
   },
   "content": {
@@ -614,6 +617,19 @@
         "actions": "Actions"
       }
     },
+    "anti_cheat": {
+      "title": "Anti-cheat blocks",
+      "subtitle": "Logins blocked by the per-team-user IP / fingerprint policy. Clear a row when a block is a false positive (e.g., teammates sharing a NAT'd public IP).",
+      "empty_title": "No blocks recorded",
+      "empty": "When the policy fires it'll show up here. Configure it under Settings → Account.",
+      "column": {
+        "when": "When",
+        "user": "Blocked user",
+        "kind": "Kind",
+        "conflict_with": "Conflict with",
+        "value": "Value"
+      }
+    },
     "watches": {
       "title": "Repository watch",
       "add": "Add a new watch",
@@ -782,6 +798,9 @@
       "run_queued": "Watch will run on the next tick",
       "token_updated": "Token updated"
     },
+    "anti_cheat": {
+      "cleared": "Block cleared"
+    },
     "repo_binding": {
       "scanned": "Scan complete",
       "summary": "{{games}} games, {{challenges}} challenges, {{failures}} failures"
@@ -849,6 +868,7 @@
     "instances": "Instances",
     "logs": "Logs",
     "repo_bindings": "Repo bindings",
+    "anti_cheat": "Anti-cheat",
     "settings": "Settings",
     "teams": "Teams",
     "users": "Users"

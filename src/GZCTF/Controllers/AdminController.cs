@@ -1377,6 +1377,57 @@ public class AdminController(
         return Ok(writeups);
     }
 
+    /// <summary>
+    /// List recent anti-cheat blocks (the per-team-user IP / fingerprint
+    /// policy enforcement log). Newest first, capped at 200 rows.
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("AntiCheatBlocks")]
+    [ProducesResponseType(typeof(Models.Response.Admin.AntiCheatBlockModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListAntiCheatBlocks(
+        [FromServices] AppDbContext dbContext,
+        [FromQuery][Range(1, 500)] int count = 100,
+        [FromQuery] int skip = 0,
+        CancellationToken token = default)
+    {
+        var rows = await dbContext.AntiCheatBlocks.AsNoTracking()
+            .OrderByDescending(b => b.OccurredAtUtc)
+            .Skip(skip).Take(count)
+            .Select(b => new Models.Response.Admin.AntiCheatBlockModel
+            {
+                Id = b.Id,
+                UserId = b.UserId,
+                UserName = b.UserName,
+                ConflictUserId = b.ConflictUserId,
+                ConflictUserName = b.ConflictUserName,
+                Kind = b.Kind,
+                ConflictingValue = b.ConflictingValue,
+                OccurredAtUtc = b.OccurredAtUtc
+            })
+            .ToArrayAsync(token);
+        return Ok(rows);
+    }
+
+    /// <summary>
+    /// Remove an anti-cheat block row. Useful when an admin determines
+    /// a false positive (e.g., teammates legitimately share a NAT'd
+    /// public IP). The block is purely advisory — deleting it does not
+    /// retroactively allow the past login; it just drops the record.
+    /// </summary>
+    [RequireAdmin]
+    [HttpDelete("AntiCheatBlocks/{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ClearAntiCheatBlock(
+        [FromRoute] int id, [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var row = await dbContext.AntiCheatBlocks.FirstOrDefaultAsync(b => b.Id == id, token);
+        if (row is null) return NotFound(new RequestResponse("Block not found."));
+        dbContext.AntiCheatBlocks.Remove(row);
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
+
     private IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                        localizer[nameof(Resources.Program.Identity_UnknownError)]));
