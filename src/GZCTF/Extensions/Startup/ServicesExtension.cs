@@ -104,6 +104,7 @@ internal static class ServicesExtension
             builder.Services.AddSingleton<IMailSender, MailSender>();
             builder.Services.AddSingleton<FlagEgressService>();
             builder.Services.AddSingleton<TrafficRecorderRegistry>();
+            builder.Services.AddScoped<IPcapFlowExtractor, PcapFlowExtractor>();
 
             builder.Services.AddHostedService<CacheMaker>();
             builder.Services.AddHostedService<FlagChecker>();

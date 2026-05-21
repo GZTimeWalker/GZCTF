@@ -152,7 +152,33 @@
       "team": "战队",
       "type": "类型"
     },
-    "traffic": "流量"
+    "traffic": "流量",
+    "flow": {
+      "title": "流量检视",
+      "empty": "没有匹配的流。",
+      "inspect_action": "检视流",
+      "column": {
+        "time": "时间",
+        "peer": "对端 IP",
+        "duration": "时长",
+        "flag_hits": "Flag 命中"
+      },
+      "filter": {
+        "regex": "正则...",
+        "peer_ip": "对端 IP...",
+        "flags_only": "仅含 Flag",
+        "direction": {
+          "both": "全部",
+          "in": "↓ 入",
+          "out": "↑ 出"
+        }
+      },
+      "detail": {
+        "empty": "选择一个流以检视。",
+        "ascii": "ASCII",
+        "hex": "十六进制"
+      }
+    }
   },
   "notice": {
     "blood": "恭喜 {{team}} 获得 [{{chal}}] {{blood}}",

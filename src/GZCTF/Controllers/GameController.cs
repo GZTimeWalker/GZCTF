@@ -798,6 +798,93 @@ public class GameController(
     }
 
     /// <summary>
+    /// Get reassembled flows from a traffic file
+    /// </summary>
+    /// <remarks>
+    /// Parses the pcap (gzipped on disk) and returns one summary per proxied
+    /// TCP session; requires Monitor permission. Supports filtering by regex,
+    /// peer IP, time range, direction, and flag-hit-only.
+    /// </remarks>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId:int}/{partId:int}/{filename}/Flows")]
+    [ProducesResponseType(typeof(TrafficFlowSummary[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetTrafficFlows([FromRoute] int challengeId, [FromRoute] int partId,
+        [FromRoute] string filename, [FromQuery] FlowFilter filter, CancellationToken token)
+    {
+        var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}", $"{partId}", filename);
+        if (!await storage.ExistsAsync(path, token))
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+
+        var flags = await ResolveFlagsAsync(challengeId, partId, token);
+        var extractor = HttpContext.RequestServices.GetRequiredService<Services.Traffic.IPcapFlowExtractor>();
+
+        try
+        {
+            var summaries = await extractor.ListFlowsAsync(path, flags, filter, token);
+            return Ok(summaries);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "GetTrafficFlows: failed to parse {Path}", path);
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+        }
+    }
+
+    /// <summary>
+    /// Get full payload of a single flow from a traffic file
+    /// </summary>
+    /// <remarks>
+    /// Returns the per-chunk payload bytes (base64) for one connectionPort
+    /// inside the pcap; requires Monitor permission.
+    /// </remarks>
+    [RequireMonitor]
+    [HttpGet("Captures/{challengeId:int}/{partId:int}/{filename}/Flow/{connectionPort:int}")]
+    [ProducesResponseType(typeof(TrafficFlowDetail), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetTrafficFlowDetail([FromRoute] int challengeId, [FromRoute] int partId,
+        [FromRoute] string filename, [FromRoute] int connectionPort, CancellationToken token)
+    {
+        var path = StoragePath.Combine(PathHelper.Capture, $"{challengeId}", $"{partId}", filename);
+        if (!await storage.ExistsAsync(path, token))
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+
+        var flags = await ResolveFlagsAsync(challengeId, partId, token);
+        var extractor = HttpContext.RequestServices.GetRequiredService<Services.Traffic.IPcapFlowExtractor>();
+
+        try
+        {
+            var detail = await extractor.GetFlowAsync(path, connectionPort, flags, token);
+            if (detail is null)
+                return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+            return Ok(detail);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "GetTrafficFlowDetail: failed to parse {Path}", path);
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_CaptureNotFound)]));
+        }
+    }
+
+    private async Task<IReadOnlyList<string>> ResolveFlagsAsync(int challengeId, int partId, CancellationToken token)
+    {
+        var flags = new List<string>();
+
+        var participation = await participationRepository.GetParticipationById(partId, token);
+        if (participation is not null)
+        {
+            var instance = await gameInstanceRepository.GetInstance(participation, challengeId, token);
+            if (instance?.FlagContext?.Flag is { Length: > 0 } dynamicFlag)
+                flags.Add(dynamicFlag);
+        }
+
+        var staticFlags = await containerRepository.GetStaticChallengeFlags(challengeId, token);
+        flags.AddRange(staticFlags.Where(f => !string.IsNullOrEmpty(f)));
+
+        return flags;
+    }
+
+    /// <summary>
     /// Deletes a traffic file
     /// </summary>
     /// <remarks>

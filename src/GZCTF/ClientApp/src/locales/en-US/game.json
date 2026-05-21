@@ -152,7 +152,33 @@
       "team": "Team",
       "type": "Type"
     },
-    "traffic": "Traffic"
+    "traffic": "Traffic",
+    "flow": {
+      "title": "Flow Inspector",
+      "empty": "No flows match the filter.",
+      "inspect_action": "Inspect flows",
+      "column": {
+        "time": "Time",
+        "peer": "Peer",
+        "duration": "Duration",
+        "flag_hits": "Flag hits"
+      },
+      "filter": {
+        "regex": "Regex...",
+        "peer_ip": "Peer IP...",
+        "flags_only": "Flag hits only",
+        "direction": {
+          "both": "Both",
+          "in": "↓ in",
+          "out": "↑ out"
+        }
+      },
+      "detail": {
+        "empty": "Select a flow to inspect.",
+        "ascii": "ASCII",
+        "hex": "Hex"
+      }
+    }
   },
   "notice": {
     "blood": "Congratulations to {{team}} for the {{blood}} on {{chal}}.",

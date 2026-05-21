@@ -1,5 +1,5 @@
-import { Avatar, Badge, Group, rem, Stack, Text, useMantineTheme } from '@mantine/core'
-import { mdiDeleteOutline, mdiFileDownloadOutline, mdiMenuRight } from '@mdi/js'
+import { ActionIcon, Avatar, Badge, Group, rem, Stack, Text, Tooltip, useMantineTheme } from '@mantine/core'
+import { mdiDeleteOutline, mdiFileDownloadOutline, mdiMagnify, mdiMenuRight } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC } from 'react'
@@ -81,15 +81,16 @@ export interface FileItemProps extends SelectableItemProps {
   locale: string
   onDownload: (file: FileRecord) => void
   onDelete: (file: FileRecord) => Promise<void>
+  onInspect?: (file: FileRecord) => void
 }
 
 export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps) => {
-  const { item, onDownload, onDelete, disabled, t, locale, ...props } = itemProps
+  const { item, onDownload, onDelete, onInspect, disabled, t, locale, ...props } = itemProps
 
   return (
     <SelectableItem h={itemHeight} active={false} {...props}>
       <Group justify="space-between" gap={0} wrap="nowrap" w="100%">
-        <Group justify="space-between" gap={0} wrap="nowrap" w="calc(100% - 2.5rem)" onClick={() => onDownload(item)}>
+        <Group justify="space-between" gap={0} wrap="nowrap" w="calc(100% - 5rem)" onClick={() => onDownload(item)}>
           <Group justify="left" gap="sm" wrap="nowrap">
             <Icon path={mdiFileDownloadOutline} size={1.2} />
 
@@ -107,7 +108,22 @@ export const FileItem: FC<PropsWithItem<FileItemProps, FileRecord>> = (itemProps
             {HunamizeSize(item.size ?? 0)}
           </Text>
         </Group>
-        <Group justify="right" gap="sm" wrap="nowrap" w="2.5rem">
+        <Group justify="right" gap="xs" wrap="nowrap" w="5rem">
+          {onInspect && (
+            <Tooltip label={t('game.label.flow.inspect_action')}>
+              <ActionIcon
+                variant="subtle"
+                color="blue"
+                disabled={disabled}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onInspect(item)
+                }}
+              >
+                <Icon path={mdiMagnify} size={1} />
+              </ActionIcon>
+            </Tooltip>
+          )}
           <ActionIconWithConfirm
             iconPath={mdiDeleteOutline}
             color="red"

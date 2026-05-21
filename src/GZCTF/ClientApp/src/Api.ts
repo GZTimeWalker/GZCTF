@@ -2118,6 +2118,47 @@ export interface TeamTrafficModel {
 }
 
 /** File record */
+/** Direction of a captured payload chunk relative to the proxied container */
+export type TrafficFlowDirection = "ContainerToTeam" | "TeamToContainer"
+
+/** Compact summary of a single proxied TCP session in a pcap */
+export interface TrafficFlowSummary {
+  connectionPort: number
+  firstSeenUtc: string
+  lastSeenUtc: string
+  peerIp: string
+  packetsIn: number
+  packetsOut: number
+  bytesIn: number
+  bytesOut: number
+  flagHits: number
+}
+
+/** One contiguous payload chunk in a flow */
+export interface TrafficFlowChunk {
+  direction: TrafficFlowDirection
+  timestampUtc: string
+  /** Base64-encoded raw bytes */
+  payloadBase64: string
+  /** Byte offsets within the decoded payload where a known flag begins */
+  flagOffsets: number[]
+}
+
+/** Full payload detail of a single flow */
+export interface TrafficFlowDetail extends TrafficFlowSummary {
+  chunks: TrafficFlowChunk[]
+}
+
+/** Filter parameters for the flow-list endpoint */
+export interface FlowFilter {
+  regexPattern?: string
+  peerIpContains?: string
+  startUtc?: string
+  endUtc?: string
+  direction?: TrafficFlowDirection
+  flagsOnly?: boolean
+}
+
 export interface FileRecord {
   /** File name */
   fileName?: string;
@@ -5914,6 +5955,51 @@ export class Api<
         data,
         options,
       ),
+
+    /**
+     * @description Reassemble captured pcap into per-TCP-session flow summaries; requires Monitor permission
+     *
+     * @tags Game
+     * @name GameGetTrafficFlows
+     * @summary Get reassembled flows from a traffic file
+     * @request GET:/api/game/captures/{challengeId}/{partId}/{filename}/flows
+     */
+    gameGetTrafficFlows: (
+      challengeId: number,
+      partId: number,
+      filename: string,
+      filter: FlowFilter = {},
+      params: RequestParams = {},
+    ) =>
+      this.request<TrafficFlowSummary[], RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/${filename}/flows`,
+        method: "GET",
+        query: filter,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Get full payload of a single flow in a traffic file; requires Monitor permission
+     *
+     * @tags Game
+     * @name GameGetTrafficFlowDetail
+     * @summary Get one flow's chunked payload
+     * @request GET:/api/game/captures/{challengeId}/{partId}/{filename}/flow/{connectionPort}
+     */
+    gameGetTrafficFlowDetail: (
+      challengeId: number,
+      partId: number,
+      filename: string,
+      connectionPort: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<TrafficFlowDetail, RequestResponse>({
+        path: `/api/game/captures/${challengeId}/${partId}/${filename}/flow/${connectionPort}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
 
     /**
      * @description Retrieves post-game writeup submission information; requires User permission

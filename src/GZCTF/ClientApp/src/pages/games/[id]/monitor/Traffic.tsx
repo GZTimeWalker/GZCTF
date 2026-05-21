@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { ScrollSelect } from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
+import { FlowInspector } from '@Components/traffic/FlowInspector'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
 import { useLanguage } from '@Utils/I18n'
 import { showErrorMsg } from '@Utils/Shared'
@@ -42,6 +43,7 @@ const Traffic: FC = () => {
   const [challengeId, setChallengeId] = useState<number | null>(null)
   const [participationId, setParticipationId] = useState<number | null>(null)
   const [disabled, setDisabled] = useState(false)
+  const [inspectFilename, setInspectFilename] = useState<string | null>(null)
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
@@ -218,7 +220,14 @@ const Traffic: FC = () => {
               <Divider size="sm" />
               <ScrollSelect
                 itemComponent={FileItem}
-                itemComponentProps={{ onDownload, onDelete, disabled, t, locale }}
+                itemComponentProps={{
+                  onDownload,
+                  onDelete,
+                  onInspect: (item: FileRecord) => item.fileName && setInspectFilename(item.fileName),
+                  disabled,
+                  t,
+                  locale,
+                }}
                 items={orderedFileRecords}
                 h={scrollHeight}
               />
@@ -226,6 +235,12 @@ const Traffic: FC = () => {
           </Grid>
         </Paper>
       )}
+      <FlowInspector
+        challengeId={inspectFilename ? challengeId : null}
+        participationId={inspectFilename ? participationId : null}
+        filename={inspectFilename}
+        onClose={() => setInspectFilename(null)}
+      />
     </WithGameMonitor>
   )
 }
