@@ -4,6 +4,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { HexAsciiView, ViewMode } from './HexAsciiView'
 import api, { TrafficFlowChunk, TrafficFlowDetail, TrafficFlowDirection } from '@Api'
+import { useUrlState } from '@Hooks/useUrlState'
 import { HunamizeSize } from '@Utils/Shared'
 
 interface FlowDetailProps {
@@ -54,7 +55,11 @@ export const FlowDetail: FC<FlowDetailProps> = ({
   const { t } = useTranslation()
   const [detail, setDetail] = useState<TrafficFlowDetail | null>(null)
   const [loading, setLoading] = useState(false)
-  const [mode, setMode] = useState<ViewMode>('ascii')
+  const [mode, setMode] = useUrlState<ViewMode>(
+    'mode',
+    (raw) => (raw === 'hex' ? 'hex' : 'ascii'),
+    (v) => (v === 'hex' ? 'hex' : null)
+  )
 
   useEffect(() => {
     if (connectionPort == null) {

@@ -21,6 +21,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlowDetail } from './FlowDetail'
 import api, { FlowFilter, TrafficFlowDirection, TrafficFlowSummary } from '@Api'
+import { useUrlState } from '@Hooks/useUrlState'
 import { HunamizeSize } from '@Utils/Shared'
 
 interface FlowInspectorProps {
@@ -45,17 +46,41 @@ export const FlowInspector: FC<FlowInspectorProps> = ({
 
   const opened = challengeId != null && participationId != null && filename != null
 
-  const [regex, setRegex] = useState('')
-  const [peerIp, setPeerIp] = useState('')
-  const [direction, setDirection] = useState<DirectionFilter>('both')
-  const [flagsOnly, setFlagsOnly] = useState(false)
+  const [regex, setRegex] = useUrlState<string>(
+    'regex',
+    (raw) => raw ?? '',
+    (v) => (v.length > 0 ? v : null)
+  )
+  const [peerIp, setPeerIp] = useUrlState<string>(
+    'ip',
+    (raw) => raw ?? '',
+    (v) => (v.length > 0 ? v : null)
+  )
+  const [direction, setDirection] = useUrlState<DirectionFilter>(
+    'dir',
+    (raw) => (raw === 'in' || raw === 'out' ? raw : 'both'),
+    (v) => (v === 'both' ? null : v)
+  )
+  const [flagsOnly, setFlagsOnly] = useUrlState<boolean>(
+    'flags',
+    (raw) => raw === '1',
+    (v) => (v ? '1' : null)
+  )
+  const [selected, setSelected] = useUrlState<number | null>(
+    'port',
+    (raw) => {
+      if (!raw) return null
+      const n = Number.parseInt(raw, 10)
+      return Number.isFinite(n) ? n : null
+    },
+    (v) => (v == null ? null : String(v))
+  )
 
   const [debouncedRegex] = useDebouncedValue(regex, 300)
   const [debouncedPeerIp] = useDebouncedValue(peerIp, 300)
 
   const [flows, setFlows] = useState<TrafficFlowSummary[]>([])
   const [loading, setLoading] = useState(false)
-  const [selected, setSelected] = useState<number | null>(null)
 
   useEffect(() => {
     if (!opened) return

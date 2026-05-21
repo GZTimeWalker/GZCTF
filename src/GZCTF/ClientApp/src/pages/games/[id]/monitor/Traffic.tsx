@@ -20,7 +20,7 @@ import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { CSSProperties, FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
+import { useParams, useSearchParams } from 'react-router'
 import { ScrollSelect } from '@Components/ScrollSelect'
 import { ChallengeItem, FileItem, TeamItem } from '@Components/TrafficItems'
 import { FlowInspector } from '@Components/traffic/FlowInspector'
@@ -40,10 +40,55 @@ const Traffic: FC = () => {
   const { id } = useParams()
   const gameId = parseInt(id ?? '-1')
 
-  const [challengeId, setChallengeId] = useState<number | null>(null)
-  const [participationId, setParticipationId] = useState<number | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const parseInt2 = (raw: string | null): number | null => {
+    if (!raw) return null
+    const n = Number.parseInt(raw, 10)
+    return Number.isFinite(n) ? n : null
+  }
+  const challengeId = parseInt2(searchParams.get('chal'))
+  const participationId = parseInt2(searchParams.get('team'))
+  const inspectFilename = searchParams.get('file')
+
+  // Cascading URL writer for the three "navigation" slots. Cascade rules
+  // match the plan: changing the upstream slot clears the downstream ones,
+  // closing the modal (file → null) wipes the inner inspector state too.
+  const setNav = (updates: { chal?: number | null; team?: number | null; file?: string | null }) => {
+    setSearchParams(
+      (prev) => {
+        const out = new URLSearchParams(prev)
+        if ('chal' in updates) {
+          if (updates.chal != null) out.set('chal', String(updates.chal))
+          else out.delete('chal')
+          out.delete('team')
+          out.delete('file')
+          out.delete('port')
+        }
+        if ('team' in updates) {
+          if (updates.team != null) out.set('team', String(updates.team))
+          else out.delete('team')
+          out.delete('file')
+          out.delete('port')
+        }
+        if ('file' in updates) {
+          if (updates.file != null) out.set('file', updates.file)
+          else out.delete('file')
+          out.delete('port')
+          if (updates.file == null) {
+            out.delete('regex')
+            out.delete('ip')
+            out.delete('dir')
+            out.delete('flags')
+            out.delete('mode')
+          }
+        }
+        return out
+      },
+      { replace: true }
+    )
+  }
+
   const [disabled, setDisabled] = useState(false)
-  const [inspectFilename, setInspectFilename] = useState<string | null>(null)
   const theme = useMantineTheme()
 
   const { t } = useTranslation()
@@ -167,7 +212,7 @@ const Traffic: FC = () => {
                 itemComponent={ChallengeItem}
                 items={challengeTraffic}
                 selectedId={challengeId}
-                onSelect={setChallengeId}
+                onSelect={(id) => setNav({ chal: id })}
                 h={scrollHeight}
               />
             </Grid.Col>
@@ -182,7 +227,7 @@ const Traffic: FC = () => {
                 itemComponent={TeamItem}
                 items={teamTraffic}
                 selectedId={participationId}
-                onSelect={setParticipationId}
+                onSelect={(id) => setNav({ team: id })}
                 h={scrollHeight}
               />
             </Grid.Col>
@@ -223,7 +268,7 @@ const Traffic: FC = () => {
                 itemComponentProps={{
                   onDownload,
                   onDelete,
-                  onInspect: (item: FileRecord) => item.fileName && setInspectFilename(item.fileName),
+                  onInspect: (item: FileRecord) => item.fileName && setNav({ file: item.fileName }),
                   disabled,
                   t,
                   locale,
@@ -239,7 +284,7 @@ const Traffic: FC = () => {
         challengeId={inspectFilename ? challengeId : null}
         participationId={inspectFilename ? participationId : null}
         filename={inspectFilename}
-        onClose={() => setInspectFilename(null)}
+        onClose={() => setNav({ file: null })}
       />
     </WithGameMonitor>
   )
