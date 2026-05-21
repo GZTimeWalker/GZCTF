@@ -46,12 +46,6 @@ public class ContainerExecHub(
         await base.OnDisconnectedAsync(exception);
     }
 
-    /// <summary>
-    /// Open a new exec session against the container identified by
-    /// <paramref name="containerGuid"/>. Returns an opaque session id the
-    /// client passes back to <see cref="Stream"/> / <see cref="Input"/> /
-    /// <see cref="Resize"/> / <see cref="Close"/>.
-    /// </summary>
     public async Task<string> Open(Guid containerGuid, string shell)
     {
         var container = await containerRepository.GetContainerById(containerGuid, default);
@@ -69,11 +63,9 @@ public class ContainerExecHub(
             }
             else
             {
-                // Shouldn't happen if OnConnected was reached, but be safe.
                 await session.DisposeAsync();
                 throw new HubException("Session bag missing — reconnect.");
             }
-            logger.LogInformation("ContainerExecHub: opened session {Sid} for {Container}", sessionId, container.LogId);
             return sessionId;
         }
         catch (NotSupportedException ex)
@@ -89,10 +81,10 @@ public class ContainerExecHub(
     }
 
     /// <summary>
-    /// Server → client byte stream. Each yielded chunk is forwarded
-    /// straight to the browser's xterm <c>term.write</c>.
+    /// Server → client stream of base64-encoded byte chunks. The client
+    /// decodes base64 → Uint8Array before piping into xterm.
     /// </summary>
-    public async IAsyncEnumerable<byte[]> Stream(string sessionId, [EnumeratorCancellation] CancellationToken token)
+    public async IAsyncEnumerable<string> Stream(string sessionId, [EnumeratorCancellation] CancellationToken token)
     {
         if (!_byConnection.TryGetValue(Context.ConnectionId, out var conn) ||
             !conn.Sessions.TryGetValue(sessionId, out var entry))
@@ -114,17 +106,25 @@ public class ContainerExecHub(
                 yield break;
             }
             if (n == 0) yield break;
-            yield return buf[..n];
+            yield return Convert.ToBase64String(buf, 0, n);
         }
     }
 
-    public async Task Input(string sessionId, byte[] chunk)
+    /// <summary>
+    /// Client → server. <paramref name="chunk"/> is base64-encoded so
+    /// the SignalR JSON protocol doesn't have to muck with byte[]
+    /// argument binding.
+    /// </summary>
+    public async Task Input(string sessionId, string chunk)
     {
-        if (chunk is null || chunk.Length == 0) return;
+        if (string.IsNullOrEmpty(chunk)) return;
+        byte[] bytes;
+        try { bytes = Convert.FromBase64String(chunk); }
+        catch (FormatException) { return; }
         if (_byConnection.TryGetValue(Context.ConnectionId, out var conn) &&
             conn.Sessions.TryGetValue(sessionId, out var entry))
         {
-            try { await entry.Session.WriteAsync(chunk, entry.Cancel.Token); }
+            try { await entry.Session.WriteAsync(bytes, entry.Cancel.Token); }
             catch (Exception ex)
             {
                 logger.LogDebug(ex, "ContainerExecHub: write error on {Sid}", sessionId);

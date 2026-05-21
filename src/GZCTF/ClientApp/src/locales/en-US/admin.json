@@ -104,6 +104,9 @@
     }
   },
   "content": {
+    "exec": {
+      "title": "Container console"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -624,9 +627,6 @@
       "memory": "Memory",
       "network": "Network",
       "live_stats": "Live stats"
-    },
-    "exec": {
-      "title": "Container console"
     },
     "logs": {
       "message": "Message",

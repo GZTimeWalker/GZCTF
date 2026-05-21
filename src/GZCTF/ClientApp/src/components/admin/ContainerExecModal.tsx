@@ -1,5 +1,5 @@
-import { Button, Group, Modal, ModalProps, SegmentedControl, Stack, Text } from '@mantine/core'
-import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr'
+import { Alert, Button, Group, Modal, ModalProps, SegmentedControl, Stack, Text } from '@mantine/core'
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr'
 import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 import '@xterm/xterm/css/xterm.css'
@@ -12,34 +12,33 @@ interface ContainerExecModalProps extends Omit<ModalProps, 'children'> {
 }
 
 /**
- * In-browser terminal over a SignalR ContainerExecHub session.
- * Lifecycle: on open we negotiate a fresh hub connection, invoke
- * `Open(guid, shell)`, then bidirectionally pump bytes via the
- * server's `Stream` (server -> client) and our `Input` calls
- * (client -> server). On close we tell the server `Close(sessionId)`
- * so the underlying docker exec dies immediately rather than waiting
- * for the disconnect.
+ * In-browser terminal over the ContainerExecHub SignalR endpoint.
+ * On mount: build a HubConnection, invoke Open(guid, shell) to get a
+ * session id, subscribe to the Stream IAsyncEnumerable for stdout
+ * bytes (base64-encoded over JSON), and pipe Terminal.onData back to
+ * the server's Input method (also base64).
+ * On unmount: invoke Close(sid) so the docker exec dies immediately
+ * instead of waiting for the connection timeout.
+ *
+ * The `shell` state is intentionally NOT a useEffect dependency —
+ * toggling the segmented control after a failed connection shouldn't
+ * tear down & rebuild the hub. Pick the shell BEFORE clicking Open;
+ * to switch, close the modal and reopen.
  */
 export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
   const { containerGuid, containerTitle, opened, onClose, ...rest } = props
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const termRef = useRef<Terminal | null>(null)
   const fitRef = useRef<FitAddon | null>(null)
   const hubRef = useRef<HubConnection | null>(null)
   const sessionIdRef = useRef<string | null>(null)
+  const shellRef = useRef<'sh' | 'bash'>('sh')
 
   const [shell, setShell] = useState<'sh' | 'bash'>('sh')
   const [status, setStatus] = useState<'idle' | 'connecting' | 'connected' | 'closed' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  const writeBytes = (term: Terminal, bytes: Uint8Array) => {
-    term.write(bytes)
-  }
-
-  // SignalR's JSON protocol encodes server-side `byte[]` chunks as
-  // base64 strings — decode to Uint8Array before piping into xterm so
-  // we don't render the literal "Ww==Cg==..." gibberish.
+  // SignalR JSON encodes byte chunks as base64 strings.
   const decodeBase64 = (s: string): Uint8Array => {
     const raw = atob(s)
     const out = new Uint8Array(raw.length)
@@ -47,20 +46,16 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
     return out
   }
 
-  const closeSession = async () => {
-    const hub = hubRef.current
-    const sid = sessionIdRef.current
-    if (hub && sid) {
-      try { await hub.invoke('Close', sid) } catch { /* ignore */ }
-    }
-    sessionIdRef.current = null
-    try { await hub?.stop() } catch { /* ignore */ }
-    hubRef.current = null
+  const encodeBase64 = (bytes: Uint8Array): string => {
+    let bin = ''
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i])
+    return btoa(bin)
   }
 
   useEffect(() => {
     if (!opened || !containerGuid || !containerRef.current) return
     let disposed = false
+    shellRef.current = shell
 
     const term = new Terminal({
       fontFamily: 'JetBrains Mono, Consolas, monospace',
@@ -72,7 +67,6 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
     term.loadAddon(fit)
     term.open(containerRef.current)
     fit.fit()
-    termRef.current = term
     fitRef.current = fit
 
     const hub = new HubConnectionBuilder()
@@ -83,72 +77,50 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
 
     const start = async () => {
       setStatus('connecting')
+      setErrorMsg(null)
       try {
         await hub.start()
         if (disposed) return
-        const sid = await hub.invoke<string>('Open', containerGuid, shell)
+        const sid = await hub.invoke<string>('Open', containerGuid, shellRef.current)
         if (disposed) {
-          await hub.invoke('Close', sid)
+          await hub.invoke('Close', sid).catch(() => undefined)
           return
         }
         sessionIdRef.current = sid
         setStatus('connected')
 
         const { cols, rows } = term
-        try { await hub.invoke('Resize', sid, cols, rows) } catch { /* ignore */ }
+        hub.invoke('Resize', sid, cols, rows).catch(() => undefined)
 
-        // Pump server -> terminal.
-        ;(async () => {
-          try {
-            const sub = hub.stream<number[] | Uint8Array | string>('Stream', sid)
-            sub.subscribe({
-              next: (chunk) => {
-                if (disposed) return
-                if (typeof chunk === 'string') {
-                  // SignalR JSON protocol gives us base64-encoded bytes.
-                  try { writeBytes(term, decodeBase64(chunk)) }
-                  catch { term.write(chunk) }
-                } else if (chunk instanceof Uint8Array) {
-                  writeBytes(term, chunk)
-                } else if (Array.isArray(chunk)) {
-                  writeBytes(term, Uint8Array.from(chunk))
-                }
-              },
-              error: (err) => {
-                if (disposed) return
-                setStatus('error')
-                setErrorMsg(err?.message ?? String(err))
-              },
-              complete: () => {
-                if (disposed) return
-                setStatus('closed')
-              },
-            })
-          } catch (e) {
-            if (!disposed) {
-              setStatus('error')
-              setErrorMsg((e as Error).message)
-            }
-          }
-        })()
-
-        // Pump terminal -> server. SignalR JSON expects byte[] parameters
-        // as base64 strings, so encode before sending — JSON arrays of
-        // numbers get silently dropped (the hub method's byte[] binds to
-        // null and nothing reaches stdin).
-        term.onData((data) => {
-          if (!sessionIdRef.current) return
-          const bytes = new TextEncoder().encode(data)
-          let bin = ''
-          for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i])
-          const b64 = btoa(bin)
-          hub.invoke('Input', sessionIdRef.current, b64).catch(() => { /* ignore */ })
+        // Server -> terminal pump.
+        const sub = hub.stream<string>('Stream', sid)
+        sub.subscribe({
+          next: (chunk) => {
+            if (disposed) return
+            try { term.write(decodeBase64(chunk)) }
+            catch { /* ignore malformed chunk */ }
+          },
+          error: (err) => {
+            if (disposed) return
+            setStatus('error')
+            setErrorMsg(err?.message ?? String(err))
+          },
+          complete: () => {
+            if (disposed) return
+            setStatus('closed')
+          },
         })
 
-        // Resize handler.
-        term.onResize(({ cols, rows }) => {
+        // Terminal -> server pump.
+        term.onData((data) => {
           if (!sessionIdRef.current) return
-          hub.invoke('Resize', sessionIdRef.current, cols, rows).catch(() => { /* ignore */ })
+          const b64 = encodeBase64(new TextEncoder().encode(data))
+          hub.invoke('Input', sessionIdRef.current, b64).catch(() => undefined)
+        })
+
+        term.onResize(({ cols: c, rows: r }) => {
+          if (!sessionIdRef.current) return
+          hub.invoke('Resize', sessionIdRef.current, c, r).catch(() => undefined)
         })
       } catch (e) {
         if (!disposed) {
@@ -160,21 +132,25 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
 
     void start()
 
-    const onResize = () => {
+    const onWindowResize = () => {
       try { fit.fit() } catch { /* ignore */ }
     }
-    window.addEventListener('resize', onResize)
+    window.addEventListener('resize', onWindowResize)
 
     return () => {
       disposed = true
-      window.removeEventListener('resize', onResize)
-      void closeSession()
-      term.dispose()
-      termRef.current = null
+      window.removeEventListener('resize', onWindowResize)
+      const sid = sessionIdRef.current
+      const ref = hubRef.current
+      sessionIdRef.current = null
+      hubRef.current = null
       fitRef.current = null
+      if (ref && sid) ref.invoke('Close', sid).catch(() => undefined)
+      ref?.stop().catch(() => undefined)
+      term.dispose()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, containerGuid, shell])
+  }, [opened, containerGuid])
 
   return (
     <Modal
@@ -212,10 +188,10 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
             {t('admin.button.exec.fit')}
           </Button>
         </Group>
-        {errorMsg && (
-          <Text size="xs" c="red" ff="monospace">
-            {errorMsg}
-          </Text>
+        {status === 'error' && errorMsg && (
+          <Alert color="red" variant="light" title={t('admin.content.exec.error_title', 'Connection error')}>
+            <Text size="xs" ff="monospace">{errorMsg}</Text>
+          </Alert>
         )}
         <div
           ref={containerRef}

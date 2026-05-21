@@ -104,6 +104,9 @@
     }
   },
   "content": {
+    "exec": {
+      "title": "容器终端"
+    },
     "games": {
       "challenges": {
         "attachment": {
@@ -624,9 +627,6 @@
       "memory": "内存",
       "network": "网络",
       "live_stats": "实时统计"
-    },
-    "exec": {
-      "title": "容器终端"
     },
     "logs": {
       "message": "信息",
