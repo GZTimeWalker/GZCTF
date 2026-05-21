@@ -1,8 +1,19 @@
 using GZCTF.Models.Data;
 using GZCTF.Utils;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Services.Transfer;
+
+/// <summary>
+/// Purpose string used by <see cref="IDataProtectionProvider"/> to encrypt
+/// the per-watch GitHub access token at rest. Keep stable — changing it
+/// invalidates already-stored tokens.
+/// </summary>
+internal static class RepoWatchProtection
+{
+    public const string Purpose = "GZCTF.RepoWatch.GitHubToken";
+}
 
 /// <summary>
 /// Background service that polls configured <see cref="RepoWatch"/> rows
@@ -18,10 +29,12 @@ namespace GZCTF.Services.Transfer;
 public sealed class RepoWatchService(
     IServiceScopeFactory scopeFactory,
     IHttpClientFactory httpClientFactory,
+    IDataProtectionProvider dataProtectionProvider,
     ILogger<RepoWatchService> logger)
     : BackgroundService
 {
     static readonly TimeSpan TickInterval = TimeSpan.FromSeconds(30);
+    readonly IDataProtector _protector = dataProtectionProvider.CreateProtector(RepoWatchProtection.Purpose);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -87,10 +100,23 @@ public sealed class RepoWatchService(
                 return;
             }
 
-            var sha = await loc.GetHeadShaAsync(http, token);
+            string? plaintextToken = null;
+            if (!string.IsNullOrEmpty(watch.GitHubTokenEncrypted))
+            {
+                try { plaintextToken = _protector.Unprotect(watch.GitHubTokenEncrypted); }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "RepoWatchService: failed to decrypt token for watch {WatchId}", watch.Id);
+                    sync.ErrorMessage = "Stored access token could not be decrypted (purpose/key changed?).";
+                    sync.Failed = 1;
+                    return;
+                }
+            }
+
+            var sha = await loc.GetHeadShaAsync(http, plaintextToken, token);
             if (string.IsNullOrEmpty(sha))
             {
-                sync.ErrorMessage = "Could not resolve HEAD commit (rate limit or 404?).";
+                sync.ErrorMessage = "Could not resolve HEAD commit (rate limit, 404, or bad token?).";
                 sync.Failed = 1;
                 return;
             }
@@ -104,7 +130,7 @@ public sealed class RepoWatchService(
             }
 
             var opts = new ChallengeImportOptions(watch.GameId, watch.CreatedByUserId, AutoApprove: true);
-            var result = await importer.ImportFromGitHubAsync(loc, opts, token);
+            var result = await importer.ImportFromGitHubAsync(loc, plaintextToken, opts, token);
 
             sync.Imported = result.Imported;
             sync.Updated = result.Updated;

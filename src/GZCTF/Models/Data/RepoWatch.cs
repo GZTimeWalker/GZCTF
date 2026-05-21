@@ -67,6 +67,18 @@ public sealed class RepoWatch
     [MaxLength(64)]
     public string? LastCommitSha { get; set; }
 
+    /// <summary>
+    /// GitHub access token, encrypted at rest by
+    /// <see cref="Microsoft.AspNetCore.DataProtection.IDataProtectionProvider"/>
+    /// before persistence and decrypted at use time. Null for public repos.
+    ///
+    /// The plaintext token is never returned by the list endpoint and never
+    /// included in <see cref="RepoWatchSync.ErrorMessage"/>.
+    /// </summary>
+    [MaxLength(2048)]
+    [JsonIgnore]
+    public string? GitHubTokenEncrypted { get; set; }
+
     public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 
     public Guid CreatedByUserId { get; set; }

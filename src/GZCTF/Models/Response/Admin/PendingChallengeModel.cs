@@ -34,6 +34,12 @@ public sealed class RepoWatchInfoModel
     public DateTimeOffset? LastRunUtc { get; set; }
     public string? LastCommitSha { get; set; }
     public RepoWatchSyncModel? LastSync { get; set; }
+
+    /// <summary>
+    /// True iff an encrypted GitHub token is stored on this watch. The
+    /// plaintext is never returned by this DTO.
+    /// </summary>
+    public bool HasGitHubToken { get; set; }
 }
 
 /// <summary>

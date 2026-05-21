@@ -71,17 +71,18 @@ public sealed class ChallengeImportService(
 
     /// <summary>
     /// Imports every <c>challenge.yaml</c> / <c>.yml</c> file found under
-    /// the optional <see cref="GitHubLocator.Subpath"/> in the public
-    /// github repo identified by <paramref name="loc"/>.
+    /// the optional <see cref="GitHubLocator.Subpath"/> in the github repo
+    /// identified by <paramref name="loc"/>. Pass <paramref name="githubToken"/>
+    /// for private repos; null is fine for public ones.
     /// </summary>
     public async Task<ChallengeImportResult> ImportFromGitHubAsync(
-        GitHubLocator loc, ChallengeImportOptions opts, CancellationToken token)
+        GitHubLocator loc, string? githubToken, ChallengeImportOptions opts, CancellationToken token)
     {
         var http = httpClientFactory.CreateClient("GitHubApi");
         var workDir = CreateWorkDir();
         try
         {
-            await using (var tarStream = await loc.DownloadTarballAsync(http, token))
+            await using (var tarStream = await loc.DownloadTarballAsync(http, githubToken, token))
                 await ExtractTarballAsync(tarStream, workDir, token);
 
             return await ImportFromWorkDirAsync(workDir, loc.Subpath, opts, token);

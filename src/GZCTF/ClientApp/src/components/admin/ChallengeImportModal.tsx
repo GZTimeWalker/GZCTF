@@ -37,12 +37,14 @@ export const ChallengeImportModal: FC<ChallengeImportModalProps> = (props) => {
   const [repoUrl, setRepoUrl] = useState('')
   const [refValue, setRefValue] = useState('')
   const [subpath, setSubpath] = useState('')
+  const [githubToken, setGithubToken] = useState('')
 
   const reset = () => {
     setFile(null)
     setRepoUrl('')
     setRefValue('')
     setSubpath('')
+    setGithubToken('')
     setResult(null)
   }
 
@@ -67,6 +69,7 @@ export const ChallengeImportModal: FC<ChallengeImportModalProps> = (props) => {
           repoUrl,
           ref: refValue || null,
           subpath: subpath || null,
+          githubToken: asAdmin && githubToken ? githubToken : null,
         })
       }
       setResult(resp.data)
@@ -113,6 +116,16 @@ export const ChallengeImportModal: FC<ChallengeImportModalProps> = (props) => {
                 onChange={(e) => setSubpath(e.currentTarget.value)}
               />
             </Group>
+            {asAdmin && (
+              <TextInput
+                label={t('admin.content.import.token')}
+                description={t('admin.content.import.token_help')}
+                placeholder="github_pat_…"
+                type="password"
+                value={githubToken}
+                onChange={(e) => setGithubToken(e.currentTarget.value)}
+              />
+            )}
             <Button
               leftSection={<Icon path={mdiUpload} size={1} />}
               loading={busy}

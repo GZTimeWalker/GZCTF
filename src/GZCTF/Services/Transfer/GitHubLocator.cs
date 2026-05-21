@@ -69,12 +69,11 @@ public sealed partial class GitHubLocator
     /// branch when <see cref="Ref"/> is null) via the GitHub REST API.
     /// Returns null on any failure — caller logs.
     /// </summary>
-    public async Task<string?> GetHeadShaAsync(HttpClient http, CancellationToken token)
+    public async Task<string?> GetHeadShaAsync(HttpClient http, string? authToken, CancellationToken token)
     {
         var refPart = string.IsNullOrEmpty(Ref) ? "HEAD" : Ref;
         var url = $"https://api.github.com/repos/{Owner}/{Repo}/commits/{Uri.EscapeDataString(refPart)}";
-        using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+        using var req = BuildRequest(HttpMethod.Get, url, authToken);
 
         using var resp = await http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, token);
         if (!resp.IsSuccessStatusCode) return null;
@@ -88,15 +87,23 @@ public sealed partial class GitHubLocator
     /// Downloads the repo as a tarball (gzipped tar) from the GitHub
     /// codeload endpoint. Caller owns the returned stream.
     /// </summary>
-    public async Task<Stream> DownloadTarballAsync(HttpClient http, CancellationToken token)
+    public async Task<Stream> DownloadTarballAsync(HttpClient http, string? authToken, CancellationToken token)
     {
         var refPart = string.IsNullOrEmpty(Ref) ? "HEAD" : Ref;
         var url = $"https://api.github.com/repos/{Owner}/{Repo}/tarball/{Uri.EscapeDataString(refPart)}";
-        using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+        using var req = BuildRequest(HttpMethod.Get, url, authToken);
 
         var resp = await http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, token);
         resp.EnsureSuccessStatusCode();
         return await resp.Content.ReadAsStreamAsync(token);
+    }
+
+    private static HttpRequestMessage BuildRequest(HttpMethod method, string url, string? authToken)
+    {
+        var req = new HttpRequestMessage(method, url);
+        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+        if (!string.IsNullOrWhiteSpace(authToken))
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+        return req;
     }
 }

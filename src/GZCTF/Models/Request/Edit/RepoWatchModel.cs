@@ -17,6 +17,14 @@ public sealed class ImportFromGitHubModel
 
     [MaxLength(512)]
     public string? Subpath { get; set; }
+
+    /// <summary>
+    /// Optional GitHub access token for private repos. Only honoured when
+    /// the caller is admin / game-admin; user submissions ignore this
+    /// field. Used in-flight only — never stored.
+    /// </summary>
+    [MaxLength(1024)]
+    public string? GitHubToken { get; set; }
 }
 
 /// <summary>
@@ -45,6 +53,14 @@ public sealed class RepoWatchCreateModel
     /// picks it up on the next tick.
     /// </summary>
     public bool RunImmediately { get; set; } = true;
+
+    /// <summary>
+    /// Optional GitHub access token for private repos. Encrypted at rest
+    /// by the server before being persisted. Required for private repos;
+    /// leave null/empty for public ones.
+    /// </summary>
+    [MaxLength(1024)]
+    public string? GitHubToken { get; set; }
 }
 
 /// <summary>
@@ -63,6 +79,13 @@ public sealed class RepoWatchUpdateModel
     public int? IntervalSeconds { get; set; }
 
     public RepoWatchStatus? Status { get; set; }
+
+    /// <summary>
+    /// Replace the stored GitHub token. Pass <c>null</c> (or omit) to keep
+    /// the existing one; pass an empty string to clear it.
+    /// </summary>
+    [MaxLength(1024)]
+    public string? GitHubToken { get; set; }
 }
 
 /// <summary>

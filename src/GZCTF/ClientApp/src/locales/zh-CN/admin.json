@@ -85,7 +85,8 @@
       "run": "立即运行",
       "pause": "暂停",
       "resume": "恢复",
-      "delete": "删除"
+      "delete": "删除",
+      "token": "更新 Token"
     }
   },
   "content": {
@@ -494,6 +495,8 @@
       "repo_url": "仓库 URL",
       "ref": "分支 / 标签（可选）",
       "subpath": "子路径（可选）",
+      "token": "GitHub Token（可选）",
+      "token_help": "仅私有仓库需要。建议使用细粒度 PAT（Contents: read）。不会被存储。",
       "tarball_help": "上传一个包含 challenge.yaml 和 attachments/ 的 .tar.gz。",
       "result": "导入结果",
       "imported": "新建",
@@ -528,6 +531,10 @@
       "ref": "分支 / 标签",
       "subpath": "子路径",
       "interval": "间隔（秒）",
+      "token": "GitHub Token（可选）",
+      "token_help": "仅私有仓库需要。加密存储。建议使用细粒度 PAT（Contents: read）。",
+      "token_prompt": "粘贴新的 GitHub Token（留空以清除）：",
+      "has_token": "已配置 Token",
       "run_immediately": "立即运行",
       "column": {
         "repo": "仓库",
@@ -667,7 +674,8 @@
     },
     "watch": {
       "created": "已创建监听",
-      "run_queued": "将在下一个心跳触发"
+      "run_queued": "将在下一个心跳触发",
+      "token_updated": "Token 已更新"
     }
   },
   "placeholder": {

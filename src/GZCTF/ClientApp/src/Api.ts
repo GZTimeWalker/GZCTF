@@ -2173,6 +2173,8 @@ export interface ImportFromGitHubModel {
   repoUrl: string
   ref?: string | null
   subpath?: string | null
+  /** Optional GitHub PAT for private repos. Admin/event-manager only; ignored for user submissions. */
+  githubToken?: string | null
 }
 
 /** Body for POST .../Reject */
@@ -2201,6 +2203,8 @@ export interface RepoWatchCreateModel {
   subpath?: string | null
   intervalSeconds: number
   runImmediately?: boolean
+  /** Optional GitHub PAT for private repos. Encrypted at rest. */
+  githubToken?: string | null
 }
 
 /** Body for PUT /api/Edit/Games/{id}/Watches/{watchId} */
@@ -2209,6 +2213,8 @@ export interface RepoWatchUpdateModel {
   subpath?: string | null
   intervalSeconds?: number | null
   status?: RepoWatchStatus | null
+  /** null = keep existing token; "" = clear; non-empty = replace. */
+  githubToken?: string | null
 }
 
 /** One sync attempt as recorded in RepoWatchSync */
@@ -2234,6 +2240,8 @@ export interface RepoWatchInfoModel {
   lastRunUtc?: string | null
   lastCommitSha?: string | null
   lastSync?: RepoWatchSyncModel | null
+  /** True iff a GitHub token is stored on this watch (plaintext never echoed). */
+  hasGitHubToken?: boolean
 }
 
 export interface FileRecord {

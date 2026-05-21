@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiDeleteOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh } from '@mdi/js'
+import { mdiCheck, mdiDeleteOutline, mdiKeyOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import { FC, useState } from 'react'
@@ -38,6 +38,7 @@ const Watches: FC = () => {
   const [subpath, setSubpath] = useState('')
   const [interval, setInterval] = useState<number>(600)
   const [runImmediately, setRunImmediately] = useState(true)
+  const [githubToken, setGithubToken] = useState('')
   const [busy, setBusy] = useState(false)
 
   const onCreate = async () => {
@@ -50,11 +51,28 @@ const Watches: FC = () => {
         subpath: subpath || null,
         intervalSeconds: interval,
         runImmediately,
+        githubToken: githubToken || null,
       })
       showNotification({ color: 'teal', message: t('admin.notification.watch.created'), icon: <Icon path={mdiCheck} size={1} /> })
       setRepoUrl('')
       setRefValue('')
       setSubpath('')
+      setGithubToken('')
+      mutate()
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const onUpdateToken = async (w: RepoWatchInfoModel) => {
+    const value = window.prompt(t('admin.content.watches.token_prompt'))
+    if (value === null) return
+    setBusy(true)
+    try {
+      await api.edit.editUpdateRepoWatch(gameId, w.id, { githubToken: value })
+      showNotification({ color: 'teal', message: t('admin.notification.watch.token_updated'), icon: <Icon path={mdiCheck} size={1} /> })
       mutate()
     } catch (e) {
       showErrorMsg(e, t)
@@ -136,6 +154,14 @@ const Watches: FC = () => {
                 onChange={(v) => setInterval(typeof v === 'number' ? v : 600)}
               />
             </Group>
+            <TextInput
+              label={t('admin.content.watches.token')}
+              description={t('admin.content.watches.token_help')}
+              placeholder="github_pat_…"
+              type="password"
+              value={githubToken}
+              onChange={(e) => setGithubToken(e.currentTarget.value)}
+            />
             <Group justify="space-between">
               <Switch
                 label={t('admin.content.watches.run_immediately')}
@@ -188,13 +214,25 @@ const Watches: FC = () => {
                   </Table.Td>
                   <Table.Td>{w.lastCommitSha ? <Code>{w.lastCommitSha.substring(0, 7)}</Code> : '—'}</Table.Td>
                   <Table.Td>
-                    <Badge color={w.status === 'Active' ? 'teal' : 'gray'}>{w.status}</Badge>
+                    <Group gap={4} wrap="nowrap">
+                      <Badge color={w.status === 'Active' ? 'teal' : 'gray'}>{w.status}</Badge>
+                      {w.hasGitHubToken && (
+                        <Tooltip label={t('admin.content.watches.has_token')}>
+                          <Icon path={mdiKeyOutline} size={0.8} />
+                        </Tooltip>
+                      )}
+                    </Group>
                   </Table.Td>
                   <Table.Td>
                     <Group gap={2} wrap="nowrap">
                       <Tooltip label={t('admin.button.watches.run')}>
                         <ActionIcon variant="subtle" disabled={busy} onClick={() => onRunNow(w)}>
                           <Icon path={mdiRefresh} size={1} />
+                        </ActionIcon>
+                      </Tooltip>
+                      <Tooltip label={t('admin.button.watches.token')}>
+                        <ActionIcon variant="subtle" disabled={busy} onClick={() => onUpdateToken(w)}>
+                          <Icon path={mdiKeyOutline} size={1} />
                         </ActionIcon>
                       </Tooltip>
                       <Tooltip label={w.status === 'Active' ? t('admin.button.watches.pause') : t('admin.button.watches.resume')}>

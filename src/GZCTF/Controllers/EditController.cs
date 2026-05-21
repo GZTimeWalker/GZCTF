@@ -9,6 +9,7 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Transfer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -44,9 +45,13 @@ public class EditController(
     GameImportService importService,
     ChallengeImportService challengeImportService,
     AppDbContext dbContext,
+    IDataProtectionProvider dataProtectionProvider,
     IDivisionRepository divisionRepository,
     IStringLocalizer<Program> localizer) : Controller
 {
+    private readonly IDataProtector _repoWatchProtector =
+        dataProtectionProvider.CreateProtector(RepoWatchProtection.Purpose);
+
     /// <summary>
     /// Add Post
     /// </summary>
@@ -1497,8 +1502,13 @@ public class EditController(
         var autoApprove = user.Role == Role.Admin
             || await dbContext.EventManagers.AnyAsync(em => em.UserId == user.Id && em.GameId == id, token);
 
+        // Only admin / game-admin callers may use a token. Users submitting
+        // for review never get to use one — keeps private-repo access out
+        // of the untrusted-input path.
+        var ghToken = autoApprove ? model.GitHubToken : null;
+
         var result = await challengeImportService.ImportFromGitHubAsync(
-            loc, new ChallengeImportOptions(id, user.Id, autoApprove), token);
+            loc, ghToken, new ChallengeImportOptions(id, user.Id, autoApprove), token);
         return Ok(result);
     }
 
@@ -1599,6 +1609,7 @@ public class EditController(
                 NextRunUtc = w.NextRunUtc,
                 LastRunUtc = w.LastRunUtc,
                 LastCommitSha = w.LastCommitSha,
+                HasGitHubToken = w.GitHubTokenEncrypted != null,
                 LastSync = dbContext.RepoWatchSyncs
                     .Where(s => s.RepoWatchId == w.Id)
                     .OrderByDescending(s => s.RanAtUtc)
@@ -1643,7 +1654,10 @@ public class EditController(
             IntervalSeconds = Math.Clamp(model.IntervalSeconds, 60, 86400),
             Status = RepoWatchStatus.Active,
             NextRunUtc = model.RunImmediately ? DateTimeOffset.UtcNow : DateTimeOffset.UtcNow.AddSeconds(model.IntervalSeconds),
-            CreatedByUserId = user.Id
+            CreatedByUserId = user.Id,
+            GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
+                ? null
+                : _repoWatchProtector.Protect(model.GitHubToken!.Trim())
         };
 
         dbContext.RepoWatches.Add(watch);
@@ -1659,7 +1673,8 @@ public class EditController(
             Status = watch.Status,
             NextRunUtc = watch.NextRunUtc,
             LastRunUtc = watch.LastRunUtc,
-            LastCommitSha = watch.LastCommitSha
+            LastCommitSha = watch.LastCommitSha,
+            HasGitHubToken = watch.GitHubTokenEncrypted != null
         });
     }
 
@@ -1683,6 +1698,14 @@ public class EditController(
         if (model.Subpath is not null) watch.Subpath = string.IsNullOrWhiteSpace(model.Subpath) ? null : model.Subpath.Trim().TrimEnd('/');
         if (model.IntervalSeconds is { } iv) watch.IntervalSeconds = Math.Clamp(iv, 60, 86400);
         if (model.Status is { } status) watch.Status = status;
+
+        // GitHubToken: null = keep existing, empty = clear, non-empty = re-protect.
+        if (model.GitHubToken is not null)
+        {
+            watch.GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
+                ? null
+                : _repoWatchProtector.Protect(model.GitHubToken.Trim());
+        }
 
         await dbContext.SaveChangesAsync(token);
         return Ok();

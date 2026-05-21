@@ -85,7 +85,8 @@
       "run": "Run now",
       "pause": "Pause",
       "resume": "Resume",
-      "delete": "Remove"
+      "delete": "Remove",
+      "token": "Update token"
     }
   },
   "content": {
@@ -494,6 +495,8 @@
       "repo_url": "Repo URL",
       "ref": "Branch / tag (optional)",
       "subpath": "Subpath (optional)",
+      "token": "GitHub token (optional)",
+      "token_help": "Required only for private repos. Use a fine-grained PAT with 'Contents: read'. Not stored.",
       "tarball_help": "Upload a .tar.gz of one challenge directory (challenge.yaml + attachments).",
       "result": "Import result",
       "imported": "imported",
@@ -528,6 +531,10 @@
       "ref": "Branch / tag",
       "subpath": "Subpath",
       "interval": "Interval (seconds)",
+      "token": "GitHub token (optional)",
+      "token_help": "Required only for private repos. Encrypted at rest. Use a fine-grained PAT scoped to 'Contents: read'.",
+      "token_prompt": "Paste the new GitHub token (leave empty to clear):",
+      "has_token": "Token configured",
       "run_immediately": "Run immediately",
       "column": {
         "repo": "Repo",
@@ -667,7 +674,8 @@
     },
     "watch": {
       "created": "Watch created",
-      "run_queued": "Watch will run on the next tick"
+      "run_queued": "Watch will run on the next tick",
+      "token_updated": "Token updated"
     }
   },
   "placeholder": {
