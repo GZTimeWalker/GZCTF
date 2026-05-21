@@ -2159,6 +2159,83 @@ export interface FlowFilter {
   flagsOnly?: boolean
 }
 
+/** Result of a challenge import (tarball or github) */
+export interface ChallengeImportResult {
+  imported: number
+  updated: number
+  skipped: number
+  failed: number
+  messages: string[]
+}
+
+/** Body for POST /api/Edit/Games/{id}/Challenges/ImportFromGitHub */
+export interface ImportFromGitHubModel {
+  repoUrl: string
+  ref?: string | null
+  subpath?: string | null
+}
+
+/** Body for POST .../Reject */
+export interface RejectChallengeModel {
+  note?: string | null
+}
+
+/** Row returned by GET .../PendingChallenges */
+export interface PendingChallengeModel {
+  id: number
+  title: string
+  category: ChallengeCategory
+  type: ChallengeType
+  submittedAtUtc?: string | null
+  submittedByUserId?: string | null
+  submittedByUserName?: string | null
+}
+
+/** Lifecycle state of a RepoWatch */
+export type RepoWatchStatus = "Active" | "Paused"
+
+/** Body for POST /api/Edit/Games/{id}/Watches */
+export interface RepoWatchCreateModel {
+  repoUrl: string
+  ref?: string | null
+  subpath?: string | null
+  intervalSeconds: number
+  runImmediately?: boolean
+}
+
+/** Body for PUT /api/Edit/Games/{id}/Watches/{watchId} */
+export interface RepoWatchUpdateModel {
+  ref?: string | null
+  subpath?: string | null
+  intervalSeconds?: number | null
+  status?: RepoWatchStatus | null
+}
+
+/** One sync attempt as recorded in RepoWatchSync */
+export interface RepoWatchSyncModel {
+  ranAtUtc: string
+  commitSha?: string | null
+  imported: number
+  updated: number
+  skipped: number
+  failed: number
+  errorMessage?: string | null
+}
+
+/** Row returned by GET /api/Edit/Games/{id}/Watches */
+export interface RepoWatchInfoModel {
+  id: number
+  repoUrl: string
+  ref?: string | null
+  subpath?: string | null
+  intervalSeconds: number
+  status: RepoWatchStatus
+  nextRunUtc?: string | null
+  lastRunUtc?: string | null
+  lastCommitSha?: string | null
+  lastSync?: RepoWatchSyncModel | null
+}
+
 export interface FileRecord {
   /** File name */
   fileName?: string;
@@ -5176,6 +5253,268 @@ export class Api<
         body: data,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Submit a single-challenge tarball for admin review; requires User permission.
+     *
+     * @tags Edit
+     * @name EditSubmitChallenge
+     * @request POST:/api/edit/games/{id}/challenges/submit
+     */
+    editSubmitChallenge: (
+      id: number,
+      archive: File,
+      params: RequestParams = {},
+    ) => {
+      const fd = new FormData()
+      fd.append("archive", archive)
+      return this.request<ChallengeImportResult, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/submit`,
+        method: "POST",
+        body: fd,
+        format: "json",
+        ...params,
+      })
+    },
+
+    /**
+     * @description Admin/game-admin tarball import (auto-approves).
+     *
+     * @tags Edit
+     * @name EditImportChallenge
+     * @request POST:/api/edit/games/{id}/challenges/import
+     */
+    editImportChallenge: (
+      id: number,
+      archive: File,
+      params: RequestParams = {},
+    ) => {
+      const fd = new FormData()
+      fd.append("archive", archive)
+      return this.request<ChallengeImportResult, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/import`,
+        method: "POST",
+        body: fd,
+        format: "json",
+        ...params,
+      })
+    },
+
+    /**
+     * @description Bulk import from a public github repo. Auto-approves when caller is admin/event-manager.
+     *
+     * @tags Edit
+     * @name EditImportChallengeFromGitHub
+     * @request POST:/api/edit/games/{id}/challenges/importfromgithub
+     */
+    editImportChallengeFromGitHub: (
+      id: number,
+      data: ImportFromGitHubModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeImportResult, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/importfromgithub`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description List challenges awaiting admin review.
+     *
+     * @tags Edit
+     * @name EditListPendingChallenges
+     * @request GET:/api/edit/games/{id}/pendingchallenges
+     */
+    editListPendingChallenges: (
+      id: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<PendingChallengeModel[], RequestResponse>({
+        path: `/api/edit/games/${id}/pendingchallenges`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    useEditListPendingChallenges: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<PendingChallengeModel[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/pendingchallenges` : null,
+        options,
+      ),
+
+    mutateEditListPendingChallenges: (
+      id: number,
+      data?: PendingChallengeModel[] | Promise<PendingChallengeModel[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<PendingChallengeModel[]>(
+        `/api/edit/games/${id}/pendingchallenges`,
+        data,
+        options,
+      ),
+
+    /**
+     * @description Approve a pending challenge.
+     *
+     * @tags Edit
+     * @name EditApproveChallenge
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/approve
+     */
+    editApproveChallenge: (
+      id: number,
+      cId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/approve`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * @description Reject a pending challenge with an optional note.
+     *
+     * @tags Edit
+     * @name EditRejectChallenge
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/reject
+     */
+    editRejectChallenge: (
+      id: number,
+      cId: number,
+      data: RejectChallengeModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/reject`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description List configured github repo watches for this game.
+     *
+     * @tags Edit
+     * @name EditListRepoWatches
+     * @request GET:/api/edit/games/{id}/watches
+     */
+    editListRepoWatches: (
+      id: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RepoWatchInfoModel[], RequestResponse>({
+        path: `/api/edit/games/${id}/watches`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    useEditListRepoWatches: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<RepoWatchInfoModel[], RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/watches` : null,
+        options,
+      ),
+
+    mutateEditListRepoWatches: (
+      id: number,
+      data?: RepoWatchInfoModel[] | Promise<RepoWatchInfoModel[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<RepoWatchInfoModel[]>(
+        `/api/edit/games/${id}/watches`,
+        data,
+        options,
+      ),
+
+    /**
+     * @description Create a new repo watch.
+     *
+     * @tags Edit
+     * @name EditCreateRepoWatch
+     * @request POST:/api/edit/games/{id}/watches
+     */
+    editCreateRepoWatch: (
+      id: number,
+      data: RepoWatchCreateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<RepoWatchInfoModel, RequestResponse>({
+        path: `/api/edit/games/${id}/watches`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update an existing repo watch (interval / pause / resume / subpath).
+     *
+     * @tags Edit
+     * @name EditUpdateRepoWatch
+     * @request PUT:/api/edit/games/{id}/watches/{watchId}
+     */
+    editUpdateRepoWatch: (
+      id: number,
+      watchId: number,
+      data: RepoWatchUpdateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/watches/${watchId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Delete a repo watch (does not remove already-imported challenges).
+     *
+     * @tags Edit
+     * @name EditDeleteRepoWatch
+     * @request DELETE:/api/edit/games/{id}/watches/{watchId}
+     */
+    editDeleteRepoWatch: (
+      id: number,
+      watchId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/watches/${watchId}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * @description Force a sync now on a repo watch.
+     *
+     * @tags Edit
+     * @name EditRunRepoWatchNow
+     * @request POST:/api/edit/games/{id}/watches/{watchId}/run
+     */
+    editRunRepoWatchNow: (
+      id: number,
+      watchId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/edit/games/${id}/watches/${watchId}/run`,
+        method: "POST",
         ...params,
       }),
   };

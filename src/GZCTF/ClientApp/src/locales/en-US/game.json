@@ -274,5 +274,27 @@
   },
   "title": {
     "index": "Games"
+  },
+  "submit": {
+    "title": "Submit a challenge",
+    "subtitle": "Share a challenge with the game organizers for review.",
+    "review_notice": "Submissions are hidden from participants until an admin approves.",
+    "github_tab": "From GitHub",
+    "tarball_tab": "From tarball",
+    "repo_url": "Repo URL",
+    "ref": "Branch / tag (optional)",
+    "subpath": "Subpath (optional)",
+    "tarball_help": "Upload a .tar.gz of one challenge directory (challenge.yaml + attachments).",
+    "result": "Submission result",
+    "no_file": "Pick an archive first.",
+    "no_url": "Enter a repo URL first.",
+    "button": {
+      "submit": "Submit",
+      "pick_file": "Choose archive"
+    },
+    "notification": {
+      "submitted": "Submitted",
+      "under_review": "Awaiting admin review."
+    }
   }
 }

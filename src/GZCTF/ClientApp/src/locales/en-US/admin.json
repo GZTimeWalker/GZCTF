@@ -26,7 +26,10 @@
       "hint": {
         "add": "Add Hint"
       },
+      "import": "Import",
       "new": "New Challenge",
+      "pending": "Pending Review",
+      "watches": "Repo Watches",
       "next": "Next",
       "preview": "Preview",
       "previous": "Previous",
@@ -67,6 +70,22 @@
     },
     "writeups": {
       "download_all": "Download All"
+    },
+    "import": {
+      "run": "Import",
+      "submit": "Submit",
+      "pick_file": "Choose archive"
+    },
+    "review": {
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "watches": {
+      "add": "Add watch",
+      "run": "Run now",
+      "pause": "Pause",
+      "resume": "Resume",
+      "delete": "Remove"
     }
   },
   "content": {
@@ -468,6 +487,58 @@
         "title": "Reset password for {{name}}"
       },
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> users displayed"
+    },
+    "import": {
+      "github_tab": "From GitHub",
+      "tarball_tab": "From tarball",
+      "repo_url": "Repo URL",
+      "ref": "Branch / tag (optional)",
+      "subpath": "Subpath (optional)",
+      "tarball_help": "Upload a .tar.gz of one challenge directory (challenge.yaml + attachments).",
+      "result": "Import result",
+      "imported": "imported",
+      "updated": "updated",
+      "skipped": "skipped",
+      "failed": "failed",
+      "no_file": "Pick an archive first.",
+      "no_url": "Enter a repo URL first."
+    },
+    "review": {
+      "title": "Challenges awaiting review",
+      "empty": {
+        "title": "No pending challenges",
+        "description": "User-submitted challenges will appear here."
+      },
+      "reject_title": "Reject \"{{name}}\"?",
+      "reject_note_placeholder": "Reason (optional, visible to admins only).",
+      "column": {
+        "submitted": "Submitted",
+        "submitter": "Submitter",
+        "title": "Title",
+        "category": "Category",
+        "type": "Type",
+        "actions": "Actions"
+      }
+    },
+    "watches": {
+      "title": "Repository watches",
+      "add": "Add a new watch",
+      "empty": "No watches configured.",
+      "repo_url": "Repo URL",
+      "ref": "Branch / tag",
+      "subpath": "Subpath",
+      "interval": "Interval (seconds)",
+      "run_immediately": "Run immediately",
+      "column": {
+        "repo": "Repo",
+        "ref": "Ref",
+        "subpath": "Subpath",
+        "interval": "Interval",
+        "last_run": "Last run",
+        "commit": "Commit",
+        "status": "Status",
+        "actions": "Actions"
+      }
     }
   },
   "label": {
@@ -586,6 +657,17 @@
       "deleted": "{{name}} has been deleted",
       "password_copied": "Password copied to clipboard",
       "updated": "User profile updated"
+    },
+    "import": {
+      "complete": "Import complete"
+    },
+    "review": {
+      "approved": "Challenge approved",
+      "rejected": "Challenge rejected"
+    },
+    "watch": {
+      "created": "Watch created",
+      "run_queued": "Watch will run on the next tick"
     }
   },
   "placeholder": {
