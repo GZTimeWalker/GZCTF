@@ -177,12 +177,15 @@ public class DockerManager : IContainerManager
         {
             if (retry++ >= 3)
             {
+                var diag = await CaptureFailureDiagnosticsAsync(container.ContainerId, token);
                 _logger.SystemLog(
                     StaticLocalizer[
                         nameof(Resources.Program.ContainerManager_ContainerInstanceStartFailed),
                         container.LogId,
                         config.Image.Split("/").LastOrDefault() ?? ""],
                     TaskStatus.Failed, LogLevel.Warning);
+                if (!string.IsNullOrEmpty(diag))
+                    _logger.SystemLog(diag, TaskStatus.Failed, LogLevel.Warning);
 
                 await DestroyContainerAsync(container, token);
                 return null;
@@ -207,10 +210,19 @@ public class DockerManager : IContainerManager
 
         if (container.Status != ContainerStatus.Running)
         {
+            var tail = await SafeFetchLogTailAsync(container.ContainerId, token);
             _logger.SystemLog(
                 StaticLocalizer[
                     nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
                     config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
+                TaskStatus.Failed, LogLevel.Warning);
+            // Append the exit code + last stdout/stderr lines so the admin
+            // can see WHY (vs. just "creation failed"). Containers that
+            // exit 127 / 126 are usually CMD-not-found / not-executable;
+            // OOM and SIGSEGV show up here too. Without this, the operator
+            // has to ssh and `docker logs` to figure out what went wrong.
+            _logger.SystemLog(
+                $"Exit {info.State.ExitCode}: {info.State.Error ?? "(no error)"}; logs: {tail}",
                 TaskStatus.Failed, LogLevel.Warning);
 
             await DestroyContainerAsync(container, token);
@@ -349,6 +361,57 @@ public class DockerManager : IContainerManager
             NetRxBytes = rx,
             NetTxBytes = tx
         };
+    }
+
+    /// <summary>
+    /// Best-effort: inspect the container + read its last stdout/stderr
+    /// lines so the failure log includes WHY the container died (e.g.
+    /// "exit 127: applet not found" for a missing busybox component, or
+    /// "OOMKilled" for memory pressure). All errors are swallowed —
+    /// the diagnostic should never block the destroy path.
+    /// </summary>
+    private async Task<string> CaptureFailureDiagnosticsAsync(string containerId, CancellationToken token)
+    {
+        try
+        {
+            var info = await _client.Containers.InspectContainerAsync(containerId, token);
+            var tail = await SafeFetchLogTailAsync(containerId, token);
+            return $"start failed: exit {info.State.ExitCode}, dead={info.State.Dead}, oom={info.State.OOMKilled}, error='{info.State.Error}'; logs: {tail}";
+        }
+        catch (Exception e)
+        {
+            return $"start failed (diagnostics unavailable: {e.Message})";
+        }
+    }
+
+    private async Task<string> SafeFetchLogTailAsync(string containerId, CancellationToken token)
+    {
+        try
+        {
+            var buf = new System.Text.StringBuilder(2048);
+            var progress = new Progress<string>(line =>
+            {
+                if (line is null) return;
+                if (buf.Length > 2048) return;
+                buf.Append(line);
+                if (!line.EndsWith('\n')) buf.Append('\n');
+            });
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            cts.CancelAfter(TimeSpan.FromSeconds(3));
+            await _client.Containers.GetContainerLogsAsync(containerId,
+                new ContainerLogsParameters
+                {
+                    ShowStdout = true,
+                    ShowStderr = true,
+                    Tail = "20"
+                }, progress, cts.Token);
+            var s = buf.ToString().Replace('\n', ' ').Replace('\r', ' ').Trim();
+            return s.Length > 1024 ? s[..1024] + "…" : (string.IsNullOrEmpty(s) ? "(empty)" : s);
+        }
+        catch (Exception e)
+        {
+            return $"(log fetch failed: {e.Message})";
+        }
     }
 
     private static IList<string> BuildContainerEnv(GZCTF.Models.Internal.ContainerConfig config)
