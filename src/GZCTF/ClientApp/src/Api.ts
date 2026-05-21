@@ -1442,7 +1442,12 @@ export interface ChallengeInfoModel {
    * @format uint64
    */
   deadlineUtc?: number | null;
+  /** Review state — surfaced so the admin list can badge pending/rejected challenges */
+  reviewStatus?: ChallengeReviewStatus;
 }
+
+/** Review state of a challenge */
+export type ChallengeReviewStatus = "Active" | "Pending" | "Rejected"
 
 /** Challenge update information (Edit) */
 export interface ChallengeUpdateModel {

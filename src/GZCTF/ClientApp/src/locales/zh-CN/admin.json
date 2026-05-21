@@ -525,6 +525,10 @@
       "previews": "审查文件预览"
     },
     "review": {
+      "badge": {
+        "pending": "待审核",
+        "rejected": "已驳回"
+      },
       "title": "待审核题目",
       "empty": {
         "title": "暂无待审核题目",

@@ -53,9 +53,6 @@ public sealed class ChallengeYamlModel
     [YamlMember(Alias = "flag_template")]
     public string? FlagTemplate { get; set; }
 
-    [YamlMember(Alias = "visible")]
-    public bool? Visible { get; set; }
-
     /// <summary>
     /// Relative path inside the package root pointing at a single attachment
     /// file (e.g. <c>./attachments/binary.zip</c>). gzcli also accepts

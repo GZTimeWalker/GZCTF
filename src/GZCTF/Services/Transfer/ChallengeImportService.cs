@@ -249,7 +249,10 @@ public sealed class ChallengeImportService(
             c.EnableTrafficCapture = m.Container?.EnableTrafficCapture ?? c.EnableTrafficCapture;
         }
 
-        c.IsEnabled = m.Visible ?? c.IsEnabled;
+        // 'visible:' is intentionally ignored — admin is the only one who
+        // flips IsEnabled. New imports inherit whatever IsEnabled was
+        // before the upsert (false for fresh challenges, untouched on
+        // updates).
         c.ReviewStatus = opts.AutoApprove ? ChallengeReviewStatus.Active : ChallengeReviewStatus.Pending;
         c.SubmittedByUserId ??= opts.SubmitterUserId;
         c.SubmittedAtUtc ??= DateTimeOffset.UtcNow;

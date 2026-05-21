@@ -525,6 +525,10 @@
       "previews": "Reviewer files"
     },
     "review": {
+      "badge": {
+        "pending": "Pending review",
+        "rejected": "Rejected"
+      },
       "title": "Challenges awaiting review",
       "empty": {
         "title": "No pending challenges",

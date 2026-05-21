@@ -56,6 +56,12 @@ public class ChallengeInfoModel
     /// </summary>
     public DateTimeOffset? DeadlineUtc { get; set; }
 
+    /// <summary>
+    /// Review state — surfaced so the admin list can badge pending /
+    /// rejected challenges that came in through the import / submit path.
+    /// </summary>
+    public ChallengeReviewStatus ReviewStatus { get; set; } = ChallengeReviewStatus.Active;
+
     internal static ChallengeInfoModel FromChallenge(GameChallenge challenge) =>
         new()
         {
@@ -67,6 +73,7 @@ public class ChallengeInfoModel
             MinScore = (int)Math.Floor(challenge.MinScoreRate * challenge.OriginalScore),
             OriginalScore = challenge.OriginalScore,
             IsEnabled = challenge.IsEnabled,
-            DeadlineUtc = challenge.DeadlineUtc
+            DeadlineUtc = challenge.DeadlineUtc,
+            ReviewStatus = challenge.ReviewStatus
         };
 }

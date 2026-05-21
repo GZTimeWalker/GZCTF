@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Badge,
   Card,
   Group,
   Progress,
@@ -60,9 +61,21 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
         <Icon path={data!.icon} color={theme.colors[data?.color ?? theme.primaryColor][5]} size={1.2} />
 
         <Stack gap={0} maw={contentWidth} miw={contentWidth}>
-          <Text truncate fw="bold">
-            {challenge.title}
-          </Text>
+          <Group gap={6} wrap="nowrap">
+            <Text truncate fw="bold">
+              {challenge.title}
+            </Text>
+            {challenge.reviewStatus === 'Pending' && (
+              <Badge size="xs" color="yellow" variant="filled">
+                {t('admin.content.review.badge.pending')}
+              </Badge>
+            )}
+            {challenge.reviewStatus === 'Rejected' && (
+              <Badge size="xs" color="red" variant="filled">
+                {t('admin.content.review.badge.rejected')}
+              </Badge>
+            )}
+          </Group>
           <Text size="sm" fw="bold" ff="monospace" w="5rem">
             {challenge.score}
             <Text span fw="bold" c="dimmed">
