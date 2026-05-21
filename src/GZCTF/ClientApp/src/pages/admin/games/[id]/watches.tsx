@@ -126,7 +126,9 @@ const Watches: FC = () => {
     <WithGameEditTab isLoading={!watches}>
       <Stack gap="md" w="100%">
         <Title order={3}>{t('admin.content.watches.title')}</Title>
+        <Text size="sm" c="dimmed">{t('admin.content.watches.one_per_event')}</Text>
 
+        {(watches?.length ?? 0) === 0 && (
         <Paper p="md" withBorder>
           <Stack gap="sm">
             <Title order={5}>{t('admin.content.watches.add')}</Title>
@@ -178,6 +180,7 @@ const Watches: FC = () => {
             </Group>
           </Stack>
         </Paper>
+        )}
 
         {!watches || watches.length === 0 ? (
           <Center h="20vh">

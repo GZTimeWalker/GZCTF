@@ -1801,6 +1801,15 @@ public class EditController(
         if (!GitHubLocator.TryParse(model.RepoUrl, model.Ref, model.Subpath, out _, out var err))
             return BadRequest(new RequestResponse(err ?? "Invalid github URL."));
 
+        // One repository per event. The watch is conceptually the single
+        // source of truth for the game; bidirectional sync (pull + push)
+        // relies on a 1:1 mapping. Admin must delete the existing watch
+        // before pointing the game at a different repo.
+        if (await dbContext.RepoWatches.AnyAsync(w => w.GameId == id, token))
+            return Conflict(new RequestResponse(
+                "This game already has a repo watch. Delete or update the existing one before adding another.",
+                StatusCodes.Status409Conflict));
+
         var user = (await userManager.GetUserAsync(User))!;
 
         var watch = new RepoWatch

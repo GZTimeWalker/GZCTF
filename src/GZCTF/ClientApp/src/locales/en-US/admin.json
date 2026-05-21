@@ -550,9 +550,10 @@
       }
     },
     "watches": {
-      "title": "Repository watches",
+      "title": "Repository watch",
       "add": "Add a new watch",
-      "empty": "No watches configured.",
+      "empty": "No watch configured.",
+      "one_per_event": "Each game uses one repository. Delete the existing watch before pointing this game at a different repo.",
       "repo_url": "Repo URL",
       "ref": "Branch / tag",
       "subpath": "Subpath",
