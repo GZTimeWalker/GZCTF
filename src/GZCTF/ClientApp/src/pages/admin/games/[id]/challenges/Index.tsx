@@ -116,7 +116,7 @@ const GameChallengeEdit: FC = () => {
             <Button
               leftSection={<Icon path={mdiClockOutline} size={1} />}
               variant="default"
-              onClick={() => navigate(`/admin/games/${numId}/challenges/pending`)}
+              onClick={() => navigate(`/admin/games/${numId}/pending`)}
             >
               {t('admin.button.challenges.pending')}
             </Button>
