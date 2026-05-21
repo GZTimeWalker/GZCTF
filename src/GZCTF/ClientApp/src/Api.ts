@@ -2191,6 +2191,16 @@ export interface RejectChallengeModel {
   note?: string | null
 }
 
+/** Point-in-time stats for a running container instance */
+export interface ContainerStatsModel {
+  cpuPercent: number
+  memoryUsedBytes: number
+  memoryLimitBytes: number
+  netRxBytes: number
+  netTxBytes: number
+  sampledAt: string
+}
+
 /** Compact summary of a game discovered by a repo binding */
 export interface RepoBindingGameSummary {
   id: number
@@ -3247,6 +3257,26 @@ export class Api<
         method: "DELETE",
         ...params,
       }),
+
+    /**
+     * @description Sample CPU/memory/network stats for a running container.
+     * @tags Admin
+     * @name AdminGetInstanceStats
+     * @request GET:/api/admin/instances/{id}/stats
+     */
+    adminGetInstanceStats: (id: string, params: RequestParams = {}) =>
+      this.request<ContainerStatsModel, RequestResponse>({
+        path: `/api/admin/instances/${id}/stats`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    useAdminGetInstanceStats: (id: string, options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ContainerStatsModel, RequestResponse>(
+        doFetch ? `/api/admin/instances/${id}/stats` : null,
+        options,
+      ),
 
     /**
      * @description Use this API to download all Writeups, requires Admin permission

@@ -265,4 +265,13 @@ public class KubernetesManager : IContainerManager
 
         return envs;
     }
+
+    public Task<Models.Response.Admin.ContainerStatsModel?> GetStatsAsync(
+        Models.Data.Container container, CancellationToken token = default)
+    {
+        // Live container stats in the K8s path would go through
+        // metrics-server / the metrics.k8s.io API, which is not yet wired.
+        // Return null so the admin UI shows "—" rather than misleading data.
+        return Task.FromResult<Models.Response.Admin.ContainerStatsModel?>(null);
+    }
 }

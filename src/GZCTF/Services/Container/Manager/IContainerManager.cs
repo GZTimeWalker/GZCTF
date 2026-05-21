@@ -25,6 +25,15 @@ public interface IContainerManager
     /// <param name="token"></param>
     /// <returns></returns>
     public Task DestroyContainerAsync(Models.Data.Container container, CancellationToken token = default);
+
+    /// <summary>
+    /// Sample point-in-time runtime stats (CPU / memory / network). Returns
+    /// null when the underlying runtime doesn't expose stats (e.g. the
+    /// Kubernetes implementation currently delegates this to metrics-server
+    /// which isn't wired up), or when the container is no longer running.
+    /// </summary>
+    public Task<Models.Response.Admin.ContainerStatsModel?> GetStatsAsync(
+        Models.Data.Container container, CancellationToken token = default);
 }
 
 internal static class ContainerManagerLogHelper

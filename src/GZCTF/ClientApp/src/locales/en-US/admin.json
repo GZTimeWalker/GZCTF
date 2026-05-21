@@ -615,7 +615,11 @@
     "instances": {
       "container_id": "Container ID",
       "entry": "Instance Entry",
-      "life_cycle": "Lifecycle"
+      "life_cycle": "Lifecycle",
+      "cpu": "CPU",
+      "memory": "Memory",
+      "network": "Network",
+      "live_stats": "Live stats"
     },
     "logs": {
       "message": "Message",

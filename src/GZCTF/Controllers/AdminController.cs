@@ -1129,6 +1129,32 @@ public class AdminController(
     /// <response code="401">Unauthorized user</response>
     /// <response code="403">Forbidden</response>
     /// <response code="404">Container instance not found</response>
+    /// <summary>
+    /// Sample point-in-time CPU/memory/network stats for a running
+    /// container instance. Returns 404 when the instance is gone or the
+    /// runtime can't provide stats (e.g. Kubernetes mode in v1).
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("Instances/{id:guid}/Stats")]
+    [ProducesResponseType(typeof(ContainerStatsModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetInstanceStats(Guid id,
+        [FromServices] Services.Container.Manager.IContainerManager containerManager,
+        CancellationToken token = default)
+    {
+        var container = await containerRepository.GetContainerById(id, token);
+        if (container is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ContainerInstanceNotFound)],
+                StatusCodes.Status404NotFound));
+
+        var stats = await containerManager.GetStatsAsync(container, token);
+        if (stats is null)
+            return NotFound(new RequestResponse("Stats unavailable for this container.",
+                StatusCodes.Status404NotFound));
+
+        return Ok(stats);
+    }
+
     [RequireAdmin]
     [HttpDelete("Instances/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]

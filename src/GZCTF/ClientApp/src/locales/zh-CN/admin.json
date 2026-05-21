@@ -615,7 +615,11 @@
     "instances": {
       "container_id": "容器 ID",
       "entry": "访问入口",
-      "life_cycle": "生命周期"
+      "life_cycle": "生命周期",
+      "cpu": "CPU",
+      "memory": "内存",
+      "network": "网络",
+      "live_stats": "实时统计"
     },
     "logs": {
       "message": "信息",

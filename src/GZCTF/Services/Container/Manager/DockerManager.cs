@@ -291,6 +291,66 @@ public class DockerManager : IContainerManager
             }
         };
 
+    public async Task<Models.Response.Admin.ContainerStatsModel?> GetStatsAsync(
+        Models.Data.Container container, CancellationToken token = default)
+    {
+        // Docker.DotNet's GetContainerStatsAsync overload that returns the
+        // parsed model takes an IProgress callback. With Stream=false and
+        // OneShot=true, the daemon emits a single sample and closes; the
+        // progress callback fires once.
+        ContainerStatsResponse? resp = null;
+        var sink = new Progress<ContainerStatsResponse>(s => resp = s);
+        try
+        {
+            await _client.Containers.GetContainerStatsAsync(
+                container.ContainerId,
+                new ContainerStatsParameters { Stream = false, OneShot = true },
+                sink,
+                token);
+        }
+        catch (DockerContainerNotFoundException) { return null; }
+        catch (DockerApiException e) when (e.StatusCode == HttpStatusCode.NotFound) { return null; }
+        catch (Exception e)
+        {
+            _logger.LogWarning(e, "DockerManager: GetStatsAsync failed for {Id}", container.LogId);
+            return null;
+        }
+        if (resp is null) return null;
+
+        // CPU %: classic Docker formula. Guard against the first read where
+        // both deltas are zero (returns 0 instead of NaN).
+        double cpu = 0;
+        ulong cpuDelta = resp.CPUStats.CPUUsage.TotalUsage - resp.PreCPUStats.CPUUsage.TotalUsage;
+        ulong sysDelta = resp.CPUStats.SystemUsage - resp.PreCPUStats.SystemUsage;
+        uint onlineCpus = resp.CPUStats.OnlineCPUs;
+        if (onlineCpus == 0 && resp.CPUStats.CPUUsage.PercpuUsage is { Count: > 0 } perc)
+            onlineCpus = (uint)perc.Count;
+        if (sysDelta > 0 && onlineCpus > 0)
+            cpu = (double)cpuDelta / sysDelta * onlineCpus * 100.0;
+
+        long memUsed = (long)resp.MemoryStats.Usage;
+        long memLimit = (long)resp.MemoryStats.Limit;
+
+        long rx = 0, tx = 0;
+        if (resp.Networks is { } nets)
+        {
+            foreach (var kv in nets)
+            {
+                rx += (long)kv.Value.RxBytes;
+                tx += (long)kv.Value.TxBytes;
+            }
+        }
+
+        return new Models.Response.Admin.ContainerStatsModel
+        {
+            CpuPercent = Math.Round(cpu, 2),
+            MemoryUsedBytes = memUsed,
+            MemoryLimitBytes = memLimit,
+            NetRxBytes = rx,
+            NetTxBytes = tx
+        };
+    }
+
     private static IList<string> BuildContainerEnv(GZCTF.Models.Internal.ContainerConfig config)
     {
         var env = new List<string>(5)
