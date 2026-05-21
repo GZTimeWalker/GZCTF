@@ -79,6 +79,12 @@ public class DetailedGameInfoModel
     public bool PracticeMode { get; set; } = true;
 
     /// <summary>
+    /// Whether logged-in users may submit challenges for this game. Drives
+    /// the visibility of the Submit tab in the participant-facing UI.
+    /// </summary>
+    public bool AllowUserSubmissions { get; set; } = true;
+
+    /// <summary>
     /// Team participation status
     /// </summary>
     [JsonPropertyName("status")]
@@ -114,6 +120,7 @@ public class DetailedGameInfoModel
             Summary = game.Summary,
             Content = game.Content,
             PracticeMode = game.PracticeMode,
+            AllowUserSubmissions = game.AllowUserSubmissions,
             Divisions =
                 game.Divisions?.Select(d => new DivisionInfo
                 {

@@ -40,6 +40,11 @@ public class GameInfoModel : IValidatableObject
     public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
+    /// Whether users may submit challenges for this game (with admin review).
+    /// </summary>
+    public bool AllowUserSubmissions { get; set; } = true;
+
+    /// <summary>
     /// Is writeup required
     /// </summary>
     public bool WriteupRequired { get; set; }
@@ -135,6 +140,7 @@ public class GameInfoModel : IValidatableObject
             InviteCode = game.InviteCode,
             PublicKey = game.PublicKey,
             AcceptWithoutReview = game.AcceptWithoutReview,
+            AllowUserSubmissions = game.AllowUserSubmissions,
             TeamMemberCountLimit = game.TeamMemberCountLimit,
             ContainerCountLimit = game.ContainerCountLimit,
             DiscordWebhook = game.DiscordWebhook,

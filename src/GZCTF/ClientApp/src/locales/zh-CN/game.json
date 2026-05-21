@@ -280,6 +280,7 @@
     "title": "提交题目",
     "subtitle": "向比赛管理员提交题目以供审核。",
     "review_notice": "题目在管理员审核通过前对参赛者不可见。",
+    "disabled_notice": "本场比赛已关闭用户题目提交。",
     "github_tab": "从 GitHub",
     "tarball_tab": "从压缩包",
     "repo_url": "仓库 URL",

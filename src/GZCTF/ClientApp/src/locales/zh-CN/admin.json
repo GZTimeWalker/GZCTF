@@ -311,6 +311,10 @@
           "description": "比赛结束后仍然可以查看题目和提交",
           "label": "练习模式"
         },
+        "allow_user_submissions": {
+          "description": "允许登录用户提交题目（管理员审核后发布）",
+          "label": "允许用户提交题目"
+        },
         "start_date": "开始日期",
         "start_time": "开始时间",
         "summary": {

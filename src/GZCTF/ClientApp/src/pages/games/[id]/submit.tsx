@@ -27,6 +27,7 @@ import { useParams } from 'react-router'
 import { WithGameTab } from '@Components/WithGameTab'
 import { WithNavBar } from '@Components/WithNavbar'
 import { WithRole } from '@Components/WithRole'
+import { useGame } from '@Hooks/useGame'
 import { HunamizeSize, showErrorMsg } from '@Utils/Shared'
 import api, { ChallengeImportResult, Role } from '@Api'
 
@@ -37,6 +38,9 @@ const Submit: FC = () => {
   const gameId = parseInt(id ?? '-1')
   const { t } = useTranslation()
   const theme = useMantineTheme()
+
+  const { game } = useGame(gameId)
+  const disabled = game?.allowUserSubmissions === false
 
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<ChallengeImportResult | null>(null)
@@ -75,11 +79,17 @@ const Submit: FC = () => {
               <Text c="dimmed">{t('game.submit.subtitle')}</Text>
             </Stack>
 
-            <Alert color="blue" variant="light" icon={<Icon path={mdiAlertCircleOutline} size={1} />}>
-              {t('game.submit.review_notice')}
-            </Alert>
+            {disabled ? (
+              <Alert color="orange" variant="light" icon={<Icon path={mdiAlertCircleOutline} size={1} />}>
+                {t('game.submit.disabled_notice')}
+              </Alert>
+            ) : (
+              <Alert color="blue" variant="light" icon={<Icon path={mdiAlertCircleOutline} size={1} />}>
+                {t('game.submit.review_notice')}
+              </Alert>
+            )}
 
-            <Paper p="lg" withBorder>
+            <Paper p="lg" withBorder style={disabled ? { opacity: 0.55, pointerEvents: 'none' } : undefined}>
               <Stack gap="md">
                 <Dropzone
                   multiple={false}

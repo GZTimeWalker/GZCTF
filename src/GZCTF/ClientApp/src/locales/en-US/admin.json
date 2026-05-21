@@ -311,6 +311,10 @@
           "description": "View challenges after the game ends",
           "label": "Practice Mode"
         },
+        "allow_user_submissions": {
+          "description": "Let logged-in users submit challenges (admin reviews before they go live)",
+          "label": "Allow User Submissions"
+        },
         "start_date": "Start Date",
         "start_time": "Start Time",
         "summary": {

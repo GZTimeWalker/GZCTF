@@ -280,6 +280,7 @@
     "title": "Submit a challenge",
     "subtitle": "Share a challenge with the game organizers for review.",
     "review_notice": "Submissions are hidden from participants until an admin approves.",
+    "disabled_notice": "User submissions are turned off for this game by the organizer.",
     "github_tab": "From GitHub",
     "tarball_tab": "From tarball",
     "repo_url": "Repo URL",

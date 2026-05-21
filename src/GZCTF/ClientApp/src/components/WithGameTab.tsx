@@ -81,6 +81,7 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       link: 'submit',
       requireJoin: false,
       requireRole: Role.User,
+      hidden: game?.allowUserSubmissions === false,
     },
     {
       icon: mdiMonitorEye,
@@ -93,6 +94,7 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   ]
 
   const filteredPages = pages
+    .filter((p) => !p.hidden)
     .filter((p) => RequireRole(p.requireRole, role))
     .filter((p) => !p.requireJoin || game?.status === ParticipationStatus.Accepted)
     .filter((p) => !p.requireJoin || !finished || game?.practiceMode)

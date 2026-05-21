@@ -70,6 +70,15 @@ public partial class Game
     public bool AcceptWithoutReview { get; set; }
 
     /// <summary>
+    /// Whether logged-in users may submit challenges (which then sit in the
+    /// admin review queue). Default true to preserve existing behaviour;
+    /// admin can flip off per-game to lock down community submissions for
+    /// a specific event.
+    /// </summary>
+    [Required]
+    public bool AllowUserSubmissions { get; set; } = true;
+
+    /// <summary>
     /// Whether writeup is required
     /// </summary>
     public bool WriteupRequired { get; set; }
@@ -205,6 +214,7 @@ public partial class Game
         Hidden = model.Hidden;
         PracticeMode = model.PracticeMode;
         AcceptWithoutReview = model.AcceptWithoutReview;
+        AllowUserSubmissions = model.AllowUserSubmissions;
         InviteCode = model.InviteCode;
         EndTimeUtc = model.EndTimeUtc;
         StartTimeUtc = model.StartTimeUtc;

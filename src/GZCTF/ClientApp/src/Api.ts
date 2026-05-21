@@ -1082,6 +1082,8 @@ export interface GameInfoModel {
   content?: string;
   /** Accept teams without review */
   acceptWithoutReview?: boolean;
+  /** Whether users may submit challenges (with admin review) for this game */
+  allowUserSubmissions?: boolean;
   /** Is writeup required */
   writeupRequired?: boolean;
   /**
@@ -1712,6 +1714,8 @@ export interface DetailedGameInfoModel {
   teamName?: string | null;
   /** Whether the game is in practice mode (can still be accessed after the game ends) */
   practiceMode?: boolean;
+  /** Whether users may submit challenges (with admin review) for this game */
+  allowUserSubmissions?: boolean;
   /** Team participation status */
   status?: ParticipationStatus;
   /**

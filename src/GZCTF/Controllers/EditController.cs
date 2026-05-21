@@ -1452,6 +1452,18 @@ public class EditController(
         if (archive.Length > MaxTarballBytes)
             return BadRequest(new RequestResponse("Archive exceeds 64 MB."));
 
+        var game = await dbContext.Games.FirstOrDefaultAsync(g => g.Id == id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        // Per-game gate. Admin / game-admin still bypass this via the
+        // Import endpoint above; this only restricts the public Submit path.
+        if (!game.AllowUserSubmissions)
+            return new ObjectResult(new RequestResponse("User submissions are disabled for this game.",
+                StatusCodes.Status403Forbidden))
+            { StatusCode = StatusCodes.Status403Forbidden };
+
         var user = (await userManager.GetUserAsync(User))!;
 
         await using var stream = archive.OpenReadStream();

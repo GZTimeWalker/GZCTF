@@ -347,6 +347,16 @@ const GameInfoEdit: FC = () => {
           )}
           onChange={(e) => game && setGame({ ...game, practiceMode: e.target.checked })}
         />
+        <Switch
+          disabled={disabled}
+          checked={game?.allowUserSubmissions ?? true}
+          classNames={{ root: misc.switchVerticalMiddle }}
+          label={SwitchLabel(
+            t('admin.content.games.info.allow_user_submissions.label'),
+            t('admin.content.games.info.allow_user_submissions.description')
+          )}
+          onChange={(e) => game && setGame({ ...game, allowUserSubmissions: e.target.checked })}
+        />
       </SimpleGrid>
       <Group grow justify="space-between">
         <Textarea
