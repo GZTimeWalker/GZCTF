@@ -2284,6 +2284,24 @@ export interface PendingChallengeModel {
 /** Lifecycle state of a RepoWatch */
 export type RepoWatchStatus = "Active" | "Paused"
 
+/**
+ * GET /api/Edit/Games/{id}/WatchBinding — read-only binding context.
+ * Returned when the game was auto-spawned by a GameRepoBinding; the
+ * per-game watches page renders a "managed by binding" card in that
+ * case and hides the add-watch form.
+ */
+export interface GameWatchBindingModel {
+  bindingId: number
+  repoUrl: string
+  ref?: string | null
+  eventManifestPath?: string | null
+  intervalSeconds: number
+  status: RepoWatchStatus
+  lastScanUtc?: string | null
+  nextScanUtc?: string | null
+  lastScanMessage?: string | null
+}
+
 /** Body for POST /api/Edit/Games/{id}/Watches */
 export interface RepoWatchCreateModel {
   repoUrl: string
@@ -5644,6 +5662,33 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * @description Read-only binding context for binding-owned games. Returns null body when the game is hand-authored.
+     * @tags Edit
+     * @name EditGetGameWatchBinding
+     * @request GET:/api/edit/games/{id}/watchbinding
+     */
+    editGetGameWatchBinding: (
+      id: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<GameWatchBindingModel | null, RequestResponse>({
+        path: `/api/edit/games/${id}/watchbinding`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    useEditGetGameWatchBinding: (
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<GameWatchBindingModel | null, RequestResponse>(
+        doFetch ? `/api/edit/games/${id}/watchbinding` : null,
+        options,
+      ),
 
     useEditListRepoWatches: (
       id: number,

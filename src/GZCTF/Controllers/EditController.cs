@@ -1746,6 +1746,61 @@ public class EditController(
     }
 
     /// <summary>
+    /// When the game was auto-spawned by a global
+    /// <see cref="GZCTF.Models.Data.GameRepoBinding"/>, return read-only
+    /// details about which binding owns it and on what cadence it
+    /// re-polls. Returns <c>null</c> when the game is hand-authored —
+    /// the watches page uses that as the signal to render the regular
+    /// add-watch form. No per-game <see cref="GZCTF.Models.Data.RepoWatch"/>
+    /// row is created for binding-owned games (single-authoritative
+    /// poller, no double-scan); this endpoint is what surfaces the
+    /// binding to the per-game UI.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/WatchBinding")]
+    [ProducesResponseType(typeof(GameWatchBindingModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGameWatchBinding([FromRoute] int id, CancellationToken token)
+    {
+        var info = await dbContext.Games.AsNoTracking()
+            .Where(g => g.Id == id && g.RepoBindingId != null)
+            .Select(g => new
+            {
+                g.EventManifestPath,
+                Binding = dbContext.GameRepoBindings.AsNoTracking()
+                    .Where(b => b.Id == g.RepoBindingId)
+                    .Select(b => new
+                    {
+                        b.Id,
+                        b.RepoUrl,
+                        b.Ref,
+                        b.IntervalSeconds,
+                        b.Status,
+                        b.LastScanUtc,
+                        b.NextScanUtc,
+                        b.LastScanMessage
+                    })
+                    .FirstOrDefault()
+            })
+            .FirstOrDefaultAsync(token);
+
+        if (info?.Binding is null)
+            return Ok((GameWatchBindingModel?)null);
+
+        return Ok(new GameWatchBindingModel
+        {
+            BindingId = info.Binding.Id,
+            RepoUrl = info.Binding.RepoUrl,
+            Ref = info.Binding.Ref,
+            EventManifestPath = info.EventManifestPath,
+            IntervalSeconds = info.Binding.IntervalSeconds,
+            Status = info.Binding.Status,
+            LastScanUtc = info.Binding.LastScanUtc,
+            NextScanUtc = info.Binding.NextScanUtc,
+            LastScanMessage = info.Binding.LastScanMessage
+        });
+    }
+
+    /// <summary>
     /// List configured repo watches for this game with last sync info.
     /// </summary>
     [RequireGameAdmin]

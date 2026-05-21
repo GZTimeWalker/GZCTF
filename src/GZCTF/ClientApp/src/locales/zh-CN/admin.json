@@ -94,6 +94,7 @@
       "pause": "暂停",
       "resume": "恢复",
       "delete": "删除",
+      "open_binding": "查看绑定",
       "token": "更新 Token"
     },
     "repo_binding": {
@@ -578,6 +579,15 @@
       "has_token": "已配置 Token",
       "paused_short": "已暂停",
       "due_now": "即将扫描",
+      "card": {
+        "ref_label": "分支",
+        "events_count_one": "已发现 {{count}} 个比赛",
+        "events_count_other": "已发现 {{count}} 个比赛",
+        "last_scan": "最近扫描",
+        "next_scan": "下次扫描",
+        "never_scanned": "尚未扫描",
+        "commit": "Commit"
+      },
       "delete_title": "删除 {{repo}} 的绑定？",
       "delete_warning": "子比赛不会被删除——它们会解除与该绑定的关联但保留数据。如需移除，请手动删除。",
       "column": {
@@ -596,6 +606,13 @@
       "add": "添加监听",
       "empty": "尚未配置监听。",
       "one_per_event": "每场比赛只关联一个仓库。如需切换，请先删除现有监听。",
+      "last_scan": "最近扫描",
+      "next_scan": "下次扫描",
+      "never_scanned": "尚未扫描",
+      "managed_by_binding": {
+        "title": "由仓库绑定管理",
+        "subtitle": "该比赛由全局仓库绑定自动创建。绑定轮询器按其自身节奏重新扫描仓库，无需添加单独的监听。"
+      },
       "repo_url": "仓库 URL",
       "ref": "分支 / 标签",
       "subpath": "子路径",

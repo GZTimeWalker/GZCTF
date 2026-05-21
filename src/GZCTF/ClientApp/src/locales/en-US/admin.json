@@ -94,6 +94,7 @@
       "pause": "Pause",
       "resume": "Resume",
       "delete": "Remove",
+      "open_binding": "Open binding",
       "token": "Update token"
     },
     "repo_binding": {
@@ -578,6 +579,15 @@
       "has_token": "Token configured",
       "paused_short": "Paused",
       "due_now": "due now",
+      "card": {
+        "ref_label": "ref",
+        "events_count_one": "{{count}} event discovered",
+        "events_count_other": "{{count}} events discovered",
+        "last_scan": "Last scan",
+        "next_scan": "Next scan",
+        "never_scanned": "Never scanned",
+        "commit": "Commit"
+      },
       "delete_title": "Delete binding to {{repo}}?",
       "delete_warning": "Child games are NOT removed — they detach from the binding and keep their data. You'll need to delete them manually if you want them gone.",
       "column": {
@@ -605,6 +615,13 @@
       "token_prompt": "Paste the new GitHub token (leave empty to clear):",
       "has_token": "Token configured",
       "run_immediately": "Run immediately",
+      "last_scan": "Last scan",
+      "next_scan": "Next scan",
+      "never_scanned": "Never scanned",
+      "managed_by_binding": {
+        "title": "Managed by repo binding",
+        "subtitle": "This game was auto-created by a global repo binding. The binding poller re-scans the repo on its own cadence; no per-game watch is needed."
+      },
       "column": {
         "repo": "Repo",
         "ref": "Ref",

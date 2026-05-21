@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiDeleteOutline, mdiKeyOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh } from '@mdi/js'
+import { mdiCheck, mdiDeleteOutline, mdiKeyOutline, mdiOpenInNew, mdiPause, mdiPlay, mdiPlus, mdiRefresh, mdiSourceBranch } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -25,7 +25,7 @@ import { FC, useState } from 'react'
 
 dayjs.extend(relativeTime)
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
 import api, { RepoWatchInfoModel } from '@Api'
@@ -36,6 +36,8 @@ const Watches: FC = () => {
   const { t } = useTranslation()
 
   const { data: watches, mutate } = api.edit.useEditListRepoWatches(gameId, undefined, gameId > 0)
+  const { data: watchBinding } = api.edit.useEditGetGameWatchBinding(gameId, undefined, gameId > 0)
+  const navigate = useNavigate()
 
   const [repoUrl, setRepoUrl] = useState('')
   const [refValue, setRefValue] = useState('')
@@ -128,7 +130,79 @@ const Watches: FC = () => {
         <Title order={3}>{t('admin.content.watches.title')}</Title>
         <Text size="sm" c="dimmed">{t('admin.content.watches.one_per_event')}</Text>
 
-        {(watches?.length ?? 0) === 0 && (
+        {watchBinding && (
+          <Paper p="md" withBorder>
+            <Stack gap="sm">
+              <Group justify="space-between" wrap="nowrap" align="flex-start">
+                <Stack gap={4} miw={0}>
+                  <Group gap="xs" wrap="nowrap">
+                    <Icon path={mdiSourceBranch} size={1} />
+                    <Title order={5}>{t('admin.content.watches.managed_by_binding.title')}</Title>
+                  </Group>
+                  <Text size="xs" c="dimmed">
+                    {t('admin.content.watches.managed_by_binding.subtitle')}
+                  </Text>
+                </Stack>
+                <Group gap="xs" wrap="nowrap">
+                  <Badge color={watchBinding.status === 'Active' ? 'teal' : 'gray'} variant="filled">
+                    {watchBinding.status}
+                  </Badge>
+                  <Badge color="gray" variant="light">
+                    {watchBinding.intervalSeconds}s
+                  </Badge>
+                </Group>
+              </Group>
+
+              <Group gap="xs" wrap="nowrap">
+                <Tooltip label={watchBinding.repoUrl}>
+                  <Text size="sm" ff="monospace" truncate>
+                    {watchBinding.repoUrl.replace('https://github.com/', '')}
+                    {watchBinding.ref ? ` @ ${watchBinding.ref}` : ''}
+                  </Text>
+                </Tooltip>
+                {watchBinding.eventManifestPath && (
+                  <Badge size="xs" variant="outline" color="gray">
+                    <Text size="xs" ff="monospace">{watchBinding.eventManifestPath}</Text>
+                  </Badge>
+                )}
+              </Group>
+
+              <Group gap="md">
+                <Text size="xs" c="dimmed">
+                  {watchBinding.lastScanUtc
+                    ? `${t('admin.content.watches.last_scan')}: ${dayjs(watchBinding.lastScanUtc).fromNow()}`
+                    : t('admin.content.watches.never_scanned')}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {watchBinding.status === 'Paused'
+                    ? t('admin.content.repo_binding.paused_short')
+                    : watchBinding.nextScanUtc
+                      ? `${t('admin.content.watches.next_scan')}: ${dayjs(watchBinding.nextScanUtc).fromNow()}`
+                      : t('admin.content.repo_binding.due_now')}
+                </Text>
+              </Group>
+
+              {watchBinding.lastScanMessage && (
+                <Text size="xs" c="dimmed" lineClamp={2} ff="monospace">
+                  {watchBinding.lastScanMessage}
+                </Text>
+              )}
+
+              <Group justify="flex-end">
+                <Button
+                  size="xs"
+                  variant="default"
+                  leftSection={<Icon path={mdiOpenInNew} size={0.8} />}
+                  onClick={() => navigate('/admin/repo-bindings')}
+                >
+                  {t('admin.button.watches.open_binding')}
+                </Button>
+              </Group>
+            </Stack>
+          </Paper>
+        )}
+
+        {!watchBinding && (watches?.length ?? 0) === 0 && (
         <Paper p="md" withBorder>
           <Stack gap="sm">
             <Title order={5}>{t('admin.content.watches.add')}</Title>
@@ -182,7 +256,7 @@ const Watches: FC = () => {
         </Paper>
         )}
 
-        {!watches || watches.length === 0 ? (
+        {watchBinding ? null : !watches || watches.length === 0 ? (
           <Center h="20vh">
             <Text c="dimmed">{t('admin.content.watches.empty')}</Text>
           </Center>

@@ -11,7 +11,6 @@ import {
   Paper,
   Stack,
   Switch,
-  Table,
   Text,
   TextInput,
   Title,
@@ -228,96 +227,32 @@ const RepoBindings: FC = () => {
               <Text c="dimmed">{t('admin.content.repo_binding.empty')}</Text>
             </Center>
           ) : (
-            <Table withTableBorder striped highlightOnHover>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>{t('admin.content.repo_binding.column.repo')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.ref')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.status')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.games')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.last_scan')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.next_scan')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.commit')}</Table.Th>
-                  <Table.Th>{t('admin.content.repo_binding.column.actions')}</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                {bindings.map((b) => (
-                  <Table.Tr key={b.id}>
-                    <Table.Td>
-                      <Group gap={4} wrap="nowrap">
-                        <Icon path={mdiSourceBranch} size={0.8} />
-                        <Text size="sm" ff="monospace">
-                          {b.repoUrl.replace('https://github.com/', '')}
-                        </Text>
+            <Stack gap="md">
+              {bindings.map((b) => (
+                <Paper key={b.id} p="md" withBorder>
+                  <Stack gap="sm">
+                    {/* Header: repo URL + PAT chip on the left; status + interval + actions on the right */}
+                    <Group justify="space-between" wrap="nowrap" align="flex-start">
+                      <Group gap="xs" wrap="nowrap" miw={0} style={{ flex: 1 }}>
+                        <Icon path={mdiSourceBranch} size={1} />
+                        <Tooltip label={b.repoUrl}>
+                          <Text size="sm" ff="monospace" truncate fw="bold">
+                            {b.repoUrl.replace('https://github.com/', '')}
+                          </Text>
+                        </Tooltip>
                         {b.hasGitHubToken && (
                           <Tooltip label={t('admin.content.repo_binding.has_token')}>
                             <Badge size="xs" color="gray" variant="light">PAT</Badge>
                           </Tooltip>
                         )}
                       </Group>
-                    </Table.Td>
-                    <Table.Td>{b.ref ?? <Text c="dimmed" size="sm">default</Text>}</Table.Td>
-                    <Table.Td>
-                      <Stack gap={2}>
-                        <Badge size="sm" color={b.status === 'Active' ? 'teal' : 'gray'} variant="filled">
+                      <Group gap="xs" wrap="nowrap">
+                        <Badge color={b.status === 'Active' ? 'teal' : 'gray'} variant="filled">
                           {b.status}
                         </Badge>
-                        <Text size="xs" c="dimmed">
+                        <Badge color="gray" variant="light">
                           {b.intervalSeconds}s
-                        </Text>
-                      </Stack>
-                    </Table.Td>
-                    <Table.Td>
-                      <Stack gap={2}>
-                        {b.games.length === 0 && (
-                          <Text size="xs" c="dimmed">
-                            {t('admin.content.repo_binding.no_games')}
-                          </Text>
-                        )}
-                        {b.games.map((g) => (
-                          <Anchor
-                            key={g.id}
-                            component={Link}
-                            to={`/admin/games/${g.id}`}
-                            size="sm"
-                          >
-                            {g.title}
-                            {g.eventManifestPath && (
-                              <Text span size="xs" c="dimmed" ff="monospace">
-                                {' '}— {g.eventManifestPath}
-                              </Text>
-                            )}
-                          </Anchor>
-                        ))}
-                      </Stack>
-                    </Table.Td>
-                    <Table.Td>
-                      {b.lastScanUtc ? (
-                        <Stack gap={0}>
-                          <Text size="xs">{dayjs(b.lastScanUtc).fromNow()}</Text>
-                          {b.lastScanMessage && (
-                            <Text size="xs" c="dimmed" lineClamp={2}>
-                              {b.lastScanMessage}
-                            </Text>
-                          )}
-                        </Stack>
-                      ) : '—'}
-                    </Table.Td>
-                    <Table.Td>
-                      {b.status === 'Paused' ? (
-                        <Text size="xs" c="dimmed">{t('admin.content.repo_binding.paused_short')}</Text>
-                      ) : b.nextScanUtc ? (
-                        <Text size="xs">{dayjs(b.nextScanUtc).fromNow()}</Text>
-                      ) : (
-                        <Text size="xs" c="teal">{t('admin.content.repo_binding.due_now')}</Text>
-                      )}
-                    </Table.Td>
-                    <Table.Td>
-                      {b.lastCommitSha ? <Code>{b.lastCommitSha.substring(0, 7)}</Code> : '—'}
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap={2} wrap="nowrap">
+                        </Badge>
                         <Tooltip label={t('admin.button.repo_binding.scan')}>
                           <ActionIcon variant="subtle" disabled={busy} onClick={() => onScan(b)}>
                             <Icon path={mdiRefresh} size={1} />
@@ -338,11 +273,71 @@ const RepoBindings: FC = () => {
                           </ActionIcon>
                         </Tooltip>
                       </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                ))}
-              </Table.Tbody>
-            </Table>
+                    </Group>
+
+                    {/* Subheader: ref + event count */}
+                    <Text size="xs" c="dimmed">
+                      {t('admin.content.repo_binding.card.ref_label')}: {b.ref ?? 'default'}
+                      {' · '}
+                      {t('admin.content.repo_binding.card.events_count', { count: b.games.length })}
+                    </Text>
+
+                    {/* Child games */}
+                    {b.games.length === 0 ? (
+                      <Text size="xs" c="dimmed">
+                        {t('admin.content.repo_binding.no_games')}
+                      </Text>
+                    ) : (
+                      <Stack gap={4}>
+                        {b.games.map((g) => (
+                          <Group key={g.id} gap="xs" wrap="nowrap">
+                            <Anchor
+                              component={Link}
+                              to={`/admin/games/${g.id}`}
+                              size="sm"
+                            >
+                              {g.title}
+                            </Anchor>
+                            {g.eventManifestPath && (
+                              <Badge size="xs" variant="outline" color="gray">
+                                <Text size="xs" ff="monospace">{g.eventManifestPath}</Text>
+                              </Badge>
+                            )}
+                          </Group>
+                        ))}
+                      </Stack>
+                    )}
+
+                    {/* Footer: timing + commit */}
+                    <Group gap="md" wrap="wrap">
+                      <Text size="xs" c="dimmed">
+                        {b.lastScanUtc
+                          ? `${t('admin.content.repo_binding.card.last_scan')} ${dayjs(b.lastScanUtc).fromNow()}`
+                          : t('admin.content.repo_binding.card.never_scanned')}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {b.status === 'Paused'
+                          ? t('admin.content.repo_binding.paused_short')
+                          : b.nextScanUtc
+                            ? `${t('admin.content.repo_binding.card.next_scan')} ${dayjs(b.nextScanUtc).fromNow()}`
+                            : t('admin.content.repo_binding.due_now')}
+                      </Text>
+                      {b.lastCommitSha && (
+                        <Text size="xs" c="dimmed">
+                          {t('admin.content.repo_binding.card.commit')}: <Code>{b.lastCommitSha.substring(0, 7)}</Code>
+                        </Text>
+                      )}
+                    </Group>
+
+                    {b.lastScanMessage && (
+                      <Text size="xs" c="dimmed" lineClamp={2} ff="monospace">
+                        {b.lastScanMessage}
+                      </Text>
+                    )}
+                  </Stack>
+                </Paper>
+              ))}
+            </Stack>
           )}
         </Stack>
       </Container>
