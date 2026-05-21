@@ -135,6 +135,14 @@ public class Challenge
     public DateTimeOffset? ReviewedAtUtc { get; set; }
 
     /// <summary>
+    /// Blob path to the original archive uploaded for this import, kept
+    /// for admin audit. Null for admin-created challenges and for
+    /// github-sourced imports (those are inherently public).
+    /// </summary>
+    [MaxLength(1024)]
+    public string? OriginalArchiveBlobPath { get; set; }
+
+    /// <summary>
     /// Generate dynamic flag for the participant
     /// </summary>
     /// <param name="part"></param>

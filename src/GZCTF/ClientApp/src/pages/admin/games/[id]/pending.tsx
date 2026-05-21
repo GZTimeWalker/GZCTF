@@ -11,7 +11,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiCheck, mdiClose, mdiMagnify } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -20,6 +20,7 @@ import { FC, useState } from 'react'
 dayjs.extend(relativeTime)
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
+import { ChallengeAuditModal } from '@Components/admin/ChallengeAuditModal'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
 import api from '@Api'
@@ -32,6 +33,8 @@ const PendingChallenges: FC = () => {
   const [busy, setBusy] = useState(false)
 
   const { data: pending, mutate } = api.edit.useEditListPendingChallenges(gameId, undefined, gameId > 0)
+
+  const [auditTarget, setAuditTarget] = useState<{ id: number; title: string; submitter?: string | null } | null>(null)
 
   const onApprove = async (cId: number) => {
     setBusy(true)
@@ -108,6 +111,14 @@ const PendingChallenges: FC = () => {
                   <Table.Td><Badge variant="outline">{row.type}</Badge></Table.Td>
                   <Table.Td>
                     <Group gap="xs" wrap="nowrap">
+                      <Button
+                        size="xs"
+                        variant="default"
+                        leftSection={<Icon path={mdiMagnify} size={0.8} />}
+                        onClick={() => setAuditTarget({ id: row.id, title: row.title, submitter: row.submittedByUserName })}
+                      >
+                        {t('admin.button.review.audit')}
+                      </Button>
                       <Button size="xs" color="teal" disabled={busy} onClick={() => onApprove(row.id)}>
                         {t('admin.button.review.approve')}
                       </Button>
@@ -122,6 +133,14 @@ const PendingChallenges: FC = () => {
           </Table>
         )}
       </Stack>
+      <ChallengeAuditModal
+        gameId={gameId}
+        challengeId={auditTarget?.id ?? null}
+        challengeTitle={auditTarget?.title}
+        submitter={auditTarget?.submitter}
+        opened={auditTarget != null}
+        onClose={() => setAuditTarget(null)}
+      />
     </WithGameEditTab>
   )
 }

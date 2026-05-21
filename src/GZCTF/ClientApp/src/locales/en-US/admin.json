@@ -78,7 +78,11 @@
     },
     "review": {
       "approve": "Approve",
-      "reject": "Reject"
+      "reject": "Reject",
+      "audit": "Audit"
+    },
+    "audit": {
+      "download": "Download archive"
     },
     "watches": {
       "add": "Add watch",
@@ -509,6 +513,16 @@
       "failed": "failed",
       "no_file": "Pick an archive first.",
       "no_url": "Enter a repo URL first."
+    },
+    "audit": {
+      "title": "Audit challenge",
+      "archive_available": "Original archive captured at upload time.",
+      "no_archive": "No original archive on file (admin-created or github-sourced).",
+      "unavailable": "Audit unavailable.",
+      "yaml": "challenge.yaml",
+      "no_yaml": "No challenge.yaml found in the archive.",
+      "files": "Files",
+      "previews": "Reviewer files"
     },
     "review": {
       "title": "Challenges awaiting review",

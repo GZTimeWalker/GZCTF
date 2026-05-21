@@ -9,6 +9,7 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Transfer;
+using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -1588,6 +1589,148 @@ public class EditController(
         challenge.ReviewNote = model.Note;
         await dbContext.SaveChangesAsync(token);
         return Ok();
+    }
+
+    /// <summary>
+    /// Download the original archive that produced a challenge, for
+    /// offline audit. Returns 404 when no archive was persisted
+    /// (admin-created or github-sourced).
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/Challenges/{cId:int}/AuditArchive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChallengeAuditArchive(
+        [FromRoute] int id, [FromRoute] int cId, CancellationToken token,
+        [FromServices] IBlobStorage storage)
+    {
+        var challenge = await dbContext.GameChallenges.AsNoTracking()
+            .FirstOrDefaultAsync(c => c.GameId == id && c.Id == cId, token);
+        if (challenge?.OriginalArchiveBlobPath is null)
+            return NotFound(new RequestResponse("No archive available for this challenge."));
+
+        if (!await storage.ExistsAsync(challenge.OriginalArchiveBlobPath, token))
+            return NotFound(new RequestResponse("Archive blob is missing from storage."));
+
+        var stream = await storage.OpenReadAsync(challenge.OriginalArchiveBlobPath, token);
+        var safeTitle = string.Concat(challenge.Title
+            .Select(c => char.IsLetterOrDigit(c) || c == '-' || c == '_' ? c : '_'));
+        return File(stream, "application/octet-stream", $"{safeTitle}.archive.bin");
+    }
+
+    /// <summary>
+    /// Parse the stored archive on-demand and return YAML text, file
+    /// tree, and previews of reviewer-targeted files (READMEs / writeups
+    /// / solvers). Heavy enough that the modal calls it explicitly on
+    /// open, not on every render.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/Challenges/{cId:int}/AuditMeta")]
+    [ProducesResponseType(typeof(Models.Response.Admin.ChallengeAuditModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChallengeAuditMeta(
+        [FromRoute] int id, [FromRoute] int cId, CancellationToken token,
+        [FromServices] IBlobStorage storage)
+    {
+        var challenge = await dbContext.GameChallenges.AsNoTracking()
+            .FirstOrDefaultAsync(c => c.GameId == id && c.Id == cId, token);
+        if (challenge is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)]));
+
+        var model = new Models.Response.Admin.ChallengeAuditModel
+        {
+            ArchiveAvailable = challenge.OriginalArchiveBlobPath is not null
+        };
+
+        if (challenge.OriginalArchiveBlobPath is null)
+            return Ok(model);
+
+        if (!await storage.ExistsAsync(challenge.OriginalArchiveBlobPath, token))
+        {
+            model.ArchiveAvailable = false;
+            return Ok(model);
+        }
+
+        var tempDir = Path.Combine(Path.GetTempPath(), $"gzctf-audit-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            await using (var src = await storage.OpenReadAsync(challenge.OriginalArchiveBlobPath, token))
+            {
+                var spool = Path.Combine(tempDir, "__archive.bin");
+                await using (var fs = System.IO.File.Create(spool))
+                    await src.CopyToAsync(fs, token);
+                await using var sf = System.IO.File.OpenRead(spool);
+                await ChallengeImportService.ExtractArchiveAsync(sf, tempDir, token);
+                System.IO.File.Delete(spool);
+            }
+
+            FillAuditModel(model, tempDir);
+            return Ok(model);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Audit: failed to parse archive for challenge {Id}", cId);
+            return Ok(model);
+        }
+        finally
+        {
+            try { Directory.Delete(tempDir, recursive: true); } catch { /* best effort */ }
+        }
+    }
+
+    private static void FillAuditModel(Models.Response.Admin.ChallengeAuditModel model, string root)
+    {
+        var rootCanonical = Path.GetFullPath(root) + Path.DirectorySeparatorChar;
+        var files = new List<Models.Response.Admin.ChallengeAuditFile>();
+
+        // GitHub-style downloads wrap content in one dir; descend if so.
+        var firstLevel = Directory.EnumerateFileSystemEntries(root).Take(2).ToArray();
+        var scanRoot = firstLevel.Length == 1 && Directory.Exists(firstLevel[0])
+            ? firstLevel[0]
+            : root;
+        var scanCanonical = Path.GetFullPath(scanRoot) + Path.DirectorySeparatorChar;
+
+        // First yaml we find wins. Anything deeper is also collected as a file
+        // entry — admins still see it but it doesn't dominate the panel.
+        string? yamlText = null;
+        var previews = new Dictionary<string, string>();
+        var previewKeywords = new[] { "readme", "writeup", "solution", "solve", "solver", "notes" };
+
+        foreach (var path in Directory.EnumerateFiles(scanRoot, "*", SearchOption.AllDirectories))
+        {
+            var rel = Path.GetRelativePath(scanRoot, path).Replace('\\', '/');
+            var info = new FileInfo(path);
+            files.Add(new() { Path = rel, Size = info.Length });
+
+            var name = Path.GetFileName(path);
+            if (yamlText is null &&
+                (string.Equals(name, "challenge.yaml", StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(name, "challenge.yml", StringComparison.OrdinalIgnoreCase)))
+            {
+                try { yamlText = System.IO.File.ReadAllText(path); }
+                catch { /* ignore */ }
+                continue;
+            }
+
+            var lowerName = name.ToLowerInvariant();
+            if (info.Length <= 64 * 1024 &&
+                previewKeywords.Any(k => lowerName.Contains(k)))
+            {
+                try
+                {
+                    var contents = System.IO.File.ReadAllText(path);
+                    if (contents.Length > 8 * 1024)
+                        contents = contents[..(8 * 1024)] + "\n…(truncated)";
+                    previews[rel] = contents;
+                }
+                catch { /* binary or unreadable; skip */ }
+            }
+        }
+
+        model.YamlText = yamlText;
+        model.Files = files.OrderBy(f => f.Path, StringComparer.OrdinalIgnoreCase).ToArray();
+        model.Previews = previews;
     }
 
     /// <summary>

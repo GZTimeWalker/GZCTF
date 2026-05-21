@@ -78,7 +78,11 @@
     },
     "review": {
       "approve": "通过",
-      "reject": "驳回"
+      "reject": "驳回",
+      "audit": "审查"
+    },
+    "audit": {
+      "download": "下载压缩包"
     },
     "watches": {
       "add": "添加监听",
@@ -509,6 +513,16 @@
       "failed": "失败",
       "no_file": "请先选择压缩包。",
       "no_url": "请先填写仓库 URL。"
+    },
+    "audit": {
+      "title": "审查题目",
+      "archive_available": "上传时保留的原始压缩包可下载。",
+      "no_archive": "未保留原始压缩包（管理员手动新建或来自 GitHub）。",
+      "unavailable": "审查信息不可用。",
+      "yaml": "challenge.yaml",
+      "no_yaml": "压缩包中未找到 challenge.yaml。",
+      "files": "文件列表",
+      "previews": "审查文件预览"
     },
     "review": {
       "title": "待审核题目",

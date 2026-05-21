@@ -2186,6 +2186,20 @@ export interface RejectChallengeModel {
   note?: string | null
 }
 
+/** One file inside the audit archive */
+export interface ChallengeAuditFile {
+  path: string
+  size: number
+}
+
+/** Parsed audit metadata for a pending/imported challenge */
+export interface ChallengeAuditModel {
+  yamlText?: string | null
+  files: ChallengeAuditFile[]
+  previews: Record<string, string>
+  archiveAvailable: boolean
+}
+
 /** Row returned by GET .../PendingChallenges */
 export interface PendingChallengeModel {
   id: number
@@ -5373,6 +5387,25 @@ export class Api<
         data,
         options,
       ),
+
+    /**
+     * @description Get parsed audit metadata (YAML, file tree, previews) for a pending challenge.
+     *
+     * @tags Edit
+     * @name EditGetChallengeAuditMeta
+     * @request GET:/api/edit/games/{id}/challenges/{cId}/auditmeta
+     */
+    editGetChallengeAuditMeta: (
+      id: number,
+      cId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeAuditModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/auditmeta`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
 
     /**
      * @description Approve a pending challenge.

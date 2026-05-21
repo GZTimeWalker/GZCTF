@@ -4,6 +4,7 @@ using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Repositories.Interface;
+using GZCTF.Storage.Interface;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using YamlDotNet.Serialization;
@@ -34,6 +35,7 @@ public sealed class ChallengeImportService(
     IGameRepository gameRepository,
     IGameChallengeRepository challengeRepository,
     IBlobRepository blobRepository,
+    IBlobStorage blobStorage,
     AppDbContext context,
     IHttpClientFactory httpClientFactory,
     ILogger<ChallengeImportService> logger)
@@ -61,8 +63,20 @@ public sealed class ChallengeImportService(
         var workDir = CreateWorkDir();
         try
         {
-            await ExtractArchiveAsync(archive, workDir, token);
-            return await ImportFromWorkDirAsync(workDir, subpath: null, opts, token);
+            // Spool to a temp file so we can both upload to blob (for audit)
+            // and extract without re-reading the upload stream twice.
+            var spool = Path.Combine(workDir, "__upload.bin");
+            await using (var fs = File.Create(spool))
+                await archive.CopyToAsync(fs, token);
+
+            var blobPath = $"imports/{opts.GameId}/{Guid.NewGuid():N}.bin";
+            await using (var fs = File.OpenRead(spool))
+                await blobStorage.WriteAsync(blobPath, fs, append: false, token);
+
+            await using (var fs = File.OpenRead(spool))
+                await ExtractArchiveAsync(fs, workDir, token);
+
+            return await ImportFromWorkDirAsync(workDir, subpath: null, opts, blobPath, token);
         }
         finally
         {
@@ -86,7 +100,10 @@ public sealed class ChallengeImportService(
             await using (var tarStream = await loc.DownloadTarballAsync(http, githubToken, token))
                 await ExtractTarballStreamAsync(tarStream, workDir, token);
 
-            return await ImportFromWorkDirAsync(workDir, loc.Subpath, opts, token);
+            // github imports don't get an OriginalArchiveBlobPath — the
+            // source is inherently public and the repo URL alone is the
+            // audit trail.
+            return await ImportFromWorkDirAsync(workDir, loc.Subpath, opts, originalArchiveBlobPath: null, token);
         }
         finally
         {
@@ -95,7 +112,8 @@ public sealed class ChallengeImportService(
     }
 
     private async Task<ChallengeImportResult> ImportFromWorkDirAsync(
-        string workDir, string? subpath, ChallengeImportOptions opts, CancellationToken token)
+        string workDir, string? subpath, ChallengeImportOptions opts,
+        string? originalArchiveBlobPath, CancellationToken token)
     {
         var game = await context.Games.FirstOrDefaultAsync(g => g.Id == opts.GameId, token);
         if (game is null)
@@ -117,7 +135,7 @@ public sealed class ChallengeImportService(
             token.ThrowIfCancellationRequested();
             try
             {
-                var outcome = await ImportOneAsync(game, packageDir, yamlPath, opts, token);
+                var outcome = await ImportOneAsync(game, packageDir, yamlPath, opts, originalArchiveBlobPath, token);
                 switch (outcome.Kind)
                 {
                     case OutcomeKind.Created: imported++; break;
@@ -141,7 +159,7 @@ public sealed class ChallengeImportService(
 
     private async Task<Outcome> ImportOneAsync(
         Game game, string packageDir, string yamlPath,
-        ChallengeImportOptions opts, CancellationToken token)
+        ChallengeImportOptions opts, string? originalArchiveBlobPath, CancellationToken token)
     {
         var yaml = await File.ReadAllTextAsync(yamlPath, token);
         ChallengeYamlModel? model;
@@ -192,6 +210,8 @@ public sealed class ChallengeImportService(
         }
 
         ApplyYamlToChallenge(challenge, model, type, image, opts);
+        if (originalArchiveBlobPath is not null)
+            challenge.OriginalArchiveBlobPath = originalArchiveBlobPath;
         await context.SaveChangesAsync(token);
 
         await SyncFlagsAsync(challenge, model.Flags ?? [], token);
@@ -292,40 +312,24 @@ public sealed class ChallengeImportService(
     }
 
     /// <summary>
-    /// Sniff the first two magic bytes of the archive stream and dispatch
-    /// to the right extractor. Supports gzipped tar (<c>1F 8B</c>) and
-    /// classic zip (<c>50 4B</c>). Any other prefix throws. Path-traversal
-    /// guards are applied per-entry inside each extractor.
+    /// Sniff the first two magic bytes of a seekable archive stream and
+    /// dispatch to the right extractor. Supports gzipped tar (<c>1F 8B</c>)
+    /// and classic zip (<c>50 4B</c>). Callers must pass a seekable stream.
     /// </summary>
     internal static async Task ExtractArchiveAsync(Stream archive, string workDir, CancellationToken token)
     {
-        // Buffer to a seekable temp file so we can sniff + rewind. Direct
-        // network streams aren't seekable; uploads usually are but the cost
-        // of one extra disk pass is negligible vs. supporting both formats.
-        var spool = Path.Combine(workDir, "__upload.bin");
-        await using (var fs = File.Create(spool))
-            await archive.CopyToAsync(fs, token);
-
-        await using var src = File.OpenRead(spool);
         var magic = new byte[2];
-        var read = await src.ReadAsync(magic.AsMemory(0, 2), token);
-        src.Position = 0;
+        var read = await archive.ReadAsync(magic.AsMemory(0, 2), token);
+        archive.Position = 0;
         if (read < 2)
             throw new InvalidOperationException("Archive too small.");
 
-        try
-        {
-            if (magic[0] == 0x1F && magic[1] == 0x8B)
-                await ExtractTarballStreamAsync(src, workDir, token);
-            else if (magic[0] == 0x50 && magic[1] == 0x4B)
-                await ExtractZipStreamAsync(src, workDir, token);
-            else
-                throw new InvalidOperationException("Unsupported archive format (expected .tar.gz or .zip).");
-        }
-        finally
-        {
-            try { File.Delete(spool); } catch { /* best effort */ }
-        }
+        if (magic[0] == 0x1F && magic[1] == 0x8B)
+            await ExtractTarballStreamAsync(archive, workDir, token);
+        else if (magic[0] == 0x50 && magic[1] == 0x4B)
+            await ExtractZipStreamAsync(archive, workDir, token);
+        else
+            throw new InvalidOperationException("Unsupported archive format (expected .tar.gz or .zip).");
     }
 
     /// <summary>
