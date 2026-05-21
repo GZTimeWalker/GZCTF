@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Badge,
+  Box,
   Button,
   Center,
   Code,
@@ -218,7 +219,9 @@ const Watches: FC = () => {
                       <Badge color={w.status === 'Active' ? 'teal' : 'gray'}>{w.status}</Badge>
                       {w.hasGitHubToken && (
                         <Tooltip label={t('admin.content.watches.has_token')}>
-                          <Icon path={mdiKeyOutline} size={0.8} />
+                          <Box component="span" style={{ display: 'inline-flex' }}>
+                            <Icon path={mdiKeyOutline} size={0.8} />
+                          </Box>
                         </Tooltip>
                       )}
                     </Group>
