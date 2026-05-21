@@ -1931,6 +1931,7 @@ public class EditController(
                         b.Ref,
                         b.IntervalSeconds,
                         b.Status,
+                        b.TokenStatus,
                         b.LastScanUtc,
                         b.NextScanUtc,
                         b.LastScanMessage
@@ -1950,6 +1951,7 @@ public class EditController(
             EventManifestPath = info.EventManifestPath,
             IntervalSeconds = info.Binding.IntervalSeconds,
             Status = info.Binding.Status,
+            TokenStatus = info.Binding.TokenStatus,
             LastScanUtc = info.Binding.LastScanUtc,
             NextScanUtc = info.Binding.NextScanUtc,
             LastScanMessage = info.Binding.LastScanMessage
@@ -1979,6 +1981,7 @@ public class EditController(
                 LastRunUtc = w.LastRunUtc,
                 LastCommitSha = w.LastCommitSha,
                 HasGitHubToken = w.GitHubTokenEncrypted != null,
+                TokenStatus = w.TokenStatus,
                 LastSync = dbContext.RepoWatchSyncs
                     .Where(s => s.RepoWatchId == w.Id)
                     .OrderByDescending(s => s.RanAtUtc)
@@ -2048,7 +2051,10 @@ public class EditController(
             CreatedByUserId = user.Id,
             GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
                 ? null
-                : _repoWatchProtector.Protect(model.GitHubToken!.Trim())
+                : _repoWatchProtector.Protect(model.GitHubToken!.Trim()),
+            TokenStatus = string.IsNullOrWhiteSpace(model.GitHubToken)
+                ? TokenStatus.NotConfigured
+                : TokenStatus.Ok
         };
 
         dbContext.RepoWatches.Add(watch);
@@ -2065,7 +2071,8 @@ public class EditController(
             NextRunUtc = watch.NextRunUtc,
             LastRunUtc = watch.LastRunUtc,
             LastCommitSha = watch.LastCommitSha,
-            HasGitHubToken = watch.GitHubTokenEncrypted != null
+            HasGitHubToken = watch.GitHubTokenEncrypted != null,
+            TokenStatus = watch.TokenStatus
         });
     }
 
@@ -2093,9 +2100,16 @@ public class EditController(
         // GitHubToken: null = keep existing, empty = clear, non-empty = re-protect.
         if (model.GitHubToken is not null)
         {
-            watch.GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
-                ? null
-                : _repoWatchProtector.Protect(model.GitHubToken.Trim());
+            if (string.IsNullOrWhiteSpace(model.GitHubToken))
+            {
+                watch.GitHubTokenEncrypted = null;
+                watch.TokenStatus = TokenStatus.NotConfigured;
+            }
+            else
+            {
+                watch.GitHubTokenEncrypted = _repoWatchProtector.Protect(model.GitHubToken.Trim());
+                watch.TokenStatus = TokenStatus.Ok;
+            }
         }
 
         await dbContext.SaveChangesAsync(token);

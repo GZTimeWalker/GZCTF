@@ -150,6 +150,11 @@ const Watches: FC = () => {
                   <Badge color="gray" variant="light">
                     {watchBinding.intervalSeconds}s
                   </Badge>
+                  {watchBinding.tokenStatus === 'DecryptFailed' && (
+                    <Tooltip label={t('admin.content.repo_binding.token_decrypt_failed')}>
+                      <Badge color="red" variant="filled">PAT ✗</Badge>
+                    </Tooltip>
+                  )}
                 </Group>
               </Group>
 

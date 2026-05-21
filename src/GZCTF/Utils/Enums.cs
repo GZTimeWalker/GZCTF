@@ -63,6 +63,25 @@ public enum ChallengeBuildStatus : byte
 }
 
 /// <summary>
+/// Health of the encrypted GitHub access token stored on a
+/// <see cref="GZCTF.Models.Data.RepoWatch"/> or
+/// <see cref="GZCTF.Models.Data.GameRepoBinding"/>. The background
+/// poller updates this on every tick so the admin UI can show a clear
+/// "Token decrypt failed" badge instead of a generic scan-failure
+/// string buried in LastScanMessage.
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<TokenStatus>))]
+public enum TokenStatus : byte
+{
+    /// <summary>No token configured (public repo path).</summary>
+    NotConfigured = 0,
+    /// <summary>Token decrypted + used successfully on the last attempt.</summary>
+    Ok = 1,
+    /// <summary>Stored ciphertext could not be decrypted (DataProtection key changed?).</summary>
+    DecryptFailed = 2
+}
+
+/// <summary>
 /// Lifecycle state of a <see cref="GZCTF.Models.Data.RepoWatch"/>.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<RepoWatchStatus>))]

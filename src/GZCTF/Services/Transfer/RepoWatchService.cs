@@ -107,14 +107,23 @@ public sealed class RepoWatchService(
 
             if (!string.IsNullOrEmpty(watch.GitHubTokenEncrypted))
             {
-                try { plaintextToken = _protector.Unprotect(watch.GitHubTokenEncrypted); }
+                try
+                {
+                    plaintextToken = _protector.Unprotect(watch.GitHubTokenEncrypted);
+                    watch.TokenStatus = TokenStatus.Ok;
+                }
                 catch (Exception ex)
                 {
                     logger.LogWarning(ex, "RepoWatchService: failed to decrypt token for watch {WatchId}", watch.Id);
                     sync.ErrorMessage = "Stored access token could not be decrypted (purpose/key changed?).";
                     sync.Failed = 1;
+                    watch.TokenStatus = TokenStatus.DecryptFailed;
                     return;
                 }
+            }
+            else
+            {
+                watch.TokenStatus = TokenStatus.NotConfigured;
             }
 
             var sha = await loc.GetHeadShaAsync(http, plaintextToken, token);

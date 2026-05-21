@@ -18,7 +18,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiDeleteOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh, mdiSourceBranch } from '@mdi/js'
+import { mdiCheck, mdiClockOutline, mdiDeleteOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh, mdiSourceBranch } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -29,7 +29,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { AdminPage } from '@Components/admin/AdminPage'
 import { showErrorMsg } from '@Utils/Shared'
-import api, { RepoBindingInfoModel, RepoBindingScanResultModel } from '@Api'
+import api, { RepoBindingInfoModel, RepoBindingScanHistoryModel, RepoBindingScanResultModel } from '@Api'
+import { Modal } from '@mantine/core'
 
 const RepoBindings: FC = () => {
   const { t } = useTranslation()
@@ -43,6 +44,8 @@ const RepoBindings: FC = () => {
   const [runImmediately, setRunImmediately] = useState(true)
   const [busy, setBusy] = useState(false)
   const [lastResult, setLastResult] = useState<RepoBindingScanResultModel | null>(null)
+  const [historyTarget, setHistoryTarget] = useState<RepoBindingInfoModel | null>(null)
+  const [history, setHistory] = useState<RepoBindingScanHistoryModel[] | null>(null)
 
   const flash = (r: RepoBindingScanResultModel) => {
     setLastResult(r)
@@ -92,6 +95,17 @@ const RepoBindings: FC = () => {
       showErrorMsg(e, t)
     } finally {
       setBusy(false)
+    }
+  }
+
+  const onOpenHistory = async (b: RepoBindingInfoModel) => {
+    setHistoryTarget(b)
+    setHistory(null)
+    try {
+      const resp = await api.admin.adminGetRepoBindingScans(b.id)
+      setHistory(resp.data)
+    } catch (e) {
+      showErrorMsg(e, t)
     }
   }
 
@@ -244,9 +258,15 @@ const RepoBindings: FC = () => {
                           </Text>
                         </Tooltip>
                         {b.hasGitHubToken && (
-                          <Tooltip label={t('admin.content.repo_binding.has_token')}>
-                            <Badge size="xs" color="gray" variant="light">PAT</Badge>
-                          </Tooltip>
+                          b.tokenStatus === 'DecryptFailed' ? (
+                            <Tooltip label={t('admin.content.repo_binding.token_decrypt_failed')}>
+                              <Badge size="xs" color="red" variant="filled">PAT ✗</Badge>
+                            </Tooltip>
+                          ) : (
+                            <Tooltip label={t('admin.content.repo_binding.has_token')}>
+                              <Badge size="xs" color="gray" variant="light">PAT</Badge>
+                            </Tooltip>
+                          )
                         )}
                       </Group>
                       <Group gap="xs" wrap="nowrap">
@@ -259,6 +279,11 @@ const RepoBindings: FC = () => {
                         <Tooltip label={t('admin.button.repo_binding.scan')}>
                           <ActionIcon variant="subtle" disabled={busy} onClick={() => onScan(b)}>
                             <Icon path={mdiRefresh} size={1} />
+                          </ActionIcon>
+                        </Tooltip>
+                        <Tooltip label={t('admin.button.repo_binding.history')}>
+                          <ActionIcon variant="subtle" onClick={() => onOpenHistory(b)}>
+                            <Icon path={mdiClockOutline} size={1} />
                           </ActionIcon>
                         </Tooltip>
                         <Tooltip label={t(
@@ -344,6 +369,60 @@ const RepoBindings: FC = () => {
           )}
         </Stack>
       </Container>
+
+      <Modal
+        size="xl"
+        opened={historyTarget != null}
+        onClose={() => { setHistoryTarget(null); setHistory(null) }}
+        title={
+          <Stack gap={0}>
+            <Title order={5}>{t('admin.content.repo_binding.history_title')}</Title>
+            {historyTarget && (
+              <Text size="xs" c="dimmed" ff="monospace">
+                {historyTarget.repoUrl.replace('https://github.com/', '')}
+              </Text>
+            )}
+          </Stack>
+        }
+      >
+        {history === null ? (
+          <Center py="xl"><Text c="dimmed">{t('admin.content.repo_binding.history_loading')}</Text></Center>
+        ) : history.length === 0 ? (
+          <Center py="xl"><Text c="dimmed">{t('admin.content.repo_binding.history_empty')}</Text></Center>
+        ) : (
+          <Stack gap="sm">
+            {history.map((row) => (
+              <Paper key={row.id} p="sm" withBorder>
+                <Stack gap={6}>
+                  <Group justify="space-between" wrap="nowrap">
+                    <Group gap="xs" wrap="nowrap">
+                      <Text size="sm" fw="bold">{dayjs(row.ranAtUtc).fromNow()}</Text>
+                      <Text size="xs" c="dimmed" ff="monospace">
+                        {dayjs(row.ranAtUtc).format('YYYY-MM-DD HH:mm:ss')}
+                      </Text>
+                    </Group>
+                    {row.commitSha && <Code>{row.commitSha.substring(0, 7)}</Code>}
+                  </Group>
+                  <Group gap="md">
+                    <Badge size="xs" color="teal" variant="light">games +{row.gamesCreated}</Badge>
+                    <Badge size="xs" color="blue" variant="light">games ~{row.gamesUpdated}</Badge>
+                    <Badge size="xs" color="teal" variant="light">chal +{row.challengesImported}</Badge>
+                    <Badge size="xs" color="blue" variant="light">chal ~{row.challengesUpdated}</Badge>
+                    <Badge size="xs" color={row.failures > 0 ? 'red' : 'gray'} variant="light">
+                      failures {row.failures}
+                    </Badge>
+                  </Group>
+                  {row.messages && (
+                    <Code block style={{ whiteSpace: 'pre-wrap', fontSize: 11, maxHeight: '20vh', overflowY: 'auto' }}>
+                      {row.messages}
+                    </Code>
+                  )}
+                </Stack>
+              </Paper>
+            ))}
+          </Stack>
+        )}
+      </Modal>
     </AdminPage>
   )
 }

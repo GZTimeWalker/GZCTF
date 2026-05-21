@@ -65,6 +65,12 @@ public sealed class GameRepoBinding
     [MaxLength(1024)]
     public string? LastScanMessage { get; set; }
 
+    /// <summary>Updated by the background poller on every scan. Lets the
+    /// admin UI distinguish "token rotated and is now bad" from
+    /// "scan failed for some other reason".</summary>
+    [Required]
+    public TokenStatus TokenStatus { get; set; } = TokenStatus.NotConfigured;
+
     /// <summary>
     /// Games discovered from this binding. Each one links back via
     /// <see cref="Game.RepoBindingId"/>.

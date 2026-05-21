@@ -102,6 +102,7 @@
       "add": "Add repository",
       "scan": "Scan now",
       "delete": "Remove",
+      "history": "Scan history",
       "pause": "Pause polling",
       "resume": "Resume polling"
     }
@@ -585,8 +586,12 @@
       "empty_title": "No repository bindings yet",
       "no_games": "No .gzevent manifests found in this repo yet.",
       "has_token": "Token configured",
+      "token_decrypt_failed": "Stored token can't be decrypted. The DataProtection key may have rotated. Update the token to fix.",
       "paused_short": "Paused",
       "due_now": "due now",
+      "history_title": "Scan history",
+      "history_loading": "Loading…",
+      "history_empty": "No scans recorded yet.",
       "card": {
         "ref_label": "ref",
         "events_count_one": "{{count}} event discovered",

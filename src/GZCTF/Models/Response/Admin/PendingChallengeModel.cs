@@ -54,6 +54,11 @@ public sealed class RepoWatchInfoModel
     /// plaintext is never returned by this DTO.
     /// </summary>
     public bool HasGitHubToken { get; set; }
+
+    /// <summary>Latest decrypt health of the stored token.
+    /// <see cref="TokenStatus.NotConfigured"/> when there is no token.
+    /// Updated on every poll tick.</summary>
+    public TokenStatus TokenStatus { get; set; }
 }
 
 /// <summary>

@@ -21,6 +21,7 @@ public sealed class GameWatchBindingModel
     public string? EventManifestPath { get; set; }
     public int IntervalSeconds { get; set; }
     public RepoWatchStatus Status { get; set; }
+    public TokenStatus TokenStatus { get; set; }
     public DateTimeOffset? LastScanUtc { get; set; }
     public DateTimeOffset? NextScanUtc { get; set; }
     public string? LastScanMessage { get; set; }

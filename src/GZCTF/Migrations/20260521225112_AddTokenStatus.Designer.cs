@@ -4,6 +4,7 @@ using System.Net;
 using GZCTF.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260521225112_AddTokenStatus")]
+    partial class AddTokenStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1039,50 +1042,6 @@ namespace GZCTF.Migrations
                     b.HasIndex("NextScanUtc", "Status");
 
                     b.ToTable("GameRepoBindings");
-                });
-
-            modelBuilder.Entity("GZCTF.Models.Data.GameRepoBindingScan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BindingId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ChallengesImported")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ChallengesUpdated")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CommitSha")
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
-
-                    b.Property<int>("Failures")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GamesCreated")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GamesUpdated")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Messages")
-                        .HasMaxLength(32768)
-                        .HasColumnType("character varying(32768)");
-
-                    b.Property<DateTimeOffset>("RanAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BindingId", "RanAtUtc");
-
-                    b.ToTable("GameRepoBindingScans");
                 });
 
             modelBuilder.Entity("GZCTF.Models.Data.LocalFile", b =>
@@ -2206,17 +2165,6 @@ namespace GZCTF.Migrations
                         .IsRequired();
 
                     b.Navigation("Game");
-                });
-
-            modelBuilder.Entity("GZCTF.Models.Data.GameRepoBindingScan", b =>
-                {
-                    b.HasOne("GZCTF.Models.Data.GameRepoBinding", "Binding")
-                        .WithMany()
-                        .HasForeignKey("BindingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Binding");
                 });
 
             modelBuilder.Entity("GZCTF.Models.Data.Participation", b =>

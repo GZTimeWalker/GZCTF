@@ -71,6 +71,7 @@ public sealed class RepoBindingInfoModel
     public string? LastCommitSha { get; set; }
     public string? LastScanMessage { get; set; }
     public bool HasGitHubToken { get; set; }
+    public GZCTF.Utils.TokenStatus TokenStatus { get; set; }
     public RepoBindingGameSummary[] Games { get; set; } = [];
 }
 
@@ -89,4 +90,18 @@ public sealed class RepoBindingScanResultModel
     public int ChallengesUpdated { get; set; }
     public int Failures { get; set; }
     public string[] Messages { get; set; } = [];
+}
+
+/// <summary>Row in the scan-history table for a binding.</summary>
+public sealed class RepoBindingScanHistoryModel
+{
+    public int Id { get; set; }
+    public DateTimeOffset RanAtUtc { get; set; }
+    public string? CommitSha { get; set; }
+    public int GamesCreated { get; set; }
+    public int GamesUpdated { get; set; }
+    public int ChallengesImported { get; set; }
+    public int ChallengesUpdated { get; set; }
+    public int Failures { get; set; }
+    public string? Messages { get; set; }
 }

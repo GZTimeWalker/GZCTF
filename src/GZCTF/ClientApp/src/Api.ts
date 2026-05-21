@@ -2228,6 +2228,7 @@ export interface RepoBindingInfoModel {
   lastCommitSha?: string | null
   lastScanMessage?: string | null
   hasGitHubToken?: boolean
+  tokenStatus?: TokenStatus
   games: RepoBindingGameSummary[]
 }
 
@@ -2257,6 +2258,19 @@ export interface RepoBindingScanResultModel {
   challengesUpdated: number
   failures: number
   messages: string[]
+}
+
+/** One row from the append-only binding scan history (GET .../{id}/Scans) */
+export interface RepoBindingScanHistoryModel {
+  id: number
+  ranAtUtc: string
+  commitSha?: string | null
+  gamesCreated: number
+  gamesUpdated: number
+  challengesImported: number
+  challengesUpdated: number
+  failures: number
+  messages?: string | null
 }
 
 /** One file inside the audit archive */
@@ -2293,6 +2307,9 @@ export interface PendingChallengeModel {
 /** Lifecycle state of a RepoWatch */
 export type RepoWatchStatus = "Active" | "Paused"
 
+/** Health of the encrypted GitHub access token for a binding / watch */
+export type TokenStatus = "NotConfigured" | "Ok" | "DecryptFailed"
+
 /**
  * GET /api/Edit/Games/{id}/WatchBinding — read-only binding context.
  * Returned when the game was auto-spawned by a GameRepoBinding; the
@@ -2306,6 +2323,7 @@ export interface GameWatchBindingModel {
   eventManifestPath?: string | null
   intervalSeconds: number
   status: RepoWatchStatus
+  tokenStatus?: TokenStatus
   lastScanUtc?: string | null
   nextScanUtc?: string | null
   lastScanMessage?: string | null
@@ -2357,6 +2375,8 @@ export interface RepoWatchInfoModel {
   lastSync?: RepoWatchSyncModel | null
   /** True iff a GitHub token is stored on this watch (plaintext never echoed). */
   hasGitHubToken?: boolean
+  /** Latest decrypt health of the stored token. */
+  tokenStatus?: TokenStatus
 }
 
 export interface FileRecord {
@@ -4143,6 +4163,20 @@ export class Api<
       this.request<RepoBindingScanResultModel, RequestResponse>({
         path: `/api/admin/repobindings/${id}/scan`,
         method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Recent scan history for a binding (newest first, max 20 rows).
+     * @tags Admin
+     * @name AdminGetRepoBindingScans
+     * @request GET:/api/admin/repobindings/{id}/scans
+     */
+    adminGetRepoBindingScans: (id: number, params: RequestParams = {}) =>
+      this.request<RepoBindingScanHistoryModel[], RequestResponse>({
+        path: `/api/admin/repobindings/${id}/scans`,
+        method: "GET",
         format: "json",
         ...params,
       }),

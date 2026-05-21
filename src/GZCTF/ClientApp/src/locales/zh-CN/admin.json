@@ -102,6 +102,7 @@
       "add": "添加仓库",
       "scan": "立即扫描",
       "delete": "移除",
+      "history": "扫描历史",
       "pause": "暂停轮询",
       "resume": "恢复轮询"
     }
@@ -585,8 +586,12 @@
       "empty_title": "尚未绑定任何仓库",
       "no_games": "该仓库尚未发现 .gzevent 清单。",
       "has_token": "已配置 Token",
+      "token_decrypt_failed": "存储的 Token 无法解密。可能是 DataProtection 密钥已轮换。请更新 Token。",
       "paused_short": "已暂停",
       "due_now": "即将扫描",
+      "history_title": "扫描历史",
+      "history_loading": "加载中…",
+      "history_empty": "暂无扫描记录。",
       "card": {
         "ref_label": "分支",
         "events_count_one": "已发现 {{count}} 个比赛",

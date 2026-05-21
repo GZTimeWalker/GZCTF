@@ -79,6 +79,11 @@ public sealed class RepoWatch
     [JsonIgnore]
     public string? GitHubTokenEncrypted { get; set; }
 
+    /// <summary>Updated by the background poller on every tick so the
+    /// admin UI can render a "Token decrypt failed" badge.</summary>
+    [Required]
+    public TokenStatus TokenStatus { get; set; } = TokenStatus.NotConfigured;
+
     public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 
     public Guid CreatedByUserId { get; set; }

@@ -1410,6 +1410,7 @@ public class AdminController(
                 LastCommitSha = b.LastCommitSha,
                 LastScanMessage = b.LastScanMessage,
                 HasGitHubToken = b.GitHubTokenEncrypted != null,
+                TokenStatus = b.TokenStatus,
                 Games = dbContext.Games
                     .Where(g => g.RepoBindingId == b.Id)
                     .OrderBy(g => g.Title)
@@ -1456,13 +1457,15 @@ public class AdminController(
         var user = (await userManager.GetUserAsync(User))!;
 
         var clamped = Math.Clamp(model.IntervalSeconds, 60, 86400);
+        var hasToken = !string.IsNullOrWhiteSpace(model.GitHubToken);
         var binding = new GameRepoBinding
         {
             RepoUrl = normalizedUrl,
             Ref = string.IsNullOrWhiteSpace(model.Ref) ? null : model.Ref.Trim(),
-            GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
-                ? null
-                : protector.Protect(model.GitHubToken!.Trim()),
+            GitHubTokenEncrypted = hasToken
+                ? protector.Protect(model.GitHubToken!.Trim())
+                : null,
+            TokenStatus = hasToken ? TokenStatus.Ok : TokenStatus.NotConfigured,
             CreatedByUserId = user.Id,
             IntervalSeconds = clamped,
             Status = RepoWatchStatus.Active,
@@ -1538,9 +1541,16 @@ public class AdminController(
         {
             var protector = dataProtectionProvider.CreateProtector(
                 Services.Transfer.GameRepoBindingProtection.Purpose);
-            binding.GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
-                ? null
-                : protector.Protect(model.GitHubToken.Trim());
+            if (string.IsNullOrWhiteSpace(model.GitHubToken))
+            {
+                binding.GitHubTokenEncrypted = null;
+                binding.TokenStatus = TokenStatus.NotConfigured;
+            }
+            else
+            {
+                binding.GitHubTokenEncrypted = protector.Protect(model.GitHubToken.Trim());
+                binding.TokenStatus = TokenStatus.Ok;
+            }
         }
         await dbContext.SaveChangesAsync(token);
 
@@ -1556,8 +1566,40 @@ public class AdminController(
             Status = binding.Status,
             LastCommitSha = binding.LastCommitSha,
             LastScanMessage = binding.LastScanMessage,
-            HasGitHubToken = binding.GitHubTokenEncrypted != null
+            HasGitHubToken = binding.GitHubTokenEncrypted != null,
+            TokenStatus = binding.TokenStatus
         });
+    }
+
+    /// <summary>
+    /// Return the most recent scan-history rows for a binding so the
+    /// admin can see *which* manifests failed without diving into logs.
+    /// Newest first; capped at 20 rows.
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("RepoBindings/{id:int}/Scans")]
+    [ProducesResponseType(typeof(Models.Request.Edit.RepoBindingScanHistoryModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRepoBindingScans(
+        [FromRoute] int id, [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var rows = await dbContext.GameRepoBindingScans.AsNoTracking()
+            .Where(s => s.BindingId == id)
+            .OrderByDescending(s => s.RanAtUtc)
+            .Take(20)
+            .Select(s => new Models.Request.Edit.RepoBindingScanHistoryModel
+            {
+                Id = s.Id,
+                RanAtUtc = s.RanAtUtc,
+                CommitSha = s.CommitSha,
+                GamesCreated = s.GamesCreated,
+                GamesUpdated = s.GamesUpdated,
+                ChallengesImported = s.ChallengesImported,
+                ChallengesUpdated = s.ChallengesUpdated,
+                Failures = s.Failures,
+                Messages = s.Messages
+            })
+            .ToArrayAsync(token);
+        return Ok(rows);
     }
 
     /// <summary>

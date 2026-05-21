@@ -73,15 +73,24 @@ public sealed class RepoBindingDiscoveryService(
         string? plaintextToken = null;
         if (!string.IsNullOrEmpty(binding.GitHubTokenEncrypted))
         {
-            try { plaintextToken = _protector.Unprotect(binding.GitHubTokenEncrypted); }
+            try
+            {
+                plaintextToken = _protector.Unprotect(binding.GitHubTokenEncrypted);
+                binding.TokenStatus = TokenStatus.Ok;
+            }
             catch (Exception ex)
             {
                 logger.LogWarning(ex, "RepoBindingDiscovery: failed to decrypt token for binding {Id}", bindingId);
                 binding.LastScanUtc = DateTimeOffset.UtcNow;
                 binding.LastScanMessage = "Stored token could not be decrypted.";
+                binding.TokenStatus = TokenStatus.DecryptFailed;
                 await context.SaveChangesAsync(token);
                 return new(0, 0, 0, 0, 1, [binding.LastScanMessage!]);
             }
+        }
+        else
+        {
+            binding.TokenStatus = TokenStatus.NotConfigured;
         }
 
         var workDir = Path.Combine(Path.GetTempPath(), $"gzctf-binding-{Guid.NewGuid():N}");
@@ -191,6 +200,8 @@ public sealed class RepoBindingDiscoveryService(
             binding.LastScanMessage = Sanitize(
                 $"games +{gamesCreated} ~{gamesUpdated}, challenges +{challengesImported} ~{challengesUpdated}, failures {failures}",
                 plaintextToken);
+            await WriteScanRowAsync(bindingId, sha, gamesCreated, gamesUpdated,
+                challengesImported, challengesUpdated, failures, messages, plaintextToken, token);
             await context.SaveChangesAsync(token);
             return new(gamesCreated, gamesUpdated, challengesImported, challengesUpdated, failures, messages);
         }
@@ -199,14 +210,47 @@ public sealed class RepoBindingDiscoveryService(
             logger.LogError(ex, "RepoBindingDiscovery: top-level error for binding {Id}", bindingId);
             binding.LastScanUtc = DateTimeOffset.UtcNow;
             binding.LastScanMessage = Sanitize(ex.Message, plaintextToken);
+            messages.Add(Sanitize(ex.Message, plaintextToken));
+            await WriteScanRowAsync(bindingId, null, gamesCreated, gamesUpdated,
+                challengesImported, challengesUpdated, failures + 1, messages, plaintextToken, token);
             await context.SaveChangesAsync(token);
             return new(gamesCreated, gamesUpdated, challengesImported, challengesUpdated, failures + 1,
-                [.. messages, Sanitize(ex.Message, plaintextToken)]);
+                messages);
         }
         finally
         {
             try { Directory.Delete(workDir, recursive: true); } catch { /* best effort */ }
         }
+    }
+
+    async Task WriteScanRowAsync(
+        int bindingId, string? sha,
+        int gamesCreated, int gamesUpdated,
+        int challengesImported, int challengesUpdated,
+        int failures, IReadOnlyList<string> messages,
+        string? plaintextToken, CancellationToken token)
+    {
+        // Sanitize once at the boundary so the persisted row can never
+        // carry the plaintext PAT, even if a downstream library managed
+        // to slip it into an exception message.
+        var joined = string.Join('\n', messages.Select(m => Sanitize(m, plaintextToken)));
+        // Cap the persisted column at the schema's MaxLength to avoid
+        // a SaveChangesAsync explosion on huge multi-event repos.
+        if (joined.Length > 30000) joined = joined[..30000] + "\n…(truncated)";
+
+        context.GameRepoBindingScans.Add(new GameRepoBindingScan
+        {
+            BindingId = bindingId,
+            RanAtUtc = DateTimeOffset.UtcNow,
+            CommitSha = sha,
+            GamesCreated = gamesCreated,
+            GamesUpdated = gamesUpdated,
+            ChallengesImported = challengesImported,
+            ChallengesUpdated = challengesUpdated,
+            Failures = failures,
+            Messages = string.IsNullOrEmpty(joined) ? null : joined
+        });
+        await Task.CompletedTask;
     }
 
     async Task<(Game game, bool created)> UpsertGameAsync(
