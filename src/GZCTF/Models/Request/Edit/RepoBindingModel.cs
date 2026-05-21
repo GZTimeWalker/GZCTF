@@ -4,8 +4,10 @@ using GZCTF.Utils;
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
-/// Body for <c>POST /api/Admin/RepoBindings</c>. Triggers an immediate
-/// scan after persistence.
+/// Body for <c>POST /api/Admin/RepoBindings</c>. Persisted as a
+/// <see cref="GZCTF.Models.Data.GameRepoBinding"/> and, when
+/// <see cref="RunImmediately"/> is true (default), scheduled for an
+/// immediate first scan by the background poller.
 /// </summary>
 public sealed class RepoBindingCreateModel
 {
@@ -21,6 +23,35 @@ public sealed class RepoBindingCreateModel
     /// </summary>
     [MaxLength(1024)]
     public string? GitHubToken { get; set; }
+
+    /// <summary>Background poll cadence in seconds. Clamped to [60, 86400].</summary>
+    [Range(60, 86400)]
+    public int IntervalSeconds { get; set; } = 600;
+
+    /// <summary>When true, the binding's first scan happens on the next
+    /// poller tick (~30s); otherwise the first scan waits a full
+    /// <see cref="IntervalSeconds"/>.</summary>
+    public bool RunImmediately { get; set; } = true;
+}
+
+/// <summary>
+/// Body for <c>PUT /api/Admin/RepoBindings/{id}</c>. Every field is
+/// optional with null = leave alone; <see cref="GitHubToken"/> follows
+/// the established "" = clear / value = re-protect convention from
+/// <see cref="RepoWatchUpdateModel"/>.
+/// </summary>
+public sealed class RepoBindingUpdateModel
+{
+    [MaxLength(128)]
+    public string? Ref { get; set; }
+
+    [Range(60, 86400)]
+    public int? IntervalSeconds { get; set; }
+
+    public GZCTF.Utils.RepoWatchStatus? Status { get; set; }
+
+    [MaxLength(1024)]
+    public string? GitHubToken { get; set; }
 }
 
 /// <summary>
@@ -34,6 +65,9 @@ public sealed class RepoBindingInfoModel
     public string? Ref { get; set; }
     public DateTimeOffset CreatedAtUtc { get; set; }
     public DateTimeOffset? LastScanUtc { get; set; }
+    public DateTimeOffset? NextScanUtc { get; set; }
+    public int IntervalSeconds { get; set; }
+    public GZCTF.Utils.RepoWatchStatus Status { get; set; }
     public string? LastCommitSha { get; set; }
     public string? LastScanMessage { get; set; }
     public bool HasGitHubToken { get; set; }

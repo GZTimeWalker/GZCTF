@@ -7,8 +7,10 @@ import {
   Code,
   Container,
   Group,
+  NumberInput,
   Paper,
   Stack,
+  Switch,
   Table,
   Text,
   TextInput,
@@ -17,7 +19,7 @@ import {
 } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiDeleteOutline, mdiPlus, mdiRefresh, mdiSourceBranch } from '@mdi/js'
+import { mdiCheck, mdiDeleteOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh, mdiSourceBranch } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -38,6 +40,8 @@ const RepoBindings: FC = () => {
   const [repoUrl, setRepoUrl] = useState('')
   const [refValue, setRefValue] = useState('')
   const [githubToken, setGithubToken] = useState('')
+  const [intervalSeconds, setIntervalSeconds] = useState<number | string>(600)
+  const [runImmediately, setRunImmediately] = useState(true)
   const [busy, setBusy] = useState(false)
   const [lastResult, setLastResult] = useState<RepoBindingScanResultModel | null>(null)
 
@@ -64,6 +68,8 @@ const RepoBindings: FC = () => {
         repoUrl,
         ref: refValue || null,
         githubToken: githubToken || null,
+        intervalSeconds: Number(intervalSeconds) || 600,
+        runImmediately,
       })
       flash(resp.data)
       setRepoUrl('')
@@ -82,6 +88,20 @@ const RepoBindings: FC = () => {
     try {
       const resp = await api.admin.adminScanRepoBinding(b.id)
       flash(resp.data)
+      mutate()
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const onTogglePause = async (b: RepoBindingInfoModel) => {
+    setBusy(true)
+    try {
+      await api.admin.adminUpdateRepoBinding(b.id, {
+        status: b.status === 'Active' ? 'Paused' : 'Active',
+      })
       mutate()
     } catch (e) {
       showErrorMsg(e, t)
@@ -144,6 +164,22 @@ const RepoBindings: FC = () => {
                   onChange={(e) => setGithubToken(e.currentTarget.value)}
                 />
               </Group>
+              <Group grow>
+                <NumberInput
+                  label={t('admin.content.repo_binding.interval')}
+                  description={t('admin.content.repo_binding.interval_help')}
+                  min={60}
+                  max={86400}
+                  step={60}
+                  value={intervalSeconds}
+                  onChange={setIntervalSeconds}
+                />
+                <Switch
+                  label={t('admin.content.repo_binding.run_immediately')}
+                  checked={runImmediately}
+                  onChange={(e) => setRunImmediately(e.currentTarget.checked)}
+                />
+              </Group>
               <Group justify="flex-end">
                 <Button
                   leftSection={<Icon path={mdiPlus} size={1} />}
@@ -197,8 +233,10 @@ const RepoBindings: FC = () => {
                 <Table.Tr>
                   <Table.Th>{t('admin.content.repo_binding.column.repo')}</Table.Th>
                   <Table.Th>{t('admin.content.repo_binding.column.ref')}</Table.Th>
+                  <Table.Th>{t('admin.content.repo_binding.column.status')}</Table.Th>
                   <Table.Th>{t('admin.content.repo_binding.column.games')}</Table.Th>
                   <Table.Th>{t('admin.content.repo_binding.column.last_scan')}</Table.Th>
+                  <Table.Th>{t('admin.content.repo_binding.column.next_scan')}</Table.Th>
                   <Table.Th>{t('admin.content.repo_binding.column.commit')}</Table.Th>
                   <Table.Th>{t('admin.content.repo_binding.column.actions')}</Table.Th>
                 </Table.Tr>
@@ -220,6 +258,16 @@ const RepoBindings: FC = () => {
                       </Group>
                     </Table.Td>
                     <Table.Td>{b.ref ?? <Text c="dimmed" size="sm">default</Text>}</Table.Td>
+                    <Table.Td>
+                      <Stack gap={2}>
+                        <Badge size="sm" color={b.status === 'Active' ? 'teal' : 'gray'} variant="filled">
+                          {b.status}
+                        </Badge>
+                        <Text size="xs" c="dimmed">
+                          {b.intervalSeconds}s
+                        </Text>
+                      </Stack>
+                    </Table.Td>
                     <Table.Td>
                       <Stack gap={2}>
                         {b.games.length === 0 && (
@@ -257,6 +305,15 @@ const RepoBindings: FC = () => {
                       ) : '—'}
                     </Table.Td>
                     <Table.Td>
+                      {b.status === 'Paused' ? (
+                        <Text size="xs" c="dimmed">{t('admin.content.repo_binding.paused_short')}</Text>
+                      ) : b.nextScanUtc ? (
+                        <Text size="xs">{dayjs(b.nextScanUtc).fromNow()}</Text>
+                      ) : (
+                        <Text size="xs" c="teal">{t('admin.content.repo_binding.due_now')}</Text>
+                      )}
+                    </Table.Td>
+                    <Table.Td>
                       {b.lastCommitSha ? <Code>{b.lastCommitSha.substring(0, 7)}</Code> : '—'}
                     </Table.Td>
                     <Table.Td>
@@ -264,6 +321,15 @@ const RepoBindings: FC = () => {
                         <Tooltip label={t('admin.button.repo_binding.scan')}>
                           <ActionIcon variant="subtle" disabled={busy} onClick={() => onScan(b)}>
                             <Icon path={mdiRefresh} size={1} />
+                          </ActionIcon>
+                        </Tooltip>
+                        <Tooltip label={t(
+                          b.status === 'Active'
+                            ? 'admin.button.repo_binding.pause'
+                            : 'admin.button.repo_binding.resume',
+                        )}>
+                          <ActionIcon variant="subtle" disabled={busy} onClick={() => onTogglePause(b)}>
+                            <Icon path={b.status === 'Active' ? mdiPause : mdiPlay} size={1} />
                           </ActionIcon>
                         </Tooltip>
                         <Tooltip label={t('admin.button.repo_binding.delete')}>

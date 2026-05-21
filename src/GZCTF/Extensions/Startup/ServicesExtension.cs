@@ -120,6 +120,7 @@ internal static class ServicesExtension
             builder.Services.AddHostedService<HoneypotPortListenerService>();
             builder.Services.AddHostedService<HoneypotChainDetectorService>();
             builder.Services.AddHostedService<RepoWatchService>();
+            builder.Services.AddHostedService<RepoBindingScanService>();
         }
 
         internal void AddWebServices()

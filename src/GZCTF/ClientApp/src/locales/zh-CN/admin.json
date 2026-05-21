@@ -99,7 +99,9 @@
     "repo_binding": {
       "add": "添加仓库",
       "scan": "立即扫描",
-      "delete": "移除"
+      "delete": "移除",
+      "pause": "暂停轮询",
+      "resume": "恢复轮询"
     }
   },
   "content": {
@@ -562,22 +564,29 @@
     },
     "repo_binding": {
       "title": "仓库绑定",
-      "subtitle": "注册 GitHub 仓库，平台会扫描其中的 .gzevent 自动创建比赛并导入该比赛下的题目。",
+      "subtitle": "注册 GitHub 仓库，平台会扫描其中的 .gzevent 自动创建比赛并导入该比赛下的题目，按设定的轮询间隔自动重新扫描。",
       "add": "添加仓库",
       "repo_url": "仓库 URL",
       "ref": "分支 / 标签（可选）",
       "token": "GitHub Token（可选）",
       "token_help": "私有仓库需要。加密存储。建议使用细粒度 PAT（Contents: read）。",
+      "interval": "轮询间隔（秒）",
+      "interval_help": "后台扫描器重新拉取仓库的频率。最小 60，最大 86400（24 小时）。",
+      "run_immediately": "立即执行首次扫描",
       "empty": "尚未绑定任何仓库。",
       "no_games": "该仓库尚未发现 .gzevent 清单。",
       "has_token": "已配置 Token",
+      "paused_short": "已暂停",
+      "due_now": "即将扫描",
       "delete_title": "删除 {{repo}} 的绑定？",
       "delete_warning": "子比赛不会被删除——它们会解除与该绑定的关联但保留数据。如需移除，请手动删除。",
       "column": {
         "repo": "仓库",
         "ref": "Ref",
+        "status": "状态",
         "games": "发现的比赛",
         "last_scan": "最近扫描",
+        "next_scan": "下次扫描",
         "commit": "Commit",
         "actions": "操作"
       }

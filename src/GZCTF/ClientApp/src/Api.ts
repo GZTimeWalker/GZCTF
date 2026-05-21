@@ -2215,6 +2215,9 @@ export interface RepoBindingInfoModel {
   ref?: string | null
   createdAtUtc: string
   lastScanUtc?: string | null
+  nextScanUtc?: string | null
+  intervalSeconds: number
+  status: RepoWatchStatus
   lastCommitSha?: string | null
   lastScanMessage?: string | null
   hasGitHubToken?: boolean
@@ -2225,6 +2228,17 @@ export interface RepoBindingInfoModel {
 export interface RepoBindingCreateModel {
   repoUrl: string
   ref?: string | null
+  githubToken?: string | null
+  intervalSeconds?: number
+  runImmediately?: boolean
+}
+
+/** Body for PUT /api/Admin/RepoBindings/{id} */
+export interface RepoBindingUpdateModel {
+  ref?: string | null
+  intervalSeconds?: number | null
+  status?: RepoWatchStatus | null
+  /** null = keep existing; "" = clear; non-empty = replace. */
   githubToken?: string | null
 }
 
@@ -4102,6 +4116,26 @@ export class Api<
       this.request<RepoBindingScanResultModel, RequestResponse>({
         path: `/api/admin/repobindings/${id}/scan`,
         method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update a repo binding (ref, interval, status, token)
+     * @tags Admin
+     * @name AdminUpdateRepoBinding
+     * @request PUT:/api/admin/repobindings/{id}
+     */
+    adminUpdateRepoBinding: (
+      id: number,
+      data: RepoBindingUpdateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<RepoBindingInfoModel, RequestResponse>({
+        path: `/api/admin/repobindings/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

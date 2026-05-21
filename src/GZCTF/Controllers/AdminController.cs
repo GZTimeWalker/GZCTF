@@ -1404,6 +1404,9 @@ public class AdminController(
                 Ref = b.Ref,
                 CreatedAtUtc = b.CreatedAtUtc,
                 LastScanUtc = b.LastScanUtc,
+                NextScanUtc = b.NextScanUtc,
+                IntervalSeconds = b.IntervalSeconds,
+                Status = b.Status,
                 LastCommitSha = b.LastCommitSha,
                 LastScanMessage = b.LastScanMessage,
                 HasGitHubToken = b.GitHubTokenEncrypted != null,
@@ -1452,6 +1455,7 @@ public class AdminController(
 
         var user = (await userManager.GetUserAsync(User))!;
 
+        var clamped = Math.Clamp(model.IntervalSeconds, 60, 86400);
         var binding = new GameRepoBinding
         {
             RepoUrl = normalizedUrl,
@@ -1459,12 +1463,31 @@ public class AdminController(
             GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
                 ? null
                 : protector.Protect(model.GitHubToken!.Trim()),
-            CreatedByUserId = user.Id
+            CreatedByUserId = user.Id,
+            IntervalSeconds = clamped,
+            Status = RepoWatchStatus.Active,
+            // RunImmediately: leave NextScanUtc null so the next poller
+            // tick (~30s) picks it up. Otherwise schedule the first run
+            // a full interval out.
+            NextScanUtc = model.RunImmediately ? null : DateTimeOffset.UtcNow.AddSeconds(clamped)
         };
         dbContext.GameRepoBindings.Add(binding);
         await dbContext.SaveChangesAsync(token);
 
+        // Synchronous first scan when RunImmediately is true so the
+        // admin gets immediate feedback. Otherwise the poller will pick
+        // it up later.
+        if (!model.RunImmediately)
+            return Ok(new Models.Request.Edit.RepoBindingScanResultModel());
+
         var result = await discovery.ScanAsync(binding.Id, user.Id, token);
+        // discovery.ScanAsync writes LastScanUtc but not NextScanUtc;
+        // do that here so the poller doesn't double-scan within the
+        // same interval window.
+        await dbContext.GameRepoBindings
+            .Where(b => b.Id == binding.Id)
+            .ExecuteUpdateAsync(s => s.SetProperty(x => x.NextScanUtc,
+                DateTimeOffset.UtcNow.AddSeconds(clamped)), token);
         return Ok(new Models.Request.Edit.RepoBindingScanResultModel
         {
             GamesCreated = result.GamesCreated,
@@ -1477,6 +1500,67 @@ public class AdminController(
     }
 
     /// <summary>
+    /// Update a binding's mutable fields. Every property is optional —
+    /// null leaves the existing value alone; <c>GitHubToken</c> follows
+    /// the established "" = clear / value = re-protect convention.
+    /// Pausing a binding stops the background poller from re-scanning
+    /// it without losing the configured interval or token.
+    /// </summary>
+    [RequireAdmin]
+    [HttpPut("RepoBindings/{id:int}")]
+    [ProducesResponseType(typeof(Models.Request.Edit.RepoBindingInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateRepoBinding(
+        [FromRoute] int id,
+        [FromBody] Models.Request.Edit.RepoBindingUpdateModel model,
+        [FromServices] AppDbContext dbContext,
+        [FromServices] IDataProtectionProvider dataProtectionProvider,
+        CancellationToken token)
+    {
+        var binding = await dbContext.GameRepoBindings.FirstOrDefaultAsync(b => b.Id == id, token);
+        if (binding is null)
+            return NotFound(new RequestResponse("Binding not found."));
+
+        if (model.Ref is not null)
+            binding.Ref = string.IsNullOrWhiteSpace(model.Ref) ? null : model.Ref.Trim();
+        if (model.IntervalSeconds is { } iv)
+            binding.IntervalSeconds = Math.Clamp(iv, 60, 86400);
+        if (model.Status is { } st)
+        {
+            // Resuming from Paused: pull NextScanUtc to "now" so the
+            // poller picks it up immediately instead of waiting out the
+            // remainder of the previously-scheduled gap.
+            if (binding.Status == RepoWatchStatus.Paused && st == RepoWatchStatus.Active)
+                binding.NextScanUtc = null;
+            binding.Status = st;
+        }
+        if (model.GitHubToken is not null)
+        {
+            var protector = dataProtectionProvider.CreateProtector(
+                Services.Transfer.GameRepoBindingProtection.Purpose);
+            binding.GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
+                ? null
+                : protector.Protect(model.GitHubToken.Trim());
+        }
+        await dbContext.SaveChangesAsync(token);
+
+        return Ok(new Models.Request.Edit.RepoBindingInfoModel
+        {
+            Id = binding.Id,
+            RepoUrl = binding.RepoUrl,
+            Ref = binding.Ref,
+            CreatedAtUtc = binding.CreatedAtUtc,
+            LastScanUtc = binding.LastScanUtc,
+            NextScanUtc = binding.NextScanUtc,
+            IntervalSeconds = binding.IntervalSeconds,
+            Status = binding.Status,
+            LastCommitSha = binding.LastCommitSha,
+            LastScanMessage = binding.LastScanMessage,
+            HasGitHubToken = binding.GitHubTokenEncrypted != null
+        });
+    }
+
+    /// <summary>
     /// Trigger a re-scan of the binding now.
     /// </summary>
     [RequireAdmin]
@@ -1485,10 +1569,24 @@ public class AdminController(
     public async Task<IActionResult> ScanRepoBinding(
         [FromRoute] int id,
         [FromServices] Services.Transfer.RepoBindingDiscoveryService discovery,
+        [FromServices] AppDbContext dbContext,
         CancellationToken token)
     {
         var user = (await userManager.GetUserAsync(User))!;
         var result = await discovery.ScanAsync(id, user.Id, token);
+
+        // Reset the poll gate so the background poller waits a full
+        // interval before re-running. Without this an Admin "Scan now"
+        // + a poller tick a few seconds later would double-scan.
+        var iv = await dbContext.GameRepoBindings.AsNoTracking()
+            .Where(b => b.Id == id).Select(b => (int?)b.IntervalSeconds)
+            .FirstOrDefaultAsync(token) ?? 600;
+        var clamped = Math.Clamp(iv, 60, 86400);
+        await dbContext.GameRepoBindings
+            .Where(b => b.Id == id)
+            .ExecuteUpdateAsync(s => s.SetProperty(x => x.NextScanUtc,
+                DateTimeOffset.UtcNow.AddSeconds(clamped)), token);
+
         return Ok(new Models.Request.Edit.RepoBindingScanResultModel
         {
             GamesCreated = result.GamesCreated,

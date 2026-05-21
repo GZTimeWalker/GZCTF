@@ -17,6 +17,7 @@ namespace GZCTF.Models.Data;
 /// automatically and lives at the platform level.
 /// </summary>
 [Index(nameof(RepoUrl), IsUnique = true)]
+[Index(nameof(NextScanUtc), nameof(Status))]
 public sealed class GameRepoBinding
 {
     [Key]
@@ -39,6 +40,22 @@ public sealed class GameRepoBinding
 
     public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
     public Guid CreatedByUserId { get; set; }
+
+    /// <summary>How often the background poller should re-scan this
+    /// repo. Clamped to <c>[60, 86400]</c> by both the controller and the
+    /// scan service.</summary>
+    [Required]
+    public int IntervalSeconds { get; set; } = 600;
+
+    /// <summary>Reuses <see cref="RepoWatchStatus"/> — Active polls,
+    /// Paused skips.</summary>
+    [Required]
+    public RepoWatchStatus Status { get; set; } = RepoWatchStatus.Active;
+
+    /// <summary>Earliest UTC instant the background poller will pick
+    /// this binding up. Null = run on next tick (used as a "due now"
+    /// sentinel for new bindings created with RunImmediately).</summary>
+    public DateTimeOffset? NextScanUtc { get; set; }
 
     public DateTimeOffset? LastScanUtc { get; set; }
     [MaxLength(64)]
