@@ -497,7 +497,7 @@
       "subpath": "子路径（可选）",
       "token": "GitHub Token（可选）",
       "token_help": "仅私有仓库需要。建议使用细粒度 PAT（Contents: read）。不会被存储。",
-      "tarball_help": "上传一个包含 challenge.yaml 和 attachments/ 的 .tar.gz。",
+      "tarball_help": "上传一个包含 challenge.yaml 和 attachments/ 的 .tar.gz 或 .zip。",
       "result": "导入结果",
       "imported": "新建",
       "updated": "更新",

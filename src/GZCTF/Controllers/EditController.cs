@@ -1484,11 +1484,10 @@ public class EditController(
     }
 
     /// <summary>
-    /// One-shot bulk import from a public github repo. Auto-approves when
-    /// the caller is admin or a game-admin for this game; lands as
-    /// pending otherwise.
+    /// One-shot bulk import from a github repo. Admin / game-admin only;
+    /// regular users can only submit single-challenge archives.
     /// </summary>
-    [RequireUser]
+    [RequireGameAdmin]
     [HttpPost("Games/{id:int}/Challenges/ImportFromGitHub")]
     [ProducesResponseType(typeof(ChallengeImportResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
@@ -1499,16 +1498,8 @@ public class EditController(
             return BadRequest(new RequestResponse(err ?? "Invalid github URL."));
 
         var user = (await userManager.GetUserAsync(User))!;
-        var autoApprove = user.Role == Role.Admin
-            || await dbContext.EventManagers.AnyAsync(em => em.UserId == user.Id && em.GameId == id, token);
-
-        // Only admin / game-admin callers may use a token. Users submitting
-        // for review never get to use one — keeps private-repo access out
-        // of the untrusted-input path.
-        var ghToken = autoApprove ? model.GitHubToken : null;
-
         var result = await challengeImportService.ImportFromGitHubAsync(
-            loc, ghToken, new ChallengeImportOptions(id, user.Id, autoApprove), token);
+            loc, model.GitHubToken, new ChallengeImportOptions(id, user.Id, AutoApprove: true), token);
         return Ok(result);
     }
 

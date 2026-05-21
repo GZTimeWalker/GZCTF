@@ -286,6 +286,7 @@
     "ref": "Branch / tag (optional)",
     "subpath": "Subpath (optional)",
     "tarball_help": "Upload a .tar.gz of one challenge directory (challenge.yaml + attachments).",
+    "archive_help": "Upload a .tar.gz or .zip of one challenge directory (challenge.yaml + attachments).",
     "result": "Submission result",
     "no_file": "Pick an archive first.",
     "no_url": "Enter a repo URL first.",

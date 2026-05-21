@@ -143,7 +143,7 @@ export const ChallengeImportModal: FC<ChallengeImportModalProps> = (props) => {
               {t('admin.content.import.tarball_help')}
             </Text>
             <Group>
-              <FileButton onChange={setFile} accept=".tar,.tar.gz,.tgz,application/gzip,application/x-tar">
+              <FileButton onChange={setFile} accept=".tar,.tar.gz,.tgz,.zip,application/gzip,application/x-tar,application/zip">
                 {(p) => <Button {...p} variant="default">{t('admin.button.import.pick_file')}</Button>}
               </FileButton>
               {file && <Text size="sm" ff="monospace">{file.name}</Text>}

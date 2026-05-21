@@ -497,7 +497,7 @@
       "subpath": "Subpath (optional)",
       "token": "GitHub token (optional)",
       "token_help": "Required only for private repos. Use a fine-grained PAT with 'Contents: read'. Not stored.",
-      "tarball_help": "Upload a .tar.gz of one challenge directory (challenge.yaml + attachments).",
+      "tarball_help": "Upload a .tar.gz or .zip of one challenge directory (challenge.yaml + attachments).",
       "result": "Import result",
       "imported": "imported",
       "updated": "updated",

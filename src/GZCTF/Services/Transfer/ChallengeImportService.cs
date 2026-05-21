@@ -49,10 +49,11 @@ public sealed class ChallengeImportService(
         .Build();
 
     /// <summary>
-    /// Imports a single-challenge tarball. Caller supplies a stream of a
-    /// gzipped tar containing one <c>challenge.yaml</c> at the root (or
-    /// inside one wrapping directory — common when downloads come from
-    /// "Save as" on GitHub).
+    /// Imports a single-challenge archive — either a <c>.tar.gz</c> or a
+    /// <c>.zip</c>. The format is auto-detected from magic bytes; callers
+    /// don't need to disambiguate. Archive must contain one
+    /// <c>challenge.yaml</c> at the root (or inside one wrapping
+    /// directory — common with "Download ZIP" from GitHub).
     /// </summary>
     public async Task<ChallengeImportResult> ImportFromArchiveAsync(
         Stream archive, ChallengeImportOptions opts, CancellationToken token)
@@ -60,7 +61,7 @@ public sealed class ChallengeImportService(
         var workDir = CreateWorkDir();
         try
         {
-            await ExtractTarballAsync(archive, workDir, token);
+            await ExtractArchiveAsync(archive, workDir, token);
             return await ImportFromWorkDirAsync(workDir, subpath: null, opts, token);
         }
         finally
@@ -83,7 +84,7 @@ public sealed class ChallengeImportService(
         try
         {
             await using (var tarStream = await loc.DownloadTarballAsync(http, githubToken, token))
-                await ExtractTarballAsync(tarStream, workDir, token);
+                await ExtractTarballStreamAsync(tarStream, workDir, token);
 
             return await ImportFromWorkDirAsync(workDir, loc.Subpath, opts, token);
         }
@@ -291,10 +292,47 @@ public sealed class ChallengeImportService(
     }
 
     /// <summary>
+    /// Sniff the first two magic bytes of the archive stream and dispatch
+    /// to the right extractor. Supports gzipped tar (<c>1F 8B</c>) and
+    /// classic zip (<c>50 4B</c>). Any other prefix throws. Path-traversal
+    /// guards are applied per-entry inside each extractor.
+    /// </summary>
+    internal static async Task ExtractArchiveAsync(Stream archive, string workDir, CancellationToken token)
+    {
+        // Buffer to a seekable temp file so we can sniff + rewind. Direct
+        // network streams aren't seekable; uploads usually are but the cost
+        // of one extra disk pass is negligible vs. supporting both formats.
+        var spool = Path.Combine(workDir, "__upload.bin");
+        await using (var fs = File.Create(spool))
+            await archive.CopyToAsync(fs, token);
+
+        await using var src = File.OpenRead(spool);
+        var magic = new byte[2];
+        var read = await src.ReadAsync(magic.AsMemory(0, 2), token);
+        src.Position = 0;
+        if (read < 2)
+            throw new InvalidOperationException("Archive too small.");
+
+        try
+        {
+            if (magic[0] == 0x1F && magic[1] == 0x8B)
+                await ExtractTarballStreamAsync(src, workDir, token);
+            else if (magic[0] == 0x50 && magic[1] == 0x4B)
+                await ExtractZipStreamAsync(src, workDir, token);
+            else
+                throw new InvalidOperationException("Unsupported archive format (expected .tar.gz or .zip).");
+        }
+        finally
+        {
+            try { File.Delete(spool); } catch { /* best effort */ }
+        }
+    }
+
+    /// <summary>
     /// Extracts a gzipped tar stream into <paramref name="workDir"/>,
     /// rejecting any entry whose normalized path escapes the work dir.
     /// </summary>
-    internal static async Task ExtractTarballAsync(Stream tarGz, string workDir, CancellationToken token)
+    internal static async Task ExtractTarballStreamAsync(Stream tarGz, string workDir, CancellationToken token)
     {
         await using var gz = new GZipStream(tarGz, CompressionMode.Decompress, leaveOpen: true);
         await using var tar = new TarReader(gz);
@@ -326,6 +364,38 @@ public sealed class ChallengeImportService(
                     break;
                 // SymbolicLink / HardLink / others: deliberately skipped.
             }
+        }
+    }
+
+    /// <summary>
+    /// Extracts a zip stream into <paramref name="workDir"/> with the same
+    /// path-escape guard the tar extractor uses.
+    /// </summary>
+    internal static async Task ExtractZipStreamAsync(Stream zipStream, string workDir, CancellationToken token)
+    {
+        using var zip = new ZipArchive(zipStream, ZipArchiveMode.Read, leaveOpen: true);
+        var canonical = Path.GetFullPath(workDir) + Path.DirectorySeparatorChar;
+
+        foreach (var entry in zip.Entries)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(entry.FullName)) continue;
+
+            var dest = Path.GetFullPath(Path.Combine(workDir, entry.FullName));
+            if (!dest.StartsWith(canonical, StringComparison.Ordinal))
+                throw new InvalidOperationException($"Zip entry escapes work dir: {entry.FullName}");
+
+            // Directory entries end with '/'.
+            if (entry.FullName.EndsWith('/'))
+            {
+                Directory.CreateDirectory(dest);
+                continue;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+            await using var src = entry.Open();
+            await using var fs = File.Create(dest);
+            await src.CopyToAsync(fs, token);
         }
     }
 

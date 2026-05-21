@@ -7,9 +7,7 @@ import {
   Group,
   Paper,
   Stack,
-  Tabs,
   Text,
-  TextInput,
   Title,
 } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
@@ -31,26 +29,16 @@ const Submit: FC = () => {
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<ChallengeImportResult | null>(null)
   const [file, setFile] = useState<File | null>(null)
-  const [repoUrl, setRepoUrl] = useState('')
-  const [refValue, setRefValue] = useState('')
-  const [subpath, setSubpath] = useState('')
 
-  const submit = async (kind: 'tarball' | 'github') => {
+  const submit = async () => {
+    if (!file) {
+      showErrorMsg(new Error(t('game.submit.no_file')), t)
+      return
+    }
     setBusy(true)
     setResult(null)
     try {
-      let resp
-      if (kind === 'tarball') {
-        if (!file) throw new Error(t('game.submit.no_file'))
-        resp = await api.edit.editSubmitChallenge(gameId, file)
-      } else {
-        if (!repoUrl) throw new Error(t('game.submit.no_url'))
-        resp = await api.edit.editImportChallengeFromGitHub(gameId, {
-          repoUrl,
-          ref: refValue || null,
-          subpath: subpath || null,
-        })
-      }
+      const resp = await api.edit.editSubmitChallenge(gameId, file)
       setResult(resp.data)
       showNotification({
         color: 'teal',
@@ -80,65 +68,23 @@ const Submit: FC = () => {
             </Alert>
 
             <Paper p="md" withBorder>
-              <Tabs defaultValue="github">
-                <Tabs.List>
-                  <Tabs.Tab value="github">{t('game.submit.github_tab')}</Tabs.Tab>
-                  <Tabs.Tab value="tarball">{t('game.submit.tarball_tab')}</Tabs.Tab>
-                </Tabs.List>
-
-                <Tabs.Panel value="github" pt="md">
-                  <Stack gap="sm">
-                    <TextInput
-                      label={t('game.submit.repo_url')}
-                      placeholder="https://github.com/your-org/your-ctf"
-                      value={repoUrl}
-                      onChange={(e) => setRepoUrl(e.currentTarget.value)}
-                    />
-                    <Group grow>
-                      <TextInput
-                        label={t('game.submit.ref')}
-                        placeholder="main"
-                        value={refValue}
-                        onChange={(e) => setRefValue(e.currentTarget.value)}
-                      />
-                      <TextInput
-                        label={t('game.submit.subpath')}
-                        placeholder="quals"
-                        value={subpath}
-                        onChange={(e) => setSubpath(e.currentTarget.value)}
-                      />
-                    </Group>
-                    <Button
-                      leftSection={<Icon path={mdiUpload} size={1} />}
-                      loading={busy}
-                      disabled={!repoUrl}
-                      onClick={() => submit('github')}
-                    >
-                      {t('game.submit.button.submit')}
-                    </Button>
-                  </Stack>
-                </Tabs.Panel>
-
-                <Tabs.Panel value="tarball" pt="md">
-                  <Stack gap="sm">
-                    <Text size="sm" c="dimmed">{t('game.submit.tarball_help')}</Text>
-                    <Group>
-                      <FileButton onChange={setFile} accept=".tar,.tar.gz,.tgz,application/gzip,application/x-tar">
-                        {(p) => <Button {...p} variant="default">{t('game.submit.button.pick_file')}</Button>}
-                      </FileButton>
-                      {file && <Text size="sm" ff="monospace">{file.name}</Text>}
-                    </Group>
-                    <Button
-                      leftSection={<Icon path={mdiUpload} size={1} />}
-                      loading={busy}
-                      disabled={!file}
-                      onClick={() => submit('tarball')}
-                    >
-                      {t('game.submit.button.submit')}
-                    </Button>
-                  </Stack>
-                </Tabs.Panel>
-              </Tabs>
+              <Stack gap="sm">
+                <Text size="sm" c="dimmed">{t('game.submit.archive_help')}</Text>
+                <Group>
+                  <FileButton onChange={setFile} accept=".tar,.tar.gz,.tgz,.zip,application/gzip,application/x-tar,application/zip">
+                    {(p) => <Button {...p} variant="default">{t('game.submit.button.pick_file')}</Button>}
+                  </FileButton>
+                  {file && <Text size="sm" ff="monospace">{file.name}</Text>}
+                </Group>
+                <Button
+                  leftSection={<Icon path={mdiUpload} size={1} />}
+                  loading={busy}
+                  disabled={!file}
+                  onClick={submit}
+                >
+                  {t('game.submit.button.submit')}
+                </Button>
+              </Stack>
             </Paper>
 
             {result && (

@@ -286,6 +286,7 @@
     "ref": "分支 / 标签（可选）",
     "subpath": "子路径（可选）",
     "tarball_help": "上传一个包含 challenge.yaml 和 attachments/ 的 .tar.gz。",
+    "archive_help": "上传一个包含 challenge.yaml 和 attachments/ 的 .tar.gz 或 .zip。",
     "result": "提交结果",
     "no_file": "请先选择压缩包。",
     "no_url": "请先填写仓库 URL。",
