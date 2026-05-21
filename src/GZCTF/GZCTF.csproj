@@ -83,6 +83,7 @@
     <PackageReference Include="SharpPcap"/>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
     <PackageReference Include="ZstdSharp.Port"/>
+    <PackageReference Include="YamlDotNet"/>
   </ItemGroup>
 
   <ItemGroup>
