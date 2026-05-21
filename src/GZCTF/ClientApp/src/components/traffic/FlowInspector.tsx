@@ -86,7 +86,6 @@ export const FlowInspector: FC<FlowInspectorProps> = ({
     if (!opened) return
     let cancelled = false
     setLoading(true)
-    setSelected(null)
 
     const filter: FlowFilter = {
       ...(debouncedRegex ? { regexPattern: debouncedRegex } : {}),
