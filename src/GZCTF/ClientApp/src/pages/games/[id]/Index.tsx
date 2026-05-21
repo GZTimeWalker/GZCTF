@@ -213,17 +213,6 @@ const GameDetail: FC = () => {
           {t('game.button.scoreboard')}
         </Button>
       )}
-      {started && (
-        <Button
-          component="a"
-          href={`/games/${numId}/attack`}
-          target="_blank"
-          rel="noreferrer"
-          variant="light"
-        >
-          {t('game.button.attack')}
-        </Button>
-      )}
       {(status === ParticipationStatus.Pending || status === ParticipationStatus.Rejected) && (
         <Button color="red" variant="outline" onClick={onLeave}>
           {t('game.button.leave')}
