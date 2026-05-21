@@ -6,6 +6,7 @@ import {
   mdiFlagOutline,
   mdiPackageVariantClosed,
   mdiSitemapOutline,
+  mdiSourceBranch,
   mdiViewDashboard,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
@@ -39,6 +40,11 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
       icon: mdiPackageVariantClosed,
       title: t('admin.tab.instances'),
       path: 'instances',
+    },
+    {
+      icon: mdiSourceBranch,
+      title: t('admin.tab.repo_bindings', 'Repo bindings'),
+      path: 'repo-bindings',
     },
     { icon: mdiFileDocumentOutline, title: t('admin.tab.logs'), path: 'logs' },
     { icon: mdiSitemapOutline, title: t('admin.tab.settings'), path: 'settings' },

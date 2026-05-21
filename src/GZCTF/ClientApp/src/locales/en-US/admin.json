@@ -817,6 +817,7 @@
     },
     "instances": "Instances",
     "logs": "Logs",
+    "repo_bindings": "Repo bindings",
     "settings": "Settings",
     "teams": "Teams",
     "users": "Users"
