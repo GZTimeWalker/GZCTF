@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Badge,
   Box,
   Code,
@@ -23,6 +24,7 @@ import {
   mdiAccountGroupOutline,
   mdiCheck,
   mdiChevronTripleRight,
+  mdiConsole,
   mdiPackageVariantClosedRemove,
   mdiPuzzleOutline,
 } from '@mdi/js'
@@ -32,6 +34,7 @@ import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { AdminPage } from '@Components/admin/AdminPage'
+import { ContainerExecModal } from '@Components/admin/ContainerExecModal'
 import { useLanguage } from '@Utils/I18n'
 import { showErrorMsg } from '@Utils/Shared'
 import { HunamizeSize, useChallengeCategoryLabelMap, getProxyUrl } from '@Utils/Shared'
@@ -154,6 +157,7 @@ const Instances: FC = () => {
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null)
   const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(null)
   const [liveStats, setLiveStats] = useState(true)
+  const [execTarget, setExecTarget] = useState<{ guid: string; title: string } | null>(null)
 
   const [filteredInstances, setFilteredInstances] = useState(instances?.data)
 
@@ -356,6 +360,18 @@ const Instances: FC = () => {
                       </Table.Td>
                       <Table.Td align="right">
                         <Group wrap="nowrap" gap="sm" justify="right">
+                          <Tooltip label={t('admin.button.exec.open')} withArrow position="left">
+                            <ActionIcon
+                              variant="subtle"
+                              disabled={!inst.containerGuid}
+                              onClick={() => inst.containerGuid && setExecTarget({
+                                guid: inst.containerGuid,
+                                title: `${inst.team?.name ?? ''} - ${inst.challenge?.title ?? ''}`,
+                              })}
+                            >
+                              <Icon path={mdiConsole} size={1} />
+                            </ActionIcon>
+                          </Tooltip>
                           <ActionIconWithConfirm
                             iconPath={mdiPackageVariantClosedRemove}
                             color="alert"
@@ -377,6 +393,12 @@ const Instances: FC = () => {
           {t('admin.content.instances.note')}
         </Text>
       </Paper>
+      <ContainerExecModal
+        containerGuid={execTarget?.guid ?? null}
+        containerTitle={execTarget?.title}
+        opened={execTarget != null}
+        onClose={() => setExecTarget(null)}
+      />
     </AdminPage>
   )
 }

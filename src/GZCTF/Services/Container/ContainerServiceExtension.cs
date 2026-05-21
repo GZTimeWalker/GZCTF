@@ -52,10 +52,12 @@ public static class ContainerServiceExtension
             {
                 ContainerProviderType.Kubernetes => services
                     .AddSingleton<IContainerManager, KubernetesManager>()
-                    .AddSingleton<Build.IChallengeImageBuilder, Build.K8sChallengeImageBuilder>(),
+                    .AddSingleton<Build.IChallengeImageBuilder, Build.K8sChallengeImageBuilder>()
+                    .AddSingleton<Exec.IContainerExecChannel, Exec.K8sContainerExecChannel>(),
                 _ => services
                     .AddSingleton<IContainerManager, DockerManager>()
                     .AddSingleton<Build.IChallengeImageBuilder, Build.DockerChallengeImageBuilder>()
+                    .AddSingleton<Exec.IContainerExecChannel, Exec.DockerContainerExecChannel>()
             };
     }
 }

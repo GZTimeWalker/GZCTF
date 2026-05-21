@@ -115,6 +115,7 @@ internal static class AppExtensions
             app.MapHub<MonitorHub>("/hub/monitor");
             app.MapHub<AdminHub>("/hub/admin");
             app.MapHub<AttackHub>("/hub/attack");
+            app.MapHub<ContainerExecHub>("/hub/containerExec");
 
             app.UseIndexAsync();
         }

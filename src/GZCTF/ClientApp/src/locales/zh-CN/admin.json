@@ -82,6 +82,10 @@
       "audit": "审查",
       "delete": "删除"
     },
+    "exec": {
+      "open": "打开终端",
+      "fit": "自适应"
+    },
     "audit": {
       "download": "下载压缩包"
     },
@@ -620,6 +624,9 @@
       "memory": "内存",
       "network": "网络",
       "live_stats": "实时统计"
+    },
+    "exec": {
+      "title": "容器终端"
     },
     "logs": {
       "message": "信息",
