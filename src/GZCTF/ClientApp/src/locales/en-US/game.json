@@ -292,7 +292,13 @@
     "no_url": "Enter a repo URL first.",
     "button": {
       "submit": "Submit",
-      "pick_file": "Choose archive"
+      "pick_file": "Choose archive",
+      "clear": "Clear"
+    },
+    "dropzone": {
+      "title": "Drag your archive here, or click to pick one",
+      "hint": "Accepts .tar.gz or .zip up to 64 MB. Must contain challenge.yaml at the root.",
+      "rejected": "File type or size not accepted."
     },
     "notification": {
       "submitted": "Submitted",

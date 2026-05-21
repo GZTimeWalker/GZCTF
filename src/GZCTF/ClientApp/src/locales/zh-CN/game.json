@@ -292,7 +292,13 @@
     "no_url": "请先填写仓库 URL。",
     "button": {
       "submit": "提交",
-      "pick_file": "选择压缩包"
+      "pick_file": "选择压缩包",
+      "clear": "清除"
+    },
+    "dropzone": {
+      "title": "拖入压缩包，或点击选择文件",
+      "hint": "支持 .tar.gz 或 .zip，最大 64 MB。压缩包根目录需包含 challenge.yaml。",
+      "rejected": "文件类型或大小不符合要求。"
     },
     "notification": {
       "submitted": "已提交",
