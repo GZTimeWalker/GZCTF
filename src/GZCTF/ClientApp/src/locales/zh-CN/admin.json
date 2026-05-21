@@ -86,7 +86,8 @@
       "open": "打开终端"
     },
     "audit": {
-      "download": "下载压缩包"
+      "download": "下载压缩包",
+      "rebuild": "重新构建"
     },
     "watches": {
       "add": "添加监听",
@@ -537,12 +538,18 @@
       "yaml": "challenge.yaml",
       "no_yaml": "压缩包中未找到 challenge.yaml。",
       "files": "文件列表",
-      "previews": "审查文件预览"
+      "previews": "审查文件预览",
+      "build_log": "构建日志",
+      "no_build_log": "暂无构建日志。"
     },
     "review": {
       "badge": {
         "pending": "待审核",
-        "rejected": "已驳回"
+        "rejected": "已驳回",
+        "building": "构建中",
+        "built": "已构建",
+        "build_failed": "构建失败",
+        "build_failed_help": "该题目最近一次 Docker 构建失败。打开「审查」查看构建日志。"
       },
       "title": "待审核题目",
       "empty": {
@@ -574,7 +581,8 @@
       "interval": "轮询间隔（秒）",
       "interval_help": "后台扫描器重新拉取仓库的频率。最小 60，最大 86400（24 小时）。",
       "run_immediately": "立即执行首次扫描",
-      "empty": "尚未绑定任何仓库。",
+      "empty": "注册一个仓库以便自动从 .gzevent 清单中发现比赛。",
+      "empty_title": "尚未绑定任何仓库",
       "no_games": "该仓库尚未发现 .gzevent 清单。",
       "has_token": "已配置 Token",
       "paused_short": "已暂停",
@@ -604,7 +612,8 @@
     "watches": {
       "title": "仓库监听",
       "add": "添加监听",
-      "empty": "尚未配置监听。",
+      "empty": "添加一个以按计划从仓库导入题目。",
+      "empty_title": "尚未配置监听",
       "one_per_event": "每场比赛只关联一个仓库。如需切换，请先删除现有监听。",
       "last_scan": "最近扫描",
       "next_scan": "下次扫描",

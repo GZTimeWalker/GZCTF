@@ -359,7 +359,7 @@ const Instances: FC = () => {
                         </Tooltip>
                       </Table.Td>
                       <Table.Td align="right">
-                        <Group wrap="nowrap" gap="sm" justify="right">
+                        <Group wrap="nowrap" gap="xs" justify="right">
                           <Tooltip label={t('admin.button.exec.open')} withArrow position="left">
                             <ActionIcon
                               variant="subtle"

@@ -86,7 +86,8 @@
       "open": "Open shell"
     },
     "audit": {
-      "download": "Download archive"
+      "download": "Download archive",
+      "rebuild": "Rebuild"
     },
     "watches": {
       "add": "Add watch",
@@ -537,12 +538,18 @@
       "yaml": "challenge.yaml",
       "no_yaml": "No challenge.yaml found in the archive.",
       "files": "Files",
-      "previews": "Reviewer files"
+      "previews": "Reviewer files",
+      "build_log": "Build log",
+      "no_build_log": "No build log captured yet."
     },
     "review": {
       "badge": {
         "pending": "Pending review",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "building": "Building",
+        "built": "Built",
+        "build_failed": "Build failed",
+        "build_failed_help": "The most recent docker build for this challenge failed. Open Audit to see the log."
       },
       "title": "Challenges awaiting review",
       "empty": {
@@ -574,7 +581,8 @@
       "interval": "Polling interval (seconds)",
       "interval_help": "How often the background scanner re-fetches the repo. Min 60, max 86400 (24h).",
       "run_immediately": "Run first scan immediately",
-      "empty": "No repository bindings yet.",
+      "empty": "Register one to start auto-discovering events from .gzevent manifests.",
+      "empty_title": "No repository bindings yet",
       "no_games": "No .gzevent manifests found in this repo yet.",
       "has_token": "Token configured",
       "paused_short": "Paused",
@@ -604,7 +612,8 @@
     "watches": {
       "title": "Repository watch",
       "add": "Add a new watch",
-      "empty": "No watch configured.",
+      "empty": "Add one to import challenges from a repo on a schedule.",
+      "empty_title": "No watch configured",
       "one_per_event": "Each game uses one repository. Delete the existing watch before pointing this game at a different repo.",
       "repo_url": "Repo URL",
       "ref": "Branch / tag",

@@ -1604,6 +1604,160 @@ public class EditController(
     }
 
     /// <summary>
+    /// Re-run the auto-build pipeline against the persisted original
+    /// archive. Useful when a Dockerfile change shipped and the admin
+    /// wants to refresh the image without re-uploading the package.
+    /// 404 if the challenge has no original archive on file (e.g.
+    /// admin-created or github-sourced with no blob saved). Returns the
+    /// fresh <see cref="ChallengeAuditModel"/> so the UI can refresh
+    /// the build-status badge inline.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPost("Games/{id:int}/Challenges/{cId:int}/Rebuild")]
+    [ProducesResponseType(typeof(Models.Response.Admin.ChallengeAuditModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RebuildChallengeImage(
+        [FromRoute] int id, [FromRoute] int cId,
+        [FromServices] Services.Container.Build.IChallengeImageBuilder builder,
+        [FromServices] Storage.Interface.IBlobStorage storage,
+        CancellationToken token)
+    {
+        var challenge = await dbContext.GameChallenges
+            .FirstOrDefaultAsync(c => c.GameId == id && c.Id == cId, token);
+        if (challenge is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)]));
+        if (string.IsNullOrEmpty(challenge.OriginalArchiveBlobPath))
+            return NotFound(new RequestResponse(
+                "No archive on file for this challenge — re-upload to trigger a build.",
+                StatusCodes.Status404NotFound));
+        if (!await storage.ExistsAsync(challenge.OriginalArchiveBlobPath, token))
+            return NotFound(new RequestResponse(
+                "Archive blob is missing from storage.", StatusCodes.Status404NotFound));
+
+        // Extract the archive into a temp dir, mirror the import service's
+        // approach: spool first, then dispatch on magic bytes.
+        var workDir = Path.Combine(Path.GetTempPath(), $"gzctf-rebuild-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(workDir);
+        challenge.BuildStatus = ChallengeBuildStatus.Building;
+        await dbContext.SaveChangesAsync(token);
+        try
+        {
+            await using (var src = await storage.OpenReadAsync(challenge.OriginalArchiveBlobPath, token))
+            {
+                var spool = Path.Combine(workDir, "__archive.bin");
+                await using (var fs = System.IO.File.Create(spool))
+                    await src.CopyToAsync(fs, token);
+                await using var sf = System.IO.File.OpenRead(spool);
+                await Services.Transfer.ChallengeImportService.ExtractArchiveAsync(sf, workDir, token);
+                System.IO.File.Delete(spool);
+            }
+
+            // The archive may be nested under a wrapping directory (e.g.
+            // github tarballs). Pick the first dir entry as the package
+            // root if there's exactly one — same logic the import service
+            // and the audit modal use.
+            var topLevel = Directory.EnumerateFileSystemEntries(workDir).Take(2).ToArray();
+            var packageDir = topLevel.Length == 1 && Directory.Exists(topLevel[0])
+                ? topLevel[0]
+                : workDir;
+
+            // We don't re-parse challenge.yaml here — the challenge row
+            // already carries ContainerImage. Honor it: if it's a local
+            // path style, rebuild from the inferred context; if it's a
+            // registry ref, this endpoint is a no-op (return current
+            // state). Inferring the context is identical to what
+            // ResolveBuildContext did at import time.
+            var declared = challenge.ContainerImage?.Trim();
+            if (string.IsNullOrEmpty(declared) ||
+                !(declared.StartsWith("./") || declared.StartsWith("../") || declared.StartsWith('/') ||
+                  declared.Equals("Dockerfile", StringComparison.OrdinalIgnoreCase) ||
+                  declared.EndsWith("/Dockerfile", StringComparison.OrdinalIgnoreCase) ||
+                  declared.StartsWith("gzctf-auto/", StringComparison.OrdinalIgnoreCase)))
+            {
+                // Not a local-build challenge. Restore the previous state
+                // (no longer "Building") and surface a clear message.
+                challenge.BuildStatus = ChallengeBuildStatus.None;
+                challenge.LastBuildLog =
+                    "Rebuild skipped: this challenge ships a published registry image. Re-upload to change.";
+                await dbContext.SaveChangesAsync(token);
+                return NotFound(new RequestResponse(
+                    "Rebuild is only valid for challenges with a local Dockerfile.",
+                    StatusCodes.Status404NotFound));
+            }
+
+            // For previously-built challenges (declared == "gzctf-auto/...")
+            // we need to find a Dockerfile in the package — same heuristic
+            // as on import: prefer src/, fall back to package root.
+            string contextDir;
+            string dockerfile;
+            if (declared.StartsWith("./") || declared.StartsWith("../") || declared.StartsWith('/'))
+            {
+                var rel = declared.Replace('\\', '/').TrimStart('.').TrimStart('/');
+                var combined = Path.Combine(packageDir, rel);
+                if (Directory.Exists(combined)) { contextDir = Path.GetFullPath(combined); dockerfile = "Dockerfile"; }
+                else if (System.IO.File.Exists(combined)) { contextDir = Path.GetFullPath(Path.GetDirectoryName(combined)!); dockerfile = "Dockerfile"; }
+                else { contextDir = Path.GetFullPath(combined); dockerfile = "Dockerfile"; }
+            }
+            else if (declared.Equals("Dockerfile", StringComparison.OrdinalIgnoreCase))
+            {
+                contextDir = Path.GetFullPath(packageDir); dockerfile = "Dockerfile";
+            }
+            else
+            {
+                // gzctf-auto tag — look for a Dockerfile in src/ first, then root.
+                var srcDir = Path.Combine(packageDir, "src");
+                if (System.IO.File.Exists(Path.Combine(srcDir, "Dockerfile")))
+                {
+                    contextDir = Path.GetFullPath(srcDir); dockerfile = "Dockerfile";
+                }
+                else
+                {
+                    contextDir = Path.GetFullPath(packageDir); dockerfile = "Dockerfile";
+                }
+            }
+
+            if (!System.IO.File.Exists(Path.Combine(contextDir, dockerfile)))
+            {
+                challenge.BuildStatus = ChallengeBuildStatus.Failed;
+                challenge.LastBuildLog = $"Rebuild failed: no Dockerfile found at '{contextDir}/{dockerfile}'.";
+                await dbContext.SaveChangesAsync(token);
+                return BadRequest(new RequestResponse(challenge.LastBuildLog));
+            }
+
+            var result = await builder.BuildAsync(
+                new Services.Container.Build.ChallengeBuildRequest(id, challenge.Title, contextDir, dockerfile),
+                token);
+
+            challenge.BuildStatus = result.Success ? ChallengeBuildStatus.Success : ChallengeBuildStatus.Failed;
+            challenge.LastBuildLog = result.LogTail;
+            if (result.Success && result.ImageTag is not null)
+            {
+                challenge.ContainerImage = result.ImageTag;
+                challenge.BuildImageDigest = result.Digest;
+            }
+            await dbContext.SaveChangesAsync(token);
+
+            return Ok(new Models.Response.Admin.ChallengeAuditModel
+            {
+                ArchiveAvailable = true,
+                BuildStatus = challenge.BuildStatus,
+                LastBuildLog = challenge.LastBuildLog
+            });
+        }
+        catch (Exception e)
+        {
+            challenge.BuildStatus = ChallengeBuildStatus.Failed;
+            challenge.LastBuildLog = $"Rebuild crashed: {e.Message}";
+            await dbContext.SaveChangesAsync(token);
+            return BadRequest(new RequestResponse(challenge.LastBuildLog));
+        }
+        finally
+        {
+            try { Directory.Delete(workDir, recursive: true); } catch { /* best effort */ }
+        }
+    }
+
+    /// <summary>
     /// Download the original archive that produced a challenge, for
     /// offline audit. Returns 404 when no archive was persisted
     /// (admin-created or github-sourced).
@@ -1651,7 +1805,9 @@ public class EditController(
 
         var model = new Models.Response.Admin.ChallengeAuditModel
         {
-            ArchiveAvailable = challenge.OriginalArchiveBlobPath is not null
+            ArchiveAvailable = challenge.OriginalArchiveBlobPath is not null,
+            BuildStatus = challenge.BuildStatus,
+            LastBuildLog = challenge.LastBuildLog
         };
 
         if (challenge.OriginalArchiveBlobPath is null)

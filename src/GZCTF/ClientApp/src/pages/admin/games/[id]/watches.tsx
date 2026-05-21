@@ -257,8 +257,11 @@ const Watches: FC = () => {
         )}
 
         {watchBinding ? null : !watches || watches.length === 0 ? (
-          <Center h="20vh">
-            <Text c="dimmed">{t('admin.content.watches.empty')}</Text>
+          <Center h="30vh">
+            <Stack gap={0} align="center">
+              <Title order={4}>{t('admin.content.watches.empty_title')}</Title>
+              <Text c="dimmed">{t('admin.content.watches.empty')}</Text>
+            </Stack>
           </Center>
         ) : (
           <Table withTableBorder striped highlightOnHover>
@@ -307,7 +310,7 @@ const Watches: FC = () => {
                     </Group>
                   </Table.Td>
                   <Table.Td>
-                    <Group gap={2} wrap="nowrap">
+                    <Group gap="xs" wrap="nowrap">
                       <Tooltip label={t('admin.button.watches.run')}>
                         <ActionIcon variant="subtle" disabled={busy} onClick={() => onRunNow(w)}>
                           <Icon path={mdiRefresh} size={1} />

@@ -62,6 +62,20 @@ public class ChallengeInfoModel
     /// </summary>
     public ChallengeReviewStatus ReviewStatus { get; set; } = ChallengeReviewStatus.Active;
 
+    /// <summary>
+    /// Outcome of the most recent auto-build (if any). Surfaced so the
+    /// challenges list can badge "Built", "Build failed", or "Building"
+    /// without the admin having to open the audit modal.
+    /// </summary>
+    public ChallengeBuildStatus BuildStatus { get; set; } = ChallengeBuildStatus.None;
+
+    /// <summary>
+    /// True when this challenge has an <c>OriginalArchiveBlobPath</c> on
+    /// file, which is the input the Rebuild endpoint reuses. Lets the
+    /// UI hide the Rebuild button when there's nothing to rebuild from.
+    /// </summary>
+    public bool HasOriginalArchive { get; set; }
+
     internal static ChallengeInfoModel FromChallenge(GameChallenge challenge) =>
         new()
         {
@@ -74,6 +88,8 @@ public class ChallengeInfoModel
             OriginalScore = challenge.OriginalScore,
             IsEnabled = challenge.IsEnabled,
             DeadlineUtc = challenge.DeadlineUtc,
-            ReviewStatus = challenge.ReviewStatus
+            ReviewStatus = challenge.ReviewStatus,
+            BuildStatus = challenge.BuildStatus,
+            HasOriginalArchive = !string.IsNullOrEmpty(challenge.OriginalArchiveBlobPath)
         };
 }

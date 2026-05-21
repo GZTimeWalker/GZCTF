@@ -1444,10 +1444,17 @@ export interface ChallengeInfoModel {
   deadlineUtc?: number | null;
   /** Review state — surfaced so the admin list can badge pending/rejected challenges */
   reviewStatus?: ChallengeReviewStatus;
+  /** Most recent auto-build outcome (for challenges with a local Dockerfile) */
+  buildStatus?: ChallengeBuildStatus;
+  /** True iff an OriginalArchiveBlobPath is on file (i.e. Rebuild has something to rebuild from) */
+  hasOriginalArchive?: boolean;
 }
 
 /** Review state of a challenge */
 export type ChallengeReviewStatus = "Active" | "Pending" | "Rejected"
+
+/** Most recent auto-build outcome for a challenge with a local Dockerfile */
+export type ChallengeBuildStatus = "None" | "Success" | "Failed" | "Building"
 
 /** Challenge update information (Edit) */
 export interface ChallengeUpdateModel {
@@ -2264,6 +2271,8 @@ export interface ChallengeAuditModel {
   files: ChallengeAuditFile[]
   previews: Record<string, string>
   archiveAvailable: boolean
+  buildStatus?: ChallengeBuildStatus
+  lastBuildLog?: string | null
 }
 
 /** Row returned by GET .../PendingChallenges (includes Pending + Rejected) */
@@ -5602,6 +5611,24 @@ export class Api<
       this.request<ChallengeAuditModel, RequestResponse>({
         path: `/api/edit/games/${id}/challenges/${cId}/auditmeta`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Re-run the auto-build pipeline against a challenge's persisted archive.
+     * @tags Edit
+     * @name EditRebuildChallengeImage
+     * @request POST:/api/edit/games/{id}/challenges/{cId}/rebuild
+     */
+    editRebuildChallengeImage: (
+      id: number,
+      cId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeAuditModel, RequestResponse>({
+        path: `/api/edit/games/${id}/challenges/${cId}/rebuild`,
+        method: "POST",
         format: "json",
         ...params,
       }),

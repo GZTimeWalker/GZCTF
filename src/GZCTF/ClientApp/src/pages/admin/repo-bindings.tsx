@@ -223,8 +223,11 @@ const RepoBindings: FC = () => {
           )}
 
           {!bindings || bindings.length === 0 ? (
-            <Center h="20vh">
-              <Text c="dimmed">{t('admin.content.repo_binding.empty')}</Text>
+            <Center h="30vh">
+              <Stack gap={0} align="center">
+                <Title order={4}>{t('admin.content.repo_binding.empty_title')}</Title>
+                <Text c="dimmed">{t('admin.content.repo_binding.empty')}</Text>
+              </Stack>
             </Center>
           ) : (
             <Stack gap="md">

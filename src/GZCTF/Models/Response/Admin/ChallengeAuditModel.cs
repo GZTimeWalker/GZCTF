@@ -1,3 +1,5 @@
+using GZCTF.Utils;
+
 namespace GZCTF.Models.Response.Admin;
 
 /// <summary>
@@ -31,6 +33,16 @@ public sealed class ChallengeAuditModel
     /// <c>AuditArchive</c>.
     /// </summary>
     public bool ArchiveAvailable { get; set; }
+
+    /// <summary>Most recent build outcome.
+    /// <see cref="ChallengeBuildStatus.None"/> for challenges that ship
+    /// a registry-published image; Success / Failed for auto-built
+    /// challenges.</summary>
+    public ChallengeBuildStatus BuildStatus { get; set; }
+
+    /// <summary>Tail of the last build log — surfaced so admins can
+    /// diagnose Failed builds without re-running the build.</summary>
+    public string? LastBuildLog { get; set; }
 }
 
 public sealed class ChallengeAuditFile

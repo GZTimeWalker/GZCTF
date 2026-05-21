@@ -75,6 +75,23 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
                 {t('admin.content.review.badge.rejected')}
               </Badge>
             )}
+            {challenge.buildStatus === 'Building' && (
+              <Badge size="xs" color="yellow" variant="light">
+                {t('admin.content.review.badge.building')}
+              </Badge>
+            )}
+            {challenge.buildStatus === 'Success' && (
+              <Badge size="xs" color="teal" variant="light">
+                {t('admin.content.review.badge.built')}
+              </Badge>
+            )}
+            {challenge.buildStatus === 'Failed' && (
+              <Tooltip label={t('admin.content.review.badge.build_failed_help')} multiline w={240}>
+                <Badge size="xs" color="red" variant="filled">
+                  {t('admin.content.review.badge.build_failed')}
+                </Badge>
+              </Tooltip>
+            )}
           </Group>
           <Text size="sm" fw="bold" ff="monospace" w="5rem">
             {challenge.score}

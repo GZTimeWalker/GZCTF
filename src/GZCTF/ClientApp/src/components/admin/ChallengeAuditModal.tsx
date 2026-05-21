@@ -15,7 +15,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { mdiDownload, mdiFileDocumentOutline, mdiFolderZipOutline } from '@mdi/js'
+import { mdiDownload, mdiFileDocumentOutline, mdiFolderZipOutline, mdiHammerWrench } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -66,6 +66,26 @@ export const ChallengeAuditModal: FC<ChallengeAuditModalProps> = (props) => {
     window.open(`/api/edit/games/${gameId}/challenges/${challengeId}/auditarchive`, '_blank')
   }
 
+  const [rebuilding, setRebuilding] = useState(false)
+  const onRebuild = async () => {
+    if (challengeId == null) return
+    setRebuilding(true)
+    try {
+      const resp = await api.edit.editRebuildChallengeImage(gameId, challengeId)
+      // Patch the in-memory audit so the build log + status badge refresh
+      // without a full reload.
+      setAudit((prev) => prev ? {
+        ...prev,
+        buildStatus: resp.data.buildStatus,
+        lastBuildLog: resp.data.lastBuildLog,
+      } : prev)
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setRebuilding(false)
+    }
+  }
+
   return (
     <Modal
       size="xl"
@@ -102,18 +122,65 @@ export const ChallengeAuditModal: FC<ChallengeAuditModalProps> = (props) => {
               <Text size="sm" c="dimmed">
                 {t('admin.content.audit.archive_available')}
               </Text>
-              <Button
-                size="xs"
-                leftSection={<Icon path={mdiDownload} size={0.9} />}
-                onClick={downloadArchive}
-              >
-                {t('admin.button.audit.download')}
-              </Button>
+              <Group gap="xs">
+                {audit.buildStatus && audit.buildStatus !== 'None' && (
+                  <Button
+                    size="xs"
+                    variant="default"
+                    leftSection={<Icon path={mdiHammerWrench} size={0.9} />}
+                    loading={rebuilding}
+                    onClick={onRebuild}
+                  >
+                    {t('admin.button.audit.rebuild')}
+                  </Button>
+                )}
+                <Button
+                  size="xs"
+                  leftSection={<Icon path={mdiDownload} size={0.9} />}
+                  onClick={downloadArchive}
+                >
+                  {t('admin.button.audit.download')}
+                </Button>
+              </Group>
             </Group>
           ) : (
             <Text size="sm" c="dimmed">
               {t('admin.content.audit.no_archive')}
             </Text>
+          )}
+
+          {audit.buildStatus && audit.buildStatus !== 'None' && (
+            <Paper p="sm" withBorder>
+              <Stack gap={4}>
+                <Group gap="xs">
+                  <Title order={6}>{t('admin.content.audit.build_log')}</Title>
+                  <Badge
+                    size="xs"
+                    color={audit.buildStatus === 'Success' ? 'teal'
+                      : audit.buildStatus === 'Failed' ? 'red'
+                      : 'yellow'}
+                    variant={audit.buildStatus === 'Failed' ? 'filled' : 'light'}
+                  >
+                    {audit.buildStatus}
+                  </Badge>
+                </Group>
+                {audit.lastBuildLog ? (
+                  <Code
+                    block
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      maxHeight: '30vh',
+                      overflowY: 'auto',
+                      fontSize: 11,
+                    }}
+                  >
+                    {audit.lastBuildLog}
+                  </Code>
+                ) : (
+                  <Text size="xs" c="dimmed">{t('admin.content.audit.no_build_log')}</Text>
+                )}
+              </Stack>
+            </Paper>
           )}
 
           <Divider />
