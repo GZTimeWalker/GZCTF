@@ -92,6 +92,11 @@
       "resume": "Resume",
       "delete": "Remove",
       "token": "Update token"
+    },
+    "repo_binding": {
+      "add": "Add repository",
+      "scan": "Scan now",
+      "delete": "Remove"
     }
   },
   "content": {
@@ -549,6 +554,28 @@
         "actions": "Actions"
       }
     },
+    "repo_binding": {
+      "title": "Repository bindings",
+      "subtitle": "Register github repositories and the platform discovers events from any .gzevent files inside, then imports each event's challenges.",
+      "add": "Add a repository",
+      "repo_url": "Repo URL",
+      "ref": "Branch / tag (optional)",
+      "token": "GitHub token (optional)",
+      "token_help": "Required for private repos. Encrypted at rest. Use a fine-grained PAT with Contents: read.",
+      "empty": "No repository bindings yet.",
+      "no_games": "No .gzevent manifests found in this repo yet.",
+      "has_token": "Token configured",
+      "delete_title": "Delete binding to {{repo}}?",
+      "delete_warning": "Child games are NOT removed — they detach from the binding and keep their data. You'll need to delete them manually if you want them gone.",
+      "column": {
+        "repo": "Repository",
+        "ref": "Ref",
+        "games": "Events discovered",
+        "last_scan": "Last scan",
+        "commit": "Commit",
+        "actions": "Actions"
+      }
+    },
     "watches": {
       "title": "Repository watch",
       "add": "Add a new watch",
@@ -704,6 +731,10 @@
       "created": "Watch created",
       "run_queued": "Watch will run on the next tick",
       "token_updated": "Token updated"
+    },
+    "repo_binding": {
+      "scanned": "Scan complete",
+      "summary": "{{games}} games, {{challenges}} challenges, {{failures}} failures"
     }
   },
   "placeholder": {

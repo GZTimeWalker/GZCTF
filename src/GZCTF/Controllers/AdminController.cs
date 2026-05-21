@@ -18,6 +18,8 @@ using GZCTF.Services.Config;
 using GZCTF.Services.Mail;
 using GZCTF.Storage.Interface;
 using GZCTF.Utils;
+using GZCTF.Models.Data;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -1352,4 +1354,142 @@ public class AdminController(
     private IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                        localizer[nameof(Resources.Program.Identity_UnknownError)]));
+
+    // =========================================================
+    //  Global repo bindings — multi-event ".gzevent" discovery
+    //  See /root/.claude/plans/compiled-squishing-neumann.md
+    // =========================================================
+
+    /// <summary>
+    /// List configured repo bindings with their child games.
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("RepoBindings")]
+    [ProducesResponseType(typeof(Models.Request.Edit.RepoBindingInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListRepoBindings(
+        [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var rows = await dbContext.GameRepoBindings.AsNoTracking()
+            .OrderByDescending(b => b.CreatedAtUtc)
+            .Select(b => new Models.Request.Edit.RepoBindingInfoModel
+            {
+                Id = b.Id,
+                RepoUrl = b.RepoUrl,
+                Ref = b.Ref,
+                CreatedAtUtc = b.CreatedAtUtc,
+                LastScanUtc = b.LastScanUtc,
+                LastCommitSha = b.LastCommitSha,
+                LastScanMessage = b.LastScanMessage,
+                HasGitHubToken = b.GitHubTokenEncrypted != null,
+                Games = dbContext.Games
+                    .Where(g => g.RepoBindingId == b.Id)
+                    .OrderBy(g => g.Title)
+                    .Select(g => new Models.Request.Edit.RepoBindingGameSummary
+                    {
+                        Id = g.Id,
+                        Title = g.Title,
+                        EventManifestPath = g.EventManifestPath
+                    })
+                    .ToArray()
+            })
+            .ToArrayAsync(token);
+        return Ok(rows);
+    }
+
+    /// <summary>
+    /// Register a new repo and immediately scan it for .gzevent manifests.
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("RepoBindings")]
+    [ProducesResponseType(typeof(Models.Request.Edit.RepoBindingScanResultModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateRepoBinding(
+        [FromBody] Models.Request.Edit.RepoBindingCreateModel model,
+        [FromServices] AppDbContext dbContext,
+        [FromServices] IDataProtectionProvider dataProtectionProvider,
+        [FromServices] Services.Transfer.RepoBindingDiscoveryService discovery,
+        CancellationToken token)
+    {
+        if (!Services.Transfer.GitHubLocator.TryParse(model.RepoUrl, model.Ref, overrideSubpath: null, out _, out var err))
+            return BadRequest(new RequestResponse(err ?? "Invalid github URL."));
+
+        var protector = dataProtectionProvider.CreateProtector(
+            Services.Transfer.GameRepoBindingProtection.Purpose);
+
+        var user = (await userManager.GetUserAsync(User))!;
+
+        var binding = new GameRepoBinding
+        {
+            RepoUrl = model.RepoUrl.Trim(),
+            Ref = string.IsNullOrWhiteSpace(model.Ref) ? null : model.Ref.Trim(),
+            GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
+                ? null
+                : protector.Protect(model.GitHubToken!.Trim()),
+            CreatedByUserId = user.Id
+        };
+        dbContext.GameRepoBindings.Add(binding);
+        await dbContext.SaveChangesAsync(token);
+
+        var result = await discovery.ScanAsync(binding.Id, user.Id, token);
+        return Ok(new Models.Request.Edit.RepoBindingScanResultModel
+        {
+            GamesCreated = result.GamesCreated,
+            GamesUpdated = result.GamesUpdated,
+            ChallengesImported = result.ChallengesImported,
+            ChallengesUpdated = result.ChallengesUpdated,
+            Failures = result.Failures,
+            Messages = result.Messages.ToArray()
+        });
+    }
+
+    /// <summary>
+    /// Trigger a re-scan of the binding now.
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("RepoBindings/{id:int}/Scan")]
+    [ProducesResponseType(typeof(Models.Request.Edit.RepoBindingScanResultModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ScanRepoBinding(
+        [FromRoute] int id,
+        [FromServices] Services.Transfer.RepoBindingDiscoveryService discovery,
+        CancellationToken token)
+    {
+        var user = (await userManager.GetUserAsync(User))!;
+        var result = await discovery.ScanAsync(id, user.Id, token);
+        return Ok(new Models.Request.Edit.RepoBindingScanResultModel
+        {
+            GamesCreated = result.GamesCreated,
+            GamesUpdated = result.GamesUpdated,
+            ChallengesImported = result.ChallengesImported,
+            ChallengesUpdated = result.ChallengesUpdated,
+            Failures = result.Failures,
+            Messages = result.Messages.ToArray()
+        });
+    }
+
+    /// <summary>
+    /// Remove a repo binding. Does NOT delete child games — admin handles those manually.
+    /// </summary>
+    [RequireAdmin]
+    [HttpDelete("RepoBindings/{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteRepoBinding(
+        [FromRoute] int id, [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var binding = await dbContext.GameRepoBindings.FirstOrDefaultAsync(b => b.Id == id, token);
+        if (binding is null)
+            return NotFound(new RequestResponse("Binding not found."));
+
+        // Detach child games (don't cascade-delete them).
+        var children = await dbContext.Games.Where(g => g.RepoBindingId == id).ToListAsync(token);
+        foreach (var g in children)
+        {
+            g.RepoBindingId = null;
+            g.EventManifestPath = null;
+        }
+
+        dbContext.GameRepoBindings.Remove(binding);
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
 }

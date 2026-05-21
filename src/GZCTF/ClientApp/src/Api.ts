@@ -2191,6 +2191,43 @@ export interface RejectChallengeModel {
   note?: string | null
 }
 
+/** Compact summary of a game discovered by a repo binding */
+export interface RepoBindingGameSummary {
+  id: number
+  title: string
+  eventManifestPath?: string | null
+}
+
+/** Row returned by GET /api/Admin/RepoBindings */
+export interface RepoBindingInfoModel {
+  id: number
+  repoUrl: string
+  ref?: string | null
+  createdAtUtc: string
+  lastScanUtc?: string | null
+  lastCommitSha?: string | null
+  lastScanMessage?: string | null
+  hasGitHubToken?: boolean
+  games: RepoBindingGameSummary[]
+}
+
+/** Body for POST /api/Admin/RepoBindings */
+export interface RepoBindingCreateModel {
+  repoUrl: string
+  ref?: string | null
+  githubToken?: string | null
+}
+
+/** Response from POST /api/Admin/RepoBindings or .../Scan */
+export interface RepoBindingScanResultModel {
+  gamesCreated: number
+  gamesUpdated: number
+  challengesImported: number
+  challengesUpdated: number
+  failures: number
+  messages: string[]
+}
+
 /** One file inside the audit archive */
 export interface ChallengeAuditFile {
   path: string
@@ -3980,6 +4017,77 @@ export class Api<
       data?: WriteupInfoModel | Promise<WriteupInfoModel>,
       options?: MutatorOptions,
     ) => mutate<WriteupInfoModel>(`/api/admin/writeups/${id}`, data, options),
+
+    /**
+     * @description List configured repo bindings
+     * @tags Admin
+     * @name AdminListRepoBindings
+     * @request GET:/api/admin/repobindings
+     */
+    adminListRepoBindings: (params: RequestParams = {}) =>
+      this.request<RepoBindingInfoModel[], RequestResponse>({
+        path: `/api/admin/repobindings`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    useAdminListRepoBindings: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<RepoBindingInfoModel[], RequestResponse>(
+        doFetch ? `/api/admin/repobindings` : null,
+        options,
+      ),
+
+    mutateAdminListRepoBindings: (
+      data?: RepoBindingInfoModel[] | Promise<RepoBindingInfoModel[]>,
+      options?: MutatorOptions,
+    ) => mutate<RepoBindingInfoModel[]>(`/api/admin/repobindings`, data, options),
+
+    /**
+     * @description Register a new repo binding (immediately scans for .gzevent manifests)
+     * @tags Admin
+     * @name AdminCreateRepoBinding
+     * @request POST:/api/admin/repobindings
+     */
+    adminCreateRepoBinding: (
+      data: RepoBindingCreateModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<RepoBindingScanResultModel, RequestResponse>({
+        path: `/api/admin/repobindings`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Trigger a re-scan of a repo binding now
+     * @tags Admin
+     * @name AdminScanRepoBinding
+     * @request POST:/api/admin/repobindings/{id}/scan
+     */
+    adminScanRepoBinding: (id: number, params: RequestParams = {}) =>
+      this.request<RepoBindingScanResultModel, RequestResponse>({
+        path: `/api/admin/repobindings/${id}/scan`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete a repo binding (does not remove child games)
+     * @tags Admin
+     * @name AdminDeleteRepoBinding
+     * @request DELETE:/api/admin/repobindings/{id}
+     */
+    adminDeleteRepoBinding: (id: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/repobindings/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
   };
   apiToken = {
     /**

@@ -273,5 +273,23 @@ public partial class Game
     /// </summary>
     public HashSet<Division>? Divisions { get; set; }
 
+    /// <summary>
+    /// Set when this game was auto-created by a <see cref="GameRepoBinding"/>
+    /// scan; null for hand-created games. Lets the discovery service find
+    /// and update its own children on re-scan.
+    /// </summary>
+    public int? RepoBindingId { get; set; }
+
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public GameRepoBinding? RepoBinding { get; set; }
+
+    /// <summary>
+    /// Repo-relative path of the <c>.gzevent</c> file that defined this
+    /// game (e.g. <c>quals/.gzevent</c>). Unique within a binding.
+    /// </summary>
+    [MaxLength(512)]
+    public string? EventManifestPath { get; set; }
+
     #endregion Db Relationship
 }
