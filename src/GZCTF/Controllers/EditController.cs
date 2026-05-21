@@ -1810,6 +1810,19 @@ public class EditController(
                 "This game already has a repo watch. Delete or update the existing one before adding another.",
                 StatusCodes.Status409Conflict));
 
+        // Games auto-created by a GameRepoBinding are managed at the
+        // global /admin/repo-bindings page. A per-game watch on top of
+        // that would create two competing polling sources.
+        var ownedByBinding = await dbContext.Games
+            .AsNoTracking()
+            .Where(g => g.Id == id)
+            .Select(g => g.RepoBindingId)
+            .FirstOrDefaultAsync(token);
+        if (ownedByBinding is not null)
+            return Conflict(new RequestResponse(
+                "This game was auto-created by a repo binding — manage it from /admin/repo-bindings instead.",
+                StatusCodes.Status409Conflict));
+
         var user = (await userManager.GetUserAsync(User))!;
 
         var watch = new RepoWatch

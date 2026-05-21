@@ -287,11 +287,63 @@ public sealed class ChallengeImportService(
         if (!absolute.StartsWith(canonicalPkg, StringComparison.Ordinal))
             throw new InvalidOperationException("'provide' path escapes the challenge package.");
 
-        if (!File.Exists(absolute))
-            throw new FileNotFoundException($"'provide' file not found: {rel}");
+        Models.Data.LocalFile blob;
+        if (File.Exists(absolute))
+        {
+            await using var fs = File.OpenRead(absolute);
+            blob = await blobRepository.CreateOrUpdateBlobFromStream(Path.GetFileName(absolute), fs, token);
+        }
+        else if (Directory.Exists(absolute))
+        {
+            // gzcli/TCP1P convention: `provide: ./dist` ships a directory
+            // of artifacts. Tar+gzip the directory contents into a single
+            // blob so participants download one archive.
+            var safe = NormalizeName(challenge.Title);
+            var tarballName = $"{safe}.tar.gz";
+            var tempPath = Path.Combine(Path.GetTempPath(), $"gzctf-provide-{Guid.NewGuid():N}.tar.gz");
+            const long maxBytes = 256L * 1024 * 1024;
+            try
+            {
+                long total = 0;
+                foreach (var f in Directory.EnumerateFiles(absolute, "*", SearchOption.AllDirectories))
+                {
+                    total += new FileInfo(f).Length;
+                    if (total > maxBytes)
+                        throw new InvalidOperationException(
+                            $"'provide' directory exceeds {maxBytes / (1024 * 1024)} MB (after tar+gzip cap).");
+                }
 
-        await using var fs = File.OpenRead(absolute);
-        var blob = await blobRepository.CreateOrUpdateBlobFromStream(Path.GetFileName(absolute), fs, token);
+                await using (var fs = File.Create(tempPath))
+                await using (var gz = new GZipStream(fs, CompressionLevel.Fastest, leaveOpen: false))
+                await using (var tar = new TarWriter(gz, leaveOpen: false))
+                {
+                    var dirCanonical = Path.GetFullPath(absolute) + Path.DirectorySeparatorChar;
+                    foreach (var f in Directory.EnumerateFiles(absolute, "*", SearchOption.AllDirectories))
+                    {
+                        var name = Path.GetRelativePath(absolute, f).Replace('\\', '/');
+                        if (name.StartsWith("..", StringComparison.Ordinal))
+                            continue; // path-traversal guard belt-and-suspenders
+                        var entry = new PaxTarEntry(TarEntryType.RegularFile, name)
+                        {
+                            DataStream = File.OpenRead(f)
+                        };
+                        await tar.WriteEntryAsync(entry, token);
+                        entry.DataStream?.Dispose();
+                    }
+                }
+
+                await using var rfs = File.OpenRead(tempPath);
+                blob = await blobRepository.CreateOrUpdateBlobFromStream(tarballName, rfs, token);
+            }
+            finally
+            {
+                try { File.Delete(tempPath); } catch { /* best effort */ }
+            }
+        }
+        else
+        {
+            throw new FileNotFoundException($"'provide' file not found: {rel}");
+        }
 
         await challengeRepository.UpdateAttachment(challenge,
             new AttachmentCreateModel
@@ -299,6 +351,15 @@ public sealed class ChallengeImportService(
                 AttachmentType = FileType.Local,
                 FileHash = blob.Hash
             }, token);
+    }
+
+    private static string NormalizeName(string s)
+    {
+        var sb = new System.Text.StringBuilder(s.Length);
+        foreach (var c in s)
+            sb.Append(char.IsLetterOrDigit(c) || c == '-' || c == '_' ? c : '_');
+        var safe = sb.ToString();
+        return safe.Length > 0 ? safe : "attachment";
     }
 
     // ---------------- helpers ----------------

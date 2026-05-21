@@ -1413,6 +1413,14 @@ public class AdminController(
         if (!Services.Transfer.GitHubLocator.TryParse(model.RepoUrl, model.Ref, overrideSubpath: null, out _, out var err))
             return BadRequest(new RequestResponse(err ?? "Invalid github URL."));
 
+        var normalizedUrl = model.RepoUrl.Trim();
+        var existing = await dbContext.GameRepoBindings
+            .FirstOrDefaultAsync(b => b.RepoUrl == normalizedUrl, token);
+        if (existing is not null)
+            return Conflict(new RequestResponse(
+                $"This repository is already registered (binding id {existing.Id}). Delete or scan that one instead.",
+                StatusCodes.Status409Conflict));
+
         var protector = dataProtectionProvider.CreateProtector(
             Services.Transfer.GameRepoBindingProtection.Purpose);
 
@@ -1420,7 +1428,7 @@ public class AdminController(
 
         var binding = new GameRepoBinding
         {
-            RepoUrl = model.RepoUrl.Trim(),
+            RepoUrl = normalizedUrl,
             Ref = string.IsNullOrWhiteSpace(model.Ref) ? null : model.Ref.Trim(),
             GitHubTokenEncrypted = string.IsNullOrWhiteSpace(model.GitHubToken)
                 ? null

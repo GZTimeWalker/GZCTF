@@ -91,6 +91,11 @@ public sealed class RepoWatchService(
     {
         var sync = new RepoWatchSync { RepoWatchId = watch.Id, RanAtUtc = DateTimeOffset.UtcNow };
 
+        // Lifted to method scope so the outer catch can sanitize against
+        // the plaintext value when decrypting succeeded but a later step
+        // surfaced an exception that might echo headers / URLs.
+        string? plaintextToken = null;
+
         try
         {
             if (!GitHubLocator.TryParse(watch.RepoUrl, watch.Ref, watch.Subpath, out var loc, out var parseError) || loc is null)
@@ -100,7 +105,6 @@ public sealed class RepoWatchService(
                 return;
             }
 
-            string? plaintextToken = null;
             if (!string.IsNullOrEmpty(watch.GitHubTokenEncrypted))
             {
                 try { plaintextToken = _protector.Unprotect(watch.GitHubTokenEncrypted); }
@@ -137,14 +141,14 @@ public sealed class RepoWatchService(
             sync.Skipped = result.Skipped;
             sync.Failed = result.Failed;
             if (result.Messages.Count > 0)
-                sync.ErrorMessage = TruncateMessages(result.Messages);
+                sync.ErrorMessage = Sanitize(TruncateMessages(result.Messages), plaintextToken);
 
             watch.LastCommitSha = sha;
         }
         catch (Exception ex)
         {
             logger.LogWarning(ex, "RepoWatchService: watch {WatchId} failed", watch.Id);
-            sync.ErrorMessage = Truncate(ex.Message, 2000);
+            sync.ErrorMessage = Sanitize(Truncate(ex.Message, 2000), plaintextToken);
             sync.Failed = Math.Max(sync.Failed, 1);
         }
         finally
@@ -169,5 +173,12 @@ public sealed class RepoWatchService(
     {
         if (string.IsNullOrEmpty(s)) return string.Empty;
         return s.Length <= max ? s : s[..max];
+    }
+
+    static string Sanitize(string? raw, string? secret)
+    {
+        if (string.IsNullOrEmpty(raw)) return string.Empty;
+        if (string.IsNullOrEmpty(secret)) return raw;
+        return raw.Replace(secret, "***");
     }
 }

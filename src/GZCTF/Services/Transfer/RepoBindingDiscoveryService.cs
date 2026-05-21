@@ -47,6 +47,13 @@ public sealed class RepoBindingDiscoveryService(
 
     readonly IDataProtector _protector = dataProtectionProvider.CreateProtector(GameRepoBindingProtection.Purpose);
 
+    static string Sanitize(string? raw, string? secret)
+    {
+        if (string.IsNullOrEmpty(raw)) return string.Empty;
+        if (string.IsNullOrEmpty(secret)) return raw;
+        return raw.Replace(secret, "***");
+    }
+
     public async Task<RepoBindingScanResult> ScanAsync(int bindingId, Guid adminUserId, CancellationToken token)
     {
         var binding = await context.GameRepoBindings.FirstOrDefaultAsync(b => b.Id == bindingId, token);
@@ -138,7 +145,7 @@ public sealed class RepoBindingDiscoveryService(
                     catch (Exception ex)
                     {
                         failures++;
-                        messages.Add($"{rel}: invalid YAML — {ex.Message}");
+                        messages.Add(Sanitize($"{rel}: invalid YAML — {ex.Message}", plaintextToken));
                         continue;
                     }
                     if (manifest is null || string.IsNullOrWhiteSpace(manifest.Title))
@@ -169,20 +176,21 @@ public sealed class RepoBindingDiscoveryService(
                     challengesUpdated += importResult.Updated;
                     failures += importResult.Failed;
                     foreach (var m in importResult.Messages)
-                        messages.Add($"{rel}: {m}");
+                        messages.Add(Sanitize($"{rel}: {m}", plaintextToken));
                 }
                 catch (Exception ex)
                 {
                     failures++;
                     logger.LogError(ex, "RepoBindingDiscovery: failed at {Manifest}", manifestPath);
-                    messages.Add($"{manifestPath}: {ex.Message}");
+                    messages.Add(Sanitize($"{manifestPath}: {ex.Message}", plaintextToken));
                 }
             }
 
             binding.LastScanUtc = DateTimeOffset.UtcNow;
             binding.LastCommitSha = sha;
-            binding.LastScanMessage =
-                $"games +{gamesCreated} ~{gamesUpdated}, challenges +{challengesImported} ~{challengesUpdated}, failures {failures}";
+            binding.LastScanMessage = Sanitize(
+                $"games +{gamesCreated} ~{gamesUpdated}, challenges +{challengesImported} ~{challengesUpdated}, failures {failures}",
+                plaintextToken);
             await context.SaveChangesAsync(token);
             return new(gamesCreated, gamesUpdated, challengesImported, challengesUpdated, failures, messages);
         }
@@ -190,10 +198,10 @@ public sealed class RepoBindingDiscoveryService(
         {
             logger.LogError(ex, "RepoBindingDiscovery: top-level error for binding {Id}", bindingId);
             binding.LastScanUtc = DateTimeOffset.UtcNow;
-            binding.LastScanMessage = ex.Message;
+            binding.LastScanMessage = Sanitize(ex.Message, plaintextToken);
             await context.SaveChangesAsync(token);
             return new(gamesCreated, gamesUpdated, challengesImported, challengesUpdated, failures + 1,
-                [.. messages, ex.Message]);
+                [.. messages, Sanitize(ex.Message, plaintextToken)]);
         }
         finally
         {

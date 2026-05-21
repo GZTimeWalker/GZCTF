@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using GZCTF.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Models.Data;
 
@@ -15,6 +16,7 @@ namespace GZCTF.Models.Data;
 /// game whose admin already exists. This shape creates games
 /// automatically and lives at the platform level.
 /// </summary>
+[Index(nameof(RepoUrl), IsUnique = true)]
 public sealed class GameRepoBinding
 {
     [Key]
