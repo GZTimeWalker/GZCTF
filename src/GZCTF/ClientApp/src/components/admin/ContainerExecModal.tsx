@@ -37,6 +37,16 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
     term.write(bytes)
   }
 
+  // SignalR's JSON protocol encodes server-side `byte[]` chunks as
+  // base64 strings — decode to Uint8Array before piping into xterm so
+  // we don't render the literal "Ww==Cg==..." gibberish.
+  const decodeBase64 = (s: string): Uint8Array => {
+    const raw = atob(s)
+    const out = new Uint8Array(raw.length)
+    for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i)
+    return out
+  }
+
   const closeSession = async () => {
     const hub = hubRef.current
     const sid = sessionIdRef.current
@@ -95,7 +105,9 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
               next: (chunk) => {
                 if (disposed) return
                 if (typeof chunk === 'string') {
-                  term.write(chunk)
+                  // SignalR JSON protocol gives us base64-encoded bytes.
+                  try { writeBytes(term, decodeBase64(chunk)) }
+                  catch { term.write(chunk) }
                 } else if (chunk instanceof Uint8Array) {
                   writeBytes(term, chunk)
                 } else if (Array.isArray(chunk)) {
@@ -120,11 +132,17 @@ export const ContainerExecModal: FC<ContainerExecModalProps> = (props) => {
           }
         })()
 
-        // Pump terminal -> server.
+        // Pump terminal -> server. SignalR JSON expects byte[] parameters
+        // as base64 strings, so encode before sending — JSON arrays of
+        // numbers get silently dropped (the hub method's byte[] binds to
+        // null and nothing reaches stdin).
         term.onData((data) => {
           if (!sessionIdRef.current) return
           const bytes = new TextEncoder().encode(data)
-          hub.invoke('Input', sessionIdRef.current, Array.from(bytes)).catch(() => { /* ignore */ })
+          let bin = ''
+          for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i])
+          const b64 = btoa(bin)
+          hub.invoke('Input', sessionIdRef.current, b64).catch(() => { /* ignore */ })
         })
 
         // Resize handler.
