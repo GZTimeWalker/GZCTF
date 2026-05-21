@@ -1,6 +1,6 @@
 import { Card, LoadingOverlay, Stack, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
+import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye, mdiUpload } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -71,6 +71,14 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       title: t('game.tab.scoreboard'),
       path: 'scoreboard',
       link: 'scoreboard',
+      requireJoin: false,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiUpload,
+      title: t('game.tab.submit', 'Submit'),
+      path: 'submit',
+      link: 'submit',
       requireJoin: false,
       requireRole: Role.User,
     },

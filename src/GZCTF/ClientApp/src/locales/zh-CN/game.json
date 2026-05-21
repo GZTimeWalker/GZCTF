@@ -264,7 +264,8 @@
       "submissions": "提交记录",
       "traffic": "流量捕获"
     },
-    "scoreboard": "积分总榜"
+    "scoreboard": "积分总榜",
+    "submit": "提交题目"
   },
   "tag": {
     "hidden": "比赛已隐藏",
