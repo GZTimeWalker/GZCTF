@@ -97,6 +97,13 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();
             builder.Services.AddScoped<GameImportService>();
+            builder.Services.AddScoped<ChallengeImportService>();
+
+            builder.Services.AddHttpClient("GitHubApi", client =>
+            {
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("GZCTF");
+                client.Timeout = TimeSpan.FromMinutes(2);
+            });
 
             builder.Services.AddChannel<Submission>();
             builder.Services.AddChannel<CacheRequest>();
@@ -111,6 +118,7 @@ internal static class ServicesExtension
             builder.Services.AddHostedService<CronJobService>();
             builder.Services.AddHostedService<HoneypotPortListenerService>();
             builder.Services.AddHostedService<HoneypotChainDetectorService>();
+            builder.Services.AddHostedService<RepoWatchService>();
         }
 
         internal void AddWebServices()

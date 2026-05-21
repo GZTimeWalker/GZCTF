@@ -352,7 +352,7 @@ public class GameRepository(
             var challengeRecords = await Context.GameChallenges
                 .AsNoTracking()
                 .IgnoreAutoIncludes()
-                .Where(c => c.GameId == game.Id && c.IsEnabled)
+                .Where(c => c.GameId == game.Id && c.IsEnabled && c.ReviewStatus == ChallengeReviewStatus.Active)
                 .OrderBy(c => c.Category)
                 .ThenBy(c => c.Title)
                 .Select(c => new ChallengeRecord

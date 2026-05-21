@@ -42,6 +42,8 @@ public class EditController(
     IBlobRepository blobService,
     GameExportService exportService,
     GameImportService importService,
+    ChallengeImportService challengeImportService,
+    AppDbContext dbContext,
     IDivisionRepository divisionRepository,
     IStringLocalizer<Program> localizer) : Controller
 {
@@ -1416,6 +1418,314 @@ public class EditController(
         dbContext.EventManagers.Remove(manager);
         await dbContext.SaveChangesAsync(token);
 
+        return Ok();
+    }
+
+    // =========================================================
+    //  Challenge import / review / repo-watch endpoints
+    //  See /root/.claude/plans/compiled-squishing-neumann.md
+    // =========================================================
+
+    const long MaxTarballBytes = 64L * 1024 * 1024;
+
+    /// <summary>
+    /// Submit a single-challenge tarball for admin review. Any logged-in
+    /// user may call this; the challenge lands with
+    /// <see cref="ChallengeReviewStatus.Pending"/> and is hidden from
+    /// participants until an admin approves.
+    /// </summary>
+    [RequireUser]
+    [HttpPost("Games/{id:int}/Challenges/Submit")]
+    [RequestSizeLimit(MaxTarballBytes)]
+    [ProducesResponseType(typeof(ChallengeImportResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SubmitChallenge(
+        [FromRoute] int id, IFormFile archive, CancellationToken token)
+    {
+        if (archive is null || archive.Length == 0)
+            return BadRequest(new RequestResponse("Archive is required."));
+        if (archive.Length > MaxTarballBytes)
+            return BadRequest(new RequestResponse("Archive exceeds 64 MB."));
+
+        var user = (await userManager.GetUserAsync(User))!;
+
+        await using var stream = archive.OpenReadStream();
+        var result = await challengeImportService.ImportFromArchiveAsync(
+            stream, new ChallengeImportOptions(id, user.Id, AutoApprove: false), token);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Admin / game-admin one-shot tarball import; auto-approves the
+    /// resulting challenges.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPost("Games/{id:int}/Challenges/Import")]
+    [RequestSizeLimit(MaxTarballBytes)]
+    [ProducesResponseType(typeof(ChallengeImportResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ImportChallenge(
+        [FromRoute] int id, IFormFile archive, CancellationToken token)
+    {
+        if (archive is null || archive.Length == 0)
+            return BadRequest(new RequestResponse("Archive is required."));
+
+        var user = (await userManager.GetUserAsync(User))!;
+
+        await using var stream = archive.OpenReadStream();
+        var result = await challengeImportService.ImportFromArchiveAsync(
+            stream, new ChallengeImportOptions(id, user.Id, AutoApprove: true), token);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// One-shot bulk import from a public github repo. Auto-approves when
+    /// the caller is admin or a game-admin for this game; lands as
+    /// pending otherwise.
+    /// </summary>
+    [RequireUser]
+    [HttpPost("Games/{id:int}/Challenges/ImportFromGitHub")]
+    [ProducesResponseType(typeof(ChallengeImportResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ImportChallengeFromGitHub(
+        [FromRoute] int id, [FromBody] ImportFromGitHubModel model, CancellationToken token)
+    {
+        if (!GitHubLocator.TryParse(model.RepoUrl, model.Ref, model.Subpath, out var loc, out var err) || loc is null)
+            return BadRequest(new RequestResponse(err ?? "Invalid github URL."));
+
+        var user = (await userManager.GetUserAsync(User))!;
+        var autoApprove = user.Role == Role.Admin
+            || await dbContext.EventManagers.AnyAsync(em => em.UserId == user.Id && em.GameId == id, token);
+
+        var result = await challengeImportService.ImportFromGitHubAsync(
+            loc, new ChallengeImportOptions(id, user.Id, autoApprove), token);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// List challenges awaiting admin review for this game.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/PendingChallenges")]
+    [ProducesResponseType(typeof(PendingChallengeModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListPendingChallenges([FromRoute] int id, CancellationToken token)
+    {
+        var rows = await dbContext.GameChallenges
+            .AsNoTracking()
+            .Where(c => c.GameId == id && c.ReviewStatus == ChallengeReviewStatus.Pending)
+            .OrderByDescending(c => c.SubmittedAtUtc)
+            .Select(c => new PendingChallengeModel
+            {
+                Id = c.Id,
+                Title = c.Title,
+                Category = c.Category,
+                Type = c.Type,
+                SubmittedAtUtc = c.SubmittedAtUtc,
+                SubmittedByUserId = c.SubmittedByUserId,
+                SubmittedByUserName = c.SubmittedByUserId != null
+                    ? dbContext.Users.Where(u => u.Id == c.SubmittedByUserId).Select(u => u.UserName).FirstOrDefault()
+                    : null
+            })
+            .ToArrayAsync(token);
+        return Ok(rows);
+    }
+
+    /// <summary>
+    /// Approve a pending challenge. Optionally enables it in one shot.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPost("Games/{id:int}/Challenges/{cId:int}/Approve")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ApproveChallenge(
+        [FromRoute] int id, [FromRoute] int cId, CancellationToken token)
+    {
+        var challenge = await dbContext.GameChallenges
+            .FirstOrDefaultAsync(c => c.GameId == id && c.Id == cId, token);
+        if (challenge is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        challenge.ReviewStatus = ChallengeReviewStatus.Active;
+        challenge.ReviewedAtUtc = DateTimeOffset.UtcNow;
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Reject a pending (or active) challenge. Persists the optional note
+    /// for audit. Challenge stays in the DB but is hidden from participants.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPost("Games/{id:int}/Challenges/{cId:int}/Reject")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RejectChallenge(
+        [FromRoute] int id, [FromRoute] int cId,
+        [FromBody] RejectChallengeModel model, CancellationToken token)
+    {
+        var challenge = await dbContext.GameChallenges
+            .FirstOrDefaultAsync(c => c.GameId == id && c.Id == cId, token);
+        if (challenge is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        challenge.ReviewStatus = ChallengeReviewStatus.Rejected;
+        challenge.ReviewedAtUtc = DateTimeOffset.UtcNow;
+        challenge.ReviewNote = model.Note;
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
+
+    /// <summary>
+    /// List configured repo watches for this game with last sync info.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpGet("Games/{id:int}/Watches")]
+    [ProducesResponseType(typeof(RepoWatchInfoModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListRepoWatches([FromRoute] int id, CancellationToken token)
+    {
+        var rows = await dbContext.RepoWatches.AsNoTracking()
+            .Where(w => w.GameId == id)
+            .OrderByDescending(w => w.CreatedAtUtc)
+            .Select(w => new RepoWatchInfoModel
+            {
+                Id = w.Id,
+                RepoUrl = w.RepoUrl,
+                Ref = w.Ref,
+                Subpath = w.Subpath,
+                IntervalSeconds = w.IntervalSeconds,
+                Status = w.Status,
+                NextRunUtc = w.NextRunUtc,
+                LastRunUtc = w.LastRunUtc,
+                LastCommitSha = w.LastCommitSha,
+                LastSync = dbContext.RepoWatchSyncs
+                    .Where(s => s.RepoWatchId == w.Id)
+                    .OrderByDescending(s => s.RanAtUtc)
+                    .Select(s => new RepoWatchSyncModel
+                    {
+                        RanAtUtc = s.RanAtUtc,
+                        CommitSha = s.CommitSha,
+                        Imported = s.Imported,
+                        Updated = s.Updated,
+                        Skipped = s.Skipped,
+                        Failed = s.Failed,
+                        ErrorMessage = s.ErrorMessage
+                    })
+                    .FirstOrDefault()
+            })
+            .ToArrayAsync(token);
+        return Ok(rows);
+    }
+
+    /// <summary>
+    /// Create a new repo watch. Validates the URL up front and clamps the
+    /// interval; schedules the first run immediately when requested.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPost("Games/{id:int}/Watches")]
+    [ProducesResponseType(typeof(RepoWatchInfoModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateRepoWatch(
+        [FromRoute] int id, [FromBody] RepoWatchCreateModel model, CancellationToken token)
+    {
+        if (!GitHubLocator.TryParse(model.RepoUrl, model.Ref, model.Subpath, out _, out var err))
+            return BadRequest(new RequestResponse(err ?? "Invalid github URL."));
+
+        var user = (await userManager.GetUserAsync(User))!;
+
+        var watch = new RepoWatch
+        {
+            GameId = id,
+            RepoUrl = model.RepoUrl.Trim(),
+            Ref = string.IsNullOrWhiteSpace(model.Ref) ? null : model.Ref.Trim(),
+            Subpath = string.IsNullOrWhiteSpace(model.Subpath) ? null : model.Subpath.Trim().TrimEnd('/'),
+            IntervalSeconds = Math.Clamp(model.IntervalSeconds, 60, 86400),
+            Status = RepoWatchStatus.Active,
+            NextRunUtc = model.RunImmediately ? DateTimeOffset.UtcNow : DateTimeOffset.UtcNow.AddSeconds(model.IntervalSeconds),
+            CreatedByUserId = user.Id
+        };
+
+        dbContext.RepoWatches.Add(watch);
+        await dbContext.SaveChangesAsync(token);
+
+        return Ok(new RepoWatchInfoModel
+        {
+            Id = watch.Id,
+            RepoUrl = watch.RepoUrl,
+            Ref = watch.Ref,
+            Subpath = watch.Subpath,
+            IntervalSeconds = watch.IntervalSeconds,
+            Status = watch.Status,
+            NextRunUtc = watch.NextRunUtc,
+            LastRunUtc = watch.LastRunUtc,
+            LastCommitSha = watch.LastCommitSha
+        });
+    }
+
+    /// <summary>
+    /// Update an existing repo watch (interval / ref / subpath / pause-resume).
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPut("Games/{id:int}/Watches/{watchId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateRepoWatch(
+        [FromRoute] int id, [FromRoute] int watchId,
+        [FromBody] RepoWatchUpdateModel model, CancellationToken token)
+    {
+        var watch = await dbContext.RepoWatches.FirstOrDefaultAsync(
+            w => w.Id == watchId && w.GameId == id, token);
+        if (watch is null)
+            return NotFound(new RequestResponse("Watch not found."));
+
+        if (model.Ref is not null) watch.Ref = string.IsNullOrWhiteSpace(model.Ref) ? null : model.Ref.Trim();
+        if (model.Subpath is not null) watch.Subpath = string.IsNullOrWhiteSpace(model.Subpath) ? null : model.Subpath.Trim().TrimEnd('/');
+        if (model.IntervalSeconds is { } iv) watch.IntervalSeconds = Math.Clamp(iv, 60, 86400);
+        if (model.Status is { } status) watch.Status = status;
+
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Delete a repo watch. Does NOT delete the challenges already imported by it.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpDelete("Games/{id:int}/Watches/{watchId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteRepoWatch(
+        [FromRoute] int id, [FromRoute] int watchId, CancellationToken token)
+    {
+        var watch = await dbContext.RepoWatches.FirstOrDefaultAsync(
+            w => w.Id == watchId && w.GameId == id, token);
+        if (watch is null)
+            return NotFound(new RequestResponse("Watch not found."));
+
+        dbContext.RepoWatches.Remove(watch);
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Force a sync now by setting <c>NextRunUtc = UtcNow</c>. The watcher
+    /// will pick it up on the next 30-second tick.
+    /// </summary>
+    [RequireGameAdmin]
+    [HttpPost("Games/{id:int}/Watches/{watchId:int}/Run")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RunRepoWatchNow(
+        [FromRoute] int id, [FromRoute] int watchId, CancellationToken token)
+    {
+        var watch = await dbContext.RepoWatches.FirstOrDefaultAsync(
+            w => w.Id == watchId && w.GameId == id, token);
+        if (watch is null)
+            return NotFound(new RequestResponse("Watch not found."));
+
+        watch.NextRunUtc = DateTimeOffset.UtcNow;
+        await dbContext.SaveChangesAsync(token);
         return Ok();
     }
 }

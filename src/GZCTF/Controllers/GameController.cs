@@ -1629,7 +1629,8 @@ public class GameController(
 
         var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
-        if (instance is null || !instance.Challenge.IsEnabled)
+        if (instance is null || !instance.Challenge.IsEnabled ||
+            instance.Challenge.ReviewStatus != ChallengeReviewStatus.Active)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
@@ -1691,7 +1692,8 @@ public class GameController(
 
         var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
-        if (instance is null || !instance.Challenge.IsEnabled)
+        if (instance is null || !instance.Challenge.IsEnabled ||
+            instance.Challenge.ReviewStatus != ChallengeReviewStatus.Active)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 
@@ -1742,7 +1744,8 @@ public class GameController(
 
         var instance = await gameInstanceRepository.GetInstance(context.Participation!, challengeId, token);
 
-        if (instance is null || !instance.Challenge.IsEnabled)
+        if (instance is null || !instance.Challenge.IsEnabled ||
+            instance.Challenge.ReviewStatus != ChallengeReviewStatus.Active)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)],
                 StatusCodes.Status404NotFound));
 

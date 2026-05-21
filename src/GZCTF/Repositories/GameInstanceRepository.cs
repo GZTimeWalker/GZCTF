@@ -41,7 +41,7 @@ public class GameInstanceRepository(
 
         var challenge = instance.Challenge;
 
-        if (!challenge.IsEnabled)
+        if (!challenge.IsEnabled || challenge.ReviewStatus != ChallengeReviewStatus.Active)
         {
             await transaction.RollbackAsync(token);
             return null;
