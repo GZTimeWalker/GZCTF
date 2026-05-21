@@ -20,7 +20,10 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDeleteOutline, mdiKeyOutline, mdiPause, mdiPlay, mdiPlus, mdiRefresh } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { FC, useState } from 'react'
+
+dayjs.extend(relativeTime)
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
