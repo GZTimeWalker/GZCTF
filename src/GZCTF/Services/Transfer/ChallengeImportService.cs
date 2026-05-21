@@ -198,7 +198,7 @@ public sealed class ChallengeImportService(
             {
                 Title = model.Name!,
                 Type = type,
-                Category = ParseCategory(model.Category)
+                Category = ParseCategory(model.Category, packageDir)
             };
             challenge = await challengeRepository.CreateChallenge(game, challenge, token);
             kind = OutcomeKind.Created;
@@ -209,7 +209,7 @@ public sealed class ChallengeImportService(
             kind = OutcomeKind.Updated;
         }
 
-        ApplyYamlToChallenge(challenge, model, type, image, opts);
+        ApplyYamlToChallenge(challenge, model, type, image, opts, packageDir);
         if (originalArchiveBlobPath is not null)
             challenge.OriginalArchiveBlobPath = originalArchiveBlobPath;
         await context.SaveChangesAsync(token);
@@ -222,10 +222,10 @@ public sealed class ChallengeImportService(
 
     private static void ApplyYamlToChallenge(
         GameChallenge c, ChallengeYamlModel m, ChallengeType type, string? image,
-        ChallengeImportOptions opts)
+        ChallengeImportOptions opts, string? packageDir = null)
     {
         c.Title = m.Name!;
-        c.Category = ParseCategory(m.Category);
+        c.Category = ParseCategory(m.Category, packageDir);
         c.Content = string.IsNullOrEmpty(m.Author)
             ? (m.Description ?? string.Empty)
             : $"Author: **{m.Author}**\n\n{m.Description ?? string.Empty}";
@@ -528,12 +528,26 @@ public sealed class ChallengeImportService(
         }
     }
 
-    private static ChallengeCategory ParseCategory(string? raw)
+    private static ChallengeCategory ParseCategory(string? raw, string? packageDir = null)
     {
-        if (string.IsNullOrWhiteSpace(raw)) return ChallengeCategory.Misc;
-        return Enum.TryParse<ChallengeCategory>(raw, ignoreCase: true, out var cat)
-            ? cat
-            : ChallengeCategory.Misc;
+        if (!string.IsNullOrWhiteSpace(raw)
+            && Enum.TryParse<ChallengeCategory>(raw, ignoreCase: true, out var explicit_))
+            return explicit_;
+
+        // gzcli / TCP1P convention: challenge.yml omits 'category:' and the
+        // category is the parent directory name (Crypto/<slug>/challenge.yml).
+        // Walk up to three levels (challenge dir, parent, grandparent) looking
+        // for a directory name that parses to a known category.
+        if (!string.IsNullOrEmpty(packageDir))
+        {
+            var cur = new DirectoryInfo(packageDir).Parent;
+            for (int i = 0; i < 3 && cur is not null; i++, cur = cur.Parent)
+            {
+                if (Enum.TryParse<ChallengeCategory>(cur.Name, ignoreCase: true, out var inferred))
+                    return inferred;
+            }
+        }
+        return ChallengeCategory.Misc;
     }
 
     private static bool IsLocalDockerfilePath(string image)
