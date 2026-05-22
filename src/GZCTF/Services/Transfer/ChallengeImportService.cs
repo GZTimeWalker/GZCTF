@@ -39,7 +39,7 @@ public sealed class ChallengeImportService(
     IBlobStorage blobStorage,
     AppDbContext context,
     IHttpClientFactory httpClientFactory,
-    IChallengeImageBuilder imageBuilder,
+    IChallengeBuildQueue buildQueue,
     ILogger<ChallengeImportService> logger)
 {
     static readonly HashSet<string> IgnoredDirNames = new(StringComparer.OrdinalIgnoreCase)
@@ -180,25 +180,13 @@ public sealed class ChallengeImportService(
         if (!Enum.TryParse<ChallengeType>(model.Type ?? "", true, out var type))
             return new(OutcomeKind.Skipped, $"Unknown challenge type '{model.Type}'");
 
-        // Container challenges with a local-path image trigger the
-        // auto-build pipeline; non-container or registry-published refs
-        // pass through unchanged.
+        // Decide what build intent this challenge implies — distinct
+        // from "what status should we set right now". We resolve before
+        // touching the DB so the persisted state is internally
+        // consistent: a row never appears in BuildStatus=Queued without
+        // an actual job in the channel.
         var image = model.Container?.ContainerImage?.Trim();
-        ChallengeBuildResult? buildResult = null;
-        if (type.IsContainer() && !string.IsNullOrEmpty(image) && IsLocalDockerfilePath(image))
-        {
-            var (contextDir, dockerfile) = ResolveBuildContext(packageDir, image);
-            if (!File.Exists(Path.Combine(contextDir, dockerfile)))
-                return new(OutcomeKind.Skipped,
-                    $"'{model.Name}': Dockerfile not found at '{image}'.");
-
-            buildResult = await imageBuilder.BuildAsync(
-                new ChallengeBuildRequest(game.Id, model.Name, contextDir, dockerfile), token);
-            if (buildResult.Success && buildResult.ImageTag is not null)
-                image = buildResult.ImageTag;
-            // On failure we still upsert the challenge so admin can see
-            // the diagnostic — image stays whatever was there or empty.
-        }
+        var intent = ResolveBuildIntent(type, image, packageDir);
 
         var existing = await context.GameChallenges
             .Include(c => c.Flags)
@@ -224,13 +212,24 @@ public sealed class ChallengeImportService(
             kind = OutcomeKind.Updated;
         }
 
-        if (buildResult is not null)
+        // Apply build-intent decision to the challenge row up-front.
+        // Note: enqueue happens AFTER SaveChanges so the row id exists.
+        switch (intent.Kind)
         {
-            challenge.BuildStatus = buildResult.Success
-                ? ChallengeBuildStatus.Success
-                : ChallengeBuildStatus.Failed;
-            challenge.BuildImageDigest = buildResult.Digest;
-            challenge.LastBuildLog = buildResult.LogTail;
+            case BuildIntentKind.NotApplicable:
+                challenge.BuildStatus = ChallengeBuildStatus.NotApplicable;
+                challenge.LastBuildLog = null;
+                break;
+            case BuildIntentKind.MissingDockerfile:
+                challenge.BuildStatus = ChallengeBuildStatus.MissingDockerfile;
+                challenge.LastBuildLog = intent.Diagnostic;
+                break;
+            case BuildIntentKind.BuildNeeded:
+                challenge.BuildStatus = ChallengeBuildStatus.Queued;
+                challenge.LastBuildLog = null;
+                break;
+            // None: leave whatever was there (manual challenges keep
+            // their prior status).
         }
 
         ApplyYamlToChallenge(challenge, model, type, image, opts, packageDir);
@@ -241,11 +240,93 @@ public sealed class ChallengeImportService(
         await SyncFlagsAsync(challenge, model.Flags ?? [], token);
         await SyncAttachmentAsync(challenge, packageDir, model.Provide, token);
 
-        if (buildResult is { Success: false } br)
+        if (intent.Kind == BuildIntentKind.BuildNeeded)
+        {
+            // Snapshot the context outside the import's temp workdir
+            // because that workdir is deleted as soon as the import
+            // returns. The queue worker owns the snapshot lifecycle.
+            try
+            {
+                var snap = PrepareBuildSnapshot(intent.ContextDir!);
+                buildQueue.Enqueue(new ChallengeBuildJob(
+                    challenge.Id, game.Id, model.Name!,
+                    snap, intent.Dockerfile!,
+                    BuildTrigger.Import));
+            }
+            catch (Exception ex)
+            {
+                // Snapshot/enqueue failed — surface as a build failure
+                // so the operator sees something other than a perpetual
+                // "Queued" badge.
+                challenge.BuildStatus = ChallengeBuildStatus.Failed;
+                challenge.LastBuildLog = $"Failed to enqueue build: {ex.Message}";
+                await context.SaveChangesAsync(token);
+                logger.LogError(ex, "ChallengeImportService: enqueue failed for {Challenge}", model.Name);
+                return new(OutcomeKind.Skipped,
+                    $"'{model.Name}': failed to enqueue build — {ex.Message}");
+            }
+        }
+
+        if (intent.Kind == BuildIntentKind.MissingDockerfile)
             return new(OutcomeKind.Skipped,
-                $"'{model.Name}': image build failed — {br.ErrorMessage}");
+                $"'{model.Name}': Dockerfile not found at '{image}'.");
 
         return new(kind, null);
+    }
+
+    private enum BuildIntentKind { None, NotApplicable, MissingDockerfile, BuildNeeded }
+
+    private sealed record BuildIntent(
+        BuildIntentKind Kind,
+        string? ContextDir = null,
+        string? Dockerfile = null,
+        string? Diagnostic = null);
+
+    /// <summary>
+    /// Decide whether the imported challenge should trigger an image
+    /// build, ship as-is on a registry image, or surface a "Dockerfile
+    /// missing" diagnostic. Splitting this out of the inline check
+    /// inside <see cref="ImportOneAsync"/> makes the three new build
+    /// statuses (NotApplicable / Queued / MissingDockerfile) explicit
+    /// and testable.
+    /// </summary>
+    private static BuildIntent ResolveBuildIntent(ChallengeType type, string? image, string packageDir)
+    {
+        if (!type.IsContainer() || string.IsNullOrEmpty(image))
+            return new BuildIntent(BuildIntentKind.None);
+
+        if (!IsLocalDockerfilePath(image))
+            return new BuildIntent(BuildIntentKind.NotApplicable);
+
+        var (contextDir, dockerfile) = ResolveBuildContext(packageDir, image);
+        if (!File.Exists(Path.Combine(contextDir, dockerfile)))
+            return new BuildIntent(BuildIntentKind.MissingDockerfile,
+                Diagnostic: $"Dockerfile not found at '{image}' (resolved to '{Path.Combine(contextDir, dockerfile)}').");
+
+        return new BuildIntent(BuildIntentKind.BuildNeeded, contextDir, dockerfile);
+    }
+
+    /// <summary>
+    /// Copy <paramref name="contextDir"/> to a fresh temp dir that
+    /// outlives the import scan. Returned path is the new context root;
+    /// the build queue worker is responsible for deleting it after the
+    /// build completes (regardless of outcome).
+    /// </summary>
+    private static string PrepareBuildSnapshot(string contextDir)
+    {
+        var dst = Path.Combine(Path.GetTempPath(),
+            "gzctf-build-" + Guid.NewGuid().ToString("N"));
+        CopyDirRecursive(contextDir, dst);
+        return dst;
+    }
+
+    private static void CopyDirRecursive(string src, string dst)
+    {
+        Directory.CreateDirectory(dst);
+        foreach (var f in Directory.EnumerateFiles(src))
+            File.Copy(f, Path.Combine(dst, Path.GetFileName(f)));
+        foreach (var d in Directory.EnumerateDirectories(src))
+            CopyDirRecursive(d, Path.Combine(dst, Path.GetFileName(d)));
     }
 
     /// <summary>

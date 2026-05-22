@@ -30,6 +30,7 @@
       "new": "New Challenge",
       "pending": "Pending Review",
       "watches": "Repo Watches",
+      "bulk_rebuild": "Rebuild failed",
       "next": "Next",
       "preview": "Preview",
       "previous": "Previous",
@@ -169,6 +170,7 @@
           "title": "Ouch! This game has no challenge yet."
         },
         "enable": "Are you sure you want to enable challenge {{name}}?",
+        "bulk_rebuild_confirm": "Enqueue rebuilds for the {{count}} challenge(s) with a Failed or Missing-Dockerfile status?",
         "flag": {
           "create": "Create flags. Multiple flags should be separated by lines, one flag per line.<br/> Each challenge can have multiple flags. Any configured flags can be accepted.",
           "delete": "Are you sure you want to delete this flag?",
@@ -546,14 +548,41 @@
       "build_log": "Build log",
       "no_build_log": "No build log captured yet."
     },
+    "builds": {
+      "title": "Image builds",
+      "subtitle": "History of every challenge image build attempt — auto-fired by imports and scans, plus operator-triggered rebuilds.",
+      "empty_title": "No build history yet",
+      "empty": "Builds will appear here once a challenge with a local Dockerfile is imported.",
+      "in_progress_title": "In progress",
+      "no_in_progress": "No builds currently running.",
+      "attempt": "attempt {{n}}",
+      "filter": {
+        "all": "All statuses",
+        "placeholder": "Filter by status"
+      },
+      "column": {
+        "when": "When",
+        "challenge": "Challenge",
+        "trigger": "Trigger",
+        "attempt": "Attempt",
+        "status": "Status",
+        "duration": "Duration",
+        "detail": "Result"
+      }
+    },
     "review": {
       "badge": {
         "pending": "Pending review",
         "rejected": "Rejected",
+        "queued": "Queued",
         "building": "Building",
         "built": "Built",
         "build_failed": "Build failed",
-        "build_failed_help": "The most recent docker build for this challenge failed. Open Audit to see the log."
+        "build_failed_help": "The most recent docker build for this challenge failed. Open Audit to see the log.",
+        "not_applicable": "Registry",
+        "not_applicable_help": "This challenge ships a published registry image — no auto-build runs.",
+        "missing_dockerfile": "Dockerfile missing",
+        "missing_dockerfile_help": "The challenge.yaml pointed at a local Dockerfile path that didn't exist in the archive. Open Audit for the resolved path, fix the source, and trigger a rebuild."
       },
       "title": "Challenges awaiting review",
       "empty": {
@@ -804,6 +833,9 @@
     "repo_binding": {
       "scanned": "Scan complete",
       "summary": "{{games}} games, {{challenges}} challenges, {{failures}} failures"
+    },
+    "builds": {
+      "bulk_enqueued": "Enqueued {{count}} build(s)"
     }
   },
   "placeholder": {
@@ -869,6 +901,7 @@
     "logs": "Logs",
     "repo_bindings": "Repo bindings",
     "anti_cheat": "Anti-cheat",
+    "builds": "Builds",
     "settings": "Settings",
     "teams": "Teams",
     "users": "Users"

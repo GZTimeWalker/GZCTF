@@ -46,12 +46,13 @@ public enum ChallengeReviewStatus : byte
 }
 
 /// <summary>
-/// Tri-state for the auto-build pipeline that turns a local
+/// Lifecycle of the auto-build pipeline that turns a local
 /// <c>Dockerfile</c> declared in a challenge.yaml into a usable image
-/// reference. None = no build needed (challenge ships a registry ref or
-/// has no container at all); Success / Failed reflect the most recent
-/// <see cref="GZCTF.Services.Container.Build.IChallengeImageBuilder"/>
-/// outcome.
+/// reference. The expanded set distinguishes "no build needed" from
+/// "we tried to build and the Dockerfile wasn't there" — otherwise
+/// both surfaced as <see cref="None"/> and operators had no way to tell
+/// whether the import had silently skipped a build that should have
+/// fired.
 /// </summary>
 [JsonConverter(typeof(JsonStringEnumConverter<ChallengeBuildStatus>))]
 public enum ChallengeBuildStatus : byte
@@ -59,7 +60,28 @@ public enum ChallengeBuildStatus : byte
     None = 0,
     Success = 1,
     Failed = 2,
-    Building = 3
+    Building = 3,
+    NotApplicable = 4,
+    Queued = 5,
+    MissingDockerfile = 6
+}
+
+/// <summary>
+/// Why a <see cref="GZCTF.Services.Container.Build.ChallengeBuildJob"/>
+/// was enqueued. Drives audit-log filtering and helps the operator tell
+/// "system spun this up on a scan tick" from "someone clicked Rebuild".
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<BuildTrigger>))]
+public enum BuildTrigger : byte
+{
+    /// <summary>Auto-fired by an import path (scan/upload).</summary>
+    Import = 0,
+    /// <summary>Operator clicked Rebuild in the admin UI.</summary>
+    Manual = 1,
+    /// <summary>Worker re-enqueued after a transient failure.</summary>
+    AutoRetry = 2,
+    /// <summary>Bulk "Rebuild all failed" action.</summary>
+    Bulk = 3
 }
 
 /// <summary>

@@ -108,6 +108,9 @@ internal static class ServicesExtension
 
             builder.Services.AddChannel<Submission>();
             builder.Services.AddChannel<CacheRequest>();
+            builder.Services.AddChannel<Services.Container.Build.ChallengeBuildJob>();
+            builder.Services.AddSingleton<Services.Container.Build.IChallengeBuildQueue,
+                Services.Container.Build.ChallengeBuildQueue>();
             builder.Services.AddSingleton<CacheHelper>();
             builder.Services.AddSingleton<IMailSender, MailSender>();
             builder.Services.AddSingleton<FlagEgressService>();
@@ -121,6 +124,7 @@ internal static class ServicesExtension
             builder.Services.AddHostedService<HoneypotChainDetectorService>();
             builder.Services.AddHostedService<RepoWatchService>();
             builder.Services.AddHostedService<RepoBindingScanService>();
+            builder.Services.AddHostedService<Services.Container.Build.ChallengeBuildQueueService>();
         }
 
         internal void AddWebServices()

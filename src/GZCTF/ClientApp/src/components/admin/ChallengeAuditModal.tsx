@@ -34,6 +34,7 @@ export const ChallengeAuditModal: FC<ChallengeAuditModalProps> = (props) => {
   const { t } = useTranslation()
   const [audit, setAudit] = useState<ChallengeAuditModel | null>(null)
   const [loading, setLoading] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
 
   useEffect(() => {
     if (!opened || challengeId == null) {
@@ -41,25 +42,39 @@ export const ChallengeAuditModal: FC<ChallengeAuditModalProps> = (props) => {
       return
     }
     let cancelled = false
-    setLoading(true)
-    api.edit
-      .editGetChallengeAuditMeta(gameId, challengeId)
-      .then((res) => {
-        if (!cancelled) setAudit(res.data)
-      })
-      .catch((e) => {
+    let timer: number | null = null
+
+    // Polls AuditMeta on a 2s cadence whenever the build is in flight
+    // so the modal reflects Queued → Building → Success/Failed without
+    // the operator having to reload. 2s matches the live-strip cadence
+    // on /admin/builds.
+    const tick = async (isInitial: boolean) => {
+      if (isInitial) setLoading(true)
+      try {
+        const res = await api.edit.editGetChallengeAuditMeta(gameId, challengeId)
+        if (cancelled) return
+        setAudit(res.data)
+        const inFlight = res.data.buildStatus === 'Queued' || res.data.buildStatus === 'Building'
+        if (inFlight && !cancelled) {
+          timer = window.setTimeout(() => void tick(false), 2000)
+        }
+      } catch (e) {
         if (!cancelled) {
-          setAudit(null)
+          if (isInitial) setAudit(null)
           showErrorMsg(e, t)
         }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
+      } finally {
+        if (isInitial && !cancelled) setLoading(false)
+      }
+    }
+
+    void tick(true)
     return () => {
       cancelled = true
+      if (timer != null) window.clearTimeout(timer)
     }
-  }, [opened, gameId, challengeId, t])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opened, gameId, challengeId, reloadKey, t])
 
   const downloadArchive = () => {
     if (challengeId == null) return
@@ -72,13 +87,16 @@ export const ChallengeAuditModal: FC<ChallengeAuditModalProps> = (props) => {
     setRebuilding(true)
     try {
       const resp = await api.edit.editRebuildChallengeImage(gameId, challengeId)
-      // Patch the in-memory audit so the build log + status badge refresh
-      // without a full reload.
+      // The endpoint now returns 202 with buildStatus=Queued. Patch the
+      // local state to Queued immediately so the operator sees the
+      // transition; the next AuditMeta tick (kicked by reloadKey
+      // bumping) will drive Building → Success/Failed.
       setAudit((prev) => prev ? {
         ...prev,
         buildStatus: resp.data.buildStatus,
         lastBuildLog: resp.data.lastBuildLog,
       } : prev)
+      setReloadKey((k) => k + 1)
     } catch (e) {
       showErrorMsg(e, t)
     } finally {
@@ -156,9 +174,14 @@ export const ChallengeAuditModal: FC<ChallengeAuditModalProps> = (props) => {
                   <Title order={6}>{t('admin.content.audit.build_log')}</Title>
                   <Badge
                     size="xs"
-                    color={audit.buildStatus === 'Success' ? 'teal'
+                    color={
+                      audit.buildStatus === 'Success' ? 'teal'
                       : audit.buildStatus === 'Failed' ? 'red'
-                      : 'yellow'}
+                      : audit.buildStatus === 'NotApplicable' ? 'gray'
+                      : audit.buildStatus === 'MissingDockerfile' ? 'orange'
+                      : audit.buildStatus === 'Queued' ? 'blue'
+                      : 'yellow'
+                    }
                     variant={audit.buildStatus === 'Failed' ? 'filled' : 'light'}
                   >
                     {audit.buildStatus}

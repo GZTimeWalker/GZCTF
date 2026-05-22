@@ -1428,6 +1428,194 @@ public class AdminController(
         return Ok();
     }
 
+    // =========================================================
+    //  Challenge image build observability
+    //  See /root/.claude/plans/compiled-squishing-neumann.md
+    // =========================================================
+
+    /// <summary>
+    /// Paginated audit history across all challenge builds. Newest
+    /// first. Supports filtering by status (Failed by default omitted —
+    /// pass <c>status=</c> for the full history) and by game.
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("Builds")]
+    [ProducesResponseType(typeof(Models.Response.Admin.ChallengeBuildAuditModel[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListBuilds(
+        [FromServices] AppDbContext dbContext,
+        [FromQuery][Range(1, 500)] int count = 50,
+        [FromQuery] int skip = 0,
+        [FromQuery] ChallengeBuildStatus? status = null,
+        [FromQuery] int? gameId = null,
+        CancellationToken token = default)
+    {
+        var q = dbContext.ChallengeBuildAudits.AsNoTracking()
+            .Include(a => a.Challenge)
+            .OrderByDescending(a => a.EnqueuedAtUtc)
+            .AsQueryable();
+        if (status is { } s) q = q.Where(a => a.Status == s);
+        if (gameId is { } g) q = q.Where(a => a.GameId == g);
+
+        var rows = await q.Skip(skip).Take(count)
+            .Select(a => new Models.Response.Admin.ChallengeBuildAuditModel
+            {
+                Id = a.Id,
+                ChallengeId = a.ChallengeId,
+                GameId = a.GameId,
+                ChallengeTitle = a.Challenge != null ? a.Challenge.Title : string.Empty,
+                EnqueuedAtUtc = a.EnqueuedAtUtc,
+                StartedAtUtc = a.StartedAtUtc,
+                FinishedAtUtc = a.FinishedAtUtc,
+                Trigger = a.Trigger,
+                Attempt = a.Attempt,
+                Status = a.Status,
+                Digest = a.Digest,
+                LogTail = a.LogTail,
+                ErrorMessage = a.ErrorMessage,
+                DurationMs = a.DurationMs
+            })
+            .ToArrayAsync(token);
+        return Ok(rows);
+    }
+
+    /// <summary>
+    /// Live snapshot of builds currently being processed by a worker.
+    /// In-memory only; cleared on app restart.
+    /// </summary>
+    [RequireAdmin]
+    [HttpGet("Builds/InProgress")]
+    [ProducesResponseType(typeof(Models.Response.Admin.ChallengeBuildInProgressModel[]), StatusCodes.Status200OK)]
+    public IActionResult ListBuildsInProgress(
+        [FromServices] Services.Container.Build.IChallengeBuildQueue buildQueue)
+    {
+        var rows = buildQueue.GetInProgress()
+            .OrderByDescending(b => b.StartedAtUtc)
+            .Select(b => new Models.Response.Admin.ChallengeBuildInProgressModel
+            {
+                AuditId = b.AuditId,
+                ChallengeId = b.ChallengeId,
+                GameId = b.GameId,
+                Slug = b.Slug,
+                Attempt = b.Attempt,
+                Trigger = b.Trigger,
+                StartedAtUtc = b.StartedAtUtc
+            })
+            .ToArray();
+        return Ok(rows);
+    }
+
+    /// <summary>
+    /// Bulk-rebuild every <c>Failed</c> / <c>MissingDockerfile</c>
+    /// challenge in a game. Skips challenges with no persisted archive
+    /// (registry-image or admin-created entries) and reports the
+    /// count.
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("Games/{gameId:int}/BulkRebuild")]
+    [ProducesResponseType(typeof(Models.Response.Admin.BulkRebuildResultModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> BulkRebuildFailed(
+        [FromRoute] int gameId,
+        [FromServices] AppDbContext dbContext,
+        [FromServices] Storage.Interface.IBlobStorage storage,
+        [FromServices] Services.Container.Build.IChallengeBuildQueue buildQueue,
+        CancellationToken token)
+    {
+        var candidates = await dbContext.GameChallenges
+            .Where(c => c.GameId == gameId
+                        && (c.BuildStatus == ChallengeBuildStatus.Failed
+                            || c.BuildStatus == ChallengeBuildStatus.MissingDockerfile))
+            .ToListAsync(token);
+
+        var result = new Models.Response.Admin.BulkRebuildResultModel();
+        var msgs = new List<string>();
+
+        foreach (var ch in candidates)
+        {
+            if (string.IsNullOrEmpty(ch.OriginalArchiveBlobPath))
+            {
+                result.Skipped++;
+                msgs.Add($"{ch.Title}: no archive on file");
+                continue;
+            }
+            if (!await storage.ExistsAsync(ch.OriginalArchiveBlobPath, token))
+            {
+                result.Skipped++;
+                msgs.Add($"{ch.Title}: archive blob missing");
+                continue;
+            }
+
+            // Extract → snapshot → enqueue, mirroring the single-shot
+            // Rebuild endpoint. Failures here are isolated per
+            // challenge: skip the one and keep going.
+            var workDir = Path.Combine(Path.GetTempPath(), $"gzctf-bulk-{Guid.NewGuid():N}");
+            try
+            {
+                Directory.CreateDirectory(workDir);
+                await using (var src = await storage.OpenReadAsync(ch.OriginalArchiveBlobPath, token))
+                {
+                    var spool = Path.Combine(workDir, "__archive.bin");
+                    await using (var fs = System.IO.File.Create(spool))
+                        await src.CopyToAsync(fs, token);
+                    await using var sf = System.IO.File.OpenRead(spool);
+                    await Services.Transfer.ChallengeImportService.ExtractArchiveAsync(sf, workDir, token);
+                    System.IO.File.Delete(spool);
+                }
+
+                var topLevel = Directory.EnumerateFileSystemEntries(workDir).Take(2).ToArray();
+                var packageDir = topLevel.Length == 1 && Directory.Exists(topLevel[0])
+                    ? topLevel[0]
+                    : workDir;
+
+                var srcDir = Path.Combine(packageDir, "src");
+                string contextDir = System.IO.File.Exists(Path.Combine(srcDir, "Dockerfile"))
+                    ? Path.GetFullPath(srcDir)
+                    : Path.GetFullPath(packageDir);
+                const string dockerfile = "Dockerfile";
+
+                if (!System.IO.File.Exists(Path.Combine(contextDir, dockerfile)))
+                {
+                    result.Skipped++;
+                    msgs.Add($"{ch.Title}: no Dockerfile in archive");
+                    continue;
+                }
+
+                var snap = Path.Combine(Path.GetTempPath(), $"gzctf-build-{Guid.NewGuid():N}");
+                CopyDirRecursive(contextDir, snap);
+
+                ch.BuildStatus = ChallengeBuildStatus.Queued;
+                ch.LastBuildLog = null;
+                buildQueue.Enqueue(new Services.Container.Build.ChallengeBuildJob(
+                    ch.Id, ch.GameId, ch.Title, snap, dockerfile,
+                    BuildTrigger.Bulk));
+                result.Enqueued++;
+            }
+            catch (Exception ex)
+            {
+                result.Skipped++;
+                msgs.Add($"{ch.Title}: {ex.Message}");
+            }
+            finally
+            {
+                try { Directory.Delete(workDir, recursive: true); } catch { /* best effort */ }
+            }
+        }
+
+        if (result.Enqueued > 0)
+            await dbContext.SaveChangesAsync(token);
+
+        result.Messages = msgs.ToArray();
+        return Ok(result);
+    }
+
+    static void CopyDirRecursive(string src, string dst)
+    {
+        Directory.CreateDirectory(dst);
+        foreach (var f in Directory.EnumerateFiles(src))
+            System.IO.File.Copy(f, Path.Combine(dst, Path.GetFileName(f)));
+        foreach (var d in Directory.EnumerateDirectories(src))
+            CopyDirRecursive(d, Path.Combine(dst, Path.GetFileName(d)));
+    }
+
     private IActionResult HandleIdentityError(IEnumerable<IdentityError> errors) =>
         BadRequest(new RequestResponse(errors.FirstOrDefault()?.Description ??
                                        localizer[nameof(Resources.Program.Identity_UnknownError)]));

@@ -30,6 +30,7 @@
       "new": "新建题目",
       "pending": "待审核",
       "watches": "仓库监听",
+      "bulk_rebuild": "重建失败镜像",
       "next": "下一题",
       "preview": "预览题目",
       "previous": "上一题",
@@ -169,6 +170,7 @@
           "title": "Ouch! 这个比赛还没有题目"
         },
         "enable": "你确定要启用题目 {{name}} 吗？",
+        "bulk_rebuild_confirm": "是否对 {{count}} 个失败或缺少 Dockerfile 的题目重新触发构建？",
         "flag": {
           "create": "创建 flag，多个 flag 按行分割，每行一个。<br/>每道题目可以拥有多个 flag，获取任意 flag 均可得分。",
           "delete": "确定删除此 flag 吗？",
@@ -546,14 +548,41 @@
       "build_log": "构建日志",
       "no_build_log": "暂无构建日志。"
     },
+    "builds": {
+      "title": "镜像构建",
+      "subtitle": "记录每一次题目镜像的构建尝试 —— 包括导入扫描自动触发和管理员手动重建。",
+      "empty_title": "暂无构建记录",
+      "empty": "导入含本地 Dockerfile 的题目后，构建记录会出现在这里。",
+      "in_progress_title": "正在进行",
+      "no_in_progress": "当前没有进行中的构建。",
+      "attempt": "第 {{n}} 次",
+      "filter": {
+        "all": "全部状态",
+        "placeholder": "按状态筛选"
+      },
+      "column": {
+        "when": "时间",
+        "challenge": "题目",
+        "trigger": "触发方式",
+        "attempt": "尝试",
+        "status": "状态",
+        "duration": "耗时",
+        "detail": "结果"
+      }
+    },
     "review": {
       "badge": {
         "pending": "待审核",
         "rejected": "已驳回",
+        "queued": "排队中",
         "building": "构建中",
         "built": "已构建",
         "build_failed": "构建失败",
-        "build_failed_help": "该题目最近一次 Docker 构建失败。打开「审查」查看构建日志。"
+        "build_failed_help": "该题目最近一次 Docker 构建失败。打开「审查」查看构建日志。",
+        "not_applicable": "仓库镜像",
+        "not_applicable_help": "该题目使用了已发布的镜像，不会触发自动构建。",
+        "missing_dockerfile": "缺少 Dockerfile",
+        "missing_dockerfile_help": "challenge.yaml 指向的本地 Dockerfile 路径在压缩包中不存在。打开「审查」查看解析路径，修正后再重建。"
       },
       "title": "待审核题目",
       "empty": {
@@ -804,6 +833,9 @@
     "repo_binding": {
       "scanned": "扫描完成",
       "summary": "比赛 {{games}}，题目 {{challenges}}，失败 {{failures}}"
+    },
+    "builds": {
+      "bulk_enqueued": "已加入 {{count}} 个构建任务"
     }
   },
   "placeholder": {
@@ -869,6 +901,7 @@
     "logs": "系统日志",
     "repo_bindings": "仓库绑定",
     "anti_cheat": "反作弊",
+    "builds": "镜像构建",
     "settings": "系统设置",
     "teams": "队伍管理",
     "users": "用户管理"

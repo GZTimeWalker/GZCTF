@@ -1453,8 +1453,64 @@ export interface ChallengeInfoModel {
 /** Review state of a challenge */
 export type ChallengeReviewStatus = "Active" | "Pending" | "Rejected"
 
-/** Most recent auto-build outcome for a challenge with a local Dockerfile */
-export type ChallengeBuildStatus = "None" | "Success" | "Failed" | "Building"
+/**
+ * Lifecycle of the challenge image build pipeline.
+ *
+ * - `None` — manual challenge, no build context known
+ * - `Success` / `Failed` — terminal states from the most recent attempt
+ * - `Building` — a worker is actively running `docker build`
+ * - `NotApplicable` — challenge ships a registry image, no build needed
+ * - `Queued` — enqueued, waiting for a worker
+ * - `MissingDockerfile` — local-style image declared but no Dockerfile
+ *   at the resolved path; surfaces clearly instead of staying silent
+ */
+export type ChallengeBuildStatus =
+  | "None"
+  | "Success"
+  | "Failed"
+  | "Building"
+  | "NotApplicable"
+  | "Queued"
+  | "MissingDockerfile"
+
+/** Why a build was enqueued — drives audit-log filters */
+export type BuildTrigger = "Import" | "Manual" | "AutoRetry" | "Bulk"
+
+/** One row of the /admin/builds history table */
+export interface ChallengeBuildAuditModel {
+  id: number
+  challengeId: number
+  gameId: number
+  challengeTitle: string
+  enqueuedAtUtc: string
+  startedAtUtc?: string | null
+  finishedAtUtc?: string | null
+  trigger: BuildTrigger
+  attempt: number
+  status: ChallengeBuildStatus
+  digest?: string | null
+  logTail?: string | null
+  errorMessage?: string | null
+  durationMs: number
+}
+
+/** One row of the live in-progress strip */
+export interface ChallengeBuildInProgressModel {
+  auditId: number
+  challengeId: number
+  gameId: number
+  slug: string
+  attempt: number
+  trigger: BuildTrigger
+  startedAtUtc: string
+}
+
+/** Result of a "Rebuild all failed" bulk action */
+export interface BulkRebuildResultModel {
+  enqueued: number
+  skipped: number
+  messages: string[]
+}
 
 /** Challenge update information (Edit) */
 export interface ChallengeUpdateModel {
@@ -4270,6 +4326,86 @@ export class Api<
       this.request<void, RequestResponse>({
         path: `/api/admin/anticheatblocks/${id}`,
         method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * @description Paginated history of challenge image builds. Newest first.
+     * @tags Admin
+     * @name AdminListBuilds
+     * @request GET:/api/admin/builds
+     */
+    adminListBuilds: (
+      query?: {
+        count?: number
+        skip?: number
+        status?: ChallengeBuildStatus
+        gameId?: number
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeBuildAuditModel[], RequestResponse>({
+        path: `/api/admin/builds`,
+        method: "GET",
+        query,
+        format: "json",
+        ...params,
+      }),
+
+    useAdminListBuilds: (
+      query?: {
+        count?: number
+        skip?: number
+        status?: ChallengeBuildStatus
+        gameId?: number
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) => {
+      const params = new URLSearchParams()
+      if (query?.count != null) params.append('count', String(query.count))
+      if (query?.skip != null) params.append('skip', String(query.skip))
+      if (query?.status != null) params.append('status', query.status)
+      if (query?.gameId != null) params.append('gameId', String(query.gameId))
+      const qs = params.toString()
+      const path = `/api/admin/builds${qs ? `?${qs}` : ''}`
+      return useSWR<ChallengeBuildAuditModel[], RequestResponse>(doFetch ? path : null, options)
+    },
+
+    /**
+     * @description Live snapshot of builds currently being processed.
+     * @tags Admin
+     * @name AdminListBuildsInProgress
+     * @request GET:/api/admin/builds/inprogress
+     */
+    adminListBuildsInProgress: (params: RequestParams = {}) =>
+      this.request<ChallengeBuildInProgressModel[], RequestResponse>({
+        path: `/api/admin/builds/inprogress`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    useAdminListBuildsInProgress: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeBuildInProgressModel[], RequestResponse>(
+        doFetch ? `/api/admin/builds/inprogress` : null,
+        options,
+      ),
+
+    /**
+     * @description Enqueue a rebuild for every Failed / MissingDockerfile challenge in a game.
+     * @tags Admin
+     * @name AdminBulkRebuildFailed
+     * @request POST:/api/admin/games/{gameId}/bulkrebuild
+     */
+    adminBulkRebuildFailed: (gameId: number, params: RequestParams = {}) =>
+      this.request<BulkRebuildResultModel, RequestResponse>({
+        path: `/api/admin/games/${gameId}/bulkrebuild`,
+        method: "POST",
+        format: "json",
         ...params,
       }),
   };

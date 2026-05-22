@@ -75,6 +75,11 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
                 {t('admin.content.review.badge.rejected')}
               </Badge>
             )}
+            {challenge.buildStatus === 'Queued' && (
+              <Badge size="xs" color="blue" variant="light">
+                {t('admin.content.review.badge.queued')}
+              </Badge>
+            )}
             {challenge.buildStatus === 'Building' && (
               <Badge size="xs" color="yellow" variant="light">
                 {t('admin.content.review.badge.building')}
@@ -84,6 +89,20 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
               <Badge size="xs" color="teal" variant="light">
                 {t('admin.content.review.badge.built')}
               </Badge>
+            )}
+            {challenge.buildStatus === 'NotApplicable' && (
+              <Tooltip label={t('admin.content.review.badge.not_applicable_help')} multiline w={240}>
+                <Badge size="xs" color="gray" variant="light">
+                  {t('admin.content.review.badge.not_applicable')}
+                </Badge>
+              </Tooltip>
+            )}
+            {challenge.buildStatus === 'MissingDockerfile' && (
+              <Tooltip label={t('admin.content.review.badge.missing_dockerfile_help')} multiline w={260}>
+                <Badge size="xs" color="orange" variant="light">
+                  {t('admin.content.review.badge.missing_dockerfile')}
+                </Badge>
+              </Tooltip>
             )}
             {challenge.buildStatus === 'Failed' && (
               <Tooltip label={t('admin.content.review.badge.build_failed_help')} multiline w={240}>
