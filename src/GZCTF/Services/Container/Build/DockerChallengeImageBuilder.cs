@@ -5,7 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
+using Microsoft.Extensions.Options;
 
 namespace GZCTF.Services.Container.Build;
 
@@ -20,10 +22,13 @@ namespace GZCTF.Services.Container.Build;
 /// </summary>
 public sealed class DockerChallengeImageBuilder(
     IContainerProvider<DockerClient, DockerMetadata> provider,
+    IOptionsMonitor<BuildRegistryConfig> registryConfig,
+    Services.Config.IConfigService configService,
     ILogger<DockerChallengeImageBuilder> logger) : IChallengeImageBuilder
 {
     private readonly DockerClient _client = provider.GetProvider();
     private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan PushTimeout = TimeSpan.FromMinutes(10);
     private const int LogTailBytes = 32 * 1024;
 
     public async Task<ChallengeBuildResult> BuildAsync(
@@ -130,6 +135,27 @@ public sealed class DockerChallengeImageBuilder(
                 logger.LogWarning(e, "BuildAsync: image {Tag} inspect failed after build", tag);
             }
 
+            // Optional registry push. The local tag is what's stored
+            // on the daemon; if the operator configured a push target
+            // (BuildRegistryConfig.PushOnBuild), we retag with the
+            // registry prefix and push. The returned ImageTag is the
+            // registry tag — that's what the challenge row's
+            // ContainerImage gets set to, and the runner pulls it from
+            // there.
+            var reg = registryConfig.CurrentValue;
+            if (reg.IsConfigured)
+            {
+                var pushed = await TryPushAsync(tag, req.GameId, slug, digest[..12],
+                    reg, logTail, linked.Token);
+                if (pushed is not null)
+                    return new ChallengeBuildResult(true, pushed, imageId, logTail.ToString(), null);
+                // TryPushAsync wrote the failure into logTail before
+                // returning null; surface it as a build failure so the
+                // operator sees what went wrong.
+                return new ChallengeBuildResult(false, null, null, logTail.ToString(),
+                    "Registry push failed — see build log for details.");
+            }
+
             return new ChallengeBuildResult(true, tag, imageId, logTail.ToString(), null);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
@@ -144,6 +170,120 @@ public sealed class DockerChallengeImageBuilder(
         finally
         {
             try { File.Delete(contextTar); } catch { /* best effort */ }
+        }
+    }
+
+    /// <summary>
+    /// Retag the local image with the registry prefix and push.
+    /// Returns the registry tag on success, or null on failure (with
+    /// the failure reason already appended to <paramref name="logTail"/>).
+    /// </summary>
+    /// <param name="localTag">The just-built local tag, e.g.
+    /// <c>gzctf-auto/8/tower-of-babel:abc123def456</c>.</param>
+    /// <param name="gameId">Owning game id (for tag composition).</param>
+    /// <param name="slug">Normalized challenge slug.</param>
+    /// <param name="digest">Short content SHA (12 hex chars).</param>
+    /// <param name="reg">Live registry config — already validated via
+    /// <see cref="BuildRegistryConfig.IsConfigured"/> by the caller.</param>
+    private async Task<string?> TryPushAsync(
+        string localTag, int gameId, string slug, string digest,
+        BuildRegistryConfig reg, StringBuilder logTail, CancellationToken token)
+    {
+        // Compose the registry tag. Examples:
+        //   ghcr.io/myorg/gzctf-auto/8/tower-of-babel:abc123def456
+        //   registry.local:5000/gzctf-auto/8/tower-of-babel:abc123def456
+        var server = reg.Server!.Trim().TrimEnd('/');
+        var ns = string.IsNullOrWhiteSpace(reg.Namespace) ? null : reg.Namespace.Trim().Trim('/');
+        var path = ns is null
+            ? $"gzctf-auto/{gameId}/{slug}"
+            : $"{ns}/gzctf-auto/{gameId}/{slug}";
+        var repository = $"{server}/{path}";
+        var registryTag = $"{repository}:{digest}";
+
+        AppendTail(logTail, $"\n[push] retagging {localTag} → {registryTag}\n");
+
+        try
+        {
+            await _client.Images.TagImageAsync(localTag,
+                new ImageTagParameters { RepositoryName = repository, Tag = digest },
+                token);
+        }
+        catch (Exception ex)
+        {
+            AppendTail(logTail, $"[push] tag failed: {ex.Message}\n");
+            logger.LogWarning(ex, "Registry push: tag failed {From} → {To}", localTag, registryTag);
+            return null;
+        }
+
+        AuthConfig? auth = null;
+        if (!string.IsNullOrEmpty(reg.Username))
+        {
+            auth = new AuthConfig
+            {
+                ServerAddress = server,
+                Username = reg.Username,
+                Password = DecryptPassword(reg.Password),
+            };
+        }
+
+        AppendTail(logTail, $"[push] pushing to {server}…\n");
+        using var pushTimeout = new CancellationTokenSource(PushTimeout);
+        using var linkedPush = CancellationTokenSource.CreateLinkedTokenSource(token, pushTimeout.Token);
+
+        try
+        {
+            var pushProgress = new Progress<JSONMessage>(msg =>
+            {
+                if (!string.IsNullOrEmpty(msg.Status))
+                    AppendTail(logTail, $"[push] {msg.Status}{(string.IsNullOrEmpty(msg.Progress?.Current.ToString()) ? "" : " " + msg.Progress?.Current)}\n");
+                if (msg.Error is { Message: { Length: > 0 } em })
+                    AppendTail(logTail, $"[push] error: {em}\n");
+            });
+            await _client.Images.PushImageAsync(
+                repository,
+                new ImagePushParameters { Tag = digest },
+                auth,
+                pushProgress,
+                linkedPush.Token);
+        }
+        catch (OperationCanceledException) when (pushTimeout.IsCancellationRequested)
+        {
+            AppendTail(logTail, $"[push] timed out after {PushTimeout.TotalMinutes:0}m\n");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            AppendTail(logTail, $"[push] failed: {ex.Message}\n");
+            logger.LogWarning(ex, "Registry push: push failed {Tag}", registryTag);
+            return null;
+        }
+
+        AppendTail(logTail, $"[push] OK — image available at {registryTag}\n");
+        return registryTag;
+    }
+
+    /// <summary>
+    /// Reverse the XOR obfuscation applied at config-save time. If the
+    /// XorKey is empty (test setups) or the stored value isn't valid
+    /// base64, fall through to returning the raw stored value — that's
+    /// the same defensive behavior the existing key-pair handling uses.
+    /// </summary>
+    private string DecryptPassword(string? stored)
+    {
+        if (string.IsNullOrEmpty(stored)) return string.Empty;
+        var key = configService.GetXorKey();
+        if (key.Length == 0) return stored;
+        try
+        {
+            return System.Text.Encoding.UTF8.GetString(
+                Codec.Xor(Convert.FromBase64String(stored), key));
+        }
+        catch
+        {
+            // Pre-encryption legacy value or malformed input — try the
+            // stored value as-is so a misconfigured XorKey doesn't
+            // permanently break pushes.
+            return stored;
         }
     }
 

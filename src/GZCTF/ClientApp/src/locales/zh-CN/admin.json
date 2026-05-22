@@ -467,6 +467,31 @@
         },
         "title": "容器策略"
       },
+      "build_registry": {
+        "title": "镜像仓库",
+        "description": "自动构建成功后将镜像推送到此处。关闭开关则镜像仅保留在本地 Docker。",
+        "push_on_build": {
+          "label": "构建后推送到镜像仓库",
+          "description": "开启后，每次自动构建成功都会按 服务器 + 命名空间 重新打标签并推送。"
+        },
+        "server": {
+          "label": "服务器",
+          "description": "主机名（不含协议）。如 ghcr.io、registry.example.com:5000"
+        },
+        "namespace": {
+          "label": "命名空间",
+          "description": "可选前缀，如 myorg → ghcr.io/myorg/gzctf-auto/..."
+        },
+        "username": {
+          "label": "用户名",
+          "description": "推送账号，匿名推送可留空。"
+        },
+        "password": {
+          "label": "密码 / PAT",
+          "description": "以 XOR 混淆存储。留空将保留当前值。",
+          "configured": "（已配置 — 留空以保留）"
+        }
+      },
       "platform": {
         "api_encryption": {
           "description": "加密部分敏感数据，如用户密码、flag",

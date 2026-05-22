@@ -467,6 +467,31 @@
         },
         "title": "Container Policy"
       },
+      "build_registry": {
+        "title": "Build registry",
+        "description": "Where the auto-build pipeline pushes images after a successful docker build. Leave the toggle off to keep built images on the local daemon only.",
+        "push_on_build": {
+          "label": "Push built images to a registry",
+          "description": "When on, every successful auto-build is retagged with the configured server + namespace and pushed."
+        },
+        "server": {
+          "label": "Server",
+          "description": "Hostname (no scheme). e.g. ghcr.io, registry.example.com:5000"
+        },
+        "namespace": {
+          "label": "Namespace",
+          "description": "Optional prefix under the server. e.g. myorg → ghcr.io/myorg/gzctf-auto/..."
+        },
+        "username": {
+          "label": "Username",
+          "description": "Registry user. Leave blank for anonymous push."
+        },
+        "password": {
+          "label": "Password / PAT",
+          "description": "Stored XOR-obfuscated. Leave blank to keep the current value.",
+          "configured": "(configured — leave blank to keep)"
+        }
+      },
       "platform": {
         "api_encryption": {
           "description": "Encrypt sensitive data in some APIs",

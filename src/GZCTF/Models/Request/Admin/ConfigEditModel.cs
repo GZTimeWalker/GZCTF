@@ -21,4 +21,9 @@ public class ConfigEditModel
     /// Game policy
     /// </summary>
     public ContainerPolicy? ContainerPolicy { get; set; }
+
+    /// <summary>
+    /// Auto-build image-push destination
+    /// </summary>
+    public BuildRegistryConfig? BuildRegistry { get; set; }
 }

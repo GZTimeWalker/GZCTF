@@ -71,11 +71,26 @@ public class AdminController(
         // always reload, ensure latest
         configService.ReloadConfig();
 
+        // For the build-registry block, blank the obfuscated password
+        // bytes before returning. The UI doesn't need them — it shows a
+        // "(configured)" placeholder via HasPassword and only sends a
+        // value back when the operator intentionally types one.
+        var buildRegistry = serviceProvider.GetRequiredService<IOptionsSnapshot<BuildRegistryConfig>>().Value;
+        var safeBuildRegistry = new BuildRegistryConfig
+        {
+            PushOnBuild = buildRegistry.PushOnBuild,
+            Server = buildRegistry.Server,
+            Namespace = buildRegistry.Namespace,
+            Username = buildRegistry.Username,
+            Password = buildRegistry.HasPassword ? string.Empty : null,
+        };
+
         ConfigEditModel config = new()
         {
             AccountPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<AccountPolicy>>().Value,
             GlobalConfig = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value,
-            ContainerPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerPolicy>>().Value
+            ContainerPolicy = serviceProvider.GetRequiredService<IOptionsSnapshot<ContainerPolicy>>().Value,
+            BuildRegistry = safeBuildRegistry,
         };
 
         return Ok(config);
@@ -99,6 +114,32 @@ public class AdminController(
         var global = serviceProvider.GetRequiredService<IOptionsSnapshot<GlobalConfig>>().Value;
         if (!global.ApiEncryption && model.GlobalConfig?.ApiEncryption is true)
             await configService.UpdateApiEncryptionKey(token);
+
+        // Special-case the build-registry password: arrives plaintext
+        // from the form, gets XOR-obfuscated before persistence. Empty
+        // string means "leave the existing password alone" — the UI
+        // shows a "(configured)" placeholder when one is stored and
+        // only sends a value when the operator types one.
+        if (model.BuildRegistry is { } br)
+        {
+            if (string.IsNullOrEmpty(br.Password))
+            {
+                var existing = serviceProvider.GetRequiredService<IOptionsSnapshot<BuildRegistryConfig>>().Value;
+                br.Password = existing.Password;
+            }
+            else
+            {
+                var xorKey = configService.GetXorKey();
+                if (xorKey.Length > 0)
+                    br.Password = Convert.ToBase64String(
+                        Codec.Xor(br.Password.ToUTF8Bytes(), xorKey));
+                // If no XorKey is configured (test envs), the password
+                // lands plaintext in the DB. That's the same risk
+                // profile as the existing RegistryConfig.Password
+                // handling, which never obfuscated either — call out
+                // in the operator docs.
+            }
+        }
 
         // save all config properties
         foreach (var prop in typeof(ConfigEditModel).GetProperties())

@@ -402,6 +402,36 @@ export interface ConfigEditModel {
   globalConfig?: GlobalConfig | null;
   /** Game policy */
   containerPolicy?: ContainerPolicy | null;
+  /** Auto-build image push destination */
+  buildRegistry?: BuildRegistryConfig | null;
+}
+
+/**
+ * Optional registry push target for the auto-build pipeline.
+ * Built images stay on the local daemon when pushOnBuild is false;
+ * otherwise they're retagged to {server}/{namespace?}/gzctf-auto/...
+ * and pushed using the configured credentials.
+ */
+export interface BuildRegistryConfig {
+  /** Master switch. When false, built images stay local. */
+  pushOnBuild?: boolean;
+  /**
+   * Registry hostname (no scheme, no trailing slash).
+   * Examples: "ghcr.io", "docker.io", "registry.example.com:5000".
+   */
+  server?: string | null;
+  /** Optional namespace under the registry, e.g. "myorg". */
+  namespace?: string | null;
+  username?: string | null;
+  /**
+   * Plaintext password / PAT — sent only when the operator is setting
+   * or changing it. Empty string preserves the existing stored value.
+   */
+  password?: string | null;
+  /** Read-only flag indicating whether a password is currently configured. */
+  hasPassword?: boolean;
+  /** Read-only: pushOnBuild && server is set. */
+  isConfigured?: boolean;
 }
 
 /** Account policy */

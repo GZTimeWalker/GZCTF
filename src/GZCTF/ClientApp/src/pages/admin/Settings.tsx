@@ -9,6 +9,7 @@ import {
   Text,
   InputBase,
   NumberInput,
+  PasswordInput,
   SimpleGrid,
   Stack,
   Switch,
@@ -31,7 +32,7 @@ import { webCryptoAvailable } from '@Utils/Crypto'
 import { getInputNumber, showErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
-import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
+import api, { AccountPolicy, BuildRegistryConfig, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
 const Configs: FC = () => {
@@ -43,6 +44,7 @@ const Configs: FC = () => {
   const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
   const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
   const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null>()
+  const [buildRegistry, setBuildRegistry] = useState<BuildRegistryConfig | null>()
   const [color, setColor] = useState<string | undefined | null>(globalConfig?.customTheme)
   const [logoFile, setLogoFile] = useState<File | null>(null)
 
@@ -56,6 +58,7 @@ const Configs: FC = () => {
       setContainerPolicy(configs.containerPolicy)
       setGlobalConfig(configs.globalConfig)
       setAccountPolicy(configs.accountPolicy)
+      setBuildRegistry(configs.buildRegistry)
       setColor(configs.globalConfig?.customTheme)
     }
   }, [configs])
@@ -115,6 +118,7 @@ const Configs: FC = () => {
             },
             accountPolicy,
             containerPolicy,
+            buildRegistry,
           })
           setSaved(false)
           setTimeout(() => {
@@ -442,6 +446,72 @@ const Configs: FC = () => {
               }
             />
           </SimpleGrid>
+        </Stack>
+
+        <Stack gap="sm">
+          <Title order={2}>{t('admin.content.settings.build_registry.title')}</Title>
+          <Text size="sm" c="dimmed">
+            {t('admin.content.settings.build_registry.description')}
+          </Text>
+          <Divider />
+          <Switch
+            checked={buildRegistry?.pushOnBuild ?? false}
+            disabled={disabled}
+            label={SwitchLabel(
+              t('admin.content.settings.build_registry.push_on_build.label'),
+              t('admin.content.settings.build_registry.push_on_build.description')
+            )}
+            onChange={(e) =>
+              setBuildRegistry({ ...buildRegistry, pushOnBuild: e.currentTarget.checked })
+            }
+          />
+          {buildRegistry?.pushOnBuild && (
+            <SimpleGrid cols={2}>
+              <TextInput
+                label={t('admin.content.settings.build_registry.server.label')}
+                description={t('admin.content.settings.build_registry.server.description')}
+                placeholder="ghcr.io"
+                disabled={disabled}
+                value={buildRegistry?.server ?? ''}
+                onChange={(e) =>
+                  setBuildRegistry({ ...buildRegistry, server: e.currentTarget.value })
+                }
+              />
+              <TextInput
+                label={t('admin.content.settings.build_registry.namespace.label')}
+                description={t('admin.content.settings.build_registry.namespace.description')}
+                placeholder="myorg"
+                disabled={disabled}
+                value={buildRegistry?.namespace ?? ''}
+                onChange={(e) =>
+                  setBuildRegistry({ ...buildRegistry, namespace: e.currentTarget.value })
+                }
+              />
+              <TextInput
+                label={t('admin.content.settings.build_registry.username.label')}
+                description={t('admin.content.settings.build_registry.username.description')}
+                disabled={disabled}
+                value={buildRegistry?.username ?? ''}
+                onChange={(e) =>
+                  setBuildRegistry({ ...buildRegistry, username: e.currentTarget.value })
+                }
+              />
+              <PasswordInput
+                label={t('admin.content.settings.build_registry.password.label')}
+                description={t('admin.content.settings.build_registry.password.description')}
+                placeholder={
+                  buildRegistry?.hasPassword
+                    ? t('admin.content.settings.build_registry.password.configured')
+                    : ''
+                }
+                disabled={disabled}
+                value={buildRegistry?.password ?? ''}
+                onChange={(e) =>
+                  setBuildRegistry({ ...buildRegistry, password: e.currentTarget.value })
+                }
+              />
+            </SimpleGrid>
+          )}
         </Stack>
       </Stack>
     </AdminPage>
