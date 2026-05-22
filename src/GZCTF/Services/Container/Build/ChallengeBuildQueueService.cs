@@ -173,13 +173,56 @@ public sealed class ChallengeBuildQueueService(
             job.Attempt, job.Trigger, startedAt);
         ((ChallengeBuildQueue)queue).MarkStart(inflight);
 
+        // Live-log sink. Each docker output line is appended to a
+        // local buffer; every ~2 seconds (FlushIntervalMs) we push the
+        // current tail to Challenge.LastBuildLog so the admin UI — which
+        // polls AuditMeta every 2s while the status is Building — can
+        // render the log as it streams. Without this the modal sits on
+        // an empty Code block until the build completes, which feels
+        // broken for builds that take a minute or more.
+        var liveBuf = new System.Text.StringBuilder();
+        var liveLock = new object();
+        long lastFlushTicks = 0;
+        const long FlushIntervalMs = 2000;
+
+        Action<string> sink = line =>
+        {
+            lock (liveLock)
+            {
+                liveBuf.Append(line);
+                if (liveBuf.Length > 32 * 1024)
+                    liveBuf.Remove(0, liveBuf.Length - 32 * 1024);
+            }
+            var now = Environment.TickCount64;
+            if (now - Interlocked.Read(ref lastFlushTicks) < FlushIntervalMs) return;
+            Interlocked.Exchange(ref lastFlushTicks, now);
+            string snapshot;
+            lock (liveLock) { snapshot = liveBuf.ToString(); }
+            // Fire-and-forget DB write — losing one progress flush is
+            // fine; what matters is that the operator sees something
+            // change every couple of seconds.
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await using var scope = scopeFactory.CreateAsyncScope();
+                    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    await db.GameChallenges
+                        .Where(c => c.Id == job.ChallengeId)
+                        .ExecuteUpdateAsync(s => s.SetProperty(x => x.LastBuildLog, snapshot));
+                }
+                catch { /* swallow — next flush will retry */ }
+            });
+        };
+
         ChallengeBuildResult? result = null;
         Exception? thrown = null;
         try
         {
             result = await imageBuilder.BuildAsync(
                 new ChallengeBuildRequest(job.GameId, job.Slug, job.ContextDir, job.Dockerfile),
-                stoppingToken);
+                stoppingToken,
+                sink);
         }
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {

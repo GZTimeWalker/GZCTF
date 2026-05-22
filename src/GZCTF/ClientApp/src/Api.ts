@@ -1358,6 +1358,10 @@ export interface ChallengeEditDetailModel {
    * @format double
    */
   difficulty: number;
+  /** Current build pipeline state */
+  buildStatus?: ChallengeBuildStatus;
+  /** Live-updated build log tail */
+  lastBuildLog?: string | null;
 }
 
 export interface Attachment {

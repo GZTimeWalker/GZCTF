@@ -9,7 +9,10 @@ namespace GZCTF.Services.Container.Build;
 /// </summary>
 public sealed class K8sChallengeImageBuilder : IChallengeImageBuilder
 {
-    public Task<ChallengeBuildResult> BuildAsync(ChallengeBuildRequest req, CancellationToken token) =>
+    public Task<ChallengeBuildResult> BuildAsync(
+        ChallengeBuildRequest req,
+        CancellationToken token,
+        Action<string>? onProgress = null) =>
         Task.FromResult(new ChallengeBuildResult(
             Success: false,
             ImageTag: null,

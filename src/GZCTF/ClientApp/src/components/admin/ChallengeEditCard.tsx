@@ -41,6 +41,14 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
 
   const inFlightBuild = challenge.buildStatus === 'Queued' || challenge.buildStatus === 'Building'
 
+  // Only Container-type challenges can have a local Dockerfile to
+  // build. Static/Dynamic Attachment challenges are file-only; showing
+  // a Build button there is just noise. Same for challenges that
+  // explicitly ship a registry image (NotApplicable).
+  const isBuildable =
+    (challenge.type === 'StaticContainer' || challenge.type === 'DynamicContainer')
+    && challenge.buildStatus !== 'NotApplicable'
+
   const onBuildNow = async () => {
     if (challenge.id == null) return
     setBuilding(true)
@@ -143,30 +151,32 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           </Text>
         </Stack>
 
-        <Tooltip
-          label={
-            inFlightBuild
-              ? t('admin.button.challenges.build_in_flight')
-              : t('admin.button.challenges.build_now')
-          }
-          ta="end"
-          position="left"
-          offset={98}
-          classNames={classes}
-        >
-          <ActionIcon
-            c={color}
-            variant="subtle"
-            disabled={building || inFlightBuild}
-            onClick={onBuildNow}
+        {isBuildable && (
+          <Tooltip
+            label={
+              inFlightBuild
+                ? t('admin.button.challenges.build_in_flight')
+                : t('admin.button.challenges.build_now')
+            }
+            ta="end"
+            position="left"
+            offset={98}
+            classNames={classes}
           >
-            {building || inFlightBuild ? (
-              <Loader size="xs" />
-            ) : (
-              <Icon path={mdiHammerWrench} size={1} />
-            )}
-          </ActionIcon>
-        </Tooltip>
+            <ActionIcon
+              c={color}
+              variant="subtle"
+              disabled={building || inFlightBuild}
+              onClick={onBuildNow}
+            >
+              {building || inFlightBuild ? (
+                <Loader size="xs" />
+              ) : (
+                <Icon path={mdiHammerWrench} size={1} />
+              )}
+            </ActionIcon>
+          </Tooltip>
+        )}
         <Tooltip label={t('admin.button.challenges.edit')} position="left" offset={10} classNames={classes}>
           <ActionIcon c={color} component={Link} to={`/admin/games/${id}/challenges/${challenge.id}`}>
             <Icon path={mdiPuzzleEditOutline} size={1} />

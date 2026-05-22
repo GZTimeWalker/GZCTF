@@ -34,5 +34,20 @@ public sealed record ChallengeBuildResult(
 /// </summary>
 public interface IChallengeImageBuilder
 {
-    Task<ChallengeBuildResult> BuildAsync(ChallengeBuildRequest req, CancellationToken token);
+    /// <summary>
+    /// Run a single image build.
+    /// </summary>
+    /// <param name="req">Build inputs (context dir + dockerfile + slug).</param>
+    /// <param name="token">Cancel token plumbed to the underlying docker
+    /// call.</param>
+    /// <param name="onProgress">Optional sink invoked once per line of
+    /// build output. The implementation buffers these locally too —
+    /// this callback exists so callers can stream the live log to
+    /// somewhere visible (e.g. update the challenge row periodically so
+    /// the admin UI can watch in real time). May be called from a
+    /// non-UI thread; the sink must be threadsafe.</param>
+    Task<ChallengeBuildResult> BuildAsync(
+        ChallengeBuildRequest req,
+        CancellationToken token,
+        Action<string>? onProgress = null);
 }

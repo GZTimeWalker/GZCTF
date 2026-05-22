@@ -155,6 +155,18 @@ public class ChallengeEditDetailModel
     [Required]
     public double Difficulty { get; set; } = 3;
 
+    /// <summary>
+    /// Current build pipeline state — surfaced so the per-challenge
+    /// edit page can show / hide the "Build now" action.
+    /// </summary>
+    public ChallengeBuildStatus BuildStatus { get; set; }
+
+    /// <summary>
+    /// Tail of the most recent build log (live-updated every ~2s while
+    /// a build is in flight; final tail persists after Success/Failed).
+    /// </summary>
+    public string? LastBuildLog { get; set; }
+
     internal static ChallengeEditDetailModel FromChallenge(GameChallenge chal) =>
         new()
         {
@@ -183,6 +195,8 @@ public class ChallengeEditDetailModel
             DeadlineUtc = chal.DeadlineUtc,
             AcceptedCount = 0, // This field should be set externally
             TestContainer = chal.TestContainer is null ? null : ContainerInfoModel.FromContainer(chal.TestContainer),
-            Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList()
+            Flags = chal.Flags.Select(FlagInfoModel.FromFlagContext).ToList(),
+            BuildStatus = chal.BuildStatus,
+            LastBuildLog = chal.LastBuildLog
         };
 }

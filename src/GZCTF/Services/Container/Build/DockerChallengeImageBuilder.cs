@@ -25,7 +25,10 @@ public sealed class DockerChallengeImageBuilder(
     private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(5);
     private const int LogTailBytes = 32 * 1024;
 
-    public async Task<ChallengeBuildResult> BuildAsync(ChallengeBuildRequest req, CancellationToken token)
+    public async Task<ChallengeBuildResult> BuildAsync(
+        ChallengeBuildRequest req,
+        CancellationToken token,
+        Action<string>? onProgress = null)
     {
         var slug = NormalizeSlug(req.ChallengeSlug);
         var contextTar = Path.Combine(Path.GetTempPath(), $"gzctf-build-{Guid.NewGuid():N}.tar.gz");
@@ -76,9 +79,16 @@ public sealed class DockerChallengeImageBuilder(
             var progress = new Progress<JSONMessage>(msg =>
             {
                 if (!string.IsNullOrEmpty(msg.Stream))
+                {
                     AppendTail(logTail, msg.Stream);
+                    try { onProgress?.Invoke(msg.Stream); } catch { /* sink errors must not break the build */ }
+                }
                 if (!string.IsNullOrEmpty(msg.Status))
-                    AppendTail(logTail, msg.Status + "\n");
+                {
+                    var line = msg.Status + "\n";
+                    AppendTail(logTail, line);
+                    try { onProgress?.Invoke(line); } catch { /* sink errors must not break the build */ }
+                }
                 if (msg.Error is { Message: { Length: > 0 } em })
                     lastError = em;
             });
