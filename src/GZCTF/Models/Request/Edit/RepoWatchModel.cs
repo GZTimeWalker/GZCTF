@@ -46,7 +46,7 @@ public sealed class RepoWatchCreateModel
     /// Polling interval, clamped to <c>[60, 86400]</c> by the API.
     /// </summary>
     [Range(60, 86400)]
-    public int IntervalSeconds { get; set; } = 600;
+    public int IntervalSeconds { get; set; } = 60;
 
     /// <summary>
     /// When true, schedules <c>NextRunUtc = now</c> so the watcher

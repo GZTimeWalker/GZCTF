@@ -43,9 +43,11 @@ public sealed class GameRepoBinding
 
     /// <summary>How often the background poller should re-scan this
     /// repo. Clamped to <c>[60, 86400]</c> by both the controller and the
-    /// scan service.</summary>
+    /// scan service. Default 60s — git fetch on an unchanged repo is
+    /// ~150ms via the SHA short-circuit, so a fast cadence is cheap and
+    /// keeps the UI feeling alive.</summary>
     [Required]
-    public int IntervalSeconds { get; set; } = 600;
+    public int IntervalSeconds { get; set; } = 60;
 
     /// <summary>Reuses <see cref="RepoWatchStatus"/> — Active polls,
     /// Paused skips.</summary>

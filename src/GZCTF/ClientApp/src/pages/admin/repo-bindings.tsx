@@ -46,7 +46,7 @@ const RepoBindings: FC = () => {
   const [repoUrl, setRepoUrl] = useState('')
   const [refValue, setRefValue] = useState('')
   const [githubToken, setGithubToken] = useState('')
-  const [intervalSeconds, setIntervalSeconds] = useState<number | string>(600)
+  const [intervalSeconds, setIntervalSeconds] = useState<number | string>(60)
   const [runImmediately, setRunImmediately] = useState(true)
   const [busy, setBusy] = useState(false)
   const [lastResult, setLastResult] = useState<RepoBindingScanResultModel | null>(null)
@@ -76,7 +76,7 @@ const RepoBindings: FC = () => {
         repoUrl,
         ref: refValue || null,
         githubToken: githubToken || null,
-        intervalSeconds: Number(intervalSeconds) || 600,
+        intervalSeconds: Number(intervalSeconds) || 60,
         runImmediately,
       })
       flash(resp.data)
@@ -152,15 +152,21 @@ const RepoBindings: FC = () => {
   return (
     <AdminPage isLoading={!bindings}>
       <Container size="xl" mt="md">
-        <Stack gap="lg">
+        <Stack gap="lg" pb={48}>
           <Stack gap={0}>
-            <Title order={2}>{t('admin.content.repo_binding.title')}</Title>
+            <Group gap="xs">
+              <Icon path={mdiSourceBranch} size={1} />
+              <Title order={2}>{t('admin.content.repo_binding.title')}</Title>
+            </Group>
             <Text c="dimmed">{t('admin.content.repo_binding.subtitle')}</Text>
           </Stack>
 
           <Paper p="md" withBorder>
             <Stack gap="sm">
-              <Title order={5}>{t('admin.content.repo_binding.add')}</Title>
+              <Group gap="xs">
+                <Icon path={mdiPlus} size={0.9} />
+                <Title order={5}>{t('admin.content.repo_binding.add')}</Title>
+              </Group>
               <TextInput
                 label={t('admin.content.repo_binding.repo_url')}
                 placeholder="https://github.com/TCP1P/findit-ctf-2026"

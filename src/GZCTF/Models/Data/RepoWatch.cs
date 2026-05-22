@@ -48,9 +48,11 @@ public sealed class RepoWatch
 
     /// <summary>
     /// Poll interval in seconds. Clamped to <c>[60, 86400]</c> by the API.
+    /// Default 60s — git fetch on an unchanged ref is sub-second after
+    /// the first clone, so polling fast is cheap.
     /// </summary>
     [Required]
-    public int IntervalSeconds { get; set; } = 600;
+    public int IntervalSeconds { get; set; } = 60;
 
     [Required]
     public RepoWatchStatus Status { get; set; } = RepoWatchStatus.Active;

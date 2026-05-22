@@ -26,7 +26,7 @@ public sealed class RepoBindingCreateModel
 
     /// <summary>Background poll cadence in seconds. Clamped to [60, 86400].</summary>
     [Range(60, 86400)]
-    public int IntervalSeconds { get; set; } = 600;
+    public int IntervalSeconds { get; set; } = 60;
 
     /// <summary>When true, the binding's first scan happens on the next
     /// poller tick (~30s); otherwise the first scan waits a full
