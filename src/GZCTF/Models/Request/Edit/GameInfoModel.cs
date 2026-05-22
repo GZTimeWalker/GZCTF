@@ -41,8 +41,9 @@ public class GameInfoModel : IValidatableObject
 
     /// <summary>
     /// Whether users may submit challenges for this game (with admin review).
+    /// Default false — admin opts a game in to community submissions.
     /// </summary>
-    public bool AllowUserSubmissions { get; set; } = true;
+    public bool AllowUserSubmissions { get; set; } = false;
 
     /// <summary>
     /// Is writeup required

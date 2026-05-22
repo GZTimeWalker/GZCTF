@@ -71,12 +71,12 @@ public partial class Game
 
     /// <summary>
     /// Whether logged-in users may submit challenges (which then sit in the
-    /// admin review queue). Default true to preserve existing behaviour;
-    /// admin can flip off per-game to lock down community submissions for
-    /// a specific event.
+    /// admin review queue). Default false — community submissions are
+    /// opt-in per game so a fresh event doesn't accept arbitrary uploads
+    /// before the admin has decided to enable the queue.
     /// </summary>
     [Required]
-    public bool AllowUserSubmissions { get; set; } = true;
+    public bool AllowUserSubmissions { get; set; } = false;
 
     /// <summary>
     /// Whether writeup is required

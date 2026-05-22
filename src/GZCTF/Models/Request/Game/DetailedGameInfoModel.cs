@@ -82,7 +82,7 @@ public class DetailedGameInfoModel
     /// Whether logged-in users may submit challenges for this game. Drives
     /// the visibility of the Submit tab in the participant-facing UI.
     /// </summary>
-    public bool AllowUserSubmissions { get; set; } = true;
+    public bool AllowUserSubmissions { get; set; } = false;
 
     /// <summary>
     /// Team participation status

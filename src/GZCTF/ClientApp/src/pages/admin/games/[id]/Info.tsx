@@ -349,7 +349,7 @@ const GameInfoEdit: FC = () => {
         />
         <Switch
           disabled={disabled}
-          checked={game?.allowUserSubmissions ?? true}
+          checked={game?.allowUserSubmissions ?? false}
           classNames={{ root: misc.switchVerticalMiddle }}
           label={SwitchLabel(
             t('admin.content.games.info.allow_user_submissions.label'),
