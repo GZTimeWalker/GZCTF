@@ -15,7 +15,7 @@ import {
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiDatabaseEditOutline, mdiHammerWrench, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { useChallengeCategoryLabelMap, showErrorMsg } from '@Utils/Shared'
@@ -25,9 +25,18 @@ import classes from '@Styles/ChallengeEditCard.module.css'
 interface ChallengeEditCardProps {
   challenge: ChallengeInfoModel
   onToggle: (challenge: ChallengeInfoModel, setDisabled: Dispatch<SetStateAction<boolean>>) => void
+  /**
+   * Revalidate the parent challenge list. The card calls this after
+   * triggering a Build so the badge + icon transition through
+   * Queued → Building → Success/Failed without the operator having to
+   * reload the page. Used by a polling effect while a build is in
+   * flight; the parent list otherwise uses OnceSWRConfig and never
+   * refreshes on its own.
+   */
+  onMutate?: () => void
 }
 
-export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle }) => {
+export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onToggle, onMutate }) => {
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const data = challengeCategoryLabelMap.get(challenge.category as ChallengeCategory)
   const theme = useMantineTheme()
@@ -59,12 +68,25 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
         message: t('admin.notification.builds.enqueued'),
         icon: <Icon path={mdiCheck} size={1} />,
       })
+      // Kick the parent list to revalidate so the badge / icon
+      // reflect the new Queued status without a manual reload.
+      onMutate?.()
     } catch (e) {
       showErrorMsg(e, t)
     } finally {
       setBuilding(false)
     }
   }
+
+  // Poll while a build is in flight so the parent list refreshes
+  // every 2s — mirrors the cadence used by the challenge-edit page's
+  // inline build-log section. Stops as soon as the status leaves
+  // Queued/Building.
+  useEffect(() => {
+    if (!inFlightBuild || !onMutate) return
+    const timer = window.setInterval(() => { onMutate() }, 2000)
+    return () => window.clearInterval(timer)
+  }, [inFlightBuild, onMutate])
   const { colorScheme } = useMantineColorScheme()
 
   const color = data?.color ?? theme.primaryColor

@@ -179,7 +179,12 @@ const GameChallengeEdit: FC = () => {
           <SimpleGrid pr={6} cols={{ base: 2, w18: 3, w24: 4, w30: 5, w36: 6, w42: 7, w48: 8 }} spacing="sm">
             {filteredChallenges &&
               filteredChallenges.map((challenge) => (
-                <ChallengeEditCard key={challenge.id} challenge={challenge} onToggle={onToggle} />
+                <ChallengeEditCard
+                  key={challenge.id}
+                  challenge={challenge}
+                  onToggle={onToggle}
+                  onMutate={() => mutate()}
+                />
               ))}
           </SimpleGrid>
         )}
