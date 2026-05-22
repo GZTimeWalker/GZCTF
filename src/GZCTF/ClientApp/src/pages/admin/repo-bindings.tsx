@@ -327,7 +327,7 @@ const RepoBindings: FC = () => {
                           <Group key={g.id} gap="xs" wrap="nowrap">
                             <Anchor
                               component={Link}
-                              to={`/admin/games/${g.id}`}
+                              to={`/admin/games/${g.id}/challenges`}
                               size="sm"
                             >
                               {g.title}
