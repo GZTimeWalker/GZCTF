@@ -1624,7 +1624,7 @@ public class EditController(
         [FromRoute] int id, [FromRoute] int cId,
         [FromServices] Services.Container.Build.IChallengeBuildQueue buildQueue,
         [FromServices] Storage.Interface.IBlobStorage storage,
-        [FromServices] Services.Transfer.RepoBindingDiscoveryService bindingDiscovery,
+        [FromServices] IServiceScopeFactory scopeFactory,
         CancellationToken token)
     {
         var challenge = await dbContext.GameChallenges
@@ -1649,19 +1649,58 @@ public class EditController(
                 await dbContext.SaveChangesAsync(token);
 
                 var user = (await userManager.GetUserAsync(User))!;
-                // Fire-and-forget: the scan can take 10-30s for a large
-                // repo and we don't want the HTTP request to wait.
-                // ScanAsync's own transactions write the audit row +
-                // CurrentActivity field so progress is visible on
-                // /admin/repo-bindings while the scan runs.
+                var userId = user.Id;
+                // Fire-and-forget background scan. The HTTP request
+                // scope is disposed the moment we return 202, so we
+                // CANNOT capture any scoped service (DbContext-backed
+                // ones explode with ObjectDisposedException). Open a
+                // fresh DI scope here and resolve the discovery service
+                // from it — the scope lives until the lambda completes.
+                //
+                // ScanAsync's own SetActivityAsync calls write the
+                // CurrentActivity field on the binding so progress is
+                // visible on /admin/repo-bindings while the scan runs.
+                logger.LogInformation(
+                    "Rebuild fallback: kicking force-scan of binding {Bid} for challenge {Cid}",
+                    bid, cId);
                 _ = Task.Run(async () =>
                 {
-                    // force=true: per-challenge Build fallback exists
-                    // precisely because the challenge needs work. A
-                    // SHA-match short-circuit here would silently leave
-                    // the challenge stuck in Queued forever.
-                    try { await bindingDiscovery.ScanAsync(bid, user.Id, CancellationToken.None, force: true); }
-                    catch { /* errors land in the scan audit row */ }
+                    try
+                    {
+                        await using var scope = scopeFactory.CreateAsyncScope();
+                        var disc = scope.ServiceProvider
+                            .GetRequiredService<Services.Transfer.RepoBindingDiscoveryService>();
+                        // force=true: per-challenge Build fallback exists
+                        // precisely because the challenge needs work. A
+                        // SHA-match short-circuit here would silently leave
+                        // the challenge stuck in Queued forever.
+                        await disc.ScanAsync(bid, userId, CancellationToken.None, force: true);
+                        logger.LogInformation(
+                            "Rebuild fallback: scan of binding {Bid} done (challenge {Cid})",
+                            bid, cId);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex,
+                            "Rebuild fallback: scan of binding {Bid} failed for challenge {Cid}",
+                            bid, cId);
+                        // Surface the failure on the challenge row so
+                        // the operator doesn't sit watching Queued
+                        // forever. The empty catch in the prior
+                        // version is what made the bug silent.
+                        try
+                        {
+                            await using var scope = scopeFactory.CreateAsyncScope();
+                            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                            await db.GameChallenges
+                                .Where(c => c.Id == cId)
+                                .ExecuteUpdateAsync(s => s
+                                    .SetProperty(x => x.BuildStatus, ChallengeBuildStatus.Failed)
+                                    .SetProperty(x => x.LastBuildLog,
+                                        $"Re-fetch from binding {bid} failed: {ex.Message}"));
+                        }
+                        catch { /* nothing more we can do */ }
+                    }
                 });
 
                 return Accepted(new Models.Response.Admin.ChallengeAuditModel
