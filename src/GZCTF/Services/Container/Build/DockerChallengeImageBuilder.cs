@@ -23,10 +23,11 @@ namespace GZCTF.Services.Container.Build;
 public sealed class DockerChallengeImageBuilder(
     IContainerProvider<DockerClient, DockerMetadata> provider,
     IOptionsMonitor<BuildRegistryConfig> registryConfig,
-    Services.Config.IConfigService configService,
+    IConfiguration configuration,
     ILogger<DockerChallengeImageBuilder> logger) : IChallengeImageBuilder
 {
     private readonly DockerClient _client = provider.GetProvider();
+    private readonly byte[] _xorKey = configuration["XorKey"]?.ToUTF8Bytes() ?? [];
     private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan PushTimeout = TimeSpan.FromMinutes(10);
     private const int LogTailBytes = 32 * 1024;
@@ -271,12 +272,11 @@ public sealed class DockerChallengeImageBuilder(
     private string DecryptPassword(string? stored)
     {
         if (string.IsNullOrEmpty(stored)) return string.Empty;
-        var key = configService.GetXorKey();
-        if (key.Length == 0) return stored;
+        if (_xorKey.Length == 0) return stored;
         try
         {
             return System.Text.Encoding.UTF8.GetString(
-                Codec.Xor(Convert.FromBase64String(stored), key));
+                Codec.Xor(Convert.FromBase64String(stored), _xorKey));
         }
         catch
         {
