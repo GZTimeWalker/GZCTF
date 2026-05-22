@@ -8,10 +8,18 @@ namespace GZCTF.Models.Request.Edit;
 /// Mirrors the subset of the gzcli schema that maps onto a
 /// <see cref="GameChallenge"/>.
 ///
-/// Property names are kebab/camel-cased in YAML (gzcli convention); the
-/// <see cref="YamlMemberAttribute"/> alias makes the binder accept both
-/// gzcli's snake_case and the camelCase used in some community templates.
-/// Unrecognized keys are silently ignored.
+/// <para><b>Key naming:</b> aliases match the upstream gzcli template
+/// schema (<c>challenge.schema.yaml</c>), which is camelCase for nested
+/// fields. Aliases are explicit (not driven by the deserializer's
+/// naming convention) so the same parser handles both <c>.gzevent</c>
+/// (binding flow, camelCase) and a hand-crafted tarball (admin upload)
+/// without depending on a convention being set the same way in two
+/// different services. Unrecognized keys are silently ignored.</para>
+///
+/// <para>Until 2026-05 the aliases were snake_case here — that silently
+/// dropped every field inside <c>container:</c> because findit-style
+/// repos use camelCase per the gzcli schema. Symptom was "build
+/// status never moves" — see the related fix in this commit.</para>
 /// </summary>
 public sealed class ChallengeYamlModel
 {
@@ -35,7 +43,7 @@ public sealed class ChallengeYamlModel
     [YamlMember(Alias = "category")]
     public string? Category { get; set; }
 
-    [YamlMember(Alias = "min_score_rate")]
+    [YamlMember(Alias = "minScoreRate")]
     public double? MinScoreRate { get; set; }
 
     [YamlMember(Alias = "difficulty")]
@@ -47,7 +55,7 @@ public sealed class ChallengeYamlModel
     [YamlMember(Alias = "flags")]
     public List<string>? Flags { get; set; }
 
-    [YamlMember(Alias = "flag_template")]
+    [YamlMember(Alias = "flagTemplate")]
     public string? FlagTemplate { get; set; }
 
     /// <summary>
@@ -58,10 +66,10 @@ public sealed class ChallengeYamlModel
     [YamlMember(Alias = "provide")]
     public string? Provide { get; set; }
 
-    [YamlMember(Alias = "disable_blood_bonus")]
+    [YamlMember(Alias = "disableBloodBonus")]
     public bool? DisableBloodBonus { get; set; }
 
-    [YamlMember(Alias = "submission_limit")]
+    [YamlMember(Alias = "submissionLimit")]
     public int? SubmissionLimit { get; set; }
 
     [YamlMember(Alias = "container")]
@@ -71,32 +79,33 @@ public sealed class ChallengeYamlModel
     {
         /// <summary>
         /// Either a published image reference (e.g. <c>nginx:alpine</c>,
-        /// <c>ghcr.io/foo/bar:tag</c>) or a relative path to a Dockerfile.
-        /// The latter is rejected by the importer in v1 — server-side
-        /// docker build is not yet wired.
+        /// <c>ghcr.io/foo/bar:tag</c>) or a relative path to a Dockerfile
+        /// (e.g. <c>./src</c>, <c>./Dockerfile</c>). The latter triggers
+        /// the auto-build pipeline via
+        /// <see cref="GZCTF.Services.Container.Build.IChallengeImageBuilder"/>.
         /// </summary>
-        [YamlMember(Alias = "container_image")]
+        [YamlMember(Alias = "containerImage")]
         public string? ContainerImage { get; set; }
 
-        [YamlMember(Alias = "flag_template")]
+        [YamlMember(Alias = "flagTemplate")]
         public string? FlagTemplate { get; set; }
 
-        [YamlMember(Alias = "memory_limit")]
+        [YamlMember(Alias = "memoryLimit")]
         public int? MemoryLimit { get; set; }
 
-        [YamlMember(Alias = "cpu_count")]
+        [YamlMember(Alias = "cpuCount")]
         public int? CpuCount { get; set; }
 
-        [YamlMember(Alias = "storage_limit")]
+        [YamlMember(Alias = "storageLimit")]
         public int? StorageLimit { get; set; }
 
-        [YamlMember(Alias = "expose_port")]
+        [YamlMember(Alias = "exposePort")]
         public int? ExposePort { get; set; }
 
-        [YamlMember(Alias = "network_mode")]
+        [YamlMember(Alias = "networkMode")]
         public string? NetworkMode { get; set; }
 
-        [YamlMember(Alias = "enable_traffic_capture")]
+        [YamlMember(Alias = "enableTrafficCapture")]
         public bool? EnableTrafficCapture { get; set; }
     }
 }

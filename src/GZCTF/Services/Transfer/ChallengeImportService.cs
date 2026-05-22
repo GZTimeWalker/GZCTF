@@ -47,8 +47,17 @@ public sealed class ChallengeImportService(
         "solver", "solvers", "dist", "node_modules", "writeup", "writeups"
     };
 
+    // Match the upstream gzcli challenge-template schema, which uses
+    // camelCase keys (containerImage, memoryLimit, cpuCount, etc.).
+    // The old UnderscoredNamingConvention combined with
+    // IgnoreUnmatchedProperties silently dropped EVERY field inside
+    // the `container:` block — operators saw "no build runs" because
+    // the parser never saw container_image at all, ResolveBuildIntent
+    // returned None on every container challenge, and the queue never
+    // got a job. Aligning with the .gzevent parser
+    // (RepoBindingDiscoveryService) also keeps both parsers in sync.
     static readonly IDeserializer YamlDeserializer = new DeserializerBuilder()
-        .WithNamingConvention(UnderscoredNamingConvention.Instance)
+        .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .IgnoreUnmatchedProperties()
         .Build();
 
@@ -319,24 +328,78 @@ public sealed class ChallengeImportService(
     /// Decide whether the imported challenge should trigger an image
     /// build, ship as-is on a registry image, or surface a "Dockerfile
     /// missing" diagnostic. Splitting this out of the inline check
-    /// inside <see cref="ImportOneAsync"/> makes the three new build
-    /// statuses (NotApplicable / Queued / MissingDockerfile) explicit
-    /// and testable.
+    /// inside <see cref="ImportOneAsync"/> makes the build statuses
+    /// (NotApplicable / Queued / MissingDockerfile) explicit and
+    /// testable.
+    ///
+    /// <para><b>Heuristic order:</b></para>
+    /// <list type="number">
+    ///   <item>Non-container challenge → <see cref="BuildIntentKind.None"/>.</item>
+    ///   <item>Image looks like a local path
+    ///   (<c>./src</c>, <c>./Dockerfile</c>, etc.) → resolve context
+    ///   and build.</item>
+    ///   <item>Image contains a gzcli template placeholder
+    ///   (<c>{{.slug}}:latest</c>) — gzcli's convention is "build the
+    ///   Dockerfile that lives in this package". Look for
+    ///   <c>./src/Dockerfile</c>, then <c>./Dockerfile</c>. If found,
+    ///   honor the intent and build; otherwise surface
+    ///   <see cref="BuildIntentKind.MissingDockerfile"/>.</item>
+    ///   <item>Empty image but a Dockerfile exists in the conventional
+    ///   spot → build it anyway (operator clearly intended to ship a
+    ///   container; the platform fills in the image tag).</item>
+    ///   <item>Otherwise (registry-style ref like
+    ///   <c>nginx:alpine</c>) → <see cref="BuildIntentKind.NotApplicable"/>.</item>
+    /// </list>
     /// </summary>
     private static BuildIntent ResolveBuildIntent(ChallengeType type, string? image, string packageDir)
     {
-        if (!type.IsContainer() || string.IsNullOrEmpty(image))
+        if (!type.IsContainer())
             return new BuildIntent(BuildIntentKind.None);
 
-        if (!IsLocalDockerfilePath(image))
-            return new BuildIntent(BuildIntentKind.NotApplicable);
+        // Explicit local path wins — operator told us exactly where to build.
+        if (!string.IsNullOrEmpty(image) && IsLocalDockerfilePath(image))
+        {
+            var (ctx, df) = ResolveBuildContext(packageDir, image);
+            if (!File.Exists(Path.Combine(ctx, df)))
+                return new BuildIntent(BuildIntentKind.MissingDockerfile,
+                    Diagnostic: $"Dockerfile not found at '{image}' (resolved to '{Path.Combine(ctx, df)}').");
+            return new BuildIntent(BuildIntentKind.BuildNeeded, ctx, df);
+        }
 
-        var (contextDir, dockerfile) = ResolveBuildContext(packageDir, image);
-        if (!File.Exists(Path.Combine(contextDir, dockerfile)))
-            return new BuildIntent(BuildIntentKind.MissingDockerfile,
-                Diagnostic: $"Dockerfile not found at '{image}' (resolved to '{Path.Combine(contextDir, dockerfile)}').");
+        // gzcli-style template placeholder, OR a missing image with a
+        // Dockerfile sitting in the conventional location. Both are
+        // "operator wants a container challenge; please build whatever
+        // Dockerfile is here". The findit-ctf-2026 repo uses this
+        // pattern: containerImage: "{{.slug}}:latest" + ./src/Dockerfile.
+        var hasTemplate = !string.IsNullOrEmpty(image) && image.Contains("{{");
+        if (hasTemplate || string.IsNullOrEmpty(image))
+        {
+            // Convention search order matches gzcli's template default:
+            // src/Dockerfile (most common), then Dockerfile at root.
+            var srcDockerfile = Path.Combine(packageDir, "src", "Dockerfile");
+            if (File.Exists(srcDockerfile))
+                return new BuildIntent(BuildIntentKind.BuildNeeded,
+                    Path.GetFullPath(Path.Combine(packageDir, "src")), "Dockerfile");
 
-        return new BuildIntent(BuildIntentKind.BuildNeeded, contextDir, dockerfile);
+            var rootDockerfile = Path.Combine(packageDir, "Dockerfile");
+            if (File.Exists(rootDockerfile))
+                return new BuildIntent(BuildIntentKind.BuildNeeded,
+                    Path.GetFullPath(packageDir), "Dockerfile");
+
+            // Template placeholder but no Dockerfile to back it — clear
+            // diagnostic so the operator knows what to fix.
+            if (hasTemplate)
+                return new BuildIntent(BuildIntentKind.MissingDockerfile,
+                    Diagnostic: $"Template image '{image}' but no Dockerfile in ./src/ or ./");
+
+            // Empty image, no Dockerfile — challenge ships without a
+            // container yet. Manual state, no auto-build.
+            return new BuildIntent(BuildIntentKind.None);
+        }
+
+        // Registry-style ref (nginx:alpine, ghcr.io/foo:tag, etc.) —
+        // platform pulls it as-is, no build needed.
+        return new BuildIntent(BuildIntentKind.NotApplicable);
     }
 
     /// <summary>
