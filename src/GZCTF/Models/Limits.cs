@@ -3,14 +3,16 @@ namespace GZCTF.Models;
 public static class Limits
 {
     /// <summary>
-    /// Flag 最大长度
+    /// Flag 最大长度. Bumped from 127 because real-world CTF flags often
+    /// embed story prose (e.g. findit-ctf-2026 tower-of-babel ~210 chars)
+    /// and the old cap rejected imports without a clear UI signal.
     /// </summary>
-    public const int MaxFlagLength = 127;
+    public const int MaxFlagLength = 512;
 
     /// <summary>
     /// Flag 模板最大长度, 为替换操作预留空间
     /// </summary>
-    public const int MaxFlagTemplateLength = 120;
+    public const int MaxFlagTemplateLength = 480;
 
     /// <summary>
     /// 队伍名称最大长度
