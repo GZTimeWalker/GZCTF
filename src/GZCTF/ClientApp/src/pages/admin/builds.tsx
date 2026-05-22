@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Center,
+  Checkbox,
   Code,
   Container,
   Group,
@@ -70,6 +71,10 @@ const Builds: FC = () => {
   const [statusFilter, setStatusFilter] = useState<ChallengeBuildStatus | ''>('')
   const [busy, setBusy] = useState(false)
   const [logRow, setLogRow] = useState<ChallengeBuildAuditModel | null>(null)
+  // Set semantics so toggling rows is O(1) and the header master
+  // checkbox doesn't need to walk a list. Cleared when the history
+  // refreshes (rows can vanish) or after a successful bulk delete.
+  const [selected, setSelected] = useState<Set<number>>(new Set())
 
   // Refresh in-progress every 2s; history every 5s (cheap enough and
   // catches new audit rows produced by background scans).
@@ -98,6 +103,64 @@ const Builds: FC = () => {
     () => history?.filter((b) => b.status === 'Failed').length ?? 0,
     [history],
   )
+
+  const allChecked = (history?.length ?? 0) > 0 && history!.every((b) => selected.has(b.id))
+  const someChecked = (history?.length ?? 0) > 0 && history!.some((b) => selected.has(b.id))
+
+  const toggleOne = (id: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleAll = () => {
+    if (!history) return
+    setSelected((prev) => {
+      // If the visible page is fully checked, clear everything;
+      // otherwise add every visible id (preserving any prior selection
+      // that's been scrolled off — there's no pagination today but
+      // this future-proofs the behavior).
+      if (history.every((b) => prev.has(b.id))) {
+        const next = new Set(prev)
+        history.forEach((b) => next.delete(b.id))
+        return next
+      }
+      const next = new Set(prev)
+      history.forEach((b) => next.add(b.id))
+      return next
+    })
+  }
+
+  const onBulkDelete = () => {
+    if (selected.size === 0) return
+    const ids = Array.from(selected)
+    modals.openConfirmModal({
+      title: t('admin.button.builds.delete_selected'),
+      children: (
+        <Text size="sm">
+          {t('admin.content.builds.confirm_bulk_delete', { count: ids.length })}
+        </Text>
+      ),
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        setBusy(true)
+        try {
+          const resp = await api.admin.adminBulkDeleteBuildAudits(ids)
+          showNotification({
+            color: 'teal',
+            message: t('admin.notification.builds.pruned', { count: resp.data.removed }),
+            icon: <Icon path={mdiCheck} size={1} />,
+          })
+          setSelected(new Set())
+          mutateHistory()
+        } catch (e) { showErrorMsg(e, t) }
+        finally { setBusy(false) }
+      },
+    })
+  }
 
   const onDelete = (row: ChallengeBuildAuditModel) => {
     modals.openConfirmModal({
@@ -197,6 +260,18 @@ const Builds: FC = () => {
               <Text c="dimmed">{t('admin.content.builds.subtitle')}</Text>
             </Stack>
             <Group gap="xs">
+              {selected.size > 0 && (
+                <Button
+                  size="xs"
+                  variant="filled"
+                  color="red"
+                  leftSection={<Icon path={mdiDeleteOutline} size={0.9} />}
+                  onClick={onBulkDelete}
+                  disabled={busy}
+                >
+                  {t('admin.button.builds.delete_selected')} ({selected.size})
+                </Button>
+              )}
               <Button
                 size="xs"
                 variant="default"
@@ -283,6 +358,14 @@ const Builds: FC = () => {
                 <Table withTableBorder striped highlightOnHover>
                   <Table.Thead>
                     <Table.Tr>
+                      <Table.Th w={36}>
+                        <Checkbox
+                          checked={allChecked}
+                          indeterminate={someChecked && !allChecked}
+                          onChange={toggleAll}
+                          aria-label={t('admin.content.builds.select_all')}
+                        />
+                      </Table.Th>
                       <Table.Th>{t('admin.content.builds.column.when')}</Table.Th>
                       <Table.Th>{t('admin.content.builds.column.challenge')}</Table.Th>
                       <Table.Th>{t('admin.content.builds.column.trigger')}</Table.Th>
@@ -295,7 +378,17 @@ const Builds: FC = () => {
                   </Table.Thead>
                   <Table.Tbody>
                     {history.map((b) => (
-                      <Table.Tr key={b.id}>
+                      <Table.Tr
+                        key={b.id}
+                        bg={selected.has(b.id) ? 'var(--mantine-color-blue-light)' : undefined}
+                      >
+                        <Table.Td>
+                          <Checkbox
+                            checked={selected.has(b.id)}
+                            onChange={() => toggleOne(b.id)}
+                            aria-label={`select ${b.challengeTitle || b.challengeId}`}
+                          />
+                        </Table.Td>
                         <Table.Td>
                           <Stack gap={0}>
                             <Text size="sm">{dayjs(b.enqueuedAtUtc).fromNow()}</Text>

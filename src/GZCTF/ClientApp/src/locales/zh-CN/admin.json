@@ -116,6 +116,7 @@
       "view_log": "查看完整日志",
       "reenqueue": "重新构建",
       "delete": "删除此记录",
+      "delete_selected": "删除所选",
       "prune_failed": "清理失败记录",
       "prune_images": "清理镜像",
       "copy": "复制日志",
@@ -595,7 +596,9 @@
       "log_modal_title": "构建日志",
       "no_log": "此次尝试没有日志。",
       "confirm_delete": "删除 {{challenge}} 的审计记录？不会影响题目本身和已构建的镜像。",
+      "confirm_bulk_delete": "删除选中的 {{count}} 条审计记录？不会影响题目本身和已构建的镜像。",
       "confirm_prune_failed": "删除 {{count}} 条 Failed 审计记录？成功、进行中的记录以及题目本身都不会受影响。",
+      "select_all": "选择本页全部记录",
       "confirm_prune_images": {
         "line1": "清理本地 Docker daemon 上没有题目引用的 gzctf-auto/* 镜像。",
         "line2": "已推送到仓库的镜像不会被清理。正在使用的镜像会保留。用于释放 GZCTF 主机磁盘。"

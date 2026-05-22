@@ -4479,6 +4479,22 @@ export class Api<
       }),
 
     /**
+     * @description Bulk-delete an explicit list of audit row ids.
+     * @tags Admin
+     * @name AdminBulkDeleteBuildAudits
+     * @request POST:/api/admin/builds/bulkdelete
+     */
+    adminBulkDeleteBuildAudits: (ids: number[], params: RequestParams = {}) =>
+      this.request<PruneResultModel, RequestResponse>({
+        path: `/api/admin/builds/bulkdelete`,
+        method: "POST",
+        body: ids,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description GC orphaned gzctf-auto/* images on the local docker daemon.
      * @tags Admin
      * @name AdminPruneOrphanBuildImages

@@ -1610,6 +1610,35 @@ public class AdminController(
     }
 
     /// <summary>
+    /// Bulk-delete an explicit list of audit row ids — the
+    /// select-many-and-Delete UX from <c>/admin/builds</c>. Single
+    /// transactional <c>ExecuteDeleteAsync</c> so a 100-row delete
+    /// doesn't round-trip per id. Silently no-ops on ids that don't
+    /// exist (parallel deletes / page-stale selection).
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("Builds/BulkDelete")]
+    [ProducesResponseType(typeof(Models.Response.Admin.PruneResultModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> BulkDeleteBuildAudits(
+        [FromBody] int[] ids,
+        [FromServices] AppDbContext dbContext,
+        CancellationToken token)
+    {
+        if (ids is null || ids.Length == 0)
+            return BadRequest(new RequestResponse("No ids provided."));
+        // Cap per request — keeps the IN-clause bounded and prevents a
+        // pathological one-shot delete from holding the table lock.
+        if (ids.Length > 500)
+            return BadRequest(new RequestResponse("At most 500 ids per request."));
+
+        var deleted = await dbContext.ChallengeBuildAudits
+            .Where(a => ids.Contains(a.Id))
+            .ExecuteDeleteAsync(token);
+        return Ok(new Models.Response.Admin.PruneResultModel { Removed = deleted });
+    }
+
+    /// <summary>
     /// Garbage-collect <c>gzctf-auto/*</c> images on the local docker
     /// daemon that no live <see cref="GameChallenge.ContainerImage"/>
     /// points at. After the registry-push feature shipped, every
