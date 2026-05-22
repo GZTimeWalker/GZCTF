@@ -79,7 +79,13 @@ public sealed class RepoBindingDiscoveryService(
         }
     }
 
-    public async Task<RepoBindingScanResult> ScanAsync(int bindingId, Guid adminUserId, CancellationToken token)
+    /// <param name="force">When true, skips the
+    /// <c>sha == LastCommitSha</c> short-circuit and re-downloads /
+    /// re-imports unconditionally. Use this for explicit "Scan now"
+    /// requests where the operator's intent is to rebuild everything
+    /// even though git didn't move (e.g. recovering from a partial
+    /// scan or testing the import pipeline).</param>
+    public async Task<RepoBindingScanResult> ScanAsync(int bindingId, Guid adminUserId, CancellationToken token, bool force = false)
     {
         var binding = await context.GameRepoBindings.FirstOrDefaultAsync(b => b.Id == bindingId, token);
         if (binding is null)
@@ -128,6 +134,22 @@ public sealed class RepoBindingDiscoveryService(
         {
             await SetActivityAsync(bindingId, "Querying commit SHA", token);
             string? sha = await loc.GetHeadShaAsync(http, plaintextToken, token);
+
+            // Short-circuit when nothing changed. The HEAD-SHA check is a
+            // single ~150ms HTTP call, vs the multi-MB tarball + walk +
+            // re-import that would follow. Mirrors what RepoWatchService
+            // already does for per-game watches. Force=true (admin "Scan
+            // now" intends to re-import even on a no-op) bypasses this.
+            if (!force && !string.IsNullOrEmpty(sha) && sha == binding.LastCommitSha)
+            {
+                await SetActivityAsync(bindingId, $"Up to date ({sha[..7]})", token);
+                binding.LastScanUtc = DateTimeOffset.UtcNow;
+                binding.LastScanMessage = $"No change since {sha[..7]} — skipped tarball.";
+                await WriteScanRowAsync(bindingId, sha, 0, 0, 0, 0, 0,
+                    ["No change — skipped."], plaintextToken, token);
+                await context.SaveChangesAsync(token);
+                return new(0, 0, 0, 0, 0, ["No change — skipped tarball download."]);
+            }
 
             await SetActivityAsync(bindingId, "Downloading tarball", token);
             await using (var tarStream = await loc.DownloadTarballAsync(http, plaintextToken, token))

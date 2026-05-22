@@ -1656,7 +1656,11 @@ public class EditController(
                 // /admin/repo-bindings while the scan runs.
                 _ = Task.Run(async () =>
                 {
-                    try { await bindingDiscovery.ScanAsync(bid, user.Id, CancellationToken.None); }
+                    // force=true: per-challenge Build fallback exists
+                    // precisely because the challenge needs work. A
+                    // SHA-match short-circuit here would silently leave
+                    // the challenge stuck in Queued forever.
+                    try { await bindingDiscovery.ScanAsync(bid, user.Id, CancellationToken.None, force: true); }
                     catch { /* errors land in the scan audit row */ }
                 });
 

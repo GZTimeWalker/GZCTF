@@ -1723,7 +1723,10 @@ public class AdminController(
         if (!model.RunImmediately)
             return Ok(new Models.Request.Edit.RepoBindingScanResultModel());
 
-        var result = await discovery.ScanAsync(binding.Id, user.Id, token);
+        // Creation flow: this is the very first scan, no prior
+        // LastCommitSha to short-circuit against — force=true is the
+        // safe default (avoids a no-op on an empty SHA cell).
+        var result = await discovery.ScanAsync(binding.Id, user.Id, token, force: true);
         // discovery.ScanAsync writes LastScanUtc but not NextScanUtc;
         // do that here so the poller doesn't double-scan within the
         // same interval window.
@@ -1855,7 +1858,11 @@ public class AdminController(
         CancellationToken token)
     {
         var user = (await userManager.GetUserAsync(User))!;
-        var result = await discovery.ScanAsync(id, user.Id, token);
+        // Explicit operator action — force re-import even if the SHA
+        // hasn't moved. "Scan now" should always do *something* visible
+        // (rather than a silent no-op) so the user gets predictable
+        // feedback after clicking the button.
+        var result = await discovery.ScanAsync(id, user.Id, token, force: true);
 
         // Reset the poll gate so the background poller waits a full
         // interval before re-running. Without this an Admin "Scan now"
