@@ -161,20 +161,30 @@ public sealed class DockerChallengeImageBuilder(
             // ContainerImage gets set to, and the runner pulls it from
             // there.
             var reg = registryConfig.CurrentValue;
+            string returnedTag = tag;
             if (reg.IsConfigured)
             {
                 var pushed = await TryPushAsync(tag, req.GameId, slug, digest[..12],
                     reg, logTail, linked.Token);
-                if (pushed is not null)
-                    return new ChallengeBuildResult(true, pushed, imageId, logTail.ToString(), null);
-                // TryPushAsync wrote the failure into logTail before
-                // returning null; surface it as a build failure so the
-                // operator sees what went wrong.
-                return new ChallengeBuildResult(false, null, null, logTail.ToString(),
-                    "Registry push failed — see build log for details.");
+                if (pushed is null)
+                {
+                    // TryPushAsync wrote the failure into logTail before
+                    // returning null; surface it as a build failure so the
+                    // operator sees what went wrong.
+                    return new ChallengeBuildResult(false, null, null, logTail.ToString(),
+                        "Registry push failed — see build log for details.");
+                }
+                returnedTag = pushed;
             }
 
-            return new ChallengeBuildResult(true, tag, imageId, logTail.ToString(), null);
+            // Auto-cleanup after a successful build: drop any older
+            // tags of this same challenge (different content SHAs from
+            // previous edits) plus the dangling images + build cache
+            // they leave behind. Best-effort — a cleanup failure must
+            // never flip a successful build to Failed.
+            await CleanupAfterBuildAsync(req.GameId, slug, digest[..12], logTail, token);
+
+            return new ChallengeBuildResult(true, returnedTag, imageId, logTail.ToString(), null);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
@@ -296,6 +306,92 @@ public sealed class DockerChallengeImageBuilder(
 
         AppendTail(logTail, $"[push] OK — image available at {registryTag}\n");
         return registryTag;
+    }
+
+    /// <summary>
+    /// Best-effort post-build cleanup:
+    /// <list type="number">
+    ///   <item>Untag every <c>gzctf-auto/{gameId}/{slug}:*</c> local
+    ///   tag whose digest suffix differs from <paramref name="keepDigest"/>.
+    ///   The new build is the only useful one to keep — older content
+    ///   SHAs from previous edits will never be re-referenced.</item>
+    ///   <item>Prune dangling images (untagged + no children). Removes
+    ///   the intermediate layers freed by step 1.</item>
+    /// </list>
+    /// <para>Build-cache prune is intentionally NOT done here — the
+    /// Docker.DotNet API exposed in 3.131.1 has no
+    /// <c>BuildPruneAsync</c>. Operators who need that can run
+    /// <c>docker builder prune -af</c> on the host manually, or use
+    /// the existing "Prune images" button on /admin/builds.</para>
+    /// <para>Every step swallows its own errors and appends a line to
+    /// the build log. A cleanup hiccup must not flip the build outcome
+    /// from Success to Failed.</para>
+    /// </summary>
+    private async Task CleanupAfterBuildAsync(
+        int gameId, string slug, string keepDigest,
+        StringBuilder logTail, CancellationToken token)
+    {
+        var repository = $"gzctf-auto/{gameId}/{slug}";
+        var keepFullTag = $"{repository}:{keepDigest}";
+
+        // 1. Drop sibling tags.
+        int removed = 0;
+        try
+        {
+            var images = await _client.Images.ListImagesAsync(
+                new ImagesListParameters { All = false }, token);
+            foreach (var img in images)
+            {
+                if (img.RepoTags is null) continue;
+                foreach (var rt in img.RepoTags)
+                {
+                    if (!rt.StartsWith(repository + ":", StringComparison.Ordinal)) continue;
+                    if (string.Equals(rt, keepFullTag, StringComparison.Ordinal)) continue;
+                    try
+                    {
+                        await _client.Images.DeleteImageAsync(rt,
+                            new ImageDeleteParameters { Force = false, NoPrune = false }, token);
+                        removed++;
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendTail(logTail, $"[cleanup] failed to untag {rt}: {ex.Message}\n");
+                    }
+                }
+            }
+            if (removed > 0)
+                AppendTail(logTail, $"[cleanup] removed {removed} older tag(s) for {repository}\n");
+        }
+        catch (Exception ex)
+        {
+            AppendTail(logTail, $"[cleanup] listing tags failed: {ex.Message}\n");
+        }
+
+        // 2. Prune dangling images. Removes anything untagged with no
+        // children — typically the orphaned intermediate layers freed
+        // by step 1.
+        try
+        {
+            var p = await _client.Images.PruneImagesAsync(
+                new ImagesPruneParameters { Filters = new Dictionary<string, IDictionary<string, bool>>
+                {
+                    ["dangling"] = new Dictionary<string, bool> { ["true"] = true }
+                } }, token);
+            if ((p?.SpaceReclaimed ?? 0) > 0)
+                AppendTail(logTail, $"[cleanup] pruned dangling images: {HumanBytes(p.SpaceReclaimed)} reclaimed\n");
+        }
+        catch (Exception ex)
+        {
+            AppendTail(logTail, $"[cleanup] image prune failed: {ex.Message}\n");
+        }
+    }
+
+    private static string HumanBytes(ulong bytes)
+    {
+        if (bytes < 1024) return $"{bytes}B";
+        if (bytes < 1024 * 1024) return $"{bytes / 1024.0:0.#}KB";
+        if (bytes < 1024UL * 1024 * 1024) return $"{bytes / (1024.0 * 1024):0.#}MB";
+        return $"{bytes / (1024.0 * 1024 * 1024):0.##}GB";
     }
 
     /// <summary>
