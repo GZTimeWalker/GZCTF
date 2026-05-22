@@ -2,6 +2,7 @@ using System.Formats.Tar;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using GZCTF.Services.Container.Provider;
@@ -146,8 +147,38 @@ public sealed class DockerChallengeImageBuilder(
         }
     }
 
+    /// <summary>
+    /// Token-shape scrubber for build output. A Dockerfile that
+    /// <c>echo</c>s a GitHub PAT (legitimately during a `gh auth status`
+    /// or buggily during a leaked $GITHUB_TOKEN) would otherwise land
+    /// the raw token in <c>Challenge.LastBuildLog</c> and
+    /// <c>ChallengeBuildAudit.LogTail</c>, both of which are visible
+    /// to anyone with admin access. Replace before append.
+    ///
+    /// <para>The patterns are GitHub's well-known PAT prefixes plus
+    /// the AWS access-key shape. False positives are acceptable — a
+    /// scrubbed log is more useful than a leaked secret.</para>
+    /// </summary>
+    private static readonly Regex[] SecretPatterns =
+    [
+        new Regex(@"ghp_[A-Za-z0-9]{36}", RegexOptions.Compiled),
+        new Regex(@"github_pat_[A-Za-z0-9_]{82,}", RegexOptions.Compiled),
+        new Regex(@"gho_[A-Za-z0-9]{36}", RegexOptions.Compiled),
+        new Regex(@"ghs_[A-Za-z0-9]{36}", RegexOptions.Compiled),
+        new Regex(@"ghr_[A-Za-z0-9]{36}", RegexOptions.Compiled),
+        new Regex(@"AKIA[0-9A-Z]{16}", RegexOptions.Compiled),
+    ];
+
+    internal static string ScrubSecrets(string line)
+    {
+        foreach (var p in SecretPatterns)
+            line = p.Replace(line, "***SCRUBBED***");
+        return line;
+    }
+
     static void AppendTail(StringBuilder sb, string line)
     {
+        line = ScrubSecrets(line);
         sb.Append(line);
         if (sb.Length > LogTailBytes)
             sb.Remove(0, sb.Length - LogTailBytes);

@@ -1579,15 +1579,33 @@ public class AdminController(
                     continue;
                 }
 
+                // Skip challenges that already have a pending build —
+                // bulk action shouldn't pile up duplicate jobs.
+                if (buildQueue.IsPending(ch.Id))
+                {
+                    result.Skipped++;
+                    msgs.Add($"{ch.Title}: build already pending");
+                    continue;
+                }
+
                 var snap = Path.Combine(Path.GetTempPath(), $"gzctf-build-{Guid.NewGuid():N}");
                 CopyDirRecursive(contextDir, snap);
 
-                ch.BuildStatus = ChallengeBuildStatus.Queued;
-                ch.LastBuildLog = null;
-                buildQueue.Enqueue(new Services.Container.Build.ChallengeBuildJob(
+                var er = buildQueue.Enqueue(new Services.Container.Build.ChallengeBuildJob(
                     ch.Id, ch.GameId, ch.Title, snap, dockerfile,
                     BuildTrigger.Bulk));
-                result.Enqueued++;
+                if (er == Services.Container.Build.EnqueueResult.Enqueued)
+                {
+                    ch.BuildStatus = ChallengeBuildStatus.Queued;
+                    ch.LastBuildLog = null;
+                    result.Enqueued++;
+                }
+                else
+                {
+                    try { Directory.Delete(snap, recursive: true); } catch { /* best effort */ }
+                    result.Skipped++;
+                    msgs.Add($"{ch.Title}: {(er == Services.Container.Build.EnqueueResult.Rejected ? "queue full" : "already pending")}");
+                }
             }
             catch (Exception ex)
             {

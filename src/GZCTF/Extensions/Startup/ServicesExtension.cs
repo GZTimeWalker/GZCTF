@@ -109,7 +109,11 @@ internal static class ServicesExtension
 
             builder.Services.AddChannel<Submission>();
             builder.Services.AddChannel<CacheRequest>();
-            builder.Services.AddChannel<Services.Container.Build.ChallengeBuildJob>();
+            // Build queue is bounded at 256 so a runaway scan loop
+            // (malformed import enqueuing thousands of jobs) can't OOM
+            // the host. 256 is generous: findit has ~16 challenges,
+            // 16 bindings scanning simultaneously is still well within.
+            builder.Services.AddBoundedChannel<Services.Container.Build.ChallengeBuildJob>(256);
             builder.Services.AddSingleton<Services.Container.Build.IChallengeBuildQueue,
                 Services.Container.Build.ChallengeBuildQueue>();
             builder.Services.AddSingleton<CacheHelper>();

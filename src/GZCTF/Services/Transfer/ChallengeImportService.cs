@@ -231,8 +231,9 @@ public sealed class ChallengeImportService(
                 challenge.LastBuildLog = intent.Diagnostic;
                 break;
             case BuildIntentKind.BuildNeeded:
-                challenge.BuildStatus = ChallengeBuildStatus.Queued;
-                challenge.LastBuildLog = null;
+                // BuildStatus assignment moved below — set only AFTER
+                // a successful enqueue so we never leave the row in
+                // Queued without a corresponding job.
                 break;
             // None: leave whatever was there (manual challenges keep
             // their prior status).
@@ -248,22 +249,48 @@ public sealed class ChallengeImportService(
 
         if (intent.Kind == BuildIntentKind.BuildNeeded)
         {
-            // Snapshot the context outside the import's temp workdir
-            // because that workdir is deleted as soon as the import
-            // returns. The queue worker owns the snapshot lifecycle.
+            // Snapshot-then-enqueue-then-persist. The status flip only
+            // happens AFTER the queue accepts the job. Without this
+            // ordering, a crash between SaveChangesAsync and Enqueue
+            // could leave the row in Queued with no actual job, and
+            // only the next app restart's ResetStuckBuildsAsync would
+            // notice. Also handles the dedup case (AlreadyPending) so
+            // a re-import while a previous build is still running
+            // doesn't kick off a second one.
+            string? snap = null;
             try
             {
-                var snap = PrepareBuildSnapshot(intent.ContextDir!);
-                buildQueue.Enqueue(new ChallengeBuildJob(
+                snap = PrepareBuildSnapshot(intent.ContextDir!);
+                var enqueueResult = buildQueue.Enqueue(new ChallengeBuildJob(
                     challenge.Id, game.Id, model.Name!,
                     snap, intent.Dockerfile!,
                     BuildTrigger.Import));
+
+                switch (enqueueResult)
+                {
+                    case EnqueueResult.Enqueued:
+                        challenge.BuildStatus = ChallengeBuildStatus.Queued;
+                        challenge.LastBuildLog = null;
+                        await context.SaveChangesAsync(token);
+                        break;
+                    case EnqueueResult.AlreadyPending:
+                        // Existing build will satisfy this re-import too.
+                        // Don't touch BuildStatus, don't keep the snapshot.
+                        SafeDelete(snap);
+                        break;
+                    case EnqueueResult.Rejected:
+                        SafeDelete(snap);
+                        challenge.BuildStatus = ChallengeBuildStatus.Failed;
+                        challenge.LastBuildLog = "Build queue is full — try again in a moment.";
+                        await context.SaveChangesAsync(token);
+                        logger.LogError("ChallengeImportService: queue full, rejected build for {Challenge}", model.Name);
+                        return new(OutcomeKind.Skipped,
+                            $"'{model.Name}': build queue full");
+                }
             }
             catch (Exception ex)
             {
-                // Snapshot/enqueue failed — surface as a build failure
-                // so the operator sees something other than a perpetual
-                // "Queued" badge.
+                if (snap is not null) SafeDelete(snap);
                 challenge.BuildStatus = ChallengeBuildStatus.Failed;
                 challenge.LastBuildLog = $"Failed to enqueue build: {ex.Message}";
                 await context.SaveChangesAsync(token);
@@ -333,6 +360,18 @@ public sealed class ChallengeImportService(
             File.Copy(f, Path.Combine(dst, Path.GetFileName(f)));
         foreach (var d in Directory.EnumerateDirectories(src))
             CopyDirRecursive(d, Path.Combine(dst, Path.GetFileName(d)));
+    }
+
+    /// <summary>
+    /// Best-effort cleanup of a snapshot dir when the enqueue path
+    /// decides not to keep it (AlreadyPending dedup hit, channel full,
+    /// or any exception after PrepareBuildSnapshot).
+    /// </summary>
+    private static void SafeDelete(string? dir)
+    {
+        if (string.IsNullOrEmpty(dir)) return;
+        try { if (Directory.Exists(dir)) Directory.Delete(dir, recursive: true); }
+        catch { /* swallow — best effort */ }
     }
 
     /// <summary>

@@ -53,6 +53,29 @@ public sealed class RepoBindingScanService(
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         var now = DateTimeOffset.UtcNow;
+
+        // Watchdog: clear CurrentActivity on any binding that hasn't
+        // completed a scan in 15 minutes. The scanner writes activity
+        // updates through SetActivityAsync as it walks the tree, and
+        // the finally block sets it back to null. But if the worker
+        // process is killed mid-fetch, the field stays set and the UI
+        // shows "Downloading tarball…" forever. 15 minutes is far past
+        // the 2-minute git timeout + the longest realistic import, so
+        // anything still "scanning" after that is definitely stuck.
+        var staleThreshold = now - TimeSpan.FromMinutes(15);
+        try
+        {
+            await db.GameRepoBindings
+                .Where(b => b.CurrentActivity != null
+                            && (b.LastScanUtc == null || b.LastScanUtc < staleThreshold))
+                .ExecuteUpdateAsync(s => s.SetProperty(x => x.CurrentActivity, (string?)null),
+                    stoppingToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogDebug(ex, "RepoBindingScanService: stale-activity watchdog failed");
+        }
+
         // Pull the small projection only — we just need ids + creator
         // to call the discovery scope, and the interval to advance the
         // next-run gate.

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 
 namespace GZCTF.Services.Transfer;
@@ -27,11 +28,18 @@ public sealed record RepoSnapshot(string CheckoutPath, string CommitSha);
 /// later <c>cat .git/config</c> on the checkout shows only the public
 /// repo URL, never the PAT.</para>
 ///
-/// <para><b>Threading:</b> the GitHub-token threat model assumes a
-/// single sync per binding at a time (the background scanner is
-/// gated to 8 bindings per tick, each running their own SyncAsync).
-/// Concurrent syncs of the same binding are not protected — callers
-/// must serialize themselves.</para>
+/// <para><b>Threading:</b> concurrent syncs of the SAME <c>(kind,id)</c>
+/// (e.g. background poller tick coinciding with an admin "Scan now",
+/// or with the per-challenge Build fallback) are serialized through a
+/// per-key <see cref="SemaphoreSlim"/>. Without this, two
+/// <c>git fetch</c>s racing on the same working tree can leave the
+/// checkout at a half-applied SHA. Different keys still run in
+/// parallel — the lock is fine-grained.</para>
+///
+/// <para>The lock is in-process only. GZCTF is single-process today;
+/// if/when multi-instance ships, switch to
+/// <c>pg_advisory_xact_lock(hash('binding:42'))</c> — see
+/// <c>GameInstanceRepository.cs:326-333</c> for an existing example.</para>
 /// </summary>
 public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
 {
@@ -41,6 +49,23 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
     /// from user-uploaded blobs (we can rebuild it from upstream).
     /// </summary>
     public const string RepoRoot = "/app/repos";
+
+    /// <summary>
+    /// Hard wall-clock cap on a single git invocation. Two minutes is
+    /// generous for a shallow clone of any real-world CTF repo — past
+    /// that we assume the connection is wedged (DNS, TLS handshake,
+    /// proxy, revoked token mid-fetch). The process is killed and the
+    /// caller sees <see cref="OperationCanceledException"/>.
+    /// </summary>
+    private static readonly TimeSpan GitCommandTimeout = TimeSpan.FromMinutes(2);
+
+    /// <summary>
+    /// Per-(kind,id) mutex. Allocated lazily on first sync and kept for
+    /// the process lifetime — one entry per binding/watch is negligible
+    /// memory and skipping the dictionary churn keeps the hot path
+    /// allocation-free.
+    /// </summary>
+    private static readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
 
     /// <summary>
     /// Shallow-clone (or fast-forward fetch) the repo identified by
@@ -53,6 +78,22 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
     /// <param name="id">Numeric id of the binding/watch. Becomes the
     /// directory name.</param>
     public async Task<RepoSnapshot> SyncAsync(
+        string kind, int id, GitHubLocator loc, string? authToken, CancellationToken ct)
+    {
+        var lockKey = $"{kind}:{id}";
+        var gate = _locks.GetOrAdd(lockKey, _ => new SemaphoreSlim(1, 1));
+        await gate.WaitAsync(ct);
+        try
+        {
+            return await SyncCoreAsync(kind, id, loc, authToken, ct);
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    private async Task<RepoSnapshot> SyncCoreAsync(
         string kind, int id, GitHubLocator loc, string? authToken, CancellationToken ct)
     {
         var kindDir = Path.Combine(RepoRoot, kind);
@@ -151,9 +192,28 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
 
         using var proc = Process.Start(psi) ?? throw new InvalidOperationException("git failed to start");
 
-        var stdoutTask = proc.StandardOutput.ReadToEndAsync(ct);
-        var stderrTask = proc.StandardError.ReadToEndAsync(ct);
-        await proc.WaitForExitAsync(ct);
+        // Hard wall-clock cap on the git call. The original token
+        // would have allowed an indefinite hang on a wedged network
+        // connection — this keeps the worker thread alive for
+        // subsequent bindings instead of starving the scan tick.
+        using var timeout = new CancellationTokenSource(GitCommandTimeout);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, timeout.Token);
+
+        var stdoutTask = proc.StandardOutput.ReadToEndAsync(linked.Token);
+        var stderrTask = proc.StandardError.ReadToEndAsync(linked.Token);
+        try
+        {
+            await proc.WaitForExitAsync(linked.Token);
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested)
+        {
+            // Kill the wedged git process so it doesn't linger past the
+            // worker. The kill is best-effort: if the process already
+            // exited we ignore the InvalidOperationException.
+            try { proc.Kill(entireProcessTree: true); } catch { /* ignore */ }
+            throw new OperationCanceledException(
+                $"git {SafeCommandSummary(args)} timed out after {GitCommandTimeout.TotalSeconds:0}s");
+        }
         var stdout = await stdoutTask;
         var stderr = await stderrTask;
 
@@ -163,9 +223,18 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
             // case git ever prints it (unlikely, but cheap insurance).
             var sanitized = stderr.Replace("Authorization: Bearer ", "Authorization: Bearer ***");
             throw new InvalidOperationException(
-                $"git {string.Join(' ', args.TakeWhile(a => a != "-c"))} exited {proc.ExitCode}: {sanitized.Trim()}");
+                $"git {SafeCommandSummary(args)} exited {proc.ExitCode}: {sanitized.Trim()}");
         }
 
         return stdout;
     }
+
+    /// <summary>
+    /// Build a human-readable summary of the git command for error
+    /// messages, stopping at the first <c>-c</c> so the
+    /// <c>http.extraHeader=Authorization: Bearer ...</c> token never
+    /// lands in an exception message.
+    /// </summary>
+    private static string SafeCommandSummary(string[] args)
+        => string.Join(' ', args.TakeWhile(a => a != "-c"));
 }

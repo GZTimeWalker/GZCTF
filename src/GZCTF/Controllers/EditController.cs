@@ -1790,18 +1790,47 @@ public class EditController(
                 return BadRequest(new RequestResponse(challenge.LastBuildLog));
             }
 
+            // If a build for this challenge is already pending /
+            // running, short-circuit: the user's intent is already
+            // satisfied by the in-flight build. No second snapshot,
+            // no second enqueue, no second audit row.
+            if (buildQueue.IsPending(challenge.Id))
+            {
+                return Accepted(new Models.Response.Admin.ChallengeAuditModel
+                {
+                    ArchiveAvailable = true,
+                    BuildStatus = challenge.BuildStatus,
+                    LastBuildLog = challenge.LastBuildLog
+                });
+            }
+
             // Snapshot to a queue-owned location so we can tear down
             // workDir before returning.
             var snap = Path.Combine(Path.GetTempPath(), $"gzctf-build-{Guid.NewGuid():N}");
             CopyDirRecursive(contextDir, snap);
 
-            challenge.BuildStatus = ChallengeBuildStatus.Queued;
-            challenge.LastBuildLog = null;
-            await dbContext.SaveChangesAsync(token);
-
-            buildQueue.Enqueue(new Services.Container.Build.ChallengeBuildJob(
+            var enqueueResult = buildQueue.Enqueue(new Services.Container.Build.ChallengeBuildJob(
                 challenge.Id, challenge.GameId, challenge.Title,
                 snap, dockerfile, BuildTrigger.Manual));
+
+            switch (enqueueResult)
+            {
+                case Services.Container.Build.EnqueueResult.Enqueued:
+                    challenge.BuildStatus = ChallengeBuildStatus.Queued;
+                    challenge.LastBuildLog = null;
+                    await dbContext.SaveChangesAsync(token);
+                    break;
+                case Services.Container.Build.EnqueueResult.AlreadyPending:
+                    // Raced with another caller — drop the snapshot, the
+                    // existing job will satisfy this request too.
+                    try { Directory.Delete(snap, recursive: true); } catch { /* best effort */ }
+                    break;
+                case Services.Container.Build.EnqueueResult.Rejected:
+                    try { Directory.Delete(snap, recursive: true); } catch { /* best effort */ }
+                    return StatusCode(503, new RequestResponse(
+                        "Build queue is full — try again in a moment.",
+                        503));
+            }
 
             return Accepted(new Models.Response.Admin.ChallengeAuditModel
             {

@@ -19,6 +19,27 @@ public static class ChannelService
             services.AddSingleton(channel.Reader);
             services.AddSingleton(channel.Writer);
         }
+
+        /// <summary>
+        /// Like <see cref="AddChannel{T}"/> but caps the queue depth so
+        /// a runaway producer (e.g. a malformed import that enqueues
+        /// thousands of build jobs) can't OOM the host. Producers that
+        /// hit the cap see a failed <c>TryWrite</c> instead of an
+        /// indefinite wait — pair with caller code that surfaces the
+        /// failure to the operator.
+        /// </summary>
+        internal void AddBoundedChannel<T>(int capacity)
+        {
+            var channel = Channel.CreateBounded<T>(new BoundedChannelOptions(capacity)
+            {
+                FullMode = BoundedChannelFullMode.Wait,
+                SingleReader = false,
+                SingleWriter = false
+            });
+            services.AddSingleton(channel);
+            services.AddSingleton(channel.Reader);
+            services.AddSingleton(channel.Writer);
+        }
     }
 }
 

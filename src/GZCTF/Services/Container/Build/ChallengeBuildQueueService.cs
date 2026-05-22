@@ -35,7 +35,6 @@ namespace GZCTF.Services.Container.Build;
 /// </summary>
 public sealed class ChallengeBuildQueueService(
     ChannelReader<ChallengeBuildJob> reader,
-    ChannelWriter<ChallengeBuildJob> writer,
     IChallengeBuildQueue queue,
     IChallengeImageBuilder imageBuilder,
     IServiceScopeFactory scopeFactory,
@@ -53,6 +52,7 @@ public sealed class ChallengeBuildQueueService(
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await ResetStuckBuildsAsync(stoppingToken);
+        SweepOrphanedSnapshots();
 
         logger.LogInformation("ChallengeBuildQueueService: starting {Workers} workers", WorkerCount);
 
@@ -111,6 +111,44 @@ public sealed class ChallengeBuildQueueService(
         catch (Exception ex)
         {
             logger.LogError(ex, "ChallengeBuildQueueService: failed to reset stuck builds");
+        }
+    }
+
+    /// <summary>
+    /// Sweep <c>/tmp/gzctf-build-*</c> dirs older than 1 hour at
+    /// startup. Snapshot dirs leak when the worker process is killed
+    /// between <c>PrepareBuildSnapshot</c> and the cleanup
+    /// <c>finally</c>. 1 hour is well past the 5-minute docker build
+    /// timeout, so anything older than that is definitely orphaned.
+    /// </summary>
+    void SweepOrphanedSnapshots()
+    {
+        try
+        {
+            var threshold = DateTime.UtcNow - TimeSpan.FromHours(1);
+            int swept = 0;
+            foreach (var dir in Directory.EnumerateDirectories(Path.GetTempPath(), "gzctf-build-*"))
+            {
+                try
+                {
+                    var info = new DirectoryInfo(dir);
+                    if (info.LastWriteTimeUtc < threshold)
+                    {
+                        Directory.Delete(dir, recursive: true);
+                        swept++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogDebug(ex, "ChallengeBuildQueueService: could not sweep {Dir}", dir);
+                }
+            }
+            if (swept > 0)
+                logger.LogInformation("ChallengeBuildQueueService: swept {Count} orphan snapshot dirs", swept);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "ChallengeBuildQueueService: snapshot sweep failed");
         }
     }
 
@@ -187,6 +225,9 @@ public sealed class ChallengeBuildQueueService(
 
         Action<string> sink = line =>
         {
+            // Scrub before appending so the live UI never briefly
+            // shows an unscrubbed token between two flushes.
+            line = DockerChallengeImageBuilder.ScrubSecrets(line);
             lock (liveLock)
             {
                 liveBuf.Append(line);
@@ -239,7 +280,12 @@ public sealed class ChallengeBuildQueueService(
         finally
         {
             stopwatch.Stop();
-            ((ChallengeBuildQueue)queue).MarkEnd(job.ChallengeId);
+            // NOTE: we do NOT call MarkEnd here unconditionally
+            // anymore. If a transient retry is about to be scheduled,
+            // we want the challenge to stay in the dedup set so a
+            // concurrent human-triggered Build click doesn't slip in
+            // and create a duplicate. MarkEnd happens after the
+            // retry decision below.
         }
 
         var finishedAt = DateTimeOffset.UtcNow;
@@ -291,20 +337,32 @@ public sealed class ChallengeBuildQueueService(
             await db.SaveChangesAsync(stoppingToken);
         }
 
+        var q = (ChallengeBuildQueue)queue;
         if (transient)
         {
             var delay = BackoffSchedule[Math.Min(job.Attempt - 1, BackoffSchedule.Length - 1)];
             logger.LogWarning(
                 "ChallengeBuildQueueService: transient failure on challenge {Id} attempt {A}, retrying in {D}s: {Err}",
                 job.ChallengeId, job.Attempt, delay.TotalSeconds, Truncate(errorMessage, 200));
+            // Clear the in-progress entry but keep the challenge in the
+            // dedup set across the backoff delay (TryRetry bypasses the
+            // dedup check on the re-enqueue path).
+            q.MarkAttemptDoneRetrying(job.ChallengeId);
             try { await Task.Delay(delay, stoppingToken); }
-            catch (OperationCanceledException) { return; }
-            // Re-enqueue with the same context dir; do NOT delete it.
-            if (!writer.TryWrite(job with { Attempt = job.Attempt + 1, Trigger = BuildTrigger.AutoRetry }))
+            catch (OperationCanceledException) { q.MarkEnd(job.ChallengeId); return; }
+            if (!q.TryRetry(job with { Attempt = job.Attempt + 1, Trigger = BuildTrigger.AutoRetry }))
+            {
                 logger.LogError("ChallengeBuildQueueService: failed to re-enqueue retry for {Id}", job.ChallengeId);
+                // Channel rejected the retry write (full?). Clear the
+                // dedup set so the operator can manually retry.
+                q.MarkEnd(job.ChallengeId);
+            }
             return;
         }
 
+        // Terminal outcome — clear in-progress AND dedup set so future
+        // builds for this challenge enqueue normally.
+        q.MarkEnd(job.ChallengeId);
         if (job.OwnsContextDir) SafeDelete(job.ContextDir);
     }
 
