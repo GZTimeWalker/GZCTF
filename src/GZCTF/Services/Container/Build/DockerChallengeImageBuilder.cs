@@ -248,6 +248,11 @@ public sealed class DockerChallengeImageBuilder(
         using var pushTimeout = new CancellationTokenSource(PushTimeout);
         using var linkedPush = CancellationTokenSource.CreateLinkedTokenSource(token, pushTimeout.Token);
 
+        // Daemon delivers push failures (DNS unresolvable, auth
+        // rejected, etc.) via JSONMessage.Error rather than as an
+        // exception from PushImageAsync. Capture them in the progress
+        // sink and bail at the end if any were reported.
+        string? pushError = null;
         try
         {
             var pushProgress = new Progress<JSONMessage>(msg =>
@@ -255,7 +260,10 @@ public sealed class DockerChallengeImageBuilder(
                 if (!string.IsNullOrEmpty(msg.Status))
                     AppendTail(logTail, $"[push] {msg.Status}{(string.IsNullOrEmpty(msg.Progress?.Current.ToString()) ? "" : " " + msg.Progress?.Current)}\n");
                 if (msg.Error is { Message: { Length: > 0 } em })
+                {
                     AppendTail(logTail, $"[push] error: {em}\n");
+                    pushError ??= em;
+                }
             });
             await _client.Images.PushImageAsync(
                 repository,
@@ -273,6 +281,16 @@ public sealed class DockerChallengeImageBuilder(
         {
             AppendTail(logTail, $"[push] failed: {ex.Message}\n");
             logger.LogWarning(ex, "Registry push: push failed {Tag}", registryTag);
+            return null;
+        }
+
+        if (pushError is not null)
+        {
+            // Daemon-reported error (e.g. "Get http://...: dial tcp:
+            // lookup ... no such host", "denied: requested access to
+            // the resource is denied"). Already in the log; bail so
+            // the caller flips the build to Failed.
+            logger.LogWarning("Registry push: daemon reported error: {Err}", pushError);
             return null;
         }
 
