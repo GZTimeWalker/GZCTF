@@ -49,3 +49,12 @@ public sealed class BulkRebuildResultModel
     public int Skipped { get; set; }
     public string[] Messages { get; set; } = [];
 }
+
+/// <summary>
+/// Result of a prune action — either audit rows or local images.
+/// </summary>
+public sealed class PruneResultModel
+{
+    public int Removed { get; set; }
+    public string[] Messages { get; set; } = [];
+}

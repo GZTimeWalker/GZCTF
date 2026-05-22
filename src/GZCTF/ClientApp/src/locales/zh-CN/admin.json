@@ -111,6 +111,15 @@
     },
     "anti_cheat": {
       "clear": "清除此记录"
+    },
+    "builds": {
+      "view_log": "查看完整日志",
+      "reenqueue": "重新构建",
+      "delete": "删除此记录",
+      "prune_failed": "清理失败记录",
+      "prune_images": "清理镜像",
+      "copy": "复制日志",
+      "copied": "已复制"
     }
   },
   "content": {
@@ -583,6 +592,14 @@
       "in_progress_title": "正在进行",
       "no_in_progress": "当前没有进行中的构建。",
       "attempt": "第 {{n}} 次",
+      "log_modal_title": "构建日志",
+      "no_log": "此次尝试没有日志。",
+      "confirm_delete": "删除 {{challenge}} 的审计记录？不会影响题目本身和已构建的镜像。",
+      "confirm_prune_failed": "删除 {{count}} 条 Failed 审计记录？成功、进行中的记录以及题目本身都不会受影响。",
+      "confirm_prune_images": {
+        "line1": "清理本地 Docker daemon 上没有题目引用的 gzctf-auto/* 镜像。",
+        "line2": "已推送到仓库的镜像不会被清理。正在使用的镜像会保留。用于释放 GZCTF 主机磁盘。"
+      },
       "filter": {
         "all": "全部状态",
         "placeholder": "按状态筛选"
@@ -863,7 +880,9 @@
     },
     "builds": {
       "bulk_enqueued": "已加入 {{count}} 个构建任务",
-      "enqueued": "构建已触发"
+      "enqueued": "构建已触发",
+      "pruned": "已清理 {{count}} 条记录",
+      "images_pruned": "已清理 {{count}} 个孤立镜像"
     }
   },
   "placeholder": {

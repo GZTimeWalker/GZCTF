@@ -1546,6 +1546,150 @@ public class AdminController(
     }
 
     /// <summary>
+    /// Re-enqueue a build for the challenge that owns this audit row.
+    /// Convenience action on /admin/builds — under the hood it just
+    /// looks up the challenge id from the audit and forwards to the
+    /// existing per-challenge Rebuild flow (with all its dedup +
+    /// blob-vs-binding-fallback logic).
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("Builds/{auditId:int}/Reenqueue")]
+    [ProducesResponseType(typeof(Models.Response.Admin.ChallengeAuditModel), StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ReenqueueBuild(
+        [FromRoute] int auditId,
+        [FromServices] AppDbContext dbContext,
+        CancellationToken token)
+    {
+        var row = await dbContext.ChallengeBuildAudits.AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == auditId, token);
+        if (row is null) return NotFound(new RequestResponse("Audit row not found."));
+        // Redirect to the existing Rebuild route — keeps all the
+        // blob-vs-binding fallback + EnqueueResult handling in one
+        // place. 307 preserves the POST verb.
+        return RedirectPreserveMethod($"/api/edit/games/{row.GameId}/challenges/{row.ChallengeId}/rebuild");
+    }
+
+    /// <summary>
+    /// Remove a single audit row. Doesn't touch the challenge or its
+    /// build artifacts — purely a history cleanup for operators who
+    /// don't want a stale Failed entry cluttering /admin/builds.
+    /// </summary>
+    [RequireAdmin]
+    [HttpDelete("Builds/{auditId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteBuildAudit(
+        [FromRoute] int auditId,
+        [FromServices] AppDbContext dbContext,
+        CancellationToken token)
+    {
+        var row = await dbContext.ChallengeBuildAudits.FirstOrDefaultAsync(a => a.Id == auditId, token);
+        if (row is null) return NotFound(new RequestResponse("Audit row not found."));
+        dbContext.ChallengeBuildAudits.Remove(row);
+        await dbContext.SaveChangesAsync(token);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Bulk-delete every Failed audit row. Lets the operator clear the
+    /// noise after a fix without scrolling through and deleting each
+    /// row individually. Doesn't affect Building / Queued / Success
+    /// rows.
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("Builds/PruneFailed")]
+    [ProducesResponseType(typeof(Models.Response.Admin.PruneResultModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> PruneFailedBuildAudits(
+        [FromServices] AppDbContext dbContext, CancellationToken token)
+    {
+        var deleted = await dbContext.ChallengeBuildAudits
+            .Where(a => a.Status == ChallengeBuildStatus.Failed)
+            .ExecuteDeleteAsync(token);
+        return Ok(new Models.Response.Admin.PruneResultModel { Removed = deleted });
+    }
+
+    /// <summary>
+    /// Garbage-collect <c>gzctf-auto/*</c> images on the local docker
+    /// daemon that no live <see cref="GameChallenge.ContainerImage"/>
+    /// points at. After the registry-push feature shipped, every
+    /// rebuild creates a new content-hashed tag locally; the old ones
+    /// stick around forever unless something prunes them. This trims
+    /// disk usage on the GZCTF host.
+    ///
+    /// <para>Images currently referenced by a challenge row are
+    /// preserved — even if that row's image is the registry-prefixed
+    /// version, the local <c>gzctf-auto/</c> tag is kept too so the
+    /// next rebuild can use the deterministic cache path.</para>
+    /// </summary>
+    [RequireAdmin]
+    [HttpPost("Builds/PruneImages")]
+    [ProducesResponseType(typeof(Models.Response.Admin.PruneResultModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> PruneOrphanBuildImages(
+        [FromServices] AppDbContext dbContext,
+        [FromServices] Services.Container.Provider.IContainerProvider<Docker.DotNet.DockerClient,
+            Services.Container.Provider.DockerMetadata> dockerProvider,
+        CancellationToken token)
+    {
+        // Build the keep-set from current ContainerImage values.
+        // ContainerImage can be either the bare local tag
+        // (gzctf-auto/...) or the registry-prefixed tag — derive the
+        // local form from the registry one so both versions are kept.
+        var referenced = await dbContext.GameChallenges
+            .Where(c => c.ContainerImage != null && c.ContainerImage.Contains("gzctf-auto/"))
+            .Select(c => c.ContainerImage!)
+            .ToListAsync(token);
+
+        var keep = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var img in referenced)
+        {
+            keep.Add(img); // as stored
+            // If it's a registry-prefixed tag, also keep the bare local form.
+            var idx = img.IndexOf("gzctf-auto/", StringComparison.Ordinal);
+            if (idx > 0) keep.Add(img[idx..]);
+        }
+
+        var client = dockerProvider.GetProvider();
+        var images = await client.Images.ListImagesAsync(
+            new Docker.DotNet.Models.ImagesListParameters { All = false }, token);
+
+        int removed = 0;
+        var messages = new List<string>();
+        foreach (var img in images)
+        {
+            if (img.RepoTags is null) continue;
+            // Only touch images whose ONLY tags are gzctf-auto.
+            var gzTags = img.RepoTags
+                .Where(t => t.Contains("gzctf-auto/") || t.StartsWith("gzctf-auto/", StringComparison.Ordinal))
+                .ToArray();
+            if (gzTags.Length == 0) continue;
+            // If any of this image's tags is referenced, skip the whole image.
+            if (gzTags.Any(t => keep.Contains(t))) continue;
+            // Untag the gzctf-auto/* tags (leaves any non-gzctf tags alone).
+            foreach (var t in gzTags)
+            {
+                try
+                {
+                    await client.Images.DeleteImageAsync(t,
+                        new Docker.DotNet.Models.ImageDeleteParameters { Force = false, NoPrune = false },
+                        token);
+                    removed++;
+                }
+                catch (Exception ex)
+                {
+                    messages.Add($"{t}: {ex.Message}");
+                }
+            }
+        }
+
+        return Ok(new Models.Response.Admin.PruneResultModel
+        {
+            Removed = removed,
+            Messages = messages.ToArray()
+        });
+    }
+
+    /// <summary>
     /// Bulk-rebuild every <c>Failed</c> / <c>MissingDockerfile</c>
     /// challenge in a game. Skips challenges with no persisted archive
     /// (registry-image or admin-created entries) and reports the

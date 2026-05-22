@@ -111,6 +111,15 @@
     },
     "anti_cheat": {
       "clear": "Clear this block"
+    },
+    "builds": {
+      "view_log": "View full build log",
+      "reenqueue": "Re-run this build",
+      "delete": "Delete this audit row",
+      "prune_failed": "Clear failed",
+      "prune_images": "Prune images",
+      "copy": "Copy log",
+      "copied": "Copied"
     }
   },
   "content": {
@@ -583,6 +592,14 @@
       "in_progress_title": "In progress",
       "no_in_progress": "No builds currently running.",
       "attempt": "attempt {{n}}",
+      "log_modal_title": "Build log",
+      "no_log": "No log captured for this attempt.",
+      "confirm_delete": "Delete the audit row for {{challenge}}? The challenge itself and its built image are not affected.",
+      "confirm_prune_failed": "Delete {{count}} Failed audit row(s)? Successful builds, in-progress builds, and the challenges themselves are preserved.",
+      "confirm_prune_images": {
+        "line1": "Untag every gzctf-auto/* image on the local docker daemon that no current challenge references.",
+        "line2": "Pushed registry copies are not touched. Active challenges keep their images. Useful for reclaiming disk on the GZCTF host."
+      },
       "filter": {
         "all": "All statuses",
         "placeholder": "Filter by status"
@@ -863,7 +880,9 @@
     },
     "builds": {
       "bulk_enqueued": "Enqueued {{count}} build(s)",
-      "enqueued": "Build triggered"
+      "enqueued": "Build triggered",
+      "pruned": "Cleared {{count}} audit row(s)",
+      "images_pruned": "Removed {{count}} orphaned image tag(s)"
     }
   },
   "placeholder": {

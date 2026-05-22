@@ -1546,6 +1546,12 @@ export interface BulkRebuildResultModel {
   messages: string[]
 }
 
+/** Result of a prune action — either audit rows or local images. */
+export interface PruneResultModel {
+  removed: number
+  messages?: string[]
+}
+
 /** Challenge update information (Edit) */
 export interface ChallengeUpdateModel {
   /**
@@ -4440,6 +4446,61 @@ export class Api<
     adminBulkRebuildFailed: (gameId: number, params: RequestParams = {}) =>
       this.request<BulkRebuildResultModel, RequestResponse>({
         path: `/api/admin/games/${gameId}/bulkrebuild`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete a single ChallengeBuildAudit row.
+     * @tags Admin
+     * @name AdminDeleteBuildAudit
+     * @request DELETE:/api/admin/builds/{auditId}
+     */
+    adminDeleteBuildAudit: (auditId: number, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/builds/${auditId}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * @description Bulk-delete every Failed audit row.
+     * @tags Admin
+     * @name AdminPruneFailedBuildAudits
+     * @request POST:/api/admin/builds/prunefailed
+     */
+    adminPruneFailedBuildAudits: (params: RequestParams = {}) =>
+      this.request<PruneResultModel, RequestResponse>({
+        path: `/api/admin/builds/prunefailed`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description GC orphaned gzctf-auto/* images on the local docker daemon.
+     * @tags Admin
+     * @name AdminPruneOrphanBuildImages
+     * @request POST:/api/admin/builds/pruneimages
+     */
+    adminPruneOrphanBuildImages: (params: RequestParams = {}) =>
+      this.request<PruneResultModel, RequestResponse>({
+        path: `/api/admin/builds/pruneimages`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Re-enqueue the build for the challenge owning this audit row.
+     * @tags Admin
+     * @name AdminReenqueueBuild
+     * @request POST:/api/admin/builds/{auditId}/reenqueue
+     */
+    adminReenqueueBuild: (auditId: number, params: RequestParams = {}) =>
+      this.request<ChallengeAuditModel, RequestResponse>({
+        path: `/api/admin/builds/${auditId}/reenqueue`,
         method: "POST",
         format: "json",
         ...params,
