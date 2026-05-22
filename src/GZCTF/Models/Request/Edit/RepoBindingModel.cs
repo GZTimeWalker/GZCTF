@@ -52,6 +52,9 @@ public sealed class RepoBindingUpdateModel
 
     [MaxLength(1024)]
     public string? GitHubToken { get; set; }
+
+    /// <summary>Opt in to pushing admin edits back to the source repo.</summary>
+    public bool? PushOnEdit { get; set; }
 }
 
 /// <summary>
@@ -76,6 +79,10 @@ public sealed class RepoBindingInfoModel
     /// <summary>Live activity from the scanner — non-null while a scan
     /// is actively running.</summary>
     public string? CurrentActivity { get; set; }
+
+    /// <summary>Per-binding switch — admin edits to challenges sourced
+    /// from this binding get pushed back to upstream as commits.</summary>
+    public bool PushOnEdit { get; set; }
 
     public RepoBindingGameSummary[] Games { get; set; } = [];
 }

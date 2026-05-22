@@ -85,6 +85,20 @@ public sealed class GameRepoBinding
     public string? CurrentActivity { get; set; }
 
     /// <summary>
+    /// Opt-in. When true, edits to a challenge sourced from this
+    /// binding via the admin UI are serialized back to
+    /// <see cref="GameChallenge.SourceYamlPath"/> and pushed upstream
+    /// as a fresh commit. Requires a PAT with <c>Contents:write</c>
+    /// scope stored in <see cref="GitHubTokenEncrypted"/>.
+    ///
+    /// <para><b>Caveat:</b> regenerating the yaml drops comments and
+    /// reorders fields per the serializer. Don't enable on a repo
+    /// whose yamls have hand-edited comments you want to keep.</para>
+    /// </summary>
+    [Required]
+    public bool PushOnEdit { get; set; }
+
+    /// <summary>
     /// Games discovered from this binding. Each one links back via
     /// <see cref="Game.RepoBindingId"/>.
     /// </summary>

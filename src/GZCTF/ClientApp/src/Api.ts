@@ -2327,6 +2327,12 @@ export interface RepoBindingInfoModel {
   tokenStatus?: TokenStatus
   /** Live progress message from the scanner — non-null while a scan is running. */
   currentActivity?: string | null
+  /**
+   * When true, admin edits to challenges owned by this binding get
+   * serialized back to challenge.yml and pushed upstream as commits.
+   * Requires a PAT with Contents:write scope.
+   */
+  pushOnEdit?: boolean
   games: RepoBindingGameSummary[]
 }
 
@@ -2346,6 +2352,8 @@ export interface RepoBindingUpdateModel {
   status?: RepoWatchStatus | null
   /** null = keep existing; "" = clear; non-empty = replace. */
   githubToken?: string | null
+  /** Opt in to pushing admin edits back to the source repo. */
+  pushOnEdit?: boolean | null
 }
 
 /** Response from POST /api/Admin/RepoBindings or .../Scan */

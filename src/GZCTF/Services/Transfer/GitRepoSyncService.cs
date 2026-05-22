@@ -148,6 +148,112 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
     }
 
     /// <summary>
+    /// Stage <paramref name="filesRelativeToRepo"/>, commit them with
+    /// the given message, and push to upstream. Caller is responsible
+    /// for having already written the file contents to disk under the
+    /// checkout dir before calling this.
+    ///
+    /// <para>Uses the same per-(kind,id) semaphore as
+    /// <see cref="SyncAsync"/> so a push can't race a fetch. Performs a
+    /// <c>fetch + reset --hard</c> first so the working tree is at
+    /// upstream HEAD before we apply the edit — this turns a
+    /// concurrent push from someone else into a normal merge-style
+    /// failure ("non-fast-forward") that the caller can surface,
+    /// rather than silently dropping their commits.</para>
+    /// </summary>
+    /// <param name="kind">Same kind used at <see cref="SyncAsync"/>.</param>
+    /// <param name="id">Same id used at <see cref="SyncAsync"/>.</param>
+    /// <param name="loc">Locator (for remote URL + ref).</param>
+    /// <param name="authToken">PAT with Contents:write scope. Required.</param>
+    /// <param name="filesRelativeToRepo">Paths relative to the repo
+    /// root (e.g. <c>final/Pwn/foo/challenge.yml</c>).</param>
+    /// <param name="commitMessage">Plain commit message.</param>
+    /// <param name="authorName">Used for git config user.name on the
+    /// push commit. Default "GZCTF admin".</param>
+    /// <param name="authorEmail">user.email. Default a noreply.</param>
+    /// <returns>The pushed commit SHA.</returns>
+    public async Task<string> CommitAndPushAsync(
+        string kind, int id, GitHubLocator loc, string authToken,
+        IReadOnlyList<string> filesRelativeToRepo,
+        string commitMessage,
+        string authorName = "GZCTF admin",
+        string authorEmail = "noreply@gzctf.local",
+        CancellationToken ct = default)
+    {
+        if (string.IsNullOrEmpty(authToken))
+            throw new InvalidOperationException("Push requires an auth token.");
+        if (filesRelativeToRepo.Count == 0)
+            throw new InvalidOperationException("Push requires at least one file path.");
+
+        var lockKey = $"{kind}:{id}";
+        var gate = _locks.GetOrAdd(lockKey, _ => new SemaphoreSlim(1, 1));
+        await gate.WaitAsync(ct);
+        try
+        {
+            return await CommitAndPushCoreAsync(kind, id, loc, authToken,
+                filesRelativeToRepo, commitMessage, authorName, authorEmail, ct);
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    private async Task<string> CommitAndPushCoreAsync(
+        string kind, int id, GitHubLocator loc, string authToken,
+        IReadOnlyList<string> filesRelativeToRepo,
+        string commitMessage, string authorName, string authorEmail,
+        CancellationToken ct)
+    {
+        var repoDir = Path.Combine(RepoRoot, kind, id.ToString());
+        if (!Directory.Exists(Path.Combine(repoDir, ".git")))
+            throw new InvalidOperationException(
+                $"Repo {kind}/{id} not cloned yet; SyncAsync must run before CommitAndPushAsync.");
+
+        var refSpec = string.IsNullOrEmpty(loc.Ref) ? "HEAD" : loc.Ref;
+        var repoUrl = $"https://github.com/{loc.Owner}/{loc.Repo}.git";
+        var authArgs = new[] { "-c", $"http.extraHeader=Authorization: Bearer {authToken}" };
+
+        // Set commit identity per-repo to avoid mutating global git
+        // config inside the container.
+        await RunGitAsync(repoDir, ["config", "user.name", authorName], ct);
+        await RunGitAsync(repoDir, ["config", "user.email", authorEmail], ct);
+        await RunGitAsync(repoDir, ["remote", "set-url", "origin", repoUrl], ct);
+
+        // Stage only the explicit paths — never a wholesale `git add .`
+        // since that would sweep up build artifacts the import wrote.
+        foreach (var rel in filesRelativeToRepo)
+        {
+            var fullPath = Path.Combine(repoDir, rel);
+            if (!File.Exists(fullPath))
+                throw new InvalidOperationException($"Push target {rel} doesn't exist on disk.");
+            await RunGitAsync(repoDir, ["add", "--", rel], ct);
+        }
+
+        // No-op detection — if nothing actually changed (operator
+        // "edit" that wrote the same yaml back), skip the commit and
+        // push to avoid empty commits cluttering history.
+        var staged = (await RunGitAsync(repoDir, ["diff", "--cached", "--name-only"], ct)).Trim();
+        if (string.IsNullOrEmpty(staged))
+        {
+            logger.LogInformation("GitRepoSync: no changes staged for {Kind}/{Id}; skip push", kind, id);
+            return (await RunGitAsync(repoDir, ["rev-parse", "HEAD"], ct)).Trim();
+        }
+
+        await RunGitAsync(repoDir, ["commit", "-m", commitMessage], ct);
+        // --depth 1 in clone means the local repo is shallow; the push
+        // works because we're appending one commit on top of the
+        // shallow HEAD. github accepts this provided the parent SHA
+        // exists upstream (which it does — it's the SHA we fetched).
+        await RunGitAsync(repoDir,
+            [.. authArgs, "push", "origin", $"HEAD:{refSpec}"], ct);
+        logger.LogInformation(
+            "GitRepoSync: pushed {Files} file(s) to {Owner}/{Repo}@{Ref}",
+            filesRelativeToRepo.Count, loc.Owner, loc.Repo, refSpec);
+        return (await RunGitAsync(repoDir, ["rev-parse", "HEAD"], ct)).Trim();
+    }
+
+    /// <summary>
     /// Drop the on-disk checkout. Called on binding/watch deletion so
     /// the cache doesn't grow indefinitely.
     /// </summary>

@@ -1883,6 +1883,7 @@ public class AdminController(
                 HasGitHubToken = b.GitHubTokenEncrypted != null,
                 TokenStatus = b.TokenStatus,
                 CurrentActivity = b.CurrentActivity,
+                PushOnEdit = b.PushOnEdit,
                 Games = dbContext.Games
                     .Where(g => g.RepoBindingId == b.Id)
                     .OrderBy(g => g.Title)
@@ -2027,6 +2028,8 @@ public class AdminController(
                 binding.TokenStatus = TokenStatus.Ok;
             }
         }
+        if (model.PushOnEdit is { } poe)
+            binding.PushOnEdit = poe;
         await dbContext.SaveChangesAsync(token);
 
         return Ok(new Models.Request.Edit.RepoBindingInfoModel
@@ -2042,7 +2045,8 @@ public class AdminController(
             LastCommitSha = binding.LastCommitSha,
             LastScanMessage = binding.LastScanMessage,
             HasGitHubToken = binding.GitHubTokenEncrypted != null,
-            TokenStatus = binding.TokenStatus
+            TokenStatus = binding.TokenStatus,
+            PushOnEdit = binding.PushOnEdit,
         });
     }
 

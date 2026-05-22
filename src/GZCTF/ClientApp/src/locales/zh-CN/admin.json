@@ -671,6 +671,8 @@
       "history_title": "扫描历史",
       "history_loading": "加载中…",
       "history_empty": "暂无扫描记录。",
+      "push_on_edit_label": "编辑后推送",
+      "push_on_edit_help": "开启后，管理员对来自此绑定的题目的编辑将作为新的 challenge.yml 提交并推送到上游仓库。需要带 Contents:write 权限的 PAT。",
       "card": {
         "ref_label": "分支",
         "events_count_one": "已发现 {{count}} 个比赛",

@@ -129,6 +129,18 @@ const RepoBindings: FC = () => {
     }
   }
 
+  const onTogglePushOnEdit = async (b: RepoBindingInfoModel) => {
+    setBusy(true)
+    try {
+      await api.admin.adminUpdateRepoBinding(b.id, { pushOnEdit: !b.pushOnEdit })
+      mutate()
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setBusy(false)
+    }
+  }
+
   const onDelete = (b: RepoBindingInfoModel) => {
     modals.openConfirmModal({
       title: t('admin.content.repo_binding.delete_title', { repo: b.repoUrl }),
@@ -316,11 +328,27 @@ const RepoBindings: FC = () => {
                     </Group>
 
                     {/* Subheader: ref + event count */}
-                    <Text size="xs" c="dimmed">
-                      {t('admin.content.repo_binding.card.ref_label')}: {b.ref ?? 'default'}
-                      {' · '}
-                      {t('admin.content.repo_binding.card.events_count', { count: b.games.length })}
-                    </Text>
+                    <Group justify="space-between" wrap="nowrap" align="center">
+                      <Text size="xs" c="dimmed">
+                        {t('admin.content.repo_binding.card.ref_label')}: {b.ref ?? 'default'}
+                        {' · '}
+                        {t('admin.content.repo_binding.card.events_count', { count: b.games.length })}
+                      </Text>
+                      <Tooltip
+                        label={t('admin.content.repo_binding.push_on_edit_help')}
+                        multiline
+                        w={280}
+                        position="left"
+                      >
+                        <Switch
+                          size="xs"
+                          checked={b.pushOnEdit ?? false}
+                          disabled={busy || !b.hasGitHubToken}
+                          onChange={() => onTogglePushOnEdit(b)}
+                          label={t('admin.content.repo_binding.push_on_edit_label')}
+                        />
+                      </Tooltip>
+                    </Group>
 
                     {/* Child games */}
                     {b.games.length === 0 ? (

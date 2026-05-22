@@ -166,6 +166,21 @@ public class Challenge
     public string? LastBuildLog { get; set; }
 
     /// <summary>
+    /// Relative path to the source <c>challenge.yml</c> inside the
+    /// owning repo binding's git checkout (e.g.
+    /// <c>final/Pwn/kopi-naught-file/challenge.yml</c>). Set by the
+    /// repo-binding import when this challenge was discovered there.
+    /// Null for admin-created or one-shot-uploaded challenges.
+    ///
+    /// <para>Used by the push-back feature
+    /// (<see cref="GameRepoBinding.PushOnEdit"/>) to know which file
+    /// to overwrite when the operator edits the challenge in the
+    /// admin UI.</para>
+    /// </summary>
+    [MaxLength(512)]
+    public string? SourceYamlPath { get; set; }
+
+    /// <summary>
     /// Generate dynamic flag for the participant
     /// </summary>
     /// <param name="part"></param>

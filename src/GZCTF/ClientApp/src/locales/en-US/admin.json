@@ -671,6 +671,8 @@
       "history_title": "Scan history",
       "history_loading": "Loading…",
       "history_empty": "No scans recorded yet.",
+      "push_on_edit_label": "Push on edit",
+      "push_on_edit_help": "When on, admin edits to challenges from this binding are committed back as a fresh challenge.yml and pushed upstream. Requires a PAT with Contents:write scope.",
       "card": {
         "ref_label": "ref",
         "events_count_one": "{{count}} event discovered",

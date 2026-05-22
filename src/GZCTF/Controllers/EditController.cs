@@ -908,7 +908,104 @@ public class EditController(
         // Always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
 
+        // Push-back: if this challenge came from a repo binding that
+        // has PushOnEdit on, serialize the row to yaml and push it
+        // upstream. Fire-and-forget so a slow git push doesn't extend
+        // the operator's edit-save round trip.
+        await TryPushBackAsync(game, res, token);
+
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
+    }
+
+    /// <summary>
+    /// If the challenge belongs to a binding-managed game and that
+    /// binding has push-on-edit enabled, regenerate the
+    /// <c>challenge.yml</c> from the current DB state and push it back
+    /// to upstream. Best-effort: failures land in the logs but don't
+    /// block the operator's edit, since the in-DB change is the
+    /// source-of-truth from the operator's perspective.
+    /// </summary>
+    private async Task TryPushBackAsync(GZCTF.Models.Data.Game game,
+        GZCTF.Models.Data.GameChallenge ch, CancellationToken token)
+    {
+        if (game.RepoBindingId is not { } bid) return;
+        if (string.IsNullOrEmpty(ch.SourceYamlPath)) return;
+
+        var binding = await dbContext.GameRepoBindings.AsNoTracking()
+            .FirstOrDefaultAsync(b => b.Id == bid, token);
+        if (binding is null || !binding.PushOnEdit) return;
+        if (string.IsNullOrEmpty(binding.GitHubTokenEncrypted)) return;
+
+        // Decrypt the PAT in this thread (uses request-scope
+        // IDataProtectionProvider) so we don't have to plumb the
+        // protector into the fire-and-forget Task.
+        string plaintext;
+        try
+        {
+            var protector = HttpContext.RequestServices
+                .GetRequiredService<Microsoft.AspNetCore.DataProtection.IDataProtectionProvider>()
+                .CreateProtector(GZCTF.Services.Transfer.GameRepoBindingProtection.Purpose);
+            plaintext = protector.Unprotect(binding.GitHubTokenEncrypted);
+        }
+        catch
+        {
+            logger.LogWarning("PushBack: failed to decrypt token for binding {Id}", bid);
+            return;
+        }
+
+        if (!GZCTF.Services.Transfer.GitHubLocator.TryParse(
+            binding.RepoUrl, binding.Ref, overrideSubpath: null, out var loc, out _) || loc is null)
+            return;
+
+        // Re-load with Flags so we can serialize them.
+        var withFlags = await dbContext.GameChallenges
+            .Include(c => c.Flags)
+            .FirstOrDefaultAsync(c => c.Id == ch.Id, token);
+        if (withFlags is null) return;
+
+        // Skip the dynamic-flag-template case — we'd need to serialize
+        // the template, not the materialized flags. The yaml's
+        // flag_template field already captures that; we can leave the
+        // existing yaml's flag list as-is.
+        var flagTexts = withFlags.Type == ChallengeType.DynamicContainer
+            ? Array.Empty<string>()
+            : withFlags.Flags.Where(f => !string.IsNullOrEmpty(f.Flag)).Select(f => f.Flag).ToArray();
+
+        var yamlPath = ch.SourceYamlPath!;
+        var commitMsg = $"chore: update {ch.Title} from GZCTF admin edit";
+        var scopeFactory = HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>();
+        var gitSync = HttpContext.RequestServices.GetRequiredService<GZCTF.Services.Transfer.GitRepoSyncService>();
+
+        // Fire-and-forget with its own scope; HTTP scope is disposed
+        // shortly after we return.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                // Make sure the checkout exists + is at HEAD before we
+                // overlay the new yaml.
+                await gitSync.SyncAsync("binding", bid, loc, plaintext, CancellationToken.None);
+
+                var repoDir = $"{GZCTF.Services.Transfer.GitRepoSyncService.RepoRoot}/binding/{bid}";
+                var fullPath = System.IO.Path.Combine(repoDir, yamlPath);
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    logger.LogWarning("PushBack: yaml {Path} missing in checkout — operator may have moved it; skipping push", yamlPath);
+                    return;
+                }
+
+                var newYaml = GZCTF.Services.Transfer.ChallengeYamlSerializer.Serialize(withFlags, flagTexts);
+                await System.IO.File.WriteAllTextAsync(fullPath, newYaml, CancellationToken.None);
+
+                await gitSync.CommitAndPushAsync("binding", bid, loc, plaintext,
+                    [yamlPath], commitMsg, ct: CancellationToken.None);
+                logger.LogInformation("PushBack: pushed {Yaml} for challenge {Cid}", yamlPath, ch.Id);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "PushBack: failed for challenge {Cid} ({Yaml})", ch.Id, yamlPath);
+            }
+        });
     }
 
     /// <summary>

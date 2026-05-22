@@ -152,7 +152,16 @@ public sealed class ChallengeImportService(
             token.ThrowIfCancellationRequested();
             try
             {
-                var outcome = await ImportOneAsync(game, packageDir, yamlPath, opts, originalArchiveBlobPath, token);
+                // Path relative to the binding's checkout root — what
+                // the push-back code needs to locate the file later.
+                // For one-shot uploads (admin tarball) workDir is a
+                // temp dir, the relpath is meaningless and the caller
+                // also passes originalArchiveBlobPath=null, so the
+                // SourceYamlPath stays effectively null (challenge has
+                // no upstream to push to either way).
+                var sourceYamlPath = Path.GetRelativePath(workDir, yamlPath).Replace('\\', '/');
+                var outcome = await ImportOneAsync(game, packageDir, yamlPath, opts,
+                    originalArchiveBlobPath, sourceYamlPath, token);
                 switch (outcome.Kind)
                 {
                     case OutcomeKind.Created: imported++; break;
@@ -176,7 +185,8 @@ public sealed class ChallengeImportService(
 
     private async Task<Outcome> ImportOneAsync(
         Game game, string packageDir, string yamlPath,
-        ChallengeImportOptions opts, string? originalArchiveBlobPath, CancellationToken token)
+        ChallengeImportOptions opts, string? originalArchiveBlobPath,
+        string? sourceYamlPath, CancellationToken token)
     {
         var yaml = await File.ReadAllTextAsync(yamlPath, token);
         ChallengeYamlModel? model;
@@ -251,6 +261,8 @@ public sealed class ChallengeImportService(
         ApplyYamlToChallenge(challenge, model, type, image, opts, packageDir);
         if (originalArchiveBlobPath is not null)
             challenge.OriginalArchiveBlobPath = originalArchiveBlobPath;
+        if (sourceYamlPath is not null)
+            challenge.SourceYamlPath = sourceYamlPath;
         await context.SaveChangesAsync(token);
 
         await SyncFlagsAsync(challenge, model.Flags ?? [], token);
