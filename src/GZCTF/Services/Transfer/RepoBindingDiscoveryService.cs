@@ -290,6 +290,28 @@ public sealed class RepoBindingDiscoveryService(
         var existing = await context.Games.FirstOrDefaultAsync(
             g => g.RepoBindingId == binding.Id && g.EventManifestPath == manifestRel, token);
 
+        // Orphan adoption: if no game is bound to this (bindingId,
+        // manifestPath), look for a detached game whose Title matches
+        // the manifest's title and adopt it instead of creating a
+        // duplicate. This is the recovery path for delete-then-rebind
+        // — the delete endpoint by default keeps games but nulls their
+        // RepoBindingId, and without this we'd end up with two games
+        // of the same name (old detached + new bound).
+        if (existing is null && !string.IsNullOrWhiteSpace(manifest.Title))
+        {
+            var orphan = await context.Games.FirstOrDefaultAsync(
+                g => g.RepoBindingId == null && g.Title == manifest.Title, token);
+            if (orphan is not null)
+            {
+                logger.LogInformation(
+                    "RepoBindingDiscovery: adopting detached game {GameId} ('{Title}') for binding {BindingId}",
+                    orphan.Id, orphan.Title, binding.Id);
+                orphan.RepoBindingId = binding.Id;
+                orphan.EventManifestPath = manifestRel;
+                existing = orphan;
+            }
+        }
+
         // PG's "timestamp with time zone" via Npgsql only accepts Offset=0
         // (UTC). The .gzevent schema uses ISO-8601 with local offsets like
         // +08:00, so normalize everything before persisting.

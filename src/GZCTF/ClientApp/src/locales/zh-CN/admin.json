@@ -105,6 +105,7 @@
       "add": "添加仓库",
       "scan": "立即扫描",
       "delete": "移除",
+      "delete_cascade": "移除并删除比赛",
       "history": "扫描历史",
       "pause": "暂停轮询",
       "resume": "恢复轮询"
@@ -683,7 +684,11 @@
         "commit": "Commit"
       },
       "delete_title": "删除 {{repo}} 的绑定？",
-      "delete_warning": "子比赛不会被删除——它们会解除与该绑定的关联但保留数据。如需移除，请手动删除。",
+      "delete_warning": "默认会保留已导入的比赛（仅解除绑定关联）。重新绑定同一仓库时，扫描器会按标题自动认领这些孤立的比赛，避免出现重复。",
+      "delete_cascade": {
+        "label": "同时删除已导入的比赛",
+        "description": "永久删除此绑定发现的所有比赛及其题目、Flag、构建记录。适用于完整清理。"
+      },
       "column": {
         "repo": "仓库",
         "ref": "Ref",

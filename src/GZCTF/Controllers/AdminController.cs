@@ -2132,6 +2132,7 @@ public class AdminController(
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRepoBinding(
         [FromRoute] int id,
+        [FromQuery] bool cascade,
         [FromServices] AppDbContext dbContext,
         [FromServices] Services.Transfer.GitRepoSyncService gitSync,
         CancellationToken token)
@@ -2140,12 +2141,27 @@ public class AdminController(
         if (binding is null)
             return NotFound(new RequestResponse("Binding not found."));
 
-        // Detach child games (don't cascade-delete them).
         var children = await dbContext.Games.Where(g => g.RepoBindingId == id).ToListAsync(token);
-        foreach (var g in children)
+
+        if (cascade)
         {
-            g.RepoBindingId = null;
-            g.EventManifestPath = null;
+            // Operator explicitly wants the imported games gone too —
+            // EF cascade delete on Games will sweep up GameChallenges,
+            // and the GameChallenges → FlagContexts / Attachments
+            // cascades take care of the rest. ChallengeBuildAudits FK
+            // is also cascade so audit rows disappear cleanly.
+            dbContext.Games.RemoveRange(children);
+        }
+        else
+        {
+            // Detach: keep the games but null out the binding link so
+            // a re-bind can adopt them (see UpsertGameAsync's
+            // orphan-adoption pass).
+            foreach (var g in children)
+            {
+                g.RepoBindingId = null;
+                g.EventManifestPath = null;
+            }
         }
 
         dbContext.GameRepoBindings.Remove(binding);

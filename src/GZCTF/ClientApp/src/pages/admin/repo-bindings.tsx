@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Center,
+  Checkbox,
   Code,
   Container,
   Group,
@@ -141,24 +142,31 @@ const RepoBindings: FC = () => {
     }
   }
 
+  // Delete needs a checkbox for cascade, which Mantine's confirmModal
+  // doesn't support (children is just a JSX block — no state hook). So
+  // hold the target binding in local state and render a real Modal
+  // with controlled inputs.
+  const [deleteTarget, setDeleteTarget] = useState<RepoBindingInfoModel | null>(null)
+  const [deleteCascade, setDeleteCascade] = useState(false)
+
   const onDelete = (b: RepoBindingInfoModel) => {
-    modals.openConfirmModal({
-      title: t('admin.content.repo_binding.delete_title', { repo: b.repoUrl }),
-      children: <Text size="sm">{t('admin.content.repo_binding.delete_warning')}</Text>,
-      labels: { confirm: t('admin.button.repo_binding.delete'), cancel: t('common.button.cancel') },
-      confirmProps: { color: 'red' },
-      onConfirm: async () => {
-        setBusy(true)
-        try {
-          await api.admin.adminDeleteRepoBinding(b.id)
-          mutate()
-        } catch (e) {
-          showErrorMsg(e, t)
-        } finally {
-          setBusy(false)
-        }
-      },
-    })
+    setDeleteCascade(false)
+    setDeleteTarget(b)
+  }
+
+  const confirmDelete = async () => {
+    const b = deleteTarget
+    if (!b) return
+    setBusy(true)
+    try {
+      await api.admin.adminDeleteRepoBinding(b.id, { cascade: deleteCascade })
+      mutate()
+      setDeleteTarget(null)
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -471,6 +479,37 @@ const RepoBindings: FC = () => {
             ))}
           </Stack>
         )}
+      </Modal>
+
+      <Modal
+        opened={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        title={
+          deleteTarget
+            ? t('admin.content.repo_binding.delete_title', { repo: deleteTarget.repoUrl })
+            : ''
+        }
+        centered
+      >
+        <Stack gap="md">
+          <Text size="sm">{t('admin.content.repo_binding.delete_warning')}</Text>
+          <Checkbox
+            checked={deleteCascade}
+            onChange={(e) => setDeleteCascade(e.currentTarget.checked)}
+            label={t('admin.content.repo_binding.delete_cascade.label')}
+            description={t('admin.content.repo_binding.delete_cascade.description')}
+          />
+          <Group justify="flex-end" gap="xs">
+            <Button variant="default" onClick={() => setDeleteTarget(null)} disabled={busy}>
+              {t('common.button.cancel')}
+            </Button>
+            <Button color="red" onClick={confirmDelete} disabled={busy} loading={busy}>
+              {deleteCascade
+                ? t('admin.button.repo_binding.delete_cascade')
+                : t('admin.button.repo_binding.delete')}
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
     </AdminPage>
   )

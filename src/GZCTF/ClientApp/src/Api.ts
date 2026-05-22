@@ -4323,15 +4323,16 @@ export class Api<
       }),
 
     /**
-     * @description Delete a repo binding (does not remove child games)
+     * @description Delete a repo binding. When cascade=true, also removes every imported game + its challenges. Default false detaches the games (sets RepoBindingId=null) so a re-bind can adopt them by title.
      * @tags Admin
      * @name AdminDeleteRepoBinding
      * @request DELETE:/api/admin/repobindings/{id}
      */
-    adminDeleteRepoBinding: (id: number, params: RequestParams = {}) =>
+    adminDeleteRepoBinding: (id: number, query?: { cascade?: boolean }, params: RequestParams = {}) =>
       this.request<void, RequestResponse>({
         path: `/api/admin/repobindings/${id}`,
         method: "DELETE",
+        query,
         ...params,
       }),
 

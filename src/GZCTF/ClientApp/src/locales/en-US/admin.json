@@ -105,6 +105,7 @@
       "add": "Add repository",
       "scan": "Scan now",
       "delete": "Remove",
+      "delete_cascade": "Remove + delete games",
       "history": "Scan history",
       "pause": "Pause polling",
       "resume": "Resume polling"
@@ -683,7 +684,11 @@
         "commit": "Commit"
       },
       "delete_title": "Delete binding to {{repo}}?",
-      "delete_warning": "Child games are NOT removed — they detach from the binding and keep their data. You'll need to delete them manually if you want them gone.",
+      "delete_warning": "By default the imported games are KEPT (detached from this binding). When you re-bind the same repo, the scanner auto-adopts the detached games by title so you don't get duplicates.",
+      "delete_cascade": {
+        "label": "Also delete imported games",
+        "description": "Permanently removes every game discovered by this binding, plus their challenges, flags, and build history. Useful for full cleanup."
+      },
       "column": {
         "repo": "Repository",
         "ref": "Ref",
