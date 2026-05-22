@@ -7,6 +7,7 @@ import {
   Code,
   Container,
   Group,
+  Loader,
   NumberInput,
   Paper,
   Stack,
@@ -35,7 +36,12 @@ import { Modal } from '@mantine/core'
 const RepoBindings: FC = () => {
   const { t } = useTranslation()
   const modals = useModals()
-  const { data: bindings, mutate } = api.admin.useAdminListRepoBindings()
+  // 3s refresh keeps the CurrentActivity field live during a running
+  // scan without hammering the backend. Idle pages get a stable
+  // response from the DB query and SWR dedupes; cost is negligible.
+  const { data: bindings, mutate } = api.admin.useAdminListRepoBindings(
+    { refreshInterval: 3000 },
+  )
 
   const [repoUrl, setRepoUrl] = useState('')
   const [refValue, setRefValue] = useState('')
@@ -356,6 +362,15 @@ const RepoBindings: FC = () => {
                         </Text>
                       )}
                     </Group>
+
+                    {b.currentActivity && (
+                      <Group gap="xs" wrap="nowrap">
+                        <Loader size="xs" />
+                        <Text size="xs" c="blue" ff="monospace" lineClamp={1}>
+                          {b.currentActivity}
+                        </Text>
+                      </Group>
+                    )}
 
                     {b.lastScanMessage && (
                       <Text size="xs" c="dimmed" lineClamp={2} ff="monospace">

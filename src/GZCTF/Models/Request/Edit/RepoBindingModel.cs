@@ -72,6 +72,11 @@ public sealed class RepoBindingInfoModel
     public string? LastScanMessage { get; set; }
     public bool HasGitHubToken { get; set; }
     public GZCTF.Utils.TokenStatus TokenStatus { get; set; }
+
+    /// <summary>Live activity from the scanner — non-null while a scan
+    /// is actively running.</summary>
+    public string? CurrentActivity { get; set; }
+
     public RepoBindingGameSummary[] Games { get; set; } = [];
 }
 

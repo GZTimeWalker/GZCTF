@@ -3,6 +3,7 @@ import {
   Badge,
   Card,
   Group,
+  Loader,
   Progress,
   Stack,
   Switch,
@@ -11,13 +12,14 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core'
-import { mdiDatabaseEditOutline, mdiPuzzleEditOutline } from '@mdi/js'
+import { showNotification } from '@mantine/notifications'
+import { mdiCheck, mdiDatabaseEditOutline, mdiHammerWrench, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
-import { useChallengeCategoryLabelMap } from '@Utils/Shared'
-import { ChallengeInfoModel, ChallengeCategory } from '@Api'
+import { useChallengeCategoryLabelMap, showErrorMsg } from '@Utils/Shared'
+import api, { ChallengeInfoModel, ChallengeCategory } from '@Api'
 import classes from '@Styles/ChallengeEditCard.module.css'
 
 interface ChallengeEditCardProps {
@@ -32,8 +34,29 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
   const { id } = useParams()
 
   const [disabled, setDisabled] = useState(false)
+  const [building, setBuilding] = useState(false)
 
   const { t } = useTranslation()
+  const numId = parseInt(id ?? '-1')
+
+  const inFlightBuild = challenge.buildStatus === 'Queued' || challenge.buildStatus === 'Building'
+
+  const onBuildNow = async () => {
+    if (challenge.id == null) return
+    setBuilding(true)
+    try {
+      await api.edit.editRebuildChallengeImage(numId, challenge.id)
+      showNotification({
+        color: 'teal',
+        message: t('admin.notification.builds.enqueued'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setBuilding(false)
+    }
+  }
   const { colorScheme } = useMantineColorScheme()
 
   const color = data?.color ?? theme.primaryColor
@@ -120,6 +143,30 @@ export const ChallengeEditCard: FC<ChallengeEditCardProps> = ({ challenge, onTog
           </Text>
         </Stack>
 
+        <Tooltip
+          label={
+            inFlightBuild
+              ? t('admin.button.challenges.build_in_flight')
+              : t('admin.button.challenges.build_now')
+          }
+          ta="end"
+          position="left"
+          offset={98}
+          classNames={classes}
+        >
+          <ActionIcon
+            c={color}
+            variant="subtle"
+            disabled={building || inFlightBuild}
+            onClick={onBuildNow}
+          >
+            {building || inFlightBuild ? (
+              <Loader size="xs" />
+            ) : (
+              <Icon path={mdiHammerWrench} size={1} />
+            )}
+          </ActionIcon>
+        </Tooltip>
         <Tooltip label={t('admin.button.challenges.edit')} position="left" offset={10} classNames={classes}>
           <ActionIcon c={color} component={Link} to={`/admin/games/${id}/challenges/${challenge.id}`}>
             <Icon path={mdiPuzzleEditOutline} size={1} />

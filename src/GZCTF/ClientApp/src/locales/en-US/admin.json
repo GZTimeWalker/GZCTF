@@ -31,6 +31,8 @@
       "pending": "Pending Review",
       "watches": "Repo Watches",
       "bulk_rebuild": "Rebuild failed",
+      "build_now": "Build image",
+      "build_in_flight": "Build in progress…",
       "next": "Next",
       "preview": "Preview",
       "previous": "Previous",
@@ -835,7 +837,8 @@
       "summary": "{{games}} games, {{challenges}} challenges, {{failures}} failures"
     },
     "builds": {
-      "bulk_enqueued": "Enqueued {{count}} build(s)"
+      "bulk_enqueued": "Enqueued {{count}} build(s)",
+      "enqueued": "Build triggered"
     }
   },
   "placeholder": {

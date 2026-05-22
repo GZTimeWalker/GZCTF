@@ -31,6 +31,8 @@
       "pending": "待审核",
       "watches": "仓库监听",
       "bulk_rebuild": "重建失败镜像",
+      "build_now": "构建镜像",
+      "build_in_flight": "构建进行中…",
       "next": "下一题",
       "preview": "预览题目",
       "previous": "上一题",
@@ -835,7 +837,8 @@
       "summary": "比赛 {{games}}，题目 {{challenges}}，失败 {{failures}}"
     },
     "builds": {
-      "bulk_enqueued": "已加入 {{count}} 个构建任务"
+      "bulk_enqueued": "已加入 {{count}} 个构建任务",
+      "enqueued": "构建已触发"
     }
   },
   "placeholder": {

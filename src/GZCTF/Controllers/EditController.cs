@@ -1624,19 +1624,53 @@ public class EditController(
         [FromRoute] int id, [FromRoute] int cId,
         [FromServices] Services.Container.Build.IChallengeBuildQueue buildQueue,
         [FromServices] Storage.Interface.IBlobStorage storage,
+        [FromServices] Services.Transfer.RepoBindingDiscoveryService bindingDiscovery,
         CancellationToken token)
     {
         var challenge = await dbContext.GameChallenges
             .FirstOrDefaultAsync(c => c.GameId == id && c.Id == cId, token);
         if (challenge is null)
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Challenge_NotFound)]));
-        if (string.IsNullOrEmpty(challenge.OriginalArchiveBlobPath))
+
+        // Fallback path for binding/watcher-imported challenges that
+        // didn't keep a blob: re-fetch from the upstream repo. We just
+        // re-run the binding scan (idempotent) — it will re-import every
+        // challenge and the new ResolveBuildIntent decision enqueues a
+        // build job for this one along the way.
+        var blobPath = challenge.OriginalArchiveBlobPath;
+        var noBlob = string.IsNullOrEmpty(blobPath) || !await storage.ExistsAsync(blobPath, token);
+        if (noBlob)
+        {
+            var game = await dbContext.Games.FirstOrDefaultAsync(g => g.Id == id, token);
+            if (game?.RepoBindingId is { } bid)
+            {
+                challenge.BuildStatus = ChallengeBuildStatus.Queued;
+                challenge.LastBuildLog = "Triggered re-fetch from parent repo binding…";
+                await dbContext.SaveChangesAsync(token);
+
+                var user = (await userManager.GetUserAsync(User))!;
+                // Fire-and-forget: the scan can take 10-30s for a large
+                // repo and we don't want the HTTP request to wait.
+                // ScanAsync's own transactions write the audit row +
+                // CurrentActivity field so progress is visible on
+                // /admin/repo-bindings while the scan runs.
+                _ = Task.Run(async () =>
+                {
+                    try { await bindingDiscovery.ScanAsync(bid, user.Id, CancellationToken.None); }
+                    catch { /* errors land in the scan audit row */ }
+                });
+
+                return Accepted(new Models.Response.Admin.ChallengeAuditModel
+                {
+                    ArchiveAvailable = false,
+                    BuildStatus = challenge.BuildStatus,
+                    LastBuildLog = challenge.LastBuildLog
+                });
+            }
             return NotFound(new RequestResponse(
-                "No archive on file for this challenge — re-upload to trigger a build.",
+                "No archive on file and no parent repo binding — re-upload to trigger a build.",
                 StatusCodes.Status404NotFound));
-        if (!await storage.ExistsAsync(challenge.OriginalArchiveBlobPath, token))
-            return NotFound(new RequestResponse(
-                "Archive blob is missing from storage.", StatusCodes.Status404NotFound));
+        }
 
         // Extract the archive into a temp dir owned by THIS handler.
         // After we identify the context dir, we hand a fresh snapshot to

@@ -1650,6 +1650,7 @@ public class AdminController(
                 LastScanMessage = b.LastScanMessage,
                 HasGitHubToken = b.GitHubTokenEncrypted != null,
                 TokenStatus = b.TokenStatus,
+                CurrentActivity = b.CurrentActivity,
                 Games = dbContext.Games
                     .Where(g => g.RepoBindingId == b.Id)
                     .OrderBy(g => g.Title)

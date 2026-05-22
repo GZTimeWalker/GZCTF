@@ -54,12 +54,38 @@ public sealed class RepoBindingDiscoveryService(
         return raw.Replace(secret, "***");
     }
 
+    /// <summary>
+    /// Push a live activity message to the binding row using a direct
+    /// SQL UPDATE so it commits independently of whatever transaction
+    /// the scan body is holding. Failures are swallowed — losing one
+    /// progress update is far better than crashing the scan.
+    /// </summary>
+    async Task SetActivityAsync(int bindingId, string? activity, CancellationToken token)
+    {
+        try
+        {
+            // Truncate to the column cap so a long challenge name can't
+            // blow up the update with a varchar overflow.
+            if (activity is { Length: > 250 }) activity = activity[..250] + "…";
+            await context.GameRepoBindings
+                .Where(b => b.Id == bindingId)
+                .ExecuteUpdateAsync(s => s.SetProperty(x => x.CurrentActivity, activity), token);
+            logger.LogInformation(
+                "RepoBindingDiscovery: binding {Id} activity → {Activity}", bindingId, activity ?? "(idle)");
+        }
+        catch (Exception ex)
+        {
+            logger.LogDebug(ex, "RepoBindingDiscovery: failed to update activity for binding {Id}", bindingId);
+        }
+    }
+
     public async Task<RepoBindingScanResult> ScanAsync(int bindingId, Guid adminUserId, CancellationToken token)
     {
         var binding = await context.GameRepoBindings.FirstOrDefaultAsync(b => b.Id == bindingId, token);
         if (binding is null)
             return new(0, 0, 0, 0, 1, ["Binding not found."]);
 
+        await SetActivityAsync(bindingId, "Starting scan", token);
         var http = httpClientFactory.CreateClient("GitHubApi");
 
         if (!GitHubLocator.TryParse(binding.RepoUrl, binding.Ref, overrideSubpath: null, out var loc, out var parseErr) || loc is null)
@@ -100,8 +126,10 @@ public sealed class RepoBindingDiscoveryService(
 
         try
         {
+            await SetActivityAsync(bindingId, "Querying commit SHA", token);
             string? sha = await loc.GetHeadShaAsync(http, plaintextToken, token);
 
+            await SetActivityAsync(bindingId, "Downloading tarball", token);
             await using (var tarStream = await loc.DownloadTarballAsync(http, plaintextToken, token))
             await using (var gz = new GZipStream(tarStream, CompressionMode.Decompress, leaveOpen: false))
             await using (var tar = new TarReader(gz))
@@ -132,16 +160,21 @@ public sealed class RepoBindingDiscoveryService(
             var top = Directory.EnumerateFileSystemEntries(workDir).Take(2).ToArray();
             var scanRoot = top.Length == 1 && Directory.Exists(top[0]) ? top[0] : workDir;
 
+            await SetActivityAsync(bindingId, "Discovering .gzevent manifests", token);
             var manifests = Directory.EnumerateFiles(scanRoot, ".gzevent", SearchOption.AllDirectories)
                 .ToList();
             if (manifests.Count == 0)
                 messages.Add("No .gzevent manifests found in repo.");
 
+            int manifestIdx = 0;
             foreach (var manifestPath in manifests)
             {
+                manifestIdx++;
                 try
                 {
                     var rel = Path.GetRelativePath(scanRoot, manifestPath).Replace('\\', '/');
+                    await SetActivityAsync(bindingId,
+                        $"Processing event {manifestIdx}/{manifests.Count}: {rel}", token);
                     var eventRootDir = Path.GetDirectoryName(manifestPath)!;
                     var eventRootRel = Path.GetRelativePath(scanRoot, eventRootDir).Replace('\\', '/');
                     if (eventRootRel == ".") eventRootRel = "";
@@ -219,6 +252,7 @@ public sealed class RepoBindingDiscoveryService(
         }
         finally
         {
+            await SetActivityAsync(bindingId, null, CancellationToken.None);
             try { Directory.Delete(workDir, recursive: true); } catch { /* best effort */ }
         }
     }

@@ -72,6 +72,17 @@ public sealed class GameRepoBinding
     public TokenStatus TokenStatus { get; set; } = TokenStatus.NotConfigured;
 
     /// <summary>
+    /// Live progress message updated by the scanner as it walks through
+    /// the work — "Fetching tarball", "Importing 3/12: tower-of-babel",
+    /// etc. Null when nothing is running. Surfaces on the admin
+    /// /admin/repo-bindings card so operators can see what the app is
+    /// doing in real time instead of waiting for the next
+    /// <see cref="LastScanMessage"/> summary.
+    /// </summary>
+    [MaxLength(256)]
+    public string? CurrentActivity { get; set; }
+
+    /// <summary>
     /// Games discovered from this binding. Each one links back via
     /// <see cref="Game.RepoBindingId"/>.
     /// </summary>

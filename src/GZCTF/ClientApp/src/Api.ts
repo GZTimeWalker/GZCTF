@@ -2285,6 +2285,8 @@ export interface RepoBindingInfoModel {
   lastScanMessage?: string | null
   hasGitHubToken?: boolean
   tokenStatus?: TokenStatus
+  /** Live progress message from the scanner — non-null while a scan is running. */
+  currentActivity?: string | null
   games: RepoBindingGameSummary[]
 }
 
