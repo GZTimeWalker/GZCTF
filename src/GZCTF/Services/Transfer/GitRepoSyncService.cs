@@ -104,9 +104,12 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
         var repoUrl = $"https://github.com/{loc.Owner}/{loc.Repo}.git";
         var refSpec = string.IsNullOrEmpty(loc.Ref) ? "HEAD" : loc.Ref;
 
-        var authArgs = !string.IsNullOrEmpty(authToken)
-            ? new[] { "-c", $"http.extraHeader=Authorization: Bearer {authToken}" }
-            : Array.Empty<string>();
+        // GitHub's git-over-HTTPS uses HTTP Basic auth with the
+        // documented user "x-access-token" + the PAT as the password.
+        // (Bearer works for the REST API but NOT for git's smart-HTTP
+        // protocol, which falls through to a username prompt → fail
+        // with "could not read Username".)
+        var authArgs = BuildAuthArgs(authToken);
 
         if (!Directory.Exists(gitDir))
         {
@@ -212,7 +215,7 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
 
         var refSpec = string.IsNullOrEmpty(loc.Ref) ? "HEAD" : loc.Ref;
         var repoUrl = $"https://github.com/{loc.Owner}/{loc.Repo}.git";
-        var authArgs = new[] { "-c", $"http.extraHeader=Authorization: Bearer {authToken}" };
+        var authArgs = BuildAuthArgs(authToken);
 
         // Set commit identity per-repo to avoid mutating global git
         // config inside the container.
@@ -343,4 +346,24 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
     /// </summary>
     private static string SafeCommandSummary(string[] args)
         => string.Join(' ', args.TakeWhile(a => a != "-c"));
+
+    /// <summary>
+    /// Compose the <c>-c http.extraHeader=...</c> args git needs to
+    /// auth against GitHub HTTPS. GitHub's smart-HTTP protocol expects
+    /// HTTP Basic with the special user <c>x-access-token</c> and the
+    /// PAT as the password — Bearer works for the REST API but git
+    /// itself falls through to a credential prompt with Bearer,
+    /// printing <c>"could not read Username for 'https://github.com'"</c>
+    /// when <see cref="GIT_TERMINAL_PROMPT"/>=0 (which we set).
+    ///
+    /// <para>Works identically for classic <c>ghp_</c> and fine-grained
+    /// <c>github_pat_</c> tokens.</para>
+    /// </summary>
+    private static string[] BuildAuthArgs(string? authToken)
+    {
+        if (string.IsNullOrEmpty(authToken)) return [];
+        var basic = Convert.ToBase64String(
+            System.Text.Encoding.UTF8.GetBytes($"x-access-token:{authToken}"));
+        return ["-c", $"http.extraHeader=Authorization: Basic {basic}"];
+    }
 }
