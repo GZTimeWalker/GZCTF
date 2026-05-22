@@ -1,15 +1,14 @@
 import { Button, Center, ComboboxItem, Group, ScrollArea, Select, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
-import { mdiCheck, mdiClockOutline, mdiHammerWrench, mdiHexagonSlice6, mdiPlus, mdiRefresh, mdiSync, mdiUpload } from '@mdi/js'
+import { mdiCheck, mdiHammerWrench, mdiHexagonSlice6, mdiPlus, mdiRefresh } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { BloodBonusModel } from '@Components/admin/BloodBonusModel'
 import { ChallengeCreateModal } from '@Components/admin/ChallengeCreateModal'
 import { ChallengeEditCard } from '@Components/admin/ChallengeEditCard'
-import { ChallengeImportModal } from '@Components/admin/ChallengeImportModal'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
 import { showErrorMsg } from '@Utils/Shared'
 import { ChallengeCategoryItem, ChallengeCategoryList, useChallengeCategoryLabelMap } from '@Utils/Shared'
@@ -21,9 +20,7 @@ const GameChallengeEdit: FC = () => {
   const numId = parseInt(id ?? '-1')
 
   const [createOpened, setCreateOpened] = useState(false)
-  const [importOpened, setImportOpened] = useState(false)
   const [bonusOpened, setBonusOpened] = useState(false)
-  const navigate = useNavigate()
   const [category, setCategory] = useState<ChallengeCategory | null>(null)
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const [disabled, setDisabled] = useState(false)
@@ -146,20 +143,6 @@ const GameChallengeEdit: FC = () => {
             })}
           />
           <Group justify="right">
-            <Button
-              leftSection={<Icon path={mdiClockOutline} size={1} />}
-              variant="default"
-              onClick={() => navigate(`/admin/games/${numId}/pending`)}
-            >
-              {t('admin.button.challenges.pending')}
-            </Button>
-            <Button
-              leftSection={<Icon path={mdiSync} size={1} />}
-              variant="default"
-              onClick={() => navigate(`/admin/games/${numId}/watches`)}
-            >
-              {t('admin.button.challenges.watches')}
-            </Button>
             {failedBuildCount > 0 && (
               <Button
                 leftSection={<Icon path={mdiHammerWrench} size={1} />}
@@ -176,9 +159,6 @@ const GameChallengeEdit: FC = () => {
             </Button>
             <Button leftSection={<Icon path={mdiHexagonSlice6} size={1} />} onClick={() => setBonusOpened(true)}>
               {t('admin.button.challenges.bonus')}
-            </Button>
-            <Button leftSection={<Icon path={mdiUpload} size={1} />} variant="default" onClick={() => setImportOpened(true)}>
-              {t('admin.button.challenges.import')}
             </Button>
             <Button mr="18px" leftSection={<Icon path={mdiPlus} size={1} />} onClick={() => setCreateOpened(true)}>
               {t('admin.button.challenges.new')}
@@ -216,14 +196,6 @@ const GameChallengeEdit: FC = () => {
         size="30%"
         opened={bonusOpened}
         onClose={() => setBonusOpened(false)}
-      />
-      <ChallengeImportModal
-        title={t('admin.button.challenges.import')}
-        gameId={numId}
-        asAdmin
-        opened={importOpened}
-        onClose={() => setImportOpened(false)}
-        onImported={() => mutate()}
       />
     </WithGameEditTab>
   )
