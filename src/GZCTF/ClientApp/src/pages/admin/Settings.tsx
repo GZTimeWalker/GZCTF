@@ -129,7 +129,7 @@ const Configs: FC = () => {
       >
         {t('admin.button.save')}
       </Button>
-      <Stack w="100%" gap="md">
+      <Stack w="100%" gap="md" pb={120}>
         <Stack gap="sm">
           <Title order={2}>{t('admin.content.settings.platform.title')}</Title>
           <Divider />
