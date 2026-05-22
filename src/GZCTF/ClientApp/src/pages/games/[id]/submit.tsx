@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Alert,
   Badge,
   Button,
@@ -17,6 +18,7 @@ import {
   mdiCheck,
   mdiCheckCircleOutline,
   mdiCloseCircleOutline,
+  mdiFileTreeOutline,
   mdiFolderZipOutline,
   mdiUpload,
 } from '@mdi/js'
@@ -87,6 +89,88 @@ const Submit: FC = () => {
               <Alert color="blue" variant="light" icon={<Icon path={mdiAlertCircleOutline} size={1} />}>
                 {t('game.submit.review_notice')}
               </Alert>
+            )}
+
+            {!disabled && (
+              <Accordion variant="separated" defaultValue={null} radius="md">
+                <Accordion.Item value="layout">
+                  <Accordion.Control icon={<Icon path={mdiFileTreeOutline} size={1} />}>
+                    <Text size="sm" fw={500}>{t('game.submit.example.title')}</Text>
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <Stack gap="md">
+                      <Text size="sm">{t('game.submit.example.intro')}</Text>
+
+                      <Stack gap={4}>
+                        <Text size="sm" fw={600}>{t('game.submit.example.attachment_title')}</Text>
+                        <Text size="xs" c="dimmed">
+                          {t('game.submit.example.attachment_desc')}
+                        </Text>
+                        <Code block style={{ fontSize: 12 }}>
+                          {`my-challenge.zip
+├── challenge.yml      ← required, see below
+└── dist/              ← (optional) files handed to the player
+    └── handout.zip`}
+                        </Code>
+                        <Code block style={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>
+                          {`name: "Cool Web Challenge"
+author: "you"
+type: "StaticAttachment"
+category: "Web"
+description: |
+  Markdown is supported.
+  Solve me!
+flags:
+  - "flag{example}"
+provide: "./dist/handout.zip"`}
+                        </Code>
+                      </Stack>
+
+                      <Stack gap={4}>
+                        <Text size="sm" fw={600}>{t('game.submit.example.container_title')}</Text>
+                        <Text size="xs" c="dimmed">
+                          {t('game.submit.example.container_desc')}
+                        </Text>
+                        <Code block style={{ fontSize: 12 }}>
+                          {`my-challenge.zip
+├── challenge.yml
+├── dist/              ← player handouts (optional)
+│   └── handout.zip
+└── src/               ← server-side; platform builds this
+    ├── Dockerfile
+    ├── app.py
+    └── flag.txt`}
+                        </Code>
+                        <Code block style={{ fontSize: 12, whiteSpace: 'pre-wrap' }}>
+                          {`name: "Pwn Me"
+author: "you"
+type: "StaticContainer"
+category: "Pwn"
+description: |
+  \`nc {{ .host }} 1337\`
+flags:
+  - "flag{example}"
+provide: "./dist/handout.zip"
+container:
+  containerImage: "{{.slug}}:latest"   # auto-built from ./src/Dockerfile
+  memoryLimit: 256
+  cpuCount: 1
+  exposePort: 1337`}
+                        </Code>
+                      </Stack>
+
+                      <Stack gap={2}>
+                        <Text size="sm" fw={600}>{t('game.submit.example.tips_title')}</Text>
+                        <Text size="xs" c="dimmed">• {t('game.submit.example.tips.value_ignored')}</Text>
+                        <Text size="xs" c="dimmed">• {t('game.submit.example.tips.visible_ignored')}</Text>
+                        <Text size="xs" c="dimmed">• {t('game.submit.example.tips.review_queue')}</Text>
+                        <Text size="xs" c="dimmed">• {t('game.submit.example.tips.template_image')}</Text>
+                        <Text size="xs" c="dimmed">• {t('game.submit.example.tips.size_cap')}</Text>
+                      </Stack>
+                    </Stack>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
             )}
 
             <Paper p="lg" withBorder style={disabled ? { opacity: 0.55, pointerEvents: 'none' } : undefined}>

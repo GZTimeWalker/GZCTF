@@ -301,6 +301,22 @@
       "hint": "支持 .tar.gz 或 .zip，最大 64 MB。压缩包根目录需包含 challenge.yaml。",
       "rejected": "文件类型或大小不符合要求。"
     },
+    "example": {
+      "title": "压缩包结构与 challenge.yml 示例",
+      "intro": "压缩一个目录，根目录包含 challenge.yml。dist/ 是参赛者下载的文件；src/ 是平台用于构建容器的服务端代码。",
+      "attachment_title": "附件题",
+      "attachment_desc": "参赛者只下载文件，不启动容器。",
+      "container_title": "带 Dockerfile 的容器题",
+      "container_desc": "平台根据 src/Dockerfile 自动构建镜像并为每个队伍启动。",
+      "tips_title": "说明",
+      "tips": {
+        "value_ignored": "YAML 中的 value 会被忽略，分值由管理员审核后设置。",
+        "visible_ignored": "YAML 中的 visible 会被忽略，由管理员决定何时启用。",
+        "review_queue": "提交会进入管理员审核队列，审核通过前不会上线。",
+        "template_image": "{{.slug}}:latest 没问题 —— 有 src/Dockerfile 时会自动构建，否则按仓库镜像处理。",
+        "size_cap": "压缩包不超过 64 MB，每个压缩包仅包含一个题目。"
+      }
+    },
     "notification": {
       "submitted": "已提交",
       "under_review": "等待管理员审核。"

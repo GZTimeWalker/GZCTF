@@ -301,6 +301,22 @@
       "hint": "Accepts .tar.gz or .zip up to 64 MB. Must contain challenge.yaml at the root.",
       "rejected": "File type or size not accepted."
     },
+    "example": {
+      "title": "Example archive layout & challenge.yml",
+      "intro": "Pack one directory containing your challenge.yml at the root. dist/ is for files players download; src/ is for the server-side bits the platform builds.",
+      "attachment_title": "Attachment-only challenge",
+      "attachment_desc": "Players just download a file — no server-side container.",
+      "container_title": "Container challenge with Dockerfile",
+      "container_desc": "Platform auto-builds the image from src/Dockerfile and runs it per team.",
+      "tips_title": "Notes",
+      "tips": {
+        "value_ignored": "value: in the YAML is ignored — the admin sets the score after review.",
+        "visible_ignored": "visible: in the YAML is ignored — admin chooses when to enable.",
+        "review_queue": "Submissions sit in the admin review queue; they are NOT live until approved.",
+        "template_image": "{{.slug}}:latest is fine — if src/Dockerfile exists the platform builds it; otherwise the image is treated as a registry tag.",
+        "size_cap": "Archive must be ≤ 64 MB. Single challenge per archive."
+      }
+    },
     "notification": {
       "submitted": "Submitted",
       "under_review": "Awaiting admin review."
