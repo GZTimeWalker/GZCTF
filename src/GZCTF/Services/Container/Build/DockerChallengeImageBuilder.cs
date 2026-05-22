@@ -66,74 +66,91 @@ public sealed class DockerChallengeImageBuilder(
             var digest = Convert.ToHexString(sha.Hash!).ToLowerInvariant();
             var tag = $"gzctf-auto/{req.GameId}/{slug}:{digest[..12]}";
 
-            // Fast path: if the tag already exists locally, treat as a
-            // no-op so admin re-imports / re-scans don't waste cycles.
+            // Fast path: if the local tag already exists, skip the
+            // docker build. But still drop through to the push step if
+            // the registry is configured — the registry may not yet
+            // have this digest even though the local daemon does.
+            string? cachedImageId = null;
             try
             {
                 var existing = await _client.Images.InspectImageAsync(tag, token);
+                cachedImageId = existing.ID;
                 logger.LogInformation("BuildAsync: image {Tag} already exists locally (digest {Id})", tag, existing.ID);
-                return new ChallengeBuildResult(true, tag, existing.ID, "(cached)", null);
             }
-            catch (DockerImageNotFoundException) { /* fall through */ }
-            catch (DockerApiException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) { /* fall through */ }
+            catch (DockerImageNotFoundException) { /* not cached */ }
+            catch (DockerApiException e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound) { /* not cached */ }
+
+            // Cache hit + no push needed → return immediately.
+            if (cachedImageId is not null && !registryConfig.CurrentValue.IsConfigured)
+                return new ChallengeBuildResult(true, tag, cachedImageId, "(cached)", null);
 
             using var timeout = new CancellationTokenSource(BuildTimeout);
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(token, timeout.Token);
 
             var logTail = new StringBuilder();
             string? lastError = null;
+            string? imageId = cachedImageId;
 
-            var progress = new Progress<JSONMessage>(msg =>
+            // Skip the docker build call when the image is already
+            // cached locally — the source context hash is deterministic
+            // so an existing tag is by-definition up-to-date.
+            if (cachedImageId is null)
             {
-                if (!string.IsNullOrEmpty(msg.Stream))
+                var progress = new Progress<JSONMessage>(msg =>
                 {
-                    AppendTail(logTail, msg.Stream);
-                    try { onProgress?.Invoke(msg.Stream); } catch { /* sink errors must not break the build */ }
-                }
-                if (!string.IsNullOrEmpty(msg.Status))
-                {
-                    var line = msg.Status + "\n";
-                    AppendTail(logTail, line);
-                    try { onProgress?.Invoke(line); } catch { /* sink errors must not break the build */ }
-                }
-                if (msg.Error is { Message: { Length: > 0 } em })
-                    lastError = em;
-            });
-
-            await using (var contextStream = File.OpenRead(contextTar))
-            {
-                await _client.Images.BuildImageFromDockerfileAsync(
-                    new ImageBuildParameters
+                    if (!string.IsNullOrEmpty(msg.Stream))
                     {
-                        Dockerfile = req.Dockerfile,
-                        Tags = [tag],
-                        Remove = true,
-                        ForceRemove = true,
-                        NoCache = false,
-                    },
-                    contextStream,
-                    authConfigs: null,
-                    headers: null,
-                    progress: progress,
-                    linked.Token);
-            }
+                        AppendTail(logTail, msg.Stream);
+                        try { onProgress?.Invoke(msg.Stream); } catch { /* sink errors must not break the build */ }
+                    }
+                    if (!string.IsNullOrEmpty(msg.Status))
+                    {
+                        var line = msg.Status + "\n";
+                        AppendTail(logTail, line);
+                        try { onProgress?.Invoke(line); } catch { /* sink errors must not break the build */ }
+                    }
+                    if (msg.Error is { Message: { Length: > 0 } em })
+                        lastError = em;
+                });
 
-            if (lastError is not null)
-            {
-                logger.LogWarning("BuildAsync: build failed for {Tag}: {Err}", tag, lastError);
-                return new ChallengeBuildResult(false, null, null, logTail.ToString(), lastError);
-            }
+                await using (var contextStream = File.OpenRead(contextTar))
+                {
+                    await _client.Images.BuildImageFromDockerfileAsync(
+                        new ImageBuildParameters
+                        {
+                            Dockerfile = req.Dockerfile,
+                            Tags = [tag],
+                            Remove = true,
+                            ForceRemove = true,
+                            NoCache = false,
+                        },
+                        contextStream,
+                        authConfigs: null,
+                        headers: null,
+                        progress: progress,
+                        linked.Token);
+                }
 
-            // Confirm the image actually exists and grab a digest.
-            string? imageId = null;
-            try
-            {
-                var inspect = await _client.Images.InspectImageAsync(tag, token);
-                imageId = inspect.ID;
+                if (lastError is not null)
+                {
+                    logger.LogWarning("BuildAsync: build failed for {Tag}: {Err}", tag, lastError);
+                    return new ChallengeBuildResult(false, null, null, logTail.ToString(), lastError);
+                }
+
+                // Confirm the image actually exists and grab a digest.
+                try
+                {
+                    var inspect = await _client.Images.InspectImageAsync(tag, token);
+                    imageId = inspect.ID;
+                }
+                catch (Exception e)
+                {
+                    logger.LogWarning(e, "BuildAsync: image {Tag} inspect failed after build", tag);
+                }
             }
-            catch (Exception e)
+            else
             {
-                logger.LogWarning(e, "BuildAsync: image {Tag} inspect failed after build", tag);
+                AppendTail(logTail, $"[build] image already cached locally as {tag}\n");
             }
 
             // Optional registry push. The local tag is what's stored
