@@ -58,6 +58,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "gzctf-files:/app/files"
+      - "gzctf-repos:/app/repos"
     depends_on:
       - postgres
       - redis
@@ -84,6 +85,7 @@ volumes:
   postgres_data:
   redis_data:
   gzctf-files:
+  gzctf-repos:
 
 networks:
   z-test-challenges-open:

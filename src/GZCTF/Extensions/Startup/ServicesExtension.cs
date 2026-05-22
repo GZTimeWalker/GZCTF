@@ -99,6 +99,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<GameImportService>();
             builder.Services.AddScoped<ChallengeImportService>();
             builder.Services.AddScoped<RepoBindingDiscoveryService>();
+            builder.Services.AddSingleton<GitRepoSyncService>();
 
             builder.Services.AddHttpClient("GitHubApi", client =>
             {

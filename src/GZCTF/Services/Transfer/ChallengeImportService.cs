@@ -113,7 +113,13 @@ public sealed class ChallengeImportService(
         }
     }
 
-    private async Task<ChallengeImportResult> ImportFromWorkDirAsync(
+    /// <summary>
+    /// Import every <c>challenge.yaml</c> under <paramref name="workDir"/>
+    /// (optionally scoped to a subpath). Made internal so
+    /// <see cref="RepoBindingDiscoveryService"/> can call it directly
+    /// against a git checkout without re-downloading a tarball.
+    /// </summary>
+    internal async Task<ChallengeImportResult> ImportFromWorkDirAsync(
         string workDir, string? subpath, ChallengeImportOptions opts,
         string? originalArchiveBlobPath, CancellationToken token)
     {

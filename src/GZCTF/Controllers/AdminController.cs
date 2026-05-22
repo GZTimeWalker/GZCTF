@@ -1895,7 +1895,10 @@ public class AdminController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRepoBinding(
-        [FromRoute] int id, [FromServices] AppDbContext dbContext, CancellationToken token)
+        [FromRoute] int id,
+        [FromServices] AppDbContext dbContext,
+        [FromServices] Services.Transfer.GitRepoSyncService gitSync,
+        CancellationToken token)
     {
         var binding = await dbContext.GameRepoBindings.FirstOrDefaultAsync(b => b.Id == id, token);
         if (binding is null)
@@ -1911,6 +1914,11 @@ public class AdminController(
 
         dbContext.GameRepoBindings.Remove(binding);
         await dbContext.SaveChangesAsync(token);
+
+        // Best-effort: drop the on-disk git clone for this binding so
+        // /app/repos doesn't accumulate orphaned checkouts.
+        gitSync.DropCache("binding", id);
+
         return Ok();
     }
 }

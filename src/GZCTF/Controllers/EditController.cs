@@ -2199,7 +2199,9 @@ public class EditController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRepoWatch(
-        [FromRoute] int id, [FromRoute] int watchId, CancellationToken token)
+        [FromRoute] int id, [FromRoute] int watchId,
+        [FromServices] Services.Transfer.GitRepoSyncService gitSync,
+        CancellationToken token)
     {
         var watch = await dbContext.RepoWatches.FirstOrDefaultAsync(
             w => w.Id == watchId && w.GameId == id, token);
@@ -2208,6 +2210,11 @@ public class EditController(
 
         dbContext.RepoWatches.Remove(watch);
         await dbContext.SaveChangesAsync(token);
+
+        // Best-effort: drop the on-disk git clone so /app/repos doesn't
+        // accumulate orphaned checkouts after watch deletions.
+        gitSync.DropCache("watch", watchId);
+
         return Ok();
     }
 

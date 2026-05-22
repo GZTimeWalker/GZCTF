@@ -1,5 +1,3 @@
-using System.Formats.Tar;
-using System.IO.Compression;
 using GZCTF.Models.Data;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Edit;
@@ -36,7 +34,7 @@ public sealed class RepoBindingDiscoveryService(
     AppDbContext context,
     IGameRepository gameRepository,
     ChallengeImportService challengeImporter,
-    IHttpClientFactory httpClientFactory,
+    GitRepoSyncService gitSync,
     IDataProtectionProvider dataProtectionProvider,
     ILogger<RepoBindingDiscoveryService> logger)
 {
@@ -92,7 +90,6 @@ public sealed class RepoBindingDiscoveryService(
             return new(0, 0, 0, 0, 1, ["Binding not found."]);
 
         await SetActivityAsync(bindingId, "Starting scan", token);
-        var http = httpClientFactory.CreateClient("GitHubApi");
 
         if (!GitHubLocator.TryParse(binding.RepoUrl, binding.Ref, overrideSubpath: null, out var loc, out var parseErr) || loc is null)
         {
@@ -125,62 +122,38 @@ public sealed class RepoBindingDiscoveryService(
             binding.TokenStatus = TokenStatus.NotConfigured;
         }
 
-        var workDir = Path.Combine(Path.GetTempPath(), $"gzctf-binding-{Guid.NewGuid():N}");
-        Directory.CreateDirectory(workDir);
         var messages = new List<string>();
         int gamesCreated = 0, gamesUpdated = 0, challengesImported = 0, challengesUpdated = 0, failures = 0;
+        string? sha = null;
 
         try
         {
-            await SetActivityAsync(bindingId, "Querying commit SHA", token);
-            string? sha = await loc.GetHeadShaAsync(http, plaintextToken, token);
+            // Switched from the tarball API to a persistent shallow git
+            // clone. First scan = `git clone --depth 1` (one full
+            // payload). Every subsequent scan = `git fetch --depth 1`
+            // which is a small delta. The result is checked out at
+            // /app/repos/binding/{id} and survives container restarts
+            // via the gzctf-repos docker volume.
+            await SetActivityAsync(bindingId, "Syncing git checkout", token);
+            var snapshot = await gitSync.SyncAsync("binding", bindingId, loc, plaintextToken, token);
+            sha = snapshot.CommitSha;
 
-            // Short-circuit when nothing changed. The HEAD-SHA check is a
-            // single ~150ms HTTP call, vs the multi-MB tarball + walk +
-            // re-import that would follow. Mirrors what RepoWatchService
-            // already does for per-game watches. Force=true (admin "Scan
-            // now" intends to re-import even on a no-op) bypasses this.
+            // Short-circuit when nothing changed. Cheaper than before
+            // (no separate API call needed — the fetch+rev-parse above
+            // already gives us the SHA). Force=true (admin "Scan now"
+            // intends to re-import even on a no-op) bypasses this.
             if (!force && !string.IsNullOrEmpty(sha) && sha == binding.LastCommitSha)
             {
                 await SetActivityAsync(bindingId, $"Up to date ({sha[..7]})", token);
                 binding.LastScanUtc = DateTimeOffset.UtcNow;
-                binding.LastScanMessage = $"No change since {sha[..7]} — skipped tarball.";
+                binding.LastScanMessage = $"No change since {sha[..7]} — skipped import.";
                 await WriteScanRowAsync(bindingId, sha, 0, 0, 0, 0, 0,
                     ["No change — skipped."], plaintextToken, token);
                 await context.SaveChangesAsync(token);
-                return new(0, 0, 0, 0, 0, ["No change — skipped tarball download."]);
+                return new(0, 0, 0, 0, 0, ["No change — skipped import."]);
             }
 
-            await SetActivityAsync(bindingId, "Downloading tarball", token);
-            await using (var tarStream = await loc.DownloadTarballAsync(http, plaintextToken, token))
-            await using (var gz = new GZipStream(tarStream, CompressionMode.Decompress, leaveOpen: false))
-            await using (var tar = new TarReader(gz))
-            {
-                var canonical = Path.GetFullPath(workDir) + Path.DirectorySeparatorChar;
-                while (await tar.GetNextEntryAsync(cancellationToken: token) is { } entry)
-                {
-                    if (string.IsNullOrEmpty(entry.Name)) continue;
-                    var dest = Path.GetFullPath(Path.Combine(workDir, entry.Name));
-                    if (!dest.StartsWith(canonical, StringComparison.Ordinal)) continue;
-
-                    if (entry.EntryType is TarEntryType.RegularFile or TarEntryType.V7RegularFile)
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                        await using var fs = File.Create(dest);
-                        if (entry.DataStream is not null)
-                            await entry.DataStream.CopyToAsync(fs, token);
-                    }
-                    else if (entry.EntryType is TarEntryType.Directory)
-                    {
-                        Directory.CreateDirectory(dest);
-                    }
-                }
-            }
-
-            // Github tarballs nest content under a single wrapper dir
-            // named {owner}-{repo}-{shortsha}. Descend into it.
-            var top = Directory.EnumerateFileSystemEntries(workDir).Take(2).ToArray();
-            var scanRoot = top.Length == 1 && Directory.Exists(top[0]) ? top[0] : workDir;
+            var scanRoot = snapshot.CheckoutPath;
 
             await SetActivityAsync(bindingId, "Discovering .gzevent manifests", token);
             var manifests = Directory.EnumerateFiles(scanRoot, ".gzevent", SearchOption.AllDirectories)
@@ -222,18 +195,18 @@ public sealed class RepoBindingDiscoveryService(
                     var (game, created) = await UpsertGameAsync(binding, manifest, rel, token);
                     if (created) gamesCreated++; else gamesUpdated++;
 
-                    // Now import challenges under the event root.
-                    if (!GitHubLocator.TryParse(binding.RepoUrl, binding.Ref,
-                        string.IsNullOrEmpty(eventRootRel) ? null : eventRootRel, out var subLoc, out var subErr) || subLoc is null)
-                    {
-                        failures++;
-                        messages.Add($"{rel}: {subErr ?? "could not build subpath locator"}");
-                        continue;
-                    }
-
-                    var importResult = await challengeImporter.ImportFromGitHubAsync(
-                        subLoc, plaintextToken,
+                    // Bypass ChallengeImportService.ImportFromGitHubAsync —
+                    // that path would re-download the tarball for each
+                    // event. We already have the entire checkout on
+                    // disk from git, so just hand the same workdir +
+                    // event subpath to the work-dir importer directly.
+                    // For a 2-event repo this drops 2 redundant
+                    // multi-MB downloads per scan.
+                    var importResult = await challengeImporter.ImportFromWorkDirAsync(
+                        scanRoot,
+                        string.IsNullOrEmpty(eventRootRel) ? null : eventRootRel,
                         new ChallengeImportOptions(game.Id, adminUserId, AutoApprove: true),
+                        originalArchiveBlobPath: null,
                         token);
 
                     challengesImported += importResult.Imported;
@@ -275,7 +248,9 @@ public sealed class RepoBindingDiscoveryService(
         finally
         {
             await SetActivityAsync(bindingId, null, CancellationToken.None);
-            try { Directory.Delete(workDir, recursive: true); } catch { /* best effort */ }
+            // No workDir cleanup — the git checkout under /app/repos is
+            // intentionally persistent so the next scan can `git fetch`
+            // instead of cloning fresh.
         }
     }
 

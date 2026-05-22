@@ -28,7 +28,7 @@ internal static class RepoWatchProtection
 /// </summary>
 public sealed class RepoWatchService(
     IServiceScopeFactory scopeFactory,
-    IHttpClientFactory httpClientFactory,
+    GitRepoSyncService gitSync,
     IDataProtectionProvider dataProtectionProvider,
     ILogger<RepoWatchService> logger)
     : BackgroundService
@@ -76,17 +76,16 @@ public sealed class RepoWatchService(
         if (due.Count == 0) return;
 
         var importer = scope.ServiceProvider.GetRequiredService<ChallengeImportService>();
-        var http = httpClientFactory.CreateClient("GitHubApi");
 
         foreach (var watch in due)
         {
             stoppingToken.ThrowIfCancellationRequested();
-            await ProcessWatchAsync(db, importer, http, watch, stoppingToken);
+            await ProcessWatchAsync(db, importer, watch, stoppingToken);
         }
     }
 
     async Task ProcessWatchAsync(
-        AppDbContext db, ChallengeImportService importer, HttpClient http,
+        AppDbContext db, ChallengeImportService importer,
         RepoWatch watch, CancellationToken token)
     {
         var sync = new RepoWatchSync { RepoWatchId = watch.Id, RanAtUtc = DateTimeOffset.UtcNow };
@@ -126,14 +125,11 @@ public sealed class RepoWatchService(
                 watch.TokenStatus = TokenStatus.NotConfigured;
             }
 
-            var sha = await loc.GetHeadShaAsync(http, plaintextToken, token);
-            if (string.IsNullOrEmpty(sha))
-            {
-                sync.ErrorMessage = "Could not resolve HEAD commit (rate limit, 404, or bad token?).";
-                sync.Failed = 1;
-                return;
-            }
-
+            // Git-clone-or-fetch the repo. First scan is a shallow
+            // clone, every subsequent scan is a small delta — much
+            // cheaper than re-downloading the full tarball every time.
+            var snapshot = await gitSync.SyncAsync("watch", watch.Id, loc, plaintextToken, token);
+            var sha = snapshot.CommitSha;
             sync.CommitSha = sha;
 
             if (string.Equals(sha, watch.LastCommitSha, StringComparison.Ordinal))
@@ -142,8 +138,13 @@ public sealed class RepoWatchService(
                 return;
             }
 
+            // Import directly from the checkout. The subpath narrows
+            // the walk to whatever the operator picked when creating
+            // the watch (e.g. <root>/Web).
             var opts = new ChallengeImportOptions(watch.GameId, watch.CreatedByUserId, AutoApprove: true);
-            var result = await importer.ImportFromGitHubAsync(loc, plaintextToken, opts, token);
+            var result = await importer.ImportFromWorkDirAsync(
+                snapshot.CheckoutPath, loc.Subpath, opts,
+                originalArchiveBlobPath: null, token);
 
             sync.Imported = result.Imported;
             sync.Updated = result.Updated;
