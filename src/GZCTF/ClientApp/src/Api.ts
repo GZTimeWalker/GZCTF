@@ -1409,6 +1409,8 @@ export interface Attachment {
 }
 
 export interface ContainerInfoModel {
+  /** Container GUID — for the in-browser exec shell. */
+  id?: string;
   /** Container status */
   status?: ContainerStatus;
   /**

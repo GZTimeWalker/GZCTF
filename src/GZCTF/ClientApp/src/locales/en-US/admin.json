@@ -38,7 +38,8 @@
       "previous": "Previous",
       "test_container": {
         "create": "Create",
-        "destroy": "Destroy"
+        "destroy": "Destroy",
+        "shell": "Shell"
       }
     },
     "divisions": {

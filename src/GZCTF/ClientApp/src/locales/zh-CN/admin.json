@@ -38,7 +38,8 @@
       "previous": "上一题",
       "test_container": {
         "create": "创建测试容器",
-        "destroy": "销毁测试容器"
+        "destroy": "销毁测试容器",
+        "shell": "Shell"
       }
     },
     "divisions": {

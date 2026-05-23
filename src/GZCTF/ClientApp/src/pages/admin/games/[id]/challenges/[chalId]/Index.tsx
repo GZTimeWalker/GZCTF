@@ -30,6 +30,7 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { HintList } from '@Components/HintList'
 import { InstanceEntry } from '@Components/InstanceEntry'
 import { ChallengePreviewModal } from '@Components/admin/ChallengePreviewModal'
+import { ContainerExecModal } from '@Components/admin/ContainerExecModal'
 import { SwitchLabel } from '@Components/admin/SwitchLabel'
 import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { ScoreFunc } from '@Components/charts/ScoreFunc'
@@ -112,6 +113,7 @@ const GameChallengeEdit: FC = () => {
   const [type, setType] = useState<string | null>(challenge?.type ?? ChallengeType.StaticAttachment)
   const [currentAcceptCount, setCurrentAcceptCount] = useState(0)
   const [previewOpened, setPreviewOpened] = useState(false)
+  const [execOpened, setExecOpened] = useState(false)
 
   const modals = useModals()
   const challengeTypeLabelMap = useChallengeTypeLabelMap()
@@ -597,6 +599,18 @@ const GameChallengeEdit: FC = () => {
                     ? t('admin.button.challenges.test_container.destroy')
                     : t('admin.button.challenges.test_container.create')}
                 </Button>
+                <Button
+                  miw="6rem"
+                  variant="default"
+                  disabled={
+                    disabled
+                    || !challenge?.testContainer
+                    || challenge.testContainer.status !== 'Running'
+                  }
+                  onClick={() => setExecOpened(true)}
+                >
+                  {t('admin.button.challenges.test_container.shell')}
+                </Button>
               </Group>
             </Grid.Col>
             <Grid.Col span={4}>
@@ -719,6 +733,12 @@ const GameChallengeEdit: FC = () => {
         cateData={
           challengeCategoryLabelMap.get((challengeInfo?.category as ChallengeCategory) ?? ChallengeCategory.Misc)!
         }
+      />
+      <ContainerExecModal
+        containerGuid={challenge?.testContainer?.id ?? null}
+        containerTitle={`${challenge?.title} (test)`}
+        opened={execOpened}
+        onClose={() => setExecOpened(false)}
       />
     </WithChallengeEdit>
   )

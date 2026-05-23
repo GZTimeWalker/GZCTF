@@ -3,6 +3,14 @@
 public class ContainerInfoModel
 {
     /// <summary>
+    /// Container GUID — surfaced so the admin UI can target the
+    /// in-browser exec shell at this specific container without
+    /// going through the /admin/instances list. Same value the
+    /// <c>ContainerExecHub</c> expects.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
     /// Container status
     /// </summary>
     public ContainerStatus Status { get; set; } = ContainerStatus.Pending;
@@ -25,6 +33,7 @@ public class ContainerInfoModel
     internal static ContainerInfoModel FromContainer(Container container) =>
         new()
         {
+            Id = container.Id,
             Status = container.Status,
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
