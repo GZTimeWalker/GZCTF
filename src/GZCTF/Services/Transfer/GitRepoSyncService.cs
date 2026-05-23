@@ -244,12 +244,29 @@ public sealed class GitRepoSyncService(ILogger<GitRepoSyncService> logger)
         }
 
         await RunGitAsync(repoDir, ["commit", "-m", commitMessage], ct);
+
+        // Resolve the destination branch name. The binding's stored
+        // Ref is either the explicit branch name the operator pinned,
+        // or null = "the default branch" — in which case `git push
+        // HEAD:HEAD` would fail with non-fast-forward because github
+        // can't update its symbolic HEAD ref directly. Derive the
+        // actual local branch name and push to that.
+        var destRef = refSpec;
+        if (string.IsNullOrEmpty(loc.Ref))
+        {
+            // `git rev-parse --abbrev-ref HEAD` → e.g. "main".
+            destRef = (await RunGitAsync(repoDir, ["rev-parse", "--abbrev-ref", "HEAD"], ct)).Trim();
+            if (string.IsNullOrEmpty(destRef) || destRef == "HEAD")
+                throw new InvalidOperationException(
+                    "Could not resolve current branch name for push; checkout is detached.");
+        }
+
         // --depth 1 in clone means the local repo is shallow; the push
         // works because we're appending one commit on top of the
         // shallow HEAD. github accepts this provided the parent SHA
         // exists upstream (which it does — it's the SHA we fetched).
         await RunGitAsync(repoDir,
-            [.. authArgs, "push", "origin", $"HEAD:{refSpec}"], ct);
+            [.. authArgs, "push", "origin", $"HEAD:refs/heads/{destRef}"], ct);
         logger.LogInformation(
             "GitRepoSync: pushed {Files} file(s) to {Owner}/{Repo}@{Ref}",
             filesRelativeToRepo.Count, loc.Owner, loc.Repo, refSpec);
