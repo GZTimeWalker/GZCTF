@@ -19,6 +19,7 @@ public sealed class MailSender : IMailSender, IDisposable
     private readonly EmailConfig? _options;
     private readonly AsyncManualResetEvent _resetEvent = new();
     private readonly SmtpClient? _smtpClient;
+    private readonly bool _useSmtpAuthentication;
     private bool _disposed;
 
     public MailSender(
@@ -28,6 +29,8 @@ public sealed class MailSender : IMailSender, IDisposable
     {
         _logger = logger;
         _options = options.Value;
+        _useSmtpAuthentication = !string.IsNullOrWhiteSpace(_options.UserName) &&
+                                 !string.IsNullOrWhiteSpace(_options.Password);
         _cancellationToken = _cancellationTokenSource.Token;
 
         if (string.IsNullOrWhiteSpace(_options.SenderAddress) ||
@@ -164,7 +167,7 @@ public sealed class MailSender : IMailSender, IDisposable
                     await _smtpClient.ConnectAsync(_options!.Smtp!.Host, _options.Smtp.Port,
                         cancellationToken: _cancellationToken);
 
-                if (!_smtpClient.IsAuthenticated)
+                if (_useSmtpAuthentication && !_smtpClient.IsAuthenticated)
                     await _smtpClient.AuthenticateAsync(_options!.UserName, _options.Password,
                         _cancellationToken);
 
@@ -214,7 +217,8 @@ public sealed class MailSender : IMailSender, IDisposable
         try
         {
             _smtpClient.Connect(_options!.Smtp!.Host, _options.Smtp.Port, cancellationToken: token);
-            _smtpClient.Authenticate(_options.UserName, _options.Password, token);
+            if (_useSmtpAuthentication)
+                _smtpClient.Authenticate(_options.UserName, _options.Password, token);
             _smtpClient.Disconnect(true, token);
             return true;
         }
