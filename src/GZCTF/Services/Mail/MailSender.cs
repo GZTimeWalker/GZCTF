@@ -29,9 +29,14 @@ public sealed class MailSender : IMailSender, IDisposable
     {
         _logger = logger;
         _options = options.Value;
-        _useSmtpAuthentication = !string.IsNullOrWhiteSpace(_options.UserName) &&
-                                 !string.IsNullOrWhiteSpace(_options.Password);
+        var hasUserName = !string.IsNullOrWhiteSpace(_options.UserName);
+        var hasPassword = !string.IsNullOrWhiteSpace(_options.Password);
+        _useSmtpAuthentication = hasUserName && hasPassword;
         _cancellationToken = _cancellationTokenSource.Token;
+
+        if (hasUserName != hasPassword)
+            _logger.SystemLog("SMTP username/password is partially configured. SMTP AUTH will be skipped.",
+                TaskStatus.Degraded, LogLevel.Warning);
 
         if (string.IsNullOrWhiteSpace(_options.SenderAddress) ||
             string.IsNullOrWhiteSpace(_options.Smtp?.Host) || _options.Smtp.Port <= 0)
