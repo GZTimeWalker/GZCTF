@@ -1,3 +1,4 @@
+using GZCTF.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 
@@ -29,6 +30,7 @@ internal static class IdentityExtension
             builder.Services.AddIdentityCore<UserInfo>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
+                    options.Password.RequiredLength = Limits.MinPasswordLength;
                     options.Password.RequireNonAlphanumeric = false;
                     options.SignIn.RequireConfirmedEmail = true;
 

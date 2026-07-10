@@ -99,7 +99,7 @@
     "include_number": "숫자가 반드시 포함되어야 합니다.",
     "include_symbol": "특수문자가 반드시 포함되어야 합니다.",
     "include_uppercase": "영어 대문자가 반드시 포함되어야 합니다.",
-    "min_length": "반드시 6 글자 이상어야 합니다.",
+    "min_length": "반드시 8 글자 이상어야 합니다.",
     "not_match": "비밀번호가 동일하지 않습니다."
   },
   "placeholder": {

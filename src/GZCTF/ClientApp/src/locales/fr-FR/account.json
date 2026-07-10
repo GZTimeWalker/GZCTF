@@ -99,7 +99,7 @@
     "include_number": "Inclure des chiffres",
     "include_symbol": "Inclure des caractères spéciaux",
     "include_uppercase": "Inclure des lettres majuscules",
-    "min_length": "Au moins 6 caractères",
+    "min_length": "Au moins 8 caractères",
     "not_match": "Le mot de passe répété est incorrect"
   },
   "placeholder": {

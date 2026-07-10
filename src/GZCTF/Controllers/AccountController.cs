@@ -63,7 +63,14 @@ public class AccountController(
         if (string.IsNullOrWhiteSpace(password))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Model_PasswordRequired)]));
 
-        var user = new UserInfo { UserName = model.UserName, Email = model.Email, Role = Role.User };
+        var user = new UserInfo
+        {
+            UserName = model.UserName,
+            Email = model.Email,
+            RealName = model.RealName,
+            StdNumber = model.StdNumber,
+            Role = Role.User
+        };
 
         user.UpdateByHttpContext(HttpContext);
 
@@ -80,6 +87,9 @@ public class AccountController(
                 return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Account_UserExisting)]));
 
             user = current;
+            user.RealName = model.RealName;
+            user.StdNumber = model.StdNumber;
+            await userManager.UpdateAsync(user);
         }
 
         if (accountPolicy.Value.ActiveOnRegister)

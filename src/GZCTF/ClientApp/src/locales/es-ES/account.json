@@ -99,7 +99,7 @@
     "include_number": "Incluir números",
     "include_symbol": "Incluir caracteres especiales",
     "include_uppercase": "Incluir letras mayúsculas",
-    "min_length": "Al menos 6 caracteres",
+    "min_length": "Al menos 8 caracteres",
     "not_match": "La contraseña repetida es incorrecta"
   },
   "placeholder": {

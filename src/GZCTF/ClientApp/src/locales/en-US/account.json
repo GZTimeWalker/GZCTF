@@ -99,7 +99,7 @@
     "include_number": "Include numbers",
     "include_symbol": "Include special characters",
     "include_uppercase": "Include upper case letters",
-    "min_length": "At least 6 characters",
+    "min_length": "At least 8 characters",
     "not_match": "The repeated password is incorrect"
   },
   "placeholder": {

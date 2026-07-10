@@ -99,7 +99,7 @@
     "include_number": "包含數字",
     "include_symbol": "包含特殊字符",
     "include_uppercase": "包含大寫字母",
-    "min_length": "至少 6 個字符",
+    "min_length": "至少 8 個字符",
     "not_match": "重複密碼有誤"
   },
   "placeholder": {

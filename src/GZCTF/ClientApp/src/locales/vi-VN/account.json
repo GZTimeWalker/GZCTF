@@ -99,7 +99,7 @@
     "include_number": "Bao gồm số",
     "include_symbol": "Bao gồm ký tự đặc biệt",
     "include_uppercase": "Bao gồm chữ hoa",
-    "min_length": "Ít nhất 6 ký tự",
+    "min_length": "Ít nhất 8 ký tự",
     "not_match": "Mật khẩu không trùng khớp"
   },
   "placeholder": {

@@ -39,9 +39,7 @@ const Profile: FC = () => {
   const [profile, setProfile] = useState<ProfileUpdateModel>({
     userName: user?.userName,
     bio: user?.bio,
-    stdNumber: user?.stdNumber,
     phone: user?.phone,
-    realName: user?.realName,
   })
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
 
@@ -62,9 +60,7 @@ const Profile: FC = () => {
     setProfile({
       userName: user?.userName,
       bio: user?.bio,
-      stdNumber: user?.stdNumber,
       phone: user?.phone,
-      realName: user?.realName,
     })
   }, [user])
 
@@ -183,22 +179,6 @@ const Profile: FC = () => {
             value={profile.phone ?? ''}
             disabled={disabled}
             onChange={(event) => setProfile({ ...profile, phone: event.target.value })}
-          />
-          <TextInput
-            label={t('account.label.student_id')}
-            type="text"
-            w="100%"
-            value={profile.stdNumber ?? ''}
-            disabled={disabled}
-            onChange={(event) => setProfile({ ...profile, stdNumber: event.target.value })}
-          />
-          <TextInput
-            label={t('account.label.real_name')}
-            type="text"
-            w="100%"
-            value={profile.realName ?? ''}
-            disabled={disabled}
-            onChange={(event) => setProfile({ ...profile, realName: event.target.value })}
           />
         </SimpleGrid>
         <Textarea

@@ -99,7 +99,7 @@
     "include_number": "Sertakan angka",
     "include_symbol": "Sertakan special karakter",
     "include_uppercase": "Sertakan huruf besar",
-    "min_length": "Setidaknya 6 karakter",
+    "min_length": "Setidaknya 8 karakter",
     "not_match": "Password yang diulang salah"
   },
   "placeholder": {

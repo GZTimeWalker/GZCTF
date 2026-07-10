@@ -24,7 +24,27 @@ public class RegisterModel : ModelWithCaptcha
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(Limits.MinPasswordLength, ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordTooShort),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Real name
+    /// </summary>
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameRequired),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(Limits.MaxUserDataLength, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public string RealName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Student number
+    /// </summary>
+    [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberRequired),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
+        ErrorMessageResourceType = typeof(Resources.Program))]
+    public string StdNumber { get; set; } = string.Empty;
 
     /// <summary>
     /// Email

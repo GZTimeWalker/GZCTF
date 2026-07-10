@@ -99,7 +99,7 @@
     "include_number": "Цифры",
     "include_symbol": "Спецсимволы",
     "include_uppercase": "Заглавные буквы",
-    "min_length": "Минимум 6 символов",
+    "min_length": "Минимум 8 символов",
     "not_match": "Введенные пароли не соответствуют"
   },
   "placeholder": {

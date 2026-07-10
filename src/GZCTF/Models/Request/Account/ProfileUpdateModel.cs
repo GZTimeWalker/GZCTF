@@ -29,18 +29,4 @@ public class ProfileUpdateModel
     [Phone(ErrorMessageResourceName = nameof(Resources.Program.Model_MalformedPhoneNumber),
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Phone { get; set; }
-
-    /// <summary>
-    /// Real name
-    /// </summary>
-    [MaxLength(Limits.MaxUserDataLength, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? RealName { get; set; }
-
-    /// <summary>
-    /// Student ID
-    /// </summary>
-    [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? StdNumber { get; set; }
 }

@@ -99,7 +99,7 @@
     "include_number": "数字が含まれています",
     "include_symbol": "特殊文字が含まれています",
     "include_uppercase": "大文字が含まれています",
-    "min_length": "最低 6 文字",
+    "min_length": "最低 8 文字",
     "not_match": "パスワードが一致しません"
   },
   "placeholder": {

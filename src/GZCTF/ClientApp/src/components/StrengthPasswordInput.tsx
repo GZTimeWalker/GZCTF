@@ -41,7 +41,7 @@ export const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => 
   ]
 
   const getStrength = (password: string) => {
-    let multiplier = password.length > 5 ? 0 : 1
+    let multiplier = password.length > 7 ? 0 : 1
 
     requirements.forEach((requirement) => {
       if (!requirement.re.test(password)) {
@@ -53,7 +53,7 @@ export const StrengthPasswordInput: FC<StrengthPasswordInputProps> = (props) => 
   }
 
   const checks = [
-    <PasswordRequirement key={0} label={t('account.password.min_length')} meets={pwd.length >= 6} />,
+    <PasswordRequirement key={0} label={t('account.password.min_length')} meets={pwd.length >= 8} />,
     ...requirements.map((requirement, index) => (
       <PasswordRequirement key={index + 1} label={requirement.label} meets={requirement.re.test(pwd)} />
     )),

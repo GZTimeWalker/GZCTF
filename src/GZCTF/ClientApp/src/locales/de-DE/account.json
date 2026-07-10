@@ -99,7 +99,7 @@
     "include_number": "Enthält Zahlen",
     "include_symbol": "Enthält Sonderzeichen",
     "include_uppercase": "Enthält Großbuchstaben",
-    "min_length": "Mindestens 6 Zeichen",
+    "min_length": "Mindestens 8 Zeichen",
     "not_match": "Das wiederholte Passwort ist falsch"
   },
   "placeholder": {

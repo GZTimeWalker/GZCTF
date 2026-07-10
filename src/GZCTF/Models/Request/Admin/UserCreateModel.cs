@@ -23,6 +23,8 @@ public class UserCreateModel
     /// </summary>
     [Required(ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordRequired),
         ErrorMessageResourceType = typeof(Resources.Program))]
+    [MinLength(Limits.MinPasswordLength, ErrorMessageResourceName = nameof(Resources.Program.Model_PasswordTooShort),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>

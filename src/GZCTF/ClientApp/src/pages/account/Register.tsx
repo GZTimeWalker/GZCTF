@@ -21,6 +21,8 @@ const Register: FC = () => {
   const [retypedPwd, setRetypedPwd] = useInputState('')
   const [uname, setUname] = useInputState('')
   const [email, setEmail] = useInputState('')
+  const [realName, setRealName] = useInputState('')
+  const [stdNumber, setStdNumber] = useInputState('')
   const [disabled, setDisabled] = useState(false)
   const { config } = useConfig()
 
@@ -96,6 +98,8 @@ const Register: FC = () => {
         userName: uname,
         password: await encryptApiData(t, pwd, config.apiPublicKey),
         email: email,
+        realName: realName,
+        stdNumber: stdNumber,
         challenge: token,
       })
       const data = RegisterStatusMap.get(res.data.data)
@@ -165,6 +169,26 @@ const Register: FC = () => {
         disabled={disabled}
         w="100%"
         error={pwd !== retypedPwd}
+      />
+      <TextInput
+        required
+        label={t('account.label.real_name')}
+        type="text"
+        placeholder="张三"
+        w="100%"
+        value={realName}
+        disabled={disabled}
+        onChange={(event) => setRealName(event.currentTarget.value)}
+      />
+      <TextInput
+        required
+        label={t('account.label.student_id')}
+        type="text"
+        placeholder="20240001"
+        w="100%"
+        value={stdNumber}
+        disabled={disabled}
+        onChange={(event) => setStdNumber(event.currentTarget.value)}
       />
       <Captcha action="register" ref={captchaRef} />
       <Anchor fz="xs" className={misc.alignSelfEnd} component={Link} to="/account/login">

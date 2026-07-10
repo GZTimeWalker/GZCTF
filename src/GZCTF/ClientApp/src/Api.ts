@@ -194,6 +194,18 @@ export type RegisterModel = ModelWithCaptcha & {
    * @minLength 1
    */
   email: string;
+  /**
+   * Real name
+   * @minLength 1
+   * @maxLength 128
+   */
+  realName: string;
+  /**
+   * Student ID
+   * @minLength 1
+   * @maxLength 64
+   */
+  stdNumber: string;
 };
 
 export interface ModelWithCaptcha {
@@ -276,28 +288,18 @@ export interface ProfileUpdateModel {
    * @format phone
    */
   phone?: string | null;
-  /**
-   * Real name
-   * @maxLength 128
-   */
-  realName?: string | null;
-  /**
-   * Student ID
-   * @maxLength 64
-   */
-  stdNumber?: string | null;
 }
 
 /** Password change */
 export interface PasswordChangeModel {
   /**
    * Old password
-   * @minLength 6
+   * @minLength 8
    */
   old: string;
   /**
    * New password
-   * @minLength 6
+   * @minLength 8
    */
   new: string;
 }

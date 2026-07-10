@@ -45,7 +45,7 @@ public static class Limits
     /// <summary>
     /// 密码最小长度
     /// </summary>
-    public const int MinPasswordLength = 6;
+    public const int MinPasswordLength = 8;
 
     /// <summary>
     /// 文件哈希长度
