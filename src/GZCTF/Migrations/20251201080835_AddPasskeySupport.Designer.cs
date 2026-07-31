@@ -4,6 +4,7 @@ using System.Net;
 using GZCTF.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GZCTF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251201080835_AddPasskeySupport")]
+    partial class AddPasskeySupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,6 +261,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("xid")
                         .HasColumnName("xmin");
 
+                    b.Property<int?>("ContainerExposePort")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ContainerImage")
                         .HasColumnType("text");
 
@@ -274,9 +280,6 @@ namespace GZCTF.Migrations
                     b.Property<byte>("Difficulty")
                         .HasColumnType("smallint");
 
-                    b.Property<int?>("ExposePort")
-                        .HasColumnType("integer");
-
                     b.Property<string>("FileName")
                         .HasColumnType("text");
 
@@ -292,11 +295,6 @@ namespace GZCTF.Migrations
 
                     b.Property<int?>("MemoryLimit")
                         .HasColumnType("integer");
-
-                    b.Property<byte?>("NetworkMode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValue((byte)0);
 
                     b.Property<int?>("StorageLimit")
                         .HasColumnType("integer");
@@ -546,6 +544,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("xid")
                         .HasColumnName("xmin");
 
+                    b.Property<int?>("ContainerExposePort")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ContainerImage")
                         .HasColumnType("text");
 
@@ -564,9 +565,6 @@ namespace GZCTF.Migrations
 
                     b.Property<bool>("EnableTrafficCapture")
                         .HasColumnType("boolean");
-
-                    b.Property<int?>("ExposePort")
-                        .HasColumnType("integer");
 
                     b.Property<string>("FileName")
                         .HasColumnType("text");
@@ -589,11 +587,6 @@ namespace GZCTF.Migrations
 
                     b.Property<double>("MinScoreRate")
                         .HasColumnType("double precision");
-
-                    b.Property<byte?>("NetworkMode")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValue((byte)0);
 
                     b.Property<int>("OriginalScore")
                         .HasColumnType("integer");

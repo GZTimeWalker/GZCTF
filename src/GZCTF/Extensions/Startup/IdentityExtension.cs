@@ -34,6 +34,9 @@ internal static class IdentityExtension
 
                     // Allow all characters in username
                     options.User.AllowedUserNameCharacters = string.Empty;
+
+                    // Enable passkey support with SchemaVersion3
+                    options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
                 })
                 .AddSignInManager<SignInManager<UserInfo>>()
                 .AddUserManager<UserManager<UserInfo>>()

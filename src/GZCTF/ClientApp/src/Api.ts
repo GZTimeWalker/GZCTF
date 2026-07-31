@@ -258,6 +258,49 @@ export type LoginModel = ModelWithCaptcha & {
   password: string;
 };
 
+/** Passkey attestation completion request */
+export interface PasskeyAttestationRequest {
+  /**
+   * The credential JSON from navigator.credentials.create()
+   * @minLength 1
+   */
+  credentialJson: string;
+  /**
+   * Optional passkey name for easier identification
+   * @maxLength 64
+   */
+  name?: string | null;
+}
+
+/** Passkey assertion options request for login */
+export interface PasskeyAssertionOptionsRequest {
+  /** Optional username to scope allowed credentials */
+  userName?: string | null;
+}
+
+/** Passkey assertion request for login */
+export interface PasskeyAssertionRequest {
+  /**
+   * The credential JSON from navigator.credentials.get()
+   * @minLength 1
+   */
+  credentialJson: string;
+}
+
+/** Response model for passkey info */
+export interface PasskeyInfoModel {
+  /** The credential ID encoded as Base64URL */
+  credentialId: string;
+  /** User-friendly name for the passkey */
+  name?: string | null;
+  /** When the passkey was created */
+  createdAt: string;
+  /** Whether the passkey is backed up */
+  isBackedUp: boolean;
+  /** Transport hints (e.g., "usb", "nfc", "ble", "internal") */
+  transports?: string[] | null;
+}
+
 /** Basic account information update */
 export interface ProfileUpdateModel {
   /**
@@ -2597,6 +2640,105 @@ export class Api<
         method: "POST",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to get options for creating a new passkey. User permissions required. The response should be passed to navigator.credentials.create() in the browser.
+     *
+     * @tags Account
+     * @name AccountPasskeyAttestationOptions
+     * @summary Get passkey attestation options for registration
+     * @request POST:/api/account/passkeyattestationoptions
+     */
+    accountPasskeyAttestationOptions: (params: RequestParams = {}) =>
+      this.request<object, RequestResponse>({
+        path: `/api/account/passkeyattestationoptions`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to complete passkey registration with the credential from navigator.credentials.create(). User permissions required.
+     *
+     * @tags Account
+     * @name AccountPasskeyAttestation
+     * @summary Complete passkey registration
+     * @request POST:/api/account/passkeyattestation
+     */
+    accountPasskeyAttestation: (data: PasskeyAttestationRequest, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/passkeyattestation`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to get options for authenticating with a passkey. The response should be passed to navigator.credentials.get() in the browser.
+     *
+     * @tags Account
+     * @name AccountPasskeyAssertionOptions
+     * @summary Get passkey assertion options for login
+     * @request POST:/api/account/passkeyassertionoptions
+     */
+    accountPasskeyAssertionOptions: (data: PasskeyAssertionOptionsRequest, params: RequestParams = {}) =>
+      this.request<object, RequestResponse>({
+        path: `/api/account/passkeyassertionoptions`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to complete passkey authentication with the credential from navigator.credentials.get().
+     *
+     * @tags Account
+     * @name AccountPasskeyAssertion
+     * @summary Complete passkey authentication
+     * @request POST:/api/account/passkeyassertion
+     */
+    accountPasskeyAssertion: (data: PasskeyAssertionRequest, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/passkeyassertion`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to get list of user's registered passkeys. User permissions required.
+     *
+     * @tags Account
+     * @name AccountPasskeys
+     * @summary Get user's registered passkeys
+     * @request GET:/api/account/passkeys
+     */
+    accountPasskeys: (params: RequestParams = {}) =>
+      this.request<PasskeyInfoModel[], RequestResponse>({
+        path: `/api/account/passkeys`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Use this API to delete a passkey. User permissions required.
+     *
+     * @tags Account
+     * @name AccountDeletePasskey
+     * @summary Delete a passkey
+     * @request DELETE:/api/account/deletepasskey/{credentialId}
+     */
+    accountDeletePasskey: (credentialId: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/account/deletepasskey/${credentialId}`,
+        method: "DELETE",
         ...params,
       }),
   };

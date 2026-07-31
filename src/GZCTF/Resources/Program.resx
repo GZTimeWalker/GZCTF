@@ -1088,4 +1088,25 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>The deadline for this challenge has passed</value>
   </data>
+  <data name="Passkey_RegistrationFailed" xml:space="preserve">
+    <value>Passkey registration failed</value>
+  </data>
+  <data name="Passkey_Registered" xml:space="preserve">
+    <value>Passkey registered successfully</value>
+  </data>
+  <data name="Passkey_LoginFailed" xml:space="preserve">
+    <value>Passkey authentication failed</value>
+  </data>
+  <data name="Passkey_LoginSuccess" xml:space="preserve">
+    <value>Logged in with passkey</value>
+  </data>
+  <data name="Passkey_InvalidCredentialId" xml:space="preserve">
+    <value>Invalid credential ID format</value>
+  </data>
+  <data name="Passkey_NotFound" xml:space="preserve">
+    <value>Passkey not found</value>
+  </data>
+  <data name="Passkey_Deleted" xml:space="preserve">
+    <value>Passkey deleted successfully</value>
+  </data>
 </root>
