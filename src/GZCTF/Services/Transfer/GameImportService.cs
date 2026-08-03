@@ -558,7 +558,12 @@ public class GameImportService(
     private async Task ImportFileAsync(string hash, ImportContext context, CancellationToken ct,
         string? fileName = null)
     {
-        var filePath = Path.Combine(context.WorkDir, "files", hash);
+        var baseFull = Path.GetFullPath(Path.Combine(context.WorkDir, "files"));
+        var filePath = Path.GetFullPath(Path.Combine(baseFull, hash));
+        if (!filePath.StartsWith(baseFull + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Invalid file path");
+        }
         if (!File.Exists(filePath))
             throw new InvalidOperationException($"Missing file in package: {hash}");
 
