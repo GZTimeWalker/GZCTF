@@ -33,12 +33,22 @@ public static class TransferHelper
     /// <summary>
     /// Compute SHA256 hash of file using streaming for memory efficiency
     /// </summary>
-    public static async Task<string> ComputeFileHashAsync(string filePath, CancellationToken ct = default)
-    {
-        await using var file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
-            bufferSize: 4096, FileOptions.SequentialScan | FileOptions.Asynchronous);
-        using var hasher = System.Security.Cryptography.SHA256.Create();
-        var hash = await hasher.ComputeHashAsync(file, ct);
-        return Convert.ToHexStringLower(hash);
-    }
+    public static async Task<string> ComputeFileHashAsync(
+    string filePath, string allowedBaseDirectory, CancellationToken ct = default)
+{
+    if (filePath == null)
+        throw new ArgumentNullException(nameof(filePath));
+
+    string fullBase = Path.GetFullPath(allowedBaseDirectory);
+    string fullPath = Path.GetFullPath(Path.Combine(fullBase, filePath));
+
+    if (!fullPath.StartsWith(fullBase + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+        throw new ArgumentException("Invalid file path");
+
+    await using var file = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read,
+        bufferSize: 4096, FileOptions.SequentialScan | FileOptions.Asynchronous);
+    using var hasher = System.Security.Cryptography.SHA256.Create();
+    var hash = await hasher.ComputeHashAsync(file, ct);
+    return Convert.ToHexStringLower(hash);
+}
 }
