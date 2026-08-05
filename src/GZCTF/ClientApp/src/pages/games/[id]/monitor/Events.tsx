@@ -257,7 +257,6 @@ const Events: FC = () => {
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card
               shadow="sm"
-              radius="sm"
               p="xs"
               key={`${event.time}@${i}`}
               className={cx({ [tableClasses.fade]: i === 0 && activePage === 1 && filteredEvents.length > 0 })}

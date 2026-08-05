@@ -1,9 +1,12 @@
 using System.Net.Sockets;
+using System.Net.WebSockets;
+using System.Text;
 using Docker.DotNet;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Services.Container.Provider;
 using k8s;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
@@ -19,6 +22,51 @@ public static class ContainerHelper
     private const string Namespace = "gzctf-test";
     private const int MaxAttempts = 30;
     private const int DelayMs = 2000;
+
+    /// <summary>
+    /// Read environment variables from an admin test container
+    /// </summary>
+    public static async Task<IReadOnlyDictionary<string, string?>> GetAdminContainerEnvAsync(
+        IServiceProvider serviceProvider,
+        int challengeId)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var challenge = await context.GameChallenges
+            .AsNoTracking()
+            .Include(c => c.TestContainer)
+            .FirstOrDefaultAsync(c => c.Id == challengeId);
+
+        if (challenge?.TestContainer is null)
+            throw new InvalidOperationException($"Challenge {challengeId} not found");
+
+        return await GetContainerEnvAsync(serviceProvider, challenge.TestContainer);
+    }
+
+    /// <summary>
+    /// Read environment variables from a user challenge container
+    /// </summary>
+    public static async Task<IReadOnlyDictionary<string, string?>> GetUserContainerEnvAsync(
+        IServiceProvider serviceProvider,
+        int challengeId,
+        int participationId)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var instance = await context.GameInstances
+            .AsNoTracking()
+            .Include(i => i.Container)
+            .FirstOrDefaultAsync(i =>
+                i.ChallengeId == challengeId && i.ParticipationId == participationId);
+
+        if (instance?.Container is null)
+            throw new InvalidOperationException(
+                $"No game instance found for challenge {challengeId}, participation {participationId}");
+
+        return await GetContainerEnvAsync(serviceProvider, instance.Container);
+    }
 
     /// <summary>
     /// Wait for admin test container to be ready
@@ -90,10 +138,17 @@ public static class ContainerHelper
     /// Fetch flag from container
     /// NOTE: use `ghcr.io/gzctf/challenge-base/echo:latest`
     /// </summary>
-    /// <param name="entry"></param>
+    /// <param name="entry">Container entry (GUID for proxy mode, IP:Port for direct mode)</param>
+    /// <param name="server">TestServer for proxy mode (from factory.Server)</param>
+    /// <param name="isNoInst">Use NoInst proxy endpoint (for admin test containers)</param>
     /// <returns></returns>
-    public static async Task<string?> FetchFlag(string entry)
+    public static async Task<string?> FetchFlag(string entry, TestServer? server = null,
+        bool isNoInst = false)
     {
+        // If entry is a GUID and server is provided, use proxy mode
+        if (Guid.TryParse(entry, out var containerId) && server is not null)
+            return await FetchFlagViaProxy(server, containerId, isNoInst);
+
         Console.WriteLine($@"🔍 Fetching flag from container entry: {entry}");
 
         // Parse the Entry field to get IP and port
@@ -119,7 +174,7 @@ public static class ContainerHelper
                 // Read the flag from the echo container
                 var buffer = new byte[256];
                 var bytesRead = await stream.ReadAsync(buffer);
-                flag = System.Text.Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                flag = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                 break;
             }
             catch (SocketException) when (attempt < 9)
@@ -133,6 +188,45 @@ public static class ContainerHelper
         Console.WriteLine($@"✅ Successfully retrieved flag from {entry}: {flag}");
 
         return flag;
+    }
+
+    /// <summary>
+    /// Fetch flag via platform WebSocket proxy
+    /// </summary>
+    private static async Task<string?> FetchFlagViaProxy(TestServer server, Guid containerId,
+        bool isNoInst)
+    {
+        var path = isNoInst
+            ? $"api/Proxy/NoInst/{containerId}"
+            : $"api/Proxy/{containerId}";
+
+        Console.WriteLine($@"🔍 Fetching flag via WebSocket proxy: {path}");
+
+        var wsUrl = new UriBuilder("127.0.0.1:8080") { Scheme = "ws", Path = path }.Uri;
+        var wsClient = server.CreateWebSocketClient();
+
+        for (var attempt = 0; attempt < 10; attempt++)
+        {
+            try
+            {
+                using var ws = await wsClient.ConnectAsync(wsUrl, CancellationToken.None);
+
+                var buffer = new byte[256];
+                var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
+                var flag = Encoding.UTF8.GetString(buffer, 0, result.Count).Trim();
+
+                await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+
+                Console.WriteLine($@"✅ Successfully retrieved flag via proxy: {flag}");
+                return flag;
+            }
+            catch (WebSocketException) when (attempt < 9)
+            {
+                await Task.Delay(500);
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -157,6 +251,50 @@ public static class ContainerHelper
         {
             await WaitDockerContainerReadyAsync(dockerProviderService, container, output);
             return;
+        }
+
+        throw new InvalidOperationException("Neither Kubernetes nor Docker provider is available");
+    }
+
+    /// <summary>
+    /// Internal: Read container env vars from the active container provider
+    /// </summary>
+    private static async Task<IReadOnlyDictionary<string, string?>> GetContainerEnvAsync(
+        IServiceProvider serviceProvider,
+        Container container)
+    {
+        var k8sProviderService = serviceProvider.GetService<IContainerProvider<Kubernetes, KubernetesMetadata>>();
+        if (k8sProviderService != null)
+        {
+            var pod = await k8sProviderService.GetProvider()
+                .CoreV1.ReadNamespacedPodAsync(container.ContainerId, Namespace);
+
+            var envVars = pod.Spec?.Containers
+                .SelectMany(c => c.Env ?? [])
+                .ToDictionary(env => env.Name, env => (string?)env.Value);
+
+            return envVars ?? new Dictionary<string, string?>();
+        }
+
+        var dockerProviderService = serviceProvider.GetService<IContainerProvider<DockerClient, DockerMetadata>>();
+        if (dockerProviderService != null)
+        {
+            var inspection = await dockerProviderService.GetProvider()
+                .Containers.InspectContainerAsync(container.ContainerId);
+
+            return (inspection.Config?.Env ?? [])
+                .Select(env =>
+                {
+                    var separatorIndex = env.IndexOf('=');
+                    return separatorIndex switch
+                    {
+                        < 0 => new KeyValuePair<string, string?>(env, null),
+                        _ => new KeyValuePair<string, string?>(
+                            env[..separatorIndex],
+                            env[(separatorIndex + 1)..])
+                    };
+                })
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
         throw new InvalidOperationException("Neither Kubernetes nor Docker provider is available");
@@ -241,7 +379,8 @@ public static class ContainerHelper
             try
             {
                 var inspection = await dockerClient.Containers.InspectContainerAsync(containerId);
-                var state = inspection.State;
+                var state = inspection.State ?? throw new InvalidOperationException(
+                    $"Docker container '{containerId}' inspection returned no state");
 
                 output.WriteLine(
                     $"  Attempt {attempt + 1}/{MaxAttempts}: Running={state.Running}, Status={state.Status}");
@@ -267,7 +406,7 @@ public static class ContainerHelper
                     await Task.Delay(DelayMs);
                 }
             }
-            catch (Exception e) when (!(e is InvalidOperationException))
+            catch (Exception e) when (e is not InvalidOperationException)
             {
                 output.WriteLine($"⚠️ Error checking container status: {e.Message}");
                 if (attempt < MaxAttempts - 1)

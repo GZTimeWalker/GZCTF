@@ -2,11 +2,11 @@ name: Work Branch CI
 
 on:
   pull_request:
-    branches: ["work"]
-    paths: ["src/**"]
+    branches: [ "work" ]
+    paths: [ "src/**" ]
   push:
-    branches: ["work"]
-    paths: ["src/**"]
+    branches: [ "work" ]
+    paths: [ "src/**" ]
   workflow_dispatch:
 
 jobs:
@@ -18,9 +18,11 @@ jobs:
     defaults:
       run:
         working-directory: src/GZCTF
+    env:
+      SixLaborsLicenseKey: ${{ secrets.SIXLABORS_LICENSE }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-dotnet@v5
         with:
@@ -30,8 +32,10 @@ jobs:
         with:
           node-version: latest
 
-      - name: Install pnpm
-        run: npm i -g pnpm
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: 11
 
       - name: Restore dependencies
         run: dotnet restore
@@ -102,8 +106,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           package: gzctf/gzctf
-          use-regex: true
-          exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}|^work$"
+          exclude-tags: latest,develop,work,v*
           validate: true
           dry-run: false
           delete-untagged: true

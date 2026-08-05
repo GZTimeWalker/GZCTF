@@ -42,7 +42,7 @@ const Login: FC = () => {
     }
   }, [user, needRedirect])
 
-  const onLogin = async (event: React.FormEvent) => {
+  const onLogin = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     if (uname.length === 0 || pwd.length < 6) {

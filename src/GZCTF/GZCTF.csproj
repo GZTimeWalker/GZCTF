@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <AssemblyVersion>1.8.3.0</AssemblyVersion>
+    <AssemblyVersion>1.8.7.0</AssemblyVersion>
     <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -18,12 +18,10 @@
     <SpaProxyServerUrl>http://localhost:63000</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm run dev -- --host</SpaProxyLaunchCommand>
     <Configurations>Debug;Release</Configurations>
-    <ReleaseVersion>1.8.3</ReleaseVersion>
+    <ReleaseVersion>1.8.7</ReleaseVersion>
     <WarningLevel>4</WarningLevel>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <!-- Temporarily disabled due to EF Core 10.0.0 compiled model generation bug with Dependency<T> pattern -->
-    <!-- Re-enable when EF Core 10.0.0 stable is released with the fix -->
-    <EFOptimizeContext>false</EFOptimizeContext>
+    <AcceptNPOIOSMFLicense>true</AcceptNPOIOSMFLicense>
     <EFPrecompileQueriesStage>none</EFPrecompileQueriesStage>
     <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
     <CETCompat>false</CETCompat>
@@ -40,14 +38,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tasks"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"/>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common"/>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
     <PackageReference Include="Npgsql.OpenTelemetry"/>
@@ -106,7 +98,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\favicon.webp"/>
-    <EmbeddedResource Update="Resources\Program.resx" PublicClass="true"/>
+    <EmbeddedResource Update="Resources\Program.resx">
+      <PublicClass>true</PublicClass>
+      <CustomToolNamespace>GZCTF.Resources</CustomToolNamespace>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

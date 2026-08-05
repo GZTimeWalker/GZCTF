@@ -48,7 +48,7 @@ export const DivisionCard: FC<DivisionCardProps> = ({
   }
 
   return (
-    <Card withBorder shadow="sm" radius="md" padding="md" {...cardProps}>
+    <Card withBorder shadow="sm" padding="md" {...cardProps}>
       <Stack gap="xs">
         <Group justify="space-between" align="flex-start">
           <Group gap="sm">

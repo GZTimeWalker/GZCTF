@@ -184,12 +184,12 @@ public static class LogHelper
                 && lokiSection.Get<GrafanaLokiOptions>() is { Enable: true, EndpointUri: not null } lokiOptions)
             {
                 loggerConfig = loggerConfig.WriteTo.GrafanaLoki(
-                    lokiOptions.EndpointUri,
-                    lokiOptions.Labels ?? [new() { Key = "app", Value = "gzctf" }],
-                    lokiOptions.PropertiesAsLabels,
-                    lokiOptions.Credentials,
-                    lokiOptions.Tenant,
-                    (LogEventLevel)(lokiOptions.MinimumLevel ?? LogLevel.Trace));
+                    uri: lokiOptions.EndpointUri,
+                    labels: lokiOptions.Labels ?? [new() { Key = "app", Value = "gzctf" }],
+                    propertiesAsLabels: lokiOptions.PropertiesAsLabels,
+                    credentials: lokiOptions.Credentials,
+                    tenant: lokiOptions.Tenant,
+                    restrictedToMinimumLevel: (LogEventLevel)(lokiOptions.MinimumLevel ?? LogLevel.Trace));
             }
 
             if (TelemetryExtension.TelemetryConfig is { Enable: true })

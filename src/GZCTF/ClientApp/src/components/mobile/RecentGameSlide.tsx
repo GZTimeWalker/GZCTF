@@ -64,7 +64,6 @@ export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       onTouchStart={handleTouchStart}
       shadow="md"
       p="md"
-      radius="md"
       __vars={{
         '--slide-image': `url(${poster})`,
         '--slide-title-color': titleColor,

@@ -53,7 +53,7 @@ public class DockerManager : IContainerManager
             }
             else
             {
-                _logger.LogDeletionFailedWithHttpContext(container.LogId, e.StatusCode, e.ResponseBody);
+                _logger.LogDeletionFailedWithHttpContext(container.LogId, e.StatusCode, e.ResponseBody ?? string.Empty);
                 return;
             }
         }
@@ -82,9 +82,12 @@ public class DockerManager : IContainerManager
         }
 
         var parameters = GetCreateContainerParameters(config);
+        var containerName = parameters.Name ?? DockerMetadata.GetName(config);
+        parameters.Name = containerName;
 
         if (_meta.ExposePort)
         {
+            parameters.HostConfig ??= new();
             parameters.ExposedPorts = new Dictionary<string, EmptyStruct> { [config.ExposedPort.ToString()] = new() };
             parameters.HostConfig.PortBindings = new Dictionary<string, IList<PortBinding>>
             {
@@ -108,7 +111,7 @@ public class DockerManager : IContainerManager
             {
                 _logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
-                        parameters.Name], TaskStatus.Failed, LogLevel.Information);
+                        containerName], TaskStatus.Failed, LogLevel.Information);
                 return null;
             }
 
@@ -137,35 +140,35 @@ public class DockerManager : IContainerManager
             {
                 _logger.SystemLog(
                     StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerExisted),
-                        parameters.Name],
+                        containerName],
                     TaskStatus.Duplicate,
                     LogLevel.Warning);
 
                 // the container already exists, remove it and retry
                 try
                 {
-                    await _client.Containers.RemoveContainerAsync(parameters.Name,
+                    await _client.Containers.RemoveContainerAsync(containerName,
                         new() { Force = true }, token);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogErrorMessage(ex,
                         StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerDeletionFailed),
-                            parameters.Name]);
+                            containerName]);
                     return null;
                 }
 
                 goto CreateDockerContainer;
             }
 
-            _logger.LogCreationFailedWithHttpContext(parameters.Name, e.StatusCode, e.ResponseBody);
+            _logger.LogCreationFailedWithHttpContext(containerName, e.StatusCode, e.ResponseBody ?? string.Empty);
             return null;
         }
         catch (Exception e)
         {
             _logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
-                    parameters.Name]);
+                    containerName]);
             return null;
         }
 
@@ -198,10 +201,23 @@ public class DockerManager : IContainerManager
         }
 
         var info = await _client.Containers.InspectContainerAsync(container.ContainerId, token);
+        var state = info.State;
 
-        container.Status = info.State.Dead || info.State.OOMKilled || info.State.Restarting
+        if (state is null)
+        {
+            _logger.SystemLog(
+                StaticLocalizer[
+                    nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
+                    config.Image.Split("/").LastOrDefault() ?? "", string.Empty],
+                TaskStatus.Failed, LogLevel.Warning);
+
+            await DestroyContainerAsync(container, token);
+            return null;
+        }
+
+        container.Status = state.Dead || state.OOMKilled || state.Restarting
             ? ContainerStatus.Destroyed
-            : info.State.Running
+            : state.Running
                 ? ContainerStatus.Running
                 : ContainerStatus.Pending;
 
@@ -210,27 +226,26 @@ public class DockerManager : IContainerManager
             _logger.SystemLog(
                 StaticLocalizer[
                     nameof(Resources.Program.ContainerManager_ContainerInstanceCreationFailedWithError),
-                    config.Image.Split("/").LastOrDefault() ?? "", info.State.Error],
+                    config.Image.Split("/").LastOrDefault() ?? "", state.Error],
                 TaskStatus.Failed, LogLevel.Warning);
 
             await DestroyContainerAsync(container, token);
             return null;
         }
 
-        container.StartedAt = DateTimeOffset.Parse(info.State.StartedAt);
+        container.StartedAt = DateTimeOffset.Parse(state.StartedAt);
         container.ExpectStopAt = container.StartedAt + TimeSpan.FromHours(2);
-        container.IP = info.NetworkSettings.Networks.FirstOrDefault().Value.IPAddress;
+        var networkSettings = info.NetworkSettings;
+        container.IP = networkSettings?.Networks?.FirstOrDefault().Value?.IPAddress ?? string.Empty;
         container.Port = config.ExposedPort;
         container.IsProxy = !_meta.ExposePort;
 
         if (!_meta.ExposePort)
             return container;
 
-        var portString = config.ExposedPort.ToString();
-        var bindings = info.NetworkSettings.Ports.Where(kv => kv.Key.StartsWith(portString)).Select(kv => kv.Value)
-            .SingleOrDefault();
+        var bindings = GetPublishedPortBindings(networkSettings?.Ports, config.ExposedPort);
 
-        if (bindings is not { Count: > 0 })
+        if (bindings is [])
         {
             _logger.SystemLog(
                 StaticLocalizer[
@@ -258,6 +273,30 @@ public class DockerManager : IContainerManager
         return container;
     }
 
+    internal static IList<PortBinding> GetPublishedPortBindings(
+        IDictionary<string, IList<PortBinding>>? ports, int exposedPort)
+    {
+        if (ports is not { Count: > 0 })
+            return [];
+
+        var port = exposedPort.ToString();
+        var portPrefix = $"{port}/";
+        var matchedPorts = ports
+            .Where(kv => kv.Value is { Count: > 0 }
+                && kv.Key.StartsWith(portPrefix, StringComparison.Ordinal))
+            .ToArray();
+
+        return matchedPorts switch
+        {
+            [] => [],
+            [{ Value: var bindings }] => bindings,
+            _ => matchedPorts.FirstOrDefault(kv =>
+                     kv.Key.EndsWith("/tcp", StringComparison.OrdinalIgnoreCase))
+                 .Value
+                 ?? matchedPorts[0].Value
+        };
+    }
+
     private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
         new()
         {
@@ -282,9 +321,7 @@ public class DockerManager : IContainerManager
             // Modification without a valid authorization may be treated as misuse.
             //
             // References: NOTICE, LICENSE_ADDENDUM.txt, licenses/LicenseRef-GZCTF-Restricted.txt
-            Env = config.Flag is null
-                ? [$"GZCTF_TEAM_ID={config.TeamId}"]
-                : [$"GZCTF_FLAG={config.Flag}", $"GZCTF_TEAM_ID={config.TeamId}"],
+            Env = BuildContainerEnv(config),
             HostConfig = new()
             {
                 Memory = config.MemoryLimit * 1024 * 1024,
@@ -292,4 +329,22 @@ public class DockerManager : IContainerManager
                 NetworkMode = _meta.NetworkNames[config.NetworkMode]
             }
         };
+
+    private static IList<string> BuildContainerEnv(GZCTF.Models.Internal.ContainerConfig config)
+    {
+        var env = new List<string>(5)
+        {
+            $"GZCTF_TEAM_ID={config.TeamId}",
+            $"GZCTF_USER_ID={config.UserId}",
+            $"GZCTF_CHALLENGE_ID={config.ChallengeId}"
+        };
+
+        if (config.GameId is int gameId)
+            env.Add($"GZCTF_GAME_ID={gameId}");
+
+        if (!string.IsNullOrWhiteSpace(config.Flag))
+            env.Add($"GZCTF_FLAG={config.Flag}");
+
+        return env;
+    }
 }

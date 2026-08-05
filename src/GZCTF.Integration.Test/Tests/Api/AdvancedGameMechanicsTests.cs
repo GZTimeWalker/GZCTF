@@ -660,7 +660,8 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
                 MinScoreRate = 0.5,
                 Difficulty = 2,
                 Game = gameObj,
-                GameId = gameObj.Id
+                GameId = gameObj.Id,
+                EnableTrafficCapture = true
             };
 
             await challengeRepository.CreateChallenge(gameObj, challenge);
@@ -720,10 +721,17 @@ public class AdvancedGameMechanicsTests(GZCTFApplicationFactory factory, ITestOu
         // 4. Wait for container to be ready
         await ContainerHelper.WaitUserContainerAsync(factory.Services, challengeId, participationId, output);
 
+        var envVars = await ContainerHelper.GetUserContainerEnvAsync(factory.Services, challengeId, participationId);
+        Assert.Equal(team.Id.ToString(), envVars["GZCTF_TEAM_ID"]);
+        Assert.Equal(user.Id.ToString(), envVars["GZCTF_USER_ID"]);
+        Assert.Equal(challengeId.ToString(), envVars["GZCTF_CHALLENGE_ID"]);
+        Assert.Equal(game.Id.ToString(), envVars["GZCTF_GAME_ID"]);
+
         // 5. Fetch the flag
-        var flag = await ContainerHelper.FetchFlag(entry);
+        var flag = await ContainerHelper.FetchFlag(entry, factory.Server);
         Assert.NotNull(flag);
         Assert.StartsWith("flag{", flag);
+        Assert.Equal(flag, envVars["GZCTF_FLAG"]);
 
         output.WriteLine($"✅ Retrieved flag: {flag}");
 

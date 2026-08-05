@@ -18,6 +18,11 @@ public class ContainerConfig
     public int ChallengeId { get; set; }
 
     /// <summary>
+    /// Game ID, null for exercise containers
+    /// </summary>
+    public int? GameId { get; set; }
+
+    /// <summary>
     /// User ID
     /// </summary>
     public Guid UserId { get; set; }

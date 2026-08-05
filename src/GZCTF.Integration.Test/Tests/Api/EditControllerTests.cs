@@ -38,7 +38,7 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Scoreboard Test Game");
         var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
             "Challenge 1", "flag{test1}", originalScore: 1000);
-        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
+        _ = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
             "Challenge 2", "flag{test2}", originalScore: 500);
 
         // Create user and team to generate submissions
@@ -517,6 +517,12 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         // Try to wait for admin test container if available
         await ContainerHelper.WaitAdminContainerAsync(factory.Services, challenge.Id, output);
 
+        var envVars = await ContainerHelper.GetAdminContainerEnvAsync(factory.Services, challenge.Id);
+        Assert.Equal("admin", envVars["GZCTF_TEAM_ID"]);
+        Assert.Equal(adminUser.Id.ToString(), envVars["GZCTF_USER_ID"]);
+        Assert.Equal(challenge.Id.ToString(), envVars["GZCTF_CHALLENGE_ID"]);
+        Assert.Equal(game.Id.ToString(), envVars["GZCTF_GAME_ID"]);
+
         try
         {
             var responseText = await createContainerResponse.Content.ReadAsStringAsync();
@@ -529,12 +535,13 @@ public class EditControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
 
             output.WriteLine($"✅ Container entry: {entry}");
 
-            var flag = await ContainerHelper.FetchFlag(entry);
+            var flag = await ContainerHelper.FetchFlag(entry, factory.Server, isNoInst: true);
 
             // Assert: Should have retrieved a flag
             Assert.NotNull(flag);
             Assert.NotEmpty(flag);
             Assert.Equal("flag{GZCTF_dynamic_flag_test}", flag);
+            Assert.Equal(flag, envVars["GZCTF_FLAG"]);
 
             // Output the retrieved flag for verification
             output.WriteLine($"✅ Successfully retrieved flag from container: {flag}");

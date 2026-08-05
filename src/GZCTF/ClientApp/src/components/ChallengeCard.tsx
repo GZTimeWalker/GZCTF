@@ -50,7 +50,6 @@ export const ChallengeCard: FC<ChallengeCardProps> = (props: ChallengeCardProps)
   return (
     <Card
       onClick={onClick}
-      radius="md"
       shadow="sm"
       className={cx(misc.hoverCard, classes.root)}
       data-faded={solved || isFaded || undefined}

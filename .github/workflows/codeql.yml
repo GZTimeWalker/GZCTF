@@ -20,6 +20,8 @@ jobs:
     defaults:
       run:
         working-directory: src/GZCTF
+    env:
+      SixLaborsLicenseKey: ${{ secrets.SIXLABORS_LICENSE }}
 
     strategy:
       fail-fast: false
@@ -28,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

@@ -2,14 +2,15 @@ name: Build & Publish Image
 
 on:
   push:
-    branches: ["develop", "ci/*", "v*"]
-    tags: ["v*"]
-    paths: ["src/**"]
+    branches: [ "develop", "ci/*", "v*" ]
+    tags: [ "v*" ]
+    paths: [ "src/**" ]
   workflow_dispatch:
 
 env:
   # latest tag is only created for `v*.*.*` or `v*.*.*-patch.*` tags
-  RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref, 'patch') || !contains(github.ref, '-')) }}
+  RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') && (contains(github.ref,
+    'patch') || !contains(github.ref, '-')) }}
 
 jobs:
   build:
@@ -20,9 +21,11 @@ jobs:
     defaults:
       run:
         working-directory: src/GZCTF
+    env:
+      SixLaborsLicenseKey: ${{ secrets.SIXLABORS_LICENSE }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-dotnet@v5
         with:
@@ -31,6 +34,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: latest
+
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: 11
 
       - name: Get current date time
         id: datetime
@@ -46,7 +54,6 @@ jobs:
 
       - name: Prebuild project
         run: |
-          npm i -g pnpm
           dotnet build "GZCTF.csproj" -c Release -o build
 
       - name: Publish project
@@ -104,7 +111,8 @@ jobs:
           context: ./src/GZCTF
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' || 'linux/amd64' }}
+          platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' ||
+            'linux/amd64' }}
           push: true
 
   prune:
@@ -120,8 +128,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           package: gzctf/gzctf
-          use-regex: true
-          exclude-tags: "^latest$|^develop$|v\\d+(\\.\\d+){0,2}|^work$"
+          exclude-tags: latest,develop,work,v*
           validate: true
           dry-run: false
           delete-untagged: true

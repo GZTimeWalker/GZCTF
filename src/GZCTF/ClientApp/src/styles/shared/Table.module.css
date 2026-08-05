@@ -33,6 +33,15 @@
 
   & tbody tr td {
     white-space: nowrap;
+
+    /*
+     * Mantine 9 adds `text-wrap: wrap` to the Text component, which overrides
+     * the inherited `white-space: nowrap` and lets cell content expand to
+     * multiple lines. Reset it so single-line cells stay single-line.
+     */
+    & :where(p) {
+      text-wrap: nowrap;
+    }
   }
 }
 
