@@ -3,6 +3,15 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.7-local] - 2026-08-05
+
+### 🔄 Local Merge
+
+- Merged official GZCTF v1.8.7 into local fork
+- Preserved local modifications: game entry animation, game transition effects, About page maintainers list, logo/footer adjustments
+- Upstream note: ImageSharp 4.0 requires a SixLabors license (see official docs)
+
+---
 ## [1.8.7](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.6..v1.8.7) - 2026-07-05
 
 ### ⛰️ Features
