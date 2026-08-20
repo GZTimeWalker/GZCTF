@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using GZCTF.Models.Data.Cyctf;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -41,6 +42,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+
+    // CYCTF Extensions
+    public DbSet<GameExtension> GameExtensions { get; set; } = null!;
+    public DbSet<DivisionExtension> DivisionExtensions { get; set; } = null!;
+    public DbSet<Registration> Registrations { get; set; } = null!;
+    public DbSet<Sponsor> Sponsors { get; set; } = null!;
+    public DbSet<Award> Awards { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -446,6 +454,72 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Property(e => e.Status)
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
+        });
+
+        // CYCTF Extensions Configuration
+        builder.Entity<GameExtension>(entity =>
+        {
+            entity.HasOne(e => e.Game)
+                .WithOne()
+                .HasForeignKey<GameExtension>(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.Sponsors)
+                .WithOne(e => e.GameExtension)
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(e => e.Awards)
+                .WithOne(e => e.GameExtension)
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<DivisionExtension>(entity =>
+        {
+            entity.HasOne(e => e.Division)
+                .WithOne()
+                .HasForeignKey<DivisionExtension>(e => e.DivisionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Registration>(entity =>
+        {
+            entity.HasOne(e => e.Game)
+                .WithMany()
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Team)
+                .WithMany()
+                .HasForeignKey(e => e.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Division)
+                .WithMany()
+                .HasForeignKey(e => e.DivisionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Reviewer)
+                .WithMany()
+                .HasForeignKey(e => e.ReviewedBy)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<Sponsor>(entity =>
+        {
+            entity.HasOne(e => e.GameExtension)
+                .WithMany(e => e.Sponsors)
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Award>(entity =>
+        {
+            entity.HasOne(e => e.GameExtension)
+                .WithMany(e => e.Awards)
+                .HasForeignKey(e => e.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

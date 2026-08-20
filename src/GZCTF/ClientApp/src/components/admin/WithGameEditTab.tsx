@@ -1,10 +1,14 @@
 import { Button, Group, GroupProps, LoadingOverlay, Stack, Tabs } from '@mantine/core'
 import {
   mdiAccountGroupOutline,
+  mdiAccountMultipleCheckOutline,
+  mdiTrophyOutline,
   mdiBullhornOutline,
+  mdiCogOutline,
   mdiFileDocumentCheckOutline,
   mdiFlagOutline,
   mdiKeyboardBackspace,
+  mdiOfficeBuilding,
   mdiTagOutline,
   mdiTextBoxOutline,
 } from '@mdi/js'
@@ -44,6 +48,11 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
     { icon: mdiTagOutline, title: t('admin.tab.games.divisions'), path: 'divisions' },
     { icon: mdiAccountGroupOutline, title: t('admin.tab.games.review'), path: 'review' },
     { icon: mdiFileDocumentCheckOutline, title: t('admin.tab.games.writeups'), path: 'writeups' },
+    { icon: mdiCogOutline, title: 'CYCTF 配置', path: 'cyctfextension' },
+    { icon: mdiAccountMultipleCheckOutline, title: '报名管理', path: 'cyctfregistrations' },
+    { icon: mdiOfficeBuilding, title: '赞助商', path: 'cyctfsponsors' },
+    { icon: mdiTrophyOutline, title: '奖项', path: 'cyctfawards' },
+    { icon: mdiTagOutline, title: '组别配置', path: 'cyctfdivisions' },
   ]
 
   const getTab = (path: string) => pages.find((page) => path.includes(page.path))

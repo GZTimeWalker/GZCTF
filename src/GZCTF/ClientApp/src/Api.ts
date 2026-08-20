@@ -2168,6 +2168,215 @@ export interface SignatureVerifyModel {
   publicKey: string;
 }
 
+/** 奖项响应 */
+export interface AwardResponse {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  gameId?: number;
+  name?: string;
+  description?: string | null;
+  primaryColor?: string | null;
+  secondaryColor?: string | null;
+  /** @format int32 */
+  sortOrder?: number;
+  /** @format uint64 */
+  createTime?: number;
+  /** @format uint64 */
+  updateTime?: number;
+}
+
+/** 创建/更新奖项请求 */
+export interface AwardRequest {
+  /** 奖项名称 */
+  name?: string;
+  /** 奖项描述 */
+  description?: string | null;
+  /** 主色调 */
+  primaryColor?: string | null;
+  /** 次色调 */
+  secondaryColor?: string | null;
+  /**
+   * 排序顺序
+   * @format int32
+   */
+  sortOrder?: number;
+}
+
+/** 组别扩展信息响应 */
+export interface DivisionExtensionResponse {
+  /** @format int32 */
+  divisionId?: number;
+  /** @format int32 */
+  minTeamSize?: number | null;
+  /** @format int32 */
+  maxTeamSize?: number | null;
+  registrationFields?: string | null;
+  /** @format uint64 */
+  createTime?: number;
+  /** @format uint64 */
+  updateTime?: number;
+}
+
+/** 创建/更新组别扩展信息请求 */
+export interface DivisionExtensionRequest {
+  /**
+   * 最小队伍人数
+   * @format int32
+   */
+  minTeamSize?: number | null;
+  /**
+   * 最大队伍人数
+   * @format int32
+   */
+  maxTeamSize?: number | null;
+  /** 报名自定义字段配置（JSON 字符串） */
+  registrationFields?: string | null;
+}
+
+/** 比赛扩展信息响应 */
+export interface GameExtensionResponse {
+  /** @format int32 */
+  gameId?: number;
+  /** @format uint64 */
+  registrationStartTime?: number;
+  /** @format uint64 */
+  registrationEndTime?: number;
+  /** @format int32 */
+  maxTeams?: number | null;
+  showRegistrationCount?: boolean;
+  showEventTime?: boolean;
+  /** @format int32 */
+  currentTeams?: number;
+  emailWhitelist?: string | null;
+  status?: string | null;
+  /** @format uint64 */
+  createTime?: number;
+  /** @format uint64 */
+  updateTime?: number;
+}
+
+/** 创建/更新比赛扩展信息请求 */
+export interface GameExtensionRequest {
+  /**
+   * 报名开始时间
+   * @format uint64
+   */
+  registrationStartTime?: number;
+  /**
+   * 报名结束时间
+   * @format uint64
+   */
+  registrationEndTime?: number;
+  /**
+   * 最大报名队伍数
+   * @format int32
+   */
+  maxTeams?: number | null;
+  /** 是否显示报名人数 */
+  showRegistrationCount?: boolean;
+  /** 是否显示比赛时间 */
+  showEventTime?: boolean;
+  /** 邮箱白名单（JSON 数组字符串） */
+  emailWhitelist?: string | null;
+  /** 比赛状态 */
+  status?: string | null;
+}
+
+/** 报名响应 */
+export interface RegistrationResponse {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  gameId?: number;
+  /** @format int32 */
+  teamId?: number;
+  teamName?: string | null;
+  /** @format int32 */
+  divisionId?: number;
+  divisionName?: string | null;
+  status?: string;
+  formData?: string | null;
+  reviewNote?: string | null;
+  reviewedBy?: string | null;
+  /** @format uint64 */
+  reviewedAt?: number | null;
+  /** @format uint64 */
+  createTime?: number;
+  /** @format uint64 */
+  updateTime?: number;
+}
+
+/** 报名请求 */
+export interface RegistrationRequest {
+  /**
+   * 比赛 ID
+   * @format int32
+   */
+  gameId?: number;
+  /**
+   * 队伍 ID
+   * @format int32
+   */
+  teamId?: number;
+  /**
+   * 组别 ID
+   * @format int32
+   */
+  divisionId?: number;
+  /** 报名表单数据（JSON 字符串） */
+  formData?: string | null;
+}
+
+/** 审核报名请求 */
+export interface RegistrationReviewRequest {
+  /** 审核状态（APPROVED, REJECTED） */
+  status?: string;
+  /** 审核备注 */
+  reviewNote?: string | null;
+}
+
+/** 赞助商响应 */
+export interface SponsorResponse {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  gameId?: number;
+  shortName?: string;
+  fullName?: string | null;
+  website?: string | null;
+  logoUrl?: string | null;
+  type?: string;
+  typeLabel?: string | null;
+  /** @format int32 */
+  sortOrder?: number;
+  /** @format uint64 */
+  createTime?: number;
+  /** @format uint64 */
+  updateTime?: number;
+}
+
+/** 创建/更新赞助商请求 */
+export interface SponsorRequest {
+  /** 赞助商简称 */
+  shortName?: string;
+  /** 赞助商全称 */
+  fullName?: string | null;
+  /** 赞助商网站 */
+  website?: string | null;
+  /** Logo URL 或文件路径 */
+  logoUrl?: string | null;
+  /** 赞助商类型 */
+  type?: string;
+  /** 类型标签 */
+  typeLabel?: string | null;
+  /**
+   * 排序顺序
+   * @format int32
+   */
+  sortOrder?: number;
+}
+
 import { apiLanguage } from "@Utils/I18n";
 import type {
   AxiosInstance,
@@ -6418,6 +6627,817 @@ export class Api<
         method: "POST",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+  };
+  award = {
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardCreateAward
+     * @summary 创建奖项
+     * @request POST:/api/cyctf/games/{gameId}/awards
+     */
+    awardCreateAward: (
+      gameId: number,
+      data: AwardRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<AwardResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/awards`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardDeleteAward
+     * @summary 删除奖项
+     * @request DELETE:/api/cyctf/games/{gameId}/awards/{id}
+     */
+    awardDeleteAward: (
+      gameId: number,
+      id: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RequestResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/awards/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardGetAward
+     * @summary 获取单个奖项
+     * @request GET:/api/cyctf/games/{gameId}/awards/{id}
+     */
+    awardGetAward: (gameId: number, id: number, params: RequestParams = {}) =>
+      this.request<AwardResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/awards/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardGetAward
+     * @summary 获取单个奖项
+     * @request GET:/api/cyctf/games/{gameId}/awards/{id}
+     */
+    useAwardGetAward: (
+      gameId: number,
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<AwardResponse, RequestResponse>(
+        doFetch ? `/api/cyctf/games/${gameId}/awards/${id}` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardGetAward
+     * @summary 获取单个奖项
+     * @request GET:/api/cyctf/games/{gameId}/awards/{id}
+     */
+    mutateAwardGetAward: (
+      gameId: number,
+      id: number,
+      data?: AwardResponse | Promise<AwardResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<AwardResponse>(
+        `/api/cyctf/games/${gameId}/awards/${id}`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardGetAwards
+     * @summary 获取比赛所有奖项
+     * @request GET:/api/cyctf/games/{gameId}/awards
+     */
+    awardGetAwards: (gameId: number, params: RequestParams = {}) =>
+      this.request<AwardResponse[], RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/awards`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardGetAwards
+     * @summary 获取比赛所有奖项
+     * @request GET:/api/cyctf/games/{gameId}/awards
+     */
+    useAwardGetAwards: (
+      gameId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<AwardResponse[], RequestResponse>(
+        doFetch ? `/api/cyctf/games/${gameId}/awards` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardGetAwards
+     * @summary 获取比赛所有奖项
+     * @request GET:/api/cyctf/games/{gameId}/awards
+     */
+    mutateAwardGetAwards: (
+      gameId: number,
+      data?: AwardResponse[] | Promise<AwardResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<AwardResponse[]>(
+        `/api/cyctf/games/${gameId}/awards`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Award
+     * @name AwardUpdateAward
+     * @summary 更新奖项
+     * @request PUT:/api/cyctf/games/{gameId}/awards/{id}
+     */
+    awardUpdateAward: (
+      gameId: number,
+      id: number,
+      data: AwardRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<AwardResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/awards/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  divisionExtension = {
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionCreateOrUpdateDivisionExtension
+     * @summary 创建或更新组别扩展信息
+     * @request PUT:/api/cyctf/divisions/{divisionId}/extension
+     */
+    divisionExtensionCreateOrUpdateDivisionExtension: (
+      divisionId: number,
+      data: DivisionExtensionRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<DivisionExtensionResponse, RequestResponse>({
+        path: `/api/cyctf/divisions/${divisionId}/extension`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionDeleteDivisionExtension
+     * @summary 删除组别扩展信息
+     * @request DELETE:/api/cyctf/divisions/{divisionId}/extension
+     */
+    divisionExtensionDeleteDivisionExtension: (
+      divisionId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RequestResponse, RequestResponse>({
+        path: `/api/cyctf/divisions/${divisionId}/extension`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionGetDivisionExtension
+     * @summary 获取组别扩展信息
+     * @request GET:/api/cyctf/divisions/{divisionId}/extension
+     */
+    divisionExtensionGetDivisionExtension: (
+      divisionId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<DivisionExtensionResponse, RequestResponse>({
+        path: `/api/cyctf/divisions/${divisionId}/extension`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionGetDivisionExtension
+     * @summary 获取组别扩展信息
+     * @request GET:/api/cyctf/divisions/{divisionId}/extension
+     */
+    useDivisionExtensionGetDivisionExtension: (
+      divisionId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<DivisionExtensionResponse, RequestResponse>(
+        doFetch ? `/api/cyctf/divisions/${divisionId}/extension` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionGetDivisionExtension
+     * @summary 获取组别扩展信息
+     * @request GET:/api/cyctf/divisions/{divisionId}/extension
+     */
+    mutateDivisionExtensionGetDivisionExtension: (
+      divisionId: number,
+      data?: DivisionExtensionResponse | Promise<DivisionExtensionResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<DivisionExtensionResponse>(
+        `/api/cyctf/divisions/${divisionId}/extension`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionGetDivisionExtensionsByGameId
+     * @summary 获取比赛下所有组别的扩展信息
+     * @request GET:/api/cyctf/games/{gameId}/division-extensions
+     */
+    divisionExtensionGetDivisionExtensionsByGameId: (
+      gameId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<DivisionExtensionResponse[], any>({
+        path: `/api/cyctf/games/${gameId}/division-extensions`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionGetDivisionExtensionsByGameId
+     * @summary 获取比赛下所有组别的扩展信息
+     * @request GET:/api/cyctf/games/{gameId}/division-extensions
+     */
+    useDivisionExtensionGetDivisionExtensionsByGameId: (
+      gameId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<DivisionExtensionResponse[], any>(
+        doFetch ? `/api/cyctf/games/${gameId}/division-extensions` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags DivisionExtension
+     * @name DivisionExtensionGetDivisionExtensionsByGameId
+     * @summary 获取比赛下所有组别的扩展信息
+     * @request GET:/api/cyctf/games/{gameId}/division-extensions
+     */
+    mutateDivisionExtensionGetDivisionExtensionsByGameId: (
+      gameId: number,
+      data?: DivisionExtensionResponse[] | Promise<DivisionExtensionResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<DivisionExtensionResponse[]>(
+        `/api/cyctf/games/${gameId}/division-extensions`,
+        data,
+        options,
+      ),
+  };
+  gameExtension = {
+    /**
+     * No description
+     *
+     * @tags GameExtension
+     * @name GameExtensionCreateOrUpdateGameExtension
+     * @summary 创建或更新比赛扩展信息
+     * @request PUT:/api/cyctf/games/{gameId}/extension
+     */
+    gameExtensionCreateOrUpdateGameExtension: (
+      gameId: number,
+      data: GameExtensionRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<GameExtensionResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/extension`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags GameExtension
+     * @name GameExtensionDeleteGameExtension
+     * @summary 删除比赛扩展信息
+     * @request DELETE:/api/cyctf/games/{gameId}/extension
+     */
+    gameExtensionDeleteGameExtension: (
+      gameId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RequestResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/extension`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags GameExtension
+     * @name GameExtensionGetGameExtension
+     * @summary 获取比赛扩展信息
+     * @request GET:/api/cyctf/games/{gameId}/extension
+     */
+    gameExtensionGetGameExtension: (
+      gameId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<GameExtensionResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/extension`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags GameExtension
+     * @name GameExtensionGetGameExtension
+     * @summary 获取比赛扩展信息
+     * @request GET:/api/cyctf/games/{gameId}/extension
+     */
+    useGameExtensionGetGameExtension: (
+      gameId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<GameExtensionResponse, RequestResponse>(
+        doFetch ? `/api/cyctf/games/${gameId}/extension` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags GameExtension
+     * @name GameExtensionGetGameExtension
+     * @summary 获取比赛扩展信息
+     * @request GET:/api/cyctf/games/{gameId}/extension
+     */
+    mutateGameExtensionGetGameExtension: (
+      gameId: number,
+      data?: GameExtensionResponse | Promise<GameExtensionResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<GameExtensionResponse>(
+        `/api/cyctf/games/${gameId}/extension`,
+        data,
+        options,
+      ),
+  };
+  registration = {
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetGameRegistrations
+     * @summary 获取比赛所有报名记录（管理员）
+     * @request GET:/api/cyctf/registrations/games/{gameId}
+     */
+    registrationGetGameRegistrations: (
+      gameId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RegistrationResponse[], RequestResponse>({
+        path: `/api/cyctf/registrations/games/${gameId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetGameRegistrations
+     * @summary 获取比赛所有报名记录（管理员）
+     * @request GET:/api/cyctf/registrations/games/{gameId}
+     */
+    useRegistrationGetGameRegistrations: (
+      gameId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<RegistrationResponse[], RequestResponse>(
+        doFetch ? `/api/cyctf/registrations/games/${gameId}` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetGameRegistrations
+     * @summary 获取比赛所有报名记录（管理员）
+     * @request GET:/api/cyctf/registrations/games/{gameId}
+     */
+    mutateRegistrationGetGameRegistrations: (
+      gameId: number,
+      data?: RegistrationResponse[] | Promise<RegistrationResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<RegistrationResponse[]>(
+        `/api/cyctf/registrations/games/${gameId}`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetRegistrationStats
+     * @summary 获取比赛报名统计（管理员）
+     * @request GET:/api/cyctf/registrations/games/{gameId}/stats
+     */
+    registrationGetRegistrationStats: (
+      gameId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<Record<string, number>, RequestResponse>({
+        path: `/api/cyctf/registrations/games/${gameId}/stats`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetRegistrationStats
+     * @summary 获取比赛报名统计（管理员）
+     * @request GET:/api/cyctf/registrations/games/{gameId}/stats
+     */
+    useRegistrationGetRegistrationStats: (
+      gameId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<Record<string, number>, RequestResponse>(
+        doFetch ? `/api/cyctf/registrations/games/${gameId}/stats` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetRegistrationStats
+     * @summary 获取比赛报名统计（管理员）
+     * @request GET:/api/cyctf/registrations/games/{gameId}/stats
+     */
+    mutateRegistrationGetRegistrationStats: (
+      gameId: number,
+      data?: Record<string, number> | Promise<Record<string, number>>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<Record<string, number>>(
+        `/api/cyctf/registrations/games/${gameId}/stats`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetTeamRegistration
+     * @summary 获取队伍的报名记录
+     * @request GET:/api/cyctf/registrations/games/{gameId}/teams/{teamId}
+     */
+    registrationGetTeamRegistration: (
+      gameId: number,
+      teamId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RegistrationResponse, RequestResponse>({
+        path: `/api/cyctf/registrations/games/${gameId}/teams/${teamId}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetTeamRegistration
+     * @summary 获取队伍的报名记录
+     * @request GET:/api/cyctf/registrations/games/{gameId}/teams/{teamId}
+     */
+    useRegistrationGetTeamRegistration: (
+      gameId: number,
+      teamId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<RegistrationResponse, RequestResponse>(
+        doFetch
+          ? `/api/cyctf/registrations/games/${gameId}/teams/${teamId}`
+          : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationGetTeamRegistration
+     * @summary 获取队伍的报名记录
+     * @request GET:/api/cyctf/registrations/games/{gameId}/teams/{teamId}
+     */
+    mutateRegistrationGetTeamRegistration: (
+      gameId: number,
+      teamId: number,
+      data?: RegistrationResponse | Promise<RegistrationResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<RegistrationResponse>(
+        `/api/cyctf/registrations/games/${gameId}/teams/${teamId}`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationRegisterTeam
+     * @summary 队伍报名比赛
+     * @request POST:/api/cyctf/registrations
+     */
+    registrationRegisterTeam: (
+      data: RegistrationRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<RegistrationResponse, RequestResponse>({
+        path: `/api/cyctf/registrations`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Registration
+     * @name RegistrationReviewRegistration
+     * @summary 审核报名（管理员）
+     * @request POST:/api/cyctf/registrations/{id}/review
+     */
+    registrationReviewRegistration: (
+      id: number,
+      data: RegistrationReviewRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<RegistrationResponse, RequestResponse>({
+        path: `/api/cyctf/registrations/${id}/review`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  sponsor = {
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorCreateSponsor
+     * @summary 创建赞助商
+     * @request POST:/api/cyctf/games/{gameId}/sponsors
+     */
+    sponsorCreateSponsor: (
+      gameId: number,
+      data: SponsorRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<SponsorResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/sponsors`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorDeleteSponsor
+     * @summary 删除赞助商
+     * @request DELETE:/api/cyctf/games/{gameId}/sponsors/{id}
+     */
+    sponsorDeleteSponsor: (
+      gameId: number,
+      id: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<RequestResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/sponsors/${id}`,
+        method: "DELETE",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorGetSponsor
+     * @summary 获取单个赞助商
+     * @request GET:/api/cyctf/games/{gameId}/sponsors/{id}
+     */
+    sponsorGetSponsor: (
+      gameId: number,
+      id: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<SponsorResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/sponsors/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorGetSponsor
+     * @summary 获取单个赞助商
+     * @request GET:/api/cyctf/games/{gameId}/sponsors/{id}
+     */
+    useSponsorGetSponsor: (
+      gameId: number,
+      id: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SponsorResponse, RequestResponse>(
+        doFetch ? `/api/cyctf/games/${gameId}/sponsors/${id}` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorGetSponsor
+     * @summary 获取单个赞助商
+     * @request GET:/api/cyctf/games/{gameId}/sponsors/{id}
+     */
+    mutateSponsorGetSponsor: (
+      gameId: number,
+      id: number,
+      data?: SponsorResponse | Promise<SponsorResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SponsorResponse>(
+        `/api/cyctf/games/${gameId}/sponsors/${id}`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorGetSponsors
+     * @summary 获取比赛所有赞助商
+     * @request GET:/api/cyctf/games/{gameId}/sponsors
+     */
+    sponsorGetSponsors: (gameId: number, params: RequestParams = {}) =>
+      this.request<SponsorResponse[], RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/sponsors`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorGetSponsors
+     * @summary 获取比赛所有赞助商
+     * @request GET:/api/cyctf/games/{gameId}/sponsors
+     */
+    useSponsorGetSponsors: (
+      gameId: number,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SponsorResponse[], RequestResponse>(
+        doFetch ? `/api/cyctf/games/${gameId}/sponsors` : null,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorGetSponsors
+     * @summary 获取比赛所有赞助商
+     * @request GET:/api/cyctf/games/{gameId}/sponsors
+     */
+    mutateSponsorGetSponsors: (
+      gameId: number,
+      data?: SponsorResponse[] | Promise<SponsorResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SponsorResponse[]>(
+        `/api/cyctf/games/${gameId}/sponsors`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Sponsor
+     * @name SponsorUpdateSponsor
+     * @summary 更新赞助商
+     * @request PUT:/api/cyctf/games/{gameId}/sponsors/{id}
+     */
+    sponsorUpdateSponsor: (
+      gameId: number,
+      id: number,
+      data: SponsorRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<SponsorResponse, RequestResponse>({
+        path: `/api/cyctf/games/${gameId}/sponsors/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
         ...params,
       }),
   };

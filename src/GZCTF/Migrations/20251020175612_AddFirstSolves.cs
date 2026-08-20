@@ -84,18 +84,39 @@ namespace GZCTF.Migrations
                 column: "SubmissionId",
                 unique: true);
 
-            migrationBuilder.Sql(@"WITH first_submissions AS (
-                SELECT DISTINCT ON (""ParticipationId"", ""ChallengeId"")
-                    ""ParticipationId"",
-                    ""ChallengeId"",
-                    ""Id"" AS ""SubmissionId""
-                FROM ""Submissions""
-                WHERE ""Status"" = 'Accepted'
-                ORDER BY ""ParticipationId"", ""ChallengeId"", ""SubmitTimeUtc"", ""Id""
-            )
-            INSERT INTO ""FirstSolves"" (""ParticipationId"", ""ChallengeId"", ""SubmissionId"")
-            SELECT ""ParticipationId"", ""ChallengeId"", ""SubmissionId""
-            FROM first_submissions;");
+            if (migrationBuilder.ActiveProvider != "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                // PostgreSQL: Use DISTINCT ON
+                migrationBuilder.Sql(@"WITH first_submissions AS (
+                    SELECT DISTINCT ON (""ParticipationId"", ""ChallengeId"")
+                        ""ParticipationId"",
+                        ""ChallengeId"",
+                        ""Id"" AS ""SubmissionId""
+                    FROM ""Submissions""
+                    WHERE ""Status"" = 'Accepted'
+                    ORDER BY ""ParticipationId"", ""ChallengeId"", ""SubmitTimeUtc"", ""Id""
+                )
+                INSERT INTO ""FirstSolves"" (""ParticipationId"", ""ChallengeId"", ""SubmissionId"")
+                SELECT ""ParticipationId"", ""ChallengeId"", ""SubmissionId""
+                FROM first_submissions;");
+            }
+            else
+            {
+                // SQLite: Use ROW_NUMBER() window function
+                migrationBuilder.Sql(@"
+                    INSERT INTO ""FirstSolves"" (""ParticipationId"", ""ChallengeId"", ""SubmissionId"")
+                    SELECT ""ParticipationId"", ""ChallengeId"", ""Id""
+                    FROM (
+                        SELECT ""ParticipationId"", ""ChallengeId"", ""Id"",
+                               ROW_NUMBER() OVER (
+                                   PARTITION BY ""ParticipationId"", ""ChallengeId""
+                                   ORDER BY ""SubmitTimeUtc"", ""Id""
+                               ) AS rn
+                        FROM ""Submissions""
+                        WHERE ""Status"" = 'Accepted'
+                    )
+                    WHERE rn = 1;");
+            }
         }
 
         /// <inheritdoc />

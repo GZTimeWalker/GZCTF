@@ -10,6 +10,7 @@
     "noEmit": true,
     "paths": {
       "@Api": ["./src/Api.ts"],
+      "@CyctfApi": ["./src/CyctfApi.ts"],
       "@App": ["./src/App"],
       "@Components/*": ["./src/components/*"],
       "@Hooks/*": ["./src/hooks/*"],

@@ -1,6 +1,6 @@
 import { Card, LoadingOverlay, Stack, Text, Title } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
-import { mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
+import { mdiAccountMultiplePlus, mdiTrophyOutline, mdiChartLine, mdiExclamationThick, mdiFlagOutline, mdiMonitorEye } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -80,6 +80,22 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
       requireRole: Role.User,
     },
     {
+      icon: mdiAccountMultiplePlus,
+      title: '报名',
+      path: 'registration',
+      link: 'registration',
+      requireJoin: false,
+      requireRole: Role.User,
+    },
+    {
+      icon: mdiTrophyOutline,
+      title: '赞助商 & 奖项',
+      path: 'sponsorsandawards',
+      link: 'sponsorsandawards',
+      requireJoin: false,
+      requireRole: Role.User,
+    },
+    {
       icon: mdiMonitorEye,
       title: t('game.tab.monitor.index'),
       path: 'monitor',
@@ -133,6 +149,11 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
 
       if (location.pathname.includes('scoreboard')) {
         // allow access to scoreboard
+        return
+      }
+
+      if (location.pathname.includes('registration') || location.pathname.includes('sponsorsandawards')) {
+        // allow access to registration and sponsors/awards pages
         return
       }
 

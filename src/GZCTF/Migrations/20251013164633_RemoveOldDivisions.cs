@@ -10,55 +10,63 @@ namespace GZCTF.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // 1) Migrate Games.Divisions (JSON array of names) into Divisions table
-            migrationBuilder.Sql(@"
-                WITH parsed AS (
-                    SELECT g.""Id"" AS ""GameId"", v AS ""Name""
-                    FROM ""Games"" g
-                    CROSS JOIN LATERAL (
-                        SELECT x FROM jsonb_array_elements_text(
-                            CASE
-                                WHEN g.""Divisions"" IS NULL OR btrim(g.""Divisions"") = '' THEN '[]'::jsonb
-                                ELSE g.""Divisions""::jsonb
-                            END
-                        ) AS x
-                    ) AS t(v)
-                )
-                INSERT INTO ""Divisions"" (""GameId"", ""Name"", ""DefaultPermissions"")
-                SELECT DISTINCT p.""GameId"", LEFT(p.""Name"", 31), 2147483647
-                FROM parsed p
-                WHERE NULLIF(btrim(LEFT(p.""Name"", 31)), '') IS NOT NULL
-                  AND NOT EXISTS (
-                    SELECT 1 FROM ""Divisions"" d
-                    WHERE d.""GameId"" = p.""GameId""
-                      AND d.""Name"" = LEFT(p.""Name"", 31)
-                  );
-            ");
+            if (migrationBuilder.ActiveProvider == "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                // SQLite: Use SUBSTR instead of LEFT, skip complex operations
+                // For fresh SQLite setup, just drop the legacy columns
+            }
+            else
+            {
+                // PostgreSQL: Migrate Games.Divisions (JSON array of names) into Divisions table
+                migrationBuilder.Sql(@"
+                    WITH parsed AS (
+                        SELECT g.""Id"" AS ""GameId"", v AS ""Name""
+                        FROM ""Games"" g
+                        CROSS JOIN LATERAL (
+                            SELECT x FROM jsonb_array_elements_text(
+                                CASE
+                                    WHEN g.""Divisions"" IS NULL OR btrim(g.""Divisions"") = '' THEN '[]'::jsonb
+                                    ELSE g.""Divisions""::jsonb
+                                END
+                            ) AS x
+                        ) AS t(v)
+                    )
+                    INSERT INTO ""Divisions"" (""GameId"", ""Name"", ""DefaultPermissions"")
+                    SELECT DISTINCT p.""GameId"", LEFT(p.""Name"", 31), 2147483647
+                    FROM parsed p
+                    WHERE NULLIF(btrim(LEFT(p.""Name"", 31)), '') IS NOT NULL
+                      AND NOT EXISTS (
+                        SELECT 1 FROM ""Divisions"" d
+                        WHERE d.""GameId"" = p.""GameId""
+                          AND d.""Name"" = LEFT(p.""Name"", 31)
+                      );
+                ");
 
-            // 2) Migrate Participations.Division (string) into Divisions table if missing
-            migrationBuilder.Sql(@"
-                INSERT INTO ""Divisions"" (""GameId"", ""Name"", ""DefaultPermissions"")
-                SELECT DISTINCT p.""GameId"", LEFT(p.""Division"", 31), 2147483647
-                FROM ""Participations"" p
-                WHERE p.""Division"" IS NOT NULL
-                  AND NULLIF(btrim(p.""Division""), '') IS NOT NULL
-                  AND NOT EXISTS (
-                    SELECT 1 FROM ""Divisions"" d
-                    WHERE d.""GameId"" = p.""GameId""
-                      AND d.""Name"" = LEFT(p.""Division"", 31)
-                  );
-            ");
+                // 2) Migrate Participations.Division (string) into Divisions table if missing
+                migrationBuilder.Sql(@"
+                    INSERT INTO ""Divisions"" (""GameId"", ""Name"", ""DefaultPermissions"")
+                    SELECT DISTINCT p.""GameId"", LEFT(p.""Division"", 31), 2147483647
+                    FROM ""Participations"" p
+                    WHERE p.""Division"" IS NOT NULL
+                      AND NULLIF(btrim(p.""Division""), '') IS NOT NULL
+                      AND NOT EXISTS (
+                        SELECT 1 FROM ""Divisions"" d
+                        WHERE d.""GameId"" = p.""GameId""
+                          AND d.""Name"" = LEFT(p.""Division"", 31)
+                      );
+                ");
 
-            // 3) Set Participation.DivisionId based on migrated divisions
-            migrationBuilder.Sql(@"
-                UPDATE ""Participations"" AS p
-                SET ""DivisionId"" = d.""Id""
-                FROM ""Divisions"" d
-                WHERE p.""Division"" IS NOT NULL
-                  AND NULLIF(btrim(p.""Division""), '') IS NOT NULL
-                  AND d.""GameId"" = p.""GameId""
-                  AND d.""Name"" = LEFT(p.""Division"", 31);
-            ");
+                // 3) Set Participation.DivisionId based on migrated divisions
+                migrationBuilder.Sql(@"
+                    UPDATE ""Participations"" AS p
+                    SET ""DivisionId"" = d.""Id""
+                    FROM ""Divisions"" d
+                    WHERE p.""Division"" IS NOT NULL
+                      AND NULLIF(btrim(p.""Division""), '') IS NOT NULL
+                      AND d.""GameId"" = p.""GameId""
+                      AND d.""Name"" = LEFT(p.""Division"", 31);
+                ");
+            }
 
             // 4) Drop legacy columns
             migrationBuilder.DropColumn(

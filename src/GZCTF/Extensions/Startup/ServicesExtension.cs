@@ -82,6 +82,13 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IExerciseChallengeRepository, ExerciseChallengeRepository>();
             builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
 
+            // CYCTF Extension Repositories
+            builder.Services.AddScoped<IGameExtensionRepository, GameExtensionRepository>();
+            builder.Services.AddScoped<IDivisionExtensionRepository, DivisionExtensionRepository>();
+            builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
+            builder.Services.AddScoped<IAwardRepository, AwardRepository>();
+            builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
+
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();
             builder.Services.AddScoped<GameImportService>();

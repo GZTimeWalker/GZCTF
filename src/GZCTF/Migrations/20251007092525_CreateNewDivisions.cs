@@ -12,6 +12,12 @@ namespace GZCTF.Migrations
     {
         private void AlterTextToIPAddress(MigrationBuilder migrationBuilder, string table, string column, bool nullable)
         {
+            if (migrationBuilder.ActiveProvider == "Microsoft.EntityFrameworkCore.Sqlite")
+            {
+                // SQLite: just recreate the column as text (SQLite doesn't have inet type)
+                return;
+            }
+
             var tempColumn = $"Temp{column}";
 
             // make a temp column (must be nullable to avoid failure on existing rows)

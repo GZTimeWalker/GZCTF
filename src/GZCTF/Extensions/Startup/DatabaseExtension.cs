@@ -13,10 +13,20 @@ internal static class DatabaseExtension
                 ExitWithFatalMessage(
                     StaticLocalizer[nameof(Resources.Program.Database_NoConnectionString)]);
 
+            var dbProvider = builder.Configuration.GetValue<string>("DbProvider") ?? "PostgreSQL";
+
             builder.Services.AddDbContext<AppDbContext>(options =>
                 {
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
-                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                    if (dbProvider.Equals("Sqlite", StringComparison.OrdinalIgnoreCase))
+                    {
+                        options.UseSqlite(builder.Configuration.GetConnectionString("Database"),
+                            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                    }
+                    else
+                    {
+                        options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
+                            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                    }
 
                     if (!builder.Environment.IsDevelopment())
                         return;
@@ -30,7 +40,14 @@ internal static class DatabaseExtension
             {
                 builder.Configuration.AddEntityConfiguration(options =>
                 {
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+                    if (dbProvider.Equals("Sqlite", StringComparison.OrdinalIgnoreCase))
+                    {
+                        options.UseSqlite(builder.Configuration.GetConnectionString("Database"));
+                    }
+                    else
+                    {
+                        options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+                    }
                 });
             }
             catch (Exception e)
