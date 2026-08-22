@@ -14,6 +14,8 @@ namespace GZCTF.Middlewares;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) : Attribute, IAsyncAuthorizationFilter
 {
+    internal record BasicUserInfo(Guid Id, Role Role, string? UserName, DateTimeOffset? LastVisitedUtc);
+
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         var logger =
@@ -30,11 +32,12 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
 
         var id = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        UserInfo? user = null;
+        BasicUserInfo? user = null;
 
         if (id is not null && context.HttpContext.User.Identity?.IsAuthenticated is true &&
             Guid.TryParse(id, out var guid))
-            user = await dbContext.Users.SingleOrDefaultAsync(u => u.Id == guid);
+            user = await dbContext.Users.AsNoTracking().Where(u => u.Id == guid).Select(u =>
+                new BasicUserInfo(u.Id, u.Role, u.UserName, u.LastVisitedUtc)).FirstOrDefaultAsync();
 
         if (user is null)
         {
@@ -46,23 +49,29 @@ public class RequirePrivilegeAttribute(Role privilege, bool allowToken = false) 
         diagnosticContext.Set("UserId", user.Id);
         diagnosticContext.Set("UserName", user.UserName ?? "Anonymous");
 
-        if (context.HttpContext.Connection.RemoteIpAddress is { } ip)
-            diagnosticContext.Set("IP", ip);
-
-        if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
+        var remoteIpAddress = context.HttpContext.Connection.RemoteIpAddress;
+        if (remoteIpAddress != null)
         {
-            user.UpdateByHttpContext(context.HttpContext);
-            await dbContext.SaveChangesAsync(); // avoid to update ConcurrencyStamp
+            diagnosticContext.Set("IP", remoteIpAddress);
+            if (DateTimeOffset.UtcNow - user.LastVisitedUtc > TimeSpan.FromSeconds(5))
+            {
+                await dbContext.Users.Where(u => u.Id == user.Id)
+                    .ExecuteUpdateAsync(s =>
+                    {
+                        s.SetProperty(u => u.LastVisitedUtc, _ => DateTimeOffset.UtcNow);
+                        s.SetProperty(u => u.IP, _ => remoteIpAddress);
+                    });
+                await dbContext.SaveChangesAsync();
+            }
         }
 
         if (user.Role >= privilege)
             return;
 
         if (privilege > Role.User)
-            logger.Log(
-                StaticLocalizer[nameof(Resources.Program.Auth_PathAccessForbidden),
-                    context.HttpContext.Request.Path], user,
-                TaskStatus.Denied);
+            logger.Log(StaticLocalizer[
+                    nameof(Resources.Program.Auth_PathAccessForbidden), context.HttpContext.Request.Path],
+                user.UserName ?? "Anonymous", remoteIpAddress, TaskStatus.Denied);
 
         context.Result = RequestResponse.Result(localizer[nameof(Resources.Program.Auth_AccessForbidden)],
             StatusCodes.Status403Forbidden);

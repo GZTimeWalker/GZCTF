@@ -16,6 +16,7 @@ global using GZCTF.Models.Data;
 global using GZCTF.Utils;
 global using static GZCTF.Server;
 global using AppDbContext = GZCTF.Models.AppDbContext;
+global using MetadataStore = System.Collections.Generic.SortedDictionary<string, System.Text.Json.JsonDocument?>;
 global using TaskStatus = GZCTF.Utils.TaskStatus;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;

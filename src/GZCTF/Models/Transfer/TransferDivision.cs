@@ -12,7 +12,7 @@ public class TransferDivision
     /// </summary>
     [Required(ErrorMessage = "Division name is required")]
     [MinLength(1, ErrorMessage = "Division name cannot be empty")]
-    [MaxLength(Limits.MaxDivisionNameLength, ErrorMessage = "Division name is too long")]
+    [MaxLength(Limits.MaxShortIdLength, ErrorMessage = "Division name is too long")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>

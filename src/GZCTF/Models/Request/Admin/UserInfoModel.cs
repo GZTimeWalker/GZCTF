@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -16,16 +17,6 @@ public class UserInfoModel
     /// Username
     /// </summary>
     public string? UserName { get; set; }
-
-    /// <summary>
-    /// Real name
-    /// </summary>
-    public string? RealName { get; set; }
-
-    /// <summary>
-    /// Student number
-    /// </summary>
-    public string? StdNumber { get; set; }
 
     /// <summary>
     /// Contact phone number
@@ -72,6 +63,12 @@ public class UserInfoModel
     /// </summary>
     public bool? EmailConfirmed { get; set; }
 
+    /// <summary>
+    /// User metadata (custom fields)
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public MetadataStore? Metadata { get; set; }
+
     internal static UserInfoModel FromUserInfo(UserInfo user) =>
         new()
         {
@@ -82,9 +79,8 @@ public class UserInfoModel
             Email = user.Email,
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
-            RealName = user.RealName,
             UserName = user.UserName,
-            StdNumber = user.StdNumber,
+            Metadata = user.Metadata,
             LastVisitedUtc = user.LastVisitedUtc,
             RegisterTimeUtc = user.RegisterTimeUtc,
             EmailConfirmed = user.EmailConfirmed

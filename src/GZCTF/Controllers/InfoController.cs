@@ -24,6 +24,7 @@ public class InfoController(
     IDistributedCache cache,
     ICaptchaService captcha,
     IPostRepository postRepository,
+    IUserMetadataFieldRepository metadataRepository,
     IServiceProvider serviceProvider,
     ILogger<InfoController> logger,
     IOptionsSnapshot<CaptchaConfig> captchaConfig,
@@ -48,7 +49,7 @@ public class InfoController(
     public async Task<IActionResult> GetLatestPosts(CancellationToken token)
     {
         var posts = await postRepository.GetPosts(token);
-        (var data, var lastModified) = posts;
+        var (data, lastModified) = posts;
         var eTag = $"\"latest-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -69,7 +70,7 @@ public class InfoController(
     public async Task<IActionResult> GetPosts(CancellationToken token)
     {
         var posts = await postRepository.GetPosts(token);
-        (var data, var lastModified) = posts;
+        var (data, lastModified) = posts;
         var eTag = $"\"all-{lastModified.ToUnixTimeSeconds():X}\"";
         if (ContextHelper.IsNotModified(Request, Response, eTag, lastModified))
             return StatusCode(StatusCodes.Status304NotModified);
@@ -184,5 +185,18 @@ public class InfoController(
             Challenge = Convert.ToHexStringLower(challenge),
             Difficulty = captchaConfig.Value.HashPow.Difficulty
         });
+    }
+
+    /// <summary>
+    /// Get user metadata fields
+    /// </summary>
+    /// <param name="token"></param>
+    /// <response code="200">Successfully retrieved metadata fields</response>
+    [HttpGet("Metadata")]
+    [ProducesResponseType(typeof(UserMetadataField[]), StatusCodes.Status200OK)]
+    public async Task<IEnumerable<UserMetadataField>> GetMetadataFields(CancellationToken token)
+    {
+        var metadataFields = await metadataRepository.GetAllAsync(token);
+        return metadataFields.Values;
     }
 }

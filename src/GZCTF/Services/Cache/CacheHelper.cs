@@ -207,6 +207,11 @@ public static class CacheKey
     public const string GameList = "_GameList";
 
     /// <summary>
+    /// User metadata fields
+    /// </summary>
+    public const string UserMetadataFields = "_UserMetadataFields";
+
+    /// <summary>
     /// Posts
     /// </summary>
     public const string Posts = "_Posts";
