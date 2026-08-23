@@ -79,7 +79,7 @@ public class CodecTests
     public void LeetEntropy_CalculatesCorrectly(string flag, bool expectedZero, bool expectedPositive)
     {
         // Act
-        var entropy = new GZCTF.Utils.DynamicFlagGenerator(flag).CalculateEntropy();
+        var entropy = new DynamicFlagGenerator(flag).CalculateEntropy();
 
         // Assert
         if (expectedZero)

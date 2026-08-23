@@ -365,9 +365,6 @@
   <data name="ContainerManager_ServiceCreationFailedStatus" xml:space="preserve">
     <value>The service {0} failed to create, status: {1}</value>
   </data>
-  <data name="ContainerManager_SwarmMode" xml:space="preserve">
-    <value>Container mode：Docker Swarm Cluster Container Control</value>
-  </data>
   <data name="ContainerManager_UnresolvedImageName" xml:space="preserve">
     <value>Could not parse image name '{0}'</value>
   </data>
@@ -382,6 +379,15 @@
   </data>
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s initialization failed, please check if the configuration is correct ({0})</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>Third-party container provider base URL is not configured.</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>Third-party container provider initialized ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>Container management mode: Third-party container control</value>
   </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>Game #{0} is about to start, adding scoreboard cache to the cache queue</value>

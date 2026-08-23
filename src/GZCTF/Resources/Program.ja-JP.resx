@@ -383,6 +383,15 @@
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s の初期化に失敗しました、構成が正しいかどうかを確認してください ({0})</value>
   </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>サードパーティコンテナ provider の base URL が設定されていません</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>サードパーティコンテナ provider が正常に初期化されました ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>コンテナ管理モード: サードパーティコンテナ制御</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>ゲーム #{0} が間もなく開始されます、ランキング キャッシュがキャッシュ キューに追加されました</value>
   </data>

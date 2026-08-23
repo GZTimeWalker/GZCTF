@@ -383,6 +383,15 @@
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>Inisialisasi K8s gagal, silakan periksa apakah konfigurasi sudah benar ({0})</value>
   </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>URL dasar penyedia container pihak ketiga belum dikonfigurasi</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>Inisialisasi penyedia container pihak ketiga berhasil ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>Mode manajemen container: Kontrol container pihak ketiga</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>Permainan #{0} akan segera dimulai, menambahkan cache papan skor ke antrean cache</value>
   </data>

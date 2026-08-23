@@ -400,7 +400,8 @@ public class EmailConfig
 public enum ContainerProviderType
 {
     Docker,
-    Kubernetes
+    Kubernetes,
+    ThirdParty
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<ContainerPortMappingType>))]
@@ -421,6 +422,7 @@ public class ContainerProvider
     public string PublicEntry { get; set; } = string.Empty;
     public KubernetesConfig? KubernetesConfig { get; set; }
     public DockerConfig? DockerConfig { get; set; }
+    public ThirdPartyConfig? ThirdPartyConfig { get; set; }
 }
 
 public class DockerConfig
@@ -437,6 +439,21 @@ public class KubernetesConfig
     public string KubeConfig { get; set; } = "kube-config.yaml";
     public string[]? AllowCidr { get; set; }
     public string[]? Dns { get; set; }
+}
+
+public class ThirdPartyConfig
+{
+    public string BaseUrl { get; set; } = string.Empty;
+    public string? ApiToken { get; set; }
+    public ThirdPartyApiVersion ApiVersion { get; set; } = ThirdPartyApiVersion.V1;
+    public int Timeout { get; set; } = 30;
+    public bool VerifyTls { get; set; } = true;
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter<ThirdPartyApiVersion>))]
+public enum ThirdPartyApiVersion
+{
+    V1
 }
 
 public class RegistrySet<T> : Dictionary<string, T>

@@ -392,6 +392,15 @@
       ({0})
     </value>
   </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>Basis-URL des Drittanbieter-Container-Providers ist nicht konfiguriert</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>Drittanbieter-Container-Provider erfolgreich initialisiert ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>Container-Verwaltungsmodus: Drittanbieter-Container-Steuerung</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>
       Spiel #{0} steht kurz vor dem Start, fügt die Punktetafel-Cache zur Cache-Warteschlange hinzu

@@ -383,6 +383,15 @@
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>Ошибка инициализации K8s, проверьте правильность конфигурации ({0})</value>
   </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>Базовый URL стороннего провайдера контейнеров не настроен</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>Успешная инициализация стороннего провайдера контейнеров ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>Режим управления контейнерами: Управление сторонними контейнерами</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>Игра #{0} скоро начнётся, добавление кэша рейтинговой таблицы в очередь кэша</value>
   </data>
