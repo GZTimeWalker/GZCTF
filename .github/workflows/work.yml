@@ -35,7 +35,7 @@ jobs:
       - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
-          version: 11
+          version: latest
 
       - name: Restore dependencies
         run: dotnet restore
@@ -51,7 +51,6 @@ jobs:
 
       - name: Prebuild project
         run: |
-          npm i -g pnpm
           dotnet build "GZCTF.csproj" -c Release -o build
 
       - name: Publish project

@@ -46,6 +46,7 @@ export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
           <Document
             file={url}
             className={classes.doc}
+            suspense={false}
             onLoadSuccess={({ numPages }) => {
               setNumPages(numPages)
             }}
