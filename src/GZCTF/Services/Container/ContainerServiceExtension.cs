@@ -2,6 +2,7 @@
 using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
+using GZCTF.Services.Container.ThirdParty;
 using k8s;
 
 namespace GZCTF.Services.Container;
@@ -44,6 +45,8 @@ public static class ContainerServiceExtension
                     .AddSingleton<IContainerProvider<DockerClient, DockerMetadata>, DockerProvider>(),
                 ContainerProviderType.Kubernetes => services
                     .AddSingleton<IContainerProvider<Kubernetes, KubernetesMetadata>, KubernetesProvider>(),
+                ContainerProviderType.ThirdParty => services
+                    .AddSingleton<IContainerProvider<IThirdPartyClient, ThirdPartyMetadata>, ThirdPartyProvider>(),
                 _ => services
             };
 
@@ -51,6 +54,7 @@ public static class ContainerServiceExtension
             => config.Type switch
             {
                 ContainerProviderType.Kubernetes => services.AddSingleton<IContainerManager, KubernetesManager>(),
+                ContainerProviderType.ThirdParty => services.AddSingleton<IContainerManager, ThirdPartyManager>(),
                 _ => services.AddSingleton<IContainerManager, DockerManager>()
             };
     }

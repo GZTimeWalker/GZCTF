@@ -383,6 +383,15 @@
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>K8s 초기화 실패. 설정이 올바른지 확인하십시오. ({0})</value>
   </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>타사 컨테이너 provider base URL이 구성되지 않았습니다</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>타사 컨테이너 provider 초기화 성공 ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>컨테이너 관리 모드: 타사 컨테이너 제어</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>#{0} 시작됨. 캐시 큐에 스코어보드 캐시를 추가합니다.</value>
   </data>

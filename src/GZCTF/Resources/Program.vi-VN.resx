@@ -383,6 +383,15 @@
   <data name="ContainerProvider_KubernetesInitFailed" xml:space="preserve">
     <value>Kubernetes không thể khởi tạo, vui lòng kiểm tra cấu hình ({0}).</value>
   </data>
+  <data name="ContainerProvider_ThirdPartyBaseUrlNotConfigured" xml:space="preserve">
+    <value>URL cơ sở của nhà cung cấp container bên thứ ba chưa được cấu hình</value>
+  </data>
+  <data name="ContainerProvider_ThirdPartyInited" xml:space="preserve">
+    <value>Nhà cung cấp container bên thứ ba đã khởi tạo thành công ({0})</value>
+  </data>
+  <data name="ContainerManager_ThirdPartyMode" xml:space="preserve">
+    <value>Chế độ quản lý container: Điều khiển container bên thứ ba</value>
+  </data>
   <data name="CronJob_BootstrapRankingCache" xml:space="preserve">
     <value>Trò chơi #{0} sắp bắt đầu, thêm cache bảng xếp hạng vào hàng chờ.</value>
   </data>
