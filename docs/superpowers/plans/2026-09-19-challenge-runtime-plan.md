@@ -14,7 +14,7 @@
 
 | File | Responsibility |
 |---|---|
-| `src/GZCTF/Features/ChallengeRuntime/Domain/ChallengeRuntimeModels.cs` | User instance, submission, progress, help usage, and solve mode. |
+| `src/GZCTF/Features/ChallengeRuntime/Domain/ChallengeRuntimeModels.cs` | User instance, submission, help usage, and solve mode; global progress comes from the Foundation schema. |
 | `src/GZCTF/Features/ChallengeRuntime/Application/ChallengeRuntimeService.cs` | Open, start, extend, stop, and inspect a learner instance. |
 | `src/GZCTF/Features/ChallengeRuntime/Application/ChallengeSubmissionService.cs` | Validate flags and create first completion atomically. |
 | `src/GZCTF/Features/ChallengeRuntime/Application/DynamicAttachmentAllocator.cs` | Transactional attachment claim and release. |
@@ -48,9 +48,9 @@
 
 ## Task 2: Add runtime persistence with explicit invariants
 
-- [ ] Add `UserChallengeInstance`, `ChallengeSubmission`, `ChallengeProgress`, and `ChallengeHelpUsage` in `ChallengeRuntimeModels.cs`.
+- [ ] Add `UserChallengeInstance`, `ChallengeSubmission`, and `ChallengeHelpUsage` in `ChallengeRuntimeModels.cs`. Reuse the Foundation `ChallengeProgress` entity rather than defining a second completion model.
 - [ ] Use a status enum for instance lifecycle and solve mode values `Independent`, `AfterHint`, and `AfterWriteup`.
-- [ ] Add unique indexes for active `(UserId, ChallengeId)` instances and `(UserId, ChallengeId)` progress. Store accepted and rejected submissions, but never include the expected flag value.
+- [ ] Add a unique index for active `(UserId, ChallengeId)` instances and verify the existing unique `(UserId, ChallengeId)` progress index. Store accepted and rejected submissions, but never include the expected flag value.
 - [ ] Store one help row per hint view and a single first WP view timestamp. Add indexes supporting user history and challenge analytics.
 - [ ] Add runtime DbSets and explicit relationships to `AppDbContext`.
 - [ ] Generate `20260919000200_AddChallengeRuntime.cs` and its designer file with `dotnet ef migrations add AddChallengeRuntime`, then normalize the timestamp and identifier.

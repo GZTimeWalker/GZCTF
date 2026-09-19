@@ -17,6 +17,7 @@
 | `src/GZCTF/Extensions/Startup/DatabaseExtension.cs` | Redact database connection diagnostics. |
 | `src/GZCTF/Features/Shared/ApiError.cs` | Stable error envelope and error codes. |
 | `src/GZCTF/Features/ChallengeLibrary/Domain/ChallengeModels.cs` | Canonical challenge, localization, flags, hints, and WP records. |
+| `src/GZCTF/Features/LearningProgress/Domain/ChallengeProgress.cs` | Global first solve identity and solve attribution. |
 | `src/GZCTF/Features/LearningPaths/Domain/LearningPathModels.cs` | Path, revision, module, item, lesson, enrollment, and lesson progress records. |
 | `src/GZCTF/Features/Dashboard/Domain/DashboardModels.cs` | Cohort, dashboard, token, and daily read model records. |
 | `src/GZCTF/Features/Imports/Domain/ImportModels.cs` | Batch and legacy source mappings. |
@@ -42,6 +43,8 @@
 | `src/GZCTF.Integration.Test/Tests/Learning/LearningPathPublishingTests.cs` | Publication, immutability, and preview access tests. |
 
 ## Task 1: Establish a repeatable backend baseline and redact secrets
+
+Detailed execution packet: `docs/superpowers/plans/2026-09-19-step-01-baseline-and-security-development.md`.
 
 - [ ] Add a failing unit test in `src/GZCTF.Test/UnitTests/Features/Shared/ApiErrorTests.cs` that serializes `ApiError` and asserts the fields are exactly `code`, `message`, `traceId`, and optional `errors`.
 - [ ] Add `src/GZCTF/Features/Shared/ApiError.cs` with an immutable response record and a small factory for validation and conflict responses.
@@ -75,6 +78,7 @@
   - Each path has at most one draft revision and one current published revision.
   - A user has at most one current enrollment.
 - [ ] Implement canonical challenge records in `src/GZCTF/Features/ChallengeLibrary/Domain/ChallengeModels.cs`. Use explicit enums for publication state, difficulty, and the existing four challenge types. Keep flag material in `ChallengeFlag`, separate from public challenge fields.
+- [ ] Implement `ChallengeProgress` in `src/GZCTF/Features/LearningProgress/Domain/ChallengeProgress.cs`; its `(UserId, ChallengeId)` uniqueness is established in the foundation migration so route record projections can be built before the runtime starts writing solves.
 - [ ] Implement path and lesson records in `src/GZCTF/Features/LearningPaths/Domain/LearningPathModels.cs`. Model `ModuleItem` with nullable `LessonId` and `ChallengeId` plus a database check constraint enforcing exclusive ownership.
 - [ ] Add `SourceType`, `SourceId`, `SourceName`, and JSON metadata fields to `Challenge` for audit without making legacy identifiers the primary key.
 - [ ] Add `RowVersion` concurrency columns to `LearningPath` and `LearningPathRevision`.
