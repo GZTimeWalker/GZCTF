@@ -17,7 +17,7 @@ public sealed class EditPostsController(
     IPostRepository posts) : ControllerBase
 {
     [HttpPost("Posts")]
-    public async Task<IActionResult> Create([FromBody] PostEditModel model, CancellationToken token)
+    public async Task<ActionResult<string>> Create([FromBody] PostEditModel model, CancellationToken token)
     {
         var user = await users.GetUserAsync(User);
         if (user is null) return Unauthorized();
@@ -26,7 +26,7 @@ public sealed class EditPostsController(
     }
 
     [HttpPut("Posts/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] PostEditModel model, CancellationToken token)
+    public async Task<ActionResult<PostDetailModel>> Update(string id, [FromBody] PostEditModel model, CancellationToken token)
     {
         var post = await posts.GetPostById(id, token);
         if (post is null) return NotFound();
@@ -37,7 +37,7 @@ public sealed class EditPostsController(
     }
 
     [HttpDelete("Posts/{id}")]
-    public async Task<IActionResult> Delete(string id, CancellationToken token)
+    public async Task<ActionResult> Delete(string id, CancellationToken token)
     {
         var post = await posts.GetPostById(id, token);
         if (post is null) return NotFound();

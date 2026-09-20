@@ -11,7 +11,6 @@ import {
 } from '@mantine/core'
 import {
   mdiAccountCircleOutline,
-  mdiAccountGroupOutline,
   mdiCached,
   mdiFlagOutline,
   mdiHomeVariantOutline,
@@ -85,15 +84,10 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
   const { t } = useTranslation()
   const { setLanguage, supportedLanguages } = useLanguage()
 
-  const legacyCompetitionVisible = false
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
     { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
     { icon: mdiFlagOutline, label: 'learning:title', link: '/learn' },
-    ...(legacyCompetitionVisible ? [
-      { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
-      { icon: mdiAccountGroupOutline, label: 'common.tab.team', link: '/teams' },
-    ] : []),
     { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
     { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/learning-paths', admin: true },
   ]

@@ -71,7 +71,7 @@ const PostEdit: FC = () => {
       setDisabled(true)
 
       try {
-        const res = await api.edit.editAddPost(post)
+        const res = await api.editPosts.editPostsCreate(post)
         api.info.mutateInfoGetLatestPosts()
         api.info.mutateInfoGetPosts()
         showNotification({
@@ -93,7 +93,7 @@ const PostEdit: FC = () => {
         // Ideally, the pin/unpin functionality should be handled by a separate API endpoint.
         const { isPinned: _, ...postWithoutPin } = post
 
-        const res = await api.edit.editUpdatePost(postId, postWithoutPin)
+        const res = await api.editPosts.editPostsUpdate(postId, postWithoutPin)
         api.info.mutateInfoGetPost(postId, res.data)
         api.info.mutateInfoGetLatestPosts()
         api.info.mutateInfoGetPosts()
@@ -115,7 +115,7 @@ const PostEdit: FC = () => {
     setDisabled(true)
 
     try {
-      await api.edit.editDeletePost(postId)
+      await api.editPosts.editPostsDelete(postId)
       api.info.mutateInfoGetPosts()
       api.info.mutateInfoGetLatestPosts()
       navigate('/posts')

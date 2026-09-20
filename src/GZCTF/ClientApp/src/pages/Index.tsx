@@ -21,7 +21,7 @@ const Home: FC = () => {
     setDisabled(true)
 
     try {
-      const res = await api.edit.editUpdatePost(post.id, {
+      const res = await api.editPosts.editPostsUpdate(post.id, {
         isPinned: !post.isPinned,
       })
       if (post.isPinned) {
