@@ -25,6 +25,9 @@ public static class PrelaunchHelper
             if (context.Database.GetMigrations().Any())
                 await context.Database.MigrateAsync();
 
+            await serviceScope.ServiceProvider.GetRequiredService<
+                GZCTF.Features.Imports.Application.StartupLegacyMigrationService>().RunOnceAsync();
+
             await context.Database.EnsureCreatedAsync();
 
             if (!await context.Posts.AnyAsync())

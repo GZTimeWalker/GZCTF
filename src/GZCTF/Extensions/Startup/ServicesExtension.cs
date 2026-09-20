@@ -4,6 +4,7 @@ using GZCTF.Features.ChallengeLibrary.Application;
 using GZCTF.Features.ChallengeRuntime.Application;
 using GZCTF.Features.ChallengeRuntime.Infrastructure;
 using GZCTF.Features.Imports.Application;
+using GZCTF.Features.Imports.Infrastructure;
 using GZCTF.Features.LearningPaths.Application;
 using GZCTF.Features.LearningProgress.Application;
 using GZCTF.Models.Internal;
@@ -103,6 +104,8 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ChallengeSubmissionService>();
             builder.Services.AddScoped<ChallengeHelpService>();
             builder.Services.AddScoped<CanonicalImportService>();
+            builder.Services.AddScoped<LegacyDatabaseSource>();
+            builder.Services.AddScoped<StartupLegacyMigrationService>();
             builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();

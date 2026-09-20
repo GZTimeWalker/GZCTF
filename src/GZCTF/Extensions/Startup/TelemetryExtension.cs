@@ -21,7 +21,8 @@ public static class TelemetryExtension
                 .AddApplicationLifecycleHealthCheck()
                 .AddCheck<StorageHealthCheck>("Storage")
                 .AddCheck<CacheHealthCheck>("Cache")
-                .AddCheck<DatabaseHealthCheck>("Database");
+                .AddCheck<DatabaseHealthCheck>("Database")
+                .AddCheck<MigrationHealthCheck>("Migration");
 
             TelemetryConfig = builder.Configuration.GetSection("Telemetry").Get<TelemetryConfig>();
 
