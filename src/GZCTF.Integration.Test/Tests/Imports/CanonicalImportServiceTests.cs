@@ -30,17 +30,35 @@ public sealed class CanonicalImportServiceTests(GZCTFApplicationFactory factory)
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         Assert.Equal(2, await db.LegacyPathMaps.CountAsync(item => item.MigrationBatchId == first.BatchId));
         Assert.Equal(2, await db.LegacyChallengeMaps.CountAsync(item => item.MigrationBatchId == first.BatchId));
-        Assert.Equal(2, await db.Challenges.CountAsync(item => item.SourceType == source.SourceType));
         var sourceIds = source.Paths.SelectMany(path => path.Modules)
             .SelectMany(module => module.Challenges).Select(challenge => challenge.SourceId).ToArray();
+        Assert.Equal(2, await db.Challenges.CountAsync(item => sourceIds.Contains(item.SourceId)));
         var progress = await db.ChallengeProgress.Include(item => item.Challenge)
             .Where(item => sourceIds.Contains(item.Challenge.SourceId)).ToListAsync();
         Assert.Empty(progress);
     }
 
+    [Fact]
+    public async Task Behavior_field_mismatch_blocks_parity_completion()
+    {
+        var source = BuildSource($"s20-{Guid.NewGuid():N}");
+        await using var scope = factory.Services.CreateAsyncScope();
+        var importer = scope.ServiceProvider.GetRequiredService<CanonicalImportService>();
+        var result = await importer.ImportAsync(source);
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var mapping = await db.LegacyChallengeMaps.FirstAsync(item => item.MigrationBatchId == result.BatchId);
+        var flag = await db.ChallengeFlags.SingleAsync(item => item.ChallengeId == mapping.ChallengeId);
+        flag.Value = "flag{tampered}";
+        await db.SaveChangesAsync();
+
+        var parity = scope.ServiceProvider.GetRequiredService<ImportParityService>();
+        var batch = await db.MigrationBatches.SingleAsync(item => item.Id == result.BatchId);
+        await Assert.ThrowsAsync<ImportParityException>(() => parity.CompareAndEnforceAsync(source, batch));
+    }
+
     private static CanonicalChallengeImportBatch BuildSource(string fingerprint)
     {
-        static CanonicalChallengeImport Challenge(string sourceId) => new(
+        CanonicalChallengeImport Challenge(string sourceId) => new(
             "legacy", sourceId, ChallengeType.StaticAttachment,
             [new ImportLocalizedText("en", "Same title", "Summary", "Body")],
             [], "flag{legacy}", null, [], null, "{\"score\":100}", 0, 0);
@@ -48,10 +66,14 @@ public sealed class CanonicalImportServiceTests(GZCTFApplicationFactory factory)
         return new CanonicalChallengeImportBatch(
             "legacy", fingerprint,
             [
-                new CanonicalPathImport("legacy", "game-a", "game-a", "Same game title", "Summary",
-                    [new CanonicalModuleImport("module-a", "Module", "Summary", 0, [Challenge("challenge-a")])]),
-                new CanonicalPathImport("legacy", "game-b", "game-b", "Same game title", "Summary",
-                    [new CanonicalModuleImport("module-b", "Module", "Summary", 0, [Challenge("challenge-b")])])
+                new CanonicalPathImport("legacy", $"game-a-{fingerprint}", $"game-a-{fingerprint}",
+                    "Same game title", "Summary",
+                    [new CanonicalModuleImport($"module-a-{fingerprint}", "Module", "Summary", 0,
+                        [Challenge($"challenge-a-{fingerprint}")])]),
+                new CanonicalPathImport("legacy", $"game-b-{fingerprint}", $"game-b-{fingerprint}",
+                    "Same game title", "Summary",
+                    [new CanonicalModuleImport("module-b", "Module", "Summary", 0,
+                        [Challenge($"challenge-b-{fingerprint}")])])
             ],
             []);
     }

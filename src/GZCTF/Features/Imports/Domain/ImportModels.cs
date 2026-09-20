@@ -24,6 +24,7 @@ public sealed class MigrationBatch
     public int ErrorCount { get; set; }
     public string? WarningsJson { get; set; }
     public string? ErrorsJson { get; set; }
+    public string? ParityReportJson { get; set; }
     public DateTimeOffset StartedAtUtc { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset? CompletedAtUtc { get; set; }
 

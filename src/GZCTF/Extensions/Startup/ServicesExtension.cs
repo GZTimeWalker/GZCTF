@@ -104,6 +104,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ChallengeSubmissionService>();
             builder.Services.AddScoped<ChallengeHelpService>();
             builder.Services.AddScoped<CanonicalImportService>();
+            builder.Services.AddScoped<ImportParityService>();
             builder.Services.AddScoped<LegacyDatabaseSource>();
             builder.Services.AddScoped<StartupLegacyMigrationService>();
             builder.Services.AddScoped<LegacyZipSource>();

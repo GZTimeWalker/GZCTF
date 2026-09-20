@@ -16,7 +16,7 @@ public sealed record CanonicalImportResult(
     int PathCount,
     int WarningCount);
 
-public sealed class CanonicalImportService(AppDbContext db)
+public sealed class CanonicalImportService(AppDbContext db, ImportParityService parity)
 {
     public async Task<CanonicalImportResult> ImportAsync(
         CanonicalChallengeImportBatch source, CancellationToken token = default)
@@ -61,11 +61,12 @@ public sealed class CanonicalImportService(AppDbContext db)
             await ImportPathAsync(exercisePath, batch, warnings, token);
         }
 
+        await parity.CompareAndEnforceAsync(source, batch, token);
         batch.State = MigrationBatchState.Completed;
         batch.CompletedAtUtc = DateTimeOffset.UtcNow;
-        batch.ChallengeCount = await db.LegacyChallengeMaps.CountAsync(item => item.MigrationBatchId == batch.Id,
-            token);
-        batch.PathCount = await db.LegacyPathMaps.CountAsync(item => item.MigrationBatchId == batch.Id, token);
+        batch.ChallengeCount = source.Paths.SelectMany(path => path.Modules)
+            .SelectMany(module => module.Challenges).Count() + source.Exercises.Count;
+        batch.PathCount = source.Paths.Count + (source.Exercises.Count > 0 ? 1 : 0);
         batch.WarningCount = warnings.Count;
         batch.WarningsJson = JsonSerializer.Serialize(warnings);
         await db.SaveChangesAsync(token);
@@ -103,9 +104,11 @@ public sealed class CanonicalImportService(AppDbContext db)
                 SourceType = source.SourceType,
                 SourceId = source.SourceId,
                 Path = path,
-                MigrationBatch = batch
+                MigrationBatch = batch,
+                MigrationBatchId = batch.Id
             };
             db.LegacyPathMaps.Add(pathMap);
+            batch.PathMappings.Add(pathMap);
             await db.SaveChangesAsync(token);
         }
 
@@ -184,13 +187,16 @@ public sealed class CanonicalImportService(AppDbContext db)
             challenge.Flags.Add(new ChallengeFlag { Kind = ChallengeFlagKind.Template, Template = source.FlagTemplate });
 
         db.Challenges.Add(challenge);
-        db.LegacyChallengeMaps.Add(new LegacyChallengeMap
+        var challengeMap = new LegacyChallengeMap
         {
             SourceType = source.SourceType,
             SourceId = source.SourceId,
             Challenge = challenge,
-            MigrationBatch = batch
-        });
+            MigrationBatch = batch,
+            MigrationBatchId = batch.Id
+        };
+        db.LegacyChallengeMaps.Add(challengeMap);
+        batch.ChallengeMappings.Add(challengeMap);
         warnings.Add($"{source.SourceType}:{source.SourceId}:official_writeup_not_imported");
         await db.SaveChangesAsync(token);
         return challenge;

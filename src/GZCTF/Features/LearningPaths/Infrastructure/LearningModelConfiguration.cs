@@ -287,6 +287,7 @@ internal static class LearningModelConfiguration
             entity.Property(e => e.State).HasConversion<byte>();
             entity.Property(e => e.WarningsJson).HasColumnType("jsonb");
             entity.Property(e => e.ErrorsJson).HasColumnType("jsonb");
+            entity.Property(e => e.ParityReportJson).HasColumnType("jsonb");
             entity.HasIndex(e => e.PackageFingerprintSha256).IsUnique();
             entity.ToTable(table => table.HasCheckConstraint(
                 "CK_MigrationBatches_State",
