@@ -71,7 +71,7 @@ export const useLogOut = () => {
     try {
       await api.account.accountLogOut()
       navigate('/')
-      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
+      mutate((key) => typeof key === 'string' && key.startsWith('/api/'), undefined, {
         revalidate: false,
       })
       mutateProfile(undefined, { revalidate: false })
