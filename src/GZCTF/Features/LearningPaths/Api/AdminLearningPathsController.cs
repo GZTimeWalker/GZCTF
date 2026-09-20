@@ -12,6 +12,10 @@ namespace GZCTF.Features.LearningPaths.Api;
 [Produces(MediaTypeNames.Application.Json)]
 public sealed class AdminLearningPathsController(LearningPathService service) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<AdminLearningPathSummaryResponse>>> List(CancellationToken token) =>
+        Ok(await service.ListAdminAsync(token));
+
     [HttpPost]
     public async Task<ActionResult<LearningPathDraftResponse>> Create(
         [FromBody] LearningPathCommand command, CancellationToken token) =>

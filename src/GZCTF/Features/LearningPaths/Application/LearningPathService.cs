@@ -8,6 +8,22 @@ namespace GZCTF.Features.LearningPaths.Application;
 
 public sealed class LearningPathService(AppDbContext db)
 {
+    public async Task<IReadOnlyList<AdminLearningPathSummaryResponse>> ListAdminAsync(CancellationToken token)
+    {
+        var paths = await db.LearningPaths
+            .AsNoTracking()
+            .Include(path => path.Localizations)
+            .Include(path => path.Revisions)
+            .OrderBy(path => path.Slug)
+            .ToListAsync(token);
+        return paths.Select(path => new AdminLearningPathSummaryResponse(
+            path.Id,
+            path.Slug,
+            path.Localizations.FirstOrDefault(item => item.Locale == "en")?.Title ?? path.Slug,
+            path.CurrentPublishedRevisionId is not null,
+            path.Revisions.Any(item => item.Status == LearningPathRevisionStatus.Draft))).ToArray();
+    }
+
     public async Task<LearningPathDraftResponse> CreatePathAsync(
         LearningPathCommand command, CancellationToken token)
     {
@@ -442,6 +458,13 @@ public sealed record LearningPathSummaryResponse(
     int ModuleCount,
     int ItemCount,
     int ExpectedMinutes);
+
+public sealed record AdminLearningPathSummaryResponse(
+    Guid PathId,
+    string Slug,
+    string Title,
+    bool IsPublished,
+    bool HasDraft);
 
 public sealed record LearningPathPreviewResponse(
     Guid PathId,
