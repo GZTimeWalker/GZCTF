@@ -14,6 +14,8 @@
 
 - Product and architecture decisions: `docs/superpowers/specs/2026-09-19-learning-platform-refactor-design.md`
 - Skill tree and shared category revision: `docs/superpowers/specs/2026-09-21-skill-tree-shared-categories-design.md`
+- Skill tree task dispatch: `docs/superpowers/plans/2026-09-21-skill-tree-task-dispatch.md`
+- Skill tree foundation packet: `docs/superpowers/plans/2026-09-21-skill-tree-foundation-plan.md`
 - Release order and global gates: `docs/superpowers/plans/2026-09-19-learning-platform-roadmap.md`
 - Wave plans:
   - `docs/superpowers/plans/2026-09-19-learning-foundation-plan.md`
