@@ -106,6 +106,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ChallengeHelpService>();
             builder.Services.AddScoped<DailySolveProjection>();
             builder.Services.AddScoped<DashboardSnapshotService>();
+            builder.Services.AddScoped<DashboardTokenService>();
             builder.Services.AddSingleton<DashboardCache>();
             builder.Services.AddScoped<CanonicalImportService>();
             builder.Services.AddScoped<ImportParityService>();
