@@ -40,6 +40,8 @@ public sealed class ChallengesController(
         return Ok(new ChallengeRuntimeDetailResponse(
             challenge.Id,
             text?.Title ?? string.Empty,
+            text?.Summary ?? string.Empty,
+            text?.Body ?? string.Empty,
             challenge.Type.ToString(),
             challenge.Hints.Select(item => item.Locale).Distinct(StringComparer.OrdinalIgnoreCase).Count(),
             challenge.Writeups.Count > 0,
@@ -87,6 +89,8 @@ public sealed class ChallengesController(
 public sealed record ChallengeRuntimeDetailResponse(
     Guid Id,
     string Title,
+    string Summary,
+    string Body,
     string Type,
     int HintLocaleCount,
     bool HasWriteup,

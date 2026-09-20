@@ -2,6 +2,7 @@ import { Button, Center, Group, Loader, Stack, Text, Title } from '@mantine/core
 import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { LessonWorkspace } from '@Components/learning/LessonWorkspace'
+import { ChallengeWorkspace } from '@Components/learning/ChallengeWorkspace'
 import { WithNavBar } from '@Components/WithNavbar'
 import { useLearningPathPreview } from '@Hooks/useLearning'
 import { useLanguage } from '@Utils/I18n'
@@ -29,12 +30,7 @@ const LearningItem = () => {
       {!path && !error ? <Center><Loader /></Center> : error || !item ? <Text c="red">{t('loadFailed')}</Text> : (
         <Stack gap="lg">
           <Title order={1}>{item.title}</Title>
-          {item.kind === 'lesson' ? <LessonWorkspace lessonId={item.contentId} /> : (
-            <Stack gap="xs">
-              <Text>{item.summary}</Text>
-              <Text c="dimmed">{t('challengeWorkspaceComingSoon')}</Text>
-            </Stack>
-          )}
+          {item.kind === 'lesson' ? <LessonWorkspace lessonId={item.contentId} /> : <ChallengeWorkspace challengeId={item.contentId} />}
           <Group justify="space-between">
             {previous ? <Button component={Link} variant="subtle" to={`/learn/${slug}/${previous.moduleId}/${previous.item.id}`}>{t('previous')}</Button> : <span />}
             {next ? <Button component={Link} variant="subtle" to={`/learn/${slug}/${next.moduleId}/${next.item.id}`}>{t('next')}</Button> : <span />}
@@ -46,4 +42,3 @@ const LearningItem = () => {
 }
 
 export default LearningItem
-

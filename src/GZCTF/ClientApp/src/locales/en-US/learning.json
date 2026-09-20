@@ -9,5 +9,21 @@
   "markComplete": "Mark complete",
   "previous": "Previous",
   "next": "Next",
-  "challengeWorkspaceComingSoon": "Challenge workspace is available from the challenge page."
+  "challengeWorkspaceComingSoon": "Challenge workspace is available from the challenge page.",
+  "loading": "Loading…",
+  "actionFailed": "The action could not be completed.",
+  "accepted": "Flag accepted.",
+  "rejected": "Flag rejected.",
+  "instance": "Challenge instance",
+  "instanceRunning": "Running",
+  "start": "Start",
+  "extend": "Extend",
+  "stop": "Stop",
+  "downloadAttachment": "Download attachment",
+  "submit": "Submit flag",
+  "flagPlaceholder": "Enter the flag",
+  "solveMode": "Solve mode",
+  "help": "Help",
+  "nextHint": "Reveal next hint",
+  "showWriteup": "Show official write-up"
 }

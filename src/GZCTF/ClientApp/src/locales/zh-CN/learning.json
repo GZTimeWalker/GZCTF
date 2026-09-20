@@ -9,5 +9,21 @@
   "markComplete": "标记完成",
   "previous": "上一项",
   "next": "下一项",
-  "challengeWorkspaceComingSoon": "挑战工作区将在挑战页面提供。"
+  "challengeWorkspaceComingSoon": "挑战工作区将在挑战页面提供。",
+  "loading": "加载中…",
+  "actionFailed": "操作未完成。",
+  "accepted": "Flag 正确。",
+  "rejected": "Flag 不正确。",
+  "instance": "挑战实例",
+  "instanceRunning": "运行中",
+  "start": "启动",
+  "extend": "延长",
+  "stop": "停止",
+  "downloadAttachment": "下载附件",
+  "submit": "提交 Flag",
+  "flagPlaceholder": "输入 Flag",
+  "solveMode": "解题方式",
+  "help": "帮助",
+  "nextHint": "查看下一条提示",
+  "showWriteup": "查看官方题解"
 }
