@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using CanonicalChallenge = GZCTF.Features.ChallengeLibrary.Domain.Challenge;
+using GZCTF.Features.SkillTrees.Domain;
 using GZCTF.Models.Data;
 
 namespace GZCTF.Features.LearningPaths.Domain;
@@ -10,6 +11,13 @@ public enum LearningPathRevisionStatus : byte
     Draft = 0,
     Published = 1,
     Archived = 2
+}
+
+public enum LessonPublicationState : byte
+{
+    Draft = 0,
+    Published = 1,
+    Retired = 2
 }
 
 public sealed class LearningPath
@@ -92,8 +100,10 @@ public sealed class Lesson
 {
     public Guid Id { get; set; } = Guid.CreateVersion7();
     public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
+    public LessonPublicationState PublicationState { get; set; } = LessonPublicationState.Draft;
     public List<LessonLocalization> Localizations { get; set; } = [];
     public List<ModuleItem> ModuleItems { get; set; } = [];
+    public List<CategoryContent> CategoryContents { get; set; } = [];
     public List<LessonProgress> Progress { get; set; } = [];
 }
 
