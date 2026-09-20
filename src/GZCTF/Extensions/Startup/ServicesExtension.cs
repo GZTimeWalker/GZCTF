@@ -106,6 +106,8 @@ internal static class ServicesExtension
             builder.Services.AddScoped<CanonicalImportService>();
             builder.Services.AddScoped<LegacyDatabaseSource>();
             builder.Services.AddScoped<StartupLegacyMigrationService>();
+            builder.Services.AddScoped<LegacyZipSource>();
+            builder.Services.AddScoped<ImportBlobStaging>();
             builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();
