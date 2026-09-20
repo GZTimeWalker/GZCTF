@@ -178,6 +178,7 @@ internal static class LearningModelConfiguration
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.PublicationState).HasConversion<byte>();
+            entity.Property(e => e.RowVersion).IsRowVersion().IsConcurrencyToken();
             entity.HasMany(e => e.Localizations)
                 .WithOne(e => e.Lesson)
                 .HasForeignKey(e => e.LessonId)

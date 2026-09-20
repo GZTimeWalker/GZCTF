@@ -761,6 +761,12 @@ namespace GZCTF.Migrations
                     b.Property<byte>("PublicationState")
                         .HasColumnType("smallint");
 
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.ToTable("Lessons");

@@ -13,6 +13,7 @@ public enum LearningPathRevisionStatus : byte
     Archived = 2
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<LessonPublicationState>))]
 public enum LessonPublicationState : byte
 {
     Draft = 0,
@@ -101,6 +102,8 @@ public sealed class Lesson
     public Guid Id { get; set; } = Guid.CreateVersion7();
     public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
     public LessonPublicationState PublicationState { get; set; } = LessonPublicationState.Draft;
+    [JsonIgnore, Timestamp]
+    public uint RowVersion { get; set; }
     public List<LessonLocalization> Localizations { get; set; } = [];
     public List<ModuleItem> ModuleItems { get; set; } = [];
     public List<CategoryContent> CategoryContents { get; set; } = [];

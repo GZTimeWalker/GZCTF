@@ -27,6 +27,16 @@ namespace GZCTF.Migrations
                 nullable: false,
                 defaultValue: (byte)0);
 
+            // Lessons gain a concurrency token. Npgsql maps it to the xmin system column,
+            // which the SQL generator omits because every PostgreSQL table already has it.
+            migrationBuilder.AddColumn<uint>(
+                name: "xmin",
+                table: "Lessons",
+                type: "xid",
+                rowVersion: true,
+                nullable: false,
+                defaultValue: 0u);
+
             migrationBuilder.CreateTable(
                 name: "SkillCategories",
                 columns: table => new
@@ -357,6 +367,10 @@ namespace GZCTF.Migrations
 
             migrationBuilder.DropColumn(
                 name: "PublicationState",
+                table: "Lessons");
+
+            migrationBuilder.DropColumn(
+                name: "xmin",
                 table: "Lessons");
         }
     }
