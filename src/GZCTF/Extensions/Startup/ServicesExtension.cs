@@ -7,6 +7,7 @@ using GZCTF.Features.Imports.Application;
 using GZCTF.Features.Imports.Infrastructure;
 using GZCTF.Features.LearningPaths.Application;
 using GZCTF.Features.LearningProgress.Application;
+using GZCTF.Features.Dashboard.Application;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
@@ -103,6 +104,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ILegacyContainerRuntimeAdapter, LegacyContainerRuntimeAdapter>();
             builder.Services.AddScoped<ChallengeSubmissionService>();
             builder.Services.AddScoped<ChallengeHelpService>();
+            builder.Services.AddScoped<DailySolveProjection>();
             builder.Services.AddScoped<CanonicalImportService>();
             builder.Services.AddScoped<ImportParityService>();
             builder.Services.AddScoped<LegacyDatabaseSource>();

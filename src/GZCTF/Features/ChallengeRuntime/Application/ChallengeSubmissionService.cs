@@ -3,6 +3,7 @@ using System.Text;
 using GZCTF.Features.ChallengeLibrary.Domain;
 using GZCTF.Features.ChallengeRuntime.Domain;
 using GZCTF.Features.Dashboard.Domain;
+using GZCTF.Features.Dashboard.Application;
 using GZCTF.Features.LearningProgress.Domain;
 using GZCTF.Models;
 using GZCTF.Utils;
@@ -21,7 +22,8 @@ public sealed record ChallengeSubmissionResult(
 public sealed class ChallengeSubmissionService(
     AppDbContext db,
     ChallengeRuntimeService runtime,
-    DynamicAttachmentAllocator attachments)
+    DynamicAttachmentAllocator attachments,
+    DailySolveProjection dailyProjection)
 {
     public async Task<ChallengeSubmissionResult> SubmitAsync(
         Guid userId, Guid challengeId, string submittedFlag, CancellationToken token = default)
@@ -65,18 +67,7 @@ public sealed class ChallengeSubmissionService(
                 ChallengeId = challengeId,
                 SolveMode = mode
             });
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
-            var daily = await db.LearnerDailySolveStats.SingleOrDefaultAsync(item =>
-                item.UserId == userId && item.Date == today, token);
-            if (daily is null)
-                db.LearnerDailySolveStats.Add(new LearnerDailySolveStat
-                {
-                    UserId = userId,
-                    Date = today,
-                    SolveCount = 1
-                });
-            else
-                daily.SolveCount++;
+            await dailyProjection.RecordFirstSolveAsync(userId, DateOnly.FromDateTime(DateTime.UtcNow), token);
 
             submission.FirstSolve = true;
             submission.SolveMode = mode;
