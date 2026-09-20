@@ -6,6 +6,8 @@ using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.LearningPaths.Infrastructure;
 using GZCTF.Features.LearningProgress.Domain;
+using GZCTF.Features.SkillTrees.Domain;
+using GZCTF.Features.SkillTrees.Infrastructure;
 using CanonicalChallenge = GZCTF.Features.ChallengeLibrary.Domain.Challenge;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -76,6 +78,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<UserChallengeInstance> UserChallengeInstances { get; set; } = null!;
     public DbSet<ChallengeSubmission> ChallengeSubmissions { get; set; } = null!;
     public DbSet<ChallengeHelpUsage> ChallengeHelpUsages { get; set; } = null!;
+    public DbSet<SkillTree> SkillTrees { get; set; } = null!;
+    public DbSet<SkillTreeRevision> SkillTreeRevisions { get; set; } = null!;
+    public DbSet<SkillCategory> SkillCategories { get; set; } = null!;
+    public DbSet<SkillTreeCategoryRef> SkillTreeCategoryRefs { get; set; } = null!;
+    public DbSet<CategoryContent> CategoryContents { get; set; } = null!;
+    public DbSet<SkillTreeEnrollment> SkillTreeEnrollments { get; set; } = null!;
+    public DbSet<LearningPathRedirect> LearningPathRedirects { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -489,5 +498,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         });
 
         LearningModelConfiguration.Configure(builder);
+        SkillTreeModelConfiguration.Configure(builder);
     }
 }
