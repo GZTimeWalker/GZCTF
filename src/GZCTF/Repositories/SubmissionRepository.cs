@@ -1,14 +1,10 @@
 ﻿using GZCTF.Extensions;
-using GZCTF.Hubs;
-using GZCTF.Hubs.Clients;
 using GZCTF.Repositories.Interface;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
 public class SubmissionRepository(
-    IHubContext<MonitorHub, IMonitorClient> hub,
     AppDbContext context) : RepositoryBase(context), ISubmissionRepository
 {
     public async Task<Submission> AddSubmission(Submission submission, CancellationToken token = default)
@@ -48,7 +44,7 @@ public class SubmissionRepository(
             .ToArrayAsync(token);
 
     public Task SendSubmission(Submission submission)
-        => hub.Clients.Group($"Game_{submission.GameId}").ReceivedSubmissions(submission);
+        => Task.CompletedTask;
 
 
     private IQueryable<Submission> GetSubmissionsByType(AnswerResult? type = null)

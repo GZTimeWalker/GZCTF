@@ -97,7 +97,6 @@ internal static class AppExtensions
             app.MapControllers();
 
             app.MapHub<UserHub>("/hub/user");
-            app.MapHub<MonitorHub>("/hub/monitor");
             app.MapHub<AdminHub>("/hub/admin");
             app.MapHub<DashboardHub>("/hub/dashboard");
 
