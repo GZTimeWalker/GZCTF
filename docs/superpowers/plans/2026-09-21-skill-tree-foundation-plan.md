@@ -29,7 +29,7 @@
 | `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeSchemaTests.cs` | PostgreSQL constraint tests |
 | `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeBackfillTests.cs` | Count, order, enrollment, redirect, and idempotency tests |
 
-## Task 1: Freeze icon and schema invariants
+## Task 1: ST01 — Freeze icon and schema invariants
 
 **Files:**
 - Create: `src/GZCTF.Test/UnitTests/Features/SkillTrees/SkillTreeIconCatalogTests.cs`
@@ -217,7 +217,7 @@ Build the integration project after adding the entity types in Task 2, then run 
 
 Do not commit the non-compiling red state. Task 2 supplies the smallest domain implementation and commits the icon tests with the domain types. Keep `SkillTreeSchemaTests.cs` uncommitted until Task 3 adds DbSets, mappings, and tables.
 
-## Task 2: Add domain entities and icon catalog
+## Task 2: ST02 — Add domain entities and icon catalog
 
 **Files:**
 - Create: `src/GZCTF/Features/SkillTrees/Domain/SkillTreeModels.cs`
@@ -365,6 +365,7 @@ public sealed class LearningPathRedirect
 Add to `LearningPathModels.cs`:
 
 ```csharp
+[JsonConverter(typeof(JsonStringEnumConverter<LessonPublicationState>))]
 public enum LessonPublicationState : byte
 {
     Draft = 0,
@@ -379,6 +380,8 @@ Add to `Lesson`:
 
 ```csharp
 public LessonPublicationState PublicationState { get; set; } = LessonPublicationState.Draft;
+[JsonIgnore, Timestamp]
+public uint RowVersion { get; set; }
 public List<CategoryContent> CategoryContents { get; set; } = [];
 ```
 
@@ -395,7 +398,7 @@ git add src/GZCTF/Features/SkillTrees/Domain \
 git commit -m "feat: add skill tree domain model"
 ```
 
-## Task 3: Configure EF Core and generate the additive migration
+## Task 3: ST03 — Configure EF Core and generate the additive migration
 
 **Files:**
 - Create: `src/GZCTF/Features/SkillTrees/Infrastructure/SkillTreeModelConfiguration.cs`
@@ -535,6 +538,7 @@ In `LearningModelConfiguration` add:
 
 ```csharp
 entity.Property(e => e.PublicationState).HasConversion<byte>();
+entity.Property(e => e.RowVersion).IsRowVersion().IsConcurrencyToken();
 ```
 
 - [ ] **Step 4: Generate the migration**
@@ -583,7 +587,7 @@ git add src/GZCTF/Features/SkillTrees/Infrastructure \
 git commit -m "feat: add skill tree persistence schema"
 ```
 
-## Task 4: Add failing backfill parity tests
+## Task 4: ST04 — Add failing backfill parity tests
 
 **Files:**
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeBackfillTests.cs`
@@ -696,7 +700,7 @@ Expected: compilation fails because `SkillTreeBackfillService` does not exist.
 
 Do not commit the non-compiling red state. Commit it with `SkillTreeBackfillService` after the parity and idempotency assertions pass.
 
-## Task 5: Implement idempotent current-Learning backfill
+## Task 5: ST05 — Implement idempotent current-Learning backfill
 
 **Files:**
 - Create: `src/GZCTF/Features/SkillTrees/Migration/SkillTreeBackfillService.cs`
@@ -827,4 +831,4 @@ git commit -m "test: prove additive skill tree migration"
 - [ ] No old Learning or competition table is dropped or renamed.
 - [ ] `dotnet build`, unit tests, integration tests, and `git diff --check` pass.
 
-Wave ST1 ends here. Do not implement new SkillTree APIs or frontend pages in this packet; those begin at ST06 after migration evidence is reviewed.
+Wave ST1 ends here. Do not implement new SkillTree APIs or frontend pages in this packet; continue with `2026-09-21-skill-tree-api-plan.md` after migration evidence is reviewed.

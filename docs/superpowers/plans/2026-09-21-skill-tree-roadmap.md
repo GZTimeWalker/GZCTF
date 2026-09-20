@@ -14,7 +14,10 @@
 
 - Approved design: `docs/superpowers/specs/2026-09-21-skill-tree-shared-categories-design.md`
 - Task dispatch: `docs/superpowers/plans/2026-09-21-skill-tree-task-dispatch.md`
-- First implementation packet: `docs/superpowers/plans/2026-09-21-skill-tree-foundation-plan.md`
+- ST1 implementation packet: `docs/superpowers/plans/2026-09-21-skill-tree-foundation-plan.md`
+- ST2 implementation packet: `docs/superpowers/plans/2026-09-21-skill-tree-api-plan.md`
+- ST3 implementation packet: `docs/superpowers/plans/2026-09-21-skill-tree-admin-web-plan.md`
+- ST4 implementation packet: `docs/superpowers/plans/2026-09-21-skill-tree-learner-release-plan.md`
 - The 2026-09-21 design supersedes route/module behavior in the 2026-09-19 design.
 - Existing challenge runtime, migration parity, dashboard, account, storage, container, and deployment contracts remain in scope as regression boundaries.
 

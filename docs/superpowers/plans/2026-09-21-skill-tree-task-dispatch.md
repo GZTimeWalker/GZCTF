@@ -14,7 +14,10 @@
 
 - Approved design: `docs/superpowers/specs/2026-09-21-skill-tree-shared-categories-design.md`
 - Release roadmap: `docs/superpowers/plans/2026-09-21-skill-tree-roadmap.md`
-- First detailed packet: `docs/superpowers/plans/2026-09-21-skill-tree-foundation-plan.md`
+- ST1 detailed packet: `docs/superpowers/plans/2026-09-21-skill-tree-foundation-plan.md`
+- ST2 detailed packet: `docs/superpowers/plans/2026-09-21-skill-tree-api-plan.md`
+- ST3 detailed packet: `docs/superpowers/plans/2026-09-21-skill-tree-admin-web-plan.md`
+- ST4 detailed packet: `docs/superpowers/plans/2026-09-21-skill-tree-learner-release-plan.md`
 
 If the documents differ, the approved design controls behavior, the roadmap controls wave order, and the detailed packet controls implementation mechanics.
 
@@ -71,7 +74,7 @@ Wave ST1 gate: execute the detailed foundation plan; full solution build and foc
 | `ST12` | TREE-API | ST09, ST11 | Implement enrollment, current tree, live progress aggregation, delete impact, typed-name soft delete, and current-pointer clearing | Deleted tree hides; historical record and global progress remain | Blocked by ST09, ST11 |
 | `ST13` | API-CODEGEN | ST12 | Expose OpenAPI tags and regenerate TypeScript client | Generated client contains SkillTree APIs and no handwritten additions | Blocked by ST12 |
 
-Wave ST2 gate: all SkillTree, category, publication, enrollment, merge, delete, and concurrency integration tests pass against PostgreSQL.
+Wave ST2 gate: execute `2026-09-21-skill-tree-api-plan.md`; all SkillTree, category, publication, enrollment, merge, delete, and concurrency integration tests pass against PostgreSQL.
 
 ### Wave ST3 — Administrator web experience
 
@@ -86,7 +89,7 @@ Wave ST2 gate: all SkillTree, category, publication, enrollment, merge, delete, 
 | `ST20` | ADMIN-WEB | ST15, ST17 | Add skill tree deletion impact preview and typed-name confirmation | Soft deletion completes and list refreshes without data loss | Blocked by ST15, ST17 |
 | `ST21` | QA-RELEASE | ST14-ST20 | Add administrator Playwright coverage and i18n key checks | No raw translation key or JSON editor appears | Blocked by ST14-ST20 |
 
-Wave ST3 gate: administrator browser suite passes in Chinese and English with clean console and network logs.
+Wave ST3 gate: execute `2026-09-21-skill-tree-admin-web-plan.md`; administrator browser suite passes in Chinese and English with clean console and network logs.
 
 ### Wave ST4 — Learner cutover and release
 
@@ -100,7 +103,7 @@ Wave ST3 gate: administrator browser suite passes in Chinese and English with cl
 | `ST27` | QA-RELEASE | ST26 | Run data parity, four challenge modes, shared progress, dashboard, browser, and performance suites | All suites pass; no N+1 query or unbounded response | Blocked by ST26 |
 | `ST28` | QA-RELEASE | ST27 | Build and inspect production image; verify ports, health, Redis, storage, Docker, and Kubernetes | Deployment contract remains unchanged | Blocked by ST27 |
 
-Wave ST4 gate: migration and behavior parity are recorded; release image is ready for deployment.
+Wave ST4 gate: execute `2026-09-21-skill-tree-learner-release-plan.md`; migration and behavior parity are recorded; release image is ready for deployment.
 
 ## 5. Parallel execution windows
 
