@@ -2,6 +2,7 @@ using System.Net.Mime;
 using GZCTF.Middlewares;
 using GZCTF.Features.ChallengeLibrary.Application;
 using GZCTF.Features.LearningPaths.Application;
+using GZCTF.Features.LearningProgress.Application;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
@@ -91,6 +92,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<LearningPathService>();
             builder.Services.AddScoped<EnrollmentService>();
             builder.Services.AddScoped<LessonProgressService>();
+            builder.Services.AddScoped<LearningRecordService>();
             builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();
