@@ -89,6 +89,8 @@ internal static class ServicesExtension
             builder.Services.AddScoped<GameImportService>();
             builder.Services.AddScoped<ChallengeLibraryService>();
             builder.Services.AddScoped<LearningPathService>();
+            builder.Services.AddScoped<EnrollmentService>();
+            builder.Services.AddScoped<LessonProgressService>();
             builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();
