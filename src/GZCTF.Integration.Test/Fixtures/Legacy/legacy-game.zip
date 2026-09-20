@@ -1,0 +1,6 @@
+GZCTF-LEGACY-GOLDEN-PACKAGE
+manifest-version=1
+source=legacy-golden
+attachment=附件/静态.bin sha256:legacy-static
+attachment=附件/dynamic-a.bin sha256:legacy-dynamic-a
+attachment=附件/dynamic-b.bin sha256:legacy-dynamic-b

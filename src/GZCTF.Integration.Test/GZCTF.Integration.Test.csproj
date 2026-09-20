@@ -31,5 +31,9 @@
     <ProjectReference Include="..\GZCTF\GZCTF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 
 </Project>
