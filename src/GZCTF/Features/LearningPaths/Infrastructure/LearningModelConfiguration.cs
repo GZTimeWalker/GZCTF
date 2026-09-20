@@ -1,4 +1,5 @@
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.ChallengeRuntime.Domain;
 using GZCTF.Features.Dashboard.Domain;
 using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
@@ -323,6 +324,78 @@ internal static class LearningModelConfiguration
             entity.HasOne(e => e.MigrationBatch)
                 .WithMany(e => e.PathMappings)
                 .HasForeignKey(e => e.MigrationBatchId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<UserChallengeInstance>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Status).HasConversion<byte>();
+            entity.Property(e => e.AssignedAttachmentKey).HasMaxLength(256);
+            entity.Property(e => e.AssignedAttachmentSha256).HasMaxLength(128);
+            entity.Property(e => e.AssignedFlag).HasMaxLength(512);
+            entity.Property(e => e.RuntimeMetadataJson).HasColumnType("jsonb");
+            entity.HasIndex(e => new { e.UserId, e.ChallengeId })
+                .IsUnique()
+                .HasFilter("\"IsActive\" = TRUE");
+            entity.HasIndex(e => new { e.UserId, e.CreatedAtUtc });
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Challenge)
+                .WithMany()
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<ChallengeSubmission>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.SubmittedFlagHash).HasMaxLength(64).IsRequired();
+            entity.Property(e => e.SolveMode).HasConversion<byte>();
+            entity.Property(e => e.RejectionCode).HasMaxLength(128);
+            entity.HasIndex(e => new { e.UserId, e.ChallengeId, e.SubmittedAtUtc });
+            entity.HasIndex(e => new { e.ChallengeId, e.Accepted, e.SubmittedAtUtc });
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Challenge)
+                .WithMany()
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Instance)
+                .WithMany(e => e.Submissions)
+                .HasForeignKey(e => e.InstanceId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<ChallengeHelpUsage>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.HasIndex(e => new { e.UserId, e.ChallengeId, e.ViewedAtUtc });
+            entity.HasIndex(e => new { e.UserId, e.ChallengeId })
+                .IsUnique()
+                .HasFilter("\"IsWriteup\" = TRUE");
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Challenge)
+                .WithMany()
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Instance)
+                .WithMany(e => e.HelpUsages)
+                .HasForeignKey(e => e.InstanceId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Hint)
+                .WithMany()
+                .HasForeignKey(e => e.HintId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
     }

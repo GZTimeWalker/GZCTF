@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.ChallengeRuntime.Domain;
 using GZCTF.Features.Dashboard.Domain;
 using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
@@ -72,6 +73,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<MigrationBatch> MigrationBatches { get; set; } = null!;
     public DbSet<LegacyChallengeMap> LegacyChallengeMaps { get; set; } = null!;
     public DbSet<LegacyPathMap> LegacyPathMaps { get; set; } = null!;
+    public DbSet<UserChallengeInstance> UserChallengeInstances { get; set; } = null!;
+    public DbSet<ChallengeSubmission> ChallengeSubmissions { get; set; } = null!;
+    public DbSet<ChallengeHelpUsage> ChallengeHelpUsages { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
