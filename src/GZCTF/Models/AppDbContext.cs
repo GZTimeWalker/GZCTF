@@ -1,4 +1,9 @@
 ﻿using System.Text.Json;
+using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.LearningPaths.Domain;
+using GZCTF.Features.LearningPaths.Infrastructure;
+using GZCTF.Features.LearningProgress.Domain;
+using CanonicalChallenge = GZCTF.Features.ChallengeLibrary.Domain.Challenge;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -41,6 +46,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+
+    public DbSet<CanonicalChallenge> Challenges { get; set; } = null!;
+    public DbSet<ChallengeLocalization> ChallengeLocalizations { get; set; } = null!;
+    public DbSet<ChallengeFlag> ChallengeFlags { get; set; } = null!;
+    public DbSet<ChallengeHint> ChallengeHints { get; set; } = null!;
+    public DbSet<ChallengeWriteup> ChallengeWriteups { get; set; } = null!;
+    public DbSet<LearningPath> LearningPaths { get; set; } = null!;
+    public DbSet<LearningPathLocalization> LearningPathLocalizations { get; set; } = null!;
+    public DbSet<LearningPathRevision> LearningPathRevisions { get; set; } = null!;
+    public DbSet<LearningModule> LearningModules { get; set; } = null!;
+    public DbSet<LearningModuleLocalization> LearningModuleLocalizations { get; set; } = null!;
+    public DbSet<ModuleItem> ModuleItems { get; set; } = null!;
+    public DbSet<Lesson> Lessons { get; set; } = null!;
+    public DbSet<LessonLocalization> LessonLocalizations { get; set; } = null!;
+    public DbSet<Enrollment> Enrollments { get; set; } = null!;
+    public DbSet<LessonProgress> LessonProgress { get; set; } = null!;
+    public DbSet<ChallengeProgress> ChallengeProgress { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -447,5 +469,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
         });
+
+        LearningModelConfiguration.Configure(builder);
     }
 }
