@@ -1,10 +1,10 @@
 # GZ::CTF — AI Coding Agent Guide
 
-GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 9 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
+GZ::CTF is a full‑stack learning platform for structured challenge paths, lessons, and challenge practice, with legacy competition data retained for audit. It is designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 10 + EF Core 10 (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
 
 ## Development principles
 
-- Exercise-related models/features are out of scope for now. Ignore those files when implementing features.
+- New work should target the learning-path, lesson, challenge-runtime, dashboard, and import features. Legacy competition tables remain available for read-only audit and migration compatibility; do not add new competition writes.
 - Be conservative with database schema changes. If logic can be done in the frontend (calculation/UI), avoid adding backend fields or endpoints.
 - Prefer existing extension points (RateLimiter, Captcha, Storage, Telemetry, SignalR) and use inline JSON fields (`Tags`/`Hints`/`Divisions`) to keep schema flexible and avoid premature hardening.
 - Follow role-based access patterns: use `[RequireUser]`, `[RequireMonitor]`, `[RequireAdmin]`, `[RequireAdminOrToken]` attributes consistently.
@@ -14,7 +14,7 @@ GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and 
 
 - Backend `src/GZCTF` (ASP.NET Core):
   - Entry: `Program.cs` wires startup via `Extensions/Startup/*` (web host, DB, storage, cache/SignalR, identity, telemetry, services, web services).
-  - Middlewares & maps: `Extensions/AppExtensions.cs` sets routing, rate limit, auth, request logging, health/metrics, SignalR hubs at `/hub/{user|monitor|admin}`, static/cached `index.html` via `UseIndexAsync()` and custom favicon via `UseCustomFavicon()`.
+  - Middlewares & maps: `Extensions/AppExtensions.cs` sets routing, rate limit, auth, request logging, health/metrics, SignalR hubs at `/hub/{user|admin|dashboard}`, static/cached `index.html` via `UseIndexAsync()` and custom favicon via `UseCustomFavicon()`.
   - Data: EF Core PostgreSQL is mandatory. App exits if `ConnectionStrings:Database` missing (`DatabaseExtension.ConfigureDatabase`).
   - Caching: Redis optional; when absent falls back to in-memory (`ConfigureCacheAndSignalR`).
   - Storage: custom storage providers (local disk and S3) selected via connection string; default forced to `disk://path=./files` (`StorageExtension`).
@@ -22,7 +22,7 @@ GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and 
   - Auth & roles: IdentityCore with cookies; use attributes `RequireUser`, `RequireMonitor`, `RequireAdmin`, `RequireAdminOrToken` (`Middlewares/PrivilegeAuthentication.cs`).
   - Rate limiting: Global sliding window + named policies (`Middlewares/RateLimiter.cs`), disabled by `DisableRateLimit=true`.
   - i18n: `Resources/` with `IStringLocalizer<Program>`; invalid model state returns JSON via `InvalidModelStateHandler`.
-  - SignalR patterns: Strongly-typed hubs (`AdminHub`, `MonitorHub`, `UserHub`) with client interfaces (`IAdminClient`, `IMonitorClient`, `IUserClient`) for real-time notifications. Each hub validates permissions and groups clients by game ID.
+  - SignalR patterns: Strongly-typed hubs (`AdminHub`, `DashboardHub`, `UserHub`) with client interfaces for real-time notifications. Dashboard clients are authorized by revocable token and grouped by dashboard ID.
   - Container proxy: `ProxyController` handles TCP-over-WebSocket for challenge access when `ContainerPortMappingType.PlatformProxy` is set. Supports Docker Swarm and Kubernetes with traffic capture capabilities.
 - Frontend `src/GZCTF/ClientApp` (React + Mantine + Vite):
   - Dev server on `63000` with proxy to backend; configure backend URL via `VITE_BACKEND_URL` (defaults to `http://localhost:8080`) in `vite.config.mts`.
@@ -68,7 +68,7 @@ Design notes (flexibility vs performance)
 ## Conventions & patterns
 
 - Controllers return JSON `RequestResponse` on errors; model validation is centralized. Keep URLs lowercase (`AddRouting(LowercaseUrls=true)`).
-- Use SignalR endpoints `/hub/user`, `/hub/monitor`, `/hub/admin`; Vite dev proxy forwards `/hub` as WebSocket.
+- Use SignalR endpoints `/hub/user`, `/hub/admin`, `/hub/dashboard`; Vite dev proxy forwards `/hub` as WebSocket.
 - Permissions: Use `[RequireUser]`, `[RequireMonitor]`, `[RequireAdmin]`, `[RequireAdminOrToken]` attributes. New permissions: `RequireReview` (submission review) and `AffectDynamicScore` (dynamic scoring).
 - Captcha pluggable via `CaptchaConfig.Provider`: `HashPow` (default) or `CloudflareTurnstile` (`Extensions/CaptchaExtension.cs`).
 - Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`. Self-maintenance storage ensures blob cleanup and consistency.
@@ -85,7 +85,7 @@ Design notes (flexibility vs performance)
 
 ## Dev workflows
 
-- Prereqs: .NET 9 SDK, Node 24+, `pnpm`.
+- Prereqs: .NET 10 SDK, Node 24+, `pnpm`.
 - Single-command dev (SpaProxy auto-starts Vite):
   - `dotnet run --project src/GZCTF/GZCTF.csproj`
   - Launch profile sets `ASPNETCORE_ENVIRONMENT=Development` and enables `Microsoft.AspNetCore.SpaProxy` (see `Properties/launchSettings.json`); Vite dev runs on `63000` and proxies to backend.
