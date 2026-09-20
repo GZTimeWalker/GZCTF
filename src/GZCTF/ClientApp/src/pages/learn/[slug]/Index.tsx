@@ -1,7 +1,8 @@
-import { Center, Loader, Text } from '@mantine/core'
+import { Center, Loader, Stack, Text } from '@mantine/core'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { RouteOutline } from '@Components/learning/RouteOutline'
+import { EnrollmentControls } from '@Components/learning/EnrollmentControls'
 import { WithNavBar } from '@Components/WithNavbar'
 import { useLearningPathPreview } from '@Hooks/useLearning'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -16,10 +17,14 @@ const LearningRoute = () => {
 
   return (
     <WithNavBar minWidth={0}>
-      {!path && !error ? <Center><Loader /></Center> : error ? <Text c="red">{t('loadFailed')}</Text> : <RouteOutline path={path!} />}
+      {!path && !error ? <Center><Loader /></Center> : error ? <Text c="red">{t('loadFailed')}</Text> : (
+        <Stack gap="lg">
+          <EnrollmentControls pathId={path!.pathId} />
+          <RouteOutline path={path!} />
+        </Stack>
+      )}
     </WithNavBar>
   )
 }
 
 export default LearningRoute
-

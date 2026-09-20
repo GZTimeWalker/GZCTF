@@ -1,5 +1,13 @@
 {
   "title": "Learning",
   "discovery": "Choose a route and explore its lessons and challenges.",
-  "loadFailed": "Learning content could not be loaded."
+  "loadFailed": "Learning content could not be loaded.",
+  "signInToStudy": "Sign in to access protected learning content.",
+  "enroll": "Join route",
+  "makeCurrent": "Make current",
+  "currentRoute": "Current route",
+  "markComplete": "Mark complete",
+  "previous": "Previous",
+  "next": "Next",
+  "challengeWorkspaceComingSoon": "Challenge workspace is available from the challenge page."
 }

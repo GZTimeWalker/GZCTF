@@ -1,5 +1,13 @@
 {
   "title": "学习",
   "discovery": "选择学习路线，逐步完成课程和挑战。",
-  "loadFailed": "暂时无法加载学习内容。"
+  "loadFailed": "暂时无法加载学习内容。",
+  "signInToStudy": "请登录后访问受保护的学习内容。",
+  "enroll": "加入路线",
+  "makeCurrent": "设为当前路线",
+  "currentRoute": "当前路线",
+  "markComplete": "标记完成",
+  "previous": "上一项",
+  "next": "下一项",
+  "challengeWorkspaceComingSoon": "挑战工作区将在挑战页面提供。"
 }
