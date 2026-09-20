@@ -23,7 +23,8 @@ public sealed class ChallengeSubmissionService(
     AppDbContext db,
     ChallengeRuntimeService runtime,
     DynamicAttachmentAllocator attachments,
-    DailySolveProjection dailyProjection)
+    DailySolveProjection dailyProjection,
+    DashboardDeltaPublisher dashboardDeltas)
 {
     public async Task<ChallengeSubmissionResult> SubmitAsync(
         Guid userId, Guid challengeId, string submittedFlag, CancellationToken token = default)
@@ -73,6 +74,7 @@ public sealed class ChallengeSubmissionService(
             submission.SolveMode = mode;
             await db.SaveChangesAsync(token);
             await transaction.CommitAsync(token);
+            await dashboardDeltas.PublishFirstSolveAsync(userId, token);
             return new ChallengeSubmissionResult(true, true, mode, null, submission.Id);
         }
         catch (DbUpdateException)
