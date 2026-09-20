@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using GZCTF.Models;
 using Serilog;
 
 namespace GZCTF.Extensions.Startup;
@@ -19,6 +20,7 @@ internal static class DatabaseExtension
                 {
                     options.UseNpgsql(connectionString,
                         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                    options.AddInterceptors(new LegacyReadOnlySaveChangesInterceptor());
 
                     if (!builder.Environment.IsDevelopment())
                         return;
