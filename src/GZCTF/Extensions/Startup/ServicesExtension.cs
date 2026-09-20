@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using GZCTF.Middlewares;
+using GZCTF.Features.ChallengeLibrary.Application;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
@@ -85,6 +86,8 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ExcelHelper>();
             builder.Services.AddScoped<GameExportService>();
             builder.Services.AddScoped<GameImportService>();
+            builder.Services.AddScoped<ChallengeLibraryService>();
+            builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();
             builder.Services.AddChannel<CacheRequest>();

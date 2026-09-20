@@ -738,6 +738,12 @@ namespace GZCTF.Migrations
                 principalTable: "Cohorts",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddColumn<string>(
+                name: "RuntimeConfigurationJson",
+                table: "Challenges",
+                type: "jsonb",
+                nullable: true);
         }
 
         /// <inheritdoc />
@@ -775,6 +781,10 @@ namespace GZCTF.Migrations
             migrationBuilder.DropColumn(
                 name: "CohortId",
                 table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "RuntimeConfigurationJson",
+                table: "Challenges");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_LearningPathRevisions_LearningPaths_PathId",

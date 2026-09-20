@@ -49,6 +49,9 @@ namespace GZCTF.Migrations
                         .HasColumnType("xid")
                         .HasColumnName("xmin");
 
+                    b.Property<string>("RuntimeConfigurationJson")
+                        .HasColumnType("jsonb");
+
                     b.Property<string>("SourceId")
                         .IsRequired()
                         .HasMaxLength(128)

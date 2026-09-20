@@ -4,13 +4,16 @@ using GZCTF.Utils;
 
 namespace GZCTF.Features.ChallengeLibrary.Domain;
 
+[JsonConverter(typeof(JsonStringEnumConverter<ChallengePublicationState>))]
 public enum ChallengePublicationState : byte
 {
     Draft = 0,
     Published = 1,
-    Retired = 2
+    Retired = 2,
+    Merged = 3
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<ChallengeFlagKind>))]
 public enum ChallengeFlagKind : byte
 {
     Static = 0,
@@ -26,6 +29,7 @@ public sealed class Challenge
     public ChallengePublicationState PublicationState { get; set; } = ChallengePublicationState.Draft;
     public bool IsEnabled { get; set; } = true;
     public int ExpectedMinutes { get; set; } = 60;
+    public string? RuntimeConfigurationJson { get; set; }
 
     public string SourceType { get; set; } = "native";
     public string SourceId { get; set; } = string.Empty;

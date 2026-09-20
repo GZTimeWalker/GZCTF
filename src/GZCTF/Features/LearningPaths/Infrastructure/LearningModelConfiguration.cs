@@ -22,6 +22,7 @@ internal static class LearningModelConfiguration
             entity.Property(e => e.Type).HasConversion<byte>();
             entity.Property(e => e.Difficulty).HasConversion<byte>();
             entity.Property(e => e.PublicationState).HasConversion<byte>();
+            entity.Property(e => e.RuntimeConfigurationJson).HasColumnType("jsonb");
             entity.Property(e => e.SourceType).HasMaxLength(64).IsRequired();
             entity.Property(e => e.SourceId).HasMaxLength(128).IsRequired();
             entity.Property(e => e.SourceName).HasMaxLength(256);
