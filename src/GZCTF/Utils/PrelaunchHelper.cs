@@ -26,6 +26,9 @@ public static class PrelaunchHelper
                 await context.Database.MigrateAsync();
 
             await serviceScope.ServiceProvider.GetRequiredService<
+                GZCTF.Features.SkillTrees.Migration.SkillTreeBackfillService>().RunAsync();
+
+            await serviceScope.ServiceProvider.GetRequiredService<
                 GZCTF.Features.Imports.Application.StartupLegacyMigrationService>().RunOnceAsync();
 
             await context.Database.EnsureCreatedAsync();

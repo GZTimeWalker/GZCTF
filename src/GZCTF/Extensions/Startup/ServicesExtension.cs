@@ -8,6 +8,7 @@ using GZCTF.Features.Imports.Infrastructure;
 using GZCTF.Features.LearningPaths.Application;
 using GZCTF.Features.LearningProgress.Application;
 using GZCTF.Features.Dashboard.Application;
+using GZCTF.Features.SkillTrees.Migration;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
@@ -95,6 +96,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<EnrollmentService>();
             builder.Services.AddScoped<LessonProgressService>();
             builder.Services.AddScoped<LearningRecordService>();
+            builder.Services.AddScoped<SkillTreeBackfillService>();
             builder.Services.AddScoped<DynamicAttachmentAllocator>();
             builder.Services.AddScoped<ILegacyStorageAdapter, LegacyStorageAdapter>();
             builder.Services.AddScoped<ChallengeRuntimeService>();
