@@ -19,7 +19,6 @@ using GZCTF.Services.CronJob;
 using GZCTF.Services.Mail;
 using GZCTF.Services.Token;
 using GZCTF.Services.Traffic;
-using GZCTF.Services.Transfer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -91,8 +90,6 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
 
             builder.Services.AddScoped<ExcelHelper>();
-            builder.Services.AddScoped<GameExportService>();
-            builder.Services.AddScoped<GameImportService>();
             builder.Services.AddScoped<ChallengeLibraryService>();
             builder.Services.AddScoped<LearningPathService>();
             builder.Services.AddScoped<EnrollmentService>();
