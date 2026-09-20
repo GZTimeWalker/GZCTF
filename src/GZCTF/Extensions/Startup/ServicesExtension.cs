@@ -99,6 +99,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ILegacyStorageAdapter, LegacyStorageAdapter>();
             builder.Services.AddScoped<ChallengeRuntimeService>();
             builder.Services.AddScoped<ILegacyContainerRuntimeAdapter, LegacyContainerRuntimeAdapter>();
+            builder.Services.AddScoped<ChallengeSubmissionService>();
             builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();
