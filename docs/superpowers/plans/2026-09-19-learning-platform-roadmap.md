@@ -13,9 +13,11 @@
 ## Source of truth
 
 - Approved design: `docs/superpowers/specs/2026-09-19-learning-platform-refactor-design.md`
+- Approved skill tree revision: `docs/superpowers/specs/2026-09-21-skill-tree-shared-categories-design.md`
 - Task dispatch queue: `docs/superpowers/plans/2026-09-19-learning-platform-task-dispatch.md`
 - First ready packet: `docs/superpowers/plans/2026-09-19-step-01-baseline-and-security-development.md`
 - This roadmap fixes the execution order and release gates.
+- The skill tree revision supersedes route/module terminology and will receive its own implementation wave after written-spec approval.
 - Each linked plan is independently executable but must be completed in the order below because later waves consume APIs and tables created earlier.
 
 ## Execution order
