@@ -1,10 +1,13 @@
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.Dashboard.Domain;
+using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.LearningProgress.Domain;
 using GZCTF.Models;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using CanonicalChallenge = GZCTF.Features.ChallengeLibrary.Domain.Challenge;
+using DashboardConfig = GZCTF.Features.Dashboard.Domain.Dashboard;
 
 namespace GZCTF.Features.LearningPaths.Infrastructure;
 
@@ -231,6 +234,95 @@ internal static class LearningModelConfiguration
                 .WithMany()
                 .HasForeignKey(e => e.ChallengeId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Cohort>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(128).IsRequired();
+            entity.HasIndex(e => e.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<DashboardConfig>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(128).IsRequired();
+            entity.Property(e => e.DisplaySettingsJson).HasColumnType("jsonb");
+            entity.HasMany(e => e.Tokens)
+                .WithOne(e => e.Dashboard)
+                .HasForeignKey(e => e.DashboardId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<DashboardToken>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.TokenHash).HasMaxLength(128).IsRequired();
+            entity.HasIndex(e => e.TokenHash).IsUnique();
+        });
+
+        modelBuilder.Entity<LearnerDailySolveStat>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Date).HasColumnType("date");
+            entity.HasIndex(e => new { e.UserId, e.Date }).IsUnique();
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<MigrationBatch>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.SourceType).HasMaxLength(64).IsRequired();
+            entity.Property(e => e.PackageFingerprintSha256).HasMaxLength(64).IsRequired();
+            entity.Property(e => e.State).HasConversion<byte>();
+            entity.Property(e => e.WarningsJson).HasColumnType("jsonb");
+            entity.Property(e => e.ErrorsJson).HasColumnType("jsonb");
+            entity.HasIndex(e => e.PackageFingerprintSha256).IsUnique();
+            entity.ToTable(table => table.HasCheckConstraint(
+                "CK_MigrationBatches_State",
+                $"\"State\" BETWEEN 0 AND {(byte)MigrationBatchState.Failed}"));
+        });
+
+        modelBuilder.Entity<LegacyChallengeMap>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.SourceType).HasMaxLength(64).IsRequired();
+            entity.Property(e => e.SourceId).HasMaxLength(256).IsRequired();
+            entity.HasIndex(e => new { e.SourceType, e.SourceId }).IsUnique();
+            entity.HasOne(e => e.Challenge)
+                .WithMany()
+                .HasForeignKey(e => e.ChallengeId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.MigrationBatch)
+                .WithMany(e => e.ChallengeMappings)
+                .HasForeignKey(e => e.MigrationBatchId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<LegacyPathMap>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.SourceType).HasMaxLength(64).IsRequired();
+            entity.Property(e => e.SourceId).HasMaxLength(256).IsRequired();
+            entity.HasIndex(e => new { e.SourceType, e.SourceId }).IsUnique();
+            entity.HasOne(e => e.Path)
+                .WithMany()
+                .HasForeignKey(e => e.PathId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.MigrationBatch)
+                .WithMany(e => e.PathMappings)
+                .HasForeignKey(e => e.MigrationBatchId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
     }
 }

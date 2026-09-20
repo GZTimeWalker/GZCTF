@@ -506,11 +506,276 @@ namespace GZCTF.Migrations
                 principalTable: "LearningPaths",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "CohortId",
+                table: "AspNetUsers",
+                type: "uuid",
+                nullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "Cohorts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cohorts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Dashboards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    TopCount = table.Column<int>(type: "integer", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplaySettingsJson = table.Column<string>(type: "jsonb", nullable: true),
+                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dashboards", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LearnerDailySolveStats",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    SolveCount = table.Column<int>(type: "integer", nullable: false),
+                    UpdatedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LearnerDailySolveStats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LearnerDailySolveStats_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MigrationBatches",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SourceType = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    PackageFingerprintSha256 = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    State = table.Column<byte>(type: "smallint", nullable: false),
+                    ChallengeCount = table.Column<int>(type: "integer", nullable: false),
+                    PathCount = table.Column<int>(type: "integer", nullable: false),
+                    WarningCount = table.Column<int>(type: "integer", nullable: false),
+                    ErrorCount = table.Column<int>(type: "integer", nullable: false),
+                    WarningsJson = table.Column<string>(type: "jsonb", nullable: true),
+                    ErrorsJson = table.Column<string>(type: "jsonb", nullable: true),
+                    StartedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CompletedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MigrationBatches", x => x.Id);
+                    table.CheckConstraint("CK_MigrationBatches_State", "\"State\" BETWEEN 0 AND 3");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DashboardTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DashboardId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TokenHash = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    CreatedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ExpiresAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    RevokedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LastUsedAtUtc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DashboardTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DashboardTokens_Dashboards_DashboardId",
+                        column: x => x.DashboardId,
+                        principalTable: "Dashboards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LegacyChallengeMaps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SourceType = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    SourceId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ChallengeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MigrationBatchId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LegacyChallengeMaps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LegacyChallengeMaps_Challenges_ChallengeId",
+                        column: x => x.ChallengeId,
+                        principalTable: "Challenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LegacyChallengeMaps_MigrationBatches_MigrationBatchId",
+                        column: x => x.MigrationBatchId,
+                        principalTable: "MigrationBatches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LegacyPathMaps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SourceType = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    SourceId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    PathId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MigrationBatchId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LegacyPathMaps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LegacyPathMaps_LearningPaths_PathId",
+                        column: x => x.PathId,
+                        principalTable: "LearningPaths",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LegacyPathMaps_MigrationBatches_MigrationBatchId",
+                        column: x => x.MigrationBatchId,
+                        principalTable: "MigrationBatches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CohortId",
+                table: "AspNetUsers",
+                column: "CohortId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cohorts_Name",
+                table: "Cohorts",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DashboardTokens_DashboardId",
+                table: "DashboardTokens",
+                column: "DashboardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DashboardTokens_TokenHash",
+                table: "DashboardTokens",
+                column: "TokenHash",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LearnerDailySolveStats_UserId_Date",
+                table: "LearnerDailySolveStats",
+                columns: new[] { "UserId", "Date" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegacyChallengeMaps_ChallengeId",
+                table: "LegacyChallengeMaps",
+                column: "ChallengeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegacyChallengeMaps_MigrationBatchId",
+                table: "LegacyChallengeMaps",
+                column: "MigrationBatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegacyChallengeMaps_SourceType_SourceId",
+                table: "LegacyChallengeMaps",
+                columns: new[] { "SourceType", "SourceId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegacyPathMaps_MigrationBatchId",
+                table: "LegacyPathMaps",
+                column: "MigrationBatchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegacyPathMaps_PathId",
+                table: "LegacyPathMaps",
+                column: "PathId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LegacyPathMaps_SourceType_SourceId",
+                table: "LegacyPathMaps",
+                columns: new[] { "SourceType", "SourceId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MigrationBatches_PackageFingerprintSha256",
+                table: "MigrationBatches",
+                column: "PackageFingerprintSha256",
+                unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AspNetUsers_Cohorts_CohortId",
+                table: "AspNetUsers",
+                column: "CohortId",
+                principalTable: "Cohorts",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_AspNetUsers_Cohorts_CohortId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "DashboardTokens");
+
+            migrationBuilder.DropTable(
+                name: "LearnerDailySolveStats");
+
+            migrationBuilder.DropTable(
+                name: "LegacyChallengeMaps");
+
+            migrationBuilder.DropTable(
+                name: "LegacyPathMaps");
+
+            migrationBuilder.DropTable(
+                name: "Cohorts");
+
+            migrationBuilder.DropTable(
+                name: "Dashboards");
+
+            migrationBuilder.DropTable(
+                name: "MigrationBatches");
+
+            migrationBuilder.DropIndex(
+                name: "IX_AspNetUsers_CohortId",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "CohortId",
+                table: "AspNetUsers");
+
             migrationBuilder.DropForeignKey(
                 name: "FK_LearningPathRevisions_LearningPaths_PathId",
                 table: "LearningPathRevisions");

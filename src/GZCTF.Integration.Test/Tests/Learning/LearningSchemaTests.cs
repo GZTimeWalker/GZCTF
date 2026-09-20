@@ -1,4 +1,6 @@
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.Dashboard.Domain;
+using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.LearningProgress.Domain;
 using GZCTF.Integration.Test.Base;
@@ -191,6 +193,103 @@ public class LearningSchemaTests(GZCTFApplicationFactory factory)
                     UserId = user.Id,
                     Path = new LearningPath { Slug = UniqueSlug() },
                     IsCurrent = true
+                });
+
+            await db.SaveChangesAsync();
+        });
+    }
+
+    [Fact]
+    public async Task Cohort_NameIsUnique()
+    {
+        await AssertConstraintViolationAsync(async db =>
+        {
+            db.Cohorts.AddRange(
+                new Cohort { Name = "2026" },
+                new Cohort { Name = "2026" });
+
+            await db.SaveChangesAsync();
+        });
+    }
+
+    [Fact]
+    public async Task LearnerDailySolveStat_UserAndDateAreUnique()
+    {
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123");
+
+        await AssertConstraintViolationAsync(async db =>
+        {
+            db.LearnerDailySolveStats.AddRange(
+                new LearnerDailySolveStat { UserId = user.Id, Date = new DateOnly(2026, 9, 20) },
+                new LearnerDailySolveStat { UserId = user.Id, Date = new DateOnly(2026, 9, 20) });
+
+            await db.SaveChangesAsync();
+        });
+    }
+
+    [Fact]
+    public async Task DashboardToken_HashIsUnique()
+    {
+        await AssertConstraintViolationAsync(async db =>
+        {
+            var dashboard = new Dashboard { Name = "Learning" };
+            db.DashboardTokens.AddRange(
+                new DashboardToken { Dashboard = dashboard, TokenHash = "hash-1" },
+                new DashboardToken { Dashboard = dashboard, TokenHash = "hash-1" });
+
+            await db.SaveChangesAsync();
+        });
+    }
+
+    [Fact]
+    public async Task LegacySourceMappings_AreUnique()
+    {
+        await AssertConstraintViolationAsync(async db =>
+        {
+            var challenge = new CanonicalChallenge { Type = ChallengeType.StaticAttachment };
+            db.LegacyChallengeMaps.AddRange(
+                new LegacyChallengeMap
+                {
+                    SourceType = "game-challenge",
+                    SourceId = "42",
+                    Challenge = challenge
+                },
+                new LegacyChallengeMap
+                {
+                    SourceType = "game-challenge",
+                    SourceId = "42",
+                    Challenge = challenge
+                });
+
+            await db.SaveChangesAsync();
+        });
+
+        await AssertConstraintViolationAsync(async db =>
+        {
+            var path = new LearningPath { Slug = UniqueSlug() };
+            db.LegacyPathMaps.AddRange(
+                new LegacyPathMap { SourceType = "game", SourceId = "42", Path = path },
+                new LegacyPathMap { SourceType = "game", SourceId = "42", Path = path });
+
+            await db.SaveChangesAsync();
+        });
+    }
+
+    [Fact]
+    public async Task MigrationBatch_PackageFingerprintIsUnique()
+    {
+        await AssertConstraintViolationAsync(async db =>
+        {
+            db.MigrationBatches.AddRange(
+                new MigrationBatch
+                {
+                    SourceType = "legacy-database",
+                    PackageFingerprintSha256 = "aabbcc"
+                },
+                new MigrationBatch
+                {
+                    SourceType = "legacy-database",
+                    PackageFingerprintSha256 = "aabbcc"
                 });
 
             await db.SaveChangesAsync();

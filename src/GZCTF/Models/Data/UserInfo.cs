@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
+using System.Text.Json.Serialization;
+using GZCTF.Features.Dashboard.Domain;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
 using MemoryPack;
@@ -124,6 +126,12 @@ public partial class UserInfo : IdentityUser<Guid>
     }
 
     #region Db Relationship
+
+    public Guid? CohortId { get; set; }
+
+    [JsonIgnore]
+    [MemoryPackIgnore]
+    public Cohort? Cohort { get; set; }
 
     /// <summary>
     /// Avatar hash

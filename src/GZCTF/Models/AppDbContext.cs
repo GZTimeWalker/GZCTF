@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.Dashboard.Domain;
+using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.LearningPaths.Infrastructure;
 using GZCTF.Features.LearningProgress.Domain;
@@ -63,6 +65,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<Enrollment> Enrollments { get; set; } = null!;
     public DbSet<LessonProgress> LessonProgress { get; set; } = null!;
     public DbSet<ChallengeProgress> ChallengeProgress { get; set; } = null!;
+    public DbSet<Cohort> Cohorts { get; set; } = null!;
+    public DbSet<Dashboard> Dashboards { get; set; } = null!;
+    public DbSet<DashboardToken> DashboardTokens { get; set; } = null!;
+    public DbSet<LearnerDailySolveStat> LearnerDailySolveStats { get; set; } = null!;
+    public DbSet<MigrationBatch> MigrationBatches { get; set; } = null!;
+    public DbSet<LegacyChallengeMap> LegacyChallengeMaps { get; set; } = null!;
+    public DbSet<LegacyPathMap> LegacyPathMaps { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -100,6 +109,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.Cohort)
+                .WithMany(e => e.Users)
+                .HasForeignKey(e => e.CohortId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
