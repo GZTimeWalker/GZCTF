@@ -89,6 +89,39 @@ export type ChallengeSubmissionResult = {
 export type ChallengeHint = { hintId: string; sortOrder: number; locale: string; content: string }
 export type ChallengeWriteup = { locale: string; content: string; firstViewedAtUtc: string }
 
+export type LearningModuleRecord = {
+  moduleId: string
+  title: string
+  progressPercent: number
+  completedItems: number
+  totalItems: number
+  isComplete: boolean
+}
+
+export type LearningRouteRecord = {
+  pathId: string
+  slug: string
+  title: string
+  isCurrent: boolean
+  progressPercent: number
+  completedModules: number
+  totalModules: number
+  completedLessons: number
+  totalLessons: number
+  completedItems: number
+  totalItems: number
+  modules: LearningModuleRecord[]
+}
+
+export type MyLearningRecord = {
+  routes: LearningRouteRecord[]
+  currentPathId?: string
+  completedLessonIds: string[]
+  solvedChallenges: { challengeId: string; solvedAtUtc: string; solveMode: string }[]
+  solvedChallengeCount: number
+  recentActivity: { kind: string; contentId: string; completedAtUtc: string; solveMode?: string; title?: string }[]
+}
+
 const localeQuery = (locale: string) => encodeURIComponent(locale || 'en')
 
 export const learningKeys = {
@@ -109,6 +142,9 @@ const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
 
 export const useLearningPaths = (locale: string) =>
   useSWR<LearningPathSummary[]>(learningKeys.paths(locale), fetcher)
+
+export const useMyLearning = (locale: string, enabled: boolean) =>
+  useSWR<MyLearningRecord>(enabled ? learningKeys.record(locale) : null, fetcher)
 
 export const useLearningPathPreview = (slug: string | undefined, locale: string) =>
   useSWR<LearningPathPreview>(slug ? learningKeys.preview(slug, locale) : null, fetcher)

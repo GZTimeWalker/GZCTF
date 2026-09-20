@@ -203,6 +203,9 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                   >
                     {t('common.tab.account.profile')}
                   </Menu.Item>
+                  <Menu.Item component={Link} to="/account/learning" leftSection={<Icon path={mdiFlagOutline} size={1} />}>
+                    {t('learning:recordTitle')}
+                  </Menu.Item>
                 </>
               )}
               <Menu.Item onClick={clearLocalCache} leftSection={<Icon path={mdiCached} size={1} />}>
