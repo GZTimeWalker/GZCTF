@@ -1,4 +1,5 @@
 using GZCTF.Utils;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Integration.Test.Fixtures.Challenges;
 
@@ -25,6 +26,7 @@ public sealed record ChallengeModeFixture(
     public bool IsContainer => Type.IsContainer();
     public bool IsDynamic => Type.IsDynamic();
 
+    [JsonIgnore]
     public string ExpectedStaticFlag => StaticFlag
         ?? throw new InvalidOperationException($"Fixture {Key} does not have a static flag.");
 }

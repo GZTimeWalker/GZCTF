@@ -1,6 +1,8 @@
 using System.Net.Mime;
 using GZCTF.Middlewares;
 using GZCTF.Features.ChallengeLibrary.Application;
+using GZCTF.Features.ChallengeRuntime.Application;
+using GZCTF.Features.ChallengeRuntime.Infrastructure;
 using GZCTF.Features.LearningPaths.Application;
 using GZCTF.Features.LearningProgress.Application;
 using GZCTF.Models.Internal;
@@ -93,6 +95,8 @@ internal static class ServicesExtension
             builder.Services.AddScoped<EnrollmentService>();
             builder.Services.AddScoped<LessonProgressService>();
             builder.Services.AddScoped<LearningRecordService>();
+            builder.Services.AddScoped<DynamicAttachmentAllocator>();
+            builder.Services.AddScoped<ILegacyStorageAdapter, LegacyStorageAdapter>();
             builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
             builder.Services.AddChannel<Submission>();

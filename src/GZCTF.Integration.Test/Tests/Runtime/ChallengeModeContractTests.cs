@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.ChallengeRuntime.Application;
+using GZCTF.Features.ChallengeRuntime.Domain;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Integration.Test.Fixtures.Challenges;
 using GZCTF.Models;
@@ -84,6 +86,42 @@ public sealed class ChallengeModeContractTests(GZCTFApplicationFactory factory)
             Assert.False(string.IsNullOrWhiteSpace(fixture.FlagTemplate));
         else
             Assert.All(fixture.Attachments, item => Assert.False(string.IsNullOrWhiteSpace(item.Flag)));
+    }
+
+    [Fact]
+    public async Task Dynamic_attachment_is_reserved_once_per_learner_and_static_is_stable()
+    {
+        var dynamicFixture = ChallengeModeFixtures.All.Single(item => item.IsDynamic && item.IsAttachment);
+        var staticFixture = ChallengeModeFixtures.All.Single(item => !item.IsDynamic && item.IsAttachment);
+        var dynamicChallengeId = await SeedFixtureAsync(dynamicFixture);
+        var staticChallengeId = await SeedFixtureAsync(staticFixture);
+        var first = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S10!LearnerPassword");
+        var second = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S10!LearnerPassword");
+
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.UserChallengeInstances.AddRange(
+                new UserChallengeInstance { UserId = first.Id, ChallengeId = dynamicChallengeId },
+                new UserChallengeInstance { UserId = second.Id, ChallengeId = dynamicChallengeId },
+                new UserChallengeInstance { UserId = first.Id, ChallengeId = staticChallengeId });
+            await db.SaveChangesAsync();
+        }
+
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var allocator = scope.ServiceProvider.GetRequiredService<DynamicAttachmentAllocator>();
+            var firstAssignment = await allocator.GetOrAllocateAsync(first.Id, dynamicChallengeId);
+            var secondAssignment = await allocator.GetOrAllocateAsync(second.Id, dynamicChallengeId);
+            var repeated = await allocator.GetOrAllocateAsync(first.Id, dynamicChallengeId);
+            var staticAssignment = await allocator.GetOrAllocateAsync(first.Id, staticChallengeId);
+
+            Assert.NotEqual(firstAssignment.Sha256, secondAssignment.Sha256);
+            Assert.Equal(firstAssignment, repeated);
+            Assert.Equal(staticFixture.Attachments[0].Sha256, staticAssignment.Sha256);
+        }
     }
 
     private async Task<Guid> SeedFixtureAsync(ChallengeModeFixture fixture)
