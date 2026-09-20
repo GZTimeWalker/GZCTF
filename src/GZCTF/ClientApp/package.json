@@ -8,6 +8,8 @@
     "lint": "oxlint --fix",
     "check": "tsc --noEmit --strict --project tsconfig.app.json",
     "build": "pnpm check && vite build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "preview": "vite preview",
     "prettier": "prettier --write src --write plugins --write *.mjs --write *.mts",
     "genapi": "swagger-typescript-api generate -p http://localhost:8080/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
@@ -61,6 +63,7 @@
     "swr": "^2.5.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/chroma-js": "^3.1.2",
     "@types/node": "^26.6.1",
