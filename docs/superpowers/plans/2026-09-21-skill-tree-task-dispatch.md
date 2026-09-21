@@ -39,13 +39,13 @@ One worker may perform roles serially. A role is an edit boundary, not a require
 
 ## 3. Dispatch rules
 
-- [ ] A task starts only after every dependency is committed and its named tests are green.
-- [ ] Only `TREE-FOUNDATION` edits `AppDbContext.cs`, the model snapshot, and the active migration pair.
-- [ ] Only `API-CODEGEN` regenerates `ClientApp/src/Api.ts` after the backend contract is green.
-- [ ] Do not remove current Learning tables or APIs before ST4 parity and redirect gates pass.
-- [ ] Every task starts with a failing behavior or schema test and ends with a focused commit.
-- [ ] Every handoff lists changed files, commands, output, schema/API decisions, risks, and the next unblocked task.
-- [ ] Any behavior change first updates the approved design and affected acceptance tests.
+- [x] A task starts only after every dependency is committed and its named tests are green.
+- [x] Only `TREE-FOUNDATION` edits `AppDbContext.cs`, the model snapshot, and the active migration pair.
+- [x] Only `API-CODEGEN` regenerates `ClientApp/src/Api.ts` after the backend contract is green.
+- [x] Do not remove current Learning tables or APIs before ST4 parity and redirect gates pass.
+- [x] Every task starts with a failing behavior or schema test and ends with a focused commit.
+- [x] Every handoff lists changed files, commands, output, schema/API decisions, risks, and the next unblocked task.
+- [x] Any behavior change first updates the approved design and affected acceptance tests.
 
 ## 4. Ordered task queue
 
@@ -53,11 +53,11 @@ One worker may perform roles serially. A role is an edit boundary, not a require
 
 | ID | Owner | Depends on | Work packet | Required result | Status |
 |---|---|---|---|---|---|
-| `ST01` | TREE-FOUNDATION | Approved docs | Freeze schema, icon, publication, soft-delete, and empty-tree invariants with failing PostgreSQL tests | Tests fail for missing SkillTree tables and Lesson publication state | Ready |
-| `ST02` | TREE-FOUNDATION | ST01 | Add skill tree/category domain entities and fixed icon catalog | Domain compiles; icon catalog rejects arbitrary values | Blocked by ST01 |
-| `ST03` | TREE-FOUNDATION | ST02 | Add EF mappings, DbSets, uniqueness, check constraints, indexes, and additive migration | Fresh PostgreSQL migrates without dropping Learning or legacy competition tables | Blocked by ST02 |
-| `ST04` | TREE-MIGRATION | ST03 | Backfill current paths, modules, items, enrollments, current selection, and slug redirect mappings | Counts and order match current Learning data | Blocked by ST03 |
-| `ST05` | TREE-MIGRATION | ST04 | Make backfill idempotent and add fresh, upgraded, and repeated-run parity tests | Running startup migration twice changes no count or association | Blocked by ST04 |
+| `ST01` | TREE-FOUNDATION | Approved docs | Freeze schema, icon, publication, soft-delete, and empty-tree invariants with failing PostgreSQL tests | Tests fail for missing SkillTree tables and Lesson publication state | Complete |
+| `ST02` | TREE-FOUNDATION | ST01 | Add skill tree/category domain entities and fixed icon catalog | Domain compiles; icon catalog rejects arbitrary values | Complete |
+| `ST03` | TREE-FOUNDATION | ST02 | Add EF mappings, DbSets, uniqueness, check constraints, indexes, and additive migration | Fresh PostgreSQL migrates without dropping Learning or legacy competition tables | Complete |
+| `ST04` | TREE-MIGRATION | ST03 | Backfill current paths, modules, items, enrollments, current selection, and slug redirect mappings | Counts and order match current Learning data | Complete |
+| `ST05` | TREE-MIGRATION | ST04 | Make backfill idempotent and add fresh, upgraded, and repeated-run parity tests | Running startup migration twice changes no count or association | Complete |
 
 Wave ST1 gate: execute the detailed foundation plan; full solution build and focused schema/migration tests pass; current product behavior remains available.
 
@@ -65,14 +65,14 @@ Wave ST1 gate: execute the detailed foundation plan; full solution build and foc
 
 | ID | Owner | Depends on | Work packet | Required result | Status |
 |---|---|---|---|---|---|
-| `ST06` | TREE-API | ST05 | Implement public skill tree summary/detail queries with empty published trees | Anonymous responses expose no protected body or progress | Blocked by ST05 |
-| `ST07` | TREE-API | ST06 | Implement admin create, draft category refs, ordering, preview, row-version conflicts, and empty publication | Published category structure switches atomically | Blocked by ST06 |
-| `ST08` | CATEGORY-API | ST07 | Implement category create/edit, orphan categories, tree association, and global content ordering | Shared category appears in every referencing tree with one content order | Blocked by ST07 |
-| `ST09` | CATEGORY-API | ST08 | Implement category impact preview, soft delete, and merge transaction | References dedupe; published audit refs remain; content/progress survive | Blocked by ST08 |
-| `ST10` | CONTENT-API | ST08 | Add lesson publication state and challenge/lesson multi-category draft commands | Uncategorized drafts save; uncategorized publish fails with stable code | Blocked by ST08 |
-| `ST11` | CONTENT-API | ST10 | Implement publish dialog command, tree-filter validation, and inline category creation | Publishing into an empty tree creates and attaches a category atomically | Blocked by ST10 |
-| `ST12` | TREE-API | ST09, ST11 | Implement enrollment, current tree, live progress aggregation, delete impact, typed-name soft delete, and current-pointer clearing | Deleted tree hides; historical record and global progress remain | Blocked by ST09, ST11 |
-| `ST13` | API-CODEGEN | ST12 | Expose OpenAPI tags and regenerate TypeScript client | Generated client contains SkillTree APIs and no handwritten additions | Blocked by ST12 |
+| `ST06` | TREE-API | ST05 | Implement public skill tree summary/detail queries with empty published trees | Anonymous responses expose no protected body or progress | Complete |
+| `ST07` | TREE-API | ST06 | Implement admin create, draft category refs, ordering, preview, row-version conflicts, and empty publication | Published category structure switches atomically | Complete |
+| `ST08` | CATEGORY-API | ST07 | Implement category create/edit, orphan categories, tree association, and global content ordering | Shared category appears in every referencing tree with one content order | Complete |
+| `ST09` | CATEGORY-API | ST08 | Implement category impact preview, soft delete, and merge transaction | References dedupe; published audit refs remain; content/progress survive | Complete |
+| `ST10` | CONTENT-API | ST08 | Add lesson publication state and challenge/lesson multi-category draft commands | Uncategorized drafts save; uncategorized publish fails with stable code | Complete |
+| `ST11` | CONTENT-API | ST10 | Implement publish dialog command, tree-filter validation, and inline category creation | Publishing into an empty tree creates and attaches a category atomically | Complete |
+| `ST12` | TREE-API | ST09, ST11 | Implement enrollment, current tree, live progress aggregation, delete impact, typed-name soft delete, and current-pointer clearing | Deleted tree hides; historical record and global progress remain | Complete |
+| `ST13` | API-CODEGEN | ST12 | Expose OpenAPI tags and regenerate TypeScript client | Generated client contains SkillTree APIs and no handwritten additions | Complete |
 
 Wave ST2 gate: execute `2026-09-21-skill-tree-api-plan.md`; all SkillTree, category, publication, enrollment, merge, delete, and concurrency integration tests pass against PostgreSQL.
 
@@ -80,14 +80,14 @@ Wave ST2 gate: execute `2026-09-21-skill-tree-api-plan.md`; all SkillTree, categ
 
 | ID | Owner | Depends on | Work packet | Required result | Status |
 |---|---|---|---|---|---|
-| `ST14` | ADMIN-WEB | ST13 | Build skill tree list and name/summary/icon creation form | Admin creates a tree without JSON, UUID, or locale fields | Blocked by ST13 |
-| `ST15` | ADMIN-WEB | ST14 | Build visual tree editor with existing-category picker, inline create, removal, drag order, preview, and publish | Empty and populated tree publication both work | Blocked by ST14 |
-| `ST16` | ADMIN-WEB | ST13 | Build global category list/editor with tree membership and content sorting | One reorder is visible in all referencing trees | Blocked by ST13 |
-| `ST17` | ADMIN-WEB | ST16 | Build category merge and impact-aware delete flows | Duplicate categories merge; typed confirmations protect referenced data | Blocked by ST16 |
-| `ST18` | ADMIN-WEB | ST13, ST16 | Replace challenge editor category fields and add publish modal | Admin selects tree, multi-selects categories, or creates one inline | Blocked by ST13, ST16 |
-| `ST19` | ADMIN-WEB | ST18 | Add lesson draft/publication editor with the same category flow | Lesson and challenge behavior remain consistent | Blocked by ST18 |
-| `ST20` | ADMIN-WEB | ST15, ST17 | Add skill tree deletion impact preview and typed-name confirmation | Soft deletion completes and list refreshes without data loss | Blocked by ST15, ST17 |
-| `ST21` | QA-RELEASE | ST14-ST20 | Add administrator Playwright coverage and i18n key checks | No raw translation key or JSON editor appears | Blocked by ST14-ST20 |
+| `ST14` | ADMIN-WEB | ST13 | Build skill tree list and name/summary/icon creation form | Admin creates a tree without JSON, UUID, or locale fields | Complete |
+| `ST15` | ADMIN-WEB | ST14 | Build visual tree editor with existing-category picker, inline create, removal, drag order, preview, and publish | Empty and populated tree publication both work | Complete |
+| `ST16` | ADMIN-WEB | ST13 | Build global category list/editor with tree membership and content sorting | One reorder is visible in all referencing trees | Complete |
+| `ST17` | ADMIN-WEB | ST16 | Build category merge and impact-aware delete flows | Duplicate categories merge; typed confirmations protect referenced data | Complete |
+| `ST18` | ADMIN-WEB | ST13, ST16 | Replace challenge editor category fields and add publish modal | Admin selects tree, multi-selects categories, or creates one inline | Complete |
+| `ST19` | ADMIN-WEB | ST18 | Add lesson draft/publication editor with the same category flow | Lesson and challenge behavior remain consistent | Complete |
+| `ST20` | ADMIN-WEB | ST15, ST17 | Add skill tree deletion impact preview and typed-name confirmation | Soft deletion completes and list refreshes without data loss | Complete |
+| `ST21` | QA-RELEASE | ST14-ST20 | Add administrator Playwright coverage and i18n key checks | No raw translation key or JSON editor appears | Complete |
 
 Wave ST3 gate: execute `2026-09-21-skill-tree-admin-web-plan.md`; administrator browser suite passes in Chinese and English with clean console and network logs.
 
@@ -95,13 +95,13 @@ Wave ST3 gate: execute `2026-09-21-skill-tree-admin-web-plan.md`; administrator 
 
 | ID | Owner | Depends on | Work packet | Required result | Status |
 |---|---|---|---|---|---|
-| `ST22` | LEARNER-WEB | ST13 | Build `/skill-trees` discovery cards and empty published state | Visitor sees icon, name, summary and counts without progress | Blocked by ST13 |
-| `ST23` | LEARNER-WEB | ST22 | Build tree detail grouped by shared categories and content workspace links | Shared category content/order matches across trees | Blocked by ST22 |
-| `ST24` | LEARNER-WEB | ST23 | Replace enrollment/current-tree controls and personal record terminology | Existing migrated enrollments and progress render correctly | Blocked by ST23 |
-| `ST25` | LEARNER-WEB | ST24 | Rename navigation icon/copy and add `/learn` plus slug redirects | Old bookmarks reach the correct new tree | Blocked by ST24 |
-| `ST26` | TREE-API | ST25 | Retire old LearningPath APIs, services, generated types, and unused JSON helpers | Search leaves only redirect and migration references | Blocked by ST25 |
-| `ST27` | QA-RELEASE | ST26 | Run data parity, four challenge modes, shared progress, dashboard, browser, and performance suites | All suites pass; no N+1 query or unbounded response | Blocked by ST26 |
-| `ST28` | QA-RELEASE | ST27 | Build and inspect production image; verify ports, health, Redis, storage, Docker, and Kubernetes | Deployment contract remains unchanged | Blocked by ST27 |
+| `ST22` | LEARNER-WEB | ST13 | Build `/skill-trees` discovery cards and empty published state | Visitor sees icon, name, summary and counts without progress | Complete |
+| `ST23` | LEARNER-WEB | ST22 | Build tree detail grouped by shared categories and content workspace links | Shared category content/order matches across trees | Complete |
+| `ST24` | LEARNER-WEB | ST23 | Replace enrollment/current-tree controls and personal record terminology | Existing migrated enrollments and progress render correctly | Complete |
+| `ST25` | LEARNER-WEB | ST24 | Rename navigation icon/copy and add `/learn` plus slug redirects | Old bookmarks reach the correct new tree | Complete |
+| `ST26` | TREE-API | ST25 | Retire old LearningPath APIs, services, generated types, and unused JSON helpers | Search leaves only redirect and migration references | Complete |
+| `ST27` | QA-RELEASE | ST26 | Run data parity, four challenge modes, shared progress, dashboard, browser, and performance suites | All suites pass; no N+1 query or unbounded response | Complete |
+| `ST28` | QA-RELEASE | ST27 | Build and inspect production image; verify ports, health, Redis, storage, Docker, and Kubernetes | Deployment contract remains unchanged | Complete |
 
 Wave ST4 gate: execute `2026-09-21-skill-tree-learner-release-plan.md`; migration and behavior parity are recorded; release image is ready for deployment.
 

@@ -107,7 +107,7 @@ public static class SkillTreeProblemCodes
 - Create: `src/GZCTF/Features/SkillTrees/Application/SkillTreeContracts.cs`
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeQueryTests.cs`
 
-- [ ] **Step 1: Add failing anonymous boundary tests**
+- [x] **Step 1: Add failing anonymous boundary tests**
 
 Seed one empty published tree, one populated published tree, one draft tree, one deleted tree, a published challenge, a draft lesson, and a published lesson. Assert:
 
@@ -137,13 +137,13 @@ public async Task Anonymous_detail_excludes_draft_content_and_protected_fields()
 }
 ```
 
-- [ ] **Step 2: Run red test**
+- [x] **Step 2: Run red test**
 
 Run the integration command with `--filter FullyQualifiedName~SkillTreeQueryTests`.
 
 Expected: `404` because `/api/skill-trees` does not exist.
 
-- [ ] **Step 3: Define response records**
+- [x] **Step 3: Define response records**
 
 Add these public records to `SkillTreeContracts.cs`:
 
@@ -167,7 +167,7 @@ public sealed record SkillTreeContentSummaryResponse(
 
 `Kind` 只能是 `challenge` 或 `lesson`。课节 `Difficulty` 返回空字符串。
 
-- [ ] **Step 4: Implement batched query service**
+- [x] **Step 4: Implement batched query service**
 
 `ListPublishedAsync` 先投影树和当前修订的计数；`GetPublishedAsync` 分两次查询：第一次取树和有序类别引用，第二次用 `categoryIds.Contains` 批量取已发布内容。禁止在类别循环中访问数据库。
 
@@ -190,7 +190,7 @@ content.Category.DeletedAtUtc == null &&
   content.Lesson!.PublicationState == LessonPublicationState.Published))
 ```
 
-- [ ] **Step 5: Add anonymous controller and register service**
+- [x] **Step 5: Add anonymous controller and register service**
 
 ```csharp
 [ApiController]
@@ -208,7 +208,7 @@ public sealed class SkillTreesController(SkillTreeQueryService service) : Contro
 }
 ```
 
-- [ ] **Step 6: Run focused tests and commit**
+- [x] **Step 6: Run focused tests and commit**
 
 Expected: all `SkillTreeQueryTests` pass, and the command log contains a bounded number of SQL commands independent of category count.
 
@@ -228,7 +228,7 @@ git commit -m "feat: expose public skill tree queries"
 - Create: `src/GZCTF/Features/SkillTrees/Api/AdminSkillTreesController.cs`
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreePublishingTests.cs`
 
-- [ ] **Step 1: Add failing publication tests**
+- [x] **Step 1: Add failing publication tests**
 
 ```csharp
 [Fact]
@@ -258,11 +258,11 @@ public async Task Stale_row_version_does_not_switch_published_revision()
 
 Also assert duplicate category IDs and noncontinuous sort order return `400`, and readers see either the old complete revision or the new complete revision during publish.
 
-- [ ] **Step 2: Run red test**
+- [x] **Step 2: Run red test**
 
 Expected: `404` for the admin route.
 
-- [ ] **Step 3: Define commands and admin responses**
+- [x] **Step 3: Define commands and admin responses**
 
 ```csharp
 public sealed record CreateSkillTreeCommand(string Name, string Summary, string IconKey);
@@ -279,17 +279,17 @@ public sealed record SkillTreeDraftResponse(
     uint RowVersion, IReadOnlyList<SkillTreeCategoryAdminResponse> Categories);
 ```
 
-- [ ] **Step 4: Implement draft lifecycle**
+- [x] **Step 4: Implement draft lifecycle**
 
 `CreateAsync` validates trimmed name and icon, then creates a tree plus one empty draft. `GetDraftAsync` copies only category references from the current published revision when no draft exists. `UpdateDraftAsync` replaces draft refs after verifying all category IDs are active and unique, then normalizes sort order to `0..n-1`.
 
 `PublishAsync` must run in a serializable transaction, execute `SELECT "Id" ... FOR UPDATE`, verify revision `xmin`, archive the old published revision, mark the draft published, switch `CurrentPublishedRevisionId`, commit, and leave no draft. Empty `Categories` is valid.
 
-- [ ] **Step 5: Map stable problems in controller**
+- [x] **Step 5: Map stable problems in controller**
 
 Every endpoint catches only known domain exceptions. Map validation to `400`, not found to `404`, row version conflict to `409`. Add `code` through `ProblemDetails.Extensions["code"]`.
 
-- [ ] **Step 6: Run tests and commit**
+- [x] **Step 6: Run tests and commit**
 
 Run `SkillTreePublishingTests` twice. Expected: all pass and no orphan draft is created.
 
@@ -308,7 +308,7 @@ git commit -m "feat: publish skill tree revisions"
 - Create: `src/GZCTF/Features/SkillTrees/Api/AdminSkillCategoriesController.cs`
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillCategoryTests.cs`
 
-- [ ] **Step 1: Add failing shared-content tests**
+- [x] **Step 1: Add failing shared-content tests**
 
 ```csharp
 [Fact]
@@ -328,7 +328,7 @@ public async Task Reordering_one_category_changes_every_referencing_tree()
 
 Also cover orphan category creation, editing metadata, tree membership reporting, duplicate content rejection, invalid kind, deleted content, and continuous order normalization.
 
-- [ ] **Step 2: Define category contracts**
+- [x] **Step 2: Define category contracts**
 
 ```csharp
 public sealed record SkillCategoryCommand(string Name, string Summary, string IconKey, uint? RowVersion);
@@ -346,17 +346,17 @@ public sealed record SkillCategoryAdminResponse(
 public sealed record CategoryTreeReferenceResponse(Guid SkillTreeId, string Name, bool IsPublished);
 ```
 
-- [ ] **Step 3: Implement category service**
+- [x] **Step 3: Implement category service**
 
 Create and update validate the fixed icon catalog. Listing returns active categories including orphans. Tree membership includes active draft and current published references but de-duplicates by tree ID. Content replacement validates exactly one of challenge/lesson per command, checks publication state, removes active rows, inserts normalized rows, and saves once inside a transaction.
 
 `UpdateTreeMembershipsAsync` locks affected trees in ID order, verifies every tree row version, creates a draft from the current published revision when needed, adds the category at the end or removes it from each draft, and normalizes draft order. It never mutates a published revision and never publishes automatically. Return affected draft IDs so the administrator can preview and publish each tree explicitly.
 
-- [ ] **Step 4: Implement controller and cache invalidation seam**
+- [x] **Step 4: Implement controller and cache invalidation seam**
 
 Introduce `ISkillTreeCacheInvalidator.InvalidateByCategoryAsync(Guid, CancellationToken)` with a no-op implementation until a distributed cache is added. Call it only after the transaction commits. Tests inject a spy and assert one invalidation per successful mutation and zero on rollback.
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Application/SkillCategoryService.cs \
@@ -372,7 +372,7 @@ git commit -m "feat: manage shared skill categories"
 - Modify: `src/GZCTF/Features/SkillTrees/Api/AdminSkillCategoriesController.cs`
 - Modify: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillCategoryTests.cs`
 
-- [ ] **Step 1: Add failing delete and merge tests**
+- [x] **Step 1: Add failing delete and merge tests**
 
 ```csharp
 [Fact]
@@ -402,7 +402,7 @@ public async Task Merge_deduplicates_tree_and_content_refs_and_keeps_survivor_or
 
 Also assert a stale version rolls back every change, self-merge fails, deleted categories cannot be merged, and duplicate tree refs are reduced to one per revision with continuous order.
 
-- [ ] **Step 2: Define impact and mutation contracts**
+- [x] **Step 2: Define impact and mutation contracts**
 
 ```csharp
 public sealed record CategoryDeleteImpactResponse(
@@ -414,15 +414,15 @@ public sealed record MergeSkillCategoryCommand(
     uint SurvivorRowVersion, uint DuplicateRowVersion);
 ```
 
-- [ ] **Step 3: Implement delete transaction**
+- [x] **Step 3: Implement delete transaction**
 
 Lock category row, re-read impact, verify full trimmed name and version, set `DeletedAtUtc`, remove refs only from draft revisions, retain published refs and all `CategoryContent` rows, save, commit, invalidate referencing trees. Public queries already filter deleted categories.
 
-- [ ] **Step 4: Implement merge transaction**
+- [x] **Step 4: Implement merge transaction**
 
 Lock category IDs in sorted order to prevent deadlock. For every revision referencing the duplicate, keep an existing survivor ref or retarget the duplicate ref, then normalize revision order. Append duplicate-only content after survivor content in duplicate sort order; remove duplicate content rows already present on survivor. Set duplicate `DeletedAtUtc` and `MergedIntoCategoryId`. Catch unique/concurrency violations, roll back, return `409 skill_category_merge_conflict`.
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Application/SkillCategoryService.cs \
@@ -440,7 +440,7 @@ git commit -m "feat: merge and soft delete skill categories"
 - Modify: `src/GZCTF/Features/ChallengeLibrary/Api/AdminLessonsController.cs`
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/ContentPublicationTests.cs`
 
-- [ ] **Step 1: Add failing publication matrix**
+- [x] **Step 1: Add failing publication matrix**
 
 Use one theory for challenge and lesson:
 
@@ -464,7 +464,7 @@ public async Task Draft_can_be_uncategorized_but_publish_requires_active_tree_ca
 
 Add cases for multiple categories, duplicate IDs, inactive category, re-publication changing categories, default append order, and one transaction rollback.
 
-- [ ] **Step 2: Define publication command**
+- [x] **Step 2: Define publication command**
 
 ```csharp
 public sealed record InlineSkillCategoryCommand(
@@ -490,13 +490,13 @@ Add these values to `ChallengeEditResponse` and `LessonResponse`. Never include 
 
 Each inline category targets exactly one active skill tree. A tree with an empty current published revision gets a new draft copied from current, the category is appended, and that draft is published in the same transaction as content publication.
 
-- [ ] **Step 3: Implement the common transaction**
+- [x] **Step 3: Implement the common transaction**
 
 `PublishChallengeAsync` and `PublishLessonAsync` call one private generic transaction body. It validates content row version and publishable localized content, creates inline categories, attaches them to the selected trees, validates every final category belongs to at least one active tree draft or current revision, replaces category links, appends with `max(SortOrder) + 1`, changes state to `Published`, and commits once.
 
 If the selected tree already has categories, inline creation remains allowed and appends the new category. If a tree has no draft, create one from current before adding; if it has no published revision, use its existing draft and publish it. Any error rolls back tree, category, links, and publication state together.
 
-- [ ] **Step 4: Add controller endpoints**
+- [x] **Step 4: Add controller endpoints**
 
 ```csharp
 [HttpPost("{id:guid}/publish")]
@@ -509,11 +509,11 @@ public async Task<IActionResult> Publish(Guid id, PublishContentCommand command,
 
 Use the equivalent method for lessons. Keep existing save endpoints as draft saves; changing `PublicationState` directly through `ChallengeCommand` or `LessonCommand` must be ignored or rejected so publication cannot bypass category validation.
 
-- [ ] **Step 5: Run focused and runtime regression tests**
+- [x] **Step 5: Run focused and runtime regression tests**
 
 Run `ContentPublicationTests`, `ChallengeLibraryTests`, `ChallengeModeContractTests`, and `ChallengeHelpTests`. Expected: all pass; the four runtime modes, hints, and WP remain unchanged.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Application/ContentPublicationService.cs \
@@ -532,7 +532,7 @@ git commit -m "feat: publish categorized challenges and lessons"
 - Modify: `src/GZCTF/Features/SkillTrees/Api/AdminSkillTreesController.cs`
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeEnrollmentTests.cs`
 
-- [ ] **Step 1: Add failing enrollment and progress tests**
+- [x] **Step 1: Add failing enrollment and progress tests**
 
 ```csharp
 [Fact]
@@ -559,7 +559,7 @@ public async Task Deleting_current_tree_clears_pointer_but_keeps_enrollment_and_
 
 Also cover first enrollment becoming current, selecting another tree, leaving current tree, rejecting deleted/unpublished tree enrollment, and category progress computed with distinct content IDs.
 
-- [ ] **Step 2: Define contracts**
+- [x] **Step 2: Define contracts**
 
 ```csharp
 public sealed record SkillTreeEnrollmentResponse(
@@ -580,19 +580,19 @@ public sealed record SkillTreeDeleteImpactResponse(
 public sealed record DeleteSkillTreeCommand(string ConfirmationName, uint RowVersion);
 ```
 
-- [ ] **Step 3: Implement enrollment transactions**
+- [x] **Step 3: Implement enrollment transactions**
 
 Enroll only active published trees. In a serializable transaction, insert once and mark current only when the user has no current active enrollment. Selecting clears every current row for the user before setting the target. Leaving deletes only the enrollment; when leaving current, do not guess a replacement.
 
-- [ ] **Step 4: Implement live progress projection**
+- [x] **Step 4: Implement live progress projection**
 
 Load the user's enrollments, current published category refs, active category contents, `ChallengeProgress`, and `LessonProgress` in bounded set queries. For each tree use distinct challenge/lesson IDs. A category is complete only when it has at least one active published content item and every distinct item is complete. Deleted trees use their retained last published revision for history and are marked `IsDeleted`.
 
-- [ ] **Step 5: Implement tree impact and soft delete**
+- [x] **Step 5: Implement tree impact and soft delete**
 
 Impact counts distinct active categories, challenges, lessons, and enrollments. Delete locks the tree, verifies version and exact trimmed name when impact requires it, sets `DeletedAtUtc`, clears `IsCurrent` on all its enrollments, retains revisions, refs, categories, content and progress, commits, then invalidates the tree cache.
 
-- [ ] **Step 6: Run tests and commit**
+- [x] **Step 6: Run tests and commit**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Application \
@@ -607,7 +607,7 @@ git commit -m "feat: track skill tree enrollment and learning records"
 - Modify: `src/GZCTF/Features/SkillTrees/Api/*.cs`
 - Modify generated: `src/GZCTF/ClientApp/src/Api.ts`
 
-- [ ] **Step 1: Verify OpenAPI tags before generation**
+- [x] **Step 1: Verify OpenAPI tags before generation**
 
 Controllers must use stable names or explicit tags: `SkillTrees`, `AdminSkillTrees`, `AdminSkillCategories`, `SkillTreeEnrollments`, `MyLearning`, `AdminChallenges`, and `AdminLessons`. Start the app and assert:
 
@@ -620,7 +620,7 @@ jq -e '.paths["/api/my-learning"]' /tmp/gzctf-openapi.json
 
 Expected: every command and response schema is present and no administrator write route is anonymous.
 
-- [ ] **Step 2: Regenerate the client**
+- [x] **Step 2: Regenerate the client**
 
 ```bash
 cd src/GZCTF/ClientApp
@@ -633,11 +633,11 @@ Do not edit `Api.ts` by hand. Search for generated modules and stable fields:
 rg -n 'SkillTrees|AdminSkillTrees|AdminSkillCategories|MyLearning|content_category_required' src/Api.ts
 ```
 
-- [ ] **Step 3: Compile both sides**
+- [x] **Step 3: Compile both sides**
 
 Run backend build, focused ST2 integration tests, `pnpm check`, and `pnpm build`. Expected: zero errors.
 
-- [ ] **Step 4: Commit generated contract**
+- [x] **Step 4: Commit generated contract**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Api src/GZCTF/ClientApp/src/Api.ts
@@ -649,7 +649,7 @@ git commit -m "chore: generate skill tree api client"
 **Files:**
 - Modify only failing test or implementation files identified by this gate.
 
-- [ ] **Step 1: Run focused API suite**
+- [x] **Step 1: Run focused API suite**
 
 ```bash
 docker run --rm \
@@ -665,15 +665,15 @@ docker run --rm \
   --filter 'FullyQualifiedName~SkillTree'
 ```
 
-- [ ] **Step 2: Run complete backend suites**
+- [x] **Step 2: Run complete backend suites**
 
 Run the roadmap unit and integration commands. Expected: no failure and existing `/api/learning-paths` tests still pass.
 
-- [ ] **Step 3: Inspect security and performance boundaries**
+- [x] **Step 3: Inspect security and performance boundaries**
 
 Capture the public list and detail JSON. Assert no `flag`, `tokenHash`, `writeup.content`, unpublished body, email, real name, or student number occurs. With 1 and 20 categories, assert detail SQL command count is constant.
 
-- [ ] **Step 4: Check repository diff**
+- [x] **Step 4: Check repository diff**
 
 ```bash
 git diff --check
@@ -684,13 +684,13 @@ Expected: no whitespace error; only intended ST2 changes remain.
 
 ## Wave ST2 completion checklist
 
-- [ ] 空技能树可发布和匿名查看。
-- [ ] 技能树结构发布原子切换，过期行版本返回稳定 `409`。
-- [ ] 同一类别的内容与顺序在所有技能树实时一致。
-- [ ] 未分类草稿允许保存，未分类或孤儿类别内容不能发布。
-- [ ] 空技能树可在内容发布事务内创建类别并完成发布。
-- [ ] 类别删除和合并保留题目、课节、完成记录及发布审计引用。
-- [ ] 技能树删除清除当前指针并保留历史。
-- [ ] 共享题目只存一条完成记录，并在所有技能树进度中计入。
-- [ ] OpenAPI 和 `Api.ts` 由运行中的服务生成且能编译。
-- [ ] 旧 Learning API 在本阶段仍可用。
+- [x] 空技能树可发布和匿名查看。
+- [x] 技能树结构发布原子切换，过期行版本返回稳定 `409`。
+- [x] 同一类别的内容与顺序在所有技能树实时一致。
+- [x] 未分类草稿允许保存，未分类或孤儿类别内容不能发布。
+- [x] 空技能树可在内容发布事务内创建类别并完成发布。
+- [x] 类别删除和合并保留题目、课节、完成记录及发布审计引用。
+- [x] 技能树删除清除当前指针并保留历史。
+- [x] 共享题目只存一条完成记录，并在所有技能树进度中计入。
+- [x] OpenAPI 和 `Api.ts` 由运行中的服务生成且能编译。
+- [x] 旧 Learning API 在本阶段仍可用。

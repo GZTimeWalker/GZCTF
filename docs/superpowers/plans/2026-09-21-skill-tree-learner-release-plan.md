@@ -67,7 +67,7 @@
 - Create: `src/GZCTF/ClientApp/src/pages/skill-trees/Index.tsx`
 - Create: `src/GZCTF/ClientApp/tests/e2e/skill-tree-card.spec.ts`
 
-- [ ] **Step 1: Add failing card contract test**
+- [x] **Step 1: Add failing card contract test**
 
 ```ts
 import { expect, test } from '@playwright/test'
@@ -90,7 +90,7 @@ test('shows public counts and never renders aggregate progress', async ({ page }
 })
 ```
 
-- [ ] **Step 2: Implement learner hooks**
+- [x] **Step 2: Implement learner hooks**
 
 ```ts
 export const skillTreeKeys = {
@@ -107,15 +107,15 @@ export const useSkillTree = (id?: string) =>
 
 Mutation helpers invalidate list only when counts or visibility change; enrollment mutations invalidate enrollments, detail controls and personal record, without refetching static challenge data.
 
-- [ ] **Step 3: Implement cards**
+- [x] **Step 3: Implement cards**
 
 Map `IconKey` through the fixed icon map. Card displays icon, name, summary, category count, challenge count and lesson count, and links by ID to `/skill-trees/{id}`. It must not read auth state or progress.
 
-- [ ] **Step 4: Implement discovery states**
+- [x] **Step 4: Implement discovery states**
 
 `/skill-trees` handles loading skeleton, network error with retry, no published trees, and responsive card grid. A published empty tree appears normally with all counts zero.
 
-- [ ] **Step 5: Run frontend checks and commit**
+- [x] **Step 5: Run frontend checks and commit**
 
 ```bash
 cd src/GZCTF/ClientApp
@@ -136,13 +136,13 @@ git commit -m "feat: add skill tree discovery page"
 - Modify: `src/GZCTF/ClientApp/src/components/learning/ChallengeWorkspace.tsx`
 - Modify: `src/GZCTF/ClientApp/src/components/learning/LessonWorkspace.tsx`
 
-- [ ] **Step 1: Implement detail outline**
+- [x] **Step 1: Implement detail outline**
 
 Render tree icon, name and summary, followed by categories in API order and content in each category's global order. Content rows show title, kind, expected minutes and challenge difficulty. A tree with no categories renders the translated “内容建设中” state.
 
 Do not show route completion percentage, completed module count, completed lesson count, progress bar, or leaderboard.
 
-- [ ] **Step 2: Build deterministic content links**
+- [x] **Step 2: Build deterministic content links**
 
 ```ts
 const contentHref = (
@@ -154,19 +154,19 @@ const contentHref = (
 
 Validate `kind` at render and route time; any value other than `challenge` or `lesson` displays the 404 page.
 
-- [ ] **Step 3: Reuse existing workspaces**
+- [x] **Step 3: Reuse existing workspaces**
 
 The route wrapper checks authentication and enrollment before requesting protected bodies or starting instances. For `challenge`, render `ChallengeWorkspace` with `challengeId`. For `lesson`, render `LessonWorkspace` with `lessonId`. Add optional `backHref`, `previousHref`, and `nextHref` props rather than duplicating runtime/help/submission logic.
 
-- [ ] **Step 4: Calculate previous and next links within the displayed tree**
+- [x] **Step 4: Calculate previous and next links within the displayed tree**
 
 Flatten category contents in category order and content order. Locate the current tuple `(categoryId, kind, contentId)`. Previous and next use adjacent tuples. Shared content reached from another tree stays in that tree's navigation context.
 
-- [ ] **Step 5: Verify shared category behavior**
+- [x] **Step 5: Verify shared category behavior**
 
 Open two trees sharing a category. Assert names and global content order match while category placement relative to other categories follows each tree's revision order.
 
-- [ ] **Step 6: Run checks and commit**
+- [x] **Step 6: Run checks and commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/components/skill-trees \
@@ -185,15 +185,15 @@ git commit -m "feat: add skill tree detail and workspaces"
 - Modify: `src/GZCTF/ClientApp/src/pages/account/Learning.tsx`
 - Modify: `src/GZCTF/ClientApp/src/hooks/useSkillTrees.ts`
 
-- [ ] **Step 1: Implement enrollment controls**
+- [x] **Step 1: Implement enrollment controls**
 
 Anonymous visitors see a login link. Logged-in users see one of: join, leave, set current, or current badge. Disable every control during mutation. Leaving a current tree shows an ordinary confirmation explaining that no replacement is selected automatically.
 
-- [ ] **Step 2: Keep progress out of discovery and detail**
+- [x] **Step 2: Keep progress out of discovery and detail**
 
 The detail page may show per-content solved/completed markers only when the API already returns them for an authenticated learner. It must not calculate or show the aggregate strings `38%`, `3 / 8`, `16 / 42`, route progress, completed categories, or completed lessons.
 
-- [ ] **Step 3: Build personal learning record**
+- [x] **Step 3: Build personal learning record**
 
 Only `/account/learning` renders:
 
@@ -206,11 +206,11 @@ Only `/account/learning` renders:
 
 Compute the percentage from distinct challenge and lesson totals returned by the API; when total content is zero, render `0%` rather than divide by zero. Deleted trees display a historical badge and no action controls.
 
-- [ ] **Step 4: Verify migrated enrollments**
+- [x] **Step 4: Verify migrated enrollments**
 
 Seed an old Learning enrollment before ST1 backfill, start the upgraded app, sign in, and assert the matching skill tree is joined and current. Complete one shared challenge and assert both joined tree records update while the database still contains one progress row.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/components/skill-trees \
@@ -233,7 +233,7 @@ git commit -m "feat: add skill tree enrollment and records"
 - Modify: `src/GZCTF/ClientApp/src/locales/zh-CN/skillTrees.json`
 - Modify: `src/GZCTF/ClientApp/src/locales/en-US/skillTrees.json`
 
-- [ ] **Step 1: Add failing redirect integration tests**
+- [x] **Step 1: Add failing redirect integration tests**
 
 ```csharp
 [Fact]
@@ -257,19 +257,19 @@ public async Task Old_deep_link_uses_migrated_module_and_item_ids()
 
 Add lesson deep link, unknown slug, mismatched module/item, and deleted tree cases. Unknown or invalid mappings return `404`, never guess a target.
 
-- [ ] **Step 2: Implement redirect lookup**
+- [x] **Step 2: Implement redirect lookup**
 
 The service queries `LearningPathRedirects` by exact old slug. Without IDs it returns the tree path. With both IDs it verifies `SkillCategory.Id == moduleId`, `CategoryContent.Id == itemId`, resolves content kind and target ID, and returns the new workspace path. Use retained published audit references so an old bookmark can resolve even after current category changes; return `404` when the target tree is deleted.
 
-- [ ] **Step 3: Replace old pages with route adapters**
+- [x] **Step 3: Replace old pages with route adapters**
 
 `/learn` returns `<Navigate replace to="/skill-trees" />`. Slug routes fetch the redirect API, render a small loading state, then call `navigate(targetPath, { replace: true })`. On `404` render the normal not-found page.
 
-- [ ] **Step 4: Rename navigation**
+- [x] **Step 4: Rename navigation**
 
 Replace `mdiFlagOutline` for the main learning entry with `mdiFileTreeOutline`, label it from `skillTrees:navigation.title`, and link to `/skill-trees`. Change the admin link to `/admin/skill-trees`. The account route may remain `/account/learning`, but visible copy must use skill tree terminology.
 
-- [ ] **Step 5: Search visible old terminology**
+- [x] **Step 5: Search visible old terminology**
 
 ```bash
 rg -n '学习路线|学习模块|Learning Path|Learning Module|/admin/learning-paths' \
@@ -278,7 +278,7 @@ rg -n '学习路线|学习模块|Learning Path|Learning Module|/admin/learning-p
 
 Expected: only migration notes, compatibility redirect keys, or intentionally historical text remain.
 
-- [ ] **Step 6: Run tests and commit**
+- [x] **Step 6: Run tests and commit**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Application/LearningRedirectService.cs \
@@ -307,7 +307,7 @@ git commit -m "feat: cut navigation over to skill trees"
 - Delete: `src/GZCTF/ClientApp/src/pages/admin/learning-paths/**`
 - Regenerate: `src/GZCTF/ClientApp/src/Api.ts`
 
-- [ ] **Step 1: Add a failing legacy-surface test**
+- [x] **Step 1: Add a failing legacy-surface test**
 
 Update `LegacySurfaceTests` with exact assertions:
 
@@ -324,15 +324,15 @@ public async Task Retired_learning_apis_are_not_routable(string route)
 
 Keep `/api/skill-tree-redirects/{slug}` covered and available.
 
-- [ ] **Step 2: Remove HTTP controllers and unused services**
+- [x] **Step 2: Remove HTTP controllers and unused services**
 
 Delete only code with no caller after the skill tree cutover. Retain `LearningPathModels.cs`, EF mapping, source tables, `Lesson`, `LessonProgress`, migration code and backfill inputs. If lesson content authorization still lives in an old service, move it to `SkillTreeEnrollmentService` before deleting the service.
 
-- [ ] **Step 3: Remove old frontend pages and helpers**
+- [x] **Step 3: Remove old frontend pages and helpers**
 
 Keep the three `/learn` redirect adapters. Remove old route cards, module outline, LearningPath hooks and admin JSON editor. Move reusable challenge/lesson helpers to `useChallengeLibraryAdmin.ts` so no SkillTree page imports `useAdminLearning.ts`.
 
-- [ ] **Step 4: Regenerate API and prove removal**
+- [x] **Step 4: Regenerate API and prove removal**
 
 Start the backend, run `pnpm genapi`, then:
 
@@ -343,11 +343,11 @@ rg -n '/api/learning-paths|AdminLearningPaths|LearningPathSummaryResponse|Learni
 
 Expected: matches exist only in migration/backfill entities, retained database mapping, redirect compatibility tests, and historical docs. `Api.ts` has no old HTTP modules.
 
-- [ ] **Step 5: Run build and tests before commit**
+- [x] **Step 5: Run build and tests before commit**
 
 Run backend build, all Learning/SkillTree integration tests, frontend unit tests, typecheck and build. Expected: all pass.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -A src/GZCTF/Features/LearningPaths \
@@ -366,7 +366,7 @@ git commit -m "refactor: retire learning path application surface"
 - Modify: `src/GZCTF.Integration.Test/Tests/Runtime/ChallengeModeContractTests.cs`
 - Modify: `src/GZCTF.Integration.Test/Tests/Dashboard/DashboardProjectionTests.cs`
 
-- [ ] **Step 1: Add upgraded-database parity test**
+- [x] **Step 1: Add upgraded-database parity test**
 
 Seed the last pre-skill-tree schema with paths, same-name modules, lessons, all four challenge modes, enrollments, current selection, lesson progress and challenge progress. Apply current migrations and backfill twice. Assert:
 
@@ -382,7 +382,7 @@ Assert.Equal(sourceModuleCount, await db.SkillCategories.CountAsync(x => x.Name 
 
 The final assertion proves same-name modules remain independent.
 
-- [ ] **Step 2: Prove four challenge modes through skill tree links**
+- [x] **Step 2: Prove four challenge modes through skill tree links**
 
 For static attachment, dynamic attachment, static container and dynamic container:
 
@@ -396,15 +396,15 @@ For static attachment, dynamic attachment, static container and dynamic containe
 
 Reuse `ChallengeModeFixtures`; do not duplicate container implementation in the test.
 
-- [ ] **Step 3: Prove ZIP import behavior**
+- [x] **Step 3: Prove ZIP import behavior**
 
 Run the existing legacy ZIP import twice. Assert every imported game creates one draft tree, each source category creates an independent category, challenges retain source mapping/runtime/flags/attachment hashes, and no tree, category or content association duplicates.
 
-- [ ] **Step 4: Prove dashboard totals remain global**
+- [x] **Step 4: Prove dashboard totals remain global**
 
 Solve one challenge referenced by two categories and two trees. Assert the large-screen cumulative series and Top leaderboard count the member's distinct solved challenge once. Filter by cohort/year and assert the same global progress source is used; skill tree association must not multiply dashboard totals.
 
-- [ ] **Step 5: Add visitor and learner Playwright journey**
+- [x] **Step 5: Add visitor and learner Playwright journey**
 
 The suite performs:
 
@@ -419,11 +419,11 @@ The suite performs:
 
 Fail on console errors, page errors and responses `>= 500`.
 
-- [ ] **Step 6: Add bounded-query performance assertion**
+- [x] **Step 6: Add bounded-query performance assertion**
 
 Use EF command interception around `GET /api/skill-trees/{id}`. Seed 1 category and record command count, then seed 50 categories with 20 items each and repeat. Assert the latter count is no more than the baseline plus one. Assert response size grows with content but no protected body or repeated category graph is serialized.
 
-- [ ] **Step 7: Run all release behavior suites**
+- [x] **Step 7: Run all release behavior suites**
 
 ```bash
 docker run --rm \
@@ -453,7 +453,7 @@ pnpm test:e2e
 
 Expected: all pass.
 
-- [ ] **Step 8: Commit evidence tests**
+- [x] **Step 8: Commit evidence tests**
 
 ```bash
 git add src/GZCTF.Integration.Test/Tests/SkillTrees \
@@ -469,7 +469,7 @@ git commit -m "test: prove skill tree behavior parity"
 - Create: `scripts/verify-skill-tree-release.sh`
 - Modify only deployment files when a verified regression requires it; expected result is no deployment contract change.
 
-- [ ] **Step 1: Add executable release script**
+- [x] **Step 1: Add executable release script**
 
 ```bash
 #!/usr/bin/env bash
@@ -524,19 +524,19 @@ docker inspect "$app" --format '{{json .Config.Entrypoint}} {{json .Config.Cmd}}
 
 Adjust only the existing health path if repository configuration proves a different current path; do not invent a new endpoint for this script.
 
-- [ ] **Step 2: Verify image metadata**
+- [x] **Step 2: Verify image metadata**
 
 Inspect entrypoint, exposed ports, non-root user policy if present, image size and healthcheck. Confirm the command still launches `dotnet GZCTF.dll`, application responds on 8080, and metrics/health responds on 3000.
 
-- [ ] **Step 3: Verify persistent upgrade**
+- [x] **Step 3: Verify persistent upgrade**
 
 Start the previous released image against a named PostgreSQL volume, seed/import representative data, stop only the app, then start the new image against the same volume. Assert accounts and admin roles remain, skill tree backfill succeeds, learning progress follows the approved migration behavior, and a second restart changes no migrated counts.
 
-- [ ] **Step 4: Verify storage and runtime providers**
+- [x] **Step 4: Verify storage and runtime providers**
 
 Run one disk storage attachment flow and one MinIO/S3 integration flow. Run static and dynamic containers with Docker. Run the existing Kubernetes integration mode for allocation, cleanup and traffic routing. Redis-enabled and Redis-absent supported configurations must both start according to existing configuration semantics.
 
-- [ ] **Step 5: Inspect compose and Kubernetes diff**
+- [x] **Step 5: Inspect compose and Kubernetes diff**
 
 ```bash
 git diff -- Dockerfile docker-compose.yml configs charts manifests .github/workflows
@@ -544,7 +544,7 @@ git diff -- Dockerfile docker-compose.yml configs charts manifests .github/workf
 
 Expected: no port, entrypoint, environment prefix, volume, readiness, storage, Redis, Docker socket or Kubernetes service contract changed solely for the skill tree feature.
 
-- [ ] **Step 6: Run final repository checks**
+- [x] **Step 6: Run final repository checks**
 
 ```bash
 git diff --check
@@ -554,7 +554,7 @@ rg -n '/api/learning-paths|admin/learning-paths|LearningPathSummaryResponse|Lear
 
 Expected search results are limited to migration/backfill, retained EF entities, redirect compatibility and historical tests.
 
-- [ ] **Step 7: Commit release verification**
+- [x] **Step 7: Commit release verification**
 
 ```bash
 chmod +x scripts/verify-skill-tree-release.sh
@@ -564,17 +564,17 @@ git commit -m "test: verify skill tree release image"
 
 ## Wave ST4 completion checklist
 
-- [ ] `/skill-trees` 和 `/skill-trees/{id}` 对访客可见且不显示聚合进度。
-- [ ] 课节和题目工作区要求登录及加入技能树，并复用已有运行、提示和 WP 行为。
-- [ ] 学员可以加入多棵树并设置一棵当前树。
-- [ ] 聚合完成率、类别、课节和解题统计只在个人中心学习记录显示。
-- [ ] `/learn`、旧 slug 和旧深链全部正确 replace 到新地址。
-- [ ] 可见术语和导航统一为技能树与类别。
-- [ ] 旧 Learning HTTP API 和前端生成类型已退役，数据库表仍保留。
-- [ ] 旧数据库升级和重复启动幂等，迁移计数与关联一致。
-- [ ] 静态附件、动态附件、静态容器、动态容器全部通过。
-- [ ] ZIP 导入重复执行不产生重复树、类别或内容关联。
-- [ ] 大屏累计曲线和排行榜按不同已解题统计，不因共享类别重复计数。
-- [ ] 技能树详情无 N+1 查询和无界实体序列化。
-- [ ] 中文、英文、访客、学员、管理员和旧地址浏览器流程全部通过。
-- [ ] 生产镜像入口、端口、健康、Redis、存储、Docker 和 Kubernetes 合同保持不变。
+- [x] `/skill-trees` 和 `/skill-trees/{id}` 对访客可见且不显示聚合进度。
+- [x] 课节和题目工作区要求登录及加入技能树，并复用已有运行、提示和 WP 行为。
+- [x] 学员可以加入多棵树并设置一棵当前树。
+- [x] 聚合完成率、类别、课节和解题统计只在个人中心学习记录显示。
+- [x] `/learn`、旧 slug 和旧深链全部正确 replace 到新地址。
+- [x] 可见术语和导航统一为技能树与类别。
+- [x] 旧 Learning HTTP API 和前端生成类型已退役，数据库表仍保留。
+- [x] 旧数据库升级和重复启动幂等，迁移计数与关联一致。
+- [x] 静态附件、动态附件、静态容器、动态容器全部通过。
+- [x] ZIP 导入重复执行不产生重复树、类别或内容关联。
+- [x] 大屏累计曲线和排行榜按不同已解题统计，不因共享类别重复计数。
+- [x] 技能树详情无 N+1 查询和无界实体序列化。
+- [x] 中文、英文、访客、学员、管理员和旧地址浏览器流程全部通过。
+- [x] 生产镜像入口、端口、健康、Redis、存储、Docker 和 Kubernetes 合同保持不变。

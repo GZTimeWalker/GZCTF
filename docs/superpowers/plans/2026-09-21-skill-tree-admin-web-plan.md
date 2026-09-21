@@ -87,7 +87,7 @@ export const skillTreeAdminKeys = {
 - Create: `src/GZCTF/ClientApp/src/components/admin/skill-trees/SkillTreeForm.tsx`
 - Create: `src/GZCTF/ClientApp/src/pages/admin/skill-trees/Index.tsx`
 
-- [ ] **Step 1: Write failing utility tests**
+- [x] **Step 1: Write failing utility tests**
 
 ```ts
 import { describe, expect, it } from 'vitest'
@@ -107,7 +107,7 @@ describe('skill tree admin utilities', () => {
 })
 ```
 
-- [ ] **Step 2: Run the red unit test**
+- [x] **Step 2: Run the red unit test**
 
 ```bash
 cd src/GZCTF/ClientApp
@@ -116,7 +116,7 @@ pnpm vitest run src/utils/skillTreeAdmin.test.ts
 
 Expected: module resolution fails because `skillTreeAdmin.ts` does not exist.
 
-- [ ] **Step 3: Implement utilities and hooks**
+- [x] **Step 3: Implement utilities and hooks**
 
 Implement the exact icon map and order helper above. `useSkillTreeAdmin` exports:
 
@@ -129,7 +129,7 @@ export const useAdminSkillTreeDraft = (id?: string) =>
 
 Wrap generated mutation calls with functions `createTree`, `saveTreeDraft`, `publishTree`, `deleteTree`, `createCategory`, `saveCategory`, `sortCategoryContents`, `mergeCategories`, and `deleteCategory`. Each successful mutation calls `mutate` only for its list, detail, preview, impact, and affected public skill tree keys.
 
-- [ ] **Step 4: Implement preset icon picker**
+- [x] **Step 4: Implement preset icon picker**
 
 Render six `UnstyledButton` items with Emoji, translated label, `aria-pressed`, and keyboard focus. The component accepts:
 
@@ -144,13 +144,13 @@ type PresetIconPickerProps = {
 
 Do not render a free text icon input.
 
-- [ ] **Step 5: Implement tree creation page**
+- [x] **Step 5: Implement tree creation page**
 
 `SkillTreeForm` accepts `name`, `summary`, `iconKey`, validation errors and submit callback. Trim name on submit; name is required and limited by the generated schema constraint. `/admin/skill-trees` renders list cards plus a creation form. On success navigate to `/admin/skill-trees/{skillTreeId}`.
 
 The page must contain no `Textarea` labelled JSON, no slug input, no locale picker, and no UUID input.
 
-- [ ] **Step 6: Run unit, type, and build checks**
+- [x] **Step 6: Run unit, type, and build checks**
 
 ```bash
 pnpm test:unit
@@ -160,7 +160,7 @@ pnpm build
 
 Expected: all pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/utils/skillTreeAdmin* \
@@ -178,7 +178,7 @@ git commit -m "feat: add skill tree admin creation"
 - Create: `src/GZCTF/ClientApp/src/pages/admin/skill-trees/[id].tsx`
 - Modify: `src/GZCTF/ClientApp/src/utils/skillTreeAdmin.test.ts`
 
-- [ ] **Step 1: Add failing reorder tests**
+- [x] **Step 1: Add failing reorder tests**
 
 ```ts
 import { moveItem } from './skillTreeAdmin'
@@ -192,7 +192,7 @@ it('moves a category and emits continuous order', () => {
 })
 ```
 
-- [ ] **Step 2: Implement immutable reorder helper**
+- [x] **Step 2: Implement immutable reorder helper**
 
 ```ts
 export const moveItem = <T>(items: T[], from: number, to: number) => {
@@ -203,25 +203,25 @@ export const moveItem = <T>(items: T[], from: number, to: number) => {
 }
 ```
 
-- [ ] **Step 3: Build existing-category picker and inline create**
+- [x] **Step 3: Build existing-category picker and inline create**
 
 The picker searches active categories by name, disables categories already selected, and exposes a “创建类别” action. Inline form contains name, summary, preset icon. On create success it appends the returned category to local draft state without publishing the tree.
 
-- [ ] **Step 4: Build sortable category cards**
+- [x] **Step 4: Build sortable category cards**
 
 Use native pointer/keyboard controls so no dependency is added. Each card has move up, move down and remove buttons with translated `aria-label`. Removal only removes the draft reference and states that the global category remains.
 
-- [ ] **Step 5: Build tree editor page**
+- [x] **Step 5: Build tree editor page**
 
 Load draft and all categories. Keep server `rowVersion` in form state. Save sends normalized category IDs and order. Preview opens a read-only modal built from the draft preview response. Publish saves first when dirty, then publishes with the returned row version. An empty category list is valid and displays the “内容建设中” preview.
 
 When a request returns `skill_tree_revision_conflict`, keep local values, show a notification, and offer a single reload button. Do not silently overwrite the server draft.
 
-- [ ] **Step 6: Verify empty and populated publication**
+- [x] **Step 6: Verify empty and populated publication**
 
 Run the page against the local backend. Publish once with zero categories and once with two categories after changing their order. Refresh after each publish and verify the exact order remains.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/components/admin/skill-trees \
@@ -237,15 +237,15 @@ git commit -m "feat: add visual skill tree editor"
 - Create: `src/GZCTF/ClientApp/src/pages/admin/skill-categories/Index.tsx`
 - Create: `src/GZCTF/ClientApp/src/pages/admin/skill-categories/[id].tsx`
 
-- [ ] **Step 1: Build category list and create form**
+- [x] **Step 1: Build category list and create form**
 
 The list shows icon, name, tree count, challenge count, lesson count, and orphan badge. Creation uses the same name, summary, icon fields as a tree. An orphan category is a valid result and remains editable.
 
-- [ ] **Step 2: Build metadata and editable membership section**
+- [x] **Step 2: Build metadata and editable membership section**
 
 The detail page shows every active tree with separate “已发布” and “草稿” badges and a membership checkbox. Saving membership sends each affected tree ID, desired inclusion state, and tree row version. The backend updates tree drafts only; after success, show affected trees as “有未发布变更” with preview and publish links. Editing metadata remains a separate category update using category `rowVersion`.
 
-- [ ] **Step 3: Build global content sorter**
+- [x] **Step 3: Build global content sorter**
 
 Render a single ordered list combining challenges and lessons. Each row shows type, title, state and move controls. Save emits:
 
@@ -259,11 +259,11 @@ contents.map((item, sortOrder) => ({
 
 After save, invalidate category detail plus every referenced public and admin tree key returned by the response.
 
-- [ ] **Step 4: Verify shared order visually**
+- [x] **Step 4: Verify shared order visually**
 
 Create two skill trees referencing the same category, reorder a lesson above a challenge in the category page, open both tree previews, and verify both show the same content order without republishing either tree.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/components/admin/skill-categories \
@@ -278,7 +278,7 @@ git commit -m "feat: manage shared skill categories"
 - Create: `src/GZCTF/ClientApp/src/components/admin/shared/TypedDeleteModal.tsx`
 - Modify: `src/GZCTF/ClientApp/src/pages/admin/skill-categories/[id].tsx`
 
-- [ ] **Step 1: Implement reusable typed confirmation modal**
+- [x] **Step 1: Implement reusable typed confirmation modal**
 
 ```ts
 type TypedDeleteModalProps = {
@@ -295,19 +295,19 @@ type TypedDeleteModalProps = {
 
 The confirm button is disabled until the entered value exactly equals `entityName` when strong confirmation is required. It remains disabled while submitting.
 
-- [ ] **Step 2: Implement category merge modal**
+- [x] **Step 2: Implement category merge modal**
 
 The current category is the default survivor. The administrator selects one different active duplicate. Show the result rule: survivor content first, duplicate-only content appended, duplicate associations removed, progress retained. Submit both row versions.
 
-- [ ] **Step 3: Connect impact preview and delete**
+- [x] **Step 3: Connect impact preview and delete**
 
 Fetch impact only when the delete modal opens. Render published tree, draft tree, challenge and lesson counts. On success navigate to `/admin/skill-categories` and invalidate category/tree caches. On `409`, close neither modal nor page; show reload action.
 
-- [ ] **Step 4: Verify merge and delete flows**
+- [x] **Step 4: Verify merge and delete flows**
 
 Merge two categories sharing one challenge and each containing one unique item. Verify the survivor displays three unique items in the specified order. Delete a referenced category, type its full name, and verify it disappears from active tree previews while the content pages still exist.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/components/admin/shared/TypedDeleteModal.tsx \
@@ -323,7 +323,7 @@ git commit -m "feat: add category merge and deletion flows"
 - Modify: `src/GZCTF/ClientApp/src/pages/admin/library/challenges/[id].tsx`
 - Modify: `src/GZCTF/ClientApp/src/hooks/useAdminLearning.ts`
 
-- [ ] **Step 1: Define shared modal state**
+- [x] **Step 1: Define shared modal state**
 
 ```ts
 export type ContentPublishSelection = {
@@ -339,23 +339,23 @@ export type ContentPublishSelection = {
 
 The modal receives `kind`, `contentId`, `rowVersion`, initial category IDs and `onPublished`.
 
-- [ ] **Step 2: Implement tree-filtered multi-selection**
+- [x] **Step 2: Implement tree-filtered multi-selection**
 
 First select a skill tree. Show only categories belonging to its current draft or published revision. Selections from other trees remain visible as removable chips. The same global category appears once even when referenced by multiple selected trees.
 
-- [ ] **Step 3: Implement empty-tree inline category form**
+- [x] **Step 3: Implement empty-tree inline category form**
 
 When the selected tree has zero categories, replace the empty select with required name, optional summary, and preset icon. Saving the modal submits this object in `inlineCategories`; it does not issue a separate create request. This preserves backend transaction atomicity.
 
-- [ ] **Step 4: Connect challenge editor**
+- [x] **Step 4: Connect challenge editor**
 
 Saving the challenge remains a draft save. The “发布题目” button first saves dirty fields, then opens the modal using the returned row version. Successful publication closes the modal, refreshes edit response and category/tree caches, and displays a success notification.
 
-- [ ] **Step 5: Verify failure recovery**
+- [x] **Step 5: Verify failure recovery**
 
 Submit with no category and assert localized `content_category_required`. Select an orphan category through a stale view and assert localized `content_category_has_no_active_tree`. Modal selections remain intact after both failures.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/components/admin/library/ContentPublishModal.tsx \
@@ -370,19 +370,19 @@ git commit -m "feat: publish challenges into skill categories"
 - Modify: `src/GZCTF/ClientApp/src/pages/admin/library/lessons/[id].tsx`
 - Modify: `src/GZCTF/ClientApp/src/components/admin/library/ContentPublishModal.tsx`
 
-- [ ] **Step 1: Connect lesson editor to the shared modal**
+- [x] **Step 1: Connect lesson editor to the shared modal**
 
 Use `kind="lesson"`. Draft save must succeed with zero categories. Publication uses the exact tree filter, category chips, inline creation, error mapping and cache invalidation as challenges.
 
-- [ ] **Step 2: Preserve localized lesson editing**
+- [x] **Step 2: Preserve localized lesson editing**
 
 Keep current Chinese and English title/body inputs. The category selection is global and must not be nested inside locale tabs. Publication state badge uses `Draft`, `Published`, and `Retired` values from the generated API.
 
-- [ ] **Step 3: Verify challenge and lesson parity**
+- [x] **Step 3: Verify challenge and lesson parity**
 
 Publish one challenge and one lesson into the same category. Reopen both editors and assert the selected category is restored. Remove the category from the lesson, select another active category, republish, and verify the challenge association remains unchanged.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add 'src/GZCTF/ClientApp/src/pages/admin/library/lessons/[id].tsx' \
@@ -396,19 +396,19 @@ git commit -m "feat: publish lessons into skill categories"
 - Modify: `src/GZCTF/ClientApp/src/pages/admin/skill-trees/[id].tsx`
 - Reuse: `src/GZCTF/ClientApp/src/components/admin/shared/TypedDeleteModal.tsx`
 
-- [ ] **Step 1: Add deletion section**
+- [x] **Step 1: Add deletion section**
 
 Load impact only after clicking delete. Show category, challenge, lesson, enrollment and publication counts. An empty unpublished draft uses ordinary confirmation; every tree with a published revision, category, content or enrollment requires the exact tree name.
 
-- [ ] **Step 2: Submit versioned delete**
+- [x] **Step 2: Submit versioned delete**
 
 Send `confirmationName` and impact response `rowVersion`, not a potentially stale editor value. On success navigate to list and invalidate admin list, public list, personal record, enrollment and deleted detail keys.
 
-- [ ] **Step 3: Verify current-tree effect**
+- [x] **Step 3: Verify current-tree effect**
 
 Enroll a learner and make this tree current, then delete it. Verify the admin list hides it and `/api/my-learning` retains a historical record with `isDeleted=true` and no current tree.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add 'src/GZCTF/ClientApp/src/pages/admin/skill-trees/[id].tsx'
@@ -423,13 +423,13 @@ git commit -m "feat: add protected skill tree deletion"
 - Modify: `src/GZCTF/ClientApp/src/main.tsx`
 - Create: `src/GZCTF/ClientApp/tests/e2e/admin-skill-trees.spec.ts`
 
-- [ ] **Step 1: Add complete namespace files**
+- [x] **Step 1: Add complete namespace files**
 
 Both JSON files must have the same key set. Include titles, labels, icon names, states, empty states, impact text, merge explanation, typed confirmation, publication errors, concurrency error, success notifications, and button accessible labels.
 
 Register the namespace through the aggregate locale loader already used by `main.tsx`. Do not add a second i18next instance.
 
-- [ ] **Step 2: Add translation parity unit test**
+- [x] **Step 2: Add translation parity unit test**
 
 ```ts
 import en from '../src/locales/en-US/skillTrees.json'
@@ -446,7 +446,7 @@ test('skill tree locale keys stay in parity', () => {
 })
 ```
 
-- [ ] **Step 3: Add Playwright administrator journey**
+- [x] **Step 3: Add Playwright administrator journey**
 
 The test logs in as Admin and performs this exact sequence:
 
@@ -463,7 +463,7 @@ The test logs in as Admin and performs this exact sequence:
 
 At each page attach listeners and fail on `pageerror`, console error, or response status `>= 500`.
 
-- [ ] **Step 4: Assert forbidden UI is absent**
+- [x] **Step 4: Assert forbidden UI is absent**
 
 ```ts
 await expect(page.getByLabel(/json|modules json/i)).toHaveCount(0)
@@ -471,7 +471,7 @@ await expect(page.getByLabel(/slug/i)).toHaveCount(0)
 await expect(page.getByText(/skillTrees\.|learning:/)).toHaveCount(0)
 ```
 
-- [ ] **Step 5: Run the full frontend gate**
+- [x] **Step 5: Run the full frontend gate**
 
 ```bash
 cd src/GZCTF/ClientApp
@@ -483,7 +483,7 @@ pnpm playwright test tests/e2e/admin-skill-trees.spec.ts
 
 Expected: every command passes in English and Simplified Chinese with clean browser logs.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/GZCTF/ClientApp/src/locales \
@@ -494,13 +494,13 @@ git commit -m "test: cover skill tree administrator journeys"
 
 ## Wave ST3 completion checklist
 
-- [ ] 管理员创建技能树时只填写名称、简介并选择预设图标。
-- [ ] 技能树编辑页没有 Modules JSON、slug、UUID 或 locale 输入。
-- [ ] 空技能树与有类别技能树都可以预览和发布。
-- [ ] 类别可全局创建、作为孤儿保存、编辑、排序内容、合并和删除。
-- [ ] 同一类别的内容排序在所有引用树中立即一致。
-- [ ] 题目与课节共用一套发布弹窗和校验行为。
-- [ ] 空技能树发布内容时在同一弹窗输入类别并原子保存。
-- [ ] 所有强删除操作展示影响并校验完整名称。
-- [ ] 中文和英文 key 完全一致，页面不显示原始翻译 key。
-- [ ] 管理员 Playwright、单元测试、类型检查和生产构建全部通过。
+- [x] 管理员创建技能树时只填写名称、简介并选择预设图标。
+- [x] 技能树编辑页没有 Modules JSON、slug、UUID 或 locale 输入。
+- [x] 空技能树与有类别技能树都可以预览和发布。
+- [x] 类别可全局创建、作为孤儿保存、编辑、排序内容、合并和删除。
+- [x] 同一类别的内容排序在所有引用树中立即一致。
+- [x] 题目与课节共用一套发布弹窗和校验行为。
+- [x] 空技能树发布内容时在同一弹窗输入类别并原子保存。
+- [x] 所有强删除操作展示影响并校验完整名称。
+- [x] 中文和英文 key 完全一致，页面不显示原始翻译 key。
+- [x] 管理员 Playwright、单元测试、类型检查和生产构建全部通过。

@@ -25,60 +25,60 @@
 
 ### Wave ST1 — Skill tree foundation and data migration
 
-- [ ] Add `SkillTree`, `SkillTreeRevision`, `SkillCategory`, `SkillTreeCategoryRef`, `CategoryContent`, `SkillTreeEnrollment`, and `LearningPathRedirect` entities.
-- [ ] Add the fixed icon catalog and API validation.
-- [ ] Add EF constraints, indexes, soft-delete fields, and publication state for lessons.
-- [ ] Add an additive migration that keeps current Learning tables intact.
-- [ ] Backfill current paths, modules, items, enrollments, current selection, and old slugs idempotently.
-- [ ] Prove fresh database, upgraded database, repeated migration, row-count parity, and no destructive legacy operation.
+- [x] Add `SkillTree`, `SkillTreeRevision`, `SkillCategory`, `SkillTreeCategoryRef`, `CategoryContent`, `SkillTreeEnrollment`, and `LearningPathRedirect` entities.
+- [x] Add the fixed icon catalog and API validation.
+- [x] Add EF constraints, indexes, soft-delete fields, and publication state for lessons.
+- [x] Add an additive migration that keeps current Learning tables intact.
+- [x] Backfill current paths, modules, items, enrollments, current selection, and old slugs idempotently.
+- [x] Prove fresh database, upgraded database, repeated migration, row-count parity, and no destructive legacy operation.
 
 Gate: the complete solution builds; schema and backfill integration tests pass twice against PostgreSQL; current APIs still run unchanged.
 
 ### Wave ST2 — Skill tree and category application APIs
 
-- [ ] Implement skill tree list, detail, draft, preview, empty publication, republishing, enrollment, and personal record APIs.
-- [ ] Implement category CRUD, tree association, global ordering, delete impact, soft delete, and merge APIs.
-- [ ] Extend challenge and lesson administration with draft/publication state and multi-category assignment.
-- [ ] Implement publish-time inline category creation for an empty tree.
-- [ ] Implement typed-name skill tree deletion with impact preview and current-tree clearing.
-- [ ] Add stable conflict and validation error codes.
-- [ ] Regenerate the TypeScript client from OpenAPI.
+- [x] Implement skill tree list, detail, draft, preview, empty publication, republishing, enrollment, and personal record APIs.
+- [x] Implement category CRUD, tree association, global ordering, delete impact, soft delete, and merge APIs.
+- [x] Extend challenge and lesson administration with draft/publication state and multi-category assignment.
+- [x] Implement publish-time inline category creation for an empty tree.
+- [x] Implement typed-name skill tree deletion with impact preview and current-tree clearing.
+- [x] Add stable conflict and validation error codes.
+- [x] Regenerate the TypeScript client from OpenAPI.
 
 Gate: backend API and transaction tests cover every publish, delete, merge, conflict, and shared-content rule; old Learning APIs remain available until Wave ST4.
 
 ### Wave ST3 — Administrator experience
 
-- [ ] Replace the route list with `/admin/skill-trees` and a name, summary, icon creation form.
-- [ ] Replace Modules JSON with category cards, an existing-category picker, inline category creation, removal, drag sorting, preview, and publish.
-- [ ] Add `/admin/skill-categories` for global editing, ownership inspection, content ordering, merge, and delete.
-- [ ] Add category selection and inline creation to challenge and lesson publish dialogs.
-- [ ] Add impact summaries and typed-name destructive confirmations.
-- [ ] Maintain Simplified Chinese and English strings; other languages fall back to English.
+- [x] Replace the route list with `/admin/skill-trees` and a name, summary, icon creation form.
+- [x] Replace Modules JSON with category cards, an existing-category picker, inline category creation, removal, drag sorting, preview, and publish.
+- [x] Add `/admin/skill-categories` for global editing, ownership inspection, content ordering, merge, and delete.
+- [x] Add category selection and inline creation to challenge and lesson publish dialogs.
+- [x] Add impact summaries and typed-name destructive confirmations.
+- [x] Maintain Simplified Chinese and English strings; other languages fall back to English.
 
 Gate: administrator Playwright flows pass without entering a UUID or JSON document; browser console and failed-request logs are clean.
 
 ### Wave ST4 — Learner cutover and release
 
-- [ ] Add `/skill-trees`, `/skill-trees/{id}`, content workspaces, empty state, enrollment, and current-tree controls.
-- [ ] Redirect `/learn` and mapped `/learn/{slug}` URLs to the new pages.
-- [ ] Rename navigation, account records, API DTOs, and visible copy from route/module to skill tree/category.
-- [ ] Switch progress aggregation and cache invalidation to shared categories.
-- [ ] Retire old LearningPath APIs and frontend generated types after redirect and parity tests pass.
-- [ ] Run old-database, ZIP import, four challenge modes, dashboard, browser, image, port, health, Redis, storage, Docker, and Kubernetes release gates.
+- [x] Add `/skill-trees`, `/skill-trees/{id}`, content workspaces, empty state, enrollment, and current-tree controls.
+- [x] Redirect `/learn` and mapped `/learn/{slug}` URLs to the new pages.
+- [x] Rename navigation, account records, API DTOs, and visible copy from route/module to skill tree/category.
+- [x] Switch progress aggregation and cache invalidation to shared categories.
+- [x] Retire old LearningPath APIs and frontend generated types after redirect and parity tests pass.
+- [x] Run old-database, ZIP import, four challenge modes, dashboard, browser, image, port, health, Redis, storage, Docker, and Kubernetes release gates.
 
 Gate: all unit and integration tests pass; migrated counts match; anonymous, learner, administrator, and dashboard journeys pass; container startup remains unchanged.
 
 ## Cross-wave rules
 
-- [ ] Use test-first changes for every invariant, migration, publication, deletion, merge, redirect, and progress calculation.
-- [ ] Keep the new schema additive until Wave ST4 parity gates pass.
-- [ ] Never infer category identity from a display name.
-- [ ] Preserve `ChallengeProgress(UserId, ChallengeId)` and `LessonProgress(UserId, LessonId)` as global completion truth.
-- [ ] Keep skill tree structure revisions immutable after publication; category content remains live shared data by design.
-- [ ] Use `AsNoTracking` and DTO projection for lists; batch-load tree details to avoid N+1 queries.
-- [ ] Never return Flag values, token hashes, unpublished protected content, or private learner fields in list DTOs.
-- [ ] Keep commits focused and green; regenerate `ClientApp/src/Api.ts` from a running OpenAPI document, not by hand.
-- [ ] Do not change Dockerfile entrypoint, ports, configuration prefix, storage, Redis, Docker, or Kubernetes contracts.
+- [x] Use test-first changes for every invariant, migration, publication, deletion, merge, redirect, and progress calculation.
+- [x] Keep the new schema additive until Wave ST4 parity gates pass.
+- [x] Never infer category identity from a display name.
+- [x] Preserve `ChallengeProgress(UserId, ChallengeId)` and `LessonProgress(UserId, LessonId)` as global completion truth.
+- [x] Keep skill tree structure revisions immutable after publication; category content remains live shared data by design.
+- [x] Use `AsNoTracking` and DTO projection for lists; batch-load tree details to avoid N+1 queries.
+- [x] Never return Flag values, token hashes, unpublished protected content, or private learner fields in list DTOs.
+- [x] Keep commits focused and green; regenerate `ClientApp/src/Api.ts` from a running OpenAPI document, not by hand.
+- [x] Do not change Dockerfile entrypoint, ports, configuration prefix, storage, Redis, Docker, or Kubernetes contracts.
 
 ## Release commands
 

@@ -35,7 +35,7 @@
 - Create: `src/GZCTF.Test/UnitTests/Features/SkillTrees/SkillTreeIconCatalogTests.cs`
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeSchemaTests.cs`
 
-- [ ] **Step 1: Write the failing icon catalog tests**
+- [x] **Step 1: Write the failing icon catalog tests**
 
 ```csharp
 using GZCTF.Features.SkillTrees.Domain;
@@ -64,7 +64,7 @@ public sealed class SkillTreeIconCatalogTests
 }
 ```
 
-- [ ] **Step 2: Write the failing PostgreSQL schema tests**
+- [x] **Step 2: Write the failing PostgreSQL schema tests**
 
 Create tests that use `GZCTFApplicationFactory` and `AssertConstraintViolationAsync` with these exact cases:
 
@@ -197,7 +197,7 @@ private async Task AssertConstraintViolationAsync(Func<AppDbContext, Task> arran
 }
 ```
 
-- [ ] **Step 3: Run tests and verify the intended red state**
+- [x] **Step 3: Run tests and verify the intended red state**
 
 ```bash
 docker run --rm \
@@ -213,7 +213,7 @@ Expected: compilation fails because `SkillTreeIconCatalog` does not exist.
 
 Build the integration project after adding the entity types in Task 2, then run `SkillTreeSchemaTests` before Task 3. Expected: database operations fail because the new tables do not exist.
 
-- [ ] **Step 4: Keep the red tests uncommitted until Task 2**
+- [x] **Step 4: Keep the red tests uncommitted until Task 2**
 
 Do not commit the non-compiling red state. Task 2 supplies the smallest domain implementation and commits the icon tests with the domain types. Keep `SkillTreeSchemaTests.cs` uncommitted until Task 3 adds DbSets, mappings, and tables.
 
@@ -224,7 +224,7 @@ Do not commit the non-compiling red state. Task 2 supplies the smallest domain i
 - Create: `src/GZCTF/Features/SkillTrees/Domain/SkillTreeIconCatalog.cs`
 - Modify: `src/GZCTF/Features/LearningPaths/Domain/LearningPathModels.cs`
 
-- [ ] **Step 1: Add the fixed icon catalog**
+- [x] **Step 1: Add the fixed icon catalog**
 
 ```csharp
 namespace GZCTF.Features.SkillTrees.Domain;
@@ -249,7 +249,7 @@ public static class SkillTreeIconCatalog
 }
 ```
 
-- [ ] **Step 2: Add the complete foundation entities**
+- [x] **Step 2: Add the complete foundation entities**
 
 Create `SkillTreeModels.cs` with these public types and properties:
 
@@ -360,7 +360,7 @@ public sealed class LearningPathRedirect
 }
 ```
 
-- [ ] **Step 3: Add lesson publication state**
+- [x] **Step 3: Add lesson publication state**
 
 Add to `LearningPathModels.cs`:
 
@@ -385,11 +385,11 @@ public uint RowVersion { get; set; }
 public List<CategoryContent> CategoryContents { get; set; } = [];
 ```
 
-- [ ] **Step 4: Run icon tests**
+- [x] **Step 4: Run icon tests**
 
 Run the Task 1 unit command. Expected: all icon cases pass.
 
-- [ ] **Step 5: Commit green icon tests and domain types**
+- [x] **Step 5: Commit green icon tests and domain types**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Domain \
@@ -408,7 +408,7 @@ git commit -m "feat: add skill tree domain model"
 - Create: `src/GZCTF/Migrations/20260921000100_AddSkillTrees.Designer.cs`
 - Modify: `src/GZCTF/Migrations/AppDbContextModelSnapshot.cs`
 
-- [ ] **Step 1: Add DbSets and configuration entry point**
+- [x] **Step 1: Add DbSets and configuration entry point**
 
 Add these DbSets to `AppDbContext`:
 
@@ -424,7 +424,7 @@ public DbSet<LearningPathRedirect> LearningPathRedirects { get; set; } = null!;
 
 Add `using GZCTF.Features.SkillTrees.Domain;`, `using GZCTF.Features.SkillTrees.Infrastructure;`, and call `SkillTreeModelConfiguration.Configure(builder)` from `OnModelCreating` beside the current Learning configuration.
 
-- [ ] **Step 2: Add exact relational rules**
+- [x] **Step 2: Add exact relational rules**
 
 `SkillTreeModelConfiguration.Configure` must configure:
 
@@ -532,7 +532,7 @@ modelBuilder.Entity<LearningPathRedirect>(entity =>
 
 Do not add global query filters; application queries must choose whether deleted rows are included.
 
-- [ ] **Step 3: Configure lesson publication state**
+- [x] **Step 3: Configure lesson publication state**
 
 In `LearningModelConfiguration` add:
 
@@ -541,7 +541,7 @@ entity.Property(e => e.PublicationState).HasConversion<byte>();
 entity.Property(e => e.RowVersion).IsRowVersion().IsConcurrencyToken();
 ```
 
-- [ ] **Step 4: Generate the migration**
+- [x] **Step 4: Generate the migration**
 
 ```bash
 docker run --rm \
@@ -558,7 +558,7 @@ Rename the generated migration pair to `20260921000100_AddSkillTrees.cs` and `20
 
 The migration must only create new tables/indexes/FKs and add `Lessons.PublicationState`. For existing lessons, add the column with `Published` value `1`, then alter the default to `Draft` value `0` for future rows. It must not rename or drop `LearningPaths`, `LearningModules`, `ModuleItems`, `Enrollments`, or legacy competition tables.
 
-- [ ] **Step 5: Run schema tests**
+- [x] **Step 5: Run schema tests**
 
 ```bash
 docker run --rm \
@@ -576,7 +576,7 @@ docker run --rm \
 
 Expected: all uniqueness, check constraint, concurrency mapping, and current-enrollment cases pass.
 
-- [ ] **Step 6: Commit schema and migration**
+- [x] **Step 6: Commit schema and migration**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Infrastructure \
@@ -592,7 +592,7 @@ git commit -m "feat: add skill tree persistence schema"
 **Files:**
 - Create: `src/GZCTF.Integration.Test/Tests/SkillTrees/SkillTreeBackfillTests.cs`
 
-- [ ] **Step 1: Seed a deterministic current Learning graph**
+- [x] **Step 1: Seed a deterministic current Learning graph**
 
 The fixture must contain two paths, including duplicate module names that must remain separate, one published and one draft revision, one shared challenge, one lesson, ordered items, two enrollments, and one current enrollment. Use unique source IDs and slugs per test.
 
@@ -670,7 +670,7 @@ db.LearningPaths.Add(path);
 await db.SaveChangesAsync();
 ```
 
-- [ ] **Step 2: Assert the exact mapping**
+- [x] **Step 2: Assert the exact mapping**
 
 After invoking `SkillTreeBackfillService.RunAsync`, assert:
 
@@ -686,17 +686,17 @@ Assert.Equal(oldPathCount,
 
 Assert category IDs equal source module IDs, tree IDs equal source path IDs, category and item order match, duplicate names remain separate, the current enrollment remains current, and existing challenge/lesson progress row counts do not change.
 
-- [ ] **Step 3: Assert idempotency**
+- [x] **Step 3: Assert idempotency**
 
 Call `RunAsync` a second time in a new service scope and assert every count and association is unchanged.
 
-- [ ] **Step 4: Run and verify red**
+- [x] **Step 4: Run and verify red**
 
 Run the integration command from Task 3 with filter `FullyQualifiedName~SkillTreeBackfillTests`.
 
 Expected: compilation fails because `SkillTreeBackfillService` does not exist.
 
-- [ ] **Step 5: Keep the red backfill test uncommitted until Task 5**
+- [x] **Step 5: Keep the red backfill test uncommitted until Task 5**
 
 Do not commit the non-compiling red state. Commit it with `SkillTreeBackfillService` after the parity and idempotency assertions pass.
 
@@ -707,7 +707,7 @@ Do not commit the non-compiling red state. Commit it with `SkillTreeBackfillServ
 - Modify: `src/GZCTF/Extensions/Startup/ServicesExtension.cs`
 - Modify: `src/GZCTF/Utils/PrelaunchHelper.cs`
 
-- [ ] **Step 1: Implement deterministic text selection**
+- [x] **Step 1: Implement deterministic text selection**
 
 Use one private helper for path/module text:
 
@@ -718,7 +718,7 @@ private static T? PickText<T>(IEnumerable<T> values, Func<T, string> locale) =>
     ?? values.FirstOrDefault();
 ```
 
-- [ ] **Step 2: Implement the transaction and stable-ID backfill**
+- [x] **Step 2: Implement the transaction and stable-ID backfill**
 
 `RunAsync` must:
 
@@ -736,7 +736,7 @@ private static T? PickText<T>(IEnumerable<T> values, Func<T, string> locale) =>
 
 Before inserting a category or content row, check by stable ID so a partially completed development database can resume safely. Never match by name.
 
-- [ ] **Step 3: Register and run backfill at startup**
+- [x] **Step 3: Register and run backfill at startup**
 
 Register:
 
@@ -754,11 +754,11 @@ await serviceScope.ServiceProvider
 
 Do not remove or reorder `StartupLegacyMigrationService`; legacy Game/ZIP migration must continue to run.
 
-- [ ] **Step 4: Run backfill tests twice**
+- [x] **Step 4: Run backfill tests twice**
 
 Run `SkillTreeBackfillTests`, then immediately run the same command again. Expected: all tests pass on both invocations and no unique-key error occurs.
 
-- [ ] **Step 5: Commit backfill**
+- [x] **Step 5: Commit backfill**
 
 ```bash
 git add src/GZCTF/Features/SkillTrees/Migration \
@@ -774,15 +774,15 @@ git commit -m "feat: backfill learning paths into skill trees"
 - Modify: `src/GZCTF.Integration.Test/Tests/Decommission/LegacyTableRetentionTests.cs`
 - Modify: `src/GZCTF.Integration.Test/Tests/Learning/LearningPathPublishingTests.cs`
 
-- [ ] **Step 1: Extend retained-table assertions**
+- [x] **Step 1: Extend retained-table assertions**
 
 Record and compare row counts for `LearningPaths`, `LearningPathRevisions`, `LearningModules`, `ModuleItems`, `Enrollments`, legacy Game tables, challenges, lessons, and progress before and after the new migration/backfill. Expected: no source count decreases.
 
-- [ ] **Step 2: Keep current Learning API tests green**
+- [x] **Step 2: Keep current Learning API tests green**
 
 Run `LearningPathPublishingTests`, `EnrollmentTests`, and `LearningRecordTests`. They must pass unchanged in Wave ST1 because cutover belongs to later waves.
 
-- [ ] **Step 3: Run the complete backend suite**
+- [x] **Step 3: Run the complete backend suite**
 
 ```bash
 docker run --rm \
@@ -795,7 +795,7 @@ docker run --rm \
 
 Then run all 174 or more unit tests and all default local integration tests with the roadmap commands. Expected: zero failures.
 
-- [ ] **Step 4: Inspect the migration script**
+- [x] **Step 4: Inspect the migration script**
 
 ```bash
 docker run --rm \
@@ -812,7 +812,7 @@ docker run --rm \
 
 Assert the script contains `CREATE TABLE "SkillTrees"`, `CREATE TABLE "SkillCategories"`, and no `DROP TABLE`, `DROP COLUMN`, or rename of a current Learning/legacy competition table.
 
-- [ ] **Step 5: Commit the safety gate**
+- [x] **Step 5: Commit the safety gate**
 
 ```bash
 git add src/GZCTF.Integration.Test/Tests/Decommission/LegacyTableRetentionTests.cs \
@@ -822,13 +822,13 @@ git commit -m "test: prove additive skill tree migration"
 
 ## Wave ST1 completion checklist
 
-- [ ] Fresh database migration passes.
-- [ ] Existing database upgrade passes.
-- [ ] Backfill run twice is idempotent.
-- [ ] Path, module, item, enrollment, current selection, and redirect counts match.
-- [ ] Existing progress rows are unchanged.
-- [ ] Current Learning APIs and UI remain operational.
-- [ ] No old Learning or competition table is dropped or renamed.
-- [ ] `dotnet build`, unit tests, integration tests, and `git diff --check` pass.
+- [x] Fresh database migration passes.
+- [x] Existing database upgrade passes.
+- [x] Backfill run twice is idempotent.
+- [x] Path, module, item, enrollment, current selection, and redirect counts match.
+- [x] Existing progress rows are unchanged.
+- [x] Current Learning APIs and UI remain operational.
+- [x] No old Learning or competition table is dropped or renamed.
+- [x] `dotnet build`, unit tests, integration tests, and `git diff --check` pass.
 
 Wave ST1 ends here. Do not implement new SkillTree APIs or frontend pages in this packet; continue with `2026-09-21-skill-tree-api-plan.md` after migration evidence is reviewed.
