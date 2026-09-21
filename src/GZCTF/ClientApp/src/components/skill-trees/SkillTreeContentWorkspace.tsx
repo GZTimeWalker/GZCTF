@@ -11,11 +11,38 @@ import { WithNavBar } from '@Components/WithNavbar'
 const VALID_KINDS = ['challenge', 'lesson'] as const
 
 export const SkillTreeContentWorkspace = () => {
-  const { treeId, categoryId, kind, contentId } = useParams()
+  // The route is /skill-trees/:id/:categoryId/:kind/:contentId.
+  const { id: treeId, categoryId, kind, contentId } = useParams()
   const { t } = useTranslation('skillTrees')
   const { user } = useUser()
   const { data: tree, error: treeError } = useSkillTree(treeId)
   const { data: record } = useMyLearning(!!user)
+
+  const isEnrolled = record?.skillTrees?.some((item) => item.skillTreeId === treeId) ?? false
+
+  // Navigation is derived before any early return so the hook order stays stable while
+  // the tree, the enrollment record, or both are still loading.
+  const nav = useMemo(() => {
+    const flat = (tree?.categories ?? []).flatMap((category) =>
+      (category.contents ?? []).map((content) => ({
+        ...content,
+        categoryId: category.categoryId,
+      })),
+    )
+    const idx = flat.findIndex((item) => item.contentId === contentId)
+    const prev = idx > 0 ? flat[idx - 1] : undefined
+    const next = idx >= 0 && idx < flat.length - 1 ? flat[idx + 1] : undefined
+
+    return {
+      backHref: `/skill-trees/${treeId}`,
+      previousHref: prev
+        ? `/skill-trees/${treeId}/${prev.categoryId}/${prev.kind}/${prev.contentId}`
+        : undefined,
+      nextHref: next
+        ? `/skill-trees/${treeId}/${next.categoryId}/${next.kind}/${next.contentId}`
+        : undefined,
+    }
+  }, [tree, treeId, contentId])
 
   if (!VALID_KINDS.includes(kind as typeof VALID_KINDS[number])) {
     return <Navigate to="/404" replace />
@@ -37,7 +64,15 @@ export const SkillTreeContentWorkspace = () => {
     )
   }
 
-  const isEnrolled = record?.skillTrees?.some((item) => item.skillTreeId === treeId) ?? false
+  if (!record) {
+    return (
+      <WithNavBar minWidth={0}>
+        <Center h="60vh">
+          <Loader />
+        </Center>
+      </WithNavBar>
+    )
+  }
 
   if (!isEnrolled) {
     return (
@@ -74,29 +109,6 @@ export const SkillTreeContentWorkspace = () => {
       </WithNavBar>
     )
   }
-
-  const nav = useMemo(() => {
-    const categories = tree.categories ?? []
-    const flat = categories.flatMap((category) =>
-      (category.contents ?? []).map((content) => ({
-        ...content,
-        categoryId: category.categoryId,
-      })),
-    )
-    const idx = flat.findIndex((item) => item.contentId === contentId)
-    const prev = idx > 0 ? flat[idx - 1] : undefined
-    const next = idx < flat.length - 1 ? flat[idx + 1] : undefined
-
-    return {
-      backHref: `/skill-trees/${treeId}`,
-      previousHref: prev
-        ? `/skill-trees/${treeId}/${prev.categoryId}/${prev.kind}/${prev.contentId}`
-        : undefined,
-      nextHref: next
-        ? `/skill-trees/${treeId}/${next.categoryId}/${next.kind}/${next.contentId}`
-        : undefined,
-    }
-  }, [tree, treeId, contentId])
 
   if (kind === 'challenge') {
     return <ChallengeWorkspace challengeId={contentId!} {...nav} />
