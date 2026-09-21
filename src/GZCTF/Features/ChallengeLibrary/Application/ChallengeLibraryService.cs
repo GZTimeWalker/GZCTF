@@ -5,6 +5,7 @@ using GZCTF.Features.ChallengeLibrary.Domain;
 using GZCTF.Features.Dashboard.Domain;
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.LearningProgress.Domain;
+using GZCTF.Features.SkillTrees.Application;
 using GZCTF.Models;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
         ApplyChallengeCommand(challenge, command, isCreate: true);
         await db.Challenges.AddAsync(challenge, token);
         await db.SaveChangesAsync(token);
-        return ToEditResponse(challenge, command.Locale);
+        return ToEditResponse(challenge, command.Locale, []);
     }
 
     public async Task<IReadOnlyList<ChallengeSummaryResponse>> ListChallengesAsync(
@@ -55,7 +56,10 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             .Include(item => item.Hints)
             .Include(item => item.Writeups)
             .SingleOrDefaultAsync(item => item.Id == id, token);
-        return challenge is null ? null : ToEditResponse(challenge, locale);
+        if (challenge is null)
+            return null;
+        var categoryIds = await LoadCategoryIdsAsync(id, null, token);
+        return ToEditResponse(challenge, locale, categoryIds);
     }
 
     public async Task<ChallengeEditResponse?> UpdateChallengeAsync(
@@ -76,7 +80,8 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
 
         ApplyChallengeCommand(challenge, command, isCreate: false);
         await db.SaveChangesAsync(token);
-        return ToEditResponse(challenge, command.Locale);
+        var categoryIds = await LoadCategoryIdsAsync(id, null, token);
+        return ToEditResponse(challenge, command.Locale, categoryIds);
     }
 
     public async Task<bool> RetireChallengeAsync(Guid id, CancellationToken token)
@@ -97,7 +102,7 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
         ApplyLessonCommand(lesson, command, isCreate: true);
         await db.Lessons.AddAsync(lesson, token);
         await db.SaveChangesAsync(token);
-        return ToLessonResponse(lesson, command.Locale);
+        return ToLessonResponse(lesson, command.Locale, []);
     }
 
     public async Task<IReadOnlyList<LessonResponse>> ListLessonsAsync(
@@ -108,7 +113,10 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             .Include(lesson => lesson.Localizations)
             .OrderBy(lesson => lesson.Id)
             .ToListAsync(token);
-        return lessons.Select(lesson => ToLessonResponse(lesson, locale)).ToArray();
+        var lessonIds = lessons.Select(lesson => lesson.Id).ToList();
+        var categoryLookup = await LoadCategoryLookupAsync(lessonIds, null, token);
+        return lessons.Select(lesson => ToLessonResponse(
+            lesson, locale, categoryLookup.GetValueOrDefault(lesson.Id, []))).ToArray();
     }
 
     public async Task<LessonResponse?> GetLessonAsync(Guid id, string? locale, CancellationToken token)
@@ -117,7 +125,10 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             .AsNoTracking()
             .Include(item => item.Localizations)
             .SingleOrDefaultAsync(item => item.Id == id, token);
-        return lesson is null ? null : ToLessonResponse(lesson, locale);
+        if (lesson is null)
+            return null;
+        var categoryIds = await LoadCategoryIdsAsync(null, id, token);
+        return ToLessonResponse(lesson, locale, categoryIds);
     }
 
     public async Task<LessonResponse?> UpdateLessonAsync(
@@ -131,7 +142,8 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
 
         ApplyLessonCommand(lesson, command, isCreate: false);
         await db.SaveChangesAsync(token);
-        return ToLessonResponse(lesson, command.Locale);
+        var categoryIds = await LoadCategoryIdsAsync(null, id, token);
+        return ToLessonResponse(lesson, command.Locale, categoryIds);
     }
 
     public async Task<bool> DeleteLessonAsync(Guid id, CancellationToken token)
@@ -193,6 +205,7 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             });
         }
 
+        await db.SaveChangesAsync(token);
         await RebuildDailyStatsAsync(affectedUserIds, token);
         duplicate.PublicationState = ChallengePublicationState.Merged;
         duplicate.IsEnabled = false;
@@ -329,7 +342,8 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             challenge.SourceName);
     }
 
-    private static ChallengeEditResponse ToEditResponse(CanonicalChallenge challenge, string? locale)
+    private static ChallengeEditResponse ToEditResponse(
+        CanonicalChallenge challenge, string? locale, IReadOnlyList<Guid> categoryIds)
     {
         var summary = ToSummaryResponse(challenge, locale);
         return new ChallengeEditResponse(
@@ -342,10 +356,13 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             challenge.Hints.OrderBy(hint => hint.SortOrder).Select(hint => new ChallengeHintResponse(
                 hint.Id, hint.Locale, hint.SortOrder, hint.Content)).ToArray(),
             challenge.Writeups.Select(writeup => new ChallengeWriteupResponse(
-                writeup.Id, writeup.Locale, writeup.Content)).ToArray());
+                writeup.Id, writeup.Locale, writeup.Content)).ToArray(),
+            new ChallengePublicationEditState(
+                challenge.RowVersion, challenge.PublicationState.ToString(), categoryIds));
     }
 
-    private static LessonResponse ToLessonResponse(Lesson lesson, string? locale)
+    private static LessonResponse ToLessonResponse(
+        Lesson lesson, string? locale, IReadOnlyList<Guid> categoryIds)
     {
         var localization = SelectLocalization(lesson.Localizations, locale, item => item.Locale);
         return new LessonResponse(
@@ -354,7 +371,37 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             localization?.Title ?? string.Empty,
             localization?.Body ?? string.Empty,
             lesson.Localizations.Select(item => new LessonLocalizationResponse(
-                item.Locale, item.Title, item.Body)).ToArray());
+                item.Locale, item.Title, item.Body)).ToArray(),
+            new LessonPublicationEditState(
+                lesson.RowVersion, lesson.PublicationState.ToString(), categoryIds));
+    }
+
+    private async Task<IReadOnlyList<Guid>> LoadCategoryIdsAsync(
+        Guid? challengeId, Guid? lessonId, CancellationToken token) =>
+        await db.CategoryContents
+            .AsNoTracking()
+            .Where(item => (challengeId != null && item.ChallengeId == challengeId) ||
+                           (lessonId != null && item.LessonId == lessonId))
+            .OrderBy(item => item.SortOrder)
+            .Select(item => item.CategoryId)
+            .Distinct()
+            .ToListAsync(token);
+
+    private async Task<Dictionary<Guid, IReadOnlyList<Guid>>> LoadCategoryLookupAsync(
+        List<Guid> lessonIds, Guid? unusedChallengeId, CancellationToken token)
+    {
+        var rows = await db.CategoryContents
+            .AsNoTracking()
+            .Where(item => item.LessonId != null && lessonIds.Contains(item.LessonId.Value))
+            .OrderBy(item => item.SortOrder)
+            .Select(item => new { LessonId = item.LessonId!.Value, item.CategoryId })
+            .ToListAsync(token);
+
+        return rows
+            .GroupBy(row => row.LessonId)
+            .ToDictionary(
+                group => group.Key,
+                group => (IReadOnlyList<Guid>)group.Select(row => row.CategoryId).Distinct().ToArray());
     }
 
     private static T? SelectLocalization<T>(
@@ -477,7 +524,8 @@ public sealed record ChallengeEditResponse(
     IReadOnlyList<ChallengeLocalizationResponse> Localizations,
     IReadOnlyList<ChallengeFlagResponse> Flags,
     IReadOnlyList<ChallengeHintResponse> Hints,
-    IReadOnlyList<ChallengeWriteupResponse> Writeups);
+    IReadOnlyList<ChallengeWriteupResponse> Writeups,
+    ChallengePublicationEditState Publication);
 
 public sealed record ChallengeLocalizationResponse(string Locale, string Title, string Summary, string Body);
 
@@ -498,7 +546,8 @@ public sealed record LessonResponse(
     string Locale,
     string Title,
     string Body,
-    IReadOnlyList<LessonLocalizationResponse> Localizations);
+    IReadOnlyList<LessonLocalizationResponse> Localizations,
+    LessonPublicationEditState Publication);
 
 public sealed record LessonLocalizationResponse(string Locale, string Title, string Body);
 

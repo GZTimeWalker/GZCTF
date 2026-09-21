@@ -142,6 +142,9 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
         var revisionId = Guid.CreateVersion7();
         var moduleId = Guid.CreateVersion7();
         var itemId = Guid.CreateVersion7();
+        var sourceSuffix = Guid.NewGuid().ToString("N");
+        var survivorSourceId = $"survivor-{sourceSuffix}";
+        var duplicateSourceId = $"duplicate-{sourceSuffix}";
 
         await using (var scope = factory.Services.CreateAsyncScope())
         {
@@ -151,7 +154,7 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
                 Id = survivorId,
                 Type = ChallengeType.StaticAttachment,
                 SourceType = "legacy",
-                SourceId = "survivor",
+                SourceId = survivorSourceId,
                 Localizations =
                 [
                     new ChallengeLocalization
@@ -168,7 +171,7 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
                 Id = duplicateId,
                 Type = ChallengeType.StaticAttachment,
                 SourceType = "legacy",
-                SourceId = "duplicate",
+                SourceId = duplicateSourceId,
                 Localizations =
                 [
                     new ChallengeLocalization
@@ -217,13 +220,13 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
                 new LegacyChallengeMap
                 {
                     SourceType = "legacy",
-                    SourceId = "survivor",
+                    SourceId = survivorSourceId,
                     Challenge = survivor
                 },
                 new LegacyChallengeMap
                 {
                     SourceType = "legacy",
-                    SourceId = "duplicate",
+                    SourceId = duplicateSourceId,
                     Challenge = duplicate
                 });
             await db.SaveChangesAsync();
@@ -258,7 +261,8 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
             Assert.Equal(new DateOnly(2026, 1, 1), stat.Date);
             Assert.Equal(1, stat.SolveCount);
 
-            Assert.Equal(2, await db.LegacyChallengeMaps.CountAsync());
+            Assert.Equal(2, await db.LegacyChallengeMaps.CountAsync(item =>
+                item.ChallengeId == survivorId || item.ChallengeId == duplicateId));
             Assert.Equal(ChallengePublicationState.Merged,
                 await db.Challenges.Where(item => item.Id == duplicateId)
                     .Select(item => item.PublicationState)

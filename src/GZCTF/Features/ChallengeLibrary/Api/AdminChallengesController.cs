@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using GZCTF.Features.ChallengeLibrary.Application;
 using GZCTF.Features.Shared;
+using GZCTF.Features.SkillTrees.Application;
 using GZCTF.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,9 @@ namespace GZCTF.Features.ChallengeLibrary.Api;
 [ApiController]
 [Route("api/admin/challenges")]
 [Produces(MediaTypeNames.Application.Json)]
-public sealed class AdminChallengesController(ChallengeLibraryService service) : ControllerBase
+public sealed class AdminChallengesController(
+    ChallengeLibraryService service,
+    ContentPublicationService publicationService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ChallengeSummaryResponse>>> List(
@@ -63,6 +66,44 @@ public sealed class AdminChallengesController(ChallengeLibraryService service) :
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken token) =>
         await service.RetireChallengeAsync(id, token) ? NoContent() : NotFound();
+
+    [HttpPost("{id:guid}/publish")]
+    public async Task<IActionResult> Publish(
+        Guid id, [FromBody] PublishContentCommand command, CancellationToken token)
+    {
+        try
+        {
+            await publicationService.PublishChallengeAsync(id, command, token);
+            return NoContent();
+        }
+        catch (ContentCategoryRequiredException)
+        {
+            return BadRequest(ApiError.Validation(
+                SkillTreeProblemCodes.ContentCategoryRequired,
+                "At least one category is required before publication.",
+                HttpContext.TraceIdentifier, null));
+        }
+        catch (ContentCategoryHasNoTreeException)
+        {
+            return BadRequest(ApiError.Validation(
+                SkillTreeProblemCodes.CategoryHasNoTree,
+                "The selected category does not belong to any active skill tree.",
+                HttpContext.TraceIdentifier, null));
+        }
+        catch (SkillTreeRevisionConflictException)
+        {
+            return Conflict(ApiError.Conflict(
+                SkillTreeProblemCodes.RevisionConflict,
+                "The content was changed by another administrator.",
+                HttpContext.TraceIdentifier));
+        }
+        catch (ContentPublicationValidationException exception)
+        {
+            return BadRequest(ApiError.Validation(
+                "content_invalid_publication", exception.Message,
+                HttpContext.TraceIdentifier, null));
+        }
+    }
 
     [HttpPost("{id:guid}/merge")]
     public async Task<ActionResult<ChallengeMergeResult>> Merge(

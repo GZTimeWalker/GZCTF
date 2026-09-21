@@ -1,12 +1,13 @@
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.LearningProgress.Domain;
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.SkillTrees.Application;
 using GZCTF.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Features.LearningProgress.Application;
 
-public sealed class LearningRecordService(AppDbContext db)
+public sealed class LearningRecordService(AppDbContext db, SkillTreeEnrollmentService skillTreeService)
 {
     private const int RecentActivityLimit = 20;
 
@@ -58,6 +59,8 @@ public sealed class LearningRecordService(AppDbContext db)
             item, locale, completedLessons, solvedChallenges)).ToArray();
         var recentActivity = BuildRecentActivity(lessonProgress, challengeProgress, locale);
 
+        var skillTreeRecord = await skillTreeService.GetMyLearningAsync(userId, token);
+
         return new MyLearningResponse(
             routes,
             enrollments.SingleOrDefault(item => item.IsCurrent)?.PathId,
@@ -67,7 +70,9 @@ public sealed class LearningRecordService(AppDbContext db)
                     item.ChallengeId, item.SolvedAtUtc, item.SolveMode.ToString()))
                 .ToArray(),
             solvedChallenges.Count,
-            recentActivity);
+            recentActivity,
+            skillTreeRecord.CurrentSkillTreeId,
+            skillTreeRecord.SkillTrees);
     }
 
     private static LearningRouteRecord ToRouteRecord(
@@ -187,7 +192,9 @@ public sealed record MyLearningResponse(
     IReadOnlyList<Guid> CompletedLessonIds,
     IReadOnlyList<LearningChallengeRecord> SolvedChallenges,
     int SolvedChallengeCount,
-    IReadOnlyList<LearningActivityRecord> RecentActivity);
+    IReadOnlyList<LearningActivityRecord> RecentActivity,
+    Guid? CurrentSkillTreeId,
+    IReadOnlyList<MySkillTreeRecordResponse> SkillTrees);
 
 public sealed record LearningRouteRecord(
     Guid PathId,
