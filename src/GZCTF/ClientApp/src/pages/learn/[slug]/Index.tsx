@@ -1,30 +1,35 @@
-import { Center, Loader, Stack, Text } from '@mantine/core'
+import { useEffect } from 'react'
 import { useParams } from 'react-router'
-import { useTranslation } from 'react-i18next'
-import { RouteOutline } from '@Components/learning/RouteOutline'
-import { EnrollmentControls } from '@Components/learning/EnrollmentControls'
-import { WithNavBar } from '@Components/WithNavbar'
-import { useLearningPathPreview } from '@Hooks/useLearning'
-import { usePageTitle } from '@Hooks/usePageTitle'
-import { useLanguage } from '@Utils/I18n'
+import { Center, Loader, Stack, Text } from '@mantine/core'
+import { useNavigate } from 'react-router'
 
-const LearningRoute = () => {
+const LearnSlug = () => {
   const { slug } = useParams()
-  const { locale } = useLanguage()
-  const { t } = useTranslation('learning')
-  const { data: path, error } = useLearningPathPreview(slug, locale)
-  usePageTitle(path?.title ?? t('title'))
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!slug) {
+      navigate('/404', { replace: true })
+      return
+    }
+
+    fetch(`/api/skill-tree-redirects/${encodeURIComponent(slug)}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('not found')
+        return res.json()
+      })
+      .then((data: { targetPath: string }) => navigate(data.targetPath, { replace: true }))
+      .catch(() => navigate('/404', { replace: true }))
+  }, [slug, navigate])
 
   return (
-    <WithNavBar minWidth={0}>
-      {!path && !error ? <Center><Loader /></Center> : error ? <Text c="red">{t('loadFailed')}</Text> : (
-        <Stack gap="lg">
-          <EnrollmentControls pathId={path!.pathId} />
-          <RouteOutline path={path!} />
-        </Stack>
-      )}
-    </WithNavBar>
+    <Center h="60vh">
+      <Stack align="center">
+        <Loader />
+        <Text c="dimmed">Loading...</Text>
+      </Stack>
+    </Center>
   )
 }
 
-export default LearningRoute
+export default LearnSlug

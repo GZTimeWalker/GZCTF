@@ -220,6 +220,10 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
     {
         await _postgresContainer.StartAsync();
         _connectionString = _postgresContainer.GetConnectionString();
+        if (!_connectionString.Contains("Include Error Detail", StringComparison.OrdinalIgnoreCase))
+        {
+            _connectionString += ";Include Error Detail=true";
+        }
     }
 
     private async Task InitializeMinioAsync()

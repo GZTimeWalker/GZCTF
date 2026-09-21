@@ -12,7 +12,7 @@ import {
 import {
   mdiAccountCircleOutline,
   mdiCached,
-  mdiFlagOutline,
+  mdiFileTreeOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
   mdiLogin,
@@ -87,9 +87,9 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
     { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
-    { icon: mdiFlagOutline, label: 'learning:title', link: '/learn' },
+    { icon: mdiFileTreeOutline, label: 'skillTrees:navigation.title', link: '/skill-trees' },
     { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
-    { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/learning-paths', admin: true },
+    { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/skill-trees', admin: true },
   ]
 
   const getLabel = (path: string) =>
@@ -201,8 +201,8 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                   >
                     {t('common.tab.account.profile')}
                   </Menu.Item>
-                  <Menu.Item component={Link} to="/account/learning" leftSection={<Icon path={mdiFlagOutline} size={1} />}>
-                    {t('learning:recordTitle')}
+                  <Menu.Item component={Link} to="/account/learning" leftSection={<Icon path={mdiFileTreeOutline} size={1} />}>
+                    {t('skillTrees:list.title')}
                   </Menu.Item>
                 </>
               )}
