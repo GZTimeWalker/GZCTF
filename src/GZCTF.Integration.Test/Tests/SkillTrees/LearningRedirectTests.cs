@@ -209,7 +209,7 @@ public class LearningRedirectTests(GZCTFApplicationFactory factory)
         });
         await db.SaveChangesAsync();
 
-        return content.Id;
+        return challenge.Id;
     }
 
     private async Task<Guid> SeedLessonAsync(string title, Guid categoryId, Guid treeId)
@@ -246,6 +246,6 @@ public class LearningRedirectTests(GZCTFApplicationFactory factory)
         });
         await db.SaveChangesAsync();
 
-        return content.Id;
+        return lesson.Id;
     }
 }

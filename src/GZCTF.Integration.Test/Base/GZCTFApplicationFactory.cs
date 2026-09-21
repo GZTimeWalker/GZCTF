@@ -161,10 +161,12 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         {
             // Replace the DbContext with our test connection string
             services.RemoveAll<DbContextOptions<AppDbContext>>();
+            var commandCounter = new CommandCountInterceptor();
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseNpgsql(_connectionString,
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                options.AddInterceptors(commandCounter);
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();
             });

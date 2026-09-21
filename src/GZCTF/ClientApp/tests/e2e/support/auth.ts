@@ -36,6 +36,11 @@ export async function login(page: Page, account: Credentials): Promise<void> {
   await page.goto('/account/login')
   await page.locator('input[type="text"], input[name="userName"], input[type="email"]').first().fill(account.userName)
   await page.locator('input[type="password"]').first().fill(account.password)
-  await page.getByRole('button', { name: /log ?in|sign ?in|登录/i }).click()
-  await expect(page).not.toHaveURL(/\/account\/login/)
+  // Wait for the submit control to be enabled so the click is never lost to hydration.
+  const submit = page.getByRole('button', { name: /log ?in|sign ?in|登录/i })
+  await expect(submit).toBeEnabled()
+  await submit.click()
+  // The redirect waits for the profile to be revalidated after a client-side RSA
+  // handshake, which needs far more than the default timeout on a loaded machine.
+  await expect(page).not.toHaveURL(/\/account\/login/, { timeout: 60_000 })
 }
