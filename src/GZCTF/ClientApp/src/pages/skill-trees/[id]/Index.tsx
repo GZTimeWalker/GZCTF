@@ -1,7 +1,8 @@
-import { Center, Loader, Stack, Text } from '@mantine/core'
+import { Center, Group, Loader, Stack, Text } from '@mantine/core'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useSkillTree } from '@Hooks/useSkillTrees'
+import { SkillTreeEnrollmentControls } from '@Components/skill-trees/SkillTreeEnrollmentControls'
 import { SkillTreeOutline } from '@Components/skill-trees/SkillTreeOutline'
 import { WithNavBar } from '@Components/WithNavbar'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -22,7 +23,12 @@ const SkillTreeDetail = () => {
         ) : error ? (
           <Text c="red">{t('errors.generic')}</Text>
         ) : (
-          <SkillTreeOutline tree={tree!} />
+          <>
+            <Group justify="flex-end">
+              <SkillTreeEnrollmentControls treeId={tree!.skillTreeId!} />
+            </Group>
+            <SkillTreeOutline tree={tree!} />
+          </>
         )}
       </Stack>
     </WithNavBar>
