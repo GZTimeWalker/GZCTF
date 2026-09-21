@@ -1,5 +1,8 @@
 using System.Net;
+using System.Net.Http.Json;
 using GZCTF.Integration.Test.Base;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace GZCTF.Integration.Test.Tests.Decommission;
@@ -7,33 +10,49 @@ namespace GZCTF.Integration.Test.Tests.Decommission;
 [Collection(nameof(IntegrationTestCollection))]
 public sealed class LegacySurfaceTests(GZCTFApplicationFactory factory)
 {
-    [Theory]
-    [InlineData("/api/game")]
-    [InlineData("/api/team")]
-    [InlineData("/api/exercise")]
-    public async Task Competition_api_surfaces_are_removed(string path)
+    [Fact]
+    public void Competition_routes_and_monitor_hub_are_not_registered()
     {
-        using var client = factory.CreateClient();
-        var response = await client.GetAsync(path);
-        Assert.True(response.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.MethodNotAllowed,
-            $"{path} returned {(int)response.StatusCode}");
+        _ = factory.CreateClient();
+        var routes = factory.Services.GetRequiredService<EndpointDataSource>().Endpoints
+            .OfType<RouteEndpoint>()
+            .Select(endpoint => endpoint.RoutePattern.RawText ?? string.Empty)
+            .ToArray();
+
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "api/game"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "api/team"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "api/exercise"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "api/admin/teams"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "api/admin/participation"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "api/admin/writeups"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "hub/monitor"));
+        Assert.DoesNotContain(routes, route => HasPrefix(route, "hub/user"));
     }
 
-    [Fact]
-    public async Task Competition_monitor_hub_is_removed()
+    [Theory]
+    [InlineData("api/admin/imports")]
+    [InlineData("hub/dashboard")]
+    [InlineData("api/skill-tree-redirects")]
+    public void Replacement_routes_are_registered(string expected)
     {
-        using var client = factory.CreateClient();
-        var response = await client.PostAsync("/hub/monitor/negotiate?negotiateVersion=1", null);
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        _ = factory.CreateClient();
+        var routes = factory.Services.GetRequiredService<EndpointDataSource>().Endpoints
+            .OfType<RouteEndpoint>()
+            .Select(endpoint => endpoint.RoutePattern.RawText ?? string.Empty);
+
+        Assert.Contains(routes, route => HasPrefix(route, expected));
     }
 
     [Theory]
     [InlineData("/api/learning-paths")]
-    [InlineData("/api/admin/imports")]
-    public async Task Replacement_routes_remain_discoverable(string path)
+    [InlineData("/api/admin/learning-paths")]
+    public async Task Retired_learning_apis_are_not_routable(string route)
     {
         using var client = factory.CreateClient();
-        var response = await client.GetAsync(path);
-        Assert.NotEqual(HttpStatusCode.NotFound, response.StatusCode);
+        var response = await client.GetAsync(route);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    private static bool HasPrefix(string route, string prefix) =>
+        route.TrimStart('/').StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
 }

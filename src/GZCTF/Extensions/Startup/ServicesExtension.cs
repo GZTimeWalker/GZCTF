@@ -79,7 +79,6 @@ internal static class ServicesExtension
             builder.Services.AddScoped<IApiTokenRepository, ApiTokenRepository>();
             builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
             builder.Services.AddScoped<ChallengeLibraryService>();
-            builder.Services.AddScoped<LearningPathService>();
             builder.Services.AddScoped<EnrollmentService>();
             builder.Services.AddScoped<LessonProgressService>();
             builder.Services.AddScoped<LearningRecordService>();
