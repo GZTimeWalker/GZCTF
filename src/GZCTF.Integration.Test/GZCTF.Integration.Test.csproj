@@ -35,5 +35,29 @@
     <None Update="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!--
+    These suites exercise the removed competition, team, scoreboard, and legacy
+    repository write paths. Keep the source as migration reference, but do not
+    include obsolete behavior in the Learning platform's default test assembly.
+  -->
+  <ItemGroup>
+    <Compile Remove="Tests/Api/AdvancedGameMechanicsTests.cs" />
+    <Compile Remove="Tests/Api/DetailedGameScoringTests.cs" />
+    <Compile Remove="Tests/Api/EditControllerTests.cs" />
+    <Compile Remove="Tests/Api/GameExportImportTests.cs" />
+    <Compile Remove="Tests/Api/GameJoinTests.cs" />
+    <Compile Remove="Tests/Api/GameWorkflowTests.cs" />
+    <Compile Remove="Tests/Api/PracticeModeDeadlineTests.cs" />
+    <Compile Remove="Tests/Api/ScoreboardCalculationTests.cs" />
+    <Compile Remove="Tests/Api/TeamManagementTests.cs" />
+    <Compile Remove="Tests/Database/DatabaseContextTests.cs" />
+    <Compile Remove="Tests/Repository/DivisionRepositoryTests.cs" />
+    <Compile Remove="Tests/Repository/GameChallengeRepositoryTests.cs" />
+    <Compile Remove="Tests/Repository/GameRepositoryTests.cs" />
+    <Compile Remove="Tests/Repository/ParticipationRepositoryTests.cs" />
+    <Compile Remove="Tests/Repository/SubmissionRepositoryTests.cs" />
+    <Compile Remove="Tests/Repository/TeamRepositoryTests.cs" />
+  </ItemGroup>
+
 
 </Project>

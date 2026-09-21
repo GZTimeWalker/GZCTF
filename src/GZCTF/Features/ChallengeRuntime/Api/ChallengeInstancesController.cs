@@ -32,8 +32,15 @@ public sealed class ChallengeInstancesController(
     [HttpDelete]
     public async Task<IActionResult> Stop(Guid challengeId, CancellationToken token)
     {
-        await runtime.StopAsync(GetUserId(), challengeId, token);
-        return NoContent();
+        try
+        {
+            await runtime.StopAsync(GetUserId(), challengeId, token);
+            return NoContent();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
+        }
     }
 
     private async Task<ActionResult<ChallengeInstanceResponse>> Execute(

@@ -41,9 +41,11 @@ public sealed class DynamicAttachmentAllocator(AppDbContext db)
             .Include(item => item.Flags)
             .SingleAsync(item => item.Id == challengeId, token);
         var candidates = ReadCandidates(challenge);
+        if (candidates.Count == 0)
+            throw new InvalidOperationException("challenge.attachment_pool_missing");
 
         if (challenge.Type == ChallengeType.StaticAttachment)
-            return await AssignAsync(current, candidates.First(), token);
+            return await AssignAsync(current, candidates[0], token);
 
         for (var attempt = 0; attempt < 3; attempt++)
         {

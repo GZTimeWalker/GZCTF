@@ -26,6 +26,8 @@ public sealed class ChallengeSubmissionsController(
             return Unauthorized();
         if (string.IsNullOrWhiteSpace(request.Flag))
             return BadRequest();
+        if (!await db.Challenges.AsNoTracking().AnyAsync(item => item.Id == challengeId, token))
+            return NotFound();
         return Ok(await submissions.SubmitAsync(user.Id, challengeId, request.Flag, token));
     }
 
