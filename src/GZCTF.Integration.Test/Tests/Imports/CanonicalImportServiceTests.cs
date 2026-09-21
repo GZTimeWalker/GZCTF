@@ -72,7 +72,7 @@ public sealed class CanonicalImportServiceTests(GZCTFApplicationFactory factory)
                         [Challenge($"challenge-a-{fingerprint}")])]),
                 new CanonicalPathImport("legacy", $"game-b-{fingerprint}", $"game-b-{fingerprint}",
                     "Same game title", "Summary",
-                    [new CanonicalModuleImport("module-b", "Module", "Summary", 0,
+                    [new CanonicalModuleImport($"module-b-{fingerprint}", "Module", "Summary", 0,
                         [Challenge($"challenge-b-{fingerprint}")])])
             ],
             []);

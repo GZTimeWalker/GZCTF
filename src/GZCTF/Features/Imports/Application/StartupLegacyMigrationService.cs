@@ -25,7 +25,11 @@ public sealed class StartupLegacyMigrationService(
         }
         catch (Exception exception)
         {
-            var failed = existing ?? new Domain.MigrationBatch
+            var existingId = existing?.Id;
+            db.ChangeTracker.Clear();
+            var failed = existingId is { } batchId
+                ? await db.MigrationBatches.SingleAsync(item => item.Id == batchId, token)
+                : new Domain.MigrationBatch
             {
                 SourceType = "legacy-database",
                 PackageFingerprintSha256 = "legacy-database-v1",
@@ -33,7 +37,7 @@ public sealed class StartupLegacyMigrationService(
             };
             failed.State = Domain.MigrationBatchState.Failed;
             failed.ErrorsJson = System.Text.Json.JsonSerializer.Serialize(new[] { exception.GetType().Name });
-            if (existing is null)
+            if (existingId is null)
                 db.MigrationBatches.Add(failed);
             await db.SaveChangesAsync(token);
             logger.LogError(exception, "Legacy database migration failed for batch {BatchId}", failed.Id);

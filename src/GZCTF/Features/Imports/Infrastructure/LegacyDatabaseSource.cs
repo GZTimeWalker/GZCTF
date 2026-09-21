@@ -65,13 +65,16 @@ public sealed class LegacyDatabaseSource(AppDbContext db)
             legacyDifficulty = challenge.Difficulty,
             category = challenge.Category.ToString()
         });
+        if (!challenge.Type.IsDynamic() && string.IsNullOrWhiteSpace(flag))
+            throw new InvalidDataException($"legacy.static_flag_missing:{game.Id}:{challenge.Id}");
+
         return new CanonicalChallengeImport(
             "legacy-db",
             $"{game.Id}:{challenge.Id}",
             challenge.Type,
             [new ImportLocalizedText("en", challenge.Title, string.Empty, challenge.Content)],
             (challenge.Hints ?? []).Select((content, index) => new ImportHint("en", index, content)).ToArray(),
-            challenge.Type.IsDynamic() ? null : flag ?? "flag{legacy-flag-recovery-required}",
+            challenge.Type.IsDynamic() ? null : flag,
             challenge.Type == ChallengeType.DynamicContainer ? challenge.FlagTemplate : null,
             attachments,
             container,

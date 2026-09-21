@@ -13,6 +13,13 @@ public sealed record LegacyZipPackage(
 public sealed class LegacyZipSource
 {
     public const long MaxExpandedBytes = 128 * 1024 * 1024;
+    private readonly long _maxExpandedBytes;
+
+    public LegacyZipSource(long maxExpandedBytes = MaxExpandedBytes)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxExpandedBytes);
+        _maxExpandedBytes = maxExpandedBytes;
+    }
 
     public async Task<LegacyZipPackage> ReadAsync(Stream source, CancellationToken token = default)
     {
@@ -26,16 +33,31 @@ public sealed class LegacyZipSource
         ZipArchiveEntry? manifest = null;
         foreach (var entry in archive.Entries)
         {
+            if (entry.FullName.EndsWith('/') || entry.FullName.EndsWith('\\'))
+                continue;
+
             var path = NormalizeEntryPath(entry.FullName);
             if (path is null)
                 throw new InvalidDataException("import.unsafe_archive_path");
             if (!files.TryAdd(path, []))
                 throw new InvalidDataException("import.duplicate_archive_entry");
-            if (entry.Length > MaxExpandedBytes || (expanded += entry.Length) > MaxExpandedBytes)
+            if (entry.Length > _maxExpandedBytes)
                 throw new InvalidDataException("import.expanded_size_limit");
             await using var entryStream = entry.Open();
             await using var file = new MemoryStream();
-            await entryStream.CopyToAsync(file, token);
+            var copyBuffer = new byte[81920];
+            long entryBytes = 0;
+            while (true)
+            {
+                var read = await entryStream.ReadAsync(copyBuffer, token);
+                if (read == 0)
+                    break;
+                entryBytes += read;
+                expanded += read;
+                if (entryBytes > _maxExpandedBytes || expanded > _maxExpandedBytes)
+                    throw new InvalidDataException("import.expanded_size_limit");
+                await file.WriteAsync(copyBuffer.AsMemory(0, read), token);
+            }
             files[path] = file.ToArray();
             if (path.Equals("manifest.json", StringComparison.OrdinalIgnoreCase))
                 manifest = entry;
