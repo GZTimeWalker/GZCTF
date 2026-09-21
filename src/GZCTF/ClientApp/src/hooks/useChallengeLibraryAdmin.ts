@@ -39,7 +39,11 @@ export const useLearningMutations = () => {
 
   const completeLesson = async (lessonId: string) => {
     await api.lessons.lessonsComplete(lessonId)
-    await mutate((key: string) => typeof key === 'string' && key.startsWith('/api/my-learning'))
+    // The generated hook keys the record as `[path, query]`, so match both key forms.
+    await mutate((key) => {
+      const path = Array.isArray(key) ? key[0] : key
+      return typeof path === 'string' && path.startsWith('/api/my-learning')
+    })
   }
 
   const startInstance = async (challengeId: string) => {

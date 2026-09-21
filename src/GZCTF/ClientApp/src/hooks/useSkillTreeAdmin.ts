@@ -11,12 +11,15 @@ export const useAdminSkillTreeDraft = (id?: string) =>
 export const useAdminSkillCategory = (id?: string) =>
   api.adminSkillCategories.useAdminSkillCategoriesGet(id ?? '', undefined, Boolean(id))
 
-const skillTreeKeyMatcher = (key: unknown) =>
-  typeof key === 'string' &&
-  (key.startsWith('/api/admin/skill-trees') ||
-    key.startsWith('/api/admin/skill-categories') ||
-    key.startsWith('/api/skill-trees') ||
-    key.startsWith('/api/my-learning'))
+// Generated hooks key some endpoints as `[path, query]`, so match both forms.
+const skillTreeKeyMatcher = (key: unknown) => {
+  const path = Array.isArray(key) ? key[0] : key
+  return typeof path === 'string' &&
+    (path.startsWith('/api/admin/skill-trees') ||
+      path.startsWith('/api/admin/skill-categories') ||
+      path.startsWith('/api/skill-trees') ||
+      path.startsWith('/api/my-learning'))
+}
 
 export const useSkillTreeAdminMutations = () => {
   const { mutate } = useSWRConfig()

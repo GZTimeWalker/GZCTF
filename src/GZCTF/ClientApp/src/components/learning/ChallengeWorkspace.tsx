@@ -54,7 +54,10 @@ export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHr
       setMessage(result.accepted ? t('accepted') : t('rejected'))
       if (result.accepted) {
         setSolveMode(result.solveMode === undefined || result.solveMode === null ? undefined : String(result.solveMode))
-        await mutate((key) => typeof key === 'string' && key.startsWith('/api/my-learning'))
+        await mutate((key) => {
+          const path = Array.isArray(key) ? key[0] : key
+          return typeof path === 'string' && path.startsWith('/api/my-learning')
+        })
       }
       setFlag('')
     } catch {

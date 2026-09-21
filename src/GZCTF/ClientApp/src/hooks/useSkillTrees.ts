@@ -23,7 +23,10 @@ export const useSkillTreeMutations = () => {
   const invalidateList = () => mutate(skillTreeKeys.list)
   const invalidateDetail = (id: string) => mutate(skillTreeKeys.detail(id))
   const invalidateEnrollments = () => mutate(skillTreeKeys.enrollments)
-  const invalidateRecord = () => mutate(skillTreeKeys.record)
+  // The generated hook keys the personal record as `[path, query]`, so a plain path
+  // string never matches. Filter by the array form instead.
+  const invalidateRecord = () =>
+    mutate((key) => Array.isArray(key) && key[0] === skillTreeKeys.record)
 
   const join = async (id: string) => {
     await Api.skillTreeEnrollments.skillTreeEnrollmentsEnroll(id)
