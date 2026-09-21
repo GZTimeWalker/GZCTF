@@ -123,6 +123,31 @@ public sealed class SkillTreeEnrollmentService(AppDbContext db)
             enrollment.SkillTree.IconKey, enrollment.IsCurrent, enrollment.EnrolledAtUtc);
     }
 
+    /// <summary>
+    /// Resolves whether a learner may open retained lesson content. A lesson is reachable
+    /// when it belongs to a shared category of a published tree; access additionally requires
+    /// an enrollment in one of those trees.
+    /// </summary>
+    public async Task<LessonAccess> GetLessonAccessAsync(
+        Guid userId, Guid lessonId, CancellationToken token)
+    {
+        var treeIds = await db.SkillTreeRevisions
+            .Where(revision => revision.Status == SkillTreeRevisionStatus.Published)
+            .SelectMany(revision => revision.Categories)
+            .Where(reference => reference.Category.Contents.Any(content => content.LessonId == lessonId))
+            .Select(reference => reference.Revision.SkillTreeId)
+            .Distinct()
+            .ToListAsync(token);
+
+        if (treeIds.Count == 0)
+            return LessonAccess.NotFound;
+
+        var enrolled = await db.SkillTreeEnrollments
+            .AnyAsync(enrollment => enrollment.UserId == userId && treeIds.Contains(enrollment.SkillTreeId), token);
+
+        return enrolled ? LessonAccess.Allowed : LessonAccess.EnrollmentRequired;
+    }
+
     public async Task<MyLearningResponse> GetMyLearningAsync(Guid userId, CancellationToken token)
     {
         var enrollments = await db.SkillTreeEnrollments
@@ -305,4 +330,11 @@ public sealed class SkillTreeEnrollmentService(AppDbContext db)
                 ?? list.FirstOrDefault(item => item.Locale.Equals("zh-CN", StringComparison.OrdinalIgnoreCase)).Title
                 ?? list.FirstOrDefault().Title) ?? string.Empty;
     }
+}
+
+public enum LessonAccess
+{
+    NotFound,
+    EnrollmentRequired,
+    Allowed
 }

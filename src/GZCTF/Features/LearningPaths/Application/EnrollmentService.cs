@@ -1,4 +1,5 @@
 using GZCTF.Features.LearningPaths.Domain;
+using GZCTF.Features.SkillTrees.Application;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Features.LearningPaths.Application;
@@ -8,19 +9,18 @@ namespace GZCTF.Features.LearningPaths.Application;
 /// <see cref="LessonProgressService"/> shares the same exception contract; the old
 /// LearningPath enrollment surface was retired in the skill tree cutover.
 /// </summary>
-public sealed class EnrollmentService(AppDbContext db)
+public sealed class EnrollmentService(AppDbContext db, SkillTreeEnrollmentService enrollments)
 {
     public async Task<LessonContentResponse> GetLessonAsync(
         Guid userId, Guid lessonId, string? locale, CancellationToken token)
     {
-        var pathIds = await CurrentPublishedPathIdsForLessonAsync(lessonId, token);
-        if (pathIds.Count == 0)
-            throw new LearningLessonNotFoundException();
-
-        var enrolled = await db.Enrollments.AnyAsync(
-            item => item.UserId == userId && pathIds.Contains(item.PathId), token);
-        if (!enrolled)
-            throw new LearningEnrollmentRequiredException();
+        switch (await enrollments.GetLessonAccessAsync(userId, lessonId, token))
+        {
+            case LessonAccess.NotFound:
+                throw new LearningLessonNotFoundException();
+            case LessonAccess.EnrollmentRequired:
+                throw new LearningEnrollmentRequiredException();
+        }
 
         var lesson = await db.Lessons
             .AsNoTracking()
@@ -34,15 +34,6 @@ public sealed class EnrollmentService(AppDbContext db)
             lesson.Id, localization?.Locale ?? "en", localization?.Title ?? string.Empty,
             localization?.Body ?? string.Empty);
     }
-
-    private async Task<List<Guid>> CurrentPublishedPathIdsForLessonAsync(
-        Guid lessonId, CancellationToken token) =>
-        await db.LearningPathRevisions
-            .Where(revision => revision.Status == LearningPathRevisionStatus.Published &&
-                               revision.Path.CurrentPublishedRevisionId == revision.Id &&
-                               revision.Modules.Any(module => module.Items.Any(item => item.LessonId == lessonId)))
-            .Select(revision => revision.PathId)
-            .ToListAsync(token);
 
     private static LessonLocalization? PickLesson(
         IEnumerable<LessonLocalization> localizations, string? locale)

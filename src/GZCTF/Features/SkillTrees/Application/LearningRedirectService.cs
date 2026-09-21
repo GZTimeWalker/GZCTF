@@ -33,9 +33,11 @@ public sealed class LearningRedirectService(AppDbContext db)
         if (!belongsToTree)
             return null;
 
+        // Legacy deep links address content by its own entity id, matching the workspace route.
         var content = await db.CategoryContents
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == contentGuid && c.CategoryId == categoryGuid, token);
+            .FirstOrDefaultAsync(c => c.CategoryId == categoryGuid &&
+                                       (c.ChallengeId == contentGuid || c.LessonId == contentGuid), token);
 
         if (content is null)
             return null;
@@ -47,6 +49,12 @@ public sealed class LearningRedirectService(AppDbContext db)
         if (kind is null)
             return null;
 
-        return $"/skill-trees/{treeId}/{categoryGuid}/{kind}/{contentGuid}";
+        // The workspace route addresses content by its own entity id, not by the
+        // CategoryContent row, so the deep link must carry the challenge or lesson id.
+        var contentId = content.ChallengeId ?? content.LessonId;
+        if (contentId is null)
+            return null;
+
+        return $"/skill-trees/{treeId}/{categoryGuid}/{kind}/{contentId}";
     }
 }
