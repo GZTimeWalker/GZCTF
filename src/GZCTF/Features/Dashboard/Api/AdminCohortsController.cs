@@ -38,6 +38,8 @@ public sealed class AdminCohortsController(AppDbContext db) : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Rename(Guid id, [FromBody] CohortCommand command, CancellationToken token)
     {
+        if (string.IsNullOrWhiteSpace(command.Name))
+            return BadRequest();
         var cohort = await db.Cohorts.SingleOrDefaultAsync(item => item.Id == id, token);
         if (cohort is null) return NotFound();
         cohort.Name = command.Name.Trim();

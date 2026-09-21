@@ -1,3 +1,4 @@
+using System.Data;
 using GZCTF.Features.Dashboard.Domain;
 using GZCTF.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ public sealed class DailySolveProjection(AppDbContext db)
 
     public async Task<DailySolveRebuildResult> RebuildAsync(CancellationToken token = default)
     {
+        await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.Serializable, token);
         var source = await db.ChallengeProgress.AsNoTracking()
             .Select(item => new { item.UserId, item.SolvedAtUtc })
             .ToArrayAsync(token);
@@ -46,6 +48,7 @@ public sealed class DailySolveProjection(AppDbContext db)
         await db.LearnerDailySolveStats.ExecuteDeleteAsync(token);
         await db.LearnerDailySolveStats.AddRangeAsync(groups, token);
         await db.SaveChangesAsync(token);
+        await transaction.CommitAsync(token);
         return new DailySolveRebuildResult(groups.Length, source.Select(item => item.SolvedAtUtc).DefaultIfEmpty().Max());
     }
 }
