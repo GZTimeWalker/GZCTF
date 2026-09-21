@@ -1,4 +1,5 @@
 import { Alert, Button, Card, Code, Group, Stack, Text, Textarea, Title } from '@mantine/core'
+import { Link } from 'react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Markdown } from '@Components/MarkdownRenderer'
@@ -10,8 +11,16 @@ import {
 import { useUser } from '@Hooks/useUser'
 import { useLanguage } from '@Utils/I18n'
 import { useSWRConfig } from 'swr'
+import { ChallengeInstanceStatus } from '@Api'
 
-export const ChallengeWorkspace = ({ challengeId }: { challengeId: string }) => {
+export type ChallengeWorkspaceProps = {
+  challengeId: string
+  backHref?: string
+  previousHref?: string
+  nextHref?: string
+}
+
+export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHref }: ChallengeWorkspaceProps) => {
   const { locale } = useLanguage()
   const { user } = useUser()
   const { t } = useTranslation('learning')
@@ -44,7 +53,7 @@ export const ChallengeWorkspace = ({ challengeId }: { challengeId: string }) => 
       const result = await submitChallenge(challengeId, flag)
       setMessage(result.accepted ? t('accepted') : t('rejected'))
       if (result.accepted) {
-        setSolveMode(result.solveMode)
+        setSolveMode(result.solveMode === undefined || result.solveMode === null ? undefined : String(result.solveMode))
         await mutate((key) => typeof key === 'string' && (key.startsWith('/api/my-learning') || key.startsWith('/api/learning-paths/')))
       }
       setFlag('')
@@ -69,6 +78,25 @@ export const ChallengeWorkspace = ({ challengeId }: { challengeId: string }) => 
 
   return (
     <Stack gap="lg">
+      {(backHref || previousHref || nextHref) && (
+        <Group gap="xs">
+          {backHref && (
+            <Button component={Link} to={backHref} variant="subtle">
+              ← Back
+            </Button>
+          )}
+          {previousHref && (
+            <Button component={Link} to={previousHref} variant="subtle">
+              ← Previous
+            </Button>
+          )}
+          {nextHref && (
+            <Button component={Link} to={nextHref} variant="subtle">
+              Next →
+            </Button>
+          )}
+        </Group>
+      )}
       <Card withBorder padding="xl">
         <Stack>
           <Group justify="space-between">
@@ -84,7 +112,7 @@ export const ChallengeWorkspace = ({ challengeId }: { challengeId: string }) => 
         <Card withBorder>
           <Stack>
             <Title order={3}>{t('instance')}</Title>
-            {instance?.status === 'Running' ? (
+            {instance?.status === ChallengeInstanceStatus.Running ? (
               <Group>
                 <Text>{instance.publicIp ?? t('instanceRunning')}:{instance.publicPort ?? ''}</Text>
                 <Button variant="light" onClick={() => run(async () => { await extendInstance(challengeId); await mutateInstance() })}>{t('extend')}</Button>

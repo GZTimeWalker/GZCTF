@@ -14,6 +14,9 @@ export const useSkillTrees = (options?: SWRConfiguration, doFetch: boolean = tru
 export const useSkillTree = (id?: string, options?: SWRConfiguration) =>
   Api.skillTrees.useSkillTreesDetail(id ?? '', options, Boolean(id))
 
+export const useMyLearning = (enabled: boolean) =>
+  Api.myLearning.useMyLearningGet({}, undefined, enabled)
+
 export const useSkillTreeMutations = () => {
   const { mutate } = useSWRConfig()
 
