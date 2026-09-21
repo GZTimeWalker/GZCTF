@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Markdown } from '@Components/MarkdownRenderer'
-import { useLesson, useLearningMutations } from '@Hooks/useLearning'
+import { useLesson, useLearningMutations } from '@Hooks/useChallengeLibraryAdmin'
 import { useLanguage } from '@Utils/I18n'
 import { useUser } from '@Hooks/useUser'
 

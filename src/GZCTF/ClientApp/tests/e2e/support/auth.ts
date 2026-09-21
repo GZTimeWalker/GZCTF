@@ -34,8 +34,8 @@ export async function createRoleContext(browser: Browser, role: TestRole): Promi
 
 export async function login(page: Page, account: Credentials): Promise<void> {
   await page.goto('/account/login')
-  await page.getByLabel(/user(name)?|用户名/i).fill(account.userName)
-  await page.getByLabel(/password|密码/i).fill(account.password)
-  await page.getByRole('button', { name: /login|登录/i }).click()
+  await page.locator('input[type="text"], input[name="userName"], input[type="email"]').first().fill(account.userName)
+  await page.locator('input[type="password"]').first().fill(account.password)
+  await page.getByRole('button', { name: /log ?in|sign ?in|登录/i }).click()
   await expect(page).not.toHaveURL(/\/account\/login/)
 }

@@ -1,23 +1,89 @@
-import { Button, Stack, Text, Textarea, TextInput, Title } from '@mantine/core'
-import { useParams } from 'react-router'
-import useSWR from 'swr'
-import { fetcher } from '@Api'
+import { Badge, Button, Group, Stack, Text, Textarea, TextInput, Title } from '@mantine/core'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useParams } from 'react-router'
+import api, { Role } from '@Api'
+import { ContentPublishModal } from '@Components/admin/library/ContentPublishModal'
 import { WithNavBar } from '@Components/WithNavbar'
 import { WithRole } from '@Components/WithRole'
-import { adminRequest } from '@Hooks/useAdminLearning'
-import { Role } from '@Api'
-import { useState } from 'react'
+import { mergeLessonLocalization } from '@Utils/LearningAdmin'
+import { showErrorMsg } from '@Utils/Shared'
 
 const AdminLessonEdit = () => {
   const { id } = useParams()
-  const { data, mutate } = useSWR<any>(id ? `/api/admin/lessons/${id}?locale=en` : null, fetcher)
-  const localization = data?.localizations?.find((item: any) => item.locale === 'en')
+  const { t } = useTranslation()
+  const { t: tSkillTrees } = useTranslation('skillTrees')
+  const { data, mutate } = api.adminLessons.useAdminLessonsGet(
+    id ?? '', { locale: 'en' }, undefined, Boolean(id)
+  )
+  const localization = data?.localizations?.find(item => item.locale?.toLowerCase() === 'en')
   const [title, setTitle] = useState<string>()
   const [body, setBody] = useState<string>()
+  const [saving, setSaving] = useState(false)
+  const [publishOpen, setPublishOpen] = useState(false)
+  const [publishRowVersion, setPublishRowVersion] = useState<number>()
   if (!id) return null
-  const save = async () => { await adminRequest(`/api/admin/lessons/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ localizations: [{ locale: 'en', title: title ?? localization?.title ?? '', body: body ?? localization?.body ?? '' }] }) }); await mutate() }
-  return <WithRole requiredRole={Role.Admin}><WithNavBar minWidth={0}><Stack><Title order={1}>Edit lesson</Title>{!data ? <Text>Loading…</Text> : <><TextInput label="English title" value={title ?? localization?.title ?? ''} onChange={(event) => setTitle(event.currentTarget.value)} /><Textarea label="Markdown" minRows={16} value={body ?? localization?.body ?? ''} onChange={(event) => setBody(event.currentTarget.value)} /><Button onClick={save}>Save</Button></>}</Stack></WithNavBar></WithRole>
+
+  const save = async () => {
+    setSaving(true)
+    try {
+      await api.adminLessons.adminLessonsUpdate(id, {
+        locale: 'en',
+        localizations: mergeLessonLocalization(data?.localizations ?? [], {
+          locale: 'en',
+          title: title ?? localization?.title ?? '',
+          body: body ?? localization?.body ?? '',
+        }),
+      })
+      await mutate()
+    } catch (error) {
+      showErrorMsg(error, t)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return <WithRole requiredRole={Role.Admin}><WithNavBar minWidth={0}><Stack>
+    <Group justify="space-between">
+      <Title order={1}>{t('learning:adminEditLesson')}</Title>
+      <Group>
+        <Badge color={data?.publication?.publicationState === 'Published' ? 'green' : 'gray'} variant="light">
+          {tSkillTrees(`state.${(data?.publication?.publicationState ?? 'Draft').toLowerCase()}`)}
+        </Badge>
+        <Button component={Link} to="/admin/skill-categories" variant="subtle">
+          {tSkillTrees('category.title')}
+        </Button>
+      </Group>
+    </Group>
+    {!data ? <Text>{t('learning:loading')}</Text> : <>
+      <TextInput label={t('learning:adminEnglishTitle')} value={title ?? localization?.title ?? ''} onChange={(event) => setTitle(event.currentTarget.value)} />
+      <Textarea label={t('learning:adminMarkdown')} minRows={16} value={body ?? localization?.body ?? ''} onChange={(event) => setBody(event.currentTarget.value)} />
+      <Group>
+        <Button loading={saving} onClick={save}>{t('learning:adminSave')}</Button>
+        <Button
+          color="green"
+          variant="light"
+          loading={saving}
+          onClick={async () => {
+            await save()
+            setPublishRowVersion(data.publication?.rowVersion)
+            setPublishOpen(true)
+          }}
+        >
+          {tSkillTrees('publish.lessonTitle')}
+        </Button>
+      </Group>
+      <ContentPublishModal
+        opened={publishOpen}
+        kind="lesson"
+        contentId={id}
+        rowVersion={publishRowVersion ?? data.publication?.rowVersion ?? 0}
+        initialCategoryIds={data.publication?.categoryIds ?? []}
+        onClose={() => setPublishOpen(false)}
+        onPublished={async () => { await mutate() }}
+      />
+    </>}
+  </Stack></WithNavBar></WithRole>
 }
 
 export default AdminLessonEdit
-

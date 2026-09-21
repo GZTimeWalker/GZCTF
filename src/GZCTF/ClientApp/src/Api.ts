@@ -38,14 +38,6 @@ export enum ChallengeCategory {
   OSINT = "OSINT",
 }
 
-export enum ParticipationStatus {
-  Pending = "Pending",
-  Accepted = "Accepted",
-  Rejected = "Rejected",
-  Suspended = "Suspended",
-  Unsubmitted = "Unsubmitted",
-}
-
 /** Task execution status */
 export enum TaskStatus {
   Success = "Success",
@@ -127,6 +119,238 @@ export enum MigrationBatchState {
   Failed = 3,
 }
 
+export interface SkillCategoryAdminResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number;
+  trees?: CategoryTreeReferenceResponse[];
+  contents?: SkillTreeContentSummaryResponse[];
+}
+
+export interface CategoryTreeReferenceResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  isPublished?: boolean;
+}
+
+export interface SkillTreeContentSummaryResponse {
+  /** @format guid */
+  contentId?: string;
+  kind?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  title?: string;
+  summary?: string;
+  /** @format int32 */
+  expectedMinutes?: number;
+  difficulty?: string;
+  state?: string | null;
+}
+
+export interface SkillCategoryCommand {
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number | null;
+}
+
+export interface UpdateCategoryContentsCommand {
+  rowVersion?: number;
+  contents?: CategoryContentOrderCommand[];
+}
+
+export interface CategoryContentOrderCommand {
+  kind?: string;
+  /** @format guid */
+  contentId?: string;
+  /** @format int32 */
+  sortOrder?: number;
+}
+
+export interface UpdateCategoryTreeMembershipsResponse {
+  /** @format guid */
+  categoryId?: string;
+  affectedSkillTreeIds?: string[];
+}
+
+export interface UpdateCategoryTreeMembershipsCommand {
+  categoryRowVersion?: number;
+  trees?: CategoryTreeMembershipCommand[];
+}
+
+export interface CategoryTreeMembershipCommand {
+  /** @format guid */
+  skillTreeId?: string;
+  included?: boolean;
+  skillTreeRowVersion?: number;
+}
+
+export interface CategoryDeleteImpactResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  /** @format int32 */
+  draftTreeCount?: number;
+  /** @format int32 */
+  publishedTreeCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+  requiresTypedConfirmation?: boolean;
+}
+
+export interface DeleteCategoryCommand {
+  confirmationName?: string;
+  rowVersion?: number;
+}
+
+export interface MergeSkillCategoryCommand {
+  /** @format guid */
+  survivorCategoryId?: string;
+  /** @format guid */
+  duplicateCategoryId?: string;
+  survivorRowVersion?: number;
+  duplicateRowVersion?: number;
+}
+
+export interface AdminSkillTreeResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  isPublished?: boolean;
+  hasDraft?: boolean;
+  rowVersion?: number;
+}
+
+export interface CreateSkillTreeCommand {
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+}
+
+export interface SkillTreeDraftResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  /** @format guid */
+  revisionId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number;
+  categories?: SkillTreeCategoryAdminResponse[];
+}
+
+export interface SkillTreeCategoryAdminResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  rowVersion?: number;
+  trees?: CategoryTreeReferenceResponse[];
+  contents?: SkillTreeContentSummaryResponse[];
+}
+
+export interface SkillTreeDetailResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  categories?: SkillCategoryPublicResponse[];
+}
+
+export interface SkillCategoryPublicResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  contents?: SkillTreeContentSummaryResponse[];
+}
+
+export interface UpdateSkillTreeDraftCommand {
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number;
+  categories?: SkillTreeCategoryOrderCommand[];
+}
+
+export interface SkillTreeCategoryOrderCommand {
+  /** @format guid */
+  categoryId?: string;
+  /** @format int32 */
+  sortOrder?: number;
+}
+
+export interface PublishSkillTreeCommand {
+  rowVersion?: number;
+}
+
+export interface SkillTreeDeleteImpactResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  /** @format int32 */
+  categoryCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+  /** @format int32 */
+  enrollmentCount?: number;
+  isPublished?: boolean;
+  requiresTypedConfirmation?: boolean;
+  rowVersion?: number;
+}
+
+export interface DeleteSkillTreeCommand {
+  confirmationName?: string;
+  rowVersion?: number;
+}
+
+export interface LearningRedirectResponse {
+  targetPath?: string;
+}
+
+export interface SkillTreeEnrollmentResponse {
+  /** @format guid */
+  enrollmentId?: string;
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  iconKey?: string;
+  isCurrent?: boolean;
+  /** @format uint64 */
+  enrolledAtUtc?: number;
+}
+
+export interface SkillTreeSummaryResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  /** @format int32 */
+  categoryCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+}
+
 export interface MyLearningResponse {
   routes?: LearningRouteRecord[];
   /** @format guid */
@@ -136,6 +360,9 @@ export interface MyLearningResponse {
   /** @format int32 */
   solvedChallengeCount?: number;
   recentActivity?: LearningActivityRecord[];
+  /** @format guid */
+  currentSkillTreeId?: string | null;
+  skillTrees?: MySkillTreeRecordResponse[];
 }
 
 export interface LearningRouteRecord {
@@ -192,156 +419,25 @@ export interface LearningActivityRecord {
   title?: string | null;
 }
 
-export interface AdminLearningPathSummaryResponse {
+export interface MySkillTreeRecordResponse {
   /** @format guid */
-  pathId?: string;
-  slug?: string;
-  title?: string;
-  isPublished?: boolean;
-  hasDraft?: boolean;
-}
-
-export interface LearningPathDraftResponse {
-  /** @format guid */
-  pathId?: string;
-  /** @format guid */
-  revisionId?: string;
-  slug?: string;
-  rowVersion?: number;
-  localizations?: LearningLocalizationResponse[];
-  modules?: LearningModuleResponse[];
-}
-
-export interface LearningLocalizationResponse {
-  locale?: string;
-  title?: string;
-  summary?: string;
-}
-
-export interface LearningModuleResponse {
-  /** @format guid */
-  id?: string;
-  /** @format int32 */
-  sortOrder?: number;
-  /** @format int32 */
-  expectedMinutes?: number;
-  title?: string;
-  summary?: string;
-  items?: LearningItemResponse[];
-}
-
-export interface LearningItemResponse {
-  /** @format guid */
-  id?: string;
-  /** @format int32 */
-  sortOrder?: number;
-  /** @format guid */
-  lessonId?: string | null;
-  /** @format guid */
-  challengeId?: string | null;
-}
-
-export interface LearningPathCommand {
-  slug?: string;
-  localizations?: LearningPathLocalizationCommand[];
-  modules?: LearningModuleCommand[];
-  rowVersion?: number | null;
-  locale?: string | null;
-}
-
-export interface LearningPathLocalizationCommand {
-  locale?: string;
-  title?: string;
-  summary?: string;
-}
-
-export interface LearningModuleCommand {
-  /** @format int32 */
-  sortOrder?: number;
-  /** @format int32 */
-  expectedMinutes?: number;
-  localizations?: LearningModuleLocalizationCommand[];
-  items?: LearningModuleItemCommand[];
-}
-
-export interface LearningModuleLocalizationCommand {
-  locale?: string;
-  title?: string;
-  summary?: string;
-}
-
-export interface LearningModuleItemCommand {
-  /** @format int32 */
-  sortOrder?: number;
-  /** @format guid */
-  lessonId?: string | null;
-  /** @format guid */
-  challengeId?: string | null;
-}
-
-export interface LearningPathPreviewResponse {
-  /** @format guid */
-  pathId?: string;
-  /** @format guid */
-  revisionId?: string;
-  slug?: string;
-  title?: string;
-  summary?: string;
-  modules?: LearningModulePreviewResponse[];
-}
-
-export interface LearningModulePreviewResponse {
-  /** @format guid */
-  id?: string;
-  /** @format int32 */
-  sortOrder?: number;
-  /** @format int32 */
-  expectedMinutes?: number;
-  title?: string;
-  summary?: string;
-  items?: LearningItemPreviewResponse[];
-}
-
-export interface LearningItemPreviewResponse {
-  /** @format guid */
-  id?: string;
-  /** @format int32 */
-  sortOrder?: number;
-  kind?: string;
-  /** @format guid */
-  contentId?: string;
-  title?: string;
-  summary?: string;
-}
-
-export interface PublishLearningPathCommand {
-  rowVersion?: number | null;
-}
-
-export interface EnrollmentResponse {
-  /** @format guid */
-  enrollmentId?: string;
-  /** @format guid */
-  pathId?: string;
-  slug?: string;
-  title?: string;
+  skillTreeId?: string;
+  name?: string;
+  iconKey?: string;
   isCurrent?: boolean;
-  /** @format uint64 */
-  enrolledAtUtc?: number;
-}
-
-export interface LearningPathSummaryResponse {
-  /** @format guid */
-  pathId?: string;
-  slug?: string;
-  title?: string;
-  summary?: string;
+  isDeleted?: boolean;
   /** @format int32 */
-  moduleCount?: number;
+  categoryCount?: number;
   /** @format int32 */
-  itemCount?: number;
+  completedCategoryCount?: number;
   /** @format int32 */
-  expectedMinutes?: number;
+  challengeCount?: number;
+  /** @format int32 */
+  completedChallengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+  /** @format int32 */
+  completedLessonCount?: number;
 }
 
 export interface LessonContentResponse {
@@ -446,6 +542,17 @@ export interface DashboardTokenResult {
 export interface TokenExpiryCommand {
   /** @format uint64 */
   expiresAtUtc?: number | null;
+}
+
+export interface DashboardTokenSummaryResponse {
+  /** @format guid */
+  tokenId?: string;
+  /** @format uint64 */
+  createdAtUtc?: number;
+  /** @format uint64 */
+  expiresAtUtc?: number | null;
+  /** @format uint64 */
+  lastUsedAtUtc?: number | null;
 }
 
 export interface DashboardSnapshotResponse {
@@ -568,6 +675,7 @@ export interface ChallengeEditResponse {
   flags?: ChallengeFlagResponse[];
   hints?: ChallengeHintResponse2[];
   writeups?: ChallengeWriteupResponse2[];
+  publication?: ChallengePublicationEditState;
 }
 
 export interface ChallengeLocalizationResponse {
@@ -601,6 +709,12 @@ export interface ChallengeWriteupResponse2 {
   id?: string;
   locale?: string;
   content?: string;
+}
+
+export interface ChallengePublicationEditState {
+  rowVersion?: number;
+  publicationState?: string;
+  categoryIds?: string[];
 }
 
 export interface ChallengeCommand {
@@ -648,6 +762,20 @@ export interface ChallengeWriteupCommand {
   content?: string;
 }
 
+export interface PublishContentCommand {
+  rowVersion?: number;
+  categoryIds?: string[];
+  inlineCategories?: InlineSkillCategoryCommand[];
+}
+
+export interface InlineSkillCategoryCommand {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+}
+
 export interface ChallengeMergeResult {
   /** @format guid */
   duplicateId?: string;
@@ -669,12 +797,19 @@ export interface LessonResponse {
   title?: string;
   body?: string;
   localizations?: LessonLocalizationResponse[];
+  publication?: LessonPublicationEditState;
 }
 
 export interface LessonLocalizationResponse {
   locale?: string;
   title?: string;
   body?: string;
+}
+
+export interface LessonPublicationEditState {
+  rowVersion?: number;
+  publicationState?: string;
+  categoryIds?: string[];
 }
 
 export interface LessonCommand {
@@ -1052,79 +1187,6 @@ export interface UserCreateModel {
    * @format phone
    */
   phone?: string | null;
-  /**
-   * Team the user joins
-   * @maxLength 20
-   */
-  teamName?: string | null;
-}
-
-/** List response */
-export interface ArrayResponseOfTeamInfoModel {
-  /** Data */
-  data: TeamInfoModel[];
-  /**
-   * Data length
-   * @format int32
-   */
-  length: number;
-  /**
-   * Total length
-   * @format int32
-   */
-  total?: number;
-}
-
-/** Team information */
-export interface TeamInfoModel {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id?: number;
-  /** Team name */
-  name?: string | null;
-  /** Team bio */
-  bio?: string | null;
-  /** Avatar URL */
-  avatar?: string | null;
-  /** Is locked */
-  locked?: boolean;
-  /** Team members */
-  members?: TeamUserInfoModel[] | null;
-}
-
-/** Team member information */
-export interface TeamUserInfoModel {
-  /**
-   * User ID
-   * @format guid
-   */
-  id?: string | null;
-  /** Username */
-  userName?: string | null;
-  /** Bio */
-  bio?: string | null;
-  /** Avatar URL */
-  avatar?: string | null;
-  /** Is Captain */
-  captain?: boolean;
-}
-
-/** Team information modification (Admin) */
-export interface AdminTeamModel {
-  /**
-   * Team name
-   * @maxLength 20
-   */
-  name?: string | null;
-  /**
-   * Team bio
-   * @maxLength 72
-   */
-  bio?: string | null;
-  /** Is locked */
-  locked?: boolean | null;
 }
 
 /** User information modification (Admin) */
@@ -1182,47 +1244,6 @@ export interface LogMessageModel {
   msg?: string | null;
   /** Task status */
   status?: TaskStatus | null;
-}
-
-/** Modify the participation information */
-export interface ParticipationEditModel {
-  /** Participation Status */
-  status?: ParticipationStatus | null;
-  /**
-   * The division of the participated team
-   * @format int32
-   */
-  divisionId?: number | null;
-}
-
-/** Game writeup information */
-export interface WriteupInfoModel {
-  /** Division ID to Division Name mapping */
-  divisions?: Record<string, string>;
-  /** Writeups list */
-  writeups?: WriteupInfo[];
-}
-
-export interface WriteupInfo {
-  /**
-   * Participation ID
-   * @format int32
-   */
-  id?: number;
-  /** Team information */
-  team?: TeamInfoModel;
-  /** File URL */
-  url?: string;
-  /**
-   * File upload time
-   * @format uint64
-   */
-  uploadTimeUtc?: number;
-  /**
-   * The division the team belongs to
-   * @format int32
-   */
-  divisionId?: number | null;
 }
 
 /** List response */
@@ -1724,6 +1745,649 @@ import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
+  adminSkillCategories = {
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesCreate
+     * @request POST:/api/admin/skill-categories
+     */
+    adminSkillCategoriesCreate: (
+      data: SkillCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesDelete
+     * @request DELETE:/api/admin/skill-categories/{id}
+     */
+    adminSkillCategoriesDelete: (
+      id: string,
+      data: DeleteCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-categories/${id}`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesGet
+     * @request GET:/api/admin/skill-categories/{id}
+     */
+    adminSkillCategoriesGet: (id: string, params: RequestParams = {}) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillCategoriesGet: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillCategoryAdminResponse, any>(
+        doFetch ? `/api/admin/skill-categories/${id}` : null,
+        options,
+      ),
+
+    mutateAdminSkillCategoriesGet: (
+      id: string,
+      data?: SkillCategoryAdminResponse | Promise<SkillCategoryAdminResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillCategoryAdminResponse>(
+        `/api/admin/skill-categories/${id}`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesGetDeleteImpact
+     * @request GET:/api/admin/skill-categories/{id}/delete-impact
+     */
+    adminSkillCategoriesGetDeleteImpact: (
+      id: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<CategoryDeleteImpactResponse, any>({
+        path: `/api/admin/skill-categories/${id}/delete-impact`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillCategoriesGetDeleteImpact: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<CategoryDeleteImpactResponse, any>(
+        doFetch ? `/api/admin/skill-categories/${id}/delete-impact` : null,
+        options,
+      ),
+
+    mutateAdminSkillCategoriesGetDeleteImpact: (
+      id: string,
+      data?:
+        | CategoryDeleteImpactResponse
+        | Promise<CategoryDeleteImpactResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<CategoryDeleteImpactResponse>(
+        `/api/admin/skill-categories/${id}/delete-impact`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesList
+     * @request GET:/api/admin/skill-categories
+     */
+    adminSkillCategoriesList: (params: RequestParams = {}) =>
+      this.request<SkillCategoryAdminResponse[], any>({
+        path: `/api/admin/skill-categories`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillCategoriesList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillCategoryAdminResponse[], any>(
+        doFetch ? `/api/admin/skill-categories` : null,
+        options,
+      ),
+
+    mutateAdminSkillCategoriesList: (
+      data?:
+        | SkillCategoryAdminResponse[]
+        | Promise<SkillCategoryAdminResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillCategoryAdminResponse[]>(
+        `/api/admin/skill-categories`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesMerge
+     * @request POST:/api/admin/skill-categories/merge
+     */
+    adminSkillCategoriesMerge: (
+      data: MergeSkillCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-categories/merge`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesUpdate
+     * @request PUT:/api/admin/skill-categories/{id}
+     */
+    adminSkillCategoriesUpdate: (
+      id: string,
+      data: SkillCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesUpdateContents
+     * @request PUT:/api/admin/skill-categories/{id}/contents
+     */
+    adminSkillCategoriesUpdateContents: (
+      id: string,
+      data: UpdateCategoryContentsCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories/${id}/contents`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesUpdateTreeMemberships
+     * @request PUT:/api/admin/skill-categories/{id}/tree-memberships
+     */
+    adminSkillCategoriesUpdateTreeMemberships: (
+      id: string,
+      data: UpdateCategoryTreeMembershipsCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<UpdateCategoryTreeMembershipsResponse, any>({
+        path: `/api/admin/skill-categories/${id}/tree-memberships`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  adminSkillTrees = {
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesCreate
+     * @request POST:/api/admin/skill-trees
+     */
+    adminSkillTreesCreate: (
+      data: CreateSkillTreeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<AdminSkillTreeResponse, any>({
+        path: `/api/admin/skill-trees`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesDelete
+     * @request DELETE:/api/admin/skill-trees/{id}
+     */
+    adminSkillTreesDelete: (
+      id: string,
+      data: DeleteSkillTreeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-trees/${id}`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesGetDeleteImpact
+     * @request GET:/api/admin/skill-trees/{id}/delete-impact
+     */
+    adminSkillTreesGetDeleteImpact: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDeleteImpactResponse, any>({
+        path: `/api/admin/skill-trees/${id}/delete-impact`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesGetDeleteImpact: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDeleteImpactResponse, any>(
+        doFetch ? `/api/admin/skill-trees/${id}/delete-impact` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesGetDeleteImpact: (
+      id: string,
+      data?:
+        | SkillTreeDeleteImpactResponse
+        | Promise<SkillTreeDeleteImpactResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDeleteImpactResponse>(
+        `/api/admin/skill-trees/${id}/delete-impact`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesGetDraft
+     * @request GET:/api/admin/skill-trees/{id}/draft
+     */
+    adminSkillTreesGetDraft: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDraftResponse, any>({
+        path: `/api/admin/skill-trees/${id}/draft`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesGetDraft: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDraftResponse, any>(
+        doFetch ? `/api/admin/skill-trees/${id}/draft` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesGetDraft: (
+      id: string,
+      data?: SkillTreeDraftResponse | Promise<SkillTreeDraftResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDraftResponse>(
+        `/api/admin/skill-trees/${id}/draft`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesList
+     * @request GET:/api/admin/skill-trees
+     */
+    adminSkillTreesList: (params: RequestParams = {}) =>
+      this.request<AdminSkillTreeResponse[], any>({
+        path: `/api/admin/skill-trees`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<AdminSkillTreeResponse[], any>(
+        doFetch ? `/api/admin/skill-trees` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesList: (
+      data?: AdminSkillTreeResponse[] | Promise<AdminSkillTreeResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<AdminSkillTreeResponse[]>(`/api/admin/skill-trees`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesPreviewDraft
+     * @request GET:/api/admin/skill-trees/{id}/draft/preview
+     */
+    adminSkillTreesPreviewDraft: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDetailResponse, any>({
+        path: `/api/admin/skill-trees/${id}/draft/preview`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesPreviewDraft: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDetailResponse, any>(
+        doFetch ? `/api/admin/skill-trees/${id}/draft/preview` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesPreviewDraft: (
+      id: string,
+      data?: SkillTreeDetailResponse | Promise<SkillTreeDetailResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDetailResponse>(
+        `/api/admin/skill-trees/${id}/draft/preview`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesPublish
+     * @request POST:/api/admin/skill-trees/{id}/publish
+     */
+    adminSkillTreesPublish: (
+      id: string,
+      data: PublishSkillTreeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-trees/${id}/publish`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesUpdateDraft
+     * @request PUT:/api/admin/skill-trees/{id}/draft
+     */
+    adminSkillTreesUpdateDraft: (
+      id: string,
+      data: UpdateSkillTreeDraftCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillTreeDraftResponse, any>({
+        path: `/api/admin/skill-trees/${id}/draft`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  learningRedirects = {
+    /**
+     * No description
+     *
+     * @tags LearningRedirects
+     * @name LearningRedirectsGet
+     * @request GET:/api/skill-tree-redirects/{slug}
+     */
+    learningRedirectsGet: (
+      slug: string,
+      query?: {
+        moduleId?: string | null;
+        itemId?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LearningRedirectResponse, any>({
+        path: `/api/skill-tree-redirects/${slug}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useLearningRedirectsGet: (
+      slug: string,
+      query?: {
+        moduleId?: string | null;
+        itemId?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<LearningRedirectResponse, any>(
+        doFetch ? [`/api/skill-tree-redirects/${slug}`, query] : null,
+        options,
+      ),
+
+    mutateLearningRedirectsGet: (
+      slug: string,
+      query?: {
+        moduleId?: string | null;
+        itemId?: string | null;
+      },
+      data?: LearningRedirectResponse | Promise<LearningRedirectResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<LearningRedirectResponse>(
+        [`/api/skill-tree-redirects/${slug}`, query],
+        data,
+        options,
+      ),
+  };
+  skillTreeEnrollments = {
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsEnroll
+     * @request POST:/api/skill-tree-enrollments/{id}
+     */
+    skillTreeEnrollmentsEnroll: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeEnrollmentResponse, any>({
+        path: `/api/skill-tree-enrollments/${id}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsLeave
+     * @request DELETE:/api/skill-tree-enrollments/{id}
+     */
+    skillTreeEnrollmentsLeave: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/skill-tree-enrollments/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsList
+     * @request GET:/api/skill-tree-enrollments
+     */
+    skillTreeEnrollmentsList: (params: RequestParams = {}) =>
+      this.request<SkillTreeEnrollmentResponse[], any>({
+        path: `/api/skill-tree-enrollments`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useSkillTreeEnrollmentsList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeEnrollmentResponse[], any>(
+        doFetch ? `/api/skill-tree-enrollments` : null,
+        options,
+      ),
+
+    mutateSkillTreeEnrollmentsList: (
+      data?:
+        | SkillTreeEnrollmentResponse[]
+        | Promise<SkillTreeEnrollmentResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeEnrollmentResponse[]>(
+        `/api/skill-tree-enrollments`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsSelectCurrent
+     * @request PUT:/api/skill-tree-enrollments/{id}/current
+     */
+    skillTreeEnrollmentsSelectCurrent: (
+      id: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillTreeEnrollmentResponse, any>({
+        path: `/api/skill-tree-enrollments/${id}/current`,
+        method: "PUT",
+        format: "json",
+        ...params,
+      }),
+  };
+  skillTrees = {
+    /**
+     * No description
+     *
+     * @tags SkillTrees
+     * @name SkillTreesDetail
+     * @request GET:/api/skill-trees/{id}
+     */
+    skillTreesDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDetailResponse, any>({
+        path: `/api/skill-trees/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useSkillTreesDetail: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDetailResponse, any>(
+        doFetch ? `/api/skill-trees/${id}` : null,
+        options,
+      ),
+
+    mutateSkillTreesDetail: (
+      id: string,
+      data?: SkillTreeDetailResponse | Promise<SkillTreeDetailResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDetailResponse>(`/api/skill-trees/${id}`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags SkillTrees
+     * @name SkillTreesList
+     * @request GET:/api/skill-trees
+     */
+    skillTreesList: (params: RequestParams = {}) =>
+      this.request<SkillTreeSummaryResponse[], any>({
+        path: `/api/skill-trees`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useSkillTreesList: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<SkillTreeSummaryResponse[], any>(
+        doFetch ? `/api/skill-trees` : null,
+        options,
+      ),
+
+    mutateSkillTreesList: (
+      data?: SkillTreeSummaryResponse[] | Promise<SkillTreeSummaryResponse[]>,
+      options?: MutatorOptions,
+    ) => mutate<SkillTreeSummaryResponse[]>(`/api/skill-trees`, data, options),
+  };
   myLearning = {
     /**
      * No description
@@ -1764,401 +2428,6 @@ export class Api<
       data?: MyLearningResponse | Promise<MyLearningResponse>,
       options?: MutatorOptions,
     ) => mutate<MyLearningResponse>([`/api/my-learning`, query], data, options),
-  };
-  adminLearningPaths = {
-    /**
-     * No description
-     *
-     * @tags AdminLearningPaths
-     * @name AdminLearningPathsCreate
-     * @request POST:/api/admin/learning-paths
-     */
-    adminLearningPathsCreate: (
-      data: LearningPathCommand,
-      params: RequestParams = {},
-    ) =>
-      this.request<LearningPathDraftResponse, any>({
-        path: `/api/admin/learning-paths`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags AdminLearningPaths
-     * @name AdminLearningPathsGetDraft
-     * @request GET:/api/admin/learning-paths/{id}/draft
-     */
-    adminLearningPathsGetDraft: (
-      id: string,
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<LearningPathDraftResponse, any>({
-        path: `/api/admin/learning-paths/${id}/draft`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    useAdminLearningPathsGetDraft: (
-      id: string,
-      query?: {
-        locale?: string | null;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<LearningPathDraftResponse, any>(
-        doFetch ? [`/api/admin/learning-paths/${id}/draft`, query] : null,
-        options,
-      ),
-
-    mutateAdminLearningPathsGetDraft: (
-      id: string,
-      query?: {
-        locale?: string | null;
-      },
-      data?: LearningPathDraftResponse | Promise<LearningPathDraftResponse>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<LearningPathDraftResponse>(
-        [`/api/admin/learning-paths/${id}/draft`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags AdminLearningPaths
-     * @name AdminLearningPathsList
-     * @request GET:/api/admin/learning-paths
-     */
-    adminLearningPathsList: (params: RequestParams = {}) =>
-      this.request<AdminLearningPathSummaryResponse[], any>({
-        path: `/api/admin/learning-paths`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    useAdminLearningPathsList: (
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<AdminLearningPathSummaryResponse[], any>(
-        doFetch ? `/api/admin/learning-paths` : null,
-        options,
-      ),
-
-    mutateAdminLearningPathsList: (
-      data?:
-        | AdminLearningPathSummaryResponse[]
-        | Promise<AdminLearningPathSummaryResponse[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<AdminLearningPathSummaryResponse[]>(
-        `/api/admin/learning-paths`,
-        data,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags AdminLearningPaths
-     * @name AdminLearningPathsPreviewDraft
-     * @request GET:/api/admin/learning-paths/{id}/draft/preview
-     */
-    adminLearningPathsPreviewDraft: (
-      id: string,
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<LearningPathPreviewResponse, any>({
-        path: `/api/admin/learning-paths/${id}/draft/preview`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    useAdminLearningPathsPreviewDraft: (
-      id: string,
-      query?: {
-        locale?: string | null;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<LearningPathPreviewResponse, any>(
-        doFetch
-          ? [`/api/admin/learning-paths/${id}/draft/preview`, query]
-          : null,
-        options,
-      ),
-
-    mutateAdminLearningPathsPreviewDraft: (
-      id: string,
-      query?: {
-        locale?: string | null;
-      },
-      data?: LearningPathPreviewResponse | Promise<LearningPathPreviewResponse>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<LearningPathPreviewResponse>(
-        [`/api/admin/learning-paths/${id}/draft/preview`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags AdminLearningPaths
-     * @name AdminLearningPathsPublish
-     * @request POST:/api/admin/learning-paths/{id}/publish
-     */
-    adminLearningPathsPublish: (
-      id: string,
-      data: PublishLearningPathCommand,
-      params: RequestParams = {},
-    ) =>
-      this.request<Blob, any>({
-        path: `/api/admin/learning-paths/${id}/publish`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags AdminLearningPaths
-     * @name AdminLearningPathsUpdateDraft
-     * @request PUT:/api/admin/learning-paths/{id}/draft
-     */
-    adminLearningPathsUpdateDraft: (
-      id: string,
-      data: LearningPathCommand,
-      params: RequestParams = {},
-    ) =>
-      this.request<LearningPathDraftResponse, any>({
-        path: `/api/admin/learning-paths/${id}/draft`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
-  enrollments = {
-    /**
-     * No description
-     *
-     * @tags Enrollments
-     * @name EnrollmentsEnroll
-     * @request POST:/api/learning-paths/{pathId}/enroll
-     */
-    enrollmentsEnroll: (
-      pathId: string,
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<EnrollmentResponse, any>({
-        path: `/api/learning-paths/${pathId}/enroll`,
-        method: "POST",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Enrollments
-     * @name EnrollmentsLeave
-     * @request DELETE:/api/learning-paths/{pathId}/enroll
-     */
-    enrollmentsLeave: (pathId: string, params: RequestParams = {}) =>
-      this.request<Blob, any>({
-        path: `/api/learning-paths/${pathId}/enroll`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Enrollments
-     * @name EnrollmentsList
-     * @request GET:/api/learning-paths/enrollments
-     */
-    enrollmentsList: (
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<EnrollmentResponse[], any>({
-        path: `/api/learning-paths/enrollments`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    useEnrollmentsList: (
-      query?: {
-        locale?: string | null;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<EnrollmentResponse[], any>(
-        doFetch ? [`/api/learning-paths/enrollments`, query] : null,
-        options,
-      ),
-
-    mutateEnrollmentsList: (
-      query?: {
-        locale?: string | null;
-      },
-      data?: EnrollmentResponse[] | Promise<EnrollmentResponse[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<EnrollmentResponse[]>(
-        [`/api/learning-paths/enrollments`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags Enrollments
-     * @name EnrollmentsSelect
-     * @request POST:/api/learning-paths/{pathId}/select
-     */
-    enrollmentsSelect: (
-      pathId: string,
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<EnrollmentResponse, any>({
-        path: `/api/learning-paths/${pathId}/select`,
-        method: "POST",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-  };
-  learningPaths = {
-    /**
-     * No description
-     *
-     * @tags LearningPaths
-     * @name LearningPathsList
-     * @request GET:/api/learning-paths
-     */
-    learningPathsList: (
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<LearningPathSummaryResponse[], any>({
-        path: `/api/learning-paths`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    useLearningPathsList: (
-      query?: {
-        locale?: string | null;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<LearningPathSummaryResponse[], any>(
-        doFetch ? [`/api/learning-paths`, query] : null,
-        options,
-      ),
-
-    mutateLearningPathsList: (
-      query?: {
-        locale?: string | null;
-      },
-      data?:
-        | LearningPathSummaryResponse[]
-        | Promise<LearningPathSummaryResponse[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<LearningPathSummaryResponse[]>(
-        [`/api/learning-paths`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags LearningPaths
-     * @name LearningPathsPreview
-     * @request GET:/api/learning-paths/{slug}/preview
-     */
-    learningPathsPreview: (
-      slug: string,
-      query?: {
-        locale?: string | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<LearningPathPreviewResponse, any>({
-        path: `/api/learning-paths/${slug}/preview`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    useLearningPathsPreview: (
-      slug: string,
-      query?: {
-        locale?: string | null;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<LearningPathPreviewResponse, any>(
-        doFetch ? [`/api/learning-paths/${slug}/preview`, query] : null,
-        options,
-      ),
-
-    mutateLearningPathsPreview: (
-      slug: string,
-      query?: {
-        locale?: string | null;
-      },
-      data?: LearningPathPreviewResponse | Promise<LearningPathPreviewResponse>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<LearningPathPreviewResponse>(
-        [`/api/learning-paths/${slug}/preview`, query],
-        data,
-        options,
-      ),
   };
   lessons = {
     /**
@@ -2560,6 +2829,43 @@ export class Api<
       options?: MutatorOptions,
     ) =>
       mutate<AdminDashboardResponse[]>(`/api/admin/dashboards`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsListTokens
+     * @request GET:/api/admin/dashboards/{id}/tokens
+     */
+    adminDashboardsListTokens: (id: string, params: RequestParams = {}) =>
+      this.request<DashboardTokenSummaryResponse[], any>({
+        path: `/api/admin/dashboards/${id}/tokens`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminDashboardsListTokens: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<DashboardTokenSummaryResponse[], any>(
+        doFetch ? `/api/admin/dashboards/${id}/tokens` : null,
+        options,
+      ),
+
+    mutateAdminDashboardsListTokens: (
+      id: string,
+      data?:
+        | DashboardTokenSummaryResponse[]
+        | Promise<DashboardTokenSummaryResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<DashboardTokenSummaryResponse[]>(
+        `/api/admin/dashboards/${id}/tokens`,
+        data,
+        options,
+      ),
 
     /**
      * No description
@@ -3194,6 +3500,26 @@ export class Api<
      * No description
      *
      * @tags AdminChallenges
+     * @name AdminChallengesPublish
+     * @request POST:/api/admin/challenges/{id}/publish
+     */
+    adminChallengesPublish: (
+      id: string,
+      data: PublishContentCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/challenges/${id}/publish`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
      * @name AdminChallengesUpdate
      * @request PUT:/api/admin/challenges/{id}
      */
@@ -3330,6 +3656,26 @@ export class Api<
       data?: LessonResponse[] | Promise<LessonResponse[]>,
       options?: MutatorOptions,
     ) => mutate<LessonResponse[]>([`/api/admin/lessons`, query], data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsPublish
+     * @request POST:/api/admin/lessons/{id}/publish
+     */
+    adminLessonsPublish: (
+      id: string,
+      data: PublishContentCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/lessons/${id}/publish`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
     /**
      * No description
@@ -3602,22 +3948,6 @@ export class Api<
       }),
 
     /**
-     * @description Use this API to delete team, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminDeleteTeam
-     * @summary Delete team
-     * @request DELETE:/api/admin/teams/{id}
-     */
-    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/admin/teams/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Use this API to delete user, requires Admin permission
      *
      * @tags Admin
@@ -3645,21 +3975,6 @@ export class Api<
       this.request<void, RequestResponse>({
         path: `/api/admin/instances/${id}`,
         method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Use this API to download all Writeups, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary Download all Writeups
-     * @request GET:/api/admin/writeups/{id}/all
-     */
-    adminDownloadAllWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/writeups/${id}/all`,
-        method: "GET",
         ...params,
       }),
 
@@ -3882,27 +4197,6 @@ export class Api<
     ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
 
     /**
-     * @description Use this API to update team participation status, review application, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminParticipation
-     * @summary Update participation status
-     * @request PUT:/api/admin/participation/{id}
-     */
-    adminParticipation: (
-      id: number,
-      data: ParticipationEditModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/participation/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
      * @description Use this API to reset the platform Logo, requires Admin permission
      *
      * @tags Admin
@@ -3934,28 +4228,6 @@ export class Api<
       }),
 
     /**
-     * @description Use this API to search teams, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminSearchTeams
-     * @summary Search teams
-     * @request POST:/api/admin/teams/search
-     */
-    adminSearchTeams: (
-      query?: {
-        hint?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
-        path: `/api/admin/teams/search`,
-        method: "POST",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Use this API to search users, requires Admin permission
      *
      * @tags Admin
@@ -3976,87 +4248,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-
-    /**
-     * @description Use this API to get all teams, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminTeams
-     * @summary Get all team information
-     * @request GET:/api/admin/teams
-     */
-    adminTeams: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 500
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
-        path: `/api/admin/teams`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    useAdminTeams: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 500
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ArrayResponseOfTeamInfoModel, RequestResponse>(
-        doFetch ? [`/api/admin/teams`, query] : null,
-        options,
-      ),
-
-    mutateAdminTeams: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 500
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      data?:
-        | ArrayResponseOfTeamInfoModel
-        | Promise<ArrayResponseOfTeamInfoModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ArrayResponseOfTeamInfoModel>(
-        [`/api/admin/teams`, query],
-        data,
-        options,
-      ),
 
     /**
      * @description Use this API to change global settings, requires Admin permission
@@ -4095,27 +4286,6 @@ export class Api<
         method: "POST",
         body: data,
         type: ContentType.FormData,
-        ...params,
-      }),
-
-    /**
-     * @description Use this API to modify team information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminUpdateTeam
-     * @summary Modify team information
-     * @request PUT:/api/admin/teams/{id}
-     */
-    adminUpdateTeam: (
-      id: number,
-      data: AdminTeamModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/teams/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
         ...params,
       }),
 
@@ -4252,37 +4422,6 @@ export class Api<
         data,
         options,
       ),
-
-    /**
-     * @description Use this API to get Writeup basic information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminWriteups
-     * @summary Get all Writeup basic information
-     * @request GET:/api/admin/writeups/{id}
-     */
-    adminWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<WriteupInfoModel, RequestResponse>({
-        path: `/api/admin/writeups/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    useAdminWriteups: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<WriteupInfoModel, RequestResponse>(
-        doFetch ? `/api/admin/writeups/${id}` : null,
-        options,
-      ),
-
-    mutateAdminWriteups: (
-      id: number,
-      data?: WriteupInfoModel | Promise<WriteupInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<WriteupInfoModel>(`/api/admin/writeups/${id}`, data, options),
   };
   apiToken = {
     /**

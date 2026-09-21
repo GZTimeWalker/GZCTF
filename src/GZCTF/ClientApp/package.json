@@ -12,6 +12,7 @@
     "test:e2e:ui": "playwright test --ui",
     "preview": "vite preview",
     "prettier": "prettier --write src --write plugins --write *.mjs --write *.mts",
+    "test:unit": "vitest run",
     "genapi": "swagger-typescript-api generate -p http://localhost:8080/openapi/v1.json -t template -o src --module-name-first-tag --sort-routes"
   },
   "dependencies": {
@@ -86,6 +87,7 @@
     "vite-plugin-banner": "^0.8.1",
     "vite-plugin-optimize-css-modules": "^1.4.0",
     "vite-plugin-pages": "^0.33.3",
-    "vite-plugin-webfont-dl": "^3.13.1"
+    "vite-plugin-webfont-dl": "^3.13.1",
+    "vitest": "^5.0.1"
   }
 }

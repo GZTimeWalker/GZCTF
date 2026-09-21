@@ -7,7 +7,7 @@ import {
   useChallenge,
   useChallengeInstance,
   useLearningMutations,
-} from '@Hooks/useLearning'
+} from '@Hooks/useChallengeLibraryAdmin'
 import { useUser } from '@Hooks/useUser'
 import { useLanguage } from '@Utils/I18n'
 import { useSWRConfig } from 'swr'
@@ -54,7 +54,7 @@ export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHr
       setMessage(result.accepted ? t('accepted') : t('rejected'))
       if (result.accepted) {
         setSolveMode(result.solveMode === undefined || result.solveMode === null ? undefined : String(result.solveMode))
-        await mutate((key) => typeof key === 'string' && (key.startsWith('/api/my-learning') || key.startsWith('/api/learning-paths/')))
+        await mutate((key) => typeof key === 'string' && key.startsWith('/api/my-learning'))
       }
       setFlag('')
     } catch {
