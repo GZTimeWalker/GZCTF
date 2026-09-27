@@ -90,7 +90,7 @@
   "editorRetireHint": "Retire {{title}}? Learners will no longer be able to open it.",
   "editorRetired": "Challenge retired",
   "adminEditLesson": "Edit lesson",
-  "adminEnglishTitle": "English title",
+  "adminTitle": "Title",
   "adminCtfCategory": "CTF category",
   "adminRuntimeType": "Runtime type",
   "adminStatement": "Statement",

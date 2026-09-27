@@ -56,7 +56,7 @@ const AdminLessonEdit = () => {
       </Group>
     </Group>
     {!data ? <Text>{t('learning:loading')}</Text> : <>
-      <TextInput label={t('learning:adminEnglishTitle')} value={title ?? localization?.title ?? ''} onChange={(event) => setTitle(event.currentTarget.value)} />
+      <TextInput label={t('learning:adminTitle')} value={title ?? localization?.title ?? ''} onChange={(event) => setTitle(event.currentTarget.value)} />
       <Textarea label={t('learning:adminMarkdown')} minRows={16} value={body ?? localization?.body ?? ''} onChange={(event) => setBody(event.currentTarget.value)} />
       <Group>
         <Button loading={saving} onClick={save}>{t('learning:adminSave')}</Button>

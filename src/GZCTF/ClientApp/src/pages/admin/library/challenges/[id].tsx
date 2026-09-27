@@ -60,7 +60,7 @@ const AdminChallengeEdit = () => {
   const save = async (): Promise<number | undefined> => {
     if (!data || !draft || saveInFlight.current || uploadInFlight.current) return
     if (!draft.title.trim()) {
-      setFormError(t('adminEnglishTitle'))
+      setFormError(t('adminTitle'))
       return
     }
     saveInFlight.current = true

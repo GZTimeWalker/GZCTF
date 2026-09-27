@@ -90,7 +90,7 @@
   "editorRetireHint": "归档 {{title}} 吗？学员将无法再打开它。",
   "editorRetired": "题目已归档",
   "adminEditLesson": "编辑课节",
-  "adminEnglishTitle": "英文标题",
+  "adminTitle": "标题",
   "adminCtfCategory": "CTF 分类",
   "adminRuntimeType": "运行方式",
   "adminStatement": "题目说明",

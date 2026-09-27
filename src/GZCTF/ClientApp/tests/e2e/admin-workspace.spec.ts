@@ -134,7 +134,7 @@ test.describe('admin workspace', () => {
     // 2. The header action opens the create modal and the list refreshes.
     await page.getByRole('button', { name: '创建题目' }).first().click()
     const dialog = page.getByRole('dialog')
-    await dialog.getByRole('textbox', { name: '英文标题' }).fill(title)
+    await dialog.getByRole('textbox', { name: '标题', exact: true }).fill(title)
     await dialog.getByRole('combobox', { name: 'CTF 分类' }).click()
     await page.getByRole('option', { name: /Misc/ }).click()
     await dialog.getByRole('combobox', { name: '运行方式' }).click()

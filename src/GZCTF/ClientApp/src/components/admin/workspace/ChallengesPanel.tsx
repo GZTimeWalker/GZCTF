@@ -147,7 +147,7 @@ export const ChallengesPanel = ({ createOpen, onClose, onOpen }: CreatePanelProp
       <Modal opened={createOpen} onClose={onClose} title={tSkillTrees('workspace.createChallenge')}>
         <Stack>
           <TextInput
-            label={t('learning:adminEnglishTitle')}
+            label={t('adminTitle')}
             value={title}
             onChange={(event) => setTitle(event.currentTarget.value)}
           />

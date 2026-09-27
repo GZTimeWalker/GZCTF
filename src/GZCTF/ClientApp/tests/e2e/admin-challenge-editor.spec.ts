@@ -18,7 +18,7 @@ test('administrator creates an independent Web container challenge from the work
   await page.goto('/admin/skill-trees?tab=challenges')
   await page.getByRole('button', { name: 'Create challenge' }).first().click()
   const dialog = page.getByRole('dialog')
-  await dialog.getByRole('textbox', { name: 'English title' }).fill('Web shell')
+  await dialog.getByRole('textbox', { name: 'Title', exact: true }).fill('Web 靶场')
   await dialog.getByRole('combobox', { name: 'CTF category' }).click()
   await page.getByRole('option', { name: /Web/ }).click()
   await dialog.getByRole('combobox', { name: 'Runtime type' }).click()
@@ -26,7 +26,10 @@ test('administrator creates an independent Web container challenge from the work
   await dialog.getByRole('button', { name: 'Create', exact: true }).click()
 
   await expect(page).toHaveURL(new RegExp(`/admin/library/challenges/${challengeId}$`))
-  expect(created).toMatchObject({ type: 'DynamicContainer', ctfCategory: 'Web' })
+  expect(created).toMatchObject({
+    type: 'DynamicContainer', ctfCategory: 'Web',
+    localizations: [{ locale: 'en', title: 'Web 靶场' }],
+  })
 })
 
 test('administrator edits container settings and Flag template without writing JSON', async ({ page }) => {
@@ -203,7 +206,7 @@ test('stale challenge edits stop for review instead of overwriting another admin
   })
 
   await page.goto(`/admin/library/challenges/${challengeId}`)
-  await page.getByRole('textbox', { name: 'English title' }).fill('My edit')
+  await page.getByRole('textbox', { name: 'Title', exact: true }).fill('My edit')
   await page.getByRole('button', { name: 'Save draft' }).click()
   await expect(page.getByRole('alert').filter({ hasText: 'Reload and review' })).toBeVisible()
   expect(writes).toBe(1)

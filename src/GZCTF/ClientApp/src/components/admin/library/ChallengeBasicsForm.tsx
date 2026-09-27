@@ -18,7 +18,7 @@ export const ChallengeBasicsForm = ({ value, onChange, disabled }: Props) => {
     <Stack gap="md">
       <Text fw={600}>{t('editorBasics')}</Text>
       <TextInput
-        label={t('adminEnglishTitle')}
+        label={t('adminTitle')}
         required
         value={value.title}
         onChange={(event) => set({ title: event.currentTarget.value })}

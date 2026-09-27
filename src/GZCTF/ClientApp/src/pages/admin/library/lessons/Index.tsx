@@ -22,7 +22,7 @@ const AdminLessons = () => {
       await mutate()
     } catch (error) { showErrorMsg(error, t) } finally { setCreating(false) }
   }
-  return <WithRole requiredRole={Role.Admin}><WithNavBar minWidth={0}><Stack><Title order={1}>{t('learning:adminLessonLibrary')}</Title><Stack><TextInput value={title} onChange={(event) => setTitle(event.currentTarget.value)} placeholder={t('learning:adminEnglishTitle')} /><Button loading={creating} onClick={create}>{t('learning:adminCreateLesson')}</Button></Stack><SimpleGrid cols={{ base: 1, sm: 2 }}>{lessons?.map((lesson) => <Card key={lesson.id} withBorder component={Link} to={`/admin/library/lessons/${lesson.id}`}><Text fw={600}>{lesson.title}</Text></Card>)}</SimpleGrid></Stack></WithNavBar></WithRole>
+  return <WithRole requiredRole={Role.Admin}><WithNavBar minWidth={0}><Stack><Title order={1}>{t('learning:adminLessonLibrary')}</Title><Stack><TextInput value={title} onChange={(event) => setTitle(event.currentTarget.value)} placeholder={t('learning:adminTitle')} /><Button loading={creating} onClick={create}>{t('learning:adminCreateLesson')}</Button></Stack><SimpleGrid cols={{ base: 1, sm: 2 }}>{lessons?.map((lesson) => <Card key={lesson.id} withBorder component={Link} to={`/admin/library/lessons/${lesson.id}`}><Text fw={600}>{lesson.title}</Text></Card>)}</SimpleGrid></Stack></WithNavBar></WithRole>
 }
 
 export default AdminLessons
