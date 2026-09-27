@@ -153,6 +153,7 @@ public sealed class CanonicalImportService(AppDbContext db, ImportParityService 
         var challenge = new CanonicalChallenge
         {
             Type = source.Type,
+            CtfCategory = ReadCtfCategory(source.LegacyMetadataJson),
             Difficulty = Difficulty.Normal,
             PublicationState = ChallengePublicationState.Draft,
             SourceType = source.SourceType,
@@ -200,6 +201,25 @@ public sealed class CanonicalImportService(AppDbContext db, ImportParityService 
         warnings.Add($"{source.SourceType}:{source.SourceId}:official_writeup_not_imported");
         await db.SaveChangesAsync(token);
         return challenge;
+    }
+
+    private static ChallengeCategory ReadCtfCategory(string? metadata)
+    {
+        if (string.IsNullOrWhiteSpace(metadata)) return ChallengeCategory.Misc;
+        try
+        {
+            using var json = JsonDocument.Parse(metadata);
+            if (json.RootElement.TryGetProperty("category", out var category) &&
+                category.ValueKind == JsonValueKind.String &&
+                Enum.TryParse<ChallengeCategory>(category.GetString(), true, out var parsed) &&
+                Enum.IsDefined(parsed))
+                return parsed;
+        }
+        catch (JsonException)
+        {
+            // Malformed legacy metadata should not prevent importing the challenge.
+        }
+        return ChallengeCategory.Misc;
     }
 
     private static CanonicalImportResult ToResult(MigrationBatch batch) =>

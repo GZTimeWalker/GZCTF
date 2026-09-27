@@ -21,6 +21,36 @@ namespace GZCTF.Integration.Test.Tests.Learning;
 public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
 {
     [Fact]
+    public async Task ChallengeCtfCategory_RoundTripsThroughCreateUpdateAndList()
+    {
+        using var admin = await CreateAdminClientAsync();
+        var created = await admin.PostAsJsonAsync("/api/admin/challenges", new
+        {
+            type = "StaticAttachment",
+            ctfCategory = "Web",
+            localizations = new[] { new { locale = "en", title = "Category test", summary = "", body = "Body" } },
+            flags = new[] { new { kind = "Static", value = "flag{category}" } }
+        });
+        created.EnsureSuccessStatusCode();
+        var challengeId = ReadGuid(await created.Content.ReadAsStringAsync());
+        var createdJson = JsonNode.Parse(await created.Content.ReadAsStringAsync());
+        Assert.Equal("Web", createdJson?["challenge"]?["ctfCategory"]?.GetValue<string>());
+
+        var updated = await admin.PutAsJsonAsync($"/api/admin/challenges/{challengeId}", new
+        {
+            ctfCategory = "Misc"
+        });
+        updated.EnsureSuccessStatusCode();
+        var updatedJson = JsonNode.Parse(await updated.Content.ReadAsStringAsync());
+        Assert.Equal("Misc", updatedJson?["challenge"]?["ctfCategory"]?.GetValue<string>());
+
+        var listed = JsonNode.Parse(await admin.GetStringAsync("/api/admin/challenges"))?.AsArray();
+        Assert.Contains(listed!, item =>
+            item?["id"]?.GetValue<string>() == challengeId.ToString() &&
+            item?["ctfCategory"]?.GetValue<string>() == "Misc");
+    }
+
+    [Fact]
     public async Task AdministratorChallengeAndLessonCrud_ProtectsSecretsAndFallsBackToEnglish()
     {
         using var anonymous = factory.CreateClient();

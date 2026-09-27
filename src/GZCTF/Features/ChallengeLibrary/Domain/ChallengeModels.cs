@@ -25,6 +25,7 @@ public sealed class Challenge
 {
     public Guid Id { get; set; } = Guid.CreateVersion7();
     public ChallengeType Type { get; set; } = ChallengeType.StaticAttachment;
+    public ChallengeCategory CtfCategory { get; set; } = ChallengeCategory.Misc;
     public Difficulty Difficulty { get; set; } = Difficulty.Normal;
     public ChallengePublicationState PublicationState { get; set; } = ChallengePublicationState.Draft;
     public bool IsEnabled { get; set; } = true;

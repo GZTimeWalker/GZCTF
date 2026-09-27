@@ -25,6 +25,9 @@ namespace GZCTF.Migrations
 
             modelBuilder.Entity("GZCTF.Features.ChallengeLibrary.Domain.Challenge", b =>
                 {
+                    b.Property<byte>("CtfCategory")
+                        .HasColumnType("smallint");
+
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 

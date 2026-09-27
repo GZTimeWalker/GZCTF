@@ -21,6 +21,7 @@ internal static class LearningModelConfiguration
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Type).HasConversion<byte>();
+            entity.Property(e => e.CtfCategory).HasConversion<byte>();
             entity.Property(e => e.Difficulty).HasConversion<byte>();
             entity.Property(e => e.PublicationState).HasConversion<byte>();
             entity.Property(e => e.RuntimeConfigurationJson).HasColumnType("jsonb");

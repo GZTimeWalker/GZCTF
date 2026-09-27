@@ -658,6 +658,7 @@ export interface ChallengeSummaryResponse {
   /** @format guid */
   id?: string;
   type?: ChallengeType;
+  ctfCategory?: ChallengeCategory;
   /** Challenge difficulty */
   difficulty?: Difficulty;
   publicationState?: ChallengePublicationState;
@@ -720,6 +721,7 @@ export interface ChallengePublicationEditState {
 
 export interface ChallengeCommand {
   type?: ChallengeType | null;
+  ctfCategory?: ChallengeCategory | null;
   difficulty?: Difficulty | null;
   sourceType?: string | null;
   sourceId?: string | null;

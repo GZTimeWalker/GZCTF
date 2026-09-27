@@ -244,6 +244,8 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
     {
         if (command.Type is { } type)
             challenge.Type = type;
+        if (command.CtfCategory is { } ctfCategory)
+            challenge.CtfCategory = ctfCategory;
         if (command.Difficulty is { } difficulty)
             challenge.Difficulty = difficulty;
         if (command.SourceType is not null)
@@ -332,6 +334,7 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
         return new ChallengeSummaryResponse(
             challenge.Id,
             challenge.Type,
+            challenge.CtfCategory,
             challenge.Difficulty,
             challenge.PublicationState,
             challenge.IsEnabled,
@@ -448,6 +451,7 @@ public sealed class ChallengeMergeConflictException()
 public sealed class ChallengeCommand
 {
     public ChallengeType? Type { get; set; }
+    public ChallengeCategory? CtfCategory { get; set; }
     public Difficulty? Difficulty { get; set; }
     public string? SourceType { get; set; }
     public string? SourceId { get; set; }
@@ -509,6 +513,7 @@ public sealed class LessonLocalizationCommand
 public sealed record ChallengeSummaryResponse(
     Guid Id,
     ChallengeType Type,
+    ChallengeCategory CtfCategory,
     Difficulty Difficulty,
     ChallengePublicationState PublicationState,
     bool IsEnabled,
