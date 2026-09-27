@@ -24,4 +24,3 @@ public sealed class DashboardHub(DashboardTokenService tokens) : Hub
 
     public static string DashboardHubGroup(Guid dashboardId) => $"dashboard:{dashboardId:N}";
 }
-

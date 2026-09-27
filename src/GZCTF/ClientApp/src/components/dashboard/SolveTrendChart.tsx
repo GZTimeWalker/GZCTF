@@ -17,4 +17,3 @@ export const SolveTrendChart = ({ members, highlighted }: { members: DashboardMe
   }), [members, highlighted])
   return <EchartsContainer option={option} style={{ height: 480, width: '100%' }} />
 }
-

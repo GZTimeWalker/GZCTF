@@ -9,4 +9,3 @@ const StandaloneChallenge = () => {
 }
 
 export default StandaloneChallenge
-

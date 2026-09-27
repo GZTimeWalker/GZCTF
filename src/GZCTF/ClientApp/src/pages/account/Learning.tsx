@@ -25,4 +25,3 @@ const AccountLearning = () => {
 }
 
 export default AccountLearning
-
