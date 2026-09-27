@@ -618,6 +618,7 @@ export interface ChallengeRuntimeDetailResponse {
   summary?: string;
   body?: string;
   type?: string;
+  ctfCategory?: string;
   /** @format int32 */
   hintLocaleCount?: number;
   hasWriteup?: boolean;
@@ -663,6 +664,11 @@ export interface ChallengeSummaryResponse {
   difficulty?: Difficulty;
   publicationState?: ChallengePublicationState;
   isEnabled?: boolean;
+  rowVersion?: number;
+  /** @format int32 */
+  expectedMinutes?: number;
+  /** @format int32 */
+  submissionLimit?: number;
   title?: string;
   summary?: string;
   sourceType?: string;
@@ -720,6 +726,7 @@ export interface ChallengePublicationEditState {
 }
 
 export interface ChallengeCommand {
+  rowVersion?: number | null;
   type?: ChallengeType | null;
   ctfCategory?: ChallengeCategory | null;
   difficulty?: Difficulty | null;
@@ -731,6 +738,8 @@ export interface ChallengeCommand {
   isEnabled?: boolean | null;
   /** @format int32 */
   expectedMinutes?: number | null;
+  /** @format int32 */
+  submissionLimit?: number | null;
   locale?: string | null;
   localizations?: ChallengeLocalizationCommand[] | null;
   flags?: ChallengeFlagCommand[] | null;

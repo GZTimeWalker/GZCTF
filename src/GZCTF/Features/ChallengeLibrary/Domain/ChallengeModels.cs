@@ -30,6 +30,7 @@ public sealed class Challenge
     public ChallengePublicationState PublicationState { get; set; } = ChallengePublicationState.Draft;
     public bool IsEnabled { get; set; } = true;
     public int ExpectedMinutes { get; set; } = 60;
+    public int SubmissionLimit { get; set; }
     public string? RuntimeConfigurationJson { get; set; }
 
     public string SourceType { get; set; } = "native";

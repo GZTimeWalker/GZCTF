@@ -11,7 +11,11 @@ namespace GZCTF.Features.ChallengeRuntime.Application;
 public sealed record AttachmentAssignment(
     string FileName,
     string Sha256,
-    string Flag);
+    string Flag,
+    string? StorageKey = null)
+{
+    public string EffectiveStorageKey => StorageKey ?? FileName;
+}
 
 public sealed class DynamicAttachmentExhaustedException : Exception
 {
@@ -31,16 +35,19 @@ public sealed class DynamicAttachmentAllocator(AppDbContext db)
                                               instance.ChallengeId == challengeId && instance.IsActive, token)
                       ?? throw new InvalidOperationException("An active challenge instance is required.");
 
-        if (!string.IsNullOrWhiteSpace(current.AssignedAttachmentKey) &&
-            !string.IsNullOrWhiteSpace(current.AssignedAttachmentSha256) &&
-            !string.IsNullOrWhiteSpace(current.AssignedFlag))
-            return new AttachmentAssignment(current.AssignedAttachmentKey,
-                current.AssignedAttachmentSha256, current.AssignedFlag);
-
         var challenge = await db.Challenges
             .Include(item => item.Flags)
             .SingleAsync(item => item.Id == challengeId, token);
         var candidates = ReadCandidates(challenge);
+
+        if (!string.IsNullOrWhiteSpace(current.AssignedAttachmentKey) &&
+            !string.IsNullOrWhiteSpace(current.AssignedAttachmentSha256) &&
+            !string.IsNullOrWhiteSpace(current.AssignedFlag))
+            return candidates.FirstOrDefault(item =>
+                       item.EffectiveStorageKey == current.AssignedAttachmentKey &&
+                       item.Sha256 == current.AssignedAttachmentSha256)
+                   ?? new AttachmentAssignment(current.AssignedAttachmentKey,
+                       current.AssignedAttachmentSha256, current.AssignedFlag);
         if (candidates.Count == 0)
             throw new InvalidOperationException("challenge.attachment_pool_missing");
 
@@ -73,7 +80,7 @@ public sealed class DynamicAttachmentAllocator(AppDbContext db)
                 if (candidate is null)
                     throw new DynamicAttachmentExhaustedException();
 
-                instance.AssignedAttachmentKey = candidate.FileName;
+                instance.AssignedAttachmentKey = candidate.EffectiveStorageKey;
                 instance.AssignedAttachmentSha256 = candidate.Sha256;
                 instance.AssignedFlag = candidate.Flag;
                 await db.SaveChangesAsync(token);
@@ -93,7 +100,7 @@ public sealed class DynamicAttachmentAllocator(AppDbContext db)
     private async Task<AttachmentAssignment> AssignAsync(
         UserChallengeInstance instance, AttachmentAssignment assignment, CancellationToken token)
     {
-        instance.AssignedAttachmentKey = assignment.FileName;
+        instance.AssignedAttachmentKey = assignment.EffectiveStorageKey;
         instance.AssignedAttachmentSha256 = assignment.Sha256;
         instance.AssignedFlag = assignment.Flag;
         await db.SaveChangesAsync(token);
@@ -118,7 +125,8 @@ public sealed class DynamicAttachmentAllocator(AppDbContext db)
         return candidates?.Select(item => new AttachmentAssignment(
                 item.FileName,
                 item.Sha256,
-                item.Flag))
+                item.Flag,
+                AttachmentStorageKey.Normalize(item.StorageKey, item.FileName)))
             .Where(item => !string.IsNullOrWhiteSpace(item.FileName) &&
                           !string.IsNullOrWhiteSpace(item.Sha256) &&
                           !string.IsNullOrWhiteSpace(item.Flag))
@@ -126,5 +134,6 @@ public sealed class DynamicAttachmentAllocator(AppDbContext db)
             ?? throw new InvalidOperationException("challenge.attachment_pool_invalid");
     }
 
-    private sealed record AttachmentCandidate(string FileName, string Sha256, string Flag);
+    private sealed record AttachmentCandidate(string FileName, string Sha256, string Flag, string? StorageKey);
+
 }

@@ -40,6 +40,11 @@ export const skillTreeErrorMessages: Record<string, string> = {
   content_category_required: 'skillTrees:errors.categoryRequired',
   content_category_has_no_active_tree: 'skillTrees:errors.categoryHasNoTree',
   content_invalid_publication: 'skillTrees:errors.invalidPublication',
+  content_static_flag_required: 'skillTrees:errors.staticFlagRequired',
+  content_attachment_pool_required: 'skillTrees:errors.attachmentPoolRequired',
+  content_attachment_missing: 'skillTrees:errors.attachmentMissing',
+  content_container_configuration_required: 'skillTrees:errors.containerConfigurationRequired',
+  content_flag_template_required: 'skillTrees:errors.flagTemplateRequired',
 }
 
 export const getApiErrorCode = (error: unknown): string | undefined => {

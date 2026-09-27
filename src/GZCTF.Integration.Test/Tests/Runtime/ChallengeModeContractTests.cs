@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using GZCTF.Features.ChallengeLibrary.Domain;
 using GZCTF.Features.ChallengeRuntime.Application;
+using GZCTF.Features.ChallengeRuntime.Infrastructure;
 using GZCTF.Features.ChallengeRuntime.Domain;
 using GZCTF.Features.SkillTrees.Domain;
 using GZCTF.Integration.Test.Base;
@@ -15,6 +16,7 @@ using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using LegacyContainer = GZCTF.Models.Data.Container;
 
 namespace GZCTF.Integration.Test.Tests.Runtime;
 
@@ -23,6 +25,197 @@ public sealed class ChallengeModeContractTests(GZCTFApplicationFactory factory)
 {
     public static IEnumerable<object[]> Fixtures() =>
         ChallengeModeFixtures.All.Select(fixture => new object[] { fixture });
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public async Task Unpublished_or_disabled_challenge_is_not_accessible_to_a_learner(
+        bool published, bool enabled)
+    {
+        var challengeId = Guid.CreateVersion7();
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Challenges.Add(new Challenge
+            {
+                Id = challengeId,
+                Type = ChallengeType.StaticAttachment,
+                PublicationState = published ? ChallengePublicationState.Published : ChallengePublicationState.Draft,
+                IsEnabled = enabled,
+                SourceType = "native",
+                SourceId = challengeId.ToString("N"),
+                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Hidden" }],
+                Flags = [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = "flag{hidden}" }]
+            });
+            await db.SaveChangesAsync();
+        }
+
+        var (_, learner) = await CreateLearnerClientAsync();
+        Assert.Equal(HttpStatusCode.NotFound,
+            (await learner.GetAsync($"/api/challenges/{challengeId}")).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound,
+            (await learner.PostAsJsonAsync($"/api/challenges/{challengeId}/submissions",
+                new { flag = "flag{hidden}" })).StatusCode);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Uploaded_attachment_uses_storage_key_and_preserves_download_name(bool legacyAssetUrl)
+    {
+        var challengeId = Guid.CreateVersion7();
+        var hash = "ab" + new string('0', 62);
+        var storageKey = $"uploads/{hash[..2]}/{hash[2..4]}/{hash}";
+        var metadataKey = legacyAssetUrl ? $"/assets/{hash}/handout.zip" : storageKey;
+        var content = Encoding.UTF8.GetBytes("uploaded handout");
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Challenges.Add(new Challenge
+            {
+                Id = challengeId,
+                Type = ChallengeType.StaticAttachment,
+                PublicationState = ChallengePublicationState.Published,
+                IsEnabled = true,
+                SourceType = "native",
+                SourceId = challengeId.ToString("N"),
+                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Handout" }],
+                Flags = [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = "flag{handout}" }],
+                RuntimeConfigurationJson = JsonSerializer.Serialize(new
+                {
+                    Attachments = new[] { new { FileName = "handout.zip", StorageKey = metadataKey,
+                        Sha256 = hash, Flag = "flag{handout}" } }
+                })
+            });
+            await db.SaveChangesAsync();
+            var storage = scope.ServiceProvider.GetRequiredService<IBlobStorage>();
+            using var stream = new MemoryStream(content);
+            await storage.WriteAsync(storageKey, stream);
+        }
+
+        var (_, learner) = await CreateLearnerClientAsync();
+        var response = await learner.GetAsync($"/api/challenges/{challengeId}/attachment");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal("handout.zip", response.Content.Headers.ContentDisposition?.FileName?.Trim('"'));
+        Assert.Equal(content, await response.Content.ReadAsByteArrayAsync());
+    }
+
+    [Fact]
+    public async Task Text_only_static_challenge_does_not_offer_a_missing_download()
+    {
+        var challengeId = Guid.CreateVersion7();
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Challenges.Add(new Challenge
+            {
+                Id = challengeId,
+                Type = ChallengeType.StaticAttachment,
+                PublicationState = ChallengePublicationState.Published,
+                IsEnabled = true,
+                SourceType = "native",
+                SourceId = challengeId.ToString("N"),
+                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Text only" }],
+                Flags = [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = "flag{text}" }]
+            });
+            await db.SaveChangesAsync();
+        }
+
+        var (_, learner) = await CreateLearnerClientAsync();
+        var body = await learner.GetStringAsync($"/api/challenges/{challengeId}");
+        Assert.Contains("\"hasAttachment\":false", body);
+    }
+
+    [Fact]
+    public async Task Imported_container_image_and_Flag_template_start_a_learner_instance()
+    {
+        var user = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S08!LearnerPassword");
+        var challengeId = Guid.CreateVersion7();
+        await using var scope = factory.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Challenges.Add(new Challenge
+        {
+            Id = challengeId,
+            Type = ChallengeType.DynamicContainer,
+            PublicationState = ChallengePublicationState.Published,
+            IsEnabled = true,
+            SourceType = "legacy-db",
+            SourceId = challengeId.ToString("N"),
+            Localizations = [new ChallengeLocalization { Locale = "en", Title = "Imported container" }],
+            Flags = [new ChallengeFlag { Kind = ChallengeFlagKind.Template, Template = "flag{legacy-{userId}}" }],
+            RuntimeConfigurationJson = JsonSerializer.Serialize(new
+            {
+                Image = "registry.test/legacy:1", ExposedPort = 8080,
+                Cpu = 1, MemoryMb = 128, StorageMb = 256, NetworkMode = "Open"
+            })
+        });
+        await db.SaveChangesAsync();
+
+        var adapter = new RecordingContainerAdapter(db);
+        var runtime = new ChallengeRuntimeService(db, adapter);
+        var instance = await runtime.StartAsync(user.Id, challengeId);
+
+        Assert.Equal(ChallengeInstanceStatus.Running, instance.Status);
+        Assert.Equal("registry.test/legacy:1", adapter.LastRequest?.Image);
+        Assert.Equal($"flag{{legacy-{user.Id:N}}}", adapter.LastRequest?.Flag);
+    }
+
+    [Fact]
+    public async Task Running_instance_returns_the_container_address_to_the_learner()
+    {
+        var (user, client) = await CreateLearnerClientAsync();
+        var challengeId = Guid.CreateVersion7();
+        var containerId = Guid.CreateVersion7();
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            db.Challenges.Add(new Challenge
+            {
+                Id = challengeId, Type = ChallengeType.StaticContainer,
+                PublicationState = ChallengePublicationState.Published, IsEnabled = true,
+                SourceType = "native", SourceId = challengeId.ToString("N"),
+                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Reachable" }],
+                Flags = [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = "flag{reachable}" }]
+            });
+            db.Containers.Add(new LegacyContainer
+            {
+                Id = containerId, Image = "registry.test/box:1", ContainerId = "reachable",
+                IP = "10.0.0.2", Port = 80, PublicIP = "203.0.113.5", PublicPort = 18080
+            });
+            db.UserChallengeInstances.Add(new UserChallengeInstance
+            {
+                UserId = user.Id, ChallengeId = challengeId, ContainerId = containerId,
+                Status = ChallengeInstanceStatus.Running, IsActive = true
+            });
+            await db.SaveChangesAsync();
+        }
+
+        var response = await client.GetAsync($"/api/challenges/{challengeId}/instances");
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"publicIp\":\"203.0.113.5\"", body);
+        Assert.Contains("\"publicPort\":18080", body);
+    }
+
+    private sealed class RecordingContainerAdapter(AppDbContext db) : ILegacyContainerRuntimeAdapter
+    {
+        public CanonicalContainerRequest? LastRequest { get; private set; }
+
+        public Task<LegacyContainer?> StartAsync(CanonicalContainerRequest request, CancellationToken token)
+        {
+            LastRequest = request;
+            var container = new LegacyContainer
+            {
+                Id = Guid.CreateVersion7(), Image = request.Image, ContainerId = "test-container",
+                IP = "127.0.0.1", Port = request.ExposedPort
+            };
+            db.Containers.Add(container);
+            return Task.FromResult<LegacyContainer?>(container);
+        }
+
+        public Task StopAsync(LegacyContainer container, CancellationToken token) => Task.CompletedTask;
+    }
 
     [Theory]
     [MemberData(nameof(Fixtures))]
@@ -46,6 +239,7 @@ public sealed class ChallengeModeContractTests(GZCTFApplicationFactory factory)
         var body = await response.Content.ReadAsStringAsync();
         Assert.Contains(fixture.Title, body);
         Assert.Contains(fixture.Type.ToString(), body);
+        Assert.Contains("\"ctfCategory\":\"Misc\"", body);
         Assert.DoesNotContain(fixture.StaticFlag ?? "flag{", body);
     }
 

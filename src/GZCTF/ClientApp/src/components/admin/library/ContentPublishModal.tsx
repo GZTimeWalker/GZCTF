@@ -62,9 +62,11 @@ export const ContentPublishModal = ({
   const treeCategories = (categories ?? []).filter((category) =>
     category.trees?.some((reference) => reference.skillTreeId === selectedTreeId)
   )
+  const selectedTree = (trees ?? []).find((tree) => tree.skillTreeId === selectedTreeId)
   const selectedCategories = (categories ?? []).filter((category) =>
     selectedCategoryIds.includes(category.categoryId ?? '')
   )
+  const sharedCategorySelected = selectedCategories.some((category) => (category.trees?.length ?? 0) > 1)
   const emptyTree = Boolean(selectedTreeId) && treeCategories.length === 0
 
   const toggleCategory = (categoryId: string, checked: boolean) => {
@@ -153,6 +155,10 @@ export const ContentPublishModal = ({
           </Stack>
         )}
 
+        {selectedTree && !selectedTree.isPublished && (
+          <Alert color="yellow">{t('publish.treeNeedsPublish')}</Alert>
+        )}
+
         {emptyTree && (
           <Stack>
             <TextInput
@@ -186,6 +192,8 @@ export const ContentPublishModal = ({
             </Group>
           </Stack>
         )}
+
+        {sharedCategorySelected && <Alert color="blue">{t('publish.sharedCategoryHint')}</Alert>}
 
         {error && <Alert color="red">{error}</Alert>}
 

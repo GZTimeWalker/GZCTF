@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.ChallengeRuntime.Application;
 using GZCTF.Features.Dashboard.Domain;
 using GZCTF.Features.Imports.Domain;
 using GZCTF.Features.LearningPaths.Domain;
@@ -28,6 +29,7 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
         {
             type = "StaticAttachment",
             ctfCategory = "Web",
+            expectedMinutes = 45,
             localizations = new[] { new { locale = "en", title = "Category test", summary = "", body = "Body" } },
             flags = new[] { new { kind = "Static", value = "flag{category}" } }
         });
@@ -35,6 +37,8 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
         var challengeId = ReadGuid(await created.Content.ReadAsStringAsync());
         var createdJson = JsonNode.Parse(await created.Content.ReadAsStringAsync());
         Assert.Equal("Web", createdJson?["challenge"]?["ctfCategory"]?.GetValue<string>());
+        Assert.Equal(45, createdJson?["challenge"]?["expectedMinutes"]?.GetValue<int>());
+        Assert.NotNull(createdJson?["challenge"]?["rowVersion"]);
 
         var updated = await admin.PutAsJsonAsync($"/api/admin/challenges/{challengeId}", new
         {
@@ -48,6 +52,106 @@ public class ChallengeLibraryTests(GZCTFApplicationFactory factory)
         Assert.Contains(listed!, item =>
             item?["id"]?.GetValue<string>() == challengeId.ToString() &&
             item?["ctfCategory"]?.GetValue<string>() == "Misc");
+    }
+
+    [Fact]
+    public async Task Challenge_update_rejects_a_stale_row_version()
+    {
+        using var admin = await CreateAdminClientAsync();
+        var created = await admin.PostAsJsonAsync("/api/admin/challenges", new
+        {
+            type = "StaticAttachment",
+            localizations = new[] { new { locale = "en", title = "Original", summary = "", body = "" } }
+        });
+        created.EnsureSuccessStatusCode();
+        var initial = JsonNode.Parse(await created.Content.ReadAsStringAsync());
+        var id = initial?["challenge"]?["id"]?.GetValue<string>();
+        var version = initial?["publication"]?["rowVersion"]?.GetValue<uint>();
+        Assert.NotNull(id);
+        Assert.NotNull(version);
+
+        var first = await admin.PutAsJsonAsync($"/api/admin/challenges/{id}", new
+        {
+            rowVersion = version,
+            localizations = new[] { new { locale = "en", title = "First edit", summary = "", body = "" } }
+        });
+        first.EnsureSuccessStatusCode();
+
+        var stale = await admin.PutAsJsonAsync($"/api/admin/challenges/{id}", new
+        {
+            rowVersion = version,
+            localizations = new[] { new { locale = "en", title = "Stale edit", summary = "", body = "" } }
+        });
+        Assert.Equal(HttpStatusCode.Conflict, stale.StatusCode);
+        var actual = JsonNode.Parse(await admin.GetStringAsync($"/api/admin/challenges/{id}/edit"));
+        Assert.Equal("First edit", actual?["challenge"]?["title"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task Submission_limit_blocks_attempts_after_the_configured_count()
+    {
+        using var admin = await CreateAdminClientAsync();
+        var created = await admin.PostAsJsonAsync("/api/admin/challenges", new
+        {
+            type = "StaticAttachment",
+            submissionLimit = 1,
+            localizations = new[] { new { locale = "en", title = "One attempt", summary = "", body = "" } },
+            flags = new[] { new { kind = "Static", value = "flag{correct}" } }
+        });
+        created.EnsureSuccessStatusCode();
+        var body = JsonNode.Parse(await created.Content.ReadAsStringAsync());
+        Assert.Equal(1, body?["challenge"]?["submissionLimit"]?.GetValue<int>());
+
+        var challengeId = Guid.Parse(body!["challenge"]!["id"]!.GetValue<string>());
+        var learner = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S12!LearnerPassword");
+        await using var scope = factory.Services.CreateAsyncScope();
+        var submissions = scope.ServiceProvider.GetRequiredService<ChallengeSubmissionService>();
+        var first = await submissions.SubmitAsync(learner.Id, challengeId, "flag{wrong}");
+        var second = await submissions.SubmitAsync(learner.Id, challengeId, "flag{correct}");
+
+        Assert.False(first.Accepted);
+        Assert.False(second.Accepted);
+        Assert.Equal("challenge.submission_limit_exhausted", second.RejectionCode);
+    }
+
+    [Fact]
+    public async Task Concurrent_submissions_cannot_exceed_the_per_learner_limit()
+    {
+        using var admin = await CreateAdminClientAsync();
+        var created = await admin.PostAsJsonAsync("/api/admin/challenges", new
+        {
+            type = "StaticAttachment",
+            submissionLimit = 1,
+            localizations = new[] { new { locale = "en", title = "Concurrent limit", summary = "", body = "" } },
+            flags = new[] { new { kind = "Static", value = "flag{correct}" } }
+        });
+        created.EnsureSuccessStatusCode();
+        var challengeId = ReadGuid(await created.Content.ReadAsStringAsync());
+        var learner = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S12!LearnerPassword");
+
+        const int requestCount = 12;
+        var ready = 0;
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var attempts = Enumerable.Range(0, requestCount).Select(async _ =>
+        {
+            await using var scope = factory.Services.CreateAsyncScope();
+            var submissions = scope.ServiceProvider.GetRequiredService<ChallengeSubmissionService>();
+            Interlocked.Increment(ref ready);
+            await release.Task;
+            return await submissions.SubmitAsync(learner.Id, challengeId, "flag{wrong}");
+        }).ToArray();
+        while (Volatile.Read(ref ready) < requestCount) await Task.Delay(10);
+        release.SetResult();
+        var results = await Task.WhenAll(attempts);
+
+        await using var verifyScope = factory.Services.CreateAsyncScope();
+        var db = verifyScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Equal(1, await db.ChallengeSubmissions.CountAsync(item =>
+            item.UserId == learner.Id && item.ChallengeId == challengeId));
+        Assert.Equal(requestCount - 1, results.Count(item =>
+            item.RejectionCode == "challenge.submission_limit_exhausted"));
     }
 
     [Fact]

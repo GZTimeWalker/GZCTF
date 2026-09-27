@@ -42,7 +42,45 @@ public sealed class ChallengeSubmissionTests(GZCTFApplicationFactory factory)
             item.UserId == user.Id && item.ChallengeId == challengeId));
     }
 
-    private async Task<Guid> SeedChallengeAsync(string flag)
+    [Fact]
+    public async Task Static_challenge_accepts_any_configured_flag()
+    {
+        var user = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S12!LearnerPassword");
+        var challengeId = await SeedChallengeAsync("flag{first}", "flag{second}");
+
+        await using var scope = factory.Services.CreateAsyncScope();
+        var service = scope.ServiceProvider.GetRequiredService<ChallengeSubmissionService>();
+        var result = await service.SubmitAsync(user.Id, challengeId, "flag{second}");
+
+        Assert.True(result.Accepted);
+        Assert.True(result.FirstSolve);
+    }
+
+    [Fact]
+    public async Task Limited_correct_submission_keeps_its_record_and_progress()
+    {
+        var user = await TestDataSeeder.CreateUserAsync(
+            factory.Services, TestDataSeeder.RandomName(), "S12!LearnerPassword");
+        var challengeId = await SeedChallengeAsync("flag{correct}", submissionLimit: 1);
+
+        await using var scope = factory.Services.CreateAsyncScope();
+        var service = scope.ServiceProvider.GetRequiredService<ChallengeSubmissionService>();
+        var first = await service.SubmitAsync(user.Id, challengeId, "flag{correct}");
+        var second = await service.SubmitAsync(user.Id, challengeId, "flag{wrong}");
+
+        Assert.True(first.Accepted);
+        Assert.True(first.FirstSolve);
+        Assert.Equal("challenge.submission_limit_exhausted", second.RejectionCode);
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Assert.Equal(1, await db.ChallengeSubmissions.CountAsync(item =>
+            item.UserId == user.Id && item.ChallengeId == challengeId));
+        Assert.Equal(1, await db.ChallengeProgress.CountAsync(item =>
+            item.UserId == user.Id && item.ChallengeId == challengeId));
+    }
+
+    private async Task<Guid> SeedChallengeAsync(
+        string flag, string? anotherFlag = null, int submissionLimit = 0)
     {
         var challengeId = Guid.CreateVersion7();
         await using var scope = factory.Services.CreateAsyncScope();
@@ -51,6 +89,7 @@ public sealed class ChallengeSubmissionTests(GZCTFApplicationFactory factory)
         {
             Id = challengeId,
             Type = ChallengeType.StaticAttachment,
+            SubmissionLimit = submissionLimit,
             PublicationState = ChallengePublicationState.Published,
             SourceType = "s12-test",
             SourceId = challengeId.ToString("N"),
@@ -64,7 +103,10 @@ public sealed class ChallengeSubmissionTests(GZCTFApplicationFactory factory)
                     Body = "Body"
                 }
             ],
-            Flags = [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = flag }]
+            Flags = anotherFlag is null
+                ? [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = flag }]
+                : [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = flag },
+                    new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = anotherFlag }]
         });
         await db.SaveChangesAsync();
         return challengeId;

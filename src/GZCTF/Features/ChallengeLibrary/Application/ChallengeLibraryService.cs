@@ -74,12 +74,25 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
         if (challenge is null)
             return null;
 
+        if (command.RowVersion is { } rowVersion && rowVersion != challenge.RowVersion)
+            throw new ChallengeRevisionConflictException();
+
         if (command.Type is { } type && type != challenge.Type &&
             challenge.PublicationState != ChallengePublicationState.Draft)
             throw new ChallengeTypeImmutableException();
 
         ApplyChallengeCommand(challenge, command, isCreate: false);
-        await db.SaveChangesAsync(token);
+        // Changes confined to child rows (localizations, Flags, hints) must still
+        // advance the parent xmin used by the editor's optimistic concurrency check.
+        db.Entry(challenge).Property(item => item.IsEnabled).IsModified = true;
+        try
+        {
+            await db.SaveChangesAsync(token);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw new ChallengeRevisionConflictException();
+        }
         var categoryIds = await LoadCategoryIdsAsync(id, null, token);
         return ToEditResponse(challenge, command.Locale, categoryIds);
     }
@@ -262,6 +275,10 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             challenge.IsEnabled = isEnabled;
         if (command.ExpectedMinutes is { } expectedMinutes)
             challenge.ExpectedMinutes = expectedMinutes;
+        if (command.SubmissionLimit is { } submissionLimit)
+            challenge.SubmissionLimit = submissionLimit >= 0
+                ? submissionLimit
+                : throw new ChallengeValidationException("Submission limit cannot be negative.");
         if (command.Localizations is not null)
         {
             challenge.Localizations.Clear();
@@ -338,6 +355,9 @@ public sealed class ChallengeLibraryService(AppDbContext db, IChallengeMergeConf
             challenge.Difficulty,
             challenge.PublicationState,
             challenge.IsEnabled,
+            challenge.RowVersion,
+            challenge.ExpectedMinutes,
+            challenge.SubmissionLimit,
             localization?.Title ?? string.Empty,
             localization?.Summary ?? string.Empty,
             challenge.SourceType,
@@ -442,6 +462,8 @@ public sealed class NoopChallengeMergeConflictChecker : IChallengeMergeConflictC
 }
 
 public sealed class ChallengeTypeImmutableException : Exception;
+public sealed class ChallengeRevisionConflictException : Exception;
+public sealed class ChallengeValidationException(string message) : Exception(message);
 
 public class ChallengeMergeException(string message) : Exception(message);
 
@@ -450,6 +472,7 @@ public sealed class ChallengeMergeConflictException()
 
 public sealed class ChallengeCommand
 {
+    public uint? RowVersion { get; set; }
     public ChallengeType? Type { get; set; }
     public ChallengeCategory? CtfCategory { get; set; }
     public Difficulty? Difficulty { get; set; }
@@ -460,6 +483,7 @@ public sealed class ChallengeCommand
     public string? RuntimeConfigurationJson { get; set; }
     public bool? IsEnabled { get; set; }
     public int? ExpectedMinutes { get; set; }
+    public int? SubmissionLimit { get; set; }
     public string? Locale { get; set; }
     public List<ChallengeLocalizationCommand>? Localizations { get; set; }
     public List<ChallengeFlagCommand>? Flags { get; set; }
@@ -517,6 +541,9 @@ public sealed record ChallengeSummaryResponse(
     Difficulty Difficulty,
     ChallengePublicationState PublicationState,
     bool IsEnabled,
+    uint RowVersion,
+    int ExpectedMinutes,
+    int SubmissionLimit,
     string Title,
     string Summary,
     string SourceType,

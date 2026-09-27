@@ -135,14 +135,21 @@ test.describe('admin workspace', () => {
     await page.getByRole('button', { name: '创建题目' }).first().click()
     const dialog = page.getByRole('dialog')
     await dialog.getByRole('textbox', { name: '英文标题' }).fill(title)
+    await dialog.getByRole('combobox', { name: 'CTF 分类' }).click()
+    await page.getByRole('option', { name: /Misc/ }).click()
+    await dialog.getByRole('combobox', { name: '运行方式' }).click()
+    await page.getByRole('option', { name: /静态附件/ }).click()
     await dialog.getByRole('button', { name: '创建', exact: true }).click()
     await expect(page.getByText('题目已创建')).toBeVisible()
-    await expect(page.getByText(title).first()).toBeVisible()
+    await expect(page).toHaveURL(new RegExp(`/admin/library/challenges/${challengeId}/?$`))
+    await expect(page.getByRole('heading', { name: title })).toBeVisible()
 
     // 3. The card opens the original detail page.
+    await page.getByRole('link', { name: '题目管理' }).click()
+    await expect(page.getByText(title).first()).toBeVisible()
     await page.getByText(title).first().click()
     await expect(page).toHaveURL(new RegExp(`/admin/library/challenges/${challengeId}/?$`))
-    await expect(page.getByRole('heading', { name: '编辑靶场题' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: title })).toBeVisible()
 
     // 4. The back entry lands on the challenges tab with the list still rendered.
     await page.getByRole('link', { name: '题目管理' }).click()

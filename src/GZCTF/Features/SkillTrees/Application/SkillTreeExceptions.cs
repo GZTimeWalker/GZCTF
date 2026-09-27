@@ -13,5 +13,9 @@ public sealed class SkillCategoryConfirmationMismatchException : Exception;
 
 public sealed class ContentCategoryRequiredException : Exception;
 public sealed class ContentCategoryHasNoTreeException : Exception;
-public sealed class ContentPublicationValidationException(string message) : Exception(message);
+public sealed class ContentPublicationValidationException(
+    string message, string code = "content_invalid_publication") : Exception(message)
+{
+    public string Code { get; } = code;
+}
 public sealed class SkillTreeEnrollmentNotFoundException : Exception;

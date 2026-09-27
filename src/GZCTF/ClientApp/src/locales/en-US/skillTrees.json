@@ -124,7 +124,9 @@
     "successChallenge": "Challenge published",
     "successLesson": "Lesson published",
     "categoryRequired": "Select at least one category before publishing",
-    "categoryHasNoTree": "The selected category does not belong to any active skill tree"
+    "categoryHasNoTree": "The selected category does not belong to any active skill tree",
+    "sharedCategoryHint": "This category is shared by several skill trees. Publishing here adds the challenge to each tree that uses it.",
+    "treeNeedsPublish": "This skill tree is still a draft. Publish the tree before learners can see this challenge."
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -135,7 +137,12 @@
     "invalidIcon": "The icon key is not supported.",
     "categoryRequired": "At least one category is required before publication.",
     "categoryHasNoTree": "The selected category does not belong to any active skill tree.",
-    "invalidPublication": "The content could not be published."
+    "invalidPublication": "The content could not be published.",
+    "staticFlagRequired": "Add at least one static Flag before publishing.",
+    "attachmentPoolRequired": "Upload attachments and set a Flag for each one before publishing.",
+    "attachmentMissing": "An attachment is missing from storage. Upload it again before publishing.",
+    "containerConfigurationRequired": "Complete the container image, port, and resources before publishing.",
+    "flagTemplateRequired": "Set a dynamic Flag template before publishing."
   },
   "state": {
     "draft": "Draft",

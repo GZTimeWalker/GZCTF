@@ -15,7 +15,8 @@ namespace GZCTF.Features.ChallengeRuntime.Api;
 public sealed class ChallengeSubmissionsController(
     ChallengeSubmissionService submissions,
     AppDbContext db,
-    UserManager<UserInfo> users) : ControllerBase
+    UserManager<UserInfo> users,
+    ChallengeAccessPolicy access) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<ChallengeSubmissionResult>> Submit(
@@ -26,8 +27,7 @@ public sealed class ChallengeSubmissionsController(
             return Unauthorized();
         if (string.IsNullOrWhiteSpace(request.Flag))
             return BadRequest();
-        if (!await db.Challenges.AsNoTracking().AnyAsync(item => item.Id == challengeId, token))
-            return NotFound();
+        if (!await access.CanAccessAsync(challengeId, user, token)) return NotFound();
         return Ok(await submissions.SubmitAsync(user.Id, challengeId, request.Flag, token));
     }
 
@@ -37,6 +37,7 @@ public sealed class ChallengeSubmissionsController(
         var user = await users.GetUserAsync(User);
         if (user is null)
             return Unauthorized();
+        if (!await access.CanAccessAsync(challengeId, user, token)) return NotFound();
         var history = await db.ChallengeSubmissions.AsNoTracking()
             .Where(item => item.UserId == user.Id && item.ChallengeId == challengeId)
             .OrderByDescending(item => item.SubmittedAtUtc)

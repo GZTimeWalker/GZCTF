@@ -56,12 +56,28 @@ public sealed class CanonicalImportServiceTests(GZCTFApplicationFactory factory)
         await Assert.ThrowsAsync<ImportParityException>(() => parity.CompareAndEnforceAsync(source, batch));
     }
 
-    private static CanonicalChallengeImportBatch BuildSource(string fingerprint)
+    [Fact]
+    public async Task Imported_legacy_CTF_category_is_kept_on_the_independent_challenge()
+    {
+        var source = BuildSource($"ctf-category-{Guid.NewGuid():N}", "{\"category\":\"Web\"}");
+        await using var scope = factory.Services.CreateAsyncScope();
+        var importer = scope.ServiceProvider.GetRequiredService<CanonicalImportService>();
+        await importer.ImportAsync(source);
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var sourceIds = source.Paths.SelectMany(path => path.Modules)
+            .SelectMany(module => module.Challenges).Select(challenge => challenge.SourceId).ToArray();
+        var imported = await db.Challenges.Where(item => sourceIds.Contains(item.SourceId)).ToListAsync();
+        Assert.Equal(2, imported.Count);
+        Assert.All(imported, challenge => Assert.Equal(ChallengeCategory.Web, challenge.CtfCategory));
+    }
+
+    private static CanonicalChallengeImportBatch BuildSource(
+        string fingerprint, string metadata = "{\"score\":100}")
     {
         CanonicalChallengeImport Challenge(string sourceId) => new(
             "legacy", sourceId, ChallengeType.StaticAttachment,
             [new ImportLocalizedText("en", "Same title", "Summary", "Body")],
-            [], "flag{legacy}", null, [], null, "{\"score\":100}", 0, 0);
+            [], "flag{legacy}", null, [], null, metadata, 0, 0);
 
         return new CanonicalChallengeImportBatch(
             "legacy", fingerprint,

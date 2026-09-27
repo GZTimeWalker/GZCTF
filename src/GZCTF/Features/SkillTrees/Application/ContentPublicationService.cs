@@ -3,12 +3,14 @@ using GZCTF.Features.ChallengeLibrary.Domain;
 using GZCTF.Features.LearningPaths.Domain;
 using GZCTF.Features.SkillTrees.Domain;
 using GZCTF.Models;
+using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
 using CanonicalChallenge = GZCTF.Features.ChallengeLibrary.Domain.Challenge;
 
 namespace GZCTF.Features.SkillTrees.Application;
 
-public sealed class ContentPublicationService(AppDbContext db, ISkillTreeCacheInvalidator cacheInvalidator)
+public sealed class ContentPublicationService(
+    AppDbContext db, ISkillTreeCacheInvalidator cacheInvalidator, IBlobStorage storage)
 {
     public async Task PublishChallengeAsync(
         Guid challengeId, PublishContentCommand command, CancellationToken token)
@@ -17,6 +19,7 @@ public sealed class ContentPublicationService(AppDbContext db, ISkillTreeCacheIn
 
         var challenge = await db.Challenges
             .Include(item => item.Localizations)
+            .Include(item => item.Flags)
             .FirstOrDefaultAsync(item => item.Id == challengeId, token)
             ?? throw new ContentPublicationValidationException("The challenge was not found.");
 
@@ -26,6 +29,7 @@ public sealed class ContentPublicationService(AppDbContext db, ISkillTreeCacheIn
             throw new SkillTreeRevisionConflictException();
         if (!HasPublishableText(challenge.Localizations.Select(item => item.Title)))
             throw new ContentPublicationValidationException("The challenge needs a localized title before publication.");
+        await ChallengePublicationValidator.ValidateAsync(challenge, storage, token);
 
         var categoryIds = await ResolveCategoriesAsync(command, token);
 

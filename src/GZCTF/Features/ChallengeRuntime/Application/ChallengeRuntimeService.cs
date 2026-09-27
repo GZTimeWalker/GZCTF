@@ -66,11 +66,14 @@ public sealed class ChallengeRuntimeService(
             throw new InvalidOperationException("challenge.container_required");
 
         var settings = ReadContainerSettings(challenge.RuntimeConfigurationJson);
+        var image = settings.ContainerImage ?? settings.Image;
+        if (string.IsNullOrWhiteSpace(image))
+            throw new InvalidOperationException("challenge.container_configuration_invalid");
         var flag = ResolveFlag(challenge, userId, settings.FlagTemplate);
         var container = await containers.StartAsync(new CanonicalContainerRequest(
             userId,
             challengeId,
-            settings.ContainerImage,
+            image,
             settings.ExposedPort,
             settings.Cpu,
             settings.MemoryMb,
@@ -128,7 +131,9 @@ public sealed class ChallengeRuntimeService(
         var staticFlag = challenge.Flags.FirstOrDefault(flag => flag.Kind == ChallengeFlagKind.Static)?.Value;
         if (challenge.Type == ChallengeType.StaticContainer)
             return staticFlag;
-        return (template ?? string.Empty).Replace("{userId}", userId.ToString("N"), StringComparison.Ordinal);
+        var actualTemplate = template ?? challenge.Flags.FirstOrDefault(flag =>
+            flag.Kind == ChallengeFlagKind.Template)?.Template;
+        return (actualTemplate ?? string.Empty).Replace("{userId}", userId.ToString("N"), StringComparison.Ordinal);
     }
 
     private static ContainerSettings ReadContainerSettings(string? configuration)
@@ -141,7 +146,8 @@ public sealed class ChallengeRuntimeService(
     }
 
     private sealed record ContainerSettings(
-        string ContainerImage,
+        string? ContainerImage,
+        string? Image,
         int ExposedPort,
         int Cpu,
         int MemoryMb,

@@ -24,8 +24,15 @@ public sealed class AdminChallengesController(
     public async Task<ActionResult<ChallengeEditResponse>> Create(
         [FromBody] ChallengeCommand command, CancellationToken token)
     {
-        var response = await service.CreateChallengeAsync(command, token);
-        return Ok(response);
+        try
+        {
+            return Ok(await service.CreateChallengeAsync(command, token));
+        }
+        catch (ChallengeValidationException exception)
+        {
+            return BadRequest(ApiError.Validation("learning.challenge_invalid", exception.Message,
+                HttpContext.TraceIdentifier, null));
+        }
     }
 
     [HttpGet("{id:guid}")]
@@ -60,6 +67,18 @@ public sealed class AdminChallengesController(
                 "learning.challenge_type_immutable",
                 "A published challenge cannot change type.",
                 HttpContext.TraceIdentifier));
+        }
+        catch (ChallengeRevisionConflictException)
+        {
+            return Conflict(ApiError.Conflict(
+                "learning.challenge_changed",
+                "The challenge changed since it was loaded.",
+                HttpContext.TraceIdentifier));
+        }
+        catch (ChallengeValidationException exception)
+        {
+            return BadRequest(ApiError.Validation("learning.challenge_invalid", exception.Message,
+                HttpContext.TraceIdentifier, null));
         }
     }
 
@@ -100,7 +119,7 @@ public sealed class AdminChallengesController(
         catch (ContentPublicationValidationException exception)
         {
             return BadRequest(ApiError.Validation(
-                "content_invalid_publication", exception.Message,
+                exception.Code, exception.Message,
                 HttpContext.TraceIdentifier, null));
         }
     }

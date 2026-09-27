@@ -93,6 +93,7 @@ internal static class ServicesExtension
             builder.Services.AddScoped<DynamicAttachmentAllocator>();
             builder.Services.AddScoped<ILegacyStorageAdapter, LegacyStorageAdapter>();
             builder.Services.AddScoped<ChallengeRuntimeService>();
+            builder.Services.AddScoped<ChallengeAccessPolicy>();
             builder.Services.AddScoped<ILegacyContainerRuntimeAdapter, LegacyContainerRuntimeAdapter>();
             builder.Services.AddScoped<ChallengeSubmissionService>();
             builder.Services.AddScoped<ChallengeHelpService>();

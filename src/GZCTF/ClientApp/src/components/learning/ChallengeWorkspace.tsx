@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Code, Group, Stack, Text, Textarea, Title } from '@mantine/core'
+import { Alert, Badge, Button, Card, Code, Group, Stack, Text, Textarea, Title } from '@mantine/core'
 import { Link } from 'react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +24,7 @@ export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHr
   const { locale } = useLanguage()
   const { user } = useUser()
   const { t } = useTranslation('learning')
+  const { t: tChallenge } = useTranslation('challenge')
   const { data: challenge, error } = useChallenge(challengeId, locale, !!user)
   const { data: instance, mutate: mutateInstance } = useChallengeInstance(challengeId, !!user)
   const { mutate } = useSWRConfig()
@@ -51,7 +52,9 @@ export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHr
     if (!flag.trim()) return
     try {
       const result = await submitChallenge(challengeId, flag)
-      setMessage(result.accepted ? t('accepted') : t('rejected'))
+      setMessage(result.accepted ? t('accepted') :
+        result.rejectionCode === 'challenge.submission_limit_exhausted'
+          ? t('submissionLimitExhausted') : t('rejected'))
       if (result.accepted) {
         setSolveMode(result.solveMode === undefined || result.solveMode === null ? undefined : String(result.solveMode))
         await mutate((key) => {
@@ -104,7 +107,14 @@ export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHr
         <Stack>
           <Group justify="space-between">
             <Title order={2}>{challenge!.title}</Title>
-            <Code>{challenge!.type}</Code>
+            <Group gap="xs">
+              {challenge!.ctfCategory && (
+                <Badge variant="light">
+                  {challenge!.ctfCategory} · {tChallenge(`category.${challenge!.ctfCategory.toLowerCase()}`)}
+                </Badge>
+              )}
+              <Code>{challenge!.type}</Code>
+            </Group>
           </Group>
           <Text c="dimmed">{challenge!.summary}</Text>
           <Markdown source={challenge!.body} />
@@ -117,7 +127,11 @@ export const ChallengeWorkspace = ({ challengeId, backHref, previousHref, nextHr
             <Title order={3}>{t('instance')}</Title>
             {instance?.status === ChallengeInstanceStatus.Running ? (
               <Group>
-                <Text>{instance.publicIp ?? t('instanceRunning')}:{instance.publicPort ?? ''}</Text>
+                <Text>
+                  {instance.publicIp
+                    ? `${instance.publicIp}${instance.publicPort ? `:${instance.publicPort}` : ''}`
+                    : t('instanceRunning')}
+                </Text>
                 <Button variant="light" onClick={() => run(async () => { await extendInstance(challengeId); await mutateInstance() })}>{t('extend')}</Button>
                 <Button color="red" variant="light" onClick={() => run(async () => { await stopInstance(challengeId); await mutateInstance(undefined, false) })}>{t('stop')}</Button>
               </Group>

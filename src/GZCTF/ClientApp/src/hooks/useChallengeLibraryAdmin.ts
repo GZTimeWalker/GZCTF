@@ -1,5 +1,5 @@
 import useSWR, { useSWRConfig } from 'swr'
-import api, { ChallengeInstanceStatus, ChallengeSolveMode, fetcher } from '@Api'
+import api, { ChallengeInstanceStatus, ChallengeSolveMode, fetcher, type ChallengeSummaryResponse } from '@Api'
 
 const localeQuery = (locale: string) => encodeURIComponent(locale || 'en')
 
@@ -16,6 +16,7 @@ export const useChallenge = (id: string | undefined, locale: string, enabled: bo
     summary: string
     body: string
     type: string
+    ctfCategory: string
     hintLocaleCount: number
     hasWriteup: boolean
     hasAttachment: boolean
@@ -100,7 +101,7 @@ export const useLearningMutations = () => {
 }
 
 export const useAdminChallenges = () =>
-  useSWR<{ id: string; type: string; publicationState: string; title: string; summary: string }[]>(
+  useSWR<ChallengeSummaryResponse[]>(
     '/api/admin/challenges?locale=en',
     fetcher,
   )

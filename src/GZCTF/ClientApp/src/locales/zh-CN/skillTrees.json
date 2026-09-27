@@ -124,7 +124,9 @@
     "successChallenge": "题目已发布",
     "successLesson": "课节已发布",
     "categoryRequired": "发布前请至少选择一个类别",
-    "categoryHasNoTree": "所选类别不属于任何有效技能树"
+    "categoryHasNoTree": "所选类别不属于任何有效技能树",
+    "sharedCategoryHint": "这个全局类别被多棵技能树共用。发布后，引用它的技能树都会显示这道题。",
+    "treeNeedsPublish": "这棵技能树仍是草稿；需要发布技能树后，学员才能看到这道题。"
   },
   "errors": {
     "generic": "操作失败，请重试。",
@@ -135,7 +137,12 @@
     "invalidIcon": "图标不在允许范围内。",
     "categoryRequired": "发布前必须至少选择一个类别。",
     "categoryHasNoTree": "所选类别不属于任何有效技能树。",
-    "invalidPublication": "内容发布失败。"
+    "invalidPublication": "内容发布失败。",
+    "staticFlagRequired": "发布前请添加至少一个静态 Flag。",
+    "attachmentPoolRequired": "发布前请上传附件并为每个附件填写 Flag。",
+    "attachmentMissing": "附件在存储中不存在，请重新上传后再发布。",
+    "containerConfigurationRequired": "发布前请填写容器镜像、端口和资源配置。",
+    "flagTemplateRequired": "发布前请填写动态 Flag 模板。"
   },
   "state": {
     "draft": "草稿",

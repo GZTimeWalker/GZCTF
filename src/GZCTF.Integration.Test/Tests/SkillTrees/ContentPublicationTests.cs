@@ -53,6 +53,66 @@ public class ContentPublicationTests(GZCTFApplicationFactory factory)
     }
 
     [Fact]
+    public async Task Publishing_rejects_missing_mode_specific_flag_or_runtime_configuration()
+    {
+        var (_, categoryId) = await SeedPublishedTreeAsync();
+        using var admin = await CreateAdminClientAsync();
+
+        var noFlag = await PublishAsync(admin, "challenge",
+            await SeedDraftAsync("challenge", ChallengeType.StaticAttachment, includeFlag: false), [categoryId], []);
+        Assert.Equal(HttpStatusCode.BadRequest, noFlag.StatusCode);
+        Assert.Equal("content_static_flag_required", await ReadCodeAsync(noFlag));
+
+        var noContainer = await PublishAsync(admin, "challenge",
+            await SeedDraftAsync("challenge", ChallengeType.DynamicContainer), [categoryId], []);
+        Assert.Equal(HttpStatusCode.BadRequest, noContainer.StatusCode);
+        Assert.Equal("content_container_configuration_required", await ReadCodeAsync(noContainer));
+
+        var noAttachmentPool = await PublishAsync(admin, "challenge",
+            await SeedDraftAsync("challenge", ChallengeType.DynamicAttachment), [categoryId], []);
+        Assert.Equal(HttpStatusCode.BadRequest, noAttachmentPool.StatusCode);
+        Assert.Equal("content_attachment_pool_required", await ReadCodeAsync(noAttachmentPool));
+    }
+
+    [Fact]
+    public async Task Publishing_rejects_an_attachment_that_is_missing_from_storage()
+    {
+        var (_, categoryId) = await SeedPublishedTreeAsync();
+        var challengeId = Guid.CreateVersion7();
+        uint rowVersion;
+        await using (var scope = factory.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var challenge = new CanonicalChallenge
+            {
+                Id = challengeId,
+                Type = ChallengeType.DynamicAttachment,
+                PublicationState = ChallengePublicationState.Draft,
+                SourceType = "native",
+                SourceId = challengeId.ToString("N"),
+                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Missing file" }],
+                Flags = [new ChallengeFlag
+                {
+                    Kind = ChallengeFlagKind.DynamicAttachment,
+                    MetadataJson = JsonSerializer.Serialize(new[]
+                    {
+                        new { FileName = "missing.zip", StorageKey = $"uploads/ff/ff/{Guid.NewGuid():N}",
+                            Sha256 = "ff" + new string('0', 62), Flag = "flag{missing}" }
+                    })
+                }]
+            };
+            db.Challenges.Add(challenge);
+            await db.SaveChangesAsync();
+            rowVersion = challenge.RowVersion;
+        }
+
+        using var admin = await CreateAdminClientAsync();
+        var publish = await PublishAsync(admin, "challenge", (challengeId, rowVersion), [categoryId], []);
+        Assert.Equal(HttpStatusCode.BadRequest, publish.StatusCode);
+        Assert.Equal("content_attachment_missing", await ReadCodeAsync(publish));
+    }
+
+    [Fact]
     public async Task Inline_category_publishes_an_untouched_tree()
     {
         var treeId = await SeedDraftTreeAsync();
@@ -98,7 +158,8 @@ public class ContentPublicationTests(GZCTFApplicationFactory factory)
         return await admin.PostAsJsonAsync(route, command);
     }
 
-    private async Task<(Guid Id, uint RowVersion)> SeedDraftAsync(string kind)
+    private async Task<(Guid Id, uint RowVersion)> SeedDraftAsync(
+        string kind, ChallengeType challengeType = ChallengeType.StaticAttachment, bool includeFlag = true)
     {
         await using var scope = factory.Services.CreateAsyncScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -108,10 +169,18 @@ public class ContentPublicationTests(GZCTFApplicationFactory factory)
             var challenge = new CanonicalChallenge
             {
                 Id = Guid.CreateVersion7(),
-                Type = ChallengeType.StaticAttachment,
+                Type = challengeType,
                 PublicationState = ChallengePublicationState.Draft,
                 IsEnabled = true,
-                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Draft challenge" }]
+                Localizations = [new ChallengeLocalization { Locale = "en", Title = "Draft challenge" }],
+                Flags = includeFlag ? challengeType switch
+                {
+                    ChallengeType.StaticAttachment or ChallengeType.StaticContainer =>
+                        [new ChallengeFlag { Kind = ChallengeFlagKind.Static, Value = "flag{publish}" }],
+                    ChallengeType.DynamicContainer =>
+                        [new ChallengeFlag { Kind = ChallengeFlagKind.Template, Template = "flag{{userId}}" }],
+                    _ => []
+                } : []
             };
             db.Challenges.Add(challenge);
             await db.SaveChangesAsync();
