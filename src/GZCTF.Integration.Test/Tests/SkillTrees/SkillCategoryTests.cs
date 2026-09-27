@@ -88,6 +88,67 @@ public class SkillCategoryTests(GZCTFApplicationFactory factory)
         Assert.Empty(detail!.Categories);
     }
 
+    [Fact]
+    public async Task Saving_memberships_creates_a_draft_for_a_published_tree()
+    {
+        // A published tree without a draft used to force-attach the cloned draft as an
+        // existing row, failing the whole save with a bogus revision conflict.
+        await using var scope = factory.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var category = new SkillCategory { Id = Guid.CreateVersion7(), Name = "Membership Seed", Summary = "", IconKey = "flag" };
+        db.SkillCategories.Add(category);
+        var (tree, revision) = PublishedTree("Membership Tree", "flag", category);
+        db.SkillTrees.Add(tree);
+        await db.SaveChangesAsync();
+        await SetCurrentRevisionAsync(db, tree.Id, revision.Id);
+        // SetCurrentRevisionAsync bumps the tree row through raw SQL, so re-read the version.
+        var treeRowVersion = await db.SkillTrees.AsNoTracking()
+            .Where(item => item.Id == tree.Id)
+            .Select(item => item.RowVersion)
+            .SingleAsync();
+
+        using var admin = await CreateAdminClientAsync();
+
+        var save = await admin.PutAsJsonAsync($"/api/admin/skill-categories/{category.Id}/tree-memberships",
+            new UpdateCategoryTreeMembershipsCommand(category.RowVersion,
+                [new CategoryTreeMembershipCommand(tree.Id, true, treeRowVersion)]));
+        Assert.Equal(HttpStatusCode.OK, save.StatusCode);
+
+        var draft = await admin.GetFromJsonAsync<SkillTreeDraftResponse>($"/api/admin/skill-trees/{tree.Id}/draft");
+        Assert.NotNull(draft);
+        Assert.Contains(draft!.Categories, item => item.CategoryId == category.Id);
+    }
+
+    [Fact]
+    public async Task Delete_uses_the_row_version_reported_by_the_delete_impact()
+    {
+        // The admin UI deletes with the row version from the impact response; that
+        // contract used to be missing, forcing a stale cached version and a 409.
+        await using var scope = factory.Services.CreateAsyncScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var category = new SkillCategory { Id = Guid.CreateVersion7(), Name = "Impact Seed", Summary = "", IconKey = "flag" };
+        db.SkillCategories.Add(category);
+        await db.SaveChangesAsync();
+
+        using var admin = await CreateAdminClientAsync();
+
+        var impact = await admin.GetFromJsonAsync<CategoryDeleteImpactResponse>(
+            $"/api/admin/skill-categories/{category.Id}/delete-impact");
+        Assert.True(impact!.RowVersion > 0);
+
+        var delete = await admin.SendAsync(new HttpRequestMessage(HttpMethod.Delete,
+            $"/api/admin/skill-categories/{category.Id}")
+        {
+            Content = JsonContent.Create(new DeleteCategoryCommand("Impact Seed", impact!.RowVersion))
+        });
+        Assert.Equal(HttpStatusCode.NoContent, delete.StatusCode);
+
+        var gone = await admin.GetAsync($"/api/admin/skill-categories/{category.Id}");
+        Assert.Equal(HttpStatusCode.NotFound, gone.StatusCode);
+    }
+
     private async Task<(Guid FirstTreeId, Guid SecondTreeId, Guid CategoryId, uint CategoryRowVersion, Guid ChallengeId, Guid LessonId)>
         SeedSharedCategoryAsync()
     {

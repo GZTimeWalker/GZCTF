@@ -141,6 +141,9 @@ public sealed class ContentPublicationService(AppDbContext db, ISkillTreeCacheIn
                 {
                     draft = ClonePublishedRevision(tree);
                     tree.Revisions.Add(draft);
+                    // Entry(...) below would force-attach the fresh clone as an existing row
+                    // and turn the insert into a zero-row xmin update, so track it as added.
+                    db.Add(draft);
                 }
 
                 var category = new SkillCategory

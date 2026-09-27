@@ -34,13 +34,8 @@
     "title": "Edit skill tree",
     "categories": "Categories",
     "addCategory": "Add category",
-    "createCategory": "Create category",
-    "newCategoryName": "New category name",
-    "newCategorySummary": "New category summary",
-    "categoryAdded": "Category created and added to the draft",
     "emptyCategories": "No categories yet. Add one to get started.",
     "searchCategory": "Search categories",
-    "selectExisting": "Select an existing category",
     "remove": "Remove",
     "moveUp": "Move up",
     "moveDown": "Move down",
@@ -149,5 +144,23 @@
   },
   "navigation": {
     "title": "Skill trees"
+  },
+  "workspace": {
+    "title": "Admin workspace",
+    "subtitle": "Switch between skill trees, categories, the challenge library and cohort members in one place.",
+    "tabs": {
+      "challenges": "Challenges",
+      "members": "Members"
+    },
+    "createChallenge": "Create challenge",
+    "createCohort": "Create cohort",
+    "challengeCreated": "Challenge created",
+    "cohortCreated": "Cohort created",
+    "membersAssigned": "Members assigned",
+    "memberRemoved": "Member removed",
+    "emptyChallenges": "No challenges yet",
+    "emptyCohorts": "No cohorts yet",
+    "emptyMembers": "No members in this cohort",
+    "retry": "Retry"
   }
 }

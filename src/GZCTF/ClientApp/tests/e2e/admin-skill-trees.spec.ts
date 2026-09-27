@@ -33,10 +33,17 @@ test.describe('skill tree administration', () => {
     const lessonTitle = `Lesson ${id}`
 
     const createCategory = async (name: string) => {
+      await page.goto('/admin/skill-trees?tab=categories')
       await page.getByRole('button', { name: 'Create category' }).first().click()
-      await page.getByRole('textbox', { name: 'New category name' }).fill(name)
-      await page.getByRole('button', { name: 'Create category' }).last().click()
+      await page.getByRole('textbox', { name: 'Name' }).fill(name)
+      await page.getByRole('button', { name: 'Create', exact: true }).click()
+      await expect(page).toHaveURL(/\/admin\/skill-categories\/[0-9a-f-]+/i)
       await expect(page.getByText(name).first()).toBeVisible()
+    }
+
+    const addCategoryToTree = async (name: string) => {
+      await page.getByRole('textbox', { name: 'Search categories' }).fill(name)
+      await page.getByRole('button', { name: 'Add category' }).first().click()
     }
 
     const publishIntoCategory = async (kind: 'challenge' | 'lesson', contentId: string) => {
@@ -53,19 +60,24 @@ test.describe('skill tree administration', () => {
       ).toBeVisible({ timeout: 10_000 })
     }
 
-    // 1. Create and publish an empty skill tree.
+    // 1. Create and publish an empty skill tree through the workspace modal.
     await page.goto('/admin/skill-trees')
+    await page.getByRole('button', { name: 'Create skill tree' }).first().click()
     await page.getByRole('textbox', { name: 'Name' }).fill(treeName)
     await page.getByRole('button', { name: 'Create', exact: true }).click()
     await expect(page).toHaveURL(/\/admin\/skill-trees\/[0-9a-f-]+/i)
     await page.getByRole('button', { name: 'Publish', exact: true }).click()
     await expect(page.getByText('Skill tree published')).toBeVisible({ timeout: 10_000 })
 
-    // 2. Create two categories visually and add both to the tree.
+    // 2. Create two categories from the categories tab.
     await createCategory(categoryA)
     await createCategory(categoryB)
 
-    // 3. Reorder categories and publish.
+    // 3. Add both to the tree, reorder categories and publish.
+    await page.goto('/admin/skill-trees')
+    await page.getByText(treeName).first().click()
+    await addCategoryToTree(categoryA)
+    await addCategoryToTree(categoryB)
     await page.getByRole('button', { name: `Move up: ${categoryB}` }).click()
     await page.getByRole('button', { name: 'Save draft' }).click()
     await expect(page.getByText('Draft saved')).toBeVisible({ timeout: 10_000 })
@@ -96,7 +108,7 @@ test.describe('skill tree administration', () => {
     await publishIntoCategory('lesson', lessonId)
 
     // 6. Reorder category contents and verify the shared order in the tree preview.
-    await page.goto('/admin/skill-categories')
+    await page.goto('/admin/skill-trees?tab=categories')
     await page.getByText(categoryA).first().click()
     await expect(page.getByText(lessonTitle).first()).toBeVisible()
     await page.getByRole('button', { name: `Move up: ${lessonTitle}` }).click()
@@ -133,12 +145,12 @@ test.describe('skill tree administration', () => {
     await page.getByRole('combobox', { name: 'Duplicate category' }).click()
     await page.getByRole('option', { name: categoryCopy }).click()
     await page.getByRole('dialog').getByRole('button', { name: 'Merge', exact: true }).click()
-    await expect(page).toHaveURL(/\/admin\/skill-categories\/?$/)
+    await expect(page).toHaveURL(/\/admin\/skill-trees\?tab=categories$/)
     const removed = await page.request.get(`/api/admin/skill-categories/${copyId}`)
     expect(removed.status()).toBe(404)
 
     // 8. Open category delete impact and cancel once before confirming.
-    await page.goto('/admin/skill-categories')
+    await page.goto('/admin/skill-trees?tab=categories')
     await page.getByText(categoryB).first().click()
     await page.getByRole('button', { name: 'Delete category' }).click()
     await expect(page.getByRole('dialog')).toContainText(/challenges|题目/i)
@@ -153,10 +165,10 @@ test.describe('skill tree administration', () => {
     await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click()
     await expect(page).toHaveURL(/\/admin\/skill-trees\/?$/)
 
-    // 10. Switch to Chinese and repeat list/create form assertions.
+    // 10. Switch to Chinese and repeat workspace assertions.
     await page.evaluate(() => localStorage.setItem('language', JSON.stringify('zh-CN')))
     await page.goto('/admin/skill-trees')
-    await expect(page.getByRole('heading', { name: '技能树' })).toBeVisible({ timeout: 10_000 })
+    await expect(page.getByRole('heading', { name: '管理工作台' })).toBeVisible({ timeout: 10_000 })
 
     // Forbidden UI must never appear.
     await expect(page.getByLabel(/json|modules json/i)).toHaveCount(0)

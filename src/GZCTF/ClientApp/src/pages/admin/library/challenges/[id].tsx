@@ -11,7 +11,10 @@ import { showErrorMsg } from '@Utils/Shared'
 
 const AdminChallengeEdit = () => {
   const { id } = useParams()
-  const { t } = useTranslation()
+  // The learning namespace must be requested explicitly; `learning:`-prefixed
+  // keys passed to a default-namespace t never trigger its load.
+  const { t } = useTranslation('learning')
+  const { t: tDefault } = useTranslation()
   const { t: tSkillTrees } = useTranslation('skillTrees')
   const { data, mutate } = api.adminChallenges.useAdminChallengesGetForEdit(
     id ?? '', { locale: 'en' }, undefined, Boolean(id)
@@ -42,7 +45,7 @@ const AdminChallengeEdit = () => {
       })
       await mutate()
     } catch (error) {
-      showErrorMsg(error, t)
+      showErrorMsg(error, tDefault)
     } finally {
       setSaving(false)
     }
@@ -55,8 +58,8 @@ const AdminChallengeEdit = () => {
         <Badge color={data?.challenge?.publicationState === 'Published' ? 'green' : 'gray'} variant="light">
           {tSkillTrees(`state.${(data?.challenge?.publicationState ?? 'Draft').toLowerCase()}`)}
         </Badge>
-        <Button component={Link} to="/admin/skill-trees" variant="subtle">
-          {tSkillTrees('list.title')}
+        <Button component={Link} to="/admin/skill-trees?tab=challenges" variant="subtle">
+          {tSkillTrees('workspace.tabs.challenges')}
         </Button>
       </Group>
     </Group>

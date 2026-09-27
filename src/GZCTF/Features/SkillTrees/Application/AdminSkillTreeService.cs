@@ -70,6 +70,9 @@ public sealed class AdminSkillTreeService(AppDbContext db, ISkillTreeCacheInvali
             }
 
             tree.Revisions.Add(draft);
+            // Track the clone as added explicitly so SaveChanges inserts it instead of
+            // relying on graph discovery for a ValueGeneratedNever key.
+            db.Add(draft);
             await db.SaveChangesAsync(token);
         }
 
@@ -273,6 +276,7 @@ public sealed class AdminSkillTreeService(AppDbContext db, ISkillTreeCacheInvali
     {
         var trees = await db.SkillTrees
             .AsNoTracking()
+            .Where(t => t.DeletedAtUtc == null)
             .Include(t => t.Revisions)
             .OrderBy(t => t.Name)
             .ToListAsync(token);

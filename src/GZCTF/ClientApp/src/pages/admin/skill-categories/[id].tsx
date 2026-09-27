@@ -3,7 +3,12 @@ import { showNotification } from '@mantine/notifications'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
-import api, { Role, type CategoryDeleteImpactResponse, type SkillCategoryAdminResponse, type SkillTreeContentSummaryResponse } from '@Api'
+import api, {
+  Role,
+  type CategoryDeleteImpactResponse,
+  type SkillCategoryAdminResponse,
+  type SkillTreeContentSummaryResponse,
+} from '@Api'
 import { SkillTreeForm, type SkillTreeFormValues } from '@Components/admin/skill-trees/SkillTreeForm'
 import { CategoryContentList } from '@Components/admin/skill-categories/CategoryContentList'
 import { CategoryMergeModal } from '@Components/admin/skill-categories/CategoryMergeModal'
@@ -18,7 +23,7 @@ const AdminSkillCategoryEdit = () => {
   const { id } = useParams()
   const { t } = useTranslation('skillTrees')
   const { data: category, mutate } = useAdminSkillCategory(id)
-  const { data: trees } = useAdminSkillTrees()
+  const { data: trees, mutate: mutateTrees } = useAdminSkillTrees()
   const { data: allCategories } = useAdminSkillCategories()
   const {
     saveCategory,
@@ -30,7 +35,10 @@ const AdminSkillCategoryEdit = () => {
   const navigate = useNavigate()
 
   const initialized = useRef<string | undefined>(undefined)
+  const initializedTreeVersions = useRef<string | undefined>(undefined)
   const [values, setValues] = useState<SkillTreeFormValues>({ name: '', summary: '', iconKey: 'flag' })
+  const [viewedCategoryRowVersion, setViewedCategoryRowVersion] = useState<number>()
+  const [viewedTreeRowVersions, setViewedTreeRowVersions] = useState<Record<string, number>>({})
   const [contents, setContents] = useState<SkillTreeContentSummaryResponse[]>([])
   const [memberships, setMemberships] = useState<Record<string, boolean>>({})
   const [affectedTreeIds, setAffectedTreeIds] = useState<string[]>([])
@@ -44,6 +52,7 @@ const AdminSkillCategoryEdit = () => {
   useEffect(() => {
     if (!category?.categoryId || initialized.current === category.categoryId) return
     initialized.current = category.categoryId
+    setViewedCategoryRowVersion(category.rowVersion)
     setValues({
       name: category.name ?? '',
       summary: category.summary ?? '',
@@ -56,6 +65,12 @@ const AdminSkillCategoryEdit = () => {
     setMemberships(state)
     setConflict(false)
   }, [category, trees])
+
+  useEffect(() => {
+    if (!id || !trees || initializedTreeVersions.current === id) return
+    initializedTreeVersions.current = id
+    setViewedTreeRowVersions(Object.fromEntries(trees.map((tree) => [tree.skillTreeId ?? '', tree.rowVersion ?? 0])))
+  }, [id, trees])
 
   if (!id) return null
 
@@ -71,9 +86,10 @@ const AdminSkillCategoryEdit = () => {
         name: values.name,
         summary: values.summary,
         iconKey: values.iconKey,
-        rowVersion: category?.rowVersion,
+        rowVersion: viewedCategoryRowVersion,
       })
-      await mutate()
+      const fresh = await mutate()
+      setViewedCategoryRowVersion(fresh?.rowVersion)
       showNotification({ color: 'green', message: t('category.metadataSuccess') })
     } catch (error) {
       handleError(error)
@@ -86,14 +102,15 @@ const AdminSkillCategoryEdit = () => {
     setSaving(true)
     try {
       await sortCategoryContents(id, {
-        rowVersion: category?.rowVersion ?? 0,
+        rowVersion: viewedCategoryRowVersion ?? 0,
         contents: contents.map((content, sortOrder) => ({
           kind: content.kind ?? '',
           contentId: content.contentId ?? '',
           sortOrder,
         })),
       })
-      await mutate()
+      const fresh = await mutate()
+      setViewedCategoryRowVersion(fresh?.rowVersion)
       showNotification({ color: 'green', message: t('category.orderSuccess') })
     } catch (error) {
       handleError(error)
@@ -106,15 +123,19 @@ const AdminSkillCategoryEdit = () => {
     setSaving(true)
     try {
       const response = await saveTreeMemberships(id, {
-        categoryRowVersion: category?.rowVersion ?? 0,
+        categoryRowVersion: viewedCategoryRowVersion ?? 0,
         trees: (trees ?? []).map((tree) => ({
           skillTreeId: tree.skillTreeId ?? '',
           included: Boolean(memberships[tree.skillTreeId ?? '']),
-          skillTreeRowVersion: tree.rowVersion ?? 0,
+          skillTreeRowVersion: viewedTreeRowVersions[tree.skillTreeId ?? ''] ?? tree.rowVersion ?? 0,
         })),
       })
       setAffectedTreeIds(response.data.affectedSkillTreeIds ?? [])
-      await mutate()
+      const [freshCategory, freshTrees] = await Promise.all([mutate(), mutateTrees()])
+      setViewedCategoryRowVersion(freshCategory?.rowVersion)
+      if (freshTrees) {
+        setViewedTreeRowVersions(Object.fromEntries(freshTrees.map((tree) => [tree.skillTreeId ?? '', tree.rowVersion ?? 0])))
+      }
       showNotification({ color: 'green', message: t('category.membershipSuccess') })
     } catch (error) {
       handleError(error)
@@ -129,12 +150,12 @@ const AdminSkillCategoryEdit = () => {
       await mergeCategories({
         survivorCategoryId: id,
         duplicateCategoryId: duplicate.categoryId ?? '',
-        survivorRowVersion: category?.rowVersion ?? 0,
+        survivorRowVersion: viewedCategoryRowVersion ?? 0,
         duplicateRowVersion: duplicate.rowVersion ?? 0,
       })
       setMergeOpen(false)
       showNotification({ color: 'green', message: t('merge.success') })
-      navigate('/admin/skill-categories')
+      navigate('/admin/skill-trees?tab=categories')
     } catch (error) {
       handleError(error)
     } finally {
@@ -158,15 +179,22 @@ const AdminSkillCategoryEdit = () => {
   const confirmDelete = async (confirmationName: string) => {
     setSaving(true)
     try {
-      await deleteCategory(id, { confirmationName, rowVersion: category?.rowVersion ?? 0 })
+      await deleteCategory(id, { confirmationName, rowVersion: impact?.rowVersion ?? 0 })
       setDeleteOpen(false)
       showNotification({ color: 'green', message: t('delete.success') })
-      navigate('/admin/skill-categories')
+      navigate('/admin/skill-trees?tab=categories')
     } catch (error) {
       handleError(error)
     } finally {
       setSaving(false)
     }
+  }
+
+  const reload = async () => {
+    initialized.current = undefined
+    initializedTreeVersions.current = undefined
+    setConflict(false)
+    await Promise.all([mutate(), mutateTrees()])
   }
 
   const impactLines = impact
@@ -184,14 +212,14 @@ const AdminSkillCategoryEdit = () => {
         <Stack>
           <Group justify="space-between">
             <Title order={1}>{category?.name ?? t('category.title')}</Title>
-            <Button component={Link} to="/admin/skill-categories" variant="subtle">
+            <Button component={Link} to="/admin/skill-trees?tab=categories" variant="subtle">
               {t('category.title')}
             </Button>
           </Group>
 
           {conflict && (
             <Alert color="red" title={t('errors.revisionConflict')}>
-              <Button size="compact-sm" onClick={() => { setConflict(false); void mutate() }}>
+              <Button size="compact-sm" onClick={reload}>
                 {t('editor.reload')}
               </Button>
             </Alert>
@@ -236,7 +264,7 @@ const AdminSkillCategoryEdit = () => {
                   />
                 ))}
               </Stack>
-              <Button w="fit-content" loading={saving} onClick={saveMembership}>
+              <Button w="fit-content" loading={saving} disabled={!trees} onClick={saveMembership}>
                 {t('category.saveMetadata')}
               </Button>
               {affectedTreeIds.length > 0 && (

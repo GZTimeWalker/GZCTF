@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 import api, { Role, type SkillTreeCategoryAdminResponse, type SkillTreeDeleteImpactResponse } from '@Api'
 import { SkillTreeForm, type SkillTreeFormValues } from '@Components/admin/skill-trees/SkillTreeForm'
-import { CategoryPicker, type NewCategoryValues } from '@Components/admin/skill-trees/CategoryPicker'
+import { CategoryPicker } from '@Components/admin/skill-trees/CategoryPicker'
 import { SortableCategoryList, type DraftCategory } from '@Components/admin/skill-trees/SortableCategoryList'
 import { TypedDeleteModal } from '@Components/admin/shared/TypedDeleteModal'
 import { WithNavBar } from '@Components/WithNavbar'
@@ -29,7 +29,7 @@ const AdminSkillTreeEdit = () => {
   const { t } = useTranslation('skillTrees')
   const { data: draft, mutate: mutateDraft } = useAdminSkillTreeDraft(id)
   const { data: allCategories, mutate: mutateCategories } = useAdminSkillCategories()
-  const { createCategory, saveTreeDraft, publishTree, deleteTree } = useSkillTreeAdminMutations()
+  const { saveTreeDraft, publishTree, deleteTree } = useSkillTreeAdminMutations()
   const navigate = useNavigate()
 
   const initializedRevision = useRef<string | undefined>(undefined)
@@ -39,7 +39,6 @@ const AdminSkillTreeEdit = () => {
   const [dirty, setDirty] = useState(false)
   const [conflict, setConflict] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [creating, setCreating] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [preview, setPreview] = useState<SkillTreeCategoryAdminResponse[] | undefined>()
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -47,29 +46,37 @@ const AdminSkillTreeEdit = () => {
   const [impact, setImpact] = useState<SkillTreeDeleteImpactResponse>()
 
   useEffect(() => {
-    if (!draft?.revisionId || initializedRevision.current === draft.revisionId) return
-    initializedRevision.current = draft.revisionId
-    setValues({
-      name: draft.name ?? '',
-      summary: draft.summary ?? '',
-      iconKey: (draft.iconKey ?? 'flag') as SkillTreeIconKey,
-    })
-    setCategories((draft.categories ?? []).map(toDraftCategory))
-    setRowVersion(draft.rowVersion)
-    setDirty(false)
-    setConflict(false)
-  }, [draft])
+    if (!draft?.revisionId) return
+    const revisionChanged = initializedRevision.current !== draft.revisionId
+    if (revisionChanged) {
+      initializedRevision.current = draft.revisionId
+      setValues({
+        name: draft.name ?? '',
+        summary: draft.summary ?? '',
+        iconKey: (draft.iconKey ?? 'flag') as SkillTreeIconKey,
+      })
+      setCategories((draft.categories ?? []).map(toDraftCategory))
+      setDirty(false)
+      setConflict(false)
+    }
+    // Keep the version paired with unsaved local edits. A background refresh must
+    // not turn those edits into an implicit overwrite of another admin's changes.
+    if (!dirty || revisionChanged) {
+      setRowVersion(draft.rowVersion)
+    }
+  }, [draft, dirty])
 
   if (!id) return null
 
   const saveDraft = async () => {
-    const result = await saveTreeDraft(id, {
+    const payload = {
       name: values.name,
       summary: values.summary,
       iconKey: values.iconKey,
       rowVersion,
       categories: categories.map((category, sortOrder) => ({ categoryId: category.categoryId, sortOrder })),
-    })
+    }
+    const result = await saveTreeDraft(id, payload)
     setRowVersion(result.data.rowVersion)
     setDirty(false)
     await mutateDraft()
@@ -129,24 +136,6 @@ const AdminSkillTreeEdit = () => {
         ? current
         : [...current, { ...toDraftCategory(category), sortOrder: current.length }])
     setDirty(true)
-  }
-
-  const createCategoryInline = async (newCategory: NewCategoryValues) => {
-    setCreating(true)
-    try {
-      const result = await createCategory({
-        name: newCategory.name,
-        summary: newCategory.summary,
-        iconKey: newCategory.iconKey,
-        rowVersion: undefined,
-      })
-      addCategory(result.data as SkillTreeCategoryAdminResponse)
-      await mutateCategories()
-    } catch (error) {
-      showSkillTreeError(error, t)
-    } finally {
-      setCreating(false)
-    }
   }
 
   const removeCategory = (categoryId: string) => {
@@ -254,8 +243,6 @@ const AdminSkillTreeEdit = () => {
                 categories={allCategories ?? []}
                 selectedIds={categories.map((category) => category.categoryId)}
                 onSelect={addCategory}
-                onCreate={createCategoryInline}
-                creating={creating}
                 disabled={saving}
               />
 

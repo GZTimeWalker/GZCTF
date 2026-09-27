@@ -34,13 +34,8 @@
     "title": "编辑技能树",
     "categories": "类别",
     "addCategory": "添加类别",
-    "createCategory": "创建类别",
-    "newCategoryName": "新类别名称",
-    "newCategorySummary": "新类别简介",
-    "categoryAdded": "类别已创建并加入草稿",
     "emptyCategories": "还没有类别，先添加一个吧",
     "searchCategory": "搜索类别",
-    "selectExisting": "选择已有类别",
     "remove": "移除",
     "moveUp": "上移",
     "moveDown": "下移",
@@ -149,5 +144,23 @@
   },
   "navigation": {
     "title": "技能树"
+  },
+  "workspace": {
+    "title": "管理工作台",
+    "subtitle": "在同一页面切换技能树、全局类别、靶场题库与年级成员。",
+    "tabs": {
+      "challenges": "题目管理",
+      "members": "成员管理"
+    },
+    "createChallenge": "创建题目",
+    "createCohort": "创建年级",
+    "challengeCreated": "题目已创建",
+    "cohortCreated": "年级已创建",
+    "membersAssigned": "成员已分配",
+    "memberRemoved": "成员已移出",
+    "emptyChallenges": "暂无题目",
+    "emptyCohorts": "暂无年级",
+    "emptyMembers": "当前年级暂无成员",
+    "retry": "重试"
   }
 }

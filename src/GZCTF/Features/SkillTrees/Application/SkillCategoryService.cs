@@ -225,6 +225,9 @@ public sealed class SkillCategoryService(AppDbContext db, ISkillTreeCacheInvalid
                 {
                     draft = ClonePublishedRevision(tree);
                     tree.Revisions.Add(draft);
+                    // Entry(...) below would force-attach the fresh clone as an existing row
+                    // and turn the insert into a zero-row xmin update, so track it as added.
+                    db.Add(draft);
                 }
 
                 if (draft.Categories.All(reference => reference.CategoryId != id))
@@ -246,6 +249,7 @@ public sealed class SkillCategoryService(AppDbContext db, ISkillTreeCacheInvalid
                 {
                     draft = ClonePublishedRevision(tree);
                     tree.Revisions.Add(draft);
+                    db.Add(draft);
                 }
 
                 if (draft is not null)
@@ -311,7 +315,8 @@ public sealed class SkillCategoryService(AppDbContext db, ISkillTreeCacheInvalid
         return new CategoryDeleteImpactResponse(
             category.Id, category.Name, draftTreeCount, publishedTreeCount,
             challengeCount, lessonCount,
-            draftTreeCount + publishedTreeCount + challengeCount + lessonCount > 0);
+            draftTreeCount + publishedTreeCount + challengeCount + lessonCount > 0,
+            category.RowVersion);
     }
 
     public async Task DeleteAsync(Guid id, DeleteCategoryCommand command, CancellationToken token)

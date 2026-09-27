@@ -1,0 +1,70 @@
+.workspace {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+.header {
+  gap: var(--mantine-spacing-4);
+}
+
+.toolbar {
+  align-items: flex-start;
+}
+
+.tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tabList {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.primaryAction {
+  flex-shrink: 0;
+}
+
+.content {
+  min-width: 0;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  padding: calc(var(--mantine-spacing-xl) * 1.5) var(--mantine-spacing-md);
+  border: 1px dashed var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  text-align: center;
+}
+
+.panelCard {
+  height: 100%;
+}
+
+.growInput {
+  flex: 1 1 12rem;
+}
+
+.cohortRow {
+  display: block;
+  width: 100%;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-sm);
+  transition: background-color 100ms ease;
+
+  &:hover {
+    background-color: var(--mantine-color-default-hover);
+  }
+}
+
+.cohortRowActive {
+  background-color: var(--mantine-primary-color-light);
+
+  &:hover {
+    background-color: var(--mantine-primary-color-light-hover);
+  }
+}

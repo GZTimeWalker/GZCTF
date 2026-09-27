@@ -107,6 +107,12 @@ public class SkillTreeEnrollmentTests(GZCTFApplicationFactory factory)
         var record = await client.GetFromJsonAsync<MyLearningResponse>("/api/my-learning", JsonOptions);
         Assert.Null(record!.CurrentSkillTreeId);
         Assert.Contains(record.SkillTrees, tree => tree.SkillTreeId == seed.FirstTreeId && tree.IsDeleted);
+
+        // Soft-deleted trees must disappear from the administrator list.
+        var adminList = await admin.GetFromJsonAsync<List<AdminSkillTreeResponse>>(
+            "/api/admin/skill-trees", JsonOptions);
+        Assert.DoesNotContain(adminList!, tree => tree.SkillTreeId == seed.FirstTreeId);
+        Assert.Contains(adminList!, tree => tree.SkillTreeId == seed.SecondTreeId);
     }
 
     private async Task<(Guid FirstTreeId, Guid SecondTreeId, Guid ChallengeId)> SeedTreesAsync()

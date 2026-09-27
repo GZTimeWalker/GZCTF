@@ -56,7 +56,7 @@ public sealed record SkillCategoryAdminResponse(
     IReadOnlyList<SkillTreeContentSummaryResponse> Contents);
 public sealed record CategoryDeleteImpactResponse(
     Guid CategoryId, string Name, int DraftTreeCount, int PublishedTreeCount,
-    int ChallengeCount, int LessonCount, bool RequiresTypedConfirmation);
+    int ChallengeCount, int LessonCount, bool RequiresTypedConfirmation, uint RowVersion);
 public sealed record DeleteCategoryCommand(string ConfirmationName, uint RowVersion);
 public sealed record MergeSkillCategoryCommand(
     Guid SurvivorCategoryId, Guid DuplicateCategoryId,

@@ -70,6 +70,23 @@ public class ContentPublicationTests(GZCTFApplicationFactory factory)
         Assert.Contains(category.Contents, item => item.ContentId == lesson.Id);
     }
 
+    [Fact]
+    public async Task Inline_category_publishes_a_published_tree_without_a_draft()
+    {
+        // Cloning the draft for a published tree used to be force-attached as an existing
+        // row, failing the publish with a bogus revision conflict.
+        var (treeId, _) = await SeedPublishedTreeAsync();
+        var lesson = await SeedDraftAsync("lesson");
+        using var admin = await CreateAdminClientAsync();
+
+        var publish = await PublishAsync(admin, "lesson", lesson,
+            [], [new InlineSkillCategoryCommand(treeId, "Inline", "Inline summary", "brain")]);
+        publish.EnsureSuccessStatusCode();
+
+        var draft = await admin.GetFromJsonAsync<SkillTreeDraftResponse>($"/api/admin/skill-trees/{treeId}/draft");
+        Assert.Contains(draft!.Categories, item => item.Name == "Inline");
+    }
+
     private async Task<HttpResponseMessage> PublishAsync(
         HttpClient admin, string kind, (Guid Id, uint RowVersion) content,
         IReadOnlyList<Guid> categoryIds, IReadOnlyList<InlineSkillCategoryCommand> inline)

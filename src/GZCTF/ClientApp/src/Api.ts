@@ -202,6 +202,7 @@ export interface CategoryDeleteImpactResponse {
   /** @format int32 */
   lessonCount?: number;
   requiresTypedConfirmation?: boolean;
+  rowVersion?: number;
 }
 
 export interface DeleteCategoryCommand {
