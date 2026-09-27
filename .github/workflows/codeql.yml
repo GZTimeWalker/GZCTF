@@ -46,7 +46,10 @@ jobs:
         with:
           node-version: latest
 
-      - run: npm i -g pnpm
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: latest
 
       - name: Build with dotnet
         run: |

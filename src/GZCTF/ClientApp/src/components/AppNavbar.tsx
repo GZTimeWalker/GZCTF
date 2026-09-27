@@ -11,9 +11,8 @@ import {
 } from '@mantine/core'
 import {
   mdiAccountCircleOutline,
-  mdiAccountGroupOutline,
   mdiCached,
-  mdiFlagOutline,
+  mdiFileTreeOutline,
   mdiHomeVariantOutline,
   mdiInformationOutline,
   mdiLogin,
@@ -88,10 +87,9 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
   const items: NavbarItem[] = [
     { icon: mdiHomeVariantOutline, label: 'common.tab.home', link: '/' },
     { icon: mdiNoteTextOutline, label: 'common.tab.post', link: '/posts' },
-    { icon: mdiFlagOutline, label: 'common.tab.game', link: '/games' },
-    { icon: mdiAccountGroupOutline, label: 'common.tab.team', link: '/teams' },
+    { icon: mdiFileTreeOutline, label: 'skillTrees:navigation.title', link: '/skill-trees' },
     { icon: mdiInformationOutline, label: 'common.tab.about', link: '/about' },
-    { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/games', admin: true },
+    { icon: mdiWrenchOutline, label: 'common.tab.admin', link: '/admin/skill-trees', admin: true },
   ]
 
   const getLabel = (path: string) =>
@@ -202,6 +200,9 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
                     leftSection={<Icon path={mdiAccountCircleOutline} size={1} />}
                   >
                     {t('common.tab.account.profile')}
+                  </Menu.Item>
+                  <Menu.Item component={Link} to="/account/learning" leftSection={<Icon path={mdiFileTreeOutline} size={1} />}>
+                    {t('skillTrees:list.title')}
                   </Menu.Item>
                 </>
               )}

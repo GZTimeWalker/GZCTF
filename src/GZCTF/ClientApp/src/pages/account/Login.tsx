@@ -3,7 +3,7 @@ import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { AccountView } from '@Components/AccountView'
@@ -24,6 +24,8 @@ const Login: FC = () => {
   const [uname, setUname] = useInputState('')
   const [disabled, setDisabled] = useState(false)
   const [needRedirect, setNeedRedirect] = useState(false)
+  // guards against redirecting twice without triggering another render
+  const redirecting = useRef(false)
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
@@ -34,8 +36,8 @@ const Login: FC = () => {
   usePageTitle(t('account.title.login'))
 
   useEffect(() => {
-    if (needRedirect && user) {
-      setNeedRedirect(false)
+    if (needRedirect && user && !redirecting.current) {
+      redirecting.current = true
       setTimeout(() => {
         navigate(params.get('from') ?? '/')
       }, 200)

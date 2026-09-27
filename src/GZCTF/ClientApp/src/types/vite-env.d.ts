@@ -12,7 +12,7 @@ interface ImportMeta {
 }
 
 declare module 'virtual:i18n-manifest' {
-  declare const manifest: Record<string, string>
+  const manifest: Record<string, string>
 
   export default manifest
 }

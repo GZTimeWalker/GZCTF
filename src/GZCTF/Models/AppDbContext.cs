@@ -1,4 +1,14 @@
 ﻿using System.Text.Json;
+using GZCTF.Features.ChallengeLibrary.Domain;
+using GZCTF.Features.ChallengeRuntime.Domain;
+using GZCTF.Features.Dashboard.Domain;
+using GZCTF.Features.Imports.Domain;
+using GZCTF.Features.LearningPaths.Domain;
+using GZCTF.Features.LearningPaths.Infrastructure;
+using GZCTF.Features.LearningProgress.Domain;
+using GZCTF.Features.SkillTrees.Domain;
+using GZCTF.Features.SkillTrees.Infrastructure;
+using CanonicalChallenge = GZCTF.Features.ChallengeLibrary.Domain.Challenge;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -42,6 +52,40 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
 
+    public DbSet<CanonicalChallenge> Challenges { get; set; } = null!;
+    public DbSet<ChallengeLocalization> ChallengeLocalizations { get; set; } = null!;
+    public DbSet<ChallengeFlag> ChallengeFlags { get; set; } = null!;
+    public DbSet<ChallengeHint> ChallengeHints { get; set; } = null!;
+    public DbSet<ChallengeWriteup> ChallengeWriteups { get; set; } = null!;
+    public DbSet<LearningPath> LearningPaths { get; set; } = null!;
+    public DbSet<LearningPathLocalization> LearningPathLocalizations { get; set; } = null!;
+    public DbSet<LearningPathRevision> LearningPathRevisions { get; set; } = null!;
+    public DbSet<LearningModule> LearningModules { get; set; } = null!;
+    public DbSet<LearningModuleLocalization> LearningModuleLocalizations { get; set; } = null!;
+    public DbSet<ModuleItem> ModuleItems { get; set; } = null!;
+    public DbSet<Lesson> Lessons { get; set; } = null!;
+    public DbSet<LessonLocalization> LessonLocalizations { get; set; } = null!;
+    public DbSet<Enrollment> Enrollments { get; set; } = null!;
+    public DbSet<LessonProgress> LessonProgress { get; set; } = null!;
+    public DbSet<ChallengeProgress> ChallengeProgress { get; set; } = null!;
+    public DbSet<Cohort> Cohorts { get; set; } = null!;
+    public DbSet<Dashboard> Dashboards { get; set; } = null!;
+    public DbSet<DashboardToken> DashboardTokens { get; set; } = null!;
+    public DbSet<LearnerDailySolveStat> LearnerDailySolveStats { get; set; } = null!;
+    public DbSet<MigrationBatch> MigrationBatches { get; set; } = null!;
+    public DbSet<LegacyChallengeMap> LegacyChallengeMaps { get; set; } = null!;
+    public DbSet<LegacyPathMap> LegacyPathMaps { get; set; } = null!;
+    public DbSet<UserChallengeInstance> UserChallengeInstances { get; set; } = null!;
+    public DbSet<ChallengeSubmission> ChallengeSubmissions { get; set; } = null!;
+    public DbSet<ChallengeHelpUsage> ChallengeHelpUsages { get; set; } = null!;
+    public DbSet<SkillTree> SkillTrees { get; set; } = null!;
+    public DbSet<SkillTreeRevision> SkillTreeRevisions { get; set; } = null!;
+    public DbSet<SkillCategory> SkillCategories { get; set; } = null!;
+    public DbSet<SkillTreeCategoryRef> SkillTreeCategoryRefs { get; set; } = null!;
+    public DbSet<CategoryContent> CategoryContents { get; set; } = null!;
+    public DbSet<SkillTreeEnrollment> SkillTreeEnrollments { get; set; } = null!;
+    public DbSet<LearningPathRedirect> LearningPathRedirects { get; set; } = null!;
+
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
             v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
@@ -78,6 +122,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.Cohort)
+                .WithMany(e => e.Users)
+                .HasForeignKey(e => e.CohortId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
@@ -447,5 +496,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
         });
+
+        LearningModelConfiguration.Configure(builder);
+        SkillTreeModelConfiguration.Configure(builder);
     }
 }

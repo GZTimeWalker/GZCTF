@@ -31,16 +31,12 @@ namespace GZCTF.Controllers;
 public class AdminController(
     UserManager<UserInfo> userManager,
     ILogger<AdminController> logger,
-    IBlobStorage storage,
-    CacheHelper cacheHelper,
     IBlobRepository blobService,
     ILogRepository logRepository,
     IConfigService configService,
-    IGameRepository gameRepository,
-    ITeamRepository teamRepository,
     IContainerRepository containerRepository,
+    AppDbContext db,
     IServiceProvider serviceProvider,
-    IParticipationRepository participationRepository,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
     /// <summary>
@@ -225,11 +221,11 @@ public class AdminController(
     public async Task<IActionResult> AddUsers([FromBody] UserCreateModel[] model, CancellationToken token = default)
     {
         var currentUser = await userManager.GetUserAsync(User);
-        var trans = await teamRepository.BeginTransactionAsync(token);
+        await using var trans = await db.Database.BeginTransactionAsync(token);
 
         try
         {
-            var users = new List<(UserInfo, string?)>(model.Length);
+            var users = new List<UserInfo>(model.Length);
             foreach (var user in model)
             {
                 var userInfo = user.ToUserInfo();
@@ -237,7 +233,7 @@ public class AdminController(
 
                 if (result.Succeeded)
                 {
-                    users.Add((userInfo, user.TeamName));
+                    users.Add(userInfo);
                     continue;
                 }
 
@@ -255,31 +251,12 @@ public class AdminController(
                 }
 
                 userInfo.UpdateUserInfo(user);
+                await userManager.UpdateAsync(userInfo);
                 var code = await userManager.GeneratePasswordResetTokenAsync(userInfo);
                 await userManager.ResetPasswordAsync(userInfo, code, user.Password);
 
-                users.Add((userInfo, user.TeamName));
+                users.Add(userInfo);
             }
-
-            var teams = new List<Team>();
-            foreach (var (user, teamName) in users)
-            {
-                if (teamName is null)
-                    continue;
-
-                var team = teams.Find(team => team.Name == teamName);
-                if (team is null)
-                {
-                    team = await teamRepository.CreateTeam(new() { Name = teamName }, user, token);
-                    teams.Add(team);
-                }
-                else
-                {
-                    team.Members.Add(user);
-                }
-            }
-
-            await teamRepository.SaveAsync(token);
             await trans.CommitAsync(token);
 
             logger.Log(StaticLocalizer[nameof(Resources.Program.Admin_UserBatchAdded), users.Count],
@@ -318,65 +295,6 @@ public class AdminController(
         ).OrderBy(e => e.Id).Take(30).ToArrayAsync(token);
 
         return Ok(data.Select(UserInfoModel.FromUserInfo).ToResponse());
-    }
-
-    /// <summary>
-    /// Get all team information
-    /// </summary>
-    /// <remarks>
-    /// Use this API to get all teams, requires Admin permission
-    /// </remarks>
-    /// <response code="200">User list</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    [HttpGet("Teams")]
-    [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Teams([FromQuery][Range(0, 500)] int count = 100, [FromQuery] int skip = 0,
-        CancellationToken token = default) =>
-        Ok((await teamRepository.GetTeams(count, skip, token)).Select(team => TeamInfoModel.FromTeam(team))
-            .ToResponse(await teamRepository.CountAsync(token)));
-
-    /// <summary>
-    /// Search teams
-    /// </summary>
-    /// <remarks>
-    /// Use this API to search teams, requires Admin permission
-    /// </remarks>
-    /// <response code="200">User list</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    [HttpPost("Teams/Search")]
-    [ProducesResponseType(typeof(ArrayResponse<TeamInfoModel>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchTeams([FromQuery] string hint, CancellationToken token = default) =>
-        Ok((await teamRepository.SearchTeams(hint, token))
-            .Select(team => TeamInfoModel.FromTeam(team))
-            .ToResponse());
-
-    /// <summary>
-    /// Modify team information
-    /// </summary>
-    /// <remarks>
-    /// Use this API to modify team information, requires Admin permission
-    /// </remarks>
-    /// <response code="200">Successfully updated</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    /// <response code="404">Team not found</response>
-    [HttpPut("Teams/{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTeam([FromRoute] int id, [FromBody] AdminTeamModel model,
-        CancellationToken token = default)
-    {
-        var team = await teamRepository.GetTeamById(id, token);
-
-        if (team is null)
-            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)]));
-
-        team.UpdateInfo(model);
-        await teamRepository.SaveAsync(token);
-
-        return Ok();
     }
 
     /// <summary>
@@ -476,37 +394,13 @@ public class AdminController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_UserNotFound)],
                 StatusCodes.Status404NotFound));
 
-        if (await teamRepository.CheckIsCaptain(user, token))
+        // A captain is still referenced by retained legacy competition evidence.
+        // Reject deletion so the database cannot cascade into those read-only rows.
+        if (await db.Teams.AsNoTracking().AnyAsync(team => team.CaptainId == userid, token))
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Admin_CaptainDeletionNotAllowed)]));
 
         await userManager.DeleteAsync(user);
-
-        return Ok();
-    }
-
-    /// <summary>
-    /// Delete team
-    /// </summary>
-    /// <remarks>
-    /// Use this API to delete team, requires Admin permission
-    /// </remarks>
-    /// <response code="200">Successfully retrieved</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    /// <response code="404">User not found</response>
-    [HttpDelete("Teams/{id:int}")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteTeam(int id, CancellationToken token = default)
-    {
-        var team = await teamRepository.GetTeamById(id, token);
-
-        if (team is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Team_NotFound)],
-                StatusCodes.Status404NotFound));
-
-        await teamRepository.DeleteTeam(team, token);
 
         return Ok();
     }
@@ -549,89 +443,6 @@ public class AdminController(
         [FromQuery][Range(0, 1000)] int count = 50,
         [FromQuery] int skip = 0, CancellationToken token = default) =>
         Ok(await logRepository.GetLogs(skip, count, level, token));
-
-    /// <summary>
-    /// Update participation status
-    /// </summary>
-    /// <remarks>
-    /// Use this API to update team participation status, review application, requires Admin permission
-    /// </remarks>
-    /// <response code="200">Update successful</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    /// <response code="404">Participation object not found</response>
-    [HttpPut("Participation/{id:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Participation(int id, [FromBody] ParticipationEditModel model,
-        CancellationToken token = default)
-    {
-        await using var transaction = await participationRepository.BeginTransactionAsync(token);
-
-        var participation = await participationRepository.GetParticipationById(id, token);
-
-        if (participation is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Admin_ParticipationNotFound)],
-                StatusCodes.Status404NotFound));
-
-        await participationRepository.UpdateParticipation(participation, model, token);
-
-        await transaction.CommitAsync(token);
-        await cacheHelper.FlushScoreboardCache(participation.GameId, token);
-
-        return Ok();
-    }
-
-    /// <summary>
-    /// Get all Writeup basic information
-    /// </summary>
-    /// <remarks>
-    /// Use this API to get Writeup basic information, requires Admin permission
-    /// </remarks>
-    /// <response code="200">Update successful</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    /// <response code="404">Game not found</response>
-    [HttpGet("Writeups/{id:int}")]
-    [ProducesResponseType(typeof(WriteupInfoModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Writeups(int id, CancellationToken token = default)
-    {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
-        return Ok(await participationRepository.GetWriteups(game, token));
-    }
-
-    /// <summary>
-    /// Download all Writeups
-    /// </summary>
-    /// <remarks>
-    /// Use this API to download all Writeups, requires Admin permission
-    /// </remarks>
-    /// <response code="200">Downloaded successfully</response>
-    /// <response code="401">Unauthorized user</response>
-    /// <response code="403">Forbidden</response>
-    /// <response code="404">Game not found</response>
-    [HttpGet("Writeups/{id:int}/All")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DownloadAllWriteups(int id, CancellationToken token = default)
-    {
-        var game = await gameRepository.GetGameById(id, token);
-
-        if (game is null)
-            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
-                StatusCodes.Status404NotFound));
-
-        var into = await participationRepository.GetWriteups(game, token);
-        var filename = $"Writeups-{game.Title}-{DateTimeOffset.UtcNow:yyyyMMdd-HH.mm.ss}Z";
-
-        return new TarFilesResult(storage, into.Writeups.Select(p => p.File), PathHelper.Uploads, filename, token);
-    }
 
     /// <summary>
     /// Get all container instances

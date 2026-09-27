@@ -1,0 +1,19 @@
+{
+  "sourceType": "legacy-golden",
+  "games": [
+    { "sourceId": "game-100", "title": "Repeated title", "draftPathSlug": "legacy-game-100" },
+    { "sourceId": "game-200", "title": "Repeated title", "draftPathSlug": "legacy-game-200" }
+  ],
+  "challenges": [
+    { "sourceId": "challenge-static-attachment", "type": "StaticAttachment", "title": "Static attachment", "flag": "flag{legacy-static}", "attachmentSha256": "sha256:legacy-static" },
+    { "sourceId": "challenge-dynamic-attachment", "type": "DynamicAttachment", "title": "Dynamic attachment", "attachmentSha256": "sha256:legacy-dynamic-a" },
+    { "sourceId": "challenge-static-container", "type": "StaticContainer", "title": "Static container", "flag": "flag{legacy-container}", "image": "ghcr.io/gzctf/legacy-static:fixture", "port": 8080, "cpu": 2, "memoryMb": 256, "storageMb": 512, "networkMode": "open" },
+    { "sourceId": "challenge-dynamic-container", "type": "DynamicContainer", "title": "Dynamic container", "flagTemplate": "flag{legacy-{userId}}", "image": "ghcr.io/gzctf/legacy-dynamic:fixture", "port": 9000, "cpu": 1, "memoryMb": 128, "storageMb": 256, "networkMode": "isolated" }
+  ],
+  "attachments": [
+    { "path": "附件/静态.bin", "sha256": "sha256:legacy-static" },
+    { "path": "附件/dynamic-a.bin", "sha256": "sha256:legacy-dynamic-a" },
+    { "path": "附件/dynamic-b.bin", "sha256": "sha256:legacy-dynamic-b" }
+  ],
+  "expectedWarnings": [ "official writeup is not imported as learner content" ]
+}

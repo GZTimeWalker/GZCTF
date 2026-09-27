@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GZCTF.Features.Shared;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
@@ -18,6 +19,7 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(int))]
 [JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(TaskStatus))]
+[JsonSerializable(typeof(ApiError))]
 [JsonSerializable(typeof(AnswerResult))]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(HashSet<string>))]

@@ -1,7 +1,6 @@
 import { Burger, Group, Menu, useMantineColorScheme, AppShell, ActionIcon } from '@mantine/core'
 import {
   mdiAccountCircleOutline,
-  mdiAccountGroupOutline,
   mdiCached,
   mdiLogout,
   mdiPalette,
@@ -62,9 +61,6 @@ export const AppHeader: FC<AppControlProps> = ({ openColorModal }) => {
             <Menu.Dropdown>
               {user && !error ? (
                 <>
-                  <Menu.Item component={Link} to="/teams" leftSection={<Icon path={mdiAccountGroupOutline} size={1} />}>
-                    {t('common.tab.team')}
-                  </Menu.Item>
                   <Menu.Item
                     component={Link}
                     to="/account/profile"

@@ -20,7 +20,7 @@ import {
 } from '@mantine/core'
 import { mdiCheck, mdiContentSaveOutline, mdiRestore } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ColorPreview } from '@Components/ColorPreview'
 import { LogoBox } from '@Components/LogoBox'
@@ -30,6 +30,7 @@ import { webCryptoAvailable } from '@Utils/Crypto'
 import { getInputNumber, showErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { OnceSWRConfig, useCaptchaConfig, useConfig } from '@Hooks/useConfig'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { AccountPolicy, ConfigEditModel, ContainerPolicy, GlobalConfig } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
@@ -39,10 +40,10 @@ const Configs: FC = () => {
 
   const { mutate: mutateConfig } = useConfig()
   const [disabled, setDisabled] = useState(false)
-  const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>()
-  const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null>()
-  const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null>()
-  const [color, setColor] = useState<string | undefined | null>(globalConfig?.customTheme)
+  const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null | undefined>(configs?.globalConfig)
+  const [accountPolicy, setAccountPolicy] = useState<AccountPolicy | null | undefined>(configs?.accountPolicy)
+  const [containerPolicy, setContainerPolicy] = useState<ContainerPolicy | null | undefined>(configs?.containerPolicy)
+  const [color, setColor] = useState<string | undefined | null>(configs?.globalConfig?.customTheme)
   const [logoFile, setLogoFile] = useState<File | null>(null)
 
   const { t } = useTranslation()
@@ -50,14 +51,14 @@ const Configs: FC = () => {
   const [saved, setSaved] = useState(true)
   const theme = useMantineTheme()
 
-  useEffect(() => {
+  useSyncOnChange([configs], () => {
     if (configs) {
       setContainerPolicy(configs.containerPolicy)
       setGlobalConfig(configs.globalConfig)
       setAccountPolicy(configs.accountPolicy)
       setColor(configs.globalConfig?.customTheme)
     }
-  }, [configs])
+  })
 
   const updateConfig = async (conf: ConfigEditModel) => {
     setDisabled(true)

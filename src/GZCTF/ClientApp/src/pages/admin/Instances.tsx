@@ -25,7 +25,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ActionIconWithConfirm } from '@Components/ActionIconWithConfirm'
 import { AdminPage } from '@Components/admin/AdminPage'
@@ -80,8 +80,6 @@ const Instances: FC = () => {
     revalidateOnFocus: false,
   })
 
-  const [teams, setTeams] = useState<TeamModel[]>()
-  const [challenge, setChallenge] = useState<ChallengeModel[]>()
   const [disabled, setDisabled] = useState(false)
   const clipBoard = useClipboard()
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
@@ -89,25 +87,24 @@ const Instances: FC = () => {
   const { t } = useTranslation()
   const { locale } = useLanguage()
 
-  useEffect(() => {
-    if (instances) {
-      const teams = [...new Map(instances.data.map((instance) => [instance.team!.id, instance.team!])).values()]
-      setTeams(teams)
-
-      const challenges = [
+  // distinct filter options, purely derived from the fetched instances
+  const teams = useMemo<TeamModel[] | undefined>(
+    () => instances && [...new Map(instances.data.map((instance) => [instance.team!.id, instance.team!])).values()],
+    [instances]
+  )
+  const challenge = useMemo<ChallengeModel[] | undefined>(
+    () =>
+      instances && [
         ...new Map(instances.data.map((instance) => [instance.challenge!.id, instance.challenge!])).values(),
-      ]
-      setChallenge(challenges)
-    }
-  }, [instances])
+      ],
+    [instances]
+  )
 
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null)
   const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(null)
 
-  const [filteredInstances, setFilteredInstances] = useState(instances?.data)
-
-  useEffect(() => {
-    if (!instances) return
+  const filteredInstances = useMemo(() => {
+    if (!instances) return undefined
 
     let filtered = instances.data
 
@@ -119,7 +116,7 @@ const Instances: FC = () => {
       filtered = filtered.filter((instance) => instance.challenge?.id === Number(selectedChallengeId))
     }
 
-    setFilteredInstances(filtered)
+    return filtered
   }, [instances, selectedTeamId, selectedChallengeId])
 
   const onDelete = async (instanceGuid?: string) => {

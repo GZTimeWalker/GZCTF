@@ -17,9 +17,10 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showErrorMsg } from '@Utils/Shared'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { useUser } from '@Hooks/useUser'
 import api, { AdminUserInfoModel, Role, UserInfoModel } from '@Api'
 
@@ -40,14 +41,12 @@ export const UserEditModal: FC<UserEditModalProps> = (props) => {
   const { user: self } = useUser()
 
   const [disabled, setDisabled] = useState(false)
-  const [profile, setProfile] = useState<AdminUserInfoModel>({})
+  const [profile, setProfile] = useState<AdminUserInfoModel>(() => ({ ...user }))
 
   const { t } = useTranslation()
   const isSelf = self?.userId === user.id
 
-  useEffect(() => {
-    setProfile({ ...user })
-  }, [user])
+  useSyncOnChange([user], () => setProfile({ ...user }))
 
   const onChangeProfile = async () => {
     if (!user.id) return

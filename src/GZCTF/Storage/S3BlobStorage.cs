@@ -58,15 +58,15 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
         if (string.IsNullOrEmpty(key))
             return;
 
-        List<KeyVersion> batch = [];
+        List<string> batch = [];
 
         var meta = await TryGetObjectMetadataAsync(key, cancellationToken);
         if (meta is not null)
-            batch.Add(new KeyVersion { Key = key });
+            batch.Add(key);
 
         await foreach (var childKey in EnumerateKeysAsync(EnsureDirectoryPrefix(key), cancellationToken))
         {
-            batch.Add(new KeyVersion { Key = childKey });
+            batch.Add(childKey);
             if (batch.Count >= 1000)
                 await FlushAsync();
         }
@@ -79,16 +79,20 @@ public sealed class S3BlobStorage : IBlobStorage, IDisposable
             if (batch.Count == 0)
                 return;
 
-            var deleteRequest = new DeleteObjectsRequest { BucketName = _bucket, Objects = batch, Quiet = true };
-
+            var keys = batch.ToArray();
             batch = [];
-            try
+            foreach (var objectKey in keys)
             {
-                await _client.DeleteObjectsAsync(deleteRequest, cancellationToken);
-            }
-            catch (AmazonS3Exception e) when (e.StatusCode == HttpStatusCode.NotFound)
-            {
-                // ignore missing keys
+                try
+                {
+                    // Delete one object per request: the multi-object DeleteObjects call needs a
+                    // Content-MD5 header the SDK does not send, which MinIO rejects outright.
+                    await _client.DeleteObjectAsync(_bucket, objectKey, cancellationToken);
+                }
+                catch (AmazonS3Exception e) when (e.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // ignore missing keys
+                }
             }
         }
     }

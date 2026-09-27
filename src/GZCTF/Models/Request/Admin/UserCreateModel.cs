@@ -55,13 +55,6 @@ public class UserCreateModel
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? Phone { get; set; }
 
-    /// <summary>
-    /// Team the user joins
-    /// </summary>
-    [MaxLength(Limits.MaxTeamNameLength, ErrorMessageResourceName = nameof(Resources.Program.Model_TeamNameTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? TeamName { get; set; }
-
     internal UserInfo ToUserInfo() =>
         new()
         {

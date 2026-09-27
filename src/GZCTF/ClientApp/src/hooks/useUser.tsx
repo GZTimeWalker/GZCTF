@@ -47,20 +47,6 @@ export const useUserRole = () => {
   return { role: user?.role, error }
 }
 
-export const useTeams = () => {
-  const {
-    data: teams,
-    error,
-    mutate,
-  } = api.team.useTeamGetTeamsInfo({
-    refreshInterval: 120000,
-    shouldRetryOnError: false,
-    revalidateOnFocus: false,
-  })
-
-  return { teams, error, mutate }
-}
-
 export const useLogOut = () => {
   const navigate = useNavigate()
   const { mutate } = useSWRConfig()
@@ -71,7 +57,7 @@ export const useLogOut = () => {
     try {
       await api.account.accountLogOut()
       navigate('/')
-      mutate((key) => typeof key === 'string' && key.includes('game/'), undefined, {
+      mutate((key) => typeof key === 'string' && key.startsWith('/api/'), undefined, {
         revalidate: false,
       })
       mutateProfile(undefined, { revalidate: false })

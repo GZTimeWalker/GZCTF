@@ -13,11 +13,14 @@ i18n
   .use(initReactI18next)
   .use(
     // implement by custom vite plugin, see plugins/vite-i18n-virtual-manifest.ts
-    resourcesToBackend(async (lang: string, _: string) => {
+    resourcesToBackend(async (lang: string, namespace: string) => {
       const file = manifest[lang.toLowerCase()]
       if (!file) return {}
       const response = await fetch(`/static/${file}`)
-      return response.json()
+      const resources = await response.json() as Record<string, unknown>
+      // Existing shared components use the default namespace with explicit
+      // `common.*` keys, while feature pages request their own namespace.
+      return namespace === 'translation' ? resources : resources[namespace] ?? {}
     })
   )
   .init({

@@ -1,5 +1,15 @@
 using System.Net.Mime;
 using GZCTF.Middlewares;
+using GZCTF.Features.ChallengeLibrary.Application;
+using GZCTF.Features.ChallengeRuntime.Application;
+using GZCTF.Features.ChallengeRuntime.Infrastructure;
+using GZCTF.Features.Imports.Application;
+using GZCTF.Features.Imports.Infrastructure;
+using GZCTF.Features.LearningPaths.Application;
+using GZCTF.Features.LearningProgress.Application;
+using GZCTF.Features.Dashboard.Application;
+using GZCTF.Features.SkillTrees.Application;
+using GZCTF.Features.SkillTrees.Migration;
 using GZCTF.Models.Internal;
 using GZCTF.Repositories;
 using GZCTF.Repositories.Interface;
@@ -11,7 +21,6 @@ using GZCTF.Services.CronJob;
 using GZCTF.Services.Mail;
 using GZCTF.Services.Token;
 using GZCTF.Services.Traffic;
-using GZCTF.Services.Transfer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 
@@ -67,33 +76,45 @@ internal static class ServicesExtension
             builder.Services.AddScoped<ILogRepository, LogRepository>();
             builder.Services.AddScoped<IBlobRepository, BlobRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
-            builder.Services.AddScoped<IGameRepository, GameRepository>();
-            builder.Services.AddScoped<ITeamRepository, TeamRepository>();
             builder.Services.AddScoped<IApiTokenRepository, ApiTokenRepository>();
             builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
-            builder.Services.AddScoped<IGameEventRepository, GameEventRepository>();
-            builder.Services.AddScoped<ICheatInfoRepository, CheatInfoRepository>();
-            builder.Services.AddScoped<IGameNoticeRepository, GameNoticeRepository>();
-            builder.Services.AddScoped<ISubmissionRepository, SubmissionRepository>();
-            builder.Services.AddScoped<IGameInstanceRepository, GameInstanceRepository>();
-            builder.Services.AddScoped<IGameChallengeRepository, GameChallengeRepository>();
-            builder.Services.AddScoped<IParticipationRepository, ParticipationRepository>();
-            builder.Services.AddScoped<IExerciseInstanceRepository, ExerciseInstanceRepository>();
-            builder.Services.AddScoped<IExerciseChallengeRepository, ExerciseChallengeRepository>();
-            builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
+            builder.Services.AddScoped<ChallengeLibraryService>();
+            builder.Services.AddScoped<EnrollmentService>();
+            builder.Services.AddScoped<LessonProgressService>();
+            builder.Services.AddScoped<LearningRecordService>();
+            builder.Services.AddScoped<SkillTreeQueryService>();
+            builder.Services.AddScoped<AdminSkillTreeService>();
+            builder.Services.AddScoped<SkillCategoryService>();
+            builder.Services.AddScoped<ContentPublicationService>();
+            builder.Services.AddScoped<SkillTreeEnrollmentService>();
+            builder.Services.AddScoped<LearningRedirectService>();
+            builder.Services.AddSingleton<ISkillTreeCacheInvalidator, NoopSkillTreeCacheInvalidator>();
+            builder.Services.AddScoped<SkillTreeBackfillService>();
+            builder.Services.AddScoped<DynamicAttachmentAllocator>();
+            builder.Services.AddScoped<ILegacyStorageAdapter, LegacyStorageAdapter>();
+            builder.Services.AddScoped<ChallengeRuntimeService>();
+            builder.Services.AddScoped<ILegacyContainerRuntimeAdapter, LegacyContainerRuntimeAdapter>();
+            builder.Services.AddScoped<ChallengeSubmissionService>();
+            builder.Services.AddScoped<ChallengeHelpService>();
+            builder.Services.AddScoped<DailySolveProjection>();
+            builder.Services.AddScoped<DashboardSnapshotService>();
+            builder.Services.AddSingleton(_ => new DashboardRequestLimiter());
+            builder.Services.AddScoped<DashboardTokenService>();
+            builder.Services.AddScoped<DashboardDeltaPublisher>();
+            builder.Services.AddSingleton<DashboardCache>();
+            builder.Services.AddScoped<CanonicalImportService>();
+            builder.Services.AddScoped<ImportParityService>();
+            builder.Services.AddScoped<LegacyDatabaseSource>();
+            builder.Services.AddScoped<StartupLegacyMigrationService>();
+            builder.Services.AddScoped<LegacyZipSource>();
+            builder.Services.AddScoped<ImportBlobStaging>();
+            builder.Services.AddSingleton<IChallengeMergeConflictChecker, NoopChallengeMergeConflictChecker>();
 
-            builder.Services.AddScoped<ExcelHelper>();
-            builder.Services.AddScoped<GameExportService>();
-            builder.Services.AddScoped<GameImportService>();
-
-            builder.Services.AddChannel<Submission>();
             builder.Services.AddChannel<CacheRequest>();
             builder.Services.AddSingleton<CacheHelper>();
             builder.Services.AddSingleton<IMailSender, MailSender>();
             builder.Services.AddSingleton<TrafficRecorderRegistry>();
 
-            builder.Services.AddHostedService<CacheMaker>();
-            builder.Services.AddHostedService<FlagChecker>();
             builder.Services.AddHostedService<CronJobService>();
         }
 

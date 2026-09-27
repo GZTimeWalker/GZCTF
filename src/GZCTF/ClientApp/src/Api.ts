@@ -21,83 +21,6 @@ export enum ContainerPortMappingType {
   PlatformProxy = "PlatformProxy",
 }
 
-/** Judgement result */
-export enum AnswerResult {
-  FlagSubmitted = "FlagSubmitted",
-  Accepted = "Accepted",
-  WrongAnswer = "WrongAnswer",
-  CheatDetected = "CheatDetected",
-  NotFound = "NotFound",
-}
-
-/** Game event type */
-export enum EventType {
-  Normal = "Normal",
-  ContainerStart = "ContainerStart",
-  ContainerDestroy = "ContainerDestroy",
-  FlagSubmit = "FlagSubmit",
-  CheatDetected = "CheatDetected",
-}
-
-/** Submission type */
-export enum SubmissionType {
-  Unaccepted = "Unaccepted",
-  FirstBlood = "FirstBlood",
-  SecondBlood = "SecondBlood",
-  ThirdBlood = "ThirdBlood",
-  Normal = "Normal",
-}
-
-/** Container network mode */
-export enum NetworkMode {
-  Open = "Open",
-  Isolated = "Isolated",
-  Custom = "Custom",
-}
-
-/** Container status */
-export enum ContainerStatus {
-  Pending = "Pending",
-  Running = "Running",
-  Destroyed = "Destroyed",
-}
-
-export enum FileType {
-  None = "None",
-  Local = "Local",
-  Remote = "Remote",
-}
-
-export enum ChallengeType {
-  StaticAttachment = "StaticAttachment",
-  StaticContainer = "StaticContainer",
-  DynamicAttachment = "DynamicAttachment",
-  DynamicContainer = "DynamicContainer",
-}
-
-/** Game participant permission */
-export enum GamePermission {
-  JoinGame = 1,
-  RankOverall = 2,
-  RequireReview = 4,
-  ViewChallenge = 256,
-  SubmitFlags = 512,
-  GetScore = 1024,
-  GetBlood = 2048,
-  AffectDynamicScore = 4096,
-  All = 2147483647,
-}
-
-/** Game announcement type */
-export enum NoticeType {
-  Normal = "Normal",
-  FirstBlood = "FirstBlood",
-  SecondBlood = "SecondBlood",
-  ThirdBlood = "ThirdBlood",
-  NewHint = "NewHint",
-  NewChallenge = "NewChallenge",
-}
-
 /** Challenge category */
 export enum ChallengeCategory {
   Misc = "Misc",
@@ -113,14 +36,6 @@ export enum ChallengeCategory {
   AI = "AI",
   Pentest = "Pentest",
   OSINT = "OSINT",
-}
-
-export enum ParticipationStatus {
-  Pending = "Pending",
-  Accepted = "Accepted",
-  Rejected = "Rejected",
-  Suspended = "Suspended",
-  Unsubmitted = "Unsubmitted",
 }
 
 /** Task execution status */
@@ -149,6 +64,764 @@ export enum RegisterStatus {
   LoggedIn = "LoggedIn",
   AdminConfirmationRequired = "AdminConfirmationRequired",
   EmailConfirmationRequired = "EmailConfirmationRequired",
+}
+
+export enum ChallengeFlagKind {
+  Static = "Static",
+  DynamicAttachment = "DynamicAttachment",
+  Template = "Template",
+}
+
+export enum ChallengePublicationState {
+  Draft = "Draft",
+  Published = "Published",
+  Retired = "Retired",
+  Merged = "Merged",
+}
+
+/** Challenge difficulty */
+export enum Difficulty {
+  Baby = "Baby",
+  Trivial = "Trivial",
+  Easy = "Easy",
+  Normal = "Normal",
+  Medium = "Medium",
+  Hard = "Hard",
+  Expert = "Expert",
+  Insane = "Insane",
+}
+
+export enum ChallengeType {
+  StaticAttachment = "StaticAttachment",
+  StaticContainer = "StaticContainer",
+  DynamicAttachment = "DynamicAttachment",
+  DynamicContainer = "DynamicContainer",
+}
+
+export enum ChallengeSolveMode {
+  Independent = 0,
+  AfterHint = 1,
+  AfterWriteup = 2,
+}
+
+export enum ChallengeInstanceStatus {
+  Pending = 0,
+  Running = 1,
+  Stopped = 2,
+  Expired = 3,
+  Failed = 4,
+}
+
+export enum MigrationBatchState {
+  Pending = 0,
+  Running = 1,
+  Completed = 2,
+  Failed = 3,
+}
+
+export interface SkillCategoryAdminResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number;
+  trees?: CategoryTreeReferenceResponse[];
+  contents?: SkillTreeContentSummaryResponse[];
+}
+
+export interface CategoryTreeReferenceResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  isPublished?: boolean;
+}
+
+export interface SkillTreeContentSummaryResponse {
+  /** @format guid */
+  contentId?: string;
+  kind?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  title?: string;
+  summary?: string;
+  /** @format int32 */
+  expectedMinutes?: number;
+  difficulty?: string;
+  state?: string | null;
+}
+
+export interface SkillCategoryCommand {
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number | null;
+}
+
+export interface UpdateCategoryContentsCommand {
+  rowVersion?: number;
+  contents?: CategoryContentOrderCommand[];
+}
+
+export interface CategoryContentOrderCommand {
+  kind?: string;
+  /** @format guid */
+  contentId?: string;
+  /** @format int32 */
+  sortOrder?: number;
+}
+
+export interface UpdateCategoryTreeMembershipsResponse {
+  /** @format guid */
+  categoryId?: string;
+  affectedSkillTreeIds?: string[];
+}
+
+export interface UpdateCategoryTreeMembershipsCommand {
+  categoryRowVersion?: number;
+  trees?: CategoryTreeMembershipCommand[];
+}
+
+export interface CategoryTreeMembershipCommand {
+  /** @format guid */
+  skillTreeId?: string;
+  included?: boolean;
+  skillTreeRowVersion?: number;
+}
+
+export interface CategoryDeleteImpactResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  /** @format int32 */
+  draftTreeCount?: number;
+  /** @format int32 */
+  publishedTreeCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+  requiresTypedConfirmation?: boolean;
+  rowVersion?: number;
+}
+
+export interface DeleteCategoryCommand {
+  confirmationName?: string;
+  rowVersion?: number;
+}
+
+export interface MergeSkillCategoryCommand {
+  /** @format guid */
+  survivorCategoryId?: string;
+  /** @format guid */
+  duplicateCategoryId?: string;
+  survivorRowVersion?: number;
+  duplicateRowVersion?: number;
+}
+
+export interface AdminSkillTreeResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  isPublished?: boolean;
+  hasDraft?: boolean;
+  rowVersion?: number;
+}
+
+export interface CreateSkillTreeCommand {
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+}
+
+export interface SkillTreeDraftResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  /** @format guid */
+  revisionId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number;
+  categories?: SkillTreeCategoryAdminResponse[];
+}
+
+export interface SkillTreeCategoryAdminResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  rowVersion?: number;
+  trees?: CategoryTreeReferenceResponse[];
+  contents?: SkillTreeContentSummaryResponse[];
+}
+
+export interface SkillTreeDetailResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  categories?: SkillCategoryPublicResponse[];
+}
+
+export interface SkillCategoryPublicResponse {
+  /** @format guid */
+  categoryId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  contents?: SkillTreeContentSummaryResponse[];
+}
+
+export interface UpdateSkillTreeDraftCommand {
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  rowVersion?: number;
+  categories?: SkillTreeCategoryOrderCommand[];
+}
+
+export interface SkillTreeCategoryOrderCommand {
+  /** @format guid */
+  categoryId?: string;
+  /** @format int32 */
+  sortOrder?: number;
+}
+
+export interface PublishSkillTreeCommand {
+  rowVersion?: number;
+}
+
+export interface SkillTreeDeleteImpactResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  /** @format int32 */
+  categoryCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+  /** @format int32 */
+  enrollmentCount?: number;
+  isPublished?: boolean;
+  requiresTypedConfirmation?: boolean;
+  rowVersion?: number;
+}
+
+export interface DeleteSkillTreeCommand {
+  confirmationName?: string;
+  rowVersion?: number;
+}
+
+export interface LearningRedirectResponse {
+  targetPath?: string;
+}
+
+export interface SkillTreeEnrollmentResponse {
+  /** @format guid */
+  enrollmentId?: string;
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  iconKey?: string;
+  isCurrent?: boolean;
+  /** @format uint64 */
+  enrolledAtUtc?: number;
+}
+
+export interface SkillTreeSummaryResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+  /** @format int32 */
+  categoryCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+}
+
+export interface MyLearningResponse {
+  routes?: LearningRouteRecord[];
+  /** @format guid */
+  currentPathId?: string | null;
+  completedLessonIds?: string[];
+  solvedChallenges?: LearningChallengeRecord[];
+  /** @format int32 */
+  solvedChallengeCount?: number;
+  recentActivity?: LearningActivityRecord[];
+  /** @format guid */
+  currentSkillTreeId?: string | null;
+  skillTrees?: MySkillTreeRecordResponse[];
+}
+
+export interface LearningRouteRecord {
+  /** @format guid */
+  pathId?: string;
+  slug?: string;
+  title?: string;
+  isCurrent?: boolean;
+  /** @format double */
+  progressPercent?: number;
+  /** @format int32 */
+  completedModules?: number;
+  /** @format int32 */
+  totalModules?: number;
+  /** @format int32 */
+  completedLessons?: number;
+  /** @format int32 */
+  totalLessons?: number;
+  /** @format int32 */
+  completedItems?: number;
+  /** @format int32 */
+  totalItems?: number;
+  modules?: LearningModuleRecord[];
+}
+
+export interface LearningModuleRecord {
+  /** @format guid */
+  moduleId?: string;
+  title?: string;
+  /** @format double */
+  progressPercent?: number;
+  /** @format int32 */
+  completedItems?: number;
+  /** @format int32 */
+  totalItems?: number;
+  isComplete?: boolean;
+}
+
+export interface LearningChallengeRecord {
+  /** @format guid */
+  challengeId?: string;
+  /** @format uint64 */
+  solvedAtUtc?: number;
+  solveMode?: string;
+}
+
+export interface LearningActivityRecord {
+  kind?: string;
+  /** @format guid */
+  contentId?: string;
+  /** @format uint64 */
+  completedAtUtc?: number;
+  solveMode?: string | null;
+  title?: string | null;
+}
+
+export interface MySkillTreeRecordResponse {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  iconKey?: string;
+  isCurrent?: boolean;
+  isDeleted?: boolean;
+  /** @format int32 */
+  categoryCount?: number;
+  /** @format int32 */
+  completedCategoryCount?: number;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  completedChallengeCount?: number;
+  /** @format int32 */
+  lessonCount?: number;
+  /** @format int32 */
+  completedLessonCount?: number;
+}
+
+export interface LessonContentResponse {
+  /** @format guid */
+  lessonId?: string;
+  locale?: string;
+  title?: string;
+  body?: string;
+}
+
+export interface ImportBatchResponse {
+  /** @format guid */
+  id?: string;
+  sourceType?: string;
+  state?: MigrationBatchState;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  pathCount?: number;
+  /** @format int32 */
+  warningCount?: number;
+  /** @format int32 */
+  errorCount?: number;
+  parityReportJson?: string | null;
+  /** @format uint64 */
+  startedAtUtc?: number;
+  /** @format uint64 */
+  completedAtUtc?: number | null;
+}
+
+export interface CanonicalImportResult {
+  /** @format guid */
+  batchId?: string;
+  state?: MigrationBatchState;
+  /** @format int32 */
+  challengeCount?: number;
+  /** @format int32 */
+  pathCount?: number;
+  /** @format int32 */
+  warningCount?: number;
+}
+
+export interface CohortResponse {
+  /** @format guid */
+  id?: string;
+  name?: string;
+  isActive?: boolean;
+  /** @format int32 */
+  memberCount?: number;
+}
+
+export interface CohortCommand {
+  name?: string;
+}
+
+export interface CohortStatusCommand {
+  isActive?: boolean;
+}
+
+export interface CohortMemberResponse {
+  /** @format guid */
+  id?: string;
+  userName?: string;
+}
+
+export interface CohortMembersCommand {
+  userIds?: string[];
+}
+
+export interface DailySolveRebuildResult {
+  /** @format int32 */
+  insertedRows?: number;
+  /** @format uint64 */
+  maximumSourceTimestamp?: number | null;
+}
+
+export interface AdminDashboardResponse {
+  /** @format guid */
+  id?: string;
+  name?: string;
+  /** @format int32 */
+  topCount?: number;
+  isEnabled?: boolean;
+  /** @format int32 */
+  activeTokenCount?: number;
+}
+
+export interface DashboardCommand {
+  name?: string;
+  /** @format int32 */
+  topCount?: number;
+}
+
+export interface DashboardTokenResult {
+  /** @format guid */
+  tokenId?: string;
+  rawToken?: string;
+  /** @format uint64 */
+  expiresAtUtc?: number | null;
+}
+
+export interface TokenExpiryCommand {
+  /** @format uint64 */
+  expiresAtUtc?: number | null;
+}
+
+export interface DashboardTokenSummaryResponse {
+  /** @format guid */
+  tokenId?: string;
+  /** @format uint64 */
+  createdAtUtc?: number;
+  /** @format uint64 */
+  expiresAtUtc?: number | null;
+  /** @format uint64 */
+  lastUsedAtUtc?: number | null;
+}
+
+export interface DashboardSnapshotResponse {
+  /** @format guid */
+  dashboardId?: string;
+  /** @format uint64 */
+  generatedAtUtc?: number;
+  cohorts?: DashboardCohortChoice[];
+  members?: DashboardMemberSeries[];
+  leaderboard?: DashboardLeaderboardEntry[];
+}
+
+export interface DashboardCohortChoice {
+  /** @format guid */
+  id?: string;
+  name?: string;
+}
+
+export interface DashboardMemberSeries {
+  userName?: string;
+  /** @format guid */
+  cohortId?: string | null;
+  points?: DashboardPoint[];
+  /** @format int32 */
+  uniqueSolvedCount?: number;
+}
+
+export interface DashboardPoint {
+  /** @format date */
+  date?: string;
+  /** @format int32 */
+  value?: number;
+}
+
+export interface DashboardLeaderboardEntry {
+  userName?: string;
+  /** @format int32 */
+  uniqueSolvedCount?: number;
+  /** @format int32 */
+  rank?: number;
+}
+
+export interface ChallengeInstanceResponse {
+  /** @format guid */
+  id?: string;
+  status?: ChallengeInstanceStatus;
+  /** @format uint64 */
+  startedAtUtc?: number | null;
+  /** @format uint64 */
+  expiresAtUtc?: number | null;
+  publicIp?: string | null;
+  /** @format int32 */
+  publicPort?: number | null;
+  attachmentFileName?: string | null;
+  attachmentSha256?: string | null;
+}
+
+export interface ChallengeRuntimeDetailResponse {
+  /** @format guid */
+  id?: string;
+  title?: string;
+  summary?: string;
+  body?: string;
+  type?: string;
+  /** @format int32 */
+  hintLocaleCount?: number;
+  hasWriteup?: boolean;
+  hasAttachment?: boolean;
+  hasContainer?: boolean;
+}
+
+export interface ChallengeHintResponse {
+  /** @format guid */
+  hintId?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  locale?: string;
+  content?: string;
+}
+
+export interface ChallengeWriteupResponse {
+  locale?: string;
+  content?: string;
+  /** @format uint64 */
+  firstViewedAtUtc?: number;
+}
+
+export interface ChallengeSubmissionResult {
+  accepted?: boolean;
+  firstSolve?: boolean;
+  solveMode?: ChallengeSolveMode | null;
+  rejectionCode?: string | null;
+  /** @format guid */
+  submissionId?: string;
+}
+
+export interface ChallengeSubmissionRequest {
+  flag?: string;
+}
+
+export interface ChallengeSummaryResponse {
+  /** @format guid */
+  id?: string;
+  type?: ChallengeType;
+  /** Challenge difficulty */
+  difficulty?: Difficulty;
+  publicationState?: ChallengePublicationState;
+  isEnabled?: boolean;
+  title?: string;
+  summary?: string;
+  sourceType?: string;
+  sourceId?: string;
+  sourceName?: string | null;
+}
+
+export interface ChallengeEditResponse {
+  challenge?: ChallengeSummaryResponse;
+  runtimeConfigurationJson?: string | null;
+  localizations?: ChallengeLocalizationResponse[];
+  flags?: ChallengeFlagResponse[];
+  hints?: ChallengeHintResponse2[];
+  writeups?: ChallengeWriteupResponse2[];
+  publication?: ChallengePublicationEditState;
+}
+
+export interface ChallengeLocalizationResponse {
+  locale?: string;
+  title?: string;
+  summary?: string;
+  body?: string;
+}
+
+export interface ChallengeFlagResponse {
+  /** @format guid */
+  id?: string;
+  kind?: ChallengeFlagKind;
+  value?: string | null;
+  template?: string | null;
+  attachmentPoolKey?: string | null;
+  metadataJson?: string | null;
+}
+
+export interface ChallengeHintResponse2 {
+  /** @format guid */
+  id?: string;
+  locale?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  content?: string;
+}
+
+export interface ChallengeWriteupResponse2 {
+  /** @format guid */
+  id?: string;
+  locale?: string;
+  content?: string;
+}
+
+export interface ChallengePublicationEditState {
+  rowVersion?: number;
+  publicationState?: string;
+  categoryIds?: string[];
+}
+
+export interface ChallengeCommand {
+  type?: ChallengeType | null;
+  difficulty?: Difficulty | null;
+  sourceType?: string | null;
+  sourceId?: string | null;
+  sourceName?: string | null;
+  sourceMetadataJson?: string | null;
+  runtimeConfigurationJson?: string | null;
+  isEnabled?: boolean | null;
+  /** @format int32 */
+  expectedMinutes?: number | null;
+  locale?: string | null;
+  localizations?: ChallengeLocalizationCommand[] | null;
+  flags?: ChallengeFlagCommand[] | null;
+  hints?: ChallengeHintCommand[] | null;
+  writeups?: ChallengeWriteupCommand[] | null;
+}
+
+export interface ChallengeLocalizationCommand {
+  locale?: string;
+  title?: string;
+  summary?: string;
+  body?: string;
+}
+
+export interface ChallengeFlagCommand {
+  kind?: ChallengeFlagKind;
+  value?: string | null;
+  template?: string | null;
+  attachmentPoolKey?: string | null;
+  metadataJson?: string | null;
+}
+
+export interface ChallengeHintCommand {
+  locale?: string;
+  /** @format int32 */
+  sortOrder?: number;
+  content?: string;
+}
+
+export interface ChallengeWriteupCommand {
+  locale?: string;
+  content?: string;
+}
+
+export interface PublishContentCommand {
+  rowVersion?: number;
+  categoryIds?: string[];
+  inlineCategories?: InlineSkillCategoryCommand[];
+}
+
+export interface InlineSkillCategoryCommand {
+  /** @format guid */
+  skillTreeId?: string;
+  name?: string;
+  summary?: string;
+  iconKey?: string;
+}
+
+export interface ChallengeMergeResult {
+  /** @format guid */
+  duplicateId?: string;
+  /** @format guid */
+  survivorId?: string;
+  /** @format int32 */
+  progressRowsReconciled?: number;
+}
+
+export interface MergeChallengeCommand {
+  /** @format guid */
+  survivorId?: string;
+}
+
+export interface LessonResponse {
+  /** @format guid */
+  id?: string;
+  locale?: string;
+  title?: string;
+  body?: string;
+  localizations?: LessonLocalizationResponse[];
+  publication?: LessonPublicationEditState;
+}
+
+export interface LessonLocalizationResponse {
+  locale?: string;
+  title?: string;
+  body?: string;
+}
+
+export interface LessonPublicationEditState {
+  rowVersion?: number;
+  publicationState?: string;
+  categoryIds?: string[];
+}
+
+export interface LessonCommand {
+  locale?: string | null;
+  localizations?: LessonLocalizationCommand[] | null;
+}
+
+export interface LessonLocalizationCommand {
+  locale?: string;
+  title?: string;
+  body?: string;
 }
 
 /** Request response */
@@ -515,79 +1188,6 @@ export interface UserCreateModel {
    * @format phone
    */
   phone?: string | null;
-  /**
-   * Team the user joins
-   * @maxLength 20
-   */
-  teamName?: string | null;
-}
-
-/** List response */
-export interface ArrayResponseOfTeamInfoModel {
-  /** Data */
-  data: TeamInfoModel[];
-  /**
-   * Data length
-   * @format int32
-   */
-  length: number;
-  /**
-   * Total length
-   * @format int32
-   */
-  total?: number;
-}
-
-/** Team information */
-export interface TeamInfoModel {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id?: number;
-  /** Team name */
-  name?: string | null;
-  /** Team bio */
-  bio?: string | null;
-  /** Avatar URL */
-  avatar?: string | null;
-  /** Is locked */
-  locked?: boolean;
-  /** Team members */
-  members?: TeamUserInfoModel[] | null;
-}
-
-/** Team member information */
-export interface TeamUserInfoModel {
-  /**
-   * User ID
-   * @format guid
-   */
-  id?: string | null;
-  /** Username */
-  userName?: string | null;
-  /** Bio */
-  bio?: string | null;
-  /** Avatar URL */
-  avatar?: string | null;
-  /** Is Captain */
-  captain?: boolean;
-}
-
-/** Team information modification (Admin) */
-export interface AdminTeamModel {
-  /**
-   * Team name
-   * @maxLength 20
-   */
-  name?: string | null;
-  /**
-   * Team bio
-   * @maxLength 72
-   */
-  bio?: string | null;
-  /** Is locked */
-  locked?: boolean | null;
 }
 
 /** User information modification (Admin) */
@@ -645,47 +1245,6 @@ export interface LogMessageModel {
   msg?: string | null;
   /** Task status */
   status?: TaskStatus | null;
-}
-
-/** Modify the participation information */
-export interface ParticipationEditModel {
-  /** Participation Status */
-  status?: ParticipationStatus | null;
-  /**
-   * The division of the participated team
-   * @format int32
-   */
-  divisionId?: number | null;
-}
-
-/** Game writeup information */
-export interface WriteupInfoModel {
-  /** Division ID to Division Name mapping */
-  divisions?: Record<string, string>;
-  /** Writeups list */
-  writeups?: WriteupInfo[];
-}
-
-export interface WriteupInfo {
-  /**
-   * Participation ID
-   * @format int32
-   */
-  id?: number;
-  /** Team information */
-  team?: TeamInfoModel;
-  /** File URL */
-  url?: string;
-  /**
-   * File upload time
-   * @format uint64
-   */
-  uploadTimeUtc?: number;
-  /**
-   * The division the team belongs to
-   * @format int32
-   */
-  divisionId?: number | null;
 }
 
 /** List response */
@@ -916,1135 +1475,6 @@ export interface PostDetailModel {
   time: number;
 }
 
-/** Game information (Edit) */
-export interface GameInfoModel {
-  /**
-   * Game ID
-   * @format int32
-   */
-  id?: number;
-  /**
-   * Game title
-   * @minLength 1
-   */
-  title: string;
-  /** Is hidden */
-  hidden?: boolean;
-  /** Game summary */
-  summary?: string;
-  /** Game detailed description */
-  content?: string;
-  /** Accept teams without review */
-  acceptWithoutReview?: boolean;
-  /** Is writeup required */
-  writeupRequired?: boolean;
-  /**
-   * Game invitation code
-   * @maxLength 32
-   */
-  inviteCode?: string | null;
-  /**
-   * Team member count limit, 0 means no limit
-   * @format int32
-   */
-  teamMemberCountLimit?: number;
-  /**
-   * Container count limit per team
-   * @format int32
-   */
-  containerCountLimit?: number;
-  /** Game poster URL */
-  poster?: string | null;
-  /** Game public key */
-  publicKey?: string;
-  /** Is the game in practice mode (accessible even after the game ends) */
-  practiceMode?: boolean;
-  /**
-   * Start time
-   * @format uint64
-   */
-  start: number;
-  /**
-   * End time
-   * @format uint64
-   */
-  end: number;
-  /**
-   * Writeup submission deadline
-   * @format uint64
-   */
-  writeupDeadline?: number;
-  /** Writeup additional notes */
-  writeupNote?: string;
-  /**
-   * Blood bonus points
-   * @format int64
-   */
-  bloodBonus?: number;
-}
-
-/** List response */
-export interface ArrayResponseOfGameInfoModel {
-  /** Data */
-  data: GameInfoModel[];
-  /**
-   * Data length
-   * @format int32
-   */
-  length: number;
-  /**
-   * Total length
-   * @format int32
-   */
-  total?: number;
-}
-
-/**
- * Game notice, which will be sent to the client.
- * Information includes first, second, and third blood notifications, hint release notifications, challenging opening notifications, etc.
- */
-export type GameNotice = FormattableDataOfNoticeType & {
-  /** @format int32 */
-  id: number;
-  /**
-   * Publish time
-   * @format uint64
-   */
-  time: number;
-};
-
-/** Formattable data */
-export interface FormattableDataOfNoticeType {
-  /** Data type */
-  type: NoticeType;
-  /** List of formatted values */
-  values: string[];
-}
-
-/** Game notice (Edit) */
-export interface GameNoticeModel {
-  /**
-   * Notice content
-   * @minLength 1
-   */
-  content: string;
-}
-
-export interface Division {
-  /** @format int32 */
-  id: number;
-  /**
-   * The name of the division.
-   * @minLength 1
-   * @maxLength 31
-   */
-  name: string;
-  /**
-   * Invitation code for joining the division.
-   * @maxLength 32
-   */
-  inviteCode?: string | null;
-  /** Permissions associated with the division. */
-  defaultPermissions?: GamePermission;
-  /** Challenge configs for this division. */
-  challengeConfigs?: DivisionChallengeConfig[];
-}
-
-export interface DivisionChallengeConfig {
-  /** @format int32 */
-  challengeId: number;
-  /** Challenge Specific Permissions */
-  permissions?: GamePermission;
-}
-
-export interface DivisionCreateModel {
-  /**
-   * The name of the division.
-   * @minLength 1
-   * @maxLength 31
-   */
-  name: string;
-  /**
-   * Invitation code for joining the division.
-   * @maxLength 32
-   */
-  inviteCode?: string | null;
-  /** Permissions associated with the division. */
-  defaultPermissions?: GamePermission | null;
-  /** Challenge configs for this division. */
-  challengeConfigs?: DivisionChallengeConfigModel[] | null;
-}
-
-export interface DivisionChallengeConfigModel {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  challengeId: number;
-  /** Challenge Specific Permissions */
-  permissions?: GamePermission;
-}
-
-export interface DivisionEditModel {
-  /**
-   * The name of the division.
-   * @maxLength 31
-   */
-  name?: string | null;
-  /**
-   * Invitation code for joining the division.
-   * @maxLength 32
-   */
-  inviteCode?: string | null;
-  /** Permissions associated with the division. */
-  defaultPermissions?: GamePermission | null;
-  /** Challenge configs for this division. */
-  challengeConfigs?: DivisionChallengeConfigModel[] | null;
-}
-
-/** Challenge detailed information (Edit) */
-export interface ChallengeEditDetailModel {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  id?: number;
-  /**
-   * Challenge title
-   * @minLength 1
-   */
-  title: string;
-  /** Challenge content */
-  content?: string;
-  /** Challenge category */
-  category: ChallengeCategory;
-  /** Challenge type */
-  type: ChallengeType;
-  /** Challenge hints */
-  hints?: string[];
-  /**
-   * Flag template, used to generate Flag based on Token and challenge, game information
-   * @maxLength 120
-   */
-  flagTemplate?: string | null;
-  /** Is the challenge enabled */
-  isEnabled: boolean;
-  /**
-   * Number of people who passed
-   * @format int32
-   */
-  acceptedCount: number;
-  /** Unified file name (only for dynamic attachments) */
-  fileName?: string | null;
-  /** Challenge attachment (dynamic attachments are stored in FlagInfoModel) */
-  attachment?: Attachment | null;
-  /** Test container */
-  testContainer?: ContainerInfoModel | null;
-  /** Challenge Flag information */
-  flags: FlagInfoModel[];
-  /**
-   * Image name and tag
-   * @minLength 1
-   */
-  containerImage: string;
-  /**
-   * Memory limit (MB)
-   * @format int32
-   */
-  memoryLimit?: number | null;
-  /**
-   * CPU limit (0.1 CPUs)
-   * @format int32
-   */
-  cpuCount?: number | null;
-  /**
-   * Storage limit (MB)
-   * @format int32
-   */
-  storageLimit?: number | null;
-  /**
-   * Container exposed port
-   * @format int32
-   */
-  exposePort?: number | null;
-  /** Container network mode */
-  networkMode?: NetworkMode | null;
-  /** Whether to record traffic */
-  enableTrafficCapture?: boolean | null;
-  /** Whether to disable blood bonus */
-  disableBloodBonus?: boolean | null;
-  /**
-   * The deadline of the challenge, null means no deadline
-   * @format uint64
-   */
-  deadlineUtc?: number | null;
-  /**
-   * Maximum number of submissions allowed per team (0 = no limit)
-   * @format int32
-   */
-  submissionLimit: number;
-  /**
-   * Initial score
-   * @format int32
-   */
-  originalScore: number;
-  /**
-   * Minimum score rate
-   * @format double
-   * @min 0
-   * @max 1
-   */
-  minScoreRate: number;
-  /**
-   * Difficulty coefficient
-   * @format double
-   */
-  difficulty: number;
-}
-
-export interface Attachment {
-  /** @format int32 */
-  id: number;
-  /** Attachment type */
-  type: FileType;
-  /** Default file URL */
-  url?: string | null;
-  /**
-   * Get attachment size
-   * @format int64
-   */
-  fileSize?: number | null;
-}
-
-export interface ContainerInfoModel {
-  /** Container status */
-  status?: ContainerStatus;
-  /**
-   * Container creation time
-   * @format uint64
-   */
-  startedAt?: number;
-  /**
-   * Expected container stop time
-   * @format uint64
-   */
-  expectStopAt?: number;
-  /** Challenge entry point */
-  entry?: string;
-}
-
-/** Flag information (Edit) */
-export interface FlagInfoModel {
-  /**
-   * Flag Id
-   * @format int32
-   */
-  id?: number;
-  /** Flag text */
-  flag?: string;
-  /** Attachment corresponding to the Flag */
-  attachment?: Attachment | null;
-}
-
-/** Basic challenge information (Edit) */
-export interface ChallengeInfoModel {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  id?: number;
-  /**
-   * Challenge title
-   * @minLength 1
-   */
-  title: string;
-  /** Challenge category */
-  category?: ChallengeCategory;
-  /** Challenge type */
-  type?: ChallengeType;
-  /** Is the challenge enabled */
-  isEnabled?: boolean;
-  /**
-   * Challenge score
-   * @format int32
-   */
-  score?: number;
-  /**
-   * Minimum score
-   * @format int32
-   */
-  minScore?: number;
-  /**
-   * Original score
-   * @format int32
-   */
-  originalScore?: number;
-  /**
-   * The deadline of the challenge, null means no deadline
-   * @format uint64
-   */
-  deadlineUtc?: number | null;
-}
-
-/** Challenge update information (Edit) */
-export interface ChallengeUpdateModel {
-  /**
-   * Challenge title
-   * @minLength 1
-   */
-  title?: string | null;
-  /** Challenge content */
-  content?: string | null;
-  /**
-   * Flag template, used to generate Flag based on Token and challenge/game information
-   * @maxLength 120
-   */
-  flagTemplate?: string | null;
-  /** Challenge category */
-  category?: ChallengeCategory | null;
-  /** Challenge hints */
-  hints?: string[] | null;
-  /** Is the challenge enabled */
-  isEnabled?: boolean | null;
-  /** Unified file name */
-  fileName?: string | null;
-  /**
-   * The deadline of the challenge, null means no deadline
-   * @format uint64
-   */
-  deadlineUtc?: number | null;
-  /**
-   * Maximum number of flag submissions allowed per team for this challenge (0 = no limit)
-   * @format int32
-   * @min 0
-   * @max 10000
-   */
-  submissionLimit?: number | null;
-  /** Container image name and tag */
-  containerImage?: string | null;
-  /**
-   * Memory limit (MB)
-   * @format int32
-   * @min 32
-   * @max 1048576
-   */
-  memoryLimit?: number | null;
-  /**
-   * CPU limit (0.1 CPUs)
-   * @format int32
-   * @min 1
-   * @max 1024
-   */
-  cpuCount?: number | null;
-  /**
-   * Storage limit (MB)
-   * @format int32
-   * @min 0
-   * @max 1048576
-   */
-  storageLimit?: number | null;
-  /**
-   * Container exposed port
-   * @format int32
-   */
-  exposePort?: number | null;
-  /** Container network mode */
-  networkMode?: NetworkMode | null;
-  /** Is traffic capture enabled (disabled by default) */
-  enableTrafficCapture?: boolean | null;
-  /** Is blood bonus disabled (enable by default) */
-  disableBloodBonus?: boolean | null;
-  /**
-   * Initial score
-   * @format int32
-   */
-  originalScore?: number | null;
-  /**
-   * Minimum score rate
-   * @format double
-   * @min 0
-   * @max 1
-   */
-  minScoreRate?: number | null;
-  /**
-   * Difficulty coefficient
-   * @format double
-   */
-  difficulty?: number | null;
-}
-
-/** New attachment information (Edit) */
-export interface AttachmentCreateModel {
-  /** Attachment type */
-  attachmentType?: FileType;
-  /** File hash (local file) */
-  fileHash?: string | null;
-  /** File URL (remote file) */
-  remoteUrl?: string | null;
-}
-
-/** New Flag information (Edit) */
-export interface FlagCreateModel {
-  /**
-   * Flag text
-   * @minLength 1
-   * @maxLength 127
-   */
-  flag: string;
-  /** Attachment type */
-  attachmentType?: FileType;
-  /** File hash (local file) */
-  fileHash?: string | null;
-  /** File URL (remote file) */
-  remoteUrl?: string | null;
-}
-
-/** Basic game information, excluding detailed description and current team registration status */
-export interface BasicGameInfoModel {
-  /** @format int32 */
-  id: number;
-  /** Game title */
-  title?: string;
-  /** Game summary */
-  summary?: string;
-  /** Poster image URL */
-  poster?: string | null;
-  /**
-   * Team member limit
-   * @format int32
-   */
-  limit?: number;
-  /**
-   * Start time
-   * @format uint64
-   */
-  start: number;
-  /**
-   * End time
-   * @format uint64
-   */
-  end: number;
-}
-
-/** List response */
-export interface ArrayResponseOfBasicGameInfoModel {
-  /** Data */
-  data: BasicGameInfoModel[];
-  /**
-   * Data length
-   * @format int32
-   */
-  length: number;
-  /**
-   * Total length
-   * @format int32
-   */
-  total?: number;
-}
-
-/** Detailed game information, including detailed introduction and current team registration status */
-export interface DetailedGameInfoModel {
-  /** @format int32 */
-  id?: number;
-  /** Game title */
-  title?: string;
-  /** Game description */
-  summary?: string;
-  /** Detailed introduction of the game */
-  content?: string;
-  /** Whether the game is hidden */
-  hidden?: boolean;
-  /** List of participation divisions */
-  divisions?: DivisionInfo[] | null;
-  /** Whether an invitation code is required */
-  inviteCodeRequired?: boolean;
-  /** Whether writeup submission is required */
-  writeupRequired?: boolean;
-  /** Game poster URL */
-  poster?: string | null;
-  /**
-   * Team member count limit
-   * @format int32
-   */
-  limit?: number;
-  /**
-   * Number of teams registered for participation
-   * @format int32
-   */
-  teamCount?: number;
-  /**
-   * Current registered division
-   * @format int32
-   */
-  division?: number | null;
-  /** Team name for participation */
-  teamName?: string | null;
-  /** Whether the game is in practice mode (can still be accessed after the game ends) */
-  practiceMode?: boolean;
-  /** Team participation status */
-  status?: ParticipationStatus;
-  /**
-   * Start time
-   * @format uint64
-   */
-  start?: number;
-  /**
-   * End time
-   * @format uint64
-   */
-  end?: number;
-}
-
-export interface DivisionInfo {
-  /**
-   * Division ID
-   * @format int32
-   */
-  id?: number;
-  /** Division name */
-  name?: string;
-  /** Is the division invite code required */
-  inviteCodeRequired?: boolean;
-}
-
-export interface GameJoinCheckInfoModel {
-  /** The teams that the current user has joined and participated in the game */
-  joinedTeams?: JoinedTeam[];
-  /** IDs of divisions that can be joined */
-  joinableDivisions?: number[];
-}
-
-export interface JoinedTeam {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * The division ID the team has joined
-   * @format int32
-   */
-  division: number;
-}
-
-export interface GameJoinModel {
-  /**
-   * Team ID for participation
-   * @format int32
-   */
-  teamId: number;
-  /**
-   * Division for participation
-   * @format int32
-   */
-  divisionId?: number | null;
-  /** Invitation code for participation */
-  inviteCode?: string | null;
-}
-
-/** Scoreboard */
-export interface ScoreboardModel {
-  /**
-   * Update time
-   * @format uint64
-   */
-  updateTimeUtc: number;
-  /**
-   * Blood bonus coefficient
-   * @format int64
-   */
-  bloodBonus: number;
-  /** List of top ten timelines */
-  timelines: TimeLineItem[];
-  /** List of team information */
-  items: ScoreboardItem[];
-  /** List of division information */
-  divisions: DivisionItem[];
-  /** Challenge information */
-  challenges: Record<string, ChallengeInfo[]>;
-  /**
-   * Number of challenges
-   * @format int32
-   */
-  challengeCount: number;
-}
-
-export interface TimeLineItem {
-  /** @format int32 */
-  divisionId?: number;
-  teams?: TopTimeLine[];
-}
-
-export interface TopTimeLine {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * Team name
-   * @minLength 1
-   */
-  name: string;
-  /** Timeline */
-  items: TimeLine[];
-}
-
-export interface TimeLine {
-  /**
-   * Time
-   * @format uint64
-   */
-  time: number;
-  /**
-   * Score
-   * @format int32
-   */
-  score: number;
-}
-
-export interface ScoreboardItem {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * Team name
-   * @minLength 1
-   */
-  name: string;
-  /** Team Bio */
-  bio?: string | null;
-  /**
-   * Division of participation
-   * @format int32
-   */
-  divisionId?: number | null;
-  /** Team avatar */
-  avatar?: string | null;
-  /**
-   * Score
-   * @format int32
-   */
-  score: number;
-  /**
-   * Rank
-   * @format int32
-   */
-  rank: number;
-  /**
-   * Division rank
-   * @format int32
-   */
-  divisionRank?: number | null;
-  /**
-   * Last submission time
-   * @format uint64
-   */
-  lastSubmissionTime: number;
-  /** List of solved challenges */
-  solvedChallenges: ChallengeItem[];
-  /**
-   * Number of solved challenges
-   * @format int32
-   */
-  solvedCount: number;
-}
-
-export interface ChallengeItem {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * Challenge score
-   * @format int32
-   */
-  score: number;
-  /** Submission type (unsolved, first blood, second blood, third blood, or others) */
-  type: SubmissionType;
-  /** Username of the solver */
-  userName?: string | null;
-  /**
-   * Submission time for the challenge, used to calculate the timeline
-   * @format uint64
-   */
-  time: number;
-}
-
-export interface DivisionItem {
-  /**
-   * Division ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * The name of the division.
-   * @minLength 1
-   */
-  name: string;
-  /** Permissions associated with the division. */
-  defaultPermissions: GamePermission;
-  /** Challenge configs for this division. */
-  challengeConfigs: Record<string, DivisionChallengeItem>;
-}
-
-export interface DivisionChallengeItem {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  challengeId: number;
-  /** Permissions for a specific challenge. */
-  permissions: GamePermission;
-}
-
-export interface ChallengeInfo {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * Challenge title
-   * @minLength 1
-   */
-  title: string;
-  /** Challenge category */
-  category: ChallengeCategory;
-  /**
-   * Challenge score
-   * @format int32
-   */
-  score: number;
-  /**
-   * Number of teams that solved the challenge
-   * @format int32
-   */
-  solved: number;
-  /**
-   * The deadline of the challenge, null means no deadline
-   * @format uint64
-   */
-  deadline?: number | null;
-  /** Bloods for the challenge */
-  bloods: Blood[];
-  /** Whether to disable blood bonus */
-  disableBloodBonus: boolean;
-}
-
-export interface Blood {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id: number;
-  /**
-   * Team name
-   * @minLength 1
-   */
-  name: string;
-  /** Team avatar */
-  avatar?: string | null;
-  /**
-   * Time when the blood was obtained
-   * @format uint64
-   */
-  submitTimeUtc?: number | null;
-}
-
-/**
- * Game event, recorded but not sent to the client.
- * Information includes flag submission, container start/stop, cheating, and score changes.
- */
-export type GameEvent = FormattableDataOfEventType & {
-  /**
-   * Publish time
-   * @format uint64
-   */
-  time: number;
-  /** Related username */
-  user?: string;
-  /** Related team name */
-  team?: string;
-};
-
-/** Formattable data */
-export interface FormattableDataOfEventType {
-  /** Data type */
-  type: EventType;
-  /** List of formatted values */
-  values: string[];
-}
-
-export interface Submission {
-  /**
-   * Submitted answer string
-   * @maxLength 127
-   */
-  answer?: string;
-  /** Status of the submitted answer */
-  status?: AnswerResult;
-  /**
-   * Time the answer was submitted
-   * @format uint64
-   */
-  time?: number;
-  /** User who submitted */
-  user?: string;
-  /** Team that submitted */
-  team?: string;
-  /** Challenge that was submitted */
-  challenge?: string;
-}
-
-/** Cheat behavior information */
-export interface CheatInfoModel {
-  /** Team owning the flag */
-  ownedTeam?: ParticipationModel;
-  /** Team submitting the flag */
-  submitTeam?: ParticipationModel;
-  /** Submission corresponding to this cheating behavior */
-  submission?: Submission;
-}
-
-/** Team participation information */
-export interface ParticipationModel {
-  /**
-   * Participation ID
-   * @format int32
-   */
-  id?: number;
-  /** Team information */
-  team?: TeamModel;
-  /** Team participation status */
-  status?: ParticipationStatus;
-  /** Team division */
-  division?: string | null;
-  /**
-   * Team division ID
-   * @format int32
-   */
-  divisionId?: number | null;
-}
-
-export interface ChallengeTrafficModel {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  id?: number;
-  /**
-   * Challenge title
-   * @minLength 1
-   */
-  title: string;
-  /** Challenge category */
-  category?: ChallengeCategory;
-  /** Challenge type */
-  type?: ChallengeType;
-  /** Is the challenge enabled */
-  isEnabled?: boolean;
-  /**
-   * Number of team traffic captured by the challenge
-   * @format int32
-   */
-  count?: number;
-}
-
-/** Team traffic information */
-export interface TeamTrafficModel {
-  /**
-   * Participation ID
-   * @format int32
-   */
-  id?: number;
-  /**
-   * Team Id
-   * @format int32
-   */
-  teamId?: number;
-  /** Team name */
-  name?: string | null;
-  /** Division of participation */
-  division?: string | null;
-  /** Avatar URL */
-  avatar?: string | null;
-  /**
-   * Number of traffic captured by the challenge
-   * @format int32
-   */
-  count?: number;
-}
-
-/** File record */
-export interface FileRecord {
-  /** File name */
-  fileName?: string;
-  /**
-   * File size
-   * @format int64
-   */
-  size?: number;
-  /**
-   * File modification date
-   * @format uint64
-   */
-  updateTime?: number;
-}
-
-export interface GameDetailModel {
-  /** Challenge information */
-  challenges?: Record<string, ChallengeInfo[]>;
-  /**
-   * Number of challenges
-   * @format int32
-   */
-  challengeCount?: number;
-  /** Scoreboard information */
-  rank?: ScoreboardItem | null;
-  /**
-   * Team token
-   * @minLength 1
-   */
-  teamToken: string;
-  /** Whether writeup submission is required */
-  writeupRequired: boolean;
-  /**
-   * Writeup submission deadline
-   * @format uint64
-   */
-  writeupDeadline: number;
-}
-
-/** Participation for review (Admin) */
-export interface ParticipationInfoModel {
-  /**
-   * Participation ID
-   * @format int32
-   */
-  id: number;
-  /** Participating team */
-  team: TeamWithDetailedUserInfo;
-  /** Registered members */
-  registeredMembers: string[];
-  /**
-   * Division of the game
-   * @format int32
-   */
-  divisionId?: number | null;
-  /** Participation status */
-  status: ParticipationStatus;
-}
-
-/** Detailed team information for review (Admin) */
-export interface TeamWithDetailedUserInfo {
-  /**
-   * Team ID
-   * @format int32
-   */
-  id?: number;
-  /** Is locked */
-  locked?: boolean;
-  /**
-   * Captain ID
-   * @format guid
-   */
-  captainId?: string;
-  /** Team name */
-  name?: string | null;
-  /** Team bio */
-  bio?: string | null;
-  /** Avatar URL */
-  avatar?: string | null;
-  /** Team members */
-  members?: ProfileUserInfoModel[];
-}
-
-/** Challenge detailed information */
-export interface ChallengeDetailModel {
-  /**
-   * Challenge ID
-   * @format int32
-   */
-  id?: number;
-  /** Challenge title */
-  title?: string;
-  /** Challenge content */
-  content?: string;
-  /** Challenge category */
-  category?: ChallengeCategory;
-  /** Challenge hints */
-  hints?: string[] | null;
-  /**
-   * Current score of the challenge
-   * @format int32
-   */
-  score?: number;
-  /** Challenge type */
-  type?: ChallengeType;
-  /** Flag context */
-  context?: ClientFlagContext;
-  /**
-   * Maximum number of attempts allowed (0 = no limit)
-   * @format int32
-   */
-  limit?: number;
-  /**
-   * Current attempt count
-   * @format int32
-   */
-  attempts?: number;
-  /**
-   * Deadline of the challenge, null means no deadline
-   * @format uint64
-   */
-  deadline?: number | null;
-}
-
-export interface ClientFlagContext {
-  /**
-   * Close time of the challenge instance
-   * @format uint64
-   */
-  closeTime?: number | null;
-  /** Connection method of the challenge instance */
-  instanceEntry?: string | null;
-  /** Attachment URL */
-  url?: string | null;
-  /**
-   * Attachment file size
-   * @format int64
-   */
-  fileSize?: number | null;
-}
-
-/** Flag submission */
-export interface FlagSubmitModel {
-  /**
-   * Flag content
-   * @minLength 1
-   */
-  flag: string;
-}
-
-/** Game writeup submission information */
-export interface BasicWriteupInfoModel {
-  /** Whether it has been submitted */
-  submitted?: boolean;
-  /** File name */
-  name?: string;
-  /**
-   * File size
-   * @format int64
-   */
-  fileSize?: number;
-  /** Writeup additional notes */
-  note?: string;
-}
-
 /** Post information */
 export interface PostInfoModel {
   /**
@@ -2129,43 +1559,6 @@ export interface HashPowChallenge {
    * @format int32
    */
   difficulty?: number;
-}
-
-/** Team information update */
-export interface TeamUpdateModel {
-  /**
-   * Team name
-   * @maxLength 20
-   */
-  name?: string | null;
-  /**
-   * Team bio
-   * @maxLength 72
-   */
-  bio?: string | null;
-}
-
-export interface TeamTransferModel {
-  /**
-   * New captain ID
-   * @format guid
-   * @minLength 1
-   */
-  newCaptainId: string;
-}
-
-/** Signature verification */
-export interface SignatureVerifyModel {
-  /**
-   * Team token
-   * @minLength 1
-   */
-  teamToken: string;
-  /**
-   * Game public key, Base64 encoded
-   * @minLength 1
-   */
-  publicKey: string;
 }
 
 import { apiLanguage } from "@Utils/I18n";
@@ -2353,6 +1746,1959 @@ import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
+  adminSkillCategories = {
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesCreate
+     * @request POST:/api/admin/skill-categories
+     */
+    adminSkillCategoriesCreate: (
+      data: SkillCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesDelete
+     * @request DELETE:/api/admin/skill-categories/{id}
+     */
+    adminSkillCategoriesDelete: (
+      id: string,
+      data: DeleteCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-categories/${id}`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesGet
+     * @request GET:/api/admin/skill-categories/{id}
+     */
+    adminSkillCategoriesGet: (id: string, params: RequestParams = {}) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillCategoriesGet: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillCategoryAdminResponse, any>(
+        doFetch ? `/api/admin/skill-categories/${id}` : null,
+        options,
+      ),
+
+    mutateAdminSkillCategoriesGet: (
+      id: string,
+      data?: SkillCategoryAdminResponse | Promise<SkillCategoryAdminResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillCategoryAdminResponse>(
+        `/api/admin/skill-categories/${id}`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesGetDeleteImpact
+     * @request GET:/api/admin/skill-categories/{id}/delete-impact
+     */
+    adminSkillCategoriesGetDeleteImpact: (
+      id: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<CategoryDeleteImpactResponse, any>({
+        path: `/api/admin/skill-categories/${id}/delete-impact`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillCategoriesGetDeleteImpact: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<CategoryDeleteImpactResponse, any>(
+        doFetch ? `/api/admin/skill-categories/${id}/delete-impact` : null,
+        options,
+      ),
+
+    mutateAdminSkillCategoriesGetDeleteImpact: (
+      id: string,
+      data?:
+        | CategoryDeleteImpactResponse
+        | Promise<CategoryDeleteImpactResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<CategoryDeleteImpactResponse>(
+        `/api/admin/skill-categories/${id}/delete-impact`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesList
+     * @request GET:/api/admin/skill-categories
+     */
+    adminSkillCategoriesList: (params: RequestParams = {}) =>
+      this.request<SkillCategoryAdminResponse[], any>({
+        path: `/api/admin/skill-categories`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillCategoriesList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillCategoryAdminResponse[], any>(
+        doFetch ? `/api/admin/skill-categories` : null,
+        options,
+      ),
+
+    mutateAdminSkillCategoriesList: (
+      data?:
+        | SkillCategoryAdminResponse[]
+        | Promise<SkillCategoryAdminResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillCategoryAdminResponse[]>(
+        `/api/admin/skill-categories`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesMerge
+     * @request POST:/api/admin/skill-categories/merge
+     */
+    adminSkillCategoriesMerge: (
+      data: MergeSkillCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-categories/merge`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesUpdate
+     * @request PUT:/api/admin/skill-categories/{id}
+     */
+    adminSkillCategoriesUpdate: (
+      id: string,
+      data: SkillCategoryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesUpdateContents
+     * @request PUT:/api/admin/skill-categories/{id}/contents
+     */
+    adminSkillCategoriesUpdateContents: (
+      id: string,
+      data: UpdateCategoryContentsCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillCategoryAdminResponse, any>({
+        path: `/api/admin/skill-categories/${id}/contents`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillCategories
+     * @name AdminSkillCategoriesUpdateTreeMemberships
+     * @request PUT:/api/admin/skill-categories/{id}/tree-memberships
+     */
+    adminSkillCategoriesUpdateTreeMemberships: (
+      id: string,
+      data: UpdateCategoryTreeMembershipsCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<UpdateCategoryTreeMembershipsResponse, any>({
+        path: `/api/admin/skill-categories/${id}/tree-memberships`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  adminSkillTrees = {
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesCreate
+     * @request POST:/api/admin/skill-trees
+     */
+    adminSkillTreesCreate: (
+      data: CreateSkillTreeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<AdminSkillTreeResponse, any>({
+        path: `/api/admin/skill-trees`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesDelete
+     * @request DELETE:/api/admin/skill-trees/{id}
+     */
+    adminSkillTreesDelete: (
+      id: string,
+      data: DeleteSkillTreeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-trees/${id}`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesGetDeleteImpact
+     * @request GET:/api/admin/skill-trees/{id}/delete-impact
+     */
+    adminSkillTreesGetDeleteImpact: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDeleteImpactResponse, any>({
+        path: `/api/admin/skill-trees/${id}/delete-impact`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesGetDeleteImpact: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDeleteImpactResponse, any>(
+        doFetch ? `/api/admin/skill-trees/${id}/delete-impact` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesGetDeleteImpact: (
+      id: string,
+      data?:
+        | SkillTreeDeleteImpactResponse
+        | Promise<SkillTreeDeleteImpactResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDeleteImpactResponse>(
+        `/api/admin/skill-trees/${id}/delete-impact`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesGetDraft
+     * @request GET:/api/admin/skill-trees/{id}/draft
+     */
+    adminSkillTreesGetDraft: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDraftResponse, any>({
+        path: `/api/admin/skill-trees/${id}/draft`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesGetDraft: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDraftResponse, any>(
+        doFetch ? `/api/admin/skill-trees/${id}/draft` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesGetDraft: (
+      id: string,
+      data?: SkillTreeDraftResponse | Promise<SkillTreeDraftResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDraftResponse>(
+        `/api/admin/skill-trees/${id}/draft`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesList
+     * @request GET:/api/admin/skill-trees
+     */
+    adminSkillTreesList: (params: RequestParams = {}) =>
+      this.request<AdminSkillTreeResponse[], any>({
+        path: `/api/admin/skill-trees`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<AdminSkillTreeResponse[], any>(
+        doFetch ? `/api/admin/skill-trees` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesList: (
+      data?: AdminSkillTreeResponse[] | Promise<AdminSkillTreeResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<AdminSkillTreeResponse[]>(`/api/admin/skill-trees`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesPreviewDraft
+     * @request GET:/api/admin/skill-trees/{id}/draft/preview
+     */
+    adminSkillTreesPreviewDraft: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDetailResponse, any>({
+        path: `/api/admin/skill-trees/${id}/draft/preview`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminSkillTreesPreviewDraft: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDetailResponse, any>(
+        doFetch ? `/api/admin/skill-trees/${id}/draft/preview` : null,
+        options,
+      ),
+
+    mutateAdminSkillTreesPreviewDraft: (
+      id: string,
+      data?: SkillTreeDetailResponse | Promise<SkillTreeDetailResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDetailResponse>(
+        `/api/admin/skill-trees/${id}/draft/preview`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesPublish
+     * @request POST:/api/admin/skill-trees/{id}/publish
+     */
+    adminSkillTreesPublish: (
+      id: string,
+      data: PublishSkillTreeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/skill-trees/${id}/publish`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminSkillTrees
+     * @name AdminSkillTreesUpdateDraft
+     * @request PUT:/api/admin/skill-trees/{id}/draft
+     */
+    adminSkillTreesUpdateDraft: (
+      id: string,
+      data: UpdateSkillTreeDraftCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillTreeDraftResponse, any>({
+        path: `/api/admin/skill-trees/${id}/draft`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  learningRedirects = {
+    /**
+     * No description
+     *
+     * @tags LearningRedirects
+     * @name LearningRedirectsGet
+     * @request GET:/api/skill-tree-redirects/{slug}
+     */
+    learningRedirectsGet: (
+      slug: string,
+      query?: {
+        moduleId?: string | null;
+        itemId?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LearningRedirectResponse, any>({
+        path: `/api/skill-tree-redirects/${slug}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useLearningRedirectsGet: (
+      slug: string,
+      query?: {
+        moduleId?: string | null;
+        itemId?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<LearningRedirectResponse, any>(
+        doFetch ? [`/api/skill-tree-redirects/${slug}`, query] : null,
+        options,
+      ),
+
+    mutateLearningRedirectsGet: (
+      slug: string,
+      query?: {
+        moduleId?: string | null;
+        itemId?: string | null;
+      },
+      data?: LearningRedirectResponse | Promise<LearningRedirectResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<LearningRedirectResponse>(
+        [`/api/skill-tree-redirects/${slug}`, query],
+        data,
+        options,
+      ),
+  };
+  skillTreeEnrollments = {
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsEnroll
+     * @request POST:/api/skill-tree-enrollments/{id}
+     */
+    skillTreeEnrollmentsEnroll: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeEnrollmentResponse, any>({
+        path: `/api/skill-tree-enrollments/${id}`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsLeave
+     * @request DELETE:/api/skill-tree-enrollments/{id}
+     */
+    skillTreeEnrollmentsLeave: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/skill-tree-enrollments/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsList
+     * @request GET:/api/skill-tree-enrollments
+     */
+    skillTreeEnrollmentsList: (params: RequestParams = {}) =>
+      this.request<SkillTreeEnrollmentResponse[], any>({
+        path: `/api/skill-tree-enrollments`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useSkillTreeEnrollmentsList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeEnrollmentResponse[], any>(
+        doFetch ? `/api/skill-tree-enrollments` : null,
+        options,
+      ),
+
+    mutateSkillTreeEnrollmentsList: (
+      data?:
+        | SkillTreeEnrollmentResponse[]
+        | Promise<SkillTreeEnrollmentResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeEnrollmentResponse[]>(
+        `/api/skill-tree-enrollments`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags SkillTreeEnrollments
+     * @name SkillTreeEnrollmentsSelectCurrent
+     * @request PUT:/api/skill-tree-enrollments/{id}/current
+     */
+    skillTreeEnrollmentsSelectCurrent: (
+      id: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<SkillTreeEnrollmentResponse, any>({
+        path: `/api/skill-tree-enrollments/${id}/current`,
+        method: "PUT",
+        format: "json",
+        ...params,
+      }),
+  };
+  skillTrees = {
+    /**
+     * No description
+     *
+     * @tags SkillTrees
+     * @name SkillTreesDetail
+     * @request GET:/api/skill-trees/{id}
+     */
+    skillTreesDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SkillTreeDetailResponse, any>({
+        path: `/api/skill-trees/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useSkillTreesDetail: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<SkillTreeDetailResponse, any>(
+        doFetch ? `/api/skill-trees/${id}` : null,
+        options,
+      ),
+
+    mutateSkillTreesDetail: (
+      id: string,
+      data?: SkillTreeDetailResponse | Promise<SkillTreeDetailResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<SkillTreeDetailResponse>(`/api/skill-trees/${id}`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags SkillTrees
+     * @name SkillTreesList
+     * @request GET:/api/skill-trees
+     */
+    skillTreesList: (params: RequestParams = {}) =>
+      this.request<SkillTreeSummaryResponse[], any>({
+        path: `/api/skill-trees`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useSkillTreesList: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<SkillTreeSummaryResponse[], any>(
+        doFetch ? `/api/skill-trees` : null,
+        options,
+      ),
+
+    mutateSkillTreesList: (
+      data?: SkillTreeSummaryResponse[] | Promise<SkillTreeSummaryResponse[]>,
+      options?: MutatorOptions,
+    ) => mutate<SkillTreeSummaryResponse[]>(`/api/skill-trees`, data, options),
+  };
+  myLearning = {
+    /**
+     * No description
+     *
+     * @tags MyLearning
+     * @name MyLearningGet
+     * @request GET:/api/my-learning
+     */
+    myLearningGet: (
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<MyLearningResponse, any>({
+        path: `/api/my-learning`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useMyLearningGet: (
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<MyLearningResponse, any>(
+        doFetch ? [`/api/my-learning`, query] : null,
+        options,
+      ),
+
+    mutateMyLearningGet: (
+      query?: {
+        locale?: string | null;
+      },
+      data?: MyLearningResponse | Promise<MyLearningResponse>,
+      options?: MutatorOptions,
+    ) => mutate<MyLearningResponse>([`/api/my-learning`, query], data, options),
+  };
+  lessons = {
+    /**
+     * No description
+     *
+     * @tags Lessons
+     * @name LessonsComplete
+     * @request POST:/api/learning-lessons/{id}/complete
+     */
+    lessonsComplete: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/learning-lessons/${id}/complete`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Lessons
+     * @name LessonsGet
+     * @request GET:/api/learning-lessons/{id}
+     */
+    lessonsGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LessonContentResponse, any>({
+        path: `/api/learning-lessons/${id}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useLessonsGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<LessonContentResponse, any>(
+        doFetch ? [`/api/learning-lessons/${id}`, query] : null,
+        options,
+      ),
+
+    mutateLessonsGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?: LessonContentResponse | Promise<LessonContentResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<LessonContentResponse>(
+        [`/api/learning-lessons/${id}`, query],
+        data,
+        options,
+      ),
+  };
+  imports = {
+    /**
+     * No description
+     *
+     * @tags Imports
+     * @name ImportsGet
+     * @request GET:/api/admin/imports/{id}
+     */
+    importsGet: (id: string, params: RequestParams = {}) =>
+      this.request<ImportBatchResponse, any>({
+        path: `/api/admin/imports/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useImportsGet: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ImportBatchResponse, any>(
+        doFetch ? `/api/admin/imports/${id}` : null,
+        options,
+      ),
+
+    mutateImportsGet: (
+      id: string,
+      data?: ImportBatchResponse | Promise<ImportBatchResponse>,
+      options?: MutatorOptions,
+    ) => mutate<ImportBatchResponse>(`/api/admin/imports/${id}`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags Imports
+     * @name ImportsList
+     * @request GET:/api/admin/imports
+     */
+    importsList: (params: RequestParams = {}) =>
+      this.request<ImportBatchResponse[], any>({
+        path: `/api/admin/imports`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useImportsList: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<ImportBatchResponse[], any>(
+        doFetch ? `/api/admin/imports` : null,
+        options,
+      ),
+
+    mutateImportsList: (
+      data?: ImportBatchResponse[] | Promise<ImportBatchResponse[]>,
+      options?: MutatorOptions,
+    ) => mutate<ImportBatchResponse[]>(`/api/admin/imports`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags Imports
+     * @name ImportsUpload
+     * @request POST:/api/admin/imports/zip
+     */
+    importsUpload: (
+      data: {
+        /** @format binary */
+        package?: File | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<CanonicalImportResult, any>({
+        path: `/api/admin/imports/zip`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+  };
+  adminCohorts = {
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsAssign
+     * @request POST:/api/admin/cohorts/{id}/members
+     */
+    adminCohortsAssign: (
+      id: string,
+      data: CohortMembersCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/cohorts/${id}/members`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsClear
+     * @request DELETE:/api/admin/cohorts/{id}/members/{userId}
+     */
+    adminCohortsClear: (
+      id: string,
+      userId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/cohorts/${id}/members/${userId}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsCreate
+     * @request POST:/api/admin/cohorts
+     */
+    adminCohortsCreate: (data: CohortCommand, params: RequestParams = {}) =>
+      this.request<CohortResponse, any>({
+        path: `/api/admin/cohorts`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsList
+     * @request GET:/api/admin/cohorts
+     */
+    adminCohortsList: (params: RequestParams = {}) =>
+      this.request<CohortResponse[], any>({
+        path: `/api/admin/cohorts`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminCohortsList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<CohortResponse[], any>(
+        doFetch ? `/api/admin/cohorts` : null,
+        options,
+      ),
+
+    mutateAdminCohortsList: (
+      data?: CohortResponse[] | Promise<CohortResponse[]>,
+      options?: MutatorOptions,
+    ) => mutate<CohortResponse[]>(`/api/admin/cohorts`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsMembers
+     * @request GET:/api/admin/cohorts/{id}/members
+     */
+    adminCohortsMembers: (
+      id: string,
+      query?: {
+        search?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<CohortMemberResponse[], any>({
+        path: `/api/admin/cohorts/${id}/members`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useAdminCohortsMembers: (
+      id: string,
+      query?: {
+        search?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<CohortMemberResponse[], any>(
+        doFetch ? [`/api/admin/cohorts/${id}/members`, query] : null,
+        options,
+      ),
+
+    mutateAdminCohortsMembers: (
+      id: string,
+      query?: {
+        search?: string | null;
+      },
+      data?: CohortMemberResponse[] | Promise<CohortMemberResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<CohortMemberResponse[]>(
+        [`/api/admin/cohorts/${id}/members`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsRename
+     * @request PUT:/api/admin/cohorts/{id}
+     */
+    adminCohortsRename: (
+      id: string,
+      data: CohortCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/cohorts/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminCohorts
+     * @name AdminCohortsSetStatus
+     * @request POST:/api/admin/cohorts/{id}/status
+     */
+    adminCohortsSetStatus: (
+      id: string,
+      data: CohortStatusCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/cohorts/${id}/status`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+  };
+  adminDashboardProjection = {
+    /**
+     * No description
+     *
+     * @tags AdminDashboardProjection
+     * @name AdminDashboardProjectionRebuild
+     * @request POST:/api/admin/dashboard/projection/rebuild
+     */
+    adminDashboardProjectionRebuild: (params: RequestParams = {}) =>
+      this.request<DailySolveRebuildResult, any>({
+        path: `/api/admin/dashboard/projection/rebuild`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+  };
+  adminDashboards = {
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsCreate
+     * @request POST:/api/admin/dashboards
+     */
+    adminDashboardsCreate: (
+      data: DashboardCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<AdminDashboardResponse, any>({
+        path: `/api/admin/dashboards`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsCreateToken
+     * @request POST:/api/admin/dashboards/{id}/tokens
+     */
+    adminDashboardsCreateToken: (
+      id: string,
+      data: TokenExpiryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<DashboardTokenResult, any>({
+        path: `/api/admin/dashboards/${id}/tokens`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsList
+     * @request GET:/api/admin/dashboards
+     */
+    adminDashboardsList: (params: RequestParams = {}) =>
+      this.request<AdminDashboardResponse[], any>({
+        path: `/api/admin/dashboards`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminDashboardsList: (
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<AdminDashboardResponse[], any>(
+        doFetch ? `/api/admin/dashboards` : null,
+        options,
+      ),
+
+    mutateAdminDashboardsList: (
+      data?: AdminDashboardResponse[] | Promise<AdminDashboardResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<AdminDashboardResponse[]>(`/api/admin/dashboards`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsListTokens
+     * @request GET:/api/admin/dashboards/{id}/tokens
+     */
+    adminDashboardsListTokens: (id: string, params: RequestParams = {}) =>
+      this.request<DashboardTokenSummaryResponse[], any>({
+        path: `/api/admin/dashboards/${id}/tokens`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useAdminDashboardsListTokens: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<DashboardTokenSummaryResponse[], any>(
+        doFetch ? `/api/admin/dashboards/${id}/tokens` : null,
+        options,
+      ),
+
+    mutateAdminDashboardsListTokens: (
+      id: string,
+      data?:
+        | DashboardTokenSummaryResponse[]
+        | Promise<DashboardTokenSummaryResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<DashboardTokenSummaryResponse[]>(
+        `/api/admin/dashboards/${id}/tokens`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsRevokeToken
+     * @request POST:/api/admin/dashboards/{id}/tokens/{tokenId}/revoke
+     */
+    adminDashboardsRevokeToken: (
+      id: string,
+      tokenId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/dashboards/${id}/tokens/${tokenId}/revoke`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsRotateToken
+     * @request POST:/api/admin/dashboards/{id}/tokens/{tokenId}/rotate
+     */
+    adminDashboardsRotateToken: (
+      id: string,
+      tokenId: string,
+      data: TokenExpiryCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<DashboardTokenResult, any>({
+        path: `/api/admin/dashboards/${id}/tokens/${tokenId}/rotate`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminDashboards
+     * @name AdminDashboardsUpdate
+     * @request PUT:/api/admin/dashboards/{id}
+     */
+    adminDashboardsUpdate: (
+      id: string,
+      data: DashboardCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/dashboards/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+  };
+  dashboards = {
+    /**
+     * No description
+     *
+     * @tags Dashboards
+     * @name DashboardsGet
+     * @request GET:/api/dashboards/{id}
+     */
+    dashboardsGet: (
+      id: string,
+      query?: {
+        /** @format guid */
+        cohortId?: string | null;
+        search?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<DashboardSnapshotResponse, any>({
+        path: `/api/dashboards/${id}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useDashboardsGet: (
+      id: string,
+      query?: {
+        /** @format guid */
+        cohortId?: string | null;
+        search?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<DashboardSnapshotResponse, any>(
+        doFetch ? [`/api/dashboards/${id}`, query] : null,
+        options,
+      ),
+
+    mutateDashboardsGet: (
+      id: string,
+      query?: {
+        /** @format guid */
+        cohortId?: string | null;
+        search?: string | null;
+      },
+      data?: DashboardSnapshotResponse | Promise<DashboardSnapshotResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<DashboardSnapshotResponse>(
+        [`/api/dashboards/${id}`, query],
+        data,
+        options,
+      ),
+  };
+  challengeInstances = {
+    /**
+     * No description
+     *
+     * @tags ChallengeInstances
+     * @name ChallengeInstancesExtend
+     * @request POST:/api/challenges/{challengeId}/instances/extend
+     */
+    challengeInstancesExtend: (
+      challengeId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeInstanceResponse, any>({
+        path: `/api/challenges/${challengeId}/instances/extend`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ChallengeInstances
+     * @name ChallengeInstancesGet
+     * @request GET:/api/challenges/{challengeId}/instances
+     */
+    challengeInstancesGet: (challengeId: string, params: RequestParams = {}) =>
+      this.request<ChallengeInstanceResponse, any>({
+        path: `/api/challenges/${challengeId}/instances`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    useChallengeInstancesGet: (
+      challengeId: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeInstanceResponse, any>(
+        doFetch ? `/api/challenges/${challengeId}/instances` : null,
+        options,
+      ),
+
+    mutateChallengeInstancesGet: (
+      challengeId: string,
+      data?: ChallengeInstanceResponse | Promise<ChallengeInstanceResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeInstanceResponse>(
+        `/api/challenges/${challengeId}/instances`,
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags ChallengeInstances
+     * @name ChallengeInstancesStart
+     * @request POST:/api/challenges/{challengeId}/instances
+     */
+    challengeInstancesStart: (
+      challengeId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeInstanceResponse, any>({
+        path: `/api/challenges/${challengeId}/instances`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ChallengeInstances
+     * @name ChallengeInstancesStop
+     * @request DELETE:/api/challenges/{challengeId}/instances
+     */
+    challengeInstancesStop: (challengeId: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/challenges/${challengeId}/instances`,
+        method: "DELETE",
+        ...params,
+      }),
+  };
+  challenges = {
+    /**
+     * No description
+     *
+     * @tags Challenges
+     * @name ChallengesDownloadAttachment
+     * @request GET:/api/challenges/{id}/attachment
+     */
+    challengesDownloadAttachment: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/challenges/${id}/attachment`,
+        method: "GET",
+        ...params,
+      }),
+    useChallengesDownloadAttachment: (
+      id: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<Blob, any>(
+        doFetch ? `/api/challenges/${id}/attachment` : null,
+        options,
+      ),
+
+    mutateChallengesDownloadAttachment: (
+      id: string,
+      data?: Blob | Promise<Blob>,
+      options?: MutatorOptions,
+    ) => mutate<Blob>(`/api/challenges/${id}/attachment`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags Challenges
+     * @name ChallengesGet
+     * @request GET:/api/challenges/{id}
+     */
+    challengesGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeRuntimeDetailResponse, any>({
+        path: `/api/challenges/${id}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useChallengesGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeRuntimeDetailResponse, any>(
+        doFetch ? [`/api/challenges/${id}`, query] : null,
+        options,
+      ),
+
+    mutateChallengesGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?:
+        | ChallengeRuntimeDetailResponse
+        | Promise<ChallengeRuntimeDetailResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeRuntimeDetailResponse>(
+        [`/api/challenges/${id}`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Challenges
+     * @name ChallengesNextHint
+     * @request GET:/api/challenges/{id}/hints/next
+     */
+    challengesNextHint: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeHintResponse, any>({
+        path: `/api/challenges/${id}/hints/next`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useChallengesNextHint: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeHintResponse, any>(
+        doFetch ? [`/api/challenges/${id}/hints/next`, query] : null,
+        options,
+      ),
+
+    mutateChallengesNextHint: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?: ChallengeHintResponse | Promise<ChallengeHintResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeHintResponse>(
+        [`/api/challenges/${id}/hints/next`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags Challenges
+     * @name ChallengesWriteup
+     * @request GET:/api/challenges/{id}/writeup
+     */
+    challengesWriteup: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeWriteupResponse, any>({
+        path: `/api/challenges/${id}/writeup`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useChallengesWriteup: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeWriteupResponse, any>(
+        doFetch ? [`/api/challenges/${id}/writeup`, query] : null,
+        options,
+      ),
+
+    mutateChallengesWriteup: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?: ChallengeWriteupResponse | Promise<ChallengeWriteupResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeWriteupResponse>(
+        [`/api/challenges/${id}/writeup`, query],
+        data,
+        options,
+      ),
+  };
+  challengeSubmissions = {
+    /**
+     * No description
+     *
+     * @tags ChallengeSubmissions
+     * @name ChallengeSubmissionsHistory
+     * @request GET:/api/challenges/{challengeId}/submissions
+     */
+    challengeSubmissionsHistory: (
+      challengeId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/challenges/${challengeId}/submissions`,
+        method: "GET",
+        ...params,
+      }),
+    useChallengeSubmissionsHistory: (
+      challengeId: string,
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<Blob, any>(
+        doFetch ? `/api/challenges/${challengeId}/submissions` : null,
+        options,
+      ),
+
+    mutateChallengeSubmissionsHistory: (
+      challengeId: string,
+      data?: Blob | Promise<Blob>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<Blob>(`/api/challenges/${challengeId}/submissions`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags ChallengeSubmissions
+     * @name ChallengeSubmissionsSubmit
+     * @request POST:/api/challenges/{challengeId}/submissions
+     */
+    challengeSubmissionsSubmit: (
+      challengeId: string,
+      data: ChallengeSubmissionRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeSubmissionResult, any>({
+        path: `/api/challenges/${challengeId}/submissions`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  adminChallenges = {
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesCreate
+     * @request POST:/api/admin/challenges
+     */
+    adminChallengesCreate: (
+      data: ChallengeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeEditResponse, any>({
+        path: `/api/admin/challenges`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesDelete
+     * @request DELETE:/api/admin/challenges/{id}
+     */
+    adminChallengesDelete: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/admin/challenges/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesGet
+     * @request GET:/api/admin/challenges/{id}
+     */
+    adminChallengesGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeSummaryResponse, any>({
+        path: `/api/admin/challenges/${id}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useAdminChallengesGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeSummaryResponse, any>(
+        doFetch ? [`/api/admin/challenges/${id}`, query] : null,
+        options,
+      ),
+
+    mutateAdminChallengesGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?: ChallengeSummaryResponse | Promise<ChallengeSummaryResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeSummaryResponse>(
+        [`/api/admin/challenges/${id}`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesGetForEdit
+     * @request GET:/api/admin/challenges/{id}/edit
+     */
+    adminChallengesGetForEdit: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeEditResponse, any>({
+        path: `/api/admin/challenges/${id}/edit`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useAdminChallengesGetForEdit: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeEditResponse, any>(
+        doFetch ? [`/api/admin/challenges/${id}/edit`, query] : null,
+        options,
+      ),
+
+    mutateAdminChallengesGetForEdit: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?: ChallengeEditResponse | Promise<ChallengeEditResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeEditResponse>(
+        [`/api/admin/challenges/${id}/edit`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesList
+     * @request GET:/api/admin/challenges
+     */
+    adminChallengesList: (
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeSummaryResponse[], any>({
+        path: `/api/admin/challenges`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useAdminChallengesList: (
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<ChallengeSummaryResponse[], any>(
+        doFetch ? [`/api/admin/challenges`, query] : null,
+        options,
+      ),
+
+    mutateAdminChallengesList: (
+      query?: {
+        locale?: string | null;
+      },
+      data?: ChallengeSummaryResponse[] | Promise<ChallengeSummaryResponse[]>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<ChallengeSummaryResponse[]>(
+        [`/api/admin/challenges`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesMerge
+     * @request POST:/api/admin/challenges/{id}/merge
+     */
+    adminChallengesMerge: (
+      id: string,
+      data: MergeChallengeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeMergeResult, any>({
+        path: `/api/admin/challenges/${id}/merge`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesPublish
+     * @request POST:/api/admin/challenges/{id}/publish
+     */
+    adminChallengesPublish: (
+      id: string,
+      data: PublishContentCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/challenges/${id}/publish`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminChallenges
+     * @name AdminChallengesUpdate
+     * @request PUT:/api/admin/challenges/{id}
+     */
+    adminChallengesUpdate: (
+      id: string,
+      data: ChallengeCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<ChallengeEditResponse, any>({
+        path: `/api/admin/challenges/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  adminLessons = {
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsCreate
+     * @request POST:/api/admin/lessons
+     */
+    adminLessonsCreate: (data: LessonCommand, params: RequestParams = {}) =>
+      this.request<LessonResponse, any>({
+        path: `/api/admin/lessons`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsDelete
+     * @request DELETE:/api/admin/lessons/{id}
+     */
+    adminLessonsDelete: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/api/admin/lessons/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsGet
+     * @request GET:/api/admin/lessons/{id}
+     */
+    adminLessonsGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LessonResponse, any>({
+        path: `/api/admin/lessons/${id}`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useAdminLessonsGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<LessonResponse, any>(
+        doFetch ? [`/api/admin/lessons/${id}`, query] : null,
+        options,
+      ),
+
+    mutateAdminLessonsGet: (
+      id: string,
+      query?: {
+        locale?: string | null;
+      },
+      data?: LessonResponse | Promise<LessonResponse>,
+      options?: MutatorOptions,
+    ) =>
+      mutate<LessonResponse>(
+        [`/api/admin/lessons/${id}`, query],
+        data,
+        options,
+      ),
+
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsList
+     * @request GET:/api/admin/lessons
+     */
+    adminLessonsList: (
+      query?: {
+        locale?: string | null;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<LessonResponse[], any>({
+        path: `/api/admin/lessons`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+    useAdminLessonsList: (
+      query?: {
+        locale?: string | null;
+      },
+      options?: SWRConfiguration,
+      doFetch: boolean = true,
+    ) =>
+      useSWR<LessonResponse[], any>(
+        doFetch ? [`/api/admin/lessons`, query] : null,
+        options,
+      ),
+
+    mutateAdminLessonsList: (
+      query?: {
+        locale?: string | null;
+      },
+      data?: LessonResponse[] | Promise<LessonResponse[]>,
+      options?: MutatorOptions,
+    ) => mutate<LessonResponse[]>([`/api/admin/lessons`, query], data, options),
+
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsPublish
+     * @request POST:/api/admin/lessons/{id}/publish
+     */
+    adminLessonsPublish: (
+      id: string,
+      data: PublishContentCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<Blob, any>({
+        path: `/api/admin/lessons/${id}/publish`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AdminLessons
+     * @name AdminLessonsUpdate
+     * @request PUT:/api/admin/lessons/{id}
+     */
+    adminLessonsUpdate: (
+      id: string,
+      data: LessonCommand,
+      params: RequestParams = {},
+    ) =>
+      this.request<LessonResponse, any>({
+        path: `/api/admin/lessons/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   account = {
     /**
      * @description Use this API to update user's avatar. User permissions required.
@@ -2503,28 +3849,12 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get user information. User permissions required.
-     *
-     * @tags Account
-     * @name AccountProfile
-     * @summary Get user information
-     * @request GET:/api/account/profile
-     */
     useAccountProfile: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ProfileUserInfoModel, RequestResponse>(
         doFetch ? `/api/account/profile` : null,
         options,
       ),
 
-    /**
-     * @description Use this API to get user information. User permissions required.
-     *
-     * @tags Account
-     * @name AccountProfile
-     * @summary Get user information
-     * @request GET:/api/account/profile
-     */
     mutateAccountProfile: (
       data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
       options?: MutatorOptions,
@@ -2619,22 +3949,6 @@ export class Api<
       }),
 
     /**
-     * @description Use this API to delete team, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminDeleteTeam
-     * @summary Delete team
-     * @request DELETE:/api/admin/teams/{id}
-     */
-    adminDeleteTeam: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/admin/teams/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Use this API to delete user, requires Admin permission
      *
      * @tags Admin
@@ -2662,21 +3976,6 @@ export class Api<
       this.request<void, RequestResponse>({
         path: `/api/admin/instances/${id}`,
         method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Use this API to download all Writeups, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminDownloadAllWriteups
-     * @summary Download all Writeups
-     * @request GET:/api/admin/writeups/{id}/all
-     */
-    adminDownloadAllWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/writeups/${id}/all`,
-        method: "GET",
         ...params,
       }),
 
@@ -2712,14 +4011,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get all files, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminFiles
-     * @summary Get all files
-     * @request GET:/api/admin/files
-     */
     useAdminFiles: (
       query?: {
         /**
@@ -2743,14 +4034,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Use this API to get all files, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminFiles
-     * @summary Get all files
-     * @request GET:/api/admin/files
-     */
     mutateAdminFiles: (
       query?: {
         /**
@@ -2790,28 +4073,12 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get global settings, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminGetConfigs
-     * @summary Get configuration
-     * @request GET:/api/admin/config
-     */
     useAdminGetConfigs: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ConfigEditModel, RequestResponse>(
         doFetch ? `/api/admin/config` : null,
         options,
       ),
 
-    /**
-     * @description Use this API to get global settings, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminGetConfigs
-     * @summary Get configuration
-     * @request GET:/api/admin/config
-     */
     mutateAdminGetConfigs: (
       data?: ConfigEditModel | Promise<ConfigEditModel>,
       options?: MutatorOptions,
@@ -2832,28 +4099,12 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get all container instances, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminInstances
-     * @summary Get all container instances
-     * @request GET:/api/admin/instances
-     */
     useAdminInstances: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<ArrayResponseOfContainerInstanceModel, RequestResponse>(
         doFetch ? `/api/admin/instances` : null,
         options,
       ),
 
-    /**
-     * @description Use this API to get all container instances, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminInstances
-     * @summary Get all container instances
-     * @request GET:/api/admin/instances
-     */
     mutateAdminInstances: (
       data?:
         | ArrayResponseOfContainerInstanceModel
@@ -2900,14 +4151,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get all logs, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminLogs
-     * @summary Get all logs
-     * @request GET:/api/admin/logs
-     */
     useAdminLogs: (
       query?: {
         /** @default "All" */
@@ -2933,14 +4176,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Use this API to get all logs, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminLogs
-     * @summary Get all logs
-     * @request GET:/api/admin/logs
-     */
     mutateAdminLogs: (
       query?: {
         /** @default "All" */
@@ -2961,27 +4196,6 @@ export class Api<
       data?: LogMessageModel[] | Promise<LogMessageModel[]>,
       options?: MutatorOptions,
     ) => mutate<LogMessageModel[]>([`/api/admin/logs`, query], data, options),
-
-    /**
-     * @description Use this API to update team participation status, review application, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminParticipation
-     * @summary Update participation status
-     * @request PUT:/api/admin/participation/{id}
-     */
-    adminParticipation: (
-      id: number,
-      data: ParticipationEditModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/participation/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
 
     /**
      * @description Use this API to reset the platform Logo, requires Admin permission
@@ -3015,28 +4229,6 @@ export class Api<
       }),
 
     /**
-     * @description Use this API to search teams, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminSearchTeams
-     * @summary Search teams
-     * @request POST:/api/admin/teams/search
-     */
-    adminSearchTeams: (
-      query?: {
-        hint?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
-        path: `/api/admin/teams/search`,
-        method: "POST",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-
-    /**
      * @description Use this API to search users, requires Admin permission
      *
      * @tags Admin
@@ -3057,103 +4249,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-
-    /**
-     * @description Use this API to get all teams, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminTeams
-     * @summary Get all team information
-     * @request GET:/api/admin/teams
-     */
-    adminTeams: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 500
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ArrayResponseOfTeamInfoModel, RequestResponse>({
-        path: `/api/admin/teams`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Use this API to get all teams, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminTeams
-     * @summary Get all team information
-     * @request GET:/api/admin/teams
-     */
-    useAdminTeams: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 500
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ArrayResponseOfTeamInfoModel, RequestResponse>(
-        doFetch ? [`/api/admin/teams`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Use this API to get all teams, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminTeams
-     * @summary Get all team information
-     * @request GET:/api/admin/teams
-     */
-    mutateAdminTeams: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 500
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      data?:
-        | ArrayResponseOfTeamInfoModel
-        | Promise<ArrayResponseOfTeamInfoModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ArrayResponseOfTeamInfoModel>(
-        [`/api/admin/teams`, query],
-        data,
-        options,
-      ),
 
     /**
      * @description Use this API to change global settings, requires Admin permission
@@ -3196,27 +4291,6 @@ export class Api<
       }),
 
     /**
-     * @description Use this API to modify team information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminUpdateTeam
-     * @summary Modify team information
-     * @request PUT:/api/admin/teams/{id}
-     */
-    adminUpdateTeam: (
-      id: number,
-      data: AdminTeamModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/admin/teams/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
      * @description Use this API to modify user information, requires Admin permission
      *
      * @tags Admin
@@ -3252,14 +4326,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get user information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminUserInfo
-     * @summary Get user information
-     * @request GET:/api/admin/users/{userid}
-     */
     useAdminUserInfo: (
       userid: string,
       options?: SWRConfiguration,
@@ -3270,14 +4336,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Use this API to get user information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminUserInfo
-     * @summary Get user information
-     * @request GET:/api/admin/users/{userid}
-     */
     mutateAdminUserInfo: (
       userid: string,
       data?: ProfileUserInfoModel | Promise<ProfileUserInfoModel>,
@@ -3317,14 +4375,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Use this API to get all users, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminUsers
-     * @summary Get all users
-     * @request GET:/api/admin/users
-     */
     useAdminUsers: (
       query?: {
         /**
@@ -3348,14 +4398,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Use this API to get all users, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminUsers
-     * @summary Get all users
-     * @request GET:/api/admin/users
-     */
     mutateAdminUsers: (
       query?: {
         /**
@@ -3381,53 +4423,6 @@ export class Api<
         data,
         options,
       ),
-
-    /**
-     * @description Use this API to get Writeup basic information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminWriteups
-     * @summary Get all Writeup basic information
-     * @request GET:/api/admin/writeups/{id}
-     */
-    adminWriteups: (id: number, params: RequestParams = {}) =>
-      this.request<WriteupInfoModel, RequestResponse>({
-        path: `/api/admin/writeups/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Use this API to get Writeup basic information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminWriteups
-     * @summary Get all Writeup basic information
-     * @request GET:/api/admin/writeups/{id}
-     */
-    useAdminWriteups: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<WriteupInfoModel, RequestResponse>(
-        doFetch ? `/api/admin/writeups/${id}` : null,
-        options,
-      ),
-
-    /**
-     * @description Use this API to get Writeup basic information, requires Admin permission
-     *
-     * @tags Admin
-     * @name AdminWriteups
-     * @summary Get all Writeup basic information
-     * @request GET:/api/admin/writeups/{id}
-     */
-    mutateAdminWriteups: (
-      id: number,
-      data?: WriteupInfoModel | Promise<WriteupInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<WriteupInfoModel>(`/api/admin/writeups/${id}`, data, options),
   };
   apiToken = {
     /**
@@ -3466,14 +4461,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * No description
-     *
-     * @tags ApiToken
-     * @name ApiTokenListTokens
-     * @summary Lists all API tokens.
-     * @request GET:/api/tokens
-     */
     useApiTokenListTokens: (
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -3483,14 +4470,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * No description
-     *
-     * @tags ApiToken
-     * @name ApiTokenListTokens
-     * @summary Lists all API tokens.
-     * @request GET:/api/tokens
-     */
     mutateApiTokenListTokens: (
       data?: ApiToken[] | Promise<ApiToken[]>,
       options?: MutatorOptions,
@@ -3600,101 +4579,16 @@ export class Api<
         ...params,
       }),
   };
-  edit = {
+  editPosts = {
     /**
-     * @description Adding a game challenge flag requires administrator privileges
+     * No description
      *
-     * @tags Edit
-     * @name EditAddFlags
-     * @summary Add Game Challenge Flag
-     * @request POST:/api/edit/games/{id}/challenges/{cId}/flags
-     */
-    editAddFlags: (
-      id: number,
-      cId: number,
-      data: FlagCreateModel[],
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/flags`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Adding a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditAddGame
-     * @summary Add Game
-     * @request POST:/api/edit/games
-     */
-    editAddGame: (data: GameInfoModel, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Adding a game challenge requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditAddGameChallenge
-     * @summary Add Game Challenge
-     * @request POST:/api/edit/games/{id}/challenges
-     */
-    editAddGameChallenge: (
-      id: number,
-      data: ChallengeInfoModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<ChallengeEditDetailModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Adding a game notice requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditAddGameNotice
-     * @summary Add Game Notice
-     * @request POST:/api/edit/games/{id}/notices
-     */
-    editAddGameNotice: (
-      id: number,
-      data: GameNoticeModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/notices`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Adding a post requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditAddPost
-     * @summary Add Post
+     * @tags EditPosts
+     * @name EditPostsCreate
      * @request POST:/api/edit/posts
      */
-    editAddPost: (data: PostEditModel, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
+    editPostsCreate: (data: PostEditModel, params: RequestParams = {}) =>
+      this.request<string, any>({
         path: `/api/edit/posts`,
         method: "POST",
         body: data,
@@ -3704,2099 +4598,37 @@ export class Api<
       }),
 
     /**
-     * @description Add a new division for a game; requires administrator privileges
+     * No description
      *
-     * @tags Edit
-     * @name EditCreateDivision
-     * @summary Create Division
-     * @request POST:/api/edit/games/{id}/divisions
-     */
-    editCreateDivision: (
-      id: number,
-      data: DivisionCreateModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<Division, RequestResponse>({
-        path: `/api/edit/games/${id}/divisions`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Testing a game challenge container requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditCreateTestContainer
-     * @summary Test Game Challenge Container
-     * @request POST:/api/edit/games/{id}/challenges/{cId}/container
-     */
-    editCreateTestContainer: (
-      id: number,
-      cId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/container`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Delete a division for a game; requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditDeleteDivision
-     * @summary Delete Division
-     * @request DELETE:/api/edit/games/{id}/divisions/{divisionId}
-     */
-    editDeleteDivision: (
-      id: number,
-      divisionId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/divisions/${divisionId}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Deleting a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditDeleteGame
-     * @summary Delete Game
-     * @request DELETE:/api/edit/games/{id}
-     */
-    editDeleteGame: (id: number, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Deleting a game notice requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditDeleteGameNotice
-     * @summary Delete Game Notice
-     * @request DELETE:/api/edit/games/{id}/notices/{noticeId}
-     */
-    editDeleteGameNotice: (
-      id: number,
-      noticeId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/notices/${noticeId}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Deleting all WriteUps for a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditDeleteGameWriteUps
-     * @summary Delete All WriteUps
-     * @request DELETE:/api/edit/games/{id}/writeups
-     */
-    editDeleteGameWriteUps: (id: number, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}/writeups`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Deleting a post requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditDeletePost
-     * @summary Delete Post
+     * @tags EditPosts
+     * @name EditPostsDelete
      * @request DELETE:/api/edit/posts/{id}
      */
-    editDeletePost: (id: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
+    editPostsDelete: (id: string, params: RequestParams = {}) =>
+      this.request<Blob, any>({
         path: `/api/edit/posts/${id}`,
         method: "DELETE",
         ...params,
       }),
 
     /**
-     * @description Destroying a test game challenge container requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditDestroyTestContainer
-     * @summary Destroy Test Game Challenge Container
-     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/container
-     */
-    editDestroyTestContainer: (
-      id: number,
-      cId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/container`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Export game with all challenges, divisions, and attachments as a ZIP file; requires Admin permission
-     *
-     * @tags Edit
-     * @name EditExportGame
-     * @summary Export game package
-     * @request POST:/api/edit/games/{id}/export
-     */
-    editExportGame: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/export`,
-        method: "POST",
-        ...params,
-      }),
-
-    /**
      * No description
      *
-     * @tags Edit
-     * @name EditFlushScoreboardCache
-     * @summary Flush Scoreboard Cache
-     * @request POST:/api/edit/games/{id}/scoreboard/flush
-     */
-    editFlushScoreboardCache: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/scoreboard/flush`,
-        method: "POST",
-        ...params,
-      }),
-
-    /**
-     * @description Retrieve all divisions for a game; requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetDivisions
-     * @summary Get Divisions
-     * @request GET:/api/edit/games/{id}/divisions
-     */
-    editGetDivisions: (id: number, params: RequestParams = {}) =>
-      this.request<Division[], RequestResponse>({
-        path: `/api/edit/games/${id}/divisions`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieve all divisions for a game; requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetDivisions
-     * @summary Get Divisions
-     * @request GET:/api/edit/games/{id}/divisions
-     */
-    useEditGetDivisions: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<Division[], RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/divisions` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieve all divisions for a game; requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetDivisions
-     * @summary Get Divisions
-     * @request GET:/api/edit/games/{id}/divisions
-     */
-    mutateEditGetDivisions: (
-      id: number,
-      data?: Division[] | Promise<Division[]>,
-      options?: MutatorOptions,
-    ) => mutate<Division[]>(`/api/edit/games/${id}/divisions`, data, options),
-
-    /**
-     * @description Retrieving a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGame
-     * @summary Get Game
-     * @request GET:/api/edit/games/{id}
-     */
-    editGetGame: (id: number, params: RequestParams = {}) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieving a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGame
-     * @summary Get Game
-     * @request GET:/api/edit/games/{id}
-     */
-    useEditGetGame: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<GameInfoModel, RequestResponse>(
-        doFetch ? `/api/edit/games/${id}` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieving a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGame
-     * @summary Get Game
-     * @request GET:/api/edit/games/{id}
-     */
-    mutateEditGetGame: (
-      id: number,
-      data?: GameInfoModel | Promise<GameInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<GameInfoModel>(`/api/edit/games/${id}`, data, options),
-
-    /**
-     * @description Retrieving a game challenge requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameChallenge
-     * @summary Get Game Challenge
-     * @request GET:/api/edit/games/{id}/challenges/{cId}
-     */
-    editGetGameChallenge: (
-      id: number,
-      cId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<ChallengeEditDetailModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieving a game challenge requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameChallenge
-     * @summary Get Game Challenge
-     * @request GET:/api/edit/games/{id}/challenges/{cId}
-     */
-    useEditGetGameChallenge: (
-      id: number,
-      cId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ChallengeEditDetailModel, RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/challenges/${cId}` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieving a game challenge requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameChallenge
-     * @summary Get Game Challenge
-     * @request GET:/api/edit/games/{id}/challenges/{cId}
-     */
-    mutateEditGetGameChallenge: (
-      id: number,
-      cId: number,
-      data?: ChallengeEditDetailModel | Promise<ChallengeEditDetailModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ChallengeEditDetailModel>(
-        `/api/edit/games/${id}/challenges/${cId}`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieving all game challenges requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameChallenges
-     * @summary Get All Game Challenges
-     * @request GET:/api/edit/games/{id}/challenges
-     */
-    editGetGameChallenges: (id: number, params: RequestParams = {}) =>
-      this.request<ChallengeInfoModel[], RequestResponse>({
-        path: `/api/edit/games/${id}/challenges`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieving all game challenges requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameChallenges
-     * @summary Get All Game Challenges
-     * @request GET:/api/edit/games/{id}/challenges
-     */
-    useEditGetGameChallenges: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ChallengeInfoModel[], RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/challenges` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieving all game challenges requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameChallenges
-     * @summary Get All Game Challenges
-     * @request GET:/api/edit/games/{id}/challenges
-     */
-    mutateEditGetGameChallenges: (
-      id: number,
-      data?: ChallengeInfoModel[] | Promise<ChallengeInfoModel[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ChallengeInfoModel[]>(
-        `/api/edit/games/${id}/challenges`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieving game notices requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameNotices
-     * @summary Get Game Notices
-     * @request GET:/api/edit/games/{id}/notices
-     */
-    editGetGameNotices: (id: number, params: RequestParams = {}) =>
-      this.request<GameNotice[], RequestResponse>({
-        path: `/api/edit/games/${id}/notices`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieving game notices requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameNotices
-     * @summary Get Game Notices
-     * @request GET:/api/edit/games/{id}/notices
-     */
-    useEditGetGameNotices: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<GameNotice[], RequestResponse>(
-        doFetch ? `/api/edit/games/${id}/notices` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieving game notices requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGameNotices
-     * @summary Get Game Notices
-     * @request GET:/api/edit/games/{id}/notices
-     */
-    mutateEditGetGameNotices: (
-      id: number,
-      data?: GameNotice[] | Promise<GameNotice[]>,
-      options?: MutatorOptions,
-    ) => mutate<GameNotice[]>(`/api/edit/games/${id}/notices`, data, options),
-
-    /**
-     * @description Retrieving the game list requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGames
-     * @summary Get Game List
-     * @request GET:/api/edit/games
-     */
-    editGetGames: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         */
-        count?: number;
-        /** @format int32 */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ArrayResponseOfGameInfoModel, RequestResponse>({
-        path: `/api/edit/games`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieving the game list requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGames
-     * @summary Get Game List
-     * @request GET:/api/edit/games
-     */
-    useEditGetGames: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         */
-        count?: number;
-        /** @format int32 */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ArrayResponseOfGameInfoModel, RequestResponse>(
-        doFetch ? [`/api/edit/games`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieving the game list requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditGetGames
-     * @summary Get Game List
-     * @request GET:/api/edit/games
-     */
-    mutateEditGetGames: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         */
-        count?: number;
-        /** @format int32 */
-        skip?: number;
-      },
-      data?:
-        | ArrayResponseOfGameInfoModel
-        | Promise<ArrayResponseOfGameInfoModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ArrayResponseOfGameInfoModel>(
-        [`/api/edit/games`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * @description Import game from a ZIP package; requires Admin permission
-     *
-     * @tags Edit
-     * @name EditImportGame
-     * @summary Import game package
-     * @request POST:/api/edit/games/import
-     */
-    editImportGame: (
-      data: {
-        /** @format binary */
-        file?: File | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<number, RequestResponse>({
-        path: `/api/edit/games/import`,
-        method: "POST",
-        body: data,
-        type: ContentType.FormData,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Deleting a game challenge flag requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditRemoveFlag
-     * @summary Delete Game Challenge Flag
-     * @request DELETE:/api/edit/games/{id}/challenges/{cId}/flags/{fId}
-     */
-    editRemoveFlag: (
-      id: number,
-      cId: number,
-      fId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<TaskStatus, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/flags/${fId}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Deleting a game challenge requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditRemoveGameChallenge
-     * @summary Delete Game Challenge
-     * @request DELETE:/api/edit/games/{id}/challenges/{cId}
-     */
-    editRemoveGameChallenge: (
-      id: number,
-      cId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Updating a game challenge attachment requires administrator privileges; only for non-dynamic attachment challenges
-     *
-     * @tags Edit
-     * @name EditUpdateAttachment
-     * @summary Update Game Challenge Attachment
-     * @request POST:/api/edit/games/{id}/challenges/{cId}/attachment
-     */
-    editUpdateAttachment: (
-      id: number,
-      cId: number,
-      data: AttachmentCreateModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<number, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}/attachment`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Update a division for a game; requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditUpdateDivision
-     * @summary Update Division
-     * @request PUT:/api/edit/games/{id}/divisions/{divisionId}
-     */
-    editUpdateDivision: (
-      id: number,
-      divisionId: number,
-      data: DivisionEditModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<Division, RequestResponse>({
-        path: `/api/edit/games/${id}/divisions/${divisionId}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Updating a game requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditUpdateGame
-     * @summary Update Game
-     * @request PUT:/api/edit/games/{id}
-     */
-    editUpdateGame: (
-      id: number,
-      data: GameInfoModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<GameInfoModel, RequestResponse>({
-        path: `/api/edit/games/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Updating a game challenge, requires administrator privileges. Flags are not affected; use Flag-related APIs to modify
-     *
-     * @tags Edit
-     * @name EditUpdateGameChallenge
-     * @summary Update Game Challenge Information
-     * @request PUT:/api/edit/games/{id}/challenges/{cId}
-     */
-    editUpdateGameChallenge: (
-      id: number,
-      cId: number,
-      data: ChallengeUpdateModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<ChallengeEditDetailModel, RequestResponse>({
-        path: `/api/edit/games/${id}/challenges/${cId}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Updating a game notice requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditUpdateGameNotice
-     * @summary Update Game Notice
-     * @request PUT:/api/edit/games/{id}/notices/{noticeId}
-     */
-    editUpdateGameNotice: (
-      id: number,
-      noticeId: number,
-      data: GameNoticeModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<GameNotice, RequestResponse>({
-        path: `/api/edit/games/${id}/notices/${noticeId}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Use this endpoint to update the game poster; administrator privileges required
-     *
-     * @tags Edit
-     * @name EditUpdateGamePoster
-     * @summary Update Game Poster
-     * @request PUT:/api/edit/games/{id}/poster
-     */
-    editUpdateGamePoster: (
-      id: number,
-      data: {
-        /** @format binary */
-        file?: File | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<string, RequestResponse>({
-        path: `/api/edit/games/${id}/poster`,
-        method: "PUT",
-        body: data,
-        type: ContentType.FormData,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Updating a post requires administrator privileges
-     *
-     * @tags Edit
-     * @name EditUpdatePost
-     * @summary Update Post
+     * @tags EditPosts
+     * @name EditPostsUpdate
      * @request PUT:/api/edit/posts/{id}
      */
-    editUpdatePost: (
+    editPostsUpdate: (
       id: string,
       data: PostEditModel,
       params: RequestParams = {},
     ) =>
-      this.request<PostDetailModel, RequestResponse>({
+      this.request<PostDetailModel, any>({
         path: `/api/edit/posts/${id}`,
         method: "PUT",
         body: data,
         type: ContentType.Json,
         format: "json",
-        ...params,
-      }),
-  };
-  game = {
-    /**
-     * @description Retrieves all challenges of the game; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameChallengesWithTeamInfo
-     * @summary Get team details in a game
-     * @request GET:/api/game/{id}/details
-     */
-    gameChallengesWithTeamInfo: (id: number, params: RequestParams = {}) =>
-      this.request<GameDetailModel, RequestResponse>({
-        path: `/api/game/${id}/details`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves all challenges of the game; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameChallengesWithTeamInfo
-     * @summary Get team details in a game
-     * @request GET:/api/game/{id}/details
-     */
-    useGameChallengesWithTeamInfo: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<GameDetailModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/details` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves all challenges of the game; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameChallengesWithTeamInfo
-     * @summary Get team details in a game
-     * @request GET:/api/game/{id}/details
-     */
-    mutateGameChallengesWithTeamInfo: (
-      id: number,
-      data?: GameDetailModel | Promise<GameDetailModel>,
-      options?: MutatorOptions,
-    ) => mutate<GameDetailModel>(`/api/game/${id}/details`, data, options),
-
-    /**
-     * @description Retrieves game cheat data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameCheatInfo
-     * @summary Get game cheat information
-     * @request GET:/api/game/{id}/cheatinfo
-     */
-    gameCheatInfo: (id: number, params: RequestParams = {}) =>
-      this.request<CheatInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/cheatinfo`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves game cheat data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameCheatInfo
-     * @summary Get game cheat information
-     * @request GET:/api/game/{id}/cheatinfo
-     */
-    useGameCheatInfo: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<CheatInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/cheatinfo` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves game cheat data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameCheatInfo
-     * @summary Get game cheat information
-     * @request GET:/api/game/{id}/cheatinfo
-     */
-    mutateGameCheatInfo: (
-      id: number,
-      data?: CheatInfoModel[] | Promise<CheatInfoModel[]>,
-      options?: MutatorOptions,
-    ) => mutate<CheatInfoModel[]>(`/api/game/${id}/cheatinfo`, data, options),
-
-    /**
-     * @description Creates a container; requires User permission
-     *
-     * @tags Game
-     * @name GameCreateContainer
-     * @summary Creates a container
-     * @request POST:/api/game/{id}/container/{challengeId}
-     */
-    gameCreateContainer: (
-      id: number,
-      challengeId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Deletes a team's traffic packet files for a challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameDeleteAllTeamTraffic
-     * @summary Deletes all traffic files
-     * @request DELETE:/api/game/captures/{challengeId}/{partId}/all
-     */
-    gameDeleteAllTeamTraffic: (
-      challengeId: number,
-      partId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/captures/${challengeId}/${partId}/all`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Deletes a container; requires User permission
-     *
-     * @tags Game
-     * @name GameDeleteContainer
-     * @summary Deletes a container
-     * @request DELETE:/api/game/{id}/container/{challengeId}
-     */
-    gameDeleteContainer: (
-      id: number,
-      challengeId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Deletes a traffic packet file; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameDeleteTeamTraffic
-     * @summary Deletes a traffic file
-     * @request DELETE:/api/game/captures/{challengeId}/{partId}/{filename}
-     */
-    gameDeleteTeamTraffic: (
-      challengeId: number,
-      partId: number,
-      filename: string,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/captures/${challengeId}/${partId}/${filename}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Retrieves game event data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameEvents
-     * @summary Get game events
-     * @request GET:/api/game/{id}/events
-     */
-    gameEvents: (
-      id: number,
-      query?: {
-        /**
-         * Hide container events
-         * @default false
-         */
-        hideContainer?: boolean;
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<GameEvent[], RequestResponse>({
-        path: `/api/game/${id}/events`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves game event data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameEvents
-     * @summary Get game events
-     * @request GET:/api/game/{id}/events
-     */
-    useGameEvents: (
-      id: number,
-      query?: {
-        /**
-         * Hide container events
-         * @default false
-         */
-        hideContainer?: boolean;
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<GameEvent[], RequestResponse>(
-        doFetch ? [`/api/game/${id}/events`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves game event data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameEvents
-     * @summary Get game events
-     * @request GET:/api/game/{id}/events
-     */
-    mutateGameEvents: (
-      id: number,
-      query?: {
-        /**
-         * Hide container events
-         * @default false
-         */
-        hideContainer?: boolean;
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      data?: GameEvent[] | Promise<GameEvent[]>,
-      options?: MutatorOptions,
-    ) => mutate<GameEvent[]>([`/api/game/${id}/events`, query], data, options),
-
-    /**
-     * @description Extends container lifetime; requires User permission and can only be extended two hours within ten minutes before expiration
-     *
-     * @tags Game
-     * @name GameExtendContainerLifetime
-     * @summary Extends container lifetime
-     * @request POST:/api/game/{id}/container/{challengeId}/extend
-     */
-    gameExtendContainerLifetime: (
-      id: number,
-      challengeId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<ContainerInfoModel, RequestResponse>({
-        path: `/api/game/${id}/container/${challengeId}/extend`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Retrieves detailed information about the game
-     *
-     * @tags Game
-     * @name GameGame
-     * @summary Get detailed game information
-     * @request GET:/api/game/{id}
-     */
-    gameGame: (id: number, params: RequestParams = {}) =>
-      this.request<DetailedGameInfoModel, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves detailed information about the game
-     *
-     * @tags Game
-     * @name GameGame
-     * @summary Get detailed game information
-     * @request GET:/api/game/{id}
-     */
-    useGameGame: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<DetailedGameInfoModel, RequestResponse>(
-        doFetch ? `/api/game/${id}` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves detailed information about the game
-     *
-     * @tags Game
-     * @name GameGame
-     * @summary Get detailed game information
-     * @request GET:/api/game/{id}
-     */
-    mutateGameGame: (
-      id: number,
-      data?: DetailedGameInfoModel | Promise<DetailedGameInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<DetailedGameInfoModel>(`/api/game/${id}`, data, options),
-
-    /**
-     * @description Retrieves game information in specified range
-     *
-     * @tags Game
-     * @name GameGames
-     * @summary Get games
-     * @request GET:/api/game
-     */
-    gameGames: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 50
-         * @default 10
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ArrayResponseOfBasicGameInfoModel, RequestResponse>({
-        path: `/api/game`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves game information in specified range
-     *
-     * @tags Game
-     * @name GameGames
-     * @summary Get games
-     * @request GET:/api/game
-     */
-    useGameGames: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 50
-         * @default 10
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ArrayResponseOfBasicGameInfoModel, RequestResponse>(
-        doFetch ? [`/api/game`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves game information in specified range
-     *
-     * @tags Game
-     * @name GameGames
-     * @summary Get games
-     * @request GET:/api/game
-     */
-    mutateGameGames: (
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 50
-         * @default 10
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      data?:
-        | ArrayResponseOfBasicGameInfoModel
-        | Promise<ArrayResponseOfBasicGameInfoModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ArrayResponseOfBasicGameInfoModel>(
-        [`/api/game`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * @description Downloads all traffic packet files for a team and challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetAllTeamTraffic
-     * @summary Download all traffic files
-     * @request GET:/api/game/captures/{challengeId}/{partId}/all
-     */
-    gameGetAllTeamTraffic: (
-      challengeId: number,
-      partId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/captures/${challengeId}/${partId}/all`,
-        method: "GET",
-        ...params,
-      }),
-
-    /**
-     * @description Retrieves challenge information; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameGetChallenge
-     * @summary Get challenge information
-     * @request GET:/api/game/{id}/challenges/{challengeId}
-     */
-    gameGetChallenge: (
-      id: number,
-      challengeId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<ChallengeDetailModel, RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves challenge information; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameGetChallenge
-     * @summary Get challenge information
-     * @request GET:/api/game/{id}/challenges/{challengeId}
-     */
-    useGameGetChallenge: (
-      id: number,
-      challengeId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ChallengeDetailModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/challenges/${challengeId}` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves challenge information; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameGetChallenge
-     * @summary Get challenge information
-     * @request GET:/api/game/{id}/challenges/{challengeId}
-     */
-    mutateGameGetChallenge: (
-      id: number,
-      challengeId: number,
-      data?: ChallengeDetailModel | Promise<ChallengeDetailModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ChallengeDetailModel>(
-        `/api/game/${id}/challenges/${challengeId}`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieves challenges with traffic capturing enabled; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetChallengesWithTrafficCapturing
-     * @summary Get challenges with traffic capturing enabled
-     * @request GET:/api/game/games/{id}/captures
-     */
-    gameGetChallengesWithTrafficCapturing: (
-      id: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<ChallengeTrafficModel[], RequestResponse>({
-        path: `/api/game/games/${id}/captures`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves challenges with traffic capturing enabled; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetChallengesWithTrafficCapturing
-     * @summary Get challenges with traffic capturing enabled
-     * @request GET:/api/game/games/{id}/captures
-     */
-    useGameGetChallengesWithTrafficCapturing: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ChallengeTrafficModel[], RequestResponse>(
-        doFetch ? `/api/game/games/${id}/captures` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves challenges with traffic capturing enabled; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetChallengesWithTrafficCapturing
-     * @summary Get challenges with traffic capturing enabled
-     * @request GET:/api/game/games/{id}/captures
-     */
-    mutateGameGetChallengesWithTrafficCapturing: (
-      id: number,
-      data?: ChallengeTrafficModel[] | Promise<ChallengeTrafficModel[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ChallengeTrafficModel[]>(
-        `/api/game/games/${id}/captures`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieves the list of captured teams for a game challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetChallengeTraffic
-     * @summary Get team captures in a challenge
-     * @request GET:/api/game/captures/{challengeId}
-     */
-    gameGetChallengeTraffic: (
-      challengeId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<TeamTrafficModel[], RequestResponse>({
-        path: `/api/game/captures/${challengeId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves the list of captured teams for a game challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetChallengeTraffic
-     * @summary Get team captures in a challenge
-     * @request GET:/api/game/captures/{challengeId}
-     */
-    useGameGetChallengeTraffic: (
-      challengeId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<TeamTrafficModel[], RequestResponse>(
-        doFetch ? `/api/game/captures/${challengeId}` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves the list of captured teams for a game challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetChallengeTraffic
-     * @summary Get team captures in a challenge
-     * @request GET:/api/game/captures/{challengeId}
-     */
-    mutateGameGetChallengeTraffic: (
-      challengeId: number,
-      data?: TeamTrafficModel[] | Promise<TeamTrafficModel[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<TeamTrafficModel[]>(
-        `/api/game/captures/${challengeId}`,
-        data,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags Game
-     * @name GameGetGameJoinCheckInfo
-     * @summary Get check info for joining a game
-     * @request GET:/api/game/{id}/check
-     */
-    gameGetGameJoinCheckInfo: (id: number, params: RequestParams = {}) =>
-      this.request<GameJoinCheckInfoModel, RequestResponse>({
-        path: `/api/game/${id}/check`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * No description
-     *
-     * @tags Game
-     * @name GameGetGameJoinCheckInfo
-     * @summary Get check info for joining a game
-     * @request GET:/api/game/{id}/check
-     */
-    useGameGetGameJoinCheckInfo: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<GameJoinCheckInfoModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/check` : null,
-        options,
-      ),
-
-    /**
-     * No description
-     *
-     * @tags Game
-     * @name GameGetGameJoinCheckInfo
-     * @summary Get check info for joining a game
-     * @request GET:/api/game/{id}/check
-     */
-    mutateGameGetGameJoinCheckInfo: (
-      id: number,
-      data?: GameJoinCheckInfoModel | Promise<GameJoinCheckInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<GameJoinCheckInfoModel>(`/api/game/${id}/check`, data, options),
-
-    /**
-     * @description Retrieves a traffic packet file; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetTeamTraffic
-     * @summary Get a traffic file
-     * @request GET:/api/game/captures/{challengeId}/{partId}/{filename}
-     */
-    gameGetTeamTraffic: (
-      challengeId: number,
-      partId: number,
-      filename: string,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/captures/${challengeId}/${partId}/${filename}`,
-        method: "GET",
-        ...params,
-      }),
-
-    /**
-     * @description Retrieves traffic packet files for a team and challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetTeamTrafficAll
-     * @summary Get traffic files
-     * @request GET:/api/game/captures/{challengeId}/{partId}
-     */
-    gameGetTeamTrafficAll: (
-      challengeId: number,
-      partId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<FileRecord[], RequestResponse>({
-        path: `/api/game/captures/${challengeId}/${partId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves traffic packet files for a team and challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetTeamTrafficAll
-     * @summary Get traffic files
-     * @request GET:/api/game/captures/{challengeId}/{partId}
-     */
-    useGameGetTeamTrafficAll: (
-      challengeId: number,
-      partId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<FileRecord[], RequestResponse>(
-        doFetch ? `/api/game/captures/${challengeId}/${partId}` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves traffic packet files for a team and challenge; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameGetTeamTrafficAll
-     * @summary Get traffic files
-     * @request GET:/api/game/captures/{challengeId}/{partId}
-     */
-    mutateGameGetTeamTrafficAll: (
-      challengeId: number,
-      partId: number,
-      data?: FileRecord[] | Promise<FileRecord[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<FileRecord[]>(
-        `/api/game/captures/${challengeId}/${partId}`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieves post-game writeup submission information; requires User permission
-     *
-     * @tags Game
-     * @name GameGetWriteup
-     * @summary Get writeup information
-     * @request GET:/api/game/{id}/writeup
-     */
-    gameGetWriteup: (id: number, params: RequestParams = {}) =>
-      this.request<BasicWriteupInfoModel, RequestResponse>({
-        path: `/api/game/${id}/writeup`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves post-game writeup submission information; requires User permission
-     *
-     * @tags Game
-     * @name GameGetWriteup
-     * @summary Get writeup information
-     * @request GET:/api/game/{id}/writeup
-     */
-    useGameGetWriteup: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<BasicWriteupInfoModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/writeup` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves post-game writeup submission information; requires User permission
-     *
-     * @tags Game
-     * @name GameGetWriteup
-     * @summary Get writeup information
-     * @request GET:/api/game/{id}/writeup
-     */
-    mutateGameGetWriteup: (
-      id: number,
-      data?: BasicWriteupInfoModel | Promise<BasicWriteupInfoModel>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<BasicWriteupInfoModel>(`/api/game/${id}/writeup`, data, options),
-
-    /**
-     * @description Join a game; requires User permission
-     *
-     * @tags Game
-     * @name GameJoinGame
-     * @summary Join a game
-     * @request POST:/api/game/{id}
-     */
-    gameJoinGame: (
-      id: number,
-      data: GameJoinModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Leave a game; requires User permission
-     *
-     * @tags Game
-     * @name GameLeaveGame
-     * @summary Leave a game
-     * @request DELETE:/api/game/{id}
-     */
-    gameLeaveGame: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}`,
-        method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * @description Retrieves game notice data
-     *
-     * @tags Game
-     * @name GameNotices
-     * @summary Get game notices
-     * @request GET:/api/game/{id}/notices
-     */
-    gameNotices: (
-      id: number,
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @min 0
-         * @max 300
-         * @default 0
-         */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<GameNotice[], RequestResponse>({
-        path: `/api/game/${id}/notices`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves game notice data
-     *
-     * @tags Game
-     * @name GameNotices
-     * @summary Get game notices
-     * @request GET:/api/game/{id}/notices
-     */
-    useGameNotices: (
-      id: number,
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @min 0
-         * @max 300
-         * @default 0
-         */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<GameNotice[], RequestResponse>(
-        doFetch ? [`/api/game/${id}/notices`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves game notice data
-     *
-     * @tags Game
-     * @name GameNotices
-     * @summary Get game notices
-     * @request GET:/api/game/{id}/notices
-     */
-    mutateGameNotices: (
-      id: number,
-      query?: {
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @min 0
-         * @max 300
-         * @default 0
-         */
-        skip?: number;
-      },
-      data?: GameNotice[] | Promise<GameNotice[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<GameNotice[]>([`/api/game/${id}/notices`, query], data, options),
-
-    /**
-     * @description Retrieves all participation information of the game; requires Admin permission
-     *
-     * @tags Game
-     * @name GameParticipations
-     * @summary Get all game participations
-     * @request GET:/api/game/{id}/participations
-     */
-    gameParticipations: (id: number, params: RequestParams = {}) =>
-      this.request<ParticipationInfoModel[], RequestResponse>({
-        path: `/api/game/${id}/participations`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves all participation information of the game; requires Admin permission
-     *
-     * @tags Game
-     * @name GameParticipations
-     * @summary Get all game participations
-     * @request GET:/api/game/{id}/participations
-     */
-    useGameParticipations: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ParticipationInfoModel[], RequestResponse>(
-        doFetch ? `/api/game/${id}/participations` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves all participation information of the game; requires Admin permission
-     *
-     * @tags Game
-     * @name GameParticipations
-     * @summary Get all game participations
-     * @request GET:/api/game/{id}/participations
-     */
-    mutateGameParticipations: (
-      id: number,
-      data?: ParticipationInfoModel[] | Promise<ParticipationInfoModel[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<ParticipationInfoModel[]>(
-        `/api/game/${id}/participations`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieves recent game in three weeks
-     *
-     * @tags Game
-     * @name GameRecentGames
-     * @summary Get the recent games
-     * @request GET:/api/game/recent
-     */
-    gameRecentGames: (
-      query?: {
-        /**
-         * Limit of the number of games
-         * @format int32
-         * @min 0
-         * @max 50
-         */
-        limit?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<BasicGameInfoModel[], RequestResponse>({
-        path: `/api/game/recent`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves recent game in three weeks
-     *
-     * @tags Game
-     * @name GameRecentGames
-     * @summary Get the recent games
-     * @request GET:/api/game/recent
-     */
-    useGameRecentGames: (
-      query?: {
-        /**
-         * Limit of the number of games
-         * @format int32
-         * @min 0
-         * @max 50
-         */
-        limit?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<BasicGameInfoModel[], RequestResponse>(
-        doFetch ? [`/api/game/recent`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves recent game in three weeks
-     *
-     * @tags Game
-     * @name GameRecentGames
-     * @summary Get the recent games
-     * @request GET:/api/game/recent
-     */
-    mutateGameRecentGames: (
-      query?: {
-        /**
-         * Limit of the number of games
-         * @format int32
-         * @min 0
-         * @max 50
-         */
-        limit?: number;
-      },
-      data?: BasicGameInfoModel[] | Promise<BasicGameInfoModel[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<BasicGameInfoModel[]>([`/api/game/recent`, query], data, options),
-
-    /**
-     * @description Retrieves the scoreboard data
-     *
-     * @tags Game
-     * @name GameScoreboard
-     * @summary Get the scoreboard
-     * @request GET:/api/game/{id}/scoreboard
-     */
-    gameScoreboard: (id: number, params: RequestParams = {}) =>
-      this.request<ScoreboardModel, RequestResponse>({
-        path: `/api/game/${id}/scoreboard`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves the scoreboard data
-     *
-     * @tags Game
-     * @name GameScoreboard
-     * @summary Get the scoreboard
-     * @request GET:/api/game/{id}/scoreboard
-     */
-    useGameScoreboard: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<ScoreboardModel, RequestResponse>(
-        doFetch ? `/api/game/${id}/scoreboard` : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves the scoreboard data
-     *
-     * @tags Game
-     * @name GameScoreboard
-     * @summary Get the scoreboard
-     * @request GET:/api/game/{id}/scoreboard
-     */
-    mutateGameScoreboard: (
-      id: number,
-      data?: ScoreboardModel | Promise<ScoreboardModel>,
-      options?: MutatorOptions,
-    ) => mutate<ScoreboardModel>(`/api/game/${id}/scoreboard`, data, options),
-
-    /**
-     * @description Downloads the game scoreboard; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameScoreboardSheet
-     * @summary Downloads the scoreboard
-     * @request GET:/api/game/{id}/scoreboardsheet
-     */
-    gameScoreboardSheet: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}/scoreboardsheet`,
-        method: "GET",
-        ...params,
-      }),
-
-    /**
-     * @description Queries flag status; requires User permission
-     *
-     * @tags Game
-     * @name GameStatus
-     * @summary Queries flag status
-     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
-     */
-    gameStatus: (
-      id: number,
-      challengeId: number,
-      submitId: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<AnswerResult, RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Queries flag status; requires User permission
-     *
-     * @tags Game
-     * @name GameStatus
-     * @summary Queries flag status
-     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
-     */
-    useGameStatus: (
-      id: number,
-      challengeId: number,
-      submitId: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<AnswerResult, RequestResponse>(
-        doFetch
-          ? `/api/game/${id}/challenges/${challengeId}/status/${submitId}`
-          : null,
-        options,
-      ),
-
-    /**
-     * @description Queries flag status; requires User permission
-     *
-     * @tags Game
-     * @name GameStatus
-     * @summary Queries flag status
-     * @request GET:/api/game/{id}/challenges/{challengeId}/status/{submitId}
-     */
-    mutateGameStatus: (
-      id: number,
-      challengeId: number,
-      submitId: number,
-      data?: AnswerResult | Promise<AnswerResult>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<AnswerResult>(
-        `/api/game/${id}/challenges/${challengeId}/status/${submitId}`,
-        data,
-        options,
-      ),
-
-    /**
-     * @description Retrieves game submission data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameSubmissions
-     * @summary Get game submissions
-     * @request GET:/api/game/{id}/submissions
-     */
-    gameSubmissions: (
-      id: number,
-      query?: {
-        /** Submission type */
-        type?: AnswerResult | null;
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<Submission[], RequestResponse>({
-        path: `/api/game/${id}/submissions`,
-        method: "GET",
-        query: query,
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Retrieves game submission data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameSubmissions
-     * @summary Get game submissions
-     * @request GET:/api/game/{id}/submissions
-     */
-    useGameSubmissions: (
-      id: number,
-      query?: {
-        /** Submission type */
-        type?: AnswerResult | null;
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<Submission[], RequestResponse>(
-        doFetch ? [`/api/game/${id}/submissions`, query] : null,
-        options,
-      ),
-
-    /**
-     * @description Retrieves game submission data; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameSubmissions
-     * @summary Get game submissions
-     * @request GET:/api/game/{id}/submissions
-     */
-    mutateGameSubmissions: (
-      id: number,
-      query?: {
-        /** Submission type */
-        type?: AnswerResult | null;
-        /**
-         * @format int32
-         * @min 0
-         * @max 100
-         * @default 100
-         */
-        count?: number;
-        /**
-         * @format int32
-         * @default 0
-         */
-        skip?: number;
-      },
-      data?: Submission[] | Promise<Submission[]>,
-      options?: MutatorOptions,
-    ) =>
-      mutate<Submission[]>(
-        [`/api/game/${id}/submissions`, query],
-        data,
-        options,
-      ),
-
-    /**
-     * @description Downloads all submissions of the game; requires Monitor permission
-     *
-     * @tags Game
-     * @name GameSubmissionSheet
-     * @summary Downloads all submissions
-     * @request GET:/api/game/{id}/submissionsheet
-     */
-    gameSubmissionSheet: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}/submissionsheet`,
-        method: "GET",
-        ...params,
-      }),
-
-    /**
-     * @description Submits a flag; requires User permission and active team participation
-     *
-     * @tags Game
-     * @name GameSubmit
-     * @summary Submits a flag
-     * @request POST:/api/game/{id}/challenges/{challengeId}
-     */
-    gameSubmit: (
-      id: number,
-      challengeId: number,
-      data: FlagSubmitModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<number, RequestResponse>({
-        path: `/api/game/${id}/challenges/${challengeId}`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Submits a post-game writeup; requires User permission
-     *
-     * @tags Game
-     * @name GameSubmitWriteup
-     * @summary Submits a writeup
-     * @request POST:/api/game/{id}/writeup
-     */
-    gameSubmitWriteup: (
-      id: number,
-      data: {
-        /** @format binary */
-        file?: File | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/game/${id}/writeup`,
-        method: "POST",
-        body: data,
-        type: ContentType.FormData,
         ...params,
       }),
   };
@@ -5816,14 +4648,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Get Captcha configuration
-     *
-     * @tags Info
-     * @name InfoGetClientCaptchaInfo
-     * @summary Get Captcha configuration
-     * @request GET:/api/captcha
-     */
     useInfoGetClientCaptchaInfo: (
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -5833,14 +4657,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Get Captcha configuration
-     *
-     * @tags Info
-     * @name InfoGetClientCaptchaInfo
-     * @summary Get Captcha configuration
-     * @request GET:/api/captcha
-     */
     mutateInfoGetClientCaptchaInfo: (
       data?: ClientCaptchaInfoModel | Promise<ClientCaptchaInfoModel>,
       options?: MutatorOptions,
@@ -5861,27 +4677,11 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Get client configuration
-     *
-     * @tags Info
-     * @name InfoGetClientConfig
-     * @summary Get client configuration
-     * @request GET:/api/config
-     */
     useInfoGetClientConfig: (
       options?: SWRConfiguration,
       doFetch: boolean = true,
     ) => useSWR<ClientConfig, any>(doFetch ? `/api/config` : null, options),
 
-    /**
-     * @description Get client configuration
-     *
-     * @tags Info
-     * @name InfoGetClientConfig
-     * @summary Get client configuration
-     * @request GET:/api/config
-     */
     mutateInfoGetClientConfig: (
       data?: ClientConfig | Promise<ClientConfig>,
       options?: MutatorOptions,
@@ -5902,14 +4702,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Get the latest posts
-     *
-     * @tags Info
-     * @name InfoGetLatestPosts
-     * @summary Get the latest posts
-     * @request GET:/api/posts/latest
-     */
     useInfoGetLatestPosts: (
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -5919,14 +4711,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Get the latest posts
-     *
-     * @tags Info
-     * @name InfoGetLatestPosts
-     * @summary Get the latest posts
-     * @request GET:/api/posts/latest
-     */
     mutateInfoGetLatestPosts: (
       data?: PostInfoModel[] | Promise<PostInfoModel[]>,
       options?: MutatorOptions,
@@ -5947,14 +4731,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Get post details
-     *
-     * @tags Info
-     * @name InfoGetPost
-     * @summary Get post details
-     * @request GET:/api/posts/{id}
-     */
     useInfoGetPost: (
       id: string,
       options?: SWRConfiguration,
@@ -5965,14 +4741,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Get post details
-     *
-     * @tags Info
-     * @name InfoGetPost
-     * @summary Get post details
-     * @request GET:/api/posts/{id}
-     */
     mutateInfoGetPost: (
       id: string,
       data?: PostDetailModel | Promise<PostDetailModel>,
@@ -5994,25 +4762,9 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Get all posts
-     *
-     * @tags Info
-     * @name InfoGetPosts
-     * @summary Get all posts
-     * @request GET:/api/posts
-     */
     useInfoGetPosts: (options?: SWRConfiguration, doFetch: boolean = true) =>
       useSWR<PostInfoModel[], any>(doFetch ? `/api/posts` : null, options),
 
-    /**
-     * @description Get all posts
-     *
-     * @tags Info
-     * @name InfoGetPosts
-     * @summary Get all posts
-     * @request GET:/api/posts
-     */
     mutateInfoGetPosts: (
       data?: PostInfoModel[] | Promise<PostInfoModel[]>,
       options?: MutatorOptions,
@@ -6033,14 +4785,6 @@ export class Api<
         format: "json",
         ...params,
       }),
-    /**
-     * @description Create Pow Captcha, valid for 5 minutes
-     *
-     * @tags Info
-     * @name InfoPowChallenge
-     * @summary Create Pow Captcha
-     * @request GET:/api/captcha/powchallenge
-     */
     useInfoPowChallenge: (
       options?: SWRConfiguration,
       doFetch: boolean = true,
@@ -6050,14 +4794,6 @@ export class Api<
         options,
       ),
 
-    /**
-     * @description Create Pow Captcha, valid for 5 minutes
-     *
-     * @tags Info
-     * @name InfoPowChallenge
-     * @summary Create Pow Captcha
-     * @request GET:/api/captcha/powchallenge
-     */
     mutateInfoPowChallenge: (
       data?: HashPowChallenge | Promise<HashPowChallenge>,
       options?: MutatorOptions,
@@ -6094,333 +4830,6 @@ export class Api<
         ...params,
       }),
   };
-  team = {
-    /**
-     * @description Interface to accept invitation, requires User permission and not being in team
-     *
-     * @tags Team
-     * @name TeamAccept
-     * @summary Accept invitation
-     * @request POST:/api/team/accept
-     */
-    teamAccept: (data: string, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/team/accept`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * @description Use this API to update team avatar, requires User permission and team membership
-     *
-     * @tags Team
-     * @name TeamAvatar
-     * @summary Update team avatar
-     * @request PUT:/api/team/{id}/avatar
-     */
-    teamAvatar: (
-      id: number,
-      data: {
-        /** @format binary */
-        file?: File | null;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<string, RequestResponse>({
-        path: `/api/team/${id}/avatar`,
-        method: "PUT",
-        body: data,
-        type: ContentType.FormData,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description User API for creating teams, each user can only create one team
-     *
-     * @tags Team
-     * @name TeamCreateTeam
-     * @summary Create team
-     * @request POST:/api/team
-     */
-    teamCreateTeam: (data: TeamUpdateModel, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description User API for deleting team, requires User permission and team captain status
-     *
-     * @tags Team
-     * @name TeamDeleteTeam
-     * @summary Delete team
-     * @request DELETE:/api/team/{id}
-     */
-    teamDeleteTeam: (id: number, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}`,
-        method: "DELETE",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Get basic information of a team by ID
-     *
-     * @tags Team
-     * @name TeamGetBasicInfo
-     * @summary Get team information
-     * @request GET:/api/team/{id}
-     */
-    teamGetBasicInfo: (id: number, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Get basic information of a team by ID
-     *
-     * @tags Team
-     * @name TeamGetBasicInfo
-     * @summary Get team information
-     * @request GET:/api/team/{id}
-     */
-    useTeamGetBasicInfo: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<TeamInfoModel, RequestResponse>(
-        doFetch ? `/api/team/${id}` : null,
-        options,
-      ),
-
-    /**
-     * @description Get basic information of a team by ID
-     *
-     * @tags Team
-     * @name TeamGetBasicInfo
-     * @summary Get team information
-     * @request GET:/api/team/{id}
-     */
-    mutateTeamGetBasicInfo: (
-      id: number,
-      data?: TeamInfoModel | Promise<TeamInfoModel>,
-      options?: MutatorOptions,
-    ) => mutate<TeamInfoModel>(`/api/team/${id}`, data, options),
-
-    /**
-     * @description Get basic information of a team based on user
-     *
-     * @tags Team
-     * @name TeamGetTeamsInfo
-     * @summary Get current team information
-     * @request GET:/api/team
-     */
-    teamGetTeamsInfo: (params: RequestParams = {}) =>
-      this.request<TeamInfoModel[], RequestResponse>({
-        path: `/api/team`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Get basic information of a team based on user
-     *
-     * @tags Team
-     * @name TeamGetTeamsInfo
-     * @summary Get current team information
-     * @request GET:/api/team
-     */
-    useTeamGetTeamsInfo: (
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<TeamInfoModel[], RequestResponse>(
-        doFetch ? `/api/team` : null,
-        options,
-      ),
-
-    /**
-     * @description Get basic information of a team based on user
-     *
-     * @tags Team
-     * @name TeamGetTeamsInfo
-     * @summary Get current team information
-     * @request GET:/api/team
-     */
-    mutateTeamGetTeamsInfo: (
-      data?: TeamInfoModel[] | Promise<TeamInfoModel[]>,
-      options?: MutatorOptions,
-    ) => mutate<TeamInfoModel[]>(`/api/team`, data, options),
-
-    /**
-     * @description Get team invitation information, must be team creator
-     *
-     * @tags Team
-     * @name TeamInviteCode
-     * @summary Get invitation information
-     * @request GET:/api/team/{id}/invite
-     */
-    teamInviteCode: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/team/${id}/invite`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-    /**
-     * @description Get team invitation information, must be team creator
-     *
-     * @tags Team
-     * @name TeamInviteCode
-     * @summary Get invitation information
-     * @request GET:/api/team/{id}/invite
-     */
-    useTeamInviteCode: (
-      id: number,
-      options?: SWRConfiguration,
-      doFetch: boolean = true,
-    ) =>
-      useSWR<string, RequestResponse>(
-        doFetch ? `/api/team/${id}/invite` : null,
-        options,
-      ),
-
-    /**
-     * @description Get team invitation information, must be team creator
-     *
-     * @tags Team
-     * @name TeamInviteCode
-     * @summary Get invitation information
-     * @request GET:/api/team/{id}/invite
-     */
-    mutateTeamInviteCode: (
-      id: number,
-      data?: string | Promise<string>,
-      options?: MutatorOptions,
-    ) => mutate<string>(`/api/team/${id}/invite`, data, options),
-
-    /**
-     * @description User kick API, kick user with corresponding ID, requires team creator permission
-     *
-     * @tags Team
-     * @name TeamKickUser
-     * @summary Kick user
-     * @request POST:/api/team/{id}/kick/{userId}
-     */
-    teamKickUser: (id: number, userId: string, params: RequestParams = {}) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}/kick/${userId}`,
-        method: "POST",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Interface to leave team, requires User permission and being in team
-     *
-     * @tags Team
-     * @name TeamLeave
-     * @summary Leave team
-     * @request POST:/api/team/{id}/leave
-     */
-    teamLeave: (id: number, params: RequestParams = {}) =>
-      this.request<void, RequestResponse>({
-        path: `/api/team/${id}/leave`,
-        method: "POST",
-        ...params,
-      }),
-
-    /**
-     * @description Team ownership transfer API, must be team creator
-     *
-     * @tags Team
-     * @name TeamTransfer
-     * @summary Transfer team ownership
-     * @request PUT:/api/team/{id}/transfer
-     */
-    teamTransfer: (
-      id: number,
-      data: TeamTransferModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}/transfer`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Interface to update invitation token, must be team creator
-     *
-     * @tags Team
-     * @name TeamUpdateInviteToken
-     * @summary Update invitation token
-     * @request PUT:/api/team/{id}/invite
-     */
-    teamUpdateInviteToken: (id: number, params: RequestParams = {}) =>
-      this.request<string, RequestResponse>({
-        path: `/api/team/${id}/invite`,
-        method: "PUT",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Team information update API, must be team creator
-     *
-     * @tags Team
-     * @name TeamUpdateTeam
-     * @summary Update team information
-     * @request PUT:/api/team/{id}
-     */
-    teamUpdateTeam: (
-      id: number,
-      data: TeamUpdateModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<TeamInfoModel, RequestResponse>({
-        path: `/api/team/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Perform signature verification
-     *
-     * @tags Team
-     * @name TeamVerifySignature
-     * @summary Verify signature
-     * @request POST:/api/team/verify
-     */
-    teamVerifySignature: (
-      data: SignatureVerifyModel,
-      params: RequestParams = {},
-    ) =>
-      this.request<void, RequestResponse>({
-        path: `/api/team/verify`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        ...params,
-      }),
-  };
 }
 
 const api = new Api();
@@ -6430,11 +4839,11 @@ export const fetcher = async (
   args: string | [string, Record<string, unknown>],
 ) => {
   if (typeof args === "string") {
-    const response = await api.request({ path: args });
+    const response = await api.request({ path: args, format: "json" });
     return response.data;
   } else {
     const [path, query] = args;
-    const response = await api.request({ path, query });
+    const response = await api.request({ path, query, format: "json" });
     return response.data;
   }
 };

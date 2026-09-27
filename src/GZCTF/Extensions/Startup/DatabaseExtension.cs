@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using GZCTF.Models;
 using Serilog;
 
 namespace GZCTF.Extensions.Startup;
@@ -13,10 +14,13 @@ internal static class DatabaseExtension
                 ExitWithFatalMessage(
                     StaticLocalizer[nameof(Resources.Program.Database_NoConnectionString)]);
 
+            var connectionString = builder.Configuration.GetConnectionString("Database");
+
             builder.Services.AddDbContext<AppDbContext>(options =>
                 {
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
+                    options.UseNpgsql(connectionString,
                         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                    options.AddInterceptors(new LegacyReadOnlySaveChangesInterceptor());
 
                     if (!builder.Environment.IsDevelopment())
                         return;
@@ -30,17 +34,21 @@ internal static class DatabaseExtension
             {
                 builder.Configuration.AddEntityConfiguration(options =>
                 {
-                    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+                    options.UseNpgsql(connectionString);
                 });
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                if (builder.Configuration.GetSection("ConnectionStrings").GetSection("Database").Exists())
-                    Log.Logger.Error(StaticLocalizer[
-                        nameof(Resources.Program.Database_CurrentConnectionString),
-                        builder.Configuration.GetConnectionString("Database") ?? "null"]);
+                var diagnostic = DatabaseConnectionDiagnostic.Parse(connectionString);
+                Log.Logger.Error(
+                    "Database configuration failed for {DatabaseHost}/{DatabaseName} ({FailureType})",
+                    diagnostic.Host,
+                    diagnostic.Database,
+                    exception.GetType().Name);
+
                 ExitWithFatalMessage(
-                    StaticLocalizer[nameof(Resources.Program.Database_ConnectionFailed), e.Message]);
+                    StaticLocalizer[nameof(Resources.Program.Database_ConnectionFailed),
+                        exception.GetType().Name]);
             }
         }
     }

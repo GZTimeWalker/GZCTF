@@ -38,7 +38,7 @@ jobs:
       - uses: pnpm/action-setup@v6
         name: Install pnpm
         with:
-          version: 11
+          version: latest
 
       - name: Get current date time
         id: datetime
@@ -96,6 +96,19 @@ jobs:
           images: |
             gztime/gzctf
             ghcr.io/${{ github.repository }}/gzctf
+          flavor: |
+            latest=${{ env.RELEASE }}
+          tags: |
+            type=ref,event=branch
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+,group=0
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+,group=0
+            type=match,enable=${{ env.RELEASE }},pattern=v\d+.\d+.\d+,group=0
+
+      - name: Docker metadata action (Aliyun)
+        uses: docker/metadata-action@v6
+        id: meta-aliyun
+        with:
+          images: |
             registry.cn-shanghai.aliyuncs.com/gztime/gzctf
           flavor: |
             latest=${{ env.RELEASE }}
@@ -114,6 +127,18 @@ jobs:
           platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' ||
             'linux/amd64' }}
           push: true
+
+      - name: Publish images (Aliyun)
+        uses: docker/build-push-action@v7
+        with:
+          context: ./src/GZCTF
+          tags: ${{ steps.meta-aliyun.outputs.tags }}
+          labels: ${{ steps.meta-aliyun.outputs.labels }}
+          platforms: ${{ env.RELEASE == 'true' && 'linux/amd64,linux/arm64' ||
+            'linux/amd64' }}
+          push: true
+          provenance: false
+          sbom: false
 
   prune:
     runs-on: ubuntu-latest

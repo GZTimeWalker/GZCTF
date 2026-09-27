@@ -1,4 +1,5 @@
 using System.Reflection;
+using GZCTF.Features.Dashboard.Api;
 using GZCTF.Hubs;
 using Scalar.AspNetCore;
 using Serilog;
@@ -95,9 +96,8 @@ internal static class AppExtensions
             app.MapHealthCheck();
             app.MapControllers();
 
-            app.MapHub<UserHub>("/hub/user");
-            app.MapHub<MonitorHub>("/hub/monitor");
             app.MapHub<AdminHub>("/hub/admin");
+            app.MapHub<DashboardHub>("/hub/dashboard");
 
             app.UseIndexAsync();
         }

@@ -161,10 +161,12 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         {
             // Replace the DbContext with our test connection string
             services.RemoveAll<DbContextOptions<AppDbContext>>();
+            var commandCounter = new CommandCountInterceptor();
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseNpgsql(_connectionString,
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+                options.AddInterceptors(commandCounter);
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();
             });
@@ -220,6 +222,10 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
     {
         await _postgresContainer.StartAsync();
         _connectionString = _postgresContainer.GetConnectionString();
+        if (!_connectionString.Contains("Include Error Detail", StringComparison.OrdinalIgnoreCase))
+        {
+            _connectionString += ";Include Error Detail=true";
+        }
     }
 
     private async Task InitializeMinioAsync()

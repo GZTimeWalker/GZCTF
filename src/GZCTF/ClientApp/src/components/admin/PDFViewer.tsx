@@ -1,5 +1,5 @@
 import { Box, Center, Paper, ScrollArea, Stack, Text, em } from '@mantine/core'
-import { FC, useRef, useState } from 'react'
+import { FC, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useTranslation } from 'react-i18next'
 import { Document, Page, pdfjs } from 'react-pdf'
@@ -20,10 +20,11 @@ export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
   const { t } = useTranslation()
 
   const h = height ? em(height) : 'calc(100vh - 110px)'
-  const ref = useRef<HTMLDivElement>(null)
+  // tracked as state via a callback ref so the measurement is not read from a ref during render
+  const [container, setContainer] = useState<HTMLDivElement | null>(null)
 
   const renderWidth = Math.round(2480 / 3)
-  const pageWidth = ref.current?.offsetWidth ?? renderWidth
+  const pageWidth = container?.offsetWidth ?? renderWidth
   const ratio = pageWidth / renderWidth
 
   return (
@@ -45,12 +46,13 @@ export const PDFViewer: FC<PDFViewerProps> = ({ url, height }) => {
           <Document
             file={url}
             className={classes.doc}
+            suspense={false}
             onLoadSuccess={({ numPages }) => {
               setNumPages(numPages)
             }}
             onLoadError={(e) => showErrorMsg(e, t)}
           >
-            <Stack ref={ref}>
+            <Stack ref={setContainer}>
               {Array.from(Array.from({ length: numPages }), (_, index) => (
                 <Paper className={classes.paper} key={`page_${index + 1}`}>
                   <Page width={renderWidth} scale={ratio} pageNumber={index + 1} renderAnnotationLayer={false} />

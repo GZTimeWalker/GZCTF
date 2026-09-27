@@ -188,6 +188,9 @@ public static class HandlerExtension
         if (context.Request.Method != HttpMethods.Get && context.Request.Method != HttpMethods.Head)
             return Results.StatusCode(StatusCodes.Status405MethodNotAllowed);
 
+        if (context.Request.Path.StartsWithSegments("/api", StringComparison.OrdinalIgnoreCase))
+            return Results.StatusCode(StatusCodes.Status404NotFound);
+
         var content = await cacheHelper.GetStringAsync(CacheKey.Index, token);
 
         if (content is null)

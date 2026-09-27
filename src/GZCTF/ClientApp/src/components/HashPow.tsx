@@ -48,42 +48,42 @@ export const usePowChallenge = () => {
     }
   }
 
-  const [result, setNonce] = useState<PowResult | null>(null)
+  // the nonce is tagged with the challenge it was computed for, so a result is never
+  // handed out while the worker is still solving a newer challenge
+  const [solved, setSolved] = useState<{ challenge?: string; result: PowResult } | null>(null)
   const [error, setError] = useState<boolean>(false)
-  const [worker, setWorker] = useState<Worker | null>(null)
-  const [pending, setPending] = useState(false)
 
   useEffect(() => {
+    const chall = data.chall
+
+    if (!chall || Date.now() - data.time >= 4 * 60 * 1000) {
+      fetchPowChallenge()
+      return
+    }
+
     const worker = new Worker(workerScript)
+
     worker.onmessage = (event: MessageEvent<PowResult>) => {
-      setPending(false)
       if (event.data.nonce) {
-        setNonce(event.data)
+        setSolved({ challenge: chall.challenge, result: event.data })
       } else {
         setError(true)
       }
     }
-    setWorker(worker)
+
+    worker.postMessage({
+      chall: chall.challenge,
+      diff: chall.difficulty,
+    } as PowRequest)
+
     return () => {
       worker.terminate()
     }
-  }, [])
+  }, [data])
 
-  useEffect(() => {
-    if (!worker) return
+  const result = solved && solved.challenge === data.chall?.challenge ? solved.result : null
 
-    if (data.chall && Date.now() - data.time < 4 * 60 * 1000) {
-      worker.postMessage({
-        chall: data.chall.challenge,
-        diff: data.chall.difficulty,
-      } as PowRequest)
-      setPending(true)
-    } else {
-      fetchPowChallenge()
-    }
-  }, [worker, data])
-
-  return { chall: data.chall, error, mutate: fetchPowChallenge, result: pending ? null : result }
+  return { chall: data.chall, error, mutate: fetchPowChallenge, result }
 }
 
 interface PowBoxProps extends BoxProps {
