@@ -244,12 +244,12 @@ public static class CacheKey
     /// <summary>
     /// Scoreboard cache
     /// </summary>
-    public static string ScoreBoard(int id) => $"_ScoreBoard_{id}";
+    public static string ScoreBoard(int id) => $"_ScoreBoard_choice_v1_{id}";
 
     /// <summary>
     /// Scoreboard cache
     /// </summary>
-    public static string ScoreBoard(string id) => $"_ScoreBoard_{id}";
+    public static string ScoreBoard(string id) => $"_ScoreBoard_choice_v1_{id}";
 
     /// <summary>
     /// Game cache

@@ -41,6 +41,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
     public DbSet<ApiToken> ApiTokens { get; set; } = null!;
+    public DbSet<ChoiceExam> ChoiceExams { get; set; } = null!;
+    public DbSet<ChoiceAttempt> ChoiceAttempts { get; set; } = null!;
 
     private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
         new(
@@ -58,6 +60,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<ChoiceExam>().HasOne(e => e.Game).WithOne().HasForeignKey<ChoiceExam>(e => e.GameId);
+        builder.Entity<ChoiceAttempt>().HasOne(e => e.Participation).WithOne()
+            .HasForeignKey<ChoiceAttempt>(e => e.ParticipationId);
+        builder.Entity<ChoiceAttempt>().HasOne(e => e.Exam).WithMany().HasForeignKey(e => e.GameId);
 
         // var setConverter = GetJsonConverter<HashSet<string>>();
         // var setComparer = GetEnumerableComparer<HashSet<string>, string>();

@@ -96,6 +96,11 @@ export const TeamRank: FC<CardProps> = (props) => {
           {item(t('game.label.score_table.solved_count'), rank?.solvedCount)}
         </Group>
         <Progress value={solved * 100} />
+        {rank?.choiceSubmittedAt != null && (
+          <Text size="sm">
+            {t('choice.title')}: {rank.choiceScore ?? 0} {t('choice.points')}
+          </Text>
+        )}
         {!isMobile && (
           <PasswordInput
             value={teamInfo?.teamToken}

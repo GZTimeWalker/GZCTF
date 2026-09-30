@@ -1,0 +1,80 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: gzctf-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gzctf}
+      POSTGRES_USER: ${POSTGRES_USER:-gzctf}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  gzctf:
+    image: gzctf:local
+    container_name: gzctf
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${GZCTF_HTTP_PORT:-8080}:8080"
+      # Prometheus and health endpoints. Remove this mapping if they are internal only.
+      - "${GZCTF_METRIC_PORT:-3000}:3000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      GZCTF_XorKey: ${GZCTF_XOR_KEY:?Set GZCTF_XOR_KEY in .env}
+      GZCTF_ADMIN_PASSWORD: ${GZCTF_ADMIN_PASSWORD:-}
+      GZCTF_ConnectionStrings__Database: >-
+        Host=postgres;Port=5432;Database=${POSTGRES_DB:-gzctf};Username=${POSTGRES_USER:-gzctf};Password=Nynusec513@
+      # Local disk storage. The volume below persists uploaded files and writeups.
+      GZCTF_ConnectionStrings__Storage: disk://path=/app/files
+      # Redis is optional. Uncomment this and the redis service if using multiple instances.
+      # GZCTF_ConnectionStrings__RedisCache: Host=redis;Port=6379
+      # GZCTF_DisableRateLimit: "false"
+      # GZCTF_RequestLogging: "false"
+    volumes:
+      - gzctf-files:/app/files
+      - "./appsettings.json:/app/appsettings.json:ro"
+      # - "./kube-config.yaml:/app/kube-config.yaml:ro" # this is required for k8s deployment
+      - "/var/run/docker.sock:/var/run/docker.sock" # this is required for docker deployment
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/healthz",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Optional shared cache for a multi-container deployment.
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: gzctf-redis
+  #   restart: unless-stopped
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - redis-data:/data
+
+  db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - "POSTGRES_PASSWORD=Nynusec513@"
+    volumes:
+      - "./data/db:/var/lib/postgresql"
+volumes:
+  postgres-data:
+  gzctf-files:
+  # redis-data:

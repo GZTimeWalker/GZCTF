@@ -16,6 +16,12 @@ using NJsonSchema.Generation.TypeMappers;
 namespace GZCTF.Utils;
 
 [JsonSerializable(typeof(int))]
+[JsonSerializable(typeof(ChoiceExamConfigModel))]
+[JsonSerializable(typeof(ChoiceExamInfoModel))]
+[JsonSerializable(typeof(ChoiceAttemptModel))]
+[JsonSerializable(typeof(ChoiceAnswerModel))]
+[JsonSerializable(typeof(ChoiceSubmitModel))]
+[JsonSerializable(typeof(ChoiceResultModel[]))]
 [JsonSerializable(typeof(string))]
 [JsonSerializable(typeof(TaskStatus))]
 [JsonSerializable(typeof(AnswerResult))]

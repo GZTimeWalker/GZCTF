@@ -284,6 +284,7 @@ public class GameRepository(
         Dictionary<int, DivisionItem> divisions;
         Dictionary<int, ChallengeScoreMeta> challengeMetas;
         List<SolveSnapshot> solveSnapshots;
+        List<ChoiceAttempt> choiceAttempts;
 
         // 0. Begin transaction
         await using (var trans = await Context.Database.BeginTransactionAsync(token))
@@ -369,6 +370,10 @@ public class GameRepository(
             var challengeIds = challengeRecords.Keys.ToArray();
 
             // 4. fetch all recorded first solves for this game
+            choiceAttempts = await Context.ChoiceAttempts.AsNoTracking()
+                .Where(a => a.GameId == game.Id && a.SubmittedAt >= game.StartTimeUtc &&
+                            a.SubmittedAt < game.EndTimeUtc).ToListAsync(token);
+
             solveSnapshots = await Context.FirstSolves
                 .AsNoTracking()
                 .Join(Context.Participations.AsNoTracking(),
@@ -533,6 +538,18 @@ public class GameRepository(
         }
 
         // 6. sort scoreboard items by score and last submission time
+        foreach (var attempt in choiceAttempts)
+        {
+            if (!items.TryGetValue(attempt.ParticipationId, out var item)) continue;
+            var division = item.DivisionId is { } div ? divisions.GetValueOrDefault(div) : null;
+            if (!CheckDivisionPermission(division, GamePermission.GetScore)) continue;
+            item.ChoiceScore = attempt.Score ?? 0;
+            item.ChoiceSubmittedAt = attempt.SubmittedAt;
+            item.Score += item.ChoiceScore;
+            if (item.ChoiceScore > 0 && attempt.SubmittedAt > item.LastSubmissionTime)
+                item.LastSubmissionTime = attempt.SubmittedAt.Value;
+        }
+
         items = items.Values
             .OrderByDescending(i => i.Score)
             .ThenBy(i => i.LastSubmissionTime)
@@ -584,11 +601,15 @@ public class GameRepository(
                         Id = item.Id,
                         Name = item.Name,
                         Items = item.SolvedChallenges
-                            .OrderBy(c => c.SubmitTimeUtc)
+                            .Select(c => new TimeLine { Score = c.Score, Time = c.SubmitTimeUtc })
+                            .Concat(item.ChoiceSubmittedAt is { } submitted
+                                ? [new TimeLine { Score = item.ChoiceScore, Time = submitted }]
+                                : Array.Empty<TimeLine>())
+                            .OrderBy(c => c.Time)
                             .Aggregate(new List<TimeLine>(), (acc, c) =>
                             {
                                 var last = acc.LastOrDefault();
-                                acc.Add(new TimeLine { Score = (last?.Score ?? 0) + c.Score, Time = c.SubmitTimeUtc });
+                                acc.Add(new TimeLine { Score = (last?.Score ?? 0) + c.Score, Time = c.Time });
                                 return acc;
                             })
                     };

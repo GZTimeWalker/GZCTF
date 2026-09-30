@@ -10,6 +10,7 @@ import { useLocation, useNavigate, useParams } from 'react-router'
 import { GameProgress } from '@Components/GameProgress'
 import { IconTabs } from '@Components/IconTabs'
 import { RequireRole } from '@Components/WithRole'
+import { useChoiceInfo } from '@Utils/ChoiceApi'
 import { DEFAULT_LOADING_OVERLAY } from '@Utils/Shared'
 import { getGameStatus, useGame } from '@Hooks/useGame'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -58,11 +59,24 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
 
   const { role } = useUserRole()
   const { game, status } = useGame(numId)
+  const { data: choiceInfo } = useChoiceInfo(numId, status)
   const { t } = useTranslation()
 
   const finished = dayjs() > dayjs(game?.end ?? new Date())
 
   const pages = [
+    ...(choiceInfo?.enabled
+      ? [
+          {
+            icon: mdiFlagOutline,
+            title: t('choice.title'),
+            path: 'choice',
+            link: 'choice',
+            requireJoin: true,
+            requireRole: Role.User,
+          },
+        ]
+      : []),
     {
       icon: mdiFlagOutline,
       title: t('game.tab.challenge'),
@@ -92,7 +106,7 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const filteredPages = pages
     .filter((p) => RequireRole(p.requireRole, role))
     .filter((p) => !p.requireJoin || game?.status === ParticipationStatus.Accepted)
-    .filter((p) => !p.requireJoin || !finished || game?.practiceMode)
+    .filter((p) => p.path === 'choice' || !p.requireJoin || !finished || game?.practiceMode)
 
   const tabs = filteredPages.map((p) => ({
     tabKey: p.link,
@@ -135,6 +149,9 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
         // allow access to scoreboard
         return
       }
+
+      // Submitted papers and saved drafts remain readable after the competition.
+      if (location.pathname.endsWith('/choice') && status === ParticipationStatus.Accepted) return
 
       if (location.pathname.includes('monitor') && RequireRole(Role.Monitor, role)) {
         // allow access to monitor

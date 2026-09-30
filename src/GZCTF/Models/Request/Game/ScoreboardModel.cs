@@ -186,6 +186,10 @@ public partial class TimeLine
 [MemoryPackable]
 public partial class ScoreboardItem
 {
+    /// <summary>Final choice paper score included in the total score.</summary>
+    public int ChoiceScore { get; set; }
+    public DateTimeOffset? ChoiceSubmittedAt { get; set; }
+
     /// <summary>
     /// Team ID
     /// </summary>

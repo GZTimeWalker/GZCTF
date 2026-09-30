@@ -1604,6 +1604,9 @@ export interface TimeLine {
 }
 
 export interface ScoreboardItem {
+  /** Final choice paper score included in the total. */
+  choiceScore?: number;
+  choiceSubmittedAt?: number | null;
   /**
    * Team ID
    * @format int32
