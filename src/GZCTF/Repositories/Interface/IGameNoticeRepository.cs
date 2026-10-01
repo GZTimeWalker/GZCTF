@@ -7,8 +7,14 @@ public interface IGameNoticeRepository : IRepository
     /// </summary>
     /// <param name="notice"></param>
     /// <param name="token"></param>
+    /// <param name="publish">Publish immediately, or defer until the caller commits its transaction</param>
     /// <returns></returns>
-    public Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default);
+    public Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default, bool publish = true);
+
+    /// <summary>
+    /// Publish a persisted notice after its transaction has committed
+    /// </summary>
+    public Task PublishNotice(GameNotice notice, CancellationToken token = default);
 
     /// <summary>
     /// Get latest notices for a specific game

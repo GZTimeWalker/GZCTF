@@ -70,12 +70,26 @@ public class TransferChallenge : IValidatableObject
     public List<string>? Hints { get; set; }
 
     /// <summary>
+    /// Release state of each hint. Older imports without this field default to disabled hints.
+    /// </summary>
+    public bool[]? HintEnabled { get; set; }
+
+    /// <summary>
     /// Container configuration (null = not a container challenge)
     /// </summary>
     public ContainerSection? Container { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (Hints?.Any(hint => hint is null) is true)
+            yield return new ValidationResult("Hint content cannot be null.", [nameof(Hints)]);
+
+        if (HintEnabled is not null && HintEnabled.Length != (Hints?.Count ?? 0))
+            yield return new ValidationResult("Each hint must have a release state.", [nameof(HintEnabled)]);
+        else if (Hints is not null && HintEnabled is not null &&
+                 Hints.Where((hint, index) => HintEnabled[index] && string.IsNullOrWhiteSpace(hint)).Any())
+            yield return new ValidationResult("An empty hint cannot be released.", [nameof(Hints)]);
+
         // Note: Flags may be completely unset for imported challenges.
         // This is acceptable since imported challenges are disabled by default
         // and require manual enablement after proper flag configuration.

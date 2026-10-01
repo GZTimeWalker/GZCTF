@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GZCTF.Extensions;
 
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
 /// Challenge update information (Edit)
 /// </summary>
-public class ChallengeUpdateModel
+public class ChallengeUpdateModel : IValidatableObject
 {
     /// <summary>
     /// Challenge title
@@ -36,6 +35,11 @@ public class ChallengeUpdateModel
     /// Challenge hints
     /// </summary>
     public List<string>? Hints { get; set; }
+
+    /// <summary>
+    /// Release state of each hint, in the same order as Hints. New hints default to disabled.
+    /// </summary>
+    public bool[]? HintEnabled { get; set; }
 
     /// <summary>
     /// Is the challenge enabled
@@ -122,12 +126,21 @@ public class ChallengeUpdateModel
     public double? Difficulty { get; set; }
 
     /// <summary>
-    /// Check if hints are updated
+    /// Validate hint release settings
     /// </summary>
-    /// <param name="originalHash">Original hash</param>
-    /// <returns></returns>
-    internal bool IsHintUpdated(int? originalHash) =>
-        Hints is not null && Hints.GetSetHashCode() != originalHash;
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (Hints?.Any(hint => hint is null) is true)
+            yield return new ValidationResult("Hint content cannot be null.", [nameof(Hints)]);
+
+        if (Hints is null || HintEnabled is null)
+            yield break;
+
+        if (Hints.Count != HintEnabled.Length)
+            yield return new ValidationResult("Each hint must have a release state.", [nameof(HintEnabled)]);
+        else if (Hints.Where((hint, index) => HintEnabled[index] && string.IsNullOrWhiteSpace(hint)).Any())
+            yield return new ValidationResult("An empty hint cannot be released.", [nameof(Hints)]);
+    }
 
     /// <summary>
     /// Check if the Flag template is valid

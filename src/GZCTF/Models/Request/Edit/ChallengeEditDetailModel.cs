@@ -45,6 +45,11 @@ public class ChallengeEditDetailModel
     public List<string> Hints { get; set; } = [];
 
     /// <summary>
+    /// Release state of each hint, in the same order as Hints
+    /// </summary>
+    public bool[] HintEnabled { get; set; } = [];
+
+    /// <summary>
     /// Flag template, used to generate Flag based on Token and challenge, game information
     /// </summary>
     [MaxLength(Limits.MaxFlagTemplateLength, ErrorMessageResourceName = nameof(Resources.Program.Model_FlagTooLong),
@@ -165,6 +170,7 @@ public class ChallengeEditDetailModel
             Type = chal.Type,
             FlagTemplate = chal.FlagTemplate,
             Hints = chal.Hints ?? [],
+            HintEnabled = chal.GetHintEnabled(),
             IsEnabled = chal.IsEnabled,
             ContainerImage = chal.ContainerImage,
             MemoryLimit = chal.MemoryLimit,

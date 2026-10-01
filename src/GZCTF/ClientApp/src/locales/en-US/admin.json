@@ -24,7 +24,10 @@
       },
       "flush_scoreboard": "Refresh Scoreboard",
       "hint": {
-        "add": "Add Hint"
+        "add": "Add Hint",
+        "enable": "Enable",
+        "disable": "Disable",
+        "delete": "Delete hint"
       },
       "new": "New Challenge",
       "next": "Next",
@@ -147,6 +150,8 @@
           "title": "Flag Management"
         },
         "hints": "Hints",
+        "hint_label": "Hint {{count}}",
+        "hint_release_description": "New hints are disabled by default. Enabling releases a hint immediately.",
         "memory_limit": {
           "description": "RAM limitation of containers",
           "label": "Memory Limit (MB)"
@@ -486,7 +491,9 @@
           "attachment_downloaded": "Pretend the attachment has been downloaded!",
           "flag_submitted": "Flag submitted!"
         },
-        "updated": "Challenge updated"
+        "updated": "Challenge updated",
+        "hint_enabled": "Hint enabled",
+        "hint_disabled": "Hint disabled"
       },
       "created": "Game created",
       "divisions": {

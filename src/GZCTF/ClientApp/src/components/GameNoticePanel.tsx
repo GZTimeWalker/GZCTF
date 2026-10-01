@@ -7,6 +7,7 @@ import { TFunction } from 'i18next'
 import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
+import { mutate } from 'swr'
 import { Empty } from '@Components/Empty'
 import { InlineMarkdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
@@ -108,8 +109,21 @@ export const GameNoticePanel: FC = () => {
 
       connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 2
 
+      connection.onreconnected(() => {
+        // Refresh open challenge details after missed hint releases or withdrawals.
+        mutate((key) => typeof key === 'string' && key.startsWith(`/api/game/${numId}/challenges/`)).catch(
+          console.error
+        )
+      })
+
       connection.on('ReceivedGameNotice', (message: GameNotice) => {
         setBuffer((prev) => ({ base: notices, items: [message, ...(prev.base === notices ? prev.items : [])] }))
+
+        if (message.type === NoticeType.NewHint) {
+          mutate((key) => typeof key === 'string' && key.startsWith(`/api/game/${numId}/challenges/`)).catch(
+            console.error
+          )
+        }
 
         if (message.type === NoticeType.NewChallenge || message.type === NoticeType.NewHint) {
           showNotification({
@@ -138,7 +152,7 @@ export const GameNoticePanel: FC = () => {
         })
       }
     }
-  })
+  }, [id, numId, notices, t, theme.primaryColor])
 
   const newNotices = buffer.base === notices ? buffer.items : []
   const allNotices = [...newNotices, ...(notices ?? [])]

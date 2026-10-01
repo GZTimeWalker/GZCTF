@@ -20,7 +20,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiContentSaveOutline, mdiDatabaseEditOutline, mdiDeleteOutline, mdiEyeOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useState } from 'react'
+import { FC, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 import { HintList } from '@Components/HintList'
@@ -40,7 +40,13 @@ import {
 import { useEditChallenge, useEditChallenges } from '@Hooks/useEdit'
 import { useGame } from '@Hooks/useGame'
 import { useSyncOnChange } from '@Hooks/useSyncOnChange'
-import api, { ChallengeCategory, ChallengeType, ChallengeUpdateModel, NetworkMode } from '@Api'
+import api, {
+  ChallengeCategory,
+  ChallengeEditDetailModel,
+  ChallengeType,
+  ChallengeUpdateModel,
+  NetworkMode,
+} from '@Api'
 import misc from '@Styles/Misc.module.css'
 
 const GameChallengeEdit: FC = () => {
@@ -53,6 +59,7 @@ const GameChallengeEdit: FC = () => {
   const { challenges, mutate: mutateChals } = useEditChallenges(numId)
 
   const [challengeInfo, setChallengeInfo] = useState<ChallengeUpdateModel>({ ...challenge })
+  const hintUpdate = useRef<ChallengeEditDetailModel | null>(null)
   const [deadline, setDeadline] = useState<dayjs.Dayjs | null>(
     challenge?.deadlineUtc ? dayjs(challenge?.deadlineUtc) : null
   )
@@ -75,6 +82,9 @@ const GameChallengeEdit: FC = () => {
 
   useSyncOnChange([challenge], () => {
     if (challenge) {
+      const preserveDraft = challenge === hintUpdate.current
+      hintUpdate.current = null
+      if (preserveDraft) return
       setChallengeInfo({ ...challenge })
       setCategory(challenge.category)
       setType(challenge.type)
@@ -110,6 +120,32 @@ const GameChallengeEdit: FC = () => {
       if (!noFeedback) {
         setDisabled(false)
       }
+    }
+  }
+
+  const onToggleHint = async (index: number, enabled: boolean) => {
+    const hints = challengeInfo.hints ?? []
+    const hintEnabled = hints.map((_, i) => (i === index ? enabled : (challengeInfo.hintEnabled?.[i] ?? false)))
+    setDisabled(true)
+    try {
+      const res = await api.edit.editUpdateGameChallenge(numId, numCId, { hints, hintEnabled })
+      // Keep unsaved changes to the other challenge fields when releasing a hint.
+      setChallengeInfo((prev) => ({ ...prev, hints: res.data.hints, hintEnabled: res.data.hintEnabled }))
+      hintUpdate.current = res.data
+      await mutate(res.data, { revalidate: false })
+      showNotification({
+        color: 'teal',
+        message: t(
+          enabled
+            ? 'admin.notification.games.challenges.hint_enabled'
+            : 'admin.notification.games.challenges.hint_disabled'
+        ),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+    } catch (e) {
+      showErrorMsg(e, t)
+    } finally {
+      setDisabled(false)
     }
   }
 
@@ -377,9 +413,12 @@ const GameChallengeEdit: FC = () => {
                   </Group>
                 }
                 hints={challengeInfo?.hints ?? []}
+                hintEnabled={challengeInfo?.hintEnabled ?? []}
+                description={t('admin.content.games.challenges.hint_release_description')}
                 disabled={disabled}
-                height={180}
-                onChangeHint={(hints) => setChallengeInfo({ ...challengeInfo, hints })}
+                height={240}
+                onChangeHint={(hints, hintEnabled) => setChallengeInfo({ ...challengeInfo, hints, hintEnabled })}
+                onToggleHint={onToggleHint}
               />
             </Stack>
           </Grid.Col>
@@ -606,7 +645,9 @@ const GameChallengeEdit: FC = () => {
         challenge={{
           title: tryDefault([challengeInfo?.title, challenge?.title], ''),
           content: tryDefault([challengeInfo?.content, challenge?.content]),
-          hints: tryDefault([challengeInfo?.hints, challenge?.hints], []),
+          hints: (challengeInfo?.hints ?? []).filter(
+            (hint, index) => challengeInfo.hintEnabled?.[index] && hint.trim()
+          ),
           score: tryDefault([challengeInfo?.originalScore, challenge?.originalScore], 0),
           limit: tryDefault([challengeInfo?.submissionLimit, challenge?.submissionLimit], 0),
           category: category as ChallengeCategory,

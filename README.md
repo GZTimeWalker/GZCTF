@@ -17,6 +17,8 @@
 
 [English](./README.md), [简体中文](./README.zh.md), [日本語](./README.ja.md)
 
+# This is an unoffical repo of GZCTF, made some custom modify to fulfill our need.
+
 GZ::CTF is an open source CTF platform based on ASP.NET Core.
 
 > [!IMPORTANT]
@@ -36,16 +38,13 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 ## Features 🛠️
 
 - Create highly customizable challenges
-
   - Type of challenges: Static Attachment, Dynamic Attachment, Static Container, Dynamic Container
-
     - Static Attachment: Shared attachments, any configured flag can be accepted.
     - Dynamic Attachment: The number of flags and attachments must be at least the number of teams. Attachments and flags are distributed according to the teams.
     - Static Container: Shared container templates, no dynamic flag is issued, and any configured flag can be submitted.
     - Dynamic Container: Automatically generate and issue flags through container environment variables, and flag of each team is unique.
 
   - Dynamic Scores
-
     - Curve of scores:
 
       $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$
@@ -165,7 +164,7 @@ Some event organizers have already chosen GZCTF and successfully completed their
 - **DinoCTF: The 4th & 5th Information Security Competition of Chengdu University of Technology**
 - **RedrockCTF 2024：Information Security Novice Competition of Chongqing University Of Posts And Telecommunications**
 - **WAXFCTF 2024：Chongqing Vocational Institute of Safety Technology "Pioneer Cup" Cybersecurity Skills Competition**
-- **ZGCTF 2025：College of XuChang The 3rd "Zhuoguang Cup" Information Security Competition** 
+- **ZGCTF 2025：College of XuChang The 3rd "Zhuoguang Cup" Information Security Competition**
 
 _These list is not in any particular order, and PRs are welcome for additions._
 

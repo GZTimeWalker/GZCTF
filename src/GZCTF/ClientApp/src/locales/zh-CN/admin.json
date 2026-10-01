@@ -24,7 +24,10 @@
       },
       "flush_scoreboard": "刷新积分榜",
       "hint": {
-        "add": "添加提示"
+        "add": "添加提示",
+        "enable": "启用",
+        "disable": "禁用",
+        "delete": "删除提示"
       },
       "new": "新建题目",
       "next": "下一题",
@@ -147,6 +150,8 @@
           "title": "flag 管理"
         },
         "hints": "题目提示",
+        "hint_label": "提示 {{count}}",
+        "hint_release_description": "新提示默认禁用，启用后立即释放",
         "memory_limit": {
           "description": "限制容器使用的 RAM",
           "label": "内存限制 (MB)"
@@ -486,7 +491,9 @@
           "attachment_downloaded": "假装附件已经下载了！",
           "flag_submitted": "flag 似乎被正确提交了！"
         },
-        "updated": "题目已更新"
+        "updated": "题目已更新",
+        "hint_enabled": "提示已启用",
+        "hint_disabled": "提示已禁用"
       },
       "created": "比赛已创建",
       "divisions": {

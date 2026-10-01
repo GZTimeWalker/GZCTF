@@ -68,7 +68,7 @@ public class ChallengeDetailModel
         {
             Id = gameInstance.Challenge.Id,
             Content = gameInstance.Challenge.Content,
-            Hints = gameInstance.Challenge.Hints,
+            Hints = gameInstance.Challenge.GetReleasedHints(),
             Score = scoreboardChallenge?.Score ?? gameInstance.Challenge.CurrentScore,
             Category = gameInstance.Challenge.Category,
             Title = gameInstance.Challenge.Title,

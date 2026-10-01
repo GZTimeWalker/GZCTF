@@ -33,6 +33,10 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     refreshInterval: 120 * 1000,
   })
 
+  useEffect(() => {
+    if (modalProps.opened) mutate().catch(console.error)
+  }, [modalProps.opened, mutate])
+
   const { config } = useConfig()
   const { t } = useTranslation()
 

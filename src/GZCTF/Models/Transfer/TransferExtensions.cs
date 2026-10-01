@@ -100,6 +100,7 @@ public static class TransferExtensions
             if (challenge.Hints?.Count > 0)
             {
                 transfer.Hints = challenge.Hints;
+                transfer.HintEnabled = challenge.GetHintEnabled();
             }
 
             // Attachment
@@ -263,7 +264,8 @@ public static class TransferExtensions
                 FlagTemplate = transfer.Flags.Template,
                 DisableBloodBonus = transfer.Flags.DisableBloodBonus,
                 EnableTrafficCapture = transfer.Flags.EnableTrafficCapture,
-                Hints = transfer.Hints
+                Hints = transfer.Hints,
+                HintEnabled = transfer.HintEnabled?.ToArray() ?? new bool[transfer.Hints?.Count ?? 0]
             };
 
             // Container configuration

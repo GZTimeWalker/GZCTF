@@ -699,7 +699,14 @@ public class EditController(
             return BadRequest(
                 new RequestResponse(localizer[nameof(Resources.Program.Challenge_DynamicAssetsNotNullable)]));
 
-        var hintUpdated = model.IsHintUpdated(res.Hints?.GetSetHashCode());
+        var hints = model.Hints ?? res.Hints ?? [];
+        if (model.HintEnabled is { } hintEnabled &&
+            (hintEnabled.Length != hints.Count ||
+             hints.Where((hint, index) => hintEnabled[index] && string.IsNullOrWhiteSpace(hint)).Any()))
+            return BadRequest(new RequestResponse("Each released hint must have non-empty content and a release state."));
+
+        var previousHints = res.GetReleasedHints();
+        var notices = new List<GameNotice>();
 
         if (!string.IsNullOrWhiteSpace(model.FlagTemplate) && res.Type == ChallengeType.DynamicContainer &&
             !model.IsValidFlagTemplate())
@@ -715,8 +722,7 @@ public class EditController(
                     await challengeRepository.EnsureInstances(res, game, token);
 
                     if (game.IsActive)
-                        await gameNoticeRepository.AddNotice(
-                            new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] }, token);
+                        notices.Add(new() { Game = game, Type = NoticeType.NewChallenge, Values = [res.Title] });
                     break;
                 }
             case false when res.Type.IsContainer():
@@ -727,10 +733,14 @@ public class EditController(
                 break;
         }
 
-        if (game.IsActive && res.IsEnabled && hintUpdated)
-            await gameNoticeRepository.AddNotice(
-                new() { Game = game, Type = NoticeType.NewHint, Values = [res.Title] },
-                token);
+        var releasedHints = res.GetReleasedHints();
+        var hasNewHints = releasedHints.GroupBy(hint => hint, StringComparer.Ordinal)
+            .Any(group => group.Count() > previousHints.Count(hint => hint == group.Key));
+        if (game.IsActive && res.IsEnabled && hasNewHints)
+            notices.Add(new() { Game = game, Type = NoticeType.NewHint, Values = [res.Title] });
+
+        foreach (var notice in notices)
+            await gameNoticeRepository.AddNotice(notice, token, publish: false);
 
         await challengeRepository.SaveAsync(token);
 
@@ -738,6 +748,10 @@ public class EditController(
 
         // Always flush scoreboard
         await cacheHelper.FlushScoreboardCache(game.Id, token);
+
+        // Broadcast only after commit so clients can immediately read the released hints.
+        foreach (var notice in notices)
+            await gameNoticeRepository.PublishNotice(notice, token);
 
         return Ok(ChallengeEditDetailModel.FromChallenge(res));
     }

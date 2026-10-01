@@ -86,7 +86,7 @@ public static class TransferValidator
             var objectProperties = obj.GetType().GetProperties()
                 .Where(p => p.PropertyType.IsClass &&
                             p.PropertyType != typeof(string) &&
-                            !typeof(IEnumerable<object>).IsAssignableFrom(p.PropertyType));
+                            !typeof(System.Collections.IEnumerable).IsAssignableFrom(p.PropertyType));
 
             foreach (var property in objectProperties)
             {

@@ -17,6 +17,13 @@
 
 [English](./README.md), [简体中文](./README.zh.md), [日本語](./README.ja.md)
 
+# 这不是官方GZCTF的仓库，该版本的GZCTF进行了一些定制化修改以满足我们在进行比赛过程中可能的需求。
+
+## 相比与官方版本的GZCTF，该仓库的GZCTF额外实现了以下功能
+
+- 选择题板块
+- hint预填写，自由启用与禁用
+
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 > [!IMPORTANT]
@@ -36,16 +43,13 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 ## 特性 🛠️
 
 - 创建高度可自定义的题目
-
   - 题目类型：静态附件、动态附件、静态容器、动态容器
-
     - 静态附件：共用附件，任意添加的 flag 均可提交。
     - 动态附件：需要至少满足队伍数量的 flag 和附件，附件及 flag 按照队伍进行分发。
     - 静态容器：共用容器模版，不下发 flag，任意添加的 flag 均可提交。
     - 动态容器：自动生成并通过容器环境变量进行 flag 下发，每个队伍 flag 唯一。
 
   - 动态分值
-
     - 分值曲线：
 
       $$f(S, r, d, x) = \left \lfloor S \times \left[r  + ( 1- r) \times \exp\left( \dfrac{1 - x}{d} \right) \right] \right \rfloor $$

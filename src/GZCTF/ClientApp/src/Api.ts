@@ -1122,6 +1122,8 @@ export interface ChallengeEditDetailModel {
   type: ChallengeType;
   /** Challenge hints */
   hints?: string[];
+  /** Release state of each hint, in the same order as hints */
+  hintEnabled?: boolean[];
   /**
    * Flag template, used to generate Flag based on Token and challenge, game information
    * @maxLength 120
@@ -1304,6 +1306,8 @@ export interface ChallengeUpdateModel {
   category?: ChallengeCategory | null;
   /** Challenge hints */
   hints?: string[] | null;
+  /** Release state of each hint, in the same order as hints. New hints default to disabled. */
+  hintEnabled?: boolean[] | null;
   /** Is the challenge enabled */
   isEnabled?: boolean | null;
   /** Unified file name */

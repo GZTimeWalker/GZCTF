@@ -14,16 +14,21 @@ public class GameNoticeRepository(
     IHubContext<UserHub, IUserClient> hub,
     AppDbContext context) : RepositoryBase(context), IGameNoticeRepository
 {
-    public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default)
+    public async Task<GameNotice> AddNotice(GameNotice notice, CancellationToken token = default, bool publish = true)
     {
         await Context.AddAsync(notice, token);
         await SaveAsync(token);
 
-        await cacheHelper.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
-
-        await hub.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
+        if (publish)
+            await PublishNotice(notice, token);
 
         return notice;
+    }
+
+    public async Task PublishNotice(GameNotice notice, CancellationToken token = default)
+    {
+        await cacheHelper.RemoveAsync(CacheKey.GameNotice(notice.GameId), token);
+        await hub.Clients.Group($"Game_{notice.GameId}").ReceivedGameNotice(notice);
     }
 
     public Task<GameNotice[]> GetNormalNotices(int gameId, CancellationToken token = default) =>

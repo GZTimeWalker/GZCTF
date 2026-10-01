@@ -162,10 +162,10 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
           <Markdown source={challenge.content ?? ''} />
           {challenge.hints && challenge.hints.length > 0 && (
             <Stack gap={2} pt="sm">
-              {challenge.hints.map((hint) => (
-                <Group key={hint} gap="xs" align="flex-start" wrap="nowrap">
+              {challenge.hints.map((hint, index) => (
+                <Group key={index} gap="xs" align="flex-start" wrap="nowrap">
                   <Icon path={mdiLightbulbOnOutline} size={0.8} color={theme.colors.yellow[5]} />
-                  <InlineMarkdown key={hint} size="sm" maw="calc(100% - 2rem)" source={hint} />
+                  <InlineMarkdown size="sm" maw="calc(100% - 2rem)" source={hint} />
                 </Group>
               ))}
             </Stack>
