@@ -96,6 +96,7 @@
     },
     "writeup": {
       "current": "当前提交",
+      "examples": "Writeup 示例文档",
       "deadline_exceeded": "提交截止时间已过",
       "instructions": {
         "additional": "附加说明",

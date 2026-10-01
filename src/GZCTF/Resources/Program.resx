@@ -1088,4 +1088,7 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>The deadline for this challenge has passed</value>
   </data>
+  <data name="File_WriteupExampleFormat" xml:space="preserve">
+    <value>Writeup samples must be PDF, DOC, DOCX or ODT documents with a file name of at most 255 characters.</value>
+  </data>
 </root>

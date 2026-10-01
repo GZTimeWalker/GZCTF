@@ -333,6 +333,14 @@
       },
       "stats": "<1>{{current}}</1> out of <1>{{total}}</1> games displayed",
       "writeups": {
+        "examples": {
+          "description": "Upload sample documents for participants to download. PDF, Word (DOC/DOCX) and ODT are supported, up to 20MB per file. Submitted writeups must still be PDF documents.",
+          "upload": "Upload sample document",
+          "empty": "No sample documents uploaded",
+          "invalid_file": "Select a nonempty PDF, DOC, DOCX or ODT document no larger than 20MB.",
+          "uploaded": "Sample document uploaded",
+          "deleted": "Sample document deleted"
+        },
         "empty": {
           "description": "New writeups will appear here",
           "title": "Ouch! No writeup yet"

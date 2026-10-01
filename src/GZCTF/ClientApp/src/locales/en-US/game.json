@@ -96,6 +96,7 @@
     },
     "writeup": {
       "current": "Current Writeup",
+      "examples": "Writeup sample documents",
       "deadline_exceeded": "Submission deadline has passed",
       "instructions": {
         "additional": "Additional Notes",

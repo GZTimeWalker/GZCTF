@@ -13,6 +13,7 @@ public class GameRepository(
     IDivisionRepository divisionRepository,
     IGameChallengeRepository challengeRepository,
     IParticipationRepository participationRepository,
+    IBlobRepository blobRepository,
     IConfigService configService,
     AppDbContext context) : RepositoryBase(context), IGameRepository
 {
@@ -235,6 +236,11 @@ public class GameRepository(
             foreach (var part in await Context.Participations.Where(p => p.Game == game).ToArrayAsync(token))
                 await participationRepository.RemoveParticipation(part, false, token);
 
+            foreach (var exampleId in await Context.WriteupExamples.Where(e => e.GameId == game.Id)
+                         .Select(e => e.Id).ToArrayAsync(token))
+                if (await DeleteWriteupExample(game, exampleId, token) == TaskStatus.Failed)
+                    throw new IOException("Failed to delete a writeup sample document.");
+
             Context.Remove(game);
 
             await SaveAsync(token);
@@ -270,6 +276,35 @@ public class GameRepository(
 
         foreach (var part in game.Participations)
             await participationRepository.DeleteParticipationWriteUp(part, token);
+    }
+
+    public async Task<List<WriteupExampleModel>> GetWriteupExamples(int gameId, CancellationToken token = default)
+    {
+        var examples = await Context.WriteupExamples.AsNoTracking().Include(e => e.File)
+            .Where(e => e.GameId == gameId).OrderBy(e => e.Id).ToListAsync(token);
+        return examples.Select(WriteupExampleModel.FromExample).ToList();
+    }
+
+    public async Task<WriteupExampleModel> AddWriteupExample(Game game, IFormFile file, string name,
+        CancellationToken token = default)
+    {
+        var blob = await blobRepository.CreateOrUpdateBlob(file, name, token, preserveExistingName: true);
+        var example = new WriteupExample { Game = game, File = blob, Name = name };
+        await Context.WriteupExamples.AddAsync(example, token);
+        await SaveAsync(token);
+        return WriteupExampleModel.FromExample(example);
+    }
+
+    public async Task<TaskStatus> DeleteWriteupExample(Game game, int exampleId, CancellationToken token = default)
+    {
+        var example = await Context.WriteupExamples.Include(e => e.File)
+            .FirstOrDefaultAsync(e => e.Id == exampleId && e.GameId == game.Id, token);
+        if (example is null)
+            return TaskStatus.NotFound;
+
+        Context.WriteupExamples.Remove(example);
+        var result = await blobRepository.DeleteBlob(example.File, token);
+        return result == TaskStatus.Failed ? result : TaskStatus.Success;
     }
 
     public Task<Game[]> GetGames(int count, int skip, CancellationToken token) =>

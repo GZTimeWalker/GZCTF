@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using GZCTF.Models.Request.Info;
+using GZCTF.Models.Request.Game;
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -17,6 +18,9 @@ public record WriteupInfoModel
     /// Writeups list
     /// </summary>
     public List<WriteupInfo> Writeups { get; set; } = [];
+
+    /// <summary>Sample documents provided by the organizers.</summary>
+    public List<WriteupExampleModel> Examples { get; set; } = [];
 }
 
 public record WriteupInfo

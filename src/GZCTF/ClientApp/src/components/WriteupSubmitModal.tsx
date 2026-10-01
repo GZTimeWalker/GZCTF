@@ -19,9 +19,10 @@ import { mdiCheck, mdiExclamationThick, mdiFileDocumentOutline, mdiFileHidden } 
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
 import dayjs from 'dayjs'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Markdown } from '@Components/MarkdownRenderer'
+import { WriteupExampleList } from '@Components/WriteupExampleList'
 import { useLanguage } from '@Utils/I18n'
 import { showErrorMsg } from '@Utils/Shared'
 import { HunamizeSize } from '@Utils/Shared'
@@ -47,6 +48,10 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, writeu
   const noteColor = data?.submitted ? theme.colors.teal[5] : theme.colors.red[5]
 
   const { t } = useTranslation()
+
+  useEffect(() => {
+    if (props.opened) void mutate()
+  }, [gameId, props.opened, mutate])
 
   useSyncOnChange([wpddl], () => {
     setDdl(dayjs(wpddl))
@@ -142,6 +147,12 @@ export const WriteupSubmitModal: FC<WriteupSubmitModalProps> = ({ gameId, writeu
           <>
             <Title order={5}>{t('game.content.writeup.instructions.additional')}</Title>
             <Markdown source={data.note} />
+          </>
+        )}
+        {!!data?.examples?.length && (
+          <>
+            <Title order={5}>{t('game.content.writeup.examples')}</Title>
+            <WriteupExampleList examples={data.examples} />
           </>
         )}
         <Title order={5}>{t('game.content.writeup.current')}</Title>

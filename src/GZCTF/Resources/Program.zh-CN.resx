@@ -1088,4 +1088,7 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>该题目的截止时间已过</value>
   </data>
+  <data name="File_WriteupExampleFormat" xml:space="preserve">
+    <value>Writeup 示例仅支持 PDF、DOC、DOCX 或 ODT 文档，文件名不能超过 255 个字符。</value>
+  </data>
 </root>

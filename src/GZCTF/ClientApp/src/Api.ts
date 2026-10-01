@@ -660,10 +660,19 @@ export interface ParticipationEditModel {
 
 /** Game writeup information */
 export interface WriteupInfoModel {
+  /** Sample documents provided by the organizers. */
+  examples?: WriteupExampleModel[];
   /** Division ID to Division Name mapping */
   divisions?: Record<string, string>;
   /** Writeups list */
   writeups?: WriteupInfo[];
+}
+
+export interface WriteupExampleModel {
+  id: number;
+  name: string;
+  fileSize: number;
+  url: string;
 }
 
 export interface WriteupInfo {
@@ -2039,6 +2048,8 @@ export interface FlagSubmitModel {
 
 /** Game writeup submission information */
 export interface BasicWriteupInfoModel {
+  /** Sample documents provided by the organizers. */
+  examples?: WriteupExampleModel[];
   /** Whether it has been submitted */
   submitted?: boolean;
   /** File name */
@@ -3260,6 +3271,33 @@ export class Api<
         data,
         options,
       ),
+
+    /** Upload a writeup sample document. */
+    adminUploadWriteupExample: (
+      id: number,
+      data: { file: File },
+      params: RequestParams = {},
+    ) =>
+      this.request<WriteupExampleModel, RequestResponse>({
+        path: `/api/admin/writeups/${id}/examples`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /** Delete a writeup sample document. */
+    adminDeleteWriteupExample: (
+      id: number,
+      exampleId: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/admin/writeups/${id}/examples/${exampleId}`,
+        method: "DELETE",
+        ...params,
+      }),
 
     /**
      * @description Use this API to get Writeup basic information, requires Admin permission

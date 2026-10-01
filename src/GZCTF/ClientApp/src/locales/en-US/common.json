@@ -6,6 +6,8 @@
     "uploading": "Uploading avatar"
   },
   "button": {
+    "download": "Download",
+    "delete": "Delete",
     "copy": "Copy to Clipboard",
     "reset": "Reset",
     "retry": "Retry",

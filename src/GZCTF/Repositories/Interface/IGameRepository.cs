@@ -120,6 +120,16 @@ public interface IGameRepository : IRepository
     /// <returns></returns>
     public Task DeleteAllWriteUps(Game game, CancellationToken token = default);
 
+    /// <summary>List sample documents for writeup submissions.</summary>
+    public Task<List<WriteupExampleModel>> GetWriteupExamples(int gameId, CancellationToken token = default);
+
+    /// <summary>Store a sample document using the shared blob storage.</summary>
+    public Task<WriteupExampleModel> AddWriteupExample(Game game, IFormFile file, string name,
+        CancellationToken token = default);
+
+    /// <summary>Remove a sample document and release its blob reference.</summary>
+    public Task<TaskStatus> DeleteWriteupExample(Game game, int exampleId, CancellationToken token = default);
+
     #region RecentGames
 
     /// <summary>

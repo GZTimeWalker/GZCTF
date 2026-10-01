@@ -8,9 +8,10 @@ public interface IBlobRepository : IRepository
     /// <param name="file">The form file</param>
     /// <param name="fileName">The name to save the file as</param>
     /// <param name="token"></param>
+    /// <param name="preserveExistingName">Keep the name of an already stored shared file</param>
     /// <returns>The file object</returns>
     public Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
-        CancellationToken token = default);
+        CancellationToken token = default, bool preserveExistingName = false);
 
     /// <summary>
     /// Create or update a blob file from a stream

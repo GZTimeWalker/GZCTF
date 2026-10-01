@@ -1117,7 +1117,9 @@ public class GameController(
         if (context.Result is not null)
             return context.Result;
 
-        return Ok(BasicWriteupInfoModel.FromParticipation(context.Participation!));
+        var info = BasicWriteupInfoModel.FromParticipation(context.Participation!);
+        info.Examples = await gameRepository.GetWriteupExamples(id, token);
+        return Ok(info);
     }
 
     /// <summary>

@@ -23,6 +23,7 @@
 
 - 选择题板块
 - hint预填写，自由启用与禁用
+- WP模板功能
 
 GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 

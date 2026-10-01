@@ -333,6 +333,14 @@
       },
       "stats": "已显示 <1>{{current}}</1>/<1>{{total}}</1> 比赛",
       "writeups": {
+        "examples": {
+          "description": "上传供选手下载参考的示例文档。支持 PDF、Word（DOC/DOCX）或 ODT，每份文件不超过 20MB；选手提交的 Writeup 仍须为 PDF。",
+          "upload": "上传示例文档",
+          "empty": "尚未上传示例文档",
+          "invalid_file": "请选择不为空且不超过 20MB 的 PDF、DOC、DOCX 或 ODT 文档。",
+          "uploaded": "示例文档已上传",
+          "deleted": "示例文档已删除"
+        },
         "empty": {
           "description": "新提交的 Writeup 会显示在这里",
           "title": "Ouch! 还没有队伍提交 Writeup"

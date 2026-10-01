@@ -15,7 +15,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         Context.Files.CountAsync(token);
 
     public async Task<LocalFile> CreateOrUpdateBlob(IFormFile file, string? fileName = null,
-        CancellationToken token = default)
+        CancellationToken token = default, bool preserveExistingName = false)
     {
         await using var tmp = BufferHelper.GetTempStream(file.Length);
 
@@ -25,7 +25,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
             LogLevel.Trace);
 
         await file.CopyToAsync(tmp, token);
-        return await StoreBlob(fileName ?? file.FileName, tmp, token);
+        return await StoreBlob(fileName ?? file.FileName, tmp, token, preserveExistingName);
     }
 
     public Task<LocalFile> CreateOrUpdateBlobFromStream(string fileName, Stream stream,
@@ -183,7 +183,7 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
     }
 
     private async Task<LocalFile> StoreBlob(string fileName, Stream contentStream,
-        CancellationToken token = default)
+        CancellationToken token = default, bool preserveExistingName = false)
     {
         contentStream.Position = 0;
         var hash = await SHA256.HashDataAsync(contentStream, token);
@@ -194,7 +194,8 @@ public class BlobRepository(AppDbContext context, ILogger<BlobRepository> logger
         if (localFile is not null)
         {
             localFile.FileSize = contentStream.Length;
-            localFile.Name = fileName; // allow to rename
+            if (!preserveExistingName)
+                localFile.Name = fileName; // allow to rename
             localFile.UploadTimeUtc = DateTimeOffset.UtcNow; // update upload time
             localFile.ReferenceCount++; // same hash, add ref count
 

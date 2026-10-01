@@ -167,10 +167,13 @@ public class ParticipationRepository(
             await SaveAsync(token);
     }
 
-    public Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default)
+    public async Task DeleteParticipationWriteUp(Participation part, CancellationToken token = default)
     {
-        if (part.Writeup is not null)
-            return blobRepository.DeleteBlob(part.Writeup, token);
-        return Task.CompletedTask;
+        if (part.Writeup is not { } writeup)
+            return;
+
+        // Shared content may remain in storage after this submission is removed.
+        part.Writeup = null;
+        await blobRepository.DeleteBlob(writeup, token);
     }
 }

@@ -6,6 +6,7 @@ using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Admin;
+using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -603,7 +604,60 @@ public class AdminController(
             return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
                 StatusCodes.Status404NotFound));
 
-        return Ok(await participationRepository.GetWriteups(game, token));
+        var info = await participationRepository.GetWriteups(game, token);
+        info.Examples = await gameRepository.GetWriteupExamples(id, token);
+        return Ok(info);
+    }
+
+    /// <summary>Upload a writeup sample document.</summary>
+    [HttpPost("Writeups/{id:int}/Examples")]
+    [RequestSizeLimit(21 * 1024 * 1024)]
+    [ProducesResponseType(typeof(WriteupExampleModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UploadWriteupExample(int id, IFormFile file, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        if (file.Length == 0)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeZero)]));
+        if (file.Length > 20 * 1024 * 1024)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_SizeTooLarge)]));
+
+        var name = Path.GetFileName(file.FileName.Replace('\\', '/'));
+        if (name.Length > 255 || Path.GetExtension(name).ToLowerInvariant() is not (".pdf" or ".doc" or ".docx" or ".odt"))
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_WriteupExampleFormat)]));
+
+        await using var transaction = await gameRepository.BeginTransactionAsync(token);
+        var example = await gameRepository.AddWriteupExample(game, file, name, token);
+        await transaction.CommitAsync(token);
+        return Ok(example);
+    }
+
+    /// <summary>Delete a writeup sample document.</summary>
+    [HttpDelete("Writeups/{id:int}/Examples/{exampleId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteWriteupExample(int id, int exampleId, CancellationToken token = default)
+    {
+        var game = await gameRepository.GetGameById(id, token);
+        if (game is null)
+            return NotFound(new RequestResponse(localizer[nameof(Resources.Program.Game_NotFound)],
+                StatusCodes.Status404NotFound));
+
+        await using var transaction = await gameRepository.BeginTransactionAsync(token);
+        var result = await gameRepository.DeleteWriteupExample(game, exampleId, token);
+        if (result == TaskStatus.NotFound)
+            return NotFound();
+        if (result != TaskStatus.Success)
+            return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.File_DeletionFailed)]));
+
+        await transaction.CommitAsync(token);
+        return Ok();
     }
 
     /// <summary>

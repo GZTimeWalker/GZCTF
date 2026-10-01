@@ -1,5 +1,5 @@
 import { Button, Center, Group, ScrollArea, Select, Stack, Text, Title } from '@mantine/core'
-import { mdiFolderDownloadOutline } from '@mdi/js'
+import { mdiFileDocumentOutline, mdiFolderDownloadOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +7,7 @@ import { useParams } from 'react-router'
 import { PDFViewer } from '@Components/admin/PDFViewer'
 import { TeamWriteupCard } from '@Components/admin/TeamWriteupCard'
 import { WithGameEditTab } from '@Components/admin/WithGameEditTab'
+import { WriteupExamplesModal } from '@Components/admin/WriteupExamplesModal'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import api, { WriteupInfo } from '@Api'
 
@@ -15,6 +16,7 @@ const GameWriteups: FC = () => {
   const numId = parseInt(id ?? '-1')
   const [pickedWriteup, setPickedWriteup] = useState<WriteupInfo>()
   const [selectedDivision, setSelectedDivision] = useState<string>('')
+  const [examplesOpened, setExamplesOpened] = useState(false)
 
   const { data } = api.admin.useAdminWriteups(numId, OnceSWRConfig)
   const { t } = useTranslation()
@@ -45,14 +47,23 @@ const GameWriteups: FC = () => {
       headProps={{ justify: 'apart' }}
       contentPos="right"
       head={
-        <Button
-          fullWidth
-          w="15rem"
-          leftSection={<Icon path={mdiFolderDownloadOutline} size={1} />}
-          onClick={() => window.open(`/api/admin/writeups/${id}/all`, '_blank')}
-        >
-          {t('admin.button.writeups.download_all')}
-        </Button>
+        <Group gap="sm">
+          <Button
+            variant="light"
+            leftSection={<Icon path={mdiFileDocumentOutline} size={1} />}
+            onClick={() => setExamplesOpened(true)}
+          >
+            {t('game.content.writeup.examples')}
+          </Button>
+          <Button
+            fullWidth
+            w="15rem"
+            leftSection={<Icon path={mdiFolderDownloadOutline} size={1} />}
+            onClick={() => window.open(`/api/admin/writeups/${id}/all`, '_blank')}
+          >
+            {t('admin.button.writeups.download_all')}
+          </Button>
+        </Group>
       }
     >
       <Group wrap="nowrap" align="flex-start" justify="space-between">
@@ -89,6 +100,7 @@ const GameWriteups: FC = () => {
           </ScrollArea>
         </Stack>
       </Group>
+      <WriteupExamplesModal gameId={numId} opened={examplesOpened} onClose={() => setExamplesOpened(false)} />
     </WithGameEditTab>
   )
 }

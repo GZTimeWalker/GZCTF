@@ -28,6 +28,9 @@ public class BasicWriteupInfoModel
     [JsonPropertyName("note")]
     public string WriteupNote { get; set; } = string.Empty;
 
+    /// <summary>Sample documents provided by the organizers.</summary>
+    public List<WriteupExampleModel> Examples { get; set; } = [];
+
     internal static BasicWriteupInfoModel FromParticipation(Participation part) =>
         new()
         {
