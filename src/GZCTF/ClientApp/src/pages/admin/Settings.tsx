@@ -12,6 +12,7 @@ import {
   SimpleGrid,
   Stack,
   Switch,
+  Textarea,
   TextInput,
   Title,
   useMantineTheme,
@@ -254,6 +255,19 @@ const Configs: FC = () => {
                     apiEncryption: e.currentTarget.checked,
                   })
                 }
+              />
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <Textarea
+                label={t('admin.content.settings.platform.head_info.label')}
+                description={t('admin.content.settings.platform.head_info.description')}
+                placeholder={t('admin.content.settings.platform.head_info.placeholder')}
+                disabled={disabled}
+                autosize
+                minRows={4}
+                maxRows={12}
+                value={globalConfig?.headInfo ?? ''}
+                onChange={(e) => setGlobalConfig({ ...globalConfig, headInfo: e.currentTarget.value })}
               />
             </Grid.Col>
           </Grid>

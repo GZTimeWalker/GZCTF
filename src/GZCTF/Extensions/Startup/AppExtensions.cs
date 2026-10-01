@@ -57,7 +57,8 @@ internal static class AppExtensions
             app.UseResponseCompression();
 
             app.UseCustomFavicon();
-            app.UseStaticFiles(DefaultStaticFileOptions);
+            app.UseWhen(context => !context.Request.Path.Equals("/index.html", StringComparison.OrdinalIgnoreCase),
+                branch => branch.UseStaticFiles(DefaultStaticFileOptions));
 
             app.UseForwardedHeaders();
 

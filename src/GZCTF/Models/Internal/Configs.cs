@@ -252,6 +252,12 @@ public class GlobalConfig
     public string? Description { get; set; } = DefaultDescription;
 
     /// <summary>
+    /// Additional plain text included in the page head as an HTML comment
+    /// </summary>
+    [CacheFlush(CacheKey.Index)]
+    public string HeadInfo { get; set; } = string.Empty;
+
+    /// <summary>
     /// Footer information
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]

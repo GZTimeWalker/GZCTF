@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net.Mime;
+using System.Security.Cryptography;
+using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -30,6 +32,18 @@ public class InfoController(
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IStringLocalizer<Program> localizer) : ControllerBase
 {
+    /// <summary>
+    /// Get the formatted head comment for the frontend development server
+    /// </summary>
+    [HttpGet("HeadInfo")]
+    [Produces(MediaTypeNames.Text.Plain)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public IActionResult GetHeadInfo([FromServices] IOptionsSnapshot<GlobalConfig> globalConfig)
+    {
+        Response.Headers.CacheControl = "no-store";
+        return Content(HandlerExtension.FormatHeadInfo(globalConfig.Value.HeadInfo), MediaTypeNames.Text.Plain);
+    }
+
     private static readonly DistributedCacheEntryOptions PowChallengeCacheOptions = new()
     {
         SlidingExpiration = TimeSpan.FromMinutes(5)

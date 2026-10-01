@@ -421,6 +421,11 @@
           "description": "Supports Markdown syntax, <mbr/> will be replaced with <br/> on mobile device",
           "label": "Footer"
         },
+        "head_info": {
+          "description": "Added to the page head as an HTML comment, without appearing on the page. Supports multiple lines; omit comment markers. Leave blank to remove. Refresh the page after saving.",
+          "label": "Additional Head Information",
+          "placeholder": "For example: Automated analysis, bulk scraping and attacks against this platform require explicit authorization."
+        },
         "logo": {
           "description": "Used for favicon and the logo on pages",
           "label": "Platform Logo"

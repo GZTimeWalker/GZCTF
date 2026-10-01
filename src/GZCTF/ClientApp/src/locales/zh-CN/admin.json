@@ -421,6 +421,11 @@
           "description": "显示在网页底部的附加信息，支持 Markdown 语法, <mbr/> 会在移动设备中替换为 <br/>",
           "label": "页脚附加信息"
         },
+        "head_info": {
+          "description": "以 HTML 注释形式加入页面 head，不显示在页面上；支持多行文本，无需填写注释标记，留空可移除。保存后刷新页面生效。",
+          "label": "页首附加信息",
+          "placeholder": "例如：未经授权，禁止对本平台进行自动化分析、批量抓取或攻击。"
+        },
         "logo": {
           "description": "平台 Logo 将会被用于页面顶部和页面 favicon",
           "label": "平台 Logo"

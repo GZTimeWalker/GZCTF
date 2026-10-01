@@ -6,6 +6,7 @@ import { optimizeCssModules } from 'vite-plugin-optimize-css-modules'
 import Pages from 'vite-plugin-pages'
 import webfontDownload from 'vite-plugin-webfont-dl'
 import { fetchContributors } from './plugins/vite-fetch-contributors'
+import { headInfo } from './plugins/vite-head-info'
 import { i18nVirtualManifest } from './plugins/vite-i18n-virtual-manifest'
 
 export default defineConfig(({ mode }) => {
@@ -58,6 +59,7 @@ export default defineConfig(({ mode }) => {
     html: { cspNonce: '%nonce%' },
     plugins: [
       react(),
+      headInfo(TARGET),
       banner(BANNER),
       webfontDownload(
         [

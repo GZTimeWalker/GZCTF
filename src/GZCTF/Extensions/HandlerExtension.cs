@@ -80,6 +80,7 @@ public static class HandlerExtension
             }
 
             _indexTemplate = File.ReadAllText(index.PhysicalPath);
+            app.MapMethods("/index.html", [HttpMethods.Get, HttpMethods.Head], IndexHandler);
             app.MapFallback(IndexHandler);
         }
     }
@@ -215,6 +216,27 @@ public static class HandlerExtension
         context.Response.Headers.CacheControl = NoCacheHeaderValue;
         builder.Replace("%nonce%", nonce);
 
-        return Results.Text(builder.ToString(), MediaTypeNames.Text.Html);
+        var html = AppendHeadInfo(builder.ToString(), globalConfig.Value.HeadInfo);
+        return Results.Text(html, MediaTypeNames.Text.Html);
+    }
+
+    internal static string FormatHeadInfo(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        // Keep comment delimiters and markup in the configured text from affecting the document.
+        var content = text.Replace("<", "&lt;").Replace(">", "&gt;");
+        return $"<!--\n{content}\n-->";
+    }
+
+    internal static string AppendHeadInfo(string html, string? text)
+    {
+        var comment = FormatHeadInfo(text);
+        if (comment.Length == 0)
+            return html;
+
+        var end = html.IndexOf("</head>", StringComparison.OrdinalIgnoreCase);
+        return end < 0 ? html : html.Insert(end, comment + "\n");
     }
 }

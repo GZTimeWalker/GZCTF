@@ -382,6 +382,8 @@ export interface GlobalConfig {
   slogan?: string;
   /** Site description information */
   description?: string | null;
+  /** Additional plain text included in the page head as an HTML comment */
+  headInfo?: string;
   /** Footer information */
   footerInfo?: string | null;
   /** Custom theme color */
