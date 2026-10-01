@@ -14,17 +14,13 @@ import classes from '@Styles/ScoreboardTable.module.css'
 
 const RANK_WIDTH = 50
 const SCORE_WIDTH = 70
+const CHOICE_WIDTH = 85
 
 const TableRow: FC<{
   item: ScoreboardItem
   onOpenDetail: () => void
 }> = React.memo(({ item, onOpenDetail }) => {
   const theme = useMantineTheme()
-  const solved = item.solvedChallenges
-
-  const totalScore = useMemo(() => {
-    return solved?.reduce((acc, cur) => acc + (cur?.score ?? 0), 0) ?? 0
-  }, [solved])
 
   return (
     <Table.Tr>
@@ -49,7 +45,9 @@ const TableRow: FC<{
           />
         </Group>
       </Table.Td>
-      <Table.Td className={cx(classes.mono, classes.left)}>{totalScore}</Table.Td>
+      <Table.Td className={cx(classes.mono, classes.left)}>{item.choiceScore ?? 0}</Table.Td>
+      <Table.Td className={cx(classes.mono, classes.left)}>{item.solvedCount}</Table.Td>
+      <Table.Td className={cx(classes.mono, classes.left)}>{item.score}</Table.Td>
     </Table.Tr>
   )
 })
@@ -140,10 +138,12 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivi
             },
           }}
         >
-          <Table className={classes.table}>
+          <Table className={classes.table} miw={420}>
             <colgroup>
               <col style={{ width: RANK_WIDTH }} />
               <col />
+              <col style={{ width: CHOICE_WIDTH }} />
+              <col style={{ width: RANK_WIDTH }} />
               <col style={{ width: SCORE_WIDTH }} />
             </colgroup>
             <Table.Thead className={classes.thead}>
@@ -153,6 +153,10 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivi
                 </Table.Th>
                 <Table.Th className={cx(classes.left, classes.theadHeader)}>
                   {t('game.label.score_table.team')}
+                </Table.Th>
+                <Table.Th className={cx(classes.left, classes.theadHeader)}>{t('choice.scoreboard_score')}</Table.Th>
+                <Table.Th className={cx(classes.left, classes.theadHeader)}>
+                  {t('game.label.score_table.solved_count')}
                 </Table.Th>
                 <Table.Th className={cx(classes.left, classes.theadHeader)}>
                   {t('game.label.score_table.score_total')}

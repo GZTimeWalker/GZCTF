@@ -172,6 +172,14 @@ export const ScoreboardItemModal: FC<ScoreboardItemModalProps> = (props) => {
             </Stack>
             <Stack gap={2}>
               <Text fw="bold" size="sm" ff="monospace">
+                {item?.choiceScore ?? 0}
+              </Text>
+              <Text size="xs" fw={500}>
+                {t('choice.scoreboard_score')}
+              </Text>
+            </Stack>
+            <Stack gap={2}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.solvedCount}
               </Text>
               <Text size="xs" fw={500}>

@@ -1,5 +1,6 @@
 {
   "title": "选择题",
+  "scoreboard_score": "选择题分数",
   "saved_config": "配置已保存。",
   "reload": "刷新",
   "reload_confirm": "重新加载服务器上的数据？",

@@ -130,6 +130,12 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.mem
             </Stack>
             <Stack gap={1}>
               <Text fw="bold" size="sm" ff="monospace">
+                {item?.choiceScore ?? 0}
+              </Text>
+              <Text size="xs">{t('choice.scoreboard_score')}</Text>
+            </Stack>
+            <Stack gap={1}>
+              <Text fw="bold" size="sm" ff="monospace">
                 {item?.solvedCount}
               </Text>
               <Text size="xs">{t('game.label.score_table.solved_count')}</Text>

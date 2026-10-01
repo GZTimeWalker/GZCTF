@@ -1,5 +1,6 @@
 {
   "title": "Choice questions",
+  "scoreboard_score": "Choice score",
   "saved_config": "Configuration saved.",
   "reload": "Reload",
   "reload_confirm": "Reload the server version?",

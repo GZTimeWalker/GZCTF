@@ -59,6 +59,83 @@ public class ChoiceExamTests(GZCTFApplicationFactory factory)
         return await Read(await client.PutAsJsonAsync(url + "/answers/2", new ChoiceAnswerModel { Version = attempt.Version, SelectedOptions = [2, 0] }));
     }
 
+    private static async Task<JsonElement> WaitForScoreboard(HttpClient client, int gameId, int teamId, int score)
+    {
+        var deadline = DateTimeOffset.UtcNow.AddSeconds(10);
+        while (true)
+        {
+            using var response = await client.GetAsync($"/api/game/{gameId}/scoreboard");
+            response.EnsureSuccessStatusCode();
+            using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            var item = json.RootElement.GetProperty("items").EnumerateArray()
+                .FirstOrDefault(i => i.GetProperty("id").GetInt32() == teamId);
+            if (item.ValueKind != JsonValueKind.Undefined && item.GetProperty("score").GetInt32() == score)
+                return json.RootElement.Clone();
+
+            if (DateTimeOffset.UtcNow >= deadline)
+            {
+                Assert.NotEqual(JsonValueKind.Undefined, item.ValueKind);
+                Assert.Equal(score, item.GetProperty("score").GetInt32());
+            }
+            await Task.Delay(100);
+        }
+    }
+
+    [Fact]
+    public async Task CachedScoreboard_CombinesCtfAndChoiceScoresAndRanksByTheirTotal()
+    {
+        var (admin, client, gameId, teamId) = await Setup();
+        using var adminScope = admin;
+        using var playerScope = client;
+        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, gameId,
+            "Fixed score challenge", "flag{combined_score}", originalScore: 100);
+        (await admin.PutAsJsonAsync($"/api/edit/games/{gameId}/challenges/{challenge.Id}",
+            new { minScoreRate = 1, disableBloodBonus = true, isEnabled = true })).EnsureSuccessStatusCode();
+
+        const string password = "Scoreboard@Test123";
+        var rival = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), password);
+        var rivalTeam = await TestDataSeeder.CreateTeamAsync(factory.Services, rival.Id, TestDataSeeder.RandomName());
+        await TestDataSeeder.JoinGameAsync(factory.Services, gameId, rivalTeam.Id, rival.Id);
+        using var rivalClient = factory.CreateClient();
+        (await rivalClient.PostAsJsonAsync("/api/account/login",
+            new LoginModel { UserName = rival.UserName, Password = password })).EnsureSuccessStatusCode();
+
+        // Warm the HTTP scoreboard cache before either score changes.
+        await WaitForScoreboard(client, gameId, teamId, 0);
+        var flagUrl = $"/api/game/{gameId}/challenges/{challenge.Id}";
+        (await rivalClient.PostAsJsonAsync(flagUrl, new FlagSubmitModel { Flag = challenge.Flag })).EnsureSuccessStatusCode();
+        await WaitForScoreboard(client, gameId, rivalTeam.Id, 100);
+        (await client.PostAsJsonAsync(flagUrl, new FlagSubmitModel { Flag = challenge.Flag })).EnsureSuccessStatusCode();
+        var ctfBoard = await WaitForScoreboard(client, gameId, teamId, 100);
+        var ctfItem = ctfBoard.GetProperty("items").EnumerateArray().Single(i => i.GetProperty("id").GetInt32() == teamId);
+        Assert.Equal(0, ctfItem.GetProperty("choiceScore").GetInt32());
+        Assert.Equal(1, ctfItem.GetProperty("solvedCount").GetInt32());
+        Assert.Equal(2, ctfItem.GetProperty("rank").GetInt32());
+
+        var url = $"/api/game/{gameId}/choice";
+        var attempt = await Complete(client, url);
+        var draftBoard = await WaitForScoreboard(client, gameId, teamId, 100);
+        Assert.Equal(0, draftBoard.GetProperty("items").EnumerateArray()
+            .Single(i => i.GetProperty("id").GetInt32() == teamId).GetProperty("choiceScore").GetInt32());
+        var final = await Read(await client.PostAsJsonAsync(url + "/submit", new ChoiceSubmitModel { Version = attempt.Version }));
+        Assert.Equal(15, final.Score);
+
+        var board = await WaitForScoreboard(client, gameId, teamId, 115);
+        var winner = board.GetProperty("items")[0];
+        Assert.Equal(teamId, winner.GetProperty("id").GetInt32());
+        Assert.Equal(1, winner.GetProperty("rank").GetInt32());
+        Assert.Equal(15, winner.GetProperty("choiceScore").GetInt32());
+        Assert.Equal(1, winner.GetProperty("solvedCount").GetInt32());
+        Assert.Equal(100, board.GetProperty("items")[1].GetProperty("score").GetInt32());
+        var timeline = board.GetProperty("timelines").EnumerateArray()
+            .Single(t => t.GetProperty("divisionId").GetInt32() == 0).GetProperty("teams").EnumerateArray()
+            .Single(t => t.GetProperty("id").GetInt32() == teamId).GetProperty("items");
+        Assert.Equal(115, timeline[timeline.GetArrayLength() - 1].GetProperty("score").GetInt32());
+
+        await Read(await client.PostAsJsonAsync(url + "/submit", new ChoiceSubmitModel { Version = attempt.Version }));
+        await WaitForScoreboard(client, gameId, teamId, 115);
+    }
+
     [Fact]
     public async Task Workflow_RestoresLocksAndAddsFinalScoreOnlyOnce()
     {
@@ -94,6 +171,10 @@ public class ChoiceExamTests(GZCTFApplicationFactory factory)
         Assert.Equal(15, board.Items[teamId].Score);
         Assert.Equal(15, board.Items[teamId].ChoiceScore);
         Assert.Equal(15, board.TimeLines[0].Single(t => t.Id == teamId).Items.Last().Score);
+        var cachedBoard = await WaitForScoreboard(client, gameId, teamId, 15);
+        var cachedItem = cachedBoard.GetProperty("items").EnumerateArray().Single(i => i.GetProperty("id").GetInt32() == teamId);
+        Assert.Equal(15, cachedItem.GetProperty("choiceScore").GetInt32());
+        Assert.Equal(0, cachedItem.GetProperty("solvedCount").GetInt32());
     }
 
     [Fact]
