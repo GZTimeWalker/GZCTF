@@ -3,6 +3,8 @@ using GZCTF.Services.Container.Manager;
 using GZCTF.Services.Container.Provider;
 using GZCTF.Storage;
 using GZCTF.Storage.Interface;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -11,7 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.K3s;
-using Testcontainers.Minio;
 using Testcontainers.PostgreSql;
 using Xunit;
 
@@ -21,12 +22,15 @@ namespace GZCTF.Integration.Test.Base;
 /// Test application factory for integration tests with PostgresSQL test container
 /// Supports two modes via GZCTF_INTEGRATION_TEST_MODE environment variable:
 /// - "local" (default): Docker + local disk storage
-/// - "cloud": K3s + MinIO (for cloud-native testing)
+/// - "cloud": K3s + RustFS (for cloud-native testing)
+/// - "rustfs" (or legacy "minio"): Docker + RustFS storage
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
 // ReSharper disable once InconsistentNaming
 public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private const string TestStorageCredential = "rustfs-test-credential";
+
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder("postgres:alpine")
         .WithDatabase("gzctf_test")
         .WithUsername("postgres")
@@ -34,13 +38,13 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         .WithCleanUp(true)
         .Build();
 
-    private readonly MinioContainer? _minioContainer;
+    private readonly IContainer? _rustfsContainer;
     // ReSharper disable once InconsistentNaming
     private readonly K3sContainer? _k3sContainer;
 
     // ReSharper disable once InconsistentNaming
     private readonly bool _useK3sMode;
-    private readonly bool _useMinioStorage;
+    private readonly bool _useRustfsStorage;
 
     private string? _connectionString;
     private string? _storageConnectionString;
@@ -53,17 +57,21 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         var testMode = Environment.GetEnvironmentVariable("GZCTF_INTEGRATION_TEST_MODE")?.ToLowerInvariant() ?? "local";
 
         _useK3sMode = testMode == "cloud" || testMode == "k3s";
-        _useMinioStorage = testMode == "cloud" || testMode == "minio";
+        _useRustfsStorage = testMode is "cloud" or "rustfs" or "minio";
 
         Console.WriteLine($@"[GZCTFApplicationFactory] Test mode: {testMode}");
 
         // Initialize containers based on mode
-        if (_useMinioStorage)
+        if (_useRustfsStorage)
         {
-            Console.WriteLine(@"[GZCTFApplicationFactory] Creating MinIO container...");
-            _minioContainer = new MinioBuilder("minio/minio:latest")
-                .WithUsername("minioadmin")
-                .WithPassword("minioadmin")
+            Console.WriteLine(@"[GZCTFApplicationFactory] Creating RustFS container...");
+            _rustfsContainer = new ContainerBuilder()
+                .WithImage("rustfs/rustfs:1.0.0")
+                .WithEnvironment("RUSTFS_ACCESS_KEY", TestStorageCredential)
+                .WithEnvironment("RUSTFS_SECRET_KEY", TestStorageCredential)
+                .WithPortBinding(9000, true)
+                .WithWaitStrategy(Wait.ForUnixContainer()
+                    .UntilHttpRequestIsSucceeded(request => request.ForPort(9000).ForPath("/health")))
                 .WithCleanUp(true)
                 .Build();
         }
@@ -84,7 +92,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         Console.WriteLine(@"[ConfigureWebHost] Starting web host configuration...");
         Console.WriteLine($@"[ConfigureWebHost] K3s mode: {_useK3sMode}, Kubeconfig path: {_kubeConfigPath ?? "null"}");
         Console.WriteLine(
-            $@"[ConfigureWebHost] MinIO mode: {_useMinioStorage}, Storage connection: {(_storageConnectionString != null ? "set" : "null")}");
+            $@"[ConfigureWebHost] RustFS mode: {_useRustfsStorage}, Storage connection: {(_storageConnectionString != null ? "set" : "null")}");
 
         // Set environment variable to allow file directory creation
         Environment.SetEnvironmentVariable("YES_I_KNOW_FILES_ARE_NOT_PERSISTED_GO_AHEAD_PLEASE", "true");
@@ -186,14 +194,14 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 Console.WriteLine(@"[ConfigureTestServices] Kubernetes container services registered");
             }
 
-            // Reconfigure storage services if in MinIO mode
-            if (_useMinioStorage && _minioContainer is not null && !string.IsNullOrEmpty(_storageConnectionString))
+            // Reconfigure storage services if in RustFS mode
+            if (_useRustfsStorage && _rustfsContainer is not null && !string.IsNullOrEmpty(_storageConnectionString))
             {
                 services.RemoveAll(typeof(IBlobStorage));
 
                 services.AddSingleton(StorageProviderFactory.Create(_storageConnectionString));
 
-                Console.WriteLine(@"[ConfigureTestServices] MinIO storage service registered");
+                Console.WriteLine(@"[ConfigureTestServices] RustFS storage service registered");
             }
         });
     }
@@ -222,15 +230,15 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         _connectionString = _postgresContainer.GetConnectionString();
     }
 
-    private async Task InitializeMinioAsync()
+    private async Task InitializeRustfsAsync()
     {
-        if (_minioContainer is null)
-            throw new InvalidOperationException("MinIO container is not initialized");
+        if (_rustfsContainer is null)
+            throw new InvalidOperationException("RustFS container is not initialized");
 
-        await _minioContainer.StartAsync();
-        var minioEndpoint = _minioContainer.GetConnectionString();
+        await _rustfsContainer.StartAsync();
+        var rustfsEndpoint = $"http://{_rustfsContainer.Hostname}:{_rustfsContainer.GetMappedPublicPort(9000)}";
         _storageConnectionString =
-            $"minio.s3://bucket=gzctf-test;endpoint={minioEndpoint};accessKey=minioadmin;secretKey=minioadmin;forcePathStyle=true;useHttp=true;";
+            $"s3://bucket=gzctf-test;endpoint={rustfsEndpoint};accessKey={TestStorageCredential};secretKey={TestStorageCredential};forcePathStyle=true;useHttp=true;";
     }
 
     public async Task InitializeAsync()
@@ -244,9 +252,9 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         if (_useK3sMode && _k3sContainer is not null)
             tasks.Add(InitializeK3sAsync());
 
-        // Start MinIO container if in MinIO mode
-        if (_useMinioStorage && _minioContainer is not null)
-            tasks.Add(InitializeMinioAsync());
+        // Start RustFS container if in RustFS mode
+        if (_useRustfsStorage && _rustfsContainer is not null)
+            tasks.Add(InitializeRustfsAsync());
 
         // Start PostgresSQL container
         tasks.Add(InitializePostgresAsync());
@@ -270,8 +278,8 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         // Dispose containers
         await _postgresContainer.DisposeAsync();
 
-        if (_minioContainer is not null)
-            await _minioContainer.DisposeAsync();
+        if (_rustfsContainer is not null)
+            await _rustfsContainer.DisposeAsync();
 
         if (_k3sContainer is not null)
             await _k3sContainer.DisposeAsync();
