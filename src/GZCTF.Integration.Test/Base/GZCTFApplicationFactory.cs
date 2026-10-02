@@ -20,7 +20,7 @@ namespace GZCTF.Integration.Test.Base;
 
 /// <summary>
 /// Test application factory for integration tests with PostgresSQL test container
-/// Supports two modes via GZCTF_INTEGRATION_TEST_MODE environment variable:
+/// Supports these modes via GZCTF_INTEGRATION_TEST_MODE environment variable:
 /// - "local" (default): Docker + local disk storage
 /// - "cloud": K3s + RustFS (for cloud-native testing)
 /// - "rustfs" (or legacy "minio"): Docker + RustFS storage
