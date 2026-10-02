@@ -23,7 +23,7 @@ namespace GZCTF.Integration.Test.Base;
 /// Supports these modes via GZCTF_INTEGRATION_TEST_MODE environment variable:
 /// - "local" (default): Docker + local disk storage
 /// - "cloud": K3s + RustFS (for cloud-native testing)
-/// - "rustfs" (or legacy "minio"): Docker + RustFS storage
+/// - "rustfs": Docker + RustFS storage
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
 // ReSharper disable once InconsistentNaming
@@ -57,7 +57,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         var testMode = Environment.GetEnvironmentVariable("GZCTF_INTEGRATION_TEST_MODE")?.ToLowerInvariant() ?? "local";
 
         _useK3sMode = testMode == "cloud" || testMode == "k3s";
-        _useRustfsStorage = testMode is "cloud" or "rustfs" or "minio";
+        _useRustfsStorage = testMode is "cloud" or "rustfs";
 
         Console.WriteLine($@"[GZCTFApplicationFactory] Test mode: {testMode}");
 
