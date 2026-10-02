@@ -71,7 +71,7 @@ Design notes (flexibility vs performance)
 - Use SignalR endpoints `/hub/user`, `/hub/monitor`, `/hub/admin`; Vite dev proxy forwards `/hub` as WebSocket.
 - Permissions: Use `[RequireUser]`, `[RequireMonitor]`, `[RequireAdmin]`, `[RequireAdminOrToken]` attributes. New permissions: `RequireReview` (submission review) and `AffectDynamicScore` (dynamic scoring).
 - Captcha pluggable via `CaptchaConfig.Provider`: `HashPow` (default) or `CloudflareTurnstile` (`Extensions/CaptchaExtension.cs`).
-- Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`. Self-maintenance storage ensures blob cleanup and consistency.
+- Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `s3://`. Set `forcePathStyle=true` for RustFS. Self-maintenance storage ensures blob cleanup and consistency.
 - Environment configuration prefix: `GZCTF_` (env vars override config).
 - Role hierarchy: `Admin` (3) > `Monitor` (1) > `User` (0) > `Banned` (-1). Frontend `WithRole` component uses `RoleMap` for access control.
 - Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/RustFS test integration. Use `IContainerManager` interface for consistency.

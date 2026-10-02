@@ -20,7 +20,7 @@ public static class StorageProviderFactory
         IBlobStorage storage = scheme switch
         {
             "disk" => CreateDiskStorage(parameters),
-            "aws.s3" or "minio.s3" or "s3" => CreateS3Storage(parameters, scheme),
+            "aws.s3" or "s3" => CreateS3Storage(parameters),
             _ => throw new NotSupportedException($"Storage provider '{scheme}' is not supported.")
         };
 
@@ -37,7 +37,7 @@ public static class StorageProviderFactory
         return new LocalBlobStorage(path);
     }
 
-    private static S3BlobStorage CreateS3Storage(IReadOnlyDictionary<string, string> parameters, string scheme)
+    private static S3BlobStorage CreateS3Storage(IReadOnlyDictionary<string, string> parameters)
     {
         if (!parameters.TryGetValue("bucket", out var bucket) || string.IsNullOrWhiteSpace(bucket))
             throw new InvalidOperationException("S3 storage requires the 'bucket' parameter.");
@@ -64,7 +64,7 @@ public static class StorageProviderFactory
         if (parameters.TryGetValue("useHttp", out var useHttpValue) && bool.TryParse(useHttpValue, out var useHttp))
             config.UseHttp = useHttp;
 
-        var forcePathStyle = scheme.Equals("minio.s3", StringComparison.OrdinalIgnoreCase);
+        var forcePathStyle = false;
         if (parameters.TryGetValue("forcePathStyle", out var fpsValue) && bool.TryParse(fpsValue, out var fps))
             forcePathStyle = fps;
         config.ForcePathStyle = forcePathStyle;
