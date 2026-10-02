@@ -71,7 +71,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
                 .WithEnvironment("RUSTFS_SECRET_KEY", TestStorageCredential)
                 .WithPortBinding(9000, true)
                 .WithWaitStrategy(Wait.ForUnixContainer()
-                    .UntilHttpRequestIsSucceeded(request => request.ForPort(9000).ForPath("/health")))
+                    .UntilHttpRequestIsSucceeded(request => request.ForPort(9000).ForPath("/health/ready")))
                 .WithCleanUp(true)
                 .Build();
         }
