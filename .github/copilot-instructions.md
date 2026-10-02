@@ -1,6 +1,6 @@
 # GZ::CTF — AI Coding Agent Guide
 
-GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 9 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
+GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 10 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
 
 ## Development principles
 
@@ -85,7 +85,7 @@ Design notes (flexibility vs performance)
 
 ## Dev workflows
 
-- Prereqs: .NET 9 SDK, Node 24+, `pnpm`.
+- Prereqs: .NET 10 SDK, Node 24+, `pnpm`.
 - Single-command dev (SpaProxy auto-starts Vite):
   - `dotnet run --project src/GZCTF/GZCTF.csproj`
   - Launch profile sets `ASPNETCORE_ENVIRONMENT=Development` and enables `Microsoft.AspNetCore.SpaProxy` (see `Properties/launchSettings.json`); Vite dev runs on `63000` and proxies to backend.
