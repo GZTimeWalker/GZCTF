@@ -74,7 +74,7 @@ Design notes (flexibility vs performance)
 - Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`. Self-maintenance storage ensures blob cleanup and consistency.
 - Environment configuration prefix: `GZCTF_` (env vars override config).
 - Role hierarchy: `Admin` (3) > `Monitor` (1) > `User` (0) > `Banned` (-1). Frontend `WithRole` component uses `RoleMap` for access control.
-- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/MinIO integration. Use `IContainerManager` interface for consistency.
+- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/RustFS test integration. Use `IContainerManager` interface for consistency.
 - Task Status: Enum includes `Success`, `Failed`, `Pending`, `Running`, `Unhealthy`, `Degraded` statuses for container/service health.
 - Divisions API: Endpoints for game-scoped division management with challenge configs. Division affects challenge visibility, scoring, and deadline enforcement.
 - FirstSolves tracking: Separate table for first-blood metadata (team, user, timestamp); used for bonus scoring and statistics.
@@ -97,10 +97,10 @@ Design notes (flexibility vs performance)
   - Run: `dotnet ./publish/GZCTF.dll`
 - Tests (xUnit + coverlet):
   - `dotnet test src/GZCTF.Test/GZCTF.Test.csproj -v minimal /p:CollectCoverage=true`
-  - `dotnet test src/GZCTF.Integration.Test/GZCTF.Integration.Test.csproj -v minimal /p:CollectCoverage=true` (requires Docker; uses Testcontainers for K3s, MinIO, PostgreSQL)
+  - `dotnet test src/GZCTF.Integration.Test/GZCTF.Integration.Test.csproj -v minimal /p:CollectCoverage=true` (requires Docker; cloud mode uses Testcontainers for K3s, RustFS, PostgreSQL)
 - Testing framework:
   - Unit tests: xUnit with `IRepository<T>` and service mocking; examples in `GZCTF.Test/UnitTests/`.
-  - Integration tests: Testcontainers for Docker Swarm/Kubernetes, MinIO S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation.
+  - Integration tests: Testcontainers for Docker Swarm/Kubernetes, RustFS S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation. Set `GZCTF_INTEGRATION_TEST_MODE=rustfs` to test S3 without K3s.
 - EF Core migrations (PostgreSQL):
   - `dotnet ef migrations add <Name> --project src/GZCTF/GZCTF.csproj --startup-project src/GZCTF/GZCTF.csproj`
   - `dotnet ef database update`
